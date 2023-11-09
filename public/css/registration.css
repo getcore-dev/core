@@ -1,0 +1,41 @@
+body, h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+/* Style the form inputs */
+input {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    max-width: 100%;
+}
+
+/* Style the submit button */
+button {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Style the submit button on hover */
+button:hover {
+    background-color: #0069d9;
+}

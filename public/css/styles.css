@@ -1,0 +1,48 @@
+body, h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+
+.header {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.opportunities {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.jobs, .communities {
+    width: 48%;
+    border: 1px solid #000;
+    padding: 20px;
+    text-align: center;
+    margin: 20px 30px;
+}
+
+.trending {
+    display: flex;
+    justify-content: space-between;
+}
+
+.trending-projects, .trending-posts {
+    width: 48%;
+    border: 1px solid #000;
+    padding: 20px;
+    margin: 20px 30px;
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+}
