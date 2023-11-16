@@ -6,17 +6,14 @@ const mysql = require("mysql2");
 const bcrypt = require("bcrypt");
 const app = express();
 const port = process.env.PORT || 8080; // Use the environment's port if provided.
+const pool = require("./db");
+const { get } = require("http");
 
 // Middleware to parse JSON bodies of requests with Content-Type: application/json
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const db = mysql.createPool({
-  host: "127.0.0.1",
-  user: "dev",
-  password: "##",
-});
-
+// session for the app to use to keep track of the user
 app.use(
   session({
     secret: "secret",
@@ -32,20 +29,50 @@ app.use(
   })
 );
 
-function currentTimestampInSQL() {
-  const now = new Date();
+app.get("/check-session", (req, res) => {
+  if (req.session && req.session.userId) {
+    const username = getUsernameFromSession(req.session.userId);
+    res.send({ username });
+  } else {
+    res.send({ username: null });
+  }
+});
 
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0"); // Months start at 0 in JavaScript
-  const day = String(now.getDate()).padStart(2, "0");
-  const hours = String(now.getHours()).padStart(2, "0");
-  const minutes = String(now.getMinutes()).padStart(2, "0");
-  const seconds = String(now.getSeconds()).padStart(2, "0");
+// login route for when user logs in
+app.post("/login", async (req, res) => {
+  //console.log(req.body);
+  try {
+    const { username, password } = req.body;
+    const query = "SELECT * FROM users WHERE username = ?";
 
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-}
+    pool.query(query, [username], async (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send("Internal server error");
+      }
 
-// /register route
+      if (results.length === 0) {
+        return res.status(401).send("Incorrect username or password");
+      }
+
+      const user = results[0];
+
+      const isMatch = await bcrypt.compare(password, user.password);
+
+      if (!isMatch) {
+        return res.status(401).send("Incorrect username or password");
+      }
+
+      // what to do if user logs in successfully
+      req.session.userId = user.userId;
+      res.redirect("/core.html");
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal server error");
+  }
+});
+
 app.post("/register", async (req, res) => {
   //console.log(req.body);
   try {
@@ -54,18 +81,19 @@ app.post("/register", async (req, res) => {
     const timeStamp = currentTimestampInSQL();
 
     const query =
-      "INSERT INTO users (username, email, password, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
-    db.execute(
-      query[(username, email, hashedPassword, timeStamp, timeStamp)],
-      (err, results) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).send("Error registering new user");
-        }
-        // what to do if user logs in successfully
-        res.redirect("/login");
+      "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+
+    pool.query(query, [username, email, hashedPassword], (err, results) => {
+      if (err) {
+        // handle if username or email already exists
+        console.error(err);
+        return res.status(500).send("Username or email already exists");
       }
-    );
+
+      return res.status(200).send("Successfully registered");
+      // what to do if user logs in successfully
+      //res.redirect("/login");
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal server error");
