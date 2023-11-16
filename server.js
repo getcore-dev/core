@@ -4,7 +4,7 @@ const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const app = express();
 const port = process.env.PORT || 8080; // Use the environment's port if provided.
-
+app.use(express.urlencoded({ extended: true }));
 app.post('/register', async (req, res) => {
 try {
     const { username, email, password } = req.body; 
