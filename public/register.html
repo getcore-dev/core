@@ -1,5 +1,3 @@
-<!-- FILEPATH: /Users/brycecole/core/signup.html -->
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,12 +7,10 @@
     <body>
             <form action="/register" method="post" id="registration">
                 <h1>CORE</h1>
-                <input type="email" id="email" placeholder="Email" required>
-                <input type="text" id="username" placeholder="Username" required>
-                <input type="password" id="password" placeholder="Password" required>
+                <input type="email" id="email" name="email" placeholder="Email" required>
+                <input type="text" id="username" name="username" placeholder="Username" required>
+                <input type="password" id="password" name="password" placeholder="Password" required>
                 <button type="submit">Register</button>
-                <div id="message"></div>
             </form>
-        <script src="js/register.js"></script>
     </body>
 </html>
