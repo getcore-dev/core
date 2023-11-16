@@ -6,16 +6,11 @@ const mysql = require("mysql2");
 const bcrypt = require("bcrypt");
 const app = express();
 const port = process.env.PORT || 8080; // Use the environment's port if provided.
+const pool = require("./db");
 
 // Middleware to parse JSON bodies of requests with Content-Type: application/json
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-const db = mysql.createPool({
-  host: "127.0.0.1",
-  user: "dev",
-  password: "##",
-});
 
 app.use(
   session({
@@ -46,6 +41,41 @@ function currentTimestampInSQL() {
 }
 
 // /register route
+
+app.post("/login", async (req, res) => {
+  //console.log(req.body);
+  try {
+    const { username, password } = req.body;
+    const query = "SELECT * FROM users WHERE username = ?";
+
+    pool.query(query, [username], async (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send("Internal server error");
+      }
+
+      if (results.length === 0) {
+        return res.status(401).send("Incorrect username or password");
+      }
+
+      const user = results[0];
+
+      const isMatch = await bcrypt.compare(password, user.password);
+
+      if (!isMatch) {
+        return res.status(401).send("Incorrect username or password");
+      }
+
+      // what to do if user logs in successfully
+      req.session.user = user;
+      res.status(200).send("Successfully logged in");
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal server error");
+  }
+});
+
 app.post("/register", async (req, res) => {
   //console.log(req.body);
   try {
@@ -54,18 +84,19 @@ app.post("/register", async (req, res) => {
     const timeStamp = currentTimestampInSQL();
 
     const query =
-      "INSERT INTO users (username, email, password, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
-    db.execute(
-      query[(username, email, hashedPassword, timeStamp, timeStamp)],
-      (err, results) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).send("Error registering new user");
-        }
-        // what to do if user logs in successfully
-        res.redirect("/login");
+      "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+
+    pool.query(query, [username, email, hashedPassword], (err, results) => {
+      if (err) {
+        // handle if username or email already exists
+        console.error(err);
+        return res.status(500).send("Username or email already exists");
       }
-    );
+
+      return res.status(200).send("Successfully registered");
+      // what to do if user logs in successfully
+      //res.redirect("/login");
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal server error");

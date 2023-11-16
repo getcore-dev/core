@@ -1,7 +1,7 @@
 {
   "name": "core",
   "version": "1.0.0",
-  "description": "",
+  "description": "> community-based platform for sharing projects and gaining opportunities",
   "main": "index.js",
   "scripts": {
     "start": "nodemon server.js",
