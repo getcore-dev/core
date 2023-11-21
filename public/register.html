@@ -5,26 +5,24 @@
         <link rel="stylesheet" href="css/acc-styles.css">
     </head>
     <body>
-<<<<<<< HEAD
         <form action="/user/register" method="post" id="registration">
-=======
-            <form action="/user/register" method="post" id="registration">
->>>>>>> origin/main
-                <h1>CORE</h1>
-                <input type="email" id="email" name="email" placeholder="Email" required>
-                <input type="text" id="username" name="username" placeholder="Username" required>
-                <input type="password" id="password" name="password" placeholder="Password" required>
-                <select>
-                    <option value="student">Student</option>
-                    <option value="employer">Employer</option>
-                </select>
+            <h1>CORE</h1>
+            <input type="email" id="email" name="email" placeholder="Email" required>
+            <input type="text" id="username" name="username" placeholder="Username" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
 
-                <select id="state"> 
+            <select id="country" name="country" required onchange="checkCountry(this);">
+                <option value="">Select Country</option>
+                <!-- You need to fill this with all countries -->
+                <option value="US">United States</option>
+                <!-- Add other countries here -->
 
-                </select>
-                <button type="submit">Register</button>
-            </form>
-            <script src="js/register.js"></script>
+            <input type="text" id="zipcode" name="zipcode" placeholder="Zip Code" required oninput="autoFillLocation(this.value)">
+            <input type="text" id="city" name="city" placeholder="City" style="display:none;" required>
+            <input type="text" id="state" name="state" placeholder="State"  style="display:none;">
+
+            <button type="submit">Register</button>
+        </form>
+        <script src="js/register.js"></script>
     </body>
-
 </html>
