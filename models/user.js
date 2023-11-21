@@ -1,32 +1,18 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const { Model, DataTypes } = require("sequelize");
+const sequelize = require("../config/database"); // Adjust the path as necessary
 
-// user schema for mongodb
-const userSchema = new mongoose.Schema({
-    username: { type: String, required: true, unique: true },
-    email: {type: String, required: true, unique: true},
-    password: { type: String, required: true }
-});
-
-// pre-save hook to has password
-userSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) {
-        return next();
-    }
-
-    try {
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
-        return next();
-    } catch (err) {
-        return next(err);
-    }
-});
-
-userSchema.methods.comparePassword = async function(candidatePassword) {
-    return await bcrypt.compare(candidatePassword, this.password);
-};
-
-const User = mongoose.model('User', userSchema);
+class User extends Model {}
+User.init(
+  {
+    user_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    username: { type: DataTypes.STRING, allowNull: false, unique: true },
+    email: { type: DataTypes.STRING, allowNull: false, unique: true },
+    password_hash: { type: DataTypes.STRING, allowNull: false },
+    created_at: { type: DataTypes.DATE, allowNull: false },
+    job_id: { type: DataTypes.INTEGER },
+    location_id: { type: DataTypes.INTEGER },
+  },
+  { sequelize, modelName: "User" }
+);
 
 module.exports = User;

@@ -4,6 +4,8 @@ const app = express();
 const port = process.env.PORT || 8080;
 const userRoutes = require("./routes/userRoutes");
 const sessionMiddleware = require("./middleware/session");
+//const { User } = require("./models");
+//const sequelize = require("./models/index").sequelize;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

@@ -20,7 +20,8 @@
     "mongoose": "^8.0.0",
     "mysql2": "^3.6.3",
     "passport": "^0.6.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "sequelize": "^6.35.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

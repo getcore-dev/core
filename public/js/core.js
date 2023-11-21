@@ -6,6 +6,15 @@ function jobsButton() {
 function communityButton() {
   window.location.href = "communities.html";
 }
+
+function login() {
+  window.location.href = "login.html";
+}
+
+function join() {
+  window.location.href = "register.html";
+}
+
 function fetchTrendingPosts() {
   return [
     {
@@ -136,9 +145,12 @@ displayTrendingPosts(postsData);
 displayTrendingProjects(projectsData);
 
 // user stuff
-
+var loginBtn = document.getElementById("login-button");
+var joinBtn = document.getElementById("join-button");
 var jobsBtn = document.getElementById("jobs-button");
 var comBtn = document.getElementById("community-button");
 
 comBtn.addEventListener("click", communityButton);
 jobsBtn.addEventListener("click", jobsButton);
+loginBtn.addEventListener("click", login);
+joinBtn.addEventListener("click", join);

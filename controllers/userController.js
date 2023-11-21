@@ -50,7 +50,7 @@ exports.register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const query =
-      "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+      "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)";
 
     pool.query(query, [username, email, hashedPassword], (err, results) => {
       if (err) {

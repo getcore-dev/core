@@ -5,12 +5,21 @@
         <link rel="stylesheet" href="css/acc-styles.css">
     </head>
     <body>
-            <form action="/user/register" method="post" id="registration">
+        <form action="/user/register" method="post" id="registration">
                 <h1>CORE</h1>
                 <input type="email" id="email" name="email" placeholder="Email" required>
                 <input type="text" id="username" name="username" placeholder="Username" required>
                 <input type="password" id="password" name="password" placeholder="Password" required>
+                <select>
+                    <option value="student">Student</option>
+                    <option value="employer">Employer</option>
+                </select>
+
+                <select id="state"> 
+
+                </select>
                 <button type="submit">Register</button>
             </form>
     </body>
+    <srcipt src="js/register.js"></srcipt>
 </html>

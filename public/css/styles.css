@@ -24,11 +24,29 @@ body, h1, h2, h3, p {
 }
 
 .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     filter: invert(1);
-    display: block;
-    height: 80px;
-    width: auto;
     margin-right: 5px;
+}
+.logo img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 230px;
+}
+
+.login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+}
+
+.login button {
+    margin: 0px 10px;
+    cursor: pointer;
 }
 
 .container {
@@ -37,7 +55,7 @@ body, h1, h2, h3, p {
     overflow: hidden;
 }
 
-img {
+.img {
     width: 13%;
     height: auto;
 }
