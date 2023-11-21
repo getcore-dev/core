@@ -5,7 +5,6 @@ function jobsButton() {
 
 function communityButton() {
   window.location.href = "communities.html";
-<<<<<<< HEAD
 }
 
 function login() {
@@ -53,46 +52,6 @@ function fetchTrendingPosts() {
   ];
 }
 
-=======
-}
-function fetchTrendingPosts() {
-  return [
-    {
-      title: "OpenAI releases GPT-5, thoughts?",
-      content: "Lorem ipsum",
-      user: "cat",
-      community: "AI",
-      reactions: [2595, 16],
-      comments: 12,
-    },
-    {
-      title: "What is your average total compensation and where do you live?",
-      content: "Lorem ipsum",
-      user: "user",
-      community: "Questions",
-      reactions: [147, 12],
-      comments: 5,
-    },
-    {
-      title: "What is your favorite programming language?",
-      content: "Lorem ipsum",
-      user: "bryce",
-      community: "Programming",
-      reactions: [95, 4],
-      comments: 9,
-    },
-    {
-      title: "What are some requested features for the  website? ",
-      content: "Lorem ipsum",
-      user: "admins",
-      community: "Questions",
-      reactions: [602, 32],
-      comments: 22,
-    },
-  ];
-}
-
->>>>>>> origin/main
 fetch("/check-session")
   .then((res) => res.json())
   .then((data) => {
@@ -191,15 +150,7 @@ var joinBtn = document.getElementById("join-button");
 var jobsBtn = document.getElementById("jobs-button");
 var comBtn = document.getElementById("community-button");
 
-<<<<<<< HEAD
 comBtn.addEventListener("click", communityButton);
 jobsBtn.addEventListener("click", jobsButton);
 loginBtn.addEventListener("click", login);
 joinBtn.addEventListener("click", join);
-=======
-var jobsBtn = document.getElementById("jobs-button");
-var comBtn = document.getElementById("community-button");
-
-comBtn.addEventListener("click", communityButton);
-jobsBtn.addEventListener("click", jobsButton);
->>>>>>> origin/main
