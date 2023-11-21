@@ -4,8 +4,17 @@ const app = express();
 const port = process.env.PORT || 8080;
 const userRoutes = require("./routes/userRoutes");
 const sessionMiddleware = require("./middleware/session");
-//const { User } = require("./models");
-//const sequelize = require("./models/index").sequelize;
+const sequelize = require("./config/database");
+
+// location information
+const Location = require("./models/location");
+const locationRoutes = require("./routes/location");
+
+sequelize.sync({ force: false }).then(() => {
+  console.log("Database & tables created!");
+});
+
+app.use("/api/locations", locationRoutes);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

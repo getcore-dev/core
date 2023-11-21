@@ -1,5 +1,6 @@
 const pool = require("../config/database");
 const bcrypt = require("bcrypt");
+const Location = require("../models/location");
 
 exports.checkSession = (req, res) => {
   if (req.session && req.session.userId) {
@@ -46,8 +47,25 @@ exports.login = async (req, res) => {
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, zipcode } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    let location = await Location.findOne({ where: { postal_code: zipcode } });
+
+    if (!location) {
+      // Fetch location data from OpenCage or similar service
+      // This should be a separate function that returns city, state, etc., based on the zipcode
+      const locationData = await fetchLocationData(zipcode);
+
+      // Create a new location entry in the Locations table
+      location = await Location.create({
+        Address: locationData.address, // You will need to modify this according to your data structure
+        City: locationData.city,
+        State: locationData.state,
+        Country: locationData.country,
+        postal_code: zipcode,
+      });
+    }
 
     const query =
       "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)";
