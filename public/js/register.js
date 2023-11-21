@@ -52,9 +52,13 @@ const states = [
 ];
 const selectElement = document.getElementById("state");
 
-states.forEach((state) => {
-  const option = document.createElement("option");
-  option.value = state;
-  option.text = state;
-  selectElement.appendChild(option);
+document.addEventListener("DOMContentLoaded", (event) => {
+  const selectElement = document.getElementById("state");
+
+  states.forEach((state) => {
+    const option = document.createElement("option");
+    option.value = state;
+    option.text = state;
+    selectElement.appendChild(option);
+  });
 });
