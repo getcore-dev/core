@@ -1,0 +1,43 @@
+body, h1, h2, h3, p {
+    margin: 0;
+    padding: 10px;
+    font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+
+.logo {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    margin-right: 5px;
+}
+.logo img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+}
+
+#community-buttons {
+        /* scroll bar and stuff*/
+        display: flex;
+        overflow-x: auto;
+        scrollbar-width: none;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+}
+
+.community-btn {
+    flex: 0 0 auto;
+    margin: 0px 10px;
+    cursor: pointer;
+
+    /* Add more styling as needed */
+}
+
+button {
+    padding: 6px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+}
