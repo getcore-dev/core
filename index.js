@@ -1,34 +1,45 @@
 const express = require("express");
 const path = require("path");
-const app = express();
-const port = process.env.PORT || 8080;
+const compression = require("compression");
+const rateLimit = require("express-rate-limit");
+
+const appConfig = require("./config/appConfig"); // Separate file for configurations
 const userRoutes = require("./routes/userRoutes");
 const sessionMiddleware = require("./middleware/session");
-const sequelize = require("./config/database");
+const { isValidPath } = require("./utils/pathValidator"); // Utility for path validation
 
-// location information
-const Location = require("./models/location");
-//const locationRoutes = require("./routes/location");
+const app = express();
+const port = appConfig.port; // Use value from config file
 
-/* sequelize.sync({ force: false }).then(() => {
-  console.log("Database & tables created!");
-}); */
+// Apply rate limiting as an early middleware to all requests
+app.use(rateLimit(appConfig.rateLimitSettings));
 
-//app.use("/api/locations", locationRoutes);
+// Apply compression to all responses
+app.use(compression());
 
+// Parse URL-encoded bodies and JSON bodies
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+// Session middleware
 app.use(sessionMiddleware);
 
-// if user then redirect to userRoutes file for redirects
-app.use("/user", userRoutes); // Use the user routes
+// Static file middleware with cache control
+app.use(
+  express.static(path.join(__dirname, "public"), {
+    maxAge: appConfig.staticFilesMaxAge,
+  })
+);
 
-app.use(express.static(path.join(__dirname, "public")));
+// User specific routes
+app.use("/user", userRoutes);
 
+// Catch all route for serving front-end application
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "core.html"));
 });
 
+// Start the server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
