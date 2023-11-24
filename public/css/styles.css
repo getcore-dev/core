@@ -27,7 +27,6 @@ body, h1, h2, h3, p {
     display: flex;
     justify-content: center;
     align-items: center;
-    filter: invert(1);
     margin-right: 5px;
 }
 .logo img {

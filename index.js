@@ -8,13 +8,13 @@ const sequelize = require("./config/database");
 
 // location information
 const Location = require("./models/location");
-const locationRoutes = require("./routes/location");
+//const locationRoutes = require("./routes/location");
 
-sequelize.sync({ force: false }).then(() => {
+/* sequelize.sync({ force: false }).then(() => {
   console.log("Database & tables created!");
-});
+}); */
 
-app.use("/api/locations", locationRoutes);
+//app.use("/api/locations", locationRoutes);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

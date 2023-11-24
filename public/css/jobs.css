@@ -1,0 +1,117 @@
+body, h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+    font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+}
+.logo img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 125px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+h1 {
+    text-align: center;
+}
+
+/* Create a grid layout */
+.jobs-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+    padding: 20px;
+}
+
+/* Style each job container */
+/* Card Styling */
+.job-card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: white;
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto;
+    border-radius: 5px;
+    transition: transform 0.2s ease-in-out;
+    overflow: hidden; /* Ensures that children elements do not overflow the rounded corners */
+  }
+  
+  .job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+  
+
+  .job-header {
+    background-color: #0077CC;
+    color: #fff;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: 8px; /* Match the job-card border-radius */
+    border-top-right-radius: 8px; /* Match the job-card border-radius */
+  }
+  
+  .job-title-location {
+    flex-grow: 1;
+  }
+  
+  .company-logo-container {
+    padding: 4px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+  }
+  
+  .company-logo {
+    width: 40px; /* Adjust size as needed */
+    height: auto; /* Maintain aspect ratio */
+  }
+  
+  .job-title {
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  
+  .job-location {
+    font-size: 0.9em;
+  }
+
+  .job-body {
+    padding: 20px; /* Increase padding as needed */
+    line-height: 1.4;
+    border-bottom: 1px solid #eee;
+    /* Rest of your styles */
+  }
+
+  .job-footer {
+    padding: 15px; /* Increase padding as needed */
+    text-align: center;
+    /* Rest of your styles */
+  }
+  
+  /* ... Other styles remain the same ... */
+  
+  /* Add responsive design if needed */
+  @media (max-width: 768px) {
+    .job-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .company-logo-container {
+      margin-top: 10px;
+      align-self: center;
+    }
+  }

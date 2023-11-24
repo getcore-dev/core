@@ -1,3 +1,5 @@
 # core
-> community-based platform for sharing projects and gaining opportunities
 
+![CORE LOGO](/public/img/core.png)
+
+> community-based platform for sharing projects and gaining opportunities

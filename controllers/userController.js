@@ -1,6 +1,6 @@
 const pool = require("../config/database");
 const bcrypt = require("bcrypt");
-const Location = require("../models/location");
+//const Location = require("../models/location");
 
 exports.checkSession = (req, res) => {
   if (req.session && req.session.userId) {
