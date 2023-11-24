@@ -3,6 +3,30 @@ body, h1, h2, h3, p {
     padding: 0;
     font-family: Arial, sans-serif;
 }
+i {
+    position: absolute;
+    top: 50%;
+    left: 10px; /* Adjust the left position as needed */
+    transform: translateY(-50%);
+    font-size: 1.2rem; /* Adjust the font size as needed */
+    color: #777; /* Adjust the color of the icon */
+  }
+
+  .input-container select#country {
+    padding-left: 30px; /* Adjust the padding to make space for the icon */
+    width: 100%; /* Set the width to 100% to fill the available space */
+    min-height: 40px !important; /* Add !important to increase specificity */
+    border: 1px solid #ccc; /* Add border styles as needed */
+    border-radius: 4px; /* Add border-radius as needed */
+}
+
+
+  #username {
+    padding-left: 30px; /* Add padding to the left of the input field to make space for the icon */
+    width: 100%; /* Set the width of the input field */
+    border: 1px solid #ccc; /* Add border styles as needed */
+    border-radius: 4px; /* Add border-radius as needed */
+  }
 
 form {
     display: flex;

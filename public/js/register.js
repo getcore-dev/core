@@ -102,17 +102,28 @@ fetch("src/countries.json")
 
 function checkCountry(select) {
   var value = select.value;
+  console.log(select.value);
+  console.log(select);
   var stateInput = document.getElementById("state");
   var cityInput = document.getElementById("city");
   var zipcodeInput = document.getElementById("zipcode");
+  var zipcodeIcon = document.getElementById("zipcode-icon");
+  var cityIcon = document.getElementById("city-icon");
+  var stateIcon = document.getElementById("state-icon");
 
   if (value === "US") {
     stateInput.style.display = "block";
     cityInput.style.display = "block";
     zipcodeInput.style.display = "block";
+    zipcodeIcon.style.display = "block";
+    stateIcon.style.display = "block";
+    cityIcon.style.display = "block";
   } else {
     stateInput.style.display = "none";
     cityInput.style.display = "none";
     zipcodeInput.style.display = "none";
+    zipcodeIcon.style.display = "none";
+    stateIcon.style.display = "none";
+    cityIcon.style.display = "none";
   }
 }

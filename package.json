@@ -20,6 +20,7 @@
     "express-rate-limit": "^7.1.4",
     "express-session": "^1.17.3",
     "jsonwebtoken": "^9.0.2",
+    "lusca": "^1.7.0",
     "mongoose": "^8.0.0",
     "mysql2": "^3.6.3",
     "passport": "^0.6.0",
