@@ -168,3 +168,11 @@ cursor: pointer;
   .nav-text-container {
     padding-left: 20px;
   }
+
+  .post { border: 1px solid #ddd; margin: 20px; padding: 20px; border-radius: 5px; }
+  .title { font-size: 24px; color: #333; }
+  .user-info { font-size: 14px; color: #666; }
+  .post-date { font-size: 14px; color: #666; }
+  .description { margin: 15px 0; }
+  .reactions { font-size: 14px; margin-top: 10px; }
+  .reaction-icon { width: 20px; vertical-align: text-bottom; }

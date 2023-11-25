@@ -155,16 +155,19 @@ body, h1, h2, h3, p {
   }
   
   .nav-text {
+    font-weight: bold;
     color: #000; /* Text color */
     text-decoration:none;
-  }
+   }
   
   .nav-text:hover {
+    font-weight: bold;
     color: #000; /* Text color */
     /* underline text*/
     text-decoration: underline;
   }
   
   .nav-text-container {
+    font-weight: bold;
     padding-left: 20px;
   }
