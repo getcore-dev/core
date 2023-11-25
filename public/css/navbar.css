@@ -1,7 +1,14 @@
-body, h1, h2, h3, p {
+body{
+    margin: 0; /* Remove default margin */
+    padding: 100px 0px; /* Remove default padding */
+    font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* Set default font family */
+  }
+
+  h1, h2, h3, p {
     margin: 0; /* Remove default margin */
     padding: 0; /* Remove default padding */
     font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* Set default font family */
+  
   }
   
 .logo {
@@ -45,6 +52,11 @@ body, h1, h2, h3, p {
     justify-content: space-between; /* Align logo and links at opposite ends */
     align-items: center; /* Vertically center logo and links */
     padding: 10px 10px; /* Adjust padding as needed */
+
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
   }
   
   .logo img {
@@ -101,6 +113,10 @@ body, h1, h2, h3, p {
     color: #fff; /* Text color */
     padding: 10px 0; /* Adjust padding as needed */
     border-bottom: #ccc 1px solid; /* Add a border at the bottom */
+    position: fixed;
+    width: 100%;
+    top: 50px; 
+    z-index: 1000;
   }
   
   /* Style for the second navbar links */
@@ -155,13 +171,11 @@ body, h1, h2, h3, p {
   }
   
   .nav-text {
-    font-weight: bold;
     color: #000; /* Text color */
     text-decoration:none;
    }
   
   .nav-text:hover {
-    font-weight: bold;
     color: #000; /* Text color */
     /* underline text*/
     text-decoration: underline;
@@ -169,5 +183,5 @@ body, h1, h2, h3, p {
   
   .nav-text-container {
     font-weight: bold;
-    padding-left: 20px;
+    padding-top: 3px;
   }
