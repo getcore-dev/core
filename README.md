@@ -5,3 +5,5 @@
 > community-based platform for sharing projects and gaining opportunities
 
 ![Alt text](image.png)
+
+![Alt text](image-1.png)
