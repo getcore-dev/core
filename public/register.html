@@ -33,6 +33,7 @@
     </style>
 </head>
 <body>
+    <!-- Navbar Placeholder -->
     <form action="/user/register" method="post" id="registration">
         <h1>CORE</h1>
         
@@ -43,7 +44,7 @@
         
         <div class="input-container">
             <i class="fas fa-user"></i> <!-- Font Awesome user icon -->
-            <input type="text" id="username" name="username" placeholder="Username" required>
+            <input type="text" id="usernameInput" name="username" placeholder="Username" required maxlength="25">
         </div>
         
         <div class="input-container">
@@ -67,16 +68,6 @@
         <div class="input-container">
             <i class="fas fa-map-marker-alt" id="zipcode-icon" style="display: none;"></i> <!-- Font Awesome map-marker-alt icon -->
             <input type="text" id="zipcode" name="zipcode" placeholder="Zip Code" required oninput="autoFillLocation(this.value)" style="display: none;">
-        </div>
-        
-        <div class="input-container">
-            <i class="fas fa-city" style="display: none;" id="city-icon"></i> <!-- Font Awesome city icon -->
-            <input type="text" id="city" name="city" placeholder="City" disabled style="display: none;">
-        </div>
-        
-        <div class="input-container">
-            <i class="fas fa-flag" style="display: none;" id="state-icon"></i> <!-- Font Awesome flag icon -->
-            <input type="text" id="state" name="state" placeholder="State" disabled style="display: none;">
         </div>
 
         <button type="submit">Register</button>

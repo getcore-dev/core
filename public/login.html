@@ -5,9 +5,10 @@
         <link rel="stylesheet" href="css/acc-styles.css">
     </head>
     <body>
+        <!-- Navbar Placeholder -->
         <form action="/user/login" method="post" id="login">
             <h1>CORE</h1>
-            <input type="text" placeholder="Username" name="username" required>
+            <input type="text" placeholder="Username" name="username" required maxlength="50" id="usernameInput">
             <input type="password" placeholder="Password" name="password" required>
 
             <!-- Add a hidden input field for the CSRF token -->
@@ -16,4 +17,5 @@
             <button type="submit">Login</button>
         </form>
     </body>
+    <script src="js/login.js"></script>
 </html>

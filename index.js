@@ -1,72 +1,93 @@
 const express = require("express");
-const path = require("path");
-const compression = require("compression");
-const rateLimit = require("express-rate-limit");
-const lusca = require("lusca");
 const fs = require("fs");
-const appConfig = require("./config/appConfig");
-const userRoutes = require("./routes/userRoutes");
-const sessionMiddleware = require("./middleware/session");
-
+const path = require("path");
 const app = express();
-const port = appConfig.port;
+const port = 8080;
+const session = require("express-session");
 
-// Read the navbar.html file
-const navbar = fs.readFileSync(
+// Read the navbar HTML content once when the server starts
+const navbarHtml = fs.readFileSync(
   path.join(__dirname, "public", "navbar.html"),
   "utf8"
 );
 
-// Apply rate limiting as an early middleware to all requests
-app.use(rateLimit(appConfig.rateLimitSettings));
-
-// Apply compression to all responses
-app.use(compression());
-
-// Parse URL-encoded bodies and JSON bodies
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-// Session middleware
-app.use(sessionMiddleware);
-
-// Static file middleware with cache control
 app.use(
-  express.static(path.join(__dirname, "public"), {
-    maxAge: appConfig.staticFilesMaxAge,
+  session({
+    secret: "xSLjAGWG3Q4pVVnrdQRrMzXgWsSfkOR7",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: !isDevelopment() },
   })
 );
 
-// Use lusca CSRF protection middleware
-app.use(lusca.csrf());
+function isDevelopment() {
+  return process.env.NODE_ENV === "development";
+}
 
-// User specific routes
-app.use("/user", userRoutes);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Catch all route for serving front-end application
-app.get("*", (req, res) => {
-  // Read the content of the specific page
-  const pagePath = path.join(
-    __dirname,
-    "public",
-    req.path === "/" ? "core.html" : req.path
-  );
-  if (fs.existsSync(pagePath) && path.extname(pagePath) === ".html") {
-    const content = fs.readFileSync(pagePath, "utf8");
+app.use("/user", require("./routes/userRoutes"));
 
-    // Replace a placeholder in your HTML file with the navbar content
-    const pageWithNavbar = content.replace(
-      "<!-- Navbar Placeholder -->",
-      navbar
-    );
-    res.send(pageWithNavbar);
+// Middleware to add username to locals for template rendering
+app.use((req, res, next) => {
+  res.locals.username = req.session.username || null;
+  next();
+});
+
+// Middleware to intercept HTML file requests and insert navbar with username
+app.use((req, res, next) => {
+  if (path.extname(req.path).toLowerCase() === ".html") {
+    const pagePath = path.join(__dirname, "public", req.path);
+
+    if (fs.existsSync(pagePath)) {
+      fs.readFile(pagePath, "utf8", (err, data) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send("Server error");
+        }
+
+        // Replace placeholder with actual navbar HTML
+        let pageWithNavbar = data.replace(
+          "<!-- Navbar Placeholder -->",
+          navbarHtml
+        );
+
+        // Insert username into the navbar HTML if user is logged in
+        if (req.session.username) {
+          pageWithNavbar = pageWithNavbar.replace(
+            /user<\/a>/g,
+            `${req.session.username}</a>`
+          );
+        }
+
+        res.send(pageWithNavbar);
+      });
+    } else {
+      next(); // If the file doesn't exist, continue to the next handler (possibly a 404 handler)
+    }
   } else {
-    // If the file doesn't exist or isn't an HTML file, send the default file
-    res.sendFile(path.join(__dirname, "public", "core.html"));
+    next();
   }
 });
 
-// Start the server
+// API endpoint to check session and return username
+app.get("/api/session", (req, res) => {
+  if (req.session.userId) {
+    res.json({ isLoggedIn: true, username: req.session.username });
+  } else {
+    res.json({ isLoggedIn: false, username: null });
+  }
+});
+
+// Static file serving for other file types (CSS, JS, images, etc.)
+app.use(express.static(path.join(__dirname, "public")));
+
+// 404 handler for when no file is found
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, "public", "404.html"));
+});
+
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`Server running on http://localhost:${port}`);
 });

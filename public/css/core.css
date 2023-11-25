@@ -1,177 +1,42 @@
-body, h1, h2, h3, p {
-    margin: 0; /* Remove default margin */
-    padding: 0; /* Remove default padding */
-    font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* Set default font family */
-}
-
-.logo {
-    display: flex; /* Display the logo and the text side by side */
-    justify-content: center; /* Center the logo and the text horizontally */
-    align-items: center; /* Center the logo and the text vertically */
-    margin-right: 5px; /* Add spacing between the logo and the text */
-}
-.logo img {
-    display: flex; /* Display the logo and the text side by side */
-    justify-content: center; /* Center the logo and the text horizontally */
-    align-items: center; /* Center the logo and the text vertically */
-    max-width: 40px; /* Set the logo width */
-    padding: 12px 20px; /* Add some padding */
-}
-
-.nb-icon {
-    width: 18px; /* Set the icon size */
-}
-
-.login-btn-content {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    line-height: 1.5;
-}
-
-.container {
-    width: 80%;
-    margin: auto;
-    overflow: hidden;
-}
-
-.img {
-    width: 13%;
-    height: auto;
-}
-
 .header {
-    text-align: center;
-    margin: 20px 0;
+  text-align: center;
+  margin: 20px 0;
 }
 
 .opportunities {
-    display: flex; /* Display the opportunities side by side */
-    justify-content: space-between; /* Align the opportunities at opposite ends */
-    margin-bottom: 20px; /* Add some spacing between the opportunities and the trending projects and posts */
+  display: flex; /* Display the opportunities side by side */
+  justify-content: space-between; /* Align the opportunities at opposite ends */
+  margin-bottom: 20px; /* Add some spacing between the opportunities and the trending projects and posts */
 }
 
 
 .jobs, .communities {
-    width: 48%; /* Set the width of the element */
-    border: 1px solid #000; /* Add a border around the element */
-    padding: 20px; /* Add some padding */
-    text-align: center;  /* Align the text to the center */
-    margin: 20px 30px;  /* Add some margin */
-    background-color: var(--gray-900); /* Sets the background color using your custom property */
-    border-radius: 10px; /* This will give the section rounded corners */
+  width: 48%; /* Set the width of the element */
+  border: 1px solid #000; /* Add a border around the element */
+  padding: 20px; /* Add some padding */
+  text-align: center;  /* Align the text to the center */
+  margin: 20px 30px;  /* Add some margin */
+  background-color: var(--gray-900); /* Sets the background color using your custom property */
+  border-radius: 10px; /* This will give the section rounded corners */
 
 }
 
 .trending {
-    display: flex;  /* Display the trending projects and posts side by side */
-    justify-content: space-between; /* Align the trending projects and posts at opposite ends */
+  display: flex;  /* Display the trending projects and posts side by side */
+  justify-content: space-between; /* Align the trending projects and posts at opposite ends */
 }
 
 .trending-projects, .trending-posts {
-    width: 48%; /* Set the width of the element */
-    border: 1px solid #000;
-    border-radius: 10px; /* This will give the section rounded corners */
-    padding: 20px; /* Add some padding */
-    margin: 20px 30px; /* Add some margin */
+  width: 48%; /* Set the width of the element */
+  border: 1px solid #000;
+  border-radius: 10px; /* This will give the section rounded corners */
+  padding: 20px; /* Add some padding */
+  margin: 20px 30px; /* Add some margin */
 }
 
 button {
-    padding: 10px 22px; /* Add some padding to the button */
-    margin-top: 10px; /* Add some spacing between the button and the text */
-    cursor: pointer; /* Change the cursor to a pointer on hover */
+  padding: 10px 10px; /* Add some padding to the button */
+  margin-top: 10px; /* Add some spacing between the button and the text */
+  cursor: pointer; /* Change the cursor to a pointer on hover */
 }
 
-.navbar {
-    background-color: #eee; /* Background color for the navbar */
-    color: #000; /* Text color */
-    display: flex; /* Display the navbar content side by side */
-    justify-content: space-between; /* Align logo and links at opposite ends */
-    align-items: center; /* Vertically center logo and links */
-    padding: 0px 10px; /* Adjust padding as needed */
-  }
-  
-  .logo img {
-    max-height: 40px; /* Set the maximum height for the logo */
-  }
-  
-  .nav-links {
-    list-style: none; /* Remove bullet points from the list */
-    margin: 0; /* Remove default margin */
-    padding: 0; /* Remove default padding */
-    display: flex; /* Display the links side by side */
-    gap: 20px; /* Adjust the gap between navigation links */
-  }
-  
-  .nav-links li {
-    font-size: 16px; /* Adjust font size for navigation links */
-  }
-  
-  .nav-links li a {
-    text-decoration: none;
-    color: #000; /* Link text color */
-  }
-  
-  .nav-links li a:hover {
-    text-decoration: none; /* Add an underline on hover */
-  }
-  
-  .content {
-    padding: 20px; /* Add some padding to separate content from the navbar */
-  }
-  
-  .navbar-button {
-    display: flex; /* Display button content side by side */
-    justify-content: center; /* Center button content horizontally */ 
-    gap: 4px; /* Adjust gap between button icon and text */ 
-    line-height: 1.5; /* Adjust line height for button text */
-
-    background-color: #eee; /* Background color for the button */
-    color: #fff; /* Text color */
-    padding: 4px 7px; /* Adjust padding as needed */
-    border: none; /* Remove borders */
-    border-radius: 5px; /* Rounded corners */
-    transition: background-color 0.15s, transform 0.15s; /* Smooth transition */
-  
-    /* Other styles like font-size, font-weight, etc. */
-  }
-  
-  .navbar-button:hover {
-    background-color: #ddd; /* Change background color on hover */
-    cursor: pointer; /* Change the cursor to a pointer on hover */
-  }
-
-  
-  /* Style for the second navbar */
-.second-navbar {
-    background-color: #eee; /* Background color for the second navbar */
-    color: #fff; /* Text color */
-    padding: 10px 0; /* Adjust padding as needed */
-    border-bottom: #ccc 1px solid; /* Add a border at the bottom */
-  }
-  
-  /* Style for the second navbar links */
-  .second-nav-links {
-    list-style: none; /* Remove bullet points from the list */
-    margin: 0; /* Remove default margin */
-    padding: 0; /* Remove padding */
-    display: flex; /* Display the links side by side */
-    align-items: center; /* Center the links vertically */
-  }
-  
-  /* Style for the second navbar buttons */
-  .navbar-button {
-    text-decoration: none; /* Remove underline from links */
-    color: #000; /* Link text color */
-    display: flex; /* Display button content side by side */
-    align-items: center; /* Center button content vertically */
-    margin: 0 10px; /* Add spacing between buttons */
-  }
-  
-  /* Style for the second navbar icons */
-  .nb-icon {
-    width: 20px; /* Set the icon size */
-    height: 20px; /* Set the icon size */
-    margin-right: 5px; /* Add spacing between icon and text */
-  }
-  
