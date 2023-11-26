@@ -23,7 +23,7 @@ padding: 10px 20px;
 margin-top: 10px;
 cursor: pointer;
 }
-  .post { border: 1px solid #ddd; margin: 20px; padding: 20px; border-radius: 5px; }
+  .post { border: 1px solid #ddd; margin: 20px; padding: 5px; border-radius: 5px; }
   .title { font-size: 24px; color: #333; }
   .user-info { font-size: 14px; color: #666; }
   .post-date { font-size: 14px; color: #666; }
@@ -31,35 +31,52 @@ cursor: pointer;
   .reactions { font-size: 14px; margin-top: 10px; }
   .reaction-icon { width: 20px; vertical-align: text-bottom; }
 
-.post {
-    display: flex; /* Use flexbox for two-column layout */
-    align-items: center; /* Center vertically */
-}
+  .post {
+    display: flex;
+    flex-direction: row; /* Align children in a row */
+    align-items: stretch; /* Stretch items to fill the container */
+  }
+  
+  .post {
+    display: flex;
+    position: relative; /* Set position context for absolute positioning */
+    margin-bottom: 10px; /* Space between posts, adjust as needed */
+  }
+  
+  .thumbnail {
+    position: absolute; /* Position thumbnail absolutely relative to the post */
+    top: 0; /* Align to the top of the post */
+    bottom: 0; /* Align to the bottom of the post */
+    left: 0; /* Align to the left of the post */
+  }
+  
+  .thumbnail-image {
+    border-radius: 5px;
+    height: 100%; /* Full height of the post */
+    aspect-ratio: 1/1; /* Maintain aspect ratio */
+    object-fit: cover; /* Cover the space without stretching the image */
+  }
+  
+  .post-content {
+    flex-grow: 1; /* Allow the content to take up the remaining space */
+    margin-left: 150px; /* Space for the thumbnail on the left, adjust this value based on the actual width of your thumbnail */
+    padding: 10px; /* Padding inside the post content */
+  }
+  
+  /* Additional styles for title, user-info, description, and reactions */
+  
+  .material-symbols-outlined {
+    font-size: 16px; /* Change this value to increase or decrease the size of the icon */
+    /* You can also include other font properties as needed */
+    vertical-align: -3px;
+  }
 
+  #trending-icon {
+    font-size:20px;
+    color: #ff5722; /* Color of the trending icon */
+  }
 
-.thumbnail {
-    width: 80px; /* Fixed width for the square thumbnail */
-    height: 80px; /* Fixed height for the square thumbnail */
-    border-radius: 10%; /* Rounded corners to make it a circle */
-    overflow: hidden; /* Hide any image overflow that's not a perfect square */
-    transition: transform 0.2s, box-shadow 0.2s; /* Add transitions for smooth hover effect */
-
-    /* Additional styles for the image inside the square */
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* Maintain aspect ratio and cover the entire square */
-    }
-}
-
-.thumbnail:hover {
-    transform: scale(1.05); /* Slight zoom in effect */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Box shadow on hover */
-}
-
-
-
-.post-content {
-    padding-left: 20px;
-    flex: 1; /* Allow the content to expand and fill the available space */
-}
+  #verified-icon {
+    font-size:15px;
+    color: green; /* Color of the verified icon */
+  }

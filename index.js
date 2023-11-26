@@ -11,6 +11,8 @@ const navbarHtml = fs.readFileSync(
   "utf8"
 );
 
+app.set("view engine", "ejs");
+
 app.use(
   session({
     secret: "xSLjAGWG3Q4pVVnrdQRrMzXgWsSfkOR7",
@@ -81,12 +83,42 @@ app.get("/api/session", (req, res) => {
 });
 
 // Static file serving for other file types (CSS, JS, images, etc.)
-app.use(express.static(path.join(__dirname, "public")));
-
-// 404 handler for when no file is found
-app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, "public", "404.html"));
+app.get("/", (req, res) => {
+  res.render("core", {
+    navbarHtml: navbarHtml,
+    username: req.session.username,
+  });
 });
+
+app.get("/openings", (req, res) => {
+  res.render("jobs", {
+    navbarHtml: navbarHtml,
+    username: req.session.username,
+  });
+});
+
+app.get("/community", (req, res) => {
+  res.render("communities", {
+    navbarHtml: navbarHtml,
+    username: req.session.username,
+  });
+});
+
+app.get("/login", (req, res) => {
+  res.render("login", {
+    navbarHtml: navbarHtml,
+    username: req.session.username,
+  });
+});
+
+app.get("/register", (req, res) => {
+  res.render("register", {
+    navbarHtml: navbarHtml,
+    username: req.session.username,
+  });
+});
+
+app.use(express.static(path.join(__dirname, "public")));
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

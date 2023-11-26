@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= user.username %>'s Profile</title>
+    <link rel="stylesheet" href="css/navbar.css" />
+    <link rel="stylesheet" href="css/user_profile.css" />
+  </head>
+  <body>
+    <!-- This line includes the navbar -->
+    <%- include('partials/navbar', { pagePath: 'user' }) %>
+
+    <div class="profile">
+      <h1>User Profile</h1>
+      <img src="profile_picture.jpg" alt="Profile Picture" width="150" />
+      <h2>Software Engineer</h2>
+      <p><strong>Username:</strong> @<%= user.username %></p>
+      <p><strong>Current Job:</strong> Software Engineer at XYZ Tech</p>
+      <p><strong>Programming Level:</strong> Expert</p>
+      <p><strong>Highlighted Projects:</strong></p>
+      <ul>
+        <li><a href="project1.html">Project 1: Awesome Web App</a></li>
+        <li><a href="project2.html">Project 2: Mobile App Development</a></li>
+        <li><a href="project3.html">Project 3: Data Analytics Dashboard</a></li>
+      </ul>
+      <p><strong>School:</strong> ABC University</p>
+      <p><strong>Email:</strong> <%= user.email %></p>
+      <p>
+        <strong>LinkedIn:</strong>
+        <a href="https://www.linkedin.com/in/userprofile"
+          >linkedin.com/in/userprofile</a
+        >
+      </p>
+    </div>
+    <!-- Add more user details as needed -->
+  </body>
+</html>

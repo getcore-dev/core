@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CORE</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+    <link rel="stylesheet" href="css/jobs.css" />
+    <link rel="stylesheet" href="css/navbar.css" />
+    <link rel="shortcut icon" href="img/core.png" />
+  </head>
+  <body>
+    <%- include('partials/navbar', { pagePath: 'user' }) %>
+
+    <div id="job-btn-container">
+      <button class="com-btn" data-community="it-tech">
+        <span class="material-symbols-outlined"> developer_board </span>
+        IT/Technology
+      </button>
+      <button class="com-btn" data-community="data-science">
+        <span class="material-symbols-outlined"> monitoring </span> Data Science
+      </button>
+      <button class="com-btn" data-community="web-dev">
+        <span class="material-symbols-outlined"> web </span> Web Development
+      </button>
+      <button class="com-btn" data-community="ml-ai">
+        <span class="material-symbols-outlined"> robot </span> ML/AI
+      </button>
+      <button class="com-btn" data-community="game-dev">
+        <span class="material-symbols-outlined"> admin_panel_settings </span>
+        Cybersecurity
+      </button>
+      <button class="com-btn" data-community="game-dev">
+        <span class="material-symbols-outlined"> sports_esports </span> Game Dev
+      </button>
+      <button class="com-btn" data-community="ios-dev">
+        <span class="material-symbols-outlined"> ios </span> iOS Dev
+      </button>
+      <button class="com-btn" data-community="android-dev">
+        <span class="material-symbols-outlined"> android </span> Android Dev
+      </button>
+      <button class="com-btn" data-community="blockchain">
+        <span class="material-symbols-outlined"> currency_bitcoin </span>
+        Web3/Blockchain
+      </button>
+      <button class="com-btn" data-community="cloud">
+        <span class="material-symbols-outlined"> cloud </span> Cloud
+      </button>
+      <!-- more buttons as needed -->
+    </div>
+    <div class="jobs-container">
+      <div class="job-card">
+        <div class="job-header">
+          <div class="job-title-location">
+            <div class="company-name">Apple</div>
+            <div class="job-title">Security Analyst</div>
+            <div class="job-location">Boston, MA or Remote</div>
+          </div>
+          <div class="company-logo-container">
+            <img
+              src="./src/applelogo.png"
+              alt="Company Logo"
+              class="company-logo"
+            />
+          </div>
+        </div>
+        <div class="job-body">
+          <div class="job-overview">
+            Protect our digital assets and ensure compliance with the latest
+            security standards.
+          </div>
+          <div class="job-type">Full-Time</div>
+          <div class="job-salary">Up to $115k/year</div>
+          <div class="job-benefits">
+            Health & Dental, Company Subscriptions, Paid Time Off
+          </div>
+        </div>
+        <div class="job-footer">
+          <a href="job1.html">
+            <button class="btn-apply">View Details</button>
+          </a>
+        </div>
+      </div>
+      <div class="job-card">
+        <div class="job-header">
+          <div class="job-title-location">
+            <div class="company-name">Tesla</div>
+            <div class="job-title">Project Manager</div>
+            <div class="job-location">Seattle, WA or Remote</div>
+          </div>
+          <div class="company-logo-container">
+            <img
+              src="./src/teslalogo.png"
+              alt="Company Logo"
+              class="company-logo"
+            />
+          </div>
+        </div>
+        <div class="job-body">
+          <div class="job-overview">
+            Drive projects to completion with a focus on timelines and
+            deliverables.
+          </div>
+          <div class="job-type">Full-Time</div>
+          <div class="job-salary">Up to $100k/year</div>
+          <div class="job-benefits">
+            Health & Dental, Electric Car Discounts, Paid Time Off
+          </div>
+        </div>
+        <div class="job-footer">
+          <a href="job1.html">
+            <button class="btn-apply">View Details</button>
+          </a>
+        </div>
+      </div>
+      <div class="job-card">
+        <div class="job-header">
+          <div class="job-title-location">
+            <div class="company-name">Meta</div>
+            <div class="job-title">UX/UI Designer</div>
+            <div class="job-location">Austin, TX or Remote</div>
+          </div>
+          <div class="company-logo-container">
+            <img
+              src="./src/facebooklogo.png"
+              alt="Company Logo"
+              class="company-logo"
+            />
+          </div>
+        </div>
+        <div class="job-body">
+          <div class="job-overview">
+            Create intuitive and beautiful user experiences for our digital
+            platforms.
+          </div>
+          <div class="job-type">Contract</div>
+          <div class="job-salary">Up to $90k/year</div>
+          <div class="job-benefits">
+            Flexible Hours, Remote Work, Paid Time Off
+          </div>
+        </div>
+        <div class="job-footer">
+          <a href="job1.html">
+            <button class="btn-apply">View Details</button>
+          </a>
+        </div>
+      </div>
+      <div class="job-card">
+        <div class="job-header">
+          <div class="job-title-location">
+            <div class="company-name">Amazon</div>
+            <div class="job-title">Data Scientist</div>
+            <div class="job-location">Chicago, IL or Remote</div>
+          </div>
+          <div class="company-logo-container">
+            <img
+              src="./src/amazonlogo.png"
+              alt="Company Logo"
+              class="company-logo"
+            />
+          </div>
+        </div>
+        <div class="job-body">
+          <div class="job-overview">
+            Harness the power of big data to drive innovation and results.
+          </div>
+          <div class="job-type">Full-Time</div>
+          <div class="job-salary">Up to $130k/year</div>
+          <div class="job-benefits">
+            Health & Dental, Gym Membership, Paid Time Off
+          </div>
+        </div>
+        <div class="job-footer">
+          <button class="btn-apply">View Details</button>
+        </div>
+      </div>
+      <div class="job-card">
+        <div class="job-header">
+          <div class="job-title-location">
+            <div class="company-name">Google</div>
+            <div class="job-title">Marketing Manager</div>
+            <div class="job-location">New York, NY or Remote</div>
+          </div>
+          <div class="company-logo-container">
+            <img
+              src="./src/googlelogo.png"
+              alt="Company Logo"
+              class="company-logo"
+            />
+          </div>
+        </div>
+        <div class="job-body">
+          <div class="job-overview">
+            Lead our marketing efforts to shape our brand's global presence.
+          </div>
+          <div class="job-type">Full-Time</div>
+          <div class="job-salary">Up to $110k/year</div>
+          <div class="job-benefits">
+            Health & Dental, Stock Options, Paid Time Off
+          </div>
+        </div>
+        <div class="job-footer">
+          <button class="btn-apply">View Details</button>
+        </div>
+      </div>
+
+      <div class="job-card">
+        <div class="job-header">
+          <div class="job-title-location">
+            <div class="company-name">Microsoft</div>
+            <div class="job-title">Senior Web Developer</div>
+            <div class="job-location">San Francisco, CA or Remote</div>
+          </div>
+          <div class="company-logo-container">
+            <img
+              src="./src/microsoftlogo.png"
+              alt="Company Logo"
+              class="company-logo"
+            />
+          </div>
+        </div>
+        <div class="job-body">
+          <div class="job-overview">
+            Join our innovative development team to create cutting-edge web
+            applications.
+          </div>
+          <div class="job-type">Full-Time</div>
+          <div class="job-salary">Up to $120k/year</div>
+          <div class="job-benefits">Health & Dental, 401k, Paid Time Off</div>
+        </div>
+        <div class="job-footer">
+          <button class="btn-apply">View Details</button>
+        </div>
+      </div>
+    </div>
+    <script src="js/jobs.js"></script>
+  </body>
+</html>

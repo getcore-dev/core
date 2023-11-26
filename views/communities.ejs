@@ -1,0 +1,194 @@
+<!-- FILEPATH: /Users/brycecole/core/communities.html -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+    <link rel="stylesheet" href="./css/navbar.css" />
+    <link rel="stylesheet" href="./css/communities.css" />
+  </head>
+  <body>
+    <%- include('partials/navbar', { pagePath: 'home' }) %>
+
+    <div id="com-btn-container">
+      <button class="com-btn" data-community="trending">
+        <span class="material-symbols-outlined"> trending_up </span>
+      </button>
+      <button class="com-btn" data-community="new">
+        <span class="material-symbols-outlined"> schedule </span>
+      </button>
+      <button class="com-btn" data-community="explore">
+        <span class="material-symbols-outlined"> public </span>
+      </button>
+      <button class="com-btn" data-community="general">
+        <span class="material-symbols-outlined"> groups </span> General
+      </button>
+      <button class="com-btn" data-community="ml-ai">
+        <span class="material-symbols-outlined"> robot </span> ML/AI
+      </button>
+      <button class="com-btn" data-community="it-tech">
+        <span class="material-symbols-outlined"> developer_board </span>
+        IT/Technology
+      </button>
+
+      <button class="com-btn" data-community="web-dev">
+        <span class="material-symbols-outlined"> web </span> Web Development
+      </button>
+      <button class="com-btn" data-community="game-dev">
+        <span class="material-symbols-outlined"> admin_panel_settings </span>
+        Cybersecurity
+      </button>
+      <button class="com-btn" data-community="game-dev">
+        <span class="material-symbols-outlined"> sports_esports </span> Game Dev
+      </button>
+      <button class="com-btn" data-community="ios-dev">
+        <span class="material-symbols-outlined"> ios </span> iOS Dev
+      </button>
+      <button class="com-btn" data-community="android-dev">
+        <span class="material-symbols-outlined"> android </span> Android Dev
+      </button>
+      <button class="com-btn" data-community="data-science">
+        <span class="material-symbols-outlined"> monitoring </span> Data Science
+      </button>
+      <button class="com-btn" data-community="blockchain">
+        <span class="material-symbols-outlined"> currency_bitcoin </span>
+        Web3/Blockchain
+      </button>
+      <button class="com-btn" data-community="cloud">
+        <span class="material-symbols-outlined"> cloud </span> Cloud
+      </button>
+      <!-- more buttons as needed -->
+    </div>
+
+    <div id="posts-container">
+      <div class="post">
+        <div class="thumbnail">
+          <img
+            src="/thumbnail_image_url.jpg"
+            alt="Thumbnail Image"
+            class="thumbnail-image"
+          />
+        </div>
+        <div class="post-content">
+          <div class="title">
+            [Advanced:Project] Open Source Chatbot
+            <span class="material-symbols-outlined" id="trending-icon">
+              trending_up
+            </span>
+          </div>
+          <div class="user-info">
+            <strong
+              ><span class="material-symbols-outlined" id="verified-icon">
+                verified
+              </span>
+              user123</strong
+            >
+            2023-11-25
+          </div>
+          <div class="description">
+            Check out my new open-source project on GitHub - a chatbot built
+            with Python and machine learning. Contributions are welcome!
+          </div>
+          <div class="reactions">
+            <span class="material-symbols-outlined"> thumb_up </span>
+            <span id="upvotes">120</span>
+            <span class="material-symbols-outlined"> thumb_down </span>
+            <span id="downvotes">4</span>
+            <span class="material-symbols-outlined"> favorite </span>
+            <span id="thinking">50</span>
+            <span class="material-symbols-outlined"> lightbulb </span>
+            <span id="favorites">75</span>
+          </div>
+        </div>
+      </div>
+      <div class="post">
+        <div class="thumbnail">
+          <img
+            src="/thumbnail_image_url.jpg"
+            alt="Thumbnail Image"
+            class="thumbnail-image"
+          />
+        </div>
+        <div class="post-content">
+          <div class="title">
+            [Advanced:Project] AI-Powered Recommendation System
+          </div>
+          <div class="user-info"><strong>techWizard</strong> 2023-11-26</div>
+          <div class="description">
+            Excited to share my latest project on GitHub - an AI-powered
+            recommendation system for movies and TV shows. Join the
+            collaboration!
+          </div>
+          <div class="reactions">
+            <span class="material-symbols-outlined"> thumb_up </span>
+            <span id="upvotes">120</span>
+            <span class="material-symbols-outlined"> thumb_down </span>
+            <span id="downvotes">4</span>
+            <span class="material-symbols-outlined"> favorite </span>
+            <span id="thinking">50</span>
+            <span class="material-symbols-outlined"> lightbulb </span>
+            <span id="favorites">75</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="post">
+        <div class="thumbnail">
+          <img
+            src="/thumbnail_image_url.jpg"
+            alt="Thumbnail Image"
+            class="thumbnail-image"
+          />
+        </div>
+        <div class="post-content">
+          <div class="title">[Beginner:Project] Online Quiz Platform</div>
+          <div class="user-info"><strong>quizMaster</strong> 2023-11-27</div>
+          <div class="description">
+            Just launched my online quiz platform! It's built with React and
+            Node.js. Try it out and let me know your thoughts!
+          </div>
+          <div class="reactions">
+            <span class="material-symbols-outlined"> thumb_up </span>
+            <span id="upvotes">120</span>
+            <span class="material-symbols-outlined"> thumb_down </span>
+            <span id="downvotes">4</span>
+            <span class="material-symbols-outlined"> favorite </span>
+            <span id="thinking">50</span>
+            <span class="material-symbols-outlined"> lightbulb </span>
+            <span id="favorites">75</span>
+          </div>
+        </div>
+      </div>
+      <div class="post">
+        <div class="thumbnail">
+          <img
+            src="/thumbnail_image_url.jpg"
+            alt="Thumbnail Image"
+            class="thumbnail-image"
+          />
+        </div>
+        <div class="post-content">
+          <div class="title">Exciting News: Mobile App Update</div>
+          <div class="user-info"><strong>appDevPro</strong> 2023-11-28</div>
+          <div class="description">
+            We've just released a major update to our mobile app! New features,
+            improved performance, and bug fixes. Check it out now!
+          </div>
+          <div class="reactions">
+            <span class="material-symbols-outlined"> thumb_up </span>
+            <span id="upvotes">120</span>
+            <span class="material-symbols-outlined"> thumb_down </span>
+            <span id="downvotes">4</span>
+            <span class="material-symbols-outlined"> favorite </span>
+            <span id="thinking">50</span>
+            <span class="material-symbols-outlined"> lightbulb </span>
+            <span id="favorites">75</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

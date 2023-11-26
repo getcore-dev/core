@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CORE Login</title>
+    <link rel="stylesheet" href="css/acc-styles.css" />
+    <link rel="stylesheet" href="css/navbar.css" />
+  </head>
+  <body>
+    <%- include('partials/navbar', { pagePath: 'home' }) %>
+    <form action="/user/login" method="post" id="login">
+      <h1>CORE</h1>
+      <input
+        type="text"
+        placeholder="Username"
+        name="username"
+        required
+        maxlength="50"
+        id="usernameInput"
+      />
+      <input type="password" placeholder="Password" name="password" required />
+
+      <!-- Add a hidden input field for the CSRF token -->
+      <input type="hidden" name="_csrf" value="<%= 123 %>" />
+
+      <button type="submit">Login</button>
+    </form>
+  </body>
+  <script src="js/login.js"></script>
+</html>

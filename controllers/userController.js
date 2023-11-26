@@ -1,5 +1,7 @@
 const User = require("../models/user"); // Update the path to the actual location of your User model
 const bcrypt = require("bcrypt");
+const express = require("express");
+const router = express.Router();
 
 exports.checkSession = (req, res) => {
   if (req.session && req.session.userId) {
@@ -35,6 +37,7 @@ exports.login = async (req, res) => {
     res.status(500).send("Internal server error");
   }
 };
+
 
 exports.register = async (req, res) => {
   try {
