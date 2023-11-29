@@ -32,7 +32,7 @@ User.init(
     job_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: "jobs", // This references the imported Job model
+        model: "job", // This references the imported Job model
         key: "job_id", // The primary key in the Job model
       },
     },

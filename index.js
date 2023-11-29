@@ -1,26 +1,29 @@
 const express = require("express");
-const fs = require("fs");
+const session = require("express-session");
 const path = require("path");
 const app = express();
 const port = process.env.PORT || 8080;
-const session = require("express-session");
 
 app.set("view engine", "ejs");
-app.set("trust proxy", 1); // Trust first proxy
+app.set("trust proxy", 1); // Trust first proxy for session security
+
+// Moved the static files to be served before the session to speed up loading static content
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
   session({
-    secret: "xSLjAGWG3Q4pVVnrdQRrMzXgWsSfkOR7",
+    secret: process.env.SESSION_SECRET || "default_secret_key", // Use environment variable for secrets
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === "production", // Cookies should be secure in production
-      maxAge: 1000 * 60 * 60 * 24, // 24 hours for example
-      httpOnly: true, // Mitigate XSS risks by preventing client-side script from accessing the cookie
-      sameSite: "lax", // Can be 'strict', 'lax', or 'none'
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24,
+      httpOnly: true,
+      sameSite: "lax",
     },
   })
 );
+
 app.use((req, res, next) => {
   res.locals.username = req.session.username || null;
   next();
@@ -28,91 +31,41 @@ app.use((req, res, next) => {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+// Routes modularization
 app.use("/user", require("./routes/userRoutes"));
 app.use("/learning", require("./routes/learningRoutes"));
 app.use("/api", require("./routes/apiRoutes"));
 
-// API endpoint to check session and return username
-app.get("/api/session", (req, res) => {
-  if (req.session.userId) {
-    res.json({ isLoggedIn: true, username: req.session.username });
-  } else {
-    res.json({ isLoggedIn: false, username: null });
+// Removed redundant endpoints and consolidated static rendering
+
+// Homepage route
+app.get("/", (req, res) => {
+  res.render("homepage", {
+    // Assuming 'homepage' is the EJS file for the index
+    pagePath: "homepage",
+    username: req.session.username,
+  });
+});
+
+// Generic static page route
+app.get("/:page", (req, res, next) => {
+  try {
+    const { page } = req.params;
+    res.render(page, {
+      username: req.session.username,
+      pagePath: page,
+    });
+  } catch (error) {
+    next(error); // Pass errors to the error handler
   }
 });
 
-app.get("/learning/arrays", (req, res) => {
-  const arrayExample = ["Element 1", "Element 2", "Element 3", "Element 4"];
-  res.render("learning-arrays", {
-    username: req.session.username,
-    arrayExample: arrayExample,
-  });
+// API endpoint to check session and return username
+app.get("/api/session", (req, res) => {
+  const isLoggedIn = !!req.session.userId;
+  res.json({ isLoggedIn, username: req.session.username || null });
 });
-
-// Static file serving for other file types (CSS, JS, images, etc.)
-app.get("/", (req, res) => {
-  console.log(req.session.id);
-  res.render("communities", {
-    pagePath: "communities", // Assuming you want to use this in your navbar for highlighting the current page or similar
-  });
-});
-
-app.get("/openings/1", (req, res) => {
-  console.log(req.session.id);
-  res.render("job1", {
-    pagePath: "openings/1", // Assuming you want to use this in your navbar for highlighting the current page or similar
-  });
-});
-
-app.get("/about", (req, res) => {
-  res.render("about", {
-    username: req.session.username,
-  });
-});
-
-app.get("/practice", (req, res) => {
-  res.render("practice", {
-    username: req.session.username,
-  });
-});
-
-app.get("/learning", (req, res) => {
-  res.render("learning", {
-    username: req.session.username,
-  });
-});
-
-app.get("/support", (req, res) => {
-  res.render("support", {
-    username: req.session.username,
-  });
-});
-
-app.get("/openings", (req, res) => {
-  res.render("jobs", {
-    username: req.session.username,
-  });
-});
-
-app.get("/community", (req, res) => {
-  res.render("communities", {
-    username: req.session.username,
-  });
-});
-
-app.get("/login", (req, res) => {
-  res.render("login", {
-    username: req.session.username,
-  });
-});
-
-app.get("/register", (req, res) => {
-  res.render("register", {
-    username: req.session.username,
-  });
-});
-
-app.use(express.static(path.join(__dirname, "public")));
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

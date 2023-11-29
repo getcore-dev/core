@@ -1,6 +1,8 @@
 const { Model, DataTypes } = require("sequelize");
-const sequelize = require("./database"); // make sure this is the correct path to your sequelize instance
+const sequelize = require("./database"); // Ensure this is the correct path to your sequelize instance
+
 class Job extends Model {}
+
 Job.init(
   {
     job_id: {
@@ -11,43 +13,57 @@ Job.init(
     title: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notEmpty: true, // Validation to prevent empty string
+      },
     },
     company_id: {
       type: DataTypes.INTEGER,
+      allowNull: false, // Adding this if company_id should not be null
       references: {
-        model: "companies", // This references the imported Company model
-        key: "company_id", // The primary key in the Company model
+        model: "companies",
+        key: "company_id",
       },
     },
-    // This assumes that the code in the Location model is of type STRING
     zip_code: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true, // ZIP code can be null, but you might want validation if a value is provided
+      validate: {
+        isPostalCode(value) {
+          // Optionally, add a validation for ZIP code format (this is a stub example)
+          if (value && !/^\d{5}(-\d{4})?$/.test(value)) {
+            throw new Error("Invalid ZIP code format.");
+          }
+        },
+      },
     },
-
     description: {
       type: DataTypes.TEXT,
+      allowNull: true, // Explicitly allow null if description is optional
     },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: DataTypes.NOW, // Automatically set the date when the row is created
+      defaultValue: DataTypes.NOW,
     },
     updated_at: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW, // Automatically set the date when the row is updated
+      defaultValue: DataTypes.NOW,
     },
   },
   {
     sequelize,
-    modelName: "jobs", // modelName is typically singular
-    tableName: "jobs", // This should be the actual table name
-    timestamps: true, // This enables Sequelize to manage createdAt and updatedAt automatically
+    modelName: "job", // Typically singular; change if needed based on your DB structure
+    tableName: "jobs",
+    timestamps: true,
+    updatedAt: "updated_at",
+    createdAt: "created_at",
   }
 );
 
-Job.sync({ force: false }) // Set force to true to drop the table if it already exists
-  .then(() => console.log("jobs table created successfully."))
-  .catch((error) => console.error("Error creating the jobs table:", error));
+// You might not want to sync in this file if you sync somewhere else in your codebase
+Job.sync({ alter: true }) // Prefer `alter` over `force` to avoid dropping tables accidentally
+  .then(() => console.log("Jobs table synced successfully."))
+  .catch((error) => console.error("Error syncing the jobs table:", error));
 
 module.exports = Job;
