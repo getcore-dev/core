@@ -41,9 +41,8 @@ app.use("/api", require("./routes/apiRoutes"));
 
 // Homepage route
 app.get("/", (req, res) => {
-  res.render("homepage", {
-    // Assuming 'homepage' is the EJS file for the index
-    pagePath: "homepage",
+  res.render("communities", {
+    pagePath: "communities",
     username: req.session.username,
   });
 });
