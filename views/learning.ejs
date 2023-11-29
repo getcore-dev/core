@@ -7,31 +7,35 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     />
     <link rel="stylesheet" href="css/navbar.css" />
+    <link rel="stylesheet" href="css/learning.css" />
   </head>
   <body>
     <%- include('partials/navbar', { pagePath: 'home' }) %>
     <h1>Learning</h1>
-    <p>
+    <div class="data-structures-container">
       Data Structures <br />
-      <button>Array</button> <button>Stack</button> <button>Queue</button>
-      <button>Linked List</button> <button>Tree</button> <button>Graph</button>
-      <button>Heap</button> <button>Hash Table</button> <button>Set</button>
-      <button>Matrix</button> <button>Trie</button>
-      <button>Priority Queue</button> <button>Map</button>
-      <button>Tuple</button> <button>Bloom Filter</button>
+      <button class="complete">Array</button class="complete"> <button class="incomplete">Stack</button> <button class="incomplete">Queue</button>
+      <button class="incomplete">Linked List</button> <button class="incomplete">Tree</button> <button class="incomplete">Graph</button>
+      <button class="incomplete">Heap</button> <button class="incomplete">Hash Table</button> <button class="incomplete">Set</button>
+      <button class="incomplete">Matrix</button> <button class="incomplete">Trie</button>
+      <button class="incomplete">Priority Queue</button> <button class="incomplete">Map</button>
+      <button class="incomplete">Tuple</button> <button class="incomplete">Bloom Filter</button>
+    </section>
+    </div>
 
+    <div class="algorithms-container">
       <br />Algorithms <br />
-      <button>Breadth-First Search</button>
-      <button>Depth-First Search</button> <button>Binary Search</button>\
-      <button>Merge Sort</button> <button>Quick Sort</button>
-      <button>Heap Sort</button> <button>Bubble Sort</button>
-      <button>Insertion Sort</button>\ <button>Selection Sort</button>
-      <button>Topological Sort</button> <button>Dijkstra's Algorithm</button>
-      <button>A* Search</button> <button>Kruskal's Algorithm</button>
-      <button>Prim's Algorithm</button> <button>Tree Traversal</button>
-      <button>Dynamic Programming</button> <button>Backtracking</button>
-      <button>Hashing</button>
-      <button>String Matching</button>
-    </p>
+      <button class="complete">Breadth-First Search</button class=>
+      <button class="complete">Depth-First Search</button> <button class="incomplete">Binary Search</button>\
+      <button class="incomplete">Merge Sort</button> <button class="incomplete">Quick Sort</button>
+      <button class="incomplete">Heap Sort</button> <button class="incomplete">Bubble Sort</button>
+      <button class="incomplete">Insertion Sort</button>\ <button class="incomplete">Selection Sort</button>
+      <button class="incomplete">Topological Sort</button> <button class="incomplete">Dijkstra's Algorithm</button>
+      <button class="incomplete">A* Search</button> <button class="incomplete">Kruskal's Algorithm</button>
+      <button class="incomplete">Prim's Algorithm</button> <button class="incomplete">Tree Traversal</button>
+      <button class="incomplete">Dynamic Programming</button> <button class="incomplete">Backtracking</button>
+      <button class="incomplete">Hashing</button>
+      <button class="incomplete">String Matching</button>
+    </div>
   </body>
 </html>
