@@ -48,7 +48,7 @@ app.get("/", (req, res) => {
   });
 });
 
-// Generic static page route
+// Generic static page route helper
 app.get("/:page", (req, res, next) => {
   try {
     const { page } = req.params;
