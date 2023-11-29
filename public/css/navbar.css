@@ -112,11 +112,11 @@ body{
   .second-navbar {
     background-color: #eee; /* Background color for the second navbar */
     color: #fff; /* Text color */
-    padding: 10px 0; /* Adjust padding as needed */
+    padding: 6px 0; /* Adjust padding as needed */
     border-bottom: #ccc 1px solid; /* Add a border at the bottom */
     position: fixed;
     width: 100%;
-    top: 44px; 
+    top: 44px;  /* Adjust top position */
     z-index: 1000;
   }
   

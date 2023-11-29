@@ -2,14 +2,11 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const app = express();
-const port = 8080;
+const port = process.env.PORT || 8080;
 const session = require("express-session");
 
 app.set("view engine", "ejs");
-
-function isDevelopment() {
-  return process.env.NODE_ENV === "development";
-}
+app.set("trust proxy", 1); // Trust first proxy
 
 app.use(
   session({
@@ -17,7 +14,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: !isDevelopment(),
+      secure: process.env.NODE_ENV === "production", // Cookies should be secure in production
       maxAge: 1000 * 60 * 60 * 24, // 24 hours for example
       httpOnly: true, // Mitigate XSS risks by preventing client-side script from accessing the cookie
       sameSite: "lax", // Can be 'strict', 'lax', or 'none'
@@ -31,7 +28,9 @@ app.use((req, res, next) => {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-//app.use("/user", require("./routes/userRoutes"));
+app.use("/user", require("./routes/userRoutes"));
+app.use("/learning", require("./routes/learningRoutes"));
+app.use("/api", require("./routes/apiRoutes"));
 
 // API endpoint to check session and return username
 app.get("/api/session", (req, res) => {
@@ -114,6 +113,11 @@ app.get("/register", (req, res) => {
 });
 
 app.use(express.static(path.join(__dirname, "public")));
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
+});
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
