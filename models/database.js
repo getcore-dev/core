@@ -1,13 +1,24 @@
-require("dotenv").config(); // Load environment variables from .env
+require("dotenv").config(); // If you're using dotenv to manage environment variables locally
 
-const Sequelize = require("sequelize");
+const { Sequelize } = require("sequelize");
 
-const { DB_NAME, DB_USER, DB_PASS, DB_HOST, DB_DIALECT } = process.env;
-
-const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
-  host: DB_HOST,
-  dialect: DB_DIALECT,
-  // Add any other Sequelize options you need here
-});
+const sequelize = new Sequelize(
+  process.env.AZURE_DB_NAME,
+  process.env.AZURE_DB_USER,
+  process.env.AZURE_DB_PASS,
+  {
+    host: process.env.AZURE_DB_HOST,
+    dialect: "mysql", // Azure database is MySQL
+    port: 3306, // Azure MySQL default port
+    ssl: true, // This enables SSL which is recommended for Azure connections
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false, // You can choose to enforce authorized only if you have a CA certificate
+      },
+    },
+    // ... other Sequelize configuration attributes
+  }
+);
 
 module.exports = sequelize;
