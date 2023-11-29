@@ -50,6 +50,8 @@ jobs:
         
     - name: Azure Login
       uses: Azure/login@v1.5.0
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v3
