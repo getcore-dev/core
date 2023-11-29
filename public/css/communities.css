@@ -1,33 +1,13 @@
-#job-btn-container {
-  /* scroll bar and stuff*/
-  padding-top: 30px;
-  padding-left: 8px;
-  display: flex;
-  overflow-x: auto;
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-      display: none;
-  }
-}
-
-.job-btn {
-flex: 0 0 auto;
-margin: 0px 13px;
-cursor: pointer;
-
-/* Add more styling as needed */
-}
-
 button {
-padding: 10px 20px;
-margin-top: 10px;
+padding: 7px 15px;
+margin-top: 0px;
 cursor: pointer;
 }
-  .post { border: 1px solid #ddd; margin: 20px; padding: 5px; border-radius: 5px; }
-  .title { font-size: 24px; color: #333; }
+  .post { border: 1px solid #ddd; margin: 10px; padding: 5px; border-radius: 5px; }
+  .title { font-size: 20px; color: #333; }
   .user-info { font-size: 14px; color: #666; }
   .post-date { font-size: 14px; color: #666; }
-  .description { margin: 15px 0; }
+  .description { margin: 5px 0; }
   .reactions { font-size: 14px; margin-top: 10px; }
   .reaction-icon { width: 20px; vertical-align: text-bottom; }
 
@@ -40,7 +20,7 @@ cursor: pointer;
   .post {
     display: flex;
     position: relative; /* Set position context for absolute positioning */
-    margin-bottom: 10px; /* Space between posts, adjust as needed */
+    margin-bottom: 0px; /* Space between posts, adjust as needed */
   }
   
   .thumbnail {
@@ -59,10 +39,19 @@ cursor: pointer;
   
   .post-content {
     flex-grow: 1; /* Allow the content to take up the remaining space */
-    margin-left: 150px; /* Space for the thumbnail on the left, adjust this value based on the actual width of your thumbnail */
-    padding: 10px; /* Padding inside the post content */
+    margin-left: 100px; /* Space for the thumbnail on the left, adjust this value based on the actual width of your thumbnail */
+    padding: 0px; /* Padding inside the post content */
+  }
+
+  .post-content .community-name {
+    font-weight: bold;
+    color: #4682B4;
   }
   
+  .post-content .header {
+    font-size: 14px;
+  }
+
   /* Additional styles for title, user-info, description, and reactions */
   
   .material-symbols-outlined {

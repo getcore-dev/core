@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"No tests yet\"",
     "start": "node index.js"
-    },
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -21,6 +21,7 @@
     "express-mysql-session": "^3.0.0",
     "express-rate-limit": "^7.1.4",
     "express-session": "^1.17.3",
+    "ico": "^0.3.3",
     "jsonwebtoken": "^9.0.2",
     "lusca": "^1.7.0",
     "mongoose": "^8.0.0",
