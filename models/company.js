@@ -26,10 +26,4 @@ Company.init(
   }
 );
 
-Company.sync({ force: false }) // Set force to true to drop the table if it already exists
-  .then(() => console.log("companies table created successfully."))
-  .catch((error) =>
-    console.error("Error creating the companies table:", error)
-  );
-
 module.exports = Company;

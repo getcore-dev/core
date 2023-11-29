@@ -61,9 +61,4 @@ Job.init(
   }
 );
 
-// You might not want to sync in this file if you sync somewhere else in your codebase
-Job.sync({ alter: true }) // Prefer `alter` over `force` to avoid dropping tables accidentally
-  .then(() => console.log("Jobs table synced successfully."))
-  .catch((error) => console.error("Error syncing the jobs table:", error));
-
 module.exports = Job;

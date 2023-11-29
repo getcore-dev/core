@@ -51,8 +51,4 @@ User.init(
   }
 );
 
-User.sync({ force: false }) // Set force to true to drop the table if it already exists
-  .then(() => console.log("users table created successfully."))
-  .catch((error) => console.error("Error creating the users table:", error));
-
 module.exports = User;
