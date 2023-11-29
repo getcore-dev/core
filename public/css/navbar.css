@@ -196,26 +196,56 @@ body{
     padding-top: 0px;
   }
 
-  .search-bar {
-    display: flex;
-    align-items: center;
-    border: 1px solid #bbb; /* Change the color as needed */
-    border-radius: 4px; /* Rounded corners */
-    padding: 4px 100px;
-    background-color: #ddd; /* Or any color you prefer */
-}
-
-.search-bar input[type="search"] {
-    border: none;
-    outline: none;
-    background-color: transparent;
-    margin-left: 5px; /* Space between icon and input */
-    flex-grow: 1; /* Makes the input field expand */
-}
-
 
 .material-symbols-outlined {
   font-size: 16px; /* Change this value to increase or decrease the size of the icon */
   /* You can also include other font properties as needed */
   vertical-align: -3px;
+}
+
+
+.mobile-navbar {
+  display: none; /* Hide by default on desktop */
+}
+
+.search-icon {
+  display: none; /* Hide by default on desktop */
+  /* Add styling for the search icon */
+}
+
+.bar {
+  width: 15px;
+  height: 2px;
+  background-color: #333;
+  margin: 4px 20px;
+  cursor: pointer;
+}
+
+/* CSS for responsive design */
+@media (max-width: 768px) {
+  .mobile-navbar {
+    display: block; /* Display on mobile */
+  }
+
+  .search-icon {
+    display: block; /* Display on mobile */
+  }
+
+  .second-nav-links {
+    display: none; /* Hide on mobile by default */
+  }
+
+  .search-bar input[type="search"] {
+    display: none;
+  }
+  .search-bar.active input[type="search"] {
+    display: block;
+  }
+  
+}
+
+/* CSS to hide the search bar input and show the icon */
+
+.search-icon {
+  cursor: pointer;
 }

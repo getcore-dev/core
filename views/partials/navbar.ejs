@@ -15,10 +15,15 @@
 
   <ul class="nav-links">
     <li>
-      <a class="search-bar">
+      <!-- Search bar icon -->
+      <div class="search-icon">
         <span class="material-symbols-outlined"> search </span>
+      </div>
+
+      <!-- Search bar input (initially hidden) -->
+      <div class="search-bar">
         <input type="search" placeholder="Search" name="search" required />
-      </a>
+      </div>
     </li>
     <li>
       <a href="login" class="navbar-button">
@@ -43,6 +48,29 @@
 </nav>
 
 <nav class="second-navbar">
+  <div class="mobile-navbar">
+    <div class="hamburger-menu">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+    <ul class="second-nav-links">
+      <li>
+        <a href="communities" class="navbar-button">
+          <img src="./img/glyphs/forum.svg" alt="forum icon" class="nb-icon" />
+          Community
+        </a>
+      </li>
+      <li>
+        <a href="jobs" class="navbar-button">
+          <img src="./img/glyphs/job.svg" alt="job icon" class="nb-icon" />
+          Openings
+        </a>
+      </li>
+      <!-- Add more navigation links for the second part as needed -->
+    </ul>
+  </div>
+
   <ul class="second-nav-links">
     <li>
       <a href="communities" class="navbar-button">
@@ -87,3 +115,24 @@
     <!-- Add more navigation links for the second part as needed -->
   </ul>
 </nav>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const bar = document.querySelector(".bar");
+    const secondNavLinks = document.querySelector(".second-nav-links");
+
+    // Toggle the second-navbar links on div with class "bar" click
+    bar.addEventListener("click", function () {
+      secondNavLinks.classList.toggle("show");
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const searchIcon = document.querySelector(".search-icon");
+    const searchBar = document.querySelector(".search-bar");
+
+    // Toggle the "active" class on search bar when search icon is clicked
+    searchIcon.addEventListener("click", function () {
+      searchBar.classList.toggle("active");
+    });
+  });
+</script>
