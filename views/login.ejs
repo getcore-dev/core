@@ -2,23 +2,35 @@
 <html>
   <head>
     <title>CORE Login</title>
-    <link rel="stylesheet" href="css/acc-styles.css" />
+    <link rel="stylesheet" href="css/login.css" />
     <link rel="stylesheet" href="css/navbar.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   </head>
   <body>
     <%- include('partials/navbar', { pagePath: 'home' }) %>
     <form action="/user/login" method="post" id="login">
       <h1>CORE</h1>
-      <input
-        type="text"
-        placeholder="Username"
-        name="username"
-        required
-        maxlength="50"
-        id="usernameInput"
-      />
-      <input type="password" placeholder="Password" name="password" required />
+      <div class="input-container">
+        <span class="material-symbols-outlined"> person </span>
+        <input
+          type="text"
+          placeholder="Username"
+          name="username"
+          required
+          maxlength="50"
+          id="usernameInput"
+        />
+      </div>
 
+      <div class="input-container">
+        <span class="material-symbols-outlined"> key </span>
+        <input
+          type="password"
+          placeholder="Password"
+          name="password"
+          required
+          id="password"
+        />
       <!-- Add a hidden input field for the CSRF token -->
       <input type="hidden" name="_csrf" value="<%= 123 %>" />
 

@@ -1,0 +1,74 @@
+/* You can include this in your existing CSS file or create a new one and link it in the HTML head */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f4; /* Light grey background */
+  font-family: 'Arial', sans-serif; /* Modern sans-serif font */
+}
+
+#login {
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  background: #ffffff; /* White background for the form */
+  width: 300px; /* Set a fixed width for the form */
+  box-sizing: border-box;
+}
+.input-container {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+
+.input-container .material-symbols-outlined {
+  position: absolute;
+  top: 38%;
+  left: 10px; /* Adjust the left position as needed */
+  transform: translateY(-50%);
+  font-size: 20px; /* Adjust the font size as needed */
+  color: #777; /* Adjust the color of the icon */
+}
+
+#login h1 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #333; /* Dark grey color for the title */
+}
+
+#login input[type="text"],
+#login input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc; /* Light grey border */
+  border-radius: 15px; /* Rounded borders for inputs */
+  box-sizing: border-box;
+}
+
+#login input[type="text"]:focus,
+#login input[type="password"]:focus {
+  outline: none;
+  border-color: #007bff; /* Highlighted border color when focused */
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.2); /* Glow effect on focus */
+}
+
+#login button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 15px;
+  background-color: #007bff; /* Blue background for the button */
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+#login button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Add any other styles you might need */

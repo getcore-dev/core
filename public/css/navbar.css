@@ -67,8 +67,9 @@ body{
     list-style: none; /* Remove bullet points from the list */
     margin: 0; /* Remove default margin */
     padding: 0; /* Remove default padding */
+    padding-right: 40px;
     display: flex; /* Display the links side by side */
-    gap: 20px; /* Adjust the gap between navigation links */
+    gap: 4px; /* Adjust the gap between navigation links */
   }
   
   .nav-links li {
@@ -115,7 +116,7 @@ body{
     border-bottom: #ccc 1px solid; /* Add a border at the bottom */
     position: fixed;
     width: 100%;
-    top: 50px; 
+    top: 44px; 
     z-index: 1000;
   }
   
@@ -142,6 +143,11 @@ body{
     width: 18px; /* Set the icon size */
     height: 18px; /* Set the icon size */
     margin-right: 5px; /* Add spacing between icon and text */
+  }
+
+  .right-nb-icon {
+    width: 18px; /* Set the icon size */
+    height: 18px; /* Set the icon size */
   }
   
   #job-btn-container {
@@ -185,3 +191,27 @@ body{
     font-weight: bold;
     padding-top: 3px;
   }
+
+  .search-bar {
+    display: flex;
+    align-items: center;
+    border: 2px solid #ccc; /* Change the color as needed */
+    border-radius: 4px; /* Rounded corners */
+    padding: 5px 10px;
+    background-color: white; /* Or any color you prefer */
+}
+
+.search-bar input[type="search"] {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    margin-left: 5px; /* Space between icon and input */
+    flex-grow: 1; /* Makes the input field expand */
+}
+
+
+.material-symbols-outlined {
+  font-size: 16px; /* Change this value to increase or decrease the size of the icon */
+  /* You can also include other font properties as needed */
+  vertical-align: -3px;
+}

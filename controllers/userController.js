@@ -18,26 +18,37 @@ exports.login = async (req, res) => {
 
     // Find the user by username using Sequelize
     const user = await User.findOne({ where: { username } });
-
     if (!user) {
       return res.status(401).send("Incorrect username or password");
     }
 
+    // Use bcrypt to compare the provided password with the hashed password stored in the database
     const isMatch = await bcrypt.compare(password, user.password_hash);
-
     if (!isMatch) {
       return res.status(401).send("Incorrect username or password");
     }
 
+    // Set the session userId and username with the user's ID and username
     req.session.userId = user.user_id; // Store the user's ID in the session
     req.session.username = user.username; // Store the username as well
-    res.redirect("/core.html");
+    console.log(
+      `user #${req.session.userId} ${req.session.username} has logged in`
+    );
+
+    console.log(`Session ID: ${req.session.id}`); // Redirect to the home page or dashboard as needed
+
+    req.session.save((err) => {
+      if (err) {
+        return res.send("err while saving session information");
+      }
+      console.log(req.session.id);
+      return res.redirect("/");
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal server error");
   }
 };
-
 
 exports.register = async (req, res) => {
   try {

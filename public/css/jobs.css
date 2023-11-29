@@ -1,6 +1,6 @@
 body, h1, h2, h3, p {
-    margin: 0;
-    padding: 0;
+    margin: 0px;
+    padding: 0px;
     font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
@@ -17,9 +17,6 @@ body, h1, h2, h3, p {
     padding: 0px 20px;
 }
 
-* {
-    box-sizing: border-box;
-}
 
 h1 {
     text-align: center;
@@ -115,7 +112,7 @@ h1 {
       align-self: center;
     }
   }
-
+  
 #job-btn-container {
   /* scroll bar and stuff*/
   padding-top: 30px;
@@ -134,15 +131,4 @@ margin: 0px 13px;
 cursor: pointer;
 
 /* Add more styling as needed */
-}
-
-button {
-padding: 10px 20px;
-margin-top: 10px;
-cursor: pointer;
-}
-.material-symbols-outlined {
-  font-size: 16px; /* Change this value to increase or decrease the size of the icon */
-  /* You can also include other font properties as needed */
-  vertical-align: -2px;
 }

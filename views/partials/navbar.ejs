@@ -1,24 +1,43 @@
 <nav class="navbar">
   <div class="logo">
-    <a href="core">
-      <img src="img/core.png" alt="core logo" />
+    <a href="/">
+      <img src="/public/img/core.png" alt="core logo" />
     </a>
     <div class="nav-text-container">
-      <a class="nav-text" href="/user/">user</a>@<a class="nav-text" href="core"
-        >CORE</a
-      >/<span id="current-path"><%= pagePath %></span>
+      <a class="nav-text" href="/">
+        <% if (username) { %>
+        <a class="nav-text" href="/profile"><%= username %></a>
+        <% } else { %>
+        <a class="nav-text" href="/login">user</a><% } %></a
+      >@<a class="nav-text" href="/">CORE</a>/<span id="current-path"
+        ><%= pagePath %></span
+      >
     </div>
   </div>
 
   <ul class="nav-links">
     <li>
+      <a class="search-bar">
+        <span class="material-symbols-outlined"> search </span>
+        <input type="search" placeholder="Search" name="search" required />
+      </a>
+    </li>
+    <li>
       <a href="/login" class="navbar-button">
-        <img src="img/glyphs/person.svg" alt="login icon" class="nb-icon" />
+        <img
+          src="img/glyphs/person.svg"
+          alt="login icon"
+          class="right-nb-icon"
+        />
       </a>
     </li>
     <li>
       <a href="/register" class="navbar-button">
-        <img src="img/glyphs/public.svg" alt="register icon" class="nb-icon" />
+        <img
+          src="img/glyphs/public.svg"
+          alt="register icon"
+          class="right-nb-icon"
+        />
       </a>
     </li>
     <!-- Add more navigation links for the first part as needed -->

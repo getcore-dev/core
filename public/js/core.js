@@ -101,6 +101,82 @@ function fetchTrendingProjects() {
       reactions: [98, 6, 3, 9],
       comments: 324,
     },
+    {
+      title: "Indie development game release 515",
+      content: "Lorem ipsum",
+      user: "user",
+      community: "GameDev",
+      link: "https://www.google.com",
+      reactions: [302, 18, 14, 22],
+      comments: 65,
+    },
+    {
+      title:
+        "New tool to visualize the loss of different machine learning models",
+      content: "Lorem ipsum",
+      user: "user",
+      community: "GameDev",
+      link: "https://www.google.com",
+      reactions: [147, 10, 4, 19],
+      comments: 98,
+    },
+    {
+      title: "Brand new tech startup for software engineers sells for $1.2B",
+      content: "Lorem ipsum",
+      user: "user",
+      community: "Hype",
+      link: "https://www.google.com",
+      reactions: [102, 8, 2, 12],
+      comments: 102,
+    },
+    {
+      title:
+        "I created an alternative to the app store which allows sideloading of any apps",
+      content: "Lorem ipsum",
+      user: "user",
+      community: "iOS",
+      link: "https://www.google.com",
+      reactions: [98, 6, 3, 9],
+      comments: 324,
+    },
+    {
+      title: "Indie development game release 515",
+      content: "Lorem ipsum",
+      user: "user",
+      community: "GameDev",
+      link: "https://www.google.com",
+      reactions: [302, 18, 14, 22],
+      comments: 65,
+    },
+    {
+      title:
+        "New tool to visualize the loss of different machine learning models",
+      content: "Lorem ipsum",
+      user: "user",
+      community: "GameDev",
+      link: "https://www.google.com",
+      reactions: [147, 10, 4, 19],
+      comments: 98,
+    },
+    {
+      title: "Brand new tech startup for software engineers sells for $1.2B",
+      content: "Lorem ipsum",
+      user: "user",
+      community: "Hype",
+      link: "https://www.google.com",
+      reactions: [102, 8, 2, 12],
+      comments: 102,
+    },
+    {
+      title:
+        "I created an alternative to the app store which allows sideloading of any apps",
+      content: "Lorem ipsum",
+      user: "user",
+      community: "iOS",
+      link: "https://www.google.com",
+      reactions: [98, 6, 3, 9],
+      comments: 324,
+    },
   ];
 }
 

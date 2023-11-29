@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="css/acc-styles.css" />
+    <link rel="stylesheet" href="/css/navbar.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Overview of Arrays</title>
+  </head>
+  <body>
+    <%- include('partials/navbar', { pagePath: 'home' }) %>
+
+    <h1>Understanding Arrays in Programming</h1>
+    <p>
+      Arrays are a fundamental data structure used to store collections of
+      elements. They are used in almost every programming language. An array can
+      store numbers, strings, objects, or even other arrays. The elements in an
+      array are indexed, which means each item has a corresponding number that
+      you can use to access it. This makes arrays very useful for storing data
+      that needs to be accessed in an ordered way.
+    </p>
+
+    <h2>Characteristics of Arrays:</h2>
+    <ul>
+      <li>Indexed: Each element has a numerical index, starting from 0.</li>
+      <li>Ordered: The elements in an array are stored in a specific order.</li>
+      <li>
+        Mutable: You can modify the elements of an array after it's created.
+      </li>
+      <li>
+        Size-variable: Some languages have arrays that can change in size, while
+        others have fixed-size arrays.
+      </li>
+    </ul>
+
+    <h2>Common Operations on Arrays:</h2>
+    <ul>
+      <li>Accessing elements using their index.</li>
+      <li>Iterating over all elements with loops.</li>
+      <li>Adding new elements to the array.</li>
+      <li>Removing elements from the array.</li>
+      <li>Finding elements within the array.</li>
+      <li>Sorting the array.</li>
+    </ul>
+
+    <h2>Example of an Array in JavaScript:</h2>
+    <pre>
+        <code>
+            let fruits = ['Apple', 'Banana', 'Cherry'];
+            console.log(fruits[0]); // Output: Apple
+            fruits.push('Date');
+            console.log(fruits); // Output: ['Apple', 'Banana', 'Cherry', 'Date']
+        </code>
+    </pre>
+
+    <% if (arrayExample && arrayExample.length > 0) { %>
+    <h2>Dynamic Array Example:</h2>
+    <p>The following is an example of an array passed to this EJS template:</p>
+    <ul>
+      <% arrayExample.forEach(function(element) { %>
+      <li><%= element %></li>
+      <% }); %>
+    </ul>
+    <% } else { %>
+    <p>No array data was passed to the template.</p>
+    <% } %>
+  </body>
+</html>
