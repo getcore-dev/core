@@ -1,251 +1,223 @@
-body{
-    margin: 0; /* Remove default margin */
-    padding: 80px 0px; /* Remove default padding */
-    font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* Set default font family */
-  }
-
-  h1, h2, h3, p {
-    margin: 0; /* Remove default margin */
-    padding: 0; /* Remove default padding */
-    font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* Set default font family */
-  
-  }
-  
-.logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 5px;
-  }
-  .logo img {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0px 20px;
-  }
-  
-  #com-btn-container {
-        /* scroll bar and stuff*/
-        padding-top: 30px;
-        padding-left: 9px;
-        display: flex;
-        overflow-x: auto;
-        scrollbar-width: none;
-        &::-webkit-scrollbar {
-            display: none;
-        }
-  }
-  
-  .com-btn {
-    flex: 0 0 auto;
-    margin: 0px 10px;
-    cursor: pointer;
-  
-    /* Add more styling as needed */
-  }
-  
-  
-  .navbar {
-    background-color: #eee; /* Background color for the navbar */
-    color: #000; /* Text color */
-    display: flex; /* Display the navbar content side by side */
-    justify-content: space-between; /* Align logo and links at opposite ends */
-    align-items: center; /* Vertically center logo and links */
-    padding: 10px 10px; /* Adjust padding as needed */
-
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-  }
-  
-  .logo img {
-    max-height: 40px; /* Set the maximum height for the logo */
-  }
-  
-  .nav-links {
-    list-style: none; /* Remove bullet points from the list */
-    margin: 0; /* Remove default margin */
-    padding: 0; /* Remove default padding */
-    padding-right: 20px;
-    display: flex; /* Display the links side by side */
-    gap: 4px; /* Adjust the gap between navigation links */
-  }
-  
-  .nav-links li {
-    font-size: 16px; /* Adjust font size for navigation links */
-  }
-  
-  .nav-links li a {
-    text-decoration: none;
-    color: #000; /* Link text color */
-  }
-  
-  .nav-links li a:hover {
-    text-decoration: none; /* Add an underline on hover */
-  }
-  
-  .content {
-    padding: 20px; /* Add some padding to separate content from the navbar */
-  }
-  
-  .navbar-button {
-    display: flex; /* Display button content side by side */
-    justify-content: center; /* Center button content horizontally */ 
-    gap: 4px; /* Adjust gap between button icon and text */ 
-    line-height: 1.5; /* Adjust line height for button text */
-  
-    background-color: #eee; /* Background color for the button */
-    color: #fff; /* Text color */
-    padding: 4px 7px; /* Adjust padding as needed */
-    border: none; /* Remove borders */
-    border-radius: 5px; /* Rounded corners */
-    transition: background-color 0.15s, transform 0.15s; /* Smooth transition */
-  }
-
-  a .navbar-button {
-    font-size: 14px;
-  }
-  
-  .navbar-button:hover {
-    background-color: #ddd; /* Change background color on hover */
-    cursor: pointer; /* Change the cursor to a pointer on hover */
-  }
-  
-  /* Style for the second navbar */
-  .second-navbar {
-    background-color: #eee; /* Background color for the second navbar */
-    color: #fff; /* Text color */
-    padding: 6px 0; /* Adjust padding as needed */
-    border-bottom: #ccc 1px solid; /* Add a border at the bottom */
-    position: fixed;
-    width: 100%;
-    top: 50px;  /* Adjust top position */
-    z-index: 1000;
-  }
-  
-  /* Style for the second navbar links */
-  .second-nav-links {
-    list-style: none; /* Remove bullet points from the list */
-    margin: 0; /* Remove default margin */
-    padding: 0; /* Remove padding */
-    display: flex; /* Display the links side by side */
-    align-items: center; /* Center the links vertically */
-  }
-  
-  /* Style for the second navbar buttons */
-  .navbar-button {
-    text-decoration: none; /* Remove underline from links */
-    color: #000; /* Link text color */
-    display: flex; /* Display button content side by side */
-    align-items: center; /* Center button content vertically */
-    margin: 0 10px; /* Add spacing between buttons */
-  }
-  
-  /* Style for the second navbar icons */
-  .nb-icon {
-    width: 18px; /* Set the icon size */
-    height: 18px; /* Set the icon size */
-    margin-right: 5px; /* Add spacing between icon and text */
-  }
-
-  .right-nb-icon {
-    width: 18px; /* Set the icon size */
-    height: 18px; /* Set the icon size */
-  }
-  
-  #job-btn-container {
-  /* scroll bar and stuff*/
-  padding-top: 30px;
-  padding-left: 8px;
-  display: flex;
-  overflow-x: auto;
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-      display: none;
-  }
-  }
-  
-  .job-btn {
-  flex: 0 0 auto;
-  margin: 0px 13px;
-  cursor: pointer;
-  
-  /* Add more styling as needed */
-  }
-  
-  button {
-  padding: 10px 20px;
-  margin-top: 10px;
-  cursor: pointer;
-  }
-  
-  .nav-text {
-    color: #000; /* Text color */
-    text-decoration:none;
-   }
-  
-  .nav-text:hover {
-    color: #000; /* Text color */
-    /* underline text*/
-    text-decoration: underline;
-  }
-  
-  .nav-text-container {
-    font-weight: bold;
-    padding-top: 0px;
-  }
-
-
-.material-symbols-outlined {
-  font-size: 16px; /* Change this value to increase or decrease the size of the icon */
-  /* You can also include other font properties as needed */
-  vertical-align: -3px;
+/* Global Style */
+body {
+  margin: 0; /* Remove default margin */
+  padding-top: 90px; /* Add padding */
+  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* Set default font family */
 }
 
-
-.mobile-navbar {
-  display: none; /* Hide by default on desktop */
-}
-
-.search-icon {
-  display: none; /* Hide by default on desktop */
-  /* Add styling for the search icon */
-}
-
-.bar {
-  width: 15px;
-  height: 2px;
-  background-color: #333;
-  margin: 4px 20px;
-  cursor: pointer;
-}
-
-/* CSS for responsive design */
 @media (max-width: 768px) {
-  .mobile-navbar {
-    display: block; /* Display on mobile */
+  body {
+      padding-top: 60px; /* Reduced padding for mobile */
   }
+}
 
-  .search-icon {
-    display: block; /* Display on mobile */
-  }
 
-  .second-nav-links {
-    display: none; /* Hide on mobile by default */
-  }
+/* Common Style for Headers and Paragraphs */
+h1, h2, h3, p {
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+}
 
-  .search-bar input[type="search"] {
-    display: none;
-  }
-  .search-bar.active input[type="search"] {
+/* Navbar Styles */
+.navbar {
+  background-color: #eee; /* Navbar background color */
+  color: #000; /* Navbar text color */
+  display: flex; /* Display navbar items inline */
+  justify-content: space-between; /* Space out items */
+  align-items: center; /* Align items vertically */
+  padding: 10px; /* Navbar padding */
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Navbar Links Style */
+.nav-links {
+  list-style: none; /* Remove list bullets */
+  margin: 0;
+  padding: 0 20px; /* Padding around the navbar links */
+  display: flex; /* Display links inline */
+  gap: 4px; /* Gap between links */
+}
+
+.nav-links li {
+  font-size: 14px; /* Font size of navbar links */
+}
+
+
+.nav-links {
+  text-decoration: none; /* Remove underline */
+  color: #000; /* Link color */
+}
+
+.nav-links li a:hover {
+  text-decoration: none; /* Underline on hover */
+}
+
+
+/* Navbar Button Style */
+.navbar-button {
+  display: flex; /* Display button contents inline */
+  justify-content: center; /* Center button content */
+  gap: 4px; /* Gap between icon and text */
+  line-height: 1.5; /* Button text line height */
+  background-color: #eee; /* Button background color */
+  color: #000; /* Button text color */
+  padding: 4px 7px; /* Button padding */
+  font-size: 14px; /* Button font size */
+  border: none; /* No border */
+  text-decoration: none; /* Remove underline */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.15s, transform 0.15s; /* Transition effects */
+}
+
+.navbar-button:hover {
+  background-color: #ddd; /* Background color on hover */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
+/* Logo Style */
+.logo {
+  display: flex; /* Display logo contents inline */
+  justify-content: center; /* Center logo content */
+  align-items: center; /* Align items vertically */
+  margin-right: 5px; /* Right margin */
+}
+
+.logo img {
+  max-height: 40px; /* Maximum height of the logo */
+  padding: 0 5px; /* Padding around the logo */
+}
+
+/* Content Style */
+.content {
+  padding: 20px; /* Content padding */
+}
+
+/* Second Navbar Styles */
+.second-navbar {
+  background-color: #eee; /* Second navbar background color */
+  color: #fff; /* Second navbar text color */
+  padding: 6px 0; /* Second navbar padding */
+  border-bottom: #ccc 1px solid; /* Bottom border */
+  position: fixed;
+  width: 100%;
+  top: 50px;
+  z-index: 1000;
+}
+
+.second-nav-links {
+  list-style: none; /* Remove list bullets */
+  margin: 0; /* Remove margin */
+  padding: 0; /* Remove padding */
+  display: flex; /* Display links inline */
+  align-items: center; /* Align items vertically */
+}
+
+/* Button Containers */
+#com-btn-container, #job-btn-container {
+  padding-top: 0px;
+  padding-left: 9px; /* Left padding */
+  display: flex; /* Display contents inline */
+  overflow-x: auto; /* Horizontal scroll */
+  scrollbar-width: none; /* Hide scrollbar */
+}
+
+#com-btn-container::-webkit-scrollbar, #job-btn-container::-webkit-scrollbar {
+  display: none; /* Hide scrollbar in WebKit browsers */
+}
+
+/* Button Styles */
+.com-btn, .job-btn {
+  flex: 0 0 auto;
+  margin: 10px; /* Margin around buttons */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
+/* Common Button Style */
+button {
+  padding: 10px 20px; /* Button padding */
+  margin-top: 10px; /* Top margin */
+  cursor: pointer; /* Pointer cursor */
+}
+
+/* Nav Text Styles */
+.nav-text, .nav-text:hover {
+  color: #000; /* Nav text and hover color */
+  text-decoration: none; /* Remove underline */
+}
+
+.nav-text:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+
+.nav-text-container {
+  font-weight: bold; /* Bold text */
+  padding-top: 0; /* Top padding */
+}
+
+/* Icon Style */
+.material-symbols-outlined {
+  font-size: 16px; /* Icon size */
+  vertical-align: -3px; /* Vertical alignment */
+}
+
+/* Mobile Navbar Style */
+.mobile-navbar, .search-icon {
+  font-size: 10px;
+  display: none; /* Hide by default on desktop */
+}
+
+#menu-icon {
+  display: none;
+  padding-left: 10px; /* Left padding */
+  color: #000; /* Icon color */
+  font-size: 20px; /* Icon size */
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  #menu-icon {
     display: block;
   }
-  
+  .mobile-navbar, .search-icon {
+      display: block; /* Show on mobile devices */
+  }
+
+  .second-nav-links, .search-bar input[type="search"] {
+      display: none; /* Hide on mobile devices */
+  }
+
+  .search-bar.active input[type="search"] {
+      display: block; /* Show active search bar on mobile */
+  }
 }
 
-/* CSS to hide the search bar input and show the icon */
-
-.search-icon {
+/* Hamburger Menu Style */
+.hamburger-menu {
+  position: relative;
   cursor: pointer;
+}
+
+.menu-content {
+  display: none; /* Hide by default */
+  position: absolute;
+  top: 44px;
+  background-color: #f9f9f9; /* Background color */
+  min-width: 160px; /* Minimum width */
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* Box shadow */
+  z-index: 1; /* Layering index */
+}
+
+.menu-content a {
+  color: black; /* Link color */
+  padding: 12px 16px; /* Padding */
+  text-decoration: none; /* Remove underline */
+  display: block; /* Block display */
+}
+
+.menu-content a:hover {
+  background-color: #f1f1f1; /* Background color on hover */
 }

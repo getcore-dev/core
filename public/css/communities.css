@@ -1,99 +1,90 @@
+/* General Button Style */
 button {
-padding: 7px 15px;
-margin-top: 0px;
-cursor: pointer;
-}
-  .post { border: 1px solid #ddd; margin: 10px; padding: 5px; border-radius: 5px; }
-  .title { font-size: 20px; color: #333; }
-  .user-info { font-size: 14px; color: #666; }
-  .post-date { font-size: 14px; color: #666; }
-  .description { margin: 5px 0; }
-  .reactions { font-size: 14px; margin-top: 10px; }
-  .reaction-icon { width: 20px; vertical-align: text-bottom; }
-
-  .post {
-    display: flex;
-    flex-direction: row; /* Align children in a row */
-    align-items: stretch; /* Stretch items to fill the container */
-  }
-  
-  .post {
-    display: flex;
-    position: relative; /* Set position context for absolute positioning */
-    margin-bottom: 0px; /* Space between posts, adjust as needed */
-  }
-  
-  /* Default styles for the thumbnail */
-.post-content .thumbnail {
-  width: 100px; /* Set the width you desire for desktop */
-  height: 100px; /* Set the height you desire for desktop */
-}
-  
-  .thumbnail {
-    position: absolute; /* Position thumbnail absolutely relative to the post */
-    top: 0; /* Align to the top of the post */
-    bottom: 0; /* Align to the bottom of the post */
-    left: 0; /* Align to the left of the post */
-  }
-  
-  .thumbnail-image {
-    border-radius: 5px;
-    height: 100%; /* Full height of the post */
-    aspect-ratio: 1/1; /* Maintain aspect ratio */
-    object-fit: cover; /* Cover the space without stretching the image */
-  }
-  
-  .post-content {
-    flex-grow: 1; /* Allow the content to take up the remaining space */
-    margin-left: 100px; /* Space for the thumbnail on the left, adjust this value based on the actual width of your thumbnail */
-    padding: 0px; /* Padding inside the post content */
-  }
-
-  .post-content .community-name {
-    font-weight: bold;
-    color: #4682B4;
-  }
-  
-  .post-content .header {
-    font-size: 14px;
-  }
-
-  /* Additional styles for title, user-info, description, and reactions */
-  
-  .material-symbols-outlined {
-    font-size: 16px; /* Change this value to increase or decrease the size of the icon */
-    /* You can also include other font properties as needed */
-    vertical-align: -3px;
-  }
-
-  #trending-icon {
-    font-size:20px;
-    color: #ff5722; /* Color of the trending icon */
-  }
-
-  #verified-icon {
-    font-size:15px;
-    color: green; /* Color of the verified icon */
-  }
-  
-  #com-btn-container,
-#posts-container {
-  max-width: 100%;
-  width: auto;
+  padding: 7px 15px;
+  margin-top: 0;
+  cursor: pointer;
 }
 
-#com-btn-container,
-#posts-container {
-  white-space: normal;
+/* Post Container Styles */
+.post {
+  border: 1px solid #ddd; /* Post border */
+  margin: 10px 0; /* Vertical margin for post */
+  padding: 0px 5px; /* Post padding */
+  border-radius: 0px; /* Rounded corners for post */
+  display: flex; /* Use flexbox for layout */
+  position: relative; /* Positioning context for child elements */
 }
 
-
-/* Media query for mobile devices */
-@media screen and (max-width: 768px) {
-  .post-content .thumbnail {
-    width: 50px; /* Set a smaller width for mobile */
-    height: 50px; /* Set a smaller height for mobile */
-  }
+/* Thumbnail Styles */
+.thumbnail {
+  position: absolute; /* Absolute positioning inside post */
+  top: 0; /* Top alignment */
+  bottom: 0; /* Bottom alignment */
+  left: 0; /* Left alignment */
 }
 
+.thumbnail-image {
+  width: 100px; /* Width */
+  height: 100%; /* Full height */
+  aspect-ratio: 1/1; /* Maintain aspect ratio */
+  object-fit: cover; /* Cover the space without stretching */
+}
 
+/* Post Content Styles */
+.post-content {
+  flex-grow: 1; /* Take up remaining space */
+  margin-left: 100px; /* Space for thumbnail */
+  padding: 0; /* No padding */
+}
+
+.post-content .community-name {
+  font-weight: bold; /* Bold font */
+  color: #4682B4; /* Color */
+}
+
+.post-content .header {
+  font-size: 14px; /* Font size */
+}
+
+/* Styles for Post Elements */
+.title, .user-info, .post-date, .description, .reactions {
+  font-size: 14px; /* Font size for consistency */
+  color: #333; /* Default text color */
+}
+
+.title {
+  color: #333; /* Specific color for title */
+}
+
+.user-info, .post-date {
+  color: #666; /* Lighter text color */
+}
+
+.description {
+  margin: 5px 0; /* Margin around description */
+}
+
+.reactions {
+  margin-top: 10px; /* Margin above reactions */
+}
+
+.reaction-icon {
+  width: 20px; /* Icon width */
+  vertical-align: text-bottom; /* Align with bottom of text */
+}
+
+/* Icon Styles */
+.material-symbols-outlined {
+  font-size: 16px; /* Icon size */
+  vertical-align: -3px; /* Vertical alignment */
+}
+
+#trending-icon {
+  font-size: 20px; /* Trending icon size */
+  color: #ff5722; /* Trending icon color */
+}
+
+#verified-icon {
+  font-size: 15px; /* Verified icon size */
+  color: green; /* Verified icon color */
+}
