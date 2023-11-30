@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
@@ -32,8 +33,13 @@
         { name: "ios-dev", icon: "ios" },
         { name: "android-dev", icon: "android" },
         { name: "data-science", icon: "monitoring" },
-        { name: "blockchain", icon: "currency_bitcoin" },
+        { name: "web3", icon: "currency_bitcoin" },
         { name: "cloud", icon: "cloud" },
+        { name: "devops", icon: "settings" },
+        { name: "AI-ethics", icon: "volunteer_activism" },
+        { name: "UX-design", icon: "design_services" },
+        { name: "software-testing", icon: "check_circle" },
+        { name: "agile-development", icon: "scatter_plot" },
         // add more communities as needed
       ];
       function createButtons() {
@@ -176,28 +182,28 @@
 
         // Create the post content HTML here using the data from the JavaScript object, with header added
         const postContentHTML = `
-  <div class="thumbnail">
-    <img
-      src="${post.thumbnail_image_url}"
-      alt="Thumbnail Image"
-      class="thumbnail-image"
-    />
-  </div>
-  <div class="post-content">
-    <div class="title"><span class="header">${header}</span> ${titleWithoutHeader}</div>
-    <div class="user-info">
-      <strong>${post.author}</strong> ${post.date} 
-      <span class="material-symbols-outlined"> thumb_up </span>
-      <span>${post.upvotes}</span>
-      <span class="material-symbols-outlined"> thumb_down </span>
-      <span>${post.downvotes}</span>
-      <span class="material-symbols-outlined"> comment </span>
-      <span>${post.favorites}</span>
-      <span class="community-name">${post.community}</span>
-    </div>
-    <div class="description">${post.description}</div>
-  </div>
-`;
+        <div class="thumbnail">
+          <img
+            src="${post.thumbnail_image_url}"
+            alt="Thumbnail Image"
+            class="thumbnail-image"
+          />
+        </div>
+        <div class="post-content">
+          <div class="title"><span class="header">${header}</span> ${titleWithoutHeader}</div>
+          <div class="user-info">
+            <strong>${post.author}</strong> ${post.date}
+            <span class="material-symbols-outlined"> thumb_up </span>
+            <span>${post.upvotes}</span>
+            <span class="material-symbols-outlined"> thumb_down </span>
+            <span>${post.downvotes}</span>
+            <span class="material-symbols-outlined"> comment </span>
+            <span>${post.favorites}</span>
+            <span class="community-name">${post.community}</span>
+          </div>
+          <div class="description">${post.description}</div>
+        </div>
+      `;
 
         postElement.innerHTML = postContentHTML;
         postsContainer.appendChild(postElement);

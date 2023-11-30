@@ -25,7 +25,7 @@ h1, h2, h3, p {
   display: flex; /* Display navbar items inline */
   justify-content: space-between; /* Space out items */
   align-items: center; /* Align items vertically */
-  padding: 10px; /* Navbar padding */
+  padding: 15px; /* Navbar padding */
   position: fixed;
   width: 100%;
   top: 0;
@@ -79,10 +79,9 @@ h1, h2, h3, p {
 
 /* Logo Style */
 .logo {
-  display: flex; /* Display logo contents inline */
-  justify-content: center; /* Center logo content */
-  align-items: center; /* Align items vertically */
-  margin-right: 5px; /* Right margin */
+  position: absolute; /* Position relative to the navbar */
+  left: 10px; /* Adjust as needed to align with navbar's left edge */
+  top: 10px; /* Adjust as needed to align with navbar's top */
 }
 
 .logo img {
@@ -99,7 +98,7 @@ h1, h2, h3, p {
 .second-navbar {
   background-color: #eee; /* Second navbar background color */
   color: #fff; /* Second navbar text color */
-  padding: 6px 0; /* Second navbar padding */
+  padding:2px 0; /* Second navbar padding */
   border-bottom: #ccc 1px solid; /* Bottom border */
   position: fixed;
   width: 100%;
@@ -158,10 +157,6 @@ button {
 }
 
 /* Icon Style */
-.material-symbols-outlined {
-  font-size: 16px; /* Icon size */
-  vertical-align: -3px; /* Vertical alignment */
-}
 
 /* Mobile Navbar Style */
 .mobile-navbar, .search-icon {
@@ -179,6 +174,11 @@ button {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+
+  .navbar {
+    padding: 14px; /* Navbar padding */
+
+  }
   #menu-icon {
     display: block;
   }
@@ -192,6 +192,17 @@ button {
 
   .search-bar.active input[type="search"] {
       display: block; /* Show active search bar on mobile */
+  }
+  .logo {
+    /* Slight adjustment for mobile view to accommodate the hamburger menu */
+    left: 35px; /* Increase left value to move the logo right */
+  }
+
+  .hamburger-menu {
+    /* Positioning for the hamburger menu */
+    position: absolute;
+    right: 10px; /* Align with the navbar's left edge */
+    bottom: 0px; /* Align with the navbar's top */
   }
 }
 
@@ -220,4 +231,26 @@ button {
 
 .menu-content a:hover {
   background-color: #f1f1f1; /* Background color on hover */
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 5px;
+}
+.logo img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
+}
+
+
+#nb-icon {
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 1px;
 }

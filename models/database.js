@@ -1,24 +1,23 @@
-require("dotenv").config(); // If you're using dotenv to manage environment variables locally
+// establish connection to Azure MySQL database
 
-const { Sequelize } = require("sequelize");
+require("dotenv").config();
+const mysql = require("mysql");
 
-const sequelize = new Sequelize(
-  process.env.AZURE_DB_NAME,
-  process.env.AZURE_DB_USER,
-  process.env.AZURE_DB_PASS,
-  {
-    host: process.env.AZURE_DB_HOST,
-    dialect: "mysql", // Azure database is MySQL
-    port: 3306, // Azure MySQL default port
-    ssl: true, // This enables SSL which is recommended for Azure connections
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false, // You can choose to enforce authorized only if you have a CA certificate
-      },
-    },
-    // ... other Sequelize configuration attributes
+var connection = mysql.createConnection({
+  host: "core-server.mysql.database.azure.com",
+  user: "roxfkzgnit",
+  password: "{your_password}",
+  database: "{your_database}",
+  port: 3306,
+  ssl: { ca: fs.readFileSync("{ca-cert filename}") },
+});
+
+connection.connect((error) => {
+  if (error) {
+    console.error("Error connecting to Azure MySQL database:", error);
+    return;
   }
-);
+  console.log("Connected to Azure MySQL database");
+});
 
-module.exports = sequelize;
+module.exports = connection;

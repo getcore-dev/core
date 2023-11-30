@@ -10,6 +10,16 @@
       <a href="/support">Support</a>
       <a href="/about">About</a>
       <!-- More actions -->
+      <a href="/profile">Profile</a>
+      <!-- Added Profile link -->
+      <a href="/settings">Settings</a>
+      <!-- Added Settings link -->
+      <a href="/inbox">Inbox</a>
+      <!-- Added Inbox link -->
+      <a href="/notifications">Notifications</a>
+      <!-- Added Notifications link -->
+      <a href="/logout">Logout</a>
+      <!-- Added Logout link -->
     </div>
   </div>
   <div class="logo">
@@ -34,7 +44,7 @@
       </div>
     </li>
     <li>
-      <a class="navbar-button">
+      <a class="navbar-button">9
         <div class="search-icon">
           <span class="material-symbols-outlined"> search </span>
         </div>
@@ -58,38 +68,46 @@
   <ul class="second-nav-links">
     <li>
       <a href="communities" class="navbar-button">
-        <span class="material-symbols-outlined"> forum </span> Community
+        <span class="material-symbols-outlined" id="nb-icon"> forum </span>
+        Community
       </a>
     </li>
     <li>
       <a href="jobs" class="navbar-button">
-        <span class="material-symbols-outlined"> work </span> Openings
+        <span class="material-symbols-outlined" id="nb-icon"> work </span>
+        Openings
       </a>
     </li>
     <li>
       <a href="learning" class="navbar-button">
-        <span class="material-symbols-outlined"> school </span> Learning
+        <span class="material-symbols-outlined" id="nb-icon"> school </span>
+        Learning
       </a>
     </li>
     <li>
       <a href="practice" class="navbar-button">
-        <span class="material-symbols-outlined"> data_object </span> Practice
+        <span class="material-symbols-outlined" id="nb-icon">
+          data_object
+        </span>
+        Practice
       </a>
     </li>
     <li>
       <a href="support" class="navbar-button">
-        <span class="material-symbols-outlined"> help </span>
+        <span class="material-symbols-outlined" id="nb-icon"> help </span>
         Support</a
       >
     </li>
     <li>
       <a href="about" class="navbar-button">
-        <span class="material-symbols-outlined"> info </span> About</a
+        <span class="material-symbols-outlined" id="nb-icon"> info </span>
+        About</a
       >
     </li>
     <!-- Add more navigation links for the second part as needed -->
   </ul>
 </nav>
+
 <script>
   document.getElementById("menu-icon").onclick = function () {
     var content = document.getElementById("menu-content");
