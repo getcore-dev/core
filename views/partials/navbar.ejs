@@ -1,4 +1,17 @@
 <nav class="navbar">
+  <div class="hamburger-menu">
+    <span class="material-symbols-outlined" id="menu-icon"> menu </span>
+    <div class="menu-content" id="menu-content">
+      <!-- Add your menu actions here -->
+      <a href="/communities">Communities</a>
+      <a href="/jobs">Openings</a>
+      <a href="/learning">Learning</a>
+      <a href="/practice">Practice</a>
+      <a href="/support">Support</a>
+      <a href="/about">About</a>
+      <!-- More actions -->
+    </div>
+  </div>
   <div class="logo">
     <a href="communities"> <img src="/img/core.png" alt="CORE" /> </a>
     <div class="nav-text-container">
@@ -15,32 +28,26 @@
 
   <ul class="nav-links">
     <li>
-      <!-- Search bar icon -->
-      <div class="search-icon">
-        <span class="material-symbols-outlined"> search </span>
-      </div>
-
       <!-- Search bar input (initially hidden) -->
       <div class="search-bar">
         <input type="search" placeholder="Search" name="search" required />
       </div>
     </li>
     <li>
+      <a class="navbar-button">
+        <div class="search-icon">
+          <span class="material-symbols-outlined"> search </span>
+        </div>
+      </a>
+    </li>
+    <li>
       <a href="login" class="navbar-button">
-        <img
-          src="img/glyphs/person.svg"
-          alt="login icon"
-          class="right-nb-icon"
-        />
+        <span class="material-symbols-outlined"> login </span>
       </a>
     </li>
     <li>
       <a href="register" class="navbar-button">
-        <img
-          src="img/glyphs/public.svg"
-          alt="register icon"
-          class="right-nb-icon"
-        />
+        <span class="material-symbols-outlined"> person_add </span>
       </a>
     </li>
     <!-- Add more navigation links for the first part as needed -->
@@ -48,83 +55,50 @@
 </nav>
 
 <nav class="second-navbar">
-  <div class="mobile-navbar">
-    <div class="hamburger-menu">
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
-    </div>
-    <ul class="second-nav-links">
-      <li>
-        <a href="communities" class="navbar-button">
-          <img src="./img/glyphs/forum.svg" alt="forum icon" class="nb-icon" />
-          Community
-        </a>
-      </li>
-      <li>
-        <a href="jobs" class="navbar-button">
-          <img src="./img/glyphs/job.svg" alt="job icon" class="nb-icon" />
-          Openings
-        </a>
-      </li>
-      <!-- Add more navigation links for the second part as needed -->
-    </ul>
-  </div>
-
   <ul class="second-nav-links">
     <li>
       <a href="communities" class="navbar-button">
-        <img src="./img/glyphs/forum.svg" alt="forum icon" class="nb-icon" />
-        Community
+        <span class="material-symbols-outlined"> forum </span> Community
       </a>
     </li>
     <li>
       <a href="jobs" class="navbar-button">
-        <img src="./img/glyphs/job.svg" alt="job icon" class="nb-icon" />
-        Openings
+        <span class="material-symbols-outlined"> work </span> Openings
       </a>
     </li>
     <li>
       <a href="learning" class="navbar-button">
-        <img src="./img/glyphs/code.svg" alt="code icon" class="nb-icon" />
-        Learning
+        <span class="material-symbols-outlined"> school </span> Learning
       </a>
     </li>
     <li>
       <a href="practice" class="navbar-button">
-        <img src="./img/glyphs/learn.svg" alt="code icon" class="nb-icon" />
-        Practice
+        <span class="material-symbols-outlined"> data_object </span> Practice
       </a>
     </li>
     <li>
       <a href="support" class="navbar-button">
-        <img
-          src="./img/glyphs/support.svg"
-          alt="support icon"
-          class="nb-icon"
-        />
+        <span class="material-symbols-outlined"> help </span>
         Support</a
       >
     </li>
     <li>
       <a href="about" class="navbar-button">
-        <img src="./img/glyphs/info.svg" alt="info icon" class="nb-icon" />
-        About</a
+        <span class="material-symbols-outlined"> info </span> About</a
       >
     </li>
     <!-- Add more navigation links for the second part as needed -->
   </ul>
 </nav>
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const bar = document.querySelector(".bar");
-    const secondNavLinks = document.querySelector(".second-nav-links");
-
-    // Toggle the second-navbar links on div with class "bar" click
-    bar.addEventListener("click", function () {
-      secondNavLinks.classList.toggle("show");
-    });
-  });
+  document.getElementById("menu-icon").onclick = function () {
+    var content = document.getElementById("menu-content");
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  };
 
   document.addEventListener("DOMContentLoaded", function () {
     const searchIcon = document.querySelector(".search-icon");
