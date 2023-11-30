@@ -23,6 +23,12 @@ cursor: pointer;
     margin-bottom: 0px; /* Space between posts, adjust as needed */
   }
   
+  /* Default styles for the thumbnail */
+.post-content .thumbnail {
+  width: 100px; /* Set the width you desire for desktop */
+  height: 100px; /* Set the height you desire for desktop */
+}
+  
   .thumbnail {
     position: absolute; /* Position thumbnail absolutely relative to the post */
     top: 0; /* Align to the top of the post */
@@ -69,3 +75,25 @@ cursor: pointer;
     font-size:15px;
     color: green; /* Color of the verified icon */
   }
+  
+  #com-btn-container,
+#posts-container {
+  max-width: 100%;
+  width: auto;
+}
+
+#com-btn-container,
+#posts-container {
+  white-space: normal;
+}
+
+
+/* Media query for mobile devices */
+@media screen and (max-width: 768px) {
+  .post-content .thumbnail {
+    width: 50px; /* Set a smaller width for mobile */
+    height: 50px; /* Set a smaller height for mobile */
+  }
+}
+
+
