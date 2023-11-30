@@ -1,37 +1,188 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title><%= user.username %>'s Profile</title>
-    <link rel="stylesheet" href="css/navbar.css" />
-    <link rel="stylesheet" href="css/user_profile.css" />
-  </head>
-  <body>
-    <!-- This line includes the navbar -->
-    <%- include('partials/navbar', { pagePath: 'user' }) %>
 
-    <div class="profile">
-      <h1>User Profile</h1>
-      <img src="profile_picture.jpg" alt="Profile Picture" width="150" />
-      <h2>Software Engineer</h2>
-      <p><strong>Username:</strong> @<%= user.username %></p>
-      <p><strong>Current Job:</strong> Software Engineer at XYZ Tech</p>
-      <p><strong>Programming Level:</strong> Expert</p>
-      <p><strong>Highlighted Projects:</strong></p>
-      <ul>
-        <li><a href="project1.html">Project 1: Awesome Web App</a></li>
-        <li><a href="project2.html">Project 2: Mobile App Development</a></li>
-        <li><a href="project3.html">Project 3: Data Analytics Dashboard</a></li>
-      </ul>
-      <p><strong>School:</strong> ABC University</p>
-      <p><strong>Email:</strong> <%= user.email %></p>
-      <p>
-        <strong>LinkedIn:</strong>
-        <a href="https://www.linkedin.com/in/userprofile"
-          >linkedin.com/in/userprofile</a
-        >
-      </p>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software Engineer Profile</title>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+  }
+  header {
+    background: #333;
+    color: #fff;
+    padding-top: 30px;
+    min-height: 70px;
+    border-bottom: #bbb 1px solid;
+  }
+  header a {
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 16px;
+  }
+  header ul {
+    padding: 0;
+    list-style: none;
+  }
+  header ul li {
+    float: left;
+    display: inline;
+    padding: 0 20px 0 20px;
+  }
+  header #branding {
+    float: left;
+  }
+  header #branding h1 {
+    margin: 0;
+  }
+  header nav {
+    float: right;
+    margin-top: 10px;
+  }
+  header .highlight, header .current a {
+    color: #e8491d;
+    font-weight: bold;
+  }
+  header a:hover {
+    color: #ffffff;
+    font-weight: bold;
+  }
+  
+  /* Profile Section */
+  .profile {
+    background: #fff;
+    color: #333;
+    padding: 20px;
+    margin-top: 20px;
+  }
+  .profile img {
+    float: left;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-right: 20px;
+  }
+  .profile h1 {
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Stats Section */
+  .stats {
+    background: #fff;
+    padding: 20px;
+    margin-top: 20px;
+    overflow: hidden;
+  }
+  .stats .box {
+    float: left;
+    width: 30%;
+    text-align: center;
+  }
+  
+  /* Skills Section */
+  .skills {
+    background: #fff;
+    padding: 20px;
+    margin-top: 20px;
+    overflow: hidden;
+  }
+  .skills .skill {
+    float: left;
+    width: 30%;
+    margin-right: 5%;
+  }
+  .skills .skill:last-child {
+    margin-right: 0;
+  }
+  
+  /* Footer */
+  footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+  }
+</style>
+</head>
+<body>
+  <%- include('partials/navbar', { pagePath: 'user' }) %>
+
+  <header>
+    <div class="container">
+      <div id="branding">
+        <h1>Software Engineer</h1>
+      </div>
+      <nav>
+        <ul>
+          <li class="current"><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="projects.html">Projects</a></li>
+        </ul>
+      </nav>
     </div>
-    <!-- Add more user details as needed -->
-  </body>
+  </header>
+
+  <section class="profile">
+    <div class="container">
+      <img src="profile-pic.jpg" alt="Software Engineer">
+      <h1>John Doe</h1>
+      <p>Skills: JavaScript, Python, HTML, CSS</p>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="container">
+      <div class="box">
+        <h3>Completed Projects</h3>
+        <p>3</p>
+      </div>
+      <div class="box">
+        <h3>Learning Hours</h3>
+        <p>56</p>
+      </div>
+      <div class="box">
+        <h3>Skills Acquired</h3>
+        <p>7</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="skills">
+    <div class="container">
+      <div class="skill">
+        <h3>React.js</h3>
+      </div>
+      <div class="skill">
+        <h3>Node.js</h3>
+           <div class="skill">
+        <h3>Node.js</h3>
+      </div>
+      <div class="skill">
+        <h3>Express.js</h3>
+      </div>
+      <div class="skill">
+        <h3>Ruby on Rails</h3>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Profile Page &copy; 2023</p>
+  </footer>
+
+</body>
 </html>

@@ -2,7 +2,9 @@ const express = require("express");
 const session = require("express-session");
 const path = require("path");
 const app = express();
+import fetch from "node-fetch";
 const port = process.env.PORT || 8080;
+const GITHUB_API_URL = "https://api.github.com/repos/brycemcole/CORE/commits"; // Replace with your repo details
 
 app.set("view engine", "ejs");
 app.set("trust proxy", 1); // Trust first proxy for session security
@@ -37,9 +39,18 @@ app.use("/user", require("./routes/userRoutes"));
 app.use("/learning", require("./routes/learningRoutes"));
 app.use("/api", require("./routes/apiRoutes"));
 
-// Removed redundant endpoints and consolidated static rendering
-
 // Homepage route
+
+app.get("/github-updates", async (req, res) => {
+  try {
+    const response = await fetch(GITHUB_API_URL);
+    const data = await response.json();
+    res.json(data); // Send the data to the frontend
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching data from GitHub" });
+  }
+});
+
 app.get("/", (req, res) => {
   res.render("communities", {
     pagePath: "communities",

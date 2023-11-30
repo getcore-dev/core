@@ -1,19 +1,75 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>About Core</title>
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     />
+    <link rel="stylesheet" href="css/about.css" />
     <link rel="stylesheet" href="css/navbar.css" />
   </head>
   <body>
     <%- include('partials/navbar', { pagePath: 'home' }) %>
-    <h1>About Core</h1>
-    <p>
-      Core is a social media platform for developers to connect with each other
-      and share their projects.
-    </p>
+    <div class="main">
+      <h1>About Core</h1>
+      <p>
+        Core is a social media platform for developers to connect with each
+        other and share their projects.
+      </p>
+
+      <div class="github-updates"></div>
+
+      Core is built using Node.js, Express, and MySQL. It is hosted on Azure.
+    </div>
   </body>
+  <script>
+    function createUpdateElement(update) {
+      const updateElement = document.createElement("div");
+      updateElement.className = "github-update-card";
+
+      let glyphSpan = document.createElement("span");
+      glyphSpan.className = "update-glyph";
+
+      if (update.type === "commit") {
+        glyphSpan.innerHTML =
+          '<span class="material-symbols-outlined">commit</span>'; // Replace with actual glyph for commit
+      } else if (update.type === "merge") {
+        glyphSpan.innerHTML =
+          '<span class="material-symbols-outlined">merge</span>'; // Replace with actual glyph for merge
+      }
+      // ... add more types as needed
+
+      const detailElement = document.createElement("div");
+      detailElement.className = "update-details";
+      detailElement.innerText = `Message: ${update.commit.message}`;
+
+      updateElement.appendChild(glyphSpan);
+      updateElement.appendChild(detailElement);
+
+      return updateElement;
+    }
+
+    async function fetchGitHubUpdates() {
+      try {
+        const response = await fetch("/github-updates");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const updates = await response.json();
+        const container = document.querySelector(".github-updates");
+        updates.forEach((update) => {
+          const updateElement = createUpdateElement(update);
+          container.appendChild(updateElement);
+        });
+      } catch (error) {
+        console.error("Failed to fetch GitHub updates:", error);
+        // Optionally, update the UI to indicate the error
+      }
+    }
+
+    fetchGitHubUpdates();
+  </script>
 </html>
