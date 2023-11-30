@@ -4,12 +4,12 @@ require("dotenv").config();
 const mysql = require("mysql");
 
 var connection = mysql.createConnection({
-  host: "core-server.mysql.database.azure.com",
-  user: "roxfkzgnit",
-  password: "{your_password}",
-  database: "{your_database}",
+  dialect: "mysql",
+  host: process.env.AZURE_DB_HOST,
+  user: process.env.AZURE_DB_USER,
+  password: "process.env.AZURE_DB_PASSWORD",
+  database: "process.env.AZURE_DB_NAME",
   port: 3306,
-  ssl: { ca: fs.readFileSync("{ca-cert filename}") },
 });
 
 connection.connect((error) => {
