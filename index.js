@@ -68,7 +68,7 @@ app.get("/:page", (req, res, next) => {
       pagePath: page,
     });
   } catch (error) {
-    next(error); // Pass errors to the error handler
+    console.log(error); // Pass errors to the error handler
   }
 });
 
