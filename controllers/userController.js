@@ -14,34 +14,43 @@ exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Replace direct query with User model method
+    // Step 1: Replace direct query with User model method
     const user = await User.findByUsername(username);
+
+    // Step 2: Check if the user was found
     if (!user) {
       return res.status(401).send("Incorrect username or password");
     }
 
+    // Step 3: Compare the provided password with the stored password hash
     const isMatch = await bcrypt.compare(password, user.password_hash);
+
+    // Step 4: Check if the password is correct
     if (!isMatch) {
       return res.status(401).send("Incorrect username or password");
     }
+
+    // Step 5: Store user information in the session
     req.session.userId = user.user_id;
     req.session.username = user.username;
     console.log(
-      `user #${req.session.userId} ${req.session.username} has logged in`
+      `User #${req.session.userId} ${req.session.username} has logged in`
     );
 
-    console.log(`Session ID: ${req.session.id}`); // Redirect to the home page or dashboard as needed
+    console.log(`Session ID: ${req.session.id}`);
 
+    // Step 6: Save the session and redirect as needed
     req.session.save((err) => {
       if (err) {
-        return res.send("err while saving session information");
+        return res.status(500).send("Error while saving session information");
       }
       console.log(req.session.id);
       return res.redirect("/");
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal server error");
+    // Step 7: Handle any unexpected errors
+    console.error("Error in login route:", error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -50,7 +59,7 @@ exports.register = async (req, res) => {
     const { username, email, password, zipcode } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Replace direct query with User.create method
+    // Step 1: Replace direct query with User.create method
     const newUser = await User.create({
       username,
       email,
@@ -58,16 +67,20 @@ exports.register = async (req, res) => {
       zip_code: zipcode,
     });
 
-    const newUserId = results.insertId;
-    req.session.userId = newUserId;
+    // Step 2: Store the new user's ID and username in the session
+    req.session.userId = newUser.user_id;
     req.session.username = username;
-    // Redirect to the home page or dashboard as needed
-    res.redirect("/"); // Redirecting also sends a 200 OK by default
+
+    // Step 3: Redirect to the home page or dashboard as needed
+    res.redirect("/");
   } catch (error) {
-    if (error.code === "ER_DUP_ENTRY") {
+    // Step 4: Handle specific error cases
+    if (error.name === "SequelizeUniqueConstraintError") {
       return res.status(400).send("Username or email already exists");
     }
-    console.error(error);
-    res.status(500).send("Internal server error");
+
+    // Step 5: Handle any unexpected errors
+    console.error("Error in register route:", error);
+    res.status(500).send("Internal Server Error");
   }
 };

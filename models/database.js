@@ -7,8 +7,8 @@ var connection = mysql.createConnection({
   dialect: "mysql",
   host: process.env.AZURE_DB_HOST,
   user: process.env.AZURE_DB_USER,
-  password: "process.env.AZURE_DB_PASSWORD",
-  database: "process.env.AZURE_DB_NAME",
+  password: process.env.AZURE_DB_PASSWORD,
+  database: process.env.AZURE_DB_NAME,
   port: 3306,
 });
 
