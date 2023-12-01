@@ -21,11 +21,11 @@ exports.login = (req, res, next) => {
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password, country, zipcode } = req.body;
+    const { username, email, password, zip_code } = req.body;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const password_hash = await bcrypt.hash(password, 10);
 
-    const newUser = new User(null, username, email, hashedPassword, country, zipcode);
+    const newUser = new User(null, username, email, password_hash, zip_code);
     newUser.save(err => {
       if (err) {
         // Handle error, like duplicate username
@@ -37,7 +37,7 @@ exports.register = async (req, res) => {
         if (err) {
           return res.status(500).send('Error logging in new user.');
         }
-        return res.redirect('/dashboard'); // Redirect to the user's dashboard
+        return res.redirect('/communities'); // Redirect to the user's dashboard
       });
     });
   } catch (error) {
