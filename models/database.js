@@ -1,7 +1,16 @@
-// establish connection to Azure MySQL database
-
 require("dotenv").config();
 const mysql = require("mysql");
+const winston = require('winston'); // logger
+
+// Configure Logger
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  defaultMeta: { service: 'mysql-module' },
+  transports: [
+    new winston.transports.Console() // log errors to console
+  ],
+});
 
 var connection = mysql.createConnection({
   dialect: "mysql",
@@ -14,10 +23,38 @@ var connection = mysql.createConnection({
 
 connection.connect((error) => {
   if (error) {
-    console.error("Error connecting to Azure MySQL database:", error);
-    return;
+    logger.error("Error connecting to Azure MySQL database:", error);
+    process.exit(1);  // Exit the process with failure status
   }
-  console.log("Connected to Azure MySQL database");
+  logger.info("Connected to Azure MySQL database");
 });
+
+connection.on('error', function(err) {
+  logger.error('Database error', err);
+  if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+    handleDisconnectedConnection();
+  } else {
+    throw err;
+  }
+});
+
+function handleDisconnectedConnection() {
+  connection = mysql.createConnection(connection.config);
+  connection.connect(function(err) {
+    if(err) {
+      logger.error('Error when reconnecting to the database:', err);
+      setTimeout(handleDisconnectedConnection, 2000);
+    }
+  });
+
+  connection.on('error', function(err) {
+    logger.error('Database error', err);
+    if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+      handleDisconnectedConnection();
+    } else {
+      throw err;
+    }
+  });
+}
 
 module.exports = connection;
