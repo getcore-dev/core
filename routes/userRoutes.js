@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
 const User = require("../models/user");
+const passport = require('passport');
 
 // /user/##### for these routes
 router.use(express.static("public"));
@@ -31,10 +32,13 @@ router.get("/:username", async (req, res) => {
   }
 });
 
-router.post("/login", userController.login);
-router.post("/register", userController.register);
-router.get("/check-session", userController.checkSession);
+router.post('/register', userController.register);
 
+router.post('/login', passport.authenticate('local', {
+  successRedirect: '/dashboard',
+  failureRedirect: '/login',
+  failureFlash: false // set to true if using connect-flash for flash messages
+}));
 // Route to get a user's profile by username
 
 // TODO!!!!

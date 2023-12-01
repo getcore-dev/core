@@ -1,79 +1,47 @@
-const User = require("../models/user"); // Update the path to the actual location of your User model
-const bcrypt = require("bcrypt");
-const express = require("express");
-const router = express.Router();
+const User = require('../models/User');
+const bcrypt = require('bcrypt');
+const passport = require('passport');
 
-exports.checkSession = (req, res) => {
-  if (req.session && req.session.userId) {
-    // Directly use the username from the session
-    res.send({ username: req.session.username });
-  } else {
-    res.send({ username: null });
-  }
-};
-
-exports.login = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-
-    // Find the user by username using Sequelize
-    const user = await User.findOne({ where: { username } });
+exports.login = (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return next(err); // will generate a 500 error
+    }
     if (!user) {
-      return res.status(401).send("Incorrect username or password");
+      return res.redirect('/login?error=' + info.message); // Redirect with an error message
     }
-
-    // Use bcrypt to compare the provided password with the hashed password stored in the database
-    const isMatch = await bcrypt.compare(password, user.password_hash);
-    if (!isMatch) {
-      return res.status(401).send("Incorrect username or password");
-    }
-
-    // Set the session userId and username with the user's ID and username
-    req.session.userId = user.user_id; // Store the user's ID in the session
-    req.session.username = user.username; // Store the username as well
-    console.log(
-      `user #${req.session.userId} ${req.session.username} has logged in`
-    );
-
-    console.log(`Session ID: ${req.session.id}`); // Redirect to the home page or dashboard as needed
-
-    req.session.save((err) => {
-      if (err) {
-        return res.send("err while saving session information");
+    req.login(user, loginErr => {
+      if (loginErr) {
+        return next(loginErr);
       }
-      console.log(req.session.id);
-      return res.redirect("/");
+      return res.redirect('/dashboard'); // Redirect to the dashboard after successful login
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal server error");
-  }
+  })(req, res, next);
 };
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password, zipcode } = req.body;
+    const { username, email, password, country, zipcode } = req.body;
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create the user using Sequelize
-    const newUser = await User.create({
-      username,
-      email,
-      password_hash: hashedPassword,
-      zip_code: zipcode,
+    const newUser = new User(null, username, email, hashedPassword, country, zipcode);
+    newUser.save(err => {
+      if (err) {
+        // Handle error, like duplicate username
+        return res.status(500).send('Error registering new user.');
+      }
+
+      // Automatically log in the user after registration
+      req.login(newUser, err => {
+        if (err) {
+          return res.status(500).send('Error logging in new user.');
+        }
+        return res.redirect('/dashboard'); // Redirect to the user's dashboard
+      });
     });
-
-    // Set the session userId and username with the new user's ID and username
-    req.session.userId = newUser.user_id; // Store the new user's ID in the session
-    req.session.username = newUser.username; // Store the new username as well
-
-    // Redirect to the home page or dashboard as needed
-    res.redirect("/"); // Redirecting also sends a 200 OK by default
   } catch (error) {
-    if (error.name === "SequelizeUniqueConstraintError") {
-      return res.status(400).send("Username or email already exists");
-    }
     console.error(error);
-    res.status(500).send("Internal server error");
+    res.status(500).send('Server Error');
   }
 };
