@@ -11,24 +11,26 @@ router.get("/:username", async (req, res) => {
   try {
     const { username } = req.params;
 
-    // Find the user by username using Sequelize
+    // Step 1: Find the user by username using Sequelize
     const user = await User.findOne({
       where: { username },
-      attributes: ["username", "email", "zip_code"], // Specify the attributes you want to retrieve
+      attributes: ["username", "email", "zip_code"],
     });
 
+    // Step 2: Check if the user was found
     if (!user) {
       return res.status(404).send("User not found");
     }
 
-    // Send back the user details. Be careful not to send back sensitive information like password hashes
+    // Step 3: Send back the user details. Be careful not to send back sensitive information like password hashes
     res.render("user_profile", {
       user,
-      pagePath: "user", // Pass the current path to the template
+      pagePath: "user",
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal server error");
+    // Step 4: Handle any unexpected errors
+    console.error("Error in /:username route:", error);
+    res.status(500).send("Internal Server Error");
   }
 });
 

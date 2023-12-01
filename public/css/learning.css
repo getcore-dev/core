@@ -1,0 +1,39 @@
+body {
+padding: 100px 0px;
+}
+
+.incomplete {
+    border: 1px solid #000; /* Add a black border */
+    border-radius: 5px;
+    background-color: transparent; /* Make the background transparent */
+    padding: 5px 10px; /* Add padding to the buttons for better spacing */
+    margin: 5px; /* Add margin to separate the buttons */
+    cursor: pointer; /* Change cursor to pointer on hover */
+  }
+  
+  /* Hover effect for incomplete buttons */
+.incomplete:hover {
+    background-color: #000; /* Change background color on hover */
+    color: #fff; /* Change text color on hover */
+  }
+  
+.complete {
+    border: 1px solid #008000; /* Add a black border */
+    border-radius: 5px;
+    color: #FFF;
+    background-color: #008000; /* Make the background transparent */
+    padding: 5px 10px; /* Add padding to the buttons for better spacing */
+    margin: 5px; /* Add margin to separate the buttons */
+    cursor: pointer; /* Change cursor to pointer on hover */
+  }
+  .complete:hover {
+    background-color: transparent; /* Change background color on hover */
+    color: #008000; /* Change text color on hover */
+  
+  }
+  
+  /* Hover effect for complete buttons */
+  .data-structures-container,
+  .algorithms-container {
+    max-width: 23%; /* Set a maximum width of 30% for each container */
+  }
