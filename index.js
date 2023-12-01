@@ -78,6 +78,7 @@ app.use(express.json());
 app.use("/user", require("./routes/userRoutes"));
 app.use("/learning", require("./routes/learningRoutes"));
 app.use("/api", require("./routes/apiRoutes"));
+app.use("/profile/:username", require("./controllers/userController").getUserByUsername)
 
 // Homepage route
 app.get("/", (req, res) => {

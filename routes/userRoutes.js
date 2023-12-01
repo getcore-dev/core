@@ -1,55 +1,25 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
-const User = require("../models/user");
 const passport = require('passport');
 
-// /user/##### for these routes
 router.use(express.static("public"));
 
-router.get("/:username", async (req, res) => {
-  try {
-    const { username } = req.params;
-
-    // Step 1: Find the user by username using Sequelize
-    const user = await User.findOne({
-      where: { username },
-      attributes: ["username", "email", "zip_code"],
-    });
-
-    // Step 2: Check if the user was found
-    if (!user) {
-      return res.status(404).send("User not found");
-    }
-
-    // Step 3: Send back the user details. Be careful not to send back sensitive information like password hashes
-    res.render("user_profile", {
-      user,
-      pagePath: "user",
-    });
-  } catch (error) {
-    // Step 4: Handle any unexpected errors
-    console.error("Error in /:username route:", error);
-    res.status(500).send("Internal Server Error");
-  }
-});
-
 router.post('/register', userController.register);
-
 router.post('/login', passport.authenticate('local', {
   successRedirect: '/dashboard',
   failureRedirect: '/login',
-  failureFlash: false // set to true if using connect-flash for flash messages
+  failureFlash: false
 }));
-// Route to get a user's profile by username
 
-// TODO!!!!
+// TODO: Implement the following routes in your userController
 //router.get("/logout", userController.logout);
-//router.get("/users/:username", userController.getUser);
 //router.get("/users/:username/posts", userController.getUserPosts);
-//router.get("/users/:username/comments", userController.getUserComments);
-//router.get("/users/:username/communities", userController.getUserCommunities);
-//router.get("/users/:username/badges", userController.getUserBadges);
-//router.get("/users/:username/achievements", userController.getUserAchievements);
+// ... other routes ...
+
+// Middleware for handling requests to undefined routes in /user
+router.use((req, res, next) => {
+  res.status(404).send('Sorry, that route does not exist');
+});
 
 module.exports = router;
