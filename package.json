@@ -31,7 +31,8 @@
     "node-fetch": "^3.3.2",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "sequelize": "^6.35.1"
+    "sequelize": "^6.35.1",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "chai": "^4.3.10",
