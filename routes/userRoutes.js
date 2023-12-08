@@ -1,16 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
-const passport = require('passport');
+const passport = require("passport");
 
 router.use(express.static("public"));
-
-router.post('/register', userController.register);
-router.post('/login', passport.authenticate('local', {
-  successRedirect: '/dashboard',
-  failureRedirect: '/login',
-  failureFlash: false
-}));
 
 // TODO: Implement the following routes in your userController
 //router.get("/logout", userController.logout);
@@ -19,7 +12,7 @@ router.post('/login', passport.authenticate('local', {
 
 // Middleware for handling requests to undefined routes in /user
 router.use((req, res, next) => {
-  res.status(404).send('Sorry, that route does not exist');
+  res.status(404).send("Sorry, that route does not exist");
 });
 
 module.exports = router;

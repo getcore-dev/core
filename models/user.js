@@ -1,4 +1,5 @@
 const db = require("./database.js");
+
 class User {
   constructor(id, username, email, password, country, zipcode) {
     this.id = id;

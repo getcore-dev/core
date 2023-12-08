@@ -76,7 +76,7 @@ app.use(express.json());
 // Routes
 app.use("/user", require("./routes/userRoutes"));
 app.use("/learning", require("./routes/learningRoutes"));
-app.use("/api", require("./routes/apiRoutes"));
+app.use("/auth", require("./routes/authRoutes"));
 
 // Homepage route
 app.get("/", (req, res) => {
