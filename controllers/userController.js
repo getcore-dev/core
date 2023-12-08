@@ -1,95 +1,50 @@
-const User = require('../models/User');
-const bcrypt = require('bcrypt');
-const passport = require('passport');
+const User = require("../models/user.js");
+const bcrypt = require("bcrypt");
 
-exports.login = (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
+exports.register = (req, res) => {
+  const { username, email, password, country, zipcode } = req.body;
+  bcrypt.hash(password, 10, (err, hashedPassword) => {
     if (err) {
-      return next(err); // will generate a 500 error
+      return res.status(500).json({ error: err });
     }
-    if (!user) {
-      return res.redirect('/login?error=' + info.message); // Redirect with an error message
-    }
-    req.login(user, loginErr => {
-      if (loginErr) {
-        return next(loginErr);
+    const newUser = new User(
+      null,
+      username,
+      email,
+      hashedPassword,
+      country,
+      zipcode
+    );
+    newUser.save((err, result) => {
+      if (err) {
+        return res.status(500).json({ error: err });
       }
-      return res.redirect('/dashboard'); // Redirect to the dashboard after successful login
+      res.status(201).json({ message: "User registered successfully" });
     });
-  })(req, res, next);
+  });
 };
 
-exports.register = async (req, res) => {
-  try {
-    // Extract user details from request body
-    const { username, email, password } = req.body;
-
-    // Input validation (basic example, consider using a library like Joi for more robust validation)
-    if (!username || !email || !password) {
-      return res.status(400).send('All fields are required');
+exports.login = (req, res) => {
+  const { username, password } = req.body;
+  User.findByUsername(username, (err, user) => {
+    if (err) {
+      return res.status(500).json({ error: err });
     }
-
-    // Check if user already exists
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
-      return res.status(409).send('User already exists with this email');
-    }
-
-    // Create the user (consider hashing the password before saving)
-    const newUser = await User.create({ username, email, password });
-
-    // successful registration
-    res.status(201).send('User successfully registered');
-  } catch (error) {
-    console.error('Registration Error:', error);
-
-    // Specific error handling
-    if (error.name === 'SequelizeValidationError') {
-      // Handle Sequelize validation errors (e.g., not null constraints, data types)
-      return res.status(400).send('Validation error: ' + error.message);
-    } else if (error.name === 'SequelizeUniqueConstraintError') {
-      // Handle unique constraint errors (e.g., duplicate username or email)
-      return res.status(409).send('Duplicate entry: ' + error.message);
-    } else if (error.name === 'SequelizeDatabaseError') {
-      // Handle general database errors (e.g., incorrect table names, syntax errors)
-      return res.status(500).send('Database error: ' + error.message);
-    }
-
-    // For other types of errors, return a generic server error
-    res.status(500).send('Internal Server Error: ' + error.message);
-  }
-};
-
-exports.getUserByUsername = async (req, res) => {
-  try {
-    const { username } = req.params;
-
-    if (!username) {
-      return res.status(400).send("Username is required");
-    }
-
-    const user = await User.findOne({
-      where: { username },
-      attributes: ["username", "email", "zip_code"],
-    });
-
     if (!user) {
-      return res.status(404).send("User not found");
+      return res.status(401).json({ message: "Invalid username or password" });
     }
-
-    res.render("user_profile", {
-      user,
-      pagePath: "user",
+    bcrypt.compare(password, user.password, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: err });
+      }
+      if (result) {
+        // Passwords match, authenticate user
+        // You might want to generate a JWT here
+        res.status(200).json({ message: "Authentication successful" });
+      } else {
+        // Passwords don't match
+        res.status(401).json({ message: "Invalid username or password" });
+      }
     });
-  } catch (error) {
-    console.error("Error in getUserByUsername:", error);
-
-    if (error.name === 'SequelizeValidationError') {
-      return res.status(400).send('Validation error: ' + error.message);
-    } else if (error.name === 'SequelizeDatabaseError') {
-      return res.status(500).send('Database error: ' + error.message);
-    }
-
-    res.status(500).send("Internal Server Error");
-  }
+  });
 };
