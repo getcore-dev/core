@@ -1,38 +1,50 @@
-const db = require('./database.js')
-class User {
-    constructor(id, username, email, password, country, zipcode) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.password = password; // Note: this should be hashed
-        this.country = country;
-        this.zipcode = zipcode;
-    }
+const User = require("../models/user.js");
+const bcrypt = require("bcrypt");
 
-    static findByUsername(username, callback) {
-        const query = 'SELECT * FROM users WHERE username = ?';
-        db.query(query, [username], (err, results) => {
-            if (err) {
-                return callback(err, null);
-            }
-            if (results.length > 0) {
-                const user = new User(results[0].id, results[0].username, results[0].email, results[0].password, results[0].country, results[0].zipcode);
-                callback(null, user);
-            } else {
-                callback(null, null);
-            }
-        });
+exports.register = (req, res) => {
+  const { username, email, password, country, zipcode } = req.body;
+  bcrypt.hash(password, 10, (err, hashedPassword) => {
+    if (err) {
+      return res.status(500).json({ error: err });
     }
+    const newUser = new User(
+      null,
+      username,
+      email,
+      hashedPassword,
+      country,
+      zipcode
+    );
+    newUser.save((err, result) => {
+      if (err) {
+        return res.status(500).json({ error: err });
+      }
+      res.status(201).json({ message: "User registered successfully" });
+    });
+  });
+};
 
-    save(callback) {
-        const query = 'INSERT INTO users (username, email, password, country, zipcode) VALUES (?, ?, ?, ?, ?)';
-        db.query(query, [this.username, this.email, this.password, this.country, this.zipcode], (err, result) => {
-            if (err) {
-                return callback(err);
-            }
-            callback(null, result);
-        });
+exports.login = (req, res) => {
+  const { username, password } = req.body;
+  User.findByUsername(username, (err, user) => {
+    if (err) {
+      return res.status(500).json({ error: err });
     }
-}
-
-module.exports = User;
+    if (!user) {
+      return res.status(401).json({ message: "Invalid username or password" });
+    }
+    bcrypt.compare(password, user.password, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: err });
+      }
+      if (result) {
+        // Passwords match, authenticate user
+        // You might want to generate a JWT here
+        res.status(200).json({ message: "Authentication successful" });
+      } else {
+        // Passwords don't match
+        res.status(401).json({ message: "Invalid username or password" });
+      }
+    });
+  });
+};
