@@ -17,42 +17,42 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Session configuration
 app.use(
-    session({
-      secret: process.env.SESSION_SECRET || "default_secret_key",
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 1000 * 60 * 60 * 24,
-        httpOnly: true,
-        sameSite: "lax",
-      },
-    })
+  session({
+    secret: process.env.SESSION_SECRET || "default_secret_key",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24,
+      httpOnly: true,
+      sameSite: "lax",
+    },
+  })
 );
 
 // Passport setup
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(new LocalStrategy(
-    async (username, password, done) => {
-      try {
-        const user = await User.findByUsername(username);
-        if (!user) {
-          return done(null, false, { message: 'Incorrect username.' });
-        }
-
-        const match = await bcrypt.compare(password, user.password);
-        if (!match) {
-          return done(null, false, { message: 'Incorrect password.' });
-        }
-
-        return done(null, user);
-      } catch (err) {
-        return done(err);
+passport.use(
+  new LocalStrategy(async (username, password, done) => {
+    try {
+      const user = await User.findByUsername(username);
+      if (!user) {
+        return done(null, false, { message: "Incorrect username." });
       }
+
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
+        return done(null, false, { message: "Incorrect password." });
+      }
+
+      return done(null, user);
+    } catch (err) {
+      return done(err);
     }
-));
+  })
+);
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -78,12 +78,22 @@ app.use(express.json());
 app.use("/user", require("./routes/userRoutes"));
 app.use("/learning", require("./routes/learningRoutes"));
 app.use("/api", require("./routes/apiRoutes"));
-app.use("/profile/:username", require("./controllers/userController").getUserByUsername)
+app.use(
+  "/profile/:username",
+  require("./controllers/userController").getUserByUsername
+);
 
 // Homepage route
 app.get("/", (req, res) => {
   res.render("communities", {
     pagePath: "communities",
+    username: req.session.passport?.user,
+  });
+});
+
+app.get("/post", (req, res) => {
+  res.render("post", {
+    pagePath: "communities/post/1 ",
     username: req.session.passport?.user,
   });
 });

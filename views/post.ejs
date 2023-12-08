@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CORE</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+    <link rel="stylesheet" href="css/navbar.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      body {
+        font-family: "Roboto", sans-serif;
+        background-color: #f4f4f4;
+      }
+
+      .main-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+      }
+
+      .post,
+      .comment {
+        padding: 20px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #eaeaea;
+      }
+
+      .post-title {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .user-info {
+        font-size: 14px;
+        color: #888;
+        margin-bottom: 20px;
+      }
+
+      .post-content,
+      .comment-content {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #666;
+      }
+
+      .comments-section {
+        margin-top: 40px;
+      }
+
+      .comments-section h3 {
+        font-size: 20px;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      .comment {
+        margin-left: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('partials/navbar', { pagePath: 'home' }) %>
+
+    <div class="main-container">
+      <!-- Top Post -->
+      <div class="post">
+        <h2 class="post-title">Post Title</h2>
+        <p class="user-info">Posted by: Username</p>
+        <div class="post-content">
+          Post content goes here. This is the main forum post where the user
+          shares their content, question, or discussion topic.
+        </div>
+      </div>
+
+      <!-- Comments Section -->
+      <div class="comments-section">
+        <h3>Comments</h3>
+        <!-- Comment 1 -->
+        <div class="comment">
+          <p class="user-info">Comment by: User1</p>
+          <div class="comment-content">
+            This is a user comment on the main post.
+          </div>
+        </div>
+
+        <!-- Comment 2 -->
+        <div class="comment">
+          <p class="user-info">Comment by: User2</p>
+          <div class="comment-content">
+            Another comment by a different user.
+          </div>
+        </div>
+
+        <!-- Additional comments go here -->
+      </div>
+    </div>
+  </body>
+</html>

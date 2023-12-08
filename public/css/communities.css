@@ -9,10 +9,19 @@ button {
 .post {
   border: 1px solid #ddd; /* Post border */
   margin: 10px 0; /* Vertical margin for post */
-  padding: 0px 5px; /* Post padding */
-  border-radius: 0px; /* Rounded corners for post */
+  padding: 20px; /* Increased padding for better spacing */
+  border-radius: 10px; /* Increased border radius for softer corners */
   display: flex; /* Use flexbox for layout */
+  flex-direction: column; /* Stack content vertically */
+  justify-content: space-between; /* Distribute space evenly between items */
   position: relative; /* Positioning context for child elements */
+  flex: 1; /* Ensure all posts take up the same amount of space */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); /* Add a subtle shadow for depth */
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1); /* Smooth transition for hover effect */
+}
+
+.post:hover {
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); /* Increase shadow on hover for a "lift" effect */
 }
 
 /* Thumbnail Styles */
@@ -44,6 +53,24 @@ button {
 
 .post-content .header {
   font-size: 14px; /* Font size */
+}
+
+.com-btn {
+  font-size: 12px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background: linear-gradient(to right, #ff9966, #ff5e62);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.com-btn:hover {
+  background-position: right;
+  color: white;
+  text-decoration: none;
 }
 
 /* Styles for Post Elements */
@@ -87,4 +114,19 @@ button {
 #verified-icon {
   font-size: 15px; /* Verified icon size */
   color: green; /* Verified icon color */
+}
+
+#com-btn-container {
+  padding-top: 20px;
+}
+
+#com-btn-container::-webkit-scrollbar, #job-btn-container::-webkit-scrollbar {
+  display: none; /* Hide scrollbar in WebKit browsers */
+}
+
+/* Button Styles */
+.com-btn, .job-btn {
+  flex: 0 0 auto;
+  margin: 10px; /* Margin around buttons */
+  cursor: pointer; /* Pointer cursor on hover */
 }

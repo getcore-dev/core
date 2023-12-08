@@ -20,16 +20,18 @@ h1, h2, h3, p {
 
 /* Navbar Styles */
 .navbar {
-  background-color: #eee; /* Navbar background color */
+  background-color: #f9f9f9; /* Modern background color */
   color: #000; /* Navbar text color */
   display: flex; /* Display navbar items inline */
-  justify-content: space-between; /* Space out items */
-  align-items: center; /* Align items vertically */
+  flex-direction: column;
+  align-items: start; /* Align items vertically */
   padding: 15px; /* Navbar padding */
   position: fixed;
   width: 100%;
+  height: 70px;
   top: 0;
   z-index: 1000;
+  border-bottom: 1px solid #ccc;
 }
 
 /* Navbar Links Style */
@@ -39,6 +41,10 @@ h1, h2, h3, p {
   padding: 0 20px; /* Padding around the navbar links */
   display: flex; /* Display links inline */
   gap: 4px; /* Gap between links */
+  display: flex;
+  margin-top: 40px;
+  flex-direction: row;
+  width: 100%;
 }
 
 .nav-links li {
@@ -62,9 +68,9 @@ h1, h2, h3, p {
   justify-content: center; /* Center button content */
   gap: 4px; /* Gap between icon and text */
   line-height: 1.5; /* Button text line height */
-  background-color: #eee; /* Button background color */
+  background-color: #f9f9f9; /* Modern background color */
   color: #000; /* Button text color */
-  padding: 4px 7px; /* Button padding */
+  padding: 12px 7px; /* Button padding */
   font-size: 14px; /* Button font size */
   border: none; /* No border */
   text-decoration: none; /* Remove underline */
@@ -94,25 +100,7 @@ h1, h2, h3, p {
   padding: 20px; /* Content padding */
 }
 
-/* Second Navbar Styles */
-.second-navbar {
-  background-color: #eee; /* Second navbar background color */
-  color: #fff; /* Second navbar text color */
-  padding:2px 0; /* Second navbar padding */
-  border-bottom: #ccc 1px solid; /* Bottom border */
-  position: fixed;
-  width: 100%;
-  top: 50px;
-  z-index: 1000;
-}
 
-.second-nav-links {
-  list-style: none; /* Remove list bullets */
-  margin: 0; /* Remove margin */
-  padding: 0; /* Remove padding */
-  display: flex; /* Display links inline */
-  align-items: center; /* Align items vertically */
-}
 
 /* Button Containers */
 #com-btn-container, #job-btn-container {
@@ -121,17 +109,6 @@ h1, h2, h3, p {
   display: flex; /* Display contents inline */
   overflow-x: auto; /* Horizontal scroll */
   scrollbar-width: none; /* Hide scrollbar */
-}
-
-#com-btn-container::-webkit-scrollbar, #job-btn-container::-webkit-scrollbar {
-  display: none; /* Hide scrollbar in WebKit browsers */
-}
-
-/* Button Styles */
-.com-btn, .job-btn {
-  flex: 0 0 auto;
-  margin: 10px; /* Margin around buttons */
-  cursor: pointer; /* Pointer cursor on hover */
 }
 
 /* Common Button Style */
@@ -253,4 +230,28 @@ button {
   justify-content: center;
   align-items: center;
   margin-right: 1px;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+}
+
+.search-bar input[type="search"] {
+  width: 200px;
+  height: 25px;
+  border: none;
+  border-radius: 5px;
+  padding: 0 30px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar input[type="search"]:focus,
+.search-bar input[type="search"]:hover {
+  width: 250px;
+  outline: none;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
 }

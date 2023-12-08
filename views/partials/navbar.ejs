@@ -3,7 +3,7 @@
     <span class="material-symbols-outlined" id="menu-icon"> menu </span>
     <div class="menu-content" id="menu-content">
       <!-- Add your menu actions here -->
-      <a href="/communities">Communities</a>
+      <a href="/">Communities</a>
       <a href="/jobs">Openings</a>
       <a href="/learning">Learning</a>
       <a href="/practice">Practice</a>
@@ -23,7 +23,7 @@
     </div>
   </div>
   <div class="logo">
-    <a href="communities"> <img src="/img/core.png" alt="CORE" /> </a>
+    <a href="/communities"> <img src="/img/core.png" alt="CORE" /> </a>
     <div class="nav-text-container">
       <a class="nav-text" href="/">
         <% if (username) { %>
@@ -37,74 +37,48 @@
   </div>
 
   <ul class="nav-links">
-    <li>
-      <!-- Search bar input (initially hidden) -->
-      <div class="search-bar">
-        <input type="search" placeholder="Search" name="search" required />
-      </div>
-    </li>
-    <li>
-      <a class="navbar-button">
-        <div class="search-icon">
-          <span class="material-symbols-outlined" id="nb-icon"> search </span>
-        </div>
-      </a>
-    </li>
-    <li>
-      <a href="login" class="navbar-button">
-        <span class="material-symbols-outlined" id="nb-icon"> login </span>
-      </a>
-    </li>
-    <li>
-      <a href="register" class="navbar-button">
-        <span class="material-symbols-outlined" id="nb-icon"> person_add </span>
-      </a>
-    </li>
-    <!-- Add more navigation links for the first part as needed -->
-  </ul>
-</nav>
+    <!-- First part navigation links -->
+    <!-- ... (existing content) ... -->
 
-<nav class="second-navbar">
-  <ul class="second-nav-links">
+    <!-- Second part navigation links (from the second navbar) -->
     <li>
-      <a href="communities" class="navbar-button">
-        <span class="material-symbols-outlined" id="nb-icon"> forum </span>
-        Community
-      </a>
-    </li>
-    <li>
-      <a href="jobs" class="navbar-button">
-        <span class="material-symbols-outlined" id="nb-icon"> work </span>
-        Openings
-      </a>
-    </li>
-    <li>
-      <a href="learning" class="navbar-button">
-        <span class="material-symbols-outlined" id="nb-icon"> school </span>
-        Learning
-      </a>
-    </li>
-    <li>
-      <a href="practice" class="navbar-button">
-        <span class="material-symbols-outlined" id="nb-icon">
-          data_object
-        </span>
-        Practice
-      </a>
-    </li>
-    <li>
-      <a href="support" class="navbar-button">
-        <span class="material-symbols-outlined" id="nb-icon"> help </span>
-        Support</a
+      <a href="communities" class="navbar-button"
+        ><span class="material-symbols-outlined" id="nb-icon"> forum </span
+        >Community</a
       >
     </li>
     <li>
-      <a href="about" class="navbar-button">
-        <span class="material-symbols-outlined" id="nb-icon"> info </span>
-        About</a
+      <a href="jobs" class="navbar-button"
+        ><span class="material-symbols-outlined" id="nb-icon"> work </span
+        >Openings</a
       >
     </li>
-    <!-- Add more navigation links for the second part as needed -->
+    <li>
+      <a href="learning" class="navbar-button"
+        ><span class="material-symbols-outlined" id="nb-icon"> school </span
+        >Learning</a
+      >
+    </li>
+    <li>
+      <a href="practice" class="navbar-button"
+        ><span class="material-symbols-outlined" id="nb-icon">
+          data_object </span
+        >Practice</a
+      >
+    </li>
+    <li>
+      <a href="support" class="navbar-button"
+        ><span class="material-symbols-outlined" id="nb-icon"> help </span
+        >Support</a
+      >
+    </li>
+    <li>
+      <a href="about" class="navbar-button"
+        ><span class="material-symbols-outlined" id="nb-icon"> info </span
+        >About</a
+      >
+    </li>
+    <!-- ... Add more navigation links as needed ... -->
   </ul>
 </nav>
 

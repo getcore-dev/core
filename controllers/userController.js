@@ -56,7 +56,7 @@ exports.register = async (req, res) => {
     }
 
     // For other types of errors, return a generic server error
-    res.status(500).send('Internal Server Error');
+    res.status(500).send('Internal Server Error: ' + error.message);
   }
 };
 
