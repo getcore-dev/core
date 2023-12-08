@@ -7,69 +7,65 @@ const dbConfig = {
   user: process.env.AZURE_DB_USER,
   password: process.env.AZURE_DB_PASS,
   database: process.env.AZURE_DB_DB,
-  port: 3306,
+  port: 1433,
+  options: {
+    encrypt: true,
+    trustServerCertificate: false, // change to true for local dev / self-signed certs
+  },
 };
 
-const conn = new mysql.createConnection(dbConfig);
+const conn = mysql.createConnection(dbConfig);
 
 if (process.env.NODE_ENV === "production") {
-  conn.connect(function (err) {
+  conn.connect((err) => {
     if (err) {
-      console.log("!!! Cannot connect !! Error:");
-      throw err;
-    } else {
-      console.log("Connection established.");
-      queryDatabase();
+      console.error("!!! Cannot connect !! Error:", err);
+      return;
     }
+    console.log("Connection established.");
+    initializeDatabase();
   });
 } else {
   console.log("Skipping database connection in non-production environment.");
 }
 
-function queryDatabase() {
-  conn.query("DROP TABLES IF EXISTS users;", function (err, results, fields) {
+function initializeDatabase() {
+  conn.query("DROP TABLE IF EXISTS users;", (err) => {
     if (err) throw err;
     console.log("Dropped users table if existed.");
   });
-  conn.query(
-    "CREATE TABLE users (\n" +
-      "    user_id INT AUTO_INCREMENT PRIMARY KEY,\n" +
-      "    username VARCHAR(50) NOT NULL UNIQUE,\n" +
-      "    email VARCHAR(100) NOT NULL UNIQUE,\n" +
-      "    password_hash VARCHAR(255) NOT NULL,\n" +
-      "    zip_code VARCHAR(20)\n" +
-      ");",
-    function (err, results, fields) {
-      if (err) throw err;
-      console.log("Created users table.");
-    }
-  );
-  conn.query(
-    "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?);",
-    ["test", "test@gmail.com", "abcde3"],
-    function (err, results, fields) {
-      if (err) throw err;
-      else console.log("Inserted " + results.affectedRows + " rows(s).");
-    }
-  );
-  conn.query(
-    "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?);",
-    ["test2", "test2@gmail.com", "abcde3"],
-    function (err, results, fields) {
-      if (err) throw err;
-      else console.log("Inserted " + results.affectedRows + " rows(s).");
-    }
-  );
-  conn.query(
-    "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?);",
-    ["test3", "test3@gmail.com", "abcde3"],
-    function (err, results, fields) {
-      if (err) throw err;
-      else console.log("Inserted " + results.affectedRows + " rows(s).");
-    }
-  );
-  conn.end(function (err) {
+
+  const createTableQuery = `
+    CREATE TABLE users (
+      user_id INT AUTO_INCREMENT PRIMARY KEY,
+      username VARCHAR(50) NOT NULL UNIQUE,
+      email VARCHAR(100) NOT NULL UNIQUE,
+      password_hash VARCHAR(255) NOT NULL,
+      zip_code VARCHAR(20)
+    );
+  `;
+  conn.query(createTableQuery, (err) => {
     if (err) throw err;
-    else console.log("Done.");
+    console.log("Created users table.");
+    insertSampleUsers();
+  });
+}
+
+function insertSampleUsers() {
+  const users = [
+    ["test", "test@gmail.com", "hashed_password1"],
+    ["test2", "test2@gmail.com", "hashed_password2"],
+    ["test3", "test3@gmail.com", "hashed_password3"],
+  ];
+
+  const insertQuery =
+    "INSERT INTO users (username, email, password_hash) VALUES ?;";
+  conn.query(insertQuery, [users], (err, results) => {
+    if (err) throw err;
+    console.log(`Inserted ${results.affectedRows} row(s).`);
+    conn.end((err) => {
+      if (err) throw err;
+      console.log("Done.");
+    });
   });
 }
