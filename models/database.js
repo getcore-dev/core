@@ -1,6 +1,5 @@
 require("dotenv").config();
 const mysql = require("mysql");
-const fs = require("fs");
 
 const dbConfig = {
   host: process.env.AZURE_DB_HOST,
