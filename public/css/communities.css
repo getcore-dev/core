@@ -7,21 +7,22 @@ button {
 
 /* Post Container Styles */
 .post {
-  border: 1px solid #ddd; /* Post border */
-  margin: 10px 0; /* Vertical margin for post */
+  border: 2px solid #ddd; /* Post border */
+  margin-top: 10px;
+  margin-bottom: 25px; /* Vertical margin for post */
   padding: 20px; /* Increased padding for better spacing */
-  border-radius: 10px; /* Increased border radius for softer corners */
+  border-radius: 5px; /* Increased border radius for softer corners */
   display: flex; /* Use flexbox for layout */
   flex-direction: column; /* Stack content vertically */
   justify-content: space-between; /* Distribute space evenly between items */
   position: relative; /* Positioning context for child elements */
   flex: 1; /* Ensure all posts take up the same amount of space */
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); /* Add a subtle shadow for depth */
   transition: all 0.3s cubic-bezier(.25,.8,.25,1); /* Smooth transition for hover effect */
 }
 
 .post:hover {
-  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22); /* Increase shadow on hover for a "lift" effect */
+  border: 2px solid #aaa; /* Post border */
+  box-shadow: 0 14px 50px rgba(0,0,0,0.12), 0 10px 10px rgba(0,0,0,0.01); /* Increase shadow on hover for a "lift" effect */
 }
 
 /* Thumbnail Styles */
@@ -33,6 +34,8 @@ button {
 }
 
 .thumbnail-image {
+  border-radius: 5px; /* Increased border radius for softer corners */
+
   width: 100px; /* Width */
   height: 100%; /* Full height */
   aspect-ratio: 1/1; /* Maintain aspect ratio */
@@ -52,7 +55,13 @@ button {
 }
 
 .post-content .header {
-  font-size: 14px; /* Font size */
+  background: linear-gradient(to right, #ff9966, #ff5e62);
+  color: white; /* Text color */
+  padding: 3px 6px; /* Padding around the text */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 12px; /* Smaller font size for the flair */
+  font-weight: bold; /* Bold text */
+  transform: translateY(+50%); /* Move the flair up by 50% of its height */
 }
 
 .com-btn {
@@ -72,9 +81,15 @@ button {
   color: white;
   text-decoration: none;
 }
+.title {
+  font-size: 22px; /* Font size */
+  font-weight: bold; /* Bold font */
+  margin: 0; /* No margin */
+}
+
 
 /* Styles for Post Elements */
-.title, .user-info, .post-date, .description, .reactions {
+.user-info, .post-date, .description, .reactions {
   font-size: 14px; /* Font size for consistency */
   color: #333; /* Default text color */
 }

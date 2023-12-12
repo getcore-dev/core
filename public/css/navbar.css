@@ -38,7 +38,7 @@ h1, h2, h3, p {
 .nav-links {
   list-style: none; /* Remove list bullets */
   margin: 0;
-  padding: 0 20px; /* Padding around the navbar links */
+  padding: 0 80px; /* Padding around the navbar links */
   display: flex; /* Display links inline */
   gap: 4px; /* Gap between links */
   display: flex;
@@ -70,7 +70,10 @@ h1, h2, h3, p {
   line-height: 1.5; /* Button text line height */
   background-color: #f9f9f9; /* Modern background color */
   color: #000; /* Button text color */
-  padding: 12px 7px; /* Button padding */
+  padding: 5px 7px; /* Button padding */
+  margin-top: 11px; /* Top margin */
+  margin-left: 12px;
+  margin-right: 12px;
   font-size: 14px; /* Button font size */
   border: none; /* No border */
   text-decoration: none; /* Remove underline */
@@ -86,12 +89,12 @@ h1, h2, h3, p {
 /* Logo Style */
 .logo {
   position: absolute; /* Position relative to the navbar */
-  left: 10px; /* Adjust as needed to align with navbar's left edge */
-  top: 10px; /* Adjust as needed to align with navbar's top */
+  left: -10px; /* Adjust as needed to align with navbar's left edge */
+  top: 5px; /* Adjust as needed to align with navbar's top */
 }
 
 .logo img {
-  max-height: 40px; /* Maximum height of the logo */
+  max-height: 85px; /* Maximum height of the logo */
   padding: 0 5px; /* Padding around the logo */
 }
 
@@ -130,7 +133,15 @@ button {
 
 .nav-text-container {
   font-weight: bold; /* Bold text */
-  padding-top: 0; /* Top padding */
+  position: absolute; /* Top padding */
+  left: 120px;
+  top: 18px;
+  font-size: 24px;
+}
+
+#posts-container {
+  padding: 30px;
+  padding-top: 0px;
 }
 
 /* Icon Style */
