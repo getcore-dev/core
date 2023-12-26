@@ -10,40 +10,13 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-    />
-    <!-- Include Font Awesome CSS -->
-    <style>
-      /* Style for the input fields with icons inside */
-
-      .input-container input[type="text"],
-      .input-container input[type="email"],
-      .input-container input[type="password"] {
-        padding-left: 30px; /* Adjust the padding to make space for the icon */
-        width: 100%; /* Set the width of the input field */
-        border: 1px solid #ccc; /* Add border styles as needed */
-      }
-
-      .input-container .fas {
-        position: absolute;
-        top: 50%;
-        left: 20px; /* Adjust the left position as needed */
-        transform: translateY(-50%);
-        font-size: 0.8rem; /* Adjust the font size as needed */
-        color: #777; /* Adjust the color of the icon */
-      }
-    </style>
   </head>
   <body>
     <%- include('partials/navbar', { pagePath: 'home' }) %>
-    <form action="/auth/register" method="post" id="registration">
+    <form action="/register" method="POST" id="registration">
       <h1>CORE</h1>
 
       <div class="input-container">
-        <span class="material-symbols-outlined"> mail </span>
-        <!-- Font Awesome envelope icon -->
         <input
           type="email"
           id="email"
@@ -54,11 +27,9 @@
       </div>
 
       <div class="input-container">
-        <span class="material-symbols-outlined"> person </span>
-        <!-- Font Awesome user icon -->
         <input
           type="text"
-          id="usernameInput"
+          id="username"
           name="username"
           placeholder="Username"
           required
@@ -67,8 +38,6 @@
       </div>
 
       <div class="input-container">
-        <span class="material-symbols-outlined"> key </span>
-        <!-- Font Awesome lock icon -->
         <input
           type="password"
           id="password"
@@ -78,43 +47,18 @@
         />
       </div>
 
-      <!-- Add a hidden input field for the CSRF token -->
-      <input type="hidden" name="_csrf" value="<%= 123 %>" />
-
       <div class="input-container">
-        <span class="material-symbols-outlined"> public </span>
-        <!-- Font Awesome globe icon -->
-        <select
-          id="country"
-          name="country"
-          required
-          onchange="checkCountry(this);"
-        >
-          <option value="">Select Country</option>
-          <!-- You need to fill this with all countries -->
-          <option value="US">United States</option>
-          <!-- Add other countries here -->
-        </select>
-      </div>
-
-      <div class="input-container">
-        <i class="fas fa-map-marker-alt" id="zipcode-icon" style="display: none"
-          ><span class="material-symbols-outlined"> public </span></i
-        >
-        <!-- Font Awesome map-marker-alt icon -->
         <input
           type="text"
           id="zipcode"
           name="zipcode"
           placeholder="Zip Code"
           required
-          oninput="autoFillLocation(this.value)"
-          style="display: none"
+          style="display: block"
         />
       </div>
-
       <button type="submit">Register</button>
+      <a href="/login" id="login-text">Login</a>
     </form>
-    <script src="js/register.js"></script>
   </body>
 </html>

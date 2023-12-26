@@ -10,22 +10,20 @@
   </head>
   <body>
     <%- include('partials/navbar', { pagePath: 'home' }) %>
-    <form action="/auth/login" method="post" id="login">
+    <form action="/login" method="POST" id="login">
       <h1>CORE</h1>
+      <% if (messages.error) {%> <%= messages.error %> <% } %>
       <div class="input-container">
-        <span class="material-symbols-outlined"> person </span>
         <input
           type="text"
           placeholder="Username"
           name="username"
           required
           maxlength="50"
-          id="usernameInput"
         />
       </div>
 
       <div class="input-container">
-        <span class="material-symbols-outlined"> key </span>
         <input
           type="password"
           placeholder="Password"
@@ -33,10 +31,10 @@
           required
           id="password"
         />
-      <!-- Add a hidden input field for the CSRF token -->
-      <input type="hidden" name="_csrf" value="<%= 123 %>" />
 
       <button type="submit">Login</button>
+      <a href="/register" id="register-text" class="register-text">Join</a>
+
     </form>
   </body>
   <script src="js/login.js"></script>

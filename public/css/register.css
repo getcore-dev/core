@@ -3,23 +3,23 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f4f4f4; /* A light grey background for a modern look */
-    font-family: 'Arial', sans-serif; /* A clean, modern font */
+    background-color: #f4f4f4;
+    font-family: 'Arial', sans-serif; 
   }
   
   #registration {
     padding: 40px;
     border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* A subtle shadow for depth */
-    background: #ffffff; /* White background for the form */
-    width: 340px; /* Set a fixed width for the form */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    background: #ffffff; 
+    width: 300px; 
     box-sizing: border-box;
   }
   
   #registration h1 {
     text-align: center;
     margin-bottom: 24px;
-    color: #333; /* A dark grey color for the title for better readability */
+    color: #333;  
   }
   
   .input-container {
@@ -27,70 +27,7 @@ body {
     margin-bottom: 15px;
   }
 
-.input-container .material-symbols-outlined {
-    position: absolute;
-    top: 38%;
-    left: 10px; /* Adjust the left position as needed */
-    transform: translateY(-50%);
-    font-size: 20px; /* Adjust the font size as needed */
-    color: #777; /* Adjust the color of the icon */
-  }
-  
 
-  .input-container input[type="email"],
-  .input-container input[type="text"],
-  .input-container input[type="password"],
-  .input-container select {
-    width: calc(100% - 20px); /* 20px accounts for padding */
-    padding: 12px 20px 12px 40px; /* Add padding to make space for the icon */
-    margin-bottom: 16px;
-    border: none;
-    border-radius: 20px; /* Rounded borders for inputs */
-    box-sizing: border-box;
-    transition: box-shadow 0.3s;
-  }
-  
-  .input-container input:focus,
-  .input-container select:focus {
-    outline: none;
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2); /* Glow effect on focus */
-  }
-  
-  .input-container .fas {
-    position: absolute;
-    top: 50%;
-    left: 10px; /* Adjust the left position as needed */
-    transform: translateY(-50%);
-    font-size: 0.9rem; /* Adjust the font size as needed */
-    color: #555; /* Adjust the color of the icon */
-  }
-  
-  #registration button {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 20px; /* Rounded borders for the button */
-    background-color: #007bff; /* A bright blue background for the button */
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-  }
-  
-  #registration button:hover {
-    background-color: #0056b3; /* A darker blue on hover for the button */
-  }
-  
   #registration select {
     cursor: pointer;
   }
-  
-  /* Additional styles for dynamic elements like zip code */
-  #zipcode,
-  #zipcode-icon {
-    display: none; /* Hidden by default, shown via JavaScript if needed */
-  }
-  
-  /* Add any other styles you might need */
-  

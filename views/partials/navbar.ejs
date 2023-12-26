@@ -16,22 +16,23 @@
     </div>
   </div>
   <div class="logo">
-    <a href="/communities"> <img src="/img/core.png" alt="CORE" /> </a>
+    <a href="/"> <img src="/img/core.png" alt="CORE" /> </a>
     <div class="nav-text-container">
-      <a class="nav-text" href="/">
-        <% if (username) { %>
-        <a class="nav-text" href="/profile"><%= username %></a>
-        <% } else { %>
-        <a class="nav-text" href="/login">user</a><% } %></a
-      >@<a class="nav-text" href="/">CORE</a>/<span id="current-path"
-        ><%= pagePath %></span
-      >
+      <% if (user) { %>
+      <a class="nav-text" href="/profile"><%= user.username %></a>@<a
+        class="nav-text"
+        href="/"
+        >CORE</a
+      >/<%= pagePath %> <% } else { %>
+      <a class="nav-text" href="/login">user</a>@<a class="nav-text" href="/"
+        >CORE</a
+      >/<%= pagePath %> <% } %>
     </div>
   </div>
 
   <ul class="nav-links">
     <li>
-      <a href="communities" class="navbar-button">
+      <a href="/" class="navbar-button">
         <span class="material-symbols-outlined" id="nb-icon"> forum </span>
         Community
       </a>
@@ -49,10 +50,30 @@
       >
     </li>
     <li>
+      <% if (user) { %> <% } else { %>
       <a href="login" class="navbar-button"
         ><span class="material-symbols-outlined" id="nb-icon"> login </span
         >Login</a
       >
+      <% } %>
+    </li>
+    <li>
+      <% if (user) { %>
+      <form
+        id="logoutForm"
+        action="/logout?_method=DELETE"
+        method="POST"
+        style="display: none"
+      ></form>
+      <a
+        href="#"
+        class="navbar-button"
+        onclick="document.getElementById('logoutForm').submit();"
+      >
+        <span class="material-symbols-outlined" id="nb-icon"> logout </span
+        >Logout
+      </a>
+      <% } else { %> <% } %>
     </li>
   </ul>
 </nav>
