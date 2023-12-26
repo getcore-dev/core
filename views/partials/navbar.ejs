@@ -2,24 +2,17 @@
   <div class="hamburger-menu">
     <span class="material-symbols-outlined" id="menu-icon"> menu </span>
     <div class="menu-content" id="menu-content">
-      <!-- Add your menu actions here -->
       <a href="/">Communities</a>
       <a href="/jobs">Openings</a>
       <a href="/learning">Learning</a>
       <a href="/practice">Practice</a>
       <a href="/support">Support</a>
       <a href="/about">About</a>
-      <!-- More actions -->
       <a href="/profile">Profile</a>
-      <!-- Added Profile link -->
       <a href="/settings">Settings</a>
-      <!-- Added Settings link -->
       <a href="/inbox">Inbox</a>
-      <!-- Added Inbox link -->
       <a href="/notifications">Notifications</a>
-      <!-- Added Notifications link -->
       <a href="/logout">Logout</a>
-      <!-- Added Logout link -->
     </div>
   </div>
   <div class="logo">
@@ -37,15 +30,11 @@
   </div>
 
   <ul class="nav-links">
-    <!-- First part navigation links -->
-    <!-- ... (existing content) ... -->
-
-    <!-- Second part navigation links (from the second navbar) -->
     <li>
-      <a href="communities" class="navbar-button"
-        ><span class="material-symbols-outlined" id="nb-icon"> forum </span
-        >Community</a
-      >
+      <a href="communities" class="navbar-button">
+        <span class="material-symbols-outlined" id="nb-icon"> forum </span>
+        Community
+      </a>
     </li>
     <li>
       <a href="jobs" class="navbar-button"
@@ -60,25 +49,11 @@
       >
     </li>
     <li>
-      <a href="practice" class="navbar-button"
-        ><span class="material-symbols-outlined" id="nb-icon">
-          data_object </span
-        >Practice</a
+      <a href="login" class="navbar-button"
+        ><span class="material-symbols-outlined" id="nb-icon"> login </span
+        >Login</a
       >
     </li>
-    <li>
-      <a href="support" class="navbar-button"
-        ><span class="material-symbols-outlined" id="nb-icon"> help </span
-        >Support</a
-      >
-    </li>
-    <li>
-      <a href="about" class="navbar-button"
-        ><span class="material-symbols-outlined" id="nb-icon"> info </span
-        >About</a
-      >
-    </li>
-    <!-- ... Add more navigation links as needed ... -->
   </ul>
 </nav>
 
@@ -96,7 +71,6 @@
     const searchIcon = document.querySelector(".search-icon");
     const searchBar = document.querySelector(".search-bar");
 
-    // Toggle the "active" class on search bar when search icon is clicked
     searchIcon.addEventListener("click", function () {
       searchBar.classList.toggle("active");
     });

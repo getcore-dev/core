@@ -22,7 +22,7 @@
         IT/Technology
       </button>
       <button class="job-btn" data-community="data-science">
-        <span class="material-symbols-outlined"> monitoring </span> Data Science
+        <span class="material-symbols-outlined"> monitoring </span> DS/ML
       </button>
       <button class="job-btn" data-community="web-dev">
         <span class="material-symbols-outlined"> web </span> Web Development
@@ -53,189 +53,329 @@
       <!-- more buttons as needed -->
     </div>
     <div class="jobs-container">
-      <div class="job-card">
-        <div class="job-header">
-          <div class="job-title-location">
-            <div class="company-name">Apple</div>
-            <div class="job-title">Security Analyst</div>
-            <div class="job-location">Boston, MA or Remote</div>
+      <% const jobPostings = [
+        {
+          companyName: "Apple",
+          jobTitle: "Security Analyst",
+          jobLocation: "Boston, MA or Remote",
+          jobOverview: "Protect our digital assets and ensure compliance with the latest security standards.",
+          jobType: "Full-Time",
+          jobSalary: "Up to $115k/year",
+          jobBenefits: "Health & Dental, Company Subscriptions, Paid Time Off",
+          companyLogo: "./src/applelogo.png"
+        },
+        {
+          companyName: "Amazon",
+          jobTitle: "Data Scientist",
+          jobLocation: "Seattle, WA",
+          jobOverview: "Utilize large datasets to uncover insights and inform business strategy decisions.",
+          jobType: "Full-Time",
+          jobSalary: "Up to $150k/year",
+          jobBenefits: "401k, Flexible Hours, Relocation Assistance",
+          
+          companyLogo: "./src/amazonlogo.png"
+          },
+          
+          {
+          companyName: "Microsoft",
+          jobTitle: "Software Engineer",
+          jobLocation: "Redmond, WA or Remote",
+          jobOverview: "Design, build and manage cloud-based products using cutting edge technology.",
+          
+          jobType: "Full-Time",
+          jobSalary: "Up to $130k/year",
+          jobBenefits: "Unlimited PTO, Equity Compensation, 401k Matching",
+          companyLogo: "./src/microsoftlogo.png"
+          },
+          
+          {
+          companyName: "Google",
+          jobTitle: "Product Manager",
+          
+          jobLocation: "Mountain View, CA",
+          jobOverview: "Lead cross-functional teams to deliver innovative Google products.",
+          jobType: "Full-Time",
+          jobSalary: "Up to $160k/year",
+          jobBenefits: "Flexible Work Arrangements, Learning Stipends, Free Meals",
+          companyLogo: "./src/googlelogo.png"
+          },
+          
+          {
+          companyName: "Facebook",
+          jobTitle: "UI/UX Designer",
+          jobLocation: "Menlo Park, CA or Remote",
+          
+          jobOverview: "Create intuitive, engaging user experiences across our family of apps.",
+          jobType: "Full-Time",
+          jobSalary: "Up to $135k/year",
+          jobBenefits: "Onsite Healthcare, Generous Leave, Development Programs",
+          companyLogo: "./src/facebooklogo.png"
+          },
+          
+          {
+          companyName: "Uber",
+          jobTitle: "Data Analyst",
+          jobLocation: "San Francisco, CA",
+          jobOverview: "Use SQL and Python to unlock insights to help enhance operations.",
+          
+          jobType: "Full-Time",
+          jobSalary: "Up to $110k/year",
+          jobBenefits: "Flexible Schedule, Commuter Benefits, Catered Lunches",
+          companyLogo: "./src/uberlogo.png"
+          },
+          
+          {
+          companyName: "Airbnb",
+          
+          jobTitle: "Front End Engineer",
+          jobLocation: "San Francisco, CA or Remote",
+          jobOverview: "Develop robust web apps that connect people around the world.",
+          
+          jobType: "Full-Time",
+          jobSalary: "Up to $140k/year",
+          jobBenefits: "Equity Awards, Annual Travel Stipends, 401k Plan",
+          companyLogo: "./src/airbnblogo.png",
+          },
+          
+          {
+          companyName: "Netflix",
+          jobTitle: "Cloud Architect",
+          
+          jobLocation: "Los Angeles, CA",
+          jobOverview: "Design and optimize cloud infrastructure powering our streaming platform.",
+          jobType: "Full-Time",
+          jobSalary: "Up to $175k/year",
+          jobBenefits: "Unlimited Vacation Days, Stock Options, Full Medical Coverage",
+          
+          companyLogo: "./src/netflixlogo.png"
+          },
+          
+          {
+          companyName: "Tesla",
+          jobTitle: "Electrical Engineer",
+          jobLocation: "Fremont, CA",
+          jobOverview: "Help build batteries and powertrain components for eco-friendly vehicles.",
+          jobType: "Full-Time",
+          
+          jobSalary: "Up to $125k/year",
+          jobBenefits: "Equity Awards, Clean Energy Credits, On-Site Fitness & Health",
+          companyLogo: "./src/teslalogo.png"
+          },
+          
+          {
+          companyName: "IBM",
+          jobTitle: "Cloud Developer",
+          jobLocation: "Raleigh, NC or Remote",
+          
+          jobOverview: "Write and manage code for industry-leading cloud computing products.",
+          
+          jobType: "Full-Time",
+          jobSalary: "Up to $115k/year",
+          jobBenefits: "Flexible Work Options, Professional Development Funds, Wellness Programs",
+          
+          companyLogo: "./src/ibmlogo.png"
+          },
+          
+          {
+          companyName: "Intel",
+          
+          jobTitle: "Computer Architect",
+          jobLocation: "Santa Clara, CA",
+          jobOverview: "Design innovative chip architectures to power leading tech products.",
+          jobType: "Full-Time",
+          jobSalary: "Up to $150k/year",
+          
+          jobBenefits: "Equity Compensation, Onsite Services, Health Premiums",
+          companyLogo: "./src/intellogo.png"
+          },
+          
+          {
+          
+          companyName: "Oracle",
+          jobTitle: "Database Administrator",
+          
+          jobLocation: "Austin, TX or Remote",
+          jobOverview: "Install, maintain, and optimize enterprise database management systems.",
+          
+          jobType: "Full-Time",
+          jobSalary: "Up to $120k/year",
+          jobBenefits: "Flexible Working, 401k Matching, Professional Development",
+          
+          companyLogo: "./src/oraclelogo.png"
+          },
+          
+          {
+          companyName: "SAP",
+          jobTitle: "Sales Executive",
+          jobLocation: "Newtown Square, PA",
+          
+          jobOverview: "Strategize and close high value software and service deals globally.",
+          
+          jobType: "Full-Time",
+          jobSalary: "Up to $130k/year + Commission",
+          
+          jobBenefits: "Stock Awards, Car Allowance, Expense Account",
+          companyLogo: "./src/saplogo.png"
+          
+          },
+          
+          {
+          companyName: "Samsung",
+          
+          jobTitle: "Embedded Software Engineer",
+          jobLocation: "San Jose, CA",
+          jobOverview: "Develop firmware and operating systems for smart consumer devices.",
+          
+          jobType: "Full-Time",
+          jobSalary: "Up to $135k/year",
+          jobBenefits: "Equity Compensation, 401k Matching, Wellness Reimbursement",
+          companyLogo: "./src/samsunglogo.png"
+          },
+          
+          {
+          
+          companyName: "Qualcomm",
+          
+          jobTitle: "Computer Vision Engineer",
+          jobLocation: "San Diego, CA",
+          jobOverview: "Create software that can process, analyze, and understand digital images.",
+          
+          jobType: "Full-Time",
+          jobSalary: "Up to $140k/year",
+          
+          jobBenefits: "Paid Time Off, Tuition Reimbursement, Healthcare Plan",
+          companyLogo: "./src/qualcommlogo.png"
+          },
+          
+          {
+          companyName: "Cisco",
+          
+          jobTitle: "Network Engineer",
+          
+          jobLocation: "San Jose, CA or Remote",
+          jobOverview: "Architect, implement and support networking solutions for global enterprise.",
+          jobType: "Full-Time",
+          
+          jobSalary: "Up to $115k/year",
+          jobBenefits: "Profit Sharing, Certification Training, 401k Match",
+          companyLogo: "./src/ciscologo.png"
+          
+          },
+          
+          {
+          companyName: "PayPal",
+          
+          jobTitle: "Fraud Analyst",
+          jobLocation: "San Jose, CA or Remote",
+          
+          jobOverview: "Detect fraudulent activity and minimize risk exposure for PayPal.",
+          jobType: "Full-Time",
+          jobSalary: "Up to $105k/year",
+          jobBenefits: "Unlimited PTO, Stock Options, Adoption/Surrogacy Benefits",
+          companyLogo: "./src/paypallogo.png"
+          },
+          
+          {
+          
+          companyName: "eBay",
+          
+          jobTitle: "Backend Engineer",
+          jobLocation: "San Jose, CA or Remote",
+          jobOverview: "Scale our platform and ensure smooth transactions for millions daily.",
+          
+          jobType: "Full-Time",
+          jobSalary: "Up to $125k/year",
+          jobBenefits: "Flexible Working, Generous Leave, Equity Compensation",
+          
+          companyLogo: "./src/ebaylogo.png"
+          
+          },
+          
+          {
+          companyName: "HP",
+          
+          jobTitle: "Technical Support Specialist",
+          
+          jobLocation: "Boise, ID or Remote",
+          
+          jobOverview: "Provide excellent technical support to troubleshoot issues.",
+          jobType: "Full-Time",
+          jobSalary: "Up to $68k/year",
+          jobBenefits: "Retirement Savings, Employee Discounts, Healthcare",
+          
+          companyLogo: "./src/hplogo.png"
+          },
+          
+          {
+          companyName: "Dell",
+          jobTitle: "QA Test Automation Engineer",
+          jobLocation: "Austin, TX or Remote",
+          
+          jobOverview: "Automate test cases for flagship hardware and software products.",
+          
+          jobType: "Full-Time",
+          jobSalary: "Up to $105k/year",
+          jobBenefits: "Unlimited PTO, Equity Awards, Onsite Fitness Center",
+          
+          companyLogo: "./src/delllogo.png"
+          },
+          
+          {
+          companyName: "Adobe",
+          
+          jobTitle: "Software Development Engineer",
+          
+          jobLocation: "San Jose, CA",
+          jobOverview: "Build the next generation of Adobe's industry leading creative tools.",
+          
+          jobType: "Full-Time",
+          jobSalary: "Up to $135k/year",
+          
+          jobBenefits: "Learning Allowances, Equity Awards, 3 Weeks Minimum PTO",
+          companyLogo: "./src/adobelogo.png"
+          
+          },
+          
+          {
+          
+          companyName: "Didi",
+          
+          jobTitle: "Data Scientist",
+          jobLocation: "Beijing, China or Remote",
+          
+          jobOverview: "Extract insights from massive mobility datasets to help us serve.",
+          jobType: "Full-Time",
+          
+          jobSalary: "Up to $120k/year",
+          jobBenefits: "Annual Travel Allowance, Onsite Healthcare Clinic",
+          
+          companyLogo: "./src/didilogo.png"
+          },
+      ]; %>
+  
+      <% jobPostings.forEach(job => { %>
+        <div class="job-card">
+          <div class="job-header">
+            <div class="job-title-location">
+              <div class="company-name"><%= job.companyName %></div>
+              <div class="job-title"><%= job.jobTitle %></div>
+              <div class="job-location"><%= job.jobLocation %></div>
+            </div>
+            <div class="company-logo-container">
+              <img src="<%= job.companyLogo %>" alt="Company Logo" class="company-logo" />
+            </div>
           </div>
-          <div class="company-logo-container">
-            <img
-              src="./src/applelogo.png"
-              alt="Company Logo"
-              class="company-logo"
-            />
+          <div class="job-body">
+            <div class="job-overview"><%= job.jobOverview %></div>
+            <div class="job-type"><%= job.jobType %></div>
+            <div class="job-salary"><%= job.jobSalary %></div>
+            <div class="job-benefits"><%= job.jobBenefits %></div>
           </div>
-        </div>
-        <div class="job-body">
-          <div class="job-overview">
-            Protect our digital assets and ensure compliance with the latest
-            security standards.
-          </div>
-          <div class="job-type">Full-Time</div>
-          <div class="job-salary">Up to $115k/year</div>
-          <div class="job-benefits">
-            Health & Dental, Company Subscriptions, Paid Time Off
-          </div>
-        </div>
-        <div class="job-footer">
-          <a href="/openings/1">
+          <div class="job-footer">
             <button class="btn-apply">View Details</button>
-          </a>
-        </div>
-      </div>
-      <div class="job-card">
-        <div class="job-header">
-          <div class="job-title-location">
-            <div class="company-name">Tesla</div>
-            <div class="job-title">Project Manager</div>
-            <div class="job-location">Seattle, WA or Remote</div>
-          </div>
-          <div class="company-logo-container">
-            <img
-              src="./src/teslalogo.png"
-              alt="Company Logo"
-              class="company-logo"
-            />
           </div>
         </div>
-        <div class="job-body">
-          <div class="job-overview">
-            Drive projects to completion with a focus on timelines and
-            deliverables.
-          </div>
-          <div class="job-type">Full-Time</div>
-          <div class="job-salary">Up to $100k/year</div>
-          <div class="job-benefits">
-            Health & Dental, Electric Car Discounts, Paid Time Off
-          </div>
-        </div>
-        <div class="job-footer">
-          <a href="/openings/1">
-            <button class="btn-apply">View Details</button>
-          </a>
-        </div>
-      </div>
-      <div class="job-card">
-        <div class="job-header">
-          <div class="job-title-location">
-            <div class="company-name">Meta</div>
-            <div class="job-title">UX/UI Designer</div>
-            <div class="job-location">Austin, TX or Remote</div>
-          </div>
-          <div class="company-logo-container">
-            <img
-              src="./src/facebooklogo.png"
-              alt="Company Logo"
-              class="company-logo"
-            />
-          </div>
-        </div>
-        <div class="job-body">
-          <div class="job-overview">
-            Create intuitive and beautiful user experiences for our digital
-            platforms.
-          </div>
-          <div class="job-type">Contract</div>
-          <div class="job-salary">Up to $90k/year</div>
-          <div class="job-benefits">
-            Flexible Hours, Remote Work, Paid Time Off
-          </div>
-        </div>
-        <div class="job-footer">
-          <a href="/openings/1">
-            <button class="btn-apply">View Details</button>
-          </a>
-        </div>
-      </div>
-      <div class="job-card">
-        <div class="job-header">
-          <div class="job-title-location">
-            <div class="company-name">Amazon</div>
-            <div class="job-title">Data Scientist</div>
-            <div class="job-location">Chicago, IL or Remote</div>
-          </div>
-          <div class="company-logo-container">
-            <img
-              src="./src/amazonlogo.png"
-              alt="Company Logo"
-              class="company-logo"
-            />
-          </div>
-        </div>
-        <div class="job-body">
-          <div class="job-overview">
-            Harness the power of big data to drive innovation and results.
-          </div>
-          <div class="job-type">Full-Time</div>
-          <div class="job-salary">Up to $130k/year</div>
-          <div class="job-benefits">
-            Health & Dental, Gym Membership, Paid Time Off
-          </div>
-        </div>
-        <div class="job-footer">
-          <button class="btn-apply">View Details</button>
-        </div>
-      </div>
-      <div class="job-card">
-        <div class="job-header">
-          <div class="job-title-location">
-            <div class="company-name">Google</div>
-            <div class="job-title">Marketing Manager</div>
-            <div class="job-location">New York, NY or Remote</div>
-          </div>
-          <div class="company-logo-container">
-            <img
-              src="./src/googlelogo.png"
-              alt="Company Logo"
-              class="company-logo"
-            />
-          </div>
-        </div>
-        <div class="job-body">
-          <div class="job-overview">
-            Lead our marketing efforts to shape our brand's global presence.
-          </div>
-          <div class="job-type">Full-Time</div>
-          <div class="job-salary">Up to $110k/year</div>
-          <div class="job-benefits">
-            Health & Dental, Stock Options, Paid Time Off
-          </div>
-        </div>
-        <div class="job-footer">
-          <button class="btn-apply">View Details</button>
-        </div>
-      </div>
-
-      <div class="job-card">
-        <div class="job-header">
-          <div class="job-title-location">
-            <div class="company-name">Microsoft</div>
-            <div class="job-title">Senior Web Developer</div>
-            <div class="job-location">San Francisco, CA or Remote</div>
-          </div>
-          <div class="company-logo-container">
-            <img
-              src="./src/microsoftlogo.png"
-              alt="Company Logo"
-              class="company-logo"
-            />
-          </div>
-        </div>
-        <div class="job-body">
-          <div class="job-overview">
-            Join our innovative development team to create cutting-edge web
-            applications.
-          </div>
-          <div class="job-type">Full-Time</div>
-          <div class="job-salary">Up to $120k/year</div>
-          <div class="job-benefits">Health & Dental, 401k, Paid Time Off</div>
-        </div>
-        <div class="job-footer">
-          <button class="btn-apply">View Details</button>
-        </div>
-      </div>
+      <% }); %>
     </div>
     <script src="js/jobs.js"></script>
   </body>

@@ -61,10 +61,6 @@
             )
           );
 
-          button.addEventListener("click", () => {
-            window.location.href = "/post";
-          });
-
           container.appendChild(button);
         });
       }
@@ -169,6 +165,68 @@
           downvotes: 1,
           favorites: 24,
         },
+        {
+          title: "[Guide] Responsive Web Design Principles",
+
+          author: "responsivePro",
+
+          date: "2023-12-05",
+
+          description:
+            "Learn the key principles of responsive web design to create sites that adapt beautifully across devices. Understand breakpoints, media queries, and fluid layouts.",
+
+          thumbnail_image_url: "/thumbnail_image_url.jpg",
+
+          community: "web-dev",
+
+          upvotes: 103,
+
+          downvotes: 3,
+
+          favorites: 29,
+        },
+
+        {
+          title: "[Showcase] Image Classification Model",
+
+          author: "mlExpert123",
+
+          date: "2023-12-06",
+
+          description:
+            "I've trained an image classification model to recognize 10 different categories with 93% accuracy. Check out the demo and model architecture.",
+
+          thumbnail_image_url: "/thumbnail_image_url.jpg",
+
+          community: "ml-ai",
+
+          upvotes: 79,
+
+          downvotes: 2,
+
+          favorites: 22,
+        },
+
+        {
+          title: "[Feedback] New Portfolio Website",
+
+          author: "webDev321",
+
+          date: "2023-12-07",
+
+          description:
+            "I just launched my new developer portfolio site. Let me know what you think about the design and content!",
+
+          thumbnail_image_url: "/thumbnail_image_url.jpg",
+
+          community: "web-dev",
+
+          upvotes: 64,
+
+          downvotes: 5,
+
+          favorites: 17,
+        },
       ];
 
       const postsContainer = document.getElementById("posts-container");
@@ -194,9 +252,9 @@
           />
         </div>
         <div class="post-content">
-          <div class="title"><span class="header">${header}</span> ${titleWithoutHeader}</div>
+          <div class="title"><strong>${post.author}</strong> / ${titleWithoutHeader}</div>
           <div class="user-info">
-            <strong>${post.author}</strong> ${post.date}
+            ${post.date}
             <span class="material-symbols-outlined"> thumb_up </span>
             <span>${post.upvotes}</span>
             <span class="material-symbols-outlined"> thumb_down </span>
@@ -210,6 +268,9 @@
       `;
 
         postElement.innerHTML = postContentHTML;
+        postElement.addEventListener("click", () => {
+          window.location.href = "/post";
+        });
         postsContainer.appendChild(postElement);
       });
     </script>

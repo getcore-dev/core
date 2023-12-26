@@ -9,16 +9,13 @@ h1 {
     text-align: center;
 }
 
-/* Create a grid layout */
 .jobs-container {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-gap: 20px;
-    padding: 20px;
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 10px;
+    padding-top: 5px;
 }
 
-/* Style each job container */
-/* Card Styling */
 .job-card {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     background: white;
@@ -27,7 +24,7 @@ h1 {
     margin: 0 auto;
     border-radius: 5px;
     transition: transform 0.2s ease-in-out;
-    overflow: hidden; /* Ensures that children elements do not overflow the rounded corners */
+    overflow: hidden; 
   }
   
   .job-card:hover {
@@ -39,12 +36,12 @@ h1 {
   .job-header {
     background-color: #000;
     color: #fff;
-    padding: 15px;
+    padding: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top-left-radius: 8px; /* Match the job-card border-radius */
-    border-top-right-radius: 8px; /* Match the job-card border-radius */
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px; 
   }
   
   .job-title-location {
@@ -52,15 +49,14 @@ h1 {
   }
   
   .company-logo-container {
-    padding: 4px;
     border-radius: 50%;
     display: flex;
     align-items: center;
   }
   
   .company-logo {
-    width: 40px; /* Adjust size as needed */
-    height: auto; /* Maintain aspect ratio */
+    width: 40px; 
+    height: auto; 
   }
   
   .job-title {
@@ -73,21 +69,18 @@ h1 {
   }
 
   .job-body {
-    padding: 20px; /* Increase padding as needed */
+    font-size: 14px;
+    padding-left: 10px;
+    padding-right: 10px;
     line-height: 1.4;
     border-bottom: 1px solid #eee;
-    /* Rest of your styles */
   }
 
   .job-footer {
-    padding: 15px; /* Increase padding as needed */
+    padding-bottom: 10px; 
     text-align: center;
-    /* Rest of your styles */
   }
   
-  /* ... Other styles remain the same ... */
-  
-  /* Add responsive design if needed */
   @media (max-width: 768px) {
     .job-header {
       flex-direction: column;
@@ -101,9 +94,7 @@ h1 {
   }
   
 #job-btn-container {
-  /* scroll bar and stuff*/
-  padding-top: 120px;
-  padding-left: 8px;
+  padding-top: 102px;
   display: flex;
   overflow-x: auto;
   scrollbar-width: none;
@@ -114,22 +105,31 @@ h1 {
 
 
 #com-btn-container::-webkit-scrollbar, #job-btn-container::-webkit-scrollbar {
-  display: none; /* Hide scrollbar in WebKit browsers */
+  display: none; 
 }
 
 .material-symbols-outlined {
-  font-size: 16px; /* Icon size */
-  vertical-align: -3px; /* Vertical alignment */
+  font-size: 16px; 
+  vertical-align: -3px; 
 }
 
 .job-btn {
   font-size: 12px;
-  margin: 10px 10px;
-  border-radius: 5px;
+  margin: 7px 10px;
   border: none;
-  background: linear-gradient(to right, #A9B388, #5F6F52);    
+  border-radius: 5px;
+  background: linear-gradient(to right, #6e8b3d, #8fbc8f); 
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
+  text-decoration: none;
+  padding: 10px 20px; /* Button padding */
+  margin-top: 10px; /* Top margin */
+  cursor: pointer; /* Pointer cursor */
+}
+
+.job-btn {
+  background-position: right;
+  color: white;
   text-decoration: none;
 }

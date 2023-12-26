@@ -11,7 +11,6 @@ body {
   }
 }
 
-
 /* Common Style for Headers and Paragraphs */
 h1, h2, h3, p {
   margin: 0; /* Remove default margin */
@@ -73,7 +72,6 @@ h1, h2, h3, p {
   padding: 5px 7px; /* Button padding */
   margin-top: 11px; /* Top margin */
   margin-left: 12px;
-  margin-right: 12px;
   font-size: 14px; /* Button font size */
   border: none; /* No border */
   text-decoration: none; /* Remove underline */
@@ -104,22 +102,6 @@ h1, h2, h3, p {
 }
 
 
-
-/* Button Containers */
-#com-btn-container, #job-btn-container {
-  padding-top: 0px;
-  padding-left: 9px; /* Left padding */
-  display: flex; /* Display contents inline */
-  overflow-x: auto; /* Horizontal scroll */
-  scrollbar-width: none; /* Hide scrollbar */
-}
-
-/* Common Button Style */
-button {
-  padding: 10px 20px; /* Button padding */
-  margin-top: 10px; /* Top margin */
-  cursor: pointer; /* Pointer cursor */
-}
 
 /* Nav Text Styles */
 .nav-text, .nav-text:hover {
@@ -164,33 +146,36 @@ button {
 @media (max-width: 768px) {
 
   .navbar {
-    padding: 14px; /* Navbar padding */
+    padding: 0px;
 
   }
   #menu-icon {
     display: block;
   }
-  .mobile-navbar, .search-icon {
-      display: block; /* Show on mobile devices */
-  }
 
-  .second-nav-links, .search-bar input[type="search"] {
-      display: none; /* Hide on mobile devices */
-  }
-
-  .search-bar.active input[type="search"] {
-      display: block; /* Show active search bar on mobile */
-  }
   .logo {
-    /* Slight adjustment for mobile view to accommodate the hamburger menu */
-    left: 35px; /* Increase left value to move the logo right */
+    left: 30px;
+  }
+  .nav-text-container {
+    position: absolute;
+    left: 86px;
   }
 
   .hamburger-menu {
     /* Positioning for the hamburger menu */
     position: absolute;
-    right: 10px; /* Align with the navbar's left edge */
-    bottom: 0px; /* Align with the navbar's top */
+    left: 6px; /* Align with the navbar's left edge */
+    top: 26px; /* Align with the navbar's top */
+  }
+  .nav-links {
+    display: none;
+  }
+
+  .logo img {
+    position: absolute;
+    top: 8px;
+    max-height: 45px; /* Maximum height of the logo */
+    padding: 0 5px; /* Padding around the logo */
   }
 }
 
@@ -227,6 +212,7 @@ button {
   align-items: center;
   margin-right: 5px;
 }
+
 .logo img {
   display: flex;
   justify-content: center;
@@ -236,7 +222,8 @@ button {
 
 
 #nb-icon {
-  font-size: 14px;
+  font-size: 16px;
+  padding-right: 3px;
   display: flex;
   justify-content: center;
   align-items: center;

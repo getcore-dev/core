@@ -1,18 +1,7 @@
-/* General Button Style */
-button {
-  padding: 7px 15px;
-  margin-top: 0;
-  cursor: pointer;
-}
-
 /* Post Container Styles */
 .post {
-  border: 2px solid #ddd; /* Post border */
   margin-top: 10px;
-  margin-bottom: 25px; /* Vertical margin for post */
-  padding: 20px; /* Increased padding for better spacing */
-  border-radius: 5px; /* Increased border radius for softer corners */
-  display: flex; /* Use flexbox for layout */
+   display: flex; /* Use flexbox for layout */
   flex-direction: column; /* Stack content vertically */
   justify-content: space-between; /* Distribute space evenly between items */
   position: relative; /* Positioning context for child elements */
@@ -21,31 +10,32 @@ button {
 }
 
 .post:hover {
+  border-radius: 5px;
   border: 2px solid #aaa; /* Post border */
-  box-shadow: 0 14px 50px rgba(0,0,0,0.12), 0 10px 10px rgba(0,0,0,0.01); /* Increase shadow on hover for a "lift" effect */
 }
 
 /* Thumbnail Styles */
 .thumbnail {
   position: absolute; /* Absolute positioning inside post */
-  top: 0; /* Top alignment */
-  bottom: 0; /* Bottom alignment */
-  left: 0; /* Left alignment */
+  bottom: 4px; /* Bottom alignment */
+  left: 10px; /* Left alignment */
 }
 
 .thumbnail-image {
   border-radius: 5px; /* Increased border radius for softer corners */
-
-  width: 100px; /* Width */
-  height: 100%; /* Full height */
+  width: 50px; /* Width */
+  height: 50px; /* Full height */
   aspect-ratio: 1/1; /* Maintain aspect ratio */
   object-fit: cover; /* Cover the space without stretching */
 }
 
+
 /* Post Content Styles */
 .post-content {
+  position: relative;
+  left: 30px;
   flex-grow: 1; /* Take up remaining space */
-  margin-left: 100px; /* Space for thumbnail */
+  margin-left: 40px;
   padding: 0; /* No padding */
 }
 
@@ -55,25 +45,32 @@ button {
 }
 
 .post-content .header {
-  background: linear-gradient(to right, #ff9966, #ff5e62);
+  position: relative; /* Relative to its normal position */
+  top: -3px; /* Move up by 20px */
+  background: linear-gradient(to right, #1f0f90, #19f9);
   color: white; /* Text color */
   padding: 3px 6px; /* Padding around the text */
   border-radius: 5px; /* Rounded corners */
   font-size: 12px; /* Smaller font size for the flair */
   font-weight: bold; /* Bold text */
-  transform: translateY(+50%); /* Move the flair up by 50% of its height */
 }
 
 .com-btn {
   font-size: 12px;
-  padding: 10px 20px;
+  padding: 7px 10px;
   border: none;
   border-radius: 5px;
-  background: linear-gradient(to right, #ff9966, #ff5e62);
+  background: linear-gradient(to right, #6e8b3d, #8fbc8f); 
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;
+  flex: 0 0 auto;
+  margin-right: 10px; /* Margin around buttons */
+  cursor: pointer; /* Pointer cursor on hover */
+  padding: 10px 20px; /* Button padding */
+  margin-top: 10px; /* Top margin */
+  cursor: pointer; /* Pointer cursor */
 }
 
 .com-btn:hover {
@@ -81,9 +78,9 @@ button {
   color: white;
   text-decoration: none;
 }
+
 .title {
-  font-size: 22px; /* Font size */
-  font-weight: bold; /* Bold font */
+  font-size: 17px; /* Font size */
   margin: 0; /* No margin */
 }
 
@@ -132,16 +129,14 @@ button {
 }
 
 #com-btn-container {
-  padding-top: 20px;
+  padding-top: 10px;
+  padding-left: 9px; /* Left padding */
+  display: flex; /* Display contents inline */
+  overflow-x: auto; /* Horizontal scroll */
+  scrollbar-width: none; /* Hide scrollbar */
+
 }
 
 #com-btn-container::-webkit-scrollbar, #job-btn-container::-webkit-scrollbar {
   display: none; /* Hide scrollbar in WebKit browsers */
-}
-
-/* Button Styles */
-.com-btn, .job-btn {
-  flex: 0 0 auto;
-  margin: 10px; /* Margin around buttons */
-  cursor: pointer; /* Pointer cursor on hover */
 }
