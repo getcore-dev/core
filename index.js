@@ -9,6 +9,7 @@ const flash = require("express-flash");
 const session = require("express-session");
 const methodOverride = require("method-override");
 const sql = require("mssql");
+const port = process.env.PORT || 8080;
 
 // Database configuration
 const dbConfig = {
@@ -162,4 +163,6 @@ app.use((error, req, res, next) => {
   res.render("404.ejs", { user: req.user });
 });
 
-app.listen(8080);
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
