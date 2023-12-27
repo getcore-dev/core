@@ -28,9 +28,12 @@ const dbConfig = {
   },
 };
 
+sql
+  .connect(dbConfig)
+  .catch((err) => console.error("Error connecting to the database:", err));
+
 const findByUsername = async (username) => {
   try {
-    await sql.connect(dbConfig);
     const result =
       await sql.query`SELECT * FROM users WHERE username = ${username}`;
     return result.recordset[0];
@@ -41,7 +44,6 @@ const findByUsername = async (username) => {
 
 const findById = async (id) => {
   try {
-    await sql.connect(dbConfig);
     const result = await sql.query`SELECT * FROM users WHERE id = ${id}`;
     return result.recordset[0];
   } catch (err) {
@@ -58,9 +60,15 @@ app.use(flash());
 app.use(express.static("public"));
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || "default_secret_key",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24,
+      httpOnly: true,
+      sameSite: "lax",
+    },
   })
 );
 app.use(passport.initialize());
