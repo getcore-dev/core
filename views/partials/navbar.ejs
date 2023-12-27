@@ -19,11 +19,8 @@
     <a href="/"> <img src="/img/core.png" alt="CORE" /> </a>
     <div class="nav-text-container">
       <% if (user) { %>
-      <a class="nav-text" href="/profile"><%= user.username %></a>@<a
-        class="nav-text"
-        href="/"
-        >CORE</a
-      >/<%= pagePath %> <% } else { %>
+      <a class="nav-text" href="/profile/<%= user.username %>"><%= user.username %></a></a
+      >@<a class="nav-text" href="/">CORE</a>/<%= pagePath %> <% } else { %>
       <a class="nav-text" href="/login">user</a>@<a class="nav-text" href="/"
         >CORE</a
       >/<%= pagePath %> <% } %>
@@ -38,13 +35,13 @@
       </a>
     </li>
     <li>
-      <a href="jobs" class="navbar-button"
+      <a href="/jobs" class="navbar-button"
         ><span class="material-symbols-outlined" id="nb-icon"> work </span
         >Openings</a
       >
     </li>
     <li>
-      <a href="learning" class="navbar-button"
+      <a href="/learning" class="navbar-button"
         ><span class="material-symbols-outlined" id="nb-icon"> school </span
         >Learning</a
       >

@@ -2,11 +2,11 @@
   "name": "core",
   "version": "1.0.0",
   "description": "> community-based platform for sharing projects and gaining opportunities",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "dev-start": "nodemon server.js",
+    "dev-start": "nodemon index.js",
     "test": "echo \"No tests yet\"",
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",

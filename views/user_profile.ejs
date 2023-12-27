@@ -7,17 +7,83 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     />
-    <link rel="stylesheet" href="./css/navbar.css" />
-    <link rel="stylesheet" href="./css/communities.css" />
+    <link rel="stylesheet" href="/css/navbar.css" />
+    <link rel="stylesheet" href="/css/user_profile.css" />
   </head>
   <body>
     <%- include('partials/navbar', { pagePath: 'communities' }) %>
-    <div id="profile">
-      <h1>User Profile</h1>
+
+    <div id="profile" class="grid-container">
       <div class="profile-info">
-        <p><strong>Username:</strong> <%= user.username %></p>
-        <p><strong>Email:</strong> <%= user.email %></p>
-        <p><strong>Zip Code:</strong> <%= user.zipcode %></p>
+        <p><%= user.username %></p>
+        <p><%= user.email %></p>
+      </div>
+
+      <div class="learning-progress">
+        <h2>Learning Progress</h2>
+        <p>
+          <strong>Data Structures:</strong> <%=
+          user.learningProgress.dataStructures %> %
+        </p>
+        <p>
+          <strong>Algorithms:</strong> <%= user.learningProgress.algorithms %> %
+        </p>
+        <!-- Add other learning sections here -->
+      </div>
+
+      <div class="achievements">
+        <h2>Achievements</h2>
+        <% if (user.achievements.length) { %> <%
+        user.achievements.forEach(function(achievement) { %>
+        <p><%= achievement %></p>
+        <% }); %> <% } else { %>
+        <p>No achievements yet.</p>
+        <% } %>
+      </div>
+
+      <div class="badges">
+        <h2>Badges</h2>
+        <% if (user.badges.length) { %> <% user.badges.forEach(function(badge) {
+        %>
+        <p><%= badge %></p>
+        <% }); %> <% } else { %>
+        <p>No badges earned yet.</p>
+        <% } %>
+      </div>
+
+      <div class="posts">
+        <h2>Posts</h2>
+        <% if (user.posts.length) { %> <% user.posts.forEach(function(post) { %>
+        <div class="post">
+          <p><%= post.title %></p>
+          <p><%= post.content %></p>
+        </div>
+        <% }); %> <% } else { %>
+        <p>No posts yet.</p>
+        <% } %>
+      </div>
+
+      <div class="comments">
+        <h2>Comments</h2>
+        <% if (user.comments.length) { %> <%
+        user.comments.forEach(function(comment) { %>
+        <div class="comment">
+          <p><%= comment %></p>
+        </div>
+        <% }); %> <% } else { %>
+        <p>No comments yet.</p>
+        <% } %>
+      </div>
+
+      <div class="current-job">
+        <h2>Current Job</h2>
+        <% if (user.currentJob && user.currentJob.company) { %>
+        <p><strong>Company:</strong> <%= user.currentJob.company %></p>
+        <p><strong>Position:</strong> <%= user.currentJob.position %></p>
+        <p><strong>Seniority:</strong> <%= user.currentJob.seniority %></p>
+        <% } else { %>
+        <p>No current job information.</p>
+        <% } %>
       </div>
     </div>
   </body>

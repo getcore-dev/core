@@ -1,26 +1,54 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* align to the center */
+  height: 90vh;
+  margin: 0;
+  background-color: #f0f0f0;
+  overflow-x: hidden; /* prevent horizontal scrolling */
+  overflow-y: hidden; /* allow vertical scrolling if needed */
+}
+
 #profile {
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    background: #ffffff; 
-    width: 300px; 
-    box-sizing: border-box;
-    text-align: center;
-  }
-  
-  .profile-info {
-    text-align: left;
-    margin-top: 20px;
-  }
-  
-  #profile h1 {
-    text-align: center;
-    margin-bottom: 24px;
-    color: #333;
-  }
-  
-  #profile p {
-    margin-bottom: 10px;
-    color: #666;
-  }
-  
+  display: grid;
+  grid-template-columns: repeat(3, minmax(300px, 1fr)); /* Adjust the number of columns */
+  gap: 20px;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  box-sizing: border-box;
+  text-align: center;
+  max-height: 80vh;
+  overflow-x: hidden; /* Updated to prevent horizontal scrolling */
+  overflow-y: auto; /* Allow vertical scrolling if needed */
+  white-space: normal; /* Allow wrapping of grid items */
+  width: auto;
+}
+
+
+/* Style for each section */
+#profile > div {
+  display: flex; /* use flexbox for each child container */
+  flex-direction: column; /* stack items vertically */
+  justify-content: flex-start; /* align items to the start */
+  align-items: stretch; /* stretch items to fill the container */
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+
+
+
+#profile h1 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #333;
+}
+
+#profile p {
+  margin-bottom: 10px;
+  color: #666;
+}
