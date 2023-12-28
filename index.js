@@ -105,7 +105,7 @@ app.get("/api/getUsername/:id", async (req, res) => {
   // This is just a placeholder, replace it with your actual database query
   const user = await db.users.find((user) => user.id === id);
   if (user) {
-    res.json(user.name);
+    res.json(user.username);
   } else {
     res.status(404).send("User not found");
   }
@@ -474,3 +474,5 @@ app.use((error, req, res, next) => {
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
+
+module.exports = app;
