@@ -4,8 +4,8 @@
 
 > community-based platform for sharing projects and gaining opportunities
 
-<img width="1800" alt="image" src="https://github.com/brycemcole/CORE/assets/92781264/f9f5b350-ac9b-478b-8817-ec9149630474">
+<img width="1512" alt="image" src="https://github.com/brycemcole/CORE/assets/92781264/6d2340ab-468f-4ffc-976d-222efc9f9590">
 
-<img width="1800" alt="image" src="https://github.com/brycemcole/CORE/assets/92781264/cef033be-89fd-4f0b-8c43-b633922266e2">
+<img width="1512" alt="image" src="https://github.com/brycemcole/CORE/assets/92781264/3e41ba16-7ea5-4a23-8749-f2c4745aa70e">
 
-<img width="1800" alt="image" src="https://github.com/brycemcole/CORE/assets/92781264/ce1a9a27-f974-4eee-b894-344ad3adfe07">
+<img width="1512" alt="image" src="https://github.com/brycemcole/CORE/assets/92781264/89a31064-091d-4a4f-8b06-a06907bdf6b3">
