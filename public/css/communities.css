@@ -60,8 +60,26 @@
   padding: 7px 10px;
   border: none;
   border-radius: 5px;
-  background: linear-gradient(to right, #6e8b3d, #8fbc8f); 
+  background: linear-gradient(to right, #117a65 ,  #0e6655); 
   color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  flex: 0 0 auto;
+  margin-right: 10px; /* Margin around buttons */
+  cursor: pointer; /* Pointer cursor on hover */
+  padding: 10px 20px; /* Button padding */
+  margin-top: 10px; /* Top margin */
+  cursor: pointer; /* Pointer cursor */
+}
+
+.create-post-btn {
+  background: linear-gradient(to right,  #5d6d7e , #34495e
+  );
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;

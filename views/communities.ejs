@@ -13,10 +13,43 @@
   <body>
     <%- include('partials/navbar', { pagePath: 'communities' }) %>
 
-    <div id="com-btn-container"></div>
+    <div id="com-btn-container">
+      <button class="create-post-btn" onclick="window.location.href='/post/create';">
+        <span class="material-symbols-outlined"> create </span> Create Post
+    </div>
 
     <div id="posts-container">
-      <!-- JavaScript will populate this container with posts from JavaScript object -->
+      <% posts.forEach(post => { %>
+      <div class="post" onclick="window.location.href='/posts/<%= post.id %>';">
+        <div class="thumbnail">
+          <img
+            src="/thumbnail_image_url.jpg"
+            alt="Thumbnail Image"
+            class="thumbnail-image"
+          />
+        </div>
+        <div class="post-content">
+          <div class="title">
+            <strong><%= post.username %></strong> / <%= post.title %>
+          </div>
+          <% 
+          let postDate = new Date(post.created_at);
+          let today = new Date();
+          let formattedDate;
+        
+          let timeOptions = { hour: '2-digit', minute: '2-digit' };
+        
+          if(postDate.toDateString() === today.toDateString()) {
+            formattedDate = `Today, ${postDate.toLocaleTimeString(undefined, timeOptions)}`;
+          } else {
+            formattedDate = `${postDate.toLocaleDateString()}, ${postDate.toLocaleTimeString(undefined, timeOptions)}`;
+          }
+        %>
+        <%= formattedDate %>
+                  <div class="description"><%= post.content %></div>
+        </div>
+      </div>
+      <% }); %>
     </div>
 
     <script>
@@ -67,212 +100,6 @@
 
       // Call the function to create buttons on page load
       createButtons();
-      // Define post data as a JavaScript object
-      const postData = [
-        {
-          title: "[Project] Open Source Chatbot",
-          author: "user123",
-          date: "2023-11-25",
-          description:
-            "Check out my new open-source project on GitHub - a chatbot built with Python and machine learning. Contributions are welcome!",
-          thumbnail_image_url: "/thumbnail_image_url.jpg",
-          community: "ml-ai",
-          upvotes: 120,
-          downvotes: 4,
-          favorites: 38,
-        },
-        {
-          title: "[Project] AI-Powered Recommendation System",
-          author: "techWizard",
-          date: "2023-11-26",
-          description:
-            "Excited to share my latest project on GitHub - an AI-powered recommendation system for movies and TV shows. Join the collaboration!",
-          thumbnail_image_url: "/thumbnail_image_url.jpg",
-          community: "ml-ai",
-          upvotes: 120,
-          downvotes: 4,
-          favorites: 123,
-        },
-        {
-          title: "[Project] Online Quiz Platform",
-          author: "quizMaster",
-          date: "2023-11-27",
-          description:
-            "Just launched my online quiz platform! It's built with React and Node.js. Try it out and let me know your thoughts!",
-          thumbnail_image_url: "/thumbnail_image_url.jpg",
-          community: "web-dev",
-          upvotes: 120,
-          downvotes: 4,
-          favorites: 22,
-        },
-        {
-          title: "[Post] Mobile App Update",
-          author: "appDevPro",
-          date: "2023-11-28",
-          description:
-            "We've just released a major update to our mobile app! New features, improved performance, and bug fixes. Check it out now!",
-          thumbnail_image_url: "/thumbnail_image_url.jpg",
-          community: "ios-dev",
-          upvotes: 120,
-          downvotes: 4,
-          favorites: 91,
-        },
-        {
-          title: "[Project] Machine Learning Chat Application",
-          author: "AIEnthusiast",
-          date: "2023-12-01",
-          description:
-            "I've built a machine learning-powered chat application that can understand natural language. Join the conversation and experience the future of chatbots!",
-          thumbnail_image_url: "/thumbnail_image_url.jpg",
-          community: "ml-ai",
-          upvotes: 85,
-          downvotes: 3,
-          favorites: 42,
-        },
-        {
-          title: "[Tutorial] Building a RESTful API with Express",
-          author: "webDev101",
-          date: "2023-12-02",
-          description:
-            "Learn how to build a RESTful API using Express.js. This step-by-step tutorial covers routing, middleware, and database integration. Get started now!",
-          thumbnail_image_url: "/thumbnail_image_url.jpg",
-          community: "web-dev",
-          upvotes: 92,
-          downvotes: 2,
-          favorites: 18,
-        },
-        {
-          title: "[Discussion] Future of Artificial Intelligence",
-          author: "AIInsights",
-          date: "2023-12-03",
-          description:
-            "Let's discuss the future of AI and its impact on society. What ethical considerations should we keep in mind? Share your thoughts and ideas!",
-          thumbnail_image_url: "/thumbnail_image_url.jpg",
-          community: "ml-ai",
-          upvotes: 68,
-          downvotes: 7,
-          favorites: 31,
-        },
-        {
-          title: "[Project] E-commerce Website Redesign",
-          author: "webDesignPro",
-          date: "2023-12-04",
-          description:
-            "I've redesigned an e-commerce website with a modern and user-friendly interface. Check out the new look and provide feedback!",
-          thumbnail_image_url: "/thumbnail_image_url.jpg",
-          community: "web-dev",
-          upvotes: 57,
-          downvotes: 1,
-          favorites: 24,
-        },
-        {
-          title: "[Guide] Responsive Web Design Principles",
-
-          author: "responsivePro",
-
-          date: "2023-12-05",
-
-          description:
-            "Learn the key principles of responsive web design to create sites that adapt beautifully across devices. Understand breakpoints, media queries, and fluid layouts.",
-
-          thumbnail_image_url: "/thumbnail_image_url.jpg",
-
-          community: "web-dev",
-
-          upvotes: 103,
-
-          downvotes: 3,
-
-          favorites: 29,
-        },
-
-        {
-          title: "[Showcase] Image Classification Model",
-
-          author: "mlExpert123",
-
-          date: "2023-12-06",
-
-          description:
-            "I've trained an image classification model to recognize 10 different categories with 93% accuracy. Check out the demo and model architecture.",
-
-          thumbnail_image_url: "/thumbnail_image_url.jpg",
-
-          community: "ml-ai",
-
-          upvotes: 79,
-
-          downvotes: 2,
-
-          favorites: 22,
-        },
-
-        {
-          title: "[Feedback] New Portfolio Website",
-
-          author: "webDev321",
-
-          date: "2023-12-07",
-
-          description:
-            "I just launched my new developer portfolio site. Let me know what you think about the design and content!",
-
-          thumbnail_image_url: "/thumbnail_image_url.jpg",
-
-          community: "web-dev",
-
-          upvotes: 64,
-
-          downvotes: 5,
-
-          favorites: 17,
-        },
-      ];
-
-      const postsContainer = document.getElementById("posts-container");
-
-      postData.forEach((post) => {
-        const postElement = document.createElement("div");
-        postElement.classList.add("post");
-
-        // Adding the header extraction from the title
-        const headerMatch = post.title.match(/^\[(.+?)\]/);
-        const header = headerMatch ? headerMatch[1] : "";
-        const titleWithoutHeader = headerMatch
-          ? post.title.replace(headerMatch[0], "").trim()
-          : post.title;
-
-        // Create the post content HTML here using the data from the JavaScript object, with header added
-        const postContentHTML = `
-        <div class="thumbnail">
-          <img
-            src="${post.thumbnail_image_url}"
-            alt="Thumbnail Image"
-            class="thumbnail-image"
-          />
-        </div>
-        <div class="post-content">
-          <div class="title"><strong>${post.author}</strong> / ${titleWithoutHeader}</div>
-          <div class="user-info">
-            ${post.date}
-            <span class="material-symbols-outlined"> thumb_up </span>
-            <span>${post.upvotes}</span>
-            <span class="material-symbols-outlined"> thumb_down </span>
-            <span>${post.downvotes}</span>
-            <span class="material-symbols-outlined"> comment </span>
-            <span>${post.favorites}</span>
-            <span class="community-name">${post.community}</span>
-          </div>
-          <div class="description">${post.description}</div>
-        </div>
-      `;
-
-        postElement.innerHTML = postContentHTML;
-        postElement.addEventListener("click", () => {
-          window.location.href = "/post";
-        });
-        postsContainer.appendChild(postElement);
-      });
     </script>
   </body>
 </html>

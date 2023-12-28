@@ -8,11 +8,12 @@
       <a href="/practice">Practice</a>
       <a href="/support">Support</a>
       <a href="/about">About</a>
-      <a href="/profile">Profile</a>
-      <a href="/settings">Settings</a>
+      <% if (user) { %>
+      <a href="/post/create">Create Post</a>
+      <a class="nav-text" href="/profile/<%= user.username %>">Profile</a>
       <a href="/inbox">Inbox</a>
-      <a href="/notifications">Notifications</a>
-      <a href="/logout">Logout</a>
+        <a href="/logout">Logout</a>
+        <% } else { %> <% } %>
     </div>
   </div>
   <div class="logo">
@@ -48,7 +49,7 @@
     </li>
     <li>
       <% if (user) { %> <% } else { %>
-      <a href="login" class="navbar-button"
+      <a href="/login" class="navbar-button"
         ><span class="material-symbols-outlined" id="nb-icon"> login </span
         >Login</a
       >

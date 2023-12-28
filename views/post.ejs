@@ -8,7 +8,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     />
-    <link rel="stylesheet" href="css/navbar.css" />
+    <link rel="stylesheet" href="/css/navbar.css" />
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -32,6 +32,11 @@
         padding: 20px;
         margin-bottom: 20px;
         border-bottom: 1px solid #eaeaea;
+      }
+      .nested-comment {
+        margin-left: 40px;
+        border-left: 2px solid #eaeaea;
+        padding-left: 20px;
       }
 
       .post-title {
@@ -72,37 +77,56 @@
     <%- include('partials/navbar', { pagePath: 'home' }) %>
 
     <div class="main-container">
-      <!-- Top Post -->
       <div class="post">
-        <h2 class="post-title">Post Title</h2>
-        <p class="user-info">Posted by: Username</p>
-        <div class="post-content">
-          Post content goes here. This is the main forum post where the user
-          shares their content, question, or discussion topic.
-        </div>
+        <h2 class="post-title"><%= post.title %></h2>
+        <p class="user-info">Posted by: <%= post.user.username %></p>
+        <div class="post-content"><%= post.content %></div>
       </div>
 
-      <!-- Comments Section -->
       <div class="comments-section">
         <h3>Comments</h3>
-        <!-- Comment 1 -->
-        <div class="comment">
-          <p class="user-info">Comment by: User1</p>
-          <div class="comment-content">
-            This is a user comment on the main post.
-          </div>
-        </div>
 
-        <!-- Comment 2 -->
+        <!-- Add Comment Form, only if user is logged in -->
+        <% if (user) { %>
+        <form action="/posts/<%= post.id %>/comments" method="POST">
+          <textarea name="comment" required></textarea>
+          <button type="submit">Submit Comment</button>
+        </form>
+        <% } %> <% function renderComments(comments) { %> <%
+        comments.forEach(comment => { %>
         <div class="comment">
-          <p class="user-info">Comment by: User2</p>
-          <div class="comment-content">
-            Another comment by a different user.
-          </div>
-        </div>
+          <div class="comment-content"><%= comment.comment %></div>
+          <p class="user-info"><%= comment.user.username%></p>
+          <% if (user) { %>
+          <form
+            action="/comments/<%= comment.id %>/replies"
+            method="POST"
+            class="reply-form"
+            style="display: none"
+          >
+            <textarea name="comment" required></textarea>
+            <button type="submit">Submit Reply</button>
+          </form>
+          <button onclick="showReplyForm(this)">Reply</button>
+          <% } %>
 
-        <!-- Additional comments go here -->
+          <!-- Render nested comments -->
+          <% if (comment.replies && comment.replies.length > 0) { %>
+          <div class="nested-comment">
+            <% renderComments(comment.replies); %>
+          </div>
+          <% } %>
+        </div>
+        <% }) %> <% } %> <% renderComments(post.comments); %>
       </div>
     </div>
+
+    <script>
+      // JavaScript function to show reply form
+      function showReplyForm(button) {
+        const form = button.previousElementSibling;
+        form.style.display = form.style.display === "none" ? "block" : "none";
+      }
+    </script>
   </body>
 </html>

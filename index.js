@@ -9,6 +9,7 @@ const flash = require("express-flash");
 const session = require("express-session");
 const methodOverride = require("method-override");
 const sql = require("mssql");
+const crypto = require("crypto");
 const port = process.env.PORT || 8080;
 
 // Database configuration
@@ -97,16 +98,56 @@ function checkNotAuthenticated(req, res, next) {
   }
 }
 
-app.get("/", checkAuthenticated, (req, res) => {
-  res.render("communities.ejs", { user: req.user });
+// Node.js server-side code
+app.get("/api/getUsername/:id", async (req, res) => {
+  const id = req.params.id;
+  // Fetch the username from your database using the id
+  // This is just a placeholder, replace it with your actual database query
+  const user = await db.users.find((user) => user.id === id);
+  if (user) {
+    res.json(user.name);
+  } else {
+    res.status(404).send("User not found");
+  }
+});
+
+app.get("/", checkAuthenticated, async (req, res) => {
+  try {
+    // Fetch posts from the database
+    const result = await sql.query("SELECT * FROM posts");
+    let posts = result.recordset;
+
+    // Fetch the user for each post
+    for (let post of posts) {
+      const userResult = await sql.query(
+        `SELECT username FROM users WHERE id = ${post.user_id}`
+      );
+      const user = userResult.recordset[0];
+      post.username = user.username;
+    }
+
+    // Render the communities.ejs template with both user and posts data
+    res.render("communities.ejs", { user: req.user, posts: posts });
+  } catch (err) {
+    console.error("Database query error:", err);
+    res.status(500).send("Error fetching posts");
+  }
 });
 
 app.get("/jobs", checkAuthenticated, (req, res) => {
   res.render("jobs.ejs", { user: req.user });
 });
 
+app.get("/post/create", checkAuthenticated, (req, res) => {
+  res.render("create-post.ejs", { user: req.user });
+});
+
 app.get("/login", checkNotAuthenticated, async (req, res) => {
   res.render("login.ejs", { user: req.user });
+});
+
+app.get("/post", async (req, res) => {
+  res.render("post.ejs", { user: req.user });
 });
 
 app.get("/register", checkNotAuthenticated, async (req, res) => {
@@ -115,6 +156,184 @@ app.get("/register", checkNotAuthenticated, async (req, res) => {
 
 app.get("/learning", checkAuthenticated, async (req, res) => {
   res.render("learning.ejs", { user: req.user });
+});
+
+// posts routes
+app.get("/posts", async (req, res) => {
+  try {
+    const result = await sql.query("SELECT * FROM posts");
+    res.json(result.recordset);
+  } catch (err) {
+    console.error("Database query error:", err);
+    res.status(500).send("Error fetching posts");
+  }
+});
+
+const getUserDetails = async (userId) => {
+  try {
+    const userResult =
+      await sql.query`SELECT username FROM users WHERE id = ${userId}`;
+    if (userResult.recordset.length > 0) {
+      return userResult.recordset[0];
+    } else {
+      // Throw an error if the user is not found
+      throw new Error(`User with ID ${userId} not found`);
+    }
+  } catch (err) {
+    console.error("Database query error:", err);
+    // Throw the error to the caller
+    throw err;
+  }
+};
+
+app.get("/posts/:postId", async (req, res) => {
+  try {
+    const postId = req.params.postId;
+
+    // Fetch all comments related to the post
+    const query = `
+      SELECT c.id, c.parent_comment_id, c.user_id, c.comment, c.created_at
+      FROM comments c
+      WHERE c.post_id = '${postId}'`;
+
+    const result = await sql.query(query);
+
+    // Function to nest comments
+    async function nestComments(commentList) {
+      const commentMap = {};
+
+      // Create a map of comments
+      commentList.forEach((comment) => {
+        commentMap[comment.id] = { ...comment, replies: [] };
+      });
+
+      const nestedComments = [];
+      for (let comment of commentList) {
+        if (comment.parent_comment_id) {
+          commentMap[comment.parent_comment_id].replies.push(
+            commentMap[comment.id]
+          );
+        } else {
+          nestedComments.push(commentMap[comment.id]);
+        }
+      }
+
+      // Fetch user details for each comment
+      for (let comment of nestedComments) {
+        comment.user = await getUserDetails(comment.user_id);
+        for (let reply of comment.replies) {
+          reply.user = await getUserDetails(reply.user_id);
+        }
+      }
+
+      return nestedComments;
+    }
+
+    // Nest comments
+    const nestedComments = await nestComments(result.recordset);
+
+    async function fetchUserDetailsForComments(comments) {
+      for (let comment of comments) {
+        comment.user = await getUserDetails(comment.user_id);
+        if (comment.replies && comment.replies.length > 0) {
+          await fetchUserDetailsForComments(comment.replies);
+        }
+      }
+    }
+
+    await fetchUserDetailsForComments(nestedComments);
+
+    // Fetch post details
+    const postQuery = `SELECT * FROM posts WHERE id = '${postId}'`;
+    const postResult = await sql.query(postQuery);
+
+    // Combine post details with comments
+    const postData = {
+      ...postResult.recordset[0],
+      user: await getUserDetails(postResult.recordset[0].user_id),
+      comments: await Promise.all(
+        nestedComments.map(async (comment) => {
+          const user = await getUserDetails(comment.user_id);
+          const replies = await Promise.all(
+            comment.replies.map(async (reply) => {
+              const replyUser = await getUserDetails(reply.user_id);
+              console.log(replyUser);
+              return { ...reply };
+            })
+          );
+          return { ...comment, user, replies };
+        })
+      ),
+    };
+
+    res.render("post.ejs", { post: postData, user: req.user });
+  } catch (err) {
+    console.error("Database query error:", err);
+    res.status(500).send("Error fetching post and comments");
+  }
+});
+
+app.post("/posts/:postId/comments", checkAuthenticated, async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const userId = req.user.id; // Assuming the user ID is stored in req.user
+    const { comment } = req.body;
+
+    // Generate a unique ID for the comment
+    const commentId = `${Date.now().toString(36)}-${crypto
+      .randomBytes(3)
+      .toString("hex")}`;
+
+    await sql.query`INSERT INTO comments (id, post_id, parent_comment_id, user_id, comment) VALUES (${commentId}, ${postId}, NULL, ${userId}, ${comment})`;
+
+    // Redirect to the same page
+    res.redirect(`/posts/${postId}`);
+  } catch (err) {
+    console.error("Database insert error:", err);
+    res.status(500).send("Error adding comment");
+  }
+});
+
+app.post(
+  "/comments/:commentId/replies",
+  checkAuthenticated,
+  async (req, res) => {
+    try {
+      const parentCommentId = req.params.commentId;
+      const userId = req.user.id;
+      const { comment } = req.body; // Assuming the comment text and user ID are sent in the request body
+
+      // Generate a unique ID for the reply
+      const replyId = `${Date.now().toString(36)}-${crypto
+        .randomBytes(3)
+        .toString("hex")}`;
+
+      await sql.query`INSERT INTO comments (id, post_id, parent_comment_id, user_id, comment) VALUES (${replyId}, (SELECT post_id FROM comments WHERE id = ${parentCommentId}), ${parentCommentId}, ${userId}, ${comment})`;
+
+      // Refresh the page
+      res.redirect("back");
+    } catch (err) {
+      console.error("Database insert error:", err);
+      res.status(500).send("Error adding reply");
+    }
+  }
+);
+
+app.post("/posts", async (req, res) => {
+  try {
+    const { userId, title, content } = req.body;
+
+    const uniqueId = `${Date.now().toString(36)}-${crypto
+      .randomBytes(3)
+      .toString("hex")}`;
+
+    await sql.query`INSERT INTO posts (id, user_id, title, content) VALUES (${uniqueId}, ${userId}, ${title}, ${content})`;
+
+    res.redirect(`/post/${uniqueId}`);
+  } catch (err) {
+    console.error("Database insert error:", err);
+    res.status(500).send("Error creating post");
+  }
 });
 
 app.post(
