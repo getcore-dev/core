@@ -114,7 +114,7 @@ app.get("/api/getUsername/:id", async (req, res) => {
 app.get("/", checkAuthenticated, async (req, res) => {
   try {
     // Fetch posts from the database
-    const result = await sql.query("SELECT * FROM posts");
+    const result = await sql.query("SELECT * FROM posts WHERE deleted = 0");
     let posts = result.recordset;
 
     // Fetch the user for each post
@@ -161,7 +161,7 @@ app.get("/learning", checkAuthenticated, async (req, res) => {
 // posts routes
 app.get("/posts", async (req, res) => {
   try {
-    const result = await sql.query("SELECT * FROM posts");
+    const result = await sql.query("SELECT * FROM posts WHERE deleted = 0");
     res.json(result.recordset);
   } catch (err) {
     console.error("Database query error:", err);
@@ -194,7 +194,7 @@ app.get("/posts/:postId", async (req, res) => {
     const query = `
       SELECT c.id, c.parent_comment_id, c.user_id, c.comment, c.created_at
       FROM comments c
-      WHERE c.post_id = '${postId}'`;
+      WHERE c.post_id = '${postId}' AND c.deleted = 0`;
 
     const result = await sql.query(query);
 
@@ -209,7 +209,10 @@ app.get("/posts/:postId", async (req, res) => {
 
       const nestedComments = [];
       for (let comment of commentList) {
-        if (comment.parent_comment_id) {
+        if (
+          comment.parent_comment_id &&
+          commentMap[comment.parent_comment_id]
+        ) {
           commentMap[comment.parent_comment_id].replies.push(
             commentMap[comment.id]
           );
@@ -244,7 +247,7 @@ app.get("/posts/:postId", async (req, res) => {
     await fetchUserDetailsForComments(nestedComments);
 
     // Fetch post details
-    const postQuery = `SELECT * FROM posts WHERE id = '${postId}'`;
+    const postQuery = `SELECT * FROM posts WHERE id = '${postId}' AND deleted = 0`;
     const postResult = await sql.query(postQuery);
 
     // Combine post details with comments
@@ -373,6 +376,84 @@ app.post("/register", checkNotAuthenticated, async (req, res) => {
   } catch (error) {
     console.error("Database insert error:", error);
     res.redirect("/register");
+  }
+});
+
+async function deletePostById(postId) {
+  await sql.query`UPDATE posts SET deleted = 1 WHERE id = ${postId}`;
+}
+
+async function getPostById(postId) {
+  const result =
+    await sql.query`SELECT * FROM posts WHERE id = ${postId} AND deleted = 0`;
+  return result.recordset[0];
+}
+
+app.delete("/post/:postId", checkAuthenticated, async (req, res) => {
+  const postId = req.params.postId;
+  const userId = req.user.id;
+
+  try {
+    const post = await getPostById(postId);
+    if (post.user_id !== userId) {
+      return res.status(403).send("You are not authorized to delete this post");
+    }
+
+    await deletePostById(postId);
+    res.redirect("/");
+  } catch (error) {
+    console.error("Database delete error:", error);
+    res.status(500).send("Error deleting post");
+  }
+});
+
+async function getCommentById(commentId) {
+  const result =
+    await sql.query`SELECT * FROM comments WHERE id = ${commentId} AND deleted = 0`;
+  return result.recordset[0];
+}
+
+async function deleteCommentById(commentId) {
+  await sql.query`UPDATE comments SET deleted = 1 WHERE id = ${commentId}`;
+}
+
+app.delete("/comment/:commentId", checkAuthenticated, async (req, res) => {
+  const commentId = req.params.commentId;
+  const userId = req.user.id;
+
+  try {
+    const comment = await getCommentById(commentId);
+    if (comment.user_id !== userId) {
+      return res
+        .status(403)
+        .send("You are not authorized to delete this comment");
+    }
+
+    await deleteCommentById(commentId);
+    res.redirect("back");
+  } catch (error) {
+    console.error("Database delete error:", error);
+    res.status(500).send("Error deleting comment");
+  }
+});
+
+app.delete("/reply/:replyId", checkAuthenticated, async (req, res) => {
+  const replyId = req.params.replyId;
+  const userId = req.user.id;
+
+  try {
+    const reply = await getReplyById(replyId);
+    if (reply.user_id !== userId) {
+      return res
+        .status(403)
+        .send("You are not authorized to delete this reply");
+    }
+
+    await deleteReplyById(replyId);
+    res.redirect("back");
+  } catch (error) {
+    console.error("Database delete error:", error);
+    res.status(500).send("Error deleting reply");
   }
 });
 

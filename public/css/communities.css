@@ -36,23 +36,9 @@
   left: 30px;
   flex-grow: 1; /* Take up remaining space */
   margin-left: 40px;
+  margin-right: 40px;
+
   padding: 0; /* No padding */
-}
-
-.post-content .community-name {
-  font-weight: bold; /* Bold font */
-  color: #4682B4; /* Color */
-}
-
-.post-content .header {
-  position: relative; /* Relative to its normal position */
-  top: -3px; /* Move up by 20px */
-  background: linear-gradient(to right, #1f0f90, #19f9);
-  color: white; /* Text color */
-  padding: 3px 6px; /* Padding around the text */
-  border-radius: 5px; /* Rounded corners */
-  font-size: 12px; /* Smaller font size for the flair */
-  font-weight: bold; /* Bold text */
 }
 
 .com-btn {
@@ -157,4 +143,27 @@
 
 #com-btn-container::-webkit-scrollbar, #job-btn-container::-webkit-scrollbar {
   display: none; /* Hide scrollbar in WebKit browsers */
+}
+
+@media (max-width: 768px) {
+
+  .post-content {
+    left: 40px;
+  }
+
+  .thumbnail {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+  .thumbnail-image {
+    border-radius: 5px; /* Increased border radius for softer corners */
+    width: 67px; /* Width */
+    height: 67px; /* Full height */
+    aspect-ratio: 1/1; /* Maintain aspect ratio */
+    object-fit: cover; /* Cover the space without stretching */
+  }
 }

@@ -19,21 +19,21 @@
         <p><%= user.email %></p>
       </div>
 
+      <!-- Assuming learningprogress is a JSON object -->
       <div class="learning-progress">
         <h2>Learning Progress</h2>
-        <p>
-          <strong>Data Structures:</strong> <%=
-          user.learningProgress.dataStructures %> %
-        </p>
-        <p>
-          <strong>Algorithms:</strong> <%= user.learningProgress.algorithms %> %
-        </p>
-        <!-- Add other learning sections here -->
+        <% if(user.learningprogress) { %> <%
+        Object.keys(user.learningprogress).forEach(function(key) { %>
+        <p><strong><%= key %>:</strong> <%= user.learningprogress[key] %> %</p>
+        <% }); %> <% } else { %>
+        <p>No learning progress yet.</p>
+        <% } %>
       </div>
 
+      <!-- Assuming achievements is an array -->
       <div class="achievements">
         <h2>Achievements</h2>
-        <% if (user.achievements.length) { %> <%
+        <% if (user.achievements && user.achievements.length) { %> <%
         user.achievements.forEach(function(achievement) { %>
         <p><%= achievement %></p>
         <% }); %> <% } else { %>
@@ -41,50 +41,19 @@
         <% } %>
       </div>
 
-      <div class="badges">
-        <h2>Badges</h2>
-        <% if (user.badges.length) { %> <% user.badges.forEach(function(badge) {
-        %>
-        <p><%= badge %></p>
-        <% }); %> <% } else { %>
-        <p>No badges earned yet.</p>
-        <% } %>
-      </div>
-
-      <div class="posts">
-        <h2>Posts</h2>
-        <% if (user.posts.length) { %> <% user.posts.forEach(function(post) { %>
-        <div class="post">
-          <p><%= post.title %></p>
-          <p><%= post.content %></p>
-        </div>
-        <% }); %> <% } else { %>
-        <p>No posts yet.</p>
-        <% } %>
-      </div>
-
-      <div class="comments">
-        <h2>Comments</h2>
-        <% if (user.comments.length) { %> <%
-        user.comments.forEach(function(comment) { %>
-        <div class="comment">
-          <p><%= comment %></p>
-        </div>
-        <% }); %> <% } else { %>
-        <p>No comments yet.</p>
-        <% } %>
-      </div>
-
+      <!-- Current job information -->
       <div class="current-job">
         <h2>Current Job</h2>
-        <% if (user.currentJob && user.currentJob.company) { %>
-        <p><strong>Company:</strong> <%= user.currentJob.company %></p>
-        <p><strong>Position:</strong> <%= user.currentJob.position %></p>
-        <p><strong>Seniority:</strong> <%= user.currentJob.seniority %></p>
+        <% if (user.currentjob) { %>
+        <p><strong>Company:</strong> <%= user.currentjob.company %></p>
+        <p><strong>Position:</strong> <%= user.currentjob.position %></p>
+        <!-- Include other job details as needed -->
         <% } else { %>
         <p>No current job information.</p>
         <% } %>
       </div>
+
+      <!-- Other sections like badges, posts, comments can be included similar to the above -->
     </div>
   </body>
 </html>
