@@ -96,6 +96,12 @@ h1, h2, h3, p {
   padding: 0 5px; /* Padding around the logo */
 }
 
+@media (prefers-color-scheme: dark) {
+  .logo img {
+    filter: invert(1); /* Invert colors for dark mode */
+  }
+}
+
 /* Content Style */
 .content {
   padding: 20px; /* Content padding */
