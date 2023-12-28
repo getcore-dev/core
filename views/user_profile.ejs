@@ -15,11 +15,20 @@
 
     <div id="profile" class="grid-container">
       <div class="profile-info">
-        <p><%= user.username %></p>
+        <h2><%= user.username %></h2>
         <p><%= user.email %></p>
       </div>
 
-      <!-- Assuming learningprogress is a JSON object -->
+      <div class="current-job">
+        <h2>Current Job</h2>
+        <% if (user.currentjob) { %>
+        <p><strong>Company:</strong> <%= user.currentjob.company %></p>
+        <p><strong>Position:</strong> <%= user.currentjob.position %></p>
+        <% } else { %>
+        <p>No current job information.</p>
+        <% } %>
+      </div>
+
       <div class="learning-progress">
         <h2>Learning Progress</h2>
         <% if(user.learningprogress) { %> <%
@@ -30,7 +39,6 @@
         <% } %>
       </div>
 
-      <!-- Assuming achievements is an array -->
       <div class="achievements">
         <h2>Achievements</h2>
         <% if (user.achievements && user.achievements.length) { %> <%
@@ -40,20 +48,6 @@
         <p>No achievements yet.</p>
         <% } %>
       </div>
-
-      <!-- Current job information -->
-      <div class="current-job">
-        <h2>Current Job</h2>
-        <% if (user.currentjob) { %>
-        <p><strong>Company:</strong> <%= user.currentjob.company %></p>
-        <p><strong>Position:</strong> <%= user.currentjob.position %></p>
-        <!-- Include other job details as needed -->
-        <% } else { %>
-        <p>No current job information.</p>
-        <% } %>
-      </div>
-
-      <!-- Other sections like badges, posts, comments can be included similar to the above -->
     </div>
   </body>
 </html>

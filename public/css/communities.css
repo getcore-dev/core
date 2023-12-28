@@ -1,18 +1,26 @@
-/* Post Container Styles */
 .post {
   margin-top: 10px;
-   display: flex; /* Use flexbox for layout */
-  flex-direction: column; /* Stack content vertically */
-  justify-content: space-between; /* Distribute space evenly between items */
-  position: relative; /* Positioning context for child elements */
-  flex: 1; /* Ensure all posts take up the same amount of space */
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1); /* Smooth transition for hover effect */
+   display: flex; 
+  flex-direction: column;
+  justify-content: space-between; 
+  position: relative; 
+  flex: 1; 
+  border-radius: 5px;
+  border: 2px solid #aaa; 
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1); 
+
 }
 
 .post:hover {
-  border-radius: 5px;
-  border: 2px solid #aaa; /* Post border */
+  border: 2px solid #fff; 
+
 }
+
+#posts-container {
+  padding: 30px;
+  padding-top: 0px;
+}
+
 
 /* Thumbnail Styles */
 .thumbnail {
@@ -166,4 +174,12 @@
     aspect-ratio: 1/1; /* Maintain aspect ratio */
     object-fit: cover; /* Cover the space without stretching */
   }
+}
+
+
+@media (prefers-color-scheme: dark) {
+  .logo img {
+    filter: invert(1); /* Invert colors for dark mode */
+  }
+
 }

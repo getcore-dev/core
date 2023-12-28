@@ -7,6 +7,8 @@ body {
   background-color: #f0f0f0;
   overflow-x: hidden; /* prevent horizontal scrolling */
   overflow-y: hidden; /* allow vertical scrolling if needed */
+  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* Set default font family */
+
 }
 
 #profile {
@@ -39,6 +41,11 @@ body {
   background-color: #f9f9f9;
 }
 
+@media (max-width: 768px) {
+  #profile {
+    grid-template-columns: repeat(1, minmax(300px, 1fr)); /* Adjust the number of columns */
+  }
+}
 
 
 

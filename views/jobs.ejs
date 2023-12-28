@@ -354,26 +354,24 @@
       ]; %>
   
       <% jobPostings.forEach(job => { %>
-        <div class="job-card">
+        <div class="job">
+          <div class="job-content">
           <div class="job-header">
-            <div class="job-title-location">
-              <div class="company-name"><%= job.companyName %></div>
-              <div class="job-title"><%= job.jobTitle %></div>
-              <div class="job-location"><%= job.jobLocation %></div>
-            </div>
             <div class="company-logo-container">
               <img src="<%= job.companyLogo %>" alt="Company Logo" class="company-logo" />
             </div>
+            <div class="job-title-location">
+              <div class="company-name"><%= job.companyName %> / <%= job.jobTitle %></div>
+              <%= job.jobLocation %></div>
+            </div>
+            <div class="job-body">
+              <div class="job-overview"><%= job.jobOverview %></div>
+              <div class="job-info"><%= job.jobType %> / <%= job.jobSalary %></div>
+            </div>
+
           </div>
-          <div class="job-body">
-            <div class="job-overview"><%= job.jobOverview %></div>
-            <div class="job-type"><%= job.jobType %></div>
-            <div class="job-salary"><%= job.jobSalary %></div>
-            <div class="job-benefits"><%= job.jobBenefits %></div>
-          </div>
-          <div class="job-footer">
-            <button class="btn-apply">View Details</button>
-          </div>
+        </div>
+          
         </div>
       <% }); %>
     </div>

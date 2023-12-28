@@ -4,15 +4,19 @@
     <div class="menu-content" id="menu-content">
       <a href="/">Communities</a>
       <a href="/jobs">Openings</a>
-      <a href="/learning">Learning</a>
-      <a href="/practice">Practice</a>
-      <a href="/support">Support</a>
-      <a href="/about">About</a>
       <% if (user) { %>
       <a href="/post/create">Create Post</a>
       <a class="nav-text" href="/profile/<%= user.username %>">Profile</a>
-      <a href="/inbox">Inbox</a>
-        <a href="/logout">Logout</a>
+      <form
+      id="logoutForm"
+      action="/logout?_method=DELETE"
+      method="POST"
+      style="display: none"
+    ></form>
+    <a
+      href="#"
+      onclick="document.getElementById('logoutForm').submit();"
+    >Logout</a>
         <% } else { %> <% } %>
     </div>
   </div>

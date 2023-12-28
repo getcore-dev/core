@@ -11,7 +11,7 @@ function initialize(passport, getUserByEmail, getUserById, getUserByUsername) {
 
       if (await bcrypt.compare(password, user.password)) {
         return done(null, user);
-      } else { 
+      } else {
         return done(null, false, { message: "Password incorrect" });
       }
     } catch (e) {
@@ -26,10 +26,8 @@ function initialize(passport, getUserByEmail, getUserById, getUserByUsername) {
   passport.serializeUser((user, done) => done(null, user.id));
 
   passport.deserializeUser(async (id, done) => {
-    console.log("Deserializing user, ID:", id); // Log the user ID
     try {
       const user = await getUserById(id);
-      console.log("Deserialized user object:", user); // Log the fetched user object
       done(null, user);
     } catch (e) {
       console.error("Error in deserialization:", e); // Log any errors

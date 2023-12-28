@@ -339,15 +339,24 @@ app.post("/posts", async (req, res) => {
   }
 });
 
-app.post(
-  "/login",
-  checkNotAuthenticated,
-  passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/login",
-    failureFlash: true,
-  })
-);
+app.post("/login", checkNotAuthenticated, (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      req.flash("error", info.message);
+      return res.redirect("/login");
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      console.log(`${user.username} has logged in`); // log the username
+      return res.redirect("/");
+    });
+  })(req, res, next);
+});
 
 app.get("/profile/:username", async (req, res) => {
   try {
