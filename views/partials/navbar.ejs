@@ -8,6 +8,7 @@ href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wg
     <div class="menu-content" id="menu-content">
       <a href="/">Communities</a>
       <a href="/jobs">Openings</a>
+
       <% if (user) { %>
       <a href="/post/create">Create Post</a>
       <a class="nav-text" href="/profile/<%= user.username %>">Profile</a>
@@ -21,7 +22,9 @@ href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wg
       href="#"
       onclick="document.getElementById('logoutForm').submit();"
     >Logout</a>
-        <% } else { %> <% } %>
+        <% } else { %> 
+			<a href="/login">Login</a>
+<% } %>
     </div>
   </div>
   <div class="logo">
