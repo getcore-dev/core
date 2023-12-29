@@ -3,6 +3,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 const express = require("express");
 const app = express();
+const path = require("path");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
 const flash = require("express-flash");
@@ -52,7 +53,7 @@ const findById = async (id) => {
   }
 };
 
-const initializePassport = require("./config/passport-config").initialize;
+const initializePassport = require("./config/passportConfig").initialize;
 initializePassport(passport, findByUsername, findById, findByUsername);
 
 app.set("view-engine", "ejs");
@@ -75,6 +76,10 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride("_method"));
+app.use((req, res, next) => {
+  res.locals.currentPath = req.path;
+  next();
+});
 
 function checkAuthenticated(req, res, next) {
   try {
@@ -111,7 +116,7 @@ app.get("/api/getUsername/:id", async (req, res) => {
   }
 });
 
-app.get("/", checkAuthenticated, async (req, res) => {
+app.get("/", async (req, res) => {
   try {
     // Fetch posts from the database
     const result = await sql.query("SELECT * FROM posts WHERE deleted = 0");
@@ -134,7 +139,7 @@ app.get("/", checkAuthenticated, async (req, res) => {
   }
 });
 
-app.get("/jobs", checkAuthenticated, (req, res) => {
+app.get("/jobs", (req, res) => {
   res.render("jobs.ejs", { user: req.user });
 });
 
@@ -361,10 +366,10 @@ app.post("/login", checkNotAuthenticated, (req, res, next) => {
 app.get("/profile/:username", async (req, res) => {
   try {
     const username = req.params.username;
-    const user = await findByUsername(username);
+    const otheruser = await findByUsername(username);
 
-    if (user) {
-      res.render("user_profile.ejs", { user });
+    if (otheruser) {
+      res.render("user_profile.ejs", { otheruser: otheruser, user: req.user });
     } else {
       res.render("404.ejs", { user });
     }
@@ -471,7 +476,7 @@ app.delete("/logout", (req, res, next) => {
     if (err) {
       return next(err);
     }
-    res.redirect("/login");
+    res.redirect("/");
   });
 });
 

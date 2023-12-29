@@ -6,13 +6,13 @@
   position: relative; 
   flex: 1; 
   border-radius: 5px;
-  border: 2px solid #aaa; 
+  border: 1px solid #aaa; 
   transition: all 0.3s cubic-bezier(.25,.8,.25,1); 
 
 }
 
 .post:hover {
-  border: 2px solid #fff; 
+  cursor: pointer;
 
 }
 
@@ -65,6 +65,11 @@
   padding: 10px 20px; /* Button padding */
   margin-top: 10px; /* Top margin */
   cursor: pointer; /* Pointer cursor */
+}
+
+span .material-symbols-outlined {
+  font-size: 16px;
+  vertical-align: -3px;
 }
 
 .create-post-btn {
@@ -125,8 +130,8 @@
 }
 
 /* Icon Styles */
-.material-symbols-outlined {
-  font-size: 16px; /* Icon size */
+div .material-symbols-outlined {
+  font-size: 15px; /* Icon size */
   vertical-align: -3px; /* Vertical alignment */
 }
 
@@ -174,12 +179,4 @@
     aspect-ratio: 1/1; /* Maintain aspect ratio */
     object-fit: cover; /* Cover the space without stretching */
   }
-}
-
-
-@media (prefers-color-scheme: dark) {
-  .logo img {
-    filter: invert(1); /* Invert colors for dark mode */
-  }
-
 }

@@ -96,13 +96,21 @@ h1, h2, h3, p {
   padding: 0 5px; /* Padding around the logo */
 }
 
-@media (prefers-color-scheme: dark) {
-  .logo img {
-    filter: invert(1); /* Invert colors for dark mode */
-  }
-
+.navbar-button.active::after {
+  content: "";
+  display: block;
+  height: 1.75px;
+  border-radius: 5px;
+  background-color: #0e6655; /* Change color as needed */
+  width: 100%;
+  position: absolute;
+  bottom: -3.75px;
+  left: 5px;
 }
 
+.nav-links li {
+  position: relative;
+}
 
 /* Nav Text Styles */
 .nav-text, .nav-text:hover {
@@ -151,8 +159,10 @@ h1, h2, h3, p {
     left: 40px;
   }
   .nav-text-container {
+    font-size: 18px;
     position: absolute;
     left: 86px;
+    top: 20px;
   }
 
   .hamburger-menu {

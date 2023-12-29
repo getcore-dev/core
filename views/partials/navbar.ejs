@@ -1,3 +1,7 @@
+<link
+rel="stylesheet"
+href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+/>
 <nav class="navbar">
   <div class="hamburger-menu">
     <span class="material-symbols-outlined" id="menu-icon"> menu </span>
@@ -34,31 +38,41 @@
 
   <ul class="nav-links">
     <li>
-      <a href="/" class="navbar-button">
-        <span class="material-symbols-outlined" id="nb-icon"> forum </span>
+      <a href="/" class="navbar-button <%= currentPath === '/' ? 'active' : '' %>">
+          <span class="material-symbols-outlined" id="nb-icon"> forum </span>
         Community
       </a>
     </li>
     <li>
-      <a href="/jobs" class="navbar-button"
-        ><span class="material-symbols-outlined" id="nb-icon"> work </span
-        >Openings</a
+      <a href="/jobs" class="navbar-button <%= currentPath === '/jobs' ? 'active' : '' %>">
+      <span class="material-symbols-outlined" id="nb-icon"> work </span>Openings</a
       >
     </li>
     <li>
-      <a href="/learning" class="navbar-button"
-        ><span class="material-symbols-outlined" id="nb-icon"> school </span
+      <% if (user) { %>
+      <a href="/learning" class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>">
+        <span class="material-symbols-outlined" id="nb-icon"> school </span
         >Learning</a
       >
+      <% } else { %> <% } %>
     </li>
     <li>
       <% if (user) { %> <% } else { %>
-      <a href="/login" class="navbar-button"
-        ><span class="material-symbols-outlined" id="nb-icon"> login </span
+      <a href="/login" class="navbar-button <%= currentPath === '/login' ? 'active' : '' %>">
+        <span class="material-symbols-outlined" id="nb-icon"> login </span
         >Login</a
       >
       <% } %>
     </li>
+    <li>
+      <% if (user) { %>
+        <a href="/profile/<%= user.username %>"
+           class="navbar-button <%= currentPath.startsWith('/profile') ? 'active' : '' %>">
+          <span class="material-symbols-outlined" id="nb-icon"> person </span>Profile
+        </a>
+      <% } %>
+    </li>
+    
     <li>
       <% if (user) { %>
       <form
@@ -69,7 +83,7 @@
       ></form>
       <a
         href="#"
-        class="navbar-button"
+        class="navbar-button <%= currentPath === '/logout' ? 'active' : '' %>"
         onclick="document.getElementById('logoutForm').submit();"
       >
         <span class="material-symbols-outlined" id="nb-icon"> logout </span
@@ -89,13 +103,4 @@
       content.style.display = "block";
     }
   };
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const searchIcon = document.querySelector(".search-icon");
-    const searchBar = document.querySelector(".search-bar");
-
-    searchIcon.addEventListener("click", function () {
-      searchBar.classList.toggle("active");
-    });
-  });
 </script>

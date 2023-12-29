@@ -1,0 +1,92 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f4f4f4;
+}
+
+.main-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.post, .comment {
+  padding: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.nested-comment {
+  margin-left: 40px;
+  border-left: 2px solid #eaeaea;
+  padding-left: 20px;
+}
+
+.post-title {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.user-info {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 20px;
+}
+
+.post-content, .comment-content {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #666;
+}
+
+.comments-section {
+  margin-top: 40px;
+}
+
+.comments-section h3 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.comment {
+  margin-left: 20px;
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+}
+
+.user-actions button {
+  margin-right: 10px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+a .material-symbols-outlined {
+  font-size: 16px;
+  vertical-align: -3px;
+}
+
+#delete-post-button {
+    font-size: 14px;
+    text-decoration: none;
+    color: black;
+}
+
+.user-actions button:hover {
+  background-color: #0056b3;
+}
+
+.user-actions button:not(:last-child) {
+  margin-right: 10px;
+}

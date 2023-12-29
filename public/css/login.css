@@ -1,4 +1,4 @@
-body {
+main {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,15 +16,68 @@ body {
   box-sizing: border-box;
 }
 
+#login-button {
+  display: flex;
+  font-size: 12px;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 5px;
+  background: linear-gradient(to right, #117a65 ,  #0e6655); 
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  flex: 0 0 auto;
+  margin-right: 10px; /* Margin around buttons */
+  cursor: pointer; /* Pointer cursor on hover */
+  padding: 10px 20px; /* Button padding */
+  margin-top: 10px; /* Top margin */
+  cursor: pointer; /* Pointer cursor */
+}
+
+.button-container {
+  display: flex;
+  justify-content:center;
+}
+
+.input-container input {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 5px; /* This makes the input rounded */
+  background-color: #f8f9fa;
+  font-size: 16px;
+}
+
+#register-button {
+  position: relative;
+  top: -45px;
+  left: 157px;
+  font-size: 12px;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 5px;
+  background: linear-gradient(to right, #ff9966, #ff5e62);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  flex: 0 0 auto;
+  margin-right: 10px; /* Margin around buttons */
+  cursor: pointer; /* Pointer cursor on hover */
+  padding: 10px 20px; /* Button padding */
+  margin-top: 10px; /* Top margin */
+  cursor: pointer; /* Pointer cursor */
+}
+
 #login h1 {
   text-align: center;
   margin-bottom: 24px;
   color: #333;  
 }
-.input-container {
-  position: relative;
-  margin-bottom: 15px;
-}
+
 
 #login select {
   cursor: pointer;

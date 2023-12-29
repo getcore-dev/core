@@ -11,7 +11,7 @@ h1 {
 
 .job-content {
   margin-top: 10px;
-    margin-right: 40px;
+  margin-right: 60px;
 
   display: flex;
   flex-direction: column; 
@@ -24,7 +24,7 @@ h1 {
 }
 
 .job-content:hover {
-  border: 2px solid #fff;
+  cursor: pointer;
 }
 
 #com-btn-container::-webkit-scrollbar, #job-btn-container::-webkit-scrollbar {
@@ -113,14 +113,10 @@ h1 {
 }
 
 
-.material-symbols-outlined {
-  font-size: 16px; 
-  vertical-align: -3px; 
-}
 
 .job-btn {
-  font-size: 12px;
-  margin: 7px 10px;
+  font-size: 11px;
+  margin: 7px 2px;
   border: none;
   border-radius: 5px;
   background: linear-gradient(to right, #212f3d, #1c2833); 
@@ -132,10 +128,14 @@ h1 {
   margin-top: 10px; /* Top margin */
   cursor: pointer; /* Pointer cursor */
 }
+div .material-symbols-outlined {
+  font-size: 15px; /* Icon size */
+  vertical-align: -3px; /* Vertical alignment */
+}
 
-@media (prefers-color-scheme: dark) {
-  .logo img {
-    filter: invert(1); /* Invert colors for dark mode */
+@media (max-width: 768px) {
+  #job-btn-container {
+    padding-top: 70px;
   }
 
 
