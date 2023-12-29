@@ -131,7 +131,6 @@ app.get("/", async (req, res) => {
       post.username = user.username;
     }
 
-    // Render the communities.ejs template with both user and posts data
     res.render("communities.ejs", { user: req.user, posts: posts });
   } catch (err) {
     console.error("Database query error:", err);
@@ -302,6 +301,30 @@ app.post("/posts/:postId/comments", checkAuthenticated, async (req, res) => {
   }
 });
 
+app.post("/posts/:postId/boost", checkAuthenticated, async (req, res) => {
+  try {
+    if (!req.user) {
+      return res
+        .status(401)
+        .json({ message: "You must be logged in to boost a post" });
+    }
+
+    let post = await getPostById(req.params.postId);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    post =
+      await sql.query`UPDATE posts SET boosts = boosts + 1 WHERE id = ${req.params.postId}`;
+
+    res.json({ message: "Boost successful" });
+  } catch (err) {
+    console.error("Database insert error:", err);
+    res.status(500).send("Error boosting post");
+  }
+});
+
 app.post(
   "/comments/:commentId/replies",
   checkAuthenticated,
@@ -337,7 +360,7 @@ app.post("/posts", async (req, res) => {
 
     await sql.query`INSERT INTO posts (id, user_id, title, content) VALUES (${uniqueId}, ${userId}, ${title}, ${content})`;
 
-    res.redirect(`/post/${uniqueId}`);
+    res.redirect(`/posts/${uniqueId}`);
   } catch (err) {
     console.error("Database insert error:", err);
     res.status(500).send("Error creating post");

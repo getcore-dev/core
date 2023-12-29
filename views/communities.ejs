@@ -20,18 +20,27 @@
 
     <div id="posts-container">
       <% posts.forEach(post => { %>
-      <div class="post" onclick="window.location.href='/posts/<%= post.id %>';">
-        <div class="thumbnail">
+      <div class="post">
+        <div class="votes">
+          <div id="post-boosts-<%= post.id %>">
+            <%= post.boosts %>
+          </div>
+            <span class="material-symbols-outlined" onclick="boostPost('<%= post.id %>')"> trending_up </span>
+          <%= post.detracts %>
+          <span class="material-symbols-outlined" onclick="downvotePost('<%= post.id %>')"> trending_down </span>        
+        </div>
+        <div class="thumbnail" onclick="window.location.href='/posts/<%= post.id %>';">
           <img
             src="/thumbnail_image_url.jpg"
             alt="Thumbnail Image"
             class="thumbnail-image"
           />
         </div>
-        <div class="post-content">
+        <div class="post-content" onclick="window.location.href='/posts/<%= post.id %>';">
           <div class="title">
             <strong><%= post.username %></strong> / <%= post.title %>
           </div>
+          <div class="post-date">
           <% 
           let postDate = new Date(post.created_at);
           let today = new Date();
@@ -46,14 +55,40 @@
           }
         %>
         <%= formattedDate %>
-                  <div class="description"><%= post.content %></div>
+        </div>
+            <div class="description"><%= post.content %></div>
         </div>
       </div>
       <% }); %>
     </div>
 
     <script>
-      const communities = [
+function boostPost(postId) {
+  fetch('/posts/' + postId + '/boost', { method: 'POST' })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Server responded with status ' + response.status);
+    }
+    return response.text(); // Get the response as text first
+  })
+  .then(text => {
+    console.log("Raw response text:", text); // Log the text
+    try {
+      const data = JSON.parse(text); // Then try to parse it
+      // Your existing success handling logic
+    } catch (e) {
+      console.error('Error parsing JSON:', e);
+    }
+  })
+  .catch(error => {
+    console.error('Fetch error:', error.message);
+  });
+}
+
+
+
+
+  const communities = [
         { name: "trending", icon: "trending_up" },
         { name: "new", icon: "schedule" },
         { name: "explore", icon: "public" },
@@ -75,6 +110,7 @@
         { name: "agile-development", icon: "scatter_plot" },
         // add more communities as needed
       ];
+
       function createButtons() {
         const container = document.getElementById("com-btn-container");
 
@@ -97,6 +133,7 @@
           container.appendChild(button);
         });
       }
+      
 
       // Call the function to create buttons on page load
       createButtons();

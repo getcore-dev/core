@@ -1,32 +1,45 @@
 .post {
-  margin-top: 10px;
    display: flex; 
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between; 
   position: relative; 
   flex: 1; 
-  border-radius: 5px;
-  border: 1px solid #aaa; 
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1); 
+  border-bottom: 1px solid #aaa;
 
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1); 
 }
 
-.post:hover {
-  cursor: pointer;
+.post:last-child {
+  border-bottom: none;
+}
 
+.post-date {
+  color: #666; /* Lighter text color */
 }
 
 #posts-container {
-  padding: 30px;
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
   padding-top: 0px;
+  display: flex;
+  flex-direction: column;
 }
 
+.votes {
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 10px;
+  margin-top: 10px;
+  padding-bottom: 5px;
+}
 
 /* Thumbnail Styles */
 .thumbnail {
   position: absolute; /* Absolute positioning inside post */
-  bottom: 4px; /* Bottom alignment */
-  left: 10px; /* Left alignment */
+  bottom: 10px; /* Bottom alignment */
+  left: 40px; /* Left alignment */
 }
 
 .thumbnail-image {
@@ -42,10 +55,10 @@
 .post-content {
   position: relative;
   left: 30px;
+  top: 10px;
   flex-grow: 1; /* Take up remaining space */
   margin-left: 40px;
   margin-right: 40px;
-
   padding: 0; /* No padding */
 }
 
@@ -72,13 +85,16 @@ span .material-symbols-outlined {
   vertical-align: -3px;
 }
 
+div .votes:hover {
+  cursor: pointer;
+}
+
 .create-post-btn {
   background: linear-gradient(to right,  #5d6d7e , #34495e
   );
   color: white;
   border: none;
   border-radius: 5px;
-  padding: 10px 20px;
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;
@@ -146,7 +162,7 @@ div .material-symbols-outlined {
 }
 
 #com-btn-container {
-  padding-top: 10px;
+  padding-bottom: 10px;
   padding-left: 9px; /* Left padding */
   display: flex; /* Display contents inline */
   overflow-x: auto; /* Horizontal scroll */
@@ -160,8 +176,13 @@ div .material-symbols-outlined {
 
 @media (max-width: 768px) {
 
+  #com-btn-container {
+    padding-top: 10px;
+  }
+
   .post-content {
-    left: 40px;
+    left: 5px;
+    top: -2px;
   }
 
   .thumbnail {
@@ -173,7 +194,6 @@ div .material-symbols-outlined {
     margin: auto;
 }
   .thumbnail-image {
-    border-radius: 5px; /* Increased border radius for softer corners */
     width: 67px; /* Width */
     height: 67px; /* Full height */
     aspect-ratio: 1/1; /* Maintain aspect ratio */

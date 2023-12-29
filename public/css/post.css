@@ -1,5 +1,5 @@
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* Set default font family */
   background-color: #f4f4f4;
 }
 
@@ -19,9 +19,8 @@ body {
 }
 
 .nested-comment {
-  margin-left: 40px;
+  margin-left: 20px;
   border-left: 2px solid #eaeaea;
-  padding-left: 20px;
 }
 
 .post-title {
@@ -30,10 +29,16 @@ body {
   margin-bottom: 10px;
 }
 
+div .user-info {
+  color: #333;
+  text-decoration: none;
+}
+
 .user-info {
-  font-size: 14px;
+  font-size: 18px;
+  font-weight: bold;
   color: #888;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .post-content, .comment-content {
@@ -55,27 +60,26 @@ body {
 .comment {
   margin-left: 20px;
 }
-
 .user-actions {
   display: flex;
-  align-items: center;
+  align-items: space-between;
 }
 
-.user-actions button {
-  margin-right: 10px;
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
+#reply-button {
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  vertical-align: 5px;
 }
 
 
 a .material-symbols-outlined {
+  text-decoration: none;
+  color: #333;
   font-size: 16px;
   vertical-align: -3px;
 }
+
 
 #delete-post-button {
     font-size: 14px;
@@ -83,10 +87,25 @@ a .material-symbols-outlined {
     color: black;
 }
 
-.user-actions button:hover {
-  background-color: #0056b3;
+.user-actions a {
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  vertical-align: 5px;
 }
 
-.user-actions button:not(:last-child) {
-  margin-right: 10px;
+.input-container input, .input-container textarea {
+  width: 95%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 5px; /* This makes the input rounded */
+  background-color: #f8f9fa;
+  font-size: 16px;
+}
+
+.input-container textarea {
+  resize: none;
 }

@@ -123,10 +123,11 @@ h1, h2, h3, p {
 }
 
 .nav-text-container {
+  white-space: pre;
   font-weight: bold; /* Bold text */
   position: absolute; /* Top padding */
-  left: 120px;
-  top: 18px;
+  left: 95px;
+  top: -35px;
   font-size: 24px;
 }
 
@@ -156,13 +157,13 @@ h1, h2, h3, p {
   }
 
   .logo {
-    left: 40px;
+    left: 27px;
   }
   .nav-text-container {
     font-size: 18px;
     position: absolute;
-    left: 86px;
-    top: 20px;
+    left: 45px;
+    top: -23px;
   }
 
   .hamburger-menu {
@@ -197,6 +198,11 @@ h1, h2, h3, p {
   min-width: 160px; /* Minimum width */
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* Box shadow */
   z-index: 1; /* Layering index */
+}
+
+.navbar-user-info {
+  text-decoration: none;
+  color: #000;
 }
 
 .menu-content a {
