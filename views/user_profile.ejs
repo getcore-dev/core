@@ -12,44 +12,46 @@
   </head>
   <body>
     <%- include('partials/navbar', { pagePath: 'communities' }) %>
+    <main>
+      <div id="profile" class="grid-container">
+        <div class="profile-info">
+          <h2><%= otheruser.username %></h2>
+          <p><%= otheruser.email %></p>
+        </div>
 
-    <div id="profile" class="grid-container">
-      <div class="profile-info">
-        <h2><%= otheruser.username %></h2>
-        <p><%= otheruser.email %></p>
-      </div>
+        <div class="current-job">
+          <h2>Current Job</h2>
+          <% if (otheruser.currentjob) { %>
+          <p><strong>Company:</strong> <%= otheruser.currentjob.company %></p>
+          <p><strong>Position:</strong> <%= otheruser.currentjob.position %></p>
+          <% } else { %>
+          <p>No current job information.</p>
+          <% } %>
+        </div>
 
-      <div class="current-job">
-        <h2>Current Job</h2>
-        <% if (otheruser.currentjob) { %>
-        <p><strong>Company:</strong> <%= otheruser.currentjob.company %></p>
-        <p><strong>Position:</strong> <%= otheruser.currentjob.position %></p>
-        <% } else { %>
-        <p>No current job information.</p>
-        <% } %>
-      </div>
+        <div class="learning-progress">
+          <h2>Learning Progress</h2>
+          <% if(otheruser.learningprogress) { %> <%
+          Object.keys(otheruser.learningprogress).forEach(function(key) { %>
+          <p>
+            <strong><%= key %>:</strong> <%= otheruser.learningprogress[key] %>
+            %
+          </p>
+          <% }); %> <% } else { %>
+          <p>No learning progress yet.</p>
+          <% } %>
+        </div>
 
-      <div class="learning-progress">
-        <h2>Learning Progress</h2>
-        <% if(otheruser.learningprogress) { %> <%
-        Object.keys(otheruser.learningprogress).forEach(function(key) { %>
-        <p>
-          <strong><%= key %>:</strong> <%= otheruser.learningprogress[key] %> %
-        </p>
-        <% }); %> <% } else { %>
-        <p>No learning progress yet.</p>
-        <% } %>
+        <div class="achievements">
+          <h2>Achievements</h2>
+          <% if (otheruser.achievements && otheruser.achievements.length) { %>
+          <% otheruser.achievements.forEach(function(achievement) { %>
+          <p><%= achievement %></p>
+          <% }); %> <% } else { %>
+          <p>No achievements yet.</p>
+          <% } %>
+        </div>
       </div>
-
-      <div class="achievements">
-        <h2>Achievements</h2>
-        <% if (otheruser.achievements && otheruser.achievements.length) { %> <%
-        otheruser.achievements.forEach(function(achievement) { %>
-        <p><%= achievement %></p>
-        <% }); %> <% } else { %>
-        <p>No achievements yet.</p>
-        <% } %>
-      </div>
-    </div>
+    </main>
   </body>
 </html>

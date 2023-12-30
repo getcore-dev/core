@@ -6,7 +6,9 @@ function initialize(passport, getUserByEmail, getUserById, getUserByUsername) {
     try {
       const user = await getUserByUsername(username);
       if (user == null) {
-        return done(null, false, { message: "No user with that name exists" });
+        return done(null, false, {
+          message: "No user with that username exists",
+        });
       }
 
       if (await bcrypt.compare(password, user.password)) {
@@ -15,6 +17,7 @@ function initialize(passport, getUserByEmail, getUserById, getUserByUsername) {
         return done(null, false, { message: "Password incorrect" });
       }
     } catch (e) {
+      console.error("Error in authentication:", e);
       return done(e);
     }
   };
@@ -30,7 +33,7 @@ function initialize(passport, getUserByEmail, getUserById, getUserByUsername) {
       const user = await getUserById(id);
       done(null, user);
     } catch (e) {
-      console.error("Error in deserialization:", e); // Log any errors
+      console.error("Error in deserialization:", e);
       done(e, null);
     }
   });

@@ -9,18 +9,18 @@ h1 {
     text-align: center;
 }
 
+
 .job-content {
   margin-top: 10px;
-  margin-right: 60px;
-
   display: flex;
   flex-direction: column; 
   justify-content: space-between; 
   position: relative; 
   flex: 1; 
-  border-radius: 5px;
-  border: 2px solid #aaa; 
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1); 
+  border-top: 1px solid #aaa; 
+  flex-grow: 1; /* Take up remaining space */
+  padding-left: 5px; /* No padding */
+  padding-right: 5px;
 }
 
 .job-content:hover {
@@ -31,20 +31,7 @@ h1 {
   display: none; 
 }
 
-#jobs-container {
-  padding: 30px;
-  padding-top: 0px;
-}
 
-.job-content {
-  position: relative;
-  left: 30px;
-  flex-grow: 1; /* Take up remaining space */
-
-
-  padding: 0; /* No padding */
-}
-  
 
   .job-header {
 
