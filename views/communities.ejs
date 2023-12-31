@@ -66,6 +66,10 @@
 
     <script>
 function detractPost(postId, user) {
+  if (!user) {
+    window.location.href = '/login'; // Redirect to the login page
+    return; // Stop further execution
+  }
   fetch(`/posts/${postId}/boost`, {
     method: 'POST',
     headers: {
@@ -110,6 +114,10 @@ function detractPost(postId, user) {
 }
 
 function boostPost(postId, user) {
+  if (!user) {
+    window.location.href = '/login'; // Redirect to the login page
+    return; // Stop further execution
+  }
   fetch(`/posts/${postId}/boost`, {
     method: 'POST',
     headers: {
