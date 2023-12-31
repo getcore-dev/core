@@ -25,9 +25,11 @@
           <div id="post-boosts-<%= post.id %>">
             <%= post.boosts %>
           </div>
-            <span class="material-symbols-outlined" onclick="boostPost('<%= post.id %>')"> trending_up </span>
+          <span class="material-symbols-outlined" onclick="boostPost('<%= post.id %>', '<%= user %>')"> trending_up </span>
+          <div id="post-detracts-<%= post.id %>">
           <%= post.detracts %>
-          <span class="material-symbols-outlined" onclick="downvotePost('<%= post.id %>')"> trending_down </span>        
+          </div>
+          <span class="material-symbols-outlined" onclick="detractPost('<%= post.id %>', '<%= user %>')"> trending_down </span>        
         </div>
         <div class="thumbnail" onclick="window.location.href='/posts/<%= post.id %>';">
           <img
@@ -63,30 +65,94 @@
     </div>
 
     <script>
-function boostPost(postId) {
-  fetch('/posts/' + postId + '/boost', { method: 'POST' })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Server responded with status ' + response.status);
-    }
-    return response.text(); // Get the response as text first
+function detractPost(postId, user) {
+  fetch(`/posts/${postId}/boost`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ user: user, action: "detract" })
   })
-  .then(text => {
-    console.log("Raw response text:", text); // Log the text
-    try {
-      const data = JSON.parse(text); // Then try to parse it
-      // Your existing success handling logic
-    } catch (e) {
-      console.error('Error parsing JSON:', e);
+  .then(response => response.json())
+  .then(data => {
+    console.log(data); // Console log the JSON response
+    if (data.message === "Detract successful") {
+      // Increase the detract count in the view
+      const detractCountElement = document.getElementById(`post-detracts-${postId}`);
+      detractCountElement.innerText = parseInt(detractCountElement.innerText) + 1;
+
+      // Change color of trending down arrow
+      const trendingDownElement = document.querySelector(`[onclick="detractPost('${postId}', '${user}')"]`);
+      trendingDownElement.style.color = "red";
+
+      // Check if the post was boosted by the user
+      const boostCountElement = document.getElementById(`post-boosts-${postId}`);
+      if (boostCountElement.innerText > 0) {
+        const trendingUpElement = document.querySelector(`[onclick="boostPost('${postId}', '${user}')"]`);
+      trendingUpElement.style.color = "black";
+              boostCountElement.innerText = parseInt(boostCountElement.innerText) - 1;
+      }
+    } else if (data.message === "Detract removed") {
+      // Decrease the detract count in the view
+      const detractCountElement = document.getElementById(`post-detracts-${postId}`);
+      detractCountElement.innerText = parseInt(detractCountElement.innerText) - 1;
+
+      // Change color of trending down arrow back to black
+      const trendingDownElement = document.querySelector(`[onclick="detractPost('${postId}', '${user}')"]`);
+      trendingDownElement.style.color = "black";
+    } else {
+      // Handle error
     }
   })
-  .catch(error => {
-    console.error('Fetch error:', error.message);
+  .catch((error) => {
+    console.error('Error:', error);
   });
 }
 
+function boostPost(postId, user) {
+  fetch(`/posts/${postId}/boost`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ user: user, action: "boost" })
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data); // Console log the JSON response
+    if (data.message === "Boost successful") {
+      // Increase the boost count in the view
+      const boostCountElement = document.getElementById(`post-boosts-${postId}`);
+      boostCountElement.innerText = parseInt(boostCountElement.innerText) + 1;
 
+      // Change color of trending up arrow
+      const trendingUpElement = document.querySelector(`[onclick="boostPost('${postId}', '${user}')"]`);
+      trendingUpElement.style.color = "green";
 
+      // Check if the post was detracted by the user
+      const detractCountElement = document.getElementById(`post-detracts-${postId}`);
+      if (detractCountElement.innerText > 0) {
+        // Decrease the detract count in the view
+        const trendingDownElement = document.querySelector(`[onclick="detractPost('${postId}', '${user}')"]`);
+      trendingDownElement.style.color = "black";
+        detractCountElement.innerText = parseInt(detractCountElement.innerText) - 1;
+      }
+    } else if (data.message === "Boost removed") {
+      // Decrease the boost count in the view
+      const boostCountElement = document.getElementById(`post-boosts-${postId}`);
+      boostCountElement.innerText = parseInt(boostCountElement.innerText) - 1;
+
+      // Change color of trending up arrow back to black
+      const trendingUpElement = document.querySelector(`[onclick="boostPost('${postId}', '${user}')"]`);
+      trendingUpElement.style.color = "black";
+    } else {
+      // Handle error
+    }
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+}
 
   const communities = [
         { name: "trending", icon: "trending_up" },

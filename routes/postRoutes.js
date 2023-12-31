@@ -34,11 +34,55 @@ router.post("/posts", async (req, res) => {
 router.post("/posts/:postId/boost", checkAuthenticated, async (req, res) => {
   try {
     const postId = req.params.postId;
-    await postQueries.boostPost(postId);
-    res.json({ message: "Boost successful" });
+    const userId = req.user.id;
+    const action = req.body.action; // Action can be "boost" or "detract"
+
+    console.log(`${action}ing post: ${postId} by user: ${userId}`);
+
+    // Check if the post is already boosted or detracted by the user
+    const isBoosted = await postQueries.isPostBoosted(postId, userId);
+    const isDetracted = await postQueries.isPostDetracted(postId, userId);
+
+    if (action === "boost") {
+      if (isBoosted) {
+        console.log("Post is already boosted. Removing the boost...");
+        // If already boosted, remove the boost
+        await postQueries.removeBoost(postId, userId);
+        res.json({ message: "Boost removed" });
+      } else {
+        console.log("Post is not boosted. Adding the boost...");
+        // If not boosted, add the boost
+        await postQueries.boostPost(postId, userId);
+
+        // Get the number of boosts and detracts for the post
+        const boosts = await postQueries.getBoostCount(postId);
+        const detracts = await postQueries.getDetractCount(postId);
+
+        res.json({ message: "Boost successful", boosts, detracts });
+      }
+    } else if (action === "detract") {
+      if (isDetracted) {
+        console.log("Post is already detracted. Removing the detract...");
+        // If already detracted, remove the detract
+        await postQueries.removeDetract(postId, userId);
+        res.json({ message: "Detract removed" });
+      } else {
+        console.log("Post is not detracted. Adding the detract...");
+        // If not detracted, add the detract
+        await postQueries.detractPost(postId, userId);
+
+        // Get the number of boosts and detracts for the post
+        const boosts = await postQueries.getBoostCount(postId);
+        const detracts = await postQueries.getDetractCount(postId);
+
+        res.json({ message: "Detract successful", boosts, detracts });
+      }
+    } else {
+      res.status(400).send("Invalid action");
+    }
   } catch (err) {
-    console.error("Database insert error:", err);
-    res.status(500).send("Error boosting post");
+    console.error("Database error:", err);
+    res.status(500).send("Error boosting/detracting post");
   }
 });
 
