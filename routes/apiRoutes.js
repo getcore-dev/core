@@ -16,6 +16,17 @@ router.get("/getUsername/:id", async (req, res) => {
   }
 });
 
+router.post("/upload-profile-picture", async (req, res) => {
+  try {
+    const { userId, imageUrl } = req.body;
+    await userQueries.addProfilePicture(userId, imageUrl);
+    res.json({ message: "Profile picture updated" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
 // Other API routes can be added here as needed.
 
 module.exports = router;
