@@ -22,14 +22,27 @@
       <% posts.forEach(post => { %>
       <div class="post">
         <div class="votes">
+          <style>
+            /* Boost Button */
+            #boost-button:hover {
+              color: green;
+              cursor: pointer;
+            }
+
+            /* Detract Button */
+            #detract-button:hover {
+              color: red;
+              cursor: pointer;
+            }
+          </style>
           <div id="post-boosts-<%= post.id %>">
             <%= post.boosts %>
           </div>
-          <span class="material-symbols-outlined" onclick="boostPost('<%= post.id %>', '<%= user %>')"> trending_up </span>
+          <span class="material-symbols-outlined" id="boost-button" onclick="boostPost('<%= post.id %>', '<%= user %>')"> trending_up </span>
           <div id="post-detracts-<%= post.id %>">
-          <%= post.detracts %>
+            <%= post.detracts %>
           </div>
-          <span class="material-symbols-outlined" onclick="detractPost('<%= post.id %>', '<%= user %>')"> trending_down </span>        
+          <span class="material-symbols-outlined" id="detract-button" onclick="detractPost('<%= post.id %>', '<%= user %>')"> trending_down </span>        
         </div>
         <div class="thumbnail" onclick="window.location.href='/posts/<%= post.id %>';">
           <img

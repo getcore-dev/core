@@ -26,6 +26,24 @@
         formattedDate %>
         <div class="post-content"><%= post.content %></div>
         <% if (user && user.username === post.user.username) { %>
+
+        <div class="votes">
+          <div id="post-boosts-<%= post.id %>"><%= post.boosts %></div>
+          <span
+            class="material-symbols-outlined"
+            onclick="boostPost('<%= post.id %>', '<%= user %>')"
+          >
+            trending_up
+          </span>
+          <div id="post-detracts-<%= post.id %>"><%= post.detracts %></div>
+          <span
+            class="material-symbols-outlined"
+            onclick="detractPost('<%= post.id %>', '<%= user %>')"
+          >
+            trending_down
+          </span>
+        </div>
+
         <form
           action="/post/<%= post.id %>?_method=DELETE"
           method="POST"
