@@ -27,6 +27,7 @@ router.post("/register", checkNotAuthenticated, async (req, res) => {
   }
 });
 
+
 // Login route
 router.get("/login", checkNotAuthenticated, async (req, res) => {
   res.render("login.ejs", { user: req.user });

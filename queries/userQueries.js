@@ -1,6 +1,4 @@
 const sql = require("mssql");
-const fs = require("fs");
-const path = require("path");
 
 const userQueries = {
   findByUsername: async (username) => {
@@ -35,23 +33,35 @@ const userQueries = {
     }
   },
 
-  addProfilePicture: async (userId, profilePictureUrl) => {
+  updateProfilePicture: async (userId, profilePicturePath) => {
+    console.log(`Starting updateProfilePicture for user ID: ${userId}`);
+
     try {
-      const profilePicturePath = path.join(
-        "/path/to/profile/images",
-        path.basename(profilePictureUrl)
+      console.log(
+        `Updating avatar for user ID: ${userId} with path: ${profilePicturePath}`
       );
 
-      // Store the profile picture on the server
-      await fs.promises.writeFile(
-        profilePicturePath,
-        fs.readFileSync(profilePictureUrl)
-      );
+      const result = await sql.query`
+        UPDATE users 
+        SET avatar = ${profilePicturePath}
+        WHERE id = ${userId}`;
 
-      // Update the profile_image_path in the database
-      await sql.query`UPDATE users SET profile_image_path = ${profilePicturePath} WHERE id = ${userId}`;
+      if (result && result.rowCount === 0) {
+        console.warn(`No rows updated. User ID ${userId} might not exist.`);
+      } else if (result) {
+        console.log(`Update successful. Rows affected: ${result.rowCount}`);
+      }
+
+      console.log(`Updated profile picture path: ${profilePicturePath}`);
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error("Database update error:", err.message);
+      console.error("Error stack:", err.stack);
+
+      // Additional information for debugging
+      console.error(
+        `Failed to update avatar for user ID: ${userId} with path: ${profilePicturePath}`
+      );
+
       throw err;
     }
   },

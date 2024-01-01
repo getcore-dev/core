@@ -15,10 +15,7 @@
     <main>
       <div id="profile" class="grid-container">
         <div class="profile-picture">
-          <img
-            src="<%= otheruser.profile_image_path %>"
-            alt="Profile Picture"
-          />
+          <img src="<%= otheruser.avatar %>" alt="Profile Picture" />
 
           <% if (user && user.username === otheruser.username) { %>
           <form
@@ -27,7 +24,7 @@
             method="POST"
             enctype="multipart/form-data"
           >
-            <input type="file" name="profilePicture" accept="image/*" />
+            <input id="files" type="file" name="file" />
             <button type="submit">Upload</button>
           </form>
           <% } %>

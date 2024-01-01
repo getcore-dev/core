@@ -85,11 +85,6 @@
   cursor: pointer; /* Pointer cursor */
 }
 
-span .material-symbols-outlined {
-  font-size: 16px;
-  vertical-align: -3px;
-}
-
 div .votes:hover {
   cursor: pointer;
 }
@@ -152,7 +147,7 @@ div .votes:hover {
 
 /* Icon Styles */
 div .material-symbols-outlined {
-  font-size: 15px; /* Icon size */
+  font-size: 20px; /* Icon size */
   vertical-align: -3px; /* Vertical alignment */
 }
 
