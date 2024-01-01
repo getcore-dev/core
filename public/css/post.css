@@ -3,6 +3,64 @@ body {
   background-color: #f4f4f4;
 }
 
+a .material-symbols-outlined {
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+  vertical-align: -3px;
+}
+.boosts {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+.detracts {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+.replies {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+
+.user-interactions {
+  display: flex;
+  flex-direction: row;
+  align-items: space;
+  justify-content: start;
+  margin-right: 20px;
+  gap: 5px; 
+  font-weight: bold;
+
+}
+
+div .material-symbols-outlined {
+  
+  font-size: 20px; 
+  vertical-align: -3px; 
+
+}
+
+.user-info:hover {
+  color: green;
+  text-decoration: none;
+}
+div .material-symbols-outlined:hover {
+  cursor: pointer;
+}
+
+.boosts:hover {
+  color: green;
+}
+
+.detracts:hover {
+  color: red;
+}
+
+
 .main-container {
   max-width: 800px;
   margin: 40px auto;
@@ -35,7 +93,7 @@ div .user-info {
 }
 
 .user-info {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   color: #888;
   margin-bottom: 25px;
@@ -72,20 +130,6 @@ div .user-info {
   vertical-align: 5px;
 }
 
-
-a .material-symbols-outlined {
-  text-decoration: none;
-  color: #333;
-  font-size: 16px;
-  vertical-align: -3px;
-}
-
-
-#delete-post-button {
-    font-size: 14px;
-    text-decoration: none;
-    color: black;
-}
 
 .user-actions a {
   text-decoration: none;

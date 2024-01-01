@@ -5,6 +5,7 @@ const { checkAuthenticated } = require("../middleware/authMiddleware");
 const postQueries = require("../queries/postQueries");
 const utilFunctions = require("../utils/utilFunctions");
 const getUserDetails = utilFunctions.getUserDetails;
+const commentQueries = require("../queries/commentQueries");
 
 // Route for viewing all posts
 router.get("/posts", async (req, res) => {
@@ -86,13 +87,78 @@ router.post("/posts/:postId/boost", checkAuthenticated, async (req, res) => {
   }
 });
 
+router.post(
+  "/comments/:commentId/boost",
+  checkAuthenticated,
+  async (req, res) => {
+    try {
+      const commentId = req.params.commentId;
+      const userId = req.user.id;
+      const action = req.body.action; // Action can be "boost" or "detract"
+
+      console.log(`${action}ing comment: ${commentId} by user: ${userId}`);
+
+      // Check if the post is already boosted or detracted by the user
+      const isBoosted = await commentQueries.isCommentBoosted(
+        commentId,
+        userId
+      );
+      const isDetracted = await commentQueries.isCommentDetracted(
+        commentId,
+        userId
+      );
+
+      if (action === "boost") {
+        if (isBoosted) {
+          console.log("Comment is already boosted. Removing the boost...");
+          // If already boosted, remove the boost
+          await commentQueries.removeBoost(commentId, userId);
+          res.json({ message: "Boost removed" });
+        } else {
+          console.log("Comment is not boosted. Adding the boost...");
+          // If not boosted, add the boost
+          await commentQueries.boostComment(commentId, userId);
+
+          // Get the number of boosts and detracts for the post
+          const boosts = await commentQueries.getBoostCount(commentId);
+          const detracts = await commentQueries.getDetractCount(commentId);
+
+          res.json({ message: "Boost successful", boosts, detracts });
+        }
+      } else if (action === "detract") {
+        if (isDetracted) {
+          console.log("Comment is already detracted. Removing the detract...");
+          // If already detracted, remove the detract
+          await commentQueries.removeDetract(commentId, userId);
+          res.json({ message: "Detract removed" });
+        } else {
+          console.log("Comment is not detracted. Adding the detract...");
+          // If not detracted, add the detract
+          await commentQueries.detractComment(commentId, userId);
+
+          // Get the number of boosts and detracts for the post
+          const boosts = await commentQueries.getBoostCount(commentId);
+          const detracts = await commentQueries.getDetractCount(commentId);
+
+          res.json({ message: "Detract successful", boosts, detracts });
+        }
+      } else {
+        res.status(400).send("Invalid action");
+      }
+    } catch (err) {
+      console.error("Database error:", err);
+      res.status(500).send("Error boosting/detracting comment");
+    }
+  }
+);
+
 router.get("/posts/:postId", async (req, res) => {
   try {
     const postId = req.params.postId;
 
     // Fetch all comments related to the post
     const query = `
-        SELECT c.id, c.parent_comment_id, c.user_id, c.comment, c.created_at
+        SELECT c.id, c.parent_comment_id, c.user_id, c.comment, c.created_at, c.boosts, c.detracts
         FROM comments c
         WHERE c.post_id = '${postId}' AND c.deleted = 0`;
 

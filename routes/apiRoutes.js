@@ -34,7 +34,7 @@ router.post(
       if (req.file.size > 1000000) {
         return res.status(400).send("File size too large");
       }
-      const userId = user.userId;
+      const userId = req.user.userId;
       const filePath = req.file.path;
       await userQueries.updateProfilePicture(userId, filePath);
       res.redirect("back");

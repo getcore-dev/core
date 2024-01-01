@@ -66,4 +66,8 @@ router.delete("/comment/:commentId", checkAuthenticated, async (req, res) => {
   }
 });
 
+
+
+router.post("/comments/:commentId/detract", )
+
 module.exports = router;

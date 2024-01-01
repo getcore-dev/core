@@ -4,7 +4,7 @@ const utilFunctions = {
   getUserDetails: async (userId) => {
     try {
       const userResult =
-        await sql.query`SELECT username FROM users WHERE id = ${userId}`;
+        await sql.query`SELECT * FROM users WHERE id = ${userId}`;
       if (userResult.recordset.length > 0) {
         return userResult.recordset[0];
       } else {
