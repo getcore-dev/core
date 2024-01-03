@@ -1,11 +1,10 @@
 .post {
-   display: flex; 
+  display: flex; 
   flex-direction: row;
   justify-content: space-between; 
   position: relative; 
   flex: 1; 
   border-bottom: 1px solid #aaa;
-
   transition: all 0.3s cubic-bezier(.25,.8,.25,1); 
 }
 
@@ -63,15 +62,16 @@
   top: 10px;
   flex-grow: 1; /* Take up remaining space */
   margin-left: 40px;
-  margin-right: 40px;
+  margin-right: 30px;
   padding: 0; /* No padding */
 }
 
 .com-btn {
-  font-size: 12px;
-  padding: 7px 10px;
+  font-size: 14px;
+  height: 32px;
+  width: 113px;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   background: linear-gradient(to right, #117a65 ,  #0e6655); 
   color: white;
   cursor: pointer;
@@ -80,7 +80,6 @@
   flex: 0 0 auto;
   margin-right: 10px; /* Margin around buttons */
   cursor: pointer; /* Pointer cursor on hover */
-  padding: 10px 20px; /* Button padding */
   margin-top: 10px; /* Top margin */
   cursor: pointer; /* Pointer cursor */
 }
@@ -90,18 +89,19 @@ div .votes:hover {
 }
 
 .create-post-btn {
-  background: linear-gradient(to right,  #5d6d7e , #34495e
-  );
-  color: white;
+  background: linear-gradient(to right,  #5d6d7e , #34495e);
+  font-size: 14px;
+  height: 32px;
+  width: 113px;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
+  color: white;
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;
   flex: 0 0 auto;
   margin-right: 10px; /* Margin around buttons */
   cursor: pointer; /* Pointer cursor on hover */
-  padding: 10px 20px; /* Button padding */
   margin-top: 10px; /* Top margin */
   cursor: pointer; /* Pointer cursor */
 }
@@ -113,19 +113,31 @@ div .votes:hover {
 }
 
 .title {
-  font-size: 17px; /* Font size */
-  margin: 0; /* No margin */
+  padding-top: 8px;
+  font-size: 15px;
+  font-weight: bold;
+  margin: 0;
+  color: #333; 
+
 }
 
+#date-icon, #user-icon, #comments-icon {
+  font-size: 15px;
+  color: #666; 
+}
+
+.post-date {
+  padding-bottom: 8px;
+}
 
 /* Styles for Post Elements */
 .user-info, .post-date, .description, .reactions {
-  font-size: 14px; /* Font size for consistency */
-  color: #333; /* Default text color */
+  font-size: 14px; 
+  color: #333;
 }
 
 .title {
-  color: #333; /* Specific color for title */
+  color: #333; 
 }
 
 .user-info, .post-date {
@@ -133,7 +145,7 @@ div .votes:hover {
 }
 
 .description {
-  margin: 5px 0; /* Margin around description */
+  margin-top: 3px;
 }
 
 .reactions {
@@ -181,22 +193,24 @@ div .material-symbols-outlined {
   }
 
   .post-content {
-    left: 5px;
+    left: 55px;
     top: -2px;
   }
+  .votes {
+    display: none;
+  }
 
-  .thumbnail {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-}
   .thumbnail-image {
-    width: 67px; /* Width */
-    height: 67px; /* Full height */
+    width: 58px; /* Width */
+    height: 58px; /* Full height */
     aspect-ratio: 1/1; /* Maintain aspect ratio */
     object-fit: cover; /* Cover the space without stretching */
   }
+  
+  .thumbnail {
+    position: absolute;
+    bottom: 0px;
+    left: 15px;
+  }
+  
 }

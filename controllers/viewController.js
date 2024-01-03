@@ -10,7 +10,8 @@ const viewController = {
 
       for (let post of posts) {
         const user = await utilFunctions.getUserDetails(post.user_id);
-        post.username = user.username;
+        post.username = user.username.toLowerCase();
+        post.comments = await utilFunctions.getComments(post.id);
       }
 
       res.render("communities.ejs", { user: req.user, posts: posts });

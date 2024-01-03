@@ -53,25 +53,50 @@
         </div>
         <div class="post-content" onclick="window.location.href='/posts/<%= post.id %>';">
           <div class="title">
-            <strong><%= post.username %></strong> / <%= post.title %>
+            <%= post.title %>
           </div>
-          <div class="post-date">
-          <% 
-          let postDate = new Date(post.created_at);
-          let today = new Date();
-          let formattedDate;
-        
-          let timeOptions = { hour: '2-digit', minute: '2-digit' };
-        
-          if(postDate.toDateString() === today.toDateString()) {
-            formattedDate = `Today, ${postDate.toLocaleTimeString(undefined, timeOptions)}`;
-          } else {
-            formattedDate = `${postDate.toLocaleDateString()}, ${postDate.toLocaleTimeString(undefined, timeOptions)}`;
-          }
-        %>
-        <%= formattedDate %>
-        </div>
             <div class="description"><%= post.content %></div>
+
+          
+          <div class="community">
+            <%= post.community %>
+          </div>  
+          <div class="post-date">
+            <span class="material-symbols-outlined" id="date-icon"> schedule </span>
+            <%
+            let postDate = new Date(post.created_at);
+            let today = new Date();
+            let formattedDate;
+          
+            // Calculate time difference in milliseconds
+            let diff = today - postDate;
+          
+            // Convert time difference to different units
+            let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+            let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+            let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+            let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+          
+            // Decide the format based on the time difference
+            if (minutes < 60) {
+              formattedDate = minutes + ' minutes ago';
+            } else if (hours < 24) {
+              formattedDate = hours + ' hours ago';
+            } else if (days < 365) {
+              formattedDate = days + ' days ago';
+            } else {
+              formattedDate = years + ' years ago';
+            }
+          %>
+          <%= formattedDate %>
+          <span class="material-symbols-outlined" id="comments-icon"> comment </span>
+          <%= post.comments.length %>
+          <span class="material-symbols-outlined" id="user-icon"> person </span>
+          <strong><%= post.username %></strong>
+          
+          
+          
+        </div>
         </div>
       </div>
       <% }); %>
@@ -177,25 +202,15 @@ function boostPost(postId, user) {
 
   const communities = [
         { name: "trending", icon: "trending_up" },
-        { name: "new", icon: "schedule" },
-        { name: "explore", icon: "public" },
-        { name: "general", icon: "groups" },
-        { name: "ml-ai", icon: "robot" },
-        { name: "it-tech", icon: "developer_board" },
-        { name: "web-dev", icon: "web" },
-        { name: "cybersecurity", icon: "admin_panel_settings" },
-        { name: "game-dev", icon: "sports_esports" },
-        { name: "ios-dev", icon: "ios" },
+        { name: "New", icon: "schedule" },
+        { name: "Explore", icon: "public" },
+        { name: "General", icon: "groups" },
+        { name: "ML-AI", icon: "robot" },
+        { name: "IT-Tech", icon: "developer_board" },
+        { name: "Web-Dev", icon: "web" },
+        { name: "Game-Dev", icon: "sports_esports" },
+        { name: "IOS-Dev", icon: "ios" },
         { name: "android-dev", icon: "android" },
-        { name: "data-science", icon: "monitoring" },
-        { name: "web3", icon: "currency_bitcoin" },
-        { name: "cloud", icon: "cloud" },
-        { name: "devops", icon: "settings" },
-        { name: "AI-ethics", icon: "volunteer_activism" },
-        { name: "UX-design", icon: "design_services" },
-        { name: "software-testing", icon: "check_circle" },
-        { name: "agile-development", icon: "scatter_plot" },
-        // add more communities as needed
       ];
 
       function createButtons() {
@@ -213,7 +228,7 @@ function boostPost(postId, user) {
           button.appendChild(span);
           button.appendChild(
             document.createTextNode(
-              ` ${community.name.replace(/-/g, " ").toUpperCase()}`
+              ` ${community.name.replace(/-/g, " ")}`
             )
           );
 

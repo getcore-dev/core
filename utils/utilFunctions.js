@@ -16,6 +16,49 @@ const utilFunctions = {
     }
   },
 
+  getComments: async (postId) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM comments WHERE post_id = ${postId} AND deleted = 0
+      `;
+      const commentList = result.recordset;
+      return await utilFunctions.getNestedComments(commentList);
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err; // Rethrow the error for the caller to handle
+    }
+  },
+
+  getNestedComments: async (commentList) => {
+    const commentMap = {};
+
+    // Create a map of comments
+    commentList.forEach((comment) => {
+      commentMap[comment.id] = { ...comment, replies: [] };
+    });
+
+    const nestedComments = [];
+    for (let comment of commentList) {
+      if (comment.parent_comment_id && commentMap[comment.parent_comment_id]) {
+        commentMap[comment.parent_comment_id].replies.push(
+          commentMap[comment.id]
+        );
+      } else {
+        nestedComments.push(commentMap[comment.id]);
+      }
+    }
+
+    // Fetch user details for each comment
+    for (let comment of nestedComments) {
+      comment.user = await utilFunctions.getUserDetails(comment.user_id);
+      for (let reply of comment.replies) {
+        reply.user = await utilFunctions.getUserDetails(reply.user_id);
+      }
+    }
+
+    return nestedComments;
+  },
+
   nestComments: async (commentList) => {
     const commentMap = {};
 
