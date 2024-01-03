@@ -140,6 +140,7 @@ div .votes:hover {
 .user-info, .post-info, .description, .reactions {
   font-size: 14px; 
   color: #333;
+  margin-right: 5px;
 }
 
 .title {
