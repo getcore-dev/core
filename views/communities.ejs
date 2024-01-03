@@ -61,7 +61,9 @@
           <div class="community">
             <%= post.community %>
           </div>  
-          <div class="post-date">
+          <div class="post-info">
+            <span class="material-symbols-outlined" id="score-icon"> star </span>
+            <%= post.score %>
             <span class="material-symbols-outlined" id="date-icon"> schedule </span>
             <%
             let postDate = new Date(post.created_at);

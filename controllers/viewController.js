@@ -11,6 +11,7 @@ const viewController = {
       for (let post of posts) {
         const user = await utilFunctions.getUserDetails(post.user_id);
         post.username = user.username.toLowerCase();
+        post.score = await utilFunctions.getPostScore(post.id);
         post.comments = await utilFunctions.getComments(post.id);
       }
 

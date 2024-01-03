@@ -59,6 +59,21 @@ const utilFunctions = {
     return nestedComments;
   },
 
+  getPostScore: async (postId) => {
+    try {
+      const result = await sql.query`
+        SELECT boosts, detracts FROM posts WHERE id = ${postId}
+      `;
+      const boosts = result.recordset[0].boosts;
+      const detracts = result.recordset[0].detracts;
+      const score = boosts - detracts;
+      return score;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err; // Rethrow the error for the caller to handle
+    }
+  },
+
   nestComments: async (commentList) => {
     const commentMap = {};
 

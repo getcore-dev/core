@@ -17,7 +17,7 @@
   border-bottom: none;
 }
 
-.post-date {
+.post-info {
   color: #666; /* Lighter text color */
 }
 
@@ -121,17 +121,23 @@ div .votes:hover {
 
 }
 
-#date-icon, #user-icon, #comments-icon {
+#date-icon, #user-icon, #comments-icon, #score-icon {
+  vertical-align: -3px;
   font-size: 15px;
   color: #666; 
 }
 
-.post-date {
+#score-icon {
+  color: green;
+}
+
+
+.post-info {
   padding-bottom: 8px;
 }
 
 /* Styles for Post Elements */
-.user-info, .post-date, .description, .reactions {
+.user-info, .post-info, .description, .reactions {
   font-size: 14px; 
   color: #333;
 }
@@ -140,7 +146,7 @@ div .votes:hover {
   color: #333; 
 }
 
-.user-info, .post-date {
+.user-info, .post-info {
   color: #666; /* Lighter text color */
 }
 
