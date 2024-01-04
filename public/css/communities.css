@@ -18,7 +18,7 @@
 }
 
 .post-info {
-  color: #666; /* Lighter text color */
+  color: #666; 
 }
 
 #posts-container {
@@ -39,20 +39,29 @@
   padding-bottom: 5px;
 }
 
-/* Thumbnail Styles */
 .thumbnail {
-  position: absolute; /* Absolute positioning inside post */
-  bottom: 10px; /* Bottom alignment */
-  left: 40px; /* Left alignment */
+  position: absolute; 
+  bottom: 10px; 
+  left: 40px;
 }
 
 .thumbnail-image {
-  border-radius: 5px; /* Increased border radius for softer corners */
-  width: 50px; /* Width */
-  height: 50px; /* Full height */
-  aspect-ratio: 1/1; /* Maintain aspect ratio */
-  object-fit: cover; /* Cover the space without stretching */
+  border-radius: 5px; 
+  width: 50px; 
+  height: 50px;
+  aspect-ratio: 1/1; 
+  object-fit: cover;
 }
+
+.communities_id {
+  display: inline-block; 
+  background-color: darkgreen; 
+  color: white;
+  padding: 2px 7px; 
+  border-radius: 5px; 
+  font-size: 12px; 
+}
+
 
 
 /* Post Content Styles */
