@@ -6,6 +6,7 @@ const postQueries = require("../queries/postQueries");
 const utilFunctions = require("../utils/utilFunctions");
 const getUserDetails = utilFunctions.getUserDetails;
 const commentQueries = require("../queries/commentQueries");
+const { getLinkPreview } = require("../utils/utilFunctions");
 
 // Route for viewing all posts
 router.get("/posts", async (req, res) => {
@@ -22,8 +23,14 @@ router.get("/posts", async (req, res) => {
 // Route for creating a new post
 router.post("/posts", async (req, res) => {
   try {
-    const { userId, title, content } = req.body;
-    const postId = await postQueries.createPost(userId, title, content);
+    const { userId, title, content, link, community_id } = req.body;
+    const postId = await postQueries.createPost(
+      userId,
+      title,
+      content,
+      link,
+      community_id
+    );
     res.redirect(`/posts/${postId}`);
   } catch (err) {
     console.error("Database insert error:", err);
@@ -158,7 +165,7 @@ router.get("/posts/:postId", async (req, res) => {
 
     // Fetch all comments related to the post
     const query = `
-        SELECT c.id, c.parent_comment_id, c.user_id, c.comment, c.created_at, c.boosts, c.detracts
+        SELECT * 
         FROM comments c
         WHERE c.post_id = '${postId}' AND c.deleted = 0`;
 
@@ -234,6 +241,12 @@ router.get("/posts/:postId", async (req, res) => {
         })
       ),
     };
+
+    // Add link preview to postData if link exists
+    if (postData.link) {
+      const linkPreview = await getLinkPreview(postData.link);
+      postData.linkPreview = linkPreview;
+    }
 
     res.render("post.ejs", { post: postData, user: req.user });
   } catch (err) {

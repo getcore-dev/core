@@ -1,4 +1,5 @@
 const sql = require("mssql");
+const crypto = require("crypto");
 
 const postQueries = {
   getPosts: async () => {
@@ -36,12 +37,12 @@ const postQueries = {
     }
   },
 
-  createPost: async (userId, title, content) => {
+  createPost: async (userId, title, content, link = "", community_id) => {
     try {
       const uniqueId = `${Date.now().toString(36)}-${crypto
         .randomBytes(3)
         .toString("hex")}`;
-      await sql.query`INSERT INTO posts (id, user_id, title, content) VALUES (${uniqueId}, ${userId}, ${title}, ${content})`;
+      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${community_id})`;
       return uniqueId;
     } catch (err) {
       console.error("Database insert error:", err);

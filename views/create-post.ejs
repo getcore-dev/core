@@ -9,91 +9,31 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     />
     <link rel="stylesheet" href="/css/navbar.css" />
-    <style>
-      body {
-        font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-          Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue",
-          Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-          "Noto Color Emoji"; /* Set default font family */
-      }
-      body {
-        font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-          Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue",
-          Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-          "Noto Color Emoji"; /* Set default font family */
-        background-color: #f4f4f4;
-      }
-
-      .main-container {
-        max-width: 800px;
-        margin: 40px auto;
-        padding: 20px;
-        background-color: #fff;
-        box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
-      }
-
-      .post,
-      .comment {
-        padding: 20px;
-        margin-bottom: 20px;
-        border-bottom: 1px solid #eaeaea;
-      }
-
-      .post-title {
-        font-size: 24px;
-        color: #333;
-        margin-bottom: 10px;
-      }
-
-      .user-info {
-        font-size: 14px;
-        color: #888;
-        margin-bottom: 20px;
-      }
-
-      .post-content,
-      .comment-content {
-        font-size: 16px;
-        line-height: 1.6;
-        color: #666;
-      }
-
-      .comments-section {
-        margin-top: 40px;
-      }
-
-      .comments-section h3 {
-        font-size: 20px;
-        color: #333;
-        margin-bottom: 20px;
-      }
-
-      .comment {
-        margin-left: 20px;
-      }
-    </style>
+    <link rel="stylesheet" href="/css/create-post.css" />
   </head>
   <body>
     <%- include('partials/navbar', { pagePath: 'home' }) %>
-
-    <div class="main-container">
-      <!-- Post Creation Form -->
-      <form action="/posts" method="POST">
-        <h2>Create a New Post</h2>
-        <div class="form-group">
-          <input type="hidden" name="userId" value="<%= user.id %>" />
-          <label for="title">Title:</label>
-          <input type="text" id="title" name="title" required />
-          <label for="community">Community:</label>
-          <input type="text" id="community" name="community" required />
-        </div>
-        <div class="form-group">
-          <label for="content">Content:</label>
-          <textarea id="content" name="content" required></textarea>
-        </div>
-        <button type="submit">Submit Post</button>
-      </form>
-    </div>
+    <main>
+      <div class="main-container">
+        <!-- Post Creation Form -->
+        <form action="/posts" method="POST">
+          <h2>Create a New Post</h2>
+          <div class="form-group">
+            <input type="hidden" name="userId" value="<%= user.id %>" />
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required />
+            <label for="community">Community:</label>
+            <input type="text" id="community" name="community_id" />
+            <label for="link">Link:</label>
+            <input type="text" id="link" name="link" />
+          </div>
+          <div class="form-group">
+            <label for="content">Content:</label>
+            <textarea id="content" name="content" required></textarea>
+          </div>
+          <button type="submit">Submit Post</button>
+        </form>
+      </div>
+    </main>
   </body>
 </html>

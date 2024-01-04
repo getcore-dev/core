@@ -8,7 +8,11 @@ body {
 @media (max-width: 768px) {
   body {
       padding-top: 60px; /* Reduced padding for mobile */
+      overflow-x: hidden;
+
   }
+
+  
 }
 
 /* Common Style for Headers and Paragraphs */
@@ -37,10 +41,9 @@ h1, h2, h3, p {
 .nav-links {
   list-style: none; /* Remove list bullets */
   margin: 0;
-  padding: 0 80px; /* Padding around the navbar links */
   display: flex; /* Display links inline */
-  gap: 4px; /* Gap between links */
-  display: flex;
+  position: absolute;
+  left: 83px;
   margin-top: 40px;
   flex-direction: row;
   width: 100%;
@@ -87,13 +90,14 @@ h1, h2, h3, p {
 /* Logo Style */
 .logo {
   position: absolute; /* Position relative to the navbar */
-  left: -10px; /* Adjust as needed to align with navbar's left edge */
+  left: -40 px; /* Adjust as needed to align with navbar's left edge */
   top: 5px; /* Adjust as needed to align with navbar's top */
 }
 
 .logo img {
   max-height: 85px; /* Maximum height of the logo */
   padding: 0 5px; /* Padding around the logo */
+  object-fit: cover;
 }
 
 .navbar-button.active::after {
@@ -157,7 +161,7 @@ h1, h2, h3, p {
   }
 
   .logo {
-    left: 27px;
+    left: 45px;
   }
   .nav-text-container {
     font-size: 18px;
@@ -180,7 +184,6 @@ h1, h2, h3, p {
     position: absolute;
     top: 8px;
     max-height: 45px; /* Maximum height of the logo */
-    padding: 0 5px; /* Padding around the logo */
   }
 }
 
@@ -198,6 +201,7 @@ h1, h2, h3, p {
   min-width: 160px; /* Minimum width */
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* Box shadow */
   z-index: 1; /* Layering index */
+  border: 1px solid #ccc;
 }
 
 .navbar-user-info {
@@ -227,7 +231,6 @@ h1, h2, h3, p {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0px 20px;
 }
 
 

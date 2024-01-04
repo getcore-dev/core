@@ -14,7 +14,29 @@
       <div class="post">
         <h2 class="post-title"><%= post.title %></h2>
 
-        <div class="post-content"><%= post.content %></div>
+        <div class="post-content">
+          <%= post.content %> <% if (post.linkPreview) { %>
+
+          <div class="link-preview">
+            <img
+              src="<%= post.linkPreview.image %>"
+              alt="Preview"
+              class="preview-image"
+            />
+            <div class="preview-text">
+              <h4 class="preview-title">
+                <a href="<%= post.linkPreview.url %>"
+                  ><%= post.linkPreview.title %></a
+                >
+              </h4>
+              <p class="preview-description">
+                <%=post.linkPreview.description %>
+              </p>
+            </div>
+          </div>
+
+          <% } %> <%= post.community_id %>
+        </div>
         <a class="user-info" href="/profile/<%= post.user.username %>"
           ><%= post.user.username %></a
         >
@@ -103,7 +125,9 @@
             <a class="user-info" href="/profile/<%= post.user.username %>"
               ><%= comment.user.username%></a
             ><% if (comment.user.verified === true) { %>
-            <span class="material-symbols-outlined">verified</span>
+            <span class="material-symbols-outlined" id="verified"
+              >verified</span
+            >
             <% } %> <span>&#183;</span>
             <% let commentDate = new Date(comment.created_at); let today = new
             Date(); let formattedDate; let timeOptions = { hour: '2-digit',

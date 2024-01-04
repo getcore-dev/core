@@ -3,11 +3,19 @@ body {
   background-color: #f4f4f4;
 }
 
+#verified, a #verified {
+  color: green;
+}
+
 a .material-symbols-outlined {
   text-decoration: none;
   color: #333;
   font-size: 16px;
   vertical-align: -3px;
+}
+
+img.linkimage {
+  width: 200px;
 }
 .boosts {
   display: flex;
@@ -92,6 +100,7 @@ div .user-info {
   text-decoration: none;
 }
 
+
 .user-info {
   font-size: 16px;
   font-weight: bold;
@@ -152,4 +161,86 @@ div .user-info {
 
 .input-container textarea {
   resize: none;
+}
+
+@media screen and (max-width: 600px) {
+  .main-container {
+    margin: 20px 10px;
+    padding: 10px;
+  }
+
+  .post, .comment {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .nested-comment {
+    margin-left: 10px;
+  }
+
+  .post-title {
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+
+  .user-info {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  .post-content, .comment-content {
+    font-size: 14px;
+  }
+
+  .comments-section h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .input-container input, .input-container textarea {
+    width: 100%; /* Adjust input width */
+    padding: 10px 15px;
+    margin: 8px 0;
+  }
+
+  .user-interactions, .boosts, .detracts, .replies {
+    flex-direction: row;
+    align-items: flex-start;
+    margin-right: 0;
+  }
+
+  .user-actions a {
+    font-size: 12px;
+  }
+
+  /* Reduce the font size of material symbols on smaller screens */
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+}
+
+.link-preview {
+  display: flex;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 10px;
+}
+
+.preview-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.preview-text {
+  margin-left: 10px;
+}
+
+.preview-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.preview-description {
+  font-size: 14px;
 }

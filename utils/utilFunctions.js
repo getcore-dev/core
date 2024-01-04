@@ -1,4 +1,6 @@
 const sql = require("mssql");
+const axios = require("axios");
+const cheerio = require("cheerio");
 
 const utilFunctions = {
   getUserDetails: async (userId) => {
@@ -13,6 +15,30 @@ const utilFunctions = {
     } catch (err) {
       console.error("Database query error:", err);
       throw err; // Rethrow the error for the caller to handle
+    }
+  },
+
+  getLinkPreview: async (url) => {
+    try {
+      const { data } = await axios.get(url);
+      const $ = cheerio.load(data);
+
+      const getTitle = () =>
+        $('meta[property="og:title"]').attr("content") || $("title").text();
+      const getDescription = () =>
+        $('meta[property="og:description"]').attr("content") ||
+        $('meta[name="description"]').attr("content");
+      const getImage = () => $('meta[property="og:image"]').attr("content");
+
+      return {
+        title: getTitle(),
+        description: getDescription(),
+        image: getImage(),
+        url,
+      };
+    } catch (error) {
+      console.error("Error fetching URL:", error);
+      return null;
     }
   },
 
