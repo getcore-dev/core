@@ -13,6 +13,9 @@ const viewController = {
         post.username = user.username.toLowerCase();
         post.score = await utilFunctions.getPostScore(post.id);
         post.comments = await utilFunctions.getComments(post.id);
+        post.community = await utilFunctions.getCommunityDetails(
+          post.communities_id
+        );
       }
 
       res.render("communities.ejs", { user: req.user, posts: posts });

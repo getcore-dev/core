@@ -56,11 +56,6 @@
             <%= post.title %>
           </div>
             <div class="description"><%= post.content %></div>
-
-          
-          <div class="community">
-            <%= post.community %>
-          </div>  
           <div class="post-info">
             <span class="material-symbols-outlined" id="score-icon"> star </span>
             <%= post.score %>
@@ -97,7 +92,7 @@
           <strong><%= post.username %></strong>
 
           <div class="communities_id">
-          <%= post.communities_id %>
+          <%= post.community.name %>
           </div>
           
           

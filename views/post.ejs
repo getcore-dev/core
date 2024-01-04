@@ -19,7 +19,7 @@
 
           <div class="link-preview">
             <img
-              src="<%= post.linkPreview.image %>"
+              src="<%= post.linkPreview.favicon %>"
               alt="Preview"
               class="preview-image"
             />
@@ -30,7 +30,8 @@
                 >
               </h4>
               <p class="preview-description">
-                <%=post.linkPreview.description %>
+                <%=post.linkPreview.description %> <%= post.linkPreview.icon
+                %><%= post.linkPreview.icon %><%= post.linkPreview.favicon %>
               </p>
             </div>
           </div>

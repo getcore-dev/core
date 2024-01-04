@@ -231,6 +231,19 @@ const postQueries = {
       throw err; // Rethrow the error for the caller to handle
     }
   },
+  getCommunityById: async (communityId) => {
+    try {
+      const result = await sql.query`
+        SELECT * 
+        FROM communities 
+        WHERE id = ${communityId}`;
+
+      return result.recordset[0];
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
 };
 
 module.exports = postQueries;

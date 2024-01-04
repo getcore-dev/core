@@ -23,19 +23,26 @@ const utilFunctions = {
       const { data } = await axios.get(url);
       const $ = cheerio.load(data);
 
-      const getTitle = () =>
-        $('meta[property="og:title"]').attr("content") || $("title").text();
-      const getDescription = () =>
-        $('meta[property="og:description"]').attr("content") ||
-        $('meta[name="description"]').attr("content");
-      const getImage = () => $('meta[property="og:image"]').attr("content");
-
-      return {
-        title: getTitle(),
-        description: getDescription(),
-        image: getImage(),
-        url,
+      const getMetaTag = (name) => {
+        return (
+          $(`meta[name=${name}]`).attr("content") ||
+          $(`meta[name="twitter${name}"]`).attr("content") ||
+          $(`meta[name="og${name}"]`).attr("content")
+        );
       };
+
+      const preview = {
+        url,
+        title: $("title").first().text(),
+        favicon:
+          $('link[rel="shortcut icon"]').attr("href") ||
+          $('link[rel="alternate icon"]').attr("href"),
+        description: getMetaTag("description"),
+        image: getMetaTag("image"),
+        author: getMetaTag("author"),
+      };
+
+      return preview;
     } catch (error) {
       console.error("Error fetching URL:", error);
       return null;
@@ -128,6 +135,18 @@ const utilFunctions = {
     }
 
     return nestedComments;
+  },
+
+  getCommunityDetails: async (communityId) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM communities WHERE id = ${communityId}
+      `;
+      return result.recordset[0];
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err; // Rethrow the error for the caller to handle
+    }
   },
 };
 
