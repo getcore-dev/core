@@ -171,11 +171,18 @@ h1, h2, h3, p {
   }
 
   .hamburger-menu {
-    /* Positioning for the hamburger menu */
     position: absolute;
-    left: 6px; /* Align with the navbar's left edge */
-    top: 26px; /* Align with the navbar's top */
+    left: 6px; 
+    top: 26px; 
   }
+
+  .hamburger-menu:hover {
+    background-color: #ddd; 
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+
   .nav-links {
     display: none;
   }

@@ -20,7 +20,20 @@ const utilFunctions = {
 
   getLinkPreview: async (url) => {
     try {
-      const { data } = await axios.get(url);
+      const headers = {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3", // Set a user agent
+      };
+      const response = await axios.get(url, {
+        headers: headers,
+        timeout: 5000,
+      }); // Set timeout as 5 seconds
+      const { data, status } = response;
+
+      // Ensure that the request was successful
+      if (status !== 200) {
+        throw new Error(`Request failed with status code ${status}`);
+      }
       const $ = cheerio.load(data);
 
       const getMetaTag = (name) => {
