@@ -44,6 +44,7 @@ const viewController = {
         res.render("user_profile.ejs", {
           otheruser: otheruser,
           user: req.user,
+          editfunction: userQueries.updateField,
         });
       } else {
         res.render("404.ejs", { user: req.user });

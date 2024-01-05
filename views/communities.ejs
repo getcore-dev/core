@@ -9,40 +9,31 @@
     />
     <link rel="stylesheet" href="./css/navbar.css" />
     <link rel="stylesheet" href="./css/communities.css" />
+    <link rel="shortcut icon" href="img/core.png" />
   </head>
   <body>
     <%- include('partials/navbar', { pagePath: 'communities' }) %>
 
     <div id="com-btn-container">
       <button class="create-post-btn" onclick="window.location.href='/post/create';">
-        <span class="material-symbols-outlined"> create </span> Create Post
+        <span class="material-symbols-outlined"> add </span>
     </div>
 
     <div id="posts-container">
       <% posts.forEach(post => { %>
       <div class="post">
         <div class="votes">
-          <style>
-            /* Boost Button */
-            #boost-button:hover {
-              color: green;
-              cursor: pointer;
-            }
-
-            /* Detract Button */
-            #detract-button:hover {
-              color: red;
-              cursor: pointer;
-            }
-          </style>
           <div id="post-boosts-<%= post.id %>">
-            <%= post.boosts %>
+            
           </div>
-          <span class="material-symbols-outlined" id="boost-button" onclick="boostPost('<%= post.id %>', '<%= user %>')"> thumb_up </span>
+          <span class="material-symbols-outlined" id="boost-button" onclick="boostPost('<%= post.id %>', '<%= user %>')"> arrow_upward_alt </span>
           <div id="post-detracts-<%= post.id %>">
-            <%= post.detracts %>
+            <span class="score">
+              <%= post.boosts - post.detracts %>
+            </span>
+            
           </div>
-          <span class="material-symbols-outlined" id="detract-button" onclick="detractPost('<%= post.id %>', '<%= user %>')"> thumb_down </span>        
+          <span class="material-symbols-outlined" id="detract-button" onclick="detractPost('<%= post.id %>', '<%= user %>')"> arrow_downward_alt </span>        
         </div>
         <div class="thumbnail" onclick="window.location.href='/posts/<%= post.id %>';">
           <img
@@ -206,9 +197,9 @@ function boostPost(postId, user) {
         { name: "New", icon: "schedule" },
         { name: "Explore", icon: "public" },
         { name: "General", icon: "groups" },
-        { name: "ML-AI", icon: "robot" },
-        { name: "IT-Tech", icon: "developer_board" },
-        { name: "Web-Dev", icon: "web" },
+        { name: "ML/AI", icon: "robot" },
+        { name: "IT", icon: "developer_board" },
+        { name: "Robotics", icon: "web" },
         { name: "Game-Dev", icon: "sports_esports" },
         { name: "IOS-Dev", icon: "ios" },
         { name: "android-dev", icon: "android" },
@@ -222,11 +213,6 @@ function boostPost(postId, user) {
           button.className = "com-btn";
           button.setAttribute("data-community", community.name);
 
-          const span = document.createElement("span");
-          span.className = "material-symbols-outlined";
-          span.textContent = community.icon;
-
-          button.appendChild(span);
           button.appendChild(
             document.createTextNode(
               ` ${community.name.replace(/-/g, " ")}`

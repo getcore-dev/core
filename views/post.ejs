@@ -15,14 +15,11 @@
         <h2 class="post-title"><%= post.title %></h2>
 
         <div class="post-content">
-          <%= post.content %> <% if (post.linkPreview) { %>
-
+          <% if (post.linkPreview) { %> <% let imageUrl = post.linkPreview.image
+          || post.linkPreview.favicon; %> <% if (imageUrl) { %>
           <div class="link-preview">
-            <img
-              src="<%= post.linkPreview.favicon %>"
-              alt="Preview"
-              class="preview-image"
-            />
+            <img src="<%= imageUrl %>" alt="Preview" class="preview-image" />
+            <% } %>
             <div class="preview-text">
               <h4 class="preview-title">
                 <a href="<%= post.linkPreview.url %>"
@@ -30,13 +27,11 @@
                 >
               </h4>
               <p class="preview-description">
-                <%=post.linkPreview.description %> <%= post.linkPreview.icon
-                %><%= post.linkPreview.icon %><%= post.linkPreview.favicon %>
+                <%=post.linkPreview.description %>
               </p>
             </div>
           </div>
-
-          <% } %> <%= post.community_id %>
+          <%= post.content %> <% } %> <%= post.community_id %>
         </div>
         <a class="user-info" href="/profile/<%= post.user.username %>"
           ><%= post.user.username %></a
@@ -44,42 +39,42 @@
         <% if (post.user.verified === true) { %>
         <span class="material-symbols-outlined">verified</span>
         <% } %> <span>&#183;</span>
-        <% let postDate = new Date(post.created_at); let today = new Date(); let
-        formattedDate; let timeOptions = { hour: '2-digit', minute: '2-digit' };
-        if(postDate.toDateString() === today.toDateString()) { formattedDate =
-        `Today, ${postDate.toLocaleTimeString(undefined, timeOptions)}`; } else
-        { formattedDate = `${postDate.toLocaleDateString().slice(0,
-        5)}/${postDate.getFullYear().toString().slice(-2)}`; } %> <%=
-        formattedDate %>
+        <%
+        let postDate = new Date(post.created_at);
+        let today = new Date();
+        let formattedDate;
+      
+        // Calculate time difference in milliseconds
+        let diff = today - postDate;
+      
+        // Convert time difference to different units
+        let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+        let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+        let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+        let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+      
+        // Decide the format based on the time difference
+        if (minutes < 60) {
+          formattedDate = minutes + ' minutes ago';
+        } else if (hours < 24) {
+          formattedDate = hours + ' hours ago';
+        } else if (days < 365) {
+          formattedDate = days + ' days ago';
+        } else {
+          formattedDate = years + ' years ago';
+        }
+      %>
+      <%= formattedDate %>
+
         <div class="user-interactions">
-          <div class="boosts">
-            <div id="post-boosts-<%= post.id %>"><%= post.boosts %></div>
-            <span
-              class="material-symbols-outlined"
-              onclick="boostPost('<%= post.id %>', '<%= user %>')"
-            >
-              thumb_up
-            </span>
-          </div>
-          <div class="detracts">
-            <div id="post-detracts-<%= post.id %>"><%= post.detracts %></div>
-            <span
-              class="material-symbols-outlined"
-              onclick="detractPost('<%= post.id %>', '<%= user %>')"
-            >
-              thumb_down
-            </span>
+          <div class="combined-score">
+            <span class="material-symbols-outlined" onclick="boostPost('<%= post.id %>', '<%= user %>')">thumb_up</span>
+            <div id="post-score-<%= post.id %>"><%= post.boosts - post.detracts %></div>
+            <span class="material-symbols-outlined" onclick="detractPost('<%= post.id %>', '<%= user %>')">thumb_down</span>
           </div>
           <div class="replies">
-            <div id="post-detracts-<%= post.id %>">
-              <%= post.comments.length %>
-            </div>
-            <span
-              class="material-symbols-outlined"
-              onclick="detractPost('<%= post.id %>', '<%= user %>')"
-            >
-              comment
-            </span>
+            <div id="post-comments-<%= post.id %>"><%= post.comments.length %></div>
+            <span class="material-symbols-outlined" onclick="commentPost('<%= post.id %>', '<%= user %>')">comment</span>
           </div>
         </div>
         <div class="post-user-actions">
@@ -89,7 +84,7 @@
               action="/post/<%= post.id %>?_method=DELETE"
               method="POST"
               onsubmit="return confirm('Are you sure you want to delete this post?');"
-            >
+            >x
               <input type="hidden" name="_method" value="DELETE" />
               <a
                 href="#"
@@ -130,16 +125,28 @@
               >verified</span
             >
             <% } %> <span>&#183;</span>
-            <% let commentDate = new Date(comment.created_at); let today = new
-            Date(); let formattedDate; let timeOptions = { hour: '2-digit',
-            minute: '2-digit' }; if(commentDate.toDateString() ===
-            today.toDateString()) { formattedDate = `Today,
-            ${commentDate.toLocaleTimeString(undefined, timeOptions)}`; } else {
-            formattedDate = `${commentDate.toLocaleDateString().slice(0,
-            5)}/${commentDate.getFullYear().toString().slice(-2)}`; } %> <%=
-            formattedDate %>
+            <% let commentDate = new Date(comment.created_at);
+            let currentDate = new Date();
+            let timeDifference = currentDate - commentDate;
+            let minutes = Math.floor(timeDifference / 60000);
+            let hours = Math.floor(minutes / 60);
+            let days = Math.floor(hours / 24);
+            let timeSinceComment = '';
+
+            if (days > 0) {
+              timeSinceComment = days + ' day(s) ago';
+            } else if (hours > 0) {
+              timeSinceComment = hours + ' hour(s) ago';
+            } else if (minutes > 0) {
+              timeSinceComment = minutes + ' minute(s) ago';
+            } else {
+              timeSinceComment = 'Just now';
+            }
+            %>
+            <%= timeSinceComment %>
           </div>
-          <%= comment.comment %> <% if (user) { %>
+          <%= comment.comment %>
+           <% if (user) { %>
           <form
             action="/comments/<%= comment.id %>/replies"
             method="POST"
@@ -152,7 +159,6 @@
           <div class="user-actions">
             <div class="boosts">
               <div id="comment-boosts-<%= comment.id %>">
-                <%= comment.boosts %>
               </div>
               <span
                 class="material-symbols-outlined"
@@ -163,7 +169,7 @@
             </div>
             <div class="detracts">
               <div id="comment-detracts-<%= comment.id %>">
-                <%= comment.detracts %>
+                <%= comment.boosts - comment.detracts %>
               </div>
               <span
                 class="material-symbols-outlined"

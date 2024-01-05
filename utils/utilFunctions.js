@@ -18,6 +18,25 @@ const utilFunctions = {
     }
   },
 
+  checkMissingFields: async (userId) => {
+    let missingFields = [];
+
+    const result = await sql.query`
+      SELECT firstname, lastname FROM users WHERE id = ${userId}
+    `;
+
+    try {
+      if (result.recordset.length > 0) {
+        let user = result.recordset[0];
+        if (!user.firstname) missingFields.push("firstname");
+        if (!user.lastname) missingFields.push("lastname");
+      }
+      return missingFields;
+    } catch (err) {
+      console.error("Error in checking missing fields:", err);
+    }
+  },
+
   getLinkPreview: async (url) => {
     try {
       const headers = {

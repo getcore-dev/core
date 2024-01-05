@@ -2,7 +2,9 @@
 rel="stylesheet"
 href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
 />
+
 <nav class="navbar">
+  <div class="top-bar">
   <div class="hamburger-menu">
     <span class="material-symbols-outlined" id="menu-icon"> menu </span>
     <div class="menu-content" id="menu-content">
@@ -27,18 +29,19 @@ href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wg
 <% } %>
     </div>
   </div>
-  <div class="logo">
-    <a href="/"> <img src="/img/core.png" alt="CORE" /> </a>
-    <div class="nav-text-container">
-      <% if (user) { %>
-      <a class="navbar-user-info" href="/profile/<%= user.username %>"><%= user.username %></a></a
-      >@<a class="nav-text" href="/">CORE</a><%= currentPath %> <% } else { %>
-      <a class="nav-text" href="/login">user</a>@<a class="nav-text" href="/"
-        >CORE</a
-      >/<%= pagePath %> <% } %>
+  
+    <div class="logo">
+      <a href="/"> <img src="/img/core.png" alt="CORE" /> </a>
+      <div class="nav-text-container">
+        <% if (user) { %>
+        <a class="navbar-user-info" href="/profile/<%= user.username %>"><%= user.username %></a></a
+        >@<a class="nav-text" href="/">CORE</a><%= currentPath %> <% } else { %>
+        <a class="nav-text" href="/login">user</a>@<a class="nav-text" href="/"
+          >CORE</a
+        >/<%= pagePath %> <% } %>
+      </div>
     </div>
   </div>
-
   <ul class="nav-links">
     <li>
       <a href="/" class="navbar-button <%= currentPath === '/' ? 'active' : '' %>">

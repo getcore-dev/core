@@ -27,6 +27,8 @@ img.linkimage {
   flex-direction: row;
   gap: 5px;
 }
+
+
 .replies {
   display: flex;
   flex-direction: row;
@@ -34,6 +36,10 @@ img.linkimage {
 }
 
 
+.combined-score {
+  display: flex;
+  flex-direction: row;
+}
 .user-interactions {
   display: flex;
   flex-direction: row;
@@ -222,25 +228,26 @@ div .user-info {
 .link-preview {
   display: flex;
   border: 1px solid #ddd;
-  padding: 10px;
-  margin: 10px;
+  border-radius: 5px;
+  padding: 4px;
+  margin: 4px;
 }
 
 .preview-image {
-  width: 100px;
-  height: 100px;
+  width: 70px;
+  height: 70px;
   object-fit: cover;
 }
 
 .preview-text {
-  margin-left: 10px;
+  margin-left: 20px;
 }
 
 .preview-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
 }
 
 .preview-description {
-  font-size: 14px;
+  font-size: 12px;
 }

@@ -12,6 +12,20 @@
   color: green;
 }
 
+#boost-button:hover {
+  color: green;
+  cursor: pointer;
+}
+
+#detract-button:hover {
+  color: red;
+  cursor: pointer;
+}
+
+.score {
+  font-size: 12px;
+}
+
 
 .post:last-child {
   border-bottom: none;
@@ -75,8 +89,8 @@
 
 .com-btn {
   font-size: 14px;
-  height: 32px;
-  width: 113px;
+  height: auto;
+  padding: 0 20px;
   border: none;
   border-radius: 6px;
   background: linear-gradient(to right, #117a65 ,  #0e6655); 
@@ -106,7 +120,7 @@ div .votes:hover {
   background: linear-gradient(to right,  #5d6d7e , #34495e);
   font-size: 14px;
   height: 32px;
-  width: 113px;
+  width: 32px;
   border: none;
   border-radius: 6px;
   color: white;

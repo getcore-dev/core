@@ -30,15 +30,26 @@
           <% } %>
         </div>
         <div class="profile-info">
+          <p><%= otheruser.firstname %></p>
+          <button onclick="editField('firstname')">Edit</button>
+          <p><%= otheruser.lastname %></p>
+          <button onclick="editField('lastname')">Edit</button>
+        </div>
+        <div class="profile-info">
           <h2><%= otheruser.username %></h2>
           <p><%= otheruser.email %></p>
+          <button onclick="editField('email')">Edit</button>
         </div>
 
         <div class="current-job">
           <h2>Current Job</h2>
           <% if (otheruser.currentjob) { %>
           <p><strong>Company:</strong> <%= otheruser.currentjob.company %></p>
+          <button onclick="editField('currentjob.company')">Edit</button>
+
           <p><strong>Position:</strong> <%= otheruser.currentjob.position %></p>
+          <button onclick="editField('currentjob.position')">Edit</button>
+
           <% } else { %>
           <p>No current job information.</p>
           <% } %>
@@ -68,5 +79,42 @@
         </div>
       </div>
     </main>
+    <script>
+      function editField(field) {
+        // Get the current value and display element
+        const displayElement = document.getElementById(`${field}-display`);
+        const currentValue = displayElement.innerText;
+
+        // Create a textfield and submit button
+        const inputField = document.createElement("input");
+        inputField.type = "text";
+        inputField.value = currentValue;
+        inputField.id = `${field}-input`;
+
+        const submitButton = document.createElement("button");
+        submitButton.innerText = "Submit";
+        submitButton.onclick = () => submitEdit(field);
+
+        // Replace the display element with the textfield and button
+        displayElement.innerHTML = "";
+        displayElement.appendChild(inputField);
+        displayElement.appendChild(submitButton);
+      }
+
+      function submitEdit(field) {
+        // Get the new value
+        const newValue = document.getElementById(`${field}-input`).value;
+
+        // TODO: Get the userId from the page context
+        const userId = "..."; // Replace with actual userId retrieval logic
+
+        // Call the updateField function
+        updateField(userId, field, newValue);
+
+        // Update the display element and remove the textfield and button
+        const displayElement = document.getElementById(`${field}-display`);
+        displayElement.innerText = newValue;
+      }
+    </script>
   </body>
 </html>
