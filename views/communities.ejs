@@ -48,9 +48,17 @@
           </div>
             <div class="description"><%= post.content %></div>
           <div class="post-info">
-            <span class="material-symbols-outlined" id="score-icon"> star </span>
+            <div class="communities_id">
+              <%= post.community.name %>
+              </div>
+              <span class="material-symbols-outlined" id="user-icon"> person </span>
+              <strong><%= post.username %></strong>
+            <span class="material-symbols-outlined" id="score-icon"> sentiment_satisfied </span>
             <%= post.score %>
+            <span class="material-symbols-outlined" id="comments-icon"> comment </span>
+          <%= post.comments.length %>
             <span class="material-symbols-outlined" id="date-icon"> schedule </span>
+            
             <%
             let postDate = new Date(post.created_at);
             let today = new Date();
@@ -77,16 +85,6 @@
             }
           %>
           <%= formattedDate %>
-          <span class="material-symbols-outlined" id="comments-icon"> comment </span>
-          <%= post.comments.length %>
-          <span class="material-symbols-outlined" id="user-icon"> person </span>
-          <strong><%= post.username %></strong>
-
-          <div class="communities_id">
-          <%= post.community.name %>
-          </div>
-          
-          
           
         </div>
         </div>
