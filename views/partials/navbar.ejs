@@ -20,6 +20,7 @@ href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wg
       method="POST"
       style="display: none"
     ></form>
+    <a href="/learning">Learning</a>
     <a
       href="#"
       onclick="document.getElementById('logoutForm').submit();"
@@ -35,10 +36,10 @@ href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wg
       <div class="nav-text-container">
         <% if (user) { %>
         <a class="navbar-user-info" href="/profile/<%= user.username %>"><%= user.username %></a></a
-        >@<a class="nav-text" href="/">CORE</a><%= currentPath %> <% } else { %>
+        >@<a class="nav-text" href="/">CORE<% } else { %>
         <a class="nav-text" href="/login">user</a>@<a class="nav-text" href="/"
           >CORE</a
-        >/<%= pagePath %> <% } %>
+        > <% } %>
       </div>
     </div>
   </div>
@@ -55,14 +56,6 @@ href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wg
       >
     </li>
     <li>
-      <% if (user) { %>
-      <a href="/learning" class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>">
-        <span class="material-symbols-outlined" id="nb-icon"> school </span
-        >Learning</a
-      >
-      <% } else { %> <% } %>
-    </li>
-    <li>
       <% if (user) { %> <% } else { %>
       <a href="/login" class="navbar-button <%= currentPath === '/login' ? 'active' : '' %>">
         <span class="material-symbols-outlined" id="nb-icon"> login </span
@@ -70,17 +63,21 @@ href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wg
       >
       <% } %>
     </li>
+    <% if (user) { %>
     <li>
-      <% if (user) { %>
+      <a href="/learning" class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>">
+        <span class="material-symbols-outlined" id="nb-icon"> school </span
+        >Learning</a
+      >
+    </li>
+    <li>
         <a href="/profile/<%= user.username %>"
            class="navbar-button <%= currentPath.startsWith('/profile') ? 'active' : '' %>">
           <span class="material-symbols-outlined" id="nb-icon"> person </span>Profile
         </a>
-      <% } %>
     </li>
     
     <li>
-      <% if (user) { %>
       <form
         id="logoutForm"
         action="/logout?_method=DELETE"
@@ -95,8 +92,9 @@ href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wg
         <span class="material-symbols-outlined" id="nb-icon"> logout </span
         >Logout
       </a>
-      <% } else { %> <% } %>
     </li>
+      <% } else { %> <% } %>
+
   </ul>
 </nav>
 

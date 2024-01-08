@@ -5,12 +5,13 @@ body {
 
 #verified, a #verified {
   color: green;
+  font-size: 14px;
 }
 
 a .material-symbols-outlined {
   text-decoration: none;
   color: #333;
-  font-size: 16px;
+  font-size: 13px;
   vertical-align: -3px;
 }
 
@@ -32,13 +33,13 @@ img.linkimage {
 .replies {
   display: flex;
   flex-direction: row;
-  gap: 5px;
 }
 
 
 .combined-score {
   display: flex;
   flex-direction: row;
+  gap: 5px;
 }
 .user-interactions {
   display: flex;
@@ -46,14 +47,15 @@ img.linkimage {
   align-items: space;
   justify-content: start;
   margin-right: 20px;
-  gap: 5px; 
-  font-weight: bold;
+  gap: 8px; 
+}
 
+.timestamp {
+  font-size: 12px;
 }
 
 div .material-symbols-outlined {
-  
-  font-size: 20px; 
+  font-size: 18px; 
   vertical-align: -3px; 
 
 }
@@ -91,28 +93,32 @@ div .material-symbols-outlined:hover {
 }
 
 .nested-comment {
-  margin-left: 20px;
+  margin-left: 5px;
   border-left: 2px solid #eaeaea;
 }
 
 .post-title {
-  font-size: 24px;
+  font-size: 22px;
   color: #333;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 }
 
-div .user-info {
-  color: #333;
+div .user-info, .header {
+  font-size: 14px;
+  color: #888;
   text-decoration: none;
 }
 
-
-.user-info {
-  font-size: 16px;
-  font-weight: bold;
-  color: #888;
-  margin-bottom: 25px;
+.communities_id {
+  display: inline-block; 
+  background-color: darkgreen; 
+  color: white;
+  padding: 2px 7px; 
+  border-radius: 5px; 
+  font-size: 12px; 
 }
+
+
 
 .post-content, .comment-content {
   font-size: 16px;
@@ -121,17 +127,17 @@ div .user-info {
 }
 
 .comments-section {
-  margin-top: 40px;
+  margin-top: 10px;
 }
 
 .comments-section h3 {
   font-size: 20px;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 
 .comment {
-  margin-left: 20px;
+  margin-left: 5px;
 }
 .user-actions {
   display: flex;
@@ -181,17 +187,7 @@ div .user-info {
   }
 
   .nested-comment {
-    margin-left: 10px;
-  }
-
-  .post-title {
-    font-size: 20px;
-    margin-bottom: 5px;
-  }
-
-  .user-info {
-    font-size: 14px;
-    margin-bottom: 15px;
+    margin-left: 4px;
   }
 
   .post-content, .comment-content {
@@ -209,11 +205,6 @@ div .user-info {
     margin: 8px 0;
   }
 
-  .user-interactions, .boosts, .detracts, .replies {
-    flex-direction: row;
-    align-items: flex-start;
-    margin-right: 0;
-  }
 
   .user-actions a {
     font-size: 12px;
@@ -230,7 +221,7 @@ div .user-info {
   border: 1px solid #ddd;
   border-radius: 5px;
   padding: 4px;
-  margin: 4px;
+  margin: 20px 4px;
 }
 
 .preview-image {
@@ -246,6 +237,10 @@ div .user-info {
 .preview-title {
   font-size: 14px;
   font-weight: bold;
+}
+
+.post-body {
+  white-space: pre-line;
 }
 
 .preview-description {

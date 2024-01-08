@@ -247,6 +247,9 @@ router.get("/posts/:postId", async (req, res) => {
       const linkPreview = await getLinkPreview(postData.link);
       postData.linkPreview = linkPreview;
     }
+    postData.community = await utilFunctions.getCommunityDetails(
+      postData.communities_id
+    );
 
     res.render("post.ejs", { post: postData, user: req.user });
   } catch (err) {

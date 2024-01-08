@@ -156,17 +156,18 @@ h1, h2, h3, p {
     padding: 0px;
 
   }
-  #menu-icon {
+  #menu-icon {  
     display: block;
   }
 
   .logo {
-    left: 45px;
+    left: 40%;
+    transform: translateX(-50%);
   }
   .nav-text-container {
     font-size: 18px;
     position: absolute;
-    left: 45px;
+    left: 70px;
     top: -23px;
   }
 
