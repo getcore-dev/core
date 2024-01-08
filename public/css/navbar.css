@@ -130,7 +130,7 @@ h1, h2, h3, p {
   white-space: pre;
   font-weight: bold; /* Bold text */
   position: absolute; /* Top padding */
-  left: 95px;
+  left: 75px;
   top: -35px;
   font-size: 24px;
 }

@@ -11,7 +11,6 @@ body {
 a .material-symbols-outlined {
   text-decoration: none;
   color: #333;
-  font-size: 13px;
   vertical-align: -3px;
 }
 
@@ -47,6 +46,7 @@ img.linkimage {
   align-items: space;
   justify-content: start;
   margin-right: 20px;
+  margin-top: 20px;
   gap: 8px; 
 }
 
@@ -87,8 +87,8 @@ div .material-symbols-outlined:hover {
 }
 
 .post, .comment {
-  padding: 20px;
-  margin-bottom: 20px;
+  padding: 7px;
+  margin-bottom: 10px;
   border-bottom: 1px solid #eaeaea;
 }
 
@@ -100,7 +100,7 @@ div .material-symbols-outlined:hover {
 .post-title {
   font-size: 22px;
   color: #333;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 div .user-info, .header {
@@ -122,7 +122,7 @@ div .user-info, .header {
 
 .post-content, .comment-content {
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.5;
   color: #666;
 }
 
@@ -159,11 +159,14 @@ div .user-info, .header {
   vertical-align: 5px;
 }
 
+.comment-timestamp {
+  font-size: 14px;
+}
+
 .input-container input, .input-container textarea {
   width: 95%;
   padding: 12px 20px;
   margin: 8px 0;
-  
   box-sizing: border-box;
   border: 2px solid #ccc;
   border-radius: 5px; /* This makes the input rounded */
@@ -207,7 +210,7 @@ div .user-info, .header {
 
 
   .user-actions a {
-    font-size: 12px;
+    font-size: 20px;
   }
 
   /* Reduce the font size of material symbols on smaller screens */
