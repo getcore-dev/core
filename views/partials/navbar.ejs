@@ -36,7 +36,8 @@ href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wg
       <div class="nav-text-container">
         <% if (user) { %>
         <a class="navbar-user-info" href="/profile/<%= user.username %>"><%= user.username %></a
-        ><% } else { %><a class="nav-text" href="/login">user</a><% } %>@<a class="nav-text" href="/">CORE</a>
+        ><% } else { %>
+          <a class="nav-text" href="/login">user</a><% } %>@<a class="nav-text" href="/">CORE</a>
       </div>
     </div>
   </div>
