@@ -60,6 +60,10 @@ div .material-symbols-outlined {
 
 }
 
+a:-webkit-any-link {
+  color: #111; /* Adjusted color for dark mode */
+}
+
 .user-info:hover {
   color: green;
   text-decoration: none;
@@ -174,6 +178,12 @@ div .user-info, .header {
   font-size: 16px;
 }
 
+
+.comment-body {
+  padding-top: 2px;
+  padding-bottom: 10px;
+}
+
 .input-container textarea {
   resize: none;
 }
@@ -203,8 +213,8 @@ div .user-info, .header {
   }
 
   .input-container input, .input-container textarea {
-    width: 100%; /* Adjust input width */
-    padding: 10px 15px;
+    width: 93%; /* Adjust input width */
+    padding: 10px 10px;
     margin: 8px 0;
   }
 
@@ -267,6 +277,10 @@ body {
 
   #verified, a #verified {
     color: #3cb371; /* Adjusted color for dark mode */
+  }
+
+  a:-webkit-any-link {
+    color: #fff; /* Adjusted color for dark mode */
   }
 
   a .material-symbols-outlined, .user-info:hover, .boosts:hover, .detracts:hover, #reply-button, .user-actions a, .post-title {
