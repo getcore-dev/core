@@ -21,6 +21,29 @@ h1, h2, h3, p {
   padding: 0; /* Remove default padding */
 }
 
+.user-btns {
+  position: absolute;
+  right: 100px;
+  top: -30px;
+}
+
+.user-btn-name {
+  display: flex;
+  flex-direction: row;
+}
+
+.user-links {
+  list-style: none; /* Remove list bullets */
+  margin: 0;
+  display: flex; /* Display links inline */
+  position: absolute;
+  margin-top: 40px;
+  flex-direction: row-reverse;
+  width: 100%;
+}
+
+
+
 /* Navbar Styles */
 .navbar {
   background-color: #f9f9f9; /* Modern background color */
@@ -46,7 +69,7 @@ h1, h2, h3, p {
   left: 83px;
   margin-top: 40px;
   flex-direction: row;
-  width: 100%;
+  width: auto;
 }
 
 .nav-links li {
@@ -63,6 +86,27 @@ h1, h2, h3, p {
   text-decoration: none; /* Underline on hover */
 }
 
+.user-button {
+  display: flex; /* Display button contents inline */
+  justify-content: center; /* Center button content */
+  gap: 4px; /* Gap between icon and text */
+  line-height: 1.5; /* Button text line height */
+  background-color: #f9f9f9; /* Modern background color */
+  color: #000; /* Button text color */
+  padding: 5px 7px; /* Button padding */
+  margin-top: 11px; /* Top margin */
+  margin-left: 12px;
+  font-size: 14px; /* Button font size */
+  border: 1px solid #ccc;
+  text-decoration: none; /* Remove underline */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.15s, transform 0.15s; /* Transition effects */
+}
+
+.user-button:hover {
+  background-color: #ddd; /* Background color on hover */
+  cursor: pointer; /* Pointer cursor on hover */
+}
 
 /* Navbar Button Style */
 .navbar-button {
@@ -151,7 +195,9 @@ h1, h2, h3, p {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-
+  .user-btns {
+    display: none;
+  }
   .navbar {
     padding: 0px;
 

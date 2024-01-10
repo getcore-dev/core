@@ -53,7 +53,7 @@
         <div class="post-content">
 
           <% if (post.linkPreview) { %>
-          <a href="<%= post.linkPreview.url %>"></a>
+          <a href="<%= post.linkPreview.url %>">
           <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %> 
           <% if (imageUrl) { %>
           <div class="link-preview">
@@ -117,7 +117,8 @@
       </div>
 
       <div class="comments-section">
-        <% function renderComments(comments) { %> <% comments.forEach(comment =>
+        <% function renderComments(comments, level = 0) { %> 
+          <% comments.forEach(comment =>
         { %>
         <div class="comment">
           <div class="comment-content">
@@ -236,9 +237,11 @@
 
           <!-- Render nested comments -->
           <% if (comment.replies && comment.replies.length > 0) { %>
-          <div class="nested-comment">
-            <% renderComments(comment.replies); %>
-          </div>
+            <% var nestedLevel = level + 1; %>
+            <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
+            <div class="<%= divClass %>">
+              <% renderComments(comment.replies, nestedLevel); %>
+            </div>
           <% } %>
         </div>
         <% }) %> <% } %> <% renderComments(post.comments); %>

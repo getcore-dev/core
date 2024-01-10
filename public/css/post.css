@@ -98,8 +98,16 @@ div .material-symbols-outlined:hover {
 
 .nested-comment {
   margin-left: 5px;
-  border-left: 2px solid #eaeaea;
+  border-left: 2px solid;
 }
+
+/* Specific classes for each level of nesting */
+.nested-comment.level-1 { border-color: #008000; } /* Green */
+.nested-comment.level-2 { border-color: #00C000; } /* Lighter Green */
+.nested-comment.level-3 { border-color: #40D040; } /* Even Lighter Green */
+.nested-comment.level-4 { border-color: #80E080; } /* Light Green */
+.nested-comment.level-5 { border-color: #B0F0B0; } /* Very Light Green */
+.nested-comment.level-6 { border-color: #D0F8D0; } /* Pale Green */
 
 .post-title {
   font-size: 22px;

@@ -1,99 +1,125 @@
 <link
-rel="stylesheet"
-href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
 />
 
 <nav class="navbar">
-  <div class="top-bar">
-  <div class="hamburger-menu">
-    <span class="material-symbols-outlined" id="menu-icon"> menu </span>
-    <div class="menu-content" id="menu-content">
-      <a href="/">Communities</a>
-      <a href="/jobs">Openings</a>
-
-      <% if (user) { %>
-      <a href="/post/create">Create Post</a>
-      <a class="nav-text" href="/profile/<%= user.username %>">Profile</a>
-      <form
-      id="logoutForm"
-      action="/logout?_method=DELETE"
-      method="POST"
-      style="display: none"
-    ></form>
-    <a href="/learning">Learning</a>
-    <a
-      href="#"
-      onclick="document.getElementById('logoutForm').submit();"
-    >Logout</a>
-        <% } else { %> 
-			<a href="/login">Login</a>
-<% } %>
-    </div>
-  </div>
-  
+  <div class="nav-bar">
     <div class="logo">
       <a href="/"> <img src="/img/core.png" alt="CORE" /> </a>
+    </div>
+    <div class="top-bar">
+      <div class="hamburger-menu">
+        <span class="material-symbols-outlined" id="menu-icon"> menu </span>
+        <div class="menu-content" id="menu-content">
+          <a href="/">Communities</a>
+          <a href="/jobs">Openings</a>
+
+          <% if (user) { %>
+          <a href="/post/create">Create Post</a>
+          <a class="nav-text" href="/profile/<%= user.username %>">Profile</a>
+          <form
+            id="logoutForm"
+            action="/logout?_method=DELETE"
+            method="POST"
+            style="display: none"
+          ></form>
+          <a href="/learning">Learning</a>
+          <a href="#" onclick="document.getElementById('logoutForm').submit();"
+            >Logout</a
+          >
+          <% } else { %>
+          <a href="/login">Login</a>
+          <% } %>
+        </div>
+      </div>
       <div class="nav-text-container">
         <% if (user) { %>
-        <a class="navbar-user-info" href="/profile/<%= user.username %>"><%= user.username %></a
-        ><% } else { %>
-          <a class="nav-text" href="/login">user</a><% } %>@<a class="nav-text" href="/">CORE</a>
+        <a class="navbar-user-info" href="/profile/<%= user.username %>"
+          ><%= user.username %></a><% } else { %> 
+            <a class="navbar-user-info" href="/login">user</a><% }%>@<a class="nav-text" href="/">CORE</a>
+      </div>
+      <div class="user-btns">
+        <ul class="user-links">
+          <li>
+            <% if (user) { %>
+            <a
+            href="/profile/<%= user.username %>"
+              class="user-button <%= currentPath === '/' ? 'active' : '' %>"
+            >
+            <% } %>
+              <span class="material-symbols-outlined" id="nb-icon">
+                person
+              </span>
+              <% if (user) { %> <%= user.firstname %> <%= user.lastname %> <%=
+              user.email %> <% } else { %> user <% } %>
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
-  </div>
-  <ul class="nav-links">
-    <li>
-      <a href="/" class="navbar-button <%= currentPath === '/' ? 'active' : '' %>">
-          <span class="material-symbols-outlined" id="nb-icon"> forum </span>
-        Community
-      </a>
-    </li>
-    <li>
-      <a href="/jobs" class="navbar-button <%= currentPath === '/jobs' ? 'active' : '' %>">
-      <span class="material-symbols-outlined" id="nb-icon"> work </span>Openings</a
-      >
-    </li>
-    <li>
-      <% if (user) { %> <% } else { %>
-      <a href="/login" class="navbar-button <%= currentPath === '/login' ? 'active' : '' %>">
-        <span class="material-symbols-outlined" id="nb-icon"> login </span
-        >Login</a
-      >
-      <% } %>
-    </li>
-    <% if (user) { %>
-    <li>
-      <a href="/learning" class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>">
-        <span class="material-symbols-outlined" id="nb-icon"> school </span
-        >Learning</a
-      >
-    </li>
-    <li>
-        <a href="/profile/<%= user.username %>"
-           class="navbar-button <%= currentPath.startsWith('/profile') ? 'active' : '' %>">
-          <span class="material-symbols-outlined" id="nb-icon"> person </span>Profile
-        </a>
-    </li>
-    
-    <li>
-      <form
-        id="logoutForm"
-        action="/logout?_method=DELETE"
-        method="POST"
-        style="display: none"
-      ></form>
-      <a
-        href="#"
-        class="navbar-button <%= currentPath === '/logout' ? 'active' : '' %>"
-        onclick="document.getElementById('logoutForm').submit();"
-      >
-        <span class="material-symbols-outlined" id="nb-icon"> logout </span
-        >Logout
-      </a>
-    </li>
-      <% } else { %> <% } %>
+    <div class="nav-btns">
+      <ul class="nav-links">
+        <li>
+          <a
+            href="/"
+            class="navbar-button <%= currentPath === '/' ? 'active' : '' %>"
+          >
+            <span class="material-symbols-outlined" id="nb-icon"> forum </span>
+            Community
+          </a>
+        </li>
+        <li>
+          <a
+            href="/jobs"
+            class="navbar-button <%= currentPath === '/jobs' ? 'active' : '' %>"
+          >
+            <span class="material-symbols-outlined" id="nb-icon"> work </span
+            >Openings</a
+          >
+        </li>
+        <li>
+          <% if (user) { %> <% } else { %>
+          <a
+            href="/login"
+            class="navbar-button <%= currentPath === '/login' ? 'active' : '' %>"
+          >
+            <span class="material-symbols-outlined" id="nb-icon"> login </span
+            >Login</a
+          >
+          <% } %>
+        </li>
+        <% if (user) { %>
+        <li>
+          <a
+            href="/learning"
+            class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>"
+          >
+            <span class="material-symbols-outlined" id="nb-icon"> school </span
+            >Learning</a
+          >
+        </li>
 
-  </ul>
+        <li>
+          <form
+            id="logoutForm"
+            action="/logout?_method=DELETE"
+            method="POST"
+            style="display: none"
+          ></form>
+          <a
+            href="#"
+            class="navbar-button <%= currentPath === '/logout' ? 'active' : '' %>"
+            onclick="document.getElementById('logoutForm').submit();"
+          >
+            <span class="material-symbols-outlined" id="nb-icon"> logout </span
+            >Logout
+          </a>
+        </li>
+        <% } else { %> <% } %>
+      </ul>
+    </div>
+  </div>
 </nav>
 
 <script>
