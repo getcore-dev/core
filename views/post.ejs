@@ -51,7 +51,9 @@
       <%= formattedDate %>
         </div>
         <div class="post-content">
+
           <% if (post.linkPreview) { %>
+          <a href="<%= post.linkPreview.url %>"></a>
           <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %> 
           <% if (imageUrl) { %>
           <div class="link-preview">
@@ -59,19 +61,19 @@
             <% } %>
             <div class="preview-text">
               <h4 class="preview-title">
-                <a href="<%= post.linkPreview.url %>"
-                  ><%= post.linkPreview.title %></a
-                >
+                  <%= post.linkPreview.title %>
               </h4>
+              <p class="preview-link">
+                
+              </p>
               <p class="preview-description">
                 <%=post.linkPreview.description %>
               </p>
             </div>
           </div> 
+        </a>
           <% } %>
-          <p class="post-body">
-            <%= post.content %>
-          </p>
+          <p class="post-body"><%= post.content %></p>
            <%= post.community_id %>
         </div>        
         <div class="user-interactions">
