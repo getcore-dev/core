@@ -274,3 +274,93 @@ div .material-symbols-outlined {
   }
   
 }
+
+/* Dark Mode Styles */
+@media (prefers-color-scheme: dark) {
+  /* General background and text colors */
+  body {
+      background-color: #121212; /* Dark background */
+      color: #fff; /* Light text */
+  }
+
+  /* Post styling adjustments */
+  .post {
+      border-bottom: 1px solid #444; /* Dark border for posts */
+  }
+  .post:last-child {
+      border-bottom: none;
+  }
+  .post-info {
+      color: #ccc; /* Lighter text color for post information */
+  }
+
+  /* Adjustments for buttons and interactive elements */
+  .com-btn, .create-post-btn {
+      background: linear-gradient(to right, #0e6655, #117a65); /* Darker button background */
+      color: #fff; /* Light text on buttons */
+  }
+  .com-btn:hover, .create-post-btn:hover {
+      background: linear-gradient(to right, #117a65, #0e6655); /* Adjusted hover colors */
+      color: #fff; /* Maintain light text on hover */
+  }
+
+  /* Adjustments for scores and icons */
+  .score, #score-icon {
+      color: #fff; /* Light color for scores */
+  }
+  #date-icon, #user-icon, #comments-icon {
+      color: #ccc; /* Lighter icon colors */
+  }
+
+  /* Adjustments for specific post elements */
+  .boosted {
+      color: #bada55; /* Adjusted color for boosted posts */
+  }
+  .votes:hover {
+      cursor: pointer;
+  }
+
+  /* Thumbnail and related styles */
+  .thumbnail-image {
+      border-radius: 5px; 
+      aspect-ratio: 1/1; 
+      object-fit: cover;
+  }
+
+  /* Adjustments for community ID tags */
+  .communities_id {
+      background-color: #006400; /* Darker background */
+      color: #fff; /* Light text */
+  }
+  /* Other elements adjustments */
+  .title {
+      color: #fff; /* Light color for titles */
+  }
+  .user-info, .description, .reactions {
+      color: #ccc; /* Lighter text color for additional information */
+  }
+
+  /* Icon adjustments */
+  .reaction-icon, div .material-symbols-outlined, #trending-icon, #verified-icon {
+      color: #ccc; /* Lighter color for icons */
+  }
+
+  /* Responsive design adjustments for smaller screens */
+  @media (max-width: 768px) {
+      .post-content {
+          margin-left: 30px;
+          margin-right: 25px;
+      }
+      .thumbnail-image {
+          width: 58px;
+          height: 58px;
+      }
+      .thumbnail {
+          bottom: 0px;
+          left: 15px;
+      }
+      .votes {
+          display: none;
+      }
+  }
+}

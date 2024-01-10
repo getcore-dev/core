@@ -1,78 +1,107 @@
+/* Original Styles */
 main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f4f4f4;
-    font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* Set default font family */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f4;
+  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+#registration {
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
+  background: #ffffff;
+  width: 300px;
+  box-sizing: border-box;
+}
+
+#registration h1 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #333;
+}
+
+.input-container input {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+  font-size: 16px;
+}
+
+#registration select {
+  cursor: pointer;
+}
+
+#login-button {
+  font-size: 12px;
+  border: none;
+  border-radius: 5px;
+  background: linear-gradient(to right, #117a65, #0e6655);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  flex: 0 0 auto;
+  margin-right: 10px;
+  padding: 10px 20px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+
+#register-button {
+  position: relative;
+  top: 34.5px;
+  left: 157px;
+  font-size: 12px;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 5px;
+  background: linear-gradient(to right, #ff9966, #ff5e62);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  flex: 0 0 auto;
+  margin-right: 10px;
+  padding: 10px 20px;
+}
+
+/* Dark Mode Styles */
+@media (prefers-color-scheme: dark) {
+  main {
+      background-color: #1a1a1a;
+      color: #f4f4f4;
   }
-  
+
   #registration {
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    background: #ffffff; 
-    width: 300px; 
-    box-sizing: border-box;
-  }
-  
+    
+      background: #333333;
+      box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
+    }
+
   #registration h1 {
-    text-align: center;
-    margin-bottom: 24px;
-    color: #333;  
+      color: #f4f4f4;
   }
-  
+
   .input-container input {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-    border: 2px solid #ccc;
-    border-radius: 5px; /* This makes the input rounded */
-    background-color: #f8f9fa;
-    font-size: 16px;
+      background-color: #262626;
+      border: 2px solid #555;
+      color: #f4f4f4;
   }
 
-
-  #registration select {
-    cursor: pointer;
+  #login-button, #register-button {
+      background: linear-gradient(to right, #0a5275, #003d66); /* New gradient for dark mode */
+      color: white;
   }
 
-  #login-button {
-    font-size: 12px;
-    border: none;
-    border-radius: 5px;
-    background: linear-gradient(to right, #117a65 ,  #0e6655); 
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    flex: 0 0 auto;
-    margin-right: 10px; /* Margin around buttons */
-    cursor: pointer; /* Pointer cursor on hover */
-    padding: 10px 20px; /* Button padding */
-  }
-  
-  .button-container {
-    display: flex;
-    justify-content:center;
-  }
-  
-  #register-button {
-    position: relative;
-    top: 34.5px;
-    left: 157px;
-    font-size: 12px;
-    padding: 7px 10px;
-    border: none;
-    border-radius: 5px;
-    background: linear-gradient(to right, #ff9966, #ff5e62);
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    flex: 0 0 auto;
-    margin-right: 10px; /* Margin around buttons */
-    cursor: pointer; /* Pointer cursor on hover */
-    padding: 10px 20px; /* Button padding */
-  }
+  /* Add any additional dark mode styles for other elements as needed */
+}

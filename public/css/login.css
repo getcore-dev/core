@@ -10,7 +10,7 @@ main {
 #login {
   padding: 40px;
   border-radius: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
   background: #ffffff; 
   width: 300px; 
   box-sizing: border-box;
@@ -83,3 +83,36 @@ main {
   cursor: pointer;
 }
 
+
+/* Original Styles */
+/* ... (Your existing CSS) ... */
+
+/* Dark Mode Styles */
+@media (prefers-color-scheme: dark) {
+  main {
+    background-color: #1a1a1a; /* Dark background for main */
+    color: #f4f4f4; /* Light text color for better readability */
+  }
+
+  #login {
+    background: #333333; /* Dark background for login */
+    box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
+  }
+
+  .input-container input {
+    background-color: #262626; /* Dark background for input fields */
+    border: 2px solid #555; /* Darker border for input fields */
+    color: #f4f4f4; /* Light text color */
+  }
+
+  #login-button, #register-button {
+    background: linear-gradient(to right, #0a5275, #003d66); /* New gradient for dark mode */
+    /* Other styles remain the same */
+  }
+
+  #login h1 {
+    color: #f4f4f4; /* Light color for headings */
+  }
+
+  /* Additional dark mode styles can be added as needed */
+}

@@ -249,3 +249,64 @@ div .user-info, .header {
 .preview-description {
   font-size: 12px;
 }
+
+body {
+  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  background-color: #f4f4f4;
+}
+
+/* Original Styles */
+/* ... (Include all the original CSS styles here) ... */
+
+/* Dark Mode Styles */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #121212; /* Dark background for body */
+    color: #e0e0e0; /* Light text color for better readability */
+  }
+
+  #verified, a #verified {
+    color: #3cb371; /* Adjusted color for dark mode */
+  }
+
+  a .material-symbols-outlined, .user-info:hover, .boosts:hover, .detracts:hover, #reply-button, .user-actions a, .post-title {
+    color: #e0e0e0; /* Lighter text color for icons and links */
+  }
+
+  .main-container {
+    background-color: #1e1e1e; /* Dark background for main container */
+    box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
+  }
+
+  .post, .comment, .nested-comment {
+    border-bottom-color: #333; /* Darker border for posts and comments */
+  }
+
+  div .user-info, .header {
+    color: #bbb; /* Lighter text color for user info and headers */
+  }
+
+  .communities_id {
+    background-color: #006400; /* Darker background for community IDs */
+  }
+
+  .post-content, .comment-content, .comments-section h3 {
+    color: #d0d0d0; /* Lighter text color for content */
+  }
+
+  .input-container input, .input-container textarea {
+    background-color: #262626; /* Dark background for input fields */
+    border-color: #555; /* Darker border for input fields */
+    color: #f4f4f4; /* Light text color */
+  }
+
+  .link-preview {
+    border-color: #555; /* Darker border for link previews */
+  }
+
+  .preview-title, .preview-description {
+    color: #e0e0e0; /* Light text color for preview titles and descriptions */
+  }
+
+  /* Add any additional dark mode styles for other elements as needed */
+}

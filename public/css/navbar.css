@@ -145,7 +145,7 @@ h1, h2, h3, p {
   display: none;
   padding-left: 10px; /* Left padding */
   color: #000; /* Icon color */
-  font-size: 20px; /* Icon size */
+  font-size: 27px; /* Icon size */
 }
 
 
@@ -176,12 +176,12 @@ h1, h2, h3, p {
 
   .hamburger-menu {
     position: absolute;
-    left: 6px; 
-    top: 26px; 
+    left: 10px; 
+    top: 22px; 
   }
 
+
   .hamburger-menu:hover {
-    background-color: #ddd; 
     cursor: pointer;
     border-radius: 5px;
   }
@@ -276,4 +276,86 @@ h1, h2, h3, p {
   width: 250px;
   outline: none;
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Dark Mode Styles for Navbar */
+@media (prefers-color-scheme: dark) {
+  /* Navbar background and text colors */
+  .navbar {
+      background-color: #222; /* Dark background for navbar */
+      color: #fff; /* Light text color */
+      border-bottom: 1px solid #555; /* Dark border */
+  }
+
+  #menu-icon {
+    color: #fff;
+  }
+
+  /* Navbar links styling */
+  .nav-links, .nav-links li a {
+      color: #fff; /* Light text color for links */
+  }
+
+  .nav-text {
+    color: #fff;
+  }
+
+  .nav-text:hover {
+    color: #0e6655;
+  }
+
+  .nav-links li a:hover {
+      color: #ddd; /* Lighter color on hover */
+      text-decoration: none; /* Underline on hover */
+  }
+
+  /* Navbar button styling */
+  .navbar-button {
+      background-color: #222; /* Darker background for buttons */
+      color: #fff; /* Light text color for buttons */
+  }
+
+  .navbar-button:hover {
+      background-color: #333; /* Lighter background on hover */
+  }
+
+  /* Logo styling */
+  .logo img {
+      filter: invert(100%); /* Invert logo colors */
+  }
+
+  /* Active navbar button indicator */
+  .navbar-button.active::after {
+      background-color: #0e6655; /* Adjust active indicator color */
+  }
+
+  /* Hamburger menu color adjustment for mobile */
+
+  /* Dropdown menu styling */
+  .menu-content {
+      background-color: #444; /* Dark background for dropdown */
+      color: #fff; /* Light text color */
+  }
+
+  .menu-content a {
+      color: #fff; /* Light text color for links */
+  }
+  .navbar-user-info {
+    color: #fff;
+  }
+
+  .menu-content a:hover {
+      background-color: #555; /* Lighter background on hover */
+  }
+
+  /* Search bar styling */
+  .search-bar input[type="search"] {
+      background-color: #555; /* Dark background for search bar */
+      color: #fff; /* Light text color */
+  }
+
+  .search-bar input[type="search"]:focus,
+  .search-bar input[type="search"]:hover {
+      background-color: #666; /* Darker background on focus/hover */
+  }
 }

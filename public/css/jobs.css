@@ -127,3 +127,34 @@ div .material-symbols-outlined {
 
 
 }
+
+/* Dark Mode Styles */
+@media (prefers-color-scheme: dark) {
+  /* General Background and Text Colors */
+  body {
+      background-color: #121212; /* Dark background */
+      color: #fff; /* Light text */
+  }
+
+  /* Job Listing Page Styles */
+  .job-btn {
+      background-color: #121212; /* Darker button background */
+      border: 1px solid #444; /* Slight border for buttons */
+  }
+  .job-btn:hover {
+      background-color: #121212; /* Slightly lighter background on hover */
+  }
+  .jobs-container {
+      background-color: #121212; /* Dark background for job container */
+  }
+  .job {
+      background-color: #121212; /* Dark background for each job */
+  }
+
+  /* Main Page Styles */
+  /* Include the dark mode styles you already provided for the main page here */
+  /* ... */
+
+  /* Additional Styling for Buttons, Text, and Other Elements */
+  /* ... */
+}

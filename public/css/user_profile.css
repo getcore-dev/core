@@ -17,7 +17,7 @@ main {
   gap: 20px;
   padding: 40px;
   border-radius: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
   background: #ffffff;
   box-sizing: border-box;
   text-align: center;
@@ -44,6 +44,7 @@ main {
 @media (max-width: 768px) {
   #profile {
     grid-template-columns: repeat(1, minmax(300px, 1fr)); /* Adjust the number of columns */
+    
   }
 }
 
@@ -58,4 +59,100 @@ main {
 #profile p {
   margin-bottom: 10px;
   color: #666;
+}
+
+
+/* Light mode styles (default) */
+:root {
+  --background-color: #f0f0f0;
+  --text-color: #333;
+  --secondary-text-color: #666;
+  --profile-background-color: #ffffff;
+  --section-background-color: #f9f9f9;
+  --border-color: #ddd;
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #121212;
+    --text-color: #f0f0f0;
+    --secondary-text-color: #999;
+    --profile-background-color: #1e1e1e;
+    --section-background-color: #333;
+    --border-color: #888;
+  }
+
+  #profile {
+    box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
+  }
+}
+
+main {
+  background-color: var(--background-color);
+  /* other styles... */
+}
+
+#profile {
+  background: var(--profile-background-color);
+  /* other styles... */
+}
+
+#profile > div {
+  border: 1px solid var(--border-color);
+  background-color: var(--section-background-color);
+  /* other styles... */
+}
+
+#profile h1 {
+  color: var(--text-color);
+  /* other styles... */
+}
+
+#profile p {
+  color: var(--secondary-text-color);
+  /* other styles... */
+}
+
+/* Dark Mode Styles */
+@media (prefers-color-scheme: dark) {
+  body {
+      background-color: #121212; /* Dark background for the body */
+      color: #e0e0e0; /* Light text color for better readability */
+  }
+
+  #profile.grid-container {
+      /* Styles for the grid container */
+      background-color: #1e1e1e; /* Dark background for the profile container */
+      box-shadow: 0px 0px 10px 0px rgba(255, 255, 255, 0.1); /* Lighter box-shadow */
+  }
+
+  .profile-picture img {
+      /* Optionally, add a filter to dim images in dark mode */
+      filter: brightness(80%);
+  }
+
+  .profile-info, .current-job, .learning-progress, .achievements {
+      /* Styles for different sections within the profile */
+      background-color: #262626; /* Darker background for sections */
+      border-radius: 5px; /* Optional border radius */
+      padding: 10px; /* Padding for these sections */
+      margin-bottom: 15px; /* Margin between sections */
+  }
+
+  .profile-info p, .current-job p, .learning-progress p, .achievements p {
+      color: #d0d0d0; /* Lighter text color for content */
+  }
+
+  .profile-info button, .current-job button, .learning-progress button, .achievements button {
+      background-color: #005f00; /* Darker green for buttons */
+      color: #ffffff; /* White text for buttons */
+      border: none; /* Removing border for buttons */
+  }
+
+  .profile-info button:hover, .current-job button:hover, .learning-progress button:hover, .achievements button:hover {
+      background-color: #004400; /* Even darker green for button hover */
+  }
+
+  /* Additional styling for other elements as needed */
 }

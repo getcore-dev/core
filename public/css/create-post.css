@@ -91,3 +91,62 @@
         font-size: 14px;
     }
 }
+
+/* Dark Mode Styles */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #121212; /* Dark background for body */
+        color: #e0e0e0; /* Light text color for better readability */
+    }
+
+    .main-container {
+        background-color: #1e1e1e; /* Dark background for main container */
+        box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
+        color: #e0e0e0; /* Light text color for content within main container */
+    }
+
+    .main-container input[type="text"],
+    .main-container textarea {
+        background-color: #262626; /* Dark background for input fields */
+        border-color: #555; /* Darker border for input fields */
+        color: #f4f4f4; /* Light text color for input fields */
+    }
+
+    .main-container button {
+        background-color: #005f00; /* Darker green for buttons */
+    }
+
+    .main-container button:hover {
+        background-color: #004400; /* Even darker green for button hover */
+    }
+
+    .main-container .post,
+    .main-container .comment {
+        border-bottom-color: #333; /* Darker border color for posts and comments */
+    }
+
+    .main-container .post-title,
+    .main-container .comments-section h3,
+    a .material-symbols-outlined, 
+    .user-info:hover, 
+    .boosts:hover, 
+    .detracts:hover, 
+    #reply-button, 
+    .user-actions a {
+        color: #e0e0e0; /* Lighter text color for titles and links */
+    }
+
+    div .user-info, 
+    .header, 
+    .communities_id {
+        color: #bbb; /* Lighter color for user info, headers, and community IDs */
+    }
+
+    /* Adjustments for responsive design in dark mode */
+    @media screen and (max-width: 768px) {
+        .main-container {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+    }
+}
