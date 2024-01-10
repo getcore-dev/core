@@ -8,6 +8,12 @@
   transition: all 0.3s cubic-bezier(.25,.8,.25,1); 
 }
 
+.link {
+  color: darkblue;
+  padding-top: 1px;
+  text-decoration: underline;
+  font-size: 14px;
+}
 .boosted {
   color: green;
 }
@@ -123,8 +129,8 @@ div .votes:hover {
 .create-post-btn {
   background: linear-gradient(to right,  #5d6d7e , #34495e);
   font-size: 14px;
-  height: 32px;
-  width: 32px;
+  height: 35px;
+  padding: 0 20px;
   border: none;
   border-radius: 6px;
   color: white;

@@ -46,13 +46,19 @@
           <div class="title">
             <%= post.title %>
           </div>
+          <div class="link"> 
+            <% if (post.link) { %>
+              <%= post.link %>
+              <% } %>
+          </div>
             <div class="description"><%= post.content %></div>
+            
           <div class="post-info">
             <div class="communities_id">
               <%= post.community.name %>
-              </div>
-              <span class="material-symbols-outlined" id="user-icon"> person </span>
-              <strong><%= post.username %></strong>
+            </div>
+            <span class="material-symbols-outlined" id="user-icon"> person </span>
+            <strong><%= post.username %></strong>
             <span class="material-symbols-outlined" id="score-icon"> sentiment_satisfied </span>
             <%= post.score %>
             <span class="material-symbols-outlined" id="comments-icon"> comment </span>
