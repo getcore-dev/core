@@ -55,7 +55,7 @@ img.linkimage {
 }
 
 div .material-symbols-outlined {
-  font-size: 18px; 
+  font-size: 16px; 
   vertical-align: -3px; 
 
 }
@@ -232,14 +232,9 @@ div .user-info, .header {
     margin: 8px 0;
   }
 
-
-  .user-actions a {
-    font-size: 20px;
-  }
-
   /* Reduce the font size of material symbols on smaller screens */
   .material-symbols-outlined {
-    font-size: 18px;
+    font-size: 16px;
   }
 }
 

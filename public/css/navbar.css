@@ -211,10 +211,11 @@ h1, h2, h3, p {
     transform: translateX(-50%);
   }
   .nav-text-container {
+    font-weight: normal;
     font-size: 18px;
     position: absolute;
-    left: 70px;
-    top: -23px;
+    left: 36px;
+    top: -19px;
   }
 
 

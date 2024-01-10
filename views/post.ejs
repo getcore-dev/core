@@ -176,9 +176,11 @@
                 thumb_up
               </span>
             </div>
+            <div class="score">
+              <%= comment.boosts - comment.detracts %>
+            </div>
             <div class="detracts">
               <div id="comment-detracts-<%= comment.id %>">
-                <%= comment.boosts - comment.detracts %>
               </div>
               <span
                 class="material-symbols-outlined"
