@@ -212,15 +212,11 @@ h1, h2, h3, p {
   }
 
   .logo {
-    left: 40%;
+    left: 44%;
     transform: translateX(-50%);
   }
   .nav-text-container {
-    font-weight: bold;
-    font-size: 18px;
-    position: absolute;
-    left: 12px;
-    top: -23px;
+    display: none;
   }
 
 
