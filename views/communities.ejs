@@ -34,11 +34,19 @@
           <span class="material-symbols-outlined" id="detract-button" onclick="detractPost('<%= post.id %>', '<%= user %>')"> arrow_downward_alt </span>        
         </div>
         <div class="thumbnail" onclick="window.location.href='/posts/<%= post.id %>';">
+          <% if (post.linkPreview) { %>
+            <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %> 
+            <% if (imageUrl) { %> 
+              <img src="<%= imageUrl %>" alt="thumbnail" />
+          <% } %>
+          <% } else { %>
           <img
             src="/thumbnail_image_url.jpg"
             alt="Thumbnail Image"
             class="thumbnail-image"
           />
+          
+          <% } %>
         </div>
         <div class="post-content" onclick="window.location.href='/posts/<%= post.id %>';">
           <div class="title">

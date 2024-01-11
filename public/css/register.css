@@ -44,7 +44,7 @@ main {
   font-size: 12px;
   border: none;
   border-radius: 5px;
-  background: linear-gradient(to right, #117a65, #0e6655);
+  background: linear-gradient(to right, #0a5275, #003d66); /* New gradient for dark mode */
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -100,10 +100,6 @@ main {
       color: #f4f4f4;
   }
 
-  #login-button, #register-button {
-      background: linear-gradient(to right, #0a5275, #003d66); /* New gradient for dark mode */
-      color: white;
-  }
 
   /* Add any additional dark mode styles for other elements as needed */
 }

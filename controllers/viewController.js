@@ -16,6 +16,7 @@ const viewController = {
         post.community = await utilFunctions.getCommunityDetails(
           post.communities_id
         );
+        post.linkPreview = await utilFunctions.getLinkPreview(post.link);
       }
 
       res.render("communities.ejs", { user: req.user, posts: posts });

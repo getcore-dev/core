@@ -22,7 +22,7 @@ main {
   padding: 7px 10px;
   border: none;
   border-radius: 5px;
-  background: linear-gradient(to right, #117a65 ,  #0e6655); 
+  background: linear-gradient(to right, #0a5275, #003d66); /* New gradient for dark mode */
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -105,10 +105,6 @@ main {
     color: #f4f4f4; /* Light text color */
   }
 
-  #login-button, #register-button {
-    background: linear-gradient(to right, #0a5275, #003d66); /* New gradient for dark mode */
-    /* Other styles remain the same */
-  }
 
   #login h1 {
     color: #f4f4f4; /* Light color for headings */

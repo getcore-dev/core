@@ -62,7 +62,7 @@
                 person
               </span>
               <% if (user) { %> <%= user.firstname %> <%= user.lastname %>
-              <%=user.email %> <% } else { %> user<% } %>
+              <%=user.email %> <% } else { %> Login<% } %>
             </a>
           </li>
           <% if (user) { %>
@@ -95,7 +95,19 @@
               Logout
             </a>
           </li>
-          <% } %>
+          <% } else { %>
+            <li>
+              <a
+                href="/register"
+                class="inbox-button <%= currentPath === '/' ? 'active' : '' %>"
+              >
+                <span class="material-symbols-outlined" id="nb-icon">
+                  person_add
+                </span>
+                Join
+              </a>
+            </li>
+            <% } %>
         </ul>
       </div>
     </div>
@@ -118,17 +130,6 @@
             <span class="material-symbols-outlined" id="nb-icon"> work </span
             >Openings</a
           >
-        </li>
-        <li>
-          <% if (user) { %> <% } else { %>
-          <a
-            href="/login"
-            class="navbar-button <%= currentPath === '/login' ? 'active' : '' %>"
-          >
-            <span class="material-symbols-outlined" id="nb-icon"> login </span
-            >Login</a
-          >
-          <% } %>
         </li>
         <% if (user) { %>
         <li>
