@@ -30,28 +30,40 @@
           <% } %>
         </div>
         <div class="profile-info">
-          <p><%= otheruser.firstname %></p>
+          <h2><%= otheruser.username %></h2>
+          <p id="email-display"><%= otheruser.email %></p>
+          <button onclick="editField('email')">Edit</button>
+          <p id="firstname-display"><%= otheruser.firstname %></p>
           <button onclick="editField('firstname')">Edit</button>
-          <p><%= otheruser.lastname %></p>
+          <p id="lastname-display"><%= otheruser.lastname %></p>
           <button onclick="editField('lastname')">Edit</button>
         </div>
         <div class="profile-info">
-          <h2><%= otheruser.username %></h2>
-          <p><%= otheruser.email %></p>
+          <p id="email-display"><%= otheruser.email %></p>
           <button onclick="editField('email')">Edit</button>
         </div>
 
         <div class="current-job">
           <h2>Current Job</h2>
-          <% if (otheruser.currentjob) { %>
-          <p><strong>Company:</strong> <%= otheruser.currentjob.company %></p>
+          <% if (otheruser.currentjob && otheruser.currentjob.company) { %>
+          <p id="currentjob.company-display">
+            <strong>Company:</strong> <%= otheruser.currentjob.company %>
+          </p>
           <button onclick="editField('currentjob.company')">Edit</button>
-
-          <p><strong>Position:</strong> <%= otheruser.currentjob.position %></p>
-          <button onclick="editField('currentjob.position')">Edit</button>
-
           <% } else { %>
-          <p>No current job information.</p>
+          <p id="currentjob.company-display"></p>
+          <button onclick="editField('currentjob.company')">Add Company</button>
+          <% } %> <% if (otheruser.currentjob && otheruser.currentjob.position)
+          { %>
+          <p id="currentjob.position-display">
+            <strong>Position:</strong> <%= otheruser.currentjob.position %>
+          </p>
+          <button onclick="editField('currentjob.position')">Edit</button>
+          <% } else { %>
+          <p id="currentjob.position-display"></p>
+          <button onclick="editField('currentjob.position')">
+            Add Position
+          </button>
           <% } %>
         </div>
 
@@ -93,7 +105,15 @@
 
         const submitButton = document.createElement("button");
         submitButton.innerText = "Submit";
-        submitButton.onclick = () => submitEdit(field);
+        submitButton.onclick = () => {
+          submitEdit(field);
+          const newValue = inputField.value;
+          inputField.remove();
+          submitButton.remove();
+          displayElement.innerText = newValue;
+
+          // Remove the display element after submitting
+        };
 
         // Replace the display element with the textfield and button
         displayElement.innerHTML = "";
@@ -105,15 +125,35 @@
         // Get the new value
         const newValue = document.getElementById(`${field}-input`).value;
 
-        // TODO: Get the userId from the page context
-        const userId = "..."; // Replace with actual userId retrieval logic
+        // Create an object for the update
+        let updates = {};
+        updates[field] = newValue;
 
-        // Call the updateField function
-        updateField(userId, field, newValue);
+        // Send the request to the server
+        fetch("/edits", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updates),
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error("Network response was not ok.");
+            }
+          })
+          .then((data) => {
+            console.log("Success:", data);
 
-        // Update the display element and remove the textfield and button
-        const displayElement = document.getElementById(`${field}-display`);
-        displayElement.innerText = newValue;
+            // Update the display element and remove the textfield and button
+            const displayElement = document.getElementById(`${field}-display`);
+            displayElement.innerText = newValue;
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
       }
     </script>
   </body>
