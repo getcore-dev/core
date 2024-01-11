@@ -96,6 +96,12 @@ div .material-symbols-outlined:hover {
   border-bottom: 1px solid #eaeaea;
 }
 
+.avatar {
+  border-radius: 50%;
+  width: 16px;
+  vertical-align: -1px;
+}
+
 .nested-comment {
   margin-left: 10px;
   border-left: 2px solid;
@@ -116,7 +122,7 @@ div .material-symbols-outlined:hover {
 }
 
 div .user-info, .header {
-  font-size: 14px;
+  font-size: 17px;
   color: #888;
   text-decoration: none;
 }
@@ -137,9 +143,13 @@ div .user-info, .header {
 
 
 .post-content, .comment-content {
-  font-size: 14px;
+  font-size: 17px;
   line-height: 1.5;
   color: #111;
+}
+
+.comment-content a {
+  text-decoration: none;
 }
 
 .comments-section {

@@ -219,7 +219,12 @@ h1, h2, h3, p {
     display: none;
   }
 
-
+  .user-links .avatar img {
+    border-radius: 50%;
+    width: 16px;
+    vertical-align: -1px;
+  }
+  
 
 
   .hamburger-menu {

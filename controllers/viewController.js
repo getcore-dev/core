@@ -40,11 +40,13 @@ const viewController = {
     try {
       const username = req.params.username;
       const otheruser = await userQueries.findByUsername(username);
+      const posts = await userQueries.getPostsByUserId(otheruser.id);
 
       if (otheruser) {
         res.render("user_profile.ejs", {
           otheruser: otheruser,
           user: req.user,
+          posts: posts,
           editfunction: userQueries.updateField,
         });
       } else {

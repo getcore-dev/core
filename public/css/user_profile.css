@@ -287,3 +287,63 @@ body {
   
 
 }
+/* Grid container layout */
+#profile {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Three columns of equal size */
+  grid-template-rows: auto; /* Rows take size based on content */
+  grid-template-areas:
+    "picture info1 info2"
+    "learning achievements achievements"
+    "posts posts posts"; /* Posts will take up the entire bottom row spanning 3 columns */
+  gap: 30px;
+  /* ... other styles ... */
+}
+
+/* Profile picture and profile info taking up the first row */
+.profile-picture {
+  grid-area: picture;
+  /* ... other styles ... */
+}
+
+.profile-info {
+  grid-area: info1;
+  /* ... other styles ... */
+}
+
+.current-job {
+  grid-area: info2;
+  /* ... other styles ... */
+}
+
+/* Current job spans all columns */
+.current-job {
+  grid-area: job;
+  /* ... other styles ... */
+}
+
+/* Learning progress, achievements, and posts */
+.learning-progress {
+  grid-area: learning;
+  /* ... other styles ... */
+}
+
+.achievements {
+  grid-area: info2;
+  /* ... other styles ... */
+}
+
+/* Posts container spans three columns at the bottom */
+.posts {
+  grid-area: posts;
+  width: 100%; /* Take the full width of the grid area */
+  /* ... other styles ... */
+}
+
+/* Individual post styling */
+.post {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Full width of posts container */
+  /* ... other styles ... */
+}

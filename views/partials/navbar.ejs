@@ -58,9 +58,25 @@
               class="user-button <%= currentPath === '/' ? 'active' : '' %>"
             >
               <% } %>
-              <span class="material-symbols-outlined" id="nb-icon">
+              <% if (user && user.avatar) { %>
+              <img
+                src="<%= user.avatar %>"
+                alt="Avatar"
+                class="avatar"
+                id="avatar" 
+                style="
+                width:  24px;
+                border-radius: 50%;
+                height: 24px;
+                padding-top: 7px;">
+              <% } else { %>
+              <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
+              <% } %>
+                <% if (!user) { %>
+              <span class="material-symbols-outlined" id="nb-icon">                
                 person
               </span>
+              <% } %>
               <% if (user) { %> <%= user.firstname %> <%= user.lastname %>
               <%=user.email %> <% } else { %> Login<% } %>
             </a>

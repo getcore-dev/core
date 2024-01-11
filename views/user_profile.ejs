@@ -9,19 +9,23 @@
     />
     <link rel="stylesheet" href="/css/navbar.css" />
     <link rel="stylesheet" href="/css/user_profile.css" />
+    <link rel="shortcut icon" href="img/core.png" />
+    <title><%= otheruser.username %>'s Profile</title>
   </head>
   <body>
     <%- include('partials/navbar', { pagePath: 'communities' }) %>
     <main>
       <div id="profile" class="grid-container">
         <div class="profile-picture">
+          <% if (otheruser.avatar) { %>
           <img
             id="profilePic"
             src="<%= otheruser.avatar %>"
             alt="Profile Picture"
           />
-
-          <% if (user && user.username === otheruser.username) { %>
+          <% } else { %>
+          <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
+          <% } %> <% if (user && user.username === otheruser.username) { %>
           <button onclick="editImage()">Edit</button>
           <div id="imageEditControls" style="display: none">
             <input id="imageUrl" type="text" placeholder="Enter image URL" />
@@ -100,6 +104,25 @@
           <p><%= achievement %></p>
           <% }); %> <% } else { %>
           <p>No achievements yet.</p>
+          <% } %>
+        </div>
+        <div class="posts">
+          <h2>Posts</h2>
+          <% if (posts.length === 0) { %>
+          <p>No posts yet.</p>
+          <% } else { %>
+          <div class="post-container">
+            <% posts.forEach(function(post) { %>
+            <div class="post">
+              <h3 class="post-title"><%= post.title %></h3>
+              <p class="post-content"><%= post.content %></p>
+              <div class="post-meta">
+                <span class="post-score">Score: <%= post.score %></span>
+                <span class="post-date"><%= new Date(post.createdAt).toLocaleDateString() %></span>
+              </div>
+            </div>
+            <% }); %>
+          </div>
           <% } %>
         </div>
       </div>

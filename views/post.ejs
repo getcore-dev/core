@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>CORE</title>
+    <title><%= post.title %></title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/navbar.css" />
     <link rel="stylesheet" href="/css/post.css" />
+    <link rel="shortcut icon" href="img/core.png" />
+
   </head>
   <body>
     <%- include('partials/navbar', { pagePath: 'home' }) %>
@@ -14,7 +16,14 @@
       <div class="post">
         <div class="header">
           <a class="user-info" href="/profile/<%= post.user.username %>"
-          ><%= post.user.username %></a
+          >
+          <% if (post.user.avatar) {%>
+          <img src="<%= post.user.avatar %>" alt="Avatar" class="avatar" />
+          <% } else { %>
+          <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
+          <% } %>
+          
+          <%= post.user.username %></a
         >         <span>&#183;</span>
         <%= post.community.name %>
         </div>
@@ -123,7 +132,12 @@
         <div class="comment">
           <div class="comment-content">
             <a class="comment-user-info" href="/profile/<%= post.user.username %>"
-              ><%= comment.user.username%></a
+              >
+              <% if (comment.user.avatar) {%>
+                <img src="<%= comment.user.avatar %>" alt="Avatar" class="avatar" />
+                <% } else { %>
+                <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
+                <% } %><%= comment.user.username%></a
             >
             <% if (comment.user.verified === true) { %>
             <span class="material-symbols-outlined" id="verified"
