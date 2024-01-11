@@ -86,7 +86,7 @@ h1, h2, h3, p {
   text-decoration: none; /* Underline on hover */
 }
 
-.user-button {
+.user-button, .inbox-button {
   display: flex; /* Display button contents inline */
   justify-content: center; /* Center button content */
   gap: 4px; /* Gap between icon and text */
@@ -104,6 +104,11 @@ h1, h2, h3, p {
 }
 
 .user-button:hover {
+  background-color: #ddd; /* Background color on hover */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
+.inbox-button:hover {
   background-color: #ddd; /* Background color on hover */
   cursor: pointer; /* Pointer cursor on hover */
 }
@@ -174,7 +179,7 @@ h1, h2, h3, p {
   white-space: pre;
   font-weight: bold; /* Bold text */
   position: absolute; /* Top padding */
-  left: 75px;
+  left: 102px;
   top: -35px;
   font-size: 24px;
 }
@@ -335,6 +340,16 @@ h1, h2, h3, p {
       border-bottom: 1px solid #555; /* Dark border */
   }
 
+  .inbox-button:hover {
+    background-color: #444; /* Background color on hover */
+    cursor: pointer; /* Pointer cursor on hover */
+  }
+  .user-button:hover {
+    background-color: #444; /* Background color on hover */
+    border: 1px solid #0e6655;
+    cursor: pointer; /* Pointer cursor on hover */
+  }
+
   #menu-icon {
     color: #fff;
   }
@@ -356,6 +371,14 @@ h1, h2, h3, p {
       color: #ddd; /* Lighter color on hover */
       text-decoration: none; /* Underline on hover */
   }
+
+  .user-links a {
+    border: 1px solid #555;
+    background-color: #222; /* Darker background for buttons */
+    color: #fff; /* Light text color for buttons */
+
+  }
+  
 
   /* Navbar button styling */
   .navbar-button {

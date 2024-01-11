@@ -36,25 +36,66 @@
       <div class="nav-text-container">
         <% if (user) { %>
         <a class="navbar-user-info" href="/profile/<%= user.username %>"
-          ><%= user.username %></a><% } else { %> 
-            <a class="navbar-user-info" href="/login">user</a><% }%>@<a class="nav-text" href="/">CORE</a>
+          ><%= user.username %></a
+        >@<a class="nav-text" href="/">CORE</a><% } else { %>
+        <a class="navbar-user-info" href="/login">user</a>@<a
+          class="nav-text"
+          href="/"
+          >CORE</a
+        ><% }%>
       </div>
       <div class="user-btns">
         <ul class="user-links">
           <li>
             <% if (user) { %>
             <a
-            href="/profile/<%= user.username %>"
+              href="/profile/<%= user.username %>"
               class="user-button <%= currentPath === '/' ? 'active' : '' %>"
             >
-            <% } %>
+              <% } else { %>
+                <a
+              href="/login"
+              class="user-button <%= currentPath === '/' ? 'active' : '' %>"
+            >
+              <% } %>
               <span class="material-symbols-outlined" id="nb-icon">
                 person
               </span>
-              <% if (user) { %> <%= user.firstname %> <%= user.lastname %> <%=
-              user.email %> <% } else { %> user <% } %>
+              <% if (user) { %> <%= user.firstname %> <%= user.lastname %>
+              <%=user.email %> <% } else { %> user<% } %>
             </a>
           </li>
+          <% if (user) { %>
+          <li>
+            <a
+              href="/"
+              class="inbox-button <%= currentPath === '/' ? 'active' : '' %>"
+            >
+              <span class="material-symbols-outlined" id="nb-icon">
+                mail
+              </span>
+              Inbox
+            </a>
+          </li>
+          <li>
+            <form
+            id="logoutForm"
+            action="/logout?_method=DELETE"
+            method="POST"
+            style="display: none"
+          ></form>
+          <a
+            href="#"
+            class="navbar-button <%= currentPath === '/logout' ? 'active' : '' %>"
+            onclick="document.getElementById('logoutForm').submit();"
+          >
+              <span class="material-symbols-outlined" id="nb-icon">
+                logout
+              </span>
+              Logout
+            </a>
+          </li>
+          <% } %>
         </ul>
       </div>
     </div>
@@ -99,22 +140,14 @@
             >Learning</a
           >
         </li>
-
         <li>
-          <form
-            id="logoutForm"
-            action="/logout?_method=DELETE"
-            method="POST"
-            style="display: none"
-          ></form>
           <a
-            href="#"
-            class="navbar-button <%= currentPath === '/logout' ? 'active' : '' %>"
-            onclick="document.getElementById('logoutForm').submit();"
+            href="/about"
+            class="navbar-button <%= currentPath === '/about' ? 'active' : '' %>"
           >
-            <span class="material-symbols-outlined" id="nb-icon"> logout </span
-            >Logout
-          </a>
+            <span class="material-symbols-outlined" id="nb-icon"> contacts </span
+            >About</a
+          >
         </li>
         <% } else { %> <% } %>
       </ul>

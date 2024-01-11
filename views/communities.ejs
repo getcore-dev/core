@@ -23,11 +23,9 @@
       <% posts.forEach(post => { %>
       <div class="post">
         <div class="votes">
-          <div id="post-boosts-<%= post.id %>">
-            
-          </div>
+
           <span class="material-symbols-outlined" id="boost-button" onclick="boostPost('<%= post.id %>', '<%= user %>')"> arrow_upward_alt </span>
-          <div id="post-detracts-<%= post.id %>">
+          <div id="post-score-<%= post.id %>">
             <span class="score">
               <%= post.boosts - post.detracts %>
             </span>
@@ -118,7 +116,7 @@ function detractPost(postId, user) {
     console.log(data); // Console log the JSON response
     if (data.message === "Detract successful") {
       // Increase the detract count in the view
-      const detractCountElement = document.getElementById(`post-detracts-${postId}`);
+      const detractCountElement = document.getElementById(`posts-score-${postId}`);
       detractCountElement.innerText = parseInt(detractCountElement.innerText) + 1;
 
       // Change color of trending down arrow
@@ -126,7 +124,7 @@ function detractPost(postId, user) {
       trendingDownElement.style.color = "red";
 
       // Check if the post was boosted by the user
-      const boostCountElement = document.getElementById(`post-boosts-${postId}`);
+      const boostCountElement = document.getElementById(`posts-score-${postId}`);
       if (boostCountElement.innerText > 0) {
         const trendingUpElement = document.querySelector(`[onclick="boostPost('${postId}', '${user}')"]`);
       trendingUpElement.style.color = "black";
@@ -134,7 +132,7 @@ function detractPost(postId, user) {
       }
     } else if (data.message === "Detract removed") {
       // Decrease the detract count in the view
-      const detractCountElement = document.getElementById(`post-detracts-${postId}`);
+      const detractCountElement = document.getElementById(`posts-score-${postId}`);
       detractCountElement.innerText = parseInt(detractCountElement.innerText) - 1;
 
       // Change color of trending down arrow back to black
@@ -166,7 +164,7 @@ function boostPost(postId, user) {
     console.log(data); // Console log the JSON response
     if (data.message === "Boost successful") {
       // Increase the boost count in the view
-      const boostCountElement = document.getElementById(`post-boosts-${postId}`);
+      const boostCountElement = document.getElementById(`posts-score-${postId}`);
       boostCountElement.innerText = parseInt(boostCountElement.innerText) + 1;
 
       // Change color of trending up arrow
@@ -174,7 +172,7 @@ function boostPost(postId, user) {
       trendingUpElement.style.color = "green";
 
       // Check if the post was detracted by the user
-      const detractCountElement = document.getElementById(`post-detracts-${postId}`);
+      const detractCountElement = document.getElementById(`posts-score-${postId}`);
       if (detractCountElement.innerText > 0) {
         // Decrease the detract count in the view
         const trendingDownElement = document.querySelector(`[onclick="detractPost('${postId}', '${user}')"]`);
@@ -183,7 +181,7 @@ function boostPost(postId, user) {
       }
     } else if (data.message === "Boost removed") {
       // Decrease the boost count in the view
-      const boostCountElement = document.getElementById(`post-boosts-${postId}`);
+      const boostCountElement = document.getElementById(`posts-score-${postId}`);
       boostCountElement.innerText = parseInt(boostCountElement.innerText) - 1;
 
       // Change color of trending up arrow back to black

@@ -17,16 +17,20 @@ router.get("/register", checkNotAuthenticated, async (req, res) => {
 router.post("/register", checkNotAuthenticated, async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    await sql.query`INSERT INTO users (id, username, email, password, zipcode) VALUES (${Date.now().toString()}, ${
-      req.body.username
-    }, ${req.body.email}, ${hashedPassword}, ${req.body.zipcode})`;
+    await sql.query`INSERT INTO users (id, username, email, password, zipcode, firstname, lastname) VALUES (
+      ${Date.now().toString()},
+      ${req.body.username},
+      ${req.body.email},
+      ${hashedPassword},
+      ${req.body.zipcode},
+      ${req.body.firstname},
+      ${req.body.lastname})`;
     res.redirect("/login");
   } catch (error) {
     console.error("Database insert error:", error);
     res.redirect("/register");
   }
 });
-
 
 // Login route
 router.get("/login", checkNotAuthenticated, async (req, res) => {

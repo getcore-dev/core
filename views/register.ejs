@@ -19,6 +19,24 @@
         <form action="/register" method="POST">
           <div class="input-container">
             <input
+              type="text"
+              id="firstname"
+              name="firstname"
+              placeholder="First Name"
+              required
+            />
+          </div>
+          <div class="input-container">
+            <input
+              type="text"
+              id="lastname"
+              name="lastname"
+              placeholder="Last Name"
+              required
+            />
+          </div>
+          <div class="input-container">
+            <input
               type="email"
               id="email"
               name="email"
@@ -59,7 +77,7 @@
             />
           </div>
           <a href="/register" id="register-text" class="register-text">
-            <button type="button" id="register-button">Join</button>
+            <button type="submit" id="register-button">Join</button>
           </a>
         </form>
         <a href="/login" id="login-text"
