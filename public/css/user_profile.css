@@ -101,20 +101,87 @@ main {
 #profile > div {
   border: 1px solid var(--border-color);
   background-color: var(--section-background-color);
-  /* other styles... */
 }
 
 #profile h1 {
   color: var(--text-color);
-  /* other styles... */
 }
 
 #profile p {
   color: var(--secondary-text-color);
-  /* other styles... */
 }
 
-/* Dark Mode Styles */
+/* Profile Picture Styles */
+.profile-picture {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile-picture img {
+  width: 100px; /* Adjust the size as needed */
+  height: 100px;
+  border-radius: 5px; /* Circular image */
+  object-fit: cover;
+  border: 3px solid #ccc; /* Border color similar to the navbar */
+  margin-bottom: 10px;
+}
+
+.profile-picture button, .profile-info button, .current-job button {
+  background-color: #f9f9f9; /* Same as navbar button */
+  color: #000;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  transition: background-color 0.15s;
+}
+
+.profile-picture {
+  display: flex;
+  flex-direction: row;
+
+}
+
+.profile-picture button:hover {
+  background-color: #ddd;
+}
+
+#imageEditControls {
+  display: none; /* Initially hidden */
+}
+
+#imageEditControls input[type="text"], .profile-info input[type="text"], .current-job input[type="text"] {
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 200px; /* Adjust the width as needed */
+  margin-bottom: 10px;
+}
+
+#imageEditControls button {
+  background-color: #f9f9f9; /* Same as navbar button */
+  color: #000;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  transition: background-color 0.15s;
+}
+
+#imageEditControls button:hover, .profile-info button:hover, .current-job button:hover {
+  background-color: #ddd;
+}
+
+/* Add any additional styles for the profile picture area here */
+
+
 @media (prefers-color-scheme: dark) {
   body {
       background-color: #121212; /* Dark background for the body */
@@ -125,11 +192,6 @@ main {
       /* Styles for the grid container */
       background-color: #1e1e1e; /* Dark background for the profile container */
       box-shadow: 0px 0px 10px 0px rgba(255, 255, 255, 0.1); /* Lighter box-shadow */
-  }
-
-  .profile-picture img {
-      /* Optionally, add a filter to dim images in dark mode */
-      filter: brightness(80%);
   }
 
   .profile-info, .current-job, .learning-progress, .achievements {
@@ -144,15 +206,84 @@ main {
       color: #d0d0d0; /* Lighter text color for content */
   }
 
-  .profile-info button, .current-job button, .learning-progress button, .achievements button {
-      background-color: #005f00; /* Darker green for buttons */
-      color: #ffffff; /* White text for buttons */
-      border: none; /* Removing border for buttons */
-  }
+  /* Dark Mode Theme */
 
-  .profile-info button:hover, .current-job button:hover, .learning-progress button:hover, .achievements button:hover {
-      background-color: #004400; /* Even darker green for button hover */
-  }
+/* Common button styles for dark mode */
+.profile-picture button, 
+.profile-info button, 
+.current-job button,
+#imageEditControls button {
+  background-color: #333; /* Dark background color for buttons */
+  color: #f9f9f9; /* Light text color for contrast */
+  border: 1px solid #555; /* Dark border color */
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  transition: background-color 0.15s;
+}
+.edit-input {
+  /* Visually match the button and the field */
+  font-size: 14px;
+  padding: 5px 10px;
+  /* Vertical alignment */
+  margin-top: 5px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 
-  /* Additional styling for other elements as needed */
+/* Hover effect for buttons in dark mode */
+.profile-picture button:hover, 
+#imageEditControls button:hover, 
+.profile-info button:hover, 
+.current-job button:hover {
+  background-color: #444; /* Slightly lighter for hover effect */
+}
+
+/* Styling for input fields in dark mode */
+#imageEditControls input[type="text"], 
+.profile-info input[type="text"], 
+.current-job input[type="text"] {
+  background-color: #222; /* Darker background color for inputs */
+  color: #f9f9f9; /* Light text color for inputs */
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #555; /* Dark border color for inputs */
+  border-radius: 5px;
+  width: 200px; /* Adjust the width as needed */
+  margin-bottom: 10px;
+}
+
+.editable-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* or 'flex-start' to align items to the left */
+  margin-bottom: 10px; /* Adjust spacing as needed */
+}
+
+.editable-field p {
+  margin-right: 10px; /* Spacing between the paragraph text and button */
+}
+
+/* This assumes that the profile-picture class is for a container element */
+.profile-picture {
+  display: flex;
+  flex-direction: row;
+  /* Since the background colors are dark in dark mode, you might want to adjust other properties as well */
+  /* Add additional styles as needed */
+}
+
+/* Example adjustments for dark mode visibility */
+body {
+  background-color: #121212; /* Dark background for overall page */
+  color: #f9f9f9; /* Light color for overall text */
+}
+
+/* Adjustments for other elements might also be needed to match with the dark theme. */
+
+
+  
+
 }

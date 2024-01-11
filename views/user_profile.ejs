@@ -15,56 +15,69 @@
     <main>
       <div id="profile" class="grid-container">
         <div class="profile-picture">
-          <img src="<%= otheruser.avatar %>" alt="Profile Picture" />
+          <img
+            id="profilePic"
+            src="<%= otheruser.avatar %>"
+            alt="Profile Picture"
+          />
 
           <% if (user && user.username === otheruser.username) { %>
-          <form
-            id="uploadForm"
-            action="/api/upload-profile-picture"
-            method="POST"
-            enctype="multipart/form-data"
-          >
-            <input id="files" type="file" name="file" />
-            <button type="submit">Upload</button>
-          </form>
+          <button onclick="editImage()">Edit</button>
+          <div id="imageEditControls" style="display: none">
+            <input id="imageUrl" type="text" placeholder="Enter image URL" />
+            <button onclick="submitImageEdit()">Update</button>
+          </div>
           <% } %>
         </div>
         <div class="profile-info">
           <h2><%= otheruser.username %></h2>
-          <p id="email-display"><%= otheruser.email %></p>
-          <button onclick="editField('email')">Edit</button>
-          <p id="firstname-display"><%= otheruser.firstname %></p>
-          <button onclick="editField('firstname')">Edit</button>
-          <p id="lastname-display"><%= otheruser.lastname %></p>
-          <button onclick="editField('lastname')">Edit</button>
-        </div>
-        <div class="profile-info">
-          <p id="email-display"><%= otheruser.email %></p>
-          <button onclick="editField('email')">Edit</button>
+          <div class="editable-field">
+            <p id="email-display"><%= otheruser.email %></p>
+            <% if (user && otheruser.username == user.username) { %>
+            <button onclick="editField('email', this)">Edit</button>
+            <% } %>
+          </div>
+          <div class="editable-field">
+            <p id="firstname-display"><%= otheruser.firstname %></p>
+            <% if (user && otheruser.username == user.username) { %>
+            <button onclick="editField('firstname', this)">Edit</button>
+            <% } %>
+          </div>
+          <div class="editable-field">
+            <p id="lastname-display"><%= otheruser.lastname %></p>
+            <% if (user && otheruser.username == user.username) { %>
+            <button onclick="editField('lastname', this)">Edit</button>
+            <% } %>
+          </div>
         </div>
 
         <div class="current-job">
           <h2>Current Job</h2>
-          <% if (otheruser.currentjob && otheruser.currentjob.company) { %>
+          <% if (user && otheruser.currentjob && otheruser.currentjob.company) {
+          %>
           <p id="currentjob.company-display">
             <strong>Company:</strong> <%= otheruser.currentjob.company %>
           </p>
-          <button onclick="editField('currentjob.company')">Edit</button>
+          <button onclick="editField('currentjob.company', this)">Edit</button>
           <% } else { %>
           <p id="currentjob.company-display"></p>
-          <button onclick="editField('currentjob.company')">Add Company</button>
-          <% } %> <% if (otheruser.currentjob && otheruser.currentjob.position)
-          { %>
+          <% if (user && otheruser.username == user.username) { %>
+          <button onclick="editField('currentjob.company', this)">
+            Add Company
+          </button>
+          <% } %> <% } %> <% if (otheruser.currentjob &&
+          otheruser.currentjob.position) { %>
           <p id="currentjob.position-display">
             <strong>Position:</strong> <%= otheruser.currentjob.position %>
           </p>
-          <button onclick="editField('currentjob.position')">Edit</button>
+          <button onclick="editField('currentjob.position', this)">Edit</button>
           <% } else { %>
           <p id="currentjob.position-display"></p>
-          <button onclick="editField('currentjob.position')">
+          <% if (user && otheruser.username == user.username) { %>
+          <button onclick="editField('currentjob.position', this)">
             Add Position
           </button>
-          <% } %>
+          <% } %> <% } %>
         </div>
 
         <div class="learning-progress">
@@ -92,42 +105,78 @@
       </div>
     </main>
     <script>
-      function editField(field) {
-        // Get the current value and display element
+      function editImage() {
+        // Show the URL input and update button
+        document.getElementById("imageEditControls").style.display = "block";
+      }
+
+      function submitImageEdit() {
+        // Get the new image URL from the input element
+        const imageUrl = document.getElementById("imageUrl").value;
+
+        // Hide the URL input and update button
+        document.getElementById("imageEditControls").style.display = "none";
+
+        // Continue only if the imageUrl is not empty
+        if (imageUrl.trim() !== "") {
+          // Send the POST request to the `/edits` endpoint with the imageURL
+          fetch("/edits", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              avatar: imageUrl, // The 'avatar' field is being updated with the imageURL
+            }),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok.");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              console.log("Success:", data);
+              // Update the profile picture preview with the new URL
+              document.getElementById("profilePic").src = imageUrl;
+              // You can redirect or refresh the page if needed
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              // You might want to show an error message to the user here
+            });
+        } else {
+          // If imageUrl is empty, display an error or reset the view
+          console.log("Image URL is required");
+          // You might want to show an error message to the user here
+        }
+      }
+
+      function editField(field, button) {
         const displayElement = document.getElementById(`${field}-display`);
         const currentValue = displayElement.innerText;
 
-        // Create a textfield and submit button
-        const inputField = document.createElement("input");
-        inputField.type = "text";
-        inputField.value = currentValue;
-        inputField.id = `${field}-input`;
+        if (button.textContent === "Edit") {
+          // If the button is in 'Edit' state, create an input field
+          const inputField = document.createElement("input");
+          inputField.type = "text";
+          inputField.value = currentValue;
+          inputField.id = `${field}-input`;
+          inputField.classList.add("edit-input"); // Add this class to style the input
 
-        const submitButton = document.createElement("button");
-        submitButton.innerText = "Submit";
-        submitButton.onclick = () => {
-          submitEdit(field);
-          const newValue = inputField.value;
-          inputField.remove();
-          submitButton.remove();
-          displayElement.innerText = newValue;
+          displayElement.parentNode.insertBefore(inputField, displayElement);
+          displayElement.style.display = "none"; // Hide the display element
 
-          // Remove the display element after submitting
-        };
-
-        // Replace the display element with the textfield and button
-        displayElement.innerHTML = "";
-        displayElement.appendChild(inputField);
-        displayElement.appendChild(submitButton);
+          button.textContent = "Submit"; // Change button text to 'Submit'
+          // Pass in the display element into the onclick handler
+          button.onclick = function () {
+            submitEdit(field, button, displayElement, inputField);
+          };
+        }
       }
 
-      function submitEdit(field) {
-        // Get the new value
-        const newValue = document.getElementById(`${field}-input`).value;
-
-        // Create an object for the update
-        let updates = {};
-        updates[field] = newValue;
+      function submitEdit(field, button, displayElement, inputField) {
+        const newValue = inputField.value;
 
         // Send the request to the server
         fetch("/edits", {
@@ -135,21 +184,27 @@
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(updates),
+          body: JSON.stringify({ [field]: newValue }), // Use computed property names
         })
           .then((response) => {
-            if (response.ok) {
-              return response.json();
-            } else {
+            if (!response.ok) {
               throw new Error("Network response was not ok.");
             }
+            return response.json();
           })
           .then((data) => {
             console.log("Success:", data);
 
-            // Update the display element and remove the textfield and button
-            const displayElement = document.getElementById(`${field}-display`);
+            // Update the display element and remove the textfield
             displayElement.innerText = newValue;
+            displayElement.style.display = "block";
+            inputField.remove();
+
+            // Change the button text back to 'Edit' and restore the original onclick event
+            button.textContent = "Edit";
+            button.onclick = function () {
+              editField(field, button); // Restore the editField function
+            };
           })
           .catch((error) => {
             console.error("Error:", error);
