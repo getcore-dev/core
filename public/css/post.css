@@ -1,6 +1,47 @@
+:root {
+  /* Light mode styles (default) */
+  --background-color: #f4f4f4;
+  --text-color: #333;
+  --secondary-text-color: #666;
+  --profile-background-color: #ffffff;
+  --section-background-color: #f9f9f9;
+  --border-color: #ddd;
+  --link-color: #111;
+  --hover-text-color: green;
+  --comment-hover-bg-color: #f8f8f8;
+  --input-bg-color: var(--section-background-color);
+  --input-border-color: var(--border-color);
+  --input-text-color: var(--text-color);
+  --link-preview-border-color: darkblue;
+  --community-id-bg-color: darkgreen;
+  --community-id-text-color: white;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark mode styles */
+    --background-color: #121212;
+    --text-color: #e0e0e0;
+    --secondary-text-color: #999;
+    --profile-background-color: #1e1e1e;
+    --section-background-color: #333;
+    --border-color: #888;
+    --link-color: #fff;
+    --hover-text-color: #e0e0e0;
+    --comment-hover-bg-color: #333;
+    --input-bg-color: #262626;
+    --input-border-color: #555;
+    --input-text-color: #f4f4f4;
+    --link-preview-border-color: #555;
+    --community-id-bg-color: #006400;
+    --community-id-text-color: white;
+  }
+}
+
 body {
-  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* Set default font family */
-  background-color: #f4f4f4;
+  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
 #verified, a #verified {
@@ -14,6 +55,9 @@ a .material-symbols-outlined {
   vertical-align: -3px;
 }
 
+div.user-interactions, div.timestamp {
+  padding-bottom: 8px;
+}
 img.linkimage {
   width: 200px;
 }
@@ -90,14 +134,33 @@ div .material-symbols-outlined:hover {
   border-radius: 10px;
 }
 
+a.comment-url  {
+  text-decoration: none;
+  color: blue; 
+}
+
+a.comment-url:hover {
+  color: blue; 
+  text-decoration: underline;
+}
+
+a.comment-url:visited {
+  color: darkblue; 
+}
+
 .post, .comment {
-  padding: 7px;
+  padding: 2px;
   margin-bottom: 10px;
   border-bottom: 1px solid #eaeaea;
 }
 
+.comment:hover {
+  background-color: #f8f8f8;
+}
+
 .avatar {
   border-radius: 50%;
+  height: 16px;
   width: 16px;
   vertical-align: -1px;
 }
@@ -114,6 +177,13 @@ div .material-symbols-outlined:hover {
 .nested-comment.level-4 { border-color: #80E080; } /* Light Green */
 .nested-comment.level-5 { border-color: #B0F0B0; } /* Very Light Green */
 .nested-comment.level-6 { border-color: #D0F8D0; } /* Pale Green */
+
+.nested-comment.level-1:hover { border-color: #004800; } /* Green */
+.nested-comment.level-2:hover { border-color: #007c00; } /* Lighter Green */
+.nested-comment.level-3:hover { border-color: #00a500; } /* Even Lighter Green */
+.nested-comment.level-4:hover { border-color: #00d200; } /* Light Green */
+.nested-comment.level-5:hover { border-color: #00cc00; } /* Very Light Green */
+.nested-comment.level-6:hover { border-color: #00e100; } /* Pale Green */
 
 .post-title {
   font-size: 22px;
@@ -153,7 +223,7 @@ div .user-info, .header {
 }
 
 .comments-section {
-  margin-top: 10px;
+  margin-top: 4px;
 }
 
 .comments-section h3 {
@@ -189,16 +259,19 @@ div .user-info, .header {
   font-size: 14px;
 }
 
-.input-container input, .input-container textarea {
-  width: 95%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 5px; /* This makes the input rounded */
-  background-color: #f8f9fa;
-  font-size: 16px;
+.main-container textarea#comment {
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+  resize: none; /* Disable manual resizing */
+  overflow: hidden; /* Hide the scrollbar */
 }
+
+
 
 
 .comment-body {
@@ -284,6 +357,7 @@ div .user-info, .header {
 }
 
 .post-body {
+  font-size: 15px;
   padding-top: 2px;
   white-space: pre-line;
 }
@@ -302,6 +376,9 @@ div .user-info, .header {
   body {
     background-color: #121212; /* Dark background for body */
     color: #e0e0e0; /* Light text color for better readability */
+  }
+  .comment:hover {
+    background-color: #333; /* Darker background on hover */
   }
 
   #verified, a #verified {
@@ -337,7 +414,7 @@ div .user-info, .header {
     color: #d0d0d0; /* Lighter text color for content */
   }
 
-  .input-container input, .input-container textarea {
+  .input-container , .input-container textarea {
     background-color: #262626; /* Dark background for input fields */
     border-color: #555; /* Darker border for input fields */
     color: #f4f4f4; /* Light text color */
@@ -353,3 +430,46 @@ div .user-info, .header {
 
   /* Add any additional dark mode styles for other elements as needed */
 }
+
+.input-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: var(--input-bg-color);
+  border: 1px solid var(--input-border-color);
+  margin-bottom: 10px;
+}
+
+/* Style for the comment input field */
+.input-container textarea {
+  flex-grow: 1;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid var(--input-border-color);
+  font-size: 14px; /* Same as other input fields */
+  background-color: var(--input-bg-color);
+  color: var(--input-text-color);
+  overflow: hidden;
+  resize: none;
+  font-family: inherit; /* Inherits font-family from body */
+  line-height: normal; /* Adjust line height as needed */
+}
+
+/* Style for the send button */
+.input-container button.fab {
+  background-color: var(--profile-background-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.15s;
+}
+
+/* Style for the send button on hover */
+.input-container button.fab:hover {
+  background-color: var(--border-color);
+} 

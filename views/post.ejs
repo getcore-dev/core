@@ -18,7 +18,7 @@
           <a class="user-info" href="/profile/<%= post.user.username %>"
           >
           <% if (post.user.avatar) {%>
-          <img src="<%= post.user.avatar %>" alt="Avatar" class="avatar" />
+          <img src="<%= post.user.avatar %>" alt="Avatar" class="avatar" id="avatar" onerror="standby()" />
           <% } else { %>
           <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
           <% } %>
@@ -110,19 +110,15 @@
           <% } %>
         </div>
         <% if (user) { %>
-        <form
-          id="comment-form"
-          action="/posts/<%= post.id %>/comments"
-          method="POST"
-        >
-          <div class="input-container">
-            <input type="text" id="comment" name="comment" required />
-            <a href="#" class="fab" onclick="submitForm('comment-form');">
-              <span class="material-symbols-outlined">send</span>
-            </a>
-          </div>
-        </form>
-        <% } %>
+          <form id="comment-form" action="/posts/<%= post.id %>/comments" method="POST">
+            <div class="input-container">
+              <textarea id="comment" name="comment" required maxlength="500" placeholder="Add a comment..." oninput="autoResizeTextarea(this)"></textarea>
+              <button type="submit" class="fab">
+                Submit
+              </button>
+            </div>
+          </form>
+          <% } %>          
       </div>
 
       <div class="comments-section">
@@ -131,7 +127,7 @@
         { %>
         <div class="comment">
           <div class="comment-content">
-            <a class="comment-user-info" href="/profile/<%= post.user.username %>"
+            <a class="comment-user-info" href="/profile/<%= comment.user.username %>"
               >
               <% if (comment.user.avatar) {%>
                 <img src="<%= comment.user.avatar %>" alt="Avatar" class="avatar" />
@@ -167,7 +163,7 @@
             <span class="comment-timestamp"><%= timeSinceComment %></p>
           </div>
           <div class="comment-body">
-            <%= comment.comment %>
+            <%- linkify(comment.comment) %>
           </div>
           
           <% if (user) { %>
@@ -204,7 +200,7 @@
             <a
               href="#"
               id="reply-button"
-              onclick="showReplyForm('<%= comment.id %>')"
+              onclick="showReplyForm('<%= comment.id %>', event)"
             >
               <span class="material-symbols-outlined">reply</span> Reply
             </a>
@@ -239,18 +235,12 @@
             style="display: none"
           >
             <div class="input-container">
-              <textarea
-                id="reply-<%= comment.id %>"
-                name="comment"
-                required
-              ></textarea>
-              <a
-                href="#"
-                class="fab"
-                onclick="submitForm('reply-form-<%= comment.id %>');"
-              >
-                <span class="material-symbols-outlined">send</span>
-              </a>
+              <form onsubmit="submitForm('comment-form', event);">
+                <textarea id="comment" name="comment" rows="4" required oninput="autoExpandTextarea(event)" maxlength="500"></textarea>
+                <button type="submit" class="fab">
+                  Submit
+                </button>
+              </form>
             </div>
           </form>
 
@@ -522,7 +512,8 @@
           });
       }
 
-      function submitForm(formId) {
+      function submitForm(formId, event) {
+        event.preventDefault();
         var form = document.getElementById(formId);
 
         if (!form) {
@@ -555,7 +546,8 @@
         }
       }
 
-      function showReplyForm(commentId) {
+      function showReplyForm(commentId, event) {
+        event.preventDefault();
         var form = document.getElementById("reply-form-" + commentId);
         form.style.display = form.style.display === "none" ? "block" : "none";
       }
@@ -565,6 +557,16 @@
     }
     return false;
   }
+  function standby() {
+    document.getElementById('avatar').src = "/img/default-avatar.png"
+  }
+
+  function autoExpandTextarea(event) {
+    event.target.style.height = 'inherit';
+    event.target.style.height = `${event.target.scrollHeight}px`;
+  }
+
+  document.getElementById('comment').addEventListener('input', autoExpandTextarea);
     </script>
   </body>
 </html>

@@ -23,10 +23,19 @@
             <input type="hidden" name="userId" value="<%= user.id %>" />
             <label for="title">Title:</label>
             <input type="text" id="title" name="title" required />
-            <label for="community">Community:</label>
-            <input type="text" id="community" name="community_id" />
-            <label for="link">Link:</label>
-            <input type="text" id="link" name="link" />
+            <div class="form-group" id="community">
+              <label for="community">Community:</label>
+              <select id="community" name="community_id">
+                <option value="1">General</option>
+                <option value="2">ML/AI</option>
+                <option value="3">IT</option>
+                <option value="4">Robotics</option>
+                <option value="5">Game-Dev</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="link">Link:</label>
+              <input type="text" id="link" name="link" />
           </div>
           <div class="form-group">
             <label for="content">Content:</label>

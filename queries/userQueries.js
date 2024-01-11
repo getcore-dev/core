@@ -23,6 +23,46 @@ const userQueries = {
     }
   },
 
+  getCommentAuthorByCommentId: async (commentId) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM users WHERE id = (SELECT user_id FROM comments WHERE id = ${commentId})`;
+      return result.recordset[0];
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getCommentsByUserId: async (userId) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM comments WHERE user_id = ${userId} AND deleted = 0 ORDER BY created_at DESC`;
+      const comments = result.recordset;
+
+      const enrichedComments = await Promise.all(
+        comments.map(async (comment) => {
+          const author = await userQueries.getCommentAuthorByCommentId(
+            comment.id
+          );
+          let receiver = null;
+          if (comment.parent_comment_id) {
+            receiver = await userQueries.getCommentAuthorByCommentId(
+              comment.parent_comment_id
+            );
+            receiver = receiver.username;
+          }
+          return { ...comment, author, receiver };
+        })
+      );
+
+      return enrichedComments;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   findById: async (id) => {
     try {
       const result = await sql.query`SELECT * FROM users WHERE id = ${id}`;

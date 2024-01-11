@@ -69,10 +69,13 @@
                 border-radius: 50%;
                 height: 24px;
                 padding-top: 7px;">
-              <% } else { %>
-              <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
-              <% } %>
-                <% if (!user) { %>
+              <% } else if (user && user.avatar) { %>
+              <img src="/img/default-avatar.png" alt="Avatar" class="avatar" 
+              style="width:  24px;
+              border-radius: 50%;
+              height: 24px;
+              padding-top: 7px;"/>
+              <% } else if (!user) { %>
               <span class="material-symbols-outlined" id="nb-icon">                
                 person
               </span>
@@ -102,7 +105,7 @@
           ></form>
           <a
             href="#"
-            class="navbar-button <%= currentPath === '/logout' ? 'active' : '' %>"
+            class="logout-button <%= currentPath === '/logout' ? 'active' : '' %>"
             onclick="document.getElementById('logoutForm').submit();"
           >
               <span class="material-symbols-outlined" id="nb-icon">

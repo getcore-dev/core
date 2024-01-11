@@ -86,7 +86,7 @@ h1, h2, h3, p {
   text-decoration: none; /* Underline on hover */
 }
 
-.user-button, .inbox-button {
+.user-button, .inbox-button, .logout-button {
   display: flex; /* Display button contents inline */
   justify-content: center; /* Center button content */
   gap: 4px; /* Gap between icon and text */
@@ -103,15 +103,11 @@ h1, h2, h3, p {
   transition: background-color 0.15s, transform 0.15s; /* Transition effects */
 }
 
-.user-button:hover {
+.navbar-button:hover, .user-button:hover, .inbox-button:hover, .logout-button:hover {
   background-color: #ddd; /* Background color on hover */
   cursor: pointer; /* Pointer cursor on hover */
 }
 
-.inbox-button:hover {
-  background-color: #ddd; /* Background color on hover */
-  cursor: pointer; /* Pointer cursor on hover */
-}
 
 /* Navbar Button Style */
 .navbar-button {

@@ -9,6 +9,10 @@
 }
 
 .post:hover {
+  background-color: #f1f1f1;
+}
+
+.post:hover {
   cursor: pointer;
 }
 
@@ -293,6 +297,11 @@ div .material-symbols-outlined {
   .post {
       border-bottom: 1px solid #444; /* Dark border for posts */
   }
+
+  .post:hover {
+      background-color: #222; /* Dark background on hover */
+  }
+  
   .post:last-child {
       border-bottom: none;
   }

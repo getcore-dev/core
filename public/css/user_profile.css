@@ -294,8 +294,9 @@ body {
   grid-template-rows: auto; /* Rows take size based on content */
   grid-template-areas:
     "picture info1 info2"
-    "learning achievements achievements"
-    "posts posts posts"; /* Posts will take up the entire bottom row spanning 3 columns */
+    "learning job job"
+    "posts posts posts"
+    "comments comments comments"; /* Posts will take up the entire bottom row spanning 3 columns */
   gap: 30px;
   /* ... other styles ... */
 }
@@ -304,6 +305,10 @@ body {
 .profile-picture {
   grid-area: picture;
   /* ... other styles ... */
+}
+
+.comments {
+  grid-area: comments;
 }
 
 .profile-info {

@@ -118,8 +118,30 @@
               <p class="post-content"><%= post.content %></p>
               <div class="post-meta">
                 <span class="post-score">Score: <%= post.score %></span>
-                <span class="post-date"><%= new Date(post.createdAt).toLocaleDateString() %></span>
+                <span class="post-date"
+                  ><%= new Date(post.createdAt).toLocaleDateString() %></span
+                >
               </div>
+            </div>
+            <% }); %>
+          </div>
+          <% } %>
+        </div>
+        <div class="comments">
+          <h2>Comment</h2>
+          <% if (comments.length === 0) { %>
+          <p>No comments yet.</p>
+          <% } else { %>
+          <div class="coments-container">
+            <% comments.forEach(function(comment) { %>
+            <div class="comment">
+              <p class="comment-author"><%= comment.author.username %> <% if (comment.receiver) { %> to <%= comment.receiver %> <% } %></p>
+              <p class="comment-content"><%= comment.comment %></p>
+              <div class="comment-meta">
+                <span class="comment-score">Score: <%= comment.boosts - comment.detracts %></span>
+                <span class="comment-date"
+                  > Date:<%= new Date(comment.created_at).toLocaleDateString() %></span
+                >
             </div>
             <% }); %>
           </div>

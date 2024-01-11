@@ -251,7 +251,11 @@ router.get("/posts/:postId", async (req, res) => {
       postData.communities_id
     );
 
-    res.render("post.ejs", { post: postData, user: req.user });
+    res.render("post.ejs", {
+      post: postData,
+      user: req.user,
+      linkify: utilFunctions.linkify,
+    });
   } catch (err) {
     console.error("Database query error:", err);
     res.status(500).send("Error fetching post and comments");

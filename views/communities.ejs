@@ -206,8 +206,7 @@ function boostPost(postId, user) {
 }
 
   const communities = [
-        { name: "New", icon: "schedule" },
-        { name: "Explore", icon: "public" },
+        { name: "All", icon: "schedule" },
         { name: "General", icon: "groups" },
         { name: "ML/AI", icon: "robot" },
         { name: "IT", icon: "developer_board" },
@@ -216,26 +215,35 @@ function boostPost(postId, user) {
       ];
 
       function createButtons() {
-        const container = document.getElementById("com-btn-container");
+    const container = document.getElementById("com-btn-container");
 
-        communities.forEach((community) => {
-          const button = document.createElement("button");
-          button.className = "com-btn";
-          button.setAttribute("data-community", community.name);
+    communities.forEach((community) => {
+        const button = document.createElement("button");
+        button.className = "com-btn";
+        button.setAttribute("data-community", community.name);
+        button.appendChild(document.createTextNode(` ${community.name.replace(/-/g, " ")}`));
+        button.addEventListener('click', function() { filterPosts(community.name); });
+        container.appendChild(button);
+    });
+}
 
-          button.appendChild(
-            document.createTextNode(
-              ` ${community.name.replace(/-/g, " ")}`
-            )
-          );
+function filterPosts(communityName) {
+    // Get all post elements
+    const posts = document.querySelectorAll('.post');
+    posts.forEach((post) => {
+        // Check if post belongs to the selected community
+        const postCommunity = post.querySelector('.communities_id').textContent.trim();
+        if (communityName === 'All' || postCommunity === communityName) {
+            post.style.display = ''; // Show post
+        } else {
+            post.style.display = 'none'; // Hide post
+        }
+    });
+}
 
-          container.appendChild(button);
-        });
-      }
-      
+// Call the function to create buttons on page load
+createButtons();
 
-      // Call the function to create buttons on page load
-      createButtons();
     </script>
   </body>
 </html>

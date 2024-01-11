@@ -17,6 +17,13 @@ const utilFunctions = {
       throw err; // Rethrow the error for the caller to handle
     }
   },
+  linkify: (text) => {
+    const urlRegex =
+      /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+    return text.replace(urlRegex, (url) => {
+      return `<a href="${url}" target="_blank" class="comment-url">${url}</a>`;
+    });
+  },
 
   checkMissingFields: async (userId) => {
     let missingFields = [];
