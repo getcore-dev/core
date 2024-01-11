@@ -69,8 +69,12 @@
                 border-radius: 50%;
                 height: 24px;
                 padding-top: 7px;">
-              <% } else { %>
-              <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
+              <% } else if (user && !user.avatar) { %>
+              <img src="/img/default-avatar.png" alt="Avatar" class="avatar" style="
+                width:  24px;
+                border-radius: 50%;
+                height: 24px;
+                padding-top: 7px;"/>
               <% } %>
                 <% if (!user) { %>
               <span class="material-symbols-outlined" id="nb-icon">                
