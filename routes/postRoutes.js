@@ -172,7 +172,7 @@ router.get("/posts/:postId", async (req, res) => {
     const result = await sql.query(query);
 
     // Function to nest comments
-    async function nestComments(commentList) {
+    function nestComments(commentList) {
       const commentMap = {};
 
       // Create a map of comments
@@ -194,58 +194,54 @@ router.get("/posts/:postId", async (req, res) => {
         }
       }
 
-      // Fetch user details for each comment
-      for (let comment of nestedComments) {
-        comment.user = await getUserDetails(comment.user_id);
-        for (let reply of comment.replies) {
-          reply.user = await getUserDetails(reply.user_id);
-        }
-      }
-
       return nestedComments;
     }
 
     // Nest comments
-    const nestedComments = await nestComments(result.recordset);
+    const nestedComments = nestComments(result.recordset);
 
-    async function fetchUserDetailsForComments(comments) {
-      for (let comment of comments) {
-        comment.user = await getUserDetails(comment.user_id);
-        if (comment.replies && comment.replies.length > 0) {
-          await fetchUserDetailsForComments(comment.replies);
-        }
+    // Function to fetch user details for a comment
+    const fetchUserDetails = async (comment) => {
+      comment.user = await getUserDetails(comment.user_id);
+      if (comment.replies) {
+        await Promise.all(comment.replies.map(fetchUserDetails));
       }
-    }
+    };
 
-    await fetchUserDetailsForComments(nestedComments);
+    // Fetch user details for all comments in parallel
+    await Promise.all(nestedComments.map(fetchUserDetails));
 
     // Fetch post details
     const postQuery = `SELECT * FROM posts WHERE id = '${postId}' AND deleted = 0`;
     const postResult = await sql.query(postQuery);
 
-    // Combine post details with comments
+    // Function to add user details to a comment
+    const addUserDetails = async (comment) => {
+      const user = await getUserDetails(comment.user_id);
+      const replies = await Promise.all(
+        comment.replies.map(async (reply) => ({
+          ...reply,
+          user: await getUserDetails(reply.user_id),
+        }))
+      );
+      return { ...comment, user, replies };
+    };
+
+    // Add user details to comments
+    const commentsWithUsers = await Promise.all(
+      nestedComments.map(addUserDetails)
+    );
+
+    // Construct postData
     const postData = {
       ...postResult.recordset[0],
       user: await getUserDetails(postResult.recordset[0].user_id),
-      comments: await Promise.all(
-        nestedComments.map(async (comment) => {
-          const user = await getUserDetails(comment.user_id);
-          const replies = await Promise.all(
-            comment.replies.map(async (reply) => {
-              const replyUser = await getUserDetails(reply.user_id);
-              console.log(replyUser);
-              return { ...reply };
-            })
-          );
-          return { ...comment, user, replies };
-        })
-      ),
+      comments: commentsWithUsers,
     };
 
     // Add link preview to postData if link exists
     if (postData.link) {
-      const linkPreview = await getLinkPreview(postData.link);
-      postData.linkPreview = linkPreview;
+      postData.linkPreview = await getLinkPreview(postData.link);
     }
     postData.community = await utilFunctions.getCommunityDetails(
       postData.communities_id

@@ -42,13 +42,16 @@ const utilFunctions = {
       if (userResult.recordset.length > 0) {
         return userResult.recordset[0];
       } else {
-        throw new Error(`User with ID ${userId} not found`);
+        // Return a default user object instead of throwing an error
+        return { id: userId, username: "unknown", avatar: null };
       }
     } catch (err) {
       console.error("Database query error:", err);
-      throw err; // Rethrow the error for the caller to handle
+      // Optionally, you can still return a default user object in case of query error
+      return { id: userId, username: "error", avatar: null };
     }
   },
+
   linkify: (text) => {
     const urlRegex =
       /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
