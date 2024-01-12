@@ -16,8 +16,8 @@
     <%- include('partials/navbar', { pagePath: 'home' }) %>
     <main>
       <div id="registration">
-        <h1>CORE</h1>
-        <form action="/register" method="POST">
+        <h1>Recruiter Registration</h1>
+        <form action="/register-recruiter" method="POST">
           <div class="input-container">
             <input
               type="text"
@@ -41,11 +41,28 @@
               type="email"
               id="email"
               name="email"
-              placeholder="Email"
+              placeholder="Work Email"
               required
             />
           </div>
-
+          <div class="input-container">
+            <input
+              type="text"
+              id="company"
+              name="company"
+              placeholder="Company Name"
+              required
+            />
+          </div>
+          <div class="input-container">
+            <input
+              type="text"
+              id="companyLocation"
+              name="companyLocation"
+              placeholder="Company Location"
+              required
+            />
+          </div>
           <div class="input-container">
             <input
               type="text"
@@ -56,7 +73,6 @@
               maxlength="25"
             />
           </div>
-
           <div class="input-container">
             <input
               type="password"
@@ -66,7 +82,6 @@
               required
             />
           </div>
-
           <div class="input-container">
             <input
               type="text"
@@ -77,17 +92,17 @@
               style="display: block"
             />
           </div>
-          <a href="/register" id="register-text" class="register-text">
-            <button type="submit" id="register-button">Join</button>
-          </a>
+          <button
+            type="submit"
+            id="register-button"
+            style="position: relative; top: 34.5px; left: 157px"
+          >
+            Register
+          </button>
         </form>
-
         <a href="/login" id="login-text"
           ><button id="login-button">Login</button></a
         >
-        <p class="recruiter-section" style="padding-top: 5px">
-          Are you a recruiter? <a href="/recruiter">Click here</a> to register.
-        </p>
       </div>
     </main>
   </body>

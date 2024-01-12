@@ -372,7 +372,7 @@ div .material-symbols-outlined {
 .container {
   background-color: #f1f1f1;
   display: flex;
-  height: calc(100vh - 104px); /* Set the height to be 100% of the viewport height */
+  height: calc(100vh - 100px); /* Set the height to be 100% of the viewport height */
 }
   
 .column {
@@ -426,7 +426,7 @@ div .material-symbols-outlined {
   flex-direction: column;
 }
 .job {
-  padding: 5px;
+  padding: 10px;
 }
 
 .post:hover, .job-content:hover {
@@ -476,9 +476,7 @@ div .material-symbols-outlined {
   scrollbar-width: none;
 }
 
-#com-btn-container::-webkit-scrollbar, #job-btn-container::-webkit-scrollbar {
-  display: none;
-}
+
 
 /* Styles for Buttons */
 .com-btn, .job-btn {
