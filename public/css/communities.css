@@ -20,7 +20,7 @@
   color: #0e6655;
   padding-top: 1px;
   text-decoration: underline;
-  font-size: 14px;
+  font-size: 18px;
 }
 .boosted {
   color: green;
@@ -37,7 +37,8 @@
 }
 
 .score {
-  font-size: 12px;
+  display:flex;
+  font-size: 18px;
 }
 
 
@@ -50,8 +51,6 @@
 }
 
 #posts-container {
-  border-top: 1px solid #aaa;
-  border-bottom: 1px solid #aaa;
   padding-top: 0px;
   display: flex;
   flex-direction: column;
@@ -60,23 +59,19 @@
 .votes {
   padding-left: 10px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   margin-right: 10px;
-  margin-top: 10px;
-  padding-bottom: 5px;
 }
 
 .thumbnail {
-  position: absolute; 
-  bottom: 10px; 
-  left: 40px;
+  display: flex;
+  align-items: center;
 }
 
 .thumbnail-image {
   border-radius: 5px; 
-  width: 50px; 
-  height: 50px;
+  width: 70px; 
+  height: 70px;
   aspect-ratio: 1/1; 
   object-fit: cover;
 }
@@ -87,7 +82,7 @@
   color: white;
   padding: 2px 7px; 
   border-radius: 5px; 
-  font-size: 12px; 
+  font-size: 14px; 
 }
 
 .combined-score {
@@ -99,7 +94,7 @@
 /* Post Content Styles */
 .post-content {
   position: relative;
-  margin-left: 60px;
+  margin-left: 40px;
   margin-right: 25px;
   flex-grow: 1; /* Take up remaining space */
   padding: 0; /* No padding */
@@ -108,7 +103,7 @@
 .com-btn {
   font-size: 14px;
   height: auto;
-  padding: 0 20px;
+  padding: 10px 20px;
   border: none;
   border-radius: 6px;
   background: linear-gradient(to right, #117a65 ,  #0e6655); 
@@ -167,7 +162,7 @@ div .votes:hover {
 
 .title {
   padding-top: 8px;
-  font-size: 15px;
+  font-size: 23px;
   font-weight: bold;
   margin: 0;
   color: #333; 
@@ -192,7 +187,7 @@ div .votes:hover {
 
 /* Styles for Post Elements */
 .user-info, .post-info, .description, .reactions {
-  font-size: 14px; 
+  font-size: 18px; 
   color: #333;
   margin-right: 5px;
 }
@@ -220,7 +215,7 @@ div .votes:hover {
 
 /* Icon Styles */
 div .material-symbols-outlined {
-  font-size: 20px; /* Icon size */
+  font-size: 40px; /* Icon size */
   vertical-align: -3px; /* Vertical alignment */
 }
 
@@ -360,6 +355,7 @@ div .material-symbols-outlined {
       color: #ccc; /* Lighter color for icons */
   }
 
+
   /* Responsive design adjustments for smaller screens */
   @media (max-width: 768px) {
       .post-content {
@@ -378,4 +374,162 @@ div .material-symbols-outlined {
           display: none;
       }
   }
+}
+
+.container {
+  display: flex;
+  height: calc(100vh - 104px); /* Set the height to be 100% of the viewport height */
+}
+  
+.column {
+  flex: 1;
+  overflow-y: auto; /* Enables vertical scrolling */
+}
+
+#com-btn-container {
+  width: 8%;
+  flex: none; /* This will prevent the container from growing */
+  display: flex;
+  flex-direction: column; /* Stacks the buttons vertically */
+  border-right: 1px solid #aaa;
+}
+
+#posts-container {
+  width: 70%;
+  flex: none;
+  flex-direction: column;
+  border-right: 1px solid #aaa;
+}
+
+.jobs-container {
+  width: 22%;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #aaa;
+}
+
+.jobs-container {
+  overflow-y: auto; /* or scroll */
+}
+.post, .job-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: relative;
+  flex: 1;
+  border-bottom: 1px solid #aaa;
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.job-content {
+  flex-direction: column;
+}
+
+.post:hover, .job-content:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+/* Job-specific Styles */
+
+.job-header {
+  padding-top: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  border-radius: 8px;
+  flex-direction: row;
+  align-content: stretch;
+}
+
+.company-logo-container {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+}
+
+.company-logo {
+  padding-right: 15px;
+  width: 40px;
+  height: auto;
+}
+
+.job-body {
+  font-size: 14px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+/* Styles for Container and Button */
+#com-btn-container, #job-btn-container {
+  padding-bottom: 10px;
+  padding-left: 9px;
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+#com-btn-container::-webkit-scrollbar, #job-btn-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Styles for Buttons */
+.com-btn, .job-btn {
+  font-size: 14px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background: linear-gradient(to right, #117a65 ,  #0e6655);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 0 0 auto;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.com-btn:hover, .job-btn:hover {
+  background: linear-gradient(to right, #0e6655 , #117a65);
+  color: white;
+  text-decoration: none;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .post-content, .job-content {
+      margin-left: 30px;
+      margin-right: 25px;
+  }
+
+  .thumbnail-image {
+      width: 58px;
+      height: 58px;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      
+  }
+
+  .thumbnail {
+    display: flex;
+    align-items: center;
+  }
+
+  #com-btn-container, #job-btn-container {
+      padding-top: 10px;
+  }
+}
+
+/* Dark Mode Styles */
+@media (prefers-color-scheme: dark) {
+  body {
+      background-color: #121212;
+      color: #fff;
+  }
+
+  /* Add other dark mode specific styles here */
 }
