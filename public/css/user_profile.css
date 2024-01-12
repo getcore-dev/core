@@ -78,12 +78,12 @@ body {
 /* Dark mode styles */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background-color: #121212;
+    --background-color: #111;
     --text-color: #f0f0f0;
-    --secondary-text-color: #999;
-    --profile-background-color: #1e1e1e;
-    --section-background-color: #333;
-    --border-color: #888;
+    --secondary-text-color: #ddd;
+    --profile-background-color: #333;
+    --section-background-color: rgb(30,30,30);
+    --border-color: #444;
   }
 
   #profile {
@@ -193,12 +193,12 @@ main {
 
   #profile.grid-container {
       /* Styles for the grid container */
-      background-color: #1e1e1e; /* Dark background for the profile container */
+      background-color: rgb(17,17,17); /* Dark background for the profile container */
   }
 
   .profile-info, .current-job, .learning-progress, .achievements {
       /* Styles for different sections within the profile */
-      background-color: #262626; /* Darker background for sections */
+      background-color: rgb(30,30,30); /* Darker background for sections */
       border-radius: 5px; /* Optional border radius */
       padding: 10px; /* Padding for these sections */
       margin-bottom: 15px; /* Margin between sections */

@@ -235,44 +235,6 @@ div .material-symbols-outlined {
   display: none; /* Hide scrollbar in WebKit browsers */
 }
 
-@media (max-width: 768px) {
-  .post-content {
-    margin-left: 30px;
-    margin-right: 25px;
-  }
-
-  .com-btn .material-symbols-outlined {
-    display: none;
-  }
-
-
-  #com-btn-container {
-    padding-top: 10px;
-  }
-
-  .post-content {
-    left: 55px;
-    top: -2px;
-  }
-  .votes {
-    display: none;
-  }
-
-  .thumbnail-image {
-    width: 58px; /* Width */
-    height: 58px; /* Full height */
-    aspect-ratio: 1/1; /* Maintain aspect ratio */
-    object-fit: cover; /* Cover the space without stretching */
-  }
-  
-  .thumbnail {
-    position: absolute;
-    bottom: 0px;
-    left: 15px;
-  }
-  
-}
-
 /* Dark Mode Styles */
 @media (prefers-color-scheme: dark) {
   /* General background and text colors */
@@ -530,6 +492,62 @@ div .material-symbols-outlined {
       background-color: #121212;
       color: #fff;
   }
+  .container {
+    background-color: rgb(17,17,17);
+  }
+
+  .post, .job-content {
+      background-color: rgb(30,30,30);
+      border: 1px solid #444;
+
+  }
+
+  .post:hover, .job-content:hover {
+      background-color: rgb(38,38,38);
+  }
 
   /* Add other dark mode specific styles here */
+}
+@media (max-width: 768px) {
+  .description {
+    padding-right: 10px;
+  }
+
+  #com-btn-container {
+    display: none;
+  }
+  #posts-container {
+    margin-top: 8px;
+    overflow-x: hidden;
+    width: 100%;
+  }
+  .jobs-container {
+    display: none;
+  }
+  .post-content {
+    margin-left: 0px;
+  }
+
+  .com-btn .material-symbols-outlined {
+    display: none;
+  }
+
+  .post-content {
+    left: 35px;
+    top: -2px;
+  }
+  .votes {
+    display: none;
+  }
+
+  .thumbnail-image {
+    margin-left: 20px;
+    width: 58px; /* Width */
+    height: 58px; /* Full height */
+    aspect-ratio: 1/1; /* Maintain aspect ratio */
+    object-fit: cover; /* Cover the space without stretching */
+  }
+  .container {
+    height: calc(100vh - 60px); /* Set the height to be 100% of the viewport height */
+  }
 }
