@@ -5,21 +5,47 @@ const userQueries = require("../queries/userQueries");
 const viewController = {
   renderHomePage: async (req, res) => {
     try {
-      const result = await sql.query("SELECT * FROM posts WHERE deleted = 0");
+      // Fetch a limited number of posts to improve performance
+      const result = await sql.query(
+        "SELECT TOP 10 * FROM posts WHERE deleted = 0"
+      ); // Example: Fetch top 10 posts
       let posts = result.recordset;
 
-      for (let post of posts) {
-        const user = await utilFunctions.getUserDetails(post.user_id);
-        post.username = user.username.toLowerCase();
-        post.score = await utilFunctions.getPostScore(post.id);
-        post.comments = await utilFunctions.getComments(post.id);
-        post.community = await utilFunctions.getCommunityDetails(
-          post.communities_id
-        );
-        post.linkPreview = await utilFunctions.getLinkPreview(post.link);
-      }
+      // Process each post concurrently
+      const processedPosts = await Promise.all(
+        posts.map(async (post) => {
+          // Gather all async operations for a single post
+          const userDetails = utilFunctions.getUserDetails(post.user_id);
+          const postScore = utilFunctions.getPostScore(post.id);
+          const comments = utilFunctions.getComments(post.id);
+          const communityDetails = utilFunctions.getCommunityDetails(
+            post.communities_id
+          );
+          const linkPreview = utilFunctions.getLinkPreview(post.link);
 
-      res.render("communities.ejs", { user: req.user, posts: posts });
+          // Await all async operations
+          const [user, score, commentsData, community, linkPrev] =
+            await Promise.all([
+              userDetails,
+              postScore,
+              comments,
+              communityDetails,
+              linkPreview,
+            ]);
+
+          // Combine data into a single post object
+          return {
+            ...post,
+            username: user.username.toLowerCase(),
+            score,
+            comments: commentsData,
+            community,
+            linkPreview: linkPrev,
+          };
+        })
+      );
+
+      res.render("communities.ejs", { user: req.user, posts: processedPosts });
     } catch (err) {
       res.render("error.ejs", {
         user: req.user,

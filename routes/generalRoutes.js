@@ -8,6 +8,7 @@ const {
 const viewController = require("../controllers/viewController");
 const userQueries = require("../queries/userQueries");
 const utilFunctions = require("../utils/utilFunctions");
+const { util } = require("chai");
 
 // Home page
 router.get("/", viewController.renderHomePage);
@@ -59,6 +60,14 @@ router.get("/jobs", (req, res) => {
 // Learning page
 router.get("/learning", checkAuthenticated, (req, res) => {
   res.render("learning.ejs", { user: req.user });
+});
+
+router.get("/about", checkAuthenticated, (req, res) => {
+  res.render("about.ejs", {
+    user: req.user,
+    fetchCommits: utilFunctions.fetchCommits,
+    displayCommits: utilFunctions.displayCommits,
+  });
 });
 
 // Post creation page

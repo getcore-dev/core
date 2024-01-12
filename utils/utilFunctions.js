@@ -3,6 +3,38 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 
 const utilFunctions = {
+  fetchCommits: async () => {
+    try {
+      const response = await fetch(
+        "https://api.github.com/repos/brycemcole/CORE/commits"
+      );
+      const commits = await response.json();
+      return commits;
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
+  displayCommits: async (commits) => {
+    try {
+      const commitsContainer = document.getElementById("commits-container");
+      commitsContainer.innerHTML = ""; // Clear existing content
+
+      commits.forEach((commit) => {
+        const commitElement = document.createElement("div");
+        commitElement.innerHTML = `
+              <p>Author: ${commit.commit.author.name}</p>
+              <p>Message: ${commit.commit.message}</p>
+              <p>Added: ${commit.stats.additions} lines</p>
+              <p>Deleted: ${commit.stats.deletions} lines</p>
+          `;
+        commitsContainer.appendChild(commitElement);
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
   getUserDetails: async (userId) => {
     try {
       const userResult =

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Core</title>
+    <link rel="stylesheet" href="/css/navbar.css" />
+    <link rel="shortcut icon" href="img/core.png" />
+  </head>
+  <body>
+    <%- include('partials/navbar', { pagePath: 'home' }) %>
+
+    <!-- Container for displaying commits -->
+    <div id="commits-container"></div>
+
+    <!-- Client-side JavaScript -->
+    <script src="/js/commitScript.js"></script>
+  </body>
+</html>
