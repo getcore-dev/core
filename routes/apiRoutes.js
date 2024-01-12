@@ -9,6 +9,7 @@ const storage = multer.diskStorage({
     cb(null, "profile-" + Date.now() + ".jpg");
   },
 });
+const utilFunctions = require("../utils/utilFunctions");
 const upload = multer({ storage });
 
 router.get("/getUsername/:id", async (req, res) => {
@@ -22,6 +23,16 @@ router.get("/getUsername/:id", async (req, res) => {
     }
   } catch (err) {
     res.status(500).send("Server error");
+  }
+});
+
+router.get("/commits", async (req, res) => {
+  try {
+    console.log("Fetching commits...");
+    const commits = await utilFunctions.fetchCommits();
+    res.json(commits);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching commits" });
   }
 });
 

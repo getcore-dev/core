@@ -160,16 +160,17 @@
             >Learning</a
           >
         </li>
+        <% } else { %> <% } %>
         <li>
           <a
-            href="/about"
-            class="navbar-button <%= currentPath === '/about' ? 'active' : '' %>"
+            href="/updates"
+            class="navbar-button <%= currentPath === '/updates' ? 'active' : '' %>"
           >
-            <span class="material-symbols-outlined" id="nb-icon"> contacts </span
-            >About</a
+            <span class="material-symbols-outlined" id="nb-icon"> update </span
+            >Updates</a
           >
         </li>
-        <% } else { %> <% } %>
+
       </ul>
     </div>
   </div>

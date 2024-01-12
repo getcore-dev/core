@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Core</title>
+    <link rel="stylesheet" href="/css/navbar.css" />
+    <link rel="stylesheet" href="/css/updates.css" />
+    <!-- Add this line for commit styles -->
+    <link rel="shortcut icon" href="img/core.png" />
+  </head>
+  <body>
+    <%- include('partials/navbar', { pagePath: 'home' }) %>
+
+    <div id="commits-container"></div>
+
+    <script>
+      async function fetchAndDisplayCommits() {
+        try {
+          const response = await fetch("/api/commits");
+          if (!response.ok) {
+            throw new Error(
+              `API request failed with status ${response.status}`
+            );
+          }
+          const commits = await response.json();
+          console.log("Commits fetched:", commits); // Log the fetched commits
+
+          displayCommits(commits);
+        } catch (err) {
+          console.error("Error fetching commits:", err);
+        }
+      }
+
+      function displayCommits(commits) {
+        const container = document.getElementById("commits-container");
+        console.log("Displaying commits in the container", container); // Log the container element
+
+        if (!commits || !commits.length) {
+          console.log("No commits to display");
+          container.innerHTML = "<p>No commits available.</p>";
+          return;
+        }
+
+        container.innerHTML = ""; // Clear previous content
+
+        commits.forEach((commit) => {
+          const commitElement = document.createElement("div");
+          commitElement.className = "commit";
+          commitElement.innerHTML = `
+            <div class="commit-info">
+              <span class="commit-author">Author: ${commit.commit.author.name}</span> 
+              <span class="commit-message">Message: ${commit.commit.message}</span>
+            </div>
+            <div class="commit-stats">
+              <span class="additions">+${commit.stats.additions}</span>
+              <span class="deletions">-${commit.stats.deletions}</span>  
+            </div>
+          `;
+          container.appendChild(commitElement);
+        });
+      }
+
+      fetchAndDisplayCommits();
+    </script>
+  </body>
+</html>

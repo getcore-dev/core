@@ -1,0 +1,42 @@
+#commits-container {
+    padding: 20px;
+  }
+  
+  .commit {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s;
+  }
+  
+  .commit:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .commit-info {
+    flex-grow: 1;
+  }
+  
+  .commit-author, .commit-message {
+    display: block;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .commit-stats {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+  }
+  
+  .additions {
+    color: green;
+    margin-right: 10px;
+  }
+  
+  .deletions {
+    color: red;
+  }
+  

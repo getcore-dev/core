@@ -1,17 +1,55 @@
 const sql = require("mssql");
 const axios = require("axios");
 const cheerio = require("cheerio");
+const NodeCache = require("node-cache");
+const myCache = new NodeCache();
 
 const utilFunctions = {
   fetchCommits: async () => {
     try {
-      const response = await fetch(
+      // Fetch the list of commits
+      const commitListResponse = await fetch(
         "https://api.github.com/repos/brycemcole/CORE/commits"
       );
-      const commits = await response.json();
-      return commits;
+      if (!commitListResponse.ok) {
+        throw new Error(
+          `GitHub API responded with status ${commitListResponse.status}`
+        );
+      }
+
+      const commitList = await commitListResponse.json();
+
+      // Check if commitList is actually an array
+      if (!Array.isArray(commitList)) {
+        throw new Error(
+          "Expected an array of commits but received something else."
+        );
+      }
+
+      // Fetch detailed data for each commit
+      const detailedCommits = await Promise.all(
+        commitList.map(async (commit) => {
+          const commitDetailResponse = await fetch(commit.url); // URL to fetch details of each commit
+          if (!commitDetailResponse.ok) {
+            throw new Error(
+              `GitHub API responded with status ${commitDetailResponse.status} for commit details`
+            );
+          }
+
+          const commitDetail = await commitDetailResponse.json();
+          return {
+            sha: commit.sha,
+            author: commit.commit.author,
+            message: commit.commit.message,
+            stats: commitDetail.stats, // Contains additions and deletions
+          };
+        })
+      );
+
+      return detailedCommits;
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching commit details:", err);
+      throw err;
     }
   },
 

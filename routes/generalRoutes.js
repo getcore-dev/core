@@ -62,8 +62,8 @@ router.get("/learning", checkAuthenticated, (req, res) => {
   res.render("learning.ejs", { user: req.user });
 });
 
-router.get("/about", checkAuthenticated, (req, res) => {
-  res.render("about.ejs", {
+router.get("/updates", (req, res) => {
+  res.render("updates.ejs", {
     user: req.user,
     fetchCommits: utilFunctions.fetchCommits,
     displayCommits: utilFunctions.displayCommits,
