@@ -2,12 +2,14 @@ main {
   display: flex;
   justify-content: center;
   align-items: center; /* align to the center */
-  height: 90vh;
   margin: 0;
-  background-color: #f0f0f0;
   overflow-x: hidden; /* prevent horizontal scrolling */
   overflow-y: hidden; /* allow vertical scrolling if needed */
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* Set default font family */
+}
+
+body {
+  overflow-y: hidden; /* allow vertical scrolling if needed */
 
 }
 
@@ -15,19 +17,20 @@ main {
   display: grid;
   grid-template-columns: repeat(3, minmax(300px, 1fr)); /* Adjust the number of columns */
   gap: 20px;
-  padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
+  padding: 70px;
   background: #ffffff;
   box-sizing: border-box;
-  text-align: center;
-  max-height: 80vh;
+  text-align: left;
+  max-height: 90vh;
   overflow-x: hidden; /* Updated to prevent horizontal scrolling */
   overflow-y: auto; /* Allow vertical scrolling if needed */
   white-space: normal; /* Allow wrapping of grid items */
   width: auto;
 }
 
+#profile.grid-container {
+  background-color: #ccc;
+}
 
 /* Style for each section */
 #profile > div {
@@ -35,8 +38,8 @@ main {
   flex-direction: column; /* stack items vertically */
   justify-content: flex-start; /* align items to the start */
   align-items: stretch; /* stretch items to fill the container */
-  border: 1px solid #ddd;
-  padding: 10px;
+  border: 1px solid #ccc;
+  padding: 20px;
   border-radius: 10px;
   background-color: #f9f9f9;
 }
@@ -69,7 +72,7 @@ main {
   --secondary-text-color: #666;
   --profile-background-color: #ffffff;
   --section-background-color: #f9f9f9;
-  --border-color: #ddd;
+  --border-color: #aaa;
 }
 
 /* Dark mode styles */
@@ -191,7 +194,6 @@ main {
   #profile.grid-container {
       /* Styles for the grid container */
       background-color: #1e1e1e; /* Dark background for the profile container */
-      box-shadow: 0px 0px 10px 0px rgba(255, 255, 255, 0.1); /* Lighter box-shadow */
   }
 
   .profile-info, .current-job, .learning-progress, .achievements {
@@ -252,8 +254,12 @@ main {
   font-size: 14px;
   border: 1px solid #555; /* Dark border color for inputs */
   border-radius: 5px;
-  width: 200px; /* Adjust the width as needed */
+  width: 180px; /* Adjust the width as needed */
   margin-bottom: 10px;
+}
+
+.email-display {
+  width: 180px;
 }
 
 .editable-field {
