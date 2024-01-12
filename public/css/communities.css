@@ -4,7 +4,9 @@
   justify-content: space-between; 
   position: relative; 
   flex: 1; 
-  border-bottom: 1px solid #aaa;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  margin: 10px;
   transition: all 0.3s cubic-bezier(.25,.8,.25,1); 
 }
 
@@ -215,7 +217,7 @@ div .votes:hover {
 
 /* Icon Styles */
 div .material-symbols-outlined {
-  font-size: 40px; /* Icon size */
+  font-size: 30px; /* Icon size */
   vertical-align: -3px; /* Vertical alignment */
 }
 
@@ -377,6 +379,8 @@ div .material-symbols-outlined {
 }
 
 .container {
+  background-color: #ccc;
+
   display: flex;
   height: calc(100vh - 104px); /* Set the height to be 100% of the viewport height */
 }
@@ -391,18 +395,16 @@ div .material-symbols-outlined {
   flex: none; /* This will prevent the container from growing */
   display: flex;
   flex-direction: column; /* Stacks the buttons vertically */
-  border-right: 1px solid #aaa;
 }
 
 #posts-container {
   width: 70%;
   flex: none;
   flex-direction: column;
-  border-right: 1px solid #aaa;
 }
 
 .jobs-container {
-  width: 22%;
+  width: 21%;
   flex: none;
   display: flex;
   flex-direction: column;
@@ -412,18 +414,26 @@ div .material-symbols-outlined {
 .jobs-container {
   overflow-y: auto; /* or scroll */
 }
+
 .post, .job-content {
+  background-color: white;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   position: relative;
   flex: 1;
-  border-bottom: 1px solid #aaa;
+  border: 1px solid #aaa;
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
 }
 
 .job-content {
+  border-radius: 5px;
+  background-color: white;
+
   flex-direction: column;
+}
+.job {
+  padding: 5px;
 }
 
 .post:hover, .job-content:hover {
@@ -468,7 +478,6 @@ div .material-symbols-outlined {
 /* Styles for Container and Button */
 #com-btn-container, #job-btn-container {
   padding-bottom: 10px;
-  padding-left: 9px;
   display: flex;
   overflow-x: auto;
   scrollbar-width: none;
