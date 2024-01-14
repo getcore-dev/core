@@ -10,8 +10,8 @@
     </div>
     <div class="top-bar">
       <div class="hamburger-menu">
-        <span class="material-symbols-outlined" id="menu-icon"> menu </span>
-        <div class="menu-content" id="menu-content">
+        <span class="material-symbols-outlined" id="menu-icon" style="z-index: 1000;"> menu </span>
+        <div class="menu-content" id="menu-content" style="width: 0px; z-index: 999;">
           <a href="/">Communities</a>
           <a href="/jobs">Openings</a>
 
@@ -177,12 +177,18 @@
 </nav>
 
 <script>
-  document.getElementById("menu-icon").onclick = function () {
+document.getElementById("menu-icon").onclick = function () {
     var content = document.getElementById("menu-content");
-    if (content.style.display === "block") {
-      content.style.display = "none";
+    var menuIcon = document.getElementById("menu-icon");
+
+    if (content.style.width === "250px") {
+        content.style.width = "0px";
+        menuIcon.textContent = 'menu';
     } else {
-      content.style.display = "block";
+        content.style.width = "250px";
+        menuIcon.textContent = 'close';
     }
-  };
+};
+
+
 </script>

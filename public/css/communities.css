@@ -164,7 +164,7 @@ div .votes:hover {
 
 .title {
   padding-top: 8px;
-  font-size: 23px;
+  font-size: 21px;
   font-weight: bold;
   margin: 0;
   color: #333; 
@@ -509,7 +509,23 @@ div .material-symbols-outlined {
   /* Add other dark mode specific styles here */
 }
 @media (max-width: 768px) {
+  .post {
+    border: none;
+    border-radius: 0px;
+    padding: 0px;
+    margin: 0px;
+    border-top: 1px solid #aaa;
+  }
+  .title {
+    font-size: 16px;
+  }
+
+  .post-info {
+    font-size: 14px;
+  }
+
   .description {
+    font-size: 14px;
     padding-right: 10px;
   }
 
@@ -533,15 +549,14 @@ div .material-symbols-outlined {
   }
 
   .post-content {
-    left: 35px;
-    top: -2px;
+    margin-left: 10px;
   }
   .votes {
     display: none;
   }
 
   .thumbnail-image {
-    margin-left: 20px;
+    margin-left: 10px;
     width: 58px; /* Width */
     height: 58px; /* Full height */
     aspect-ratio: 1/1; /* Maintain aspect ratio */
