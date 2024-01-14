@@ -542,6 +542,13 @@ function boostPost(postId, user) {
 
     communities.forEach((community) => {
         const button = document.createElement("button");
+
+        // Add icon
+        const icon = document.createElement("span");
+        icon.className = "material-symbols-outlined";
+        icon.appendChild(document.createTextNode(community.icon));
+        button.appendChild(icon);
+        
         button.className = "com-btn";
         button.setAttribute("data-community", community.name);
         button.appendChild(document.createTextNode(` ${community.name.replace(/-/g, " ")}`));

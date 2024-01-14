@@ -21,17 +21,24 @@ const viewController = {
           const communityDetails = utilFunctions.getCommunityDetails(
             post.communities_id
           );
-          const linkPreview = utilFunctions.getLinkPreview(post.link);
+
+          const operations = [
+            userDetails,
+            postScore,
+            comments,
+            communityDetails,
+          ];
+
+          // Only add link preview if there is a link
+          let linkPreview;
+          if (post.link) {
+            linkPreview = utilFunctions.getLinkPreview(post.link);
+            operations.push(linkPreview);
+          }
 
           // Await all async operations
           const [user, score, commentsData, community, linkPrev] =
-            await Promise.all([
-              userDetails,
-              postScore,
-              comments,
-              communityDetails,
-              linkPreview,
-            ]);
+            await Promise.all(operations);
 
           // Combine data into a single post object
           return {

@@ -126,6 +126,11 @@ const utilFunctions = {
       );
     };
     try {
+      // Ensure the URL is a string
+      if (typeof url !== "string") {
+        throw new Error("URL must be a string");
+      }
+
       let cachedData = cache.get(url);
       if (cachedData) {
         return cachedData; // Return cached data if available
