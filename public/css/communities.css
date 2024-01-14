@@ -66,6 +66,12 @@
   margin-right: 10px;
 }
 
+div.vote-interactions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .thumbnail {
   display: flex;
   align-items: center;
@@ -102,25 +108,6 @@
   flex-grow: 1; /* Take up remaining space */
   padding: 0; /* No padding */
 }
-
-.com-btn {
-  font-size: 14px;
-  height: auto;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  background: linear-gradient(to right, #117a65 ,  #0e6655); 
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  flex: 0 0 auto;
-  margin-right: 10px; /* Margin around buttons */
-  cursor: pointer; /* Pointer cursor on hover */
-  margin-top: 10px; /* Top margin */
-  cursor: pointer; /* Pointer cursor */
-}
-
 .com-btn:hover {
   transition: all 0.3s ease;
   background: linear-gradient(to right, #0e6655 , #117a65);
@@ -190,7 +177,7 @@ div .votes:hover {
 
 /* Styles for Post Elements */
 .user-info, .post-info, .description, .reactions {
-  font-size: 18px; 
+  font-size: 16px; 
   color: #333;
   margin-right: 5px;
 }
@@ -218,7 +205,7 @@ div .votes:hover {
 
 /* Icon Styles */
 div .material-symbols-outlined {
-  font-size: 30px; /* Icon size */
+  font-size: 24px; /* Icon size */
   vertical-align: -3px; /* Vertical alignment */
 }
 
@@ -329,7 +316,10 @@ div .material-symbols-outlined {
 .container {
   background-color: #f1f1f1;
   display: flex;
-  height: calc(100vh - 100px); /* Set the height to be 100% of the viewport height */
+  height: calc(100vh - 100px);
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: space-between;
 }
   
 .column {
@@ -337,17 +327,34 @@ div .material-symbols-outlined {
   overflow-y: auto; /* Enables vertical scrolling */
 }
 
-#com-btn-container {
-  width: 8%;
+#com-btn-container { 
+  width: 6%;
   flex: none; /* This will prevent the container from growing */
   display: flex;
   flex-direction: column; /* Stacks the buttons vertically */
+  -webkit-scrollbar {
+    display: none;
+  }
+  
+  -ms-overflow-style: none; 
+  scrollbar-width: none;
+
+}
+
+#com-btn-container .material-symbols-outlined {
+  font-size: 14px;
 }
 
 #posts-container {
-  width: 70%;
+  width: 50%;
   flex: none;
   flex-direction: column;
+  -webkit-scrollbar {
+    display: none;
+  }
+  
+  -ms-overflow-style: none; 
+  scrollbar-width: none;
 }
 
 .jobs-container {
@@ -356,6 +363,12 @@ div .material-symbols-outlined {
   display: flex;
   flex-direction: column;
   border-right: 1px solid #aaa;
+  -webkit-scrollbar {
+    display: none;
+  }
+  
+  -ms-overflow-style: none; 
+  scrollbar-width: none;
 }
 
 .jobs-container {
@@ -433,16 +446,20 @@ div .material-symbols-outlined {
   scrollbar-width: none;
 }
 
+:root {
+  --btn-bg-light: #f8f9fa; /* Light mode background */
+  --btn-text-light: #212529; /* Light mode text */
+  --btn-bg-dark: rgb(30,30,30); /* Dark mode background */
+  --btn-text-dark: #f8f9fa; /* Dark mode text */
+}
 
-
-/* Styles for Buttons */
 .com-btn, .job-btn {
   font-size: 14px;
-  padding: 10px 20px;
+  padding: 6px 10px;
   border: none;
-  border-radius: 6px;
-  background: linear-gradient(to right, #117a65 ,  #0e6655);
-  color: white;
+  border-radius: 5px;
+  background: var(--btn-bg-dark); /* Default to dark mode */
+  color: var(--btn-text-dark); /* Default to dark mode */
   cursor: pointer;
   transition: all 0.3s ease;
   flex: 0 0 auto;
@@ -450,11 +467,9 @@ div .material-symbols-outlined {
   margin-top: 10px;
 }
 
-.com-btn:hover, .job-btn:hover {
-  background: linear-gradient(to right, #0e6655 , #117a65);
-  color: white;
-  text-decoration: none;
-}
+
+
+/* Styles for Buttons */
 
 /* Responsive Styles */
 @media (max-width: 768px) {
@@ -486,6 +501,11 @@ div .material-symbols-outlined {
   body {
       background-color: #121212;
       color: #fff;
+  }
+
+  .com-btn {
+    border: 1px solid #444;
+
   }
   .container {
     background-color: rgb(17,17,17);
@@ -527,11 +547,7 @@ div .material-symbols-outlined {
   #com-btn-container {
     display: none;
   }
-  #posts-container {
-    margin-top: 8px;
-    overflow-x: hidden;
-    width: 100%;
-  }
+
   .jobs-container {
     display: none;
   }
