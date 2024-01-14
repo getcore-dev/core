@@ -1,25 +1,46 @@
 const sql = require("mssql");
 const crypto = require("crypto");
+const redisClient = require("../config/redisConfig"); // Adjust the path as necessary
 
 const postQueries = {
   getPosts: async () => {
     try {
+      const cacheKey = "posts_all";
+      // Try to get data from cache
+      const cachedPosts = await redisClient.get(cacheKey);
+      if (cachedPosts) {
+        return JSON.parse(cachedPosts);
+      }
+
       const result = await sql.query("SELECT * FROM posts WHERE deleted = 0");
-      return result.recordset;
+      const posts = result.recordset;
+
+      // Cache the result for future requests
+      await redisClient.set(cacheKey, JSON.stringify(posts), "EX", 3600); // Expires in 1 hour
+      return posts;
     } catch (err) {
       console.error("Database query error:", err);
-      throw err; // Rethrow the error for the caller to handle
+      throw err;
     }
   },
 
   getPostById: async (postId) => {
     try {
+      const cacheKey = `post_${postId}`;
+      const cachedPost = await redisClient.get(cacheKey);
+      if (cachedPost) {
+        return JSON.parse(cachedPost);
+      }
+
       const result =
         await sql.query`SELECT * FROM posts WHERE id = ${postId} AND deleted = 0`;
-      return result.recordset[0];
+      const post = result.recordset[0];
+
+      await redisClient.set(cacheKey, JSON.stringify(post), "EX", 3600); // Expires in 1 hour
+      return post;
     } catch (err) {
       console.error("Database query error:", err);
-      throw err; // Rethrow the error for the caller to handle
+      throw err;
     }
   },
 

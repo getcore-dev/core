@@ -14,7 +14,6 @@
     <%- include('partials/navbar', { pagePath: 'home' }) %>
     <main>
       <div id="commits-container">
-        <h1>Core Updates</h1>
         <div id="commits">
           <% for (let i = 0; i < commits.length; i++) { 
             let postDate = new Date(commits[i].commit.author.date);
@@ -61,7 +60,7 @@
                 </div>
               </div>
               <div class="commit-stats">
-                <div class="commit-stats-item" style="background-color: #112987ae;">
+                <div class="commit-stats-item" id="commit-comments">
                   <div class="commit-stats-item-value">
                     <%= commits[i].commit.comment_count %>
                   </div>

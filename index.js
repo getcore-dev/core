@@ -5,7 +5,8 @@ const flash = require("express-flash");
 const session = require("express-session");
 const methodOverride = require("method-override");
 const sql = require("mssql");
-
+const cluster = require("cluster");
+const os = require("os");
 
 // Custom modules
 const environment = require("./config/environment");
@@ -67,8 +68,25 @@ app.use(generalRoutes);
 app.use(errorHandler);
 
 // Server start
-app.listen(environment.port, () => {
-  console.log(`Server running on http://localhost:${environment.port}`);
-});
+
+if (cluster.isMaster) {
+  // Fork workers for each CPU core
+  const numCPUs = os.cpus().length;
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on("exit", (worker, code, signal) => {
+    console.log(`Worker ${worker.process.pid} died`);
+    cluster.fork(); // Optional: Start a new worker on death of the old one
+  });
+} else {
+  // Workers share the TCP connection in this server
+  app.listen(environment.port, () => {
+    console.log(
+      `Server running on http://localhost:${environment.port}, Worker PID: ${process.pid}`
+    );
+  });
+}
 
 module.exports = app;

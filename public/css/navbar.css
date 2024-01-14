@@ -194,7 +194,7 @@ h1, h2, h3, p {
   }
 
   body {
-    padding-top: 50px; /* Reduced padding for mobile */
+    padding-top: 60px; /* Reduced padding for mobile */
     overflow-x: hidden;
   }
 

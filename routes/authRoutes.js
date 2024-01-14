@@ -20,18 +20,25 @@ router.get("/recruiter", checkNotAuthenticated, async (req, res) => {
 
 router.post("/register", checkNotAuthenticated, async (req, res) => {
   try {
+    // Validate and sanitize input data here
+
+    // Generate a unique user ID
+    const userId = uuidv4();
+
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     await sql.query`INSERT INTO users (id, username, email, password, zipcode, firstname, lastname) VALUES (
-      ${Date.now().toString()},
+      ${userId},
       ${req.body.username},
       ${req.body.email},
       ${hashedPassword},
       ${req.body.zipcode},
       ${req.body.firstname},
       ${req.body.lastname})`;
+
+    // Optionally add a flash message for successful registration
     res.redirect("/login");
   } catch (error) {
-    console.error("Database insert error:", error);
+    next(error);
     res.redirect("/register");
   }
 });

@@ -1,11 +1,9 @@
-h1 {
-  padding-top: 13px;
-  padding-left: 10px;
-  padding-bottom: 5px;
-}
-
 span.material-symbols-outlined {
   font-size: 14px;
+}
+.commit-title a {
+  color: #121212;
+  text-decoration: none;
 }
   .commit:hover {
     background-color: #f5f5f5;
@@ -13,8 +11,8 @@ span.material-symbols-outlined {
   .commit {
     border: 1px solid #eaecef;
     border-radius: 6px;
-    padding: 16px;
-    margin-bottom: 16px;
+    padding: 10px;
+    margin-bottom: 5px;
     margin-left: 10px;
     margin-right: 10px;
   }
@@ -23,7 +21,7 @@ span.material-symbols-outlined {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
   }
 
   .commit-title {
@@ -48,16 +46,23 @@ span.material-symbols-outlined {
   }
 
   .commit-author img {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     margin-right: 8px;
+    border: 1px solid #eaecef;
   }
 
   .commit-author-name {
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 450px;
   }
+
+  div#commit-comments {
+    background-color: blue;
+  }
+
+
 
   .commit-stats {
     display: flex;
@@ -78,7 +83,7 @@ span.material-symbols-outlined {
 
   .commit-stats-item-value {
     font-size: 14px;
-    color: #586069;
+    color: #eee;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -104,7 +109,7 @@ span.material-symbols-outlined {
       color: #8b949e;
     }
     .commit-stats-item-value {
-      color: #8b949e;
+      color: #586069;
     }
   }
 
@@ -138,7 +143,6 @@ span.material-symbols-outlined {
   .commit-stats-item {
     display: flex;
     align-items: start;
-    background-color: #2c332e; /* Assuming a dark theme similar to your uploaded image */
     color: white;
     padding: 2px 6px;
     border-radius: 6px;

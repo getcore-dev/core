@@ -58,14 +58,14 @@ const utilFunctions = {
       );
     };
     try {
-      // Ensure the URL is a string
       if (typeof url !== "string") {
         throw new Error("URL must be a string");
       }
 
-      let cachedData = cache.get(url);
+      const cacheKey = `link_preview_${url}`;
+      const cachedData = await redisClient.get(cacheKey);
       if (cachedData) {
-        return cachedData; // Return cached data if available
+        return JSON.parse(cachedData); // Return cached data if available
       }
 
       const headers = {
@@ -74,13 +74,11 @@ const utilFunctions = {
       };
 
       const response = await axios.get(url, { headers, timeout: 5000 });
-      const { data, status } = response;
-
-      if (status !== 200) {
-        throw new Error(`Request failed with status code ${status}`);
+      if (response.status !== 200) {
+        throw new Error(`Request failed with status code ${response.status}`);
       }
 
-      const $ = cheerio.load(data);
+      const $ = cheerio.load(response.data);
       const metaTags = await Promise.all([
         getMetaTag($, "description"),
         getMetaTag($, "image"),
@@ -98,7 +96,8 @@ const utilFunctions = {
         author: metaTags[2],
       };
 
-      cache.set(url, preview); // Cache the new result
+      // Cache the result for future requests
+      await redisClient.set(cacheKey, JSON.stringify(preview), "EX", 3600); // Expires in 1 hour
       return preview;
     } catch (error) {
       console.error("Error fetching URL:", error);
