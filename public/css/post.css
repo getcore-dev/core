@@ -83,15 +83,16 @@ img.linkimage {
   display: flex;
   flex-direction: row;
   gap: 5px;
+  align-items: center;
 }
 .user-interactions {
   display: flex;
+  align-items: center;
+  align-content: stretch;
+  flex-wrap: nowrap;
   flex-direction: row;
-  align-items: space;
-  justify-content: start;
-  margin-right: 20px;
-  margin-top: 20px;
-  gap: 8px; 
+  justify-content: flex-start;
+  gap: 5px;
 }
 
 .timestamp {

@@ -1,6 +1,11 @@
 span.material-symbols-outlined {
   font-size: 14px;
 }
+
+.commits-container {
+  margin-top: 5px;
+}
+
 .commit-title a {
   color: #121212;
   text-decoration: none;
@@ -61,6 +66,7 @@ span.material-symbols-outlined {
   div#commit-comments {
     background-color: blue;
   }
+
 
 
 
