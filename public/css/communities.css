@@ -73,9 +73,9 @@
 
 .thumbnail-image {
   border-radius: 5px; 
-  width: 70px; 
-  height: 70px;
-  aspect-ratio: 1/1; 
+  max-width: 70px; 
+  max-height: 70px;
+  aspect-ratio: 1/1;
   object-fit: cover;
 }
 
@@ -286,12 +286,6 @@ div .material-symbols-outlined {
       cursor: pointer;
   }
 
-  /* Thumbnail and related styles */
-  .thumbnail-image {
-      border-radius: 5px; 
-      aspect-ratio: 1/1; 
-      object-fit: cover;
-  }
 
   /* Adjustments for community ID tags */
   .communities_id {

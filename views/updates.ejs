@@ -6,62 +6,68 @@
     <title>About Core</title>
     <link rel="stylesheet" href="/css/navbar.css" />
     <link rel="stylesheet" href="/css/updates.css" />
-    <!-- Add this line for commit styles -->
     <link rel="shortcut icon" href="img/core.png" />
   </head>
+  <style>
+  </style>
   <body>
     <%- include('partials/navbar', { pagePath: 'home' }) %>
-
-    <div id="commits-container"></div>
+    <main>
+    <div id="commits-container">
+      <h1>Core Updates</h1>
+      <div id="commits">
+        <% for (let i = 0; i < commits.length; i++) { %>
+          <div class="commit">
+            <div class="commit-header">
+              <div class="commit-title">
+                <a href="<%= commits[i].html_url %>"><%= commits[i].commit.message %></a>
+              </div>
+              <div class="commit-date">
+                <%= commits[i].commit.author.date %>
+              </div>
+            </div>
+            <div class="commit-body">
+              <div class="commit-author">
+                <img src="<%= commits[i].author.avatar_url %>" alt="avatar" />
+                <div class="commit-author-name">
+                  <%= commits[i].commit.author.name %>
+                </div>
+              </div>
+              <div class="commit-stats">
+                <div class="commit-stats-item">
+                  <span class="material-symbols-outlined">
+                    comment
+                    </span>
+                                      <div class="commit-stats-item-value">
+                    <%= commits[i].commit.comment_count %>
+                  </div>
+                </div>
+                <div class="commit-stats-item">
+                  <span class="material-symbols-outlined" id="sha">tag</span>
+                  <div class="commit-stats-item-value" id="sha">
+                    <%= commits[i].commit.tree.sha %>
+                  </div>
+                </div>
+                <div class="commit-stats-item">
+                  <span class="material-symbols-outlined" style="color:green;">add</span>
+                  <div class="commit-stats-item-value">
+                    <%= commits[i].linesAdded %>
+                  </div>
+                </div>
+                <div class="commit-stats-item">
+                  <span class="material-symbols-outlined" style="color: red;">remove</span>
+                  <div class="commit-stats-item-value">
+                    <%= commits[i].linesDeleted %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% } %>
+    </div>
+  </main>
 
     <script>
-      async function fetchAndDisplayCommits() {
-        try {
-          const response = await fetch("/api/commits");
-          if (!response.ok) {
-            throw new Error(
-              `API request failed with status ${response.status}`
-            );
-          }
-          const commits = await response.json();
-          console.log("Commits fetched:", commits); // Log the fetched commits
-
-          displayCommits(commits);
-        } catch (err) {
-          console.error("Error fetching commits:", err);
-        }
-      }
-
-      function displayCommits(commits) {
-        const container = document.getElementById("commits-container");
-        console.log("Displaying commits in the container", container); // Log the container element
-
-        if (!commits || !commits.length) {
-          console.log("No commits to display");
-          container.innerHTML = "<p>No commits available.</p>";
-          return;
-        }
-
-        container.innerHTML = ""; // Clear previous content
-
-        commits.forEach((commit) => {
-          const commitElement = document.createElement("div");
-          commitElement.className = "commit";
-          commitElement.innerHTML = `
-            <div class="commit-info">
-              <span class="commit-author">Author: ${commit.commit.author.name}</span> 
-              <span class="commit-message">Message: ${commit.commit.message}</span>
-            </div>
-            <div class="commit-stats">
-              <span class="additions">+${commit.stats.additions}</span>
-              <span class="deletions">-${commit.stats.deletions}</span>  
-            </div>
-          `;
-          container.appendChild(commitElement);
-        });
-      }
-
-      fetchAndDisplayCommits();
     </script>
   </body>
 </html>

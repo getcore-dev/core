@@ -1,42 +1,140 @@
-#commits-container {
-    padding: 20px;
-  }
-  
-  .commit {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    transition: background-color 0.3s;
-  }
-  
+h1 {
+  padding-top: 13px;
+  padding-left: 10px;
+  padding-bottom: 5px;
+}
+
+span.material-symbols-outlined {
+  font-size: 18px;
+}
   .commit:hover {
     background-color: #f5f5f5;
   }
-  
-  .commit-info {
-    flex-grow: 1;
+  .commit {
+    border: 1px solid #eaecef;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+    margin-left: 10px;
+    margin-right: 10px;
   }
-  
-  .commit-author, .commit-message {
-    display: block;
-    color: #333;
-    margin-bottom: 5px;
+
+  .commit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
   }
-  
+
+  .commit-title {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .commit-date {
+    font-size: 14px;
+    color: #586069;
+  }
+
+  .commit-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .commit-author {
+    display: flex;
+    align-items: center;
+  }
+
+  .commit-author img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+
+  .commit-author-name {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
   .commit-stats {
     display: flex;
     align-items: center;
-    font-weight: bold;
   }
-  
-  .additions {
-    color: green;
-    margin-right: 10px;
+
+  .commit-stats-item {
+    display: flex;
+    align-items: center;
+    margin-right: 16px;
   }
-  
-  .deletions {
-    color: red;
+
+  .commit-stats-item img {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
   }
-  
+
+  .commit-stats-item-value {
+    font-size: 14px;
+    color: #586069;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #121212;
+      color: #fff;
+  }
+    .commit {
+      background-color: rgb(30,30,30);
+      border: 1px solid #444;
+    }
+
+    .commit:hover {
+      background-color: #444d56;
+    }
+    .commit-title {
+      color: #c9d1d9;
+    }
+    .commit-date {
+      color: #8b949e;
+    }
+    .commit-author-name {
+      color: #8b949e;
+    }
+    .commit-stats-item-value {
+      color: #8b949e;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .commit {
+      border: 0;
+      border-top: 1px solid #eaecef;
+      border-radius: 0;
+      margin-left: 0;
+      margin-right: 0;
+      margin-bottom: 0;
+    }
+    .commit-body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      flex-direction: column;
+      flex-wrap: nowrap;
+    }
+    .commit-stats {
+      margin-left: 5px;
+      padding-right: 10px;
+      margin-top: 8px; 
+    }
+
+    .sha {
+      display: none;
+    }
+
+    .commit:last-child {
+      border-bottom: 1px solid #eaecef;
+    }
+  }

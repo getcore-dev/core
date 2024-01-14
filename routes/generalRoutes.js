@@ -8,7 +8,7 @@ const {
 const viewController = require("../controllers/viewController");
 const userQueries = require("../queries/userQueries");
 const utilFunctions = require("../utils/utilFunctions");
-const { util } = require("chai");
+const githubService = require("../services/githubService");
 
 // Home page
 router.get("/", viewController.renderHomePage);
@@ -62,11 +62,11 @@ router.get("/learning", checkAuthenticated, (req, res) => {
   res.render("learning.ejs", { user: req.user });
 });
 
-router.get("/updates", (req, res) => {
+router.get("/updates", async (req, res) => {
+  const commits = await githubService.fetchCommits();
   res.render("updates.ejs", {
     user: req.user,
-    fetchCommits: utilFunctions.fetchCommits,
-    displayCommits: utilFunctions.displayCommits,
+    commits,
   });
 });
 
