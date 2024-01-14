@@ -13,17 +13,44 @@
   <body>
     <%- include('partials/navbar', { pagePath: 'home' }) %>
     <main>
-    <div id="commits-container">
-      <h1>Core Updates</h1>
-      <div id="commits">
-        <% for (let i = 0; i < commits.length; i++) { %>
+      <div id="commits-container">
+        <h1>Core Updates</h1>
+        <div id="commits">
+          <% for (let i = 0; i < commits.length; i++) { 
+            let postDate = new Date(commits[i].commit.author.date);
+            let today = new Date();
+            let formattedDate;
+          
+            // Calculate time difference in milliseconds
+            let diff = today - postDate;
+          
+            // Convert time difference to different units
+            let minutes = Math.floor(diff / 60000);
+            let hours = Math.floor(diff / 3600000);
+            let days = Math.floor(diff / 86400000);
+            let months = Math.floor(days / 30);
+            let years = Math.floor(days / 365);
+          
+            // Decide the format based on the time difference
+            if (minutes < 60) {
+              formattedDate = minutes + ' min' + (minutes === 1 ? '' : 's') + ' ago';
+            } else if (hours < 24) {
+              formattedDate = hours + ' hour' + (hours === 1 ? '' : 's') + ' ago';
+            } else if (days < 30) {
+              formattedDate = days + ' day' + (days === 1 ? '' : 's') + ' ago';
+            } else if (months < 12) {
+              formattedDate = months + ' month' + (months === 1 ? '' : 's') + ' ago';
+            } else {
+              formattedDate = years + ' year' + (years === 1 ? '' : 's') + ' ago';
+            }
+          %>
           <div class="commit">
             <div class="commit-header">
               <div class="commit-title">
                 <a href="<%= commits[i].html_url %>"><%= commits[i].commit.message %></a>
               </div>
               <div class="commit-date">
-                <%= commits[i].commit.author.date %>
+                <%= formattedDate %>
               </div>
             </div>
             <div class="commit-body">
@@ -55,9 +82,10 @@
               </div>
             </div>
           </div>
-        <% } %>
-    </div>
-  </main>
+          <% } %>
+        </div>
+      </div>
+    </main>
 
     <script>
     </script>
