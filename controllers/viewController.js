@@ -7,8 +7,8 @@ const viewController = {
     try {
       // Fetch a limited number of posts to improve performance
       const result = await sql.query(
-        "SELECT TOP 10 * FROM posts WHERE deleted = 0"
-      ); // Example: Fetch top 10 posts
+        "SELECT TOP 20 * FROM posts WHERE deleted = 0 ORDER BY created_at DESC"
+      );
       let posts = result.recordset;
 
       // Process each post concurrently
