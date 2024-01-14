@@ -34,28 +34,20 @@
                 </div>
               </div>
               <div class="commit-stats">
-                <div class="commit-stats-item">
-                  <span class="material-symbols-outlined">
-                    comment
-                    </span>
-                                      <div class="commit-stats-item-value">
+                <div class="commit-stats-item" style="background-color: #112987ae;">
+                  <div class="commit-stats-item-value">
                     <%= commits[i].commit.comment_count %>
                   </div>
                 </div>
-                <div class="commit-stats-item">
-                  <span class="material-symbols-outlined" id="sha">tag</span>
-                  <div class="commit-stats-item-value" id="sha">
-                    <%= commits[i].commit.tree.sha %>
-                  </div>
-                </div>
-                <div class="commit-stats-item">
-                  <span class="material-symbols-outlined" style="color:green;">add</span>
+
+                <div class="commit-stats-item" style="background-color: #12542489;">
+                  <span class="material-symbols-outlined">add</span>
                   <div class="commit-stats-item-value">
                     <%= commits[i].linesAdded %>
                   </div>
                 </div>
-                <div class="commit-stats-item">
-                  <span class="material-symbols-outlined" style="color: red;">remove</span>
+                <div class="commit-stats-item" style="background-color: #7e0d0da7;">
+                  <span class="material-symbols-outlined">remove</span>
                   <div class="commit-stats-item-value">
                     <%= commits[i].linesDeleted %>
                   </div>

@@ -5,7 +5,7 @@ h1 {
 }
 
 span.material-symbols-outlined {
-  font-size: 18px;
+  font-size: 14px;
 }
   .commit:hover {
     background-color: #f5f5f5;
@@ -38,7 +38,7 @@ span.material-symbols-outlined {
 
   .commit-body {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
   }
 
@@ -94,7 +94,7 @@ span.material-symbols-outlined {
     .commit:hover {
       background-color: #444d56;
     }
-    .commit-title {
+    .commit-title a {
       color: #c9d1d9;
     }
     .commit-date {
@@ -109,6 +109,9 @@ span.material-symbols-outlined {
   }
 
   @media (max-width: 768px) {
+    body {
+      overflow-x: hidden; 
+    }
     .commit {
       border: 0;
       border-top: 1px solid #eaecef;
@@ -119,22 +122,37 @@ span.material-symbols-outlined {
     }
     .commit-body {
       display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      flex-direction: column;
-      flex-wrap: nowrap;
+      align-items: flex-end;
+      flex-direction: row;
+      align-content: space-between;
+      justify-content: space-between;
     }
-    .commit-stats {
-      margin-left: 5px;
-      padding-right: 10px;
-      margin-top: 8px; 
-    }
-
-    .sha {
-      display: none;
-    }
-
     .commit:last-child {
       border-bottom: 1px solid #eaecef;
     }
+    .material-symbols-outlined {
+      color: #8b949e;
+    }
   }
+
+  .commit-stats-item {
+    display: flex;
+    align-items: start;
+    background-color: #2c332e; /* Assuming a dark theme similar to your uploaded image */
+    color: white;
+    padding: 2px 6px;
+    border-radius: 6px;
+  font: 12px ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+    margin: 5px;
+  }
+  
+  .material-symbols-outlined {
+    font-variant: normal;
+    text-transform: none;
+    display: inline-block;
+    line-height: 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'liga';
+  }
+  
