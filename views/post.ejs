@@ -1,9 +1,25 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= post.title %></title>
+    <title>CORE: <%= post.title %></title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="<%= post.content.substring(0, 160) %>" />
+    <meta name="keywords" content="Your, Keywords, Here" />
+  
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="<%= post.title %>" />
+    <meta property="og:description" content="<%= post.content.substring(0, 160) %>" />
+    <meta property="og:image" content="<%= post.user.avatar || '/img/default-avatar.png' %>" />
+    <meta property="og:url" content="c-ore.dev/post/<%= post.id %>" />
+  
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="<%= post.title %>" />
+    <meta property="twitter:description" content="<%= post.content.substring(0, 160) %>" />
+    <meta property="twitter:image" content="<%= post.user.avatar || '/img/default-avatar.png' %>" />
+  
     <link rel="stylesheet" href="/css/navbar.css" />
     <link rel="stylesheet" href="/css/post.css" />
     <link rel="shortcut icon" href="img/core.png" />

@@ -11,7 +11,7 @@
     <div class="top-bar">
       <div class="hamburger-menu">
         <span class="material-symbols-outlined" id="menu-icon" style="z-index: 1000;"> menu </span>
-        <div class="menu-content" id="menu-content" style="width: 0px; z-index: 999;">
+        <div class="menu-content" id="menu-content">
           <a href="/">Communities</a>
           <a href="/jobs">Openings</a>
 
@@ -181,14 +181,15 @@ document.getElementById("menu-icon").onclick = function () {
     var content = document.getElementById("menu-content");
     var menuIcon = document.getElementById("menu-icon");
 
-    if (content.style.width === "250px") {
-        content.style.width = "0px";
+    if (content.classList.contains("sidebar-open")) {
+        content.classList.remove("sidebar-open");
         menuIcon.textContent = 'menu';
     } else {
-        content.style.width = "250px";
+        content.classList.add("sidebar-open");
         menuIcon.textContent = 'close';
     }
 };
+
 
 
 </script>

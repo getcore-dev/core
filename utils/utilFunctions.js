@@ -2,7 +2,7 @@ const sql = require("mssql");
 const axios = require("axios");
 const cheerio = require("cheerio");
 const NodeCache = require("node-cache");
-const myCache = new NodeCache();
+const cache = new NodeCache({ stdTTL: 3600 }); // Cache TTL is 1 hour (3600 seconds)
 
 const utilFunctions = {
   fetchCommits: async () => {
@@ -118,30 +118,37 @@ const utilFunctions = {
   },
 
   getLinkPreview: async (url) => {
+    const getMetaTag = async ($, name) => {
+      return (
+        $(`meta[name=${name}]`).attr("content") ||
+        $(`meta[name="twitter:${name}"]`).attr("content") ||
+        $(`meta[property="og:${name}"]`).attr("content")
+      );
+    };
     try {
+      let cachedData = cache.get(url);
+      if (cachedData) {
+        return cachedData; // Return cached data if available
+      }
+
       const headers = {
         "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3", // Set a user agent
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
       };
-      const response = await axios.get(url, {
-        headers: headers,
-        timeout: 5000,
-      }); // Set timeout as 5 seconds
+
+      const response = await axios.get(url, { headers, timeout: 5000 });
       const { data, status } = response;
 
-      // Ensure that the request was successful
       if (status !== 200) {
         throw new Error(`Request failed with status code ${status}`);
       }
-      const $ = cheerio.load(data);
 
-      const getMetaTag = (name) => {
-        return (
-          $(`meta[name=${name}]`).attr("content") ||
-          $(`meta[name="twitter${name}"]`).attr("content") ||
-          $(`meta[name="og${name}"]`).attr("content")
-        );
-      };
+      const $ = cheerio.load(data);
+      const metaTags = await Promise.all([
+        getMetaTag($, "description"),
+        getMetaTag($, "image"),
+        getMetaTag($, "author"),
+      ]);
 
       const preview = {
         url,
@@ -149,17 +156,20 @@ const utilFunctions = {
         favicon:
           $('link[rel="shortcut icon"]').attr("href") ||
           $('link[rel="alternate icon"]').attr("href"),
-        description: getMetaTag("description"),
-        image: getMetaTag("image"),
-        author: getMetaTag("author"),
+        description: metaTags[0],
+        image: metaTags[1],
+        author: metaTags[2],
       };
 
+      cache.set(url, preview); // Cache the new result
       return preview;
     } catch (error) {
       console.error("Error fetching URL:", error);
       return null;
     }
   },
+
+  // Helper function to fetch meta tags
 
   getComments: async (postId) => {
     try {

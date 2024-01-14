@@ -5,16 +5,6 @@ body {
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* Set default font family */
 }
 
-@media (max-width: 768px) {
-  body {
-      padding-top: 60px; /* Reduced padding for mobile */
-      overflow-x: hidden;
-
-  }
-
-  
-}
-
 /* Common Style for Headers and Paragraphs */
 h1, h2, h3, p {
   margin: 0; /* Remove default margin */
@@ -25,11 +15,6 @@ h1, h2, h3, p {
   position: absolute;
   right: 100px;
   top: -30px;
-}
-
-.user-btn-name {
-  display: flex;
-  flex-direction: row;
 }
 
 .user-links {
@@ -44,7 +29,10 @@ h1, h2, h3, p {
 
 #menu-icon {
   position: relative;
-  z-index: 1000;
+  display: none;
+  padding-left: 10px; /* Left padding */
+  color: #000; /* Icon color */
+  font-size: 23px; /* Icon size */
 }
 
 /* Navbar Styles */
@@ -189,13 +177,6 @@ h1, h2, h3, p {
   display: none; /* Hide by default on desktop */
 }
 
-#menu-icon {
-  z-index: 3;
-  display: none;
-  padding-left: 10px; /* Left padding */
-  color: #000; /* Icon color */
-  font-size: 27px; /* Icon size */
-}
 
 
 /* Responsive Design */
@@ -204,11 +185,17 @@ h1, h2, h3, p {
     display: none;
   }
   .navbar {
+    height: 60px;
     padding: 0px;
 
   }
   #menu-icon {  
     display: block;
+  }
+
+  body {
+    padding-top: 50px; /* Reduced padding for mobile */
+    overflow-x: hidden;
   }
 
   .logo {
@@ -228,7 +215,7 @@ h1, h2, h3, p {
 
 
   .hamburger-menu {
-    position: absolute;
+    position: relative;
     left: 10px; 
     top: 22px; 
     z-index: 2;
@@ -247,15 +234,9 @@ h1, h2, h3, p {
 
   .logo img {
     position: absolute;
-    top: 8px;
+    top: 3px;
     max-height: 45px; /* Maximum height of the logo */
   }
-}
-
-/* Hamburger Menu Style */
-.hamburger-menu {
-  position: relative;
-  cursor: pointer;
 }
 
 .navbar-user-info {
@@ -417,18 +398,22 @@ h1, h2, h3, p {
 
 
 .menu-content {
-  position: fixed; /* Positioned relative to the viewport */
-  top: 0; /* Full height */
-  left: 0; /* Sidebar starts on the left side */
-  height: 100%; /* Full height */
-  overflow-x: hidden; /* Disable horizontal scroll */
-  transition: 0.5s; /* Transition effect when sliding in/out */
-  padding-top: 60px; /* Space from the top */
-  background-color: #eee; /* Sidebar background color */
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow-x: hidden;
+  transition: transform 0.5s; /* Use transform for transition */
+  padding-top: 60px;
+  background-color: #f9f9f9;
   z-index: 2;
-  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.5); /* Shadow effect */
+  width: 250px; /* Set a fixed width */
+  transform: translateX(-250px); /* Start off-screen */
 }
 
+.sidebar-open {
+  transform: translateX(0); /* Slide in */
+}
 
 .menu-content a {
   padding: 8px 8px 8px 32px;
@@ -439,9 +424,9 @@ h1, h2, h3, p {
   transition: 0.3s;
 }
 
-.menu-content a:hover {
-  color: #f1f1f1;
-}
+  .menu-content a:hover {
+    color: #0e6655;
+  }
 
 @media (prefers-color-scheme: dark) {
   .menu-content {
@@ -452,8 +437,5 @@ h1, h2, h3, p {
     color: #fff;
   }
 
-  .menu-content a:hover {
-    color: #0e6655;
-  }
 }
 
