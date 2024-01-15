@@ -55,35 +55,29 @@ router.post("/posts/:postId/boost", checkAuthenticated, async (req, res) => {
       if (isBoosted) {
         console.log("Post is already boosted. Removing the boost...");
         // If already boosted, remove the boost
-        await postQueries.removeBoost(postId, userId);
-        res.json({ message: "Boost removed" });
+        const newScore = await postQueries.removeBoost(postId, userId);
+        res.json({ message: "Boost removed", newScore });
       } else {
         console.log("Post is not boosted. Adding the boost...");
         // If not boosted, add the boost
-        await postQueries.boostPost(postId, userId);
+        const newScore = await postQueries.boostPost(postId, userId);
 
-        // Get the number of boosts and detracts for the post
-        const boosts = await postQueries.getBoostCount(postId);
-        const detracts = await postQueries.getDetractCount(postId);
-
-        res.json({ message: "Boost successful", boosts, detracts });
+        res.json({ message: "Boost successful", newScore });
       }
     } else if (action === "detract") {
       if (isDetracted) {
         console.log("Post is already detracted. Removing the detract...");
         // If already detracted, remove the detract
-        await postQueries.removeDetract(postId, userId);
-        res.json({ message: "Detract removed" });
+        const newScore = await postQueries.removeDetract(postId, userId);
+        res.json({ message: "Detract removed", newScore });
       } else {
         console.log("Post is not detracted. Adding the detract...");
         // If not detracted, add the detract
-        await postQueries.detractPost(postId, userId);
-
-        // Get the number of boosts and detracts for the post
-        const boosts = await postQueries.getBoostCount(postId);
-        const detracts = await postQueries.getDetractCount(postId);
-
-        res.json({ message: "Detract successful", boosts, detracts });
+        const newScore = await postQueries.detractPost(postId, userId);
+        res.json({
+          message: "Detract successful",
+          newScore,
+        });
       }
     } else {
       res.status(400).send("Invalid action");
@@ -119,8 +113,8 @@ router.post(
         if (isBoosted) {
           console.log("Comment is already boosted. Removing the boost...");
           // If already boosted, remove the boost
-          await commentQueries.removeBoost(commentId, userId);
-          res.json({ message: "Boost removed" });
+          const newScore = await commentQueries.removeBoost(commentId, userId);
+          res.json({ message: "Boost removed", newScore });
         } else {
           console.log("Comment is not boosted. Adding the boost...");
           // If not boosted, add the boost

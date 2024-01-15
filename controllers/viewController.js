@@ -1,6 +1,7 @@
 const sql = require("mssql");
 const utilFunctions = require("../utils/utilFunctions");
 const userQueries = require("../queries/userQueries");
+const postQueries = require("../queries/postQueries");
 
 const viewController = {
   renderHomePage: async (req, res) => {
@@ -36,8 +37,17 @@ const viewController = {
             operations.push(linkPreview);
           }
 
+          let userInteractions;
+          if (req.user) {
+            userInteractions = postQueries.getUserInteractions(
+              post.id,
+              req.user.id
+            );
+            operations.push(userInteractions);
+          }
+
           // Await all async operations
-          const [user, score, commentsData, community, linkPrev] =
+          const [user, score, commentsData, community, linkPrev, uActions] =
             await Promise.all(operations);
 
           // Combine data into a single post object
@@ -48,6 +58,7 @@ const viewController = {
             comments: commentsData,
             community,
             linkPreview: linkPrev,
+            userInteractions: uActions,
           };
         })
       );

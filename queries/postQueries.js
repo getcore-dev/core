@@ -100,6 +100,16 @@ const postQueries = {
         await sql.query`
           INSERT INTO userPostActions (user_id, post_id, action_type) 
           VALUES (${userId}, ${postId}, 'B')`;
+
+        const newScore =
+          (await postQueries.getBoostCount(postId)) -
+          (await postQueries.getDetractCount(postId));
+
+        if (newScore == 0) {
+          return 0;
+        } else {
+          return newScore;
+        }
       } else if (userAction.recordset[0].action_type === "D") {
         // Update the boost count and remove the detract count in posts table
         await sql.query`
@@ -113,6 +123,10 @@ const postQueries = {
           UPDATE userPostActions 
           SET action_type = 'B'
           WHERE user_id = ${userId} AND post_id = ${postId}`;
+        const newScore =
+          (await postQueries.getBoostCount(postId)) -
+          (await postQueries.getDetractCount(postId));
+        return newScore;
       } else {
         console.log("User has already interacted with this post.");
       }
@@ -141,6 +155,11 @@ const postQueries = {
         await sql.query`
           INSERT INTO userPostActions (user_id, post_id, action_type) 
           VALUES (${userId}, ${postId}, 'D')`;
+
+        const newScore =
+          (await postQueries.getBoostCount(postId)) -
+          (await postQueries.getDetractCount(postId));
+        return newScore;
       } else if (userAction.recordset[0].action_type === "B") {
         // Update the detract count and remove the boost count in posts table
         await sql.query`
@@ -154,6 +173,11 @@ const postQueries = {
           UPDATE userPostActions 
           SET action_type = 'D'
           WHERE user_id = ${userId} AND post_id = ${postId}`;
+
+        const newScore =
+          (await postQueries.getBoostCount(postId)) -
+          (await postQueries.getDetractCount(postId));
+        return newScore;
       } else {
         console.log("User has already interacted with this post.");
       }
@@ -204,6 +228,11 @@ const postQueries = {
       await sql.query`
         DELETE FROM userPostActions 
         WHERE user_id = ${userId} AND post_id = ${postId}`;
+
+      const newScore =
+        (await postQueries.getBoostCount(postId)) -
+        (await postQueries.getDetractCount(postId));
+      return newScore;
     } catch (err) {
       console.error("Database update error:", err);
       throw err; // Rethrow the error for the caller to handle
@@ -235,6 +264,26 @@ const postQueries = {
       throw err; // Rethrow the error for the caller to handle
     }
   },
+  getUserInteractions: async (postId, userId) => {
+    try {
+      const result = await sql.query`
+      SELECT action_type 
+      FROM userPostActions 
+        WHERE user_id = ${userId} AND post_id = ${postId}`;
+
+        console.log(result)
+
+      if (result.recordset.length === 0) {
+        return "";
+      } else {
+        return result.recordset[0].action_type;
+      }
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   removeDetract: async (postId, userId) => {
     try {
       // Update the detract count in posts table
@@ -247,6 +296,12 @@ const postQueries = {
       await sql.query`
         DELETE FROM userPostActions 
         WHERE user_id = ${userId} AND post_id = ${postId}`;
+
+      const newScore =
+        (await postQueries.getBoostCount(postId)) -
+        (await postQueries.getDetractCount(postId));
+
+      return newScore;
     } catch (err) {
       console.error("Database update error:", err);
       throw err; // Rethrow the error for the caller to handle

@@ -171,6 +171,8 @@ const commentQueries = {
       await sql.query`
         DELETE FROM userCommentActions 
         WHERE user_id = ${userId} AND comment_id = ${commentId}`;
+
+      return await commentQueries.getBoostCount(commentId);
     } catch (err) {
       console.error("Database update error:", err);
       throw err;

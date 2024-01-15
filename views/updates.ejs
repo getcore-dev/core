@@ -43,10 +43,11 @@
               formattedDate = years + ' year' + (years === 1 ? '' : 's') + ' ago';
             }
           %>
+          <a href="<%= commits[i].html_url %>">
           <div class="commit">
             <div class="commit-header">
               <div class="commit-title">
-                <a href="<%= commits[i].html_url %>"><%= commits[i].commit.message %></a>
+                <%= commits[i].commit.message %>
               </div>
               <div class="commit-date">
                 <%= formattedDate %>
@@ -81,6 +82,7 @@
               </div>
             </div>
           </div>
+        </a>
           <% } %>
         </div>
       </div>

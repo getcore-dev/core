@@ -27,14 +27,12 @@
       <div class="post">
         <div class="votes">
           <div class="vote-interactions">
-            <span class="material-symbols-outlined" id="boost-button" onclick="boostPost('<%= post.id %>', '<%= user %>')"> arrow_upward_alt </span>
-            <div id="post-score-<%= post.id %>">
-              <span class="score">
+            <span class="material-symbols-outlined boost-button" onclick="boostPost('<%= post.id %>', '<%= user %>')" <% if (user && post.userInteractions === 'B') { %>style="color: green;"<% } %>>arrow_upward_alt</span>
+            <div id="posts-score-<%= post.id %>">
                 <%= post.boosts - post.detracts %>
-              </span>
-              
             </div>
-            <span class="material-symbols-outlined" id="detract-button" onclick="detractPost('<%= post.id %>', '<%= user %>')"> arrow_downward_alt </span>   
+
+            <span class="material-symbols-outlined detract-button" onclick="detractPost('<%= post.id %>', '<%= user %>')" <% if (user && post.userInteractions === 'D') { %>style="color: red;"<% } %>>arrow_downward_alt</span>
           </div>     
         </div>
         <div class="thumbnail" onclick="window.location.href='/posts/<%= post.id %>';">
@@ -431,10 +429,11 @@
     </div>
 
     <script>
+
 function detractPost(postId, user) {
   if (!user) {
     window.location.href = '/login'; // Redirect to the login page
-    return; // Stop further execution
+    return; 
   }
   fetch(`/posts/${postId}/boost`, {
     method: 'POST',
@@ -449,7 +448,7 @@ function detractPost(postId, user) {
     if (data.message === "Detract successful") {
       // Increase the detract count in the view
       const detractCountElement = document.getElementById(`posts-score-${postId}`);
-      detractCountElement.innerText = parseInt(detractCountElement.innerText) + 1;
+      detractCountElement.innerText = data.newScore;
 
       // Change color of trending down arrow
       const trendingDownElement = document.querySelector(`[onclick="detractPost('${postId}', '${user}')"]`);
@@ -460,12 +459,12 @@ function detractPost(postId, user) {
       if (boostCountElement.innerText > 0) {
         const trendingUpElement = document.querySelector(`[onclick="boostPost('${postId}', '${user}')"]`);
       trendingUpElement.style.color = "black";
-              boostCountElement.innerText = parseInt(boostCountElement.innerText) - 1;
+              boostCountElement.innerText = data.newScore;
       }
     } else if (data.message === "Detract removed") {
       // Decrease the detract count in the view
       const detractCountElement = document.getElementById(`posts-score-${postId}`);
-      detractCountElement.innerText = parseInt(detractCountElement.innerText) - 1;
+      detractCountElement.innerText = data.newScore;
 
       // Change color of trending down arrow back to black
       const trendingDownElement = document.querySelector(`[onclick="detractPost('${postId}', '${user}')"]`);
@@ -497,7 +496,7 @@ function boostPost(postId, user) {
     if (data.message === "Boost successful") {
       // Increase the boost count in the view
       const boostCountElement = document.getElementById(`posts-score-${postId}`);
-      boostCountElement.innerText = parseInt(boostCountElement.innerText) + 1;
+      boostCountElement.innerText = data.newScore;
 
       // Change color of trending up arrow
       const trendingUpElement = document.querySelector(`[onclick="boostPost('${postId}', '${user}')"]`);
@@ -509,12 +508,12 @@ function boostPost(postId, user) {
         // Decrease the detract count in the view
         const trendingDownElement = document.querySelector(`[onclick="detractPost('${postId}', '${user}')"]`);
       trendingDownElement.style.color = "black";
-        detractCountElement.innerText = parseInt(detractCountElement.innerText) - 1;
+        detractCountElement.innerText = data.newScore;
       }
     } else if (data.message === "Boost removed") {
       // Decrease the boost count in the view
       const boostCountElement = document.getElementById(`posts-score-${postId}`);
-      boostCountElement.innerText = parseInt(boostCountElement.innerText) - 1;
+      boostCountElement.innerText = data.newScore;
 
       // Change color of trending up arrow back to black
       const trendingUpElement = document.querySelector(`[onclick="boostPost('${postId}', '${user}')"]`);
