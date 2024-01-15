@@ -64,7 +64,6 @@
   padding-left: 10px;
   display: flex;
   align-items: center;
-  margin-right: 10px;
 }
 
 div.vote-interactions {
@@ -200,6 +199,15 @@ div .votes:hover {
 
 .description {
   margin-top: 3px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Number of lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  /* Set the height to match your line-height * 2 */
+  height: 3em; /* Example: for 1.5em line-height */
+  line-height: 1.5em;
 }
 
 .reactions {
@@ -316,7 +324,7 @@ div .material-symbols-outlined {
           left: 15px;
       }
       .votes {
-          display: none;
+          display: relative;
       }
   }
 }
@@ -554,7 +562,7 @@ div .material-symbols-outlined {
 
   .description {
     font-size: 14px;
-    padding-right: 10px;
+    padding-right: 5px;
   }
 
   #com-btn-container {
@@ -575,12 +583,10 @@ div .material-symbols-outlined {
   .post-content {
     margin-left: 10px;
   }
-  .votes {
-    display: none;
-  }
 
   .thumbnail-image {
     margin-left: 10px;
+    margin-right: 10px;
     width: 58px; /* Width */
     height: 58px; /* Full height */
     aspect-ratio: 1/1; /* Maintain aspect ratio */
