@@ -454,7 +454,7 @@ div .material-symbols-outlined {
 }
 
 :root {
-  --btn-bg-light: #f8f9fa; /* Light mode background */
+  --btn-bg-light: white; /* Light mode background */
   --btn-text-light: #212529; /* Light mode text */
   --btn-bg-dark: rgb(30,30,30); /* Dark mode background */
   --btn-text-dark: #f8f9fa; /* Dark mode text */
@@ -465,8 +465,8 @@ div .material-symbols-outlined {
   padding: 6px 10px;
   border: none;
   border-radius: 5px;
-  background: var(--btn-bg-dark); /* Default to dark mode */
-  color: var(--btn-text-dark); /* Default to dark mode */
+  background: var(--btn-bg-light); /* Default to dark mode */
+  color: var(--btn-text-light); /* Default to dark mode */
   cursor: pointer;
   transition: all 0.3s ease;
   flex: 0 0 auto;
@@ -505,6 +505,11 @@ div .material-symbols-outlined {
 
 /* Dark Mode Styles */
 @media (prefers-color-scheme: dark) {
+
+  .com-btn, .job-btn {
+    background: var(--btn-bg-dark);
+    color: var(--btn-text-dark);
+}
   body {
       background-color: #121212;
       color: #fff;
@@ -579,6 +584,9 @@ div .material-symbols-outlined {
     height: 58px; /* Full height */
     aspect-ratio: 1/1; /* Maintain aspect ratio */
     object-fit: cover; /* Cover the space without stretching */
+  }
+  #posts-container {
+    width: 100%;
   }
   .container {
     height: calc(100vh - 60px); /* Set the height to be 100% of the viewport height */
