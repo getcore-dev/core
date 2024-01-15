@@ -49,32 +49,16 @@
           />
           
           <% } %>
+          <div class="communities_id">
+            <%= post.community.name %>
+          </div>
         </div>
         <div class="post-content" onclick="window.location.href='/posts/<%= post.id %>';">
-          <div class="title">
-            <%= post.title %>
+          <div class="post-header">
+          <div class="username">
+            <a href="/profile/<%= post.username %>"><strong><%= post.username %></strong></a>
           </div>
-          <div class="link"> 
-            <% if (post.link) { %>
-              <%= post.link %>
-            <% } %>
-          </div>
-          <div class="description">
-            <%= post.content %>
-          </div>
-            
-          <div class="post-info">
-            <div class="communities_id">
-              <%= post.community.name %>
-            </div>
-            <span class="material-symbols-outlined" id="user-icon"> person </span>
-            <strong><%= post.username %></strong>
-            <span class="material-symbols-outlined" id="score-icon"> sentiment_satisfied </span>
-            <%= post.score %>
-            <span class="material-symbols-outlined" id="comments-icon"> comment </span>
-          <%= post.comments.length %>
-            <span class="material-symbols-outlined" id="date-icon"> schedule </span>
-            
+          <div class="timestamp">
             <%
             let postDate = new Date(post.created_at);
             let today = new Date();
@@ -101,8 +85,19 @@
             }
           %>
           <%= formattedDate %>
-          
-        </div>
+          </div>
+          </div>
+          <div class="title">
+            <%= post.title %>
+          </div>
+          <div class="link"> 
+            <% if (post.link) { %>
+              <%= post.link %>
+            <% } %>
+          </div>
+          <div class="description">
+            <%= post.content %>
+          </div>
         </div>
       </div>
       <% }); %>

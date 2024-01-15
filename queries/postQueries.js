@@ -58,16 +58,62 @@ const postQueries = {
     }
   },
 
-  createPost: async (userId, title, content, link = "", community_id) => {
+  createPost: async (userId, title, content, tags, community_id, link = "") => {
     try {
+      // Insert the post into the posts table
       const uniqueId = `${Date.now().toString(36)}-${crypto
         .randomBytes(3)
         .toString("hex")}`;
-      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${community_id})`;
+      await sql.query`INSERT INTO posts (id, user_id, title, content, communities_id, link) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${community_id}, ${link})`;
+
+      // Insert the tags into the post_tags table
+      if (tags && tags.length > 0) {
+        for (const tag of tags) {
+          // Find or create the tag and get its id
+          let tagId;
+          const tagRecord =
+            await sql.query`SELECT id FROM tags WHERE name = ${tag}`;
+          if (tagRecord.recordset.length > 0) {
+            tagId = tagRecord.recordset[0].id;
+          } else {
+            // If tag does not exist, create it
+            const newTag =
+              await sql.query`INSERT INTO tags (name) OUTPUT INSERTED.id VALUES (${tag})`;
+            tagId = newTag.recordset[0].id;
+          }
+          // Associate the tag with the post
+          await sql.query`INSERT INTO post_tags (post_id, tag_id) VALUES (${uniqueId}, ${tagId})`;
+        }
+      }
+
       return uniqueId;
     } catch (err) {
       console.error("Database insert error:", err);
       throw err; // Rethrow the error for the caller to handle
+    }
+  },
+
+  getTagsByPostId: async (postId) => {
+    try {
+      const result = await sql.query`
+        SELECT t.name
+        FROM tags t
+        JOIN post_tags pt ON t.id = pt.tag_id
+        WHERE pt.post_id = ${postId}`;
+
+      return result.recordset.map((record) => record.name);
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getAllTags: async () => {
+    try {
+      const result = await sql.query`SELECT * FROM tags`;
+      return result.recordset;
+    } catch (err) {
+      return JSON.stringify(err);
     }
   },
 
@@ -271,7 +317,7 @@ const postQueries = {
       FROM userPostActions 
         WHERE user_id = ${userId} AND post_id = ${postId}`;
 
-        console.log(result)
+      console.log(result);
 
       if (result.recordset.length === 0) {
         return "";

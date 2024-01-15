@@ -75,6 +75,10 @@ div.vote-interactions {
 .thumbnail {
   display: flex;
   align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 5px 5px;
 }
 
 .thumbnail-image {
@@ -87,8 +91,6 @@ div.vote-interactions {
 
 .communities_id {
   display: inline-block; 
-  background-color: darkgreen; 
-  color: white;
   padding: 2px 7px; 
   border-radius: 5px; 
   font-size: 14px; 
@@ -98,15 +100,20 @@ div.vote-interactions {
   margin: 5px;
 }
 
-
+.post-header {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
 
 /* Post Content Styles */
 .post-content {
   position: relative;
-  margin-left: 40px;
+  margin-left: 8px;
   margin-right: 25px;
   flex-grow: 1; /* Take up remaining space */
   padding: 0; /* No padding */
+  padding-top: 5px;
 }
 .com-btn:hover {
   transition: all 0.3s ease;
@@ -151,7 +158,6 @@ div .votes:hover {
 }
 
 .title {
-  padding-top: 8px;
   font-size: 21px;
   font-weight: bold;
   margin: 0;
@@ -171,7 +177,6 @@ div .votes:hover {
 
 
 .post-info {
-  padding-top: 3px;
   padding-bottom: 8px;
   display: flex;
   flex-direction: row;
@@ -197,8 +202,21 @@ div .votes:hover {
   color: #666; /* Lighter text color */
 }
 
+.timestamp {
+  color: #666; /* Lighter text color */
+
+}
+
+.username a {
+  color: #333;
+  text-decoration: none;
+}
+
+.username a:hover {
+  color: #0e6655;
+}
+
 .description {
-  margin-top: 3px;
   display: -webkit-box;
   -webkit-line-clamp: 2; /* Number of lines */
   -webkit-box-orient: vertical;

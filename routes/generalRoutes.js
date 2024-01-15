@@ -9,6 +9,7 @@ const viewController = require("../controllers/viewController");
 const userQueries = require("../queries/userQueries");
 const utilFunctions = require("../utils/utilFunctions");
 const githubService = require("../services/githubService");
+const postQueries = require("../queries/postQueries");
 
 // Home page
 router.get("/", viewController.renderHomePage);
@@ -71,8 +72,9 @@ router.get("/updates", async (req, res) => {
 });
 
 // Post creation page
-router.get("/post/create", checkAuthenticated, (req, res) => {
-  res.render("create-post.ejs", { user: req.user });
+router.get("/post/create", checkAuthenticated, async (req, res) => {
+  const tags = await postQueries.getAllTags();
+  res.render("create-post.ejs", { user: req.user, tags });
 });
 
 // Individual post page

@@ -41,6 +41,18 @@
             <label for="content">Content:</label>
             <textarea id="content" name="content" required></textarea>
           </div>
+
+          <div class="form-group">
+            <label>Tags:</label>
+            <div id="tags-container">
+              <% tags.forEach(function(tag) { %>
+                <div class="tag-item">
+                  <input type="checkbox" id="tag-<%= tag.id %>" name="tags" value="<%= tag.name %>">
+                  <label for="tag-<%= tag.id %>"><%= tag.name %></label>
+                </div>
+              <% }); %>
+            </div>
+          </div>
           <button type="submit">Submit Post</button>
         </form>
       </div>
