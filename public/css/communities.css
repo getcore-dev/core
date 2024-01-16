@@ -20,9 +20,8 @@
 }
 
 .link {
-  color: #0e6655;
   padding-top: 1px;
-  text-decoration: underline;
+  text-decoration: none;
   font-size: 15px;
 }
 
@@ -162,6 +161,7 @@ div .votes:hover {
   font-weight: bold;
   margin: 0;
   color: #333; 
+  margin-top: 2px;
 
 }
 
@@ -204,11 +204,14 @@ div .votes:hover {
 
 .timestamp {
   color: #666; /* Lighter text color */
+}
 
+.comments {
+  padding-bottom: 3px;
 }
 
 .username a {
-  color: #333;
+  color: #0e6655;
   text-decoration: none;
 }
 
@@ -218,14 +221,49 @@ div .votes:hover {
 
 .description {
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Number of lines */
+  -webkit-line-clamp: 2; 
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
-  /* Set the height to match your line-height * 2 */
-  height: 3em; /* Example: for 1.5em line-height */
   line-height: 1.5em;
+  max-height: 3em; /* Max height for 2 lines */
+}
+
+
+div .mini-link {
+  padding: 6px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row ;
+}
+
+div .mini-link-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 1; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+.mini-link-body {
+  margin-left: 6px;
+}
+
+.mini-link-url a {
+  color: #fff;
+}
+
+div .mini-link-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 1; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
 }
 
 .reactions {
@@ -265,6 +303,13 @@ div .material-symbols-outlined {
       color: #fff; /* Light text */
   }
 
+  .username a {
+    color: #0e6655;
+  }
+
+  .timestamp {
+    color: #ccc;
+  }
   /* Post styling adjustments */
   .post {
       border-bottom: 1px solid #444; /* Dark border for posts */
@@ -328,23 +373,7 @@ div .material-symbols-outlined {
 
 
   /* Responsive design adjustments for smaller screens */
-  @media (max-width: 768px) {
-      .post-content {
-          margin-left: 30px;
-          margin-right: 25px;
-      }
-      .thumbnail-image {
-          width: 58px;
-          height: 58px;
-      }
-      .thumbnail {
-          bottom: 0px;
-          left: 15px;
-      }
-      .votes {
-          display: relative;
-      }
-  }
+
 }
 
 .container {

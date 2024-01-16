@@ -302,7 +302,7 @@ h1, h2, h3, p {
   .navbar {
       background-color: #222; /* Dark background for navbar */
       color: #fff; /* Light text color */
-      border-bottom: 1px solid #555; /* Dark border */
+      border-bottom: 1px solid #444; /* Dark border */
   }
 
   .inbox-button:hover {
@@ -316,7 +316,7 @@ h1, h2, h3, p {
   }
 
   #menu-icon {
-    color: #fff;
+    color: #ccc;
   }
 
   /* Navbar links styling */
