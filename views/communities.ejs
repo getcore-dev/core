@@ -121,10 +121,10 @@
         {
           companyName: "Apple",
           jobTitle: "Security Analyst",
-          jobLocation: "Boston, MA or Remote",
+          jobLocation: "Boston, MA",
           jobOverview: "Protect our digital assets and ensure compliance with the latest security standards.",
           jobType: "Full-Time",
-          jobSalary: "Up to $115k/year",
+          jobSalary: "$115k/yr",
           jobBenefits: "Health & Dental, Company Subscriptions, Paid Time Off",
           companyLogo: "./src/applelogo.png"
         },
@@ -134,7 +134,7 @@
           jobLocation: "Seattle, WA",
           jobOverview: "Utilize large datasets to uncover insights and inform business strategy decisions.",
           jobType: "Full-Time",
-          jobSalary: "Up to $150k/year",
+          jobSalary: "$150k/yr",
           jobBenefits: "401k, Flexible Hours, Relocation Assistance",
           
           companyLogo: "./src/amazonlogo.png"
@@ -143,11 +143,11 @@
           {
           companyName: "Microsoft",
           jobTitle: "Software Engineer",
-          jobLocation: "Redmond, WA or Remote",
+          jobLocation: "Redmond, WA",
           jobOverview: "Design, build and manage cloud-based products using cutting edge technology.",
           
           jobType: "Full-Time",
-          jobSalary: "Up to $130k/year",
+          jobSalary: "$130k/yr",
           jobBenefits: "Unlimited PTO, Equity Compensation, 401k Matching",
           companyLogo: "./src/microsoftlogo.png"
           },
@@ -159,7 +159,7 @@
           jobLocation: "Mountain View, CA",
           jobOverview: "Lead cross-functional teams to deliver innovative Google products.",
           jobType: "Full-Time",
-          jobSalary: "Up to $160k/year",
+          jobSalary: "$160k/yr",
           jobBenefits: "Flexible Work Arrangements, Learning Stipends, Free Meals",
           companyLogo: "./src/googlelogo.png"
           },
@@ -173,8 +173,13 @@
                   <img src="<%= job.companyLogo %>" alt="Company Logo" class="company-logo" />
                 </div>
                 <div class="job-title-location">
-                  <div class="company-name"><%= job.companyName %> / <%= job.jobTitle %></div>
-                  <%= job.jobLocation %>
+                  <div class="job-header">
+                    <div class="company-name"><%= job.companyName %> </div> 
+                    <div class="job-location">
+                      <%= job.jobLocation %>
+                    </div>
+                  </div>
+                  <div class="job-title"><%= job.jobTitle %></div>
                 </div>
               </div>
               <div class="job-body">

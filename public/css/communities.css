@@ -476,16 +476,21 @@ div .material-symbols-outlined {
 
 /* Job-specific Styles */
 
+
+.company-name {
+  font-size: 15px;
+}
+
+.job-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  margin-top: 2px;
+}
+
 .job-header {
-  padding-top: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
   display: flex;
-  justify-content: flex-start;
-  align-items: stretch;
-  border-radius: 8px;
   flex-direction: row;
-  align-content: stretch;
 }
 
 .company-logo-container {
@@ -495,8 +500,8 @@ div .material-symbols-outlined {
 }
 
 .company-logo {
-  padding-right: 15px;
-  width: 40px;
+  padding: 8px;
+  width: 24px;
   height: auto;
 }
 
