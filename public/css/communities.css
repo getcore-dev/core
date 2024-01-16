@@ -103,6 +103,7 @@ div.vote-interactions {
   display: flex;
   flex-direction: row;
   gap: 5px;
+  align-items: center;
 }
 
 /* Post Content Styles */
@@ -203,10 +204,12 @@ div .votes:hover {
 }
 
 .timestamp {
+  font-size: 14px;
   color: #666; /* Lighter text color */
 }
 
 .comments {
+  color: #666; /* Darker text color */
   padding-bottom: 3px;
 }
 
@@ -301,6 +304,10 @@ div .material-symbols-outlined {
   body {
       background-color: #121212; /* Dark background */
       color: #fff; /* Light text */
+  }
+
+  .comments {
+      color: #ccc; /* Lighter text color for comments */
   }
 
   .username a {
@@ -541,6 +548,10 @@ div .material-symbols-outlined {
       margin-right: 25px;
   }
 
+  .comments {
+      font-size: 14px;
+  }
+
   .thumbnail-image {
       width: 58px;
       height: 58px;
@@ -608,7 +619,7 @@ div .material-symbols-outlined {
   }
 
   .description {
-    font-size: 14px;
+    font-size: 15px;
     padding-right: 5px;
   }
 
