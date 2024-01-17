@@ -25,23 +25,14 @@ const postQueries = {
   },
 
   getPostById: async (postId) => {
-    const cacheKey = `post_${postId}`;
-    const cachedPost = await redisClient.get(cacheKey);
-    if (cachedPost) {
-      return JSON.parse(cachedPost);
-    }
     try {
       const result =
         await sql.query`SELECT * FROM posts WHERE id = ${postId} AND deleted = 0`;
-      await redisClient.set(cacheKey, result.recordset[0], "EX", 3600); // Expires in 1 hour
       return result.recordset[0];
-
     } catch (err) {
       console.error("Database query error:", err);
       throw err; // Rethrow the error for the caller to handle
     }
-
-    
   },
 
   getCommentsByPostId: async (postId) => {
