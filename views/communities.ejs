@@ -113,6 +113,16 @@
           <div class="comments">
             <%= post.comments.length %> replies 
           </div>
+
+          <div class="tags">
+            <% if (post.tags) { %>
+              <% post.tags.forEach(tag => { %>
+                <div class="tag">
+                  <%= tag.name %>
+                </div>
+              <% }); %>
+            <% } %>
+          </div>
         </div>
       </div>
       <% }); %>

@@ -23,18 +23,21 @@ router.get("/posts", async (req, res) => {
 // Route for creating a new post
 router.post("/posts", async (req, res) => {
   try {
-    const { userId, title, content, link, community_id } = req.body;
+    const { userId, title, content, link, community_id, tags } = req.body;
     const postId = await postQueries.createPost(
       userId,
       title,
       content,
       link,
-      community_id
+      community_id,
+      tags
     );
     res.redirect(`/posts/${postId}`);
   } catch (err) {
     console.error("Database insert error:", err);
-    res.status(500).send("Error creating post");
+    res.status(500).render("error.ejs", {
+      error: { status: 500, message: "Error creating post" },
+    });
   }
 });
 
@@ -229,7 +232,7 @@ router.get("/posts/:postId", async (req, res) => {
     // Construct postData
     const postData = {
       ...postResult.recordset[0],
-      user: await getUserDetails(postResult.recordset[0].user_id),
+      user: await getUserDetails(postResult.recordset[0].id),
       comments: commentsWithUsers,
     };
 
@@ -266,7 +269,6 @@ router.delete("/post/:postId", checkAuthenticated, async (req, res) => {
     await postQueries.deletePostById(postId);
     res.redirect("/");
   } catch (error) {
-    console.error("Database delete error:", error);
     res.status(500).send("Error deleting post");
   }
 });

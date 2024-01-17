@@ -46,9 +46,22 @@ const viewController = {
             operations.push(userInteractions);
           }
 
+          let tags = postQueries.getTagsByPostId(post.id);
+
+          if (tags.length > 0) {
+            operations.push(tags);
+          }
+
           // Await all async operations
-          const [user, score, commentsData, community, linkPrev, uActions] =
-            await Promise.all(operations);
+          const [
+            user,
+            score,
+            commentsData,
+            community,
+            linkPrev,
+            uActions,
+            post_tags,
+          ] = await Promise.all(operations);
 
           // Combine data into a single post object
           return {
@@ -59,6 +72,7 @@ const viewController = {
             community,
             linkPreview: linkPrev,
             userInteractions: uActions,
+            tags: post_tags,
           };
         })
       );

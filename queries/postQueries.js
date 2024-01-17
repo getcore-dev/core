@@ -25,23 +25,23 @@ const postQueries = {
   },
 
   getPostById: async (postId) => {
+    const cacheKey = `post_${postId}`;
+    const cachedPost = await redisClient.get(cacheKey);
+    if (cachedPost) {
+      return JSON.parse(cachedPost);
+    }
     try {
-      const cacheKey = `post_${postId}`;
-      const cachedPost = await redisClient.get(cacheKey);
-      if (cachedPost) {
-        return JSON.parse(cachedPost);
-      }
-
       const result =
         await sql.query`SELECT * FROM posts WHERE id = ${postId} AND deleted = 0`;
-      const post = result.recordset[0];
+      await redisClient.set(cacheKey, result.recordset[0], "EX", 3600); // Expires in 1 hour
+      return result.recordset[0];
 
-      await redisClient.set(cacheKey, JSON.stringify(post), "EX", 3600); // Expires in 1 hour
-      return post;
     } catch (err) {
       console.error("Database query error:", err);
-      throw err;
+      throw err; // Rethrow the error for the caller to handle
     }
+
+    
   },
 
   getCommentsByPostId: async (postId) => {
@@ -58,15 +58,32 @@ const postQueries = {
     }
   },
 
-  createPost: async (userId, title, content, tags, community_id, link = "") => {
+  createPost: async (userId, title, content, link = "", community_id, tags) => {
+    if (typeof link !== "string") {
+      throw new Error("Link must be a string");
+    }
+
+    console.log(
+      "userId:",
+      userId,
+      "title:",
+      title,
+      "content:",
+      content,
+      "tags:",
+      tags,
+      "community_id:",
+      community_id,
+      "link:",
+      link
+    );
+
     try {
       // Insert the post into the posts table
       const uniqueId = `${Date.now().toString(36)}-${crypto
         .randomBytes(3)
         .toString("hex")}`;
-      await sql.query`INSERT INTO posts (id, user_id, title, content, communities_id, link) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${community_id}, ${link})`;
 
-      // Insert the tags into the post_tags table
       if (tags && tags.length > 0) {
         for (const tag of tags) {
           // Find or create the tag and get its id
@@ -86,6 +103,7 @@ const postQueries = {
         }
       }
 
+      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${community_id})`;
       return uniqueId;
     } catch (err) {
       console.error("Database insert error:", err);
@@ -316,8 +334,6 @@ const postQueries = {
       SELECT action_type 
       FROM userPostActions 
         WHERE user_id = ${userId} AND post_id = ${postId}`;
-
-      console.log(result);
 
       if (result.recordset.length === 0) {
         return "";

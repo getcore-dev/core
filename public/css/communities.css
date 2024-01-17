@@ -613,6 +613,7 @@ div .material-symbols-outlined {
     border-radius: 0px;
     padding: 0px;
     margin: 0px;
+    width: 100%;
     border-top: 1px solid #aaa;
   }
   .title {
