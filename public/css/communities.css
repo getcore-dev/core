@@ -302,7 +302,6 @@ div .material-symbols-outlined {
   display: flex; /* Display contents inline */
   overflow-x: auto; /* Horizontal scroll */
   scrollbar-width: none; /* Hide scrollbar */
-
 }
 
 #com-btn-container::-webkit-scrollbar, #job-btn-container::-webkit-scrollbar {
@@ -625,6 +624,7 @@ div .material-symbols-outlined {
     padding: 0px;
     margin: 0px;
     width: 100%;
+    max-width: 100%;
     border-top: 1px solid #aaa;
   }
   .title {
@@ -659,6 +659,10 @@ div .material-symbols-outlined {
     margin-left: 10px;
   }
 
+  .mini-link {
+    max-width: 100%;
+  }
+
   .thumbnail-image {
     margin-left: 10px;
     margin-right: 10px;
@@ -669,6 +673,7 @@ div .material-symbols-outlined {
   }
   #posts-container {
     width: 100%;
+    max-width: 100%;
   }
   .container {
     height: calc(100vh - 60px); /* Set the height to be 100% of the viewport height */

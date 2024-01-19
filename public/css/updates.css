@@ -6,7 +6,7 @@ span.material-symbols-outlined {
   margin-top: 5px;
 }
 
-.commit-title a {
+div.commit-title {
   color: #121212;
   text-decoration: none;
 }
