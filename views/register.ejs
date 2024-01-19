@@ -16,7 +16,6 @@
     <%- include('partials/navbar', { pagePath: 'home' }) %>
     <main>
       <div id="registration">
-        <h1>CORE</h1>
         <form action="/register" method="POST">
           <div class="input-container">
             <input
@@ -81,10 +80,11 @@
             <button type="submit" id="register-button">Join</button>
           </a>
         </form>
+        <p id="login-text">
+          Click <a href="/login" class="login-link">here</a> if you're already a
+          member.
+        </p>
 
-        <a href="/login" id="login-text"
-          ><button id="login-button">Login</button></a
-        >
         <p class="recruiter-section" style="padding-top: 5px">
           Are you a recruiter? <a href="/recruiter">Click here</a> to register.
         </p>

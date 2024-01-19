@@ -21,7 +21,7 @@ router.get("/posts", async (req, res) => {
 });
 
 // Route for creating a new post
-router.post("/posts", async (req, res) => {
+router.post("/posts", checkAuthenticated, async (req, res) => {
   try {
     const { userId, title, content, link, community_id, tags } = req.body;
     const postId = await postQueries.createPost(
@@ -162,7 +162,7 @@ router.get("/posts/:postId", async (req, res) => {
 
     // Fetch all comments related to the post
     const query = `
-        SELECT * 
+        SELECT c.* 
         FROM comments c
         WHERE c.post_id = '${postId}' AND c.deleted = 0`;
 
@@ -197,43 +197,34 @@ router.get("/posts/:postId", async (req, res) => {
     // Nest comments
     const nestedComments = nestComments(result.recordset);
 
-    // Function to fetch user details for a comment
-    const fetchUserDetails = async (comment) => {
+    // Recursive function to fetch user and parent author details for each comment
+    const fetchUserAndParentDetails = async (comment) => {
       comment.user = await getUserDetails(comment.user_id);
-      if (comment.replies) {
-        await Promise.all(comment.replies.map(fetchUserDetails));
+
+      // Use the new function to get the parent author's username
+      if (comment.parent_comment_id || comment.post_id) {
+        comment.parent_author =
+          await postQueries.getParentAuthorUsernameByCommentId(comment.id);
+        comment.replyingTo = comment.parent_comment_id ? "comment" : "post";
+      }
+
+      if (comment.replies && comment.replies.length > 0) {
+        await Promise.all(comment.replies.map(fetchUserAndParentDetails));
       }
     };
 
-    // Fetch user details for all comments in parallel
-    await Promise.all(nestedComments.map(fetchUserDetails));
+    // Fetch user and parent author details for all comments in parallel
+    await Promise.all(nestedComments.map(fetchUserAndParentDetails));
 
     // Fetch post details
     const postQuery = `SELECT * FROM posts WHERE id = '${postId}' AND deleted = 0`;
     const postResult = await sql.query(postQuery);
 
-    // Function to add user details to a comment
-    const addUserDetails = async (comment) => {
-      const user = await getUserDetails(comment.user_id);
-      const replies = await Promise.all(
-        comment.replies.map(async (reply) => ({
-          ...reply,
-          user: await getUserDetails(reply.user_id),
-        }))
-      );
-      return { ...comment, user, replies };
-    };
-
-    // Add user details to comments
-    const commentsWithUsers = await Promise.all(
-      nestedComments.map(addUserDetails)
-    );
-
     // Construct postData
     const postData = {
       ...postResult.recordset[0],
-      user: await getUserDetails(postResult.recordset[0].id),
-      comments: commentsWithUsers,
+      user: await getUserDetails(postResult.recordset[0].user_id),
+      comments: nestedComments,
     };
 
     // Add link preview to postData if link exists

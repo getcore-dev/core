@@ -15,7 +15,6 @@
     <%- include('partials/navbar', { pagePath: 'home' }) %>
     <main>
       <div id="login">
-        <h1>CORE</h1>
         <% if (messages.error) {%> <%= messages.error %> <% } %>
         <form action="/login" method="POST">
           <div class="input-container">
@@ -39,9 +38,11 @@
           </div>
           <button type="submit" id="login-button">Login</button>
         </form>
-        <a href="/register" id="register-text" class="register-text">
-          <button type="button" id="register-button">Join</button>
-        </a>
+        Click
+        <a href="/register" class="join-link"
+          ><span class="highlight">here</span></a
+        >
+        to join
       </div>
     </main>
   </body>

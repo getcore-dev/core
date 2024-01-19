@@ -42,34 +42,13 @@ main {
 
 .input-container input {
   width: 100%;
-  padding: 12px 20px;
+  padding: 10px 20px;
   margin: 8px 0;
   box-sizing: border-box;
   border: 2px solid #ccc;
   border-radius: 5px; /* This makes the input rounded */
   background-color: #f8f9fa;
   font-size: 16px;
-}
-
-#register-button {
-  position: relative;
-  top: -45px;
-  left: 157px;
-  font-size: 12px;
-  padding: 7px 10px;
-  border: none;
-  border-radius: 5px;
-  background: linear-gradient(to right, #ff9966, #ff5e62);
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  flex: 0 0 auto;
-  margin-right: 10px; /* Margin around buttons */
-  cursor: pointer; /* Pointer cursor on hover */
-  padding: 10px 20px; /* Button padding */
-  margin-top: 10px; /* Top margin */
-  cursor: pointer; /* Pointer cursor */
 }
 
 #login h1 {
@@ -83,10 +62,19 @@ main {
   cursor: pointer;
 }
 
+.join-link {
+  text-decoration: none; 
+  color: inherit; 
+}
 
-/* Original Styles */
-/* ... (Your existing CSS) ... */
+.join-link .highlight {
+  font-weight: bold; 
+  color: green;
+}
 
+.join-link:hover .highlight {
+  text-decoration: underline; 
+}
 /* Dark Mode Styles */
 @media (prefers-color-scheme: dark) {
   main {

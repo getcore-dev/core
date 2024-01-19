@@ -151,13 +151,9 @@ a.comment-url:visited {
 
 .post, .comment {
   padding: 2px;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #eaeaea;
+  margin-bottom: 5px;
 }
 
-.comment:hover {
-  background-color: #f8f8f8;
-}
 
 .avatar {
   border-radius: 50%;
@@ -248,6 +244,11 @@ div .user-info, .header {
   vertical-align: 5px;
 }
 
+a.comment-user-info:hover {
+  text-decoration: underline;
+}
+
+
 
 .user-actions a {
   text-decoration: none;
@@ -292,6 +293,18 @@ div .user-info, .header {
     padding: 15px;
   }
 
+  p.post-body {
+    font-size: 19px;
+  }
+  
+  .post-title {
+    font-size: 28px;
+  }
+
+  .timestamp {
+    font-size: 14px;
+  }
+
   .post, .comment {
     padding: 10px;
     margin-bottom: 10px;
@@ -305,10 +318,23 @@ div .user-info, .header {
     font-size: 14px;
   }
 
+  .comment-body {
+    font-size: 16px;
+  }
+
+  .comment-content {
+    font-size: 16px;
+  }
+
+  .comment-timestamp {
+    font-size: 16px;
+  }
+
   .comments-section h3 {
     font-size: 18px;
     margin-bottom: 10px;
   }
+  
 
   .input-container input, .input-container textarea {
     width: 93%; /* Adjust input width */
@@ -373,13 +399,15 @@ div .user-info, .header {
   color: blue;
 }
 
+.comment-with-replies {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin: 25px 5px;
+}
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #121212; /* Dark background for body */
     color: #e0e0e0; /* Light text color for better readability */
-  }
-  .comment:hover {
-    background-color: #333; /* Darker background on hover */
   }
 
   #verified, a #verified {
@@ -397,10 +425,6 @@ div .user-info, .header {
   .main-container {
     background-color: #1e1e1e; /* Dark background for main container */
     box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
-  }
-
-  .post, .comment, .nested-comment {
-    border-bottom-color: #333; /* Darker border for posts and comments */
   }
 
   div .user-info, .header {

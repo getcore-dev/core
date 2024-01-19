@@ -213,6 +213,14 @@ div .votes:hover {
   padding-bottom: 3px;
 }
 
+.material-symbols-outlined.boost-button:hover {
+  color: green;
+}
+
+.material-symbols-outlined.detract-button:hover {
+  color: orangered;
+}
+
 .username a {
   color: #0e6655;
   text-decoration: none;
@@ -220,6 +228,7 @@ div .votes:hover {
 
 .username a:hover {
   color: #0e6655;
+  text-decoration: underline;
 }
 
 .description {
@@ -241,6 +250,7 @@ div .mini-link {
   border-radius: 5px;
   display: flex;
   flex-direction: row ;
+  max-width: auto;
 }
 
 div .mini-link-title {

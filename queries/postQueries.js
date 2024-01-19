@@ -35,6 +35,42 @@ const postQueries = {
     }
   },
 
+  getParentAuthorUsernameByCommentId: async (commentId) => {
+    try {
+      // Query to check if the comment has a parent_comment_id and get the parent comment's author username or post's author username accordingly
+      const result = await sql.query`
+        SELECT 
+          COALESCE(parentComment.user_id, post.user_id) as author_id
+        FROM 
+          comments as comment
+          LEFT JOIN comments as parentComment ON comment.parent_comment_id = parentComment.id
+          LEFT JOIN posts as post ON comment.post_id = post.id
+        WHERE 
+          comment.id = ${commentId}`;
+
+      if (result.recordset.length === 0) {
+        throw new Error("Comment not found");
+      }
+
+      const authorId = result.recordset[0].author_id;
+
+      // Now fetch the username using the authorId
+      const userResult = await sql.query`
+        SELECT username
+        FROM users
+        WHERE id = ${authorId}`;
+
+      if (userResult.recordset.length === 0) {
+        throw new Error("User not found");
+      }
+
+      return userResult.recordset[0].username;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getCommentsByPostId: async (postId) => {
     try {
       const result = await sql.query`

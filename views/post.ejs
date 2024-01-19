@@ -33,15 +33,10 @@
         <div class="header">
           <a class="user-info" href="/profile/<%= post.user.username %>"
           >
-          <% if (post.user.avatar) {%>
-          <img src="<%= post.user.avatar %>" alt="Avatar" class="avatar" id="avatar" onerror="standby()" />
-          <% } else { %>
-          <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
-          <% } %>
           
-          <%= post.user.username %></a
-        >         <span>&#183;</span>
-        <%= post.community.name %>
+          @<%= post.user.username %></a
+        > in 
+        <a class="community" href="/"><%= post.community.name %></a>
         </div>
         
         <div class="title">
@@ -141,21 +136,13 @@
         <% function renderComments(comments, level = 0) { %> 
           <% comments.forEach(comment =>
         { %>
+          <% if (level == 0) { %>
+        <div class="comment-with-replies"> 
+          <% } %>
         <div class="comment">
           <div class="comment-content">
-            <a class="comment-user-info" href="/profile/<%= comment.user.username %>"
-              >
-              <% if (comment.user.avatar) {%>
-                <img src="<%= comment.user.avatar %>" alt="Avatar" class="avatar" />
-                <% } else { %>
-                <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
-                <% } %><%= comment.user.username%></a
-            >
-            <% if (comment.user.verified === true) { %>
-            <span class="material-symbols-outlined" id="verified"
-              >verified</span
-            >
-            <% } %> 
+            <a class="comment-user-info" href="/profile/<%= comment.user.username %>">
+              @<%= comment.user.username%></a> to <a class="comment-user-info" href="/profile/<%= comment.parent_author %>">@<%= comment.parent_author %></a>
             <span>&#183;</span>
               
             <% let commentDate = new Date(comment.created_at);
@@ -259,7 +246,6 @@
               </form>
             </div>
           </form>
-
           <!-- Render nested comments -->
       <% if (comment.replies && comment.replies.length > 0) { %>
           <% var nestedLevel = level + 1; %>
@@ -268,10 +254,14 @@
               <% renderComments(comment.replies, nestedLevel); %>
             </div>
           <% } %>
+          <% if (level == 0) { %>
+          </div>
+          <% } %>
+
         <% }) %> 
         <% } %> 
         <% renderComments(post.comments); %>
-    </div>
+    </div> 
 
     <script>
       function detractPost(postId, user) {
