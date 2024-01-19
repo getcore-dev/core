@@ -131,7 +131,6 @@ div .material-symbols-outlined:hover {
   margin: 0px auto;
   padding: 20px;
   background-color: #fff;
-  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }
 
@@ -149,8 +148,10 @@ a.comment-url:visited {
   color: darkblue; 
 }
 
-.post, .comment {
-  padding: 2px;
+.post {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 10px 10px;
   margin-bottom: 5px;
 }
 
@@ -307,7 +308,6 @@ a.comment-user-info:hover {
 
   .post, .comment {
     padding: 10px;
-    margin-bottom: 10px;
   }
 
   .nested-comment {
@@ -353,6 +353,7 @@ a.comment-user-info:hover {
   max-height: auto;
   max-width: 92%;
   display: flex;
+  padding: 3px;
   border: 1px solid darkblue;
   border-radius: 10px;
   margin: 4px 4px;
@@ -362,6 +363,7 @@ a.comment-user-info:hover {
   padding: 5px;
   width: 50px;
   height: 50px;
+  border-radius: 6px;
   object-fit: cover;
 }
 .post-content a {
@@ -400,14 +402,49 @@ a.comment-user-info:hover {
 }
 
 .comment-with-replies {
+  padding: 3px;
   border: 1px solid #ccc;
   border-radius: 6px;
   margin: 25px 5px;
 }
+
+h4.preview-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 1; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+.preview-link {
+  color: inherit;
+}
+
+p.preview-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 1; 
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #121212; /* Dark background for body */
     color: #e0e0e0; /* Light text color for better readability */
+  }
+
+  .post {
+    border-color: #888; /* Darker border for comments */
+    background-color: rgb(30,30,30);
+  }
+
+  .comment-with-replies {
+    border-color: #888; /* Darker border for comments */
+    background-color: rgb(30,30,30);
   }
 
   #verified, a #verified {
@@ -423,8 +460,7 @@ a.comment-user-info:hover {
   }
 
   .main-container {
-    background-color: #1e1e1e; /* Dark background for main container */
-    box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
+    background-color: #121212; /* Dark background for main container */
   }
 
   div .user-info, .header {

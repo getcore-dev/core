@@ -243,6 +243,7 @@ div .votes:hover {
 }
 
 
+
 div .mini-link {
   padding: 6px;
   margin: 5px;
@@ -250,7 +251,7 @@ div .mini-link {
   border-radius: 5px;
   display: flex;
   flex-direction: row ;
-  max-width: auto;
+  max-width: 100%;
 }
 
 div .mini-link-title {
@@ -267,7 +268,7 @@ div .mini-link-title {
 }
 
 .mini-link-url a {
-  color: #fff;
+  color: inherit;
 }
 
 div .mini-link-desc {

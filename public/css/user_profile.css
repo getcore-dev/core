@@ -44,13 +44,6 @@ body {
   background-color: #f9f9f9;
 }
 
-@media (max-width: 768px) {
-  #profile {
-    grid-template-columns: repeat(1, minmax(300px, 1fr)); /* Adjust the number of columns */
-    
-  }
-}
-
 
 
 #profile h1 {
@@ -208,6 +201,7 @@ main {
       color: #d0d0d0; /* Lighter text color for content */
   }
 
+
   /* Dark Mode Theme */
 
 /* Common button styles for dark mode */
@@ -249,12 +243,12 @@ main {
 .profile-info input[type="text"], 
 .current-job input[type="text"] {
   background-color: #222; /* Darker background color for inputs */
-  color: #f9f9f9; /* Light text color for inputs */
+  color: #f9f9f9;
   padding: 5px;
   font-size: 14px;
-  border: 1px solid #555; /* Dark border color for inputs */
+  border: 1px solid #555; 
   border-radius: 5px;
-  width: 180px; /* Adjust the width as needed */
+  width: 180px; 
   margin-bottom: 10px;
 }
 
@@ -265,20 +259,23 @@ main {
 .editable-field {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* or 'flex-start' to align items to the left */
-  margin-bottom: 10px; /* Adjust spacing as needed */
+  justify-content: space-between; 
+  margin-bottom: 10px;
 }
 
 .editable-field p {
-  margin-right: 10px; /* Spacing between the paragraph text and button */
+  margin-right: 10px; 
 }
 
-/* This assumes that the profile-picture class is for a container element */
 .profile-picture {
   display: flex;
   flex-direction: row;
-  /* Since the background colors are dark in dark mode, you might want to adjust other properties as well */
-  /* Add additional styles as needed */
+
+}
+
+.profilePic {
+  position: relative;
+padding: auto;
 }
 
 /* Example adjustments for dark mode visibility */
@@ -307,7 +304,22 @@ body {
   /* ... other styles ... */
 }
 
-/* Profile picture and profile info taking up the first row */
+@media screen and (max-width: 768px) {
+  #profile {
+    padding: 10px;
+    gap: 10px;
+    grid-template-columns: repeat(2, 1fr); /* Two columns of equal size */
+    grid-template-areas:
+      "picture info1"
+      "info2 info2"
+      "learning learning"
+      "job job"
+      "posts posts"
+      "comments comments";
+  }
+  
+}
+
 .profile-picture {
   grid-area: picture;
   /* ... other styles ... */
@@ -347,7 +359,6 @@ body {
 /* Posts container spans three columns at the bottom */
 .posts {
   grid-area: posts;
-  width: 100%; /* Take the full width of the grid area */
   /* ... other styles ... */
 }
 
