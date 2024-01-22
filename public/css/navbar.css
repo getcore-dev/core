@@ -32,7 +32,7 @@ h1, h2, h3, p {
   display: none;
   padding-left: 10px; /* Left padding */
   color: #000; /* Icon color */
-  font-size: 23px; /* Icon size */
+  font-size: 16px; /* Icon size */
 }
 
 /* Navbar Styles */
@@ -177,30 +177,58 @@ h1, h2, h3, p {
   display: none; /* Hide by default on desktop */
 }
 
+#avatar {
+  width: 24px;
+  border-radius: 50%;
+  height: 24px;
+  margin-top: 8px;
+}
 
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .user-btns {
+  .navbar {
+    height: 77.5px;
+    padding: 0px;
+  }
+
+  .user-button {
+    font-size: 12px;
+  }
+
+  #avatar {
+    padding-top: 0px;
+    margin-top: 0px;
+  }
+
+  .navbar-btn-text {
     display: none;
   }
-  .navbar {
-    height: 60px;
-    padding: 0px;
 
+  .user-btns {
+    right: 50px;
+    top: -37px;
+    }
+  .navbar-button {
+    padding: 2px;
+    font-size: 12px;
+  }
+
+  .nav-links {
+    left: 0px;
+    top: 2px;  
   }
   #menu-icon {  
     display: block;
   }
 
   body {
-    padding-top: 60px; /* Reduced padding for mobile */
+    padding-top: 77.5px; /* Reduced padding for mobile */
     overflow-x: hidden;
   }
 
   .logo {
-    left: 44%;
-    transform: translateX(-50%);
+    left: 50px;
   }
   .nav-text-container {
     display: none;
@@ -227,15 +255,10 @@ h1, h2, h3, p {
     border-radius: 5px;
   }
 
-
-  .nav-links {
-    display: none;
-  }
-
   .logo img {
     position: absolute;
     top: 3px;
-    max-height: 45px; /* Maximum height of the logo */
+    max-height: 37px; /* Maximum height of the logo */
   }
 }
 
@@ -418,7 +441,7 @@ h1, h2, h3, p {
 .menu-content a {
   padding: 8px 8px 8px 32px;
   text-decoration: none;
-  font-size: 25px;
+  font-size: 16px;
   color: #000;
   display: block;
   transition: 0.3s;

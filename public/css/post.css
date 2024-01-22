@@ -130,9 +130,17 @@ div .material-symbols-outlined:hover {
   max-width: 800px;
   margin: 0px auto;
   padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
+  background-color: var(--background-color);
 }
+
+.post {
+  background-color: var(--profile-background-color);
+}
+
+.comment-with-replies {
+  background-color: var(--profile-background-color);
+}
+
 
 a.comment-url  {
   text-decoration: none;
@@ -402,7 +410,7 @@ a.comment-user-info:hover {
 }
 
 .comment-with-replies {
-  padding: 3px;
+  padding: 10px 5px;
   border: 1px solid #ccc;
   border-radius: 6px;
   margin: 25px 5px;

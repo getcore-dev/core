@@ -63,25 +63,16 @@
                 src="<%= user.avatar %>"
                 alt="Avatar"
                 class="avatar"
-                id="avatar" 
-                style="
-                width: 24px;
-    border-radius: 50%;
-    height: 24px;
-    margin-top: 8px;">
+                id="avatar" >
               <% } else if (user && user.avatar) { %>
-              <img src="/img/default-avatar.png" alt="Avatar" class="avatar" 
-              style="width: 24px;
-              border-radius: 50%;
-              height: 24px;
-              margin-top: 8px;"/>
+              <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
               <% } else if (!user) { %>
               <span class="material-symbols-outlined" id="nb-icon">                
                 person
               </span>
               <% } %>
-              <% if (user) { %> <%= user.firstname %> <%= user.lastname %>
-              <%=user.email %> <% } else { %> Login<% } %>
+              <% if (user) { %> <span class="navbar-btn-text"><%= user.firstname %> <%= user.lastname %>
+              <%=user.email %></span> <% } else { %> <span class="navbar-btn-text">Login</span><% } %>
             </a>
           </li>
           <% if (user) { %>
@@ -93,7 +84,7 @@
               <span class="material-symbols-outlined" id="nb-icon">
                 mail
               </span>
-              Inbox
+              <span class="navbar-btn-text">Inbox</span>
             </a>
           </li>
           <li>
@@ -111,7 +102,7 @@
               <span class="material-symbols-outlined" id="nb-icon">
                 logout
               </span>
-              Logout
+              <span class="navbar-btn-text">Logout</span>
             </a>
           </li>
           <% } else { %>
@@ -123,7 +114,7 @@
                 <span class="material-symbols-outlined" id="nb-icon">
                   person_add
                 </span>
-                Join
+                <span class="navbar-btn-text">Join</span>
               </a>
             </li>
             <% } %>
