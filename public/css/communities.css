@@ -521,6 +521,10 @@ div .mini-link-desc {
     align-items: center;
   }
 
+  .container {
+    height: calc(100vh - 110px);
+  }
+
   #com-btn-container, #job-btn-container {
       padding-top: 10px;
   }
@@ -568,12 +572,12 @@ div .mini-link-desc {
     max-width: 100%;
     border-top: 1px solid #aaa;
   }
+
+  body {
+    overflow-y: hidden;
+  }
   .title {
     font-size: 16px;
-  }
-
-  .container {
-    overflow-y: none;;
   }
 
   .post-info {
@@ -620,9 +624,7 @@ div .mini-link-desc {
     width: 100%;
     max-width: 100%;
   }
-  .container {
-    height: calc(100vh - 60px); /* Set the height to be 100% of the viewport height */
-  }
+
 
   @media (prefers-color-scheme: dark) {
     .post {
