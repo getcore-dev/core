@@ -15,7 +15,7 @@ const userQueries = {
   getPostsByUserId: async (userId) => {
     try {
       const result = await sql.query`
-        SELECT * FROM posts WHERE user_id = ${userId} ORDER BY created_at DESC`;
+      SELECT * FROM posts WHERE user_id = ${userId} AND deleted = 0 ORDER BY created_at DESC`;
       return result.recordset;
     } catch (err) {
       console.error("Database query error:", err);

@@ -55,13 +55,13 @@
             <% } %>
           </div>
           <div class="editable-field">
-            <p id="github-url-display"><span class="material-symbols-outlined">code</span> <%- linkify(otheruser.github_url) %></p>
+            <p id="github-url-display"><span class="material-symbols-outlined">code</span> <% if (otheruser.github_url) { %><%- linkify(otheruser.github_url) %><% } else { %>No Github URL yet.<% } %></p>
             <% if (user && otheruser.username == user.username) { %>
               <button onclick="editField('github-url', this)">Edit</button>
             <% } %>
           </div>
           <div class="editable-field">
-            <p id="leetcode-url-display"><span class="material-symbols-outlined">code</span> <%- linkify(otheruser.leetcode_url) %></p>
+            <p id="github-url-display"><span class="material-symbols-outlined">code</span> <% if (otheruser.leetcode_url) { %><%- linkify(otheruser.leetcode_url) %><% } else { %>No LeetCode URL yet.<% } %></p>
             <% if (user && otheruser.username == user.username) { %>
               <button onclick="editField('leetcode-url', this)">Edit</button>
             <% } %>
