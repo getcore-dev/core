@@ -30,6 +30,16 @@ body {
   background-color: #fff;
 }
 
+.profile-details .material-symbols-outlined {
+  float: left;
+  padding-right: 3px;
+  font-size: 14px;
+}
+
+.profile-details h2 .material-symbols-outlined {
+  font-size: 24px;
+}
+
 /* Style for each section */
 #profile > div {
   display: flex; /* use flexbox for each child container */
@@ -294,7 +304,7 @@ body {
   grid-template-columns: repeat(3, 1fr); /* Three columns of equal size */
   grid-template-rows: auto; /* Rows take size based on content */
   grid-template-areas:
-    "picture info1 info2"
+    "info1 info1 info2"
     "learning job job"
     "posts posts posts"
     "comments comments comments"; /* Posts will take up the entire bottom row spanning 3 columns */

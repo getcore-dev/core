@@ -35,29 +35,35 @@
           <% } %>
         </div>
         <div class="profile-details">
-          <h2><%= otheruser.username %></h2>
+          <h2><span class="material-symbols-outlined">person</span> <%= otheruser.username %></h2>
           <div class="editable-field">
-            <p id="email-display"><%= otheruser.email %></p>
+            <p id="email-display"><span class="material-symbols-outlined">email</span> <%= otheruser.email %></p>
             <% if (user && otheruser.username == user.username) { %>
             <button onclick="editField('email', this)">Edit</button>
             <% } %>
           </div>
           <div class="editable-field">
-            <p id="firstname-display"><%= otheruser.firstname %></p>
+            <p id="firstname-display"><span class="material-symbols-outlined">badge</span> <%= otheruser.firstname %></p>
             <% if (user && otheruser.username == user.username) { %>
             <button onclick="editField('firstname', this)">Edit</button>
             <% } %>
           </div>
           <div class="editable-field">
-            <p id="lastname-display"><%= otheruser.lastname %></p>
+            <p id="lastname-display"><span class="material-symbols-outlined">badge</span> <%= otheruser.lastname %></p>
             <% if (user && otheruser.username == user.username) { %>
             <button onclick="editField('lastname', this)">Edit</button>
             <% } %>
           </div>
           <div class="editable-field">
-            <p id="github-url-display"><%= otheruser.github_url %></p>
+            <p id="github-url-display"><span class="material-symbols-outlined">code</span> <%- linkify(otheruser.github_url) %></p>
             <% if (user && otheruser.username == user.username) { %>
               <button onclick="editField('github-url', this)">Edit</button>
+            <% } %>
+          </div>
+          <div class="editable-field">
+            <p id="leetcode-url-display"><span class="material-symbols-outlined">code</span> <%- linkify(otheruser.leetcode_url) %></p>
+            <% if (user && otheruser.username == user.username) { %>
+              <button onclick="editField('leetcode-url', this)">Edit</button>
             <% } %>
           </div>
         </div>

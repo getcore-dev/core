@@ -108,6 +108,7 @@ const viewController = {
           posts: posts,
           comments: comments,
           editfunction: userQueries.updateField,
+          linkify: utilFunctions.linkify,
         });
       } else {
         res.render("404.ejs", { user: req.user });

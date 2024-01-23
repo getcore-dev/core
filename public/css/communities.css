@@ -1,5 +1,7 @@
 .post {
   display: flex; 
+  background: #f4f4f4;
+  border: 1px solid #ccc;
   flex-direction: row;
   justify-content: space-between; 
   position: relative; 
@@ -335,7 +337,7 @@ div .mini-link-desc {
 }
 
 .container {
-  background-color: #f1f1f1;
+  background-color: #fff;
   display: flex;
   height: calc(100vh - 100px);
   flex-wrap: nowrap;
@@ -360,7 +362,6 @@ div .mini-link-desc {
 
 
 #com-btn-container { 
-  width: 8%;
   flex: none; /* This will prevent the container from growing */
   display: flex;
   flex-direction: column; /* Stacks the buttons vertically */
@@ -412,7 +413,8 @@ div .mini-link-desc {
 
 .job-content {
   border-radius: 5px;
-  background-color: white;
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
 
   flex-direction: column;
 }
@@ -480,12 +482,10 @@ div .mini-link-desc {
 }
 
 .com-btn, .job-btn {
-  font-size: 14px;
-  padding: 10px 20px;
+  font-size: 12px;
+  padding: 4px 4px;
   border: none;
   border-radius: 5px;
-  background: var(--btn-bg-light); /* Default to dark mode */
-  color: var(--btn-text-light); /* Default to dark mode */
   cursor: pointer;
   transition: all 0.3s ease;
   flex: 0 0 auto;
