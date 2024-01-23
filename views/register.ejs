@@ -15,63 +15,53 @@
   <body>
     <%- include('partials/navbar', { pagePath: 'home' }) %>
     <main>
+      <div id="login">
+        <div class="user-res">Already a member? <a href="/login">Login</a></div>
+      </div>
       <div id="registration">
         <form action="/register" method="POST">
           <div class="input-container">
-            <input
-              type="text"
-              id="firstname"
-              name="firstname"
-              placeholder="First Name"
-              required
-            />
+            <label for="firstname">First Name</label>
+            <input type="text" id="firstname" name="firstname" required />
           </div>
           <div class="input-container">
-            <input
-              type="text"
-              id="lastname"
-              name="lastname"
-              placeholder="Last Name"
-              required
-            />
+            <label for="lastname">Last Name</label>
+            <input type="text" id="lastname" name="lastname" required />
           </div>
           <div class="input-container">
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Email"
-              required
-            />
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required />
           </div>
 
           <div class="input-container">
+            <label for="username">Username</label>
             <input
               type="text"
               id="username"
               name="username"
-              placeholder="Username"
               required
               maxlength="25"
             />
           </div>
 
           <div class="input-container">
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Password"
-              required
-            />
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required />
+            <span id="password-strength"></span>
           </div>
 
           <div class="input-container">
+            <label for="password2">Confirm Password</label>
+            <input type="password" id="password2" name="password2" required />
+            <span id="password-match"></span>
+          </div>
+
+          <div class="input-container">
+            <label for="zipcode">Zip Code</label>
             <input
               type="text"
               id="zipcode"
               name="zipcode"
-              placeholder="Zip Code"
               required
               style="display: block"
             />
@@ -80,15 +70,61 @@
             <button type="submit" id="register-button">Join</button>
           </a>
         </form>
-        <p id="login-text">
-          Click <a href="/login" class="login-link">here</a> if you're already a
-          member.
-        </p>
-
-        <p class="recruiter-section" style="padding-top: 5px">
-          Are you a recruiter? <a href="/recruiter">Click here</a> to register.
-        </p>
       </div>
     </main>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var password = document.getElementById("password");
+        var confirmPassword = document.getElementById("password2");
+        var passwordStrengthText = document.getElementById("password-strength");
+        var passwordMatchText = document.getElementById("password-match");
+
+        function checkPasswordStrength() {
+          var strength = 0;
+          if (password.value.length > 5) strength += 1;
+          if (password.value.match(/(?=.*[0-9])/)) strength += 1;
+          if (password.value.match(/(?=.*[!@#$%^&*])/)) strength += 1;
+          if (password.value.match(/(?=.*[a-z])/)) strength += 1;
+          if (password.value.match(/(?=.*[A-Z])/)) strength += 1;
+
+          switch (strength) {
+            case 1:
+            case 2:
+              passwordStrengthText.textContent = "Weak";
+              password.style.borderColor = "red";
+              break;
+            case 3:
+            case 4:
+              passwordStrengthText.textContent = "Medium";
+              password.style.borderColor = "yellow";
+              break;
+            case 5:
+              passwordStrengthText.textContent = "Strong";
+              password.style.borderColor = "green";
+              break;
+            default:
+              passwordStrengthText.textContent = "";
+              password.style.borderColor = "";
+          }
+        }
+
+        function checkPasswordMatch() {
+          if (password.value === confirmPassword.value) {
+            passwordMatchText.textContent = "Passwords match";
+            confirmPassword.style.borderColor = "green";
+          } else {
+            passwordMatchText.textContent = "Passwords do not match";
+            confirmPassword.style.borderColor = "red";
+          }
+        }
+
+        password.addEventListener("input", function () {
+          checkPasswordStrength();
+          checkPasswordMatch();
+        });
+
+        confirmPassword.addEventListener("input", checkPasswordMatch);
+      });
+    </script>
   </body>
 </html>

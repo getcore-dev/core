@@ -1,25 +1,50 @@
 main {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  gap: 15px;
   align-items: center;
-  height: calc(100vh - 40px);
-  background-color: #f4f4f4;
+  height: calc(100vh - 110px);
+  background-color: #fff;
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* Set default font family */
 }
 
-#login {
-  padding: 40px;
-  border-radius: 20px;
+#register {
+  padding: 20px 20px;
+  border-radius: 6px;
   box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
-  background: #ffffff; 
-  width: 300px; 
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  width: 350px; 
+  box-sizing: border-box;
+  text-align: center;
+  display:flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#register a {
+  text-decoration: none;
+  color: rgb(14, 102, 85);
+}
+
+#login {
+  padding: 20px 20px;
+  border-radius: 6px;
+  box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  width: 350px; 
   box-sizing: border-box;
 }
 
+#forgot-pass {
+  float: right;
+}
+
 #login-button {
-  display: flex;
   font-size: 12px;
-  padding: 7px 10px;
+  width: 100%;
   border: none;
   border-radius: 5px;
   background: linear-gradient(to right, #0a5275, #003d66); /* New gradient for dark mode */
@@ -42,10 +67,10 @@ main {
 
 .input-container input {
   width: 100%;
-  padding: 10px 20px;
+  padding: 7px 20px;
   margin: 8px 0;
   box-sizing: border-box;
-  border: 2px solid #ccc;
+  border: 1px solid #ccc;
   border-radius: 5px; /* This makes the input rounded */
   background-color: #f8f9fa;
   font-size: 16px;

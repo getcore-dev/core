@@ -14,35 +14,33 @@
   <body>
     <%- include('partials/navbar', { pagePath: 'home' }) %>
     <main>
+      <div id="register">
+        <div class="user-res">
+          Not a member? <a href="/register">Join the community</a>
+        </div>
+
+        <div class="recruiter-res">
+          Are you a recruiter? <a href="/recruiter/register">Register here</a>
+        </div>
+      </div>
       <div id="login">
         <% if (messages.error) {%> <%= messages.error %> <% } %>
         <form action="/login" method="POST">
           <div class="input-container">
-            <input
-              type="text"
-              placeholder="Username"
-              name="username"
-              required
-              maxlength="50"
-            />
+            <label for="username">Username</label>
+            <input type="text" name="username" required maxlength="50" />
           </div>
 
           <div class="input-container">
-            <input
-              type="password"
-              placeholder="Password"
-              name="password"
-              required
-              id="password"
-            />
+            <label for="password">Password</label>
+            <a href="#" id="forgot-pass">Forgot?</a>
+
+            <input type="password" name="password" required id="password" />
           </div>
-          <button type="submit" id="login-button">Login</button>
+          <button type="submit" id="login-button">
+            <p id="login-text">Login</p>
+          </button>
         </form>
-        Click
-        <a href="/register" class="join-link"
-          ><span class="highlight">here</span></a
-        >
-        to join
       </div>
     </main>
   </body>

@@ -146,9 +146,6 @@ div.commit-title {
       justify-content: space-between;
     }
 
-    .material-symbols-outlined {
-      color: #8b949e;
-    }
   }
 
   .commit-stats-item {
