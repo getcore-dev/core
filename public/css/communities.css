@@ -5,7 +5,6 @@
   position: relative; 
   height: auto;
   flex: 0 1 auto; 
-  border: 1px solid #aaa;
   border-radius: 5px;
   margin: 10px;
   transition: all 0.3s cubic-bezier(.25,.8,.25,1); 
@@ -204,6 +203,12 @@ div .mini-link {
   flex-direction: row ;
   max-width: 100%;
   background-color: #f1f1f1;
+  font-size: 13px;
+}
+
+.mini-link-url {
+  text-decoration: underline;
+  color: rgb(14, 102, 85);
 }
 
 div .mini-link-title {
@@ -250,6 +255,11 @@ div .mini-link-desc {
   body {
       background-color: #121212; /* Dark background */
       color: #fff; /* Light text */
+  }
+
+  div .mini-link {
+    background-color: #333;
+    border: 1px solid #444;
   }
 
   .comments {
@@ -396,17 +406,6 @@ div .mini-link-desc {
 
 .jobs-container {
   overflow-y: auto; /* or scroll */
-}
-
-.post, .job-content {
-  background-color: white;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  position: relative;
-  flex: 0 1 auto;
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-  border: 1px solid #ddd;
 }
 
 
@@ -624,4 +623,10 @@ div .mini-link-desc {
   .container {
     height: calc(100vh - 60px); /* Set the height to be 100% of the viewport height */
   }
+
+  @media (prefers-color-scheme: dark) {
+    .post {
+      border-top: 1px solid #333;
+  }
+}
 }

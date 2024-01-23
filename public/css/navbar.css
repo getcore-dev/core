@@ -28,11 +28,14 @@ h1, h2, h3, p {
 }
 
 #menu-icon {
+  padding: 2px;
   position: relative;
   display: none;
-  padding-left: 10px; /* Left padding */
+  border: 1px solid #ccc;
+  border-radius: 5px; 
+  margin-left: 10px; /* Left padding */
   color: #000; /* Icon color */
-  font-size: 16px; /* Icon size */
+  font-size: 20px; /* Icon size */
 }
 
 /* Navbar Styles */
@@ -89,8 +92,8 @@ h1, h2, h3, p {
   margin-left: 12px;
   font-size: 14px; /* Button font size */
   border: 1px solid #ccc;
+  border-radius: 5px; 
   text-decoration: none; /* Remove underline */
-  border-radius: 5px; /* Rounded corners */
   transition: background-color 0.15s, transform 0.15s; /* Transition effects */
 }
 
@@ -188,12 +191,12 @@ h1, h2, h3, p {
 /* Responsive Design */
 @media (max-width: 768px) {
   .navbar {
-    height: 77.5px;
+    height: 81.5px;
     padding: 0px;
   }
 
   .user-button {
-    font-size: 12px;
+    font-size: 14px;
   }
 
   #avatar {
@@ -210,11 +213,12 @@ h1, h2, h3, p {
     top: -37px;
     }
   .navbar-button {
-    padding: 2px;
+    padding: 4px 2px;
     font-size: 12px;
   }
 
   .nav-links {
+    overflow-x: auto;
     left: 0px;
     top: 2px;  
   }
@@ -223,7 +227,7 @@ h1, h2, h3, p {
   }
 
   body {
-    padding-top: 77.5px; /* Reduced padding for mobile */
+    padding-top: 82px; /* Reduced padding for mobile */
     overflow-x: hidden;
   }
 
@@ -245,7 +249,7 @@ h1, h2, h3, p {
   .hamburger-menu {
     position: relative;
     left: 10px; 
-    top: 22px; 
+    top: 18px; 
     z-index: 2;
   }
 
@@ -258,7 +262,7 @@ h1, h2, h3, p {
   .logo img {
     position: absolute;
     top: 3px;
-    max-height: 37px; /* Maximum height of the logo */
+    max-height: 39px; /* Maximum height of the logo */
   }
 }
 
@@ -358,6 +362,10 @@ h1, h2, h3, p {
   .nav-links li a:hover {
       color: #ddd; /* Lighter color on hover */
       text-decoration: none; /* Underline on hover */
+  }
+
+  #menu-icon {
+    border: 1px solid #555;
   }
 
   .user-links a {

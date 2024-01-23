@@ -2,8 +2,15 @@ span.material-symbols-outlined {
   font-size: 14px;
 }
 
-.commits-container {
-  margin-top: 5px;
+#loading-commit {
+  background-color: #f3f3f3;
+  animation: loadingAnimation 1.5s infinite;
+}
+
+@keyframes loadingAnimation {
+  0% { background-color: #e0e0e0; }
+  50% { background-color: #f3f3f3; }
+  100% { background-color: #e0e0e0; }
 }
 
 div.commit-title {
@@ -16,7 +23,8 @@ div.commit-title {
   .commit {
     border: 1px solid #eaecef;
     border-radius: 6px;
-    padding: 10px;
+    padding: 5px;
+    margin: 10px;
     margin-bottom: 5px;
     margin-left: 10px;
     margin-right: 10px;
@@ -63,12 +71,11 @@ div.commit-title {
     font-weight: 450px;
   }
 
+  
+
   div#commit-comments {
     background-color: blue;
   }
-
-
-
 
   .commit-stats {
     display: flex;
@@ -97,6 +104,13 @@ div.commit-title {
       background-color: #121212;
       color: #fff;
   }
+
+  @keyframes loadingAnimation {
+    0% { background-color: #333; }
+    50% { background-color: #121212; }
+    100% { background-color: #333; }
+  }
+
     .commit {
       background-color: rgb(30,30,30);
       border: 1px solid #444;
@@ -105,7 +119,7 @@ div.commit-title {
     .commit:hover {
       background-color: #444d56;
     }
-    .commit-title a {
+    div.commit-title {
       color: #c9d1d9;
     }
     .commit-date {
@@ -123,14 +137,7 @@ div.commit-title {
     body {
       overflow-x: hidden; 
     }
-    .commit {
-      border: 0;
-      border-top: 1px solid #eaecef;
-      border-radius: 0;
-      margin-left: 0;
-      margin-right: 0;
-      margin-bottom: 0;
-    }
+
     .commit-body {
       display: flex;
       align-items: flex-end;
@@ -138,9 +145,7 @@ div.commit-title {
       align-content: space-between;
       justify-content: space-between;
     }
-    .commit:last-child {
-      border-bottom: 1px solid #eaecef;
-    }
+
     .material-symbols-outlined {
       color: #8b949e;
     }

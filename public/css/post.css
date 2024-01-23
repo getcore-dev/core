@@ -134,7 +134,8 @@ div .material-symbols-outlined:hover {
 }
 
 .post {
-  background-color: var(--profile-background-color);
+  background-color: inherit;
+  border: 1px solid #444;
 }
 
 .comment-with-replies {
@@ -157,7 +158,6 @@ a.comment-url:visited {
 }
 
 .post {
-  border: 1px solid #ccc;
   border-radius: 6px;
   padding: 10px 10px;
   margin-bottom: 5px;
@@ -176,20 +176,24 @@ a.comment-url:visited {
   border-left: 2px solid;
 }
 
-/* Specific classes for each level of nesting */
-.nested-comment.level-1 { border-color: #008000; } /* Green */
-.nested-comment.level-2 { border-color: #00C000; } /* Lighter Green */
-.nested-comment.level-3 { border-color: #40D040; } /* Even Lighter Green */
-.nested-comment.level-4 { border-color: #80E080; } /* Light Green */
-.nested-comment.level-5 { border-color: #B0F0B0; } /* Very Light Green */
-.nested-comment.level-6 { border-color: #D0F8D0; } /* Pale Green */
+@media (prefers-color-scheme: light) {
+  .nested-comment.level-1 { background-color: #e6e6e6; border-color: #008000; } /* Green Border, Darker Grey */
+  .nested-comment.level-2 { background-color: #e0e0e0; border-color: #00C000; } /* Lighter Green Border, Darker Grey */
+  .nested-comment.level-3 { background-color: #dadada; border-color: #40D040; } /* Even Lighter Green Border, Darker Grey */
+  .nested-comment.level-4 { background-color: #d4d4d4; border-color: #80E080; } /* Light Green Border, Darker Grey */
+  .nested-comment.level-5 { background-color: #cecece; border-color: #B0F0B0; } /* Very Light Green Border, Darker Grey */
+  .nested-comment.level-6 { background-color: #c8c8c8; border-color: #D0F8D0; } /* Pale Green Border, Darker Grey */
+}
 
-.nested-comment.level-1:hover { border-color: #004800; } /* Green */
-.nested-comment.level-2:hover { border-color: #007c00; } /* Lighter Green */
-.nested-comment.level-3:hover { border-color: #00a500; } /* Even Lighter Green */
-.nested-comment.level-4:hover { border-color: #00d200; } /* Light Green */
-.nested-comment.level-5:hover { border-color: #00cc00; } /* Very Light Green */
-.nested-comment.level-6:hover { border-color: #00e100; } /* Pale Green */
+@media (prefers-color-scheme: dark) {
+  .nested-comment.level-1 { background-color: #2e2e2e; border-color: #008000; } /* Green Border, Darker */
+  .nested-comment.level-2 { background-color: #2a2a2a; border-color: #00C000; } /* Lighter Green Border, Darker */
+  .nested-comment.level-3 { background-color: #262626; border-color: #40D040; } /* Even Lighter Green Border, Darker */
+  .nested-comment.level-4 { background-color: #222222; border-color: #80E080; } /* Light Green Border, Darker */
+  .nested-comment.level-5 { background-color: #1e1e1e; border-color: #B0F0B0; } /* Very Light Green Border, Darker */
+  .nested-comment.level-6 { background-color: #1a1a1a; border-color: #D0F8D0; } /* Pale Green Border, Darker */
+}
+
 
 .post-title {
   font-size: 22px;
@@ -295,74 +299,13 @@ a.comment-user-info:hover {
   resize: none;
 }
 
-@media screen and (max-width: 600px) {
-  .main-container {
-    border-radius: 0px;
-    margin: 0px 00px;
-    padding: 15px;
-  }
-
-  p.post-body {
-    font-size: 19px;
-  }
-  
-  .post-title {
-    font-size: 28px;
-  }
-
-  .timestamp {
-    font-size: 14px;
-  }
-
-  .post, .comment {
-    padding: 10px;
-  }
-
-  .nested-comment {
-    margin-left: 4px;
-  }
-
-  .post-content, .comment-content {
-    font-size: 14px;
-  }
-
-  .comment-body {
-    font-size: 16px;
-  }
-
-  .comment-content {
-    font-size: 16px;
-  }
-
-  .comment-timestamp {
-    font-size: 16px;
-  }
-
-  .comments-section h3 {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  
-
-  .input-container input, .input-container textarea {
-    width: 93%; /* Adjust input width */
-    padding: 10px 10px;
-    margin: 8px 0;
-  }
-
-  /* Reduce the font size of material symbols on smaller screens */
-  .material-symbols-outlined {
-    font-size: 16px;
-  }
-}
-
 .link-preview {
   cursor: pointer; 
   max-height: auto;
   max-width: 92%;
   display: flex;
   padding: 3px;
-  border: 1px solid darkblue;
+  border: 1px solid #0e6655;
   border-radius: 10px;
   margin: 4px 4px;
 }
@@ -385,7 +328,7 @@ a.comment-user-info:hover {
 
 .post-content .preview-title {
   margin-top: 0px;
-  margin-bottom: 3px;
+  margin-bottom: 0px;
 }
 
 .preview-title {
@@ -406,7 +349,8 @@ a.comment-user-info:hover {
 .preview-link
 {
   font-size: 12px;
-  color: blue;
+  color: #0e6655;
+  text-decoration: underline;
 }
 
 .comment-with-replies {
@@ -425,9 +369,6 @@ h4.preview-title {
   white-space: normal;
 }
 
-.preview-link {
-  color: inherit;
-}
 
 p.preview-description {
     display: -webkit-box;
@@ -446,8 +387,8 @@ p.preview-description {
   }
 
   .post {
-    border-color: #888; /* Darker border for comments */
     background-color: rgb(30,30,30);
+    border: 1px solid #444;
   }
 
   .comment-with-replies {
@@ -542,3 +483,81 @@ p.preview-description {
 .input-container button.fab:hover {
   background-color: var(--border-color);
 } 
+
+@media screen and (max-width: 600px) {
+
+  .comment-with-replies {
+    margin: 0px;
+    border: 0px;
+    border-radius: 0px;
+  }
+
+  .post {
+    margin: 0px;
+  }
+
+  .comments-section {
+    margin: 0px;
+  }
+
+  .main-container {
+    border-radius: 0px;
+    margin: 0px 0px;
+    padding: 0px;
+  }
+
+  p.post-body {
+    font-size: 16px;
+  }
+  
+  .post-title {
+    font-size: 28px;
+  }
+
+  .timestamp {
+    font-size: 14px;
+  }
+
+  .post, .comment {
+    border: 0px;
+    border-bottom: 1px solid #222;
+    border-radius: 0px;
+  }
+
+  .nested-comment {
+    margin-left: 4px;
+  }
+
+  .post-content, .comment-content {
+    font-size: 14px;
+  }
+
+  .comment-body {
+    font-size: 16px;
+  }
+
+  .comment-content {
+    font-size: 16px;
+  }
+
+  .comment-timestamp {
+    font-size: 16px;
+  }
+
+  .comments-section h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+
+  .input-container input, .input-container textarea {
+    width: 93%; /* Adjust input width */
+    padding: 10px 10px;
+    margin: 8px 0;
+  }
+
+  /* Reduce the font size of material symbols on smaller screens */
+  .material-symbols-outlined {
+    font-size: 16px;
+  }
+}
