@@ -37,31 +37,31 @@
         <div class="profile-details">
           <h2><span class="material-symbols-outlined">person</span> <%= otheruser.username %></h2>
           <div class="editable-field">
-            <p id="email-display"><span class="material-symbols-outlined">email</span> <%= otheruser.email %></p>
+            <span class="material-symbols-outlined">email</span><p id="email-display"><%= otheruser.email %></p>
             <% if (user && otheruser.username == user.username) { %>
             <button onclick="editField('email', this)">Edit</button>
             <% } %>
           </div>
           <div class="editable-field">
-            <p id="firstname-display"><span class="material-symbols-outlined">badge</span> <%= otheruser.firstname %></p>
+            <span class="material-symbols-outlined">badge</span><p id="firstname-display"><%= otheruser.firstname %></p>
             <% if (user && otheruser.username == user.username) { %>
             <button onclick="editField('firstname', this)">Edit</button>
             <% } %>
           </div>
           <div class="editable-field">
-            <p id="lastname-display"><span class="material-symbols-outlined">badge</span> <%= otheruser.lastname %></p>
+            <span class="material-symbols-outlined">badge</span><p id="lastname-display"><%= otheruser.lastname %></p>
             <% if (user && otheruser.username == user.username) { %>
             <button onclick="editField('lastname', this)">Edit</button>
             <% } %>
           </div>
           <div class="editable-field">
-            <p id="github-url-display"><span class="material-symbols-outlined">code</span> <% if (otheruser.github_url) { %><%- linkify(otheruser.github_url) %><% } else { %>No Github URL yet.<% } %></p>
+            <span class="material-symbols-outlined">code</span><p id="github-url-display"><% if (otheruser.github_url) { %><%- linkify(otheruser.github_url) %><% } else { %>No Github URL yet.<% } %></p>
             <% if (user && otheruser.username == user.username) { %>
               <button onclick="editField('github-url', this)">Edit</button>
             <% } %>
           </div>
           <div class="editable-field">
-            <p id="github-url-display"><span class="material-symbols-outlined">code</span> <% if (otheruser.leetcode_url) { %><%- linkify(otheruser.leetcode_url) %><% } else { %>No LeetCode URL yet.<% } %></p>
+            <span class="material-symbols-outlined">code</span><p id="github-url-display"><% if (otheruser.leetcode_url) { %><%- linkify(otheruser.leetcode_url) %><% } else { %>No LeetCode URL yet.<% } %></p>
             <% if (user && otheruser.username == user.username) { %>
               <button onclick="editField('leetcode-url', this)">Edit</button>
             <% } %>
@@ -128,7 +128,9 @@
           <div class="post-container">
             <% posts.forEach(function(post) { %>
             <div class="post">
-              <h3 class="post-title"><%= post.title %></h3>
+              <h3 class="post-title">
+                <a href="/posts/<%= post.id %>"><%= post.title %></a>
+              </h3>
               <p class="post-content"><%= post.content %></p>
               <div class="post-meta">
                 <span class="post-score">Score: <%= post.score %></span>
