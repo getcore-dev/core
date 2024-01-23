@@ -49,7 +49,7 @@ main {
   margin: 4px 0px;
   box-sizing: border-box;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 6px;
   background-color: #f8f9fa;
   font-size: 16px;
 }
@@ -93,7 +93,7 @@ main {
   font-size: 12px;
   width: 100%;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   background: linear-gradient(to right, #ff9966, #ff5e62);
   color: white;
   cursor: pointer;

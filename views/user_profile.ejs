@@ -15,7 +15,8 @@
     <%- include('partials/navbar', { pagePath: 'communities' }) %>
     <main>
       <div id="profile" class="grid-container">
-        <div class="profile-picture">
+        <div class="profile-info">
+                  <div class="profile-picture">
           <% if (otheruser.avatar) { %>
           <img
             id="profilePic"
@@ -33,9 +34,7 @@
           </div>
           <% } %>
         </div>
-        
-        
-        <div class="profile-info">
+        <div class="profile-details">
           <h2><%= otheruser.username %></h2>
           <div class="editable-field">
             <p id="email-display"><%= otheruser.email %></p>
@@ -55,6 +54,13 @@
             <button onclick="editField('lastname', this)">Edit</button>
             <% } %>
           </div>
+          <div class="editable-field">
+            <p id="github-url-display"><%= otheruser.github_url %></p>
+            <% if (user && otheruser.username == user.username) { %>
+              <button onclick="editField('github-url', this)">Edit</button>
+            <% } %>
+          </div>
+        </div>
         </div>
 
         <div class="current-job">

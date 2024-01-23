@@ -86,7 +86,13 @@ const userQueries = {
 
   updateField: async (userId, field, value) => {
     try {
-      const validFields = ["firstname", "lastname", "avatar", "email"];
+      const validFields = [
+        "firstname",
+        "lastname",
+        "avatar",
+        "email",
+        "github_url",
+      ];
 
       // Check if the field is valid
       if (!validFields.includes(field)) {
