@@ -19,6 +19,7 @@ const postRoutes = require("./routes/postRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const apiRoutes = require("./routes/apiRoutes");
 const generalRoutes = require("./routes/generalRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 
 const app = express();
 
@@ -62,6 +63,7 @@ app.use(authRoutes);
 app.use(postRoutes);
 app.use(commentRoutes);
 app.use("/api", apiRoutes);
+app.use("/notifications", notificationRoutes);
 app.use(generalRoutes);
 
 // Error handling

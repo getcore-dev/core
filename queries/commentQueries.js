@@ -1,5 +1,6 @@
 const sql = require("mssql");
 const crypto = require("crypto");
+const notificationQueries = require("./notificationQueries");
 
 function GETDATE() {
   return new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -8,10 +9,29 @@ function GETDATE() {
 const commentQueries = {
   addComment: async (postId, userId, commentText) => {
     try {
+      // Insert the comment into the database
       const commentId = `${Date.now().toString(36)}-${crypto
         .randomBytes(3)
         .toString("hex")}`;
       await sql.query`INSERT INTO comments (id, post_id, user_id, comment) VALUES (${commentId}, ${postId}, ${userId}, ${commentText})`;
+
+      // Fetch the user ID of the original post's author
+      const result =
+        await sql.query`SELECT user_id FROM posts WHERE id = ${postId}`;
+      if (result.recordset.length > 0) {
+        const originalPostAuthorId = result.recordset[0].user_id;
+
+        // Create a notification for the original post author
+        if (originalPostAuthorId !== userId) {
+          // Check to avoid notifying if commenting on own post
+          await notificationQueries.createNotification(
+            originalPostAuthorId,
+            "NEW_COMMENT",
+            `User ${userId} commented on your post`
+          );
+        }
+      }
+
       return commentId;
     } catch (err) {
       console.error("Database insert error:", err);
@@ -52,16 +72,36 @@ const commentQueries = {
 
   addReply: async (commentId, userId, replyText) => {
     try {
+      // Insert the reply into the database
       const replyId = `${Date.now().toString(36)}-${crypto
         .randomBytes(3)
         .toString("hex")}`;
       await sql.query`INSERT INTO replies (id, comment_id, user_id, reply) VALUES (${replyId}, ${commentId}, ${userId}, ${replyText})`;
+
+      // Fetch the user ID of the original comment author
+      const result =
+        await sql.query`SELECT user_id FROM comments WHERE id = ${commentId}`;
+      if (result.recordset.length > 0) {
+        const originalCommentAuthorId = result.recordset[0].user_id;
+
+        // Create a notification for the original comment author
+        if (originalCommentAuthorId !== userId) {
+          // Check to avoid notifying if replying to own comment
+          await notificationQueries.createNotification(
+            originalCommentAuthorId,
+            "REPLY",
+            `User ${userId} replied to your comment`
+          );
+        }
+      }
+
       return replyId;
     } catch (err) {
       console.error("Database insert error:", err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
+
   boostComment: async (commentId, userId) => {
     try {
       const userAction = await sql.query`

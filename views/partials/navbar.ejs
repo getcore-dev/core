@@ -76,17 +76,20 @@
             </a>
           </li>
           <% if (user) { %>
-          <li>
-            <a
-              href="/"
-              class="inbox-button <%= currentPath === '/' ? 'active' : '' %>"
-            >
-              <span class="material-symbols-outlined" id="nb-icon">
-                mail
-              </span>
-              <span class="navbar-btn-text">Inbox</span>
-            </a>
-          </li>
+            <li>
+              <a href="#" class="inbox-button <%= currentPath === '/' ? 'active' : '' %>" id="notification-btn">
+                <span class="material-symbols-outlined" id="nb-icon">
+                  mail
+                </span>
+                <span class="navbar-btn-text">Notifications</span>
+              </a>
+              <div id="notification-popup" class="notification-popup" style="display: none;">
+                <button id="clear-all-btn">Clear All</button>
+                <ul id="notification-list">
+                  <!-- Notifications will be dynamically loaded here -->
+                </ul>
+              </div>
+            </li>
           <li>
             <form
             id="logoutForm"
@@ -157,7 +160,7 @@
 </nav>
 
 <script>
-document.getElementById("menu-icon").onclick = function () {
+document.getElementById("menu-icon").onclick = function (event) {
     var content = document.getElementById("menu-content");
     var menuIcon = document.getElementById("menu-icon");
 
@@ -168,7 +171,80 @@ document.getElementById("menu-icon").onclick = function () {
         content.classList.add("sidebar-open");
         menuIcon.textContent = 'close';
     }
+    event.stopPropagation(); // Prevents the document click listener from immediately executing
 };
+
+document.addEventListener('click', function (event) {
+    var content = document.getElementById("menu-content");
+    var menuIcon = document.getElementById("menu-icon");
+
+    // Check if the click is outside the sidebar and not on the menu icon
+    if (!content.contains(event.target) && event.target !== menuIcon) {
+        if (content.classList.contains("sidebar-open")) {
+            content.classList.remove("sidebar-open");
+            menuIcon.textContent = 'menu';
+        }
+    }
+});
+
+
+
+
+document.getElementById('notification-btn').addEventListener('click', function(event) {
+  document.getElementById('notification-popup').style.display = 'block';
+  event.stopPropagation();
+  fetchNotifications();
+});
+
+document.addEventListener('click', function(event) {
+  var notificationPopup = document.getElementById('notification-popup');
+  var notificationBtn = document.getElementById('notification-btn');
+
+  // Check if the click is outside the notification popup and not on the notification button
+  if (!notificationPopup.contains(event.target) && event.target !== notificationBtn) {
+    notificationPopup.style.display = 'none';
+  }
+});
+
+
+async function fetchNotifications() {
+  // Fetch notifications (adjust userId as needed)
+  const response = await fetch(`/notifications/unread/${user.id}`);
+  const notifications = await response.json();
+  
+  // Clear current list
+  const notificationList = document.getElementById('notification-list');
+  notificationList.innerHTML = '';
+
+  // Populate list
+  notifications.forEach(notification => {
+    const li = document.createElement('li');
+    li.classList.add('notification-item');
+    li.textContent = notification.message;
+    
+    // Clear button for each notification
+    const clearBtn = document.createElement('button');
+    clearBtn.classList.add('clear-btn');
+    clearBtn.textContent = 'Clear';
+    clearBtn.onclick = function() {
+      clearNotification(notification.id);
+      li.remove();
+    };
+
+    li.appendChild(clearBtn);
+    notificationList.appendChild(li);
+  });
+}
+
+async function clearNotification(notificationId) {
+  await fetch(`/notifications/${notificationId}`, { method: 'DELETE' });
+}
+
+document.getElementById('clear-all-btn').addEventListener('click', async function() {
+  // Clear all notifications (adjust userId as needed)
+  await fetch(`/notifications/markAllAsRead/${user.id}`, { method: 'PUT' });
+  fetchNotifications(); // Refresh the list
+});
 
 
 

@@ -86,21 +86,25 @@ div.vote-interactions {
   padding: 0; /* No padding */
   padding-top: 5px;
 }
+
+.com-btn {
+  width: 100%;
+  background: rgba(0,0,0,0);
+}
+
 .com-btn:hover {
   transition: all 0.3s ease;
-  background: linear-gradient(to right, #0e6655 , #117a65);
-  color: white;
+  color: #0e6655;
   text-decoration: none;
 }
 
 .create-post-btn {
-  background: linear-gradient(to right,  #5d6d7e , #34495e);
-  font-size: 14px;
+  background: rgba(0,0,0,0);
   height: 35px;
   padding: 0 20px;
-  border: none;
+  border: 1px solid #0e6655;
   border-radius: 6px;
-  color: white;
+  color: black;
   cursor: pointer;
   transition: all 0.7s ease;
   text-decoration: none;
@@ -241,10 +245,13 @@ div .mini-link-desc {
 
 #com-btn-container {
   padding-bottom: 10px;
-  padding-left: 9px; /* Left padding */
-  display: flex; /* Display contents inline */
+  padding-left: 9px; 
+  padding-right: 9px; 
+  display: flex; 
+  flex-direction: column;
+  gap: 15px;
   overflow-x: none;
-  scrollbar-width: none; /* Hide scrollbar */
+  scrollbar-width: none; 
 }
 
 #com-btn-container::-webkit-scrollbar, #job-btn-container::-webkit-scrollbar {
@@ -295,10 +302,6 @@ div .mini-link-desc {
   .com-btn, .create-post-btn {
       background: linear-gradient(to right, #0e6655, #117a65); /* Darker button background */
       color: #fff; /* Light text on buttons */
-  }
-  .com-btn:hover, .create-post-btn:hover {
-      background: linear-gradient(to right, #117a65, #0e6655); /* Adjusted hover colors */
-      color: #fff; /* Maintain light text on hover */
   }
 
   /* Adjustments for scores and icons */
@@ -373,6 +376,10 @@ div .mini-link-desc {
   scrollbar-width: none;
   -ms-autohiding-scrollbar: none;
 
+}
+
+#com-btn-container {
+  border-right: 1px solid #aaa;
 }
 
 #com-btn-container .material-symbols-outlined {
@@ -484,8 +491,7 @@ div .mini-link-desc {
 .com-btn, .job-btn {
   font-size: 12px;
   padding: 4px 4px;
-  border: none;
-  border-radius: 5px;
+  border: 0;
   cursor: pointer;
   transition: all 0.3s ease;
   flex: 0 0 auto;
