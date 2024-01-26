@@ -55,7 +55,7 @@ a .material-symbols-outlined {
   vertical-align: -3px;
 }
 
-div.user-interactions, div.timestamp {
+div.user-interactions {
   padding-bottom: 8px;
 }
 img.linkimage {
@@ -164,12 +164,7 @@ a.comment-url:visited {
 }
 
 
-.avatar {
-  border-radius: 50%;
-  height: 16px;
-  width: 16px;
-  vertical-align: -1px;
-}
+
 
 .nested-comment {
   margin-left: 10px;
@@ -207,6 +202,12 @@ div .user-info, .header {
   text-decoration: none;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .communities_id {
   display: inline-block; 
   background-color: darkgreen; 
@@ -221,9 +222,28 @@ div .user-info, .header {
   flex-direction: column;
 }
 
+.comment-content {
+  padding: 5px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+div.repliers-avatar, div.repliees-avatar {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  border-radius: 6px;
+  height: 24px;
+  width: 24px;
+}
+
 
 .post-content, .comment-content {
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.5;
   color: #111;
 }
@@ -242,8 +262,9 @@ div .user-info, .header {
   margin-bottom: 0px;
 }
 
-.comment {
+.commen:first-child {
   margin-left: 5px;
+  border-left: 1px solid #ccc;
 }
 .user-actions {
   display: flex;
@@ -267,7 +288,6 @@ a.comment-user-info:hover {
   text-decoration: none;
   color: #333;
   font-size: 14px;
-  vertical-align: 5px;
 }
 
 .comment-timestamp {
@@ -288,10 +308,10 @@ a.comment-user-info:hover {
 
 
 
-
 .comment-body {
   font-size: 14px;
   padding-top: 2px;
+  margin-left: 6px;
   padding-bottom: 10px;
 }
 

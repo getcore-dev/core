@@ -160,6 +160,22 @@ h1, h2, h3, p {
   overflow-y: auto;
 }
 
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 1; 
+}
+
+ul.notification-list {
+  padding-left: 0px;
+  list-style: none; /* Remove list bullets */
+}
+
 .notification-item {
   padding: 10px;
   border-bottom: 1px solid #eee;
@@ -355,6 +371,33 @@ h1, h2, h3, p {
       background-color: #222; /* Dark background for navbar */
       color: #fff; /* Light text color */
       border-bottom: 1px solid #444; /* Dark border */
+  }
+
+  .notification-popup {
+    position: absolute;
+    background-color: #222;
+    border: 1px solid #444;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #333;
+  }
+
+  .notification-item:hover {
+    background-color: #444;
+  }
+  
+  .notification-item:last-child {
+    border-bottom: none;
+  }
+  
+  .clear-btn {
+    float: right;
   }
 
   .inbox-button:hover {

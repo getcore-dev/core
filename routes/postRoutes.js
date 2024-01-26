@@ -7,6 +7,7 @@ const utilFunctions = require("../utils/utilFunctions");
 const getUserDetails = utilFunctions.getUserDetails;
 const commentQueries = require("../queries/commentQueries");
 const { getLinkPreview } = require("../utils/utilFunctions");
+const userQueries = require("../queries/userQueries");
 
 // Route for viewing all posts
 router.get("/posts", async (req, res) => {
@@ -203,8 +204,12 @@ router.get("/posts/:postId", async (req, res) => {
 
       // Use the new function to get the parent author's username
       if (comment.parent_comment_id || comment.post_id) {
-        comment.parent_author =
+        comment_parent_username =
           await postQueries.getParentAuthorUsernameByCommentId(comment.id);
+
+        comment.parent_author = await userQueries.findByUsername(
+          comment_parent_username
+        );
         comment.replyingTo = comment.parent_comment_id ? "comment" : "post";
       }
 

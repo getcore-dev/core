@@ -31,16 +31,14 @@
     <div class="main-container">
       <div class="post">
         <div class="header">
+          <a class="community" href="/"><%= post.community.name %></a>/
+          <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+
           <a class="user-info" href="/profile/<%= post.user.username %>"
           >
-          
-          @<%= post.user.username %></a
-        > in 
-        <a class="community" href="/"><%= post.community.name %></a>
-        </div>
-        
-        <div class="title">
-          <h2 class="post-title"><%= post.title %></h2>
+          <div class="header-text">
+          <%= post.user.username %></a
+        > 
         </div>
         <div class="timestamp">
           <%
@@ -59,16 +57,21 @@
       
         // Decide the format based on the time difference
         if (minutes < 60) {
-          formattedDate = minutes + ' minutes ago';
+          formattedDate = minutes + 'm ago';
         } else if (hours < 24) {
-          formattedDate = hours + ' hours ago';
+          formattedDate = hours + 'h ago';
         } else if (days < 365) {
-          formattedDate = days + ' days ago';
+          formattedDate = days + 'd ago';
         } else {
-          formattedDate = years + ' years ago';
+          formattedDate = years + 'y ago';
         }
       %>
       <%= formattedDate %>
+        </div>
+      </div>
+        
+        <div class="title">
+          <h2 class="post-title"><%= post.title %></h2>
         </div>
       <div class="post-content">
 
@@ -141,8 +144,25 @@
           <% } %>
         <div class="comment">
           <div class="comment-content">
+
+            <div class="repliers-avatar">
+              <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+            </div>
             <a class="comment-user-info" href="/profile/<%= comment.user.username %>">
-              @<%= comment.user.username%></a> to <a class="comment-user-info" href="/profile/<%= comment.parent_author %>">@<%= comment.parent_author %></a>
+              <div class="repliers-info">
+                <%= comment.user.username%></a> 
+              </div>
+              
+              <p> to  </p> 
+              
+              <div class="repliees-avatar">
+                <img src="<%= comment.parent_author.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+              </div>
+              <div class="repliees-info">
+                <a class="comment-user-info" href="/profile/<%= comment.parent_author.username %>"> 
+              </div>
+
+                <%= comment.parent_author.username %></a>
             <span>&#183;</span>
               
             <% let commentDate = new Date(comment.created_at);
@@ -154,11 +174,11 @@
             let timeSinceComment = '';
 
             if (days > 0) {
-              timeSinceComment = days + ' day(s) ago';
+              timeSinceComment = days + 'd ago';
             } else if (hours > 0) {
-              timeSinceComment = hours + ' hour(s) ago';
+              timeSinceComment = hours +  'h ago';
             } else if (minutes > 0) {
-              timeSinceComment = minutes + ' minute(s) ago';
+              timeSinceComment = minutes + 'm ago';
             } else {
               timeSinceComment = 'Just now';
             }
@@ -168,6 +188,15 @@
           <div class="comment-body">
             <%- linkify(comment.comment) %>
           </div>
+          <div class="comment-chevron">
+            <% if (comment.replies && comment.replies.length > 0) { %>
+              <span class="material-symbols-outlined chevron" onclick="toggleNestedComments('<%= comment.id %>')">chevron_right</span>
+              <span class="replies-count"><%= comment.replies.length %> <% if (comment.replies.length === 1) { %> reply <% } else { %> replies <% } %></span>
+              </span>
+
+              <% } %>
+            </div>
+          
           
           <% if (user) { %>
           <form
@@ -226,11 +255,15 @@
                   </a>
                 </form>
                 <% } %>
+
             </div>
+            
           </div>
 
           <% } %>  
+          
           </div>
+          
           <form
             id="reply-form-<%= comment.id %>"
             action="/comments/<%= comment.id %>/replies"
@@ -246,24 +279,33 @@
               </form>
             </div>
           </form>
-          <!-- Render nested comments -->
-      <% if (comment.replies && comment.replies.length > 0) { %>
-          <% var nestedLevel = level + 1; %>
+
+          <% if (comment.replies && comment.replies.length > 0) { %>
+            <% var nestedLevel = level + 1; %>
             <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
-            <div class="<%= divClass %>">
+            <div class="<%= divClass %>" id="nested-comments-<%= comment.id %>" style="display: none;">
               <% renderComments(comment.replies, nestedLevel); %>
             </div>
           <% } %>
+  
           <% if (level == 0) { %>
           </div>
           <% } %>
-
-        <% }) %> 
-        <% } %> 
-        <% renderComments(post.comments); %>
-    </div> 
+      <% }) %> 
+    <% } %> 
+    <% renderComments(post.comments); %>
+  </div>
 
     <script>
+
+function toggleNestedComments(commentId) {
+    var nestedComments = document.getElementById('nested-comments-' + commentId);
+    if (nestedComments.style.display === 'none') {
+      nestedComments.style.display = 'block';
+    } else {
+      nestedComments.style.display = 'none';
+    }
+  }
       function detractPost(postId, user) {
         if (!user) {
           window.location.href = "/login"; // Redirect to the login page
