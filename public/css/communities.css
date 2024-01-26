@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 .post {
   display: flex; 
   background: #f4f4f4;
@@ -134,8 +136,8 @@ div.vote-interactions {
 }
 
 .title {
-  font-size: 21px;
-  font-weight: bold;
+  font-size: 18px;
+  font-weight: 700;
   margin: 0;
   color: #333; 
   margin-top: 2px;
@@ -165,6 +167,10 @@ div.vote-interactions {
   margin-right: 5px;
 }
 
+.description {
+  font-size: 14px;
+}
+
 .title {
   color: #333; 
 }
@@ -179,6 +185,7 @@ div.vote-interactions {
 }
 
 .comments {
+  font-size: 12px;
   color: #666; /* Darker text color */
   padding-bottom: 3px;
 }

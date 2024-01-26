@@ -176,11 +176,6 @@
           titleDiv.innerText = post.title;
           postContentDiv.appendChild(titleDiv);
 
-          const descriptionDiv = document.createElement('div');
-          descriptionDiv.className = 'description';
-          descriptionDiv.innerText = post.content; // Assuming 'content' holds the description
-          postContentDiv.appendChild(descriptionDiv);
-
           if (post.link) {
           const linkDiv = document.createElement('div');
           linkDiv.className = 'link';
@@ -188,6 +183,12 @@
           postContentDiv.appendChild(linkDiv);
           fetchPromises.push(fetchLinkPreview(post.link, linkDiv));
         }
+        
+          const descriptionDiv = document.createElement('div');
+          descriptionDiv.className = 'description';
+          descriptionDiv.innerText = post.content; // Assuming 'content' holds the description
+          postContentDiv.appendChild(descriptionDiv);
+
 
         const commentsDiv = document.createElement('div');
         commentsDiv.className = 'comments';

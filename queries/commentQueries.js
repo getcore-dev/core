@@ -1,6 +1,8 @@
 const sql = require("mssql");
 const crypto = require("crypto");
 const notificationQueries = require("./notificationQueries");
+const utilFunctions = require("../utils/utilFunctions");
+const { findById } = require("./userQueries");
 
 function GETDATE() {
   return new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -23,11 +25,12 @@ const commentQueries = {
 
         // Create a notification for the original post author
         if (originalPostAuthorId !== userId) {
+          const username = await findById(userId);
           // Check to avoid notifying if commenting on own post
           await notificationQueries.createNotification(
             originalPostAuthorId,
             "NEW_COMMENT",
-            `User ${userId} commented on your post`
+            `@${username} commented on your post`
           );
         }
       }

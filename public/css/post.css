@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 :root {
   /* Light mode styles (default) */
   --background-color: #f4f4f4;
@@ -39,7 +40,7 @@
 }
 
 body {
-  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Noto Sans", sans-serif, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: 'Inter', sans-serif;
   background-color: var(--background-color);
   color: var(--text-color);
 }
@@ -71,7 +72,11 @@ img.linkimage {
   flex-direction: row;
   gap: 5px;
 }
-
+.header-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
 
 .replies {
   display: flex;
@@ -222,6 +227,11 @@ div .user-info, .header {
   flex-direction: column;
 }
 
+.comment {
+  display:flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
 .comment-content {
   padding: 5px;
   font-size: 18px;
@@ -235,10 +245,23 @@ div.repliers-avatar, div.repliees-avatar {
   align-items: center;
 }
 
+.comment-main {
+  display:flex;
+  flex-direction: column;
+}
+
 .avatar {
-  border-radius: 6px;
-  height: 24px;
-  width: 24px;
+  border-radius: 50%;
+  height: 38px;
+  width: 38px;
+  padding: 2px 4px;
+}
+
+.avatar-nested {
+  border-radius: 50%;
+  height: 28px;
+  width: 28px;
+  padding: 4px;
 }
 
 

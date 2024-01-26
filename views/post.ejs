@@ -32,7 +32,7 @@
       <div class="post">
         <div class="header">
           <a class="community" href="/"><%= post.community.name %></a>/
-          <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+          <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="header-avatar" onerror="standby()" />
 
           <a class="user-info" href="/profile/<%= post.user.username %>"
           >
@@ -143,15 +143,24 @@
         <div class="comment-with-replies"> 
           <% } %>
         <div class="comment">
+          <div class="repliers-avatar">
+            <% if (level == 0) { %>
+            <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+            <% } else { %>
+            <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar-nested" onerror="standby()" />
+            <% } %>
+          </div>
+          <div class="comment-main">
+
           <div class="comment-content">
 
-            <div class="repliers-avatar">
-              <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
-            </div>
             <a class="comment-user-info" href="/profile/<%= comment.user.username %>">
               <div class="repliers-info">
                 <%= comment.user.username%></a> 
-              </div><p>to</p><div class="repliees-info"><a class="comment-user-info" href="/profile/<%= comment.parent_author.username %>"> 
+              </div>
+              <p>to</p>
+              <div class="repliees-info">
+                <a class="comment-user-info" href="/profile/<%= comment.parent_author.username %>"> 
               </div>
 
                 <%= comment.parent_author.username %></a>
@@ -255,6 +264,7 @@
             </div>
             
             <% } %>
+          </div>
           </div> 
 
            

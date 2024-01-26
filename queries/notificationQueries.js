@@ -6,9 +6,11 @@ const notificationQueries = {
   getUnreadNotifications: async (userId) => {
     try {
       const result = await sql.query`
-        SELECT * FROM notifications 
-        WHERE userId = ${userId} AND isRead = 0 
-        ORDER BY createdAt DESC`;
+      SELECT notifications.*, users.username 
+      FROM notifications 
+      INNER JOIN users ON notifications.userId = users.id
+      WHERE notifications.userId = ${userId} AND notifications.isRead = 0 
+      ORDER BY notifications.createdAt DESC`;
       return result.recordset;
     } catch (err) {
       console.error("Database query error:", err);
