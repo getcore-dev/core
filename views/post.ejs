@@ -188,14 +188,6 @@
           <div class="comment-body">
             <%- linkify(comment.comment) %>
           </div>
-          <div class="comment-chevron">
-            <% if (comment.replies && comment.replies.length > 0) { %>
-              <span class="material-symbols-outlined chevron" onclick="toggleNestedComments('<%= comment.id %>')">chevron_right</span>
-              <span class="replies-count"><%= comment.replies.length %> <% if (comment.replies.length === 1) { %> reply <% } else { %> replies <% } %></span>
-              </span>
-
-              <% } %>
-            </div>
           
           
           <% if (user) { %>
@@ -261,8 +253,16 @@
           </div>
 
           <% } %>  
-          
+          <div class="comment-chevron">
+            <% if (comment.replies && comment.replies.length > 0) { %>
+              <span class="material-symbols-outlined chevron" onclick="toggleNestedComments('<%= comment.id %>')">chevron_right</span>
+              <span class="replies-count"><%= comment.replies.length %> <% if (comment.replies.length === 1) { %> reply <% } else { %> replies <% } %></span>
+              </span>
+
+              <% } %>
+            </div>
           </div>
+          
           
           <form
             id="reply-form-<%= comment.id %>"

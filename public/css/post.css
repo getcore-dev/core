@@ -506,6 +506,10 @@ p.preview-description {
 
 @media screen and (max-width: 600px) {
 
+  .comments-section {
+    border-top: 1px solid #ccc;
+  }
+
   .comment-with-replies {
     margin: 0px;
     border: 0px;
@@ -538,9 +542,9 @@ p.preview-description {
     font-size: 14px;
   }
 
+  
   .post, .comment {
     border: 0px;
-    border-bottom: 1px solid #222;
     border-radius: 0px;
   }
 

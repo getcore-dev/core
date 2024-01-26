@@ -64,12 +64,33 @@ router.get("/learning", checkAuthenticated, (req, res) => {
 });
 
 router.get("/updates", async (req, res) => {
-  const commits = await githubService.fetchCommits();
-  res.render("updates.ejs", {
-    user: req.user,
-    commits,
-    getGithubUsername: utilFunctions.getUserDetailsFromGithub,
-  });
+  try {
+    const commits = await githubService.fetchCommits();
+
+    // Resolve the GitHub usernames for each commit
+    const commitsWithUsernames = await Promise.all(
+      commits.map(async (commit) => {
+        const userDetails = await utilFunctions.getUserDetailsFromGithub(
+          commit.author.githubUsername
+        );
+        return {
+          ...commit,
+          coreUser: userDetails, // or the appropriate property
+        };
+      })
+    );
+
+    res.render("updates.ejs", {
+      user: req.user,
+      commits: commitsWithUsernames,
+    });
+  } catch (error) {
+    console.error("Error fetching updates:", error);
+    res.render("error.ejs", {
+      user: req.user,
+      error: { message: error.message },
+    });
+  }
 });
 
 // Post creation page
