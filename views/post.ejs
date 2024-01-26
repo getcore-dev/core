@@ -151,15 +151,7 @@
             <a class="comment-user-info" href="/profile/<%= comment.user.username %>">
               <div class="repliers-info">
                 <%= comment.user.username%></a> 
-              </div>
-              
-              <p> to  </p> 
-              
-              <div class="repliees-avatar">
-                <img src="<%= comment.parent_author.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
-              </div>
-              <div class="repliees-info">
-                <a class="comment-user-info" href="/profile/<%= comment.parent_author.username %>"> 
+              </div><p>to</p><div class="repliees-info"><a class="comment-user-info" href="/profile/<%= comment.parent_author.username %>"> 
               </div>
 
                 <%= comment.parent_author.username %></a>
@@ -200,7 +192,19 @@
             <textarea name="comment" required></textarea>
             <button type="submit">Submit Reply</button>
           </form>
+          <% } %>
+
+          
           <div class="user-actions">
+            <div class="comment-chevron">
+              <% if (comment.replies && comment.replies.length > 0) { %>
+                <span class="material-symbols-outlined chevron" onclick="toggleNestedComments('<%= comment.id %>')">chevron_right</span>
+                <span class="replies-count" onclick="toggleNestedComments('<%= comment.id %>')"><%= comment.replies.length %> <% if (comment.replies.length === 1) { %> reply <% } else { %> replies <% } %></span>
+                </span>
+  
+                <% } %>
+            </div>
+            <% if (user) { %>
             <div class="boosts">
               <span
                 class="material-symbols-outlined"
@@ -250,17 +254,10 @@
 
             </div>
             
-          </div>
+            <% } %>
+          </div> 
 
-          <% } %>  
-          <div class="comment-chevron">
-            <% if (comment.replies && comment.replies.length > 0) { %>
-              <span class="material-symbols-outlined chevron" onclick="toggleNestedComments('<%= comment.id %>')">chevron_right</span>
-              <span class="replies-count"><%= comment.replies.length %> <% if (comment.replies.length === 1) { %> reply <% } else { %> replies <% } %></span>
-              </span>
-
-              <% } %>
-            </div>
+           
           </div>
           
           

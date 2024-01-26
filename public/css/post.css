@@ -267,8 +267,13 @@ div.repliers-avatar, div.repliees-avatar {
   border-left: 1px solid #ccc;
 }
 .user-actions {
+  margin: 0px 5px;
   display: flex;
-  align-items: space-between;
+  gap: 5px;
+  align-items: center;
+  flex-wrap: nowrap;
+  align-content: flex-start;
+  padding-bottom: 5px;
 }
 
 #reply-button {
@@ -306,10 +311,12 @@ a.comment-user-info:hover {
   overflow: hidden; /* Hide the scrollbar */
 }
 
-
+.replies-count:hover {
+  cursor: pointer;
+}
 
 .comment-body {
-  font-size: 14px;
+  font-size: 17px;
   padding-top: 2px;
   margin-left: 6px;
   padding-bottom: 10px;
@@ -357,7 +364,7 @@ a.comment-user-info:hover {
 }
 
 .post-body {
-  font-size: 15px;
+  font-size: 16px;
   padding-top: 2px;
   white-space: pre-line;
 }
