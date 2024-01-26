@@ -90,9 +90,13 @@ router.get("/comments/:postId", async (req, res) => {
 
 router.get("/link-preview/:link", async (req, res) => {
   try {
-    const linkPreview = await utilFunctions.getLinkPreview(req.params.link);
+    const link = decodeURIComponent(req.params.link);
+    console.log("Link received for preview:", link);
+    const linkPreview = await utilFunctions.getLinkPreview(link);
+    console.log("Link preview data:", linkPreview);
     res.json(linkPreview);
   } catch (err) {
+    console.error("Error in link preview route:", err);
     res.status(500).send(err.message);
   }
 });
