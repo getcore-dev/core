@@ -2,6 +2,17 @@ const sql = require("mssql");
 const crypto = require("crypto");
 const redisClient = require("../config/redisConfig"); // Adjust the path as necessary
 
+const generateUniqueId = () => {
+  // Use the last 4 characters of the current timestamp in base 36
+  const timestampPart = Date.now().toString(36).slice(-4);
+
+  // Generate a random 4-character string in base 36
+  const randomPart = crypto.randomBytes(2).toString("hex").slice(0, 4);
+
+  // Combine both parts to form an 8-character ID
+  return `${timestampPart}${randomPart}`;
+};
+
 const removeDuplicateActions = async (postId, userId, actionType) => {
   try {
     console.log(
@@ -169,9 +180,7 @@ const postQueries = {
 
     try {
       // Insert the post into the posts table
-      const uniqueId = `${Date.now().toString(36)}-${crypto
-        .randomBytes(3)
-        .toString("hex")}`;
+      const uniqueId = generateUniqueId();
 
       if (tags && tags.length > 0) {
         for (const tag of tags) {

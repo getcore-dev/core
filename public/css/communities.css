@@ -1,6 +1,6 @@
 .post {
   display: flex; 
-  background: #f4f4f4;
+  background: #fff;
   border: 1px solid #ccc;
   flex-direction: row;
   justify-content: space-between; 
