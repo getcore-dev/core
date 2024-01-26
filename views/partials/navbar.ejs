@@ -120,6 +120,17 @@
     </div>
     <div class="nav-btns">
       <ul class="nav-links">
+        <% if (user) { %>
+          <li>
+            <a
+              href="/post/create"
+              class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>"
+            >
+              <span class="material-symbols-outlined" id="nb-icon"> add </span
+              >Create</a
+            >
+          </li>
+          <% } %>
         <li>
           <a
             href="/"

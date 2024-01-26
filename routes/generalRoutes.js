@@ -68,6 +68,7 @@ router.get("/updates", async (req, res) => {
   res.render("updates.ejs", {
     user: req.user,
     commits,
+    getGithubUsername: utilFunctions.getUserDetailsFromGithub,
   });
 });
 

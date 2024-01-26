@@ -82,24 +82,16 @@
               <div class="commit-author">
                 <img src="<%= commits[i].author.avatar_url %>" alt="avatar" />
                 <div class="commit-author-name">
-                  <%= commits[i].commit.author.name %>
+                  <%- getGithubUsername(commits[i].commit.author.name) %>
                 </div>
               </div>
               <div class="commit-stats">
-                <div class="commit-stats-item" id="commit-comments">
-                  <div class="commit-stats-item-value">
-                    <%= commits[i].commit.comment_count %>
-                  </div>
-                </div>
-
                 <div class="commit-stats-item" style="background-color: #12542489;">
-                  <span class="material-symbols-outlined">add</span>
                   <div class="commit-stats-item-value">
                     <%= commits[i].linesAdded %>
                   </div>
                 </div>
                 <div class="commit-stats-item" style="background-color: #7e0d0da7;">
-                  <span class="material-symbols-outlined">remove</span>
                   <div class="commit-stats-item-value">
                     <%= commits[i].linesDeleted %>
                   </div>

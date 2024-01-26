@@ -28,6 +28,8 @@ h1, h2, h3, p {
   width: 100%;
 }
 
+
+
 #menu-icon {
   padding: 4px 2px;
   position: relative;
@@ -63,8 +65,15 @@ h1, h2, h3, p {
   position: absolute;
   left: 83px;
   margin-top: 40px;
-  flex-direction: row;
-  width: auto;
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 100%; 
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.nav-links::-webkit-scrollbar {
+  display: none;
 }
 
 .nav-links li {

@@ -39,7 +39,8 @@ div.commit-title {
 
   .commit-title {
     font-size: 20px;
-    font-weight: 600;
+    padding: 4px;
+    font-weight: 400;
   }
 
   .commit-date {
@@ -48,6 +49,7 @@ div.commit-title {
   }
 
   .commit-body {
+    padding: 5px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
