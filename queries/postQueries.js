@@ -242,101 +242,67 @@ const postQueries = {
     }
   },
 
-  boostPost: async (postId, userId) => {
+  interactWithPost: async (postId, userId, actionType) => {
     try {
-      // Check if the user has already boosted or detracted the post
+      // Validate actionType
+      if (!["B", "D"].includes(actionType)) {
+        throw new Error("Invalid action type");
+      }
+
+      // Check if the user has already interacted with the post
       const userAction = await sql.query`
         SELECT action_type 
         FROM userPostActions 
         WHERE user_id = ${userId} AND post_id = ${postId}`;
 
-      // If user hasn't interacted with the post in terms of boosting or detracting
+      let updateBoosts, updateDetracts;
+
       if (userAction.recordset.length === 0) {
-        // Insert a record in userPostActions to indicate this user has boosted the post
+        // If no previous interaction, insert new action
         await sql.query`
           INSERT INTO userPostActions (user_id, post_id, action_type) 
-          VALUES (${userId}, ${postId}, 'B')`;
+          VALUES (${userId}, ${postId}, ${actionType})`;
 
-        // Calculate the new score and update the post table
-        const { detracts, boosts, score } = await getScore(postId);
-        await sql.query`
-          UPDATE posts 
-          SET boosts = ${boosts} + 1 
-          WHERE id = ${postId}`;
-
-        return score;
-      } else if (userAction.recordset[0].action_type === "D") {
-        // Update the action_type in userPostActions to indicate this user has boosted the post
-        await sql.query`
-          UPDATE userPostActions 
-          SET action_type = 'B'
-          WHERE user_id = ${userId} AND post_id = ${postId}`;
-
-        // Calculate the new score and update the post table
-        const { detracts, boosts, score } = await getScore(postId);
-        await sql.query`
-          UPDATE posts 
-          SET boosts = ${boosts} + 1,
-              detracts = ${detracts} - 1
-          WHERE id = ${postId}`;
-
-        return score;
-      } else {
-        console.log("User has already interacted with this post.");
-        return 0;
-      }
-    } catch (err) {
-      console.error("Database update error:", err);
-      throw err; // Rethrow the error for the caller to handle
-    }
-  },
-
-  detractPost: async (postId, userId) => {
-    try {
-      // Check if the user has already boosted or detracted the post
-      const userAction = await sql.query`
-        SELECT action_type 
-        FROM userPostActions 
-        WHERE user_id = ${userId} AND post_id = ${postId}`;
-
-      // If user hasn't interacted with the post in terms of boosting or detracting
-      if (userAction.recordset.length === 0) {
-        // Insert a record in userPostActions to indicate this user has detracted the post
-        await sql.query`
-          INSERT INTO userPostActions (user_id, post_id, action_type) 
-          VALUES (${userId}, ${postId}, 'D')`;
-
-        // Calculate the new score and update the post table
-        const { detracts, boosts, score } = await getScore(postId);
-        await sql.query`
-          UPDATE posts 
-          SET detracts = ${detracts} + 1 
-          WHERE id = ${postId}`;
-
-        return newScore;
-      } else if (userAction.recordset[0].action_type === "B") {
-        // Update the action_type in userPostActions to indicate this user has detracted the post
+        if (actionType === "B") {
+          updateBoosts = 1;
+          updateDetracts = 0;
+        } else {
+          updateBoosts = 0;
+          updateDetracts = 1;
+        }
+      } else if (userAction.recordset[0].action_type !== actionType) {
+        // If existing interaction is different, update action
         await sql.query`
           UPDATE userPostActions 
-          SET action_type = 'D'
+          SET action_type = ${actionType}
           WHERE user_id = ${userId} AND post_id = ${postId}`;
 
-        // Calculate the new score and update the post table
-        const { detracts, boosts, score } = await getScore(postId);
-        await sql.query`
-          UPDATE posts 
-          SET detracts = ${detracts} + 1,
-              boosts = ${boosts} - 1
-          WHERE id = ${postId}`;
-
-        return score;
+        updateBoosts = actionType === "B" ? 1 : -1;
+        updateDetracts = actionType === "D" ? 1 : -1;
       } else {
-        console.log("User has already interacted with this post.");
-        return 0;
+        // If user is repeating the same action, remove the action
+        await sql.query`
+          DELETE FROM userPostActions 
+          WHERE user_id = ${userId} AND post_id = ${postId}`;
+
+        updateBoosts = actionType === "B" ? -1 : 0;
+        updateDetracts = actionType === "D" ? -1 : 0;
       }
+
+      // Recalculate the score after the action
+      const { detracts, boosts } = await getScore(postId);
+
+      await sql.query`
+        UPDATE posts 
+        SET boosts = ${boosts + updateBoosts},
+            detracts = ${detracts + updateDetracts}
+        WHERE id = ${postId}`;
+
+      const newScore = await getScore(postId);
+      return newScore.score;
     } catch (err) {
       console.error("Database update error:", err);
-      throw err; // Rethrow the error for the caller to handle
+      throw err;
     }
   },
 

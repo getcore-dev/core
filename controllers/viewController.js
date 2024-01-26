@@ -3,81 +3,19 @@ const utilFunctions = require("../utils/utilFunctions");
 const userQueries = require("../queries/userQueries");
 const postQueries = require("../queries/postQueries");
 
+async function timeAsyncOperation(operation, name) {
+  const start = Date.now();
+  const result = await operation;
+  const duration = Date.now() - start;
+  console.log(`${name} Time: ${duration}ms`);
+  return result;
+}
+
 const viewController = {
   renderHomePage: async (req, res) => {
     try {
-      // Fetch a limited number of posts to improve performance
-      const result = await sql.query(
-        "SELECT TOP 20 * FROM posts WHERE deleted = 0 ORDER BY created_at DESC"
-      );
-      let posts = result.recordset;
-
-      // Process each post concurrently
-      const processedPosts = await Promise.all(
-        posts.map(async (post) => {
-          // Gather all async operations for a single post
-          const userDetails = utilFunctions.getUserDetails(post.user_id);
-          const postScore = utilFunctions.getPostScore(post.id);
-          const comments = utilFunctions.getComments(post.id);
-          const communityDetails = utilFunctions.getCommunityDetails(
-            post.communities_id
-          );
-
-          const operations = [
-            userDetails,
-            postScore,
-            comments,
-            communityDetails,
-          ];
-
-          // Only add link preview if there is a link
-          let linkPreview;
-          if (post.link) {
-            linkPreview = utilFunctions.getLinkPreview(post.link);
-            operations.push(linkPreview);
-          }
-
-          let userInteractions;
-          if (req.user) {
-            userInteractions = postQueries.getUserInteractions(
-              post.id,
-              req.user.id
-            );
-            operations.push(userInteractions);
-          }
-
-          let tags = postQueries.getTagsByPostId(post.id);
-
-          if (tags.length > 0) {
-            operations.push(tags);
-          }
-
-          // Await all async operations
-          const [
-            user,
-            score,
-            commentsData,
-            community,
-            linkPrev,
-            uActions,
-            post_tags,
-          ] = await Promise.all(operations);
-
-          // Combine data into a single post object
-          return {
-            ...post,
-            username: user.username.toLowerCase(),
-            score,
-            comments: commentsData,
-            community,
-            linkPreview: linkPrev,
-            userInteractions: uActions,
-            tags: post_tags,
-          };
-        })
-      );
-
-      res.render("communities.ejs", { user: req.user, posts: processedPosts });
+      // Send basic post data to the client
+      res.render("communities.ejs", { user: req.user });
     } catch (err) {
       res.render("error.ejs", {
         user: req.user,

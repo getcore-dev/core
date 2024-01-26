@@ -23,109 +23,6 @@
     </div>
 
     <div id="posts-container" class="column">
-      <% posts.forEach(post => { %>
-      <div class="post">
-        <div class="votes">
-          <div class="vote-interactions">
-            <span class="material-symbols-outlined boost-button" onclick="boostPost('<%= post.id %>', '<%= user %>')" <% if (user && post.userInteractions === 'B') { %>style="color: green;"<% } %>>arrow_upward_alt</span>
-            <div id="posts-score-<%= post.id %>">
-                <%= post.boosts - post.detracts %>
-            </div>
-
-            <span class="material-symbols-outlined detract-button" onclick="detractPost('<%= post.id %>', '<%= user %>')" <% if (user && post.userInteractions === 'D') { %>style="color: red;"<% } %>>arrow_downward_alt</span>
-          </div>     
-        </div>
-        <div class="post-content" onclick="window.location.href='/posts/<%= post.id %>';">
-          <div class="post-header">
-          <div class="username">
-            <a href="/profile/<%= post.username %>"><strong><%= post.username %></strong></a>
-          </div>
-          <div class="timestamp">
-            <%
-            let postDate = new Date(post.created_at);
-            let today = new Date();
-            let formattedDate;
-          
-            // Calculate time difference in milliseconds
-            let diff = today - postDate;
-          
-            // Convert time difference to different units
-            let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
-            let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
-            let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
-            let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
-          
-            // Decide the format based on the time difference
-            if (minutes < 60) {
-              formattedDate = minutes + ' minutes ago';
-            } else if (hours < 24) {
-              formattedDate = hours + ' hours ago';
-            } else if (days < 365) {
-              formattedDate = days + ' days ago';
-            } else {
-              formattedDate = years + ' years ago';
-            }
-          %>
-          <%= formattedDate %>
-          </div>
-          </div>
-          <div class="title">
-            <%= post.title %>
-          </div>
-          <div class="link"> 
-              <% if (post.link && post.linkPreview) { %>
-                <div class="mini-link" >
-                  <div class="mini-link-image">
-                    <% if (post.linkPreview) { %>
-                      <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %> 
-                      <% if (imageUrl) { %> 
-                        <img src="<%= imageUrl %>" alt="thumbnail" class="thumbnail-image" />
-                    <% } %>
-                    <% } else { %>
-                    <img
-                      src="/thumbnail_image_url.jpg"
-                      alt="Thumbnail Image"
-                      class="thumbnail-image"
-                    />
-                    
-                    <% } %>
-                  </div>
-                  <div class="mini-link-body">
-                    <div class="mini-link-title">
-                      <%= post.linkPreview.title %>
-                    </div>
-                    <div class="mini-link-url">
-                      <%= post.link %>
-                    </div>
-                    <div class="mini-link-desc">
-                      <%= post.linkPreview.description %>
-    
-                    </div>
-                  </div>
-
-              </div>
-
-              <% } %>
-          </div>
-          <div class="description">
-            <%= post.content %>
-          </div>
-          <div class="comments">
-            <%= post.comments.length %> replies 
-          </div>
-
-          <div class="tags">
-            <% if (post.tags) { %>
-              <% post.tags.forEach(tag => { %>
-                <div class="tag">
-                  <%= tag.name %>
-                </div>
-              <% }); %>
-            <% } %>
-          </div>
-        </div>
-      </div>
-      <% }); %>
     </div>
       <% const jobPostings = [
         {
@@ -185,15 +82,17 @@
                 <div class="job-title-location">
                   <div class="job-header">
                     <div class="company-name"><%= job.companyName %> </div> 
-                    <div class="job-location">
-                      <%= job.jobLocation %>
-                    </div>
                   </div>
                   <div class="job-title"><%= job.jobTitle %></div>
                 </div>
               </div>
               <div class="job-body">
-                <div class="job-info"><%= job.jobType %> / <%= job.jobSalary %></div>
+                <div class="job-info"></div>
+              </div>
+              <div class="job-flairs">
+                <span class="job-flair"><%= job.jobType %></span>
+                <span class="job-flair"><%= job.jobSalary %></span>
+                <span class="job-flair"><%= job.jobLocation %></span>
               </div>
             </div>
           </div>
@@ -202,97 +101,195 @@
     </div>
 
     <script>
+      function fetchAndDisplayPosts() {
+    fetch('/api/posts') // Adjust this to your server's endpoint
+      .then(response => response.json())
+      .then(posts => {
+        const postsContainer = document.getElementById('posts-container');
+        const fetchPromises = [];
 
-function detractPost(postId, user) {
-  if (!user) {
-    window.location.href = '/login'; // Redirect to the login page
-    return; 
+        posts.forEach(post => {
+          // Main post div
+          const postDiv = document.createElement('div');
+          postDiv.className = 'post';
+
+          // Votes div
+          const votesDiv = document.createElement('div');
+          votesDiv.className = 'votes';
+
+          // Vote interactions div
+          const voteInteractionsDiv = document.createElement('div');
+          voteInteractionsDiv.className = 'vote-interactions';
+
+          // Boost button
+          const boostButton = document.createElement('span');
+          boostButton.className = 'material-symbols-outlined boost-button';
+          boostButton.innerText = 'arrow_upward_alt';
+          boostButton.onclick = () => interactWithPost(post.id, '<%= user %>', 'boost'); 
+          voteInteractionsDiv.appendChild(boostButton);
+
+          // Post score div
+          const postScoreDiv = document.createElement('div');
+          postScoreDiv.id = 'posts-score-' + post.id;
+          postScoreDiv.innerText = post.boostCount - post.detractCount;
+          voteInteractionsDiv.appendChild(postScoreDiv);
+
+          // Detract button
+          const detractButton = document.createElement('span');
+          detractButton.className = 'material-symbols-outlined detract-button';
+          detractButton.innerText = 'arrow_downward_alt';
+          detractButton.onclick = () => interactWithPost(post.id, '<%= user %>', 'detract');
+          voteInteractionsDiv.appendChild(detractButton);
+
+          votesDiv.appendChild(voteInteractionsDiv);
+          postDiv.appendChild(votesDiv);
+
+          // Post content div
+          const postContentDiv = document.createElement('div');
+          postContentDiv.className = 'post-content';
+          postContentDiv.onclick = () => window.location.href = '/posts/' + post.id;
+
+          // Post header div
+          const postHeaderDiv = document.createElement('div');
+          postHeaderDiv.className = 'post-header';
+
+          // Username div
+          const usernameDiv = document.createElement('div');
+          usernameDiv.className = 'username';
+          const usernameLink = document.createElement('a');
+          usernameLink.href = '/profile/' + post.username;
+          usernameLink.innerHTML = '<strong>' + post.username + '</strong>';
+          usernameDiv.appendChild(usernameLink);
+          postHeaderDiv.appendChild(usernameDiv);
+
+          // Timestamp div
+          const timestampDiv = document.createElement('div');
+          timestampDiv.className = 'timestamp';
+          timestampDiv.innerText = formatDate(new Date(post.created_at)); // Implement formatDate function based on your logic
+          postHeaderDiv.appendChild(timestampDiv);
+
+          postContentDiv.appendChild(postHeaderDiv);
+
+          // Title div
+          const titleDiv = document.createElement('div');
+          titleDiv.className = 'title';
+          titleDiv.innerText = post.title;
+          postContentDiv.appendChild(titleDiv);
+
+          const descriptionDiv = document.createElement('div');
+          descriptionDiv.className = 'description';
+          descriptionDiv.innerText = post.content; // Assuming 'content' holds the description
+          postContentDiv.appendChild(descriptionDiv);
+
+          if (post.link) {
+          const linkDiv = document.createElement('div');
+          linkDiv.className = 'link';
+          linkDiv.innerHTML = '<div class="placeholder-link-preview">Loading link preview...</div>'; // Placeholder
+          postContentDiv.appendChild(linkDiv);
+          fetchPromises.push(fetchLinkPreview(post.link, linkDiv));
+        }
+
+        const commentsDiv = document.createElement('div');
+        commentsDiv.className = 'comments';
+        commentsDiv.innerHTML = 'Loading comments...'; // Placeholder
+        postContentDiv.appendChild(commentsDiv);
+        fetchPromises.push(fetchComments(post.id, commentsDiv));
+
+          postDiv.appendChild(postContentDiv);
+          postsContainer.appendChild(postDiv);
+        });
+        return Promise.all(fetchPromises);
+
+      })
+      .catch(error => console.error('Error fetching posts:', error));
   }
-  fetch(`/posts/${postId}/boost`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ user: user, action: "detract" })
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log(data); // Console log the JSON response
-    if (data.message === "Detract successful") {
-      // Increase the detract count in the view
-      const detractCountElement = document.getElementById(`posts-score-${postId}`);
-      detractCountElement.innerText = data.newScore;
-
-      // Change color of trending down arrow
-      const trendingDownElement = document.querySelector(`[onclick="detractPost('${postId}', '${user}')"]`);
-      trendingDownElement.style.color = "red";
-
-      // Check if the post was boosted by the user
-      const boostCountElement = document.getElementById(`posts-score-${postId}`);
-      if (boostCountElement.innerText > 0) {
-        const trendingUpElement = document.querySelector(`[onclick="boostPost('${postId}', '${user}')"]`);
-      trendingUpElement.style.color = "black";
-              boostCountElement.innerText = data.newScore;
+  function fetchLinkPreview(link, container) {
+  return fetch(`/api/link-preview/${encodeURIComponent(link)}`)
+    .then(response => response.json())
+    .then(linkPreview => {
+      if (linkPreview) {
+        let imageUrl = linkPreview.image || linkPreview.favicon;
+        let htmlContent = `
+          <div class="mini-link">
+              <div class="mini-link-image">
+                  ${imageUrl ? `<img src="${imageUrl}" alt="thumbnail" class="thumbnail-image" />` : ''}
+              </div>
+              <div class="mini-link-body">
+                  <div class="mini-link-title">${linkPreview.title || ''}</div>
+                  <div class="mini-link-url">${link || ''}</div>
+                  <div class="mini-link-desc">${linkPreview.description || ''}</div>
+              </div>
+          </div>`;
+        container.innerHTML = htmlContent;
       }
-    } else if (data.message === "Detract removed") {
-      // Decrease the detract count in the view
-      const detractCountElement = document.getElementById(`posts-score-${postId}`);
-      detractCountElement.innerText = data.newScore;
-
-      // Change color of trending down arrow back to black
-      const trendingDownElement = document.querySelector(`[onclick="detractPost('${postId}', '${user}')"]`);
-      trendingDownElement.style.color = "black";
-    } else {
-      // Handle error
-    }
-  })
-  .catch((error) => {
-    console.error('Error:', error);
-  });
+    });
+}
+function fetchComments(postId, container) {
+  return fetch(`/api/comments/${postId}`)
+    .then(response => response.json())
+    .then(comments => {
+      container.innerHTML = comments.length + ' replies'; 
+    });
 }
 
-function boostPost(postId, user) {
-  if (!user) {
-    window.location.href = '/login'; // Redirect to the login page
-    return; // Stop further execution
+  function formatDate(date) {
+    let postDate = new Date(date);
+    let today = new Date();
+    let formattedDate;
+          
+   // Calculate time difference in milliseconds
+            let diff = today - postDate;
+          
+            // Convert time difference to different units
+            let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+            let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+            let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+            let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+          
+            // Decide the format based on the time difference
+            if (minutes < 60) {
+              formattedDate = minutes + ' minutes ago';
+            } else if (hours < 24) {
+              formattedDate = hours + ' hours ago';
+            } else if (days < 365) {
+              formattedDate = days + ' days ago';
+            } else {
+              formattedDate = years + ' years ago';
+            }
+            return formattedDate;
   }
+  
+  document.addEventListener("DOMContentLoaded", fetchAndDisplayPosts);
+
+  function interactWithPost(postId, user, action) {
+    if (!user) {
+      window.location.href = '/login';
+      return;
+    }
+
   fetch(`/posts/${postId}/boost`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ user: user, action: "boost" })
+    body: JSON.stringify({ user: user, action: action })
   })
   .then(response => response.json())
   .then(data => {
-    console.log(data); // Console log the JSON response
-    if (data.message === "Boost successful") {
-      // Increase the boost count in the view
-      const boostCountElement = document.getElementById(`posts-score-${postId}`);
-      boostCountElement.innerText = data.newScore;
+    const scoreElement = document.getElementById(`posts-score-${postId}`);
+    const boostButton = document.querySelector(`[onclick="interactWithPost('${postId}', '${user}', 'boost')"]`);
+    const detractButton = document.querySelector(`[onclick="interactWithPost('${postId}', '${user}', 'detract')"]`);
 
-      // Change color of trending up arrow
-      const trendingUpElement = document.querySelector(`[onclick="boostPost('${postId}', '${user}')"]`);
-      trendingUpElement.style.color = "green";
+    // Update the score
+    scoreElement.innerText = data.newScore;
 
-      // Check if the post was detracted by the user
-      const detractCountElement = document.getElementById(`posts-score-${postId}`);
-      if (detractCountElement.innerText > 0) {
-        // Decrease the detract count in the view
-        const trendingDownElement = document.querySelector(`[onclick="detractPost('${postId}', '${user}')"]`);
-      trendingDownElement.style.color = "black";
-        detractCountElement.innerText = data.newScore;
-      }
-    } else if (data.message === "Boost removed") {
-      // Decrease the boost count in the view
-      const boostCountElement = document.getElementById(`posts-score-${postId}`);
-      boostCountElement.innerText = data.newScore;
-
-      // Change color of trending up arrow back to black
-      const trendingUpElement = document.querySelector(`[onclick="boostPost('${postId}', '${user}')"]`);
-      trendingUpElement.style.color = "black";
-    } else {
-      // Handle error
+    // Update button colors based on the action and server response
+    if (action === "boost") {
+      boostButton.style.color = data.message === "Boost successful" ? "green" : "black";
+      detractButton.style.color = "black"; // Reset detract button
+    } else if (action === "detract") {
+      detractButton.style.color = data.message === "Detract successful" ? "red" : "black";
+      boostButton.style.color = "black"; // Reset boost button
     }
   })
   .catch((error) => {

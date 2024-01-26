@@ -51,40 +51,27 @@ router.post("/posts/:postId/boost", checkAuthenticated, async (req, res) => {
 
     console.log(`${action}ing post: ${postId} by user: ${userId}`);
 
-    // Check if the post is already boosted or detracted by the user
-    const isBoosted = await postQueries.isPostBoosted(postId, userId);
-    const isDetracted = await postQueries.isPostDetracted(postId, userId);
-
+    let actionType;
     if (action === "boost") {
-      if (isBoosted) {
-        console.log("Post is already boosted. Removing the boost...");
-        // If already boosted, remove the boost
-        const newScore = await postQueries.removeBoost(postId, userId);
-        res.json({ message: "Boost removed", newScore });
-      } else {
-        console.log("Post is not boosted. Adding the boost...");
-        // If not boosted, add the boost
-        const newScore = await postQueries.boostPost(postId, userId);
-
-        res.json({ message: "Boost successful", newScore });
-      }
+      actionType = "B";
     } else if (action === "detract") {
-      if (isDetracted) {
-        console.log("Post is already detracted. Removing the detract...");
-        // If already detracted, remove the detract
-        const newScore = await postQueries.removeDetract(postId, userId);
-        res.json({ message: "Detract removed", newScore });
-      } else {
-        console.log("Post is not detracted. Adding the detract...");
-        // If not detracted, add the detract
-        const newScore = await postQueries.detractPost(postId, userId);
-        res.json({
-          message: "Detract successful",
-          newScore,
-        });
-      }
+      actionType = "D";
     } else {
-      res.status(400).send("Invalid action");
+      return res.status(400).send("Invalid action");
+    }
+
+    const newScore = await postQueries.interactWithPost(
+      postId,
+      userId,
+      actionType
+    );
+
+    if (newScore === 0) {
+      console.log("User has already interacted with this post.");
+      res.json({ message: "Action unchanged", newScore });
+    } else {
+      console.log(`Post ${action}ed successfully.`);
+      res.json({ message: `Post ${action}ed successfully`, newScore });
     }
   } catch (err) {
     console.error("Database error:", err);

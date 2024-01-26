@@ -5,6 +5,92 @@ const NodeCache = require("node-cache");
 const cache = new NodeCache({ stdTTL: 1200 }); // TTL is 20 minutes
 
 const utilFunctions = {
+  getPosts: async () => {
+    try {
+      // Query to get posts with boosts and detracts count
+      const result = await sql.query`
+        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, 
+               u.username, 
+               SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
+               SUM(CASE WHEN upa.action_type = 'D' THEN 1 ELSE 0 END) as detractCount
+        FROM posts p
+        INNER JOIN users u ON p.user_id = u.id
+        LEFT JOIN userPostActions upa ON p.id = upa.post_id
+        WHERE p.deleted = 0
+        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id
+        ORDER BY p.created_at DESC
+      `;
+
+      // Optionally, update the posts table if there's a discrepancy
+      for (let post of result.recordset) {
+        if (
+          post.boostCount !== post.boosts ||
+          post.detractCount !== post.detracts
+        ) {
+          await sql.query`
+            UPDATE posts
+            SET boosts = ${post.boostCount}, detracts = ${post.detractCount}
+            WHERE id = ${post.id}
+          `;
+        }
+      }
+
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getPostData: async (postId) => {
+    try {
+      const result = await sql.query`
+        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id,
+                u.username, 
+                SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
+                SUM(CASE WHEN upa.action_type = 'D' THEN 1 ELSE 0 END) as detractCount
+        FROM posts p
+        INNER JOIN users u ON p.user_id = u.id
+        LEFT JOIN userPostActions upa ON p.id = upa.post_id
+        WHERE p.id = ${postId}
+        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id
+      `;
+      const postData = result.recordset[0];
+      if (postData) {
+        postData.user = await utilFunctions.getUserDetails(postData.user_id);
+        postData.score = postData.boostCount - postData.detractCount;
+      }
+      return postData;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getRepliesForComment: async (commentId) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM comments WHERE parent_comment_id = ${commentId}
+      `;
+      const commentList = result.recordset;
+      return await utilFunctions.getNestedComments(commentList);
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+  getCommentsForPost: async (postId) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM comments WHERE post_id = ${postId} AND deleted = 0
+      `;
+      const commentList = result.recordset;
+      return await utilFunctions.getNestedComments(commentList);
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
   getUserDetails: async (userId) => {
     try {
       const userResult =
@@ -28,6 +114,7 @@ const utilFunctions = {
       const query = `SELECT * FROM users WHERE github_url = '${githubUser}'`;
 
       const result = await sql.query(query);
+      console.log(result);
       if (result.recordset.length > 0) {
         return result.recordset[0];
       } else {

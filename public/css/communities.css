@@ -1,6 +1,6 @@
 .post {
   display: flex; 
-  background: #fff;
+  background: #f4f4f4;
   border: 1px solid #ccc;
   flex-direction: row;
   justify-content: space-between; 
@@ -98,6 +98,18 @@ div.vote-interactions {
   text-decoration: none;
 }
 
+.job-flair {
+  display: inline-block;
+  padding: 2px 3px;
+  margin: 2px;
+  background-color: rgba(14, 102, 85, 0.3); 
+  border: 1px solid rgba(14, 102, 85, 0.3); 
+  color: white;
+  border-radius: 6px;
+  font-size: 12px;
+  position: relative;
+}
+
 .create-post-btn {
   background: rgba(0,0,0,0);
   height: 35px;
@@ -109,15 +121,15 @@ div.vote-interactions {
   transition: all 0.7s ease;
   text-decoration: none;
   flex: 0 0 auto;
-  margin-right: 10px; /* Margin around buttons */
   cursor: pointer; /* Pointer cursor on hover */
-  margin-top: 10px; /* Top margin */
+  margin: 10px 10px;
   cursor: pointer; /* Pointer cursor */
 }
 
 .create-post-btn:hover {
   transition: all 0.7s ease;
-  color: white;
+  background-color: #0e6655;
+  color: #fff;
   text-decoration: none;
 }
 
@@ -245,8 +257,6 @@ div .mini-link-desc {
 
 #com-btn-container {
   padding-bottom: 10px;
-  padding-left: 9px; 
-  padding-right: 9px; 
   display: flex; 
   flex-direction: column;
   gap: 15px;
@@ -383,7 +393,8 @@ div .mini-link-desc {
 }
 
 #com-btn-container .material-symbols-outlined {
-  font-size: 14px;
+  font-size: 20px;
+  vertical-align: -3px;
 }
 
 #posts-container {
@@ -422,6 +433,7 @@ div .mini-link-desc {
   border-radius: 5px;
   background-color: #f4f4f4;
   border: 1px solid #ccc;
+  padding: 5px;
 
   flex-direction: column;
 }
@@ -488,15 +500,22 @@ div .mini-link-desc {
   --btn-text-dark: #f8f9fa; /* Dark mode text */
 }
 
-.com-btn, .job-btn {
-  font-size: 12px;
-  padding: 4px 4px;
+.com-btn {
+  font-size: 18px;
+  width: 100%;
   border: 0;
+  height: 40px;
   cursor: pointer;
   transition: all 0.3s ease;
   flex: 0 0 auto;
   margin-right: 10px;
   margin-top: 10px;
+}
+
+.com-btn:hover {
+  transition: all 0.3s ease;
+  background-color: rgba(0,0,0,0.1);
+  text-decoration: none;
 }
 
 
@@ -505,6 +524,9 @@ div .mini-link-desc {
 
 /* Responsive Styles */
 @media (max-width: 768px) {
+  .post {
+    background: #fff;
+  }
   .post-content, .job-content {
       margin-left: 30px;
       margin-right: 25px;
