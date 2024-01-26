@@ -80,9 +80,9 @@
             </div>
             <div class="commit-body">
               <div class="commit-author">
-                <img src="<%= commits[i].commit.coreUser.avatar %>" alt="avatar" />
+                <img src="<%= commits[i].author.avatar_url %>" alt="avatar" />
                 <div class="commit-author-name">
-                  <%= commits[i].commit.coreUser.username %>
+                  <%= commits[i].commit.author.name %>
                 </div>
               </div>
               <div class="commit-stats">
