@@ -2,7 +2,7 @@ const sql = require("mssql");
 const axios = require("axios");
 const cheerio = require("cheerio");
 const NodeCache = require("node-cache");
-const cache = new NodeCache({ stdTTL: 3600 }); // Cache TTL is 1 hour (3600 seconds)
+const cache = new NodeCache({ stdTTL: 1200 }); // TTL is 20 minutes
 
 const utilFunctions = {
   getUserDetails: async (userId) => {
@@ -19,6 +19,23 @@ const utilFunctions = {
       console.error("Database query error:", err);
       // Optionally, you can still return a default user object in case of query error
       return { id: userId, username: "error", avatar: null };
+    }
+  },
+
+  getUserDetailsFromGithub: async (githubUsername) => {
+    try {
+      const githubUser = "https://github.com/" + githubUsername;
+      const query = `SELECT * FROM users WHERE github_url = '${githubUser}'`;
+
+      const result = await sql.query(query);
+      if (result.recordset.length > 0) {
+        return result.recordset[0];
+      } else {
+        return null;
+      }
+    } catch (err) {
+      console.error("Database query error:", err);
+      return null;
     }
   },
 

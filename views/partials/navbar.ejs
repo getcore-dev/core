@@ -2,6 +2,9 @@
   rel="stylesheet"
   href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
 />
+<script>
+    var user = JSON.parse('<%- JSON.stringify(user) %>');
+</script>
 
 <nav class="navbar">
   <div class="nav-bar">
@@ -10,6 +13,7 @@
     </div>
     <div class="top-bar">
       <div class="hamburger-menu">
+        
         <span class="material-symbols-outlined" id="menu-icon" style="z-index: 1000;"> menu </span>
         <div class="menu-content" id="menu-content">
           <a href="/">Communities</a>
@@ -32,6 +36,7 @@
           <a href="/login">Login</a>
           <% } %>
         </div>
+        <div id="overlay"></div>
       </div>
       <div class="nav-text-container">
         <% if (user) { %>
@@ -85,8 +90,8 @@
               </a>
               <div id="notification-popup" class="notification-popup" style="display: none;">
                 <button id="clear-all-btn">Clear All</button>
-                <ul id="notification-list">
-                  <!-- Notifications will be dynamically loaded here -->
+                <ul id="notification-list" class="notification-list">
+                  <!-- notifications get loaded in this field right here, dont forget. -->
                 </ul>
               </div>
             </li>
@@ -115,6 +120,17 @@
     </div>
     <div class="nav-btns">
       <ul class="nav-links">
+        <% if (user) { %>
+          <li>
+            <a
+              href="/post/create"
+              class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>"
+            >
+              <span class="material-symbols-outlined" id="nb-icon"> add </span
+              >Create</a
+            >
+          </li>
+          <% } %>
         <li>
           <a
             href="/"
@@ -162,90 +178,97 @@
 <script>
 document.getElementById("menu-icon").onclick = function (event) {
     var content = document.getElementById("menu-content");
+    var overlay = document.getElementById("overlay");
     var menuIcon = document.getElementById("menu-icon");
 
     if (content.classList.contains("sidebar-open")) {
         content.classList.remove("sidebar-open");
+        overlay.style.display = "none";
         menuIcon.textContent = 'menu';
+        document.body.style.overflow = ""; // Enable scrolling
     } else {
         content.classList.add("sidebar-open");
+        overlay.style.display = "block";
         menuIcon.textContent = 'close';
+        document.body.style.overflow = "hidden"; // Disable scrolling
     }
-    event.stopPropagation(); // Prevents the document click listener from immediately executing
+    event.stopPropagation();
 };
 
 document.addEventListener('click', function (event) {
     var content = document.getElementById("menu-content");
+    var overlay = document.getElementById("overlay");
     var menuIcon = document.getElementById("menu-icon");
 
-    // Check if the click is outside the sidebar and not on the menu icon
     if (!content.contains(event.target) && event.target !== menuIcon) {
         if (content.classList.contains("sidebar-open")) {
             content.classList.remove("sidebar-open");
+            overlay.style.display = "none";
             menuIcon.textContent = 'menu';
+            document.body.style.overflow = "";
         }
     }
 });
-
-
-
-
-document.getElementById('notification-btn').addEventListener('click', function(event) {
-  document.getElementById('notification-popup').style.display = 'block';
-  event.stopPropagation();
-  fetchNotifications();
-});
-
-document.addEventListener('click', function(event) {
-  var notificationPopup = document.getElementById('notification-popup');
-  var notificationBtn = document.getElementById('notification-btn');
-
-  // Check if the click is outside the notification popup and not on the notification button
-  if (!notificationPopup.contains(event.target) && event.target !== notificationBtn) {
-    notificationPopup.style.display = 'none';
-  }
-});
-
-
-async function fetchNotifications() {
-  // Fetch notifications (adjust userId as needed)
-  const response = await fetch(`/notifications/unread/${user.id}`);
-  const notifications = await response.json();
   
-  // Clear current list
-  const notificationList = document.getElementById('notification-list');
-  notificationList.innerHTML = '';
-
-  // Populate list
-  notifications.forEach(notification => {
-    const li = document.createElement('li');
-    li.classList.add('notification-item');
-    li.textContent = notification.message;
-    
-    // Clear button for each notification
-    const clearBtn = document.createElement('button');
-    clearBtn.classList.add('clear-btn');
-    clearBtn.textContent = 'Clear';
-    clearBtn.onclick = function() {
-      clearNotification(notification.id);
-      li.remove();
-    };
-
-    li.appendChild(clearBtn);
-    notificationList.appendChild(li);
+  
+  
+  
+  document.getElementById('notification-btn').addEventListener('click', function(event) {
+    document.getElementById('notification-popup').style.display = 'block';
+    event.stopPropagation();
+    fetchNotifications();
   });
-}
-
-async function clearNotification(notificationId) {
-  await fetch(`/notifications/${notificationId}`, { method: 'DELETE' });
-}
-
-document.getElementById('clear-all-btn').addEventListener('click', async function() {
-  // Clear all notifications (adjust userId as needed)
-  await fetch(`/notifications/markAllAsRead/${user.id}`, { method: 'PUT' });
-  fetchNotifications(); // Refresh the list
-});
-
-
-
-</script>
+  
+  document.addEventListener('click', function(event) {
+    var notificationPopup = document.getElementById('notification-popup');
+    var notificationBtn = document.getElementById('notification-btn');
+  
+    // Check if the click is outside the notification popup and not on the notification button
+    if (!notificationPopup.contains(event.target) && event.target !== notificationBtn) {
+      notificationPopup.style.display = 'none';
+    }
+  });
+  
+  
+  async function fetchNotifications() {
+    // Fetch notifications (adjust userId as needed)
+    const response = await fetch(`/notifications/unread/${user.id}`);
+    const notifications = await response.json();
+    
+    // Clear current list
+    const notificationList = document.getElementById('notification-list');
+    notificationList.innerHTML = '';
+  
+    // Populate list
+    notifications.forEach(notification => {
+      const li = document.createElement('li');
+      li.classList.add('notification-item');
+      li.textContent = notification.message;
+      
+      // Clear button for each notification
+      const clearBtn = document.createElement('button');
+      clearBtn.classList.add('clear-btn');
+      clearBtn.textContent = 'Clear';
+      clearBtn.onclick = function() {
+        clearNotification(notification.id);
+        li.remove();
+      };
+  
+      li.appendChild(clearBtn);
+      notificationList.appendChild(li);
+    });
+  }
+  
+  async function clearNotification(notificationId) {
+    await fetch(`/notifications/${notificationId}`, { method: 'DELETE' });
+  }
+  
+  document.getElementById('clear-all-btn').addEventListener('click', async function() {
+    // Clear all notifications (adjust userId as needed)
+    await fetch(`/notifications/markAllAsRead/${user.id}`, { method: 'PUT' });
+    fetchNotifications(); // Refresh the list
+  });
+  
+  
+  
+  </script>

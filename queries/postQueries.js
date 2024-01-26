@@ -2,6 +2,68 @@ const sql = require("mssql");
 const crypto = require("crypto");
 const redisClient = require("../config/redisConfig"); // Adjust the path as necessary
 
+const removeDuplicateActions = async (postId, userId, actionType) => {
+  try {
+    console.log(
+      `Removing duplicate ${actionType} actions for user ${userId} on post ${postId}`
+    );
+
+    // Check if there are duplicate actions for the same user and post with the specified action type
+    const duplicateActions = await sql.query`
+      SELECT id
+      FROM userPostActions
+      WHERE user_id = ${userId} AND post_id = ${postId} AND action_type = ${actionType}`;
+
+    // If there are duplicates, delete them
+    if (duplicateActions.recordset.length > 1) {
+      console.log(
+        `Found ${duplicateActions.recordset.length} duplicate ${actionType} actions.`
+      );
+
+      const duplicateIds = duplicateActions.recordset.map(
+        (action) => action.id
+      );
+      await sql.query`
+        DELETE FROM userPostActions
+        WHERE id IN (${duplicateIds.join(",")})`;
+
+      console.log(
+        `Deleted ${duplicateIds.length} duplicate ${actionType} actions.`
+      );
+    } else {
+      console.log(`No duplicate ${actionType} actions found.`);
+    }
+  } catch (err) {
+    console.error("Database delete error:", err);
+    throw err; // Rethrow the error for the caller to handle
+  }
+};
+const getScore = async (postId) => {
+  try {
+    // Get the sum of boosts for the specified post
+    const boostResult = await sql.query`
+      SELECT COUNT(*) AS boostCount
+      FROM userPostActions
+      WHERE post_id = ${postId} AND action_type = 'B'`;
+
+    const boostCount = boostResult.recordset[0].boostCount;
+
+    // Get the sum of detracts for the specified post
+    const detractResult = await sql.query`
+      SELECT COUNT(*) AS detractCount
+      FROM userPostActions
+      WHERE post_id = ${postId} AND action_type = 'D'`;
+
+    const detractCount = detractResult.recordset[0].detractCount;
+
+    // Calculate the score (boosts - detracts)
+    return { boostCount, detractCount, score: boostCount - detractCount };
+  } catch (err) {
+    console.error("Database query error:", err);
+    throw err; // Rethrow the error for the caller to handle
+  }
+};
+
 const postQueries = {
   getPosts: async () => {
     try {
@@ -181,51 +243,45 @@ const postQueries = {
 
       // If user hasn't interacted with the post in terms of boosting or detracting
       if (userAction.recordset.length === 0) {
-        // Update the boost count in posts table
-        await sql.query`
-          UPDATE posts 
-          SET boosts = boosts + 1 
-          WHERE id = ${postId}`;
-
         // Insert a record in userPostActions to indicate this user has boosted the post
         await sql.query`
           INSERT INTO userPostActions (user_id, post_id, action_type) 
           VALUES (${userId}, ${postId}, 'B')`;
 
-        const newScore =
-          (await postQueries.getBoostCount(postId)) -
-          (await postQueries.getDetractCount(postId));
-
-        if (newScore == 0) {
-          return 0;
-        } else {
-          return newScore;
-        }
-      } else if (userAction.recordset[0].action_type === "D") {
-        // Update the boost count and remove the detract count in posts table
+        // Calculate the new score and update the post table
+        const { detracts, boosts, score } = await getScore(postId);
         await sql.query`
           UPDATE posts 
-          SET boosts = boosts + 1,
-              detracts = detracts - 1
+          SET boosts = ${boosts} + 1 
           WHERE id = ${postId}`;
 
+        return score;
+      } else if (userAction.recordset[0].action_type === "D") {
         // Update the action_type in userPostActions to indicate this user has boosted the post
         await sql.query`
           UPDATE userPostActions 
           SET action_type = 'B'
           WHERE user_id = ${userId} AND post_id = ${postId}`;
-        const newScore =
-          (await postQueries.getBoostCount(postId)) -
-          (await postQueries.getDetractCount(postId));
-        return newScore;
+
+        // Calculate the new score and update the post table
+        const { detracts, boosts, score } = await getScore(postId);
+        await sql.query`
+          UPDATE posts 
+          SET boosts = ${boosts} + 1,
+              detracts = ${detracts} - 1
+          WHERE id = ${postId}`;
+
+        return score;
       } else {
         console.log("User has already interacted with this post.");
+        return 0;
       }
     } catch (err) {
       console.error("Database update error:", err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
+
   detractPost: async (postId, userId) => {
     try {
       // Check if the user has already boosted or detracted the post
@@ -236,47 +292,45 @@ const postQueries = {
 
       // If user hasn't interacted with the post in terms of boosting or detracting
       if (userAction.recordset.length === 0) {
-        // Update the detract count in posts table
-        await sql.query`
-          UPDATE posts 
-          SET detracts = detracts + 1 
-          WHERE id = ${postId}`;
-
         // Insert a record in userPostActions to indicate this user has detracted the post
         await sql.query`
           INSERT INTO userPostActions (user_id, post_id, action_type) 
           VALUES (${userId}, ${postId}, 'D')`;
 
-        const newScore =
-          (await postQueries.getBoostCount(postId)) -
-          (await postQueries.getDetractCount(postId));
-        return newScore;
-      } else if (userAction.recordset[0].action_type === "B") {
-        // Update the detract count and remove the boost count in posts table
+        // Calculate the new score and update the post table
+        const { detracts, boosts, score } = await getScore(postId);
         await sql.query`
           UPDATE posts 
-          SET detracts = detracts + 1,
-              boosts = boosts - 1
+          SET detracts = ${detracts} + 1 
           WHERE id = ${postId}`;
 
+        return newScore;
+      } else if (userAction.recordset[0].action_type === "B") {
         // Update the action_type in userPostActions to indicate this user has detracted the post
         await sql.query`
           UPDATE userPostActions 
           SET action_type = 'D'
           WHERE user_id = ${userId} AND post_id = ${postId}`;
 
-        const newScore =
-          (await postQueries.getBoostCount(postId)) -
-          (await postQueries.getDetractCount(postId));
-        return newScore;
+        // Calculate the new score and update the post table
+        const { detracts, boosts, score } = await getScore(postId);
+        await sql.query`
+          UPDATE posts 
+          SET detracts = ${detracts} + 1,
+              boosts = ${boosts} - 1
+          WHERE id = ${postId}`;
+
+        return score;
       } else {
         console.log("User has already interacted with this post.");
+        return 0;
       }
     } catch (err) {
       console.error("Database update error:", err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
+
   isPostBoosted: async (postId, userId) => {
     try {
       const result = await sql.query`

@@ -1,8 +1,10 @@
 const axios = require("axios");
 const NodeCache = require("node-cache");
 
-// Create a cache instance
-const cache = new NodeCache({ stdTTL: 3600 }); // Cache for 1 hour
+// Create a cache instance with a TTL of 20 minutes (1200 seconds)
+const cache = new NodeCache({ stdTTL: 1200 });
+
+let lastFetchTime = 0; // Variable to track the last fetch time
 
 const fetchCommitDetails = async (commitUrl) => {
   try {
@@ -12,17 +14,19 @@ const fetchCommitDetails = async (commitUrl) => {
       totalLinesDeleted: response.data.stats.deletions,
     };
   } catch (error) {
-    console.error("Error in fetchCommitDetails:", error);
+    console.error("Error fetching commit details:", error.message);
     return { totalLinesAdded: 0, totalLinesDeleted: 0 };
   }
 };
 
 const fetchCommits = async () => {
   try {
-    // Check if data is in cache
+    const currentTime = Date.now();
+
+    // Check if data is in cache and if last fetch was less than 20 minutes ago
     const cachedData = cache.get("commits");
-    if (cachedData) {
-      return cachedData; // Return cached data if available
+    if (cachedData && currentTime - lastFetchTime < 1200 * 1000) {
+      return cachedData; // Return cached data if available and updated within 20 minutes
     }
 
     // Fetch data from GitHub API
@@ -42,12 +46,13 @@ const fetchCommits = async () => {
       })
     );
 
-    // Save to cache and return
+    // Update last fetch time and save to cache
+    lastFetchTime = currentTime;
     cache.set("commits", detailedCommits);
     return detailedCommits;
   } catch (error) {
-    console.error("Error in fetchCommits:", error);
-    return [];
+    console.error("Error fetching commits:", error.message);
+    return cache.get("commits") || [];
   }
 };
 
