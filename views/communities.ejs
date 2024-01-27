@@ -204,7 +204,7 @@
       .catch(error => console.error('Error fetching posts:', error));
   }
   function fetchLinkPreview(link, container) {
-  return fetch(`/api/link-preview/${encodeURIComponent(link)}`)
+  return fetch(`/api/link-preview/${encodeURIComponent(encodeURIComponent(link))}`)
     .then(response => response.json())
     .then(linkPreview => {
       if (linkPreview) {

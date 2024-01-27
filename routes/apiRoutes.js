@@ -90,7 +90,7 @@ router.get("/comments/:postId", async (req, res) => {
 
 router.get("/link-preview/:link", async (req, res) => {
   try {
-    const link = decodeURIComponent(req.params.link);
+    const link = decodeURIComponent(decodeURIComponent(req.params.link));
     console.log("Link received for preview:", link);
     const linkPreview = await utilFunctions.getLinkPreview(link);
     console.log("Link preview data:", linkPreview);
