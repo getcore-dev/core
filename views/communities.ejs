@@ -18,8 +18,18 @@
     <div class="container">
       
     <div id="com-btn-container" class="column">
-      <button class="create-post-btn" onclick="window.location.href='/post/create';">
-        <span class="material-symbols-outlined"> add </span>
+      <h4>Communities</h4>
+      <a href="#" onclick="filterPosts('All')">All</a>
+      <a href="#" onclick="filterPosts('ML-AI')">ML-AI</a>
+      <a href="#" onclick="filterPosts('Web-Dev')">Web-Dev</a>
+      <a href="#" onclick="filterPosts('Cyber-Security')">Cyber-Security</a>
+      <a href="#" onclick="filterPosts('Data-Science')">Data-Science</a>
+      <a href="#" onclick="filterPosts('Software-Engineering')">Software-Engineering</a>
+      <a href="#" onclick="filterPosts('Product-Management')">Product-Management</a>
+
+      <h4>Recent Posts</h4>
+
+      <h4>Recent Jobs</h4>
     </div>
 
     <div id="posts-container" class="column">
@@ -297,34 +307,6 @@ function fetchComments(postId, container) {
   });
 }
 
-  const communities = [
-        { name: "All", icon: "schedule" },
-        { name: "General", icon: "groups" },
-        { name: "ML/AI", icon: "robot" },
-        { name: "IT", icon: "developer_board" },
-        { name: "Robotics", icon: "web" },
-        { name: "Game-Dev", icon: "sports_esports" },
-      ];
-
-      function createButtons() {
-    const container = document.getElementById("com-btn-container");
-
-    communities.forEach((community) => {
-        const button = document.createElement("button");
-
-        // Add icon
-        const icon = document.createElement("span");
-        icon.className = "material-symbols-outlined";
-        icon.appendChild(document.createTextNode(community.icon));
-        button.appendChild(icon);
-        
-        button.className = "com-btn";
-        button.setAttribute("data-community", community.name);
-        button.appendChild(document.createTextNode(` ${community.name.replace(/-/g, " ")}`));
-        button.addEventListener('click', function() { filterPosts(community.name); });
-        container.appendChild(button);
-    });
-}
 
 function filterPosts(communityName) {
     // Get all post elements

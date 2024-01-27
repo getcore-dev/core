@@ -14,6 +14,8 @@ h1, h2, h3, p {
   padding: 0; /* Remove default padding */
 }
 
+
+
 .user-btns {
   position: absolute;
   right: 100px;
@@ -28,6 +30,7 @@ h1, h2, h3, p {
   margin-top: 40px;
   flex-direction: row-reverse;
   width: 100%;
+  align-items: flex-start;
 }
 
 
@@ -259,7 +262,36 @@ ul.notification-list {
   height: 24px;
   margin-top: 8px;
 }
+#search-bar {
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  height: 27px;
+  width: 200px; /* Adjust the width as needed */
+  margin-bottom: 10px;
+  margin-right: 3px;
+}
 
+#search-bar-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 10px;
+}
+
+#search-button {
+  background-color: #f9f9f9; /* Same as navbar button */
+  color: #000;
+  border: 1px solid #ccc;
+  padding: 5px 9px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  transition: background-color 0.15s;
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -407,6 +439,27 @@ ul.notification-list {
 
 /* Dark Mode Styles for Navbar */
 @media (prefers-color-scheme: dark) {
+  #search-bar {
+    background-color: #222; /* Darker background color for inputs */
+    color: #f9f9f9;
+    font-size: 14px;
+    border: 1px solid #555; 
+    border-radius: 5px;
+    width: 180px; 
+    margin-bottom: 10px;
+  }
+
+  #search-button {
+    background-color: #333; /* Dark background color for buttons */
+    color: #f9f9f9; /* Light text color for contrast */
+    border: 1px solid #555; /* Dark border color */
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    transition: background-color 0.15s;
+  }
   /* Navbar background and text colors */
   .navbar {
       background-color: #222; /* Dark background for navbar */

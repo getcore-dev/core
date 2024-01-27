@@ -90,15 +90,9 @@ div.vote-interactions {
 }
 
 .com-btn {
-  width: 100%;
   background: rgba(0,0,0,0);
 }
 
-.com-btn:hover {
-  transition: all 0.3s ease;
-  color: #0e6655;
-  text-decoration: none;
-}
 
 .job-flair {
   display: inline-block;
@@ -124,7 +118,7 @@ div.vote-interactions {
   text-decoration: none;
   flex: 0 0 auto;
   cursor: pointer; /* Pointer cursor on hover */
-  margin: 10px 10px;
+  margin: 10px 10px 0px 10px;
   cursor: pointer; /* Pointer cursor */
 }
 
@@ -263,98 +257,24 @@ div .mini-link-desc {
 }
 
 #com-btn-container {
-  padding-bottom: 10px;
+  padding: 10px 17px;
   display: flex; 
   flex-direction: column;
-  gap: 15px;
   overflow-x: none;
   scrollbar-width: none; 
 }
+
+#com-btn-container h4 {
+  margin: 2px 0px;
+}
+
 
 #com-btn-container::-webkit-scrollbar, #job-btn-container::-webkit-scrollbar {
   display: none; /* Hide scrollbar in WebKit browsers */
 }
 
+
 /* Dark Mode Styles */
-@media (prefers-color-scheme: dark) {
-  /* General background and text colors */
-  body {
-      background-color: #121212; /* Dark background */
-      color: #fff; /* Light text */
-  }
-
-  div .mini-link {
-    background-color: #333;
-    border: 1px solid #444;
-  }
-
-  .comments {
-      color: #ccc; /* Lighter text color for comments */
-  }
-
-  .username a {
-    color: #0e6655;
-  }
-
-  .timestamp {
-    color: #ccc;
-  }
-  /* Post styling adjustments */
-  .post {
-      border-bottom: 1px solid #444; /* Dark border for posts */
-  }
-
-  .post:hover {
-      background-color: #222; /* Dark background on hover */
-  }
-  
-  .post:last-child {
-      border-bottom: none;
-  }
-  .post-info {
-      color: #ccc; /* Lighter text color for post information */
-  }
-
-  /* Adjustments for buttons and interactive elements */
-  .com-btn, .create-post-btn {
-      background: linear-gradient(to right, #0e6655, #117a65); /* Darker button background */
-      color: #fff; /* Light text on buttons */
-  }
-
-  /* Adjustments for scores and icons */
-  .score, #score-icon {
-      color: #fff; /* Light color for scores */
-  }
-  #date-icon, #user-icon, #comments-icon {
-      color: #ccc; /* Lighter icon colors */
-  }
-
-  /* Adjustments for specific post elements */
-  .boosted {
-      color: #bada55; /* Adjusted color for boosted posts */
-  }
-  .votes:hover {
-      cursor: pointer;
-  }
-
-
-  /* Adjustments for community ID tags */
-  .communities_id {
-      background-color: #006400; /* Darker background */
-      color: #fff; /* Light text */
-  }
-  /* Other elements adjustments */
-  .title {
-      color: #fff; /* Light color for titles */
-  }
-  .user-info, .description, .reactions {
-      color: #ccc; /* Lighter text color for additional information */
-  }
-
-
-  /* Responsive design adjustments for smaller screens */
-
-}
 
 .container {
   background-color: #fff;
@@ -379,9 +299,8 @@ div .mini-link-desc {
   scrollbar-width: none;  /* Firefox */
 }
 
-
-
 #com-btn-container { 
+  width: 16%;
   flex: none; /* This will prevent the container from growing */
   display: flex;
   flex-direction: column; /* Stacks the buttons vertically */
@@ -493,7 +412,7 @@ div .mini-link-desc {
 }
 
 /* Styles for Container and Button */
-#com-btn-container, #job-btn-container {
+#job-btn-container {
   padding-bottom: 10px;
   display: flex;
   overflow-x: auto;
@@ -507,21 +426,8 @@ div .mini-link-desc {
   --btn-text-dark: #f8f9fa; /* Dark mode text */
 }
 
-.com-btn {
-  font-size: 18px;
-  width: 100%;
-  border: 0;
-  height: 40px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  flex: 0 0 auto;
-  margin-right: 10px;
-  margin-top: 10px;
-}
 
 .com-btn:hover {
-  transition: all 0.3s ease;
-  background-color: rgba(0,0,0,0.1);
   text-decoration: none;
 }
 
@@ -560,16 +466,17 @@ div .mini-link-desc {
     height: calc(100vh - 110px);
   }
 
-  #com-btn-container, #job-btn-container {
-      padding-top: 10px;
-  }
 }
 
 /* Dark Mode Styles */
 @media (prefers-color-scheme: dark) {
 
+  #com-btn-container {
+    background-color: rgb(30,30,30);
+  }
+
   .com-btn, .job-btn {
-    background: var(--btn-bg-dark);
+    background: rgba(0,0,0,0);
     color: var(--btn-text-dark);
 }
   body {
@@ -577,10 +484,6 @@ div .mini-link-desc {
       color: #fff;
   }
 
-  .com-btn {
-    border: 1px solid #444;
-
-  }
   .container {
     background-color: rgb(17,17,17);
   }
@@ -666,4 +569,93 @@ div .mini-link-desc {
       border-top: 1px solid #333;
   }
 }
+}
+
+@media (prefers-color-scheme: dark) {
+  /* General background and text colors */
+  body {
+      background-color: #121212; /* Dark background */
+      color: #fff; /* Light text */
+  }
+
+  div .mini-link {
+    background-color: #333;
+    border: 1px solid #444;
+  }
+
+  #com-btn-container a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 300;
+    margin: 2px 0px;
+  }
+
+  #com-btn-container {
+    border-right: 1px solid #444;
+  }
+
+  .comments {
+      color: #ccc; /* Lighter text color for comments */
+  }
+
+  .username a {
+    color: #0e6655;
+  }
+
+  .timestamp {
+    color: #ccc;
+  }
+  /* Post styling adjustments */
+  .post {
+      border-bottom: 1px solid #444; /* Dark border for posts */
+  }
+
+  .post:hover, .job-content:hover, .com-btn:hover {
+      background-color: #222; /* Dark background on hover */
+  }
+  
+  .post:last-child {
+      border-bottom: none;
+  }
+  .post-info {
+      color: #ccc; /* Lighter text color for post information */
+  }
+
+
+  /* Adjustments for buttons and interactive elements */
+
+  /* Adjustments for scores and icons */
+  .score, #score-icon {
+      color: #fff; /* Light color for scores */
+  }
+  #date-icon, #user-icon, #comments-icon {
+      color: #ccc; /* Lighter icon colors */
+  }
+
+  /* Adjustments for specific post elements */
+  .boosted {
+      color: #bada55; /* Adjusted color for boosted posts */
+  }
+  .votes:hover {
+      cursor: pointer;
+  }
+
+
+  /* Adjustments for community ID tags */
+  .communities_id {
+      background-color: #006400; /* Darker background */
+      color: #fff; /* Light text */
+  }
+  /* Other elements adjustments */
+  .title {
+      color: #fff; /* Light color for titles */
+  }
+  .user-info, .description, .reactions {
+      color: #ccc; /* Lighter text color for additional information */
+  }
+
+
+  /* Responsive design adjustments for smaller screens */
+
 }
