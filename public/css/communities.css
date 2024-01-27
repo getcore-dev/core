@@ -2,7 +2,7 @@
 
 .post {
   display: flex; 
-  background: #f4f4f4;
+  background: #fff;
   border: 1px solid #ccc;
   flex-direction: row;
   justify-content: space-between; 
@@ -45,15 +45,16 @@
 }
 
 .votes {
-  padding-left: 10px;
   display: flex;
-  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
 }
 
 div.vote-interactions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  gap: 4px;
 }
 
 .thumbnail {
@@ -67,16 +68,23 @@ div.vote-interactions {
 
 .thumbnail-image {
   border-radius: 5px; 
-  max-width: 70px; 
-  max-height: 70px;
+  max-width: 53px; 
+  max-height: 53px;
   aspect-ratio: 1/1;
   object-fit: cover;
+}
+
+.current-job {
+  font-size: 12px;
 }
 
 .post-header {
   display: flex;
   flex-direction: row;
   gap: 5px;
+  align-items: flex-start;
+  border-radius: 6px;
+  width: 30%;
   align-items: center;
 }
 
@@ -180,8 +188,16 @@ div.vote-interactions {
 
 .comments {
   font-size: 12px;
-  color: #666; /* Darker text color */
-  padding-bottom: 3px;
+  color: #333; /* Darker text color */
+  float: right;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 5px;
+}
+
+.material-symbols-outlined.boost-button, .material-symbols-outlined.detract-button {
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
 .material-symbols-outlined.boost-button:hover {
@@ -193,7 +209,8 @@ div.vote-interactions {
 }
 
 .username a {
-  color: #0e6655;
+  font-size:12px;
+  color: #333;
   text-decoration: none;
 }
 
@@ -216,12 +233,11 @@ div.vote-interactions {
 div .mini-link {
   padding: 6px;
   margin: 5px;
-  border: 1px solid #ccc;
   border-radius: 5px;
   display: flex;
   flex-direction: row ;
   max-width: 100%;
-  background-color: #f1f1f1;
+  background-color: #e1e1e1;
   font-size: 13px;
 }
 
@@ -426,16 +442,6 @@ div .mini-link-desc {
   --btn-text-dark: #f8f9fa; /* Dark mode text */
 }
 
-
-.com-btn:hover {
-  text-decoration: none;
-}
-
-
-
-/* Styles for Buttons */
-
-/* Responsive Styles */
 @media (max-width: 768px) {
   .post {
     background: #fff;
@@ -538,10 +544,6 @@ div .mini-link-desc {
     margin-left: 0px;
   }
 
-  .com-btn .material-symbols-outlined {
-    display: none;
-  }
-
   .post-content {
     margin-left: 10px;
   }
@@ -571,6 +573,29 @@ div .mini-link-desc {
 }
 }
 
+.avatar {
+  display: flex;
+  align-items: center;
+}
+
+.avatar img {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+}
+
+#com-btn-container a {
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 200;
+  color: black;
+  margin: 4px 0px;
+}
+
+#com-btn-container a:hover {
+  text-decoration: underline;
+}
+
 @media (prefers-color-scheme: dark) {
   /* General background and text colors */
   body {
@@ -580,15 +605,12 @@ div .mini-link-desc {
 
   div .mini-link {
     background-color: #333;
-    border: 1px solid #444;
   }
 
   #com-btn-container a {
     text-decoration: none;
     color: #fff;
-    font-size: 14px;
     font-weight: 300;
-    margin: 2px 0px;
   }
 
   #com-btn-container {

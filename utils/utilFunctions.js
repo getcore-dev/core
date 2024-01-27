@@ -9,15 +9,19 @@ const utilFunctions = {
     try {
       // Query to get posts with boosts and detracts count
       const result = await sql.query`
-        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, 
-               u.username, 
+        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, u.currentJob,
+               u.username, u.avatar,
+               pt.tag_id, 
+               t.name as tagName,
                SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
                SUM(CASE WHEN upa.action_type = 'D' THEN 1 ELSE 0 END) as detractCount
         FROM posts p
         INNER JOIN users u ON p.user_id = u.id
+        LEFT JOIN post_tags pt ON p.id = pt.post_id
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
+        LEFT JOIN tags t ON pt.tag_id = t.id
         WHERE p.deleted = 0
-        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id
+        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob, pt.tag_id, t.name
         ORDER BY p.created_at DESC
       `;
 

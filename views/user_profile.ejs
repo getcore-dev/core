@@ -71,11 +71,23 @@
 
         <div class="current-job">
           <h2>Current Job</h2>
-          <% if (user && otheruser.currentjob && otheruser.currentjob.company) {
-          %>
+          <% if (otheruser.currentJob && otheruser.currentCompany) {%>
           <p id="currentjob.company-display">
-            <strong>Company:</strong> <%= otheruser.currentjob.company %>
+            <strong>Company:</strong> <%= otheruser.currentCompany %>
           </p>
+          <p id="currentjob.position-display">
+            <strong>Position:</strong> <%= otheruser.currentJob %>
+          </p>
+          <p id="currentjob.position-display">
+            <strong>Start Date: </strong> <%= otheruser.currentJob_startdate %>
+          </p>
+          <p id="currentjob.position-display">
+            <strong>Skills: </strong> <%= otheruser.currentJob_skills %>
+          </p>
+          <p id="currentjob.position-display">
+            <strong>Employment Type: </strong> <%= otheruser.currentJob_employment_type %>
+
+
           <button onclick="editField('currentjob.company', this)">Edit</button>
           <% } else { %>
           <p id="currentjob.company-display"></p>

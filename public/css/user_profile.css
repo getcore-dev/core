@@ -68,6 +68,12 @@ body {
   color: #666;
 }
 
+.github-url-display a {
+  font-size: 12px;
+  color: #666;
+
+}
+
 
 /* Light mode styles (default) */
 :root {

@@ -21,11 +21,9 @@
       <h4>Communities</h4>
       <a href="#" onclick="filterPosts('All')">All</a>
       <a href="#" onclick="filterPosts('ML-AI')">ML-AI</a>
-      <a href="#" onclick="filterPosts('Web-Dev')">Web-Dev</a>
-      <a href="#" onclick="filterPosts('Cyber-Security')">Cyber-Security</a>
-      <a href="#" onclick="filterPosts('Data-Science')">Data-Science</a>
-      <a href="#" onclick="filterPosts('Software-Engineering')">Software-Engineering</a>
-      <a href="#" onclick="filterPosts('Product-Management')">Product-Management</a>
+      <a href="#" onclick="filterPosts('Web-Dev')">Web Development</a>
+      <a href="#" onclick="filterPosts('cs')">Computer Science</a>
+      <a href="#" onclick="filterPosts('Programming')">Software</a>
 
       <h4>Recent Posts</h4>
 
@@ -123,37 +121,6 @@
           const postDiv = document.createElement('div');
           postDiv.className = 'post';
 
-          // Votes div
-          const votesDiv = document.createElement('div');
-          votesDiv.className = 'votes';
-
-          // Vote interactions div
-          const voteInteractionsDiv = document.createElement('div');
-          voteInteractionsDiv.className = 'vote-interactions';
-
-          // Boost button
-          const boostButton = document.createElement('span');
-          boostButton.className = 'material-symbols-outlined boost-button';
-          boostButton.innerText = 'arrow_upward_alt';
-          boostButton.onclick = () => interactWithPost(post.id, '<%= user %>', 'boost'); 
-          voteInteractionsDiv.appendChild(boostButton);
-
-          // Post score div
-          const postScoreDiv = document.createElement('div');
-          postScoreDiv.id = 'posts-score-' + post.id;
-          postScoreDiv.innerText = post.boostCount - post.detractCount;
-          voteInteractionsDiv.appendChild(postScoreDiv);
-
-          // Detract button
-          const detractButton = document.createElement('span');
-          detractButton.className = 'material-symbols-outlined detract-button';
-          detractButton.innerText = 'arrow_downward_alt';
-          detractButton.onclick = () => interactWithPost(post.id, '<%= user %>', 'detract');
-          voteInteractionsDiv.appendChild(detractButton);
-
-          votesDiv.appendChild(voteInteractionsDiv);
-          postDiv.appendChild(votesDiv);
-
           // Post content div
           const postContentDiv = document.createElement('div');
           postContentDiv.className = 'post-content';
@@ -163,20 +130,27 @@
           const postHeaderDiv = document.createElement('div');
           postHeaderDiv.className = 'post-header';
 
-          // Username div
+          // avatar div
+          const avatarDiv = document.createElement('div');
+          avatarDiv.className = 'avatar';
+          const avatarImg = document.createElement('img');
+          avatarImg.src = post.avatar;
+          avatarDiv.appendChild(avatarImg);
+          postHeaderDiv.appendChild(avatarDiv);
+
+          // Username and current job div
           const usernameDiv = document.createElement('div');
           usernameDiv.className = 'username';
           const usernameLink = document.createElement('a');
           usernameLink.href = '/profile/' + post.username;
           usernameLink.innerHTML = '<strong>' + post.username + '</strong>';
           usernameDiv.appendChild(usernameLink);
-          postHeaderDiv.appendChild(usernameDiv);
+          const currentJobDiv = document.createElement('div');
+          currentJobDiv.className = 'current-job';
+          currentJobDiv.innerText = post.currentJob ? post.currentJob : '';
+          usernameDiv.appendChild(currentJobDiv);
 
-          // Timestamp div
-          const timestampDiv = document.createElement('div');
-          timestampDiv.className = 'timestamp';
-          timestampDiv.innerText = formatDate(new Date(post.created_at)); // Implement formatDate function based on your logic
-          postHeaderDiv.appendChild(timestampDiv);
+          postHeaderDiv.appendChild(usernameDiv);
 
           postContentDiv.appendChild(postHeaderDiv);
 
@@ -192,17 +166,54 @@
           linkDiv.innerHTML = '<div class="placeholder-link-preview">Loading link preview...</div>'; // Placeholder
           postContentDiv.appendChild(linkDiv);
           fetchPromises.push(fetchLinkPreview(post.link, linkDiv));
-        }
+          }
           const descriptionDiv = document.createElement('div');
           descriptionDiv.className = 'description';
           descriptionDiv.innerText = post.content; // Assuming 'content' holds the description
           postContentDiv.appendChild(descriptionDiv);
 
+              // Votes div
+          const votesDiv = document.createElement("div");
+          votesDiv.className = "votes";
+
+              // Vote interactions div
+              const voteInteractionsDiv = document.createElement("div");
+              voteInteractionsDiv.className = "vote-interactions";
+
+              // Boost button
+              const boostButton = document.createElement("span");
+              boostButton.className = "material-symbols-outlined boost-button";
+              boostButton.innerText = "arrow_upward_alt";
+              boostButton.onclick = () =>
+                interactWithPost(post.id, "<%= user %>", "boost");
+              voteInteractionsDiv.appendChild(boostButton);
+
+              // Post score div
+              const postScoreDiv = document.createElement("div");
+              postScoreDiv.id = "posts-score-" + post.id;
+              postScoreDiv.innerText = post.boostCount - post.detractCount;
+              voteInteractionsDiv.appendChild(postScoreDiv);
+
+              // Detract button
+              const detractButton = document.createElement("span");
+              detractButton.className =
+                "material-symbols-outlined detract-button";
+              detractButton.innerText = "arrow_downward_alt";
+              detractButton.onclick = () =>
+                interactWithPost(post.id, "<%= user %>", "detract");
+              voteInteractionsDiv.appendChild(detractButton);
+
+              votesDiv.appendChild(voteInteractionsDiv);
+              postContentDiv.appendChild(votesDiv);
+
+        
+
+
 
         const commentsDiv = document.createElement('div');
         commentsDiv.className = 'comments';
         commentsDiv.innerHTML = 'Loading comments...'; // Placeholder
-        postContentDiv.appendChild(commentsDiv);
+        votesDiv.appendChild(commentsDiv);
         fetchPromises.push(fetchComments(post.id, commentsDiv));
 
           postDiv.appendChild(postContentDiv);
