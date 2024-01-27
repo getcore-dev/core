@@ -27,6 +27,7 @@
     "express-mysql-session": "^3.0.0",
     "express-rate-limit": "^7.1.4",
     "express-session": "^1.17.3",
+    "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
     "lusca": "^1.7.0",
     "method-override": "^3.0.0",
