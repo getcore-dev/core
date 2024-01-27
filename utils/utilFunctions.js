@@ -71,6 +71,18 @@ const utilFunctions = {
     }
   },
 
+  getCommunities: async (communityId) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM communities WHERE id = ${communityId}
+      `;
+      return result.recordset[0];
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getRepliesForComment: async (commentId) => {
     try {
       const result = await sql.query`
@@ -95,6 +107,20 @@ const utilFunctions = {
       throw err;
     }
   },
+  getTags: async (postId) => {
+    try {
+      const result = await sql.query`
+        SELECT t.name FROM tags t
+        INNER JOIN post_tags pt ON t.id = pt.tag_id
+        WHERE pt.post_id = ${postId}
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getUserDetails: async (userId) => {
     try {
       const userResult =

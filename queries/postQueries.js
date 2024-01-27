@@ -163,6 +163,10 @@ const postQueries = {
       throw new Error("Link must be a string");
     }
 
+    if (!Array.isArray(tags)) {
+      tags = tags.split(",").map((tag) => tag.trim());
+    }
+
     console.log(
       "userId:",
       userId,
@@ -175,12 +179,17 @@ const postQueries = {
       "community_id:",
       community_id,
       "link:",
-      link
+      link,
+      "tags:",
+      tags
     );
 
     try {
       // Insert the post into the posts table
       const uniqueId = generateUniqueId();
+
+      // Insert into the posts table
+      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${community_id})`;
 
       if (tags && tags.length > 0) {
         for (const tag of tags) {
@@ -201,7 +210,9 @@ const postQueries = {
         }
       }
 
-      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${community_id})`;
+      // Record user's upvote and set boosts and detracts
+      await sql.query`INSERT INTO userpostactions (post_id, user_id, upvoted, boosts, detracts) VALUES (${uniqueId}, ${userId}, 1, 1, 0)`;
+
       return uniqueId;
     } catch (err) {
       console.error("Database insert error:", err);

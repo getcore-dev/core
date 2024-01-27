@@ -109,6 +109,15 @@
     </div>
 
     <script>
+
+function showLoader() {
+    document.getElementById('loadingAnimation').style.display = 'block';
+}
+
+function hideLoader() {
+    document.getElementById('loadingAnimation').style.display = 'none';
+}
+
       function fetchAndDisplayPosts() {
     fetch('/api/posts') // Adjust this to your server's endpoint
       .then(response => response.json())
@@ -138,16 +147,26 @@
           avatarDiv.appendChild(avatarImg);
           postHeaderDiv.appendChild(avatarDiv);
 
-          // Username and current job div
+          // Username, community and current job div
           const usernameDiv = document.createElement('div');
           usernameDiv.className = 'username';
           const usernameLink = document.createElement('a');
           usernameLink.href = '/profile/' + post.username;
-          usernameLink.innerHTML = '<strong>' + post.username + '</strong>';
+          usernameLink.innerHTML = '<strong>' + post.username + '</strong> ';
           usernameDiv.appendChild(usernameLink);
+
+          const communityLink = document.createElement('a');
+          communityLink.href = '/communities/' + post.communities_id;
+          communityLink.className = 'community';
+          communityLink.innerText = "";
+          usernameDiv.appendChild(communityLink);
+          fetchPromises.push(fetchCommunity(post.communities_id, communityLink));
+
+      
+
           const currentJobDiv = document.createElement('div');
           currentJobDiv.className = 'current-job';
-          currentJobDiv.innerText = post.currentJob ? post.currentJob : '';
+          currentJobDiv.innerText = post.currentJob ? post.currentJob : 'No job info';
           usernameDiv.appendChild(currentJobDiv);
 
           postHeaderDiv.appendChild(usernameDiv);
@@ -207,7 +226,12 @@
               postContentDiv.appendChild(votesDiv);
 
         
-
+              const tagsDiv = document.createElement('div');
+        tagsDiv.className = 'tags';
+        tagsDiv.innerHTML = '...'; // Placeholder
+        tagsDiv.style = 'font-size: 12px;';
+        votesDiv.appendChild(tagsDiv);
+        fetchPromises.push(fetchTags(post.id, tagsDiv));
 
 
         const commentsDiv = document.createElement('div');
@@ -215,6 +239,7 @@
         commentsDiv.innerHTML = 'Loading comments...'; // Placeholder
         votesDiv.appendChild(commentsDiv);
         fetchPromises.push(fetchComments(post.id, commentsDiv));
+        
 
           postDiv.appendChild(postContentDiv);
           postsContainer.appendChild(postDiv);
@@ -224,6 +249,23 @@
       })
       .catch(error => console.error('Error fetching posts:', error));
   }
+
+  function fetchCommunity(community_id, container) {
+  return fetch(`/api/communities/${community_id}`)
+    .then(response => response.json())
+    .then(community => {
+      container.innerHTML = " in " + community.name;
+    });
+}
+
+  function fetchTags(post_id, container) {
+  return fetch(`/api/tags/${post_id}`)
+    .then(response => response.json())
+    .then(tags => {
+      container.innerHTML = tags.map(tag => `<span id="post-flair">${tag.name}</span>`).join(' ');
+    });
+  }
+
   function fetchLinkPreview(link, container) {
   return fetch(`/api/link-preview/${encodeURIComponent(encodeURIComponent(link))}`)
     .then(response => response.json())

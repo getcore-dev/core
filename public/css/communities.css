@@ -47,8 +47,9 @@
 .votes {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
+
 
 div.vote-interactions {
   display: flex;
@@ -108,6 +109,32 @@ div.vote-interactions {
   margin: 2px;
   background-color: rgba(14, 102, 85, 0.3); 
   border: 1px solid rgba(14, 102, 85, 0.3); 
+  color: white;
+  border-radius: 6px;
+  font-size: 12px;
+  position: relative;
+}
+.loader {
+  border: 5px solid #f3f3f3; /* Light grey */
+  border-top: 5px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.5); opacity: 0.5; }
+  100% { transform: scale(1); }
+}
+
+#post-flair {
+  display: inline-block;
+  padding: 2px 3px;
+  margin: 2px;
+  background-color: rgba(45, 112, 68, 0.507); 
+  border: 1px solid rgba(45, 112, 68, 0.507); 
   color: white;
   border-radius: 6px;
   font-size: 12px;

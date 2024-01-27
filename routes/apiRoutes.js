@@ -88,6 +88,26 @@ router.get("/comments/:postId", async (req, res) => {
   }
 });
 
+router.get("/tags/:postId", async (req, res) => {
+  try {
+    const tags = await utilFunctions.getTags(req.params.postId);
+    res.json(tags);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+router.get("/communities/:communitiesId", async (req, res) => {
+  try {
+    const communities = await utilFunctions.getCommunities(
+      req.params.communitiesId
+    );
+    res.json(communities);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
 router.get("/link-preview/:link", async (req, res) => {
   try {
     const link = decodeURIComponent(decodeURIComponent(req.params.link));
