@@ -64,7 +64,7 @@ router.get("/posts", async (req, res) => {
     console.log("Fetching posts...");
     const posts = await utilFunctions.getPosts();
     res.json(posts);
-    console.log("Posts fetched successfully, example post:", posts[0].title);
+    console.log(posts);
   } catch (err) {
     res.status(500).send(err.message);
   }
