@@ -133,7 +133,6 @@ function hideLoader() {
           // Post content div
           const postContentDiv = document.createElement('div');
           postContentDiv.className = 'post-content';
-          postContentDiv.onclick = () => window.location.href = '/posts/' + post.id;
 
           // Post header div
           const postHeaderDiv = document.createElement('div');
@@ -177,6 +176,7 @@ function hideLoader() {
           const titleDiv = document.createElement('div');
           titleDiv.className = 'title';
           titleDiv.innerText = post.title;
+          titleDiv.onclick = () => window.location.href = '/posts/' + post.id;
           postContentDiv.appendChild(titleDiv);
 
           if (post.link) {
@@ -191,44 +191,51 @@ function hideLoader() {
           descriptionDiv.innerText = post.content; // Assuming 'content' holds the description
           postContentDiv.appendChild(descriptionDiv);
 
-              // Votes div
-          const votesDiv = document.createElement("div");
-          votesDiv.className = "votes";
+// Votes div
+const votesDiv = document.createElement("div");
+votesDiv.className = "votes";
 
-              // Vote interactions div
-              const voteInteractionsDiv = document.createElement("div");
-              voteInteractionsDiv.className = "vote-interactions";
+// Reaction interactions div
+const reactionInteractionsDiv = document.createElement("div");
+reactionInteractionsDiv.className = "reaction-interactions";
 
-              // Boost button
-              const boostButton = document.createElement("span");
-              boostButton.className = "material-symbols-outlined boost-button";
-              boostButton.innerText = "arrow_upward_alt";
-              boostButton.onclick = () =>
-                interactWithPost(post.id, "<%= user %>", "boost");
-              voteInteractionsDiv.appendChild(boostButton);
+// Reaction buttons
+const reactionTypes = [
+  { type: "LOVE", icon: "favorite" },
+  { type: "LIKE", icon: "thumb_up_alt" },
+  { type: "CURIOUS", icon: "help_outline" },
+  { type: "INTERESTING", icon: "lightbulb" },
+  { type: "CELEBRATE", icon: "celebration" }
+];
 
-              // Post score div
-              const postScoreDiv = document.createElement("div");
-              postScoreDiv.id = "posts-score-" + post.id;
-              postScoreDiv.innerText = post.boostCount - post.detractCount;
-              voteInteractionsDiv.appendChild(postScoreDiv);
+reactionTypes.forEach(reaction => {
+      const button = document.createElement("button");
+      button.className = `reaction-button ${reaction.type.toLowerCase()}-button`;
+      button.onclick = () => interactWithPost(post.id, "<%= user %>", reaction.type);
 
-              // Detract button
-              const detractButton = document.createElement("span");
-              detractButton.className =
-                "material-symbols-outlined detract-button";
-              detractButton.innerText = "arrow_downward_alt";
-              detractButton.onclick = () =>
-                interactWithPost(post.id, "<%= user %>", "detract");
-              voteInteractionsDiv.appendChild(detractButton);
+      const icon = document.createElement("span");
+      icon.className = "material-symbols-outlined";
+      icon.innerText = reaction.icon;
 
-              votesDiv.appendChild(voteInteractionsDiv);
-              postContentDiv.appendChild(votesDiv);
+      const countText = document.createElement("span");
+      countText.className = "reaction-count";
+      // Get the count for each reaction type dynamically from the post object
+      countText.innerText = ` ${post[reaction.type.toLowerCase() + 'Count'] || 0}`;
+
+      button.appendChild(icon);
+      button.appendChild(countText);
+      reactionInteractionsDiv.appendChild(button);
+    });
+
+
+votesDiv.appendChild(reactionInteractionsDiv);
+postContentDiv.appendChild(votesDiv);
+
 
         
               const tagsDiv = document.createElement('div');
         tagsDiv.className = 'tags';
-        tagsDiv.innerHTML = '...'; // Placeholder
+        tagsDiv.innerHTML = 'Loading tags...'; // Placeholder
         tagsDiv.style = 'font-size: 12px;';
         votesDiv.appendChild(tagsDiv);
         fetchPromises.push(fetchTags(post.id, tagsDiv));
@@ -325,40 +332,42 @@ function fetchComments(postId, container) {
   document.addEventListener("DOMContentLoaded", fetchAndDisplayPosts);
 
   function interactWithPost(postId, user, action) {
-    if (!user) {
-      window.location.href = '/login';
-      return;
-    }
+  if (!user) {
+    window.location.href = '/login';
+    return;
+  }
 
-  fetch(`/posts/${postId}/boost`, {
+  fetch(`/posts/${postId}/react`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ user: user, action: action })
+    body: JSON.stringify({ user: user, action: action.toLowerCase() }) // Ensure action is in lowercase
   })
   .then(response => response.json())
   .then(data => {
-    const scoreElement = document.getElementById(`posts-score-${postId}`);
-    const boostButton = document.querySelector(`[onclick="interactWithPost('${postId}', '${user}', 'boost')"]`);
-    const detractButton = document.querySelector(`[onclick="interactWithPost('${postId}', '${user}', 'detract')"]`);
-
-    // Update the score
-    scoreElement.innerText = data.newScore;
-
-    // Update button colors based on the action and server response
-    if (action === "boost") {
-      boostButton.style.color = data.message === "Boost successful" ? "green" : "black";
-      detractButton.style.color = "black"; // Reset detract button
-    } else if (action === "detract") {
-      detractButton.style.color = data.message === "Detract successful" ? "red" : "black";
-      boostButton.style.color = "black"; // Reset boost button
-    }
+    // Update reaction counts
+    Object.keys(data.reactions).forEach(reactionType => {
+      const reactionButton = document.querySelector(`[onclick="interactWithPost('${postId}', '${user}', '${reactionType.toLowerCase()}')"]`);
+      if (reactionButton) {
+        const icon = reactionButton.getElementsByTagName('span')[0];
+        const count = reactionButton.getElementsByTagName('span')[1];
+        count.innerText = ` ${data.reactions[reactionType] || 0}`;
+        
+        // Update button color if needed
+        if (reactionType.toLowerCase() === action.toLowerCase()) {
+          reactionButton.style.color = "blue"; // Change color to indicate selected action
+        } else {
+          reactionButton.style.color = "black"; // Reset color for other buttons
+        }
+      }
+    });
   })
   .catch((error) => {
     console.error('Error:', error);
   });
 }
+
 
 
 function filterPosts(communityName) {

@@ -9,27 +9,37 @@ const utilFunctions = {
     try {
       // Query to get posts with boosts and detracts count
       const result = await sql.query`
-        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, u.currentJob,
-               u.username, u.avatar,
-               SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-               SUM(CASE WHEN upa.action_type = 'D' THEN 1 ELSE 0 END) as detractCount
+        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate,
+        u.currentJob, u.username, u.avatar,
+              SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
+              SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+              SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
+              SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
+              SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount
         FROM posts p
         INNER JOIN users u ON p.user_id = u.id
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
         WHERE p.deleted = 0
-        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob
+        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob,p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate
         ORDER BY p.created_at DESC
       `;
 
       // Optionally, update the posts table if there's a discrepancy
       for (let post of result.recordset) {
         if (
-          post.boostCount !== post.boosts ||
-          post.detractCount !== post.detracts
+          post.likeCount !== post.react_like ||
+          post.loveCount !== post.react_love ||
+          post.interestingCount !== post.react_interesting ||
+          post.curiousCount !== post.react_curious ||
+          post.celebrateCount !== post.react_celebrate
         ) {
           await sql.query`
             UPDATE posts
-            SET boosts = ${post.boostCount}, detracts = ${post.detractCount}
+            SET react_like = ${post.likeCount},
+                react_love = ${post.loveCount},
+                react_interesting = ${post.interestingCount},
+                react_curious = ${post.curiousCount},
+                react_celebrate = ${post.celebrateCount}
             WHERE id = ${post.id}
           `;
         }
@@ -47,8 +57,11 @@ const utilFunctions = {
       const result = await sql.query`
         SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id,
                 u.username, 
-                SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-                SUM(CASE WHEN upa.action_type = 'D' THEN 1 ELSE 0 END) as detractCount
+                SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
+                SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+                SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
+                SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
+                SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount
         FROM posts p
         INNER JOIN users u ON p.user_id = u.id
         LEFT JOIN userPostActions upa ON p.id = upa.post_id

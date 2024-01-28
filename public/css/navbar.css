@@ -3,7 +3,7 @@
 /* Global Style */
 body {
   margin: 0; /* Remove default margin */
-  padding-top: 100px; /* Add padding */
+  padding-top: 80px; /* Add padding */
   font-family: 'Inter', sans-serif;
 }
 
@@ -16,21 +16,18 @@ h1, h2, h3, p {
 
 
 
-.user-btns {
-  position: absolute;
-  right: 100px;
-  top: -30px;
+
+
+.top-bar {
+  display: flex;
+  flex-direction: row;
 }
 
 .user-links {
   list-style: none; /* Remove list bullets */
   margin: 0;
   display: flex; /* Display links inline */
-  position: absolute;
-  margin-top: 40px;
-  flex-direction: row-reverse;
-  width: 100%;
-  align-items: flex-start;
+
 }
 
 
@@ -46,17 +43,16 @@ h1, h2, h3, p {
   font-size: 20px; /* Icon size */
 }
 
-/* Navbar Styles */
+
 .navbar {
-  background-color: #f9f9f9; /* Modern background color */
-  color: #000; /* Navbar text color */
-  display: flex; /* Display navbar items inline */
+  background-color: #f9f9f9; 
+  color: #000; 
+  display: flex; 
   flex-direction: column;
-  align-items: start; /* Align items vertically */
-  padding: 15px; /* Navbar padding */
+  align-items: center; 
   position: fixed;
   width: 100%;
-  height: 70px;
+  height: 80px;
   top: 0;
   z-index: 1;
   border-bottom: 1px solid #ccc;
@@ -67,16 +63,15 @@ h1, h2, h3, p {
   list-style: none; /* Remove list bullets */
   margin: 0;
   display: flex; /* Display links inline */
-  position: absolute;
-  left: 83px;
-  margin-top: 40px;
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
   width: 100%; 
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
-  padding-right: 10px;
+  padding-bottom: 30px;
+  justify-content: center;
+  padding-inline-start: 0px;
 }
 
 .nav-links::-webkit-scrollbar {
@@ -97,8 +92,9 @@ h1, h2, h3, p {
   text-decoration: none; /* Underline on hover */
 }
 
+
 .user-button, .inbox-button, .logout-button {
-  padding: 8px 8px; 
+  padding: 7px; 
   display: flex; 
   justify-content: center; 
   gap: 4px; 
@@ -109,12 +105,17 @@ h1, h2, h3, p {
   margin-left: 12px;
   font-size: 14px; /* Button font size */
   border: 1px solid #ccc;
-  border-radius: 5px; 
+  border-radius: 6px; 
   text-decoration: none; /* Remove underline */
   transition: background-color 0.15s, transform 0.15s; /* Transition effects */
 }
+#search-button {
+  padding: 7px;
+  border-radius: 6px;
+  margin-top: 0px;
+}
 
-.user-button:hover, .inbox-button:hover, .logout-button:hover {
+.user-button:hover, .inbox-button:hover, .logout-button:hover, #search-button:hover {
   background-color: #ddd; /* Background color on hover */
   cursor: pointer; /* Pointer cursor on hover */
 }
@@ -128,7 +129,6 @@ h1, h2, h3, p {
   line-height: 1.5; /* Button text line height */
   color: #000; /* Button text color */
   padding: 5px 7px; /* Button padding */
-  margin-top: 11px; /* Top margin */
   margin-left: 12px;
   font-size: 14px; /* Button font size */
   border: none; /* No border */
@@ -142,16 +142,10 @@ h1, h2, h3, p {
   cursor: pointer; /* Pointer cursor on hover */
 }
 
-/* Logo Style */
-.logo {
-  position: absolute; /* Position relative to the navbar */
-  left: -40 px; /* Adjust as needed to align with navbar's left edge */
-  top: 5px; /* Adjust as needed to align with navbar's top */
-}
 
 .logo img {
-  max-height: 85px; /* Maximum height of the logo */
-  padding: 0 5px; /* Padding around the logo */
+  max-height: 65px; /* Maximum height of the logo */
+  padding: 5px 0px; /* Padding around the logo */
   object-fit: cover;
 }
 
@@ -163,7 +157,7 @@ h1, h2, h3, p {
   background-color: #0e6655; /* Change color as needed */
   width: 100%;
   position: absolute;
-  top: 38px;
+  top: 34px;
   left: 5px;
   z-index: 1;
 }
@@ -237,6 +231,19 @@ ul.notification-list {
   text-decoration: none; /* Remove underline */
 }
 
+.user-btns {
+  display:flex;
+}
+
+.nav-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+
+
 .nav-text:hover {
   text-decoration: underline; /* Underline on hover */
 }
@@ -244,10 +251,17 @@ ul.notification-list {
 .nav-text-container {
   white-space: pre;
   font-weight: bold; /* Bold text */
-  position: absolute; /* Top padding */
-  left: 102px;
-  top: -35px;
-  font-size: 24px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+margin-top: 20px;
+  margin-left: 17px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.logo-img {
+  margin-top: -20px;
 }
 
 /* Mobile Navbar Style */
@@ -263,7 +277,7 @@ ul.notification-list {
   margin-top: 8px;
 }
 #search-bar {
-  padding: 5px;
+  padding: 1px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -280,17 +294,8 @@ ul.notification-list {
   align-items: flex-start;
   padding: 10px;
 }
-
-#search-button {
-  background-color: #f9f9f9; /* Same as navbar button */
-  color: #000;
-  border: 1px solid #ccc;
-  padding: 5px 9px;
-  font-size: 14px;
-  cursor: pointer;
-  border-radius: 5px;
-  margin-bottom: 5px;
-  transition: background-color 0.15s;
+.navbar-btn-text {
+  font-size: 12px;
 }
 
 /* Responsive Design */
@@ -381,6 +386,10 @@ ul.notification-list {
   }
 }
 
+.user-info div {
+  font-size: 12px;
+}
+
 .navbar-user-info {
   text-decoration: none;
   color: #000;
@@ -398,15 +407,10 @@ ul.notification-list {
   margin-right: 5px;
 }
 
-.logo img {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 
 #nb-icon {
-  font-size: 16px;
+  font-size: 14px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -449,17 +453,6 @@ ul.notification-list {
     margin-bottom: 10px;
   }
 
-  #search-button {
-    background-color: #333; /* Dark background color for buttons */
-    color: #f9f9f9; /* Light text color for contrast */
-    border: 1px solid #555; /* Dark border color */
-    padding: 5px 10px;
-    font-size: 14px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    transition: background-color 0.15s;
-  }
   /* Navbar background and text colors */
   .navbar {
       background-color: #222; /* Dark background for navbar */
@@ -498,7 +491,7 @@ ul.notification-list {
     background-color: #444; /* Background color on hover */
     cursor: pointer; /* Pointer cursor on hover */
   }
-  .user-button:hover {
+  .user-button:hover, #search-button:hover {
     background-color: #444; /* Background color on hover */
     border: 1px solid #0e6655;
     cursor: pointer; /* Pointer cursor on hover */
@@ -530,7 +523,7 @@ ul.notification-list {
     border: 1px solid #555;
   }
 
-  .user-links a {
+  .user-links a, #search-button {
     border: 1px solid #555;
     background-color: #222; /* Darker background for buttons */
     color: #fff; /* Light text color for buttons */

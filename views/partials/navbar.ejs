@@ -14,7 +14,77 @@ try {
 <nav class="navbar">
   <div class="nav-bar">
     <div class="logo">
-      <a href="/"> <img src="/img/core.png" alt="CORE" /> </a>
+      <div class="logo-img">
+        <a href="/"> <img src="/img/core.png" alt="CORE" /> </a>
+      </div>
+      <div class="nav-text-and-user-btns">
+<div class="nav-text-container">
+        <% if (user) { %>
+        <a class="navbar-user-info" href="/profile/<%= user.username %>"
+          ><%= user.username %></a
+        >@<a class="nav-text" href="/">CORE</a><% } else { %>
+        <a class="navbar-user-info" href="/login">user</a>@<a
+          class="nav-text"
+          href="/"
+          >CORE</a
+        ><% }%>
+      </div>
+      <div class="nav-btns">
+        <ul class="nav-links">
+          <% if (user) { %>
+            <li>
+              <a
+                href="/post/create"
+                class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>"
+              >
+                <span class="material-symbols-outlined" id="nb-icon"> add </span
+                >Create</a
+              >
+            </li>
+            <% } %>
+          <li>
+            <a
+              href="/"
+              class="navbar-button <%= currentPath === '/' ? 'active' : '' %>"
+            >
+              <span class="material-symbols-outlined" id="nb-icon"> forum </span>
+              Community
+            </a>
+          </li>
+          <li>
+            <a
+              href="/jobs"
+              class="navbar-button <%= currentPath === '/jobs' ? 'active' : '' %>"
+            >
+              <span class="material-symbols-outlined" id="nb-icon"> work </span
+              >Openings</a
+            >
+          </li>
+          <% if (user) { %>
+          <li>
+            <a
+              href="/learning"
+              class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>"
+            >
+              <span class="material-symbols-outlined" id="nb-icon"> school </span
+              >Learning</a
+            >
+          </li>
+          <% } else { %> <% } %>
+          <li>
+            <a
+              href="/updates"
+              class="navbar-button <%= currentPath === '/updates' ? 'active' : '' %>"
+            >
+              <span class="material-symbols-outlined" id="nb-icon"> update </span
+              >Updates</a
+            >
+          </li>
+  
+        </ul>
+      </div>
+      </div>
+      
     </div>
     <div class="top-bar">
       <div class="hamburger-menu">
@@ -43,17 +113,6 @@ try {
         </div>
         <div id="overlay"></div>
       </div>
-      <div class="nav-text-container">
-        <% if (user) { %>
-        <a class="navbar-user-info" href="/profile/<%= user.username %>"
-          ><%= user.username %></a
-        >@<a class="nav-text" href="/">CORE</a><% } else { %>
-        <a class="navbar-user-info" href="/login">user</a>@<a
-          class="nav-text"
-          href="/"
-          >CORE</a
-        ><% }%>
-      </div>
       <div class="user-btns">
         <ul class="user-links">
           <li>
@@ -81,8 +140,11 @@ try {
                 person
               </span>
               <% } %>
-              <% if (user) { %> <span class="navbar-btn-text"><%= user.firstname %> <%= user.lastname %>
-              <%=user.email %></span> <% } else { %> <span class="navbar-btn-text">Login</span><% } %>
+              <% if (user) { %> 
+                <div class="user-info">
+                  <div class="user-info-name"><%= user.username %></div>
+                  <div class="user-info-email"><%= user.email %></div>
+                </div> <% } else { %><% } %>
             </a>
           </li>
           <% if (user) { %>
@@ -91,12 +153,10 @@ try {
                 <span class="material-symbols-outlined" id="nb-icon">
                   mail
                 </span>
-                <span class="navbar-btn-text">Notifications</span>
               </a>
               <div id="notification-popup" class="notification-popup" style="display: none;">
                 <button id="clear-all-btn">Clear All</button>
                 <ul id="notification-list" class="notification-list">
-                  <!-- notifications get loaded in this field right here, dont forget. -->
                 </ul>
               </div>
             </li>
@@ -115,7 +175,6 @@ try {
               <span class="material-symbols-outlined" id="nb-icon">
                 logout
               </span>
-              <span class="navbar-btn-text">Logout</span>
             </a>
           </li>
           <% } else { %>
@@ -124,66 +183,12 @@ try {
               <div id="search-bar-container">
                 <input type="text" id="search-bar" placeholder="Search" />
                 <button id="search-button" aria-label="Search Google">
-                  <span class="material-symbols-outlined"> search </span>
+                  <span class="material-symbols-outlined" id="nb-icon"> search </span>
                 </button>
               </div>
             </li>
         </ul>
       </div>
-    </div>
-    <div class="nav-btns">
-      <ul class="nav-links">
-        <% if (user) { %>
-          <li>
-            <a
-              href="/post/create"
-              class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>"
-            >
-              <span class="material-symbols-outlined" id="nb-icon"> add </span
-              >Create</a
-            >
-          </li>
-          <% } %>
-        <li>
-          <a
-            href="/"
-            class="navbar-button <%= currentPath === '/' ? 'active' : '' %>"
-          >
-            <span class="material-symbols-outlined" id="nb-icon"> forum </span>
-            Community
-          </a>
-        </li>
-        <li>
-          <a
-            href="/jobs"
-            class="navbar-button <%= currentPath === '/jobs' ? 'active' : '' %>"
-          >
-            <span class="material-symbols-outlined" id="nb-icon"> work </span
-            >Openings</a
-          >
-        </li>
-        <% if (user) { %>
-        <li>
-          <a
-            href="/learning"
-            class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>"
-          >
-            <span class="material-symbols-outlined" id="nb-icon"> school </span
-            >Learning</a
-          >
-        </li>
-        <% } else { %> <% } %>
-        <li>
-          <a
-            href="/updates"
-            class="navbar-button <%= currentPath === '/updates' ? 'active' : '' %>"
-          >
-            <span class="material-symbols-outlined" id="nb-icon"> update </span
-            >Updates</a
-          >
-        </li>
-
-      </ul>
     </div>
   </div>
 </nav>

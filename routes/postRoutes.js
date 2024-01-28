@@ -43,41 +43,41 @@ router.post("/posts", checkAuthenticated, async (req, res) => {
 });
 
 // Route for boosting a post
-router.post("/posts/:postId/boost", checkAuthenticated, async (req, res) => {
+router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
   try {
     const postId = req.params.postId;
     const userId = req.user.id;
-    const action = req.body.action; // Action can be "boost" or "detract"
+    const action = req.body.action.toUpperCase(); // Convert action to uppercase for consistency
 
     console.log(`${action}ing post: ${postId} by user: ${userId}`);
 
-    let actionType;
-    if (action === "boost") {
-      actionType = "B";
-    } else if (action === "detract") {
-      actionType = "D";
-    } else {
-      return res.status(400).send("Invalid action");
+    // Valid reactions
+    const validActions = ["LOVE", "LIKE", "CURIOUS", "INTERESTING", "CELEBRATE"];
+
+    if (!validActions.includes(action)) {
+      res.status(400).send("Invalid action");
+      return;
     }
 
     const newScore = await postQueries.interactWithPost(
       postId,
       userId,
-      actionType
+      action
     );
 
     if (newScore === 0) {
       console.log("User has already interacted with this post.");
       res.json({ message: "Action unchanged", newScore });
     } else {
-      console.log(`Post ${action}ed successfully.`);
-      res.json({ message: `Post ${action}ed successfully`, newScore });
+      console.log(`Post ${action.toLowerCase()}ed successfully.`);
+      res.json({ message: `Post ${action.toLowerCase()}ed successfully`, newScore });
     }
   } catch (err) {
     console.error("Database error:", err);
-    res.status(500).send("Error boosting/detracting post");
+    res.status(500).send("Error processing reaction");
   }
 });
+
 
 router.post(
   "/comments/:commentId/boost",
