@@ -110,6 +110,7 @@ h1, h2, h3, p {
   transition: background-color 0.15s, transform 0.15s; /* Transition effects */
 }
 #search-button {
+  border: 1px solid #ccc;
   padding: 7px;
   border-radius: 6px;
   margin-top: 0px;

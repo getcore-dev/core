@@ -37,10 +37,25 @@
 }
 
 .votes {
+  position: relative;
   display: flex;
+  flex-direction: row;
+  align-items: center;
   justify-content: space-between;
-  margin-bottom: 3px;
+  margin: 4px;
+  margin-bottom: 7px;
 }
+
+.reaction-interactions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 4px;
+  margin-bottom: 7px;
+
+}
+
 
 
 div.vote-interactions {
@@ -107,10 +122,10 @@ div.vote-interactions {
   position: relative;
 }
 
-.reaction-button {
+.reaction-button, .main-reaction-button {
   background-color: rgba(0,0,0,0);
-  border: 1px solid #333;
-  color: #333;
+  border: 1px solid #ccc;
+  color: #ccc;
   border-radius: 6px;
   padding: 2px 4px;
   margin: 3px 5px;
@@ -133,6 +148,8 @@ div.vote-interactions {
   height: 40px;
   animation: spin 2s linear infinite;
 }
+
+
 
 @keyframes spin {
   0% { transform: scale(1); }
@@ -167,6 +184,12 @@ div.vote-interactions {
   margin: 10px 10px 0px 10px;
   cursor: pointer; /* Pointer cursor */
 }
+.link-preview {
+  background: #e1e1e1;
+  margin: 10px 3px;
+  border-radius: 6px;
+  padding: 4px 6px;
+}
 
 .create-post-btn:hover {
   transition: all 0.7s ease;
@@ -175,9 +198,41 @@ div.vote-interactions {
   text-decoration: none;
 }
 
+.reaction-menu {
+  position: absolute;
+  transform: translateX(-44%);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  padding: 10px;
+  z-index: 999;
+  pointer-events: none;
+}
+
+.reaction-menu button {
+  pointer-events: auto;
+  margin: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: transform 2s ease;
+}
+
+/* Adjust for the arch shape */
+.reaction-menu button:nth-child(1) { transform: translateY(-20px); }
+.reaction-menu button:nth-child(2) { transform: translateY(-35px); }
+.reaction-menu button:nth-child(3) { transform: translateY(-50px); }
+.reaction-menu button:nth-child(4) { transform: translateY(-35px); }
+.reaction-menu button:nth-child(5) { transform: translateY(-20px); }
+
+
 .title {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 19px;
+  font-weight: 500;
   margin: 0;
   color: #333; 
   margin-top: 2px;
@@ -235,6 +290,7 @@ div.vote-interactions {
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 5px;
+
 }
 
 .material-symbols-outlined.boost-button, .material-symbols-outlined.detract-button {

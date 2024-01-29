@@ -118,12 +118,13 @@ function hideLoader() {
     document.getElementById('loadingAnimation').style.display = 'none';
 }
 
-      function fetchAndDisplayPosts() {
+function fetchAndDisplayPosts() {
     fetch('/api/posts') // Adjust this to your server's endpoint
       .then(response => response.json())
       .then(posts => {
         const postsContainer = document.getElementById('posts-container');
         const fetchPromises = [];
+        
 
         posts.forEach(post => {
           // Main post div
@@ -179,17 +180,21 @@ function hideLoader() {
           titleDiv.onclick = () => window.location.href = '/posts/' + post.id;
           postContentDiv.appendChild(titleDiv);
 
+          const linkPreviewDiv = document.createElement('div');
+          linkPreviewDiv.className = 'link-preview';
+          postContentDiv.appendChild(linkPreviewDiv);
+          
           if (post.link) {
           const linkDiv = document.createElement('div');
           linkDiv.className = 'link';
           linkDiv.innerHTML = '<div class="placeholder-link-preview">Loading link preview...</div>'; // Placeholder
-          postContentDiv.appendChild(linkDiv);
+          linkPreviewDiv.appendChild(linkDiv);
           fetchPromises.push(fetchLinkPreview(post.link, linkDiv));
           }
           const descriptionDiv = document.createElement('div');
           descriptionDiv.className = 'description';
           descriptionDiv.innerText = post.content; // Assuming 'content' holds the description
-          postContentDiv.appendChild(descriptionDiv);
+          linkPreviewDiv.appendChild(descriptionDiv);
 
 // Votes div
 const votesDiv = document.createElement("div");
@@ -199,34 +204,99 @@ votesDiv.className = "votes";
 const reactionInteractionsDiv = document.createElement("div");
 reactionInteractionsDiv.className = "reaction-interactions";
 
+const mainReactionButton = document.createElement("button");
+mainReactionButton.className = "main-reaction-button";
+mainReactionButton.innerText = "😀";
+reactionInteractionsDiv.appendChild(mainReactionButton);
+
+const reactionMenu = document.createElement("div");
+reactionMenu.className = "reaction-menu";
+
+document.body.appendChild(reactionMenu);
+
+mainReactionButton.onmouseover = function() {
+  reactionMenu.style.display = "block";
+};
+
+
+
 // Reaction buttons
 const reactionTypes = [
-  { type: "LOVE", icon: "favorite" },
-  { type: "LIKE", icon: "thumb_up_alt" },
-  { type: "CURIOUS", icon: "help_outline" },
-  { type: "INTERESTING", icon: "lightbulb" },
-  { type: "CELEBRATE", icon: "celebration" }
+  { type: "LOVE", icon: "❤️" },
+  { type: "LIKE", icon: "👍" },
+  { type: "CURIOUS", icon: "🤔" },
+  { type: "INTERESTING", icon: "💡" },
+  { type: "CELEBRATE", icon: "🎉" },
 ];
 
 reactionTypes.forEach(reaction => {
-      const button = document.createElement("button");
-      button.className = `reaction-button ${reaction.type.toLowerCase()}-button`;
-      button.onclick = () => interactWithPost(post.id, "<%= user %>", reaction.type);
+  if (post[reaction.type.toLowerCase() + 'Count'] > 0) {
+    const button = document.createElement("button");
+    button.className = `reaction-button ${reaction.type.toLowerCase()}-button`;
+    button.onclick = () => interactWithPost(post.id, "<%= user %>", reaction.type);
 
-      const icon = document.createElement("span");
-      icon.className = "material-symbols-outlined";
-      icon.innerText = reaction.icon;
+    const icon = document.createElement("span");
+    icon.innerText = reaction.icon;
 
-      const countText = document.createElement("span");
-      countText.className = "reaction-count";
-      // Get the count for each reaction type dynamically from the post object
-      countText.innerText = ` ${post[reaction.type.toLowerCase() + 'Count'] || 0}`;
+    const countText = document.createElement("span");
+    countText.className = "reaction-count";
+    countText.innerText = ` ${post[reaction.type.toLowerCase() + 'Count']}`;
 
-      button.appendChild(icon);
-      button.appendChild(countText);
-      reactionInteractionsDiv.appendChild(button);
-    });
+    button.appendChild(icon);
+    button.appendChild(countText);
+    reactionInteractionsDiv.appendChild(button);
+  }
+});
 
+reactionTypes.forEach(reaction => {
+  const button = document.createElement("button");
+  button.innerText = reaction.icon;
+  button.onclick = () => handleReactionClick(reaction.type); // Replace with your function
+  reactionMenu.appendChild(button);
+});
+
+let showMenuTimeout; // Variable to hold the timeout for showing the menu
+let hideMenuTimeout; // Variable to hold the timeout for hiding the menu
+
+mainReactionButton.addEventListener('mouseenter', (event) => {
+  // Schedule to show the menu after a delay when hovering over the button
+  showMenuTimeout = setTimeout(() => {
+    let rect = mainReactionButton.getBoundingClientRect();
+    reactionMenu.style.left = `${rect.left + window.scrollX}px`;
+    reactionMenu.style.top = `${rect.top + window.scrollY - reactionMenu.offsetHeight + 30}px`;
+    reactionMenu.style.display = 'flex';
+    reactionMenu.style.opacity = '1';
+    // Schedule to hide the menu if it's shown but the mouse hasn't moved towards it
+    hideMenuTimeout = setTimeout(() => {
+      reactionMenu.style.opacity = '0';
+      reactionMenu.style.display = 'none';
+    }, 2000); // Change this delay as needed
+  }, 200); // Delay before menu is shown to check intention
+});
+
+mainReactionButton.addEventListener('mouseleave', () => {
+  // Cancel showing the menu if mouse leaves the button before it's shown
+  clearTimeout(showMenuTimeout);
+  // Start hiding the menu immediately if it's already shown
+  clearTimeout(hideMenuTimeout);
+  hideMenuTimeout = setTimeout(() => {
+    reactionMenu.style.opacity = '0';
+    reactionMenu.style.display = 'none';
+  }, 200); // Delay before hiding menu
+});
+
+reactionMenu.addEventListener('mouseenter', () => {
+  // Cancel hiding the menu when mouse enters the menu area
+  clearTimeout(hideMenuTimeout);
+});
+
+reactionMenu.addEventListener('mouseleave', () => {
+  // Schedule to hide the menu after a delay when the mouse leaves the menu area
+  hideMenuTimeout = setTimeout(() => {
+    reactionMenu.style.opacity = '0';
+    reactionMenu.style.display = 'none';
+  }, 500); // Delay before hiding menu
+});
 
 votesDiv.appendChild(reactionInteractionsDiv);
 postContentDiv.appendChild(votesDiv);
@@ -383,6 +453,7 @@ function filterPosts(communityName) {
         }
     });
 }
+
 
 // Call the function to create buttons on page load
 createButtons();
