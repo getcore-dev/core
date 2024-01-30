@@ -52,32 +52,36 @@ router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
     console.log(`${action}ing post: ${postId} by user: ${userId}`);
 
     // Valid reactions
-    const validActions = ["LOVE", "LIKE", "CURIOUS", "INTERESTING", "CELEBRATE"];
+    const validActions = [
+      "LOVE",
+      "LIKE",
+      "CURIOUS",
+      "INTERESTING",
+      "CELEBRATE",
+    ];
 
     if (!validActions.includes(action)) {
       res.status(400).send("Invalid action");
       return;
     }
 
-    const newScore = await postQueries.interactWithPost(
-      postId,
-      userId,
-      action
-    );
+    const newScore = await postQueries.interactWithPost(postId, userId, action);
 
     if (newScore === 0) {
       console.log("User has already interacted with this post.");
       res.json({ message: "Action unchanged", newScore });
     } else {
       console.log(`Post ${action.toLowerCase()}ed successfully.`);
-      res.json({ message: `Post ${action.toLowerCase()}ed successfully`, newScore });
+      res.json({
+        message: `Post ${action.toLowerCase()}ed successfully`,
+        newScore,
+      });
     }
   } catch (err) {
     console.error("Database error:", err);
     res.status(500).send("Error processing reaction");
   }
 });
-
 
 router.post(
   "/comments/:commentId/boost",

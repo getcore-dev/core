@@ -3,13 +3,6 @@ const utilFunctions = require("../utils/utilFunctions");
 const userQueries = require("../queries/userQueries");
 const postQueries = require("../queries/postQueries");
 
-async function timeAsyncOperation(operation, name) {
-  const start = Date.now();
-  const result = await operation;
-  const duration = Date.now() - start;
-  console.log(`${name} Time: ${duration}ms`);
-  return result;
-}
 
 const viewController = {
   renderHomePage: async (req, res) => {

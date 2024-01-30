@@ -412,7 +412,7 @@ function fetchComments(postId, container) {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ user: user, action: action.toLowerCase() }) // Ensure action is in lowercase
+    body: JSON.stringify({ user: user, action: action }) // Ensure action is in lowercase
   })
   .then(response => response.json())
   .then(data => {

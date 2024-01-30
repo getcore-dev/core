@@ -29,7 +29,7 @@ router.get("/getUsername/:id", async (req, res) => {
 router.get("/posts/:postId/comments", async (req, res) => {
   try {
     const postId = req.params.postId;
-    const comments = await utilFunctions.getCommentsForPost(postId); // Implement this function
+    const comments = await utilFunctions.getComments(postId); // Implement this function
     res.json(comments);
   } catch (err) {
     console.error("Error fetching comments:", err);
@@ -61,10 +61,8 @@ router.get("/comments/:commentId/replies", async (req, res) => {
 
 router.get("/posts", async (req, res) => {
   try {
-    console.log("Fetching posts...");
     const posts = await utilFunctions.getPosts();
     res.json(posts);
-    console.log(posts);
   } catch (err) {
     res.status(500).send(err.message);
   }
@@ -111,9 +109,7 @@ router.get("/communities/:communitiesId", async (req, res) => {
 router.get("/link-preview/:link", async (req, res) => {
   try {
     const link = decodeURIComponent(decodeURIComponent(req.params.link));
-    console.log("Link received for preview:", link);
     const linkPreview = await utilFunctions.getLinkPreview(link);
-    console.log("Link preview data:", linkPreview);
     res.json(linkPreview);
   } catch (err) {
     console.error("Error in link preview route:", err);

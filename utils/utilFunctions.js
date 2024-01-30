@@ -1,10 +1,3 @@
-  "use strict";
-const puppeteer = require("puppeteer-extra");
-const pluginStealth = require("puppeteer-extra-plugin-stealth");
-const util = require("util");
-const request = util.promisify(require("request"));
-const getUrls = require("get-urls");
-const isBase64 = require("is-base64");
 const sql = require("mssql");
 const axios = require("axios");
 const cheerio = require("cheerio");
@@ -27,7 +20,7 @@ const utilFunctions = {
         INNER JOIN users u ON p.user_id = u.id
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
         WHERE p.deleted = 0
-        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob,p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate
+        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob,p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.link_description, p.link_image, p.link_title
         ORDER BY p.created_at DESC
       `;
 
@@ -62,7 +55,7 @@ const utilFunctions = {
   getPostData: async (postId) => {
     try {
       const result = await sql.query`
-        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id,
+        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate,
                 u.username, 
                 SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
                 SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
@@ -73,7 +66,7 @@ const utilFunctions = {
         INNER JOIN users u ON p.user_id = u.id
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
         WHERE p.id = ${postId}
-        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id
+        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate
       `;
       const postData = result.recordset[0];
       if (postData) {
@@ -111,7 +104,7 @@ const utilFunctions = {
       throw err;
     }
   },
-  getCommentsForPost: async (postId) => {
+  getComments: async (postId) => {
     try {
       const result = await sql.query`
         SELECT * FROM comments WHERE post_id = ${postId} AND deleted = 0
@@ -199,253 +192,74 @@ const utilFunctions = {
     }
   },
 
-  getLinkPreview: async (uri, puppeteerArgs = [], puppeteerAgent = "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)", executablePath) => {
-    puppeteer.use(pluginStealth());
-
-    const urlImageIsAccessible = async (url) => {
-      const correctedUrls = getUrls(url);
-  if (isBase64(url, { allowMime: true })) {
-    return true;
-  }
-  if (correctedUrls.size !== 0) {
-    const urlResponse = await request(correctedUrls.values().next().value);
-    const contentType = urlResponse.headers["content-type"];
-    return new RegExp("image/*").test(contentType);
-  }
+  getLinkPreview: async (url) => {
+    const getMetaTag = async ($, name) => {
+      return (
+        $(`meta[name=${name}]`).attr("content") ||
+        $(`meta[name="twitter:${name}"]`).attr("content") ||
+        $(`meta[property="og:${name}"]`).attr("content")
+      );
     };
-
-    const getImg = async (page, uri) => {
-      const img = await page.evaluate(async () => {
-    const ogImg = document.querySelector('meta[property="og:image"]');
-    if (
-      ogImg != null &&
-      ogImg.content.length > 0 &&
-      (await urlImageIsAccessible(ogImg.content))
-    ) {
-      return ogImg.content;
-    }
-    const imgRelLink = document.querySelector('link[rel="image_src"]');
-    if (
-      imgRelLink != null &&
-      imgRelLink.href.length > 0 &&
-      (await urlImageIsAccessible(imgRelLink.href))
-    ) {
-      return imgRelLink.href;
-    }
-    const twitterImg = document.querySelector('meta[name="twitter:image"]');
-    if (
-      twitterImg != null &&
-      twitterImg.content.length > 0 &&
-      (await urlImageIsAccessible(twitterImg.content))
-    ) {
-      return twitterImg.content;
-    }
-
-    let imgs = Array.from(document.getElementsByTagName("img"));
-    if (imgs.length > 0) {
-      imgs = imgs.filter((img) => {
-        let addImg = true;
-        if (img.naturalWidth > img.naturalHeight) {
-          if (img.naturalWidth / img.naturalHeight > 3) {
-            addImg = false;
-          }
-        } else {
-          if (img.naturalHeight / img.naturalWidth > 3) {
-            addImg = false;
-          }
-        }
-        if (img.naturalHeight <= 50 || img.naturalWidth <= 50) {
-          addImg = false;
-        }
-        return addImg;
-      });
-      if (imgs.length > 0) {
-        imgs.forEach((img) =>
-          img.src.indexOf("//") === -1
-            ? (img.src = `${new URL(uri).origin}/${img.src}`)
-            : img.src
-        );
-        return imgs[0].src;
-      }
-    }
-    return null;
-  });
-  return img;
-    };
-
-    const getTitle = async (page) => {
-      const title = await page.evaluate(() => {
-    const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle != null && ogTitle.content.length > 0) {
-      return ogTitle.content;
-    }
-    const twitterTitle = document.querySelector('meta[name="twitter:title"]');
-    if (twitterTitle != null && twitterTitle.content.length > 0) {
-      return twitterTitle.content;
-    }
-    const docTitle = document.title;
-    if (docTitle != null && docTitle.length > 0) {
-      return docTitle;
-    }
-    const h1El = document.querySelector("h1");
-    const h1 = h1El ? h1El.innerHTML : null;
-    if (h1 != null && h1.length > 0) {
-      return h1;
-    }
-    const h2El = document.querySelector("h2");
-    const h2 = h2El ? h2El.innerHTML : null;
-    if (h2 != null && h2.length > 0) {
-      return h2;
-    }
-    return null;
-  });
-  return title;
-    };
-
-    const getDescription = async (page) => {
- const description = await page.evaluate(() => {
-    const ogDescription = document.querySelector(
-      'meta[property="og:description"]'
-    );
-    if (ogDescription != null && ogDescription.content.length > 0) {
-      return ogDescription.content;
-    }
-    const twitterDescription = document.querySelector(
-      'meta[name="twitter:description"]'
-    );
-    if (twitterDescription != null && twitterDescription.content.length > 0) {
-      return twitterDescription.content;
-    }
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription != null && metaDescription.content.length > 0) {
-      return metaDescription.content;
-    }
-    let paragraphs = document.querySelectorAll("p");
-    let fstVisibleParagraph = null;
-    for (let i = 0; i < paragraphs.length; i++) {
-      if (
-        // if object is visible in dom
-        paragraphs[i].offsetParent !== null &&
-        !paragraphs[i].childElementCount != 0
-      ) {
-        fstVisibleParagraph = paragraphs[i].textContent;
-        break;
-      }
-    }
-    return fstVisibleParagraph;
-  });
-  return description;
-    };
-
-    const getDomainName = async (page, uri) => {
-      const domainName = await page.evaluate(() => {
-    const canonicalLink = document.querySelector("link[rel=canonical]");
-    if (canonicalLink != null && canonicalLink.href.length > 0) {
-      return canonicalLink.href;
-    }
-    const ogUrlMeta = document.querySelector('meta[property="og:url"]');
-    if (ogUrlMeta != null && ogUrlMeta.content.length > 0) {
-      return ogUrlMeta.content;
-    }
-    return null;
-  });
-  return domainName != null
-    ? new URL(domainName).hostname.replace("www.", "")
-    : new URL(uri).hostname.replace("www.", "");
-    };
-
-    const getFavicon = async (page, uri) => {
-      const noLinkIcon = `${new URL(uri).origin}/favicon.ico`;
-  if (await urlImageIsAccessible(noLinkIcon)) {
-    return noLinkIcon;
-  }
-
-  const favicon = await page.evaluate(async () => {
-    const icon16Sizes = document.querySelector('link[rel=icon][sizes="16x16"]');
-    if (
-      icon16Sizes &&
-      icon16Sizes.href.length > 0 &&
-      (await urlImageIsAccessible(icon16Sizes.href))
-    ) {
-      return icon16Sizes.href;
-    }
-
-    const shortcutIcon = document.querySelector('link[rel="shortcut icon"]');
-    if (
-      shortcutIcon &&
-      shortcutIcon.href.length > 0 &&
-      (await urlImageIsAccessible(shortcutIcon.href))
-    ) {
-      return shortcutIcon.href;
-    }
-
-    const icons = document.querySelectorAll("link[rel=icon]");
-    for (let i = 0; i < icons.length; i++) {
-      if (
-        icons[i] &&
-        icons[i].href.length > 0 &&
-        (await urlImageIsAccessible(icons[i].href))
-      ) {
-        return icons[i].href;
-      }
-    }
-
-    const appleTouchIcons = document.querySelectorAll('link[rel="apple-touch-icon"],link[rel="apple-touch-icon-precomposed"]');
-    for (let i = 0; i < appleTouchIcons.length; i ++) {
-      if (
-        appleTouchIcons[i] &&
-        appleTouchIcons[i].href.length > 0 &&
-        (await urlImageIsAccessible(appleTouchIcons[i].href))
-      ) {
-        return appleTouchIcons[i].href;
-      }
-    }
-
-    return null;
-  })
-
-  return favicon;
-    };
-
-    const params = {
-      headless: true,
-      args: [...puppeteerArgs],
-    };
-    if (executablePath) {
-      params["executablePath"] = executablePath;
-    }
-
-    const browser = await puppeteer.launch(params);
-    const page = await browser.newPage();
-    page.setUserAgent(puppeteerAgent);
-
-    await page.goto(uri);
-    await page.exposeFunction("request", request);
-    await page.exposeFunction("urlImageIsAccessible", urlImageIsAccessible);
-
-    const preview = {};
-    preview.title = await getTitle(page);
-    preview.description = await getDescription(page);
-    preview.domain = await getDomainName(page, uri);
-    preview.img = await getImg(page, uri);
-    preview.favicon = await getFavicon(page, uri);
-
-    await browser.close();
-    return preview;
-  },
-
-  // Helper function to fetch meta tags
-
-  getComments: async (postId) => {
     try {
-      const result = await sql.query`
-        SELECT * FROM comments WHERE post_id = ${postId} AND deleted = 0
-      `;
-      const commentList = result.recordset;
-      return await utilFunctions.getNestedComments(commentList);
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err; // Rethrow the error for the caller to handle
+      // Ensure the URL is a string
+      if (typeof url !== "string") {
+        throw new Error("URL must be a string");
+      }
+
+      // check if url exists in the LinkPreviewData table
+      const linkPreviewDataQuery = `SELECT * FROM LinkPreviewData WHERE link = '${url}'`;
+      const linkPreviewDataResult = await sql.query(linkPreviewDataQuery);
+
+      // return data mapped to the proper format
+      // link = url, image_url = image, description = description, title = title
+      if (linkPreviewDataResult.recordset.length > 0) {
+        const linkPreviewData = linkPreviewDataResult.recordset[0];
+        return {
+          url: linkPreviewData.link,
+          image: linkPreviewData.image_url,
+          description: linkPreviewData.description,
+          title: linkPreviewData.title,
+        };
+      }
+
+      const headers = {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+      };
+
+      const response = await axios.get(url, { headers, timeout: 5000 });
+      const { data, status } = response;
+
+      if (status !== 200) {
+        throw new Error(`Request failed with status code ${status}`);
+      }
+
+      const $ = cheerio.load(data);
+      const metaTags = await Promise.all([
+        getMetaTag($, "description"),
+        getMetaTag($, "image"),
+        getMetaTag($, "author"),
+      ]);
+
+      const preview = {
+        url,
+        title: $("title").first().text(),
+        favicon:
+          $('link[rel="shortcut icon"]').attr("href") ||
+          $('link[rel="alternate icon"]').attr("href"),
+        description: metaTags[0],
+        image: metaTags[1],
+        author: metaTags[2],
+      };
+
+      // insert into LinkPreviewData table
+      const insertLinkPreviewDataQuery = `INSERT INTO LinkPreviewData (link, image_url, description, title) VALUES ('${preview.url}', '${preview.image}', '${preview.description}', '${preview.title}')`;
+      await sql.query(insertLinkPreviewDataQuery);
+
+      return preview;
+    } catch (error) {
+      console.error("Error fetching URL:", error);
+      return null;
     }
   },
 
