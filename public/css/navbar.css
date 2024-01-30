@@ -1,11 +1,10 @@
-
-  @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 /* Global Style */
 body {
   margin: 0; /* Remove default margin */
   padding-top: 80px; /* Add padding */
-font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 
@@ -70,7 +69,7 @@ h1, h2, h3, p {
   width: 100%; 
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
-  padding-bottom: 30px;
+  padding-bottom: 7px;
   justify-content: center;
   padding-inline-start: 0px;
 }
@@ -94,7 +93,7 @@ h1, h2, h3, p {
 }
 
 
-.user-button, .inbox-button, .logout-button {
+.user-button, .inbox-button, .logout-button, #search-button {
   padding: 7px; 
   display: flex; 
   justify-content: center; 
@@ -102,19 +101,12 @@ h1, h2, h3, p {
   line-height: 1.5; 
   background-color: #f9f9f9; 
   color: #000;
-  margin-top: 11px; /* Top margin */
   margin-left: 12px;
   font-size: 14px; /* Button font size */
   border: 1px solid #ccc;
   border-radius: 6px; 
   text-decoration: none; /* Remove underline */
   transition: background-color 0.15s, transform 0.15s; /* Transition effects */
-}
-#search-button {
-  border: 1px solid #ccc;
-  padding: 7px;
-  border-radius: 6px;
-  margin-top: 0px;
 }
 
 .user-button:hover, .inbox-button:hover, .logout-button:hover, #search-button:hover {
@@ -263,7 +255,7 @@ margin-top: 20px;
 }
 
 .logo-img {
-  margin-top: -20px;
+  margin-top: -2px;
 }
 
 /* Mobile Navbar Style */
@@ -285,16 +277,19 @@ margin-top: 20px;
   border-radius: 6px;
   height: 27px;
   width: 200px; /* Adjust the width as needed */
-  margin-bottom: 10px;
   margin-right: 3px;
 }
+
+.user-links {
+  margin-top: 20px;
+}
+
 
 #search-bar-container {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
-  padding: 10px;
 }
 .navbar-btn-text {
   font-size: 12px;
@@ -302,6 +297,30 @@ margin-top: 20px;
 
 /* Responsive Design */
 @media (max-width: 768px) {
+
+  ul {
+    padding-inline-start: 0px;
+  }
+  .user-links {
+    display: flex;
+    align-items: center;
+  } 
+
+  .user-btns {
+    position: absolute;
+    right: 15px;
+    top: 20px;
+  }
+  
+  #search-bar {
+    display: none;
+  }
+
+  .nav-text-and-user-btns {
+    position: absolute;
+    top: 75px;
+    left: 20px;
+  }
 
   .notification-popup {
     position: absolute;
@@ -359,7 +378,7 @@ margin-top: 20px;
 
 
   .hamburger-menu {
-    position: relative;
+    position: absolute;
     left: 10px; 
     top: 18px; 
     z-index: 2;
@@ -374,7 +393,7 @@ margin-top: 20px;
   .logo img {
     position: absolute;
     top: 8px;
-    left: 5px;
+    left: 55px;
     max-height: 45px; /* Maximum height of the logo */
   }
 }
@@ -443,7 +462,6 @@ margin-top: 20px;
     border: 1px solid #555; 
     border-radius: 5px;
     width: 180px; 
-    margin-bottom: 10px;
   }
 
   /* Navbar background and text colors */
