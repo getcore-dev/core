@@ -6,7 +6,7 @@ main {
   align-items: center;
   height: calc(100vh - 110px);
   background-color: #fff;
-  font-family: 'Inter', sans-serif;
+font-family: 'Open Sans', sans-serif;
 }
 
 #register {
