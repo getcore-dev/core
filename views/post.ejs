@@ -28,6 +28,7 @@
   <body>
     <%- include('partials/navbar', { pagePath: 'home' }) %>
 
+    <main>
     <div class="main-container">
       <div class="post">
         <div class="header">
@@ -302,9 +303,57 @@
     <% } %> 
     <% renderComments(post.comments); %>
   </div>
+</div>
+<div class="sidebar-container">
+
+<div class="sidebar">
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <h3>Poster Info</h3>
+    </div>
+    <div class="sidebar-body">
+      <div class="sidebar-poster">
+        <div class="sidebar-poster-info">
+          <div class="sidebar-poster-join-date">
+            <p>Join Date: <%= post.user.joinDate %></p>
+          </div>
+          <div class="sidebar-poster-email">
+            <p>Email: <%= post.user.email %></p>
+          </div>
+        </div>
+        <div class="sidebar-poster-avatar">
+          <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="sidebar">
+      <div class="sidebar-content">
+        <div class="sidebar-header">
+          <h3>Community Info</h3>
+        </div>
+        <div class="sidebar-body">
+          <div class="sidebar-community">
+            <div class="sidebar-community-info">
+              <div class="sidebar-community-name">
+                <h4><%= post.community.name %></h4>
+              </div>
+              <div class="sidebar-community-description">
+                <p><%= post.community.description %></p>
+              </div>
+            </div>
+            <div class="sidebar-community-avatar">
+              <img src="<%= post.community.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+    
 
     <script>
-      
 
 function toggleNestedComments(commentId) {
     var nestedComments = document.getElementById('nested-comments-' + commentId);

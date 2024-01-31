@@ -187,33 +187,109 @@ div.vote-interactions {
 }
 
 .create-post-btn {
-  background: rgba(0,0,0,0);
-  height: 35px;
-  padding: 0 20px;
-  border: 1px solid #0e6655;
+  padding: 4px 2px;
+  width: 30%;
+  background: #0e6655;
   border-radius: 6px;
-  color: black;
+  color: white;
   cursor: pointer;
   transition: all 0.7s ease;
   text-decoration: none;
   flex: 0 0 auto;
-  cursor: pointer; /* Pointer cursor on hover */
-  margin: 10px 10px 0px 10px;
-  cursor: pointer; /* Pointer cursor */
+  text-align: center;
+  display: flex; 
+  flex-direction: row;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  gap: 4px;
 }
+
+.avatar-com-container img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.com-btn-container-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 10px 0px;
+}
+
+.com-btn-container-header .username {
+  font-weight: 700;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 3px;
+
+}
+
+.recent-post-avatar img {
+  width: 16px;
+  height: auto;
+}
+
+.trending-post-avatar img {
+  width: 16px;
+  border-radius: 50%;
+  height: auto;
+}
+
+.trending-post {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.trending-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.trending-post-content {
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* Limit the text block to just one line */
+  -webkit-box-orient: vertical;
+  overflow: hidden; /* Hide text that doesn't fit in the box */
+  text-overflow: ellipsis; /* Add an ellipsis at the end of the text that doesn't fit */
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+  max-width: 100%; /* Ensure it takes the full width of its container */
+}
+
+.create-post-btn .material-symbols-outlined {
+  font-size: 17px;
+  vertical-align: -3px;
+}
+
+.create-post-btn a:hover {
+  text-decoration: none;
+}
+
+.communities {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+}
+
+.communities .material-symbols-outlined {
+  font-size: 16px;
+}
+
 .link-preview {
   border: 1px solid #eee;
   background-color: #eee;
   margin: 10px 3px;
   border-radius: 6px;
   padding: 4px 6px;
-}
-
-.create-post-btn:hover {
-  transition: all 0.7s ease;
-  background-color: #0e6655;
-  color: #fff;
-  text-decoration: none;
 }
 
 .reaction-menu {
@@ -367,7 +443,35 @@ div .mini-link-title {
   white-space: normal;
 }
 
+.community-header, .job-header {
+  margin: 20px 10px 0px 10px;
+}
 
+.header-button {
+  background: rgba(0,0,0,0);
+  border: 1px solid #ccc;
+  color: inherit;
+  border-radius: 6px;
+  padding: 6px 12px;
+  margin: 3px 5px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+#filterMenu {
+  display: none;
+  position: absolute;
+  transform: translateX(-38%) translateY(-50%);
+  z-index: 10;
+}
+
+.community-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
 
 .mini-link-body {
   margin-left: 6px;
@@ -386,8 +490,13 @@ div .mini-link-desc {
   white-space: normal;
 }
 
+#post-button {
+  background: darkgreen;
+  border: darkgreen;
+}
+
 #com-btn-container {
-  padding: 10px 17px;
+  padding: 15px 20px;
   display: flex; 
   flex-direction: column;
   overflow-x: none;
@@ -409,7 +518,8 @@ div .mini-link-desc {
 .container {
   background-color: #fff;
   display: flex;
-  height: calc(100vh - 100px);
+  height: calc(100vh - 80px);
+  overflow-y: hidden;
   flex-wrap: nowrap;
   flex-direction: row;
   justify-content: space-between;
@@ -430,7 +540,7 @@ div .mini-link-desc {
 }
 
 #com-btn-container { 
-  width: 10%;
+  width: 16%;
   flex: none; /* This will prevent the container from growing */
   display: flex;
   flex-direction: column; /* Stacks the buttons vertically */
@@ -448,10 +558,6 @@ div .mini-link-desc {
   border-right: 1px solid #aaa;
 }
 
-#com-btn-container .material-symbols-outlined {
-  font-size: 20px;
-  vertical-align: -3px;
-}
 
 #posts-container {
   width: 50%;
@@ -516,7 +622,7 @@ div .mini-link-desc {
   margin-top: 2px;
 }
 
-.job-header {
+.jobs-header {
   display: flex;
   flex-direction: row;
 }

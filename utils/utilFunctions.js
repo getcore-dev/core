@@ -53,6 +53,35 @@ const utilFunctions = {
     }
   },
 
+  getTrendingPosts: async () => {
+    try {
+      const result = await sql.query`
+        SELECT TOP 5 * FROM (
+          SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate,
+          u.currentJob, u.username, u.avatar,
+                SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
+                SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
+                SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+                SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
+                SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
+                SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount
+          FROM posts p
+          INNER JOIN users u ON p.user_id = u.id
+          LEFT JOIN userPostActions upa ON p.id = upa.post_id
+          WHERE p.deleted = 0
+          GROUP BY p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, u.username, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate
+        ) AS SubQuery
+        ORDER BY (loveCount + boostCount + interestingCount + curiousCount + likeCount + celebrateCount) / NULLIF(DATEDIFF(hour, created_at, GETDATE()), 0) DESC
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+  
+  
+
   getPostData: async (postId) => {
     try {
       const result = await sql.query`

@@ -68,6 +68,15 @@ router.get("/posts", async (req, res) => {
   }
 });
 
+router.get("/trending-posts", async (req, res) => {
+  try {
+    const posts = await utilFunctions.getTrendingPosts();
+    res.json(posts);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
 router.get("/user-details/:userId", async (req, res) => {
   try {
     const userDetails = await utilFunctions.getUserDetails(req.params.userId);

@@ -18,16 +18,64 @@
     <div class="container">
       
     <div id="com-btn-container" class="column">
+      <div class="com-btn-container-header">
+      <% if (user) { %>
+
+        <div class="user-info">
+          <div class="avatar-com-container">
+            <img src="<%= user.avatar %>" alt="Avatar" />
+          </div>
+          <div class="username"><%= user.username %></div>
+        </div>
+
+      <% } else { %>
+        <div class="create-post-btn" onclick="window.location.href = '/login';">
+          <span class="material-symbols-outlined">login</span> Login
+        </div>
+      <% } %>
+    </div>
+
       <h4>Communities</h4>
-      <a href="#" onclick="filterPosts('All')">All</a>
-      <a href="#" onclick="filterPosts('ML-AI')">ML-AI</a>
-      <a href="#" onclick="filterPosts('Web-Dev')">Web Development</a>
-      <a href="#" onclick="filterPosts('cs')">Computer Science</a>
-      <a href="#" onclick="filterPosts('Programming')">Software</a>
+      <div class="communities">
+        <span class="material-symbols-outlined">forum</span>
+        <a href="/communities/1" class="community-link">
+          <div class="community-name">All</div>
+        </a>
+      </div>
+      <div class="communities">
+        <span class="material-symbols-outlined">robot</span>
+        <a href="/communities/1" class="community-link">
+          <div class="community-name">ML-AI</div>
+        </a>
+      </div>
+      <div class="communities">
+        <span class="material-symbols-outlined">computer</span>
+        <a href="/communities/2" class="community-link">
+          <div class="community-name">Web-Dev</div>
+        </a>
+      </div>
+      <div class="communities">
+        <span class="material-symbols-outlined">science</span>
+        <a href="/communities/3" class="community-link">
+          <div class="community-name">Computer Science</div>
+        </a>
+      </div>
+      <div class="communities">
+        <span class="material-symbols-outlined">terminal</span>
+        <a href="/communities/4" class="community-link">
+          <div class="community-name">Software</div>
+        </a>
+      </div>
 
-      <h4>Recent Posts</h4>
-
+      <br>
+      <h4>Trending Posts</h4>
+      <div class="trending-posts">
+        loading...
+      </div>
+      
+      <br>
       <h4>Recent Jobs</h4>
+
     </div>
 
     <div id="posts-container" class="column">
@@ -80,15 +128,18 @@
           },
       ]; %>
       <div class="jobs-container">
+        <div class="job-header">
+          <h3>Openings</h3>
+        </div> 
         <% jobPostings.forEach(job => { %>
           <div class="job">
             <div class="job-content">
-              <div class="job-header">
+              <div class="jobs-header">
                 <div class="company-logo-container">
                   <img src="<%= job.companyLogo %>" alt="Company Logo" class="company-logo" />
                 </div>
                 <div class="job-title-location">
-                  <div class="job-header">
+                  <div class="job-posting-header">
                     <div class="company-name"><%= job.companyName %> </div> 
                   </div>
                   <div class="job-title"><%= job.jobTitle %></div>
@@ -118,13 +169,44 @@ function hideLoader() {
     document.getElementById('loadingAnimation').style.display = 'none';
 }
 
+function toggleFilterMenu() {
+    const filterMenu = document.getElementById('filterMenu');
+    if (filterMenu.style.display === 'block') {
+        filterMenu.style.display = 'none';
+    } else {
+        filterMenu.style.display = 'block';
+    }
+}
+
 function fetchAndDisplayPosts() {
     fetch('/api/posts') // Adjust this to your server's endpoint
       .then(response => response.json())
       .then(posts => {
         const postsContainer = document.getElementById('posts-container');
         const fetchPromises = [];
-        
+
+        const communityHeader = document.createElement('div');
+        communityHeader.className = 'community-header';
+        communityHeader.innerHTML = `
+        <div class="post-header-title">
+          <h3>Posts</h3>
+        </div>
+        <div class=post-header-buttons>
+          <% if (user) { %>
+            <button class="header-button" id="post-button" onclick="window.location.href='/post/create'">Post</button>
+          <% } %>
+          <button class="header-button" id="filter-button" onclick="toggleFilterMenu()">Filter</button>
+            <div class="filter-menu" id="filterMenu">
+              <button class="filter-button" onclick="filterPosts('All')">All</button>
+              <button class="filter-button" onclick="filterPosts('ML-AI')">ML-AI</button>
+              <button class="filter-button" onclick="filterPosts('Web-Dev')">Web-Dev</button>
+              <button class="filter-button" onclick="filterPosts('Computer Science')">Computer Science</button>
+              <button class="filter-button" onclick="filterPosts('Software')">Software</button>
+            </div> 
+
+          </div>  
+`;        postsContainer.appendChild(communityHeader);
+
 
         posts.forEach(post => {
           // Main post div
@@ -386,7 +468,6 @@ function fetchComments(postId, container) {
     let today = new Date();
     let formattedDate;
           
-   // Calculate time difference in milliseconds
             let diff = today - postDate;
           
             // Convert time difference to different units
@@ -483,7 +564,39 @@ function filterPosts(communityName) {
     });
 }
 
+function getTrendingPosts() {
+    fetch('/api/trending-posts') // Adjust this to your server's endpoint
+    .then(response => response.json())
+    .then(posts => {
+        const trendingPostsContainer = document.querySelector('.trending-posts');
+        trendingPostsContainer.innerHTML = ''; // Clear existing posts
 
+        posts.forEach(post => {
+            const postElement = document.createElement('div');
+            postElement.className = 'trending-post';
+
+            // Add content to postElement here. Example:
+            postElement.innerHTML = `
+                <div class="trending-post-avatar">
+                    <img src="${post.avatar}" alt="Avatar" />
+                </div>
+                <div class="trending-post-content">
+                  <a href="/posts/${post.id}" class="trending-post-title">
+                    <p><strong>${post.username}</strong>/${post.title}</p> 
+                  </a>
+                </div>
+
+            `;
+
+            trendingPostsContainer.appendChild(postElement);
+        });
+    })
+    .catch(error => console.error('Error fetching trending posts:', error));
+}
+
+
+
+getTrendingPosts();
 // Call the function to create buttons on page load
 createButtons();
 
