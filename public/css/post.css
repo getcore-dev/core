@@ -564,6 +564,15 @@ p.preview-description {
   .comments-section {
     border-top: 1px solid #ccc;
   }
+  
+  main {
+    display: flex;
+    flex-direction: column-reverse;
+    }
+    
+    .sidebar-container {
+      flex-direction: row;
+      }
 
   .comment-with-replies {
     margin: 0px;
