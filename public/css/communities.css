@@ -46,7 +46,6 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin: 4px;
   margin-bottom: 7px;
 }
 
@@ -55,7 +54,6 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin: 4px;
   margin-bottom: 7px;
 
 }
@@ -97,14 +95,15 @@ div.vote-interactions {
   gap: 5px;
   align-items: flex-start;
   border-radius: 6px;
+  margin-top: 7px;
+  margin-left: 5px;
   width: 30%;
   align-items: center;
 }
 
 .post-content {
   position: relative;
-  margin-left: 8px;
-  margin-right: 25px;
+  margin: 4px 12px;
   flex-grow: 1; /* Take up remaining space */
   padding: 0; /* No padding */
   padding-top: 5px;
@@ -127,13 +126,26 @@ div.vote-interactions {
   position: relative;
 }
 
-.reaction-button, .main-reaction-button {
+.reaction-button, .main-reaction-button, .boost-button {
   background-color: rgba(0,0,0,0);
   border: 1px solid #ccc;
   color: #ccc;
-  border-radius: 6px;
-  padding: 2px 4px;
+  border-radius: 15px;
+  padding: 4px 8px;
   margin: 3px 5px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.reaction-interactions .material-symbols-outlined {
+  font-size: 14px;
+  vertical-align: -2px;
+}
+
+.main-reaction-button {
+  padding: 4px 6px;
+  margin: 0px;
+  border-radius: 100%;
 }
 
 .reaction-button:hover {
@@ -190,7 +202,8 @@ div.vote-interactions {
   cursor: pointer; /* Pointer cursor */
 }
 .link-preview {
-  border: 1px solid #ccc;
+  border: 1px solid #eee;
+  background-color: #eee;
   margin: 10px 3px;
   border-radius: 6px;
   padding: 4px 6px;
@@ -205,7 +218,7 @@ div.vote-interactions {
 
 .reaction-menu {
   position: absolute;
-  transform: translateX(-44%);
+  transform: translateX(-38%) translateY(-100%);
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -213,34 +226,33 @@ div.vote-interactions {
   align-items: flex-end;
   opacity: 0;
   transition: opacity 0.3s ease;
-
-  padding: 10px;
-  z-index: 999;
+  background-color: #bbb;
+  border-radius: 25px;
+  border: 1px solid #ccc;
   pointer-events: none;
+  z-index: 999;
 }
 
 .reaction-menu button {
   pointer-events: auto;
-  margin: 5px;
-  border: 1px solid #ccc;
+  font-size: 16px;
+  padding: 10px;
+  border: 0;
+  background: 0;
   border-radius: 6px;
   transition: transform 2s ease;
 }
 
-/* Adjust for the arch shape */
-.reaction-menu button:nth-child(1) { transform: translateY(-20px); }
-.reaction-menu button:nth-child(2) { transform: translateY(-35px); }
-.reaction-menu button:nth-child(3) { transform: translateY(-50px); }
-.reaction-menu button:nth-child(4) { transform: translateY(-35px); }
-.reaction-menu button:nth-child(5) { transform: translateY(-20px); }
 
+
+/* Adjust for the arch shape */
 
 .title {
   font-size: 19px;
   font-weight: 500;
-  margin: 0;
+  margin-top: 7px;
+  margin-left: 3px;
   color: #333; 
-  margin-top: 2px;
 }
 
 .title:hover {
@@ -248,7 +260,8 @@ div.vote-interactions {
 }
 
 #date-icon, #user-icon, #comments-icon, #score-icon {
-  vertical-align: -3px;
+  vertical-align: -4px;
+  padding: 3px;
   font-size: 15px;
   color: #666; 
 }
@@ -290,9 +303,8 @@ div.vote-interactions {
 
 .comments {
   font-size: 12px;
-  color: #333; /* Darker text color */
+  color: #666;
   float: right;
-  border: 1px solid #ccc;
   border-radius: 6px;
   padding: 5px;
 
@@ -354,6 +366,8 @@ div .mini-link-title {
   text-overflow: ellipsis;
   white-space: normal;
 }
+
+
 
 .mini-link-body {
   margin-left: 6px;
@@ -577,6 +591,11 @@ div .mini-link-desc {
 /* Dark Mode Styles */
 @media (prefers-color-scheme: dark) {
 
+  .reaction-menu {
+    background-color: #333;
+    border: 1px solid #444;
+  }
+
   #com-btn-container {
     background-color: rgb(30,30,30);
   }
@@ -698,25 +717,23 @@ div .mini-link-desc {
 @media (prefers-color-scheme: dark) {
   /* General background and text colors */
   body {
-      background-color: #121212; /* Dark background */
-      color: #fff; /* Light text */
+      background-color: #111; /* Dark background */
+      color: #ddd; /* Light text */
   }
 
-  div .mini-link {
-    background-color: #333;
+  .main-reaction-button, .boost-button { 
+    border: 1px solid #444;
   }
 
   .link-preview {
-    background-color: #333;
+    background-color: #222;
+    border: 1px solid #222;
   }
 
-  .comments {
-    border: 1px solid #444;
-  }
 
   .reaction-button {
     border: 1px solid #444;
-    color: #ccc;
+    color: #ddd;
   }
 
   .reaction-button:hover {
@@ -725,7 +742,7 @@ div .mini-link-desc {
 
   #com-btn-container a {
     text-decoration: none;
-    color: #fff;
+    color: #ddd;
     font-weight: 300;
   }
 

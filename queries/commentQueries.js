@@ -25,7 +25,7 @@ const commentQueries = {
 
         // Create a notification for the original post author
         if (originalPostAuthorId !== userId) {
-          const username = await findById(userId);
+          const username = await findById(userId).then((user) => user.username);
           // Check to avoid notifying if commenting on own post
           await notificationQueries.createNotification(
             originalPostAuthorId,
@@ -89,11 +89,12 @@ const commentQueries = {
 
         // Create a notification for the original comment author
         if (originalCommentAuthorId !== userId) {
-          // Check to avoid notifying if replying to own comment
+          const username = await findById(userId).then((user) => user.username);
+          // Check to avoid notifying if commenting on own post
           await notificationQueries.createNotification(
-            originalCommentAuthorId,
-            "REPLY",
-            `User ${userId} replied to your comment`
+            originalPostAuthorId,
+            "NEW_COMMENT",
+            `@${username} commented on your post`
           );
         }
       }

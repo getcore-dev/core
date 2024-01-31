@@ -58,6 +58,7 @@ router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
       "CURIOUS",
       "INTERESTING",
       "CELEBRATE",
+      "BOOST"
     ];
 
     if (!validActions.includes(action)) {

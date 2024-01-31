@@ -33,7 +33,7 @@ h1, h2, h3, p {
 
 
 #menu-icon {
-  padding: 4px 2px;
+  padding: 8px 6px;
   position: relative;
   display: none;
   border: 1px solid #ccc;
@@ -94,20 +94,20 @@ h1, h2, h3, p {
 
 
 .user-button, .inbox-button, .logout-button, #search-button {
-  padding: 7px; 
   display: flex; 
   justify-content: center; 
   gap: 4px; 
   line-height: 1.5; 
   background-color: #f9f9f9; 
   color: #000;
-  margin-left: 12px;
+  margin: 0px 6px;
   font-size: 14px; /* Button font size */
   border: 1px solid #ccc;
   border-radius: 6px; 
   text-decoration: none; /* Remove underline */
   transition: background-color 0.15s, transform 0.15s; /* Transition effects */
 }
+
 
 .user-button:hover, .inbox-button:hover, .logout-button:hover, #search-button:hover {
   background-color: #ddd; /* Background color on hover */
@@ -122,10 +122,10 @@ h1, h2, h3, p {
   gap: 4px; /* Gap between icon and text */
   line-height: 1.5; /* Button text line height */
   color: #000; /* Button text color */
-  padding: 5px 7px; /* Button padding */
+  padding: 3px 7px; /* Button padding */
   margin-left: 12px;
   font-size: 14px; /* Button font size */
-  border: none; /* No border */
+  border: 1px solid #ccc;
   text-decoration: none; /* Remove underline */
   border-radius: 5px; /* Rounded corners */
   transition: background-color 0.15s, transform 0.15s; /* Transition effects */
@@ -143,17 +143,8 @@ h1, h2, h3, p {
   object-fit: cover;
 }
 
-.navbar-button.active::after {
-  content: "";
-  display: block;
-  height: 1.5px;
-  border-radius: 5px;
-  background-color: #0e6655; /* Change color as needed */
-  width: 100%;
-  position: absolute;
-  top: 34px;
-  left: 5px;
-  z-index: 1;
+.navbar-button.active {
+  border: 1px solid #0e6655;
 }
 
 .notification-popup {
@@ -268,7 +259,7 @@ margin-top: 20px;
   width: 24px;
   border-radius: 50%;
   height: 24px;
-  margin-top: 8px;
+  padding: 3px;
 }
 #search-bar {
   padding: 1px;
@@ -295,6 +286,16 @@ margin-top: 20px;
   font-size: 12px;
 }
 
+.nav-avatar {
+  display: flex;
+  align-items: center; 
+  padding-left: 2px;
+}
+
+
+#nb-icon {
+  padding: 7px;
+}
 /* Responsive Design */
 @media (max-width: 768px) {
 
@@ -304,7 +305,16 @@ margin-top: 20px;
   .user-links {
     display: flex;
     align-items: center;
+    margin-top: 0px;
+
   } 
+
+  #nb-icon {
+    padding: 12px;
+  }
+
+
+
 
   .user-btns {
     position: absolute;
@@ -351,7 +361,7 @@ margin-top: 20px;
 
 
   .navbar-button {
-    padding: 4px 2px;
+    padding: 4px 9px;
     font-size: 14px;
   }
 
@@ -393,7 +403,7 @@ margin-top: 20px;
   .logo img {
     position: absolute;
     top: 8px;
-    left: 55px;
+    left: 65px;
     max-height: 45px; /* Maximum height of the logo */
   }
 }
@@ -545,6 +555,7 @@ margin-top: 20px;
   /* Navbar button styling */
   .navbar-button {
       color: #fff; /* Light text color for buttons */
+      border: 1px solid #333;
   }
 
 

@@ -31,23 +31,11 @@ try {
       </div>
       <div class="nav-btns">
         <ul class="nav-links">
-          <% if (user) { %>
-            <li>
-              <a
-                href="/post/create"
-                class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>"
-              >
-                <span class="material-symbols-outlined" id="nb-icon"> add </span
-                >Create</a
-              >
-            </li>
-            <% } %>
           <li>
             <a
               href="/"
               class="navbar-button <%= currentPath === '/' ? 'active' : '' %>"
             >
-              <span class="material-symbols-outlined" id="nb-icon"> forum </span>
               Community
             </a>
           </li>
@@ -55,9 +43,7 @@ try {
             <a
               href="/jobs"
               class="navbar-button <%= currentPath === '/jobs' ? 'active' : '' %>"
-            >
-              <span class="material-symbols-outlined" id="nb-icon"> work </span
-              >Openings</a
+            >Openings</a
             >
           </li>
           <% if (user) { %>
@@ -66,8 +52,7 @@ try {
               href="/learning"
               class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>"
             >
-              <span class="material-symbols-outlined" id="nb-icon"> school </span
-              >Learning</a
+  Learning</a
             >
           </li>
           <% } else { %> <% } %>
@@ -76,8 +61,7 @@ try {
               href="/updates"
               class="navbar-button <%= currentPath === '/updates' ? 'active' : '' %>"
             >
-              <span class="material-symbols-outlined" id="nb-icon"> update </span
-              >Updates</a
+  Updates</a
             >
           </li>
   
@@ -128,23 +112,23 @@ try {
             >
               <% } %>
               <% if (user && user.avatar) { %>
+                <div class="nav-avatar">
               <img
                 src="<%= user.avatar %>"
                 alt="Avatar"
                 class="avatar"
                 id="avatar" >
+              </div>
               <% } else if (user && user.avatar) { %>
+                <div class="nav-avatar">
+
               <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
+                </div>
               <% } else if (!user) { %>
               <span class="material-symbols-outlined" id="nb-icon">                
                 person
               </span>
               <% } %>
-              <% if (user) { %> 
-                <div class="user-info">
-                  <div class="user-info-name"><%= user.username %></div>
-                  <div class="user-info-email"><%= user.email %></div>
-                </div> <% } else { %><% } %>
             </a>
           </li>
           <% if (user) { %>

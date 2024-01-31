@@ -204,6 +204,16 @@ votesDiv.className = "votes";
 const reactionInteractionsDiv = document.createElement("div");
 reactionInteractionsDiv.className = "reaction-interactions";
 
+// boost button
+const boostButton = document.createElement("button");
+boostButton.className = "boost-button";
+boostButton.innerHTML = `<span class='material-symbols-outlined'>bolt</span> <span class='boost-count'>${post.boostCount}</span>`;
+
+boostButton.onclick = () => interactWithPost(post.id, "<%= user %>", "BOOST");
+
+reactionInteractionsDiv.appendChild(boostButton);
+
+
 const mainReactionButton = document.createElement("button");
 mainReactionButton.className = "main-reaction-button";
 mainReactionButton.innerText = "😀";
@@ -251,7 +261,7 @@ reactionTypes.forEach(reaction => {
 reactionTypes.forEach(reaction => {
   const button = document.createElement("button");
   button.innerText = reaction.icon;
-  button.onclick = () => handleReactionClick(reaction.type); // Replace with your function
+  button.onclick = () => interactWithPost(post.id, "<%= user %>", reaction.type);
   reactionMenu.appendChild(button);
 });
 
@@ -367,7 +377,7 @@ function fetchComments(postId, container) {
   return fetch(`/api/comments/${postId}`)
     .then(response => response.json())
     .then(comments => {
-      container.innerHTML = comments.length + ' replies'; 
+      container.innerHTML = '<span class="material-symbols-outlined" id="comments-icon">comment</span>' + comments.length + ' replies</span>';
     });
 }
 
@@ -415,16 +425,36 @@ function fetchComments(postId, container) {
   })
   .then(response => response.json())
   .then(data => {
-    // Update reaction counts
-    Object.keys(data.reactions).forEach(reactionType => {
-      const reactionButton = document.querySelector(`[onclick="interactWithPost('${postId}', '${user}', '${reactionType.toLowerCase()}')"]`);
-      if (reactionButton) {
-        const icon = reactionButton.getElementsByTagName('span')[0];
-        const count = reactionButton.getElementsByTagName('span')[1];
-        count.innerText = ` ${data.reactions[reactionType] || 0}`;
-        
+    console.log('Success:', data);
+
+    // Update or create reaction buttons
+    reactionTypes.forEach(reaction => {
+      const reactionCount = data.reactions[reaction.type] || 0;
+      let reactionButton = document.querySelector(`.reaction-button.${reaction.type.toLowerCase()}-button`);
+
+      if (!reactionButton && reactionCount > 0) {
+        // Create a new reaction button if it doesn't exist and the count is positive
+        reactionButton = document.createElement("button");
+        reactionButton.className = `reaction-button ${reaction.type.toLowerCase()}-button`;
+        reactionButton.onclick = () => interactWithPost(postId, user, reaction.type);
+
+        const icon = document.createElement("span");
+        icon.innerText = reaction.icon;
+
+        const countText = document.createElement("span");
+        countText.className = "reaction-count";
+        countText.innerText = ` ${reactionCount}`;
+
+        reactionButton.appendChild(icon);
+        reactionButton.appendChild(countText);
+        reactionInteractionsDiv.appendChild(reactionButton);
+      } else if (reactionButton) {
+        // Update count of existing button
+        const countSpan = reactionButton.getElementsByClassName('reaction-count')[0];
+        countSpan.innerText = ` ${reactionCount}`;
+
         // Update button color if needed
-        if (reactionType.toLowerCase() === action.toLowerCase()) {
+        if (reaction.type.toLowerCase() === action.toLowerCase()) {
           reactionButton.style.color = "blue"; // Change color to indicate selected action
         } else {
           reactionButton.style.color = "black"; // Reset color for other buttons
