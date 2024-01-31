@@ -32,71 +32,42 @@
     <div class="main-container">
       <div class="post">
         <div class="header">
-          <a class="community" href="/"><%= post.community.name %></a>/
-          <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="header-avatar" onerror="standby()" />
-
-          <a class="user-info" href="/profile/<%= post.user.username %>"
-          >
-          <div class="header-text">
-          <%= post.user.username %></a
-        > 
-        </div>
-        <div class="timestamp">
-          <%
-        let postDate = new Date(post.created_at);
-        let today = new Date();
-        let formattedDate;
-      
-        // Calculate time difference in milliseconds
-        let diff = today - postDate;
-      
-        // Convert time difference to different units
-        let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
-        let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
-        let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
-        let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
-      
-        // Decide the format based on the time difference
-        if (minutes < 60) {
-          formattedDate = minutes + 'm ago';
-        } else if (hours < 24) {
-          formattedDate = hours + 'h ago';
-        } else if (days < 365) {
-          formattedDate = days + 'd ago';
-        } else {
-          formattedDate = years + 'y ago';
-        }
-      %>
-      <%= formattedDate %>
-        </div>
+          <div class="title">
+            <h2 class="post-title"><%= post.title %></h2>
+            <p class="post-subtitle">
+               in <%= post.community.name %>
+  
+                <%
+              let postDate = new Date(post.created_at);
+              let today = new Date();
+              let formattedDate;
+            
+              // Calculate time difference in milliseconds
+              let diff = today - postDate;
+            
+              // Convert time difference to different units
+              let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+              let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+              let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+              let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+            
+              // Decide the format based on the time difference
+              if (minutes < 60) {
+                formattedDate = minutes + 'm ago';
+              } else if (hours < 24) {
+                formattedDate = hours + 'h ago';
+              } else if (days < 365) {
+                formattedDate = days + 'd ago';
+              } else {
+                formattedDate = years + 'y ago';
+              }
+            %>
+            <%= formattedDate %>
+            </h4>
+          </div>
       </div>
-        
-        <div class="title">
-          <h2 class="post-title"><%= post.title %></h2>
-        </div>
+      
       <div class="post-content">
-
-          <% if (post.linkPreview) { %>
-          <a href="<%= post.linkPreview.url %>">
-          <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %> 
-          <% if (imageUrl) { %>
-          <div class="link-preview">
-            <img src="<%= imageUrl %>" alt="Preview" class="preview-image" />
-            <% } %>
-            <div class="preview-text">
-              <h4 class="preview-title">
-                  <%= post.linkPreview.title %>
-              </h4>
-              <p class="preview-link">
-                <%= post.link %>
-              </p>
-              <p class="preview-description">
-                <%=post.linkPreview.description %>
-              </p>
-            </div>
-          </div> 
-        </a>
-          <% } %>
           <p class="post-body"><%= post.content %></p>
            <%= post.community_id %>
         </div>        
@@ -308,46 +279,52 @@
 
 <div class="sidebar">
   <div class="sidebar-content">
-    <div class="sidebar-header">
-      <h3>Poster Info</h3>
-    </div>
     <div class="sidebar-body">
+      <div class="sidebar-poster-avatar">
+        <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="sidebar-avatar" onerror="standby()" />
+      </div>
       <div class="sidebar-poster">
         <div class="sidebar-poster-info">
-          <div class="sidebar-poster-join-date">
-            <p>Join Date: <%= post.user.joinDate %></p>
+          <div class="sidebar-poster-name">
+            <span class="material-symbols-outlined">person</span>
+            <%= post.user.username %>
           </div>
-          <div class="sidebar-poster-email">
-            <p>Email: <%= post.user.email %></p>
-          </div>
-        </div>
-        <div class="sidebar-poster-avatar">
-          <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
-        </div>
+          <div class="sidebar-poster-job">
+            <% if (post.user.currentJob && post.user.currentCompany) { %>
+              <strong><%= post.user.currentCompany %></strong>/<%= post.user.currentJob %>
+            <% } else { %>
+              No job information
+            <% } %>
+            
+            </div> 
+        </div> 
       </div>
     </div>
   </div>
 </div>
     <div class="sidebar">
       <div class="sidebar-content">
-        <div class="sidebar-header">
-          <h3>Community Info</h3>
-        </div>
+        <% if (post.linkPreview) { %>
         <div class="sidebar-body">
-          <div class="sidebar-community">
-            <div class="sidebar-community-info">
-              <div class="sidebar-community-name">
-                <h4><%= post.community.name %></h4>
-              </div>
-              <div class="sidebar-community-description">
-                <p><%= post.community.description %></p>
-              </div>
-            </div>
-            <div class="sidebar-community-avatar">
-              <img src="<%= post.community.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
-            </div>
+          <div class="sidebar-link-image">
+
+
+          <a href="<%= post.linkPreview.url %>">
+            <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %> 
+            <% if (imageUrl) { %>
+              <img src="<%= imageUrl %>" alt="Preview" class="preview-image" />
+          <% } %>
+        </div>
+        <div class="sidebar-link-info-title">
+          <%= post.linkPreview.title %>
+          </div> 
+        <div class="sidebar-link-info">
+          <div class="sidebar-link-info-url">
+            <%= post.linkPreview.url %>
           </div>
         </div>
+        </div>
+        <% } %>
       </div>
 
     </main>

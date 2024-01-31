@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
 :root {
   /* Light mode styles (default) */
-  --background-color: #f4f4f4;
+  --background-color: #fff;
   --text-color: #333;
   --secondary-text-color: #666;
-  --profile-background-color: #ffffff;
-  --section-background-color: #f9f9f9;
+  --profile-background-color: #eee;
+  --section-background-color: #eee;
   --border-color: #ddd;
   --link-color: #111;
   --hover-text-color: green;
@@ -250,6 +250,11 @@ div .user-info, .header {
 .post-content {
   display: flex;
   flex-direction: column;
+  background-color: var(--profile-background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 5px;
+  margin-top: 10px;
 }
 
 .comment {
@@ -380,18 +385,22 @@ a.comment-user-info:hover {
   max-width: 92%;
   display: flex;
   padding: 3px;
-  border: 1px solid #0e6655;
-  border-radius: 10px;
   margin: 4px 4px;
 }
 
 .preview-image {
-  padding: 5px;
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 6px;
   object-fit: cover;
 }
+
+.sidebar-link-info-url, .sidebar-link-info-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .post-content a {
   text-decoration: none;
 }
@@ -554,12 +563,48 @@ p.preview-description {
   transition: background-color 0.15s;
 }
 
+.sidebar-poster-job, .sidebar-poster-name, .sidebar-link-info-title, .sidebar-link-info-url {
+  background-color: #ccc;
+  border-radius: 6px;
+  margin: 3px;
+  padding: 0px 3px;
+  max-width: 100%;
+  font-size: 13px;
+}
+
+.sidebar-link-info-title, .sidebar-link-info-url {
+  max-width: 37%;
+}
+
+
+
 /* Style for the send button on hover */
 .input-container button.fab:hover {
   background-color: var(--border-color);
 } 
 
+.sidebar-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 6px;
+  object-fit: cover;
+
+}
+
+.sidebar-body {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+
+}
+
 @media screen and (max-width: 600px) {
+
+  .sidebar {
+    overflow: hidden;
+    max-width: 45%;
+  }
 
   .comments-section {
     border-top: 1px solid #ccc;
@@ -570,9 +615,21 @@ p.preview-description {
     flex-direction: column-reverse;
     }
     
-    .sidebar-container {
-      flex-direction: row;
-      }
+  .sidebar-container {
+    width: 100%;
+    flex-direction: row;
+
+  }
+  .sidebar {
+    height: 30%;
+    margin: 5px;
+  }
+
+
+  .main-container {
+    width: 100%;
+  }
+
 
   .comment-with-replies {
     margin: 0px;
@@ -585,7 +642,9 @@ p.preview-description {
   }
 
   .comments-section {
-    margin: 0px;
+    margin: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
   }
 
   .main-container {
