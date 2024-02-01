@@ -1,0 +1,97 @@
+<div id="com-btn-container" class="column">
+  <div class="com-btn-container-header">
+    <% if (user) { %>
+
+    <div class="user-info">
+      <div class="avatar-com-container">
+        <img src="<%= user.avatar %>" alt="Avatar" />
+      </div>
+      <div class="username"><%= user.username %></div>
+    </div>
+
+    <% } else { %>
+    <div class="create-post-btn" onclick="window.location.href = '/login';">
+      <span class="material-symbols-outlined">login</span> Login
+    </div>
+    <% } %>
+  </div>
+
+  <h4>Communities</h4>
+  <div class="communities">
+    <span class="material-symbols-outlined">forum</span>
+    <a href="/communities/1" class="community-link">
+      <div class="community-name">All</div>
+    </a>
+  </div>
+  <div class="communities">
+    <span class="material-symbols-outlined">robot</span>
+    <a href="/communities/1" class="community-link">
+      <div class="community-name">ML-AI</div>
+    </a>
+  </div>
+  <div class="communities">
+    <span class="material-symbols-outlined">computer</span>
+    <a href="/communities/2" class="community-link">
+      <div class="community-name">Web-Dev</div>
+    </a>
+  </div>
+  <div class="communities">
+    <span class="material-symbols-outlined">science</span>
+    <a href="/communities/3" class="community-link">
+      <div class="community-name">Computer Science</div>
+    </a>
+  </div>
+  <div class="communities">
+    <span class="material-symbols-outlined">terminal</span>
+    <a href="/communities/4" class="community-link">
+      <div class="community-name">Software</div>
+    </a>
+  </div>
+
+  <br>
+  <h4>Trending Posts</h4>
+  <div class="trending-posts">
+    loading...
+  </div>
+
+  <br>
+  <h4>Recent Jobs</h4>
+
+</div>
+
+
+<script>
+  function getTrendingPosts() {
+    fetch('/api/trending-posts') // Adjust this to your server's endpoint
+      .then(response => response.json())
+      .then(posts => {
+        const trendingPostsContainer = document.querySelector('.trending-posts');
+        trendingPostsContainer.innerHTML = ''; // Clear existing posts
+
+        posts.forEach(post => {
+          const postElement = document.createElement('div');
+          postElement.className = 'trending-post';
+
+          // Add content to postElement here. Example:
+          postElement.innerHTML = `
+                <div class="trending-post-avatar">
+                    <img src="${post.avatar}" alt="Avatar" />
+                </div>
+                <div class="trending-post-content">
+                  <a href="/posts/${post.id}" class="trending-post-title">
+                    <p><strong>${post.username}</strong>/${post.title}</p> 
+                  </a>
+                </div>
+
+            `;
+
+          trendingPostsContainer.appendChild(postElement);
+        });
+      })
+      .catch(error => console.error('Error fetching trending posts:', error));
+  }
+
+
+
+  getTrendingPosts();
+</script>

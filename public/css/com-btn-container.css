@@ -1,0 +1,123 @@
+.com-btn-container-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 10px 0px;
+  }
+  
+  .com-btn-container-header .username {
+    font-weight: 700;
+  }
+
+  #com-btn-container {
+    padding: 15px 20px;
+    display: flex; 
+    background-color: #F6F8FA;
+    flex-direction: column;
+    overflow-x: none;
+    scrollbar-width: none; 
+    overflow-y: auto;
+    height: calc(100vh - 110px);
+  }
+  
+  .communities {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+}
+
+.create-post-btn {
+  padding: 4px;
+  width: 60px;
+  background: #229954;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.7s ease;
+  text-decoration: none;
+  flex: 0 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  gap: 2px;
+}
+
+  #com-btn-container h4 {
+    margin: 2px 0px;
+    margin-bottom: 4px;
+    font-size: 16px;
+    font-weight: 400;
+  }
+  
+  .trending-post-avatar img 
+  {
+  width: 16px;
+  border-radius: 50%;
+  height: auto;
+}
+  
+  #com-btn-container::-webkit-scrollbar, #job-btn-container::-webkit-scrollbar {
+    display: none; /* Hide scrollbar in WebKit browsers */
+  }
+
+  #com-btn-container { 
+    width: 16%;
+    flex: none; /* This will prevent the container from growing */
+    display: flex;
+    flex-direction: column; /* Stacks the buttons vertically */
+    -webkit-scrollbar {
+      display: none;
+    }
+    
+    -ms-overflow-style: none; 
+    scrollbar-width: none;
+    -ms-autohiding-scrollbar: none;
+  
+  }
+  
+  #com-btn-container {
+    border-right: 1px solid #ddd;
+  }
+
+  #com-btn-container a {
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    color: black;
+    margin: 4px 0px;
+  }
+  
+  #com-btn-container a:hover {
+    text-decoration: underline;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    #com-btn-container {
+        background-color: rgb(30,30,30);
+      }
+    
+      .com-btn, .job-btn {
+        background: rgba(0,0,0,0);
+        color: var(--btn-text-dark);
+    }
+
+  #com-btn-container a {
+    text-decoration: none;
+    color: #ddd;
+    font-weight: 300;
+  }
+
+  #com-btn-container {
+    border-right: 1px solid #444;
+  }
+    
+  }
+  @media (max-width: 768px) {
+    #com-btn-container {
+        display: none;
+      }
+  }

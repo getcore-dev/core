@@ -1,17 +1,44 @@
+:root {
+  /* Color variables */
+  --primary-text-color: #000;
+  --navbar-background-color: #F6F8FA;
+  --border-color: #ccc;
+  --hover-background-color: #ddd;
+  --active-indicator-color: #0e6655;
+  --notification-background-color: #fff;
+  --dark-mode-background-color: #222;
+  --dark-mode-text-color: #fff;
+  --dark-mode-border-color: #444;
+  --dark-mode-hover-background-color: #444;
+
+  /* Font and size variables */
+  --font-family: 'Roboto', sans-serif;
+  --default-font-size: 14px;
+  --navbar-button-font-size: 16px;
+  --nav-text-font-size: 20px;
+  --navbar-height: 80px;
+  --mobile-navbar-height: 95px;
+  --logo-max-height: 65px;
+  --mobile-logo-max-height: 45px;
+  --search-bar-width: 170px;
+  --mobile-search-bar-width: 180px;
+  --search-bar-height: 27px;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+
 
 /* Global Style */
 body {
-  margin: 0; /* Remove default margin */
-  padding-top: 80px; /* Add padding */
-  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding-top: var(--navbar-height);
+  font-family: var(--font-family);
 }
 
-
-/* Common Style for Headers and Paragraphs */
-h1, h2, h3, p {
-  margin: 0; /* Remove default margin */
-  padding: 0; /* Remove default padding */
+h1, h2, h3, h4, h5, p {
+  margin: 0; 
+  padding: 0; 
 }
 
 
@@ -45,14 +72,14 @@ h1, h2, h3, p {
 
 
 .navbar {
-  background-color: #f9f9f9; 
+  background-color: var(--navbar-background-color); 
   color: #000; 
   display: flex; 
   flex-direction: column;
   align-items: center; 
   position: fixed;
   width: 100%;
-  height: 80px;
+  height: var(--navbar-height);
   top: 0;
   z-index: 1;
   border-bottom: 1px solid #ccc;
@@ -79,7 +106,7 @@ h1, h2, h3, p {
 }
 
 .nav-links li {
-  font-size: 14px; /* Font size of navbar links */
+  font-size: var(--default-font-size); /* Font size of navbar links */
 }
 
 
@@ -98,10 +125,10 @@ h1, h2, h3, p {
   justify-content: center; 
   gap: 4px; 
   line-height: 1.5; 
-  background-color: #f9f9f9; 
+  background-color: var(--navbar-background-color); 
   color: #000;
   margin: 0px 6px;
-  font-size: 14px; /* Button font size */
+  font-size: var(--default-font-size); /* Button font size */
   border: 1px solid #ccc;
   border-radius: 6px; 
   text-decoration: none; /* Remove underline */
@@ -143,12 +170,12 @@ h1, h2, h3, p {
 }
 
 .navbar-button.active {
-  border-bottom: 1.5px solid #0e6655; /* Active button indicator */
+  border-bottom: 1.5px solid var(--active-indicator-color); /* Active button indicator */
 }
 
 .notification-popup {
   position: absolute;
-  background-color: white;
+  background-color: var(--notification-background-color);
   border: 1px solid #ddd;
   border-radius: 6px;
   box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
@@ -183,7 +210,7 @@ ul.notification-list {
   text-align: center;
   cursor: pointer;
   background: linear-gradient(to right, #0a5275, #003d66); /* New gradient for dark mode */
-  color: white;
+  color: var(--notification-background-color);
   border-radius: 6px;
   border: 0;
   cursor: pointer;
@@ -263,7 +290,7 @@ margin-top: 20px;
 #search-bar {
   padding: 4px 6px;
   margin-left: 5px;
-  font-size: 14px;
+  font-size: var(--default-font-size);
   border: 1px solid #ccc;
   border-radius: 6px;
   height: 27px;
@@ -306,7 +333,7 @@ margin-top: 20px;
     margin: 0px;
   }
   .nav-btns {
-    margin-top: -17px;
+    display: none;
   }
   ul {
     padding-inline-start: 0px;
@@ -319,7 +346,7 @@ margin-top: 20px;
   } 
 
   #nb-icon {
-    padding: 12px;
+    padding: 8px;
   }
 
 
@@ -347,16 +374,15 @@ margin-top: 20px;
     top: 110px;
   }
 
-  .navbar-button.active::after {
-    bottom: -9px;
-  }
+
   .navbar {
-    height: 95px;
+    height: var(--navbar-height);
     padding: 0px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1); 
   }
 
   .user-button {
-    font-size: 14px;
+    font-size: var(--default-font-size);
   }
 
   #avatar {
@@ -379,7 +405,7 @@ margin-top: 20px;
   }
 
   body {
-    padding-top: 110px; /* Reduced padding for mobile */
+    padding-top: var(--navbar-height); /* Reduced padding for mobile */
     overflow-x: hidden;
   }
 
@@ -476,8 +502,8 @@ margin-top: 20px;
 @media (prefers-color-scheme: dark) {
   #search-bar {
     background-color: #222; /* Darker background color for inputs */
-    color: #f9f9f9;
-    font-size: 14px;
+    color: var(--navbar-background-color);
+    font-size: var(--default-font-size);
     border: 1px solid #555; 
     border-radius: 5px;
     width: 180px; 
@@ -490,10 +516,16 @@ margin-top: 20px;
       border-bottom: 1px solid #444; /* Dark border */
   }
 
+  .navbar {
+    background-color: var(--dark-mode-background-color);
+    color: var(--dark-mode-text-color);
+    border-bottom: 1px solid var(--dark-mode-border-color);
+}
+
   .notification-popup {
     position: absolute;
-    background-color: #222;
-    border: 1px solid #444;
+    background-color: var(--dark-mode-background-color);
+    border: 1px solid var(--dark-mode-border-color);
     box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
     width: 300px;
     max-height: 400px;
@@ -502,11 +534,11 @@ margin-top: 20px;
   
   .notification-item {
     padding: 10px;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--dark-mode-border-color);
   }
 
   .notification-item:hover {
-    background-color: #444;
+    background-color: var(--dark-mode-border-color);
   }
   
   .notification-item:last-child {
@@ -518,12 +550,12 @@ margin-top: 20px;
   }
 
   .inbox-button:hover {
-    background-color: #444; /* Background color on hover */
+    background-color: var(--dark-mode-hover-background-color); /* Background color on hover */
     cursor: pointer; /* Pointer cursor on hover */
   }
   .user-button:hover, #search-button:hover {
-    background-color: #444; /* Background color on hover */
-    border: 1px solid #0e6655;
+    background-color: var(--dark-mode-hover-background-color); /* Background color on hover */
+    border: 1px solid var(--active-indicator-color);
     cursor: pointer; /* Pointer cursor on hover */
   }
 
@@ -541,7 +573,7 @@ margin-top: 20px;
   }
 
   .nav-text:hover {
-    color: #0e6655;
+    color: var(--active-indicator-color);
   }
 
   .nav-links li a:hover {
@@ -555,7 +587,7 @@ margin-top: 20px;
 
   .user-links a, #search-button {
     border: 1px solid #555;
-    background-color: #222; /* Darker background for buttons */
+    background-color: var(--dark-mode-background-color);
     color: #fff; /* Light text color for buttons */
 
   }
@@ -573,17 +605,10 @@ margin-top: 20px;
       filter: invert(100%); /* Invert logo colors */
   }
 
-  /* Active navbar button indicator */
-  .navbar-button.active::after {
-      background-color: #0e6655; /* Adjust active indicator color */
-  }
-
-  /* Hamburger menu color adjustment for mobile */
-
   /* Dropdown menu styling */
   .menu-content {
     z-index: 100;
-    background-color: #222; /* Dark background for navbar */
+    background-color: var(--dark-mode-background-color);
     color: #fff; /* Light text color */
   }
 
@@ -639,12 +664,12 @@ margin-top: 20px;
 }
 
   .menu-content a:hover {
-    color: #0e6655;
+    color: var(--active-indicator-color);
   }
 
 @media (prefers-color-scheme: dark) {
   .menu-content {
-    background-color: #222; /* Sidebar background color */
+    background-color: var(--dark-mode-background-color);
   }
 
   .menu-content a {

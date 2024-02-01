@@ -11,6 +11,7 @@ const storage = multer.diskStorage({
 });
 const utilFunctions = require("../utils/utilFunctions");
 const upload = multer({ storage });
+const marked = require("marked");
 
 router.get("/getUsername/:id", async (req, res) => {
   const id = req.params.id;
@@ -29,7 +30,7 @@ router.get("/getUsername/:id", async (req, res) => {
 router.get("/posts/:postId/comments", async (req, res) => {
   try {
     const postId = req.params.postId;
-    const comments = await utilFunctions.getComments(postId); // Implement this function
+    const comments = await utilFunctions.getComments(postId);
     res.json(comments);
   } catch (err) {
     console.error("Error fetching comments:", err);
@@ -40,7 +41,8 @@ router.get("/posts/:postId/comments", async (req, res) => {
 router.get("/posts/:postId", async (req, res) => {
   try {
     const postId = req.params.postId;
-    const postData = await utilFunctions.getPostData(postId); // Implement this function
+    const postData = await utilFunctions.getPostData(postId);
+    postData.content = marked(postData.content);
     res.json(postData);
   } catch (err) {
     console.error("Error fetching post data:", err);
@@ -51,7 +53,7 @@ router.get("/posts/:postId", async (req, res) => {
 router.get("/comments/:commentId/replies", async (req, res) => {
   try {
     const commentId = req.params.commentId;
-    const replies = await utilFunctions.getRepliesForComment(commentId); // Implement this function
+    const replies = await utilFunctions.getRepliesForComment(commentId);
     res.json(replies);
   } catch (err) {
     console.error("Error fetching replies:", err);

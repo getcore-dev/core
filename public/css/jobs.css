@@ -10,18 +10,26 @@ h1 {
     text-align: center;
 }
 
+main {
+  display: flex;
+  flex-direction: row;
+
+}
+
 
 .job-content {
+  background-color: #F6F8FA;
   display: flex;
   flex-direction: column; 
   justify-content: space-between; 
   position: relative; 
   flex: 1; 
-  border-top: 1px solid #aaa; 
   flex-grow: 1; /* Take up remaining space */
   padding-left: 5px; /* No padding */
   padding-right: 5px;
+  border-bottom: 1px solid #ccc;
 }
+
 
 .job-content:hover {
   cursor: pointer;
@@ -98,23 +106,39 @@ h1 {
 }
 
 
+.jobs-container {
+  overflow-y: auto;
+  height: calc(100vh - 80px);
+  width: 100%;
+}
+
+.jobs-container h3 {
+  margin: 30px 50px;
+}
+
 .jobs-container::-webkit-scrollbar {
   display: none;
 }
 
+.job-list {
+  margin: 30px 50px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
 .job-content {
-  padding: 5px;
+  padding: 12px;
 }
 
 .job-flair {
   display: inline-block;
   padding: 2px 3px;
   margin: 2px;
-  background-color: rgba(14, 102, 85, 0.3); 
-  border: 1px solid rgba(14, 102, 85, 0.3); 
+  background-color: #f07826; 
+  border: 1px solid #e05624; 
   color: white;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 14px;
   position: relative;
 }
 

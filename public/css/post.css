@@ -4,8 +4,8 @@
   --background-color: #fff;
   --text-color: #333;
   --secondary-text-color: #666;
-  --profile-background-color: #eee;
-  --section-background-color: #eee;
+  --profile-background-color: #F6F8FA;
+  --section-background-color: #F6F8FA;
   --border-color: #ccc;
   --link-color: #111;
   --hover-text-color: green;
@@ -139,15 +139,10 @@ div .material-symbols-outlined:hover {
 
 .main-container {
   width: 70%;
-  margin: 0px auto;
-  padding: 20px;
+  margin: 0px 20px;
+  padding-left: 20px;
   background-color: var(--background-color);
   overflow-y: scroll;
-}
-
-.post{
-  background-color: var(--profile-background-color);
-  border: 1px solid var(--border-color);
 }
 
 .comment-with-replies {
@@ -162,6 +157,7 @@ div .material-symbols-outlined:hover {
   justify-content: flex-start;
   gap: 10px;
   padding-top: 20px;
+  margin-top: 46px;
 }
 
 .sidebar {
@@ -253,7 +249,7 @@ div .user-info, .header {
   background-color: var(--profile-background-color);
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  padding: 5px;
+  padding: 12px;
   margin-top: 10px;
 }
 
@@ -388,9 +384,13 @@ a.comment-user-info:hover {
   margin: 4px 4px;
 }
 
-.preview-image {
-  width: 60px;
-  height: 60px;
+.sidebar-body a {
+  max-width: 100%;
+}
+
+.preview-image, .sidebar-avatar {
+  width: 120px;
+  height: 120px;
   border-radius: 6px;
   object-fit: cover;
 }
@@ -470,10 +470,6 @@ p.preview-description {
     color: #e0e0e0; /* Light text color for better readability */
   }
 
-  .post {
-    background-color: rgb(30,30,30);
-    border: 1px solid var(--border-color)
-  }
 
   .comment-with-replies {
     border-color: #888; /* Darker border for comments */
@@ -564,16 +560,10 @@ p.preview-description {
 }
 
 .sidebar-poster-job, .sidebar-poster-name, .sidebar-link-info-title, .sidebar-link-info-url {
-  background-color: #ccc;
-  border-radius: 6px;
   margin: 3px;
   padding: 0px 3px;
   max-width: 100%;
   font-size: 13px;
-}
-
-.sidebar-link-info-title, .sidebar-link-info-url {
-  max-width: 37%;
 }
 
 
@@ -583,23 +573,30 @@ p.preview-description {
   background-color: var(--border-color);
 } 
 
-.sidebar-avatar {
-  width: 60px;
-  height: 60px;
-  border-radius: 6px;
-  object-fit: cover;
-
-}
 
 .sidebar-body {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   gap: 5px;
 
 }
 
 @media screen and (max-width: 600px) {
+
+  .sidebar-link-info-title, .sidebar-link-info-url {
+    max-width: 37%;
+  }
+
+  .sidebar-body {
+    flex-direction: row;
+  }
+  .preview-image, .sidebar-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    object-fit: cover;
+  }
 
   .sidebar {
     overflow: hidden;

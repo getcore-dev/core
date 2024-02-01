@@ -6,7 +6,7 @@ body {
 
 .post {
   display: flex; 
-  background: #f4f4f4;
+  background: #F6F8FA;
   border: 1px solid #ccc;
   flex-direction: row;
   justify-content: space-between; 
@@ -116,8 +116,8 @@ div.vote-interactions {
   display: inline-block;
   padding: 2px 3px;
   margin: 2px;
-  background-color: rgba(14, 102, 85, 0.3); 
-  border: 1px solid rgba(14, 102, 85, 0.3); 
+  background-color: #f07826; 
+  border: 1px solid #e05624; 
   color: white;
   border-radius: 6px;
   font-size: 12px;
@@ -127,7 +127,7 @@ div.vote-interactions {
 .reaction-button, .main-reaction-button, .boost-button {
   background-color: rgba(0,0,0,0);
   border: 1px solid #ccc;
-  color: #ccc;
+  color: #666;
   border-radius: 15px;
   padding: 4px 8px;
   margin: 3px 5px;
@@ -185,9 +185,9 @@ div.vote-interactions {
 }
 
 .create-post-btn {
-  padding: 4px 2px;
+  padding: 4px;
   width: 60px;
-  background: #0e6655;
+  background: #229954;
   border-radius: 6px;
   color: white;
   cursor: pointer;
@@ -200,7 +200,7 @@ div.vote-interactions {
   justify-content: center;
   cursor: pointer;
   font-size: 14px;
-  gap: 4px;
+  gap: 2px;
 }
 
 .avatar-com-container img {
@@ -209,16 +209,6 @@ div.vote-interactions {
   border-radius: 50%;
 }
 
-.com-btn-container-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin: 10px 0px;
-}
-
-.com-btn-container-header .username {
-  font-weight: 700;
-}
 
 .user-info {
   display: flex;
@@ -243,7 +233,7 @@ div.vote-interactions {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
 }
 
 .trending-posts {
@@ -371,6 +361,8 @@ div.vote-interactions {
   font-size: 14px;
   vertical-align: -3px;
   margin: 0px 4px;
+  color: #69956e;
+  font-weight: bold;
 }
 
 .title {
@@ -468,6 +460,15 @@ div .mini-link-title {
   cursor: pointer;
 }
 
+#filter-button {
+  border: 0;
+}
+
+#filter-button .material-symbols-outlined {
+  font-size: 22px;
+  vertical-align: -3px;
+}
+
 #filterMenu {
   display: none;
   position: absolute;
@@ -500,27 +501,13 @@ div .mini-link-desc {
   white-space: normal;
 }
 
+
 #post-button {
-  background: darkgreen;
-  border: darkgreen;
+  background: #229954;
+  border: #117732;
+  color: white;
 }
 
-#com-btn-container {
-  padding: 15px 20px;
-  display: flex; 
-  flex-direction: column;
-  overflow-x: none;
-  scrollbar-width: none; 
-}
-
-#com-btn-container h4 {
-  margin: 2px 0px;
-}
-
-
-#com-btn-container::-webkit-scrollbar, #job-btn-container::-webkit-scrollbar {
-  display: none; /* Hide scrollbar in WebKit browsers */
-}
 
 
 /* Dark Mode Styles */
@@ -547,25 +534,6 @@ div .mini-link-desc {
 .column {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
-}
-
-#com-btn-container { 
-  width: 16%;
-  flex: none; /* This will prevent the container from growing */
-  display: flex;
-  flex-direction: column; /* Stacks the buttons vertically */
-  -webkit-scrollbar {
-    display: none;
-  }
-  
-  -ms-overflow-style: none; 
-  scrollbar-width: none;
-  -ms-autohiding-scrollbar: none;
-
-}
-
-#com-btn-container {
-  border-right: 1px solid #ddd;
 }
 
 
@@ -603,7 +571,7 @@ div .mini-link-desc {
 
 .job-content {
   border-radius: 5px;
-  background-color: #f4f4f4;
+  background-color: #F6F8FA;
   border: 1px solid #ccc;
   padding: 5px;
 
@@ -699,7 +667,7 @@ div .mini-link-desc {
   }
 
   .container {
-    height: calc(100vh - 110px);
+    height: calc(100vh - 95px);
   }
 
 }
@@ -712,14 +680,7 @@ div .mini-link-desc {
     border: 1px solid #444;
   }
 
-  #com-btn-container {
-    background-color: rgb(30,30,30);
-  }
 
-  .com-btn, .job-btn {
-    background: rgba(0,0,0,0);
-    color: var(--btn-text-dark);
-}
   body {
       background-color: #121212;
       color: #fff;
@@ -766,10 +727,6 @@ div .mini-link-desc {
     font-size: 15px;
     padding-right: 5px;
     padding-left: 5px;
-  }
-
-  #com-btn-container {
-    display: none;
   }
 
   .jobs-container {
@@ -819,17 +776,6 @@ div .mini-link-desc {
   border-radius: 6px;
 }
 
-#com-btn-container a {
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 400;
-  color: black;
-  margin: 4px 0px;
-}
-
-#com-btn-container a:hover {
-  text-decoration: underline;
-}
 
 @media (prefers-color-scheme: dark) {
   /* General background and text colors */
@@ -855,16 +801,6 @@ div .mini-link-desc {
 
   .reaction-button:hover {
     background-color: #222;
-  }
-
-  #com-btn-container a {
-    text-decoration: none;
-    color: #ddd;
-    font-weight: 300;
-  }
-
-  #com-btn-container {
-    border-right: 1px solid #444;
   }
 
   .comments {

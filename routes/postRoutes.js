@@ -8,6 +8,7 @@ const getUserDetails = utilFunctions.getUserDetails;
 const commentQueries = require("../queries/commentQueries");
 const { getLinkPreview } = require("../utils/utilFunctions");
 const userQueries = require("../queries/userQueries");
+const marked = require("marked");
 
 // Route for viewing all posts
 router.get("/posts", async (req, res) => {
@@ -58,7 +59,7 @@ router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
       "CURIOUS",
       "INTERESTING",
       "CELEBRATE",
-      "BOOST"
+      "BOOST",
     ];
 
     if (!validActions.includes(action)) {
@@ -231,6 +232,9 @@ router.get("/posts/:postId", async (req, res) => {
     postData.community = await utilFunctions.getCommunityDetails(
       postData.communities_id
     );
+
+    // render markup content in html
+    postData.content = marked.parse(postData.content);
 
     res.render("post.ejs", {
       post: postData,
