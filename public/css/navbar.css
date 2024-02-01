@@ -124,12 +124,11 @@ h1, h2, h3, p {
   color: #000; /* Button text color */
   padding: 3px 7px; /* Button padding */
   margin-left: 12px;
-  font-size: 14px; /* Button font size */
-  border: 1px solid #ccc;
+  font-size: 16px; /* Button font size */
   text-decoration: none; /* Remove underline */
-  border-radius: 5px; /* Rounded corners */
   transition: background-color 0.15s, transform 0.15s; /* Transition effects */
   z-index: 2;
+  padding-bottom: 9px;
 }
 
 .navbar-button:hover {
@@ -144,7 +143,7 @@ h1, h2, h3, p {
 }
 
 .navbar-button.active {
-  border: 1px solid #0e6655;
+  border-bottom: 1.5px solid #0e6655; /* Active button indicator */
 }
 
 .notification-popup {
@@ -262,12 +261,13 @@ margin-top: 20px;
   padding: 3px;
 }
 #search-bar {
-  padding: 1px;
+  padding: 4px 6px;
+  margin-left: 5px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 6px;
   height: 27px;
-  width: 200px; /* Adjust the width as needed */
+  width: 170px; /* Adjust the width as needed */
   margin-right: 3px;
 }
 
@@ -294,11 +294,20 @@ margin-top: 20px;
 
 
 #nb-icon {
-  padding: 7px;
+  padding: 9px;
 }
 /* Responsive Design */
 @media (max-width: 768px) {
+  .username a {
+    font-size: 16px;
+  }
 
+  .community-header {
+    margin: 0px;
+  }
+  .nav-btns {
+    margin-top: -17px;
+  }
   ul {
     padding-inline-start: 0px;
   }
@@ -342,7 +351,7 @@ margin-top: 20px;
     bottom: -9px;
   }
   .navbar {
-    height: 110px;
+    height: 95px;
     padding: 0px;
   }
 
@@ -361,8 +370,8 @@ margin-top: 20px;
 
 
   .navbar-button {
-    padding: 4px 9px;
-    font-size: 14px;
+    padding: 7px 9px;
+    font-size: 15px;
   }
 
   #menu-icon {  
@@ -432,7 +441,7 @@ margin-top: 20px;
 
 
 #nb-icon {
-  font-size: 14px;
+  font-size: 16px;
   display: flex;
   justify-content: center;
   align-items: center;

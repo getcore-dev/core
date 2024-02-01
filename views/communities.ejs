@@ -273,10 +273,16 @@ function fetchAndDisplayPosts() {
           linkPreviewDiv.appendChild(linkDiv);
           fetchPromises.push(fetchLinkPreview(post.link, linkDiv));
           }
-          const descriptionDiv = document.createElement('div');
-          descriptionDiv.className = 'description';
-          descriptionDiv.innerText = post.content; // Assuming 'content' holds the description
-          linkPreviewDiv.appendChild(descriptionDiv);
+          const materialSymbolSpan = document.createElement('span');
+materialSymbolSpan.className = 'material-symbols-outlined';
+materialSymbolSpan.textContent = 'chat_bubble'; // Example icon name
+
+const descriptionDiv = document.createElement('div');
+descriptionDiv.className = 'description';
+descriptionDiv.appendChild(materialSymbolSpan);
+descriptionDiv.append(`${post.content}`);
+
+linkPreviewDiv.appendChild(descriptionDiv);
 
 // Votes div
 const votesDiv = document.createElement("div");

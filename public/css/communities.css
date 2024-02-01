@@ -6,7 +6,7 @@ body {
 
 .post {
   display: flex; 
-  background: #fff;
+  background: #f4f4f4;
   border: 1px solid #ccc;
   flex-direction: row;
   justify-content: space-between; 
@@ -22,7 +22,7 @@ body {
 .link {
   padding-top: 1px;
   text-decoration: none;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .score {
@@ -54,8 +54,6 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 7px;
-
 }
 
 
@@ -97,7 +95,7 @@ div.vote-interactions {
   border-radius: 6px;
   margin-top: 7px;
   margin-left: 5px;
-  width: 30%;
+  width: 100%;
   align-items: center;
 }
 
@@ -133,7 +131,7 @@ div.vote-interactions {
   border-radius: 15px;
   padding: 4px 8px;
   margin: 3px 5px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
 }
 
@@ -178,17 +176,17 @@ div.vote-interactions {
   display: inline-block;
   padding: 2px 3px;
   margin: 2px;
-  background-color: rgba(45, 112, 68, 0.507); 
-  border: 1px solid rgba(45, 112, 68, 0.507); 
+  background-color: #6d93b1; 
+  border: 1px solid #6488a4; 
   color: white;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 14px;
   position: relative;
 }
 
 .create-post-btn {
   padding: 4px 2px;
-  width: 30%;
+  width: 60px;
   background: #0e6655;
   border-radius: 6px;
   color: white;
@@ -285,11 +283,13 @@ div.vote-interactions {
 }
 
 .link-preview {
-  border: 1px solid #eee;
-  background-color: #eee;
+  border: 1px solid #e8e8e8;
   margin: 10px 3px;
   border-radius: 6px;
   padding: 4px 6px;
+}
+.mini-link {
+  border-bottom: 1px solid #e8e8e8;
 }
 
 .reaction-menu {
@@ -324,7 +324,7 @@ div.vote-interactions {
 /* Adjust for the arch shape */
 
 .title {
-  font-size: 19px;
+  font-size: 21px;
   font-weight: 500;
   margin-top: 7px;
   margin-left: 3px;
@@ -362,6 +362,15 @@ div.vote-interactions {
 
 .description {
   font-size: 14px;
+  margin-left: 5px;
+  font-weight: bold;
+  padding: 3px;
+}
+
+.description .material-symbols-outlined {
+  font-size: 14px;
+  vertical-align: -3px;
+  margin: 0px 4px;
 }
 
 .title {
@@ -378,7 +387,7 @@ div.vote-interactions {
 }
 
 .comments {
-  font-size: 12px;
+  font-size: 14px;
   color: #666;
   float: right;
   border-radius: 6px;
@@ -400,7 +409,7 @@ div.vote-interactions {
 }
 
 .username a {
-  font-size:12px;
+  font-size: 14px;
   color: #333;
   text-decoration: none;
 }
@@ -426,7 +435,7 @@ div .mini-link {
   display: flex;
   flex-direction: row ;
   max-width: 100%;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .mini-link-url {
@@ -474,6 +483,7 @@ div .mini-link-title {
 }
 
 .mini-link-body {
+  color: #666;
   margin-left: 6px;
 }
 
@@ -555,7 +565,7 @@ div .mini-link-desc {
 }
 
 #com-btn-container {
-  border-right: 1px solid #aaa;
+  border-right: 1px solid #ddd;
 }
 
 
@@ -745,7 +755,7 @@ div .mini-link-desc {
     overflow-y: hidden;
   }
   .title {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .post-info {
@@ -755,6 +765,7 @@ div .mini-link-desc {
   .description {
     font-size: 15px;
     padding-right: 5px;
+    padding-left: 5px;
   }
 
   #com-btn-container {
@@ -811,7 +822,7 @@ div .mini-link-desc {
 #com-btn-container a {
   text-decoration: none;
   font-size: 14px;
-  font-weight: 200;
+  font-weight: 400;
   color: black;
   margin: 4px 0px;
 }

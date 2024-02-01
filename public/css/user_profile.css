@@ -10,10 +10,6 @@ main {
   font-family: 'Inter', sans-serif;
 }
 
-body {
-  overflow-y: hidden; /* allow vertical scrolling if needed */
-
-}
 
 #profile {
   display: grid;
