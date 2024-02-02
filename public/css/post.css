@@ -149,6 +149,10 @@ div .material-symbols-outlined:hover {
   background-color: var(--profile-background-color);
 }
 
+.post-content p { 
+  margin-bottom: 4px;
+  }
+
 .sidebar-container {
   width: 20%;
   display: flex;
@@ -609,6 +613,10 @@ p.preview-description {
   .sidebar-link-info-title, .sidebar-link-info-url {
     max-width: 37%;
   }
+  
+  .post-content {
+    margin-bottom: 2px;
+    }
   
   .sidebar-container {
     margin-top: 0px;
