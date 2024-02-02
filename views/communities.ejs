@@ -157,6 +157,8 @@
             // Main post div
             const postDiv = document.createElement('div');
             postDiv.className = 'post';
+            postDiv.onclick = () => window.location.href = '/posts/' + post.id;
+
 
             // Post content div
             const postContentDiv = document.createElement('div');
@@ -204,7 +206,6 @@
             const titleDiv = document.createElement('div');
             titleDiv.className = 'title';
             titleDiv.innerText = post.title;
-            titleDiv.onclick = () => window.location.href = '/posts/' + post.id;
             postContentDiv.appendChild(titleDiv);
 
             const linkPreviewDiv = document.createElement('div');

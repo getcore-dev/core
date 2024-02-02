@@ -6,9 +6,10 @@
   --hover-background-color: #ddd;
   --active-indicator-color: #0e6655;
   --notification-background-color: #fff;
-  --dark-mode-background-color: #222;
+  --dark-mode-background-color: #1B1F22;
   --dark-mode-text-color: #fff;
-  --dark-mode-border-color: #444;
+  --dark-mode-body-color: #16191B;
+  --dark-mode-border-color: #272D31;
   --dark-mode-hover-background-color: #444;
 
   /* Font and size variables */
@@ -16,7 +17,7 @@
   --default-font-size: 14px;
   --navbar-button-font-size: 16px;
   --nav-text-font-size: 20px;
-  --navbar-height: 80px;
+  --navbar-height: 85px;
   --mobile-navbar-height: 95px;
   --logo-max-height: 65px;
   --mobile-logo-max-height: 45px;
@@ -156,6 +157,7 @@ h1, h2, h3, h4, h5, p {
   transition: background-color 0.15s, transform 0.15s; /* Transition effects */
   z-index: 2;
   padding-bottom: 9px;
+  margin-top: 5px;
 }
 
 .navbar-button:hover {
@@ -252,8 +254,6 @@ ul.notification-list {
   justify-content: space-evenly;
   width: 100%;
 }
-
-
 
 .nav-text:hover {
   text-decoration: underline; /* Underline on hover */
@@ -437,7 +437,7 @@ margin-top: 20px;
 
   .logo img {
     position: absolute;
-    top: 13px;
+    top: 15px;
     left: 65px;
     max-height: 45px; /* Maximum height of the logo */
   }
@@ -501,10 +501,10 @@ margin-top: 20px;
 /* Dark Mode Styles for Navbar */
 @media (prefers-color-scheme: dark) {
   #search-bar {
-    background-color: #222; /* Darker background color for inputs */
+    background-color: var(--dark-mode-body-color); /* Darker background color for inputs */
     color: var(--navbar-background-color);
     font-size: var(--default-font-size);
-    border: 1px solid #555; 
+    border: 1px solid var(--dark-mode-border-color); 
     border-radius: 5px;
     width: 180px; 
   }
@@ -513,7 +513,7 @@ margin-top: 20px;
   .navbar {
       background-color: #222; /* Dark background for navbar */
       color: #fff; /* Light text color */
-      border-bottom: 1px solid #444; /* Dark border */
+      border-bottom: 1px solid var(--dark-mode-border-color); /* Dark border */
   }
 
   .navbar {
@@ -586,7 +586,7 @@ margin-top: 20px;
   }
 
   .user-links a, #search-button {
-    border: 1px solid #555;
+    border: 1px solid var(--dark-mode-border-color);
     background-color: var(--dark-mode-background-color);
     color: #fff; /* Light text color for buttons */
 

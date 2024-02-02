@@ -1,3 +1,17 @@
+:root {
+  --primary-text-color: #000;
+  --light-mode-main-color: #fff;
+  --light-mode-body-color: #F6F8FA;
+  --border-color: #ccc;
+  --hover-background-color: #ddd;
+  --active-indicator-color: #0e6655;
+  --dark-mode-main-color: #1B1F22;
+  --dark-mode-body-color: #16191B;
+  --dark-mode-text-color: #fff;
+  --dark-mode-border-color: #272D31;
+  --dark-mode-hover-background-color: #444;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 body, h1, h2, h3, p {
@@ -18,7 +32,7 @@ main {
 
 
 .job-content {
-  background-color: #F6F8FA;
+  background-color: var(--light-mode-body-color);
   display: flex;
   flex-direction: column; 
   justify-content: space-between; 
@@ -108,7 +122,7 @@ main {
 
 .jobs-container {
   overflow-y: auto;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 85px);
   width: 100%;
 }
 
@@ -168,15 +182,20 @@ div .material-symbols-outlined {
 @media (prefers-color-scheme: dark) {
   /* General Background and Text Colors */
   body , .job-content    {
-      background-color: rgb(30,30,30); /* Dark background */
+      background-color: var(--dark-mode-body-color); /* Dark background */
       color: #fff; /* Light text */
   }
 
-  .job {
-      background-color: rgb(30,30,30); /* Dark background for each job */
+  .job-list {
+    border-color: var(--dark-mode-border-color);
+  }
+
+  .job-content {
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
   }
 
   .job:hover {
-    background-color: rgb(38,38,38);
+    background-color: var(--dark-mode-body-color);
   }
 }

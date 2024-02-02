@@ -1,3 +1,17 @@
+:root {
+  --primary-text-color: #000;
+  --light-mode-main-color: #fff;
+  --light-mode-body-color: #F6F8FA;
+  --border-color: #ccc;
+  --hover-background-color: #ddd;
+  --active-indicator-color: #0e6655;
+  --dark-mode-main-color: #1B1F22;
+  --dark-mode-body-color: #16191B;
+  --dark-mode-text-color: #fff;
+  --dark-mode-border-color: #272D31;
+  --dark-mode-hover-background-color: #444;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 main {
@@ -69,6 +83,10 @@ main {
   color: #666;
 
 }
+.editable-field a {
+  color: var(--active-indicator-color);
+  text-decoration: none;
+}
 
 
 /* Light mode styles (default) */
@@ -84,12 +102,12 @@ main {
 /* Dark mode styles */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background-color: #111;
+    --background-color: #16191B;
     --text-color: #f0f0f0;
     --secondary-text-color: #ddd;
-    --profile-background-color: #333;
-    --section-background-color: rgb(30,30,30);
-    --border-color: #444;
+    --profile-background-color: #16191B;
+    --section-background-color: #1B1F22;
+    --border-color: #272D31;
   }
 
   #profile {
@@ -199,7 +217,7 @@ main {
 
   #profile.grid-container {
       /* Styles for the grid container */
-      background-color: rgb(17,17,17); /* Dark background for the profile container */
+      background-color: var(--background-color); /* Dark background for the profile container */
   }
 
   .profile-info, .current-job, .learning-progress, .achievements {

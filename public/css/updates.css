@@ -1,3 +1,18 @@
+:root {
+  --primary-text-color: #000;
+  --light-mode-body-color: #fff;
+  --light-mode-main-color: #F6F8FA;
+  --border-color: #ccc;
+  --hover-background-color: #ddd;
+  --active-indicator-color: #0e6655;
+  --dark-mode-main-color: #1B1F22;
+  --dark-mode-body-color: #16191B;
+  --dark-mode-text-color: #fff;
+  --dark-mode-border-color: #272D31;
+  --dark-mode-hover-background-color: #444;
+}
+
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 body {
@@ -9,7 +24,7 @@ span.material-symbols-outlined {
 }
 
 #loading-commit {
-  background-color: #f3f3f3;
+  background-color: var(--light-mode-main-color);
   animation: loadingAnimation 1.5s infinite;
 }
 
@@ -24,14 +39,15 @@ div.commit-title {
   text-decoration: none;
 }
   .commit:hover {
-    background-color: #f5f5f5;
+    cursor: pointer;
   }
+  
   .commit {
-    border: 1px solid #eaecef;
+    border: 1px solid var(--light-mode-main-color);
     border-radius: 6px;
     padding: 5px;
     margin: 10px;
-    margin-bottom: 5px;
+    margin-bottom: 20px;
     margin-left: 10px;
     margin-right: 10px;
   }
@@ -109,9 +125,9 @@ div.commit-title {
 
   @media (prefers-color-scheme: dark) {
     body {
-      background-color: #121212;
+      background-color: var(--dark-mode-body-color);
       color: #fff;
-  }
+    }
 
   @keyframes loadingAnimation {
     0% { background-color: #333; }
@@ -120,13 +136,10 @@ div.commit-title {
   }
 
     .commit {
-      background-color: rgb(30,30,30);
-      border: 1px solid #444;
+      background-color: var(--dark-mode-main-color);
+      border: 1px solid var(--dark-mode-border-color);
     }
 
-    .commit:hover {
-      background-color: #444d56;
-    }
     div.commit-title {
       color: #c9d1d9;
     }

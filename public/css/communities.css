@@ -19,6 +19,10 @@ body {
   overflow-y: none;
 }
 
+.post:hover {
+  cursor: pointer;
+}
+
 .link {
   padding-top: 1px;
   text-decoration: none;
@@ -116,7 +120,7 @@ div.vote-interactions {
   display: inline-block;
   padding: 2px 3px;
   margin: 2px;
-  background-color: #f07826; 
+  background-color: #FF6F59; 
   border: 1px solid #e05624; 
   color: white;
   border-radius: 6px;
@@ -273,13 +277,9 @@ div.vote-interactions {
 }
 
 .link-preview {
-  border: 1px solid #e8e8e8;
   margin: 10px 3px;
   border-radius: 6px;
   padding: 4px 6px;
-}
-.mini-link {
-  border-bottom: 1px solid #e8e8e8;
 }
 
 .reaction-menu {
@@ -321,9 +321,7 @@ div.vote-interactions {
   color: #333; 
 }
 
-.title:hover {
-  text-decoration: underline
-}
+
 
 #date-icon, #user-icon, #comments-icon, #score-icon {
   vertical-align: -4px;
@@ -515,7 +513,7 @@ div .mini-link-desc {
 .container {
   background-color: #fff;
   display: flex;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 85px);
   overflow-y: hidden;
   flex-wrap: nowrap;
   flex-direction: row;
@@ -641,6 +639,11 @@ div .mini-link-desc {
 }
 
 @media (max-width: 768px) {
+
+  .community-header, .job-header {
+    margin: 10px 10px 10px 10px;
+  }
+
   .post {
     background: #fff;
   }
@@ -667,7 +670,7 @@ div .mini-link-desc {
   }
 
   .container {
-    height: calc(100vh - 95px);
+    height: calc(100vh - 85px);
   }
 
 }
@@ -675,24 +678,30 @@ div .mini-link-desc {
 /* Dark Mode Styles */
 @media (prefers-color-scheme: dark) {
 
+  .mini-link-body {
+    color: #eee;
+  }
   .reaction-menu {
     background-color: #333;
     border: 1px solid #444;
   }
 
+  #post-flair {
+    background-color: #345995;
+  }
 
   body {
-      background-color: #121212;
+      background-color: #16191B;
       color: #fff;
   }
 
   .container {
-    background-color: rgb(17,17,17);
+    background-color: #16191B;
   }
 
   .post, .job-content {
-      background-color: rgb(30,30,30);
-      border: 1px solid #444;
+      background-color: #1B1F22;
+      border: 1px solid #272D31;
 
   }
  .job-content:hover {
@@ -712,6 +721,9 @@ div .mini-link-desc {
     border-top: 1px solid #aaa;
   }
 
+  .job-flair {
+    background-color: #DB504A;
+  }
   body {
     overflow-y: hidden;
   }
@@ -790,8 +802,7 @@ div .mini-link-desc {
   }
 
   .link-preview {
-    background-color: #222;
-    border: 1px solid #222;
+    background-color: #1F2427;
   }
 
 
@@ -816,9 +827,6 @@ div .mini-link-desc {
     color: #ccc;
   }
   /* Post styling adjustments */
-  .post {
-      border-bottom: 1px solid #444; /* Dark border for posts */
-  }
 
   .job-content:hover, .com-btn:hover {
       background-color: #222; /* Dark background on hover */

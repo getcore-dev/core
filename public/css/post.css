@@ -21,12 +21,12 @@
 @media (prefers-color-scheme: dark) {
   :root {
     /* Dark mode styles */
-    --background-color: #121212;
+    --background-color: #16191B;
     --text-color: #e0e0e0;
     --secondary-text-color: #999;
-    --profile-background-color: #1e1e1e;
+    --profile-background-color: #1B1F22;
     --section-background-color: #333;
-    --border-color: #444;
+    --border-color: #272D31;
     --link-color: #fff;
     --hover-text-color: #e0e0e0;
     --comment-hover-bg-color: #333;
@@ -217,9 +217,10 @@ a.comment-url:visited {
 
 
 .post-title {
-  font-size: 22px;
+  font-size: 25px;
   color: #333;
-  margin-bottom: 2px;
+  margin-bottom: 7px;
+  margin-top: 15px;
 }
 
 div .user-info, .header {
@@ -228,10 +229,27 @@ div .user-info, .header {
   text-decoration: none;
 }
 
+.reaction-button, .main-reaction-button, .boost-button {
+  background-color: rgba(0,0,0,0);
+  border: 1px solid #ccc;
+  color: #666;
+  border-radius: 15px;
+  padding: 4px 8px;
+  margin: 3px 5px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.reaction-interactions .material-symbols-outlined {
+  font-size: 14px;
+  vertical-align: -2px;
+}
+
 .header {
   display: flex;
   align-items: center;
   gap: 4px;
+  margin-bottom: 20px;
 }
 
 .communities_id {
@@ -292,7 +310,7 @@ div.repliers-avatar, div.repliees-avatar {
 
 
 .post-content, .comment-content {
-  font-size: 16px;
+  font-size: 19px;
   line-height: 1.5;
   color: #111;
 }
@@ -466,8 +484,12 @@ p.preview-description {
 
 @media (prefers-color-scheme: dark) {
   body {
-    background-color: #121212; /* Dark background for body */
+    background-color: var(--background-color); /* Dark background for body */
     color: #e0e0e0; /* Light text color for better readability */
+  }
+
+  .reaction-button {
+    border-color: var(--border-color);
   }
 
 
@@ -489,7 +511,7 @@ p.preview-description {
   }
 
   .main-container {
-    background-color: #121212; /* Dark background for main container */
+    background-color: var(--background-color); /* Dark background for main container */
   }
 
   div .user-info, .header {
@@ -563,7 +585,7 @@ p.preview-description {
   margin: 3px;
   padding: 0px 3px;
   max-width: 100%;
-  font-size: 13px;
+  font-size: 16px;
 }
 
 

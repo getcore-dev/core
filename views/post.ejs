@@ -70,14 +70,39 @@
         </div>
 
         <div class="post-content">
-            <%- post.content %>
+          <%- post.content %>
         </div>
         <div class="user-interactions">
-          <div class="combined-score">
-            <span class="material-symbols-outlined" onclick="boostPost('<%= post.id %>', '<%= user %>')">thumb_up</span>
-            <div id="post-score-<%= post.id %>"><%= post.boosts - post.detracts %></div>
-            <span class="material-symbols-outlined" onclick="detractPost('<%= post.id %>', '<%= user %>')">thumb_down</span>
-          </div>
+          <% const reactionTypes = [
+        {
+            type: "LOVE",
+            icon: "❤️",
+            count: post.react_love
+        },
+        {
+            type: "LIKE",
+            icon: "👍",
+            count: post.react_like
+        },
+        {
+            type: "CURIOUS",
+            icon: "🤔",
+            count: post.react_curious
+        },
+        {
+            type: "INTERESTING",
+            icon: "💡",
+            count: post.react_interesting
+        },
+        {
+            type: "CELEBRATE",
+            icon: "🎉",
+            count: post.react_celebrate
+        }
+    ]; %>
+          <% reactionTypes.forEach(reaction => { %>
+          <button class="reaction-button" onclick='interactWithPost(post.id, <%= user %>, reaction.type)''> <%= reaction.icon %> <%= reaction.count %></button>
+          <% }); %>
           <% if (user && user.username === post.user.username) { %>
           <div class="delete">
             <form action="/post/<%= post.id %>?_method=DELETE" method="POST">
@@ -340,6 +365,66 @@
         // Submit the form
         form.submit();
       }
+    }
+
+    function interactWithPost(postId, user, action) {
+      if (!user) {
+        window.location.href = '/login';
+        return;
+      }
+
+      fetch(`/posts/${postId}/react`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            user: user,
+            action: action
+          }) // Ensure action is in lowercase
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Success:', data);
+
+          // Update or create reaction buttons
+          reactionTypes.forEach(reaction => {
+            const reactionCount = data.reactions[reaction.type] || 0;
+            let reactionButton = document.querySelector(`.reaction-button.${reaction.type.toLowerCase()}-button`);
+
+            if (!reactionButton && reactionCount > 0) {
+              // Create a new reaction button if it doesn't exist and the count is positive
+              reactionButton = document.createElement("button");
+              reactionButton.className = `reaction-button ${reaction.type.toLowerCase()}-button`;
+              reactionButton.onclick = () => interactWithPost(postId, user, reaction.type);
+
+              const icon = document.createElement("span");
+              icon.innerText = reaction.icon;
+
+              const countText = document.createElement("span");
+              countText.className = "reaction-count";
+              countText.innerText = ` ${reactionCount}`;
+
+              reactionButton.appendChild(icon);
+              reactionButton.appendChild(countText);
+              reactionInteractionsDiv.appendChild(reactionButton);
+            } else if (reactionButton) {
+              // Update count of existing button
+              const countSpan = reactionButton.getElementsByClassName('reaction-count')[0];
+              countSpan.innerText = ` ${reactionCount}`;
+
+              // Update button color if needed
+              if (reaction.type.toLowerCase() === action.toLowerCase()) {
+                reactionButton.style.color = "blue"; // Change color to indicate selected action
+              } else {
+                reactionButton.style.color = "black"; // Reset color for other buttons
+              }
+            }
+          });
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
     }
 
     function showReplyForm(commentId, event) {

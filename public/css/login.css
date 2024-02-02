@@ -1,3 +1,16 @@
+:root {
+  --primary-text-color: #000;
+  --light-mode-main-color: #fff;
+  --light-mode-body-color: #F6F8FA;
+  --border-color: #ccc;
+  --hover-background-color: #ddd;
+  --active-indicator-color: #0e6655;
+  --dark-mode-main-color: #1B1F22;
+  --dark-mode-body-color: #16191B;
+  --dark-mode-text-color: #fff;
+  --dark-mode-border-color: #272D31;
+  --dark-mode-hover-background-color: #444;
+}
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 body {
@@ -10,16 +23,16 @@ main {
   justify-content: center;
   gap: 15px;
   align-items: center;
-  height: calc(100vh - 110px);
-  background-color: #fff;
+  height: calc(100vh - 85px);
+  background-color: var(--light-mode-main-color);
 font-family: 'Open Sans', sans-serif;
 }
 
 #register {
   padding: 20px 20px;
   border-radius: 6px;
-  background-color: #f4f4f4;
-  border: 1px solid #ccc;
+  background-color: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
   width: 350px; 
   box-sizing: border-box;
   text-align: center;
@@ -28,16 +41,16 @@ font-family: 'Open Sans', sans-serif;
   gap: 4px;
 }
 
-#register a {
+#register a, #forgot-pass a {
   text-decoration: none;
-  color: rgb(14, 102, 85);
+  color: var(--active-indicator-color);
 }
 
 #login {
   padding: 20px 20px;
   border-radius: 6px;
-  background-color: #f4f4f4;
-  border: 1px solid #ccc;
+  background-color: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
   width: 350px; 
   box-sizing: border-box;
 }
@@ -47,11 +60,11 @@ font-family: 'Open Sans', sans-serif;
 }
 
 #login-button {
-  font-size: 12px;
+  font-size: 16px;
   width: 100%;
   border: none;
   border-radius: 5px;
-  background: linear-gradient(to right, #0a5275, #003d66); /* New gradient for dark mode */
+  background: var(--active-indicator-color); /* New gradient for dark mode */
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -74,9 +87,9 @@ font-family: 'Open Sans', sans-serif;
   padding: 7px 20px;
   margin: 8px 0;
   box-sizing: border-box;
-  border: 1px solid #ccc;
   border-radius: 5px; /* This makes the input rounded */
-  background-color: #f8f9fa;
+  background-color: var(--navbar-background-color);
+  border: 1px solid var(--border-color);
   font-size: 16px;
 }
 
@@ -98,7 +111,7 @@ font-family: 'Open Sans', sans-serif;
 
 .join-link .highlight {
   font-weight: bold; 
-  color: green;
+  color: var(--active-indicator-color);
 }
 
 .join-link:hover .highlight {
@@ -107,22 +120,24 @@ font-family: 'Open Sans', sans-serif;
 /* Dark Mode Styles */
 @media (prefers-color-scheme: dark) {
   main {
-    background-color: #1a1a1a; /* Dark background for main */
+    background-color: var(--dark-mode-body-color); /* Dark background for main */
     color: #f4f4f4; /* Light text color for better readability */
   }
 
   #login {
-    background: #333333; /* Dark background for login */
+    background: var(--dark-mode-main-color); /* Dark background for login */
+    border-color: var(--dark-mode-border-color);
   }
 
   #register
   {
-    background: #333333; /* Dark background for login */
+    background: var(--dark-mode-main-color); /* Dark background for login */
+    border-color: var(--dark-mode-border-color);
     }
 
   .input-container input {
-    background-color: #262626; /* Dark background for input fields */
-    border: 2px solid #555; /* Darker border for input fields */
+    background-color: var(--dark-mode-body-color); /* Dark background for input fields */
+    border: 1px solid var(--dark-mode-border-color); /* Darker border for input fields */
     color: #f4f4f4; /* Light text color */
   }
 

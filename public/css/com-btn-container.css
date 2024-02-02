@@ -10,14 +10,14 @@
   }
 
   #com-btn-container {
-    padding: 15px 20px;
+    padding: 15px 30px;
     display: flex; 
     background-color: #F6F8FA;
     flex-direction: column;
     overflow-x: none;
     scrollbar-width: none; 
     overflow-y: auto;
-    height: calc(100vh - 110px);
+    height: calc(100vh - 115px);
   }
   
   .communities {
@@ -49,7 +49,7 @@
   #com-btn-container h4 {
     margin: 2px 0px;
     margin-bottom: 4px;
-    font-size: 16px;
+    font-size: 19px;
     font-weight: 400;
   }
   
@@ -85,8 +85,8 @@
 
   #com-btn-container a {
     text-decoration: none;
-    font-size: 14px;
-    font-weight: 400;
+    font-size: 16px;
+    font-weight: 425;
     color: black;
     margin: 4px 0px;
   }
@@ -97,7 +97,7 @@
 
   @media (prefers-color-scheme: dark) {
     #com-btn-container {
-        background-color: rgb(30,30,30);
+        background-color: #1B1F22;
       }
     
       .com-btn, .job-btn {
@@ -108,11 +108,10 @@
   #com-btn-container a {
     text-decoration: none;
     color: #ddd;
-    font-weight: 300;
   }
 
   #com-btn-container {
-    border-right: 1px solid #444;
+    border-right: 1px solid #272D31;
   }
     
   }
