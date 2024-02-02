@@ -609,6 +609,14 @@ p.preview-description {
   .sidebar-link-info-title, .sidebar-link-info-url {
     max-width: 37%;
   }
+  
+  .sidebar-container {
+    margin-top: 0px;
+    }
+    
+    .post { 
+      padding-top: 0px;
+    }
 
   .sidebar-body {
     flex-direction: row;
