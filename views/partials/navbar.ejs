@@ -1,14 +1,11 @@
-<link
-  rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 <script>
-var user;
-try {
+  var user;
+  try {
     user = JSON.parse('<%- JSON.stringify(user) %>');
-} catch (error) {
+  } catch (error) {
     user = null; // or any default value you prefer
-}
+  }
 </script>
 
 <nav class="navbar">
@@ -18,61 +15,40 @@ try {
         <a href="/"> <img src="/img/core.png" alt="CORE" /> </a>
       </div>
       <div class="nav-text-and-user-btns">
-<div class="nav-text-container">
-        <% if (user) { %>
-        <a class="navbar-user-info" href="/profile/<%= user.username %>"
-          ><%= user.username %></a
-        >@<a class="nav-text" href="/">CORE</a><% } else { %>
-        <a class="navbar-user-info" href="/login">user</a>@<a
-          class="nav-text"
-          href="/"
-          >CORE</a
-        ><% }%>
-      </div>
-      <div class="nav-btns">
-        <ul class="nav-links">
-          <li>
-            <a
-              href="/"
-              class="navbar-button <%= currentPath === '/' ? 'active' : '' %>"
-            >
-              Community
-            </a>
-          </li>
-          <li>
-            <a
-              href="/jobs"
-              class="navbar-button <%= currentPath === '/jobs' ? 'active' : '' %>"
-            >Openings</a
-            >
-          </li>
+        <div class="nav-text-container">
           <% if (user) { %>
-          <li>
-            <a
-              href="/learning"
-              class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>"
-            >
-  Learning</a
-            >
-          </li>
-          <% } else { %> <% } %>
-          <li>
-            <a
-              href="/updates"
-              class="navbar-button <%= currentPath === '/updates' ? 'active' : '' %>"
-            >
-  Updates</a
-            >
-          </li>
-  
-        </ul>
+          <a class="navbar-user-info" href="/profile/<%= user.username %>"><%= user.username %></a>@<a class="nav-text" href="/">CORE</a><% } else { %>
+          <a class="navbar-user-info" href="/login">user</a>@<a class="nav-text" href="/">CORE</a><% }%>
+        </div>
+        <div class="nav-btns">
+          <ul class="nav-links">
+            <li>
+              <a href="/" class="navbar-button <%= currentPath === '/' ? 'active' : '' %>">
+                Community
+              </a>
+            </li>
+            <li>
+              <a href="/jobs" class="navbar-button <%= currentPath === '/jobs' ? 'active' : '' %>">Openings</a>
+            </li>
+            <% if (user) { %>
+            <li>
+              <a href="/learning" class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>">
+                Learning</a>
+            </li>
+            <% } else { %> <% } %>
+            <li>
+              <a href="/updates" class="navbar-button <%= currentPath === '/updates' ? 'active' : '' %>">
+                Updates</a>
+            </li>
+
+          </ul>
+        </div>
       </div>
-      </div>
-      
+
     </div>
     <div class="top-bar">
       <div class="hamburger-menu">
-        
+
         <span class="material-symbols-outlined" id="menu-icon" style="z-index: 1000;"> menu </span>
         <div class="menu-content" id="menu-content">
           <a href="/">Communities</a>
@@ -81,16 +57,9 @@ try {
           <% if (user) { %>
           <a href="/post/create">Create Post</a>
           <a class="nav-text" href="/profile/<%= user.username %>">Profile</a>
-          <form
-            id="logoutForm"
-            action="/logout?_method=DELETE"
-            method="POST"
-            style="display: none"
-          ></form>
+          <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
           <a href="/learning">Learning</a>
-          <a href="#" onclick="document.getElementById('logoutForm').submit();"
-            >Logout</a
-          >
+          <a href="#" onclick="document.getElementById('logoutForm').submit();">Logout</a>
           <% } else { %>
           <a href="/login">Login</a>
           <% } %>
@@ -99,78 +68,58 @@ try {
       </div>
       <div class="user-btns">
         <ul class="user-links">
-          <li>
-            <% if (user) { %>
-            <a
-              href="/profile/<%= user.username %>"
-              class="user-button <%= currentPath === '/' ? 'active' : '' %>"
-            >
-              <% } else { %>
-                <a
-              href="/login"
-              class="user-button <%= currentPath === '/' ? 'active' : '' %>"
-            >
-              <% } %>
-              <% if (user && user.avatar) { %>
-                <div class="nav-avatar">
-              <img
-                src="<%= user.avatar %>"
-                alt="Avatar"
-                class="avatar"
-                id="avatar" >
-              </div>
-              <% } else if (user && user.avatar) { %>
-                <div class="nav-avatar">
-
-              <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
-                </div>
-              <% } else if (!user) { %>
-              <span class="material-symbols-outlined" id="nb-icon">                
-                person
-              </span>
-              <% } %>
-            </a>
-          </li>
           <% if (user) { %>
-            <li>
-              <a href="#" class="inbox-button <%= currentPath === '/' ? 'active' : '' %>" id="notification-btn">
-                <span class="material-symbols-outlined" id="nb-icon">
-                  mail
-                </span>
-              </a>
-              <div id="notification-popup" class="notification-popup" style="display: none;">
-                <button id="clear-all-btn">Clear All</button>
-                <ul id="notification-list" class="notification-list">
-                </ul>
-              </div>
-            </li>
           <li>
-            <form
-            id="logoutForm"
-            action="/logout?_method=DELETE"
-            method="POST"
-            style="display: none"
-          ></form>
-          <a
-            href="#"
-            class="logout-button <%= currentPath === '/logout' ? 'active' : '' %>"
-            onclick="document.getElementById('logoutForm').submit();"
-          >
+            <a href="#" class="inbox-button <%= currentPath === '/' ? 'active' : '' %>" id="notification-btn">
+              <span class="material-symbols-outlined" id="nb-icon">
+                notifications
+              </span>
+            </a>
+            <div id="notification-popup" class="notification-popup" style="display: none;">
+              <button id="clear-all-btn">Clear All</button>
+              <ul id="notification-list" class="notification-list">
+              </ul>
+            </div>
+          </li>
+          <li>
+            <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
+            <a href="#" class="logout-button <%= currentPath === '/logout' ? 'active' : '' %>" onclick="document.getElementById('logoutForm').submit();">
               <span class="material-symbols-outlined" id="nb-icon">
                 logout
               </span>
             </a>
           </li>
           <% } else { %>
-            <% } %>
-            <li>
-              <div id="search-bar-container">
-                <input type="text" id="search-bar" placeholder="Search" />
-                <button id="search-button" aria-label="Search Google">
-                  <span class="material-symbols-outlined" id="nb-icon"> search </span>
-                </button>
-              </div>
-            </li>
+          <% } %>
+          <li>
+            <div id="search-bar-container">
+              <button id="search-button" aria-label="Search Google">
+                <span class="material-symbols-outlined" id="nb-icon"> search </span>
+              </button>
+            </div>
+          </li>
+          <li>
+            <% if (user) { %>
+            <a href="/profile/<%= user.username %>" class="user-button <%= currentPath === '/' ? 'active' : '' %>">
+              <% } else { %>
+              <a href="/login" class="user-button <%= currentPath === '/' ? 'active' : '' %>">
+                <% } %>
+                <% if (user && user.avatar) { %>
+                <div class="nav-avatar">
+                  <img src="<%= user.avatar %>" alt="Avatar" class="avatar" id="avatar">
+                </div>
+                <% } else if (user && user.avatar) { %>
+                <div class="nav-avatar">
+
+                  <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
+                </div>
+                <% } else if (!user) { %>
+                <span class="material-symbols-outlined" id="nb-icon">
+                  person
+                </span>
+                <% } %>
+              </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -178,75 +127,75 @@ try {
 </nav>
 
 <script>
-document.getElementById("menu-icon").onclick = function (event) {
+  document.getElementById("menu-icon").onclick = function(event) {
     var content = document.getElementById("menu-content");
     var overlay = document.getElementById("overlay");
     var menuIcon = document.getElementById("menu-icon");
 
     if (content.classList.contains("sidebar-open")) {
-        content.classList.remove("sidebar-open");
-        overlay.style.display = "none";
-        menuIcon.textContent = 'menu';
-        document.body.style.overflow = ""; // Enable scrolling
+      content.classList.remove("sidebar-open");
+      overlay.style.display = "none";
+      menuIcon.textContent = 'menu';
+      document.body.style.overflow = ""; // Enable scrolling
     } else {
-        content.classList.add("sidebar-open");
-        overlay.style.display = "block";
-        menuIcon.textContent = 'close';
-        document.body.style.overflow = "hidden"; // Disable scrolling
+      content.classList.add("sidebar-open");
+      overlay.style.display = "block";
+      menuIcon.textContent = 'close';
+      document.body.style.overflow = "hidden"; // Disable scrolling
     }
     event.stopPropagation();
-};
+  };
 
-document.addEventListener('click', function (event) {
+  document.addEventListener('click', function(event) {
     var content = document.getElementById("menu-content");
     var overlay = document.getElementById("overlay");
     var menuIcon = document.getElementById("menu-icon");
 
     if (!content.contains(event.target) && event.target !== menuIcon) {
-        if (content.classList.contains("sidebar-open")) {
-            content.classList.remove("sidebar-open");
-            overlay.style.display = "none";
-            menuIcon.textContent = 'menu';
-            document.body.style.overflow = "";
-        }
+      if (content.classList.contains("sidebar-open")) {
+        content.classList.remove("sidebar-open");
+        overlay.style.display = "none";
+        menuIcon.textContent = 'menu';
+        document.body.style.overflow = "";
+      }
     }
-});
-  
-  
-  
-  
+  });
+
+
+
+
   document.getElementById('notification-btn').addEventListener('click', function(event) {
     document.getElementById('notification-popup').style.display = 'block';
     event.stopPropagation();
     fetchNotifications();
   });
-  
+
   document.addEventListener('click', function(event) {
     var notificationPopup = document.getElementById('notification-popup');
     var notificationBtn = document.getElementById('notification-btn');
-  
+
     // Check if the click is outside the notification popup and not on the notification button
     if (!notificationPopup.contains(event.target) && event.target !== notificationBtn) {
       notificationPopup.style.display = 'none';
     }
   });
-  
-  
+
+
   async function fetchNotifications() {
     // Fetch notifications (adjust userId as needed)
     const response = await fetch(`/notifications/unread/${user.id}`);
     const notifications = await response.json();
-    
+
     // Clear current list
     const notificationList = document.getElementById('notification-list');
     notificationList.innerHTML = '';
-  
+
     // Populate list
     notifications.forEach(notification => {
       const li = document.createElement('li');
       li.classList.add('notification-item');
       li.textContent = notification.message;
-      
+
       // Clear button for each notification
       const clearBtn = document.createElement('button');
       clearBtn.classList.add('clear-btn');
@@ -255,22 +204,23 @@ document.addEventListener('click', function (event) {
         clearNotification(notification.id);
         li.remove();
       };
-  
+
       li.appendChild(clearBtn);
       notificationList.appendChild(li);
     });
   }
-  
+
   async function clearNotification(notificationId) {
-    await fetch(`/notifications/${notificationId}`, { method: 'DELETE' });
+    await fetch(`/notifications/${notificationId}`, {
+      method: 'DELETE'
+    });
   }
-  
+
   document.getElementById('clear-all-btn').addEventListener('click', async function() {
     // Clear all notifications (adjust userId as needed)
-    await fetch(`/notifications/markAllAsRead/${user.id}`, { method: 'PUT' });
+    await fetch(`/notifications/markAllAsRead/${user.id}`, {
+      method: 'PUT'
+    });
     fetchNotifications(); // Refresh the list
   });
-  
-  
-  
-  </script>
+</script>

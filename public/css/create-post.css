@@ -4,6 +4,10 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
+.editor-toolbar button {
+    color: black;
+}
+
 /* Specific styles for main container and its children */
 .main-container {
     max-width: 800px;
@@ -32,9 +36,8 @@ body {
 
 .main-container button {
     background-color: green;
-    color: white;
     border: none;
-    padding: 10px 20px;
+
     border-radius: 5px;
     cursor: pointer;
 }

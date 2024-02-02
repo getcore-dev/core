@@ -117,6 +117,12 @@ div.vote-interactions {
   align-items: center;
 }
 
+.post-header-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .post-content {
   position: relative;
   margin: 4px 12px;
@@ -205,21 +211,6 @@ div.vote-interactions {
   gap: 2px;
 }
 
-.avatar-com-container img {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-}
-
-
-.user-info {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 3px;
-
-}
-
 .recent-post-avatar img {
   width: 16px;
   height: auto;
@@ -231,28 +222,6 @@ div.vote-interactions {
   height: auto;
 }
 
-.trending-post {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-}
-
-.trending-posts {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.trending-post-content {
-  display: -webkit-box;
-  -webkit-line-clamp: 1; /* Limit the text block to just one line */
-  -webkit-box-orient: vertical;
-  overflow: hidden; /* Hide text that doesn't fit in the box */
-  text-overflow: ellipsis; /* Add an ellipsis at the end of the text that doesn't fit */
-  white-space: nowrap; /* Prevent text from wrapping to the next line */
-  max-width: 100%; /* Ensure it takes the full width of its container */
-}
 
 .create-post-btn .material-symbols-outlined {
   font-size: 17px;
@@ -440,6 +409,7 @@ div .mini-link-title {
   cursor: pointer;
 }
 
+
 #filter-button {
   border: 0;
 }
@@ -447,6 +417,7 @@ div .mini-link-title {
 #filter-button .material-symbols-outlined {
   font-size: 22px;
   vertical-align: -3px;
+  font-weight: normal;
 }
 
 #filterMenu {

@@ -46,6 +46,42 @@
   gap: 2px;
 }
 
+.user-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 3px;
+}
+.trending-post {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.trending-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.trending-post-content {
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* Limit the text block to just one line */
+  -webkit-box-orient: vertical;
+  overflow: hidden; /* Hide text that doesn't fit in the box */
+  text-overflow: ellipsis; /* Add an ellipsis at the end of the text that doesn't fit */
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+  max-width: 100%; /* Ensure it takes the full width of its container */
+}
+
+
+.avatar-com-container img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
   #com-btn-container h4 {
     margin: 2px 0px;
     margin-bottom: 4px;
