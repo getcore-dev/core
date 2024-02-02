@@ -1,8 +1,8 @@
 :root {
   /* Color variables */
-  --primary-text-color: #000;
+  --primary-text-color: #1D2935;
   --navbar-background-color: #F6F8FA;
-  --border-color: #ccc;
+  --border-color: #D8E0E9;
   --hover-background-color: #ddd;
   --active-indicator-color: #0e6655;
   --notification-background-color: #fff;
@@ -64,17 +64,17 @@ h1, h2, h3, h4, h5, p {
   padding: 8px 6px;
   position: relative;
   display: none;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 5px; 
   margin-left: 10px; /* Left padding */
-  color: #000; /* Icon color */
+  color: var(--primary-text-color); /* Icon color */
   font-size: 20px; /* Icon size */
 }
 
 
 .navbar {
   background-color: var(--navbar-background-color); 
-  color: #000; 
+  color: var(--primary-text-color); 
   display: flex; 
   flex-direction: column;
   align-items: center; 
@@ -83,7 +83,7 @@ h1, h2, h3, h4, h5, p {
   height: var(--navbar-height);
   top: 0;
   z-index: 1;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--border-color);
 }
 
 /* Navbar Links Style */
@@ -113,7 +113,7 @@ h1, h2, h3, h4, h5, p {
 
 .nav-links {
   text-decoration: none; /* Remove underline */
-  color: #000; /* Link color */
+  color: var(--primary-text-color); /* Link color */
 }
 
 .nav-links li a:hover {
@@ -127,10 +127,10 @@ h1, h2, h3, h4, h5, p {
   gap: 4px; 
   line-height: 1.5; 
   background-color: var(--navbar-background-color); 
-  color: #000;
+  color: var(--primary-text-color);
   margin: 0px 6px;
   font-size: var(--default-font-size); /* Button font size */
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 6px; 
   text-decoration: none; /* Remove underline */
   transition: background-color 0.15s, transform 0.15s; /* Transition effects */
@@ -149,7 +149,7 @@ h1, h2, h3, h4, h5, p {
   justify-content: center; /* Center button content */
   gap: 4px; /* Gap between icon and text */
   line-height: 1.5; /* Button text line height */
-  color: #000; /* Button text color */
+  color: var(--primary-text-color); /* Button text color */
   padding: 3px 7px; /* Button padding */
   margin-left: 12px;
   font-size: 16px; /* Button font size */
@@ -240,7 +240,7 @@ ul.notification-list {
 
 /* Nav Text Styles */
 .nav-text, .nav-text:hover {
-  color: #000; /* Nav text and hover color */
+  color: var(--primary-text-color); /* Nav text and hover color */
   text-decoration: none; /* Remove underline */
 }
 
@@ -291,7 +291,7 @@ margin-top: 20px;
   padding: 4px 6px;
   margin-left: 5px;
   font-size: var(--default-font-size);
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   height: 27px;
   width: 170px; /* Adjust the width as needed */
@@ -449,7 +449,7 @@ margin-top: 20px;
 
 .navbar-user-info {
   text-decoration: none;
-  color: #000;
+  color: var(--primary-text-color);
 }
 
 
@@ -560,7 +560,7 @@ margin-top: 20px;
   }
 
   #menu-icon {
-    color: #ccc;
+    color: var(--border-color);
   }
 
   /* Navbar links styling */
@@ -657,7 +657,7 @@ margin-top: 20px;
   padding: 8px 8px 8px 32px;
   text-decoration: none;
   font-size: 16px;
-  color: #000;
+  color: var(--primary-text-color);
   display: block;
   transition: 0.3s;
 }

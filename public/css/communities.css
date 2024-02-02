@@ -1,3 +1,17 @@
+:root {
+  --primary-text-color: #1D2935;
+  --light-mode-main-color: #fff;
+  --light-mode-body-color: #F6F8FA;
+  --border-color: #D8E0E9;
+  --hover-background-color: #ddd;
+  --active-indicator-color: #0e6655;
+  --dark-mode-main-color: #1B1F22;
+  --dark-mode-body-color: #16191B;
+  --dark-mode-text-color: #fff;
+  --dark-mode-border-color: #272D31;
+  --dark-mode-hover-background-color: #444;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 body {
@@ -6,8 +20,8 @@ body {
 
 .post {
   display: flex; 
-  background: #F6F8FA;
-  border: 1px solid #ccc;
+  background: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
   flex-direction: row;
   justify-content: space-between; 
   position: relative; 
@@ -84,7 +98,7 @@ div.vote-interactions {
   max-height: 39px;
   aspect-ratio: 1/1;
   object-fit: cover;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
 }
 
 .current-job {
@@ -129,8 +143,8 @@ div.vote-interactions {
 }
 
 .reaction-button, .main-reaction-button, .boost-button {
-  background-color: rgba(0,0,0,0);
-  border: 1px solid #ccc;
+  background-color: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
   color: #666;
   border-radius: 15px;
   padding: 4px 8px;
@@ -158,22 +172,6 @@ div.vote-interactions {
 .reaction-button .material-symbols-outlined {
   font-size: 15px;
   vertical-align: -3px;
-}
-.loader {
-  border: 5px solid #f3f3f3; /* Light grey */
-  border-top: 5px solid #3498db; /* Blue */
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 2s linear infinite;
-}
-
-
-
-@keyframes spin {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.5); opacity: 0.5; }
-  100% { transform: scale(1); }
 }
 
 #post-flair {
@@ -277,6 +275,7 @@ div.vote-interactions {
 }
 
 .link-preview {
+  background-color: #E5EBF1;
   margin: 10px 3px;
   border-radius: 6px;
   padding: 4px 6px;
@@ -309,13 +308,9 @@ div.vote-interactions {
   transition: transform 2s ease;
 }
 
-
-
-/* Adjust for the arch shape */
-
 .title {
   font-size: 21px;
-  font-weight: 500;
+  font-weight: 600;
   margin-top: 7px;
   margin-left: 3px;
   color: #333; 
@@ -385,19 +380,6 @@ div.vote-interactions {
 
 }
 
-.material-symbols-outlined.boost-button, .material-symbols-outlined.detract-button {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-.material-symbols-outlined.boost-button:hover {
-  color: green;
-}
-
-.material-symbols-outlined.detract-button:hover {
-  color: orangered;
-}
-
 .username a {
   font-size: 14px;
   color: #333;
@@ -448,7 +430,7 @@ div .mini-link-title {
 
 .header-button {
   background: rgba(0,0,0,0);
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   color: inherit;
   border-radius: 6px;
   padding: 6px 12px;
@@ -536,7 +518,7 @@ div .mini-link-desc {
 
 
 #posts-container {
-  width: 50%;
+  width: 40%;
   flex: none;
   flex-direction: column;
   -webkit-scrollbar {
@@ -548,11 +530,11 @@ div .mini-link-desc {
 }
 
 .jobs-container {
-  width: 21%;
+  width: 15%;
   flex: none;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #aaa;
+  margin: 0px 20px;
   -webkit-scrollbar {
     display: none;
   }
@@ -569,9 +551,9 @@ div .mini-link-desc {
 
 .job-content {
   border-radius: 5px;
-  background-color: #F6F8FA;
-  border: 1px solid #ccc;
-  padding: 5px;
+  background-color: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
+  padding: 5px 10px;
 
   flex-direction: column;
 }
@@ -580,7 +562,6 @@ div .mini-link-desc {
 }
 
  .job-content:hover {
-  background-color: #f1f1f1;
   cursor: pointer;
 }
 
@@ -645,7 +626,7 @@ div .mini-link-desc {
   }
 
   .post {
-    background: #fff;
+    background: var(--light-mode-body-color);
   }
   .post-content, .job-content {
       margin-left: 30px;
@@ -675,7 +656,7 @@ div .mini-link-desc {
 
 }
 
-/* Dark Mode Styles */
+
 @media (prefers-color-scheme: dark) {
 
   .mini-link-body {
@@ -708,7 +689,6 @@ div .mini-link-desc {
       background-color: rgb(38,38,38);
   }
 
-  /* Add other dark mode specific styles here */
 }
 @media (max-width: 768px) {
   .post {
@@ -718,7 +698,7 @@ div .mini-link-desc {
     margin: 0px;
     width: 100%;
     max-width: 100%;
-    border-top: 1px solid #aaa;
+    border-top: 1px solid var(--border-color);
   }
 
   .job-flair {
@@ -760,10 +740,10 @@ div .mini-link-desc {
   .thumbnail-image {
     margin-left: 10px;
     margin-right: 10px;
-    width: 58px; /* Width */
-    height: 58px; /* Full height */
-    aspect-ratio: 1/1; /* Maintain aspect ratio */
-    object-fit: cover; /* Cover the space without stretching */
+    width: 58px;
+    height: 58px; 
+    aspect-ratio: 1/1; 
+    object-fit: cover; 
   }
   #posts-container {
     width: 100%;
@@ -798,6 +778,7 @@ div .mini-link-desc {
   }
 
   .main-reaction-button, .boost-button { 
+    background-color: var(--dark-mode-main-color);
     border: 1px solid #444;
   }
 
@@ -807,6 +788,7 @@ div .mini-link-desc {
 
 
   .reaction-button {
+    background-color: var(--dark-mode-main-color);
     border: 1px solid #444;
     color: #ddd;
   }

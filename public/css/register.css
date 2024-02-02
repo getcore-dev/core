@@ -2,7 +2,7 @@
   --primary-text-color: #000;
   --light-mode-main-color: #fff;
   --light-mode-body-color: #F6F8FA;
-  --border-color: #ccc;
+  --border-color: #D8E0E9;
   --hover-background-color: #ddd;
   --active-indicator-color: #0e6655;
   --dark-mode-main-color: #1B1F22;
@@ -34,7 +34,7 @@ main {
 #login {
   padding: 20px 20px;
   border-radius: 6px;
-  background-color: #f4f4f4;
+  background-color: var(--light-mode-body-color);
   border: 1px solid #ccc;
   width: 350px; 
   box-sizing: border-box;
@@ -47,7 +47,7 @@ main {
 #registration {
   padding: 20px 20px;
   border-radius: 6px;
-  background-color: #f4f4f4;
+  background-color: var(--light-mode-body-color);
   border: 1px solid #ccc;
   width: 350px;
   box-sizing: border-box;

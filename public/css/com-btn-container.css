@@ -65,7 +65,7 @@
   }
 
   #com-btn-container { 
-    width: 16%;
+    width: 13%;
     flex: none; /* This will prevent the container from growing */
     display: flex;
     flex-direction: column; /* Stacks the buttons vertically */
@@ -80,7 +80,7 @@
   }
   
   #com-btn-container {
-    border-right: 1px solid #ddd;
+    border-right: 1px solid #D8E0E9;
   }
 
   #com-btn-container a {

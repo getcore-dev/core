@@ -50,6 +50,11 @@ app.use(
     cookie: { secure: environment.isProduction, maxAge: 1000 * 60 * 60 * 24 },
   })
 );
+
+app.use((req, res, next) => {
+  console.log("Session:", req.session);
+  next();
+});
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride("_method"));
@@ -71,24 +76,10 @@ app.use(errorHandler);
 
 // Server start
 
-if (cluster.isMaster) {
-  // Fork workers for each CPU core
-  const numCPUs = os.cpus().length;
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
-
-  cluster.on("exit", (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died`);
-    cluster.fork(); // Optional: Start a new worker on death of the old one
-  });
-} else {
-  // Workers share the TCP connection in this server
-  app.listen(environment.port, () => {
-    console.log(
-      `Server running on http://localhost:${environment.port}, Worker PID: ${process.pid}`
-    );
-  });
-}
+app.listen(environment.port, () => {
+  console.log(
+    `Server running on http://localhost:${environment.port}, Worker PID: ${process.pid}`
+  );
+});
 
 module.exports = app;
