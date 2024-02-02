@@ -355,7 +355,7 @@ margin-top: 20px;
   .user-btns {
     position: absolute;
     right: 15px;
-    top: 20px;
+    top: 25px;
   }
   
   #search-bar {
@@ -364,7 +364,7 @@ margin-top: 20px;
 
   .nav-text-and-user-btns {
     position: absolute;
-    top: 75px;
+    top: 80px;
     left: 20px;
   }
 
@@ -425,7 +425,7 @@ margin-top: 20px;
   .hamburger-menu {
     position: absolute;
     left: 10px; 
-    top: 18px; 
+    top: 23px; 
     z-index: 2;
   }
 
@@ -437,7 +437,7 @@ margin-top: 20px;
 
   .logo img {
     position: absolute;
-    top: 8px;
+    top: 13px;
     left: 65px;
     max-height: 45px; /* Maximum height of the logo */
   }
