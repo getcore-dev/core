@@ -167,7 +167,7 @@ div .material-symbols-outlined {
 /* Dark Mode Styles */
 @media (prefers-color-scheme: dark) {
   /* General Background and Text Colors */
-  body {
+  body , .job-content    {
       background-color: rgb(30,30,30); /* Dark background */
       color: #fff; /* Light text */
   }
