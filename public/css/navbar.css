@@ -503,38 +503,30 @@ margin-top: 20px;
   #search-bar {
     background-color: var(--dark-mode-body-color); /* Darker background color for inputs */
     color: var(--navbar-background-color);
-    font-size: var(--default-font-size);
-    border: 1px solid var(--dark-mode-border-color); 
-    border-radius: 5px;
-    width: 180px; 
+    border-color: var(--dark-mode-border-color); 
   }
 
   /* Navbar background and text colors */
   .navbar {
       background-color: #222; /* Dark background for navbar */
       color: #fff; /* Light text color */
-      border-bottom: 1px solid var(--dark-mode-border-color); /* Dark border */
+      border-color: var(--dark-mode-border-color); /* Dark border */
   }
 
   .navbar {
     background-color: var(--dark-mode-background-color);
     color: var(--dark-mode-text-color);
-    border-bottom: 1px solid var(--dark-mode-border-color);
+    border-color: var(--dark-mode-border-color);
 }
 
   .notification-popup {
-    position: absolute;
     background-color: var(--dark-mode-background-color);
-    border: 1px solid var(--dark-mode-border-color);
+    border-color: var(--dark-mode-border-color);
     box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-    width: 300px;
-    max-height: 400px;
-    overflow-y: auto;
   }
   
   .notification-item {
-    padding: 10px;
-    border-bottom: 1px solid var(--dark-mode-border-color);
+    border-color: var(--dark-mode-border-color);
   }
 
   .notification-item:hover {
@@ -544,10 +536,6 @@ margin-top: 20px;
   .notification-item:last-child {
     border-bottom: none;
   }
-  
-  .clear-btn {
-    float: right;
-  }
 
   .inbox-button:hover {
     background-color: var(--dark-mode-hover-background-color); /* Background color on hover */
@@ -555,7 +543,7 @@ margin-top: 20px;
   }
   .user-button:hover, #search-button:hover {
     background-color: var(--dark-mode-hover-background-color); /* Background color on hover */
-    border: 1px solid var(--active-indicator-color);
+    border-color: var(--active-indicator-color);
     cursor: pointer; /* Pointer cursor on hover */
   }
 
@@ -582,11 +570,11 @@ margin-top: 20px;
   }
 
   #menu-icon {
-    border: 1px solid #555;
+    border-color: var(--dark-mode-border-color);
   }
 
   .user-links a, #search-button {
-    border: 1px solid var(--dark-mode-border-color);
+    border-color: var(--dark-mode-border-color);
     background-color: var(--dark-mode-background-color);
     color: #fff; /* Light text color for buttons */
 
@@ -595,28 +583,28 @@ margin-top: 20px;
 
   /* Navbar button styling */
   .navbar-button {
-      color: #fff; /* Light text color for buttons */
-  }
+    color: #fff; /* Light text color for buttons */
+}
 
 
-  /* Logo styling */
-  .logo img {
-      filter: invert(100%); /* Invert logo colors */
-  }
+/* Logo styling */
+.logo img {
+    filter: invert(100%); /* Invert logo colors */
+}
 
-  /* Dropdown menu styling */
-  .menu-content {
-    z-index: 100;
-    background-color: var(--dark-mode-background-color);
-    color: #fff; /* Light text color */
-  }
+/* Dropdown menu styling */
+.menu-content {
+  z-index: 100;
+  background-color: var(--dark-mode-background-color);
+  color: #fff; /* Light text color */
+}
 
-  .menu-content a {
-      color: #fff; /* Light text color for links */
-  }
-  .navbar-user-info {
-    color: #fff;
-  }
+.menu-content a {
+    color: #fff; /* Light text color for links */
+}
+.navbar-user-info {
+  color: #fff;
+}
 
   .menu-content a:hover {
       background-color: #555; /* Lighter background on hover */
