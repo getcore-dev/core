@@ -87,6 +87,12 @@
               </div>
               <div class="job-title"><%= job.jobTitle %></div>
             </div>
+            <div class="job-posting-link">
+              <img src="./src/indeedlogo.png" class="company-logo" id="job-link-logo" />
+            </div>
+            <div class="job-posting-deadline">
+              Deadline: <span id="deadline"></span>
+            </div>
           </div>
           <div class="job-body">
             <div class="job-info"></div>
@@ -99,6 +105,12 @@
         </div>
       </div>
       <% }); %>
+
+      <div class="see-more">
+        <img src="./src/core.png" class="company-logo" id="see-more-core-logo">
+        <span id="see-more-separator">&#183;</span>
+        <a href="/jobs">See More</a>
+      </div>
     </div>
   </div>
 
@@ -400,6 +412,26 @@
           container.innerHTML = tags.map(tag => `<span id="post-flair">${tag.name}</span>`).join(' ');
         });
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      var deadlineElements = document.querySelectorAll('.job-posting-deadline');
+      var currentDate = new Date();
+      var deadlineDate = new Date(currentDate.getTime() + (24 * 60 * 60 * 1000)); // Adds one day
+
+      var month = deadlineDate.getMonth() + 1; // getMonth() returns 0-11
+      var day = deadlineDate.getDate(); // getDate() returns 1-31
+
+      // Ensure month and day are always two digits
+      var formattedMonth = month < 10 ? '0' + month : month;
+      var formattedDay = day < 10 ? '0' + day : day;
+
+      var formattedDeadline = formattedMonth + '/' + formattedDay;
+
+      deadlineElements.forEach(function(elem) {
+        elem.textContent = 'Apply by: ' + formattedDeadline;
+      });
+    });
+
 
     function fetchLinkPreview(link, container) {
       return fetch(`/api/link-preview/${encodeURIComponent(encodeURIComponent(link))}`)

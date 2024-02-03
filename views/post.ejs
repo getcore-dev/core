@@ -71,8 +71,11 @@
           </div>
         </div>
 
-        <div class="post-content">
-          <%- post.content %>
+        <div class="post-container">
+          <div class="post-content">
+            <%- post.content %>
+          </div>
+          <div class="view-more">View More</div>
         </div>
         <div class="user-interactions">
           <% const reactionTypes = [
@@ -450,6 +453,42 @@
       event.target.style.height = 'inherit';
       event.target.style.height = `${event.target.scrollHeight}px`;
     }
+    document.addEventListener("DOMContentLoaded", function() {
+      const posts = document.querySelectorAll('.post-container');
+
+      posts.forEach(post => {
+        const content = post.querySelector('.post-content');
+        const viewMore = post.querySelector('.view-more');
+
+        if (content.scrollHeight > content.clientHeight) {
+          // Content is longer than the max height
+          viewMore.style.display = 'block';
+
+          viewMore.addEventListener('click', function() {
+            if (content.style.maxHeight) {
+              // If max-height is set, remove it
+              content.style.maxHeight = null;
+              viewMore.textContent = 'View More';
+            } else {
+              // Set max-height to scrollHeight to expand
+              content.style.maxHeight = content.scrollHeight + 'px';
+              viewMore.textContent = 'View Less';
+            }
+          });
+        }
+      });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+      var postContents = document.querySelectorAll('.post-content');
+
+      postContents.forEach(function(postContent) {
+        if (postContent.scrollHeight > postContent.clientHeight) {
+          postContent.classList.add('overflow');
+        }
+      });
+    });
+
 
     document.getElementById('comment').addEventListener('input', autoExpandTextarea);
 

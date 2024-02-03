@@ -500,12 +500,40 @@ div .mini-link-desc {
   scrollbar-width: none;
 }
 
+#job-link-logo {
+  position: absolute;
+  right: 38px;
+  margin-top: -5px; 
+  width: 40px;
+  height: auto;
+}
+
+.job-posting-deadline {
+  font-size: 13px; 
+  position: absolute; 
+  right: 58px;
+  margin-top: 46px;
+  font-weight: 550;
+}
+
+#see-more-core-logo {
+    width: 26px;
+  height: auto;
+}
+
+#see-more-separator {
+  font-size: 23px;
+  padding-right: 10px;
+}
+
 .jobs-container {
-  width: 15%;
+  width: 33%;
+  max-width: 500px;
   flex: none;
   display: flex;
   flex-direction: column;
-  margin: 0px 20px;
+  margin: 0px;
+  margin-right: 36px;
   -webkit-scrollbar {
     display: none;
   }
@@ -565,6 +593,10 @@ div .mini-link-desc {
   padding: 8px;
   width: 24px;
   height: auto;
+}
+.job-header {
+  margin-top: 26px;
+  margin-bottom: 10px;
 }
 
 .job-body {
@@ -740,12 +772,27 @@ div .mini-link-desc {
   border-radius: 6px;
 }
 
+.see-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.see-more a {
+  font-size: 15px;
+    color: #065;
+    text-decoration: none;
+}
 
 @media (prefers-color-scheme: dark) {
   /* General background and text colors */
   body {
       background-color: #111; /* Dark background */
       color: #ddd; /* Light text */
+  }
+
+  #see-more-core-logo {
+    filter: invert(1);
   }
 
   .main-reaction-button, .boost-button { 

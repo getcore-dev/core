@@ -41,7 +41,7 @@
 
 main {
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
   overflow-y: none;
 
 }
@@ -273,6 +273,27 @@ div .user-info, .header {
   border-radius: 6px;
   padding: 12px;
   margin-top: 10px;
+  max-height: calc(8 * 1.5em); /* Assuming line-height is 1.5em */
+  overflow: hidden;
+  position: relative;
+}
+
+.view-more {
+  display: none;
+  text-align: center;
+  color: #fff; /* or your preferred color */
+  cursor: pointer;
+  padding: 5px 0;
+}
+
+.post-content.overflow::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 1.5em; /* Same as your line-height */
+  background: linear-gradient(to bottom, transparent, white 50%);
 }
 
 .comment {
@@ -490,6 +511,10 @@ p.preview-description {
   body {
     background-color: var(--background-color); /* Dark background for body */
     color: #e0e0e0; /* Light text color for better readability */
+  }
+
+  .post-content.overflow::after {
+    background: linear-gradient(to bottom, transparent, var(--background-color) 50%);
   }
 
   .reaction-button {
