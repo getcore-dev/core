@@ -26,15 +26,17 @@ router.get("/posts", async (req, res) => {
 router.post("/posts", checkAuthenticated, async (req, res) => {
   try {
     const { userId, title, content, link, community_id, tags } = req.body;
+    console.log("Creating post with the following details:", req.body);
     const postId = await postQueries.createPost(
       userId,
       title,
       content,
       link,
       community_id,
-      tags
+      tags || []
     );
-    res.redirect(`/posts/${postId}`);
+
+    console.log(`Post created with ID: ${postId}`);
   } catch (err) {
     console.error("Database insert error:", err);
     res.status(500).render("error.ejs", {

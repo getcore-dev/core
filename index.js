@@ -51,10 +51,6 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
-  console.log("Session:", req.session);
-  next();
-});
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride("_method"));
@@ -77,9 +73,7 @@ app.use(errorHandler);
 // Server start
 
 app.listen(environment.port, () => {
-  console.log(
-    `Server running on http://localhost:${environment.port}, Worker PID: ${process.pid}`
-  );
+  console.log(`Server running on http://localhost:${environment.port}`);
 });
 
 module.exports = app;

@@ -6,7 +6,12 @@
       <div class="avatar-com-container">
         <img src="<%= user.avatar %>" alt="Avatar" />
       </div>
-      <div class="username"><%= user.username %></div>
+      <div class="username">
+        <a class="user" href="/profile/<%= user.username %>">
+          <%= user.username %>
+        </a>
+      </div>
+
     </div>
 
     <% } else { %>

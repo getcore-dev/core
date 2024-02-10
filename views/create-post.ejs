@@ -10,6 +10,10 @@
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/create-post.css" />
   <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
 
 </head>
@@ -41,27 +45,49 @@
           </div>
           <div class="form-group">
             <label for="content">Content:</label>
-            <textarea id="content" name="content" required></textarea>
+            <textarea id="content" name="content"></textarea>
           </div>
 
           <div class="form-group">
             <label>Tags:</label>
             <div id="tags-container">
-              <% tags.forEach(function(tag) { %>
-              <div class="tag-item">
-                <input type="checkbox" id="tag-<%= tag.id %>" name="tags" value="<%= tag.name %>">
-                <label for="tag-<%= tag.id %>"><%= tag.name %></label>
-              </div>
-              <% }); %>
+              <select class="tags-select2" name="tags[]" multiple="multiple">
+                <% tags.forEach(function(tag) { %>
+                <option value="<%= tag.id %>"><%= tag.name %></option>
+                <% }); %>
+              </select>
             </div>
+
           </div>
-          <button type="submit">Submit Post</button>
+          <button class="add-post-button" type="submit">Submit Post</button>
       </form>
     </div>
   </main>
   <script>
-    var easyMDE = new EasyMDE({
-      element: document.getElementById('content')
+    $(document).ready(function() {
+      $('.tags-select2').select2({
+        width: '100%' // Full width of its container
+      });
+
+      var easyMDE = new EasyMDE({
+        element: document.getElementById('content')
+      });
+
+      $('form').on('submit', function(e) {
+        // Check if the EasyMDE editor is empty
+        if (!easyMDE.value().trim()) {
+          // Prevent form submission
+          e.preventDefault();
+          // Display an error message or focus the EasyMDE editor
+          alert("Please fill in the content.");
+          easyMDE.codemirror.focus();
+        } else {
+          // Form is valid, submit it
+          // Optional: Sync content back to textarea if not automatically done
+          easyMDE.toTextArea();
+          easyMDE.codemirror.save();
+        }
+      });
     });
   </script>
 </body>

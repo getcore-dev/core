@@ -527,13 +527,13 @@ div .mini-link-desc {
 }
 
 .jobs-container {
-  width: 33%;
+  width: 32%;
   max-width: 500px;
   flex: none;
   display: flex;
   flex-direction: column;
   margin: 0px;
-  margin-right: 36px;
+  margin-right: 10px;
   -webkit-scrollbar {
     display: none;
   }

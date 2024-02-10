@@ -1,8 +1,8 @@
 :root {
-  --primary-text-color: #000;
-  --light-mode-body-color: #fff;
-  --light-mode-main-color: #F6F8FA;
-  --border-color: #ccc;
+  --primary-text-color: #1D2935;
+  --light-mode-main-color: #fff;
+  --light-mode-body-color: #F6F8FA;
+  --border-color: #D8E0E9;
   --hover-background-color: #ddd;
   --active-indicator-color: #0e6655;
   --dark-mode-main-color: #1B1F22;
@@ -41,16 +41,25 @@ div.commit-title {
   .commit:hover {
     cursor: pointer;
   }
+
+  #commits {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }  
   
   .commit {
-    border: 1px solid var(--light-mode-main-color);
+    border: 1px solid var(--border-color);
+    background: var(--light-mode-body-color);
     border-radius: 6px;
     padding: 5px;
+    width: 600px;
     margin: 10px;
     margin-bottom: 20px;
     margin-left: 10px;
     margin-right: 10px;
-  }
+}
 
   .commit-header {
     display: flex;

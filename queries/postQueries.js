@@ -13,68 +13,6 @@ const generateUniqueId = () => {
   return `${timestampPart}${randomPart}`;
 };
 
-const removeDuplicateActions = async (postId, userId, actionType) => {
-  try {
-    console.log(
-      `Removing duplicate ${actionType} actions for user ${userId} on post ${postId}`
-    );
-
-    // Check if there are duplicate actions for the same user and post with the specified action type
-    const duplicateActions = await sql.query`
-      SELECT id
-      FROM userPostActions
-      WHERE user_id = ${userId} AND post_id = ${postId} AND action_type = ${actionType}`;
-
-    // If there are duplicates, delete them
-    if (duplicateActions.recordset.length > 1) {
-      console.log(
-        `Found ${duplicateActions.recordset.length} duplicate ${actionType} actions.`
-      );
-
-      const duplicateIds = duplicateActions.recordset.map(
-        (action) => action.id
-      );
-      await sql.query`
-        DELETE FROM userPostActions
-        WHERE id IN (${duplicateIds.join(",")})`;
-
-      console.log(
-        `Deleted ${duplicateIds.length} duplicate ${actionType} actions.`
-      );
-    } else {
-      console.log(`No duplicate ${actionType} actions found.`);
-    }
-  } catch (err) {
-    console.error("Database delete error:", err);
-    throw err; // Rethrow the error for the caller to handle
-  }
-};
-const getScore = async (postId) => {
-  try {
-    // Get the sum of boosts for the specified post
-    const boostResult = await sql.query`
-      SELECT COUNT(*) AS boostCount
-      FROM userPostActions
-      WHERE post_id = ${postId} AND action_type = 'B'`;
-
-    const boostCount = boostResult.recordset[0].boostCount;
-
-    // Get the sum of detracts for the specified post
-    const detractResult = await sql.query`
-      SELECT COUNT(*) AS detractCount
-      FROM userPostActions
-      WHERE post_id = ${postId} AND action_type = 'D'`;
-
-    const detractCount = detractResult.recordset[0].detractCount;
-
-    // Calculate the score (boosts - detracts)
-    return { boostCount, detractCount, score: boostCount - detractCount };
-  } catch (err) {
-    console.error("Database query error:", err);
-    throw err; // Rethrow the error for the caller to handle
-  }
-};
-
 const postQueries = {
   getPosts: async () => {
     try {
@@ -167,22 +105,13 @@ const postQueries = {
       tags = tags.split(",").map((tag) => tag.trim());
     }
 
-    console.log(
-      "userId:",
-      userId,
-      "title:",
-      title,
-      "content:",
-      content,
-      "tags:",
-      tags,
-      "community_id:",
-      community_id,
-      "link:",
-      link,
-      "tags:",
-      tags
-    );
+    console.log("creating post with data:");
+    console.log("userId:", userId);
+    console.log("title:", title);
+    console.log("content:", content);
+    console.log("link:", link);
+    console.log("community_id:", community_id);
+    console.log("tags:", tags);
 
     try {
       // Insert the post into the posts table
@@ -211,7 +140,7 @@ const postQueries = {
       }
 
       // Record user's upvote and set boosts and detracts
-      await sql.query`INSERT INTO userpostactions (post_id, user_id, upvoted, boosts, detracts) VALUES (${uniqueId}, ${userId}, 1, 1, 0)`;
+      await sql.query`INSERT INTO UserPostActions (post_id, user_id, action_type) VALUES (${uniqueId}, ${userId}, 'B')`;
 
       return uniqueId;
     } catch (err) {
@@ -257,9 +186,14 @@ const postQueries = {
     try {
       // Validate actionType
       if (
-        !["LOVE", "LIKE", "CURIOUS", "INTERESTING", "CELEBRATE", "BOOST"].includes(
-          actionType
-        )
+        ![
+          "LOVE",
+          "LIKE",
+          "CURIOUS",
+          "INTERESTING",
+          "CELEBRATE",
+          "BOOST",
+        ].includes(actionType)
       ) {
         throw new Error("Invalid action type");
       }

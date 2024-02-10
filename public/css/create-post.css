@@ -1,3 +1,17 @@
+:root {
+    --primary-text-color: #1D2935;
+    --light-mode-main-color: #fff;
+    --light-mode-body-color: #F6F8FA;
+    --border-color: #D8E0E9;
+    --hover-background-color: #ddd;
+    --active-indicator-color: #0e6655;
+    --dark-mode-main-color: #1B1F22;
+    --dark-mode-body-color: #16191B;
+    --dark-mode-text-color: #fff;
+    --dark-mode-border-color: #272D31;
+    --dark-mode-hover-background-color: #444;
+  }
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 body {
@@ -5,7 +19,7 @@ body {
 }
 
 .editor-toolbar button {
-    color: black;
+    color: var(--primary-text-color);
 }
 
 /* Specific styles for main container and its children */
@@ -13,8 +27,8 @@ body {
     max-width: 800px;
     margin: 40px auto;
     padding: 20px;
-    background-color: #fff;
-    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+    background-color: var(--light-mode-body-color);
+    border: 1px solid var(--border-color);
     border-radius: 10px;
 }
 
@@ -28,22 +42,24 @@ body {
 .main-container textarea {
     width: calc(100% - 30px); /* Adjust width to account for padding */
     padding: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     margin: 15px 8px; /* Add margin for external spacing */
 }
 
 
-.main-container button {
-    background-color: green;
+.add-post-button {
+    background-color: var(--active-indicator-color);
     border: none;
-
+    width: 100%;
+    padding: 15px;
+    color: white;
     border-radius: 5px;
     cursor: pointer;
 }
 
-.main-container button:hover {
-    background-color: darkgreen;
+#tags-container {
+    margin: 12px;
 }
 
 .main-container .post,
@@ -104,26 +120,33 @@ body {
 /* Dark Mode Styles */
 @media (prefers-color-scheme: dark) {
     body {
-        background-color: #121212; /* Dark background for body */
-        color: #e0e0e0; /* Light text color for better readability */
+        background-color: var(--dark-mode-body-color);
+    }
+
+    .editor-toolbar button {
+        color: var(--dark-mode-text-color);
     }
 
     .main-container {
-        background-color: #1e1e1e; /* Dark background for main container */
-        box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
-        color: #e0e0e0; /* Light text color for content within main container */
+        background-color: var(--dark-mode-main-color);
+        border-color: var(--dark-mode-border-color);
+        color: var(--dark-mode-text-color);
     }
 
     .main-container input[type="text"],
     .main-container textarea {
-        background-color: #262626; /* Dark background for input fields */
-        border-color: #555; /* Darker border for input fields */
-        color: #f4f4f4; /* Light text color for input fields */
+        background-color: var(--dark-mode-main-color);
+        border-color: var(--dark-mode-border-color);
+        color: var(--dark-mode-text-color);
     }
 
-    .main-container button {
-        background-color: #005f00; /* Darker green for buttons */
+    div.form-group .CodeMirror, div.form-group .select2-container--default .select2-selection--multiple, div.form-group .editor-toolbar, div.form-group .select2-dropdown select2-dropdown--above {
+        background-color: var(--dark-mode-main-color);
+        border-color: var(--dark-mode-border-color);
+
+        color: var(--dark-mode-text-color);
     }
+
 
     .main-container button:hover {
         background-color: #004400; /* Even darker green for button hover */
