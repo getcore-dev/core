@@ -129,6 +129,38 @@
     font-weight: 700;
     margin: 3px;
   }
+
+  .create-post-btn {
+    padding: 4px;
+    width: 60px;
+    background: #229954;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.7s ease;
+    text-decoration: none;
+    flex: 0 0 auto;
+    text-align: center;
+    display: flex; 
+    flex-direction: row;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    gap: 2px;
+  }
+  
+  .create-post-btn .material-symbols-outlined {
+    font-size: 17px;
+    vertical-align: -3px;
+  }
+  
+  .create-post-btn a:hover {
+    text-decoration: none;
+  }
+
+  .communities .material-symbols-outlined, .trending-post .material-symbols-outlined {
+    font-size: 16px;
+}
   
   #com-btn-container a:hover {
     text-decoration: underline;

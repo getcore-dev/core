@@ -50,6 +50,28 @@ router.get("/posts/:postId", async (req, res) => {
   }
 });
 
+router.get("/communities", async (req, res) => {
+  try {
+    console.log("Fetching communities...");
+    const communities = await utilFunctions.getAllCommunities();
+    res.json(communities);
+  } catch (err) {
+    console.error("Error fetching communities:", err);
+    res.status(500).send("Error fetching communities");
+  }
+});
+
+router.get("/communities/:communityId/posts", async (req, res) => {
+  try {
+    const communityId = req.params.communityId;
+    const posts = await utilFunctions.getPostsForCommunity(communityId);
+    res.json(posts);
+  } catch (err) {
+    console.error("Error fetching posts:", err);
+    res.status(500).send("Error fetching posts");
+  }
+});
+
 router.get("/comments/:commentId/replies", async (req, res) => {
   try {
     const commentId = req.params.commentId;

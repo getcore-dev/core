@@ -8,6 +8,7 @@
       </div>
       <div class="nav-text-and-user-btns">
         <div class="nav-text-container">
+          <% let user = locals.user; %>
           <% if (user) { %>
           <a class="navbar-user-info" href="/profile/<%= user.username %>"><%= user.username %></a>@<a class="nav-text" href="/">CORE</a><% } else { %>
           <a class="navbar-user-info" href="/login">user</a>@<a class="nav-text" href="/">CORE</a><% }%>

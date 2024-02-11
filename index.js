@@ -20,6 +20,7 @@ const commentRoutes = require("./routes/commentRoutes");
 const apiRoutes = require("./routes/apiRoutes");
 const generalRoutes = require("./routes/generalRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const communityRoutes = require("./routes/communityRoutes");
 
 const app = express();
 
@@ -65,6 +66,7 @@ app.use(postRoutes);
 app.use(commentRoutes);
 app.use("/api", apiRoutes);
 app.use("/notifications", notificationRoutes);
+app.use("/communities", communityRoutes);
 app.use(generalRoutes);
 
 // Error handling

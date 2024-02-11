@@ -193,7 +193,7 @@
             usernameDiv.className = 'username';
             const usernameLink = document.createElement('a');
             usernameLink.href = '/profile/' + post.username;
-            usernameLink.innerHTML = '<strong>' + post.username + '</strong> ';
+            usernameLink.innerHTML = '<strong>' + post.username + '</strong>';
             usernameDiv.appendChild(usernameLink);
 
             const communityLink = document.createElement('a');
@@ -231,13 +231,9 @@
               linkPreviewDiv.appendChild(linkDiv);
               fetchPromises.push(fetchLinkPreview(post.link, linkDiv));
             }
-            const materialSymbolSpan = document.createElement('span');
-            materialSymbolSpan.className = 'material-symbols-outlined';
-            materialSymbolSpan.textContent = 'chat_bubble'; // Example icon name
 
             const descriptionDiv = document.createElement('div');
             descriptionDiv.className = 'description';
-            descriptionDiv.appendChild(materialSymbolSpan);
             descriptionDiv.append(`${post.content}`);
 
             linkPreviewDiv.appendChild(descriptionDiv);
@@ -371,16 +367,6 @@
             votesDiv.appendChild(reactionInteractionsDiv);
             postContentDiv.appendChild(votesDiv);
 
-
-
-            const tagsDiv = document.createElement('div');
-            tagsDiv.className = 'tags';
-            tagsDiv.innerHTML = 'Loading tags...'; // Placeholder
-            tagsDiv.style = 'font-size: 12px;';
-            votesDiv.appendChild(tagsDiv);
-            fetchPromises.push(fetchTags(post.id, tagsDiv));
-
-
             const commentsDiv = document.createElement('div');
             commentsDiv.className = 'comments';
             commentsDiv.innerHTML = 'Loading comments...'; // Placeholder
@@ -396,6 +382,7 @@
         })
         .catch(error => console.error('Error fetching posts:', error));
     }
+
 
     function fetchCommunity(community_id, container) {
       return fetch(`/api/communities/${community_id}`)

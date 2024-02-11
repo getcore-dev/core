@@ -1,0 +1,233 @@
+:root {
+    --primary-text-color: #1D2935;
+    --light-mode-body-color: #fff;
+    --light-mode-main-color: #F6F8FA;
+    --border-color: #D8E0E9;
+    --hover-background-color: #ddd;
+    --active-indicator-color: #0e6655;
+    --dark-mode-main-color: #1B1F22;
+    --dark-mode-body-color: #16191B;
+    --dark-mode-lighter-color: #1F2427;
+    --dark-mode-text-color: #fff;
+    --dark-mode-border-color: #272D31;
+    --dark-mode-hover-background-color: #444;
+  }
+
+body {
+    background-color: var(--light-mode-body-color);
+    color: var(--primary-text-color);
+}
+
+.reaction-button, .main-reaction-button, .boost-button {
+    background-color: var(--light-mode-body-color);
+    border: 1px solid var(--border-color);
+    color: #666;
+    border-radius: 15px;
+    padding: 4px 8px;
+    margin: 3px 5px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .reaction-interactions .material-symbols-outlined {
+    font-size: 14px;
+    vertical-align: -2px;
+  }
+  
+  .main-reaction-button {
+    padding: 4px 6px;
+    margin: 0px;
+    border-radius: 100%;
+  }
+  
+  .reaction-button:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+  }
+  
+  .reaction-button .material-symbols-outlined {
+    font-size: 15px;
+    vertical-align: -3px;
+  }
+
+#communityActionBtn {
+    padding: 5px;
+    width: 60px;
+    background: var(--active-indicator-color);
+    border-radius: 6px;
+    color: white;
+    border: 0;
+    cursor: pointer;
+    transition: all 0.7s ease;
+    text-decoration: none;
+    flex: 0 0 auto;
+    text-align: center;
+    display: flex; 
+    flex-direction: row;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    gap: 2px;
+}
+
+#communityActionBtn:hover {
+    cursor: pointer;
+}
+
+
+.community-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    margin: 10px;
+}
+
+.community-header {
+    padding: 15px;
+}
+
+.community-header-title {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+}
+.main-container {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+}
+
+.community-container {
+    width: 100%;
+    height: calc(100vh - 85px);
+    overflow-y: auto;
+}
+
+.post {
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
+    border-radius: 6px;
+    background-color: var(--light-mode-main-color);
+    border: 1px solid var(--border-color);
+}
+
+.posts-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.avatar img {
+    width: 32px;
+    height: 32px;
+    border-radius: 100%;
+}
+
+.post-header {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;   
+    margin-top: 7px;
+    margin-left: 5px;
+    width: 100%;
+}
+
+.username a {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--active-indicator-color);
+}
+
+.title {
+    font-size: 21px;
+    font-weight: 600;
+    margin-top: 7px;
+    margin-left: 3px;
+}
+
+.content {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; 
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    line-height: 1.5em;
+    max-height: 3em; /* Max height for 2 lines */
+    font-size: 14px;
+    margin-left: 5px;
+    font-weight: bold;
+    padding: 7px;
+    border-radius: 6px;
+  }
+
+  div .mini-link {
+    padding: 6px;
+    display: flex;
+    flex-direction: row;
+    max-width: 100%;
+    font-size: 15px;
+    gap: 1em;
+  }
+
+  div .mini-link-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+
+div .mini-link-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+
+  .link-preview img {
+        border-radius: 5px;
+        max-width: 39px;
+        max-height: 39px;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+        border: 1px solid var(--border-color);
+
+  }
+  
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: var(--dark-mode-body-color);
+        color: var(--dark-mode-text-color);
+    }
+
+    .post {
+        background-color: var(--dark-mode-main-color);
+        border: 1px solid var(--dark-mode-border-color);
+    }
+
+    .link-preview {
+        background-color: var(--dark-mode-lighter-color);
+    }
+
+    .main-reaction-button, .boost-button { 
+        background-color: var(--dark-mode-main-color);
+        border: 1px solid #444;
+      }
+      .reaction-button {
+        background-color: var(--dark-mode-main-color);
+        border: 1px solid #444;
+        color: #ddd;
+      }
+    
+      .reaction-button:hover {
+        background-color: #222;
+      }
+    
+}

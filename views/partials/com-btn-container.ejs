@@ -22,35 +22,8 @@
   </div>
 
   <h4>Communities</h4>
-  <div class="communities">
-    <span class="material-symbols-outlined">forum</span>
-    <a href="/communities/1" class="community-link">
-      <div class="community-name">All</div>
-    </a>
-  </div>
-  <div class="communities">
-    <span class="material-symbols-outlined">robot</span>
-    <a href="/communities/1" class="community-link">
-      <div class="community-name">ML-AI</div>
-    </a>
-  </div>
-  <div class="communities">
-    <span class="material-symbols-outlined">computer</span>
-    <a href="/communities/2" class="community-link">
-      <div class="community-name">Web-Dev</div>
-    </a>
-  </div>
-  <div class="communities">
-    <span class="material-symbols-outlined">science</span>
-    <a href="/communities/3" class="community-link">
-      <div class="community-name">Computer Science</div>
-    </a>
-  </div>
-  <div class="communities">
-    <span class="material-symbols-outlined">terminal</span>
-    <a href="/communities/4" class="community-link">
-      <div class="community-name">Software</div>
-    </a>
+  <div class="communities-container">
+    loading...
   </div>
 
   <br>
@@ -79,12 +52,12 @@
 
           // Add content to postElement here. Example:
           postElement.innerHTML = `
-                <div class="trending-post-avatar">
-                    <img src="${post.avatar}" alt="Avatar" />
-                </div>
+                <span class="material-symbols-outlined" style="color: var(--active-indicator-color);">
+trending_up
+</span> 
                 <div class="trending-post-content">
                   <a href="/posts/${post.id}" class="trending-post-title">
-                    <p><strong>${post.username}</strong>/${post.title}</p> 
+                    <p>${post.title} - ${post.username}</p> 
                   </a>
                 </div>
 
@@ -96,7 +69,31 @@
       .catch(error => console.error('Error fetching trending posts:', error));
   }
 
+  function getAllCommunities() {
+    fetch('/api/communities') // Adjust this to your server's endpoint
+      .then(response => response.json())
+      .then(communities => {
+        const communitiesContainer = document.querySelector('.communities-container');
+        communitiesContainer.innerHTML = ''; // Clear existing communities
 
+        communities.forEach(community => {
+          const communityElement = document.createElement('div');
+          communityElement.className = 'communities';
 
+          // Add content to communityElement here. Example:
+          communityElement.innerHTML = `
+                <span class="material-symbols-outlined">${community.mini_icon}</span>
+                <a href="/communities/${community.id}" class="community-link">
+                    <div class="community-name">${community.name}</div>
+                </a>
+            `;
+
+          communitiesContainer.appendChild(communityElement);
+        });
+      })
+      .catch(error => console.error('Error fetching communities:', error));
+  }
+
+  getAllCommunities();
   getTrendingPosts();
 </script>

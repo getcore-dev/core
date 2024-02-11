@@ -53,6 +53,42 @@ const utilFunctions = {
     }
   },
 
+  getPostsForCommunity: async (communityId) => {
+    try {
+      const result = await sql.query`
+        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate,
+        u.currentJob, u.username, u.avatar,
+              SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
+              SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
+              SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+              SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
+              SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
+              SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount
+        FROM posts p
+        INNER JOIN users u ON p.user_id = u.id
+        LEFT JOIN userPostActions upa ON p.id = upa.post_id
+        WHERE p.communities_id = ${communityId} AND p.deleted = 0
+        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate
+        ORDER BY p.created_at DESC
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getCommunities: async () => {
+    try {
+      const result = await sql.query`
+        SELECT name FROM communities`;
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getTrendingPosts: async () => {
     try {
       const result = await sql.query`
@@ -102,6 +138,18 @@ const utilFunctions = {
         postData.score = postData.boostCount - postData.detractCount;
       }
       return postData;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getAllCommunities: async () => {
+    try {
+      const result = await sql.query`
+        SELECT id, name, mini_icon FROM communities WHERE PrivacySetting = 'Public'
+      `;
+      return result.recordset;
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
