@@ -31,12 +31,7 @@
           <input type="text" id="title" name="title" required />
           <div class="form-group" id="community">
             <label for="community">Community:</label>
-            <select id="community" name="community_id">
-              <option value="1">General</option>
-              <option value="2">ML/AI</option>
-              <option value="3">IT</option>
-              <option value="4">Robotics</option>
-              <option value="5">Game-Dev</option>
+            <select id="community_choice" name="community_id">
             </select>
           </div>
           <div class="form-group">
@@ -89,6 +84,22 @@
         }
       });
     });
+
+    function getAllCommunities() {
+      fetch('/api/communities') // Adjust this to your server's endpoint
+        .then(response => response.json())
+        .then(communities => {
+          // Create an option for each community
+          communities.forEach(community => {
+            const option = document.createElement('option');
+            option.value = community.id;
+            option.textContent = community.name;
+            document.getElementById('community_choice').appendChild(option);
+          });
+        });
+    }
+
+    getAllCommunities();
   </script>
 </body>
 

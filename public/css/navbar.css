@@ -592,6 +592,16 @@ margin-top: 20px;
     filter: invert(100%); /* Invert logo colors */
 }
 
+.menu-content h3 {
+  margin: 10px 25px;
+}
+
+#menu-community-icon {
+  font-size: 14px;
+  padding: 0px 5px;
+  vertical-align: -2px;
+}
+
 /* Dropdown menu styling */
 .menu-content {
   z-index: 100;
@@ -630,7 +640,7 @@ margin-top: 20px;
   height: 100%;
   overflow-x: hidden;
   transition: transform 0.5s; /* Use transform for transition */
-  padding-top: 60px;
+  padding-top: 90px;
   background-color: #f9f9f9;
   z-index: 4;
   width: 250px; /* Set a fixed width */

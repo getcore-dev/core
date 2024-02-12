@@ -182,10 +182,42 @@ main {
 /* Add any additional styles for the profile picture area here */
 
 
+.post-content {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  line-height: 1.5em;
+  max-height: 3em; /* Max height for 2 lines */
+}
+
+.post-container, .coments-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 15px;
+  align-items: center;
+}
+
+.post, .comment {
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  width: 95%;
+  max-width: 95%;
+
+}
+
 @media (prefers-color-scheme: dark) {
   body {
       background-color: var(--dark-mode-body-color); /* Dark background for the body */
       color: var(--dark-mode-text-color); /* Light text color for better readability */
+  }
+
+  .post, .comment {
+    border-color: var(--dark-mode-border-color);
   }
 
   #profile > div {
@@ -367,10 +399,6 @@ padding: auto;
 .posts {
   grid-area: posts;
   /* ... other styles ... */
-}
-
-.post {
-  padding: 5px 4px;
 }
 
 

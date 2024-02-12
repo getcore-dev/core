@@ -48,15 +48,18 @@
           <a href="/jobs">Openings</a>
           <a href="/updates">Updates</a>
           <% if (user) { %>
-          <a href="/post/create">Create Post</a>
-          <a class="nav-text" href="/profile/<%= user.username %>">Profile</a>
           <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
           <a href="/learning">Learning</a>
           <a href="#" onclick="document.getElementById('logoutForm').submit();">Logout</a>
           <% } else { %>
           <a href="/login">Login</a>
           <% } %>
+
+          <h3> Communities </h3>
+          <div class="menu-communities" id="menu-communities"></div>
+
         </div>
+
         <div id="overlay"></div>
       </div>
       <div class="user-btns">
@@ -84,13 +87,7 @@
           </li>
           <% } else { %>
           <% } %>
-          <li>
-            <div id="search-bar-container">
-              <button id="search-button" aria-label="Search Google">
-                <span class="material-symbols-outlined" id="nb-icon"> search </span>
-              </button>
-            </div>
-          </li>
+
           <li>
             <% if (user) { %>
             <a href="/profile/<%= user.username %>" class="user-button <%= currentPath === '/' ? 'active' : '' %>">
@@ -208,6 +205,25 @@
       method: 'DELETE'
     });
   }
+
+  function getAllCommunities() {
+    fetch('/api/communities') // Adjust this to your server's endpoint
+      .then(response => response.json())
+      .then(communities => {
+        const menuContent = document.getElementById('menu-communities');
+        const communityLinks = communities.map(community => {
+          return `
+          
+          <div class="menu-community">
+          <a href="/communities/${community.id}"><span id="menu-community-icon" class="material-symbols-outlined">${community.mini_icon}</span>${community.name}</a>
+          </div>`;
+        });
+        menuContent.innerHTML = communityLinks.join('');
+      });
+  }
+
+  getAllCommunities();
+
 
   document.getElementById('clear-all-btn').addEventListener('click', async function() {
     // Clear all notifications (adjust userId as needed)

@@ -36,6 +36,8 @@ router.post("/posts", checkAuthenticated, async (req, res) => {
       tags || []
     );
 
+    return res.redirect(`/posts/${postId}`);
+
     console.log(`Post created with ID: ${postId}`);
   } catch (err) {
     console.error("Database insert error:", err);

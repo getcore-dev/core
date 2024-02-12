@@ -298,9 +298,10 @@
           </div>
         </div>
       </div>
+      <% if (post.linkPreview) { %>
       <div class="sidebar">
         <div class="sidebar-content">
-          <% if (post.linkPreview) { %>
+
           <div class="sidebar-body">
             <div class="sidebar-link-image">
 
@@ -320,8 +321,8 @@
               </div>
             </div>
           </div>
-          <% } %>
         </div>
+        <% } %>
 
   </main>
 
@@ -492,9 +493,7 @@
 
     document.getElementById('comment').addEventListener('input', autoExpandTextarea);
 
-    var easyMDE = new EasyMDE({
-      element: document.getElementById('comment')
-    });
+
   </script>
 </body>
 

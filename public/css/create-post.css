@@ -174,11 +174,4 @@ body {
         color: #bbb; /* Lighter color for user info, headers, and community IDs */
     }
 
-    /* Adjustments for responsive design in dark mode */
-    @media screen and (max-width: 768px) {
-        .main-container {
-            background-color: #1e1e1e;
-            color: #e0e0e0;
-        }
-    }
 }
