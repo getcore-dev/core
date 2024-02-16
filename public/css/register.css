@@ -25,7 +25,7 @@ main {
   gap: 15px;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 85px);
+  height: calc(100dvh);
   background-color: #fff;
   font-family: 'Inter', sans-serif;
 }

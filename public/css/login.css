@@ -23,9 +23,14 @@ main {
   justify-content: center;
   gap: 15px;
   align-items: center;
-  height: calc(100vh - 85px);
+  height: calc(100dvh - 65px);
   background-color: var(--light-mode-main-color);
 font-family: 'Open Sans', sans-serif;
+}
+
+#forgot-pass {
+  color: var(--active-indicator-color);
+  text-decoration: none;
 }
 
 #register {
@@ -139,6 +144,11 @@ font-family: 'Open Sans', sans-serif;
     background-color: var(--dark-mode-body-color); /* Dark background for input fields */
     border: 1px solid var(--dark-mode-border-color); /* Darker border for input fields */
     color: #f4f4f4; /* Light text color */
+  }
+
+  .input-container input:-internal-autofill-selected {
+    background-color: var(--dark-mode-body-color) !important; /* Dark background for autofill */
+    color: #f4f4f4 !important; /* Light text color for autofill */
   }
 
 

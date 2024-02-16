@@ -293,7 +293,7 @@ div .user-info, .header {
   border-radius: 6px;
   padding: 12px;
   margin-top: 10px;
-  max-height: calc(8 * 1.5em); /* Assuming line-height is 1.5em */
+  max-height: calc(14 * 1.5em); /* Assuming line-height is 1.5em */
   overflow: hidden;
   position: relative;
 }
@@ -301,8 +301,9 @@ div .user-info, .header {
 .view-more {
   display: none;
   text-align: center;
-  color: #fff; /* or your preferred color */
+  color: var(--text-color);
   cursor: pointer;
+  font-size: 12px;
   padding: 5px 0;
 }
 
@@ -411,12 +412,13 @@ a.comment-user-info:hover {
   font-size: 14px;
 }
 
+
 .main-container textarea#comment {
-  padding: 5px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 5px;
   width: 100%;
+  box-sizing: border-box;
   height: auto;
   margin-bottom: 10px;
   resize: none; /* Disable manual resizing */
@@ -529,7 +531,7 @@ p.preview-description {
 
 .input-container {
   display: flex;
-  align-items: center;
+  flex-direction:column;
   justify-content: space-between;
   padding: 10px;
   border-radius: 10px;
@@ -673,6 +675,8 @@ p.preview-description {
   
   .sidebar-container {
     margin-top: 0px;
+    padding-top: 2px;
+
     }
     
     .post { 
@@ -706,7 +710,11 @@ p.preview-description {
   .sidebar-container {
     width: 100%;
     flex-direction: row;
+    gap: 0px;
+  }
 
+  .sidebar-poster-job {
+    max-width: 80%;
   }
   .sidebar {
     height: 30%;
@@ -746,6 +754,7 @@ p.preview-description {
   }
   
   .post-title {
+    margin-top: 4px;
     font-size: 28px;
   }
 

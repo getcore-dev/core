@@ -548,7 +548,7 @@ margin-top: 20px;
   }
 
   #menu-icon {
-    color: var(--border-color);
+    color: var(--dark-mode-text-color);
   }
 
   /* Navbar links styling */
