@@ -78,7 +78,7 @@ a .material-symbols-outlined {
 }
 
 div.user-interactions {
-  padding-bottom: 8px;
+  padding-bottom: 0px;
 }
 img.linkimage {
   width: 200px;
@@ -112,7 +112,7 @@ img.linkimage {
   align-items: center;
 }
 .user-interactions {
-  margin: 15px 0px;
+  margin: 2px 0px;
   display: flex;
   align-items: center;
   align-content: stretch;
@@ -161,9 +161,6 @@ div .material-symbols-outlined:hover {
   overflow-y: scroll;
 }
 
-.comment-with-replies {
-  background-color: var(--profile-background-color);
-}
 
 .post-content p { 
   margin-bottom: 4px;
@@ -218,21 +215,21 @@ a.comment-url:visited {
 }
 
 @media (prefers-color-scheme: light) {
-  .nested-comment.level-1 { background-color: #e6e6e6; border-color: #008000; } /* Green Border, Darker Grey */
-  .nested-comment.level-2 { background-color: #e0e0e0; border-color: #00C000; } /* Lighter Green Border, Darker Grey */
-  .nested-comment.level-3 { background-color: #dadada; border-color: #40D040; } /* Even Lighter Green Border, Darker Grey */
-  .nested-comment.level-4 { background-color: #d4d4d4; border-color: #80E080; } /* Light Green Border, Darker Grey */
-  .nested-comment.level-5 { background-color: #cecece; border-color: #B0F0B0; } /* Very Light Green Border, Darker Grey */
-  .nested-comment.level-6 { background-color: #c8c8c8; border-color: #D0F8D0; } /* Pale Green Border, Darker Grey */
+  .nested-comment.level-1 {  border-color: #008000; } /* Green Border, Darker Grey */
+  .nested-comment.level-2 {  border-color: #00C000; } /* Lighter Green Border, Darker Grey */
+  .nested-comment.level-3 {  border-color: #40D040; } /* Even Lighter Green Border, Darker Grey */
+  .nested-comment.level-4 {  border-color: #80E080; } /* Light Green Border, Darker Grey */
+  .nested-comment.level-5 {  border-color: #B0F0B0; } /* Very Light Green Border, Darker Grey */
+  .nested-comment.level-6 {  border-color: #D0F8D0; } /* Pale Green Border, Darker Grey */
 }
 
 @media (prefers-color-scheme: dark) {
-  .nested-comment.level-1 { background-color: #2e2e2e; border-color: #008000; } /* Green Border, Darker */
-  .nested-comment.level-2 { background-color: #2a2a2a; border-color: #00C000; } /* Lighter Green Border, Darker */
-  .nested-comment.level-3 { background-color: #262626; border-color: #40D040; } /* Even Lighter Green Border, Darker */
-  .nested-comment.level-4 { background-color: #222222; border-color: #80E080; } /* Light Green Border, Darker */
-  .nested-comment.level-5 { background-color: #1e1e1e; border-color: #B0F0B0; } /* Very Light Green Border, Darker */
-  .nested-comment.level-6 { background-color: #1a1a1a; border-color: #D0F8D0; } /* Pale Green Border, Darker */
+  .nested-comment.level-1 {  border-color: #008000; } /* Green Border, Darker */
+  .nested-comment.level-2 {  border-color: #00C000; } /* Lighter Green Border, Darker */
+  .nested-comment.level-3 {  border-color: #40D040; } /* Even Lighter Green Border, Darker */
+  .nested-comment.level-4 {  border-color: #80E080; } /* Light Green Border, Darker */
+  .nested-comment.level-5 {  border-color: #B0F0B0; } /* Very Light Green Border, Darker */
+  .nested-comment.level-6 {  border-color: #D0F8D0; } /* Pale Green Border, Darker */
 }
 
 
@@ -273,7 +270,7 @@ div .user-info, .header {
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .communities_id {
@@ -323,7 +320,7 @@ div .user-info, .header {
   align-items: flex-start;
 }
 .comment-content {
-  padding: 5px;
+  padding: 2px;
   font-size: 18px;
   display: flex;
   align-items: center;
@@ -429,6 +426,10 @@ a.comment-user-info:hover {
   cursor: pointer;
 }
 
+.replies-count {
+  font-size: 14px;
+}
+
 .comment-body {
   font-size: 17px;
   padding-top: 2px;
@@ -504,7 +505,6 @@ a.comment-user-info:hover {
 
 .comment-with-replies {
   padding: 10px 5px;
-  border: 1px solid #ccc;
   border-radius: 6px;
   margin: 25px 5px;
 }
@@ -561,12 +561,6 @@ p.preview-description {
 
   .reaction-button, #delete-post-button {
     border-color: var(--dark-mode-border-color);
-  }
-
-
-  .comment-with-replies {
-    border-color: #888; /* Darker border for comments */
-    background-color: rgb(30,30,30);
   }
 
   #verified, a #verified {
@@ -697,10 +691,6 @@ p.preview-description {
     overflow: hidden;
     max-width: 45%;
   }
-
-  .comments-section {
-    border-top: 1px solid #ccc;
-  }
   
   main {
     display: flex;
@@ -739,7 +729,6 @@ p.preview-description {
 
   .comments-section {
     margin: 8px;
-    border: 1px solid var(--border-color);
     border-radius: 6px;
   }
 
@@ -755,7 +744,7 @@ p.preview-description {
   
   .post-title {
     margin-top: 4px;
-    font-size: 28px;
+    font-size: 23px;
   }
 
   .timestamp {
@@ -766,6 +755,7 @@ p.preview-description {
   .post, .comment {
     border: 0px;
     border-radius: 0px;
+    padding-bottom: 0px;
   }
 
   .nested-comment {
@@ -777,15 +767,11 @@ p.preview-description {
   }
 
   .comment-body {
-    font-size: 16px;
-  }
-
-  .comment-content {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .comment-timestamp {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .comments-section h3 {
