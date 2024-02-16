@@ -437,7 +437,7 @@ div .mini-link-desc {
 .container {
   background-color: #fff;
   display: flex;
-  height: calc(100vh - 85px);
+  height: calc(100dvh - 85px);
   overflow-y: hidden;
   flex-wrap: nowrap;
   flex-direction: row;
@@ -460,7 +460,7 @@ div .mini-link-desc {
 
 
 #posts-container {
-  width: 40%;
+  width: 46%;
   flex: none;
   flex-direction: column;
   -webkit-scrollbar {
@@ -498,13 +498,13 @@ div .mini-link-desc {
 }
 
 .jobs-container {
-  width: 32%;
+  width: 35%;
   max-width: 500px;
   flex: none;
   display: flex;
   flex-direction: column;
   margin: 0px;
-  margin-right: 10px;
+  margin-right: 1%;
   -webkit-scrollbar {
     display: none;
   }
@@ -524,11 +524,13 @@ div .mini-link-desc {
   background-color: var(--light-mode-body-color);
   border: 1px solid var(--border-color);
   padding: 5px 10px;
-
   flex-direction: column;
 }
-.job {
-  padding: 10px;
+
+.jobslist {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
  .job-content:hover {
@@ -625,7 +627,7 @@ div .mini-link-desc {
   }
 
   .container {
-    height: calc(100vh - 85px);
+    height: calc(100dvh - 65px);
   }
 
 }

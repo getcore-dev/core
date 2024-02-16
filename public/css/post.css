@@ -18,6 +18,21 @@
   --community-id-text-color: white;
 }
 
+:root {
+    --primary-text-color: #1D2935;
+    --light-mode-main-color: #fff;
+    --light-mode-body-color: #F6F8FA;
+    --border-color: #D8E0E9;
+    --hover-background-color: #ddd;
+    --active-indicator-color: #0e6655;
+    --dark-mode-main-color: #1B1F22;
+    --dark-mode-body-color: #16191B;
+    --dark-mode-text-color: #fff;
+    --dark-mode-border-color: #272D31;
+    --dark-mode-hover-background-color: #444;
+  }
+
+
 @media (prefers-color-scheme: dark) {
   :root {
     /* Dark mode styles */
@@ -30,7 +45,7 @@
     --link-color: #fff;
     --hover-text-color: #e0e0e0;
     --comment-hover-bg-color: #333;
-    --input-bg-color: #262626;
+    --input-bg-color: #1B1F22;
     --input-border-color: #555;
     --input-text-color: #f4f4f4;
     --link-preview-border-color: #555;
@@ -97,13 +112,14 @@ img.linkimage {
   align-items: center;
 }
 .user-interactions {
+  margin: 15px 0px;
   display: flex;
   align-items: center;
   align-content: stretch;
   flex-wrap: nowrap;
   flex-direction: row;
   justify-content: flex-start;
-  gap: 5px;
+  gap: 1em;
 }
 
 .timestamp {
@@ -233,15 +249,19 @@ div .user-info, .header {
   text-decoration: none;
 }
 
-.reaction-button, .main-reaction-button, .boost-button {
+.reaction-button, .main-reaction-button, .boost-button, #delete-post-button {
   background-color: rgba(0,0,0,0);
   border: 1px solid #ccc;
-  color: #666;
-  border-radius: 15px;
+  color: #999;
+  border-radius: 6px;
   padding: 4px 8px;
-  margin: 3px 5px;
   font-size: 14px;
   font-weight: 500;
+  text-decoration: none;
+}
+
+#delete-post-button {
+  padding: 5px 9px;
 }
 
 .reaction-interactions .material-symbols-outlined {
@@ -507,18 +527,38 @@ p.preview-description {
 
 }
 
+.input-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: var(--input-bg-color);
+  border: 1px solid var(--input-border-color);
+  margin-bottom: 10px;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     background-color: var(--background-color); /* Dark background for body */
     color: #e0e0e0; /* Light text color for better readability */
   }
 
+  .input-container {
+    border-color: var(--dark-mode-border-color);
+  }
+
+
+  .main-container textarea#comment {
+    border-color: var(--dark-mode-border-color);
+  }
+
   .post-content.overflow::after {
     background: linear-gradient(to bottom, transparent, var(--background-color) 50%);
   }
 
-  .reaction-button {
-    border-color: var(--border-color);
+  .reaction-button, #delete-post-button {
+    border-color: var(--dark-mode-border-color);
   }
 
 
@@ -556,8 +596,7 @@ p.preview-description {
   }
 
   .input-container , .input-container textarea {
-    background-color: #262626; /* Dark background for input fields */
-    border-color: #555; /* Darker border for input fields */
+    border-color: var(--dark-mode-border-color);
     color: #f4f4f4; /* Light text color */
   }
 
@@ -570,17 +609,6 @@ p.preview-description {
   }
 
   /* Add any additional dark mode styles for other elements as needed */
-}
-
-.input-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-  border-radius: 10px;
-  background-color: var(--input-bg-color);
-  border: 1px solid var(--input-border-color);
-  margin-bottom: 10px;
 }
 
 /* Style for the comment input field */

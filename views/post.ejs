@@ -80,29 +80,34 @@
         <div class="user-interactions">
           <% const reactionTypes = [
         {
+            type: "boost",
+            icon: "⚡️",
+            count: post.boostCount
+        },
+        {
             type: "LOVE",
             icon: "❤️",
-            count: post.react_love
+            count: post.loveCount
         },
         {
             type: "LIKE",
             icon: "👍",
-            count: post.react_like
+            count: post.likeCount
         },
         {
             type: "CURIOUS",
             icon: "🤔",
-            count: post.react_curious
+            count: post.curiousCount
         },
         {
             type: "INTERESTING",
             icon: "💡",
-            count: post.react_interesting
+            count: post.interestingCount
         },
         {
             type: "CELEBRATE",
             icon: "🎉",
-            count: post.react_celebrate
+            count: post.celebrateCount
         }
     ]; %>
           <% reactionTypes.forEach(reaction => { %>
@@ -113,7 +118,7 @@
             <form action="/post/<%= post.id %>?_method=DELETE" method="POST">
               <input type="hidden" name="_method" value="DELETE" />
               <a href="#" id="delete-post-button" onclick="return confirmDeletion(this);">
-                <span class="material-symbols-outlined"> delete </span>
+                🗑️
               </a>
             </form>
           </div>
@@ -492,8 +497,6 @@
 
 
     document.getElementById('comment').addEventListener('input', autoExpandTextarea);
-
-
   </script>
 </body>
 

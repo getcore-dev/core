@@ -219,13 +219,13 @@ router.get("/posts/:postId", async (req, res) => {
     await Promise.all(nestedComments.map(fetchUserAndParentDetails));
 
     // Fetch post details
-    const postQuery = `SELECT * FROM posts WHERE id = '${postId}' AND deleted = 0`;
-    const postResult = await sql.query(postQuery);
+    const postResult = await utilFunctions.getPostData(postId);
 
+    console.log("Post result:", postResult.user_id);
     // Construct postData
     const postData = {
-      ...postResult.recordset[0],
-      user: await getUserDetails(postResult.recordset[0].user_id),
+      ...postResult,
+      user: await getUserDetails(postResult.user_id),
       comments: nestedComments,
     };
 

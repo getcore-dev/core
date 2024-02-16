@@ -18,7 +18,7 @@
   --navbar-button-font-size: 16px;
   --nav-text-font-size: 20px;
   --navbar-height: 85px;
-  --mobile-navbar-height: 95px;
+  --mobile-navbar-height: 65px;
   --logo-max-height: 65px;
   --mobile-logo-max-height: 45px;
   --search-bar-width: 170px;
@@ -355,7 +355,7 @@ margin-top: 20px;
   .user-btns {
     position: absolute;
     right: 15px;
-    top: 25px;
+    top: 12px;
   }
   
   #search-bar {
@@ -376,7 +376,7 @@ margin-top: 20px;
 
 
   .navbar {
-    height: var(--navbar-height);
+    height: var(--mobile-navbar-height);
     padding: 0px;
     box-shadow: 0px 0px 10px rgba(0,0,0,0.1); 
   }
@@ -405,7 +405,7 @@ margin-top: 20px;
   }
 
   body {
-    padding-top: var(--navbar-height); /* Reduced padding for mobile */
+    padding-top: var(--mobile-navbar-height); /* Reduced padding for mobile */
     overflow-x: hidden;
   }
 
@@ -425,7 +425,7 @@ margin-top: 20px;
   .hamburger-menu {
     position: absolute;
     left: 10px; 
-    top: 23px; 
+    top: 12px; 
     z-index: 2;
   }
 
@@ -437,7 +437,7 @@ margin-top: 20px;
 
   .logo img {
     position: absolute;
-    top: 15px;
+    top: 5px;
     left: 65px;
     max-height: 45px; /* Maximum height of the logo */
   }

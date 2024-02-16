@@ -74,37 +74,40 @@
       <div class="job-header">
         <h3>Openings</h3>
       </div>
-      <% jobPostings.forEach(job => { %>
-      <div class="job">
-        <div class="job-content">
-          <div class="jobs-header">
-            <div class="company-logo-container">
-              <img src="<%= job.companyLogo %>" alt="Company Logo" class="company-logo" />
-            </div>
-            <div class="job-title-location">
-              <div class="job-posting-header">
-                <div class="company-name"><%= job.companyName %> </div>
+      <div class="jobslist">
+
+        <% jobPostings.forEach(job => { %>
+        <div class="job">
+          <div class="job-content">
+            <div class="jobs-header">
+              <div class="company-logo-container">
+                <img src="<%= job.companyLogo %>" alt="Company Logo" class="company-logo" />
               </div>
-              <div class="job-title"><%= job.jobTitle %></div>
+              <div class="job-title-location">
+                <div class="job-posting-header">
+                  <div class="company-name"><%= job.companyName %> </div>
+                </div>
+                <div class="job-title"><%= job.jobTitle %></div>
+              </div>
+              <div class="job-posting-link">
+                <img src="./src/indeedlogo.png" class="company-logo" id="job-link-logo" />
+              </div>
+              <div class="job-posting-deadline">
+                Deadline: <span id="deadline"></span>
+              </div>
             </div>
-            <div class="job-posting-link">
-              <img src="./src/indeedlogo.png" class="company-logo" id="job-link-logo" />
+            <div class="job-body">
+              <div class="job-info"></div>
             </div>
-            <div class="job-posting-deadline">
-              Deadline: <span id="deadline"></span>
+            <div class="job-flairs">
+              <span class="job-flair"><%= job.jobType %></span>
+              <span class="job-flair"><%= job.jobSalary %></span>
+              <span class="job-flair"><%= job.jobLocation %></span>
             </div>
-          </div>
-          <div class="job-body">
-            <div class="job-info"></div>
-          </div>
-          <div class="job-flairs">
-            <span class="job-flair"><%= job.jobType %></span>
-            <span class="job-flair"><%= job.jobSalary %></span>
-            <span class="job-flair"><%= job.jobLocation %></span>
           </div>
         </div>
+        <% }); %>
       </div>
-      <% }); %>
 
       <div class="see-more">
         <img src="./src/core.png" class="company-logo" id="see-more-core-logo">
