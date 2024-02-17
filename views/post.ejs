@@ -211,19 +211,6 @@
             <% } %>
         </div>
         <% if (user) { %>
-        <div class="boosts">
-          <span class="material-symbols-outlined" onclick="boostComment('<%= post.id %>', '<%= user %>')">
-            thumb_up
-          </span>
-        </div>
-        <div class="score">
-          <%= comment.boosts - comment.detracts %>
-        </div>
-        <div class="detracts">
-          <span class="material-symbols-outlined" onclick="detractComment('<%= post.id %>', '<%= user %>')">
-            thumb_down
-          </span>
-        </div>
         <div class="replies">
           <a href="#" id="reply-button" onclick="showReplyForm('<%= comment.id %>', event)">
             <span class="material-symbols-outlined">reply</span> Reply
@@ -268,7 +255,7 @@
     </div>
     <% } %>
 
-    <% if (level == 0) { %>
+    <% if (level > 3) { %>
     </div>
     <% } %>
     <% }) %>
