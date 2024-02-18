@@ -60,6 +60,12 @@ main {
   overflow-y: none;
 
 }
+
+.user-interactions button {
+  display: flex;
+  flex-direction: row;
+  }
+   
 body {
   font-family: 'Roboto', sans-serif;
   background-color: var(--background-color);

@@ -754,11 +754,6 @@ div .mini-link-desc {
   justify-content: center;
 }
 
-.user-interactions button {
-  display: flex;
-  flex-direction: row;
-  }
-
 .see-more a {
   font-size: 15px;
     color: #065;
