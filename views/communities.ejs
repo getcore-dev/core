@@ -210,9 +210,7 @@
 
             const currentJobDiv = document.createElement('div');
             currentJobDiv.className = 'current-job';
-
-            let currentDate = post.created_at;
-            currentJobDiv.innerText = formatDate(currentDate);
+            currentJobDiv.innerText = post.currentJob ? post.currentJob : 'No job info';
             usernameDiv.appendChild(currentJobDiv);
 
             postHeaderDiv.appendChild(usernameDiv);
@@ -450,7 +448,7 @@
       return fetch(`/api/comments/${postId}`)
         .then(response => response.json())
         .then(comments => {
-          container.innerHTML = '<span class="material-symbols-outlined" id="comments-icon">comment</span>' + comments.length '</span>';
+          container.innerHTML = '<span class="material-symbols-outlined" id="comments-icon">comment</span>' + comments.length + '</span>';
         });
     }
 
