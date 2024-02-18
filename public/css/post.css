@@ -93,6 +93,35 @@ img.linkimage {
   flex-direction: row;
   gap: 5px;
 }
+
+pre {
+  border-radius: 5px; 
+  -moz-border-radius: 5px; 
+  -webkit-border-radius: 5px;
+  border: 1px solid #BCBEC0;
+  background: #F1F3F5;
+  font:12px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace
+}
+
+code {
+  border-radius: 5px; 
+  -moz-border-radius: 5px; 
+  -webkit-border-radius: 5px; 
+  border: 1px solid #BCBEC0;
+  padding: 2px;
+  font:12px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace
+}
+
+pre code {
+  border-radius: 0px; 
+  -moz-border-radius: 0px; 
+  -webkit-border-radius: 0px; 
+  border: 0px;
+  padding: 2px;
+  font:12px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace
+}
+
+
 .header-avatar {
   width: 24px;
   height: 24px;
