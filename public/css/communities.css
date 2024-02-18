@@ -149,10 +149,10 @@ div.vote-interactions {
 }
 
 .reaction-button, .main-reaction-button, .boost-button {
-  background-color: var(--light-mode-body-color);
+  background-color: var(--border-color);
   border: 1px solid var(--border-color);
   color: #666;
-  border-radius: 15px;
+  border-radius: 6px;
   padding: 4px 8px;
   margin: 3px 5px;
   font-size: 14px;
@@ -260,7 +260,6 @@ div.vote-interactions {
 
 #date-icon, #user-icon, #comments-icon, #score-icon {
   vertical-align: -4px;
-  padding: 3px;
   font-size: 15px;
   color: #666; 
 }
@@ -286,7 +285,7 @@ div.vote-interactions {
 .description {
   font-size: 14px;
   margin-left: 5px;
-  font-weight: bold;
+  font-weight: normal;
   padding: 3px;
 }
 
@@ -316,8 +315,12 @@ div.vote-interactions {
   color: #666;
   float: right;
   border-radius: 6px;
-  padding: 5px;
-
+  padding: 4px 8px;
+  background: var(--border-color);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .username a {
@@ -598,7 +601,7 @@ div .mini-link-desc {
 @media (max-width: 768px) {
 
   .community-header, .job-header {
-    margin: 10px 10px 10px 10px;
+    margin: 6px 10px -6px 10px;
   }
 
   .post {
@@ -668,13 +671,11 @@ div .mini-link-desc {
 }
 @media (max-width: 768px) {
   .post {
-    border: none;
-    border-radius: 0px;
+    border-radius: 6px;
     padding: 0px;
-    margin: 0px;
-    width: 100%;
+    margin: 7px;
     max-width: 100%;
-    border-top: 1px solid var(--border-color);
+    border: 1px solid var(--border-color);
   }
 
   .job-flair {
