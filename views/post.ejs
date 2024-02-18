@@ -140,7 +140,7 @@
         <% function renderComments(comments, level = 0) { %>
         <% comments.forEach(comment =>
         { %>
-        <% if (level == 0) { %>
+        <% if (level > 3) { %>
         <div class="comment-with-replies">
           <% } %>
           <div class="comment">
