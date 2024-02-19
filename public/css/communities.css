@@ -731,7 +731,7 @@ div .mini-link-desc {
 
   @media (prefers-color-scheme: dark) {
     .post {
-      border-top: 1px solid var(--dark-mode-border-color);
+      border: 1px solid var(--dark-mode-border-color);
   }
   
 }
