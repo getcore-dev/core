@@ -76,7 +76,13 @@ const userQueries = {
   getCommentsByUserIdUserProfile: async (userId) => {
     try {
       const result = await sql.query`
-        SELECT * FROM comments WHERE user_id = ${userId} AND deleted = 0 ORDER BY created_at DESC OFFSET 0 ROWS FETCH NEXT 3 ROWS ONLY`;
+      SELECT comments.*, posts.title 
+      FROM comments 
+      INNER JOIN posts ON comments.post_id = posts.id 
+      WHERE comments.user_id = ${userId} AND comments.deleted = 0 
+      ORDER BY comments.created_at DESC 
+      OFFSET 0 ROWS 
+      FETCH NEXT 3 ROWS ONLY`;
       const comments = result.recordset;
 
       const enrichedComments = await Promise.all(

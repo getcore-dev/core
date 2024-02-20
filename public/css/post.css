@@ -240,7 +240,7 @@ a.comment-url:visited {
 }
 .nested-comment.level-1 > .comment:first-child {
   background-color: var(--light-mode-main-color);
-  border-color: var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   box-sizing: border-box;
   padding: 3px;
@@ -284,7 +284,7 @@ div .user-info, .header {
 }
 
 .reaction-button, .main-reaction-button, .boost-button, #delete-post-button {
-  background-color: var(--profile-background-color);
+  background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
   color: #999;
   border-radius: 6px;
@@ -344,7 +344,6 @@ div .user-info, .header {
 .post-interactions-header {
   width: 100%;
   border-bottom: 1px solid var(--border-color);
-  background-color: var(--border-color);
   padding: 4px;
   box-sizing: border-box;
   border-top-left-radius: 5px;
@@ -384,7 +383,7 @@ div .user-info, .header {
 .comment-with-replies > .comment >.comment-main >.comment-content {
   width: 100%;
   border-bottom: 1px solid var(--border-color);
-  background-color: var(--border-color);
+
 }
 
 div.repliers-avatar, div.repliees-avatar {
@@ -442,10 +441,9 @@ div.repliers-avatar, div.repliees-avatar {
 .user-actions {
   margin: 0px 5px;
   display: flex;
-  gap: 5px;
   align-items: center;
   flex-wrap: nowrap;
-  align-content: flex-start;
+
   padding-bottom: 5px;
 }
 
@@ -460,6 +458,12 @@ a.comment-user-info:hover {
   text-decoration: underline;
 }
 
+.comment-user-interactions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 6px;
+}
 
 
 .user-actions a {
@@ -475,7 +479,7 @@ a.comment-user-info:hover {
 
 .main-container textarea#comment {
   font-size: 14px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 5px;
   margin: 5px 0px;
   width: 100%;
@@ -495,10 +499,8 @@ a.comment-user-info:hover {
 }
 
 .comment-body {
-  font-size: 17px;
-  padding-top: 2px;
-  margin-left: 6px;
-  padding-bottom: 10px;
+  font-size: 16px;
+  padding: 12px;
 }
 
 .input-container textarea, .comment-container textarea{
@@ -739,7 +741,7 @@ p.preview-description {
 @media screen and (max-width: 600px) {
 
   .user-interactions {
-    justify-content: space-around;
+    justify-content: space-between;
     gap: 0px;
   }
   .sidebar-link-info-title, .sidebar-link-info-url {

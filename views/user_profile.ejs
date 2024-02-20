@@ -73,39 +73,52 @@
         <% } %>
       </div>
 
-      <div class="posts">
-        <h4><%=otheruser.username%>'s posts</h4>
-        <% if (posts.length === 0) { %>
-        <p>No posts yet.</p>
-        <% } else { %>
-        <div class="post-container">
-          <% posts.forEach(function(post) { %>
-          <div class="post">
-            <h3 class="post-title">
-              <a href="/posts/<%= post.id %>"><%= post.title %></a>
-            </h3>
-            <p class="post-content"><%= post.content %></p>
-          </div>
-          <% }); %>
+      <div class="user-activity">
+        <div class="user-activity-buttons">
+          <button onclick="showSection('posts')" class="active">Posts</button>
+          <button onclick="showSection('comments')">Comments</button>
         </div>
-        <% } %>
-      </div>
-      <div class="comments">
-        <h2>Comment</h2>
-        <% if (comments.length === 0) { %>
-        <p>No comments yet.</p>
-        <% } else { %>
-        <div class="coments-container">
-          <% comments.forEach(function(comment) { %>
-          <div class="comment">
-            <p class="comment-author"><%= comment.author.username %> <% if (comment.receiver) { %> to <%= comment.receiver %> <% } %></p>
-            <p class="comment-content"><%= comment.comment %></p>
-          </div>
-          <% }); %>
 
+        <div id="posts" class="content">
+          <h4><%=otheruser.username%>'s posts</h4>
+          <% if (posts.length === 0) { %>
+          <p>No posts yet.</p>
+          <% } else { %>
+          <div class="post-container">
+            <% posts.forEach(function(post) { %>
+            <div class="post">
+              <h3 class="post-title">
+                <a href="/posts/<%= post.id %>"><%= post.title %></a>
+              </h3>
+              <p class="post-content"><%= post.content %></p>
+            </div>
+            <% }); %>
+          </div>
+          <% } %>
+        </div>
+
+        <div id="comments" class="content" style="display:none;">
+          <h4><%=otheruser.username%>'s comments</h4>
+          <% if (comments.length === 0) { %>
+          <p>No comments yet.</p>
+          <% } else { %>
+          <div class="comments-container">
+            <% comments.forEach(function(comment) { %>
+            <div class="comment">
+              <h3 class="comment-title">
+                <a href="/posts/<%= comment.post_id %>"><%= comment.title %></a>
+              </h3>
+              <p class="comment-author">
+                <a href="/profile/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/profile/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
+              </p>
+              <p class="comment-content"><%= comment.comment %></p>
+            </div>
+            <% }); %>
+          </div>
           <% } %>
         </div>
       </div>
+
   </main>
   <script>
     function editImage() {
@@ -240,6 +253,22 @@
         formattedDate = years + ' years ago';
       }
       return formattedDate;
+    }
+
+    function showSection(section) {
+      // Hide both sections
+      document.getElementById('posts').style.display = 'none';
+      document.getElementById('comments').style.display = 'none';
+
+      // Remove active class from all buttons
+      var buttons = document.querySelectorAll('.user-activity-buttons button');
+      buttons.forEach(function(button) {
+        button.classList.remove('active');
+      });
+
+      // Show the selected section and add 'active' class to the corresponding button
+      document.getElementById(section).style.display = 'block';
+      document.querySelector('.user-activity-buttons button[onclick="showSection(\'' + section + '\')"]').classList.add('active');
     }
   </script>
 </body>

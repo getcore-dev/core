@@ -200,7 +200,7 @@ main {
   max-height: 3em; /* Max height for 2 lines */
 }
 
-.post-container, .coments-container {
+.post-container, .comments-container {
   display: flex;
   flex-direction: column;
   gap: 7px;
@@ -232,11 +232,16 @@ main {
 
 .post, .comment {
   padding: 10px;
+  background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
   border-radius: 6px;
   width: 95%;
   max-width: 95%;
+}
 
+.post:hover, .comment:hover {
+  background-color: var(--light-mode-body-color);
+  cursor: pointer;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -364,7 +369,7 @@ padding: auto;
   grid-template-areas:
     "info1 info1 info1"
     "job job job"
-    "posts posts comments"; /* Posts will take up the entire bottom row spanning 3 columns */
+    "user-activity user-activity user-activity"; /* Posts will take up the entire bottom row spanning 3 columns */
   gap: 30px;
   /* ... other styles ... */
 }
@@ -372,7 +377,7 @@ padding: auto;
 @media screen and (max-width: 768px) {
 
   #profile {
-    max-height: calc(100vh - 65px);
+    max-height: calc(100dvh - 65px);
   }
   #profile {
     padding: 15px;
@@ -381,8 +386,7 @@ padding: auto;
     grid-template-areas:
       "info1 info1"
       "job job"
-      "posts posts"
-      "comments comments";
+      "user-activity user-activity";
   }
   
 }
@@ -422,20 +426,31 @@ padding: auto;
   /* ... other styles ... */
 }
 
-.achievements {
-  grid-area: info2;
-  /* ... other styles ... */
+.user-activity {
+  grid-area: user-activity;
 }
 
-/* Posts container spans three columns at the bottom */
-.posts {
-  grid-area: posts;
-  /* ... other styles ... */
+.user-activity-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.user-activity-buttons button {
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  padding: 5px;
+}
+
+.user-activity-buttons button:hover {
+  cursor: pointer;
+}
+
+.user-activity-buttons button.active {
+  border-color: var(--active-indicator-color)
 }
 
 
-
-/* Individual post styling */
 .post {
   display: flex;
   flex-direction: column;

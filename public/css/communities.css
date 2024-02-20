@@ -154,9 +154,9 @@ div.vote-interactions {
   border-color: #BF2239;
 }
 
-.reaction-button, .main-reaction-button, .boost-button {
-  background-color: var(--border-color);
+.reaction-button, .boost-button {
   border: 1px solid var(--border-color);
+  background-color: var(--light-mode-main-color);
   color: #666;
   border-radius: 6px;
   padding: 4px 8px;
@@ -176,9 +176,14 @@ div.vote-interactions {
 }
 
 .main-reaction-button {
-  padding: 4px 6px;
+  height: 100%;
   margin: 0px;
+  padding-inline: 0px;
+  padding: 4px 6px;
   border-radius: 100%;
+  border: 1px solid var(--border-color);
+  background-color: var(--light-mode-main-color);
+
 }
 
 .reaction-button:hover {
@@ -226,7 +231,8 @@ div.vote-interactions {
 }
 
 .link-preview {
-  background-color: #E5EBF1;
+  background-color: var(--light-mode-main-color);
+  border: 1px solid var(--border-color);
   margin: 10px 3px;
   border-radius: 6px;
   padding: 4px 6px;
@@ -327,8 +333,8 @@ div.vote-interactions {
   float: right;
   border-radius: 6px;
   padding: 4px 8px;
-  background: var(--border-color);
   border: 1px solid var(--border-color);
+  background-color: var(--light-mode-main-color);
   display: flex;
   align-items: center;
   gap: 4px;

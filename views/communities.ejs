@@ -255,7 +255,7 @@
             // boost button
             const boostButton = document.createElement("button");
             boostButton.className = "boost-button";
-            boostButton.innerHTML = `<span class='material-symbols-outlined'>bolt</span> <span class='boost-count'>${post.boostCount}</span>`;
+            boostButton.innerHTML = `⚡️ <span class='boost-count'>${post.boostCount}</span>`;
 
             boostButton.onclick = () => interactWithPost(post.id, "<%= user %>", "BOOST");
 
