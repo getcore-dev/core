@@ -66,12 +66,11 @@ h1, h2, h3, h4, h5, p {
 
 
 #menu-icon {
-  padding: 11px 7px;
+  padding: 9px 9px;
   position: relative;
   display: none;
   border: 1px solid var(--border-color);
   border-radius: 5px; 
-  margin-left: 10px; /* Left padding */
   color: var(--primary-text-color); /* Icon color */
   font-size: 20px; /* Icon size */
 }
@@ -264,7 +263,7 @@ ul.notification-list {
   position: fixed;
   top: 0;
   left: 0;
-  height: 100dvh;
+  height: calc(100vh - 65px);
   overflow-x: hidden;
   transition: transform 0.5s ease-out; /* Updated for smoother transition */
   padding-top: 65px;
