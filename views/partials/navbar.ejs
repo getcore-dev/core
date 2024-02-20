@@ -104,10 +104,9 @@
             </div>
           </li>
           <li>
-            <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
-            <a href="#" class="logout-button <%= currentPath === '/logout' ? 'active' : '' %>" onclick="document.getElementById('logoutForm').submit();">
+            <a href="/post/create" class="logout-button">
               <span class="material-symbols-outlined" id="nb-icon">
-                logout
+                add
               </span>
             </a>
           </li>
