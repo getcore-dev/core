@@ -49,7 +49,7 @@
               <span class="material-symbols-outlined" id="menu-community-icon">
                 groups
               </span>
-              Communities
+              Home
             </div>
           </a>
           <a href="/jobs">
@@ -78,7 +78,6 @@
               Learning
             </div>
           </a>
-          <% } else { %>
           <% } %>
 
           <h3> Communities </h3>
@@ -144,6 +143,24 @@
 </nav>
 
 <script>
+  function getAllCommunities() {
+    fetch('/api/communities') // Adjust this to your server's endpoint
+      .then(response => response.json())
+      .then(communities => {
+        const menuContent = document.getElementById('menu-communities');
+        const communityLinks = communities.map(community => {
+          return `
+          
+          <div class="menu-community">
+          <a href="/communities/${community.id}"><span id="menu-community-icon" class="material-symbols-outlined">${community.mini_icon}</span>${community.name}</a>
+          </div>`;
+        });
+        menuContent.innerHTML = communityLinks.join('');
+      });
+  }
+
+  getAllCommunities();
+
   document.getElementById("menu-icon").onclick = function(event) {
     var content = document.getElementById("menu-content");
     var overlay = document.getElementById("overlay");
@@ -242,24 +259,6 @@
       method: 'DELETE'
     });
   }
-
-  function getAllCommunities() {
-    fetch('/api/communities') // Adjust this to your server's endpoint
-      .then(response => response.json())
-      .then(communities => {
-        const menuContent = document.getElementById('menu-communities');
-        const communityLinks = communities.map(community => {
-          return `
-          
-          <div class="menu-community">
-          <a href="/communities/${community.id}"><span id="menu-community-icon" class="material-symbols-outlined">${community.mini_icon}</span>${community.name}</a>
-          </div>`;
-        });
-        menuContent.innerHTML = communityLinks.join('');
-      });
-  }
-
-  getAllCommunities();
 
 
   document.getElementById('clear-all-btn').addEventListener('click', async function() {
