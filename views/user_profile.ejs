@@ -42,17 +42,23 @@
         <h4>
           <%= otheruser.currentJob%> @ <%= otheruser.currentCompany %>
         </h4>
+
         <p id="currentjob.position-display">
-          <strong>Start Date: </strong> <%= otheruser.currentJob_startdate %>
         </p>
         <p id="currentjob.position-display">
-          <strong>Skills: </strong> <%= otheruser.currentJob_skills %>
+          <span class="flair" id="date-flair">
+            <%= new Date(otheruser.currentJob_startdate).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) %>
+          </span>
+          <span class="flair" id="emp-type-flair">
+            <%= otheruser.currentJob_employment_type %>
+          </span>
+          <% otheruser.currentJob_skills.split(',').forEach(function(skill) { %>
+          <span class="flair"><%= skill.trim() %></span>
+          <% }); %>
         </p>
-        <p id="currentjob.position-display">
-          <strong>Employment Type: </strong> <%= otheruser.currentJob_employment_type %>
 
 
-          <% } else { %>
+        <% } else { %>
         <p id="currentjob.company-display"></p>
         <% if (user && otheruser.username == user.username) { %>
         Add Company

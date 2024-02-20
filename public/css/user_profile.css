@@ -208,6 +208,28 @@ main {
   align-items: center;
 }
 
+.flair {
+  display: inline-block;
+  padding: 2px 3px;
+  margin: 2px;
+  background-color: #6d93b1; 
+  border: 1px solid #6488a4; 
+  color: white;
+  border-radius: 6px;
+  font-size: 14px;
+  position: relative;
+}
+
+#date-flair {
+  background-color: #39A77F; 
+  border: 1px solid #32936F;
+}
+
+#emp-type-flair {
+   background-color: #DB5461;
+   border-color: #D43545;
+}
+
 .post, .comment {
   padding: 10px;
   border: 1px solid var(--border-color);
