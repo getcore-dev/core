@@ -620,7 +620,7 @@ div .mini-link-desc {
   }
   .post-content, .job-content {
       margin-left: 30px;
-      margin-right: 25px;
+      margin-right: 10px;
   }
 
   .comments {
@@ -819,7 +819,7 @@ div .mini-link-desc {
   /* Post styling adjustments */
 
   .post:hover, .job-content:hover, .com-btn:hover {
-      background-color: var(--dark-mode-border-color); /* Dark background on hover */
+      background-color: var(--dark-mode-body-color); /* Dark background on hover */
   }
   
   .post:last-child {

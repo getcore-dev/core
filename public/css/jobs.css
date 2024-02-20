@@ -41,7 +41,6 @@ main {
   flex-grow: 1; /* Take up remaining space */
   padding-left: 5px; /* No padding */
   padding-right: 5px;
-  border-bottom: 1px solid #ccc;
 }
 
 
@@ -90,8 +89,7 @@ main {
 
   .job-body {
     font-size: 14px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 5px 0px;
     line-height: 1.4;
   }
 
@@ -127,7 +125,7 @@ main {
 }
 
 .jobs-container h3 {
-  margin: 30px 50px;
+  margin: 15px 20px;
 }
 
 .jobs-container::-webkit-scrollbar {
@@ -135,28 +133,34 @@ main {
 }
 
 .job-list {
-  margin: 30px 50px;
-  border: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 4px 7px;
   border-radius: 6px;
 }
 
 .job-content {
-  padding: 12px;
+  padding: 4px 10px;
 }
 
 .job-flair {
   display: inline-block;
   padding: 2px 3px;
   margin: 2px;
-  background-color: #f07826; 
-  border: 1px solid #e05624; 
+  background-color: #DB504A;
+    border: 1px solid #FF8370; 
   color: white;
   border-radius: 6px;
   font-size: 14px;
   position: relative;
 }
 
-
+.job-content {
+  border: 1px solid var(--border-color);
+  background: var(--light-mode-body-color);
+  border-radius: 6px;
+}
 
 
 .job-btn {
@@ -186,6 +190,7 @@ div .material-symbols-outlined {
       color: #fff; /* Light text */
   }
 
+
   .job-list {
     border-color: var(--dark-mode-border-color);
   }
@@ -197,5 +202,11 @@ div .material-symbols-outlined {
 
   .job:hover {
     background-color: var(--dark-mode-body-color);
+  }
+}
+
+@media (max-width: 768px) {
+  .jobs-container {
+    height: calc(100vh - 65px);
   }
 }
