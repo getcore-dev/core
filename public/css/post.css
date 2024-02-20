@@ -99,7 +99,7 @@ pre {
   -moz-border-radius: 5px; 
   -webkit-border-radius: 5px;
   border: 1px solid var(--border-color);
-  background: var(--profile-background-color);
+  background: var(--light-mode-main-color);
   font: 13px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace;
   padding: 15px;
 }
@@ -192,7 +192,7 @@ div .material-symbols-outlined:hover {
 }
 
 
-.post-content p { 
+.post-body p { 
   margin-bottom: 4px;
   }
 
@@ -232,19 +232,40 @@ a.comment-url:visited {
 
 .post {
   border-radius: 6px;
-  padding: 10px 10px;
   margin-bottom: 5px;
 }
 
 .nested-comment.level-1 {
-  background-color: var(--dark-mode-body-color);
-  border: 1px solid var(--border-color);
+  padding: 5px;
+}
+.nested-comment.level-1 > .comment:first-child {
+  background-color: var(--light-mode-main-color);
+  border-color: var(--border-color);
   border-radius: 6px;
+  box-sizing: border-box;
   padding: 3px;
+}
+
+.nested-comments-container .comment {
+  width: 100%;
+  padding: 5px;
+  box-sizing: border-box;
 }
 
 .nested-comment {
   width: 100%;
+  box-sizing: border-box;
+}
+
+.comment-container {
+  padding: 12px;
+}
+
+.comment-container {
+  border: 1px solid var(--border-color);  
+}
+
+.comment-container textarea {
   box-sizing: border-box;
 }
 
@@ -315,7 +336,9 @@ div .user-info, .header {
 }
 
 .post-body {
-  padding: 0px 12px;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 12px;
 }
 
 .post-interactions-header {
@@ -346,15 +369,22 @@ div .user-info, .header {
 .comment-with-replies {
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  padding: 4px 6px;
   background-color: var(--profile-background-color);
 }
 .comment-content {
   padding: 2px;
-  font-size: 18px;
+  font-size: 14px;
   display: flex;
   align-items: center;
   gap: 4px;
+  box-sizing: border-box;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+.comment-with-replies > .comment >.comment-main >.comment-content {
+  width: 100%;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--border-color);
 }
 
 div.repliers-avatar, div.repliees-avatar {
@@ -365,26 +395,26 @@ div.repliers-avatar, div.repliees-avatar {
 .comment-main {
   display:flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .avatar {
   border-radius: 50%;
-  height: 38px;
-  width: 38px;
+  height: 24px;
+  width: 24px;
   padding: 2px 4px;
 }
 
 .avatar-nested {
   border-radius: 50%;
-  height: 28px;
-  width: 28px;
+  height: 24px;
+  width: 24px;
   padding: 4px;
 }
 
 
 .post-content, .comment-content {
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: 14px;
   color: #111;
 }
 
@@ -393,7 +423,10 @@ div.repliers-avatar, div.repliees-avatar {
 }
 
 .comments-section {
-  margin-top: 4px;
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 }
 
 .comments-section h3 {
@@ -468,7 +501,7 @@ a.comment-user-info:hover {
   padding-bottom: 10px;
 }
 
-.input-container textarea {
+.input-container textarea, .comment-container textarea{
   resize: none;
 }
 
@@ -512,8 +545,7 @@ a.comment-user-info:hover {
   margin-left: 5px;
 }
 
-.post-content .preview-title {
-  margin-top: 0px;
+.post-body .preview-title {
   margin-bottom: 0px;
 }
 
@@ -522,9 +554,13 @@ a.comment-user-info:hover {
   font-weight: bold;
 }
 
+.comment-body {
+  padding-top: 6px;
+}
+
 .post-body {
   font-size: 16px;
-  padding-top: 2px;
+  padding-top: 10px;
   white-space: pre-line;
 }
 
@@ -560,17 +596,16 @@ p.preview-description {
 
 }
 
-.input-container {
+.input-container, .comment-container{
   display: flex;
   flex-direction:column;
   justify-content: space-between;
   border-radius: 6px;
   background-color: var(--input-bg-color);
-  border: 1px solid var(--border-color);
   margin-top: 5px;
   margin-bottom: 5px;
-  padding: 4px 6px;
-
+  box-sizing: border-box;
+  padding: 5px;
 }
 
 .reply-form {
@@ -583,12 +618,23 @@ p.preview-description {
     color: #e0e0e0; /* Light text color for better readability */
   }
 
-  .input-container {
+  .nested-comment.level-1 > .comment:first-child {
+    background-color: var(--dark-mode-body-color);
+    border: 1px solid var(--border-color);
+  }
+
+  pre {
+    background-color: var(--dark-mode-body-color); /* Dark background for code blocks */
+    border-color: var(--dark-mode-border-color); /* Dark border color for code blocks */
+  }
+
+  .input-container, .comment-container {
     border-color: var(--dark-mode-border-color);
   }
 
 
   .main-container textarea#comment {
+    background-color: var(--dark-mode-body-color); /* Dark background for code blocks */
     border-color: var(--dark-mode-border-color);
   }
 
@@ -624,7 +670,7 @@ p.preview-description {
     color: #d0d0d0; /* Lighter text color for content */
   }
 
-  .input-container , .input-container textarea {
+  .input-container , .input-container textarea, .comment-container, .comment-container textarea {
     border-color: var(--dark-mode-border-color);
     color: #f4f4f4; /* Light text color */
   }
@@ -641,13 +687,13 @@ p.preview-description {
 }
 
 /* Style for the comment input field */
-.input-container textarea {
+.input-container textarea, .comment-container textarea{
   flex-grow: 1;
   padding: 5px 10px;
   border-radius: 5px;
   border: 1px solid var(--input-border-color);
   font-size: 14px; /* Same as other input fields */
-  background-color: var(--input-bg-color);
+  background-color: var(--light-mode-main-color);
   color: var(--input-text-color);
   overflow: hidden;
   resize: none;
@@ -656,7 +702,7 @@ p.preview-description {
 }
 
 /* Style for the send button */
-.input-container button.fab {
+.input-container button.fab, .comment-container button.fab {
   background-color: var(--profile-background-color);
   color: var(--text-color);
   border: 1px solid var(--border-color);
@@ -692,6 +738,10 @@ p.preview-description {
 
 @media screen and (max-width: 600px) {
 
+  .user-interactions {
+    justify-content: space-around;
+    gap: 0px;
+  }
   .sidebar-link-info-title, .sidebar-link-info-url {
     max-width: 37%;
   }
@@ -707,7 +757,9 @@ p.preview-description {
     }
     
     .post { 
+      padding: 10px 8px;
       padding-top: 0px;
+      
     }
 
   .sidebar-body {
@@ -780,12 +832,12 @@ p.preview-description {
   }
 
 
-  .post-content, .comment-content {
+  .post-content {
     font-size: 16px;
   }
 
   .comment-body {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .comment-timestamp {

@@ -142,14 +142,16 @@
           </div>
 
           <% if (user) { %>
-          <form id="comment-form" action="/posts/<%= post.id %>/comments" method="POST">
-            <div class="input-container">
-              <textarea id="comment" name="comment" required maxlength="500" placeholder="Add a comment..." oninput="autoResizeTextarea(this)"></textarea>
-              <button type="submit" class="fab">
-                Submit
-              </button>
-            </div>
-          </form>
+          <div class="comments-form">
+            <form id="comment-form" action="/posts/<%= post.id %>/comments" method="POST">
+              <div class="comment-container">
+                <textarea id="comment" name="comment" required maxlength="500" placeholder="Add a comment..." oninput="autoResizeTextarea(this)"></textarea>
+                <button type="submit" class="fab">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
           <% } %>
         </div>
       </div>
@@ -180,9 +182,6 @@
                 </a>
               </div>
               <p>to</p>
-              <div class="repliees-info">
-                <a class="comment-user-info" href="/profile/<%= comment.parent_author.username %>">
-              </div>
 
               <%= comment.parent_author.username %></a>
               <span>&#183;</span>
@@ -288,7 +287,7 @@ const totalReplies = countAllReplies(comment.replies);
           <form id="reply-form-<%= comment.id %>" action="/comments/<%= comment.id %>/replies" method="POST" style="display: block">
             <div class="input-container">
               <form onsubmit="submitForm('comment-form', event);">
-                <textarea id="comment" name="comment" rows="4" required oninput="autoExpandTextarea(event)" maxlength="500"></textarea>
+                <textarea id="comment" name="comment" rows="4" required oninput="autoExpandTextarea(event)" maxlength="500" placeholder="Reply to <%= comment.user.username %>..."></textarea>
                 <button type="submit" class="fab">
                   Submit
                 </button>
