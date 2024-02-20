@@ -338,7 +338,7 @@ div .user-info, .header {
 .post-body {
   display: flex;
   flex-direction: column;
-  padding: 4px 12px;
+  padding: 4px 6px;
 }
 
 .post-interactions-header {
