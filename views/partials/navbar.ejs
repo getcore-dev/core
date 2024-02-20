@@ -151,13 +151,18 @@
 
     if (content.classList.contains("sidebar-open")) {
       content.classList.remove("sidebar-open");
-      overlay.style.display = "none";
       menuIcon.textContent = 'menu';
+      overlay.style.opacity = '0';
+      setTimeout(() => {
+        overlay.style.pointerEvents = 'none'; // Block clicks when the overlay is fully transparent
+      }, 500);
       document.body.style.overflow = ""; // Enable scrolling
     } else {
       content.classList.add("sidebar-open");
-      overlay.style.display = "block";
+      overlay.style.visibility = "visible";
       menuIcon.textContent = 'close';
+      overlay.style.opacity = '1';
+      overlay.style.pointerEvents = 'auto';
       document.body.style.overflow = "hidden"; // Disable scrolling
     }
     event.stopPropagation();
@@ -171,8 +176,13 @@
     if (!content.contains(event.target) && event.target !== menuIcon) {
       if (content.classList.contains("sidebar-open")) {
         content.classList.remove("sidebar-open");
-        overlay.style.display = "none";
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+          overlay.style.pointerEvents = 'none'; // Block clicks when the overlay is fully transparent
+        }, 500);
         menuIcon.textContent = 'menu';
+        overlay.style.pointerEvents = 'auto';
+        document.body.style.overflow = "hidden"; // Disable scrolling
         document.body.style.overflow = "";
       }
     }

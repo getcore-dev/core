@@ -198,9 +198,13 @@ h1, h2, h3, h4, h5, p {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  display: none;
+  opacity: 0; /* Make overlay invisible initially */
   z-index: 1; 
+  transition: opacity 0.5s ease; /* Apply transition to opacity only */
+  pointer-events: none; /* Prevents click events when overlay is invisible */
 }
+
+
 
 ul.notification-list {
   padding-left: 0px;
