@@ -145,7 +145,7 @@
           <div class="comments-form">
             <form id="comment-form" action="/posts/<%= post.id %>/comments" method="POST">
               <div class="comment-container">
-                <textarea id="comment" name="comment" required maxlength="500" placeholder="Add a comment..." oninput="autoResizeTextarea(this)"></textarea>
+                <textarea id="comment" name="comment" required maxlength="500" placeholder="Add a comment to <%= post.username%>'s post" oninput="autoResizeTextarea(this)"></textarea>
                 <button type="submit" class="fab">
                   Submit
                 </button>
