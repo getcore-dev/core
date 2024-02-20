@@ -263,7 +263,7 @@ ul.notification-list {
   position: fixed;
   top: 0;
   left: 0;
-  height: calc(100vh - 65px);
+  height: calc(100dvh - 65px);
   overflow-x: hidden;
   transition: transform 0.5s ease-out; /* Updated for smoother transition */
   padding-top: 65px;

@@ -28,7 +28,7 @@
     overflow-x: none;
     scrollbar-width: none; 
     overflow-y: auto;
-    height: calc(100vh - 115px);
+    height: calc(100dvh - 115px);
   }
   
   .communities {
