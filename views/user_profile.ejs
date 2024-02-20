@@ -7,13 +7,14 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/user_profile.css" />
-  <link rel="shortcut icon" href="img/core.png" />
+  <link rel="shortcut icon" href="/img/core.png" />
+  <title> <%= otheruser.username %> : CORE</title>
 </head>
 
 <body>
   <%- include('partials/navbar', { pagePath: 'communities' }) %>
   <main>
-  
+
     <div id="profile" class="grid-container">
       <div class="profile-info">
         <div class="profile-picture">
@@ -26,11 +27,9 @@
         </div>
         <div class="profile-details">
           <h2><%= otheruser.username %></h2>
-          <span class="material-symbols-outlined">email</span>
-          <p id="email-display"><%= otheruser.email %></p>
-          <span class="material-symbols-outlined">badge</span>
           <p id="firstname-display"><%= otheruser.firstname %> <%= otheruser.lastname %></p>
 
+          <p id="email-display"><%= otheruser.email %></p>
 
           <p id="github-url-display"><% if (otheruser.github_url) { %><%- linkify(otheruser.github_url) %><% } else { %>No Github URL yet.<% } %></p>
 
@@ -39,14 +38,10 @@
       </div>
 
       <div class="current-job">
-        <h2>Current Job</h2>
         <% if (otheruser.currentJob && otheruser.currentCompany) {%>
-        <p id="currentjob.company-display">
-          <strong>Company:</strong> <%= otheruser.currentCompany %>
-        </p>
-        <p id="currentjob.position-display">
-          <strong>Position:</strong> <%= otheruser.currentJob %>
-        </p>
+        <h4>
+          <%= otheruser.currentJob%> @ <%= otheruser.currentCompany %>
+        </h4>
         <p id="currentjob.position-display">
           <strong>Start Date: </strong> <%= otheruser.currentJob_startdate %>
         </p>
@@ -73,7 +68,7 @@
       </div>
 
       <div class="posts">
-        <h2>Posts</h2>
+        <h4><%=otheruser.username%>'s posts</h4>
         <% if (posts.length === 0) { %>
         <p>No posts yet.</p>
         <% } else { %>
@@ -213,6 +208,32 @@
         .catch((error) => {
           console.error("Error:", error);
         });
+    }
+
+    function formatDate(date) {
+      let postDate = new Date(date);
+      let today = new Date();
+      let formattedDate;
+
+      let diff = today - postDate;
+
+      // Convert time difference to different units
+      let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+      let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+      let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+      let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+
+      // Decide the format based on the time difference
+      if (minutes < 60) {
+        formattedDate = minutes + ' minutes ago';
+      } else if (hours < 24) {
+        formattedDate = hours + ' hours ago';
+      } else if (days < 365) {
+        formattedDate = days + ' days ago';
+      } else {
+        formattedDate = years + ' years ago';
+      }
+      return formattedDate;
     }
   </script>
 </body>

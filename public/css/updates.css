@@ -38,15 +38,21 @@ div.commit-title {
   color: #121212;
   text-decoration: none;
 }
-  .commit:hover {
+
+#commits-container {
+  max-width: 100vh;
+  display: flex;
+  justify-content: flex-start;
+
+}
+  #commit:hover {
     cursor: pointer;
   }
 
   #commits {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    width: 100%;
+    max-width: 100vh;
   }  
   
   .commit {
@@ -54,7 +60,7 @@ div.commit-title {
     background: var(--light-mode-body-color);
     border-radius: 6px;
     padding: 5px;
-    width: 600px;
+    max-width: 100vh;
     margin: 10px;
     margin-bottom: 20px;
     margin-left: 10px;
@@ -164,9 +170,6 @@ div.commit-title {
   }
 
   @media (max-width: 768px) {
-    body {
-      overflow-x: hidden; 
-    }
 
     .commit-body {
       display: flex;
