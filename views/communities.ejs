@@ -92,9 +92,6 @@
               <div class="job-posting-link">
                 <img src="./src/indeedlogo.png" class="company-logo" id="job-link-logo" />
               </div>
-              <div class="job-posting-deadline">
-                Deadline: <span id="deadline"></span>
-              </div>
             </div>
             <div class="job-body">
               <div class="job-info"></div>
@@ -103,6 +100,7 @@
               <span class="job-flair"><%= job.jobType %></span>
               <span class="job-flair"><%= job.jobSalary %></span>
               <span class="job-flair"><%= job.jobLocation %></span>
+              <span class="job-flair" id="job-posting-deadline"><%= job.jobBenefits %></span>
             </div>
           </div>
         </div>
@@ -195,10 +193,15 @@
             const usernameDiv = document.createElement('div');
             usernameDiv.className = 'username';
             const usernameLink = document.createElement('a');
+            usernameLink.className = 'username-link';
             usernameLink.href = '/profile/' + post.username;
             usernameLink.innerHTML = '<strong>' + post.username + '</strong>';
             usernameDiv.appendChild(usernameLink);
 
+            const communityText = document.createElement('span');
+            communityText.className = 'communities-text';
+            communityText.innerText = " in ";
+            usernameDiv.appendChild(communityText);
             const communityLink = document.createElement('a');
             communityLink.href = '/communities/' + post.communities_id;
             communityLink.className = 'community';
@@ -391,7 +394,7 @@
       return fetch(`/api/communities/${community_id}`)
         .then(response => response.json())
         .then(community => {
-          container.innerHTML = " in " + community.name;
+          container.innerHTML = community.name;
         });
     }
 
@@ -404,7 +407,7 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
-      var deadlineElements = document.querySelectorAll('.job-posting-deadline');
+      var deadlineElements = document.querySelectorAll('#job-posting-deadline');
       var currentDate = new Date();
       var deadlineDate = new Date(currentDate.getTime() + (24 * 60 * 60 * 1000)); // Adds one day
 
@@ -418,7 +421,7 @@
       var formattedDeadline = formattedMonth + '/' + formattedDay;
 
       deadlineElements.forEach(function(elem) {
-        elem.textContent = 'Apply by: ' + formattedDeadline;
+        elem.textContent = 'Exp: ' + formattedDeadline;
       });
     });
 

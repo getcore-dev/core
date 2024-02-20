@@ -142,11 +142,16 @@ div.vote-interactions {
   padding: 2px 3px;
   margin: 2px;
   background-color: #FF6F59; 
-  border: 1px solid #e05624; 
+  border: 1px solid #FF8370; 
   color: white;
   border-radius: 6px;
   font-size: 12px;
   position: relative;
+}
+
+#job-posting-deadline {
+  background-color: #A71D31;
+  border-color: #BF2239;
 }
 
 .reaction-button, .main-reaction-button, .boost-button {
@@ -158,6 +163,11 @@ div.vote-interactions {
   margin: 3px 5px;
   font-size: 14px;
   font-weight: 500;
+}
+
+.main-reaction-button:hover, .boost-button:hover, .reaction-button:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
 }
 
 .reaction-interactions .material-symbols-outlined {
@@ -324,7 +334,7 @@ div.vote-interactions {
   gap: 4px;
 }
 
-.username a {
+.username a, .communities-text {
   font-size: 14px;
   color: #333;
   text-decoration: none;
@@ -642,6 +652,10 @@ div .mini-link-desc {
   .mini-link-body {
     color: #eee;
   }
+
+  .main-reaction-button:hover, .boost-button:hover, .reaction-button:hover {
+    background-color: var(--dark-mode-border-color);
+  }
   .reaction-menu {
     background-color: #333;
     border: 1px solid #444;
@@ -781,10 +795,6 @@ div .mini-link-desc {
     color: #ddd;
   }
 
-  .reaction-button:hover {
-    background-color: #222;
-  }
-
   .link-preview {
     background-color: #1F2427;
   }
@@ -795,8 +805,12 @@ div .mini-link-desc {
       color: #ccc; /* Lighter text color for comments */
   }
 
-  .username a {
-    color: #0e6655;
+  .username a, .communities-text {
+    color: var(--btn-text-dark);
+  }
+
+  .username .username-link {
+    color: var(--active-indicator-color);
   }
 
   .timestamp {
@@ -804,8 +818,8 @@ div .mini-link-desc {
   }
   /* Post styling adjustments */
 
-  .job-content:hover, .com-btn:hover {
-      background-color: #222; /* Dark background on hover */
+  .post:hover, .job-content:hover, .com-btn:hover {
+      background-color: var(--dark-mode-border-color); /* Dark background on hover */
   }
   
   .post:last-child {

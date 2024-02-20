@@ -133,7 +133,8 @@
   .create-post-btn {
     padding: 4px;
     width: 60px;
-    background: #229954;
+    background: #0C8346;
+    border: 1px solid #0E954F;
     border-radius: 6px;
     color: white;
     cursor: pointer;

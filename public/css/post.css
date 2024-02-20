@@ -60,12 +60,6 @@ main {
   overflow-y: none;
 
 }
-
-.user-interactions button {
-  display: flex;
-  flex-direction: row;
-  }
-   
 body {
   font-family: 'Roboto', sans-serif;
   background-color: var(--background-color);
@@ -104,9 +98,10 @@ pre {
   border-radius: 5px; 
   -moz-border-radius: 5px; 
   -webkit-border-radius: 5px;
-  border: 1px solid #BCBEC0;
-  background: #F1F3F5;
-  font:12px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace
+  border: 1px solid var(--border-color);
+  background: var(--profile-background-color);
+  font:12px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace;
+  padding: 15px;
 }
 
 code {
@@ -115,7 +110,7 @@ code {
   -webkit-border-radius: 5px; 
   border: 1px solid #BCBEC0;
   padding: 2px;
-  font:12px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace
+  font:12px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace;
 }
 
 pre code {
@@ -124,7 +119,7 @@ pre code {
   -webkit-border-radius: 0px; 
   border: 0px;
   padding: 2px;
-  font:12px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace
+  font:12px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace;
 }
 
 
@@ -282,8 +277,8 @@ div .user-info, .header {
 }
 
 .reaction-button, .main-reaction-button, .boost-button, #delete-post-button {
-  background-color: rgba(0,0,0,0);
-  border: 1px solid #ccc;
+  background-color: var(--profile-background-color);
+  border: 1px solid var(--border-color);
   color: #999;
   border-radius: 6px;
   padding: 4px 8px;
@@ -291,6 +286,12 @@ div .user-info, .header {
   font-weight: 500;
   text-decoration: none;
 }
+
+.reaction-button:hover, .main-reaction-button:hover, .boost-button:hover, #delete-post-button:hover {
+  background-color: var(--dark-mode-border-color);
+  cursor: pointer;
+}
+
 
 #delete-post-button {
   padding: 5px 9px;
@@ -325,28 +326,7 @@ div .user-info, .header {
   border-radius: 6px;
   padding: 12px;
   margin-top: 10px;
-  max-height: calc(14 * 1.5em); /* Assuming line-height is 1.5em */
-  overflow: hidden;
   position: relative;
-}
-
-.view-more {
-  display: none;
-  text-align: center;
-  color: var(--text-color);
-  cursor: pointer;
-  font-size: 12px;
-  padding: 5px 0;
-}
-
-.post-content.overflow::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  height: 1.5em; /* Same as your line-height */
-  background: linear-gradient(to bottom, transparent, white 50%);
 }
 
 .comment {
