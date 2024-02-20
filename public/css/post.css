@@ -100,7 +100,7 @@ pre {
   -webkit-border-radius: 5px;
   border: 1px solid var(--border-color);
   background: var(--profile-background-color);
-  font:12px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace;
+  font: 13px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace;
   padding: 15px;
 }
 
@@ -110,7 +110,7 @@ code {
   -webkit-border-radius: 5px; 
   border: 1px solid #BCBEC0;
   padding: 2px;
-  font:12px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace;
+  font: 13px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace;
 }
 
 pre code {
@@ -119,7 +119,7 @@ pre code {
   -webkit-border-radius: 0px; 
   border: 0px;
   padding: 2px;
-  font:12px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace;
+  font: 13px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace;
 }
 
 
@@ -476,7 +476,7 @@ a.comment-user-info:hover {
   object-fit: cover;
 }
 
-.sidebar-link-info-url, .sidebar-link-info-title {
+.sidebar-link-info-url, .sidebar-link-info-title, .sidebar-poster-job {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -696,15 +696,14 @@ p.preview-description {
     flex-direction: row;
   }
   .preview-image, .sidebar-avatar {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border-radius: 6px;
     object-fit: cover;
   }
 
   .sidebar {
     overflow: hidden;
-    max-width: 45%;
   }
   
   main {
@@ -718,9 +717,6 @@ p.preview-description {
     gap: 0px;
   }
 
-  .sidebar-poster-job {
-    max-width: 80%;
-  }
   .sidebar {
     height: 30%;
     margin: 5px;
@@ -778,7 +774,7 @@ p.preview-description {
   }
 
   .post-content, .comment-content {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .comment-body {

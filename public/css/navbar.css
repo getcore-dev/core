@@ -254,6 +254,23 @@ ul.notification-list {
   width: 100%;
 }
 
+.menu-content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100dvh;
+  overflow-x: hidden;
+  transition: transform 0.5s ease-out; /* Updated for smoother transition */
+  padding-top: 90px;
+  background-color: #f9f9f9;
+  border-right: 1px solid var(--border-color);
+  z-index: 4;
+  border-radius: 12px;
+  width: 249px;
+  transform: translateX(-250px); /* Start off-screen */
+  will-change: transform; /* Prepare the browser for transform changes */
+}
+
 .nav-text:hover {
   text-decoration: underline; /* Underline on hover */
 }
@@ -605,6 +622,7 @@ margin-top: 20px;
 .menu-content {
   z-index: 100;
   background-color: var(--dark-mode-background-color);
+  border-right: 1px solid var(--dark-mode-border-color);
   color: #fff; /* Light text color */
 }
 
@@ -632,19 +650,7 @@ margin-top: 20px;
 }
 
 
-.menu-content {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  overflow-x: hidden;
-  transition: transform 0.5s; /* Use transform for transition */
-  padding-top: 90px;
-  background-color: #f9f9f9;
-  z-index: 4;
-  width: 250px; /* Set a fixed width */
-  transform: translateX(-250px); /* Start off-screen */
-}
+
 
 .sidebar-open {
   transform: translateX(0); /* Slide in */

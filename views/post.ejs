@@ -108,19 +108,25 @@
         }
     ]; %>
               <% reactionTypes.forEach(reaction => { %>
-              <button class="reaction-button" onclick='interactWithPost(post.id, <%= user %>, reaction.type)''> <%= reaction.icon %> <%= reaction.count %></button>
-          <% }); %>
-          <% if (user && user.username === post.user.username) { %>
-          <div class="delete">
-            <form action="/post/<%= post.id %>?_method=DELETE" method="POST">
-              <input type="hidden" name="_method" value="DELETE" />
-              <a href="#" id="delete-post-button" onclick="return confirmDeletion(this);">
-                🗑️
-              </a>
-            </form>
-          </div>
-          <% } %>
-        </div>
+              <button class="reaction-button" onclick='
+              <% if (user) { %>
+              interactWithPost(<%= post.id %>, <%= user %>, <%= reaction.type %>)
+              <% } else { %>
+              window.location.href = "/login";
+              <% } %>
+              '> <%= reaction.icon %> <%= reaction.count %></button>
+              <% }); %>
+              <% if (user && user.username === post.user.username) { %>
+              <div class="delete">
+                <form action="/post/<%= post.id %>?_method=DELETE" method="POST">
+                  <input type="hidden" name="_method" value="DELETE" />
+                  <a href="#" id="delete-post-button" onclick="return confirmDeletion(this);">
+                    🗑️
+                  </a>
+                </form>
+              </div>
+              <% } %>
+            </div>
           </div>
         </div>
 
@@ -202,7 +208,7 @@
 
 
             <div class="user-actions">
-    <div class="comment-chevron" onclick="toggleNestedComments(' <%= comment.id %>', <%= nestedLevel %>)">
+              <div class="comment-chevron" onclick="toggleNestedComments(' <%= comment.id %>', <%= nestedLevel %>)">
                 <% 
 function countAllReplies(replies) {
     if (!replies || replies.length === 0) return 0;
@@ -222,70 +228,70 @@ const totalReplies = countAllReplies(comment.replies);
                   <%= totalReplies %> <% if (totalReplies === 1) { %> reply <% } else { %> replies <% } %>
                 </span>
                 <% } %> <% } %>
-            </div>
-            <% if (user) { %>
-            <div class="replies">
-              <a href="#" id="reply-button" onclick="showReplyForm('<%= comment.id %>', event)">
-                <span class="material-symbols-outlined">reply</span> Reply
-              </a>
-            </div>
-            <div clas="delete">
-              <% if (user.username === comment.user.username) { %>
-              <form id="delete-comment-form-<%= comment.id %>" action="/comment/<%= comment.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');">
-                <input type="hidden" name="_method" value="DELETE" />
-                <a href="#" class="delete-comment-button-<%= comment.id %>" onclick="document.getElementById('delete-comment-form-<%= comment.id %>').submit();">
-                  <span class="material-symbols-outlined"> delete </span> Delete
+              </div>
+              <% if (user) { %>
+              <div class="replies">
+                <a href="#" id="reply-button" onclick="showReplyForm('<%= comment.id %>', event)">
+                  <span class="material-symbols-outlined">reply</span> Reply
                 </a>
-              </form>
+              </div>
+              <div clas="delete">
+                <% if (user.username === comment.user.username) { %>
+                <form id="delete-comment-form-<%= comment.id %>" action="/comment/<%= comment.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                  <input type="hidden" name="_method" value="DELETE" />
+                  <a href="#" class="delete-comment-button-<%= comment.id %>" onclick="document.getElementById('delete-comment-form-<%= comment.id %>').submit();">
+                    <span class="material-symbols-outlined"> delete </span> Delete
+                  </a>
+                </form>
+                <% } %>
+
+              </div>
+
               <% } %>
-
             </div>
-
-            <% } %>
           </div>
+
+
         </div>
 
 
-      </div>
+        <form id="reply-form-<%= comment.id %>" action="/comments/<%= comment.id %>/replies" method="POST" style="display: none">
+          <div class="input-container">
+            <form onsubmit="submitForm('comment-form', event);">
+              <textarea id="comment" name="comment" rows="4" required oninput="autoExpandTextarea(event)" maxlength="500"></textarea>
+              <button type="submit" class="fab">
+                Submit
+              </button>
+            </form>
+          </div>
+        </form>
 
-
-      <form id="reply-form-<%= comment.id %>" action="/comments/<%= comment.id %>/replies" method="POST" style="display: none">
-        <div class="input-container">
-          <form onsubmit="submitForm('comment-form', event);">
-            <textarea id="comment" name="comment" rows="4" required oninput="autoExpandTextarea(event)" maxlength="500"></textarea>
-            <button type="submit" class="fab">
-              Submit
-            </button>
-          </form>
-        </div>
-      </form>
-
-      <% if (comment.replies && comment.replies.length > 0) { %>
-      <% var nestedLevel = level + 1; %>
-      <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
-      <div class="<%= divClass %>" id="nested-comments-<%= comment.id %>" style="
+        <% if (comment.replies && comment.replies.length > 0) { %>
+        <% var nestedLevel = level + 1; %>
+        <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
+        <div class="<%= divClass %>" id="nested-comments-<%= comment.id %>" style="
       <% if (nestedLevel < 4) { %>
       display: block;
       <% } else { %>
       display: none;
       <% } %>
       ">
-        <% renderComments(comment.replies, nestedLevel); %>
+          <% renderComments(comment.replies, nestedLevel); %>
+        </div>
+        <% } %>
+
+        <% if (level == 0) { %>
       </div>
       <% } %>
-
-      <% if (level == 0) { %>
-    </div>
-    <% } %>
-    <% }) %>
-    <% } %>
-    <% renderComments(post.comments); %>
+      <% }) %>
+      <% } %>
+      <% renderComments(post.comments); %>
     </div>
     </div>
     <div class="sidebar-container">
 
-      <div class="sidebar">
-        <div class="sidebar-content">
+      <div class="sidebar" style=" <% if (post.linkPreview) { %> max-width: 45%; <% } else { %> width: 100%; <% } %> ">
+        <div class=" sidebar-content">
           <div class="sidebar-body">
             <div class="sidebar-poster-avatar">
               <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="sidebar-avatar" onerror="standby()" />
@@ -293,12 +299,13 @@ const totalReplies = countAllReplies(comment.replies);
             <div class="sidebar-poster">
               <div class="sidebar-poster-info">
                 <div class="sidebar-poster-name">
-                  <span class="material-symbols-outlined">person</span>
-                  <%= post.user.username %>
+                  <a href="/profile/<%= post.user.username %>" style="text-decoration: none;">
+                    <%= post.user.username %>
+                  </a>
                 </div>
                 <div class="sidebar-poster-job">
                   <% if (post.user.currentJob && post.user.currentCompany) { %>
-                  <strong><%= post.user.currentCompany %></strong>/<%= post.user.currentJob %>
+                  <%= post.user.currentJob %> @ <strong><%= post.user.currentCompany %></strong>
                   <% } else { %>
                   No job information
                   <% } %>
