@@ -515,6 +515,39 @@ margin-top: 20px;
 }
 
 /* Dark Mode Styles for Navbar */
+
+
+
+
+.sidebar-open {
+  transform: translateX(0); /* Slide in */
+}
+
+.menu-content a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 16px;
+  color: var(--primary-text-color);
+  display: block;
+  transition: 0.3s;
+}
+
+  .menu-content a:hover {
+    color: var(--active-indicator-color);
+  }
+
+@media (prefers-color-scheme: dark) {
+  .menu-content {
+    background-color: var(--dark-mode-background-color);
+  }
+
+  .menu-content a {
+    color: #fff;
+  }
+
+}
+
+
 @media (prefers-color-scheme: dark) {
   #search-bar {
     background-color: var(--dark-mode-body-color); /* Darker background color for inputs */
@@ -618,7 +651,6 @@ margin-top: 20px;
   vertical-align: -2px;
 }
 
-/* Dropdown menu styling */
 .menu-content {
   z-index: 100;
   background-color: var(--dark-mode-background-color);
@@ -648,35 +680,3 @@ margin-top: 20px;
       background-color: #666; /* Darker background on focus/hover */
   }
 }
-
-
-
-
-.sidebar-open {
-  transform: translateX(0); /* Slide in */
-}
-
-.menu-content a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 16px;
-  color: var(--primary-text-color);
-  display: block;
-  transition: 0.3s;
-}
-
-  .menu-content a:hover {
-    color: var(--active-indicator-color);
-  }
-
-@media (prefers-color-scheme: dark) {
-  .menu-content {
-    background-color: var(--dark-mode-background-color);
-  }
-
-  .menu-content a {
-    color: #fff;
-  }
-
-}
-

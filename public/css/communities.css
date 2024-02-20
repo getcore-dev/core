@@ -612,7 +612,7 @@ div .mini-link-desc {
 @media (max-width: 768px) {
 
   .community-header, .job-header {
-    margin: 6px 10px -6px 10px;
+    margin: 6px 10px -2px 10px;
   }
 
   .post {

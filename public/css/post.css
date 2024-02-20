@@ -236,30 +236,11 @@ a.comment-url:visited {
   margin-bottom: 5px;
 }
 
-
-
-
-.nested-comment {
-  margin-left: 10px;
-  border-left: 2px solid;
-}
-
-@media (prefers-color-scheme: light) {
-  .nested-comment.level-1 {  border-color: #008000; } /* Green Border, Darker Grey */
-  .nested-comment.level-2 {  border-color: #00C000; } /* Lighter Green Border, Darker Grey */
-  .nested-comment.level-3 {  border-color: #40D040; } /* Even Lighter Green Border, Darker Grey */
-  .nested-comment.level-4 {  border-color: #80E080; } /* Light Green Border, Darker Grey */
-  .nested-comment.level-5 {  border-color: #B0F0B0; } /* Very Light Green Border, Darker Grey */
-  .nested-comment.level-6 {  border-color: #D0F8D0; } /* Pale Green Border, Darker Grey */
-}
-
-@media (prefers-color-scheme: dark) {
-  .nested-comment.level-1 {  border-color: #008000; } /* Green Border, Darker */
-  .nested-comment.level-2 {  border-color: #00C000; } /* Lighter Green Border, Darker */
-  .nested-comment.level-3 {  border-color: #40D040; } /* Even Lighter Green Border, Darker */
-  .nested-comment.level-4 {  border-color: #80E080; } /* Light Green Border, Darker */
-  .nested-comment.level-5 {  border-color: #B0F0B0; } /* Very Light Green Border, Darker */
-  .nested-comment.level-6 {  border-color: #D0F8D0; } /* Pale Green Border, Darker */
+.nested-comment.level-1 {
+  background-color: var(--dark-mode-body-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 3px;
 }
 
 
@@ -324,15 +305,44 @@ div .user-info, .header {
   background-color: var(--profile-background-color);
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  padding: 12px;
   margin-top: 10px;
   position: relative;
 }
 
+.post-body {
+  padding: 0px 12px;
+}
+
+.post-interactions-header {
+  width: 100%;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--border-color);
+  padding: 4px;
+  box-sizing: border-box;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  display: flex;
+  flex-direction: row-reverse;
+  
+}
+
+.dropbtn {
+  background-color: rgba(0,0,0,0);
+  border: 0; 
+  color: #d0d0d0;
+}
+
 .comment {
   display:flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: flex-start;
+}
+
+.comment-with-replies {
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 4px 6px;
+  background-color: var(--profile-background-color);
 }
 .comment-content {
   padding: 2px;
@@ -429,6 +439,7 @@ a.comment-user-info:hover {
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  margin: 5px 0px;
   width: 100%;
   box-sizing: border-box;
   height: auto;
@@ -454,6 +465,11 @@ a.comment-user-info:hover {
 
 .input-container textarea {
   resize: none;
+}
+
+
+.main-container textarea#comment {
+  height: calc(2 * 1.5em); 
 }
 
 .link-preview {
@@ -518,11 +534,6 @@ a.comment-user-info:hover {
   text-decoration: underline;
 }
 
-.comment-with-replies {
-  padding: 10px 5px;
-  border-radius: 6px;
-  margin: 25px 5px;
-}
 
 h4.preview-title {
   display: -webkit-box;
@@ -548,11 +559,17 @@ p.preview-description {
   display: flex;
   flex-direction:column;
   justify-content: space-between;
-  padding: 10px;
-  border-radius: 10px;
+  border-radius: 6px;
   background-color: var(--input-bg-color);
-  border: 1px solid var(--input-border-color);
-  margin-bottom: 10px;
+  border: 1px solid var(--border-color);
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 4px 6px;
+
+}
+
+.reply-form {
+  width: 100%;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -568,10 +585,6 @@ p.preview-description {
 
   .main-container textarea#comment {
     border-color: var(--dark-mode-border-color);
-  }
-
-  .post-content.overflow::after {
-    background: linear-gradient(to bottom, transparent, var(--background-color) 50%);
   }
 
   .reaction-button, #delete-post-button {
@@ -728,12 +741,6 @@ p.preview-description {
   }
 
 
-  .comment-with-replies {
-    margin: 0px;
-    border: 0px;
-    border-radius: 0px;
-  }
-
   .post {
     margin: 0px;
   }
@@ -764,14 +771,9 @@ p.preview-description {
 
   
   .post, .comment {
-    border: 0px;
-    border-radius: 0px;
     padding-bottom: 0px;
   }
 
-  .nested-comment {
-    margin-left: 4px;
-  }
 
   .post-content, .comment-content {
     font-size: 16px;
