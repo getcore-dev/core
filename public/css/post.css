@@ -398,7 +398,7 @@ div.repliers-avatar, div.repliees-avatar {
   width: 100%;
 }
 
-.avatar {
+.comment .avatar {
   border-radius: 50%;
   height: 24px;
   width: 24px;
