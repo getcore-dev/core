@@ -133,7 +133,7 @@
   #com-btn-container a {
     text-decoration: none;
     font-size: 15px;
-    font-weight: 425;
+    font-weight: normal;
     color: black;
     margin: 4px 0px;
   }
