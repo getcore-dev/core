@@ -44,15 +44,57 @@
 
         <span class="material-symbols-outlined" id="menu-icon" style="z-index: 1000;"> menu </span>
         <div class="menu-content" id="menu-content">
-          <a href="/">Communities</a>
-          <a href="/jobs">Openings</a>
-          <a href="/updates">Updates</a>
+          <a href="/">
+            <div class="menu-item">
+              <span class="material-symbols-outlined" id="menu-community-icon">
+                groups
+              </span>
+              Communities
+            </div>
+          </a>
+          <a href="/jobs">
+            <div class="menu-item">
+              <span class="material-symbols-outlined" id="menu-community-icon">
+                work
+              </span>
+              Openings
+            </div>
+          </a>
+          <a href="/updates">
+            <div class="menu-item">
+              <span class="material-symbols-outlined" id="menu-community-icon">
+                commit
+              </span>
+              Updates
+            </div>
+          </a>
           <% if (user) { %>
           <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
-          <a href="/learning">Learning</a>
-          <a href="#" onclick="document.getElementById('logoutForm').submit();">Logout</a>
+          <a href="/learning">
+            <div class="menu-item">
+              <span class="material-symbols-outlined" id="menu-community-icon">
+                library_books
+              </span>
+              Learning
+            </div>
+          </a>
+          <a href="#" onclick="document.getElementById('logoutForm').submit();">
+            <div class="menu-item">
+              <span class="material-symbols-outlined" id="menu-community-icon">
+                logout
+              </span>
+              Logout
+            </div>
+          </a>
           <% } else { %>
-          <a href="/login">Login</a>
+          <a href="/login">
+            <div class="menu-item">
+              <span class="material-symbols-outlined" id="menu-community-icon">
+                login
+              </span>
+              Login
+            </div>
+          </a>
           <% } %>
 
           <h3> Communities </h3>

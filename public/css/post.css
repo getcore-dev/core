@@ -243,6 +243,11 @@ a.comment-url:visited {
   padding: 3px;
 }
 
+.nested-comment {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 
 .post-title {
   font-size: 25px;
