@@ -60,6 +60,7 @@ h1, h2, h3, h4, h5, p {
 .menu-item {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 
@@ -522,6 +523,11 @@ margin-top: 20px;
 
 /* Dark Mode Styles for Navbar */
 
+#menu-community-icon {
+  font-size: 14px;
+  padding: 0px 5px;
+  vertical-align: -2px;
+}
 
 
 
@@ -651,11 +657,6 @@ margin-top: 20px;
   margin: 10px 25px;
 }
 
-#menu-community-icon {
-  font-size: 14px;
-  padding: 0px 5px;
-  vertical-align: -2px;
-}
 
 .menu-content {
   z-index: 100;
