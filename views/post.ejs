@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>CORE: <%= post.title %></title>
+  <title><%= post.title %> : <%= post.username %> @ CORE </title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="<%= post.content.substring(0, 160) %>" />
@@ -23,13 +23,14 @@
 
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/post.css" />
-  <link rel="shortcut icon" href="img/core.png" />
+  <link rel="shortcut icon" href="/img/core.png" />
   <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
   <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
 
 </head>
 
 <body>
+
   <%- include('partials/navbar', { pagePath: 'home' }) %>
 
   <main>
@@ -73,12 +74,27 @@
 
         <div class="post-container">
           <div class="post-content">
-            <%- post.content %>
-          </div>
-          <div class="view-more">View More</div>
-        </div>
-        <div class="user-interactions">
-          <% const reactionTypes = [
+            <div class="post-interactions-header">
+
+              <div class="dropdown">
+                <button class="dropbtn">
+                  <span class="material-symbols-outlined">more_horiz</span>
+                </button>
+                <div class="dropdown-content" style="display: none;">
+                  <% if (user && user.username === post.user.username) { %>
+                  <a href="/posts/<%= post.id %>/edit">Edit</a>
+                  <form action="/posts/<%= post.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?');">
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <button type="submit">Delete</button>
+                  </form>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+            <div class="post-body">
+              <%- post.content %>
+              <div class="user-interactions">
+                <% const reactionTypes = [
         {
             type: "boost",
             icon: "⚡️",
@@ -110,60 +126,63 @@
             count: post.celebrateCount
         }
     ]; %>
-          <% reactionTypes.forEach(reaction => { %>
-          <button class="reaction-button" onclick='interactWithPost(post.id, <%= user %>, reaction.type)''> <%= reaction.icon %> <%= reaction.count %></button>
-          <% }); %>
-          <% if (user && user.username === post.user.username) { %>
-          <div class="delete">
-            <form action="/post/<%= post.id %>?_method=DELETE" method="POST">
-              <input type="hidden" name="_method" value="DELETE" />
-              <a href="#" id="delete-post-button" onclick="return confirmDeletion(this);">
-                🗑️
-              </a>
+                <% reactionTypes.forEach(reaction => { %>
+                <button class="reaction-button" onclick='
+              <% if (user) { %>
+              interactWithPost(<%= post.id %>, <%= user %>, <%= reaction.type %>)
+              <% } else { %>
+              window.location.href = "/login";
+              <% } %>
+              '> <%= reaction.icon %> <%= reaction.count %></button>
+                <% }); %>
+                <% if (user && user.username === post.user.username) { %>
+
+                <% } %>
+              </div>
+            </div>
+          </div>
+
+          <% if (user) { %>
+          <div class="comments-form">
+            <form id="comment-form" action="/posts/<%= post.id %>/comments" method="POST">
+              <div class="comment-container">
+                <textarea id="comment" name="comment" required maxlength="500" placeholder="Add a comment to <%= post.username%>'s post" oninput="autoResizeTextarea(this)"></textarea>
+                <button type="submit" class="fab">
+                  Submit
+                </button>
+              </div>
             </form>
           </div>
           <% } %>
         </div>
-        <% if (user) { %>
-        <form id="comment-form" action="/posts/<%= post.id %>/comments" method="POST">
-          <div class="input-container">
-            <textarea id="comment" name="comment" required maxlength="500" placeholder="Add a comment..." oninput="autoResizeTextarea(this)"></textarea>
-            <button type="submit" class="fab">
-              Submit
-            </button>
-          </div>
-        </form>
-        <% } %>
       </div>
 
       <div class="comments-section">
         <% function renderComments(comments, level = 0) { %>
         <% comments.forEach(comment =>
         { %>
-        <% if (level > 3) { %>
+        <% if (level == 0) { %>
         <div class="comment-with-replies">
           <% } %>
           <div class="comment">
-            <div class="repliers-avatar">
-              <% if (level == 0) { %>
-              <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
-              <% } else { %>
-              <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar-nested" onerror="standby()" />
-              <% } %>
-            </div>
+
             <div class="comment-main">
 
               <div class="comment-content">
 
+                <div class="repliers-avatar">
+                  <% if (level == 0) { %>
+                  <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+                  <% } else { %>
+                  <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar-nested" onerror="standby()" />
+                  <% } %>
+                </div>
                 <a class="comment-user-info" href="/profile/<%= comment.user.username %>">
                   <div class="repliers-info">
                     <%= comment.user.username%>
                 </a>
               </div>
               <p>to</p>
-              <div class="repliees-info">
-                <a class="comment-user-info" href="/profile/<%= comment.parent_author.username %>">
-              </div>
 
               <%= comment.parent_author.username %></a>
               <span>&#183;</span>
@@ -202,71 +221,163 @@
 
 
             <div class="user-actions">
-              <div class="comment-chevron">
-                <% if (comment.replies && comment.replies.length > 0) { %>
-                <span class="material-symbols-outlined chevron" onclick="toggleNestedComments(' <%= comment.id %>')">chevron_right</span>
-            <span class="replies-count" onclick="toggleNestedComments('<%= comment.id %>')"><%= comment.replies.length %> <% if (comment.replies.length === 1) { %> reply <% } else { %> replies <% } %></span>
-            </span>
 
-            <% } %>
-        </div>
-        <% if (user) { %>
-        <div class="replies">
-          <a href="#" id="reply-button" onclick="showReplyForm('<%= comment.id %>', event)">
-            <span class="material-symbols-outlined">reply</span> Reply
-          </a>
-        </div>
-        <div clas="delete">
-          <% if (user.username === comment.user.username) { %>
-          <form id="delete-comment-form-<%= comment.id %>" action="/comment/<%= comment.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');">
-            <input type="hidden" name="_method" value="DELETE" />
-            <a href="#" class="delete-comment-button-<%= comment.id %>" onclick="document.getElementById('delete-comment-form-<%= comment.id %>').submit();">
-              <span class="material-symbols-outlined"> delete </span> Delete
-            </a>
-          </form>
+              <% if (level == 0) {%>
+              <div class="comment-user-interactions">
+                <% const reactionTypes = [
+        {
+            type: "boost",
+            icon: "⚡️",
+            count: comment.boostCount
+        },
+        {
+            type: "LOVE",
+            icon: "❤️",
+            count: comment.loveCount
+        },
+        {
+            type: "LIKE",
+            icon: "👍",
+            count: comment.likeCount
+        },
+        {
+            type: "CURIOUS",
+            icon: "🤔",
+            count: comment.curiousCount
+        },
+        {
+            type: "INTERESTING",
+            icon: "💡",
+            count: comment.interestingCount
+        },
+        {
+            type: "CELEBRATE",
+            icon: "🎉",
+            count: comment.celebrateCount
+        }
+    ]; %>
+                <% reactionTypes.forEach(reaction => { %>
+                <button class="reaction-button" onclick='
+              <% if (user) { %>
+              interactWithPost(<%= post.id %>, <%= user %>, <%= reaction.type %>)
+              <% } else { %>
+              window.location.href = "/login";
+              <% } %>
+              '> <%= reaction.icon %> <%= reaction.count %></button>
+                <% }); %>
+                <% if (user && user.username === post.user.username) { %>
+
+                <% } %>
+                <% if (level == 0) { %>
+                <div class="replies">
+                  <a href="#" id="reply-button" onclick="showReplyForm('<%= comment.id %>', event)">
+                    <% 
+function countAllReplies(replies) {
+    if (!replies || replies.length === 0) return 0;
+    let total = 0;
+    for (const reply of replies) {
+        total += 1 + countAllReplies(reply.replies);
+    }
+    return total;
+}
+const totalReplies = countAllReplies(comment.replies);
+%>
+                    <button class="reaction-button">💬 <%= totalReplies%>
+                    </button>
+                  </a>
+                </div>
+                <% } %>
+              </div>
+
+              <% } %>
+
+              <% if (level >= 3) {%>
+              <div class="comment-chevron" onclick="toggleNestedComments(' <%= comment.id %>', <%= nestedLevel %>)">
+                <% 
+function countAllReplies(replies) {
+    if (!replies || replies.length === 0) return 0;
+    let total = 0;
+    for (const reply of replies) {
+        total += 1 + countAllReplies(reply.replies);
+    }
+    return total;
+}
+const totalReplies = countAllReplies(comment.replies);
+%>
+
+                <% if (totalReplies > 0) { %>
+                <span class="material-symbols-outlined chevron">chevron_right</span>
+                <% if (level >= 3) { %>
+                <span class="replies-count" onclick="toggleNestedComments('<%= comment.id %>', <%= nestedLevel %>)">
+                  <%= totalReplies %> <% if (totalReplies === 1) { %> reply <% } else { %> replies <% } %>
+                </span>
+                <% } %> <% } %>
+              </div>
+              <% } %>
+
+              <% if (user) { %>
+              <div clas="delete">
+                <% if (user.username === comment.user.username) { %>
+                <form id="delete-comment-form-<%= comment.id %>" action="/comment/<%= comment.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                  <input type="hidden" name="_method" value="DELETE" />
+                  <a href="#" class="delete-comment-button-<%= comment.id %>" onclick="document.getElementById('delete-comment-form-<%= comment.id %>').submit();">
+                    <span class="material-symbols-outlined"> delete </span> Delete
+                  </a>
+                </form>
+                <% } %>
+
+              </div>
+
+              <% } %>
+            </div>
+          </div>
+
+
+          <% if (comment.replies && comment.replies.length > 0) { %>
+          <% var nestedLevel = level + 1; %>
+          <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
+          <div class="<%= divClass %>" id="nested-comments-<%= comment.id %>" style="
+      <% if (nestedLevel < 4) { %>
+      display: block;
+      <% } else { %>
+      display: none;
+      <% } %>
+      ">
+
+            <% renderComments(comment.replies, nestedLevel); %>
+          </div>
           <% } %>
-
         </div>
 
-        <% } %>
+
+        <% if (level == 0) { %>
+
+        <div class="reply-form">
+          <form id="reply-form-<%= comment.id %>" action="/comments/<%= comment.id %>/replies" method="POST" style="display: block">
+            <div class="input-container">
+              <form onsubmit="submitForm('comment-form', event);">
+                <textarea id="comment" name="comment" rows="4" required oninput="autoExpandTextarea(event)" maxlength="500" placeholder="Reply to <%= comment.user.username %>..."></textarea>
+                <button type="submit" class="fab">
+                  Submit
+                </button>
+              </form>
+            </div>
+          </form>
+        </div>
+
       </div>
-    </div>
+      <% } %>
 
+      <% }) %>
+      <% } %>
+      <% renderComments(post.comments); %>
 
-    </div>
-
-
-    <form id="reply-form-<%= comment.id %>" action="/comments/<%= comment.id %>/replies" method="POST" style="display: none">
-      <div class="input-container">
-        <form onsubmit="submitForm('comment-form', event);">
-          <textarea id="comment" name="comment" rows="4" required oninput="autoExpandTextarea(event)" maxlength="500"></textarea>
-          <button type="submit" class="fab">
-            Submit
-          </button>
-        </form>
-      </div>
-    </form>
-
-    <% if (comment.replies && comment.replies.length > 0) { %>
-    <% var nestedLevel = level + 1; %>
-    <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
-    <div class="<%= divClass %>" id="nested-comments-<%= comment.id %>" style="display: none;">
-      <% renderComments(comment.replies, nestedLevel); %>
-    </div>
-    <% } %>
-
-    <% if (level > 3) { %>
-    </div>
-    <% } %>
-    <% }) %>
-    <% } %>
-    <% renderComments(post.comments); %>
     </div>
     </div>
     <div class="sidebar-container">
 
-      <div class="sidebar">
-        <div class="sidebar-content">
+      <div class="sidebar" style=" <% if (post.linkPreview) { %> max-width: 45%; <% } else { %> width: 100%; <% } %> ">
+        <div class=" sidebar-content">
           <div class="sidebar-body">
             <div class="sidebar-poster-avatar">
               <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="sidebar-avatar" onerror="standby()" />
@@ -274,12 +385,13 @@
             <div class="sidebar-poster">
               <div class="sidebar-poster-info">
                 <div class="sidebar-poster-name">
-                  <span class="material-symbols-outlined">person</span>
-                  <%= post.user.username %>
+                  <a href="/profile/<%= post.user.username %>" style="text-decoration: none;">
+                    <%= post.user.username %>
+                  </a>
                 </div>
                 <div class="sidebar-poster-job">
                   <% if (post.user.currentJob && post.user.currentCompany) { %>
-                  <strong><%= post.user.currentCompany %></strong>/<%= post.user.currentJob %>
+                  <%= post.user.currentJob %> @ <strong><%= post.user.currentCompany %></strong>
                   <% } else { %>
                   No job information
                   <% } %>
@@ -320,12 +432,32 @@
 
 
   <script>
-    function toggleNestedComments(commentId) {
+    // JavaScript function to toggle nested comments
+    function toggleNestedComments(commentId, level) {
       var nestedComments = document.getElementById('nested-comments-' + commentId);
-      if (nestedComments.style.display === 'none') {
-        nestedComments.style.display = 'block';
-      } else {
-        nestedComments.style.display = 'none';
+      if (nestedComments) {
+        var isDisplayed = nestedComments.style.display === 'block';
+        nestedComments.style.display = isDisplayed ? 'none' : 'block'; // Toggle display
+
+        // Change chevron direction based on visibility
+        var chevron = nestedComments.previousElementSibling.querySelector('.chevron');
+        if (chevron) {
+          chevron.textContent = isDisplayed ? 'chevron_right' : 'expand_more';
+        }
+
+        // Optionally, if you want to hide all deeper nested comments when collapsing one,
+        // you can add the following lines:
+        if (isDisplayed) {
+          var allNested = nestedComments.querySelectorAll('.nested-comment');
+          allNested.forEach(function(nested) {
+            nested.style.display = 'none'; // Hide all deeper nested comments
+            // Reset all chevrons in deeper nested comments
+            var innerChevrons = nested.previousElementSibling.querySelectorAll('.chevron');
+            innerChevrons.forEach(function(chevron) {
+              chevron.textContent = 'chevron_right';
+            });
+          });
+        }
       }
     }
 

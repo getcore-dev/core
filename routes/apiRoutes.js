@@ -52,9 +52,8 @@ router.get("/posts/:postId", async (req, res) => {
 
 router.get("/communities", async (req, res) => {
   try {
-    console.log("Fetching communities...");
     const communities = await utilFunctions.getAllCommunities();
-    res.json(communities);
+    return res.json(communities);
   } catch (err) {
     console.error("Error fetching communities:", err);
     res.status(500).send("Error fetching communities");

@@ -142,16 +142,21 @@ div.vote-interactions {
   padding: 2px 3px;
   margin: 2px;
   background-color: #FF6F59; 
-  border: 1px solid #e05624; 
+  border: 1px solid #FF8370; 
   color: white;
   border-radius: 6px;
   font-size: 12px;
   position: relative;
 }
 
-.reaction-button, .main-reaction-button, .boost-button {
-  background-color: var(--border-color);
+#job-posting-deadline {
+  background-color: #A71D31;
+  border-color: #BF2239;
+}
+
+.reaction-button, .boost-button {
   border: 1px solid var(--border-color);
+  background-color: var(--light-mode-main-color);
   color: #666;
   border-radius: 6px;
   padding: 4px 8px;
@@ -160,15 +165,25 @@ div.vote-interactions {
   font-weight: 500;
 }
 
+.main-reaction-button:hover, .boost-button:hover, .reaction-button:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
 .reaction-interactions .material-symbols-outlined {
   font-size: 14px;
   vertical-align: -2px;
 }
 
 .main-reaction-button {
-  padding: 4px 6px;
+  height: 100%;
   margin: 0px;
+  padding-inline: 0px;
+  padding: 4px 6px;
   border-radius: 100%;
+  border: 1px solid var(--border-color);
+  background-color: var(--light-mode-main-color);
+
 }
 
 .reaction-button:hover {
@@ -216,7 +231,8 @@ div.vote-interactions {
 }
 
 .link-preview {
-  background-color: #E5EBF1;
+  background-color: var(--light-mode-main-color);
+  border: 1px solid var(--border-color);
   margin: 10px 3px;
   border-radius: 6px;
   padding: 4px 6px;
@@ -317,14 +333,14 @@ div.vote-interactions {
   float: right;
   border-radius: 6px;
   padding: 4px 8px;
-  background: var(--border-color);
   border: 1px solid var(--border-color);
+  background-color: var(--light-mode-main-color);
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.username a {
+.username a, .communities-text {
   font-size: 14px;
   color: #333;
   text-decoration: none;
@@ -345,6 +361,7 @@ div.vote-interactions {
   line-height: 1.5em;
   max-height: 3em; /* Max height for 2 lines */
 }
+
 
 div .mini-link {
   padding: 6px;
@@ -397,9 +414,28 @@ div .mini-link-title {
 
 #filterMenu {
   display: none;
+  background-color: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
   position: absolute;
-  transform: translateX(-38%) translateY(-50%);
+  box-shadow: 0px 0px 10px 0px #000000;
+  top: 155px;
   z-index: 10;
+}
+
+.filter-menu button {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 35px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: 0;
+  box-sizing: border-box;
+}
+
+.filter-menu button:hover {
+  background-color: var(--border-color);
 }
 
 .community-header {
@@ -429,8 +465,8 @@ div .mini-link-desc {
 
 
 #post-button {
-  background: #229954;
-  border: #117732;
+  background: #0C8346;
+  border: 1px solid #0E954F;
   color: white;
 }
 
@@ -600,9 +636,11 @@ div .mini-link-desc {
 }
 
 @media (max-width: 768px) {
-
+  #filterMenu {
+    top: 116px;
+  }
   .community-header, .job-header {
-    margin: 6px 10px -6px 10px;
+    margin: 6px 10px -2px 10px;
   }
 
   .post {
@@ -610,7 +648,7 @@ div .mini-link-desc {
   }
   .post-content, .job-content {
       margin-left: 30px;
-      margin-right: 25px;
+      margin-right: 10px;
   }
 
   .comments {
@@ -641,6 +679,10 @@ div .mini-link-desc {
 
   .mini-link-body {
     color: #eee;
+  }
+
+  .main-reaction-button:hover, .boost-button:hover, .reaction-button:hover {
+    background-color: var(--dark-mode-border-color);
   }
   .reaction-menu {
     background-color: #333;
@@ -771,6 +813,19 @@ div .mini-link-desc {
     filter: invert(1);
   }
 
+  #filterMenu {
+    background-color: var(--dark-mode-body-color);
+    border-color: var(--dark-mode-border-color);
+  }
+
+  #filterMenu button {
+    color: var(--btn-text-dark);
+  }
+
+  #filterMenu button:hover {
+    background-color: var(--dark-mode-border-color);
+  }
+
   .main-reaction-button, .boost-button { 
     background-color: var(--dark-mode-main-color);
     border: 1px solid var(--dark-mode-border-color);
@@ -779,10 +834,6 @@ div .mini-link-desc {
     background-color: var(--dark-mode-main-color);
     border: 1px solid var(--dark-mode-border-color);
     color: #ddd;
-  }
-
-  .reaction-button:hover {
-    background-color: #222;
   }
 
   .link-preview {
@@ -795,8 +846,12 @@ div .mini-link-desc {
       color: #ccc; /* Lighter text color for comments */
   }
 
-  .username a {
-    color: #0e6655;
+  .username a, .communities-text {
+    color: var(--btn-text-dark);
+  }
+
+  .username .username-link {
+    color: var(--active-indicator-color);
   }
 
   .timestamp {
@@ -804,8 +859,8 @@ div .mini-link-desc {
   }
   /* Post styling adjustments */
 
-  .job-content:hover, .com-btn:hover {
-      background-color: #222; /* Dark background on hover */
+  .post:hover, .job-content:hover, .com-btn:hover {
+      background-color: var(--dark-mode-body-color); /* Dark background on hover */
   }
   
   .post:last-child {

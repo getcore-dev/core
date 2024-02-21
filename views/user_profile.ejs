@@ -7,13 +7,14 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/user_profile.css" />
-  <link rel="shortcut icon" href="img/core.png" />
+  <link rel="shortcut icon" href="/img/core.png" />
+  <title> <%= otheruser.username %> : CORE</title>
 </head>
 
 <body>
   <%- include('partials/navbar', { pagePath: 'communities' }) %>
   <main>
-  
+
     <div id="profile" class="grid-container">
       <div class="profile-info">
         <div class="profile-picture">
@@ -26,11 +27,9 @@
         </div>
         <div class="profile-details">
           <h2><%= otheruser.username %></h2>
-          <span class="material-symbols-outlined">email</span>
-          <p id="email-display"><%= otheruser.email %></p>
-          <span class="material-symbols-outlined">badge</span>
           <p id="firstname-display"><%= otheruser.firstname %> <%= otheruser.lastname %></p>
 
+          <p id="email-display"><%= otheruser.email %></p>
 
           <p id="github-url-display"><% if (otheruser.github_url) { %><%- linkify(otheruser.github_url) %><% } else { %>No Github URL yet.<% } %></p>
 
@@ -39,25 +38,27 @@
       </div>
 
       <div class="current-job">
-        <h2>Current Job</h2>
         <% if (otheruser.currentJob && otheruser.currentCompany) {%>
-        <p id="currentjob.company-display">
-          <strong>Company:</strong> <%= otheruser.currentCompany %>
+        <h4>
+          <%= otheruser.currentJob%> @ <%= otheruser.currentCompany %>
+        </h4>
+
+        <p id="currentjob.position-display">
         </p>
         <p id="currentjob.position-display">
-          <strong>Position:</strong> <%= otheruser.currentJob %>
+          <span class="flair" id="date-flair">
+            <%= new Date(otheruser.currentJob_startdate).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) %>
+          </span>
+          <span class="flair" id="emp-type-flair">
+            <%= otheruser.currentJob_employment_type %>
+          </span>
+          <% otheruser.currentJob_skills.split(',').forEach(function(skill) { %>
+          <span class="flair"><%= skill.trim() %></span>
+          <% }); %>
         </p>
-        <p id="currentjob.position-display">
-          <strong>Start Date: </strong> <%= otheruser.currentJob_startdate %>
-        </p>
-        <p id="currentjob.position-display">
-          <strong>Skills: </strong> <%= otheruser.currentJob_skills %>
-        </p>
-        <p id="currentjob.position-display">
-          <strong>Employment Type: </strong> <%= otheruser.currentJob_employment_type %>
 
 
-          <% } else { %>
+        <% } else { %>
         <p id="currentjob.company-display"></p>
         <% if (user && otheruser.username == user.username) { %>
         Add Company
@@ -72,39 +73,52 @@
         <% } %>
       </div>
 
-      <div class="posts">
-        <h2>Posts</h2>
-        <% if (posts.length === 0) { %>
-        <p>No posts yet.</p>
-        <% } else { %>
-        <div class="post-container">
-          <% posts.forEach(function(post) { %>
-          <div class="post">
-            <h3 class="post-title">
-              <a href="/posts/<%= post.id %>"><%= post.title %></a>
-            </h3>
-            <p class="post-content"><%= post.content %></p>
-          </div>
-          <% }); %>
+      <div class="user-activity">
+        <div class="user-activity-buttons">
+          <button onclick="showSection('posts')" class="active">Posts</button>
+          <button onclick="showSection('comments')">Comments</button>
         </div>
-        <% } %>
-      </div>
-      <div class="comments">
-        <h2>Comment</h2>
-        <% if (comments.length === 0) { %>
-        <p>No comments yet.</p>
-        <% } else { %>
-        <div class="coments-container">
-          <% comments.forEach(function(comment) { %>
-          <div class="comment">
-            <p class="comment-author"><%= comment.author.username %> <% if (comment.receiver) { %> to <%= comment.receiver %> <% } %></p>
-            <p class="comment-content"><%= comment.comment %></p>
-          </div>
-          <% }); %>
 
+        <div id="posts" class="content">
+          <h4><%=otheruser.username%>'s posts</h4>
+          <% if (posts.length === 0) { %>
+          <p>No posts yet.</p>
+          <% } else { %>
+          <div class="post-container">
+            <% posts.forEach(function(post) { %>
+            <div class="post">
+              <h3 class="post-title">
+                <a href="/posts/<%= post.id %>"><%= post.title %></a>
+              </h3>
+              <p class="post-content"><%= post.content %></p>
+            </div>
+            <% }); %>
+          </div>
+          <% } %>
+        </div>
+
+        <div id="comments" class="content" style="display:none;">
+          <h4><%=otheruser.username%>'s comments</h4>
+          <% if (comments.length === 0) { %>
+          <p>No comments yet.</p>
+          <% } else { %>
+          <div class="comments-container">
+            <% comments.forEach(function(comment) { %>
+            <div class="comment">
+              <h3 class="comment-title">
+                <a href="/posts/<%= comment.post_id %>"><%= comment.title %></a>
+              </h3>
+              <p class="comment-author">
+                <a href="/profile/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/profile/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
+              </p>
+              <p class="comment-content"><%= comment.comment %></p>
+            </div>
+            <% }); %>
+          </div>
           <% } %>
         </div>
       </div>
+
   </main>
   <script>
     function editImage() {
@@ -213,6 +227,48 @@
         .catch((error) => {
           console.error("Error:", error);
         });
+    }
+
+    function formatDate(date) {
+      let postDate = new Date(date);
+      let today = new Date();
+      let formattedDate;
+
+      let diff = today - postDate;
+
+      // Convert time difference to different units
+      let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+      let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+      let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+      let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+
+      // Decide the format based on the time difference
+      if (minutes < 60) {
+        formattedDate = minutes + ' minutes ago';
+      } else if (hours < 24) {
+        formattedDate = hours + ' hours ago';
+      } else if (days < 365) {
+        formattedDate = days + ' days ago';
+      } else {
+        formattedDate = years + ' years ago';
+      }
+      return formattedDate;
+    }
+
+    function showSection(section) {
+      // Hide both sections
+      document.getElementById('posts').style.display = 'none';
+      document.getElementById('comments').style.display = 'none';
+
+      // Remove active class from all buttons
+      var buttons = document.querySelectorAll('.user-activity-buttons button');
+      buttons.forEach(function(button) {
+        button.classList.remove('active');
+      });
+
+      // Show the selected section and add 'active' class to the corresponding button
+      document.getElementById(section).style.display = 'block';
+      document.querySelector('.user-activity-buttons button[onclick="showSection(\'' + section + '\')"]').classList.add('active');
     }
   </script>
 </body>

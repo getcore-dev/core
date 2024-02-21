@@ -57,15 +57,20 @@ h1, h2, h3, h4, h5, p {
 
 }
 
+.menu-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 
 
 #menu-icon {
-  padding: 11px 7px;
+  padding: 9px 9px;
   position: relative;
   display: none;
   border: 1px solid var(--border-color);
   border-radius: 5px; 
-  margin-left: 10px; /* Left padding */
   color: var(--primary-text-color); /* Icon color */
   font-size: 20px; /* Icon size */
 }
@@ -193,9 +198,13 @@ h1, h2, h3, h4, h5, p {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  display: none;
+  opacity: 0; /* Make overlay invisible initially */
   z-index: 1; 
+  transition: opacity 0.5s ease; /* Apply transition to opacity only */
+  pointer-events: none; /* Prevents click events when overlay is invisible */
 }
+
+
 
 ul.notification-list {
   padding-left: 0px;
@@ -254,6 +263,25 @@ ul.notification-list {
   width: 100%;
 }
 
+.menu-content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: calc(100dvh - 65px);
+  overflow-x: hidden;
+  transition: transform 0.5s ease-out; /* Updated for smoother transition */
+  padding-top: 65px;
+  background-color: #f9f9f9;
+  border-right: 1px solid var(--border-color);
+  z-index: 4;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+  width: 249px;
+  overflow-y: auto;
+  transform: translateX(-250px); /* Start off-screen */
+  will-change: transform; /* Prepare the browser for transform changes */
+}
+
 .nav-text:hover {
   text-decoration: underline; /* Underline on hover */
 }
@@ -281,9 +309,9 @@ margin-top: 20px;
 }
 
 #avatar {
-  width: 42px;
+  width: 45px;
   border-radius: 50%;
-  height: 42px;
+  height: 45px;
   margin-top: -3px;
 }
 #search-bar {
@@ -439,6 +467,7 @@ margin-top: 20px;
     top: 5px;
     left: 65px;
     max-height: 45px; /* Maximum height of the logo */
+    z-index: 1000;
   }
 }
 
@@ -490,6 +519,10 @@ margin-top: 20px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
+.menu-content h3 {
+  margin: 10px 25px;
+}
+
 .search-bar input[type="search"]:focus,
 .search-bar input[type="search"]:hover {
   width: 250px;
@@ -498,6 +531,44 @@ margin-top: 20px;
 }
 
 /* Dark Mode Styles for Navbar */
+
+#menu-community-icon {
+  font-size: 14px;
+  padding: 0px 5px;
+  vertical-align: -2px;
+}
+
+
+
+.sidebar-open {
+  transform: translateX(0); /* Slide in */
+}
+
+.menu-content a {
+  padding: 14px 0px 14px 32px;
+  text-decoration: none;
+  font-size: 16px;
+  color: var(--primary-text-color);
+  display: block;
+  transition: 0.3s;
+}
+
+  .menu-content a:hover {
+    color: var(--active-indicator-color);
+  }
+
+@media (prefers-color-scheme: dark) {
+  .menu-content {
+    background-color: var(--dark-mode-background-color);
+  }
+
+  .menu-content a {
+    color: #fff;
+  }
+
+}
+
+
 @media (prefers-color-scheme: dark) {
   #search-bar {
     background-color: var(--dark-mode-body-color); /* Darker background color for inputs */
@@ -591,20 +662,11 @@ margin-top: 20px;
     filter: invert(100%); /* Invert logo colors */
 }
 
-.menu-content h3 {
-  margin: 10px 25px;
-}
 
-#menu-community-icon {
-  font-size: 14px;
-  padding: 0px 5px;
-  vertical-align: -2px;
-}
-
-/* Dropdown menu styling */
 .menu-content {
   z-index: 100;
   background-color: var(--dark-mode-background-color);
+  border-right: 1px solid var(--dark-mode-border-color);
   color: #fff; /* Light text color */
 }
 
@@ -630,47 +692,3 @@ margin-top: 20px;
       background-color: #666; /* Darker background on focus/hover */
   }
 }
-
-
-.menu-content {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  overflow-x: hidden;
-  transition: transform 0.5s; /* Use transform for transition */
-  padding-top: 90px;
-  background-color: #f9f9f9;
-  z-index: 4;
-  width: 250px; /* Set a fixed width */
-  transform: translateX(-250px); /* Start off-screen */
-}
-
-.sidebar-open {
-  transform: translateX(0); /* Slide in */
-}
-
-.menu-content a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: 16px;
-  color: var(--primary-text-color);
-  display: block;
-  transition: 0.3s;
-}
-
-  .menu-content a:hover {
-    color: var(--active-indicator-color);
-  }
-
-@media (prefers-color-scheme: dark) {
-  .menu-content {
-    background-color: var(--dark-mode-background-color);
-  }
-
-  .menu-content a {
-    color: #fff;
-  }
-
-}
-

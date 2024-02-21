@@ -99,7 +99,7 @@ body {
 
 .community-container {
     width: 100%;
-    height: calc(100vh - 85px);
+    height: calc(100dvh - 85px);
     overflow-y: auto;
 }
 

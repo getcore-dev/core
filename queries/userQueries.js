@@ -22,6 +22,16 @@ const userQueries = {
       throw err;
     }
   },
+  getPostsByUserIdUserProfile: async (userId) => {
+    try {
+      const result = await sql.query`
+      SELECT * FROM posts WHERE user_id = ${userId} AND deleted = 0 ORDER BY created_at DESC OFFSET 0 ROWS FETCH NEXT 3 ROWS ONLY`;
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
 
   getCommentAuthorByCommentId: async (commentId) => {
     try {
@@ -38,6 +48,41 @@ const userQueries = {
     try {
       const result = await sql.query`
         SELECT * FROM comments WHERE user_id = ${userId} AND deleted = 0 ORDER BY created_at DESC`;
+      const comments = result.recordset;
+
+      const enrichedComments = await Promise.all(
+        comments.map(async (comment) => {
+          const author = await userQueries.getCommentAuthorByCommentId(
+            comment.id
+          );
+          let receiver = null;
+          if (comment.parent_comment_id) {
+            receiver = await userQueries.getCommentAuthorByCommentId(
+              comment.parent_comment_id
+            );
+            receiver = receiver.username;
+          }
+          return { ...comment, author, receiver };
+        })
+      );
+
+      return enrichedComments;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getCommentsByUserIdUserProfile: async (userId) => {
+    try {
+      const result = await sql.query`
+      SELECT comments.*, posts.title 
+      FROM comments 
+      INNER JOIN posts ON comments.post_id = posts.id 
+      WHERE comments.user_id = ${userId} AND comments.deleted = 0 
+      ORDER BY comments.created_at DESC 
+      OFFSET 0 ROWS 
+      FETCH NEXT 3 ROWS ONLY`;
       const comments = result.recordset;
 
       const enrichedComments = await Promise.all(

@@ -3,7 +3,6 @@ const utilFunctions = require("../utils/utilFunctions");
 const userQueries = require("../queries/userQueries");
 const postQueries = require("../queries/postQueries");
 
-
 const viewController = {
   renderHomePage: async (req, res) => {
     try {
@@ -29,8 +28,10 @@ const viewController = {
     try {
       const username = req.params.username;
       const otheruser = await userQueries.findByUsername(username);
-      const posts = await userQueries.getPostsByUserId(otheruser.id);
-      const comments = await userQueries.getCommentsByUserId(otheruser.id);
+      const posts = await userQueries.getPostsByUserIdUserProfile(otheruser.id);
+      const comments = await userQueries.getCommentsByUserIdUserProfile(
+        otheruser.id
+      );
 
       if (otheruser) {
         res.render("user_profile.ejs", {

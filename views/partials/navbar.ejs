@@ -44,15 +44,40 @@
 
         <span class="material-symbols-outlined" id="menu-icon" style="z-index: 1000;"> menu </span>
         <div class="menu-content" id="menu-content">
-          <a href="/">Communities</a>
-          <a href="/jobs">Openings</a>
-          <a href="/updates">Updates</a>
+          <a href="/">
+            <div class="menu-item">
+              <span class="material-symbols-outlined" id="menu-community-icon">
+                groups
+              </span>
+              Home
+            </div>
+          </a>
+          <a href="/jobs">
+            <div class="menu-item">
+              <span class="material-symbols-outlined" id="menu-community-icon">
+                work
+              </span>
+              Openings
+            </div>
+          </a>
+          <a href="/updates">
+            <div class="menu-item">
+              <span class="material-symbols-outlined" id="menu-community-icon">
+                commit
+              </span>
+              Updates
+            </div>
+          </a>
           <% if (user) { %>
           <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
-          <a href="/learning">Learning</a>
-          <a href="#" onclick="document.getElementById('logoutForm').submit();">Logout</a>
-          <% } else { %>
-          <a href="/login">Login</a>
+          <a href="/learning">
+            <div class="menu-item">
+              <span class="material-symbols-outlined" id="menu-community-icon">
+                library_books
+              </span>
+              Learning
+            </div>
+          </a>
           <% } %>
 
           <h3> Communities </h3>
@@ -78,10 +103,9 @@
             </div>
           </li>
           <li>
-            <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
-            <a href="#" class="logout-button <%= currentPath === '/logout' ? 'active' : '' %>" onclick="document.getElementById('logoutForm').submit();">
+            <a href="/post/create" class="logout-button">
               <span class="material-symbols-outlined" id="nb-icon">
-                logout
+                add
               </span>
             </a>
           </li>
@@ -119,6 +143,24 @@
 </nav>
 
 <script>
+  function getAllCommunities() {
+    fetch('/api/communities') // Adjust this to your server's endpoint
+      .then(response => response.json())
+      .then(communities => {
+        const menuContent = document.getElementById('menu-communities');
+        const communityLinks = communities.map(community => {
+          return `
+          
+          <div class="menu-community">
+          <a href="/communities/${community.id}"><span id="menu-community-icon" class="material-symbols-outlined">${community.mini_icon}</span>${community.name}</a>
+          </div>`;
+        });
+        menuContent.innerHTML = communityLinks.join('');
+      });
+  }
+
+  getAllCommunities();
+
   document.getElementById("menu-icon").onclick = function(event) {
     var content = document.getElementById("menu-content");
     var overlay = document.getElementById("overlay");
@@ -126,13 +168,18 @@
 
     if (content.classList.contains("sidebar-open")) {
       content.classList.remove("sidebar-open");
-      overlay.style.display = "none";
       menuIcon.textContent = 'menu';
+      overlay.style.opacity = '0';
+      setTimeout(() => {
+        overlay.style.pointerEvents = 'none'; // Block clicks when the overlay is fully transparent
+      }, 500);
       document.body.style.overflow = ""; // Enable scrolling
     } else {
       content.classList.add("sidebar-open");
-      overlay.style.display = "block";
+      overlay.style.visibility = "visible";
       menuIcon.textContent = 'close';
+      overlay.style.opacity = '1';
+      overlay.style.pointerEvents = 'auto';
       document.body.style.overflow = "hidden"; // Disable scrolling
     }
     event.stopPropagation();
@@ -146,8 +193,13 @@
     if (!content.contains(event.target) && event.target !== menuIcon) {
       if (content.classList.contains("sidebar-open")) {
         content.classList.remove("sidebar-open");
-        overlay.style.display = "none";
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+          overlay.style.pointerEvents = 'none'; // Block clicks when the overlay is fully transparent
+        }, 500);
         menuIcon.textContent = 'menu';
+        overlay.style.pointerEvents = 'auto';
+        document.body.style.overflow = "hidden"; // Disable scrolling
         document.body.style.overflow = "";
       }
     }
@@ -207,24 +259,6 @@
       method: 'DELETE'
     });
   }
-
-  function getAllCommunities() {
-    fetch('/api/communities') // Adjust this to your server's endpoint
-      .then(response => response.json())
-      .then(communities => {
-        const menuContent = document.getElementById('menu-communities');
-        const communityLinks = communities.map(community => {
-          return `
-          
-          <div class="menu-community">
-          <a href="/communities/${community.id}"><span id="menu-community-icon" class="material-symbols-outlined">${community.mini_icon}</span>${community.name}</a>
-          </div>`;
-        });
-        menuContent.innerHTML = communityLinks.join('');
-      });
-  }
-
-  getAllCommunities();
 
 
   document.getElementById('clear-all-btn').addEventListener('click', async function() {

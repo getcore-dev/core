@@ -1,3 +1,17 @@
+:root {
+  --primary-text-color: #1D2935;
+  --light-mode-main-color: #fff;
+  --light-mode-body-color: #F6F8FA;
+  --border-color: #D8E0E9;
+  --hover-background-color: #ddd;
+  --active-indicator-color: #0e6655;
+  --dark-mode-main-color: #1B1F22;
+  --dark-mode-body-color: #16191B;
+  --dark-mode-text-color: #fff;
+  --dark-mode-border-color: #272D31;
+  --dark-mode-hover-background-color: #444;
+}
+
 .com-btn-container-header {
     display: flex;
     flex-direction: row;
@@ -14,7 +28,7 @@
     overflow-x: none;
     scrollbar-width: none; 
     overflow-y: auto;
-    height: calc(100vh - 115px);
+    height: calc(100dvh - 115px);
   }
   
   .communities {
@@ -119,7 +133,7 @@
   #com-btn-container a {
     text-decoration: none;
     font-size: 15px;
-    font-weight: 425;
+    font-weight: normal;
     color: black;
     margin: 4px 0px;
   }
@@ -133,7 +147,8 @@
   .create-post-btn {
     padding: 4px;
     width: 60px;
-    background: #229954;
+    background: #0C8346;
+    border: 1px solid #0E954F;
     border-radius: 6px;
     color: white;
     cursor: pointer;
@@ -163,6 +178,7 @@
 }
   
   #com-btn-container a:hover {
+    color: var(--active-indicator-color);
     text-decoration: underline;
   }
 
