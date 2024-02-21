@@ -716,7 +716,7 @@ div .mini-link-desc {
   .post {
     border-radius: 6px;
     padding: 0px;
-    margin: 7px;
+    margin: 13px;
     max-width: 100%;
     border: 1px solid var(--border-color);
   }
