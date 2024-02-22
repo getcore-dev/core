@@ -709,7 +709,7 @@ p.preview-description {
   padding: 5px 10px;
   border-radius: 5px;
   border: 1px solid var(--input-border-color);
-  font-size: 14px; /* Same as other input fields */
+  font-size: 16px; /* Same as other input fields */
   background-color: var(--light-mode-main-color);
   color: var(--input-text-color);
   overflow: hidden;
