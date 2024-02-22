@@ -421,6 +421,8 @@ const totalReplies = countAllReplies(comment.replies);
                   <a href="/profile/<%= post.user.username %>" style="text-decoration: none;">
                     <%= post.user.username %>
                   </a>
+                  <%= post.user.points ? `(${post.user.points} points)` : '0'%> points
+
                 </div>
                 <div class="sidebar-poster-job">
                   <% if (post.user.currentJob && post.user.currentCompany) { %>

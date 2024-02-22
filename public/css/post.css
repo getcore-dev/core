@@ -209,11 +209,16 @@ div .material-symbols-outlined:hover {
   margin-top: 46px;
 }
 
+.sidebar-poster-avatar {
+  height: 50px;
+  width: 50px;
+}
+
 .sidebar {
   background-color: var(--profile-background-color);
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  padding: 10px;
+  padding: 4px 6px;
   width: 80%;
 }
 
@@ -769,6 +774,11 @@ p.preview-description {
   padding: 0px 3px;
   max-width: 100%;
   font-size: 16px;
+}
+
+.sidebar-poster-name a {
+  color: var(--active-indicator-color);
+  font-weight: bold;
 }
 
 #submit-button {
