@@ -47,7 +47,8 @@
     "redis": "^4.6.12",
     "request": "^2.88.2",
     "sequelize": "^6.35.1",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "ws": "^8.16.0"
   },
   "devDependencies": {
     "chai": "^4.3.10",

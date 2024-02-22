@@ -26,7 +26,7 @@ router.get("/posts", async (req, res) => {
 router.post("/posts", checkAuthenticated, async (req, res) => {
   try {
     const { userId, title, content, link, community_id, tags } = req.body;
-    console.log("Creating post with the following details:", req.body);
+
     const postId = await postQueries.createPost(
       userId,
       title,
@@ -38,7 +38,7 @@ router.post("/posts", checkAuthenticated, async (req, res) => {
 
     return res.redirect(`/posts/${postId}`);
 
-    console.log(`Post created with ID: ${postId}`);
+
   } catch (err) {
     console.error("Database insert error:", err);
     res.status(500).render("error.ejs", {
@@ -54,7 +54,7 @@ router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
     const userId = req.user.id;
     const action = req.body.action.toUpperCase(); // Convert action to uppercase for consistency
 
-    console.log(`${action}ing post: ${postId} by user: ${userId}`);
+
 
     // Valid reactions
     const validActions = [
@@ -74,10 +74,10 @@ router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
     const newScore = await postQueries.interactWithPost(postId, userId, action);
 
     if (newScore === 0) {
-      console.log("User has already interacted with this post.");
+
       res.json({ message: "Action unchanged", newScore });
     } else {
-      console.log(`Post ${action.toLowerCase()}ed successfully.`);
+
       res.json({
         message: `Post ${action.toLowerCase()}ed successfully`,
         newScore,
@@ -98,7 +98,7 @@ router.post(
       const userId = req.user.id;
       const action = req.body.action; // Action can be "boost" or "detract"
 
-      console.log(`${action}ing comment: ${commentId} by user: ${userId}`);
+
 
       // Check if the post is already boosted or detracted by the user
       const isBoosted = await commentQueries.isCommentBoosted(
@@ -112,7 +112,7 @@ router.post(
 
       if (action === "boost") {
         if (isBoosted) {
-          console.log("Comment is already boosted. Removing the boost...");
+
           // If already boosted, remove the boost
           const newScore = await commentQueries.removeBoost(commentId, userId);
           res.json({ message: "Boost removed", newScore });
@@ -134,7 +134,7 @@ router.post(
           await commentQueries.removeDetract(commentId, userId);
           res.json({ message: "Detract removed" });
         } else {
-          console.log("Comment is not detracted. Adding the detract...");
+
           // If not detracted, add the detract
           await commentQueries.detractComment(commentId, userId);
 
@@ -231,7 +231,7 @@ ORDER BY c.created_at DESC;`;
     // Fetch post details
     const postResult = await utilFunctions.getPostData(postId);
 
-    console.log("Post result:", postResult.user_id);
+
     // Construct postData
     const postData = {
       ...postResult,

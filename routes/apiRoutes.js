@@ -66,7 +66,6 @@ router.get("/communities/:communityId/posts", async (req, res) => {
     const posts = await utilFunctions.getPostsForCommunity(communityId);
     res.json(posts);
   } catch (err) {
-    console.error("Error fetching posts:", err);
     res.status(500).send("Error fetching posts");
   }
 });
@@ -85,6 +84,7 @@ router.get("/comments/:commentId/replies", async (req, res) => {
 router.get("/posts", async (req, res) => {
   try {
     const posts = await utilFunctions.getPosts();
+
     res.json(posts);
   } catch (err) {
     res.status(500).send(err.message);
@@ -151,7 +151,6 @@ router.get("/link-preview/:link", async (req, res) => {
 
 router.get("/commits", async (req, res) => {
   try {
-    console.log("Fetching commits...");
     const commits = await utilFunctions.fetchCommits();
     res.json(commits);
   } catch (error) {

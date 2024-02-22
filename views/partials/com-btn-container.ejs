@@ -73,9 +73,13 @@ trending_up
     fetch('/api/communities') // Adjust this to your server's endpoint
       .then(response => response.json())
       .then(communities => {
-        const communitiesContainer = document.querySelector('.communities-container');
-        communitiesContainer.innerHTML = ''; // Clear existing communities
+        // Use window.matchMedia to check for mobile devices
+        const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
+        // Select the container based on whether or not it is a mobile device
+        const containerClassName = isMobile ? '.community-selector' : '.communities-container';
+        const communitiesContainer = document.querySelector(containerClassName);
 
+        communitiesContainer.innerHTML = ''; // Clear existing communities
         communities.forEach(community => {
           const communityElement = document.createElement('div');
           communityElement.className = 'communities';
@@ -84,7 +88,7 @@ trending_up
           communityElement.innerHTML = `
                 <span class="material-symbols-outlined">${community.mini_icon}</span>
                 <a href="/communities/${community.id}" class="community-link">
-                    <div class="community-name">${community.name}</div>
+                    <div class="community-name">${isMobile ? `${community.shortname}` : community.name}</div>
                 </a>
             `;
 
@@ -93,6 +97,7 @@ trending_up
       })
       .catch(error => console.error('Error fetching communities:', error));
   }
+
 
   getAllCommunities();
   getTrendingPosts();

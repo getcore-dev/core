@@ -138,6 +138,11 @@
     margin: 4px 0px;
   }
 
+  .comm-text {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+  }
   #com-btn-container .user {
     font-size: 14px;
     font-weight: 700;

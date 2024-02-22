@@ -496,7 +496,7 @@ div .mini-link-desc {
 
 
 #posts-container {
-  width: 46%;
+  width: 53%;
   flex: none;
   flex-direction: column;
   -webkit-scrollbar {
@@ -534,7 +534,7 @@ div .mini-link-desc {
 }
 
 .jobs-container {
-  width: 35%;
+  width: 28%;
   max-width: 500px;
   flex: none;
   display: flex;
@@ -631,12 +631,61 @@ div .mini-link-desc {
   --btn-text-dark: #f8f9fa; /* Dark mode text */
 }
 
+.community-content {
+  padding: 8px;
+}
+
+.community-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+
+
 @media (max-width: 768px) {
   #filterMenu {
     top: 116px;
   }
+
+  .communities a {
+    text-decoration: none;
+    color: var(--primary-text-color)
+  }
+
+  .community-selector {
+    padding-top: 7px;
+    padding-left: 13px;
+    padding-right: 14px;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    min-height: 30px;
+    overflow-x: auto;
+    -webkit-scrollbar {
+      display: none;
+    }
+    
+    -ms-overflow-style: none; 
+    scrollbar-width: none;
+  }
+
+  .communities {
+    background-color: var(--light-mode-body-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px; 
+    padding:4px 6px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .community-name {
+    font-size: 14px;
+  }
   .community-header, .job-header {
-    margin: 6px 10px -2px 10px;
+    margin: 0px 10px -2px 10px;
   }
 
   .post {

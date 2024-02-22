@@ -13,7 +13,7 @@ router.get("/:communityId", async (req, res) => {
   try {
     const community =
       await sql.query`SELECT * FROM communities WHERE id = ${communityId}`;
-    console.log(community.recordset[0].name);
+
 
     // if no community was found, return a
     if (!community.recordset[0]) {
@@ -31,9 +31,13 @@ router.get("/:communityId", async (req, res) => {
       });
     }
 
-    res.render("community.ejs", {
+    res.render("communities.ejs", {
       user: req.user,
       community: community.recordset[0],
+      communityId: communityId,
+      communityPostCount: await communityQueries.getCommunityPostCount(
+        communityId
+      ),
     });
   } catch (err) {
     return res.render("error.ejs", {

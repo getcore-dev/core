@@ -7,7 +7,10 @@ const viewController = {
   renderHomePage: async (req, res) => {
     try {
       // Send basic post data to the client
-      res.render("communities.ejs", { user: req.user });
+      res.render("communities.ejs", {
+        user: req.user,
+        communityId: null,
+      });
     } catch (err) {
       res.render("error.ejs", {
         user: req.user,

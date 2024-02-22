@@ -554,7 +554,7 @@ const totalReplies = countAllReplies(comment.replies);
         })
         .then(response => response.json())
         .then(data => {
-          console.log('Success:', data);
+
 
           // Update or create reaction buttons
           reactionTypes.forEach(reaction => {
@@ -663,7 +663,7 @@ const totalReplies = countAllReplies(comment.replies);
     choices.forEach(function(choice) {
       choice.addEventListener('click', function() {
         document.getElementById('reactionPopup').style.display = 'none';
-        console.log('Reaction chosen:', this.textContent); // Placeholder action, replace with your logic
+
       });
     });
 

@@ -31,6 +31,19 @@ const communityQueries = {
     }
   },
 
+  getCommunityPostCount: async (communityId) => {
+    try {
+      const result = await sql.query`
+        SELECT COUNT(*) FROM posts 
+        WHERE communities_id = ${communityId}`;
+
+      return result.recordset[0][""];
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   leaveCommunity: async (userId, communityId) => {
     try {
       // Remove user from the community

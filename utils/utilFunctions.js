@@ -135,7 +135,6 @@ const utilFunctions = {
       `;
       const postData = result.recordset[0];
 
-      console.log(postData);
       if (postData) {
         postData.user = await utilFunctions.getUserDetails(postData.user_id);
         postData.score = postData.boostCount - postData.detractCount;
@@ -150,7 +149,7 @@ const utilFunctions = {
   getAllCommunities: async () => {
     try {
       const result = await sql.query`
-        SELECT id, name, mini_icon FROM communities WHERE PrivacySetting = 'Public'
+        SELECT id, name, mini_icon, shortname FROM communities WHERE PrivacySetting = 'Public'
       `;
       return result.recordset;
     } catch (err) {
@@ -232,7 +231,7 @@ const utilFunctions = {
       const query = `SELECT * FROM users WHERE github_url = '${githubUser}'`;
 
       const result = await sql.query(query);
-      console.log(result);
+
       if (result.recordset.length > 0) {
         return result.recordset[0];
       } else {

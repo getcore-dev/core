@@ -26,11 +26,11 @@ router.post("/edits", checkAuthenticated, async (req, res) => {
 
   // Exclude the userId from updates to avoid updating it
   delete updates.id;
-  console.log(userId, updates);
+
   try {
     for (let field in updates) {
       if (updates.hasOwnProperty(field)) {
-        console.log(`Updating ${field} to ${updates[field]}`);
+
         await userQueries.updateField(userId, field, updates[field]);
       }
     }

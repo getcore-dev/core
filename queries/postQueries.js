@@ -105,13 +105,6 @@ const postQueries = {
       tags = tags.split(",").map((tag) => tag.trim());
     }
 
-    console.log("creating post with data:");
-    console.log("userId:", userId);
-    console.log("title:", title);
-    console.log("content:", content);
-    console.log("link:", link);
-    console.log("community_id:", community_id);
-    console.log("tags:", tags);
 
     try {
       // Insert the post into the posts table
