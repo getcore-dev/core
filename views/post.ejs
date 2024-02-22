@@ -355,15 +355,15 @@ const totalReplies = countAllReplies(comment.replies);
         <div class="reply-form">
           <form id="reply-form-<%= comment.id %>" action="/comments/<%= comment.id %>/replies" method="POST" style="display: block">
             <div class="input-container">
-              <form onsubmit="submitForm('comment-form', event);">
-                <textarea id="comment" name="comment" rows="4" required oninput="autoExpandTextarea(event)" maxlength="500" placeholder="Reply to <%= comment.user.username %>..."></textarea>
-                <button type="submit" class="fab">
-                  Submit
-                </button>
-              </form>
+              <textarea id="comment-<%= comment.id %>" name="comment" rows="1" required oninput="autoExpandTextarea(event); showReplyButtons('<%= comment.id %>')" maxlength="500" placeholder="Reply to <%= comment.user.username %>..."></textarea>
+              <div class="reply-buttons" id="reply-buttons-<%= comment.id %>" style="display: none;">
+                <button type="submit" class="fab">Submit</button>
+                <button type="button" class="fab" onclick="cancelReply('<%= comment.id %>')">Cancel</button>
+              </div>
             </div>
           </form>
         </div>
+
 
       </div>
       <% } %>
@@ -432,6 +432,27 @@ const totalReplies = countAllReplies(comment.replies);
 
 
   <script>
+    function showReplyButtons(commentId) {
+      // Show the reply buttons
+      var replyButtons = document.getElementById('reply-buttons-' + commentId);
+      replyButtons.style.display = 'block';
+    }
+
+    function cancelReply(commentId) {
+      // Clear the textarea
+      var textarea = document.getElementById('comment-' + commentId);
+      textarea.value = '';
+      textarea.rows = 1;
+
+      // Hide the reply buttons
+      var replyButtons = document.getElementById('reply-buttons-' + commentId);
+      replyButtons.style.display = 'none';
+    }
+
+    function autoExpandTextarea(event) {
+      event.target.style.height = 'inherit';
+      event.target.style.height = `${event.target.scrollHeight}px`;
+    }
     // JavaScript function to toggle nested comments
     function toggleNestedComments(commentId, level) {
       var nestedComments = document.getElementById('nested-comments-' + commentId);

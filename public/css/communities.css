@@ -331,10 +331,6 @@ div.vote-interactions {
   font-size: 14px;
   color: #666;
   float: right;
-  border-radius: 6px;
-  padding: 4px 8px;
-  border: 1px solid var(--border-color);
-  background-color: var(--light-mode-main-color);
   display: flex;
   align-items: center;
   gap: 4px;
