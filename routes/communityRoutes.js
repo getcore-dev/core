@@ -14,7 +14,6 @@ router.get("/:communityId", async (req, res) => {
     const community =
       await sql.query`SELECT * FROM communities WHERE id = ${communityId}`;
 
-
     // if no community was found, return a
     if (!community.recordset[0]) {
       return res.render("error.ejs", {

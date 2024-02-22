@@ -37,8 +37,6 @@ router.post("/posts", checkAuthenticated, async (req, res) => {
     );
 
     return res.redirect(`/posts/${postId}`);
-
-
   } catch (err) {
     console.error("Database insert error:", err);
     res.status(500).render("error.ejs", {
@@ -53,8 +51,6 @@ router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
     const postId = req.params.postId;
     const userId = req.user.id;
     const action = req.body.action.toUpperCase(); // Convert action to uppercase for consistency
-
-
 
     // Valid reactions
     const validActions = [
@@ -74,10 +70,8 @@ router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
     const newScore = await postQueries.interactWithPost(postId, userId, action);
 
     if (newScore === 0) {
-
       res.json({ message: "Action unchanged", newScore });
     } else {
-
       res.json({
         message: `Post ${action.toLowerCase()}ed successfully`,
         newScore,
@@ -98,8 +92,6 @@ router.post(
       const userId = req.user.id;
       const action = req.body.action; // Action can be "boost" or "detract"
 
-
-
       // Check if the post is already boosted or detracted by the user
       const isBoosted = await commentQueries.isCommentBoosted(
         commentId,
@@ -112,7 +104,6 @@ router.post(
 
       if (action === "boost") {
         if (isBoosted) {
-
           // If already boosted, remove the boost
           const newScore = await commentQueries.removeBoost(commentId, userId);
           res.json({ message: "Boost removed", newScore });
@@ -134,7 +125,6 @@ router.post(
           await commentQueries.removeDetract(commentId, userId);
           res.json({ message: "Detract removed" });
         } else {
-
           // If not detracted, add the detract
           await commentQueries.detractComment(commentId, userId);
 
@@ -231,7 +221,6 @@ ORDER BY c.created_at DESC;`;
     // Fetch post details
     const postResult = await utilFunctions.getPostData(postId);
 
-
     // Construct postData
     const postData = {
       ...postResult,
@@ -253,6 +242,8 @@ ORDER BY c.created_at DESC;`;
     res.render("post.ejs", {
       post: postData,
       user: req.user,
+      communityId: postData.communities_id,
+      community: postData.community,
       linkify: utilFunctions.linkify,
     });
   } catch (err) {

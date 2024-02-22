@@ -9,9 +9,15 @@
       <div class="nav-text-and-user-btns">
         <div class="nav-text-container">
           <% let user = locals.user; %>
+          <% let communityId = locals.communityId%>
+          <% if (communityId) { %>
+          <a class="navbar-user-info" href="/communities/<%= community.id %>">/<%= community.shortname %></a>@<a class="nav-text" href="/">CORE</a><% } else { %>
           <% if (user) { %>
-          <a class="navbar-user-info" href="/profile/<%= user.username %>"><%= user.username %></a>@<a class="nav-text" href="/">CORE</a><% } else { %>
-          <a class="navbar-user-info" href="/login">user</a>@<a class="nav-text" href="/">CORE</a><% }%>
+          <a class="navbar-user-info" href="/profile/<%= user.username %>"><%= user.username %></a>@<a class="nav-text" href="/">CORE</a>
+          <% } else { %>
+          <a class="navbar-user-info" href="/login">user</a>@<a class="nav-text" href="/">CORE</a>
+          <% } %>
+          <% } %>
         </div>
         <div class="nav-btns">
           <ul class="nav-links">
@@ -101,13 +107,6 @@
               <ul id="notification-list" class="notification-list">
               </ul>
             </div>
-          </li>
-          <li>
-            <a href="/post/create" class="logout-button">
-              <span class="material-symbols-outlined" id="nb-icon">
-                add
-              </span>
-            </a>
           </li>
           <% } else { %>
           <% } %>

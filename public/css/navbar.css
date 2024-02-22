@@ -288,7 +288,7 @@ ul.notification-list {
 
 .nav-text-container {
   white-space: pre;
-  font-weight: bold; /* Bold text */
+  font-weight: 500;
   font-size: 20px;
   display: flex;
   align-items: center;
@@ -392,7 +392,7 @@ margin-top: 20px;
   .nav-text-and-user-btns {
     position: absolute;
     top: 80px;
-    left: 20px;
+    left: 14px;
   }
 
   .notification-popup {
@@ -411,15 +411,17 @@ margin-top: 20px;
   .user-button {
     font-size: var(--default-font-size);
   }
+  .nav-text-and-user-btns {
+      position: relative;
+      top: 12px;
+      right: 40px;
+  }
 
   #avatar {
     padding-top: 0px;
     margin-top: 0px;
   }
 
-  .navbar-btn-text {
-    display: none;
-  }
 
 
   .navbar-button {
@@ -437,9 +439,6 @@ margin-top: 20px;
   }
 
 
-  .nav-text-container {
-    display: none;
-  }
 
   .user-links .avatar img {
     border-radius: 50%;
@@ -465,7 +464,7 @@ margin-top: 20px;
   .logo img {
     position: absolute;
     top: 5px;
-    left: 65px;
+    left: 60px;
     max-height: 45px; /* Maximum height of the logo */
     z-index: 1000;
   }
