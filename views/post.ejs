@@ -426,7 +426,7 @@ const totalReplies = countAllReplies(comment.replies);
                 </div>
                 <div class="sidebar-poster-job">
                   <% if (post.user.currentJob && post.user.currentCompany) { %>
-                  <%= post.user.currentJob %> @ <strong><%= post.user.currentCompany %></strong>
+                  <%= post.user.currentJob %>@<strong><%= post.user.currentCompany %></strong>
                   <% } else { %>
                   No job information
                   <% } %>
