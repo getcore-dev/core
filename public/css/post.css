@@ -274,7 +274,7 @@ a.comment-url:visited {
 .post-title {
   font-size: 25px;
   color: #333;
-  margin-bottom: 7px;
+
   margin-top: 15px;
 }
 
@@ -324,6 +324,42 @@ div .user-info, .header {
   padding: 2px 7px; 
   border-radius: 5px; 
   font-size: 12px; 
+}
+
+.post-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.sort-selector {
+  display: inline-flex;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.sort-option {
+  background-color: var(--light-mode-main-color);
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.sort-option.active {
+  background-color: var(--light-mode-body-color); /* Active tab color */
+}
+
+.sort-option:focus {
+  outline: none;
+}
+
+.sort-option:not(:last-child) {
+  border-right: 1px solid #ccc;
 }
 
 .post-content {
@@ -422,10 +458,8 @@ div.repliers-avatar, div.repliees-avatar {
 }
 
 .comments-section {
-  margin-top: 14px;
   display: flex;
   flex-direction: column;
-  gap: 1em;
 }
 
 .comments-section h3 {
@@ -852,7 +886,6 @@ p.preview-description {
   .comments-section {
     margin: 0px 14px;
     border-radius: 6px;
-    margin-top: 15px;
   }
 
   .main-container {

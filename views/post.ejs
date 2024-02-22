@@ -135,8 +135,10 @@
             count: post.celebrateCount
         }
     ]; %>
+                <% let reactionsCount = 0; %>
                 <% reactionTypes.forEach(reaction => { %>
                 <% if (reaction.count > 0) { %>
+                <% reactionsCount += reaction.count; %>
                 <button class="reaction-button" onclick='
                 <% if (user) { %>
                     interactWithPost(<%= post.id %>, "<%= user.username %>", "<%= reaction.type %>")
@@ -167,7 +169,20 @@
       </div>
 
       <div class="comments-section">
+        <div class="post-info">
+          <div class="post-counts">
+            <%= post.comments.length ? post.comments.length : 0 %> comments
+            •
+            <%= reactionsCount ? reactionsCount: 0 %> reaction <%= reactionsCount > 1 ? 's' : '' %>
+          </div>
+          <div class="sort-selector">
+            <button class="sort-option active" onclick="sortComments('best')">Best</button>
+            <button class="sort-option" onclick="sortComments('newest')">Newest</button>
+          </div>
+        </div>
         <% function renderComments(comments, level = 0) { %>
+
+
         <% comments.forEach(comment =>
         { %>
         <% if (level == 0) { %>
