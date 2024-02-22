@@ -94,6 +94,15 @@
             <div class="post-body">
               <%- post.content %>
               <div class="user-interactions">
+                <button id="reactionButton" class="reaction-button">😀</button>
+                <div id="reactionPopup" class="reaction-popup" style="display:none;">
+                  <button class="reaction-choice">⚡️</button>
+                  <button class="reaction-choice">❤️</button>
+                  <button class="reaction-choice">👍</button>
+                  <button class="reaction-choice">🤔</button>
+                  <button class="reaction-choice">💡</button>
+                  <button class="reaction-choice">🎉</button>
+                </div>
                 <% const reactionTypes = [
         {
             type: "boost",
@@ -127,33 +136,33 @@
         }
     ]; %>
                 <% reactionTypes.forEach(reaction => { %>
+                <% if (reaction.count > 0) { %>
                 <button class="reaction-button" onclick='
-              <% if (user) { %>
-              interactWithPost(<%= post.id %>, <%= user %>, <%= reaction.type %>)
-              <% } else { %>
-              window.location.href = "/login";
-              <% } %>
-              '> <%= reaction.icon %> <%= reaction.count %></button>
-                <% }); %>
-                <% if (user && user.username === post.user.username) { %>
-
+                <% if (user) { %>
+                    interactWithPost(<%= post.id %>, "<%= user.username %>", "<%= reaction.type %>")
+                <% } else { %>
+                    window.location.href = "/login";
                 <% } %>
+            '><%= reaction.icon %> <%= reaction.count %></button>
+                <% } %>
+                <% }); %>
               </div>
             </div>
-          </div>
 
-          <% if (user) { %>
-          <div class="comments-form">
-            <form id="comment-form" action="/posts/<%= post.id %>/comments" method="POST">
-              <div class="comment-container">
-                <textarea id="comment" name="comment" required maxlength="500" placeholder="Add a comment to <%= post.username%>'s post" oninput="autoResizeTextarea(this)"></textarea>
-                <button type="submit" class="fab">
-                  Submit
-                </button>
-              </div>
-            </form>
+
+            <div class="reply-form">
+              <form id="reply-form-<%= post.id %>" action="/posts/<%= post.id %>/comments" method="POST" style="display: block">
+                <div class="input-container">
+                  <textarea id="comment" name="comment" required maxlength="500" placeholder="Add a comment to <%= post.username%>'s post" onclick="autoExpandTextarea(event); showReplyButtons('<%= post.id %>')"></textarea>
+                  <div class="reply-buttons" id="reply-buttons-<%= post.id %>" style="display: none;">
+                    <button id="cancel-button" type="button" class="fab" onclick="cancelReply('<%= post.id %>')">Cancel</button>
+
+                    <button id="submit-button" type="submit" class="fab">Submit</button>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
-          <% } %>
         </div>
       </div>
 
@@ -224,6 +233,15 @@
 
               <% if (level == 0) {%>
               <div class="comment-user-interactions">
+                <button id="reactionButton" class="reaction-button">😀</button>
+                <div id="reactionPopup" class="reaction-popup" style="display:none;">
+                  <button class="reaction-choice">⚡️</button>
+                  <button class="reaction-choice">❤️</button>
+                  <button class="reaction-choice">👍</button>
+                  <button class="reaction-choice">🤔</button>
+                  <button class="reaction-choice">💡</button>
+                  <button class="reaction-choice">🎉</button>
+                </div>
                 <% const reactionTypes = [
         {
             type: "boost",
@@ -257,17 +275,16 @@
         }
     ]; %>
                 <% reactionTypes.forEach(reaction => { %>
+                <% if (reaction.count > 0) { %>
                 <button class="reaction-button" onclick='
-              <% if (user) { %>
-              interactWithPost(<%= post.id %>, <%= user %>, <%= reaction.type %>)
-              <% } else { %>
-              window.location.href = "/login";
-              <% } %>
-              '> <%= reaction.icon %> <%= reaction.count %></button>
-                <% }); %>
-                <% if (user && user.username === post.user.username) { %>
-
+                <% if (user) { %>
+                    interactWithPost(<%= post.id %>, "<%= user.username %>", "<%= reaction.type %>")
+                <% } else { %>
+                    window.location.href = "/login";
                 <% } %>
+            '><%= reaction.icon %> <%= reaction.count %></button>
+                <% } %>
+                <% }); %>
                 <% if (level == 0) { %>
                 <div class="replies">
                   <a href="#" id="reply-button" onclick="showReplyForm('<%= comment.id %>', event)">
@@ -318,11 +335,11 @@ const totalReplies = countAllReplies(comment.replies);
               <% if (user) { %>
               <div clas="delete">
                 <% if (user.username === comment.user.username) { %>
-                <form id="delete-comment-form-<%= comment.id %>" action="/comment/<%= comment.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                <form id="delete-comment-form-<%= comment.id %>" class=reactionButton action="/comment/<%= comment.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');">
                   <input type="hidden" name="_method" value="DELETE" />
-                  <a href="#" class="delete-comment-button-<%= comment.id %>" onclick="document.getElementById('delete-comment-form-<%= comment.id %>').submit();">
-                    <span class="material-symbols-outlined"> delete </span> Delete
-                  </a>
+                  <button class="delete-comment-button-<%= comment.id %>" onclick="document.getElementById('delete-comment-form-<%= comment.id %>').submit();">
+                    🗑️
+                  </button>
                 </form>
                 <% } %>
 
@@ -355,10 +372,11 @@ const totalReplies = countAllReplies(comment.replies);
         <div class="reply-form">
           <form id="reply-form-<%= comment.id %>" action="/comments/<%= comment.id %>/replies" method="POST" style="display: block">
             <div class="input-container">
-              <textarea id="comment-<%= comment.id %>" name="comment" rows="1" required oninput="autoExpandTextarea(event); showReplyButtons('<%= comment.id %>')" maxlength="500" placeholder="Reply to <%= comment.user.username %>..."></textarea>
+              <textarea id="comment-<%= comment.id %>" name="comment" rows="1" required onclick="autoExpandTextarea(event); showReplyButtons('<%= comment.id %>')" maxlength="500" placeholder="Reply to <%= comment.user.username %>..."></textarea>
               <div class="reply-buttons" id="reply-buttons-<%= comment.id %>" style="display: none;">
-                <button type="submit" class="fab">Submit</button>
-                <button type="button" class="fab" onclick="cancelReply('<%= comment.id %>')">Cancel</button>
+                <button id="cancel-button" type="button" class="fab" onclick="cancelReply('<%= comment.id %>')">Cancel</button>
+
+                <button id="submit-button" type="submit" class="fab">Submit</button>
               </div>
             </div>
           </form>
@@ -435,7 +453,7 @@ const totalReplies = countAllReplies(comment.replies);
     function showReplyButtons(commentId) {
       // Show the reply buttons
       var replyButtons = document.getElementById('reply-buttons-' + commentId);
-      replyButtons.style.display = 'block';
+      replyButtons.style.display = 'flex';
     }
 
     function cancelReply(commentId) {
@@ -634,6 +652,21 @@ const totalReplies = countAllReplies(comment.replies);
         }
       });
     });
+
+    document.getElementById('reactionButton').addEventListener('click', function() {
+      var popup = document.getElementById('reactionPopup');
+      popup.style.display = popup.style.display === 'none' ? 'block' : 'none'; // Toggle display
+    });
+
+    // Close the popup if a reaction is selected
+    var choices = document.querySelectorAll('.reaction-choice');
+    choices.forEach(function(choice) {
+      choice.addEventListener('click', function() {
+        document.getElementById('reactionPopup').style.display = 'none';
+        console.log('Reaction chosen:', this.textContent); // Placeholder action, replace with your logic
+      });
+    });
+
 
 
     document.getElementById('comment').addEventListener('input', autoExpandTextarea);
