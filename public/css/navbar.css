@@ -356,6 +356,10 @@ margin-top: 20px;
     font-size: 16px;
   }
 
+  .nav-text-container {
+    font-size: 16px;
+  }
+
   .community-header {
     margin: 0px;
   }
@@ -390,9 +394,9 @@ margin-top: 20px;
   }
 
   .nav-text-and-user-btns {
-    position: absolute;
-    top: 80px;
-    left: 8px;
+    position: relative;
+    top: 13px;
+    right: -7px;
   }
 
   .notification-popup {
@@ -410,11 +414,6 @@ margin-top: 20px;
 
   .user-button {
     font-size: var(--default-font-size);
-  }
-  .nav-text-and-user-btns {
-      position: relative;
-      top: 12px;
-      right: 34px;
   }
 
   #avatar {
