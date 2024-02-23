@@ -23,13 +23,14 @@ body {
   display: flex; 
   background: var(--light-mode-body-color);
   border: 1px solid var(--border-color);
+  border-radius: 6px;
+  margin: 10px;
+
   flex-direction: row;
   justify-content: space-between; 
   position: relative; 
   height: auto;
   flex: 0 1 auto; 
-  border-radius: 5px;
-  margin: 10px;
   transition: all 0.3s cubic-bezier(.25,.8,.25,1); 
   overflow-y: none;
 }
@@ -402,7 +403,7 @@ div .mini-link-title {
   color: inherit;
   border-radius: 6px;
   padding: 6px 12px;
-  margin: 3px 5px;
+  margin: 6px 1px;
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -414,9 +415,9 @@ div .mini-link-title {
 }
 
 #filter-button .material-symbols-outlined {
-  font-size: 22px;
+  font-size: 20px;
   vertical-align: -3px;
-  font-weight: normal;
+  font-weight: 400;
 }
 
 #filterMenu {

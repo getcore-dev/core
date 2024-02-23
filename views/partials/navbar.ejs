@@ -113,13 +113,19 @@
 
           <li>
             <% if (user) { %>
-            <a href="/profile/<%= user.username %>" class="user-button <%= currentPath === '/' ? 'active' : '' %>">
+            <a href="#" class="user-button <%= currentPath === '/' ? 'active' : '' %>">
               <% } else { %>
               <a href="/login" class="user-button <%= currentPath === '/' ? 'active' : '' %>">
                 <% } %>
                 <% if (user && user.avatar) { %>
                 <div class="nav-avatar">
-                  <img src="<%= user.avatar %>" alt="Avatar" class="avatar" id="avatar">
+                  <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar">
+
+                  <div class="avatar-dropdown" style="display: none;">
+                    <a href="/profile/<%= user.username %>">Profile</a>
+                    <a href="/settings">Settings</a>
+                    <a href="#" onclick="document.getElementById('logoutForm').submit()">Logout</a>
+                  </div>
                 </div>
                 <% } else if (user && user.avatar) { %>
                 <div class="nav-avatar">
@@ -223,6 +229,17 @@
     }
   });
 
+  document.addEventListener('click', function(event) {
+    var avatar = document.getElementById('user-avatar');
+    var avatarDropdown = document.querySelector('.avatar-dropdown');
+
+    if (avatar && avatar.contains(event.target)) {
+      avatarDropdown.style.display = 'block';
+    } else {
+      avatarDropdown.style.display = 'none';
+    }
+  });
+
 
   async function fetchNotifications() {
     // Fetch notifications (adjust userId as needed)
@@ -259,6 +276,7 @@
     });
   }
 
+  <% if (user) { %>
 
   document.getElementById('clear-all-btn').addEventListener('click', async function() {
     // Clear all notifications (adjust userId as needed)
@@ -267,4 +285,6 @@
     });
     fetchNotifications(); // Refresh the list
   });
+
+  <% } %>
 </script>

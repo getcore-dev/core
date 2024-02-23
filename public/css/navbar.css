@@ -13,6 +13,10 @@
   --dark-mode-body-color: #16191B;
   --dark-mode-border-color: #272D31;
   --dark-mode-hover-background-color: #444;
+  --primary-text-color: #1D2935;
+  --light-mode-main-color: #fff;
+  --light-mode-body-color: #F6F8FA;
+  --border-color: #D8E0E9;
 
   /* Font and size variables */
   --font-family: 'Roboto', sans-serif;
@@ -185,7 +189,7 @@ h1, h2, h3, h4, h5, p {
   border: 1px solid #ddd;
   border-radius: 6px;
   box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
-  width: 300px;
+  width: 200px;
   max-height: 400px;
   overflow-y: auto;
   z-index: 5;
@@ -200,7 +204,7 @@ h1, h2, h3, h4, h5, p {
   background: rgba(0, 0, 0, 0.5);
   opacity: 0; /* Make overlay invisible initially */
   z-index: 1; 
-  transition: opacity 0.5s ease; /* Apply transition to opacity only */
+  transition: opacity 0.3s ease; /* Apply transition to opacity only */
   pointer-events: none; /* Prevents click events when overlay is invisible */
 }
 
@@ -269,7 +273,7 @@ ul.notification-list {
   left: 0;
   height: calc(100dvh - 65px);
   overflow-x: hidden;
-  transition: transform 0.5s ease-out; /* Updated for smoother transition */
+  transition: transform 0.3s ease-out; /* Updated for smoother transition */
   padding-top: 65px;
   background-color: #f9f9f9;
   border-right: 1px solid var(--border-color);
@@ -308,7 +312,7 @@ margin-top: 20px;
   display: none; /* Hide by default on desktop */
 }
 
-#avatar {
+#user-avatar {
   width: 45px;
   border-radius: 50%;
   height: 45px;
@@ -396,13 +400,13 @@ margin-top: 20px;
   .nav-text-and-user-btns {
     position: relative;
     top: 13px;
-    right: -7px;
+    right: 0px;
   }
 
   .notification-popup {
     position: absolute;
     right: 0px;
-    top: 110px;
+    top: 60px;
   }
 
 
@@ -416,7 +420,7 @@ margin-top: 20px;
     font-size: var(--default-font-size);
   }
 
-  #avatar {
+  #user-avatar {
     padding-top: 0px;
     margin-top: 0px;
   }
@@ -439,7 +443,7 @@ margin-top: 20px;
 
 
 
-  .user-links .avatar img {
+  .user-links .user-avatar img {
     border-radius: 50%;
     width: 16px;
     vertical-align: -1px;
@@ -542,8 +546,32 @@ margin-top: 20px;
   transform: translateX(0); /* Slide in */
 }
 
+.avatar-dropdown {
+  position: absolute;
+  top: 0;
+  right: -16px;
+  z-index: 2;
+  background-color: var(--light-mode-body-color);
+  border-radius: 0px;
+  border-left: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  display: none;
+  padding: 10px;
+  margin-top: 52.8px;
+  width: 150px;
+}
+
+.avatar-dropdown a {
+  padding: 5px;
+  text-decoration: none;
+  font-size: 16px;
+  color: var(--primary-text-color);
+  display: block;
+  transition: 0.3s;
+}
+
 .menu-content a {
-  padding: 14px 0px 14px 32px;
+  padding: 14px 0px 14px 40px;
   text-decoration: none;
   font-size: 16px;
   color: var(--primary-text-color);
@@ -613,6 +641,11 @@ margin-top: 20px;
     background-color: var(--dark-mode-hover-background-color); /* Background color on hover */
     border-color: var(--active-indicator-color);
     cursor: pointer; /* Pointer cursor on hover */
+  }
+
+  .avatar-dropdown {
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color)
   }
 
   #menu-icon {

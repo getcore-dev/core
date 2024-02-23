@@ -35,7 +35,7 @@ main {
   padding: 20px 20px;
   border-radius: 6px;
   background-color: var(--light-mode-body-color);
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   width: 350px; 
   box-sizing: border-box;
   text-align: center;
@@ -48,7 +48,7 @@ main {
   padding: 20px 20px;
   border-radius: 6px;
   background-color: var(--light-mode-body-color);
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   width: 350px;
   box-sizing: border-box;
 }
@@ -72,9 +72,9 @@ main {
   padding: 8px 20px;
   margin: 4px 0px;
   box-sizing: border-box;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
-  background-color: #f8f9fa;
+  background-color: var(--light-mode-main-color);
   font-size: 16px;
 }
 
@@ -116,10 +116,10 @@ main {
   position: relative;
   font-size: 16px;
   width: 100%;
-  border: none;
   border-radius: 6px;
-  background: var(--active-indicator-color);
-  color: white;
+  background: #0C8346;
+  border: 1px solid #0E954F;
+    color: white;
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;

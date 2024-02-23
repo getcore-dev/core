@@ -25,7 +25,7 @@ main {
   align-items: center;
   height: calc(100dvh - 65px);
   background-color: var(--light-mode-main-color);
-font-family: 'Open Sans', sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 
 #forgot-pass {
@@ -69,8 +69,9 @@ font-family: 'Open Sans', sans-serif;
   width: 100%;
   border: none;
   border-radius: 5px;
-  background: var(--active-indicator-color); /* New gradient for dark mode */
-  color: white;
+  background: #0C8346;
+  border: 1px solid #0E954F;
+    color: white;
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;
@@ -93,7 +94,7 @@ font-family: 'Open Sans', sans-serif;
   margin: 8px 0;
   box-sizing: border-box;
   border-radius: 5px; /* This makes the input rounded */
-  background-color: var(--navbar-background-color);
+  background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
   font-size: 16px;
 }
