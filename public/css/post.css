@@ -364,7 +364,7 @@ div .user-info, .header {
 }
 
 .sort-option:not(:last-child) {
-  border-right: 1px solid #ccc;
+  border-right: 1px solid var(--border-color);
 }
 
 .post-content {
@@ -668,6 +668,10 @@ p.preview-description {
   body {
     background-color: var(--background-color); /* Dark background for body */
     color: var(--dark-mode-text-color); /* Light text color for better readability */
+  }
+  
+  .sort-option:not(:last-child) {
+  border-color: var(--dark-mode-border-color);
   }
   
   .input-container textarea, .comment-container textarea {
