@@ -782,7 +782,8 @@ p.preview-description {
 
   .input-container , .input-container textarea, .comment-container, .comment-container textarea {
     border-color: var(--dark-mode-border-color);
-    color: #f4f4f4; /* Light text color */
+    color: var(--dark-mode-text-color);
+    background-color: var(--dark-mode-body-color);
   }
 
   .link-preview {
