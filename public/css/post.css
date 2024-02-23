@@ -465,6 +465,7 @@ div.repliers-avatar, div.repliees-avatar {
 .comments-section {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
 .comments-section h3 {
@@ -668,6 +669,10 @@ p.preview-description {
   body {
     background-color: var(--background-color); /* Dark background for body */
     color: var(--dark-mode-text-color); /* Light text color for better readability */
+  }
+  
+  .nested-comment.level-1 {
+  background-color: var(--dark-mode-body-color);
   }
   
   .sort-option:not(:last-child) {
