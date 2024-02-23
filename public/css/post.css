@@ -667,7 +667,24 @@ p.preview-description {
 @media (prefers-color-scheme: dark) {
   body {
     background-color: var(--background-color); /* Dark background for body */
-    color: #e0e0e0; /* Light text color for better readability */
+    color: var(--dark-mode-text-color); /* Light text color for better readability */
+  }
+  
+  .sort-selector {
+  border-color: var(--border-color);
+}
+
+.sort-option {
+  background-color: var(--dark-mode-main-color);
+}
+
+.sort-option.active {
+  background-color: var(--dark-mode-body-color); /* Active tab color */
+}
+  .reaction-button { 
+  background-color: var(--dark-mode-main-color);
+  border-color: var(--dark-mode-border-color);
+  color: var(--dark-mode-text-color);
   }
 
   .dropbtn {

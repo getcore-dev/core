@@ -173,7 +173,7 @@
           <div class="post-counts">
             <%= post.comments.length ? post.comments.length : 0 %> comments
             •
-            <%= reactionsCount ? reactionsCount: 0 %> reaction <%= reactionsCount > 1 ? 's' : '' %>
+            <%= reactionsCount ? reactionsCount: 0 %> reaction<%= reactionsCount > 1 ? 's' : '' %>
           </div>
           <div class="sort-selector">
             <button class="sort-option active" onclick="sortComments('best')">Best</button>

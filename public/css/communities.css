@@ -878,14 +878,28 @@ div .mini-link-desc {
     background-color: var(--dark-mode-main-color);
     border: 1px solid var(--dark-mode-border-color);
   }
-  .reaction-button, .comments {
+  .reaction-button {
     background-color: var(--dark-mode-main-color);
     border: 1px solid var(--dark-mode-border-color);
-    color: #ddd;
+    color: var(--dark-mode-text-color);
+  }
+  
+  .comments {
+  color: var(--dark-mode-text-color);
   }
 
   .link-preview {
-    background-color: #1F2427;
+    background-color: var(--dark-mode-border-color);
+    border-color: var(--dark-mode-border-color);
+  }
+  
+  .communities {
+  background-color: var(--dark-mode-main-color);
+  border-color: var(--dark-mode-border-color);
+  }
+  
+  .communities a {
+  color: var(--dark-mode-text-color);
   }
 
 
