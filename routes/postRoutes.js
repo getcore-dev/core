@@ -245,6 +245,7 @@ ORDER BY c.created_at DESC;`;
       communityId: postData.communities_id,
       community: postData.community,
       linkify: utilFunctions.linkify,
+      tags: utilFunctions.getTags(postId);
     });
   } catch (err) {
     console.error("Database query error:", err);

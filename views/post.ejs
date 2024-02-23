@@ -180,6 +180,12 @@
             <button class="sort-option" onclick="sortComments('newest')">Newest</button>
           </div>
         </div>
+        <div class="tags-div">
+        <% let postTags = locals.tags; %>
+        <% if (postTags) { %>
+        <%= postTags %>
+        <% } %>
+        </div>
         <% function renderComments(comments, level = 0) { %>
 
 
