@@ -178,7 +178,7 @@ div.vote-interactions {
   height: 100%;
   margin: 0px;
   padding-inline: 0px;
-  padding: 4px 6px;
+  padding: 6px 6px;
   border-radius: 100%;
   border: 1px solid var(--border-color);
   background-color: var(--light-mode-main-color);
@@ -877,6 +877,7 @@ div .mini-link-desc {
   .main-reaction-button, .boost-button { 
     background-color: var(--dark-mode-main-color);
     border: 1px solid var(--dark-mode-border-color);
+    color: var(--dark-mode-text-color);
   }
   .reaction-button {
     background-color: var(--dark-mode-main-color);
