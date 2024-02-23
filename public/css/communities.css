@@ -115,6 +115,11 @@ div.vote-interactions {
   margin-left: 2px;
   width: 100%;
   align-items: center;
+  justify-content: space-between;
+}
+
+.three-dots {
+  margin-right: 3px;
 }
 
 .post-header-buttons {
@@ -135,6 +140,12 @@ div.vote-interactions {
   background: rgba(0,0,0,0);
 }
 
+.post-header-username {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
 
 .job-flair {
   display: inline-block;

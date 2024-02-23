@@ -197,7 +197,7 @@ const utilFunctions = {
   getTags: async (postId) => {
     try {
       const result = await sql.query`
-        SELECT t.name FROM tags t
+        SELECT t.* FROM tags t
         INNER JOIN post_tags pt ON t.id = pt.tag_id
         WHERE pt.post_id = ${postId}
       `;

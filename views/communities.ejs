@@ -28,7 +28,7 @@
       <% } %>
 
       <% if (communityId != null) { %>
-      <div class="post" style="margin-bottom: 0px; margin-top: 7px;">
+      <div class="post" style="margin-bottom: 0px; margin-top: 10px;">
         <div class="community-content">
           <div class="community-info">
             <div class="community-title">
@@ -212,13 +212,16 @@
               const postHeaderDiv = document.createElement('div');
               postHeaderDiv.className = 'post-header';
 
+              const postHeaderUsernameDiv = document.createElement('div');
+              postHeaderUsernameDiv.className = 'post-header-username';
+
               // avatar div
               const avatarDiv = document.createElement('div');
               avatarDiv.className = 'avatar';
               const avatarImg = document.createElement('img');
               avatarImg.src = post.avatar;
               avatarDiv.appendChild(avatarImg);
-              postHeaderDiv.appendChild(avatarDiv);
+              postHeaderUsernameDiv.appendChild(avatarDiv);
 
               // Username, community and current job div
               const usernameDiv = document.createElement('div');
@@ -233,6 +236,7 @@
               communityText.className = 'communities-text';
               communityText.innerText = " in ";
               usernameDiv.appendChild(communityText);
+              style = "font-weight: 200;"
               const communityLink = document.createElement('a');
               communityLink.href = '/communities/' + post.communities_id;
               communityLink.className = 'community';
@@ -247,7 +251,13 @@
               currentJobDiv.innerText = post.currentJob ? post.currentJob : 'No job info';
               usernameDiv.appendChild(currentJobDiv);
 
-              postHeaderDiv.appendChild(usernameDiv);
+
+              postHeaderUsernameDiv.appendChild(usernameDiv);
+              postHeaderDiv.appendChild(postHeaderUsernameDiv);
+              const threeDotsDiv = document.createElement('div');
+              threeDotsDiv.className = 'three-dots';
+              threeDotsDiv.innerHTML = '<span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>';
+              postHeaderDiv.appendChild(threeDotsDiv);
 
               postContentDiv.appendChild(postHeaderDiv);
 

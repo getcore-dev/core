@@ -9,6 +9,7 @@ const commentQueries = require("../queries/commentQueries");
 const { getLinkPreview } = require("../utils/utilFunctions");
 const userQueries = require("../queries/userQueries");
 const marked = require("marked");
+const { util } = require("chai");
 
 // Route for viewing all posts
 router.get("/posts", async (req, res) => {
@@ -224,6 +225,7 @@ ORDER BY c.created_at DESC;`;
     // Construct postData
     const postData = {
       ...postResult,
+      tags: await utilFunctions.getTags(postId),
       user: await getUserDetails(postResult.user_id),
       comments: nestedComments,
     };
@@ -245,7 +247,6 @@ ORDER BY c.created_at DESC;`;
       communityId: postData.communities_id,
       community: postData.community,
       linkify: utilFunctions.linkify,
-      tags: utilFunctions.getTags(postId);
     });
   } catch (err) {
     console.error("Database query error:", err);

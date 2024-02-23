@@ -181,10 +181,15 @@
           </div>
         </div>
         <div class="tags-div">
-        <% let postTags = locals.tags; %>
-        <% if (postTags) { %>
-        <%= postTags %>
-        <% } %>
+          <% if (post.tags && post.tags.length > 0) { %>
+          <div class="tags">
+            <% post.tags.forEach(tag => { %>
+            <span class="tag-flair">
+              <a href="#" class="tag"><%= tag.name %></a>
+            </span>
+            <% }); %>
+          </div>
+          <% } %>
         </div>
         <% function renderComments(comments, level = 0) { %>
 
@@ -415,7 +420,7 @@ const totalReplies = countAllReplies(comment.replies);
     </div>
     <div class="sidebar-container">
 
-      <div class="sidebar" style=" <% if (post.linkPreview) { %> max-width: 45%; <% } else { %> width: 100%; <% } %> ">
+      <div class="sidebar" style=" <% if (post.linkPreview) { %> max-width: 50%; <% } else { %> width: 100%; <% } %> ">
         <div class=" sidebar-content">
           <div class="sidebar-body">
             <div class="sidebar-poster-avatar">
