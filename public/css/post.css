@@ -242,6 +242,33 @@ a.comment-url:visited {
   margin-bottom: 5px;
 }
 
+.input-container textarea, .comment-container textarea{
+  flex-grow: 1;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid var(--input-border-color);
+  font-size: 16px; /* Same as other input fields */
+  background-color: var(--light-mode-main-color);
+  color: var(--input-text-color);
+  overflow: hidden;
+  resize: none;
+  font-family: inherit; /* Inherits font-family from body */
+  line-height: normal; /* Adjust line height as needed */
+}
+
+/* Style for the send button */
+.input-container button.fab, .comment-container button.fab {
+  background-color: var(--profile-background-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 7px 13px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.15s;
+}
+
+
 .nested-comment.level-1 {
   padding: 5px;
 }
@@ -474,10 +501,6 @@ div.repliers-avatar, div.repliees-avatar {
   margin-bottom: 0px;
 }
 
-.commen:first-child {
-  margin-left: 5px;
-  border-left: 1px solid #ccc;
-}
 .user-actions {
   margin: 0px 5px;
   display: flex;
@@ -774,32 +797,6 @@ p.preview-description {
 }
 
 /* Style for the comment input field */
-.input-container textarea, .comment-container textarea{
-  flex-grow: 1;
-  padding: 5px 10px;
-  border-radius: 5px;
-  border: 1px solid var(--input-border-color);
-  font-size: 16px; /* Same as other input fields */
-  background-color: var(--light-mode-main-color);
-  color: var(--input-text-color);
-  overflow: hidden;
-  resize: none;
-  font-family: inherit; /* Inherits font-family from body */
-  line-height: normal; /* Adjust line height as needed */
-}
-
-/* Style for the send button */
-.input-container button.fab, .comment-container button.fab {
-  background-color: var(--profile-background-color);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  padding: 7px 13px;
-  font-size: 14px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.15s;
-}
-
 .sidebar-poster-job, .sidebar-poster-name, .sidebar-link-info-title, .sidebar-link-info-url {
   margin: 3px;
   padding: 0px 3px;
