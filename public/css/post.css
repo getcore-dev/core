@@ -670,6 +670,11 @@ p.preview-description {
     color: var(--dark-mode-text-color); /* Light text color for better readability */
   }
   
+  .input-container textarea, .comment-container textarea {
+  background-color: var(--dark-mode-main-color);
+  color: var(--dark-mode-text-color);
+  }
+  
   .sort-selector {
   border-color: var(--border-color);
 }
@@ -693,7 +698,7 @@ p.preview-description {
 
   .nested-comment.level-1 > .comment:first-child {
     background-color: var(--dark-mode-body-color);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--dark-mode-border-color);
   }
 
   pre {
