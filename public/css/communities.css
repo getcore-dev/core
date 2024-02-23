@@ -654,13 +654,13 @@ div .mini-link-desc {
   }
 
   .community-selector {
-    padding-top: 7px;
+    padding-top: 10px;
     padding-left: 13px;
-    padding-right: 14px;
+    padding-right: 13px;
     display: flex;
     flex-direction: row;
     gap: 12px;
-    min-height: 30px;
+    min-height: 37px;
     overflow-x: auto;
     -webkit-scrollbar {
       display: none;
@@ -926,9 +926,6 @@ div .mini-link-desc {
       background-color: var(--dark-mode-body-color); /* Dark background on hover */
   }
   
-  .post:last-child {
-      border-bottom: none;
-  }
   .post-info {
       color: #ccc; /* Lighter text color for post information */
   }
