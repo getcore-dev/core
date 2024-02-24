@@ -79,6 +79,7 @@ main {
 
 #profile p {
   margin-bottom: 3px;
+  margin-top: 3px;
   color: var(--primary-text-color);
 }
 
@@ -314,10 +315,86 @@ main {
 }
 
 
+/* Grid container layout */
+#profile {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Three columns of equal size */
+  grid-template-rows: auto; /* Rows take size based on content */
+  grid-template-areas:
+    "info1 info1 info1"
+    "job job job"
+    "user-activity user-activity user-activity"; /* Posts will take up the entire bottom row spanning 3 columns */
+  gap: 30px;
+  /* ... other styles ... */
+}
+
+@media screen and (max-width: 768px) {
+
+  #profile {
+    max-height: calc(100dvh - 65px);
+  }
+  #profile {
+    padding: 15px;
+    gap: 10px;
+    grid-template-columns: repeat(2, 1fr); /* Two columns of equal size */
+    grid-template-areas:
+      "info1 info1"
+      "job job"
+      "user-activity user-activity";
+  }
+  
+}
+
+.profile-picture {
+  grid-area: picture;
+  /* ... other styles ... */
+}
+
+.comments {
+  grid-area: comments;
+}
+#profile > div.profile-info {
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  gap: 10px;
+
+}
+
+.profile-info {
+  display: flex;
+  grid-area: info1;
+}
+
+.current-job {
+  grid-area: info2;
+  /* ... other styles ... */
+}
+
+/* Current job spans all columns */
+.current-job {
+  grid-area: job;
+  /* ... other styles ... */
+}
+
+/* Learning progress, achievements, and posts */
+.learning-progress {
+  grid-area: learning;
+  /* ... other styles ... */
+}
+
+.user-activity {
+  grid-area: user-activity;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
       background-color: var(--dark-mode-body-color); /* Dark background for the body */
       color: var(--dark-mode-text-color); /* Light text color for better readability */
+  }
+
+  .select2-dropdown {
+      background-color: var(--dark-mode-body-color);
   }
 
   .link-display {
@@ -441,75 +518,4 @@ padding: auto;
 
 
 
-}
-/* Grid container layout */
-#profile {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Three columns of equal size */
-  grid-template-rows: auto; /* Rows take size based on content */
-  grid-template-areas:
-    "info1 info1 info1"
-    "job job job"
-    "user-activity user-activity user-activity"; /* Posts will take up the entire bottom row spanning 3 columns */
-  gap: 30px;
-  /* ... other styles ... */
-}
-
-@media screen and (max-width: 768px) {
-
-  #profile {
-    max-height: calc(100dvh - 65px);
-  }
-  #profile {
-    padding: 15px;
-    gap: 10px;
-    grid-template-columns: repeat(2, 1fr); /* Two columns of equal size */
-    grid-template-areas:
-      "info1 info1"
-      "job job"
-      "user-activity user-activity";
-  }
-  
-}
-
-.profile-picture {
-  grid-area: picture;
-  /* ... other styles ... */
-}
-
-.comments {
-  grid-area: comments;
-}
-#profile > div.profile-info {
-  display: flex;
-  flex-direction: row;
-  box-sizing: border-box;
-  gap: 10px;
-
-}
-
-.profile-info {
-  display: flex;
-  grid-area: info1;
-}
-
-.current-job {
-  grid-area: info2;
-  /* ... other styles ... */
-}
-
-/* Current job spans all columns */
-.current-job {
-  grid-area: job;
-  /* ... other styles ... */
-}
-
-/* Learning progress, achievements, and posts */
-.learning-progress {
-  grid-area: learning;
-  /* ... other styles ... */
-}
-
-.user-activity {
-  grid-area: user-activity;
 }

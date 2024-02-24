@@ -1,6 +1,5 @@
 const sql = require("mssql");
 const crypto = require("crypto");
-const redisClient = require("../config/redisConfig"); // Adjust the path as necessary
 
 const generateUniqueId = () => {
   // Use the last 4 characters of the current timestamp in base 36
@@ -16,18 +15,12 @@ const generateUniqueId = () => {
 const postQueries = {
   getPosts: async () => {
     try {
-      const cacheKey = "posts_all";
-      // Try to get data from cache
-      const cachedPosts = await redisClient.get(cacheKey);
-      if (cachedPosts) {
-        return JSON.parse(cachedPosts);
-      }
-
-      const result = await sql.query("SELECT * FROM posts WHERE deleted = 0");
+      const result = await sql.query(
+        "SELECT * FROM posts WHERE deleted = 0 ORDER BY created_at DESC"
+      );
       const posts = result.recordset;
 
       // Cache the result for future requests
-      await redisClient.set(cacheKey, JSON.stringify(posts), "EX", 3600); // Expires in 1 hour
       return posts;
     } catch (err) {
       console.error("Database query error:", err);
@@ -96,7 +89,15 @@ const postQueries = {
     }
   },
 
-  createPost: async (userId, title, content, link = "", community_id, tags) => {
+  createPost: async (
+    userId,
+    title,
+    content,
+    link = "",
+    community_id,
+    tags,
+    post_type
+  ) => {
     if (typeof link !== "string") {
       throw new Error("Link must be a string");
     }
@@ -105,13 +106,12 @@ const postQueries = {
       tags = tags.split(",").map((tag) => tag.trim());
     }
 
-
     try {
       // Insert the post into the posts table
       const uniqueId = generateUniqueId();
 
       // Insert into the posts table
-      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${community_id})`;
+      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id, post_type) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${community_id}, ${post_type})`;
 
       if (tags && tags.length > 0) {
         for (const tag of tags) {

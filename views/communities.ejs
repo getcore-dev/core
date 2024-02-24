@@ -238,7 +238,7 @@
 
               const communityText = document.createElement('span');
               communityText.className = 'communities-text';
-              communityText.innerText = " in ";
+              communityText.innerText = " posted a " + post.post_type + " in ";
               usernameDiv.appendChild(communityText);
               style = "font-weight: 200;"
               const communityLink = document.createElement('a');
@@ -519,7 +519,7 @@
         return fetch(`/api/communities/${community_id}`)
           .then(response => response.json())
           .then(community => {
-            container.innerHTML = community.name;
+            container.innerHTML = community.shortname;
           });
       }
 

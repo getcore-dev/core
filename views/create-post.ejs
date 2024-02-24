@@ -22,22 +22,29 @@
   <%- include('partials/navbar', { pagePath: 'home' }) %>
   <main>
     <div class="post-header">
-      <h2>Create a Post</h2>
+      <h2 id="post-header-title">Create a Post</h2>
     </div>
+
     <div class="post-selector">
-      <div class="post-type">
-        <a href="#" class="post-type-button">Post</a>
+      <div class="post-type" style="background-color:#0A483B;border-color:#07362C;">
+        <a href="#" class="post-type-button" id="post">Post</a>
       </div>
       <div class="post-type">
-        <a href="#" class="post-type-button">Project</a>
+        <a href="#" class="post-type-button" id="question">Question</a>
       </div>
       <div class="post-type">
-        <a href="#" class="post-type-button">Blog</a>
+        <a href="#" class="post-type-button" id="blog">Blog</a>
       </div>
+      <div class="post-type">
+        <a href="#" class="post-type-button" id="project">Project</a>
+      </div>
+    </div>
+
     </div>
     <div class="main-container">
 
       <form action="/posts" method="POST">
+        <input type="hidden" id="post_type" name="post_type" value="post" />
         <div class="form-group">
           <input type="hidden" name="userId" value="<%= user.id %>" />
           <label for="title">Title:</label>
@@ -47,8 +54,8 @@
             <select id="community_choice" name="community_id">
             </select>
           </div>
-          <div class="form-group">
-            <label for="link">Link:</label>
+          <div class="form-group" id="link-field">
+            <label for="link" id="link-label">Link:</label>
             <input type="text" id="link" name="link" />
           </div>
           <div class="form-group">
@@ -66,12 +73,58 @@
               </select>
             </div>
 
+            <div id="confirmation-question" class="form-group" style="display: none;margin: 0px 0px;margin-bottom: 15px;">
+              <input type="checkbox" id="confirm-google" name="confirm_google">
+              <label for="confirm-google">Did you try to Google this question before you are making this post?</label>
+            </div>
+
           </div>
           <button class="add-post-button" type="submit">Submit Post</button>
       </form>
     </div>
   </main>
   <script>
+    $('.post-type-button').click(function(e) {
+      e.preventDefault(); // Prevent the default link behavior
+
+      // Update header text, hidden input value, and link field visibility based on the clicked element
+      const selectedPostType = $(this).attr('id'); // Get the id of the clicked element
+      let headerText = 'Create a Post'; // Default text
+      switch (selectedPostType) {
+        case 'post':
+          headerText = 'Create a Post';
+          $('#link-field').show();
+          $('#link-label').text('Link:');
+          $('#confirmation-question').hide(); // Hide the confirmation question
+          break;
+        case 'question':
+          headerText = 'Create a Question';
+          $('#link-field').hide();
+          $('#confirmation-question').show(); // Show the confirmation question
+          break;
+        case 'blog':
+          headerText = 'Create a Blog';
+          $('#link-field').hide();
+          $('#confirmation-question').hide(); // Hide the confirmation question
+          break;
+        case 'project':
+          headerText = 'Create a Project';
+          $('#link-field').show();
+          $('#link-label').text('GitHub URL:');
+          $('#confirmation-question').hide(); // Hide the confirmation question
+          break;
+      }
+      $('#post-header-title').text(headerText); // Change the header text
+      $('#post_type').val(selectedPostType); // Set the hidden input field's value
+      $('.post-type').css('background-color', '');
+      $('.post-type').css('border-color', '');
+
+      $(this).closest('.post-type').css('background-color', '#0A483B');
+      $(this).closest('.post-type').css('border-color', '#07362C');
+    });
+
+
+
     $(document).ready(function() {
       $('.tags-select2').select2({
         width: '100%' // Full width of its container
@@ -82,20 +135,26 @@
       });
 
       $('form').on('submit', function(e) {
+        var easyMDE = new EasyMDE({
+          element: document.getElementById('content')
+        });
+
         // Check if the EasyMDE editor is empty
         if (!easyMDE.value().trim()) {
-          // Prevent form submission
-          e.preventDefault();
-          // Display an error message or focus the EasyMDE editor
-          alert("Please fill in the content.");
-          easyMDE.codemirror.focus();
+          e.preventDefault(); // Prevent form submission
+          alert("Please fill in the content."); // Display an error message
+          easyMDE.codemirror.focus(); // Focus the EasyMDE editor
         } else {
-          // Form is valid, submit it
-          // Optional: Sync content back to textarea if not automatically done
           easyMDE.toTextArea();
           easyMDE.codemirror.save();
+
+          // If link field is hidden, remove its value before submitting
+          if ($('#link-field').is(':hidden')) {
+            $('#link').val('');
+          }
         }
       });
+
     });
 
     function getAllCommunities() {

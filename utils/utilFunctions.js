@@ -9,7 +9,7 @@ const utilFunctions = {
     try {
       // Query to get posts with boosts and detracts count
       const result = await sql.query`
-        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate,
+        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type,
         u.currentJob, u.username, u.avatar,
               SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
               SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
@@ -21,9 +21,20 @@ const utilFunctions = {
         INNER JOIN users u ON p.user_id = u.id
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
         WHERE p.deleted = 0
-        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob,p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.link_description, p.link_image, p.link_title
+        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob,p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.link_description, p.link_image, p.link_title, p.post_type
         ORDER BY p.created_at DESC
       `;
+
+      const postsToUpdate = result.recordset.filter((post) => !post.post_type);
+      for (let post of postsToUpdate) {
+        await sql.query`
+          UPDATE posts
+          SET post_type = 'post'
+          WHERE id = ${post.id}
+        `;
+        // Reflect the change in the local object to ensure the updated data is returned
+        post.post_type = "post";
+      }
 
       // Optionally, update the posts table if there's a discrepancy
       for (let post of result.recordset) {
@@ -119,7 +130,7 @@ const utilFunctions = {
   getPostData: async (postId) => {
     try {
       const result = await sql.query`
-        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate,
+        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type,
                 u.username, u.id as user_id, u.avatar, 
                 SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
                 SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
@@ -131,9 +142,21 @@ const utilFunctions = {
         INNER JOIN users u ON p.user_id = u.id
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
         WHERE p.id = ${postId}
-        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, u.avatar, u.id
+        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, u.avatar, u.id, p.post_type
       `;
       const postData = result.recordset[0];
+
+      if (postData && postData.post_type === null) {
+        // Update the record in the SQL database
+        await sql.query`
+            UPDATE posts
+            SET post_type = 'post'
+            WHERE id = ${postId}
+        `;
+
+        // Update your local postData object to reflect the change
+        postData.post_type = "post";
+      }
 
       if (postData) {
         postData.user = await utilFunctions.getUserDetails(postData.user_id);

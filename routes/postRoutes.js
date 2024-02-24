@@ -26,7 +26,8 @@ router.get("/posts", async (req, res) => {
 // Route for creating a new post
 router.post("/posts", checkAuthenticated, async (req, res) => {
   try {
-    const { userId, title, content, link, community_id, tags } = req.body;
+    const { userId, title, content, link, community_id, tags, post_type } =
+      req.body;
 
     const postId = await postQueries.createPost(
       userId,
@@ -34,7 +35,8 @@ router.post("/posts", checkAuthenticated, async (req, res) => {
       content,
       link,
       community_id,
-      tags || []
+      tags || [],
+      post_type
     );
 
     return res.redirect(`/posts/${postId}`);
@@ -164,6 +166,8 @@ LEFT JOIN UserCommentActions uca ON c.id = uca.comment_id
 WHERE c.post_id = '${postId}' AND c.deleted = 0
 GROUP BY c.id, c.created_at, c.deleted, c.comment, c.user_id, c.parent_comment_id, c.post_id
 ORDER BY c.created_at DESC;`;
+
+
 
     const result = await sql.query(query);
 
