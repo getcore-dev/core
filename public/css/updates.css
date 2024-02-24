@@ -110,7 +110,7 @@ div.commit-title {
     border: 1px solid #eaecef;
   }
 
-  .commit-author-name {
+  .commit-author-name, .commit-author-name a {
     font-size: 14px;
     font-weight: 450px;
   }

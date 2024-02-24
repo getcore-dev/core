@@ -430,9 +430,9 @@ const totalReplies = countAllReplies(comment.replies);
 
     </div>
     </div>
-    <div class="sidebar-container">
+    <div class="sidebar-container" style="<% if (post.linkPreview && post.post_type != 'project') { %>flex-direction: row; <% } else { %> flex-direction: column; gap: 0px; <% } %>">
 
-      <div class="sidebar" style=" <% if (post.linkPreview) { %> max-width: 50%; <% } else { %> width: 100%; <% } %> ">
+      <div class="sidebar" style=" <% if (post.linkPreview && post.post_type != 'project') { %> max-width: 50%; <% } else { %> width: 100%; <% } %> ">
         <div class=" sidebar-content">
           <div class="sidebar-body">
             <div class="sidebar-poster-avatar">
@@ -460,31 +460,62 @@ const totalReplies = countAllReplies(comment.replies);
           </div>
         </div>
       </div>
-      <% if (post.linkPreview) { %>
-      <div class="sidebar">
-        <div class="sidebar-content">
-
+      <% if (post.post_type == 'project') { %>
+      <% 
+  let gitHubData;
+  try {
+    gitHubData = JSON.parse(post.gitHubLinkPreview.raw_json);
+  } catch(e) {
+    console.error('Error parsing JSON', e);
+    gitHubData = {}; // Set a default empty object in case of error
+  }
+%>
+      <div class="sidebar" id="github-link-preview" style=" <% if (post.linkPreview && post.post_type != 'project') { %> max-width: 50%; <% } else { %> width: 100%; <% } %> ">
+        <div class=" sidebar-content">
           <div class="sidebar-body">
             <div class="sidebar-link-image">
-
-
-              <a href="<%= post.linkPreview.url %>">
+              <a href="<%= post.linkPreview.url %>" style="text-decoration: none;">
                 <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
                 <% if (imageUrl) { %>
                 <img src="<%= imageUrl %>" alt="Preview" class="preview-image" />
                 <% } %>
             </div>
             <div class="sidebar-link-info-title">
-              <%= post.linkPreview.title %>
             </div>
             <div class="sidebar-link-info">
               <div class="sidebar-link-info-url">
                 <%= post.linkPreview.url %>
               </div>
             </div>
+            <%= gitHubData.id %>
           </div>
         </div>
         <% } %>
+        <% if (post.linkPreview && post.post_type != 'project') { %>
+        <div class="sidebar">
+          <div class="sidebar-content">
+
+            <div class="sidebar-body">
+              <div class="sidebar-link-image">
+
+
+                <a href="<%= post.linkPreview.url %>">
+                  <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
+                  <% if (imageUrl) { %>
+                  <img src="<%= imageUrl %>" alt="Preview" class="preview-image" />
+                  <% } %>
+              </div>
+              <div class="sidebar-link-info-title">
+                <%= post.linkPreview.title %>
+              </div>
+              <div class="sidebar-link-info">
+                <div class="sidebar-link-info-url">
+                  <%= post.linkPreview.url %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% } %>
 
   </main>
 

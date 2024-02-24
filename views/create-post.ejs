@@ -45,15 +45,15 @@
 
       <form action="/posts" method="POST">
         <input type="hidden" id="post_type" name="post_type" value="post" />
+        <div class="form-group" id="community">
+          <label for="community">Community:</label>
+          <select id="community_choice" name="community_id">
+          </select>
+        </div>
         <div class="form-group">
           <input type="hidden" name="userId" value="<%= user.id %>" />
           <label for="title">Title:</label>
           <input type="text" id="title" name="title" required />
-          <div class="form-group" id="community">
-            <label for="community">Community:</label>
-            <select id="community_choice" name="community_id">
-            </select>
-          </div>
           <div class="form-group" id="link-field">
             <label for="link" id="link-label">Link:</label>
             <input type="text" id="link" name="link" />

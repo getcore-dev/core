@@ -519,7 +519,7 @@
         return fetch(`/api/communities/${community_id}`)
           .then(response => response.json())
           .then(community => {
-            container.innerHTML = community.shortname;
+            container.innerHTML = "/" + community.shortname;
           });
       }
 

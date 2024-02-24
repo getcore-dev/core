@@ -71,14 +71,15 @@
                 </div>
               </div>
               <div class="commit-stats">
+                <p class="commit-author-name">Lines Changed:</p>
                 <div class="commit-stats-item" style="background-color: #12542489;">
                   <div class="commit-stats-item-value">
-                    <%= commits[i].linesAdded %>
+                    + <%= commits[i].linesAdded %>
                   </div>
                 </div>
                 <div class="commit-stats-item" style="background-color: #7e0d0da7;">
                   <div class="commit-stats-item-value">
-                    <%= commits[i].linesDeleted %>
+                    - <%= commits[i].linesDeleted %>
                   </div>
                 </div>
               </div>

@@ -364,6 +364,82 @@ const utilFunctions = {
     }
   },
 
+  getGitHubRepoPreview: async (url) => {
+    const isGitHubUrl = /^https?:\/\/github\.com\/.+\/.+/.test(url);
+    if (!isGitHubUrl) {
+      throw new Error("URL must be a GitHub repository URL");
+    }
+
+    // Extract the repository's owner and name from the URL
+    const [, owner, repo] = url.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+
+    try {
+      // Check if recent data (within the last 30 minutes) already exists in the GitHubRepoData table
+      const existingDataQuery = `
+        SELECT *, DATEDIFF(minute, time_fetched, GETDATE()) AS time_diff 
+        FROM GitHubRepoData 
+        WHERE repo_url = '${url}'
+        AND DATEDIFF(minute, time_fetched, GETDATE()) <= 30
+      `;
+      const existingDataResult = await sql.query(existingDataQuery);
+
+      if (existingDataResult.recordset.length > 0 ) {
+        // Recent data exists, return it without fetching new data
+        const existingData = existingDataResult.recordset[0];
+        return {
+          id: existingData.id,
+          repo_url: existingData.repo_url,
+          repo_name: existingData.repo_name,
+          raw_json: existingData.raw_json,
+          raw_commits_json: existingData.raw_commits_json,
+          time_fetched: existingData.time_fetched,
+        };
+      }
+
+      // Fetch data from GitHub API if no recent data is available
+      const apiUrl = `https://api.github.com/repos/${owner}/${repo}`;
+      const commitsUrl = `${apiUrl}/commits`; // URL for the commits
+      const repoResponse = await axios.get(apiUrl, {
+        headers: { "User-Agent": "request" },
+        timeout: 5000,
+      });
+      const commitsResponse = await axios.get(commitsUrl, {
+        headers: { "User-Agent": "request" },
+        params: { per_page: 5 }, // Get only the latest 5 commits
+        timeout: 5000,
+      });
+
+      if (repoResponse.status !== 200 || commitsResponse.status !== 200) {
+        throw new Error(
+          `Request to GitHub API failed with status code ${repoResponse.status} or ${commitsResponse.status}`
+        );
+      }
+
+      const repoData = repoResponse.data;
+      const commitsData = commitsResponse.data; 
+      const rawRepoJson = JSON.stringify(repoData);
+      const rawCommitsJson = JSON.stringify(commitsData); 
+  
+      // Insert new data into GitHubRepoData table
+      const insertQuery = `
+      INSERT INTO GitHubRepoData (id, repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
+      VALUES (${repoData.id}, '${repoData.html_url}', '${repoData.name.replace(/'/g, "''")}', '${rawRepoJson.replace(/'/g, "''")}', '${rawCommitsJson.replace(/'/g, "''")}', GETDATE())
+    `;
+    await sql.query(insertQuery);
+
+      return {
+        id: repoData.id,
+        repo_url: repoData.html_url,
+        repo_name: repoData.name,
+        raw_json: rawJson,
+        time_fetched: new Date().toISOString(),
+      };
+    } catch (error) {
+      console.error("Error fetching GitHub repository data:", error);
+      return null;
+    }
+  },
+
   getNestedComments: async (commentList) => {
     const commentMap = {};
 

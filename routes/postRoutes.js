@@ -167,8 +167,6 @@ WHERE c.post_id = '${postId}' AND c.deleted = 0
 GROUP BY c.id, c.created_at, c.deleted, c.comment, c.user_id, c.parent_comment_id, c.post_id
 ORDER BY c.created_at DESC;`;
 
-
-
     const result = await sql.query(query);
 
     // Function to nest comments
@@ -233,6 +231,12 @@ ORDER BY c.created_at DESC;`;
       user: await getUserDetails(postResult.user_id),
       comments: nestedComments,
     };
+
+    if (postData.link && postData.post_type === "project") {
+      postData.gitHubLinkPreview = await utilFunctions.getGitHubRepoPreview(
+        postData.link
+      );
+    }
 
     // Add link preview to postData if link exists
     if (postData.link) {
