@@ -156,12 +156,15 @@
 
       function toggleFilterMenu() {
         const filterMenu = document.getElementById('filterMenu');
+        const buttonRect = document.getElementById('filter-button').getBoundingClientRect();
+
         if (filterMenu.style.display === 'block') {
           filterMenu.style.display = 'none';
         } else {
           filterMenu.style.display = 'block';
         }
       }
+
 
       function fetchAndDisplayPosts(communityId = null) {
         const apiUrl = communityId ? `/api/communities/${communityId}/posts` : '/api/posts';
@@ -179,7 +182,7 @@
         <div class="post-header-title">
           <h3>Posts</h3>
         </div>
-        <div class=post-header-buttons>
+        <div class=post-header-buttons style="position:relative;">
           <% if (user) { %>
             <button class="header-button" id="post-button" onclick="window.location.href='/post/create'">+</button>
           <% } %>

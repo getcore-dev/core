@@ -412,6 +412,7 @@ div .mini-link-title {
 
 #filter-button {
   border: 0;
+  position: relative;
 }
 
 #filter-button .material-symbols-outlined {
@@ -422,10 +423,11 @@ div .mini-link-title {
 
 #filterMenu {
   display: none;
+  position: absolute;
+  right: 0;
   background-color: var(--light-mode-body-color);
   border: 1px solid var(--border-color);
-  position: fixed;
-  top: 155px;
+  top: 0;
   z-index: 10;
 }
 
@@ -655,10 +657,6 @@ div .mini-link-desc {
 
 
 @media (max-width: 768px) {
-  #filterMenu {
-    top: 155px;
-    right: 0px;
-  }
 
   .communities a {
     text-decoration: none;
