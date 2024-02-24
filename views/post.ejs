@@ -2,9 +2,9 @@
 <html>
 
 <head>
-  <title><%= post.title %> : <%= post.username %> @ CORE </title>
+  <title>CORE/<%= community.shortname%>/<%= post.title %> : <%= post.username %></title>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="description" content="<%= post.content.substring(0, 160) %>" />
   <meta name="keywords" content="Your, Keywords, Here" />
 
@@ -40,7 +40,8 @@
           <div class="title">
             <h2 class="post-title"><%= post.title %></h2>
             <p class="post-subtitle">
-              in <%= post.community.name %>
+              <%= post.post_type.charAt(0).toUpperCase() + post.post_type.slice(1) %> in
+              <%= post.community.name %>
 
               <%
               let postDate = new Date(post.created_at);
@@ -81,13 +82,7 @@
                   <span class="material-symbols-outlined">more_horiz</span>
                 </button>
                 <div class="dropdown-content" style="display: none;">
-                  <% if (user && user.username === post.user.username) { %>
-                  <a href="/posts/<%= post.id %>/edit">Edit</a>
-                  <form action="/posts/<%= post.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this post?');">
-                    <input type="hidden" name="_method" value="DELETE" />
-                    <button type="submit">Delete</button>
-                  </form>
-                  <% } %>
+                  hellloooo 123
                 </div>
               </div>
             </div>
@@ -148,11 +143,20 @@
             '><%= reaction.icon %> <%= reaction.count %></button>
                 <% } %>
                 <% }); %>
+                <% if (user && user.username === post.username) { %>
+
+                <form action="/post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
+                  <input type="hidden" name="_method" value="DELETE" />
+                  <button class="reaction-button" onclick="return confirmDeletion(this);">
+                    <p style="margin-top: -17px;margin-bottom: -18px;">🗑️</p>
+                  </button>
+                </form>
+                <% } %>
               </div>
             </div>
 
 
-            <div class="reply-form">
+            <div class=" reply-form">
               <form id="reply-form-<%= post.id %>" action="/posts/<%= post.id %>/comments" method="POST" style="display: block">
                 <div class="input-container">
                   <textarea id="comment" name="comment" required maxlength="500" placeholder="Add a comment to <%= post.username%>'s post" onclick="autoExpandTextarea(event); showReplyButtons('<%= post.id %>')"></textarea>
@@ -181,10 +185,15 @@
           </div>
         </div>
         <div class="tags-div">
-        <% let postTags = locals.tags; %>
-        <% if (postTags) { %>
-        <%= postTags %>
-        <% } %>
+          <% if (post.tags && post.tags.length > 0) { %>
+          <div class="tags">
+            <% post.tags.forEach(tag => { %>
+            <span class="tag-flair">
+              <a href="#" class="tag"><%= tag.name %></a>
+            </span>
+            <% }); %>
+          </div>
+          <% } %>
         </div>
         <% function renderComments(comments, level = 0) { %>
 
@@ -199,25 +208,28 @@
             <div class="comment-main">
 
               <div class="comment-content">
+                <div class="comment-header">
+                  <div class="repliers-avatar">
+                    <% if (level == 0) { %>
+                    <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+                    <% } else { %>
+                    <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar-nested" onerror="standby()" />
+                    <% } %>
+                  </div>
+                  <a class="comment-user-info" href="/profile/<%= comment.user.username %>">
+                    <div class="repliers-info">
+                      <%= comment.user.username%>
+                  </a>
 
-                <div class="repliers-avatar">
-                  <% if (level == 0) { %>
-                  <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
-                  <% } else { %>
-                  <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar-nested" onerror="standby()" />
-                  <% } %>
+
+
                 </div>
-                <a class="comment-user-info" href="/profile/<%= comment.user.username %>">
-                  <div class="repliers-info">
-                    <%= comment.user.username%>
-                </a>
-              </div>
-              <p>to</p>
+                <p>to</p>
 
-              <%= comment.parent_author.username %></a>
-              <span>&#183;</span>
+                <%= comment.parent_author.username %></a>
+                <span>&#183;</span>
 
-              <% let commentDate = new Date(comment.created_at);
+                <% let commentDate = new Date(comment.created_at);
             let currentDate = new Date();
             let timeDifference = currentDate - commentDate;
             let minutes = Math.floor(timeDifference / 60000);
@@ -235,7 +247,27 @@
               timeSinceComment = 'Just now';
             }
             %>
-              <span class="comment-timestamp"><%= timeSinceComment %></p>
+                <span class="comment-timestamp"><%= timeSinceComment %></p>
+
+              </div>
+
+              <div class="dropdown-<%= comment.id %>">
+                <button class="dropbtn" onclick="showDropdown(event)">
+                  <span class="material-symbols-outlined">more_horiz</span>
+                </button>
+                <div class="dropdown-content" style="display: none;">
+
+
+                  <% if (user && user.username === comment.user.username) { %>
+
+                  <form id="delete-comment-form-<%= comment.id %>" class="reactionButton" action="/comment/<%= comment.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <button type="submit" class="delete-comment-button-<%= comment.id %>">
+                      Delete
+                    </button>
+                  </form> <% } %>
+                </div>
+              </div>
             </div>
             <div class="comment-body">
               <%- linkify(comment.comment) %>
@@ -352,21 +384,6 @@ const totalReplies = countAllReplies(comment.replies);
                 <% } %> <% } %>
               </div>
               <% } %>
-
-              <% if (user) { %>
-              <div clas="delete">
-                <% if (user.username === comment.user.username) { %>
-                <form id="delete-comment-form-<%= comment.id %>" class=reactionButton action="/comment/<%= comment.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');">
-                  <input type="hidden" name="_method" value="DELETE" />
-                  <button class="delete-comment-button-<%= comment.id %>" onclick="document.getElementById('delete-comment-form-<%= comment.id %>').submit();">
-                    🗑️
-                  </button>
-                </form>
-                <% } %>
-
-              </div>
-
-              <% } %>
             </div>
           </div>
 
@@ -413,9 +430,9 @@ const totalReplies = countAllReplies(comment.replies);
 
     </div>
     </div>
-    <div class="sidebar-container">
+    <div class="sidebar-container" style="<% if (post.linkPreview && post.post_type != 'project') { %>flex-direction: row; <% } else { %> flex-direction: column; gap: 0px; <% } %>">
 
-      <div class="sidebar" style=" <% if (post.linkPreview) { %> max-width: 45%; <% } else { %> width: 100%; <% } %> ">
+      <div class="sidebar" style=" <% if (post.linkPreview && post.post_type != 'project') { %> max-width: 50%; <% } else { %> width: 100%; <% } %> ">
         <div class=" sidebar-content">
           <div class="sidebar-body">
             <div class="sidebar-poster-avatar">
@@ -443,36 +460,103 @@ const totalReplies = countAllReplies(comment.replies);
           </div>
         </div>
       </div>
-      <% if (post.linkPreview) { %>
-      <div class="sidebar">
-        <div class="sidebar-content">
-
+      <% if (post.post_type == 'project') { %>
+      <% 
+  let gitHubData;
+  try {
+    gitHubData = JSON.parse(post.gitHubLinkPreview.raw_json);
+  } catch(e) {
+    console.error('Error parsing JSON', e);
+    gitHubData = {}; // Set a default empty object in case of error
+  }
+%>
+      <div class="sidebar" id="github-link-preview" style=" <% if (post.linkPreview && post.post_type != 'project') { %> max-width: 50%; <% } else { %> width: 100%; <% } %> ">
+        <div class=" sidebar-content">
           <div class="sidebar-body">
             <div class="sidebar-link-image">
-
-
-              <a href="<%= post.linkPreview.url %>">
+              <a href="<%= post.linkPreview.url %>" style="text-decoration: none;">
                 <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
                 <% if (imageUrl) { %>
                 <img src="<%= imageUrl %>" alt="Preview" class="preview-image" />
                 <% } %>
             </div>
             <div class="sidebar-link-info-title">
-              <%= post.linkPreview.title %>
             </div>
             <div class="sidebar-link-info">
               <div class="sidebar-link-info-url">
                 <%= post.linkPreview.url %>
               </div>
             </div>
+            <%= gitHubData.id %>
           </div>
         </div>
         <% } %>
+        <% if (post.linkPreview && post.post_type != 'project') { %>
+        <div class="sidebar">
+          <div class="sidebar-content">
+
+            <div class="sidebar-body">
+              <div class="sidebar-link-image">
+
+
+                <a href="<%= post.linkPreview.url %>">
+                  <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
+                  <% if (imageUrl) { %>
+                  <img src="<%= imageUrl %>" alt="Preview" class="preview-image" />
+                  <% } %>
+              </div>
+              <div class="sidebar-link-info-title">
+                <%= post.linkPreview.title %>
+              </div>
+              <div class="sidebar-link-info">
+                <div class="sidebar-link-info-url">
+                  <%= post.linkPreview.url %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% } %>
 
   </main>
 
 
   <script>
+    function showDropdown(event) {
+      event.stopPropagation(); // Stop the click from propagating to the document
+
+      // Find the dropdown content next to the clicked button
+      var dropdownContent = event.currentTarget.nextElementSibling;
+
+      // Check if the current dropdown is already open
+      var isCurrentlyShown = dropdownContent.style.display === 'block';
+
+      // Close all dropdowns first
+      closeAllDropdowns();
+
+      // If the dropdown was not already open, open it
+      if (!isCurrentlyShown) {
+        dropdownContent.style.display = 'block';
+      }
+    }
+
+    function closeAllDropdowns() {
+      const allDropdowns = document.querySelectorAll('.dropdown-content');
+      allDropdowns.forEach(function(dropdown) {
+        dropdown.style.display = 'none';
+      });
+    }
+
+    // Attach an event listener to the document to close all dropdowns when clicking anywhere else
+    document.addEventListener('click', closeAllDropdowns);
+
+    // This function is to prevent the click inside the dropdown from propagating to the document
+    document.addEventListener('click', function(event) {
+      const withinBoundaries = event.composedPath().includes(event.target.closest('.dropdown-content'));
+
+      if (withinBoundaries) {
+        event.stopPropagation(); // Prevent the click from closing the dropdown immediately
+      }
+    }, true); // True here sets the listener to the capture phase
     function showReplyButtons(commentId) {
       // Show the reply buttons
       var replyButtons = document.getElementById('reply-buttons-' + commentId);

@@ -10,6 +10,7 @@ const userQueries = require("../queries/userQueries");
 const utilFunctions = require("../utils/utilFunctions");
 const githubService = require("../services/githubService");
 const postQueries = require("../queries/postQueries");
+const { util } = require("chai");
 
 // Home page
 router.get("/", viewController.renderHomePage);
@@ -30,7 +31,6 @@ router.post("/edits", checkAuthenticated, async (req, res) => {
   try {
     for (let field in updates) {
       if (updates.hasOwnProperty(field)) {
-
         await userQueries.updateField(userId, field, updates[field]);
       }
     }
@@ -102,6 +102,29 @@ router.get("/post/create", checkAuthenticated, async (req, res) => {
 // Individual post page
 router.get("/post", async (req, res) => {
   res.render("post.ejs", { user: req.user });
+});
+
+router.get("/edit-profile", checkAuthenticated, async (req, res) => {
+  const full_user = await userQueries.findById(req.user.id);
+  res.render("edit-profile.ejs", { user: req.user, edit_user: full_user });
+});
+
+router.post("/edit-profile", checkAuthenticated, async (req, res) => {
+  const updates = req.body;
+  const userId = req.user.id;
+
+  try {
+    for (let field in updates) {
+      if (updates.hasOwnProperty(field)) {
+        await userQueries.updateField(userId, field, updates[field]);
+      }
+    }
+
+    res.redirect("/profile/" + req.user.username);
+  } catch (err) {
+    console.error("Error updating user fields:", err.message);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 // Error handling middleware

@@ -137,6 +137,17 @@ const userQueries = {
         "avatar",
         "email",
         "github_url",
+        "recruiter_id",
+        "leetcode_url",
+        "linkedin_url",
+        "zipcode",
+        "currentJob_employment_type",
+        "currentJob_skills",
+        "currentJob",
+        "currentCompany",
+        "currentIndustry",
+        "password",
+        "currentJob_begindate",
       ];
 
       // Check if the field is valid

@@ -3,12 +3,12 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/user_profile.css" />
   <link rel="shortcut icon" href="/img/core.png" />
-  <title> <%= otheruser.username %> : CORE</title>
+  <title>CORE/<%= otheruser.username %></title>
 </head>
 
 <body>
@@ -24,17 +24,40 @@
           <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
           <% } %>
 
+          <% if (user && otheruser.username == user.username) { %>
+          <div class="edit-controls">
+            <button onclick=window.location.href='/edit-profile'>Edit Profile</button>
+          </div>
+          <% } %>
+
         </div>
         <div class="profile-details">
           <h2><%= otheruser.username %></h2>
           <p id="firstname-display"><%= otheruser.firstname %> <%= otheruser.lastname %></p>
 
           <p id="email-display"><%= otheruser.email %></p>
+          <div class="link-display">
+            <img src="/src/github.png" style="height:20px;width:20px;">
 
-          <p id="github-url-display"><% if (otheruser.github_url) { %><%- linkify(otheruser.github_url) %><% } else { %>No Github URL yet.<% } %></p>
+            <p id="github-url-display"><% if (otheruser.github_url) { %>
+              <%= otheruser.github_url%>
+              <% } else { %>No Github URL yet.<% } %></p>
+          </div>
+          <div class="link-display">
+            <img src="/src/leetcodeglyph.png" style="height:20px;width:20px;">
 
-          <p id="github-url-display"><% if (otheruser.leetcode_url) { %><%- linkify(otheruser.leetcode_url) %><% } else { %>No LeetCode URL yet.<% } %></p>
+            <p id="leetcode-url-display"><% if (otheruser.leetcode_url) { %>
+              <%= otheruser.leetcode_url%>
+              <% } else { %>No LeetCode URL yet.<% } %></p>
+          </div>
+          <div class="link-display">
+            <img src="/src/linkedin.png" style="height:20px;width:20px;">
+            <p id="linkedin-url-display"><% if (otheruser.linkedin_url) { %>
+              <%= otheruser.linkedin_url%>
+              <% } else { %>No LinkedIn URL yet.<% } %></p>
+          </div>
         </div>
+
       </div>
 
       <div class="current-job">
@@ -47,7 +70,7 @@
         </p>
         <p id="currentjob.position-display">
           <span class="flair" id="date-flair">
-            <%= new Date(otheruser.currentJob_startdate).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) %>
+            <%= new Date(otheruser.currentJob_begindate).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) %>
           </span>
           <span class="flair" id="emp-type-flair">
             <%= otheruser.currentJob_employment_type %>
@@ -74,23 +97,27 @@
       </div>
 
       <div class="user-activity">
-        <div class="user-activity-buttons">
-          <button onclick="showSection('posts')" class="active">Posts</button>
-          <button onclick="showSection('comments')">Comments</button>
+        <div class="user-activity-header">
+          <div class="user-activity-title">
+            <h4><%=otheruser.username%>'s posts</h4>
+          </div>
+          <div class="user-activity-buttons">
+            <button class="sort-option active" showSection('posts')">Posts</button>
+            <button class="sort-option" onclick="showSection('comments')">Comments</button>
+          </div>
         </div>
 
         <div id="posts" class="content">
-          <h4><%=otheruser.username%>'s posts</h4>
           <% if (posts.length === 0) { %>
           <p>No posts yet.</p>
           <% } else { %>
           <div class="post-container">
             <% posts.forEach(function(post) { %>
-            <div class="post">
-              <h3 class="post-title">
-                <a href="/posts/<%= post.id %>"><%= post.title %></a>
-              </h3>
-              <p class="post-content"><%= post.content %></p>
+            <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
+              <h4 class="post-title">
+                <%= post.title %>
+                </h3>
+                <p class="post-content" style="font-size: 14px;"><%= post.content %></p>
             </div>
             <% }); %>
           </div>
@@ -98,7 +125,6 @@
         </div>
 
         <div id="comments" class="content" style="display:none;">
-          <h4><%=otheruser.username%>'s comments</h4>
           <% if (comments.length === 0) { %>
           <p>No comments yet.</p>
           <% } else { %>

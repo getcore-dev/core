@@ -9,6 +9,7 @@ const commentQueries = require("../queries/commentQueries");
 const { getLinkPreview } = require("../utils/utilFunctions");
 const userQueries = require("../queries/userQueries");
 const marked = require("marked");
+const { util } = require("chai");
 
 // Route for viewing all posts
 router.get("/posts", async (req, res) => {
@@ -25,7 +26,8 @@ router.get("/posts", async (req, res) => {
 // Route for creating a new post
 router.post("/posts", checkAuthenticated, async (req, res) => {
   try {
-    const { userId, title, content, link, community_id, tags } = req.body;
+    const { userId, title, content, link, community_id, tags, post_type } =
+      req.body;
 
     const postId = await postQueries.createPost(
       userId,
@@ -33,7 +35,8 @@ router.post("/posts", checkAuthenticated, async (req, res) => {
       content,
       link,
       community_id,
-      tags || []
+      tags || [],
+      post_type
     );
 
     return res.redirect(`/posts/${postId}`);
@@ -224,9 +227,16 @@ ORDER BY c.created_at DESC;`;
     // Construct postData
     const postData = {
       ...postResult,
+      tags: await utilFunctions.getTags(postId),
       user: await getUserDetails(postResult.user_id),
       comments: nestedComments,
     };
+
+    if (postData.link && postData.post_type === "project") {
+      postData.gitHubLinkPreview = await utilFunctions.getGitHubRepoPreview(
+        postData.link
+      );
+    }
 
     // Add link preview to postData if link exists
     if (postData.link) {
@@ -245,7 +255,6 @@ ORDER BY c.created_at DESC;`;
       communityId: postData.communities_id,
       community: postData.community,
       linkify: utilFunctions.linkify,
-      tags: utilFunctions.getTags(postId);
     });
   } catch (err) {
     console.error("Database query error:", err);

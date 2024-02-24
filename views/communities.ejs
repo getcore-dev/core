@@ -3,18 +3,20 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/communities.css" />
   <link rel="stylesheet" href="/css/com-btn-container.css" />
 
   <link rel="shortcut icon" href="img/core.png" />
-  <title>Home : CORE</title>
+  <title>CORE/<%= communityId ? community.shortname : 'Home' %>
+
+  </title>
 </head>
 
 <body>
-  <%- include('partials/navbar', { pagePath: 'communities' }) %>
+  <%- include('partials/navbar', { pagePath: 'communities', user: user}) %>
 
   <div class="container">
 
@@ -28,7 +30,7 @@
       <% } %>
 
       <% if (communityId != null) { %>
-      <div class="post" style="margin-bottom: 0px; margin-top: 7px;">
+      <div class="post" style="margin-bottom: 0px; margin-top: 10px;">
         <div class="community-content">
           <div class="community-info">
             <div class="community-title">
@@ -154,12 +156,15 @@
 
       function toggleFilterMenu() {
         const filterMenu = document.getElementById('filterMenu');
+        const buttonRect = document.getElementById('filter-button').getBoundingClientRect();
+
         if (filterMenu.style.display === 'block') {
           filterMenu.style.display = 'none';
         } else {
           filterMenu.style.display = 'block';
         }
       }
+
 
       function fetchAndDisplayPosts(communityId = null) {
         const apiUrl = communityId ? `/api/communities/${communityId}/posts` : '/api/posts';
@@ -177,19 +182,18 @@
         <div class="post-header-title">
           <h3>Posts</h3>
         </div>
-        <div class=post-header-buttons>
+        <div class=post-header-buttons style="position:relative;">
           <% if (user) { %>
-            <button class="header-button" id="post-button" onclick="window.location.href='/post/create'">Post</button>
+            <button class="header-button" id="post-button" onclick="window.location.href='/post/create'">+</button>
           <% } %>
           <button class="header-button" id="filter-button" onclick="toggleFilterMenu()">
             <span class="material-symbols-outlined">tune</span>
             </button>
             <div class="filter-menu" id="filterMenu">
-              <button class="filter-button" onclick="filterPosts('All')">All</button>
-              <button class="filter-button" onclick="filterPosts('ML-AI')">ML-AI</button>
-              <button class="filter-button" onclick="filterPosts('Web-Dev')">Web-Dev</button>
-              <button class="filter-button" onclick="filterPosts('Computer Science')">Computer Science</button>
-              <button class="filter-button" onclick="filterPosts('Software')">Software</button>
+              <button class="filter-button" onclick="filterPosts('Trending')">Trending</button>
+              <button class="filter-button" onclick="filterPosts('New')">New</button>
+              <button class="filter-button" onclick="filterPosts('Top')">Top</button>
+              <button class="filter-button" onclick="filterPosts('Explore')">Explore</button>
             </div> 
 
           </div>  
@@ -212,13 +216,16 @@
               const postHeaderDiv = document.createElement('div');
               postHeaderDiv.className = 'post-header';
 
+              const postHeaderUsernameDiv = document.createElement('div');
+              postHeaderUsernameDiv.className = 'post-header-username';
+
               // avatar div
               const avatarDiv = document.createElement('div');
               avatarDiv.className = 'avatar';
               const avatarImg = document.createElement('img');
               avatarImg.src = post.avatar;
               avatarDiv.appendChild(avatarImg);
-              postHeaderDiv.appendChild(avatarDiv);
+              postHeaderUsernameDiv.appendChild(avatarDiv);
 
               // Username, community and current job div
               const usernameDiv = document.createElement('div');
@@ -231,8 +238,9 @@
 
               const communityText = document.createElement('span');
               communityText.className = 'communities-text';
-              communityText.innerText = " in ";
+              communityText.innerText = " posted a " + post.post_type + " in ";
               usernameDiv.appendChild(communityText);
+              style = "font-weight: 200;"
               const communityLink = document.createElement('a');
               communityLink.href = '/communities/' + post.communities_id;
               communityLink.className = 'community';
@@ -247,7 +255,13 @@
               currentJobDiv.innerText = post.currentJob ? post.currentJob : 'No job info';
               usernameDiv.appendChild(currentJobDiv);
 
-              postHeaderDiv.appendChild(usernameDiv);
+
+              postHeaderUsernameDiv.appendChild(usernameDiv);
+              postHeaderDiv.appendChild(postHeaderUsernameDiv);
+              const threeDotsDiv = document.createElement('div');
+              threeDotsDiv.className = 'three-dots';
+              threeDotsDiv.innerHTML = '<span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>';
+              postHeaderDiv.appendChild(threeDotsDiv);
 
               postContentDiv.appendChild(postHeaderDiv);
 
@@ -505,7 +519,7 @@
         return fetch(`/api/communities/${community_id}`)
           .then(response => response.json())
           .then(community => {
-            container.innerHTML = community.name;
+            container.innerHTML = "/" + community.shortname;
           });
       }
 

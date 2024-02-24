@@ -3,8 +3,8 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About Core</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CORE/updates</title>
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/updates.css" />
   <link rel="shortcut icon" href="img/core.png" />
@@ -13,8 +13,16 @@
 </style>
 
 <body>
-  <%- include('partials/navbar', { pagePath: 'home' }) %>
+  <%- include('partials/navbar', { pagePath: 'updates' }) %>
   <main>
+    <div id="updates-header">
+      <div id="updates-title">
+        <h2>Updates</h2>
+      </div>
+      <div id="updates-description">
+        <p>Stay up to date with the latest changes to the CORE project.</p>
+      </div>
+    </div>
     <div id="commits-container">
       <div id="commits">
         <% for (let i = 0; i < commits.length; i++) { 
@@ -63,14 +71,15 @@
                 </div>
               </div>
               <div class="commit-stats">
+                <p class="commit-author-name">Lines Changed:</p>
                 <div class="commit-stats-item" style="background-color: #12542489;">
                   <div class="commit-stats-item-value">
-                    <%= commits[i].linesAdded %>
+                    + <%= commits[i].linesAdded %>
                   </div>
                 </div>
                 <div class="commit-stats-item" style="background-color: #7e0d0da7;">
                   <div class="commit-stats-item-value">
-                    <%= commits[i].linesDeleted %>
+                    - <%= commits[i].linesDeleted %>
                   </div>
                 </div>
               </div>

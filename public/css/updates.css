@@ -23,6 +23,12 @@ span.material-symbols-outlined {
   font-size: 14px;
 }
 
+#updates-header {
+  margin-top: 7px;
+  margin-left: 13px;
+  margin-right: 13px;
+}
+
 #loading-commit {
   background-color: var(--light-mode-main-color);
   animation: loadingAnimation 1.5s infinite;
@@ -54,7 +60,7 @@ div.commit-title {
     display: flex;
     flex-direction: column;
     max-width: 100vh;
-    gap: 10px;
+    gap: 16px;
   }  
   
   .commit {
@@ -63,7 +69,7 @@ div.commit-title {
     border-radius: 6px;
     padding: 5px;
     max-width: 100vh;
-    margin: 0px 7px;
+    margin: 0px 13px;
 }
 
   .commit-header {
@@ -104,7 +110,7 @@ div.commit-title {
     border: 1px solid #eaecef;
   }
 
-  .commit-author-name {
+  .commit-author-name, .commit-author-name a {
     font-size: 14px;
     font-weight: 450px;
   }
