@@ -155,7 +155,7 @@ div.vote-interactions {
 
 .reaction-button, .boost-button {
   border: 1px solid var(--border-color);
-  background-color: var(--light-mode-main-color);
+  background-color: var(--border-color);
   color: #666;
   border-radius: 6px;
   padding: 4px 8px;
@@ -181,7 +181,7 @@ div.vote-interactions {
   padding: 6px 6px;
   border-radius: 100%;
   border: 1px solid var(--border-color);
-  background-color: var(--light-mode-main-color);
+  background-color: var(--border-color);
 
 }
 
@@ -875,12 +875,12 @@ div .mini-link-desc {
   }
 
   .main-reaction-button, .boost-button { 
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-border-color);
     border: 1px solid var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
   .reaction-button {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-border-color);
     border: 1px solid var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
