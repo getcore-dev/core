@@ -356,6 +356,12 @@ margin-top: 20px;
 }
 /* Responsive Design */
 @media (max-width: 768px) {
+  body {
+    padding-top: constant(safe-area-inset-top); 
+    padding-top: env(safe-area-inset-top);
+    background-color: var(--light-mode-body-color);
+  }
+}
   .username a {
     font-size: 16px;
   }
@@ -471,7 +477,7 @@ margin-top: 20px;
     max-height: 45px; /* Maximum height of the logo */
     z-index: 1000;
   }
-}
+
 
 .user-info div {
   font-size: 12px;
@@ -721,5 +727,13 @@ margin-top: 20px;
   .search-bar input[type="search"]:focus,
   .search-bar input[type="search"]:hover {
       background-color: #666; /* Darker background on focus/hover */
+  }
+
+  @media (max-width: 768px) {
+    body {
+      padding-top: calc(constant(safe-area-inset-top) + var(--navbar-height) - 19px); 
+      padding-top: calc(env(safe-area-inset-top) + var(--navbar-height) - 19px);
+      background-color: var(--dark-mode-body-color);
+    }
   }
 }
