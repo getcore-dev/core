@@ -424,8 +424,7 @@ div .mini-link-title {
   display: none;
   background-color: var(--light-mode-body-color);
   border: 1px solid var(--border-color);
-  position: absolute;
-  box-shadow: 0px 0px 10px 0px #000000;
+  position: fixed;
   top: 155px;
   z-index: 10;
 }
@@ -657,7 +656,8 @@ div .mini-link-desc {
 
 @media (max-width: 768px) {
   #filterMenu {
-    top: 116px;
+    top: 155px;
+    right: 0px;
   }
 
   .communities a {
@@ -680,6 +680,10 @@ div .mini-link-desc {
     
     -ms-overflow-style: none; 
     scrollbar-width: none;
+  }
+
+  .community-selector::-webkit-scrollbar {
+    display: none;
   }
 
   .communities {
@@ -874,7 +878,7 @@ div .mini-link-desc {
   }
 
   #filterMenu {
-    background-color: var(--dark-mode-body-color);
+    background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-border-color);
   }
 
@@ -887,12 +891,12 @@ div .mini-link-desc {
   }
 
   .main-reaction-button, .boost-button { 
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-border-color);
     border: 1px solid var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
   .reaction-button {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-border-color);
     border: 1px solid var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
@@ -907,7 +911,7 @@ div .mini-link-desc {
   }
   
   .communities {
-  background-color: var(--dark-mode-main-color);
+  background-color: var(--dark-mode-border-color);
   border-color: var(--dark-mode-border-color);
   }
   

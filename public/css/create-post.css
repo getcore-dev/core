@@ -29,7 +29,40 @@ body {
     padding: 20px;
     background-color: var(--light-mode-body-color);
     border: 1px solid var(--border-color);
-    border-radius: 10px;
+    border-radius: 6px;
+}
+
+.post-selector {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    margin: 4px 13px;
+    margin-bottom: 10px;
+}
+
+.post-type {
+    border: 1px solid var(--border-color);
+    background-color: var(--border-color);
+    border-radius: 6px;
+    display: inline-flex;
+    padding: 2px 3px;
+}
+
+.post-type a {
+    text-decoration: none;
+    color: var(--primary-text-color);
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0px 12px;
+    margin-top: 16px;
+    margin-bottom: 5px;
 }
 
 .main-container form {
@@ -40,19 +73,24 @@ body {
 
 .main-container input[type="text"],
 .main-container textarea {
-    width: calc(100% - 30px); /* Adjust width to account for padding */
+    width: 100%;
+    box-sizing: border-box;
     padding: 8px;
     font-size: 16px;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
-    margin: 15px 8px; /* Add margin for external spacing */
+    border-radius: 6px;
+    margin: 5px 0px; /* Add margin for external spacing */
+}
+
+.EasyMDEContainer {
+    margin-top: 5px;
 }
 
 .main-container select {
     padding: 8px;
     font-size: 16px;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: 6px;
 }
 
 
@@ -62,12 +100,12 @@ body {
     width: 100%;
     padding: 15px;
     color: white;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
 }
 
 #tags-container {
-    margin: 12px;
+    margin: 12px 0px;
 }
 
 .main-container .post,
@@ -108,9 +146,11 @@ body {
 /* Responsive styles */
 @media screen and (max-width: 768px) {
     .main-container {
-        margin: 20px;
-        padding: 10px;
+        margin: 0px 12px;
+        margin-bottom: 50px;
+        padding: 10px 6px;
     }
+    
 
     .main-container h2,
     .main-container .post-title,
@@ -129,6 +169,22 @@ body {
 @media (prefers-color-scheme: dark) {
     body {
         background-color: var(--dark-mode-body-color);
+        color: var(--dark-mode-text-color);
+    }
+
+    .post-type {
+        background-color: var(--dark-mode-border-color);
+        border-color: var(--dark-mode-border-color);
+    }
+
+    .post-type a {
+        color: var(--dark-mode-text-color);
+    }
+
+    .main-container select {
+        background-color: var(--dark-mode-body-color);
+        border-color: var(--dark-mode-border-color);
+        color: var(--dark-mode-text-color);
     }
 
     .editor-toolbar button {
@@ -143,13 +199,13 @@ body {
 
     .main-container input[type="text"],
     .main-container textarea {
-        background-color: var(--dark-mode-main-color);
+        background-color: var(--dark-mode-body-color);
         border-color: var(--dark-mode-border-color);
         color: var(--dark-mode-text-color);
     }
 
     div.form-group .CodeMirror, div.form-group .select2-container--default .select2-selection--multiple, div.form-group .editor-toolbar, div.form-group .select2-dropdown select2-dropdown--above {
-        background-color: var(--dark-mode-main-color);
+        background-color: var(--dark-mode-body-color);
         border-color: var(--dark-mode-border-color);
 
         color: var(--dark-mode-text-color);

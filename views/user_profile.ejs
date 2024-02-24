@@ -40,20 +40,20 @@
             <img src="/src/github.png" style="height:20px;width:20px;">
 
             <p id="github-url-display"><% if (otheruser.github_url) { %>
-              github.com/<%= otheruser.github_url%>
+              <%= otheruser.github_url%>
               <% } else { %>No Github URL yet.<% } %></p>
           </div>
           <div class="link-display">
             <img src="/src/leetcodeglyph.png" style="height:20px;width:20px;">
 
             <p id="leetcode-url-display"><% if (otheruser.leetcode_url) { %>
-              leetcode.com/<%= otheruser.leetcode_url%>
+              <%= otheruser.leetcode_url%>
               <% } else { %>No LeetCode URL yet.<% } %></p>
           </div>
           <div class="link-display">
             <img src="/src/linkedin.png" style="height:20px;width:20px;">
             <p id="linkedin-url-display"><% if (otheruser.linkedin_url) { %>
-              linkedin.com/in/<%= otheruser.linkedin_url%>
+              <%= otheruser.linkedin_url%>
               <% } else { %>No LinkedIn URL yet.<% } %></p>
           </div>
         </div>

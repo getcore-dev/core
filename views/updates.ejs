@@ -15,6 +15,14 @@
 <body>
   <%- include('partials/navbar', { pagePath: 'updates' }) %>
   <main>
+    <div id="updates-header">
+      <div id="updates-title">
+        <h2>Updates</h2>
+      </div>
+      <div id="updates-description">
+        <p>Stay up to date with the latest changes to the CORE project.</p>
+      </div>
+    </div>
     <div id="commits-container">
       <div id="commits">
         <% for (let i = 0; i < commits.length; i++) { 

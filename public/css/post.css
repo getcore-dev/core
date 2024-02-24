@@ -325,7 +325,7 @@ div .user-info, .header {
   color: #999;
   border-radius: 6px;
   padding: 4px 8px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   text-decoration: none;
 }
@@ -766,7 +766,7 @@ p.preview-description {
   background-color: var(--dark-mode-body-color); /* Active tab color */
 }
   .reaction-button { 
-  background-color: var(--dark-mode-main-color);
+  background-color: var(--dark-mode-border-color);
   border-color: var(--dark-mode-border-color);
   color: var(--dark-mode-text-color);
   }

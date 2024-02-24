@@ -301,10 +301,28 @@ main {
   cursor: pointer;
 }
 
+.link-display {
+  display: inline-flex;
+  padding: 2px 3px;
+  margin: 2px;
+  background-color: var(--border-color); 
+  border: 1px solid var(--border-color); 
+  color: white;
+  border-radius: 6px;
+  font-size: 14px;
+  position: relative;
+}
+
+
 @media (prefers-color-scheme: dark) {
   body {
       background-color: var(--dark-mode-body-color); /* Dark background for the body */
       color: var(--dark-mode-text-color); /* Light text color for better readability */
+  }
+
+  .link-display {
+    background-color: var(--dark-mode-border-color);
+    border-color: var(--dark-mode-border-color);
   }
 
   .post, .comment {

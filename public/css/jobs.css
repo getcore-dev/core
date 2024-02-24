@@ -53,6 +53,7 @@ main {
 }
 
 
+
   .job-header {
     padding: 5px;
     display: flex;
@@ -77,8 +78,8 @@ main {
   }
   
   .company-logo {
-    width: 32px; 
-    height: auto; 
+    width: 42px; 
+    height: 42px; 
     padding-right: 10px;
   }
   
@@ -88,8 +89,11 @@ main {
   }
 
   .job-body {
-    font-size: 14px;
-    padding: 5px 0px;
+    background-color: var(--light-mode-body-color);
+    font-size: 16px;
+    padding: 5px 10px;
+    margin: 5px 0px;
+    border-radius: 6px;
     line-height: 1.4;
   }
 
@@ -100,7 +104,7 @@ main {
   
   @media (max-width: 768px) {
     .job-title-location {
-      font-size: 15px;
+      font-size: 18px;
     }
 
     .job-flairs {
@@ -136,7 +140,7 @@ main {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  margin: 4px 7px;
+  margin: 4px 13px;
   border-radius: 6px;
 }
 
@@ -149,11 +153,21 @@ main {
   padding: 2px 3px;
   margin: 2px;
   background-color: #DB504A;
-    border: 1px solid #FF8370; 
+  border: 1px solid #FF8370; 
   color: white;
   border-radius: 6px;
   font-size: 14px;
   position: relative;
+}
+
+#pay-flair {
+  background: #0C8346;
+  border: 1px solid #0E954F;
+}
+
+#location-flair {
+  background-color: #6d93b1; 
+  border: 1px solid #6488a4; 
 }
 
 .job-content {
@@ -192,6 +206,11 @@ div .material-symbols-outlined {
 
 
   .job-list {
+    border-color: var(--dark-mode-border-color);
+  }
+
+  .job-body {
+    background-color: var(--dark-mode-border-color);
     border-color: var(--dark-mode-border-color);
   }
 
