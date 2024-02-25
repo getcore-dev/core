@@ -359,7 +359,7 @@ margin-top: 20px;
   body {
     padding-top: constant(safe-area-inset-top); 
     padding-top: env(safe-area-inset-top);
-    background-color: var(--light-mode-body-color);
+    background-color: var(--light-mode-main-color);
   }
 }
   .username a {
