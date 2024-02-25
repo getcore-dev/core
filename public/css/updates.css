@@ -24,7 +24,7 @@ span.material-symbols-outlined {
 }
 
 #updates-header {
-  margin-top: 7px;
+  margin-top: 13px;
   margin-left: 13px;
   margin-right: 13px;
 }
@@ -47,6 +47,7 @@ div.commit-title {
 
 #commits-container {
   margin-top: 10px;
+  margin-bottom: 25px;
   max-width: 100vh;
   display: flex;
   justify-content: flex-start;
@@ -59,7 +60,7 @@ div.commit-title {
   #commits {
     display: flex;
     flex-direction: column;
-    max-width: 100vh;
+    max-width: 100vw;
     gap: 16px;
   }  
   
@@ -68,20 +69,34 @@ div.commit-title {
     background: var(--light-mode-body-color);
     border-radius: 6px;
     padding: 5px;
-    max-width: 100vh;
+    max-width: 100%;
     margin: 0px 13px;
 }
 
+
+  .commit-top {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  box-sizing: border-box;
+}
+  .commit-title {
+    max-width: 100%;
+    inline-size: 100%;
+    overflow-wrap: break-word;
+  }
   .commit-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  flex-direction: column;
+  max-width: 50%;
+  padding: 4px;
   }
 
   .commit-title {
     font-size: 14px;
-    padding: 4px;
     font-weight: 650;
   }
 
@@ -112,7 +127,9 @@ div.commit-title {
 
   .commit-author-name, .commit-author-name a {
     font-size: 14px;
-    font-weight: 450px;
+    margin-right: 3px;
+    font-weight: 600px;
+    color: black;
   }
 
   
@@ -123,7 +140,14 @@ div.commit-title {
 
   .commit-stats {
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+  }
+
+  .commit-stats-container {
+    display:flex;
+    flex-direction: row;
   }
 
   .commit-stats-item {
@@ -178,8 +202,8 @@ div.commit-title {
 
     .commit-body {
       display: flex;
-      align-items: flex-end;
-      flex-direction: row;
+      align-items: flex-start;
+      flex-direction: column;
       align-content: space-between;
       justify-content: space-between;
     }
@@ -192,7 +216,7 @@ div.commit-title {
     color: white;
     padding: 2px 6px;
     border-radius: 6px;
-    margin: 5px;
+    margin: 5px 2px;
   }
   
   .material-symbols-outlined {

@@ -141,6 +141,7 @@ main {
   flex-direction: column;
   gap: 14px;
   margin: 4px 13px;
+  margin-bottom: 25px;
   border-radius: 6px;
 }
 

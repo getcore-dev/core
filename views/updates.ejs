@@ -19,9 +19,6 @@
       <div id="updates-title">
         <h2>Updates</h2>
       </div>
-      <div id="updates-description">
-        <p>Stay up to date with the latest changes to the CORE project.</p>
-      </div>
     </div>
     <div id="commits-container">
       <div id="commits">
@@ -55,12 +52,29 @@
           %>
         <a href="<%= commits[i].html_url %>" style="text-decoration:none">
           <div class="commit">
-            <div class="commit-header">
-              <div class="commit-title">
-                <%= commits[i].commit.message %>
+            <div class="commit-top">
+              <div class="commit-header">
+                <div class="commit-title">
+                  <p><%= commits[i].commit.message %></p>
+                </div>
+                <div class="commit-date">
+                  <%= formattedDate %>
+                </div>
               </div>
-              <div class="commit-date">
-                <%= formattedDate %>
+              <div class="commit-stats">
+                <p class="commit-author-name">Lines Changed:</p>
+                <div class="commit-stats-container">
+                  <div class="commit-stats-item" style="background-color: #12542489;">
+                    <div class="commit-stats-item-value">
+                      + <%= commits[i].linesAdded %>
+                    </div>
+                  </div>
+                  <div class="commit-stats-item" style="background-color: #7e0d0da7;">
+                    <div class="commit-stats-item-value">
+                      - <%= commits[i].linesDeleted %>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="commit-body">
@@ -68,19 +82,6 @@
                 <img src="<%= commits[i].author.avatar_url %>" alt="avatar" />
                 <div class="commit-author-name">
                   <%= commits[i].commit.author.name %>
-                </div>
-              </div>
-              <div class="commit-stats">
-                <p class="commit-author-name">Lines Changed:</p>
-                <div class="commit-stats-item" style="background-color: #12542489;">
-                  <div class="commit-stats-item-value">
-                    + <%= commits[i].linesAdded %>
-                  </div>
-                </div>
-                <div class="commit-stats-item" style="background-color: #7e0d0da7;">
-                  <div class="commit-stats-item-value">
-                    - <%= commits[i].linesDeleted %>
-                  </div>
                 </div>
               </div>
             </div>
