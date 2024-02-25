@@ -320,7 +320,7 @@ div .user-info, .header {
 }
 
 .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button {
-  background-color: var(--light-mode-main-color);
+  background-color: var(--border-color);
   border: 1px solid var(--border-color);
   color: #999;
   border-radius: 6px;
