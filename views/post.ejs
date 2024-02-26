@@ -87,7 +87,6 @@
 
             </p>
 
-            </h4>
           </div>
         </div>
         <% if (post.post_type == 'project') { %>
@@ -114,23 +113,37 @@
                 <div class="sidebar-link-info">
                   <div class="sidebar-link-info-url">
                     <div class="github-repo-title">
+<% if (post.gitHubMatchUsername) { %>
+                      <span class="material-symbols-outlined" style="float:left;">
+done
+                      </span>
+                      <% } %>
                       <h4>GitHub: <%= gitHubData.name %></h4>
                     </div>
-                    <div class="github-repo-link">
-                      <%= gitHubData.html_url %>
-                      </span>
+                    <div class="github-repo-description">
+                      <%= gitHubData.description %>
                     </div>
                   </div>
                   <div class="github-repo-info">
                     <div class="tags">
                       <span class=tag-flair>
+                        <span class="material-symbols-outlined">
+                          code
+                        </span>
                         <a href="#" class="tag"><%= gitHubData.language %></a>
                       </span>
 
                       <span class=tag-flair>
+                        <span class="material-symbols-outlined">
+                          bug_report
+                        </span>
                         <a href="#" class="tag"><%= gitHubData.open_issues %></a>
                       </span>
                       <span class=tag-flair>
+                        <span class="material-symbols-outlined">
+                          star
+                        </span>
+
                         <a href="#" class="tag"><%= gitHubData.stargazers_count %></a>
                       </span>
 

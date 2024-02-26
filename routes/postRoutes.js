@@ -236,7 +236,9 @@ ORDER BY c.created_at DESC;`;
       postData.gitHubLinkPreview = await utilFunctions.getGitHubRepoPreview(
         postData.link
       );
+      postData.gitHubMatchUsername = postData.user.github_url == JSON.parse(postData.gitHubLinkPreview.raw_json).owner.login;
     }
+
 
     // Add link preview to postData if link exists
     if (postData.link) {

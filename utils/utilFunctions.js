@@ -244,9 +244,7 @@ const utilFunctions = {
 
   getUserDetailsFromGithub: async (githubUsername) => {
     try {
-      const githubUser = "https://github.com/" + githubUsername;
-      const query = `SELECT * FROM users WHERE github_url = '${githubUser}'`;
-
+      const query = `SELECT * FROM users WHERE github_url = '${githubUsername}'`;
       const result = await sql.query(query);
 
       if (result.recordset.length > 0) {
@@ -373,7 +371,7 @@ const utilFunctions = {
         SELECT *, DATEDIFF(minute, time_fetched, GETDATE()) AS time_diff 
         FROM GitHubRepoData 
         WHERE repo_url = '${url}'
-        AND DATEDIFF(minute, time_fetched, GETDATE()) <= 30
+        AND DATEDIFF(minute, time_fetched, GETDATE()) <= 60
       `;
       const existingDataResult = await sql.query(existingDataQuery);
 

@@ -352,6 +352,11 @@ div .user-info, .header {
   margin-bottom: 10px;
 }
 
+.github-repo-description {
+  inline-size: min-content;
+  overflow-wrap: break-word;
+}
+
 .communities_id {
   display: inline-block; 
   background-color: darkgreen; 
