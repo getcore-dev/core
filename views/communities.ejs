@@ -30,7 +30,7 @@
       <% } %>
 
       <% if (communityId != null) { %>
-      <div class="post" style="margin-bottom: 0px; margin-top: 10px;">
+      <div class="post" style="margin-bottom: 0px; margin-top: 10px; border: 0;">
         <div class="community-content">
           <div class="community-info">
             <div class="community-title">
@@ -50,20 +50,11 @@
             </div>
           </div>
         </div>
+      </div>
         <% } %>
       </div>
 
       <% const jobPostings = [
-        {
-          companyName: "Apple",
-          jobTitle: "Security Analyst",
-          jobLocation: "Boston, MA",
-          jobOverview: "Protect our digital assets and ensure compliance with the latest security standards.",
-          jobType: "Full-Time",
-          jobSalary: "$115k/yr",
-          jobBenefits: "Health & Dental, Company Subscriptions, Paid Time Off",
-          companyLogo: "./src/applelogo.png"
-        },
         {
           companyName: "Amazon",
           jobTitle: "Data Scientist",
@@ -73,7 +64,7 @@
           jobSalary: "$150k/yr",
           jobBenefits: "401k, Flexible Hours, Relocation Assistance",
           
-          companyLogo: "./src/amazonlogo.png"
+          companyLogo: "/src/amazonlogo.png"
           },
           
           {
@@ -85,7 +76,7 @@
           jobType: "Full-Time",
           jobSalary: "$130k/yr",
           jobBenefits: "Unlimited PTO, Equity Compensation, 401k Matching",
-          companyLogo: "./src/microsoftlogo.png"
+          companyLogo: "/src/microsoftlogo.png"
           },
           
           {
@@ -97,7 +88,7 @@
           jobType: "Full-Time",
           jobSalary: "$160k/yr",
           jobBenefits: "Flexible Work Arrangements, Learning Stipends, Free Meals",
-          companyLogo: "./src/googlelogo.png"
+          companyLogo: "/src/googlelogo.png"
           },
       ]; %>
       <div class="jobs-container">
@@ -119,17 +110,14 @@
                   </div>
                   <div class="job-title"><%= job.jobTitle %></div>
                 </div>
-                <div class="job-posting-link">
-                  <img src="./src/indeedlogo.png" class="company-logo" id="job-link-logo" />
-                </div>
               </div>
               <div class="job-body">
-                <div class="job-info"></div>
+                <div class="job-desc"><%= job.jobOverview %></div>
               </div>
               <div class="job-flairs">
                 <span class="job-flair"><%= job.jobType %></span>
-                <span class="job-flair"><%= job.jobSalary %></span>
-                <span class="job-flair"><%= job.jobLocation %></span>
+                <span class="job-flair" id="pay-flair"><%= job.jobSalary %></span>
+                <span class="job-flair" id="location-flair"><%= job.jobLocation %></span>
                 <span class="job-flair" id="job-posting-deadline"><%= job.jobBenefits %></span>
               </div>
             </div>
@@ -290,7 +278,7 @@
                 linkPreviewDiv.style.background = "none";
                 const descriptionDiv = document.createElement('div');
                 descriptionDiv.className = 'description';
-                descriptionDiv.append(`${shortenContent(post.content)}`);
+                descriptionDiv.append(`${post.content}`);
 
                 linkPreviewDiv.appendChild(descriptionDiv);
               }

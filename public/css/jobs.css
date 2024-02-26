@@ -172,7 +172,6 @@ main {
 }
 
 .job-content {
-  border: 1px solid var(--border-color);
   background: var(--light-mode-body-color);
   border-radius: 6px;
 }

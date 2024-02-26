@@ -214,8 +214,7 @@ div .material-symbols-outlined:hover {
 
 
 .sidebar {
-  background-color: var(--light-mode-main-color);
-  border: 1px solid var(--border-color);
+  background-color: var(--light-mode-body-color);
   border-radius: 6px;
   width: 100%;
   box-sizing: border-box;
@@ -320,8 +319,8 @@ div .user-info, .header {
 }
 
 .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button {
-  background-color: var(--light-mode-body-color);
-  border: 1px solid var(--light-mode-body-color);
+  background-color: var(--border-color);
+  border: 0;
   color: #999;
   border-radius: 6px;
   padding: 5px 8px;
@@ -386,8 +385,9 @@ div .user-info, .header {
   font-family: Arial, sans-serif;
 }
 
-.sort-selector button {
-  font-size: 15px;
+
+.sort-selector button, .post-counts {
+  font-size: 14px;
 }
 
 .sidebar-link-info {
@@ -417,8 +417,7 @@ div .user-info, .header {
 .post-content {
   display: flex;
   flex-direction: column;
-  background-color: var(--light-mode-main-color);
-  border: 1px solid var(--border-color);
+  background-color: var(--light-mode-body-color);
   border-radius: 6px;
   margin-top: 10px;
   position: relative;
@@ -452,9 +451,8 @@ div .user-info, .header {
 }
 
 .comment-with-replies {
-  border: 1px solid var(--border-color);
   border-radius: 6px;
-  background-color: var(--light-mode-main-color);
+  background-color: var(--light-mode-body-color);
 }
 .comment-header {
   padding: 2px;
@@ -583,7 +581,6 @@ a.comment-user-info:hover {
 
 .main-container textarea#comment {
   font-size: 16px;
-  border: 1px solid #ccc;
   border-radius: 5px;
   margin: 5px 0px;
   width: 100%;
@@ -781,7 +778,7 @@ p.preview-description {
 
 .reply-form {
   border-top: 1px solid var(--border-color);
-  background-color: var(--light-mode-body-color);
+  background-color: var(--border-color);
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
   width: 100%;
@@ -838,8 +835,7 @@ p.preview-description {
   }
 
   .sidebar, .comment-with-replies, .post-content {
-    background-color: var(--dark-mode-body-color);
-    border-color: var(--dark-mode-border-color);
+    background-color: var(--dark-mode-border-color);
   }
 
   .nested-comment.level-1 > .comment:first-child {
@@ -1062,7 +1058,11 @@ p.preview-description {
   .post-title {
     font-weight: 500;
     margin-top: 4px;
-    font-size: 24px;
+    font-size: 21px;
+  }
+
+  .post-subtitle {
+    font-size: 14px;
   }
 
   .timestamp {

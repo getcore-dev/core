@@ -35,7 +35,7 @@ main {
   padding: 20px 20px;
   border-radius: 6px;
   background-color: var(--light-mode-body-color);
-  border: 1px solid var(--border-color);
+  border: 0;
   width: 350px; 
   box-sizing: border-box;
   text-align: center;
@@ -48,7 +48,7 @@ main {
   padding: 20px 20px;
   border-radius: 6px;
   background-color: var(--light-mode-body-color);
-  border: 1px solid var(--border-color);
+  border: 0;
   width: 350px;
   box-sizing: border-box;
 }
@@ -69,12 +69,12 @@ main {
 
 .input-container input {
   width: 100%;
-  padding: 8px 20px;
+  padding: 10px 20px;
   margin: 4px 0px;
   box-sizing: border-box;
-  border: 1px solid var(--border-color);
+  border: 0;
   border-radius: 6px;
-  background-color: var(--light-mode-main-color);
+  background-color: var(--light-mode-main-color) !important;
   font-size: 16px;
 }
 

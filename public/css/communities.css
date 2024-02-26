@@ -20,13 +20,12 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
-.post {
+.post, .job {
   display: flex; 
-  background: var(--light-mode-body-color);
-  border: 1px solid var(--border-color);
+  background: var(--light-mode-main-color);
+  border: 0;
   border-radius: 6px;
   margin: 10px;
-
   flex-direction: row;
   justify-content: space-between; 
   position: relative; 
@@ -131,7 +130,7 @@ div.vote-interactions {
   align-items: center;
 }
 
-.post-content {
+.post-content, .job-content {
   position: relative;
   margin: 4px 12px;
   flex-grow: 1; /* Take up remaining space */
@@ -154,12 +153,22 @@ div.vote-interactions {
   display: inline-block;
   padding: 2px 3px;
   margin: 2px;
-  background-color: #FF6F59; 
+  background-color: #DB504A;
   border: 1px solid #FF8370; 
   color: white;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 14px;
   position: relative;
+}
+
+#pay-flair {
+  background: #0C8346;
+  border: 1px solid #0E954F;
+}
+
+#location-flair {
+  background-color: #6d93b1;
+  border: 1px solid #6488a4;
 }
 
 #job-posting-deadline {
@@ -168,12 +177,12 @@ div.vote-interactions {
 }
 
 .reaction-button, .boost-button {
-  border: 1px solid var(--light-mode-body-color);
-  background-color: var(--light-mode-body-color);
+  background-color: var(--border-color);
+  border: 0;
   color: #666;
   border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 16px;
+  padding: 6px 8px;
+  font-size: 14px;
   font-weight: 500;
 }
 
@@ -191,11 +200,11 @@ div.vote-interactions {
   height: 100%;
   margin: 0;
   padding-inline: 0;
-  padding: 4px 8px;
+  padding: 6px 8px;
   border-radius: 6px;
-  font-size: 16px;
-  border: 1px solid var(--light-mode-body-color);
-  background-color: var(--light-mode-body-color);
+  font-size: 14px;
+  border: 0;
+  background-color: var(--border-color);
 
 }
 
@@ -244,7 +253,7 @@ div.vote-interactions {
 }
 
 .link-preview {
-  background-color: var(--light-mode-body-color);
+  background-color: var(--border-color);
   border-radius: 6px;
 }
 
@@ -310,12 +319,18 @@ div.vote-interactions {
 
 .post-date {
   font-size: 14px;
+  color: #666;
 }
 
 .description {
   font-size: 14px;
   font-weight: normal;
   padding-top: 5px;
+  line-height: 1.5em; /* Adjust based on your design */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 6; /* Number of lines you want */
+  -webkit-box-orient: vertical;
 }
 
 .description .material-symbols-outlined {
@@ -380,7 +395,7 @@ div .mini-link {
   display: flex;
   flex-direction: row ;
   max-width: 100%;
-  font-size: 15px;
+  font-size: 14px;
   align-items: center;
 }
 
@@ -577,10 +592,6 @@ div .mini-link-desc {
 
 
 .job-content {
-  border-radius: 5px;
-  background-color: var(--light-mode-body-color);
-  border: 1px solid var(--border-color);
-  padding: 5px 10px;
   flex-direction: column;
 }
 
@@ -713,7 +724,7 @@ div .mini-link-desc {
     }
 
   .post {
-    background: var(--light-mode-main-color);
+    background: var(--light-mode-body-color);
   }
   .job-content {
       margin-left: 30px;
@@ -765,7 +776,6 @@ div .mini-link-desc {
 
   .post, .job-content {
       background-color: #1B1F22;
-      border: 1px solid #272D31;
 
   }
  .job-content:hover {
@@ -782,7 +792,10 @@ div .mini-link-desc {
     margin-left: 13px;
     margin-right: 13px;
     max-width: 100%;
-    border: 1px solid var(--border-color);
+  }
+
+  .description {
+    -webkit-line-clamp: 3;
   }
 
   .job-flair {
@@ -800,7 +813,7 @@ div .mini-link-desc {
   }
 
   .description {
-    font-size: 15px;
+    font-size: 14px;
   }
 
 
@@ -822,14 +835,6 @@ div .mini-link-desc {
     width: 100%;
     max-width: 100%;
   }
-
-
-  @media (prefers-color-scheme: dark) {
-    .post {
-      border: 1px solid var(--dark-mode-border-color);
-  }
-  
-}
 }
 
 .avatar {
@@ -881,12 +886,10 @@ div .mini-link-desc {
 
   .main-reaction-button, .boost-button { 
     background-color: var(--dark-mode-border-color);
-    border: 1px solid var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
   .reaction-button {
     background-color: var(--dark-mode-border-color);
-    border: 1px solid var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
   
@@ -896,12 +899,11 @@ div .mini-link-desc {
 
   .link-preview {
     background-color: var(--dark-mode-border-color);
-    border-color: var(--dark-mode-border-color);
   }
   
   .community-selector .communities {
-  background-color: var(--dark-mode-border-color);
-  border-color: var(--dark-mode-border-color);
+  background-color: var(--dark-mode-main-color);
+  border-color: var(--dark-mode-main-color);
   }
   
   .communities a {
