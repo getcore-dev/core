@@ -114,14 +114,14 @@
                   <div class="sidebar-link-info-url">
                     <div class="github-repo-title">
 <% if (post.gitHubMatchUsername) { %>
-                      <span class="material-symbols-outlined" style="float:left;">
+                      <span class="material-symbols-outlined" style="float:left; font-weight: 500; color: green; font-size: 17px;">
 done
                       </span>
                       <% } %>
                       <h4>GitHub: <%= gitHubData.name %></h4>
                     </div>
                     <div class="github-repo-description">
-                      <%= gitHubData.description %>
+                      <p><%= gitHubData.description %></p>
                     </div>
                   </div>
                   <div class="github-repo-info">

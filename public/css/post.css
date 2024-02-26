@@ -320,11 +320,11 @@ div .user-info, .header {
 }
 
 .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button {
-  background-color: var(--border-color);
-  border: 1px solid var(--border-color);
+  background-color: var(--light-mode-body-color);
+  border: 1px solid var(--light-mode-body-color);
   color: #999;
   border-radius: 6px;
-  padding: 3px 8px;
+  padding: 5px 8px;
   font-size: 15px;
   font-weight: 400;
   text-decoration: none;
@@ -353,8 +353,13 @@ div .user-info, .header {
 }
 
 .github-repo-description {
-  inline-size: min-content;
-  overflow-wrap: break-word;
+  max-width: 100%; /* Adjust to your layout */
+}
+
+.github-repo-description p {
+  word-break: break-word; /* This breaks long words if needed */
+  overflow-wrap: break-word; 
+  max-width: 100%; /* This ensures that the paragraph does not extend beyond its container */
 }
 
 .communities_id {
@@ -385,8 +390,12 @@ div .user-info, .header {
   font-size: 15px;
 }
 
+.sidebar-link-info {
+  padding: 6px 8px;
+}
+
 .sort-option {
-  background-color: var(--border-color);
+  background-color: var(--light-mode-main-color);
   border: none;
   padding: 7px 13px;
   cursor: pointer;
@@ -394,7 +403,7 @@ div .user-info, .header {
 }
 
 .sort-option.active {
-  background-color: var(--border-color); /* Active tab color */
+  background-color: var(--light-mode-body-color); /* Active tab color */
 }
 
 .sort-option:focus {
@@ -745,6 +754,7 @@ p.preview-description {
   border-radius: 6px;
   font-size: 14px;
   position: relative;
+  color: white;
 }
 
 .tag-flair a {
@@ -938,6 +948,7 @@ p.preview-description {
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
   gap: 5px;
 
 }
@@ -989,6 +1000,7 @@ p.preview-description {
     flex-direction: row;
   }
   .preview-image, .sidebar-avatar {
+    aspect-ratio: 1/1;
     width: 60px;
     height: 60px;
     border-radius: 6px;
@@ -997,8 +1009,8 @@ p.preview-description {
     object-fit: cover;
   }
   .preview-image {
-    width: 80px;
-    height: 80px;
+    width: auto;
+    height: 100%;
   }
 
   .sidebar {

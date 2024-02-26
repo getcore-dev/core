@@ -168,8 +168,8 @@ div.vote-interactions {
 }
 
 .reaction-button, .boost-button {
-  border: 1px solid var(--border-color);
-  background-color: var(--border-color);
+  border: 1px solid var(--light-mode-body-color);
+  background-color: var(--light-mode-body-color);
   color: #666;
   border-radius: 6px;
   padding: 4px 8px;
@@ -189,13 +189,13 @@ div.vote-interactions {
 
 .main-reaction-button {
   height: 100%;
-  margin: 0px;
-  padding-inline: 0px;
+  margin: 0;
+  padding-inline: 0;
   padding: 4px 8px;
   border-radius: 6px;
   font-size: 16px;
-  border: 1px solid var(--border-color);
-  background-color: var(--border-color);
+  border: 1px solid var(--light-mode-body-color);
+  background-color: var(--light-mode-body-color);
 
 }
 
@@ -244,7 +244,7 @@ div.vote-interactions {
 }
 
 .link-preview {
-  background-color: var(--border-color);
+  background-color: var(--light-mode-body-color);
   border-radius: 6px;
 }
 
@@ -688,8 +688,8 @@ div .mini-link-desc {
   }
 
   .community-selector .communities {
-    background-color: var(--border-color);
-    border: 1px solid var(--border-color);
+    background-color: var(--light-mode-body-color);
+    border: 1px solid var(--light-mode-body-color);
     border-radius: 6px; 
     padding:4px 6px;
 
@@ -706,7 +706,7 @@ div .mini-link-desc {
     }
 
   .post {
-    background: var(--light-mode-body-color);
+    background: var(--light-mode-main-color);
   }
   .job-content {
       margin-left: 30px;
