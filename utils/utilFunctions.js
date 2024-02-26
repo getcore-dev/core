@@ -368,25 +368,11 @@ const utilFunctions = {
     try {
       // Check if recent data (within the last 30 minutes) already exists in the GitHubRepoData table
       const existingDataQuery = `
-        SELECT *, DATEDIFF(minute, time_fetched, GETDATE()) AS time_diff 
-        FROM GitHubRepoData 
-        WHERE repo_url = '${url}'
-        AND DATEDIFF(minute, time_fetched, GETDATE()) <= 60
-      `;
+      SELECT *, DATEDIFF(minute, time_fetched, GETDATE()) AS time_diff
+      FROM GitHubRepoData
+      WHERE repo_url = '${url}'
+    `;
       const existingDataResult = await sql.query(existingDataQuery);
-
-      if (existingDataResult.recordset.length > 0) {
-        // Recent data exists, return it without fetching new data from GitHub
-        const existingData = existingDataResult.recordset[0];
-        return {
-          id: existingData.id,
-          repo_url: existingData.repo_url,
-          repo_name: existingData.repo_name,
-          raw_json: existingData.raw_json,
-          raw_commits_json: existingData.raw_commits_json,
-          time_fetched: existingData.time_fetched,
-        };
-      }
 
       // Only fetch data from GitHub API if no recent data is available in your database
       const apiUrl = `https://api.github.com/repos/${owner}/${repo}`;
@@ -412,19 +398,25 @@ const utilFunctions = {
       const rawRepoJson = JSON.stringify(repoData);
       const rawCommitsJson = JSON.stringify(commitsData);
 
-      // Insert new data into GitHubRepoData table since it's not recent
-      const insertQuery = `
-        INSERT INTO GitHubRepoData (repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
-        VALUES ('${url}', '${repoData.name.replace(
-        /'/g,
-        "''"
-      )}', '${rawRepoJson.replace(/'/g, "''")}', '${rawCommitsJson.replace(
-        /'/g,
-        "''"
-      )}', GETDATE())
+      if (existingDataResult.recordset.length > 0) {
+        // Data exists, so update it with the new data from GitHub if it's older than 30 minutes
+        const updateQuery = `
+        UPDATE GitHubRepoData
+        SET repo_name = '${repoData.name.replace(/'/g, "''")}',
+            raw_json = '${rawRepoJson.replace(/'/g, "''")}',
+            raw_commits_json = '${rawCommitsJson.replace(/'/g, "''")}',
+            time_fetched = GETDATE()
+        WHERE repo_url = '${url}'
       `;
-      await sql.query(insertQuery);
-
+        await sql.query(updateQuery);
+      } else {
+        // No existing data, insert new data into GitHubRepoData table
+        const insertQuery = `
+        INSERT INTO GitHubRepoData (id, repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
+        VALUES ('${repoData.id}', '${url}', '${repoData.name.replace(/'/g, "''")}', '${rawRepoJson.replace(/'/g, "''")}', '${rawCommitsJson.replace(/'/g, "''")}', GETDATE())
+      `;
+        await sql.query(insertQuery);
+      }
       return {
         id: repoData.id,
         repo_url: repoData.html_url,

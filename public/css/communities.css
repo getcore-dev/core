@@ -244,8 +244,8 @@ div.vote-interactions {
 }
 
 .link-preview {
-  background-color: var(--light-mode-main-color);
-    border-radius: 6px;
+  background-color: var(--border-color);
+  border-radius: 6px;
 }
 
 .reaction-menu {
@@ -277,9 +277,9 @@ div.vote-interactions {
 
 .title {
   font-size: 21px;
-  font-weight: 600;
-  margin-top: 7px;
-  margin-bottom: 7px;
+  font-weight: 500;
+  margin-top: 4px;
+  margin-bottom: 4px;
   color: #333; 
 }
 
@@ -785,7 +785,7 @@ div .mini-link-desc {
     overflow-y: hidden;
   }
   .title {
-    font-size: 18px;
+    font-size: 20px;
   }
 
   .post-info {
