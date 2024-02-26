@@ -268,7 +268,7 @@ const utilFunctions = {
     });
   },
 
-  implemented checkMissingFields: async (userId) => {
+  checkMissingFields: async (userId) => {
     let missingFields = [];
 
     const result = await sql.query`

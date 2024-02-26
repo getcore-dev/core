@@ -687,7 +687,7 @@ div .mini-link-desc {
     display: none;
   }
 
-  .communities {
+  .community-selector .communities {
     background-color: var(--border-color);
     border: 1px solid var(--border-color);
     border-radius: 6px; 
@@ -892,7 +892,7 @@ div .mini-link-desc {
     border-color: var(--dark-mode-border-color);
   }
   
-  .communities {
+  .community-selector .communities {
   background-color: var(--dark-mode-border-color);
   border-color: var(--dark-mode-border-color);
   }

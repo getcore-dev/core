@@ -1,22 +1,8 @@
-:root {
-  --primary-text-color: #1D2935;
-  --light-mode-main-color: #fff;
-  --light-mode-body-color: #F6F8FA;
-  --border-color: #D8E0E9;
-  --hover-background-color: #ddd;
-  --active-indicator-color: #0e6655;
-  --dark-mode-main-color: #1B1F22;
-  --dark-mode-body-color: #16191B;
-  --dark-mode-text-color: #fff;
-  --dark-mode-border-color: #272D31;
-  --dark-mode-hover-background-color: #444;
-}
-
 .com-btn-container-header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin: 10px 0px;
+    margin: 10px ;
   }
   
 
@@ -25,7 +11,7 @@
     display: flex; 
     background-color: #F6F8FA;
     flex-direction: column;
-    overflow-x: none;
+    overflow-x: hidden;
     scrollbar-width: none; 
     overflow-y: auto;
     height: calc(100dvh - 115px);
