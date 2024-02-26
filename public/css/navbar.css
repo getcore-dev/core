@@ -73,8 +73,7 @@ h1, h2, h3, h4, h5, p {
   padding: 9px 9px;
   position: relative;
   display: none;
-  background-color: var(--border-color);
-  border: 1px solid var(--border-color);
+  background-color: rgba(0,0,0,0);
   border-radius: 5px; 
   color: var(--primary-text-color); /* Icon color */
   font-size: 20px; /* Icon size */
@@ -135,11 +134,11 @@ h1, h2, h3, h4, h5, p {
   justify-content: center; 
   gap: 4px; 
   line-height: 1.5; 
-  background-color: var(--border-color); 
+  background-color: rgba(0,0,0,0);
   color: var(--primary-text-color);
   margin: 0px 6px;
   font-size: var(--default-font-size); /* Button font size */
-  border: 1px solid var(--border-color);
+  border: 0;
   border-radius: 6px; 
   text-decoration: none; /* Remove underline */
   transition: background-color 0.15s, transform 0.15s; /* Transition effects */
@@ -504,7 +503,8 @@ margin-top: 20px;
 
 
 #nb-icon {
-  font-size: 16px;
+  font-size: 20px;
+  font-weight: 400;
   display: flex;
   justify-content: center;
   align-items: center;

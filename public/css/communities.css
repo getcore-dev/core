@@ -308,11 +308,14 @@ div.vote-interactions {
   color: #333;
 }
 
+.post-date {
+  font-size: 14px;
+}
+
 .description {
   font-size: 14px;
   font-weight: normal;
-  padding: 14px;
-  padding-top: 9px;
+  padding-top: 5px;
 }
 
 .description .material-symbols-outlined {
@@ -349,9 +352,13 @@ div.vote-interactions {
 
 .username a, .communities-text {
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 400;
   color: #333;
   text-decoration: none;
+}
+
+.username a {
+  font-weight: 500;
 }
 
 .username a:hover {

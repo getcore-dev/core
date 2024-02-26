@@ -250,10 +250,10 @@
 
 
 
-              const currentJobDiv = document.createElement('div');
-              currentJobDiv.className = 'current-job';
-              currentJobDiv.innerText = post.currentJob ? post.currentJob : 'No job info';
-              usernameDiv.appendChild(currentJobDiv);
+              const postDateDiv = document.createElement('div');
+              postDateDiv.className = 'post-date';
+              postDateDiv.innerText = formatDate(post.created_at);
+              usernameDiv.appendChild(postDateDiv);
 
 
               postHeaderUsernameDiv.appendChild(usernameDiv);
@@ -283,9 +283,11 @@
                 fetchPromises.push(fetchLinkPreview(post.link, linkDiv));
               }
 
+
               if ((post.post_type == "discussion" || post.post_type == "project") && post.link) {
                 // just chill 
               } else {
+                linkPreviewDiv.style.background = "none";
                 const descriptionDiv = document.createElement('div');
                 descriptionDiv.className = 'description';
                 descriptionDiv.append(`${shortenContent(post.content)}`);
@@ -612,8 +614,8 @@
       }
 
       function shortenContent(content) {
-        if (content.length > 200) {
-          return content.substring(0, 150) + '...';
+        if (content.length > 130) {
+          return content.substring(0, 130) + '-...';
         } else {
           return content;
         }
