@@ -127,11 +127,12 @@
                     <a href="#" onclick="document.getElementById('logoutForm').submit()">Logout</a>
                   </div>
                 </div>
-                <% } else if (user && user.avatar) { %>
-                <div class="nav-avatar">
-
-                  <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
-                </div>
+                <% } else if (user && !user.avatar) { %>
+                <a href="/profile/<%= user.username %>" class="inbox-button">
+                  <span class="material-symbols-outlined" id="nb-icon">
+                    person
+                  </span>
+                </a>
                 <% } else if (!user) { %>
                 <a href="/login" class="inbox-button">
                   <span class="material-symbols-outlined" id="nb-icon">

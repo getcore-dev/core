@@ -27,6 +27,7 @@
     --active-indicator-color: #0e6655;
     --dark-mode-main-color: #1B1F22;
     --dark-mode-body-color: #16191B;
+    --dark-mode-background-text-color: #A0AEBB;
     --dark-mode-text-color: #fff;
     --dark-mode-border-color: #272D31;
     --dark-mode-hover-background-color: #444;
@@ -735,6 +736,10 @@ p.preview-description {
     color: var(--dark-mode-text-color); /* Light text color for better readability */
   }
 
+  .post-body p {
+    color: var(--dark-mode-text-color); /* Light text color for better readability */
+  }
+
   .dropdown-content {
     background-color: var(--dark-mode-main-color);
     color: var(--dark-mode-text-color);
@@ -811,7 +816,7 @@ p.preview-description {
   }
 
   div .user-info, .header {
-    color: #bbb; /* Lighter text color for user info and headers */
+    color: var(--dark-mode-background-text-color); /* Lighter text color for user info and headers */
   }
 
   .communities_id {
