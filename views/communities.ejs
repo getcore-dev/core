@@ -283,11 +283,15 @@
                 fetchPromises.push(fetchLinkPreview(post.link, linkDiv));
               }
 
-              const descriptionDiv = document.createElement('div');
-              descriptionDiv.className = 'description';
-              descriptionDiv.append(`${post.content}`);
+              if ((post.post_type == "discussion" || post.post_type == "project") && post.link) {
+                // just chill 
+              } else {
+                const descriptionDiv = document.createElement('div');
+                descriptionDiv.className = 'description';
+                descriptionDiv.append(`${shortenContent(post.content)}`);
 
-              linkPreviewDiv.appendChild(descriptionDiv);
+                linkPreviewDiv.appendChild(descriptionDiv);
+              }
 
               // Votes div
               const votesDiv = document.createElement("div");
@@ -605,6 +609,14 @@
           formattedDate = years + ' years ago';
         }
         return formattedDate;
+      }
+
+      function shortenContent(content) {
+        if (content.length > 200) {
+          return content.substring(0, 150) + '...';
+        } else {
+          return content;
+        }
       }
 
       document.addEventListener("DOMContentLoaded", () => fetchAndDisplayPosts(<%= communityId %>));

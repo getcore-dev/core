@@ -211,18 +211,13 @@ div .material-symbols-outlined:hover {
   box-sizing: border-box;
 }
 
-.sidebar-poster-avatar {
-  height: 50px;
-  width: 50px;
-}
 
 .sidebar {
   background-color: var(--profile-background-color);
-  border: 1px solid var(--border-color);
   border-radius: 6px;
-  padding: 4px 6px;
   width: 100%;
   box-sizing: border-box;
+  
 }
 
 
@@ -297,10 +292,6 @@ a.comment-url:visited {
   padding: 12px;
 }
 
-.comment-container {
-  border: 1px solid var(--border-color);  
-}
-
 .comment-container textarea {
   box-sizing: border-box;
 }
@@ -371,7 +362,6 @@ div .user-info, .header {
 }
 .sort-selector {
   display: inline-flex;
-  border: 1px solid var(--border-color);
   border-radius: 6px;
   overflow: hidden;
   font-family: Arial, sans-serif;
@@ -382,15 +372,15 @@ div .user-info, .header {
 }
 
 .sort-option {
-  background-color: var(--light-mode-main-color);
+  background-color: var(--border-color);
   border: none;
-  padding: 5px 10px;
+  padding: 7px 13px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
 .sort-option.active {
-  background-color: var(--light-mode-body-color); /* Active tab color */
+  background-color: var(--border-color); /* Active tab color */
 }
 
 .sort-option:focus {
@@ -405,7 +395,6 @@ div .user-info, .header {
   display: flex;
   flex-direction: column;
   background-color: var(--profile-background-color);
-  border: 1px solid var(--border-color);
   border-radius: 6px;
   margin-top: 10px;
   position: relative;
@@ -414,7 +403,7 @@ div .user-info, .header {
 .post-body {
   display: flex;
   flex-direction: column;
-  padding: 4px 12px;
+  padding: 4px 6px;
 }
 
 .post-interactions-header {
@@ -569,7 +558,7 @@ a.comment-user-info:hover {
 
 .comment-body {
   font-size: 16px;
-  padding: 12px;
+  padding: 6px;
 }
 
 .input-container textarea, .comment-container textarea{
@@ -607,6 +596,7 @@ a.comment-user-info:hover {
   flex-direction: row;
   justify-content: space-between;
   padding: 0px 5px;
+  padding-top: 6px;
 }
 
 .dropdown .material-symbols-outlined {
@@ -654,6 +644,10 @@ a.comment-user-info:hover {
   font-size: 16px;
   padding-top: 0px;
   white-space: pre-line;
+}
+
+.post-body p , .comment-body p {
+  line-height: 1.5em;
 }
 
 .preview-description {
@@ -730,6 +724,8 @@ p.preview-description {
 .reply-form {
   border-top: 1px solid var(--border-color);
   background-color: var(--border-color);
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
   width: 100%;
 }
 
@@ -756,10 +752,6 @@ p.preview-description {
   background-color: var(--dark-mode-main-color);
   color: var(--dark-mode-text-color);
   }
-  
-  .sort-selector {
-  border-color: var(--border-color);
-}
 
 .sort-option {
   background-color: var(--dark-mode-main-color);
@@ -767,7 +759,7 @@ p.preview-description {
 }
 
 .sort-option.active {
-  background-color: var(--dark-mode-body-color); /* Active tab color */
+  background-color: var(--dark-mode-border-color); /* Active tab color */
 }
   .reaction-button { 
   background-color: var(--dark-mode-border-color);
@@ -833,6 +825,8 @@ p.preview-description {
   .input-container , .input-container textarea, .comment-container, .comment-container textarea {
     border-color: var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
   }
 
   .link-preview {
@@ -933,10 +927,16 @@ p.preview-description {
     flex-direction: row;
   }
   .preview-image, .sidebar-avatar {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 6px;
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
     object-fit: cover;
+  }
+  .preview-image {
+    width: 75px;
+    height: 75px;
   }
 
   .sidebar {

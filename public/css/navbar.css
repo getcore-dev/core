@@ -640,6 +640,10 @@ margin-top: 20px;
     border-bottom: none;
   }
 
+  #menu-icon {
+    background-color: var(--dark-mode-border-color);
+  }
+
   .inbox-button:hover {
     background-color: var(--dark-mode-hover-background-color); /* Background color on hover */
     cursor: pointer; /* Pointer cursor on hover */
@@ -681,11 +685,21 @@ margin-top: 20px;
     border-color: var(--dark-mode-border-color);
   }
 
-  .user-links a, #search-button {
+  #search-button {
     border-color: var(--dark-mode-border-color);
-    background-color: var(--dark-mode-background-color);
-    color: #fff; /* Light text color for buttons */
+    background-color: var(--dark-mode-border-color);
+    color: var(--dark-mode-text-color)
+  }
 
+  a.inbox-button {
+    border-color: var(--dark-mode-border-color);
+    background-color: var(--dark-mode-border-color);
+    color: var(--dark-mode-text-color)
+  }
+
+  .avatar-dropdown a {
+    background-color: var(--dark-mode-main-color);
+    color: var(--dark-mode-text-color)
   }
   
 

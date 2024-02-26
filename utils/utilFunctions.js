@@ -25,17 +25,22 @@ const utilFunctions = {
         ORDER BY p.created_at DESC
       `;
 
-      const postsToUpdate = result.recordset.filter((post) => !post.post_type);
+      /*
+      const postsToUpdate = result.recordset.filter(
+        (post) => post.post_type == "post"
+      );
       for (let post of postsToUpdate) {
         await sql.query`
           UPDATE posts
-          SET post_type = 'post'
+          SET post_type = 'discussion'
           WHERE id = ${post.id}
         `;
         // Reflect the change in the local object to ensure the updated data is returned
-        post.post_type = "post";
+        post.post_type = "discussion";
       }
+      */
 
+      /*
       // Optionally, update the posts table if there's a discrepancy
       for (let post of result.recordset) {
         if (
@@ -56,6 +61,7 @@ const utilFunctions = {
           `;
         }
       }
+      */
 
       return result.recordset;
     } catch (err) {
@@ -145,18 +151,6 @@ const utilFunctions = {
         GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, u.avatar, u.id, p.post_type
       `;
       const postData = result.recordset[0];
-
-      if (postData && postData.post_type === null) {
-        // Update the record in the SQL database
-        await sql.query`
-            UPDATE posts
-            SET post_type = 'post'
-            WHERE id = ${postId}
-        `;
-
-        // Update your local postData object to reflect the change
-        postData.post_type = "post";
-      }
 
       if (postData) {
         postData.user = await utilFunctions.getUserDetails(postData.user_id);
@@ -383,7 +377,7 @@ const utilFunctions = {
       `;
       const existingDataResult = await sql.query(existingDataQuery);
 
-      if (existingDataResult.recordset.length > 0 ) {
+      if (existingDataResult.recordset.length > 0) {
         // Recent data exists, return it without fetching new data
         const existingData = existingDataResult.recordset[0];
         return {
@@ -416,16 +410,22 @@ const utilFunctions = {
       }
 
       const repoData = repoResponse.data;
-      const commitsData = commitsResponse.data; 
+      const commitsData = commitsResponse.data;
       const rawRepoJson = JSON.stringify(repoData);
-      const rawCommitsJson = JSON.stringify(commitsData); 
-  
+      const rawCommitsJson = JSON.stringify(commitsData);
+
       // Insert new data into GitHubRepoData table
       const insertQuery = `
       INSERT INTO GitHubRepoData (id, repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
-      VALUES (${repoData.id}, '${repoData.html_url}', '${repoData.name.replace(/'/g, "''")}', '${rawRepoJson.replace(/'/g, "''")}', '${rawCommitsJson.replace(/'/g, "''")}', GETDATE())
+      VALUES (${repoData.id}, '${repoData.html_url}', '${repoData.name.replace(
+        /'/g,
+        "''"
+      )}', '${rawRepoJson.replace(/'/g, "''")}', '${rawCommitsJson.replace(
+        /'/g,
+        "''"
+      )}', GETDATE())
     `;
-    await sql.query(insertQuery);
+      await sql.query(insertQuery);
 
       return {
         id: repoData.id,
