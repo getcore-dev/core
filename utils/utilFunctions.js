@@ -413,7 +413,13 @@ const utilFunctions = {
         // No existing data, insert new data into GitHubRepoData table
         const insertQuery = `
         INSERT INTO GitHubRepoData (id, repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
-        VALUES ('${repoData.id}', '${url}', '${repoData.name.replace(/'/g, "''")}', '${rawRepoJson.replace(/'/g, "''")}', '${rawCommitsJson.replace(/'/g, "''")}', GETDATE())
+        VALUES ('${repoData.id}', '${url}', '${repoData.name.replace(
+          /'/g,
+          "''"
+        )}', '${rawRepoJson.replace(/'/g, "''")}', '${rawCommitsJson.replace(
+          /'/g,
+          "''"
+        )}', GETDATE())
       `;
         await sql.query(insertQuery);
       }

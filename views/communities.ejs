@@ -571,7 +571,7 @@
         return fetch(`/api/comments/${postId}`)
           .then(response => response.json())
           .then(comments => {
-            container.innerHTML = '<span class="material-symbols-outlined" id="comments-icon">comment</span>' + comments.length + '</span>';
+            container.innerHTML = comments.length + ' comment' + (comments.length !== 1 ? 's' : '');
           });
       }
 
