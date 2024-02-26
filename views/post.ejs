@@ -99,67 +99,70 @@
     gitHubData = {}; // Set a default empty object in case of error
   }
 %>
-        <div class="sidebar" id="github-link-preview" style=" <% if (post.linkPreview && post.post_type != 'project') { %> max-width: 50%; <% } else { %> width: 100%; <% } %> ">
-          <div class=" sidebar-content" onclick="window.location.href='<%= post.linkPreview.url %>'">
-            <div class="sidebar-body">
-              <div class="sidebar-link-image">
+          <div class="sidebar" id="github-link-preview" style=" <% if (post.linkPreview && post.post_type != 'project') { %> max-width: 50%; <% } else { %> width: 100%; <% } %> ">
+            <div class=" sidebar-content" onclick="window.location.href='<%= post.linkPreview.url %>'">
+              <div class="sidebar-body">
+                <div class="sidebar-link-image">
 
-                <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
-                <% if (imageUrl) { %>
-                <img src="<%= imageUrl %>" alt="Preview" class="preview-image" />
-                <% } %>
-              </div>
-              <div class="sidebar-description">
-                <div class="sidebar-link-info">
-                  <div class="sidebar-link-info-url">
-                    <div class="github-repo-title">
-<% if (post.gitHubMatchUsername) { %>
-                      <span class="material-symbols-outlined" style="float:left; font-weight: 500; color: green; font-size: 17px;">
-done
-                      </span>
-                      <% } %>
-                      <h4>GitHub: <%= gitHubData.name %></h4>
-                    </div>
-                    <div class="github-repo-description">
-                      <p><%= gitHubData.description %></p>
-                    </div>
-                  </div>
-                  <div class="github-repo-info">
-                    <div class="tags">
-                      <span class=tag-flair>
-                        <span class="material-symbols-outlined">
-                          code
-                        </span>
-                        <a href="#" class="tag"><%= gitHubData.language %></a>
-                      </span>
+                  <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
+                  <% if (imageUrl) { %>
+                  <img src="<%= imageUrl %>" alt="Preview" class="preview-image" />
+                  <% } %>
+                </div>
+                <div class="sidebar-description">
+                  <div class="sidebar-link-info">
+                    <div class="sidebar-link-info-url">
+                      <div class="github-repo-title">
+  <% if (post.gitHubMatchUsername) { %>
 
-                      <span class=tag-flair>
-                        <span class="material-symbols-outlined">
-                          bug_report
+                        <% } %>
+                        <h4>GitHub: <%= gitHubData.name %></h4>
+                        <span class="material-symbols-outlined" style=" font-weight: 500; color: green; font-size: 17px;">
+  done
                         </span>
-                        <a href="#" class="tag"><%= gitHubData.open_issues %></a>
-                      </span>
-                      <span class=tag-flair>
-                        <span class="material-symbols-outlined">
-                          star
+                      </div>
+                      <div class="github-repo-description">
+                        <p>
+                        <%= gitHubData.description %>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="github-repo-info">
+                      <div class="tags">
+                        <span class=tag-flair>
+                          <span class="material-symbols-outlined">
+                            code
+                          </span>
+                          <a href="#" class="tag"><%= gitHubData.language %></a>
                         </span>
 
-                        <a href="#" class="tag"><%= gitHubData.stargazers_count %></a>
-                      </span>
+                        <span class=tag-flair>
+                          <span class="material-symbols-outlined">
+                            bug_report
+                          </span>
+                          <a href="#" class="tag"><%= gitHubData.open_issues %></a>
+                        </span>
+                        <span class=tag-flair>
+                          <span class="material-symbols-outlined">
+                            star
+                          </span>
 
-                      <span class=tag-flair>
-                        <a href="#" class="tag"> <%= new Date(gitHubData.pushed_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) %></a>
-                      </span>
+                          <a href="#" class="tag"><%= gitHubData.stargazers_count %></a>
+                        </span>
 
+                        <span class=tag-flair>
+                          <a href="#" class="tag"> <%= new Date(gitHubData.pushed_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) %></a>
+                        </span>
+
+                      </div>
                     </div>
+
                   </div>
 
                 </div>
-
               </div>
             </div>
           </div>
-        </div>
 
         <% } %>
 

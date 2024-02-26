@@ -22,8 +22,7 @@ body {
 
 .post, .job {
   display: flex; 
-  background: var(--light-mode-main-color);
-  border: 0;
+  background: var(--light-mode-body-color);
   border-radius: 6px;
   margin: 10px;
   flex-direction: row;
@@ -229,6 +228,7 @@ div.vote-interactions {
   font-size: 14px;
   position: relative;
 }
+
 
 .recent-post-avatar img {
   width: 16px;
@@ -775,7 +775,7 @@ div .mini-link-desc {
   }
 
   .post, .job-content {
-      background-color: #1B1F22;
+      background-color: var(--dark-mode-main-color);
 
   }
  .job-content:hover {
@@ -786,6 +786,7 @@ div .mini-link-desc {
 @media (max-width: 768px) {
   .post {
     border-radius: 6px;
+    border: 0;
     padding: 0px;
     margin-top: 0px;
     margin-bottom: 15px;

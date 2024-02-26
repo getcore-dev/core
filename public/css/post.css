@@ -356,9 +356,15 @@ div .user-info, .header {
 }
 
 .github-repo-description p {
-  word-break: break-word; /* This breaks long words if needed */
-  overflow-wrap: break-word; 
   max-width: 100%; /* This ensures that the paragraph does not extend beyond its container */
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
+}
+
+.github-repo-title {
+  display: flex;
+  flex-direction: row;
 }
 
 .communities_id {
@@ -663,14 +669,8 @@ a.comment-user-info:hover {
 }
 
 .sidebar-link-image {
-  width: 80px;
-  height: 80px;
-}
-
-.sidebar-link-info-url, .sidebar-link-info-title, .sidebar-poster-job {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  width: 100px;
+  height: 100px;
 }
 
 .post-content a {
