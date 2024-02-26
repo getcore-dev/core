@@ -268,7 +268,7 @@ const utilFunctions = {
     });
   },
 
-  checkMissingFields: async (userId) => {
+  implemented checkMissingFields: async (userId) => {
     let missingFields = [];
 
     const result = await sql.query`
@@ -378,7 +378,7 @@ const utilFunctions = {
       const existingDataResult = await sql.query(existingDataQuery);
 
       if (existingDataResult.recordset.length > 0) {
-        // Recent data exists, return it without fetching new data
+        // Recent data exists, return it without fetching new data from GitHub
         const existingData = existingDataResult.recordset[0];
         return {
           id: existingData.id,
@@ -390,22 +390,22 @@ const utilFunctions = {
         };
       }
 
-      // Fetch data from GitHub API if no recent data is available
+      // Only fetch data from GitHub API if no recent data is available in your database
       const apiUrl = `https://api.github.com/repos/${owner}/${repo}`;
-      const commitsUrl = `${apiUrl}/commits`; // URL for the commits
+      const commitsUrl = `${apiUrl}/commits`;
       const repoResponse = await axios.get(apiUrl, {
         headers: { "User-Agent": "request" },
         timeout: 5000,
       });
       const commitsResponse = await axios.get(commitsUrl, {
         headers: { "User-Agent": "request" },
-        params: { per_page: 5 }, // Get only the latest 5 commits
+        params: { per_page: 5 },
         timeout: 5000,
       });
 
       if (repoResponse.status !== 200 || commitsResponse.status !== 200) {
         throw new Error(
-          `Request to GitHub API failed with status code ${repoResponse.status} or ${commitsResponse.status}`
+          `Request to GitHub API failed with status: ${repoResponse.status} or ${commitsResponse.status}`
         );
       }
 
@@ -414,29 +414,30 @@ const utilFunctions = {
       const rawRepoJson = JSON.stringify(repoData);
       const rawCommitsJson = JSON.stringify(commitsData);
 
-      // Insert new data into GitHubRepoData table
+      // Insert new data into GitHubRepoData table since it's not recent
       const insertQuery = `
-      INSERT INTO GitHubRepoData (id, repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
-      VALUES (${repoData.id}, '${repoData.html_url}', '${repoData.name.replace(
+        INSERT INTO GitHubRepoData (repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
+        VALUES ('${url}', '${repoData.name.replace(
         /'/g,
         "''"
       )}', '${rawRepoJson.replace(/'/g, "''")}', '${rawCommitsJson.replace(
         /'/g,
         "''"
       )}', GETDATE())
-    `;
+      `;
       await sql.query(insertQuery);
 
       return {
         id: repoData.id,
         repo_url: repoData.html_url,
         repo_name: repoData.name,
-        raw_json: rawJson,
+        raw_json: rawRepoJson,
+        raw_commits_json: rawCommitsJson,
         time_fetched: new Date().toISOString(),
       };
     } catch (error) {
       console.error("Error fetching GitHub repository data:", error);
-      return null;
+      throw error; // Changed to rethrow the error to make error handling more consistent
     }
   },
 
