@@ -25,17 +25,22 @@ const utilFunctions = {
         ORDER BY p.created_at DESC
       `;
 
-      const postsToUpdate = result.recordset.filter((post) => !post.post_type);
+      /*
+      const postsToUpdate = result.recordset.filter(
+        (post) => post.post_type == "post"
+      );
       for (let post of postsToUpdate) {
         await sql.query`
           UPDATE posts
-          SET post_type = 'post'
+          SET post_type = 'discussion'
           WHERE id = ${post.id}
         `;
         // Reflect the change in the local object to ensure the updated data is returned
-        post.post_type = "post";
+        post.post_type = "discussion";
       }
+      */
 
+      /*
       // Optionally, update the posts table if there's a discrepancy
       for (let post of result.recordset) {
         if (
@@ -56,6 +61,7 @@ const utilFunctions = {
           `;
         }
       }
+      */
 
       return result.recordset;
     } catch (err) {
@@ -67,7 +73,7 @@ const utilFunctions = {
   getPostsForCommunity: async (communityId) => {
     try {
       const result = await sql.query`
-        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate,
+        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type,
         u.currentJob, u.username, u.avatar,
               SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
               SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
@@ -79,7 +85,7 @@ const utilFunctions = {
         INNER JOIN users u ON p.user_id = u.id
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
         WHERE p.communities_id = ${communityId} AND p.deleted = 0
-        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate
+        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type
         ORDER BY p.created_at DESC
       `;
       return result.recordset;
@@ -145,18 +151,6 @@ const utilFunctions = {
         GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, u.avatar, u.id, p.post_type
       `;
       const postData = result.recordset[0];
-
-      if (postData && postData.post_type === null) {
-        // Update the record in the SQL database
-        await sql.query`
-            UPDATE posts
-            SET post_type = 'post'
-            WHERE id = ${postId}
-        `;
-
-        // Update your local postData object to reflect the change
-        postData.post_type = "post";
-      }
 
       if (postData) {
         postData.user = await utilFunctions.getUserDetails(postData.user_id);
@@ -250,9 +244,7 @@ const utilFunctions = {
 
   getUserDetailsFromGithub: async (githubUsername) => {
     try {
-      const githubUser = "https://github.com/" + githubUsername;
-      const query = `SELECT * FROM users WHERE github_url = '${githubUser}'`;
-
+      const query = `SELECT * FROM users WHERE github_url = '${githubUsername}'`;
       const result = await sql.query(query);
 
       if (result.recordset.length > 0) {
@@ -376,67 +368,72 @@ const utilFunctions = {
     try {
       // Check if recent data (within the last 30 minutes) already exists in the GitHubRepoData table
       const existingDataQuery = `
-        SELECT *, DATEDIFF(minute, time_fetched, GETDATE()) AS time_diff 
-        FROM GitHubRepoData 
-        WHERE repo_url = '${url}'
-        AND DATEDIFF(minute, time_fetched, GETDATE()) <= 30
-      `;
+      SELECT *, DATEDIFF(minute, time_fetched, GETDATE()) AS time_diff
+      FROM GitHubRepoData
+      WHERE repo_url = '${url}'
+    `;
       const existingDataResult = await sql.query(existingDataQuery);
 
-      if (existingDataResult.recordset.length > 0 ) {
-        // Recent data exists, return it without fetching new data
-        const existingData = existingDataResult.recordset[0];
-        return {
-          id: existingData.id,
-          repo_url: existingData.repo_url,
-          repo_name: existingData.repo_name,
-          raw_json: existingData.raw_json,
-          raw_commits_json: existingData.raw_commits_json,
-          time_fetched: existingData.time_fetched,
-        };
-      }
-
-      // Fetch data from GitHub API if no recent data is available
+      // Only fetch data from GitHub API if no recent data is available in your database
       const apiUrl = `https://api.github.com/repos/${owner}/${repo}`;
-      const commitsUrl = `${apiUrl}/commits`; // URL for the commits
+      const commitsUrl = `${apiUrl}/commits`;
       const repoResponse = await axios.get(apiUrl, {
         headers: { "User-Agent": "request" },
         timeout: 5000,
       });
       const commitsResponse = await axios.get(commitsUrl, {
         headers: { "User-Agent": "request" },
-        params: { per_page: 5 }, // Get only the latest 5 commits
+        params: { per_page: 5 },
         timeout: 5000,
       });
 
       if (repoResponse.status !== 200 || commitsResponse.status !== 200) {
         throw new Error(
-          `Request to GitHub API failed with status code ${repoResponse.status} or ${commitsResponse.status}`
+          `Request to GitHub API failed with status: ${repoResponse.status} or ${commitsResponse.status}`
         );
       }
 
       const repoData = repoResponse.data;
-      const commitsData = commitsResponse.data; 
+      const commitsData = commitsResponse.data;
       const rawRepoJson = JSON.stringify(repoData);
-      const rawCommitsJson = JSON.stringify(commitsData); 
-  
-      // Insert new data into GitHubRepoData table
-      const insertQuery = `
-      INSERT INTO GitHubRepoData (id, repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
-      VALUES (${repoData.id}, '${repoData.html_url}', '${repoData.name.replace(/'/g, "''")}', '${rawRepoJson.replace(/'/g, "''")}', '${rawCommitsJson.replace(/'/g, "''")}', GETDATE())
-    `;
-    await sql.query(insertQuery);
+      const rawCommitsJson = JSON.stringify(commitsData);
 
+      if (existingDataResult.recordset.length > 0) {
+        // Data exists, so update it with the new data from GitHub if it's older than 30 minutes
+        const updateQuery = `
+        UPDATE GitHubRepoData
+        SET repo_name = '${repoData.name.replace(/'/g, "''")}',
+            raw_json = '${rawRepoJson.replace(/'/g, "''")}',
+            raw_commits_json = '${rawCommitsJson.replace(/'/g, "''")}',
+            time_fetched = GETDATE()
+        WHERE repo_url = '${url}'
+      `;
+        await sql.query(updateQuery);
+      } else {
+        // No existing data, insert new data into GitHubRepoData table
+        const insertQuery = `
+        INSERT INTO GitHubRepoData (id, repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
+        VALUES ('${repoData.id}', '${url}', '${repoData.name.replace(
+          /'/g,
+          "''"
+        )}', '${rawRepoJson.replace(/'/g, "''")}', '${rawCommitsJson.replace(
+          /'/g,
+          "''"
+        )}', GETDATE())
+      `;
+        await sql.query(insertQuery);
+      }
       return {
         id: repoData.id,
         repo_url: repoData.html_url,
         repo_name: repoData.name,
-        raw_json: rawJson,
+        raw_json: rawRepoJson,
+        raw_commits_json: rawCommitsJson,
         time_fetched: new Date().toISOString(),
       };
     } catch (error) {
       console.error("Error fetching GitHub repository data:", error);
-      return null;
+      throw error; // Changed to rethrow the error to make error handling more consistent
     }
   },
 

@@ -27,8 +27,9 @@
     --active-indicator-color: #0e6655;
     --dark-mode-main-color: #1B1F22;
     --dark-mode-body-color: #16191B;
+    --dark-mode-background-text-color: #A0AEBB;
     --dark-mode-text-color: #fff;
-    --dark-mode-border-color: #272D31;
+    --dark-mode-border-color: #24292D;
     --dark-mode-hover-background-color: #444;
   }
 
@@ -211,18 +212,14 @@ div .material-symbols-outlined:hover {
   box-sizing: border-box;
 }
 
-.sidebar-poster-avatar {
-  height: 50px;
-  width: 50px;
-}
 
 .sidebar {
   background-color: var(--light-mode-body-color);
   border: 0;
   border-radius: 6px;
-  padding: 4px 6px;
   width: 100%;
   box-sizing: border-box;
+  
 }
 
 
@@ -249,9 +246,9 @@ a.comment-url:visited {
   flex-grow: 1;
   padding: 5px 10px;
   border-radius: 5px;
-  border: 1px solid var(--input-border-color);
-  font-size: 16px; /* Same as other input fields */
   background-color: var(--light-mode-main-color);
+  border: 1px solid var(--border-color);
+  font-size: 16px; /* Same as other input fields */
   color: var(--input-text-color);
   overflow: hidden;
   resize: none;
@@ -297,10 +294,6 @@ a.comment-url:visited {
   padding: 12px;
 }
 
-.comment-container {
-  border: 1px solid var(--border-color);  
-}
-
 .comment-container textarea {
   box-sizing: border-box;
 }
@@ -319,14 +312,21 @@ div .user-info, .header {
   text-decoration: none;
 }
 
+.post-title-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button {
   background-color: var(--border-color);
-  border: 1px solid var(--border-color);
+  border: 0;
   color: #999;
   border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 16px;
-  font-weight: 500;
+  padding: 5px 8px;
+  font-size: 15px;
+  font-weight: 400;
   text-decoration: none;
 }
 
@@ -352,6 +352,16 @@ div .user-info, .header {
   margin-bottom: 10px;
 }
 
+.github-repo-description {
+  max-width: 100%; /* Adjust to your layout */
+}
+
+.github-repo-description p {
+  word-break: break-word; /* This breaks long words if needed */
+  overflow-wrap: break-word; 
+  max-width: 100%; /* This ensures that the paragraph does not extend beyond its container */
+}
+
 .communities_id {
   display: inline-block; 
   background-color: darkgreen; 
@@ -371,20 +381,24 @@ div .user-info, .header {
 }
 .sort-selector {
   display: inline-flex;
-  border: 1px solid var(--border-color);
   border-radius: 6px;
   overflow: hidden;
   font-family: Arial, sans-serif;
 }
 
-.sort-selector button {
-  font-size: 15px;
+
+.sort-selector button, .post-counts {
+  font-size: 14px;
+}
+
+.sidebar-link-info {
+  padding: 6px 8px;
 }
 
 .sort-option {
   background-color: var(--light-mode-main-color);
   border: none;
-  padding: 5px 10px;
+  padding: 7px 13px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
@@ -405,7 +419,6 @@ div .user-info, .header {
   display: flex;
   flex-direction: column;
   background-color: var(--light-mode-body-color);
-  border: 1px solid var(--border-color);
   border-radius: 6px;
   margin-top: 10px;
   position: relative;
@@ -414,19 +427,16 @@ div .user-info, .header {
 .post-body {
   display: flex;
   flex-direction: column;
-  padding: 4px 12px;
 }
 
 .post-interactions-header {
   width: 100%;
-  padding: 4px;
   box-sizing: border-box;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   display: flex;
-  height: 0px;
-  flex-direction: row-reverse;
-  
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .dropbtn {
@@ -442,9 +452,8 @@ div .user-info, .header {
 }
 
 .comment-with-replies {
-  border: 1px solid var(--border-color);
   border-radius: 6px;
-  background-color: var(--profile-background-color);
+  background-color: var(--light-mode-body-color);
 }
 .comment-header {
   padding: 2px;
@@ -464,19 +473,36 @@ div .user-info, .header {
 div.repliers-avatar, div.repliees-avatar {
   display: flex;
   align-items: center;
+  margin-right: 7px;
+
 }
 
 .comment-main {
   display:flex;
   flex-direction: column;
   width: 100%;
+  padding: 9px 14px;
+  box-sizing: border-box;
+  gap: 7px;
 }
 
-.comment .avatar {
-  border-radius: 50%;
-  height: 24px;
-  width: 24px;
-  padding: 2px 4px;
+.post-user-info {
+  font-size: 15px;
+    font-weight: 500;
+}
+
+.post-user-info-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.comment .avatar, .post-user-info-header .avatar {
+  border-radius: 100%;
+  height: 28px;
+  width: 28px;
+  border: 1px solid var(--border-color);
 }
 
 .avatar-nested {
@@ -487,9 +513,16 @@ div.repliers-avatar, div.repliees-avatar {
 }
 
 
-.post-content, .comment-header {
+.post-content {
+  padding: 9px 14px;
   font-size: 14px;
   color: #111;
+  gap: 10px;
+}
+
+.comment-header {
+  color: var(--text-color);
+  font-size: 15px;
 }
 
 .comment-header a {
@@ -509,12 +542,9 @@ div.repliers-avatar, div.repliees-avatar {
 }
 
 .user-actions {
-  margin: 0px 5px;
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
-
-  padding-bottom: 5px;
 }
 
 #reply-button {
@@ -524,6 +554,9 @@ div.repliers-avatar, div.repliees-avatar {
   vertical-align: 5px;
 }
 
+a.comment-user-info {
+  font-weight: 600;
+}
 a.comment-user-info:hover {
   text-decoration: underline;
 }
@@ -549,7 +582,6 @@ a.comment-user-info:hover {
 
 .main-container textarea#comment {
   font-size: 16px;
-  border: 1px solid #ccc;
   border-radius: 5px;
   margin: 5px 0px;
   width: 100%;
@@ -569,7 +601,8 @@ a.comment-user-info:hover {
 
 .comment-body {
   font-size: 16px;
-  padding: 12px;
+  padding: 6px 0px;
+  padding-top: 4px;
 }
 
 .input-container textarea, .comment-container textarea{
@@ -606,13 +639,11 @@ a.comment-user-info:hover {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 0px 5px;
 }
 
 .dropdown .material-symbols-outlined {
   font-size: 20px;
   font-weight: 300;
-  vertical-align: 5px;
 }
 
 .preview-image, .sidebar-avatar {
@@ -620,6 +651,21 @@ a.comment-user-info:hover {
   height: 120px;
   border-radius: 6px;
   object-fit: cover;
+}
+
+.sidebar-description {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-poster-avatar {
+  width: 60px;
+    height: 60px;
+}
+
+.sidebar-link-image {
+  width: 80px;
+  height: 80px;
 }
 
 .sidebar-link-info-url, .sidebar-link-info-title, .sidebar-poster-job {
@@ -646,14 +692,13 @@ a.comment-user-info:hover {
   font-weight: bold;
 }
 
-.comment-body {
-  padding-top: 6px;
+.post-body {
+  font-size: 14px;
+  white-space: pre-line;
 }
 
-.post-body {
-  font-size: 16px;
-  padding-top: 0px;
-  white-space: pre-line;
+.post-body p , .comment-body p {
+  line-height: 1.5em;
 }
 
 .preview-description {
@@ -707,6 +752,7 @@ p.preview-description {
   border-radius: 6px;
   font-size: 14px;
   position: relative;
+  color: white;
 }
 
 .tag-flair a {
@@ -714,6 +760,10 @@ p.preview-description {
   text-decoration: none;
 }
 
+.github-repo-info .tags .tag-flair {
+  background: #0C8346;
+  border: 1px solid #0E954F;
+}
 
 .reply-buttons {
   width: 100%;
@@ -730,6 +780,8 @@ p.preview-description {
 .reply-form {
   border-top: 1px solid var(--border-color);
   background-color: var(--border-color);
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
   width: 100%;
 }
 
@@ -741,6 +793,14 @@ p.preview-description {
   
   .post-content {
   background-color: var(--dark-mode-main-color);
+  }
+
+  .reply-form {
+    background-color: var(--dark-mode-main-color);
+  }
+
+  .post-body p {
+    color: var(--dark-mode-text-color); /* Light text color for better readability */
   }
 
   .dropdown-content {
@@ -757,13 +817,9 @@ p.preview-description {
   }
   
   .input-container textarea, .comment-container textarea {
-  background-color: var(--dark-mode-main-color);
+  background-color: var(--dark-mode-body-color);
   color: var(--dark-mode-text-color);
   }
-  
-  .sort-selector {
-  border-color: var(--border-color);
-}
 
 .sort-option {
   background-color: var(--dark-mode-main-color);
@@ -771,16 +827,20 @@ p.preview-description {
 }
 
 .sort-option.active {
-  background-color: var(--dark-mode-body-color); /* Active tab color */
+  background-color: var(--dark-mode-border-color); /* Active tab color */
 }
   .reaction-button { 
   background-color: var(--dark-mode-border-color);
   border-color: var(--dark-mode-border-color);
-  color: var(--dark-mode-text-color);
+  color: var(--dark-mode-background-text-color);
   }
 
   .dropbtn {
     color: var(--dark-mode-text-color)
+  }
+
+  .sidebar, .comment-with-replies, .post-content {
+    background-color: var(--dark-mode-border-color);
   }
 
   .nested-comment.level-1 > .comment:first-child {
@@ -795,6 +855,8 @@ p.preview-description {
   .input-container, .comment-container {
     border-color: var(--dark-mode-border-color);
   }
+
+  
 
 
   .main-container textarea#comment {
@@ -823,7 +885,7 @@ p.preview-description {
   }
 
   div .user-info, .header {
-    color: #bbb; /* Lighter text color for user info and headers */
+    color: var(--dark-mode-background-text-color); /* Lighter text color for user info and headers */
   }
 
   .communities_id {
@@ -837,6 +899,8 @@ p.preview-description {
   .input-container , .input-container textarea, .comment-container, .comment-container textarea {
     border: 0;
     color: var(--dark-mode-text-color);
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
   }
 
   .link-preview {
@@ -853,9 +917,8 @@ p.preview-description {
 /* Style for the comment input field */
 .sidebar-poster-job, .sidebar-poster-name, .sidebar-link-info-title, .sidebar-link-info-url {
   margin: 3px;
-  padding: 0px 3px;
   max-width: 100%;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .sidebar-poster-name a {
@@ -886,6 +949,7 @@ p.preview-description {
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
   gap: 5px;
 
 }
@@ -937,10 +1001,17 @@ p.preview-description {
     flex-direction: row;
   }
   .preview-image, .sidebar-avatar {
-    width: 50px;
-    height: 50px;
+    aspect-ratio: 1/1;
+    width: 60px;
+    height: 60px;
     border-radius: 6px;
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
     object-fit: cover;
+  }
+  .preview-image {
+    width: auto;
+    height: 100%;
   }
 
   .sidebar {
@@ -990,8 +1061,13 @@ p.preview-description {
   }
   
   .post-title {
+    font-weight: 500;
     margin-top: 4px;
-    font-size: 23px;
+    font-size: 21px;
+  }
+
+  .post-subtitle {
+    font-size: 14px;
   }
 
   .timestamp {
@@ -1009,7 +1085,7 @@ p.preview-description {
   }
 
   .comment-body {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .comment-timestamp {

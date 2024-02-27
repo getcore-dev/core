@@ -37,7 +37,7 @@ main {
   padding: 20px 20px;
   border-radius: 6px;
   background-color: var(--light-mode-body-color);
-  border: 1px solid var(--border-color);
+  border: 0;
   width: 350px; 
   box-sizing: border-box;
   text-align: center;
@@ -55,7 +55,7 @@ main {
   padding: 20px 20px;
   border-radius: 6px;
   background-color: var(--light-mode-body-color);
-  border: 1px solid var(--border-color);
+  border: 0;
   width: 350px; 
   box-sizing: border-box;
 }
@@ -90,12 +90,12 @@ main {
 
 .input-container input {
   width: 100%;
-  padding: 7px 20px;
+  padding: 10px 20px;
   margin: 8px 0;
   box-sizing: border-box;
   border-radius: 5px; /* This makes the input rounded */
-  background-color: var(--light-mode-main-color);
-  border: 1px solid var(--border-color);
+  background-color: var(--light-mode-main-color) !important;
+  border: 0;
   font-size: 16px;
 }
 

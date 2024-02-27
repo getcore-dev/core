@@ -20,13 +20,12 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
-.post {
+.post, .job {
   display: flex; 
-  background: var(--light-mode-body-color);
-  border: 1px solid var(--border-color);
+  background: var(--light-mode-main-color);
+  border: 0;
   border-radius: 6px;
   margin: 10px;
-
   flex-direction: row;
   justify-content: space-between; 
   position: relative; 
@@ -41,7 +40,6 @@ body {
 }
 
 .link {
-  padding-top: 1px;
   text-decoration: none;
   font-size: 17px;
 }
@@ -68,7 +66,7 @@ body {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 6px;
-  margin-top: 7px;
+  margin-top: 11px;
 }
 
 .reaction-interactions {
@@ -76,7 +74,7 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 3px;
+  gap: 6px;
 }
 
 
@@ -98,12 +96,13 @@ div.vote-interactions {
 }
 
 .thumbnail-image {
+  width: 70px;
+  height: 70px; 
   border-radius: 5px; 
-  max-width: 39px; 
-  max-height: 39px;
   aspect-ratio: 1/1;
   object-fit: cover;
-  border: 1px solid var(--border-color);
+  border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
 }
 
 .current-job {
@@ -116,7 +115,6 @@ div.vote-interactions {
   gap: 5px;
   align-items: flex-start;
   border-radius: 6px;
-  margin-left: 2px;
   width: 100%;
   align-items: center;
   justify-content: space-between;
@@ -132,7 +130,7 @@ div.vote-interactions {
   align-items: center;
 }
 
-.post-content {
+.post-content, .job-content {
   position: relative;
   margin: 4px 12px;
   flex-grow: 1; /* Take up remaining space */
@@ -155,12 +153,22 @@ div.vote-interactions {
   display: inline-block;
   padding: 2px 3px;
   margin: 2px;
-  background-color: #FF6F59; 
+  background-color: #DB504A;
   border: 1px solid #FF8370; 
   color: white;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 14px;
   position: relative;
+}
+
+#pay-flair {
+  background: #0C8346;
+  border: 1px solid #0E954F;
+}
+
+#location-flair {
+  background-color: #6d93b1;
+  border: 1px solid #6488a4;
 }
 
 #job-posting-deadline {
@@ -169,13 +177,12 @@ div.vote-interactions {
 }
 
 .reaction-button, .boost-button {
-  border: 1px solid var(--border-color);
   background-color: var(--border-color);
+  border: 0;
   color: #666;
   border-radius: 6px;
-  padding: 4px 8px;
-  margin: 3px 5px;
-  font-size: 16px;
+  padding: 6px 8px;
+  font-size: 14px;
   font-weight: 500;
 }
 
@@ -191,12 +198,12 @@ div.vote-interactions {
 
 .main-reaction-button {
   height: 100%;
-  margin: 0px;
-  padding-inline: 0px;
-  padding: 4px 8px;
+  margin: 0;
+  padding-inline: 0;
+  padding: 6px 8px;
   border-radius: 6px;
-  font-size: 16px;
-  border: 1px solid var(--border-color);
+  font-size: 14px;
+  border: 0;
   background-color: var(--border-color);
 
 }
@@ -246,11 +253,8 @@ div.vote-interactions {
 }
 
 .link-preview {
-  background-color: var(--light-mode-main-color);
-  border: 1px solid var(--border-color);
-  margin: 3px 3px;
-    border-radius: 6px;
-  padding: 4px 6px;
+  background-color: var(--border-color);
+  border-radius: 6px;
 }
 
 .reaction-menu {
@@ -282,10 +286,9 @@ div.vote-interactions {
 
 .title {
   font-size: 21px;
-  font-weight: 600;
-  margin-top: 7px;
-  margin-left: 5px;
-  margin-bottom: 7px;
+  font-weight: 500;
+  margin-top: 4px;
+  margin-bottom: 4px;
   color: #333; 
 }
 
@@ -312,13 +315,22 @@ div.vote-interactions {
 .user-info, .post-info, .description, .reactions {
   font-size: 16px; 
   color: #333;
-  margin-right: 5px;
+}
+
+.post-date {
+  font-size: 14px;
+  color: #666;
 }
 
 .description {
   font-size: 14px;
-  margin-left: 5px;
   font-weight: normal;
+  padding-top: 5px;
+  line-height: 1.5em; /* Adjust based on your design */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 6; /* Number of lines you want */
+  -webkit-box-orient: vertical;
 }
 
 .description .material-symbols-outlined {
@@ -355,9 +367,13 @@ div.vote-interactions {
 
 .username a, .communities-text {
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 400;
   color: #333;
   text-decoration: none;
+}
+
+.username a {
+  font-weight: 500;
 }
 
 .username a:hover {
@@ -366,23 +382,21 @@ div.vote-interactions {
 }
 
 .description {
-  display: -webkit-box;
-  -webkit-line-clamp: 2; 
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  inline-size: min-content;
   white-space: normal;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
   line-height: 1.5em;
-  max-height: 3em; /* Max height for 2 lines */
 }
 
 
 div .mini-link {
-  padding: 6px;
   display: flex;
   flex-direction: row ;
   max-width: 100%;
-  font-size: 15px;
+  font-size: 14px;
+  align-items: center;
 }
 
 .mini-link-url {
@@ -403,14 +417,17 @@ div .mini-link-title {
   margin: 20px 10px 0px 10px;
 }
 
+.mini-link-image {
+  display: flex;
+}
+
 .header-button {
   background: rgba(0,0,0,0);
   border: 1px solid var(--border-color);
   color: inherit;
   border-radius: 6px;
   padding: 6px 12px;
-  margin: 6px 1px;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
 }
@@ -575,10 +592,6 @@ div .mini-link-desc {
 
 
 .job-content {
-  border-radius: 5px;
-  background-color: var(--light-mode-body-color);
-  border: 1px solid var(--border-color);
-  padding: 5px 10px;
   flex-direction: column;
 }
 
@@ -692,9 +705,9 @@ div .mini-link-desc {
     display: none;
   }
 
-  .communities {
-    background-color: var(--border-color);
-    border: 1px solid var(--border-color);
+  .community-selector .communities {
+    background-color: var(--light-mode-body-color);
+    border: 1px solid var(--light-mode-body-color);
     border-radius: 6px; 
     padding:4px 6px;
 
@@ -707,7 +720,7 @@ div .mini-link-desc {
     font-size: 14px;
   }
   .community-header, .job-header {
-    margin: 4px 14px 4px 14px;
+    margin: 9px 14px 13px 14px;
     }
 
   .post {
@@ -720,14 +733,6 @@ div .mini-link-desc {
 
   .comments {
       font-size: 14px;
-  }
-
-  .thumbnail-image {
-      width: 58px;
-      height: 58px;
-      aspect-ratio: 1/1;
-      object-fit: cover;
-      
   }
 
   .thumbnail {
@@ -771,7 +776,6 @@ div .mini-link-desc {
 
   .post, .job-content {
       background-color: #1B1F22;
-      border: 1px solid #272D31;
 
   }
  .job-content:hover {
@@ -788,7 +792,10 @@ div .mini-link-desc {
     margin-left: 13px;
     margin-right: 13px;
     max-width: 100%;
-    border: 1px solid var(--border-color);
+  }
+
+  .description {
+    -webkit-line-clamp: 3;
   }
 
   .job-flair {
@@ -798,7 +805,7 @@ div .mini-link-desc {
     overflow-y: hidden;
   }
   .title {
-    font-size: 18px;
+    font-size: 20px;
   }
 
   .post-info {
@@ -806,9 +813,7 @@ div .mini-link-desc {
   }
 
   .description {
-    font-size: 15px;
-    padding-right: 5px;
-    padding-left: 5px;
+    font-size: 14px;
   }
 
 
@@ -816,22 +821,13 @@ div .mini-link-desc {
     display: none;
   }
 
-  .post-content {
-    margin-left: 6px;
-    margin-right: 6px;
-    margin-top: 2px;
-    margin-bottom: 0px;
-  }
-
   .mini-link {
     max-width: 100%;
   }
 
   .thumbnail-image {
-    margin-left: 10px;
-    margin-right: 10px;
-    width: 58px;
-    height: 58px; 
+    width: 70px;
+    height: 70px; 
     aspect-ratio: 1/1; 
     object-fit: cover; 
   }
@@ -839,14 +835,6 @@ div .mini-link-desc {
     width: 100%;
     max-width: 100%;
   }
-
-
-  @media (prefers-color-scheme: dark) {
-    .post {
-      border: 1px solid var(--dark-mode-border-color);
-  }
-  
-}
 }
 
 .avatar {
@@ -898,12 +886,10 @@ div .mini-link-desc {
 
   .main-reaction-button, .boost-button { 
     background-color: var(--dark-mode-border-color);
-    border: 1px solid var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
   .reaction-button {
     background-color: var(--dark-mode-border-color);
-    border: 1px solid var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
   
@@ -913,12 +899,11 @@ div .mini-link-desc {
 
   .link-preview {
     background-color: var(--dark-mode-border-color);
-    border-color: var(--dark-mode-border-color);
   }
   
-  .communities {
-  background-color: var(--dark-mode-border-color);
-  border-color: var(--dark-mode-border-color);
+  .community-selector .communities {
+  background-color: var(--dark-mode-main-color);
+  border-color: var(--dark-mode-main-color);
   }
   
   .communities a {

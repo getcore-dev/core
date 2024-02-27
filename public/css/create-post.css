@@ -18,6 +18,11 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
+label {
+    margin-top: 5px;
+    margin-bottom: 6px;
+}
+
 .editor-toolbar button {
     color: var(--primary-text-color);
 }
@@ -26,9 +31,9 @@ body {
 .main-container {
     max-width: 800px;
     margin: 40px auto;
-    padding: 20px;
+    padding: 12px 17px;
     background-color: var(--light-mode-body-color);
-    border: 1px solid var(--border-color);
+    border: 0;
     border-radius: 6px;
 }
 
@@ -72,19 +77,29 @@ body {
     gap: 10px;
 }
 
-.main-container input[type="text"],
-.main-container textarea {
+.editor-toolbar {
+    display: none !important;
+    border: 0 !important;
+}
+
+.editor-statusbar {
+    display: none !important;
+}
+
+
+.main-container input[type="text"], .main-container textarea {
     width: 100%;
     box-sizing: border-box;
     padding: 8px;
     font-size: 16px;
-    border: 1px solid var(--border-color);
+    border: 0;
     border-radius: 6px;
-    margin: 5px 0px; /* Add margin for external spacing */
+    margin: 9px 0px; /* Add margin for external spacing */
 }
 
 .EasyMDEContainer {
     margin-top: 5px;
+    margin-bottom: 10px;
 }
 
 .main-container select {
@@ -115,6 +130,15 @@ body {
     padding: 20px;
     margin-bottom: 20px;
     border-bottom: 1px solid #eaeaea;
+}
+
+.select2-container--default .select2-selection--multiple {
+    border: 0 !important;
+}
+
+.EasyMDEContainer .CodeMirror {
+    border: 0 !important;
+    border-radius: 6px;
 }
 
 .main-container .post-title,
@@ -156,7 +180,6 @@ body {
     .main-container {
         margin: 0px 12px;
         margin-bottom: 50px;
-        padding: 10px 6px;
     }
     
 
@@ -226,7 +249,7 @@ body {
 
     div.form-group .CodeMirror, div.form-group .select2-container--default .select2-selection--multiple, div.form-group .editor-toolbar, div.form-group .select2-dropdown select2-dropdown--above {
         background-color: var(--dark-mode-body-color);
-        border-color: var(--dark-mode-border-color);
+        border: 0;
 
         color: var(--dark-mode-text-color);
     }

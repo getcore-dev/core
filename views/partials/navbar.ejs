@@ -11,11 +11,11 @@
           <% let user = locals.user; %>
           <% let communityId = locals.communityId%>
           <% if (communityId) { %>
-          <a class="navbar-user-info" href="/communities/<%= community.id %>">/<%= community.shortname %></a>@<a class="nav-text" href="/">CORE</a><% } else { %>
+          <a class="navbar-user-info" href="/communities/<%= community.id %>">/<%= community.shortname %></a>@<a class="nav-text" href="/" style="font-weight: 400;">CORE</a><% } else { %>
           <% if (user) { %>
-          <a class="navbar-user-info" href="/profile/<%= user.username %>"><%= user.username %></a>@<a class="nav-text" href="/">CORE</a>
+          <a class="navbar-user-info" href="/profile/<%= user.username %>"><%= user.username %></a>@<a class="nav-text" href="/" style="font-weight: 400;">CORE</a>
           <% } else { %>
-          <a class="navbar-user-info" href="/login">user</a>@<a class="nav-text" href="/">CORE</a>
+          <a class="navbar-user-info" href="/login">user</a>@<a class="nav-text" href="/" style="font-weight: 400;">CORE</a>
           <% } %>
           <% } %>
         </div>
@@ -127,11 +127,12 @@
                     <a href="#" onclick="document.getElementById('logoutForm').submit()">Logout</a>
                   </div>
                 </div>
-                <% } else if (user && user.avatar) { %>
-                <div class="nav-avatar">
-
-                  <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
-                </div>
+                <% } else if (user && !user.avatar) { %>
+                <a href="/profile/<%= user.username %>" class="inbox-button">
+                  <span class="material-symbols-outlined" id="nb-icon">
+                    person
+                  </span>
+                </a>
                 <% } else if (!user) { %>
                 <a href="/login" class="inbox-button">
                   <span class="material-symbols-outlined" id="nb-icon">

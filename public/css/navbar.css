@@ -57,6 +57,7 @@ h1, h2, h3, h4, h5, p {
 .user-links {
   list-style: none; /* Remove list bullets */
   margin: 0;
+  padding-left: 0;
   display: flex; /* Display links inline */
 
 }
@@ -73,11 +74,11 @@ h1, h2, h3, h4, h5, p {
   padding: 9px 9px;
   position: relative;
   display: none;
-  background-color: var(--border-color);
-  border: 1px solid var(--border-color);
+  background-color: rgba(0,0,0,0);
   border-radius: 5px; 
   color: var(--primary-text-color); /* Icon color */
-  font-size: 20px; /* Icon size */
+  font-size: 22px; /* Icon size */
+  font-weight: 400;
 }
 
 
@@ -92,7 +93,6 @@ h1, h2, h3, h4, h5, p {
   height: var(--navbar-height);
   top: 0;
   z-index: 1;
-  border-bottom: 1px solid var(--border-color);
 }
 
 /* Navbar Links Style */
@@ -135,11 +135,11 @@ h1, h2, h3, h4, h5, p {
   justify-content: center; 
   gap: 4px; 
   line-height: 1.5; 
-  background-color: var(--border-color); 
+  background-color: rgba(0,0,0,0);
   color: var(--primary-text-color);
   margin: 0px 6px;
   font-size: var(--default-font-size); /* Button font size */
-  border: 1px solid var(--border-color);
+  border: 0;
   border-radius: 6px; 
   text-decoration: none; /* Remove underline */
   transition: background-color 0.15s, transform 0.15s; /* Transition effects */
@@ -154,19 +154,19 @@ h1, h2, h3, h4, h5, p {
 
 /* Navbar Button Style */
 .navbar-button {
-  display: flex; /* Display button contents inline */
-  justify-content: center; /* Center button content */
-  gap: 4px; /* Gap between icon and text */
-  line-height: 1.5; /* Button text line height */
-  color: var(--primary-text-color); /* Button text color */
-  padding: 3px 7px; /* Button padding */
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  line-height: 1.5;
+  color: var(--primary-text-color);
+  padding: 3px 5px;
   margin-left: 12px;
-  font-size: 16px; /* Button font size */
-  text-decoration: none; /* Remove underline */
-  transition: background-color 0.15s, transform 0.15s; /* Transition effects */
+  font-size: 16px;
+  text-decoration: none;
+  transition: background-color 0.15s, transform 0.15s;
   z-index: 2;
-  padding-bottom: 9px;
-  margin-top: 5px;
+  padding-bottom: 6px;
+  margin-top: 9px;
 }
 
 .navbar-button:hover {
@@ -264,8 +264,9 @@ ul.notification-list {
 .nav-bar {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
-  width: 100%;
+  justify-content: center;
+  width: 60%;
+  gap: 15%;
 }
 
 .menu-content {
@@ -276,11 +277,8 @@ ul.notification-list {
   overflow-x: hidden;
   transition: transform 0.3s ease-out; /* Updated for smoother transition */
   padding-top: 65px;
-  background-color: #f9f9f9;
-  border-right: 1px solid var(--border-color);
+  background-color: var(--light-mode-body-color);
   z-index: 4;
-  border-top-right-radius: 12px;
-  border-bottom-right-radius: 12px;
   width: 249px;
   overflow-y: auto;
   transform: translateX(-250px); /* Start off-screen */
@@ -293,14 +291,18 @@ ul.notification-list {
 
 .nav-text-container {
   white-space: pre;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 20px;
   display: flex;
   align-items: center;
 margin-top: 20px;
   margin-left: 17px;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-left: 17px;
+  margin-top: 19px;
+}
+
+.nav-text-container a {
+  font-weight:500;
 }
 
 .logo-img {
@@ -362,20 +364,26 @@ margin-top: 20px;
     padding-top: env(safe-area-inset-top);
     background-color: var(--light-mode-main-color);
   }
-}
+  .nav-btns {
+    display: none;
+  }
+
   .username a {
     font-size: 16px;
   }
 
   .nav-text-container {
-    font-size: 16px;
+    font-size: 18px;
+    margin-left: -15px;
+    margin-top: 9px;
+  }
+
+  .community-flair {
+    font-size: 15px;
   }
 
   .community-header {
     margin: 0px;
-  }
-  .nav-btns {
-    display: none;
   }
   ul {
     padding-inline-start: 0px;
@@ -394,12 +402,14 @@ margin-top: 20px;
 
 
 
+
+
   .user-btns {
     position: absolute;
     right: 15px;
     top: 12px;
   }
-  
+
   #search-bar {
     display: none;
   }
@@ -420,7 +430,6 @@ margin-top: 20px;
   .navbar {
     height: var(--mobile-navbar-height);
     padding: 0px;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.1); 
   }
 
   .user-button {
@@ -455,7 +464,7 @@ margin-top: 20px;
     width: 16px;
     vertical-align: -1px;
   }
-  
+
 
 
   .hamburger-menu {
@@ -478,6 +487,7 @@ margin-top: 20px;
     max-height: 45px; /* Maximum height of the logo */
     z-index: 1000;
   }
+}
 
 
 .user-info div {
@@ -504,7 +514,8 @@ margin-top: 20px;
 
 
 #nb-icon {
-  font-size: 16px;
+  font-size: 20px;
+  font-weight: 400;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -592,7 +603,7 @@ margin-top: 20px;
 
 @media (prefers-color-scheme: dark) {
   .menu-content {
-    background-color: var(--dark-mode-background-color);
+    background-color: var(--dark-mode-main-color);
   }
 
   .menu-content a {
@@ -677,15 +688,13 @@ margin-top: 20px;
       text-decoration: none; /* Underline on hover */
   }
 
-  #menu-icon {
-    border-color: var(--dark-mode-border-color);
+  a.inbox-button {
+    color: var(--dark-mode-text-color)
   }
 
-  .user-links a, #search-button {
-    border-color: var(--dark-mode-border-color);
-    background-color: var(--dark-mode-background-color);
-    color: #fff; /* Light text color for buttons */
-
+  .avatar-dropdown a {
+    background-color: var(--dark-mode-main-color);
+    color: var(--dark-mode-text-color)
   }
   
 

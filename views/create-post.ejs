@@ -22,12 +22,12 @@
   <%- include('partials/navbar', { pagePath: 'home' }) %>
   <main>
     <div class="post-header">
-      <h2 id="post-header-title">Create a Post</h2>
+      <h2 id="post-header-title">Create a Discussion</h2>
     </div>
 
     <div class="post-selector">
-      <div class="post-type" style="background-color:#0A483B;border-color:#07362C;">
-        <a href="#" class="post-type-button" id="post">Post</a>
+      <div class="post-type" style="background-color:#0C8346;border-color:#0E954F; color: white;">
+        <a href="#" class="post-type-button" id="discussion">Discussion</a>
       </div>
       <div class="post-type">
         <a href="#" class="post-type-button" id="question">Question</a>
@@ -91,8 +91,8 @@
       const selectedPostType = $(this).attr('id'); // Get the id of the clicked element
       let headerText = 'Create a Post'; // Default text
       switch (selectedPostType) {
-        case 'post':
-          headerText = 'Create a Post';
+        case 'discussion':
+          headerText = 'Create a Discussion';
           $('#link-field').show();
           $('#link-label').text('Link:');
           $('#confirmation-question').hide(); // Hide the confirmation question
@@ -119,8 +119,8 @@
       $('.post-type').css('background-color', '');
       $('.post-type').css('border-color', '');
 
-      $(this).closest('.post-type').css('background-color', '#0A483B');
-      $(this).closest('.post-type').css('border-color', '#07362C');
+      $(this).closest('.post-type').css('background-color', '#0C8346');
+      $(this).closest('.post-type').css('border-color', '#0E954F');
     });
 
 
