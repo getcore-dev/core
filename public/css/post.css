@@ -840,7 +840,7 @@ p.preview-description {
   }
 
   .sidebar, .comment-with-replies, .post-content {
-    background-color: var(--dark-mode-border-color);
+    background-color: var(--dark-mode-main-color);
   }
 
   .nested-comment.level-1 > .comment:first-child {
