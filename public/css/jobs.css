@@ -210,8 +210,8 @@ div .material-symbols-outlined {
   }
 
   .job-body {
-    background-color: var(--dark-mode-border-color);
-    border-color: var(--dark-mode-border-color);
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-main-color);
   }
 
   .job-content {

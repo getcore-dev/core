@@ -198,7 +198,11 @@
             <% if (post.post_type == 'blog') { %>
             padding: 0;
             <% } %>">
+<% if ((post.post_type == 'discussion' && !post.linkPreview) || post.post_type == 'project') { %>
               <%- post.content %>
+            <% } else { %>
+
+             <% } %>
               <div class="user-interactions">
                 <button id="reactionButton" class="reaction-button">😀</button>
                 <div id="reactionPopup" class="reaction-popup" style="display:none;">
@@ -578,7 +582,7 @@ const totalReplies = countAllReplies(comment.replies);
           </div>
         </div>
       </div>
-      <% if (post.linkPreview && post.post_type != 'project') { %>
+      <% if (post.linkPreview && (post.post_type != 'project' && post.post_type != 'discussion') ) { %>
       <div class="sidebar">
         <div class="sidebar-content">
 

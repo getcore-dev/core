@@ -796,7 +796,7 @@ p.preview-description {
   }
 
   .reply-form {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-border-color);
   }
 
   .post-body p {
