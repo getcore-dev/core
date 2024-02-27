@@ -215,6 +215,7 @@ div .material-symbols-outlined:hover {
 
 .sidebar {
   background-color: var(--light-mode-body-color);
+  border: 0;
   border-radius: 6px;
   width: 100%;
   box-sizing: border-box;
@@ -789,6 +790,10 @@ p.preview-description {
     background-color: var(--background-color); /* Dark background for body */
     color: var(--dark-mode-text-color); /* Light text color for better readability */
   }
+  
+  .post-content {
+  background-color: var(--dark-mode-main-color);
+  }
 
   .reply-form {
     background-color: var(--dark-mode-main-color);
@@ -804,7 +809,7 @@ p.preview-description {
   }
   
   .nested-comment.level-1 {
-  background-color: var(--dark-mode-body-color);
+  background-color: var(--dark-mode-main-color);
   }
   
   .sort-option:not(:last-child) {
@@ -835,11 +840,11 @@ p.preview-description {
   }
 
   .sidebar, .comment-with-replies, .post-content {
-    background-color: var(--dark-mode-border-color);
+    background-color: var(--dark-mode-main-color);
   }
 
   .nested-comment.level-1 > .comment:first-child {
-    background-color: var(--dark-mode-body-color);
+    background-color: var(--dark-mode-main-color);
   }
 
   pre {
@@ -892,7 +897,7 @@ p.preview-description {
   }
 
   .input-container , .input-container textarea, .comment-container, .comment-container textarea {
-    border-color: var(--dark-mode-border-color);
+    border: 0;
     color: var(--dark-mode-text-color);
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
