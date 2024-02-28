@@ -68,6 +68,51 @@ h1, h2, h3, h4, h5, p {
   align-items: center;
 }
 
+.search-container {
+  position: relative;
+  display: inline-block; /* Align with other icons */
+}
+
+.search-form {
+  display: flex; /* Use flexbox for alignment */
+  justify-content: space-between; /* Space between search input and buttons */
+  align-items: center; /* Align items vertically in the center */
+  width: 100%; /* Full width */
+  background-color: var(--light-mode-body-color); /* Adjust if necessary */
+  padding: 5px;
+  height: 55px;
+  border-radius: 4px; /* Rounded corners */
+  position: fixed; /* Stick to the top */
+  top: 0; /* Align to the top */
+  left: 0; /* Align to the left */
+  z-index: 1000; /* Ensure it's above other content */
+}
+
+
+.search-input {
+  border: none;
+  font-size: 16px;
+  flex-grow: 1;
+  background-color: var(--border-color);
+  border-radius: 6px;
+  margin-left: 10px;
+  padding: 10px 25px;
+}
+
+.search-btn, .cancel-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex; /* Align the icons properly */
+  justify-content: center; /* Center icons horizontally */
+  align-items: center; /* Center icons vertically */
+}
+
+/* Hide the form by default */
+#searchForm {
+  display: none;
+}
+
 
 
 #menu-icon {

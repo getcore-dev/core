@@ -15,6 +15,7 @@ const userQueries = require("./queries/userQueries");
 const passportConfig = require("./config/passportConfig");
 const errorHandler = require("./middleware/errorHandling");
 const authRoutes = require("./routes/authRoutes");
+const searchRoutes = require("./routes/searchRoutes");
 const postRoutes = require("./routes/postRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const apiRoutes = require("./routes/apiRoutes");
@@ -64,6 +65,7 @@ app.use((req, res, next) => {
 app.use(authRoutes);
 app.use(postRoutes);
 app.use(commentRoutes);
+app.use('/search', searchRoutes);
 app.use("/api", apiRoutes);
 app.use("/notifications", notificationRoutes);
 app.use("/communities", communityRoutes);

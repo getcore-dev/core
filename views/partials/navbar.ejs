@@ -95,6 +95,22 @@
       </div>
       <div class="user-btns">
         <ul class="user-links">
+          <li>
+            <div class="search-container">
+              <form id="searchForm" class="search-form" action="/search" method="get" style="display: none;">
+                <input type="text" name="searchTerm" placeholder="Search..." class="search-input">
+                <button type="submit" class="search-btn">
+                  <span class="material-symbols-outlined" id="nb-icon">search</span>
+                </button>
+                <button type="button" class="cancel-btn">
+                  <span class="material-symbols-outlined" id="nb-icon">close</span>
+                </button>
+              </form>
+              <button id="expandSearch" class="inbox-button">
+                <span class="material-symbols-outlined" id="nb-icon">search</span>
+              </button>
+            </div>
+          </li>
           <% if (user) { %>
           <li>
             <a href="#" class="inbox-button <%= currentPath === '/' ? 'active' : '' %>" id="notification-btn">
@@ -149,6 +165,22 @@
 </nav>
 
 <script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const expandSearchBtn = document.getElementById('expandSearch');
+    const searchForm = document.getElementById('searchForm');
+    const cancelBtn = document.querySelector('.cancel-btn');
+
+    expandSearchBtn.addEventListener('click', function() {
+      searchForm.style.display = 'flex'; // Show the form
+      expandSearchBtn.style.display = 'none'; // Hide the search icon
+    });
+
+    cancelBtn.addEventListener('click', function() {
+      searchForm.style.display = 'none'; // Hide the form
+      expandSearchBtn.style.display = 'block'; // Show the search icon again
+    });
+  });
   function getAllCommunities() {
     fetch('/api/communities') // Adjust this to your server's endpoint
       .then(response => response.json())

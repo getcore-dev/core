@@ -717,7 +717,8 @@ div .mini-link-desc {
   }
 
   .community-name {
-    font-size: 14px;
+    font-size: 15px;
+    font-weight: bold;
   }
   .community-header, .job-header {
     margin: 9px 14px 13px 14px;
@@ -806,7 +807,7 @@ div .mini-link-desc {
     overflow-y: hidden;
   }
   .title {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .post-info {
