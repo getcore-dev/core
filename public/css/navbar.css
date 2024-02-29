@@ -453,7 +453,7 @@ margin-top: 20px;
   .user-btns {
     position: absolute;
     right: 15px;
-    top: 12px;
+    top: 7px;
   }
 
   #search-bar {
@@ -463,7 +463,7 @@ margin-top: 20px;
   .nav-text-and-user-btns {
     position: relative;
     top: 13px;
-    right: 0px;
+    right: 3px;
   }
 
   .notification-popup {
@@ -484,6 +484,7 @@ margin-top: 20px;
 
   #user-avatar {
     padding-top: 0px;
+    margin-left: 7px;
     margin-top: 0px;
   }
 
@@ -529,8 +530,8 @@ margin-top: 20px;
   .logo img {
     position: absolute;
     top: 5px;
-    left: 60px;
-    max-height: 45px; /* Maximum height of the logo */
+    left: 54px;
+    max-height: 45px;
     z-index: 1000;
   }
 }

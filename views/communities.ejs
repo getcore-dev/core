@@ -171,9 +171,12 @@
           <h3>Posts</h3>
         </div>
         <div class=post-header-buttons style="position:relative;">
-          <% if (user) { %>
-            <button class="header-button" id="post-button" onclick="window.location.href='/post/create'">Create</button>
-          <% } %>
+          <button class="header-button" id="post-sort-button">Best
+            <span class="material-symbols-outlined">
+expand_more
+</span>
+
+            </button>
           <button class="header-button" id="filter-button" onclick="toggleFilterMenu()">
             <span class="material-symbols-outlined">tune</span>
             </button>
@@ -183,7 +186,9 @@
               <button class="filter-button" onclick="filterPosts('Top')">Top</button>
               <button class="filter-button" onclick="filterPosts('Explore')">Explore</button>
             </div> 
-
+           <% if (user) { %>
+            <button class="header-button" id="post-button" onclick="window.location.href='/post/create'">+</button>
+          <% } %>
           </div>  
 `;
             postsContainer.appendChild(communityHeader);

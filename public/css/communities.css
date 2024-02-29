@@ -64,8 +64,8 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 6px;
-  margin-top: 11px;
+  margin-bottom: 11px;
+  margin-top: 15px;
 }
 
 .reaction-interactions {
@@ -131,7 +131,7 @@ div.vote-interactions {
 
 .post-content, .job-content {
   position: relative;
-  margin: 4px 12px;
+  margin: 7px 14px;
   flex-grow: 1; /* Take up remaining space */
   padding: 0; /* No padding */
   padding-top: 5px;
@@ -175,13 +175,13 @@ div.vote-interactions {
   border-color: #BF2239;
 }
 
-.reaction-button, .boost-button {
+.reaction-button, .boost-button, .main-reaction-button {
   background-color: var(--border-color);
   border: 0;
   color: #666;
-  border-radius: 6px;
+  border-radius: 21px;
   padding: 6px 8px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
 }
 
@@ -193,18 +193,6 @@ div.vote-interactions {
 .reaction-interactions .material-symbols-outlined {
   font-size: 14px;
   vertical-align: -2px;
-}
-
-.main-reaction-button {
-  height: 100%;
-  margin: 0;
-  padding-inline: 0;
-  padding: 6px 8px;
-  border-radius: 6px;
-  font-size: 14px;
-  border: 0;
-  background-color: var(--border-color);
-
 }
 
 .reaction-button:hover {
@@ -287,8 +275,7 @@ div.vote-interactions {
 .title {
   font-size: 21px;
   font-weight: 500;
-  margin-top: 4px;
-  margin-bottom: 4px;
+  margin: 12px 0px;
   color: #333; 
 }
 
@@ -442,6 +429,24 @@ div .mini-link-title {
   font-size: 20px;
   vertical-align: -3px;
   font-weight: 400;
+}
+
+#communityActionBtn {
+  border: 0;
+  background-color: var(--border-color);
+  border-radius: 6px;
+  padding: 4px 10px;
+}
+
+#post-sort-button {
+  border: 0;
+  padding: 6px 3px;
+}
+
+#post-sort-button .material-symbols-outlined {
+  font-size: 14px;
+  vertical-align: -2px;
+
 }
 
 #filterMenu {
@@ -754,6 +759,11 @@ div .mini-link-desc {
     color: #eee;
   }
 
+  #communityActionBtn {
+    background-color: var(--dark-mode-border-color);
+    color: var(--dark-mode-text-color);
+  }
+
   .job {
     background-color: var(--dark-mode-main-color);
   }
@@ -794,7 +804,7 @@ div .mini-link-desc {
     border: 0;
     padding: 0px;
     margin-top: 0px;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
     margin-left: 13px;
     margin-right: 13px;
     max-width: 100%;
