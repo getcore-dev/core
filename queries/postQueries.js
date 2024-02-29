@@ -299,7 +299,7 @@ const postQueries = {
           case "CELEBRATE":
             celebrateCount = row.count;
             break;
-          case "BOOST":
+          case "B":
             boostCount = row.count;
             break;
         }

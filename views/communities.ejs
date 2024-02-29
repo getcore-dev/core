@@ -299,12 +299,13 @@ expand_more
 
             // Reaction interactions div
             const reactionInteractionsDiv = document.createElement("div");
-            reactionInteractionsDiv.className = "reaction-interactions";
+            reactionInteractionsDiv.className = `reaction-interactions ${post.id}-reactions`;
+            reactionInteractionsDiv.id = `reaction-interactions ${post.id}-reactions`;
 
             // boost button
             const boostButton = document.createElement("button");
-            boostButton.className = "boost-button";
-            boostButton.innerHTML = `⚡️ <span class='boost-count'>${post.boostCount}</span>`;
+            boostButton.className = `boost-button boost-button-${post.id}`;
+            boostButton.innerHTML = `⚡️ <span class='boost-count-${post.id}'>${post.boostCount}</span>`;
 
             boostButton.onclick = () => interactWithPost(post.id, "<%= user %>", "BOOST");
 
@@ -353,14 +354,14 @@ expand_more
             reactionTypes.forEach(reaction => {
               if (post[reaction.type.toLowerCase() + 'Count'] > 0) {
                 const button = document.createElement("button");
-                button.className = `reaction-button ${reaction.type.toLowerCase()}-button`;
+                button.className = `reaction-button ${reaction.type.toLowerCase()}-button-${post.id}`;
                 button.onclick = () => interactWithPost(post.id, "<%= user %>", reaction.type);
 
                 const icon = document.createElement("span");
                 icon.innerText = reaction.icon;
 
                 const countText = document.createElement("span");
-                countText.className = "reaction-count";
+                countText.className = `reaction-count ${reaction.type.toLowerCase()}-count ${post.id}`
                 countText.innerText = ` ${post[reaction.type.toLowerCase() + 'Count']}`;
 
                 button.appendChild(icon);
@@ -634,52 +635,91 @@ expand_more
           },
           body: JSON.stringify({
             user: user,
-            action: action
-          }) // Ensure action is in lowercase
+            action: action.toLowerCase() // Ensure action is in lowercase
+          })
         })
         .then(response => response.json())
         .then(data => {
           console.log('Success:', data);
 
-          // Update or create reaction buttons
+          // Assuming the 'reactions' field directly contains the count values
+          const reactionsData = data.newScore; // Adjust according to actual response structure
+
+          const reactionTypes = [{
+              type: "LOVE",
+              icon: "❤️"
+            },
+            {
+              type: "LIKE",
+              icon: "👍"
+            },
+            {
+              type: "CURIOUS",
+              icon: "🤔"
+            },
+            {
+              type: "INTERESTING",
+              icon: "💡"
+            },
+            {
+              type: "CELEBRATE",
+              icon: "🎉"
+            },
+          ];
+
+          // Ensure you have a reference to the container where buttons should be placed
+          const reactionInteractionsDiv = document.getElementById(`reaction-interactions ${postId}-reactions`); // Adjust ID as necessary
+
           reactionTypes.forEach(reaction => {
-            const reactionCount = data.reactions[reaction.type] || 0;
-            let reactionButton = document.querySelector(`.reaction-button.${reaction.type.toLowerCase()}-button`);
+            const reactionCount = reactionsData[reaction.type.toLowerCase()] || 0;
+            let reactionButton = document.querySelector(`.reaction-button.${reaction.type.toLowerCase()}-button-${postId}`);
 
-            if (!reactionButton && reactionCount > 0) {
-              // Create a new reaction button if it doesn't exist and the count is positive
-              reactionButton = document.createElement("button");
-              reactionButton.className = `reaction-button ${reaction.type.toLowerCase()}-button`;
-              reactionButton.onclick = () => interactWithPost(postId, user, reaction.type);
+            if (reactionCount > 0) {
+              if (!reactionButton) {
+                // Create a new reaction button if it doesn't exist
+                reactionButton = document.createElement("button");
+                reactionButton.className = `reaction-button ${reaction.type.toLowerCase()}-button-${postId}`;
+                reactionButton.onclick = () => interactWithPost(postId, user, reaction.type);
 
-              const icon = document.createElement("span");
-              icon.innerText = reaction.icon;
+                const icon = document.createElement("span");
+                icon.innerText = reaction.icon;
 
-              const countText = document.createElement("span");
-              countText.className = "reaction-count";
-              countText.innerText = ` ${reactionCount}`;
+                const countText = document.createElement("span");
+                countText.className = `reaction-count ${reaction.type.toLowerCase()}-count ${postId}`;
+                countText.innerText = ` ${reactionCount}`;
 
-              reactionButton.appendChild(icon);
-              reactionButton.appendChild(countText);
-              reactionInteractionsDiv.appendChild(reactionButton);
-            } else if (reactionButton) {
-              // Update count of existing button
-              const countSpan = reactionButton.getElementsByClassName('reaction-count')[0];
-              countSpan.innerText = ` ${reactionCount}`;
-
-              // Update button color if needed
-              if (reaction.type.toLowerCase() === action.toLowerCase()) {
-                reactionButton.style.color = "blue"; // Change color to indicate selected action
+                reactionButton.appendChild(icon);
+                reactionButton.appendChild(countText);
+                reactionInteractionsDiv.appendChild(reactionButton);
               } else {
-                reactionButton.style.color = "black"; // Reset color for other buttons
+                // Update count of existing button
+                const countSpan = reactionButton.querySelector(`.reaction-count ${reaction.type.toLowerCase()}-count ${postId}`);
+                if (countSpan) countSpan.innerText = ` ${reactionCount}`;
+              }
+            } else if (reactionCount == 0) {
+              if (reactionButton) {
+                reactionButton.remove();
               }
             }
+
+            // Update button color if needed
+            if (reactionButton && reaction.type.toLowerCase() === action.toLowerCase()) {
+              // maybe add a lil reaction later idk
+            } else if (reactionButton) {
+              reactionButton.style.color = ""; // Reset to default styles for other buttons
+            }
           });
+
+          const boostCount = reactionsData['boosts'] || 0;
+          let boostButton = document.querySelector(`.boost-button.boost-button-${postId}`);
+          const countSpan = boostButton.querySelector(`span.boost-count-${postId}`);
+          countSpan.innerText = ` ${boostCount}`;
         })
         .catch((error) => {
           console.error('Error:', error);
         });
     }
+
 
 
 
