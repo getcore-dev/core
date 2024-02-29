@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@azure/msal-node": "^2.6.0",
+    "@azure/storage-blob": "^12.17.0",
     "axios": "^1.6.4",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",

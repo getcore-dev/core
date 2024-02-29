@@ -150,6 +150,8 @@ const userQueries = {
         "currentJob_begindate",
       ];
 
+      console.log(field, value, userId);
+
       // Check if the field is valid
       if (!validFields.includes(field)) {
         throw new Error(`Invalid field name: ${field}`);

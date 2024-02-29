@@ -22,11 +22,11 @@
     <label for="avatar">Avatar *** not working yet *** </label>
     <input type="file" id="avatar" class="upload-avatar" name="avatar" accept="image/*">
 
-    <label for="first_name">First Name</label>
-    <input type="text" id="firstname" name="first_name" value="<%= edit_user.firstname %>" required>
+    <label for="firstname">First Name</label>
+    <input type="text" id="firstname" name="firstname" value="<%= edit_user.firstname %>" required>
 
-    <label for="last_name">Last Name</label>
-    <input type="text" id="lastname" name="last_name" value="<%= edit_user.lastname %>" required>
+    <label for="lastname">Last Name</label>
+    <input type="text" id="lastname" name="lastname" value="<%= edit_user.lastname %>" required>
 
 
     <label for="email">Email</label>
@@ -91,47 +91,40 @@
 
   <script>
     $(document).ready(function() {
-      // Object to hold original values
-      var originalValues = {};
-      // Fill the originalValues with the current value of each input and select
-      $('input, select').each(function() {
-        var id = $(this).attr('id');
-        originalValues[id] = $(this).val();
-      });
-
-      // Event listener for the submit button
       $('#submit').click(function(e) {
-        e.preventDefault(); // Prevent the default form submission
-        var changedValues = {}; // Object to hold changed values
+        e.preventDefault(); // Prevent the default button action
 
-        // Check each field to see if the value has changed
+        var formData = new FormData(); // Create a new FormData object
+
+        // Append file data from file input to formData
+        var avatarFile = $('#avatar')[0].files[0]; // Get the file from input
+        if (avatarFile) {
+          formData.append('avatar', avatarFile); // Append file to formData
+        }
+
+        // Append other form values to formData
         $('input, select').each(function() {
-          var id = $(this).attr('id');
-          var currentValue = $(this).val();
-          if (originalValues[id] !== currentValue) {
-            changedValues[id] = currentValue;
+          // For each input and select element, add it to the FormData.
+          if (this.name && this.value) {
+            formData.append(this.name, this.value);
           }
         });
 
-        // Make a POST request if there are changed values
-        if (Object.keys(changedValues).length > 0) {
-          $.ajax({
-            url: '/edit-profile',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(changedValues),
-            success: function(response) {
-              // Handle success - for example, you might redirect or display a message
-              alert('Profile updated successfully.');
-            },
-            error: function(xhr, status, error) {
-              // Handle errors
-              alert('Error updating profile: ' + error);
-            }
-          });
-        } else {
-          alert('No changes detected.');
-        }
+        // Make the AJAX request
+        $.ajax({
+          url: '/edit-profile',
+          type: 'POST',
+          data: formData,
+          processData: false, // Important: tell jQuery not to process the data
+          contentType: false, // Important: tell jQuery not to set contentType
+          success: function(response) {
+            alert('Profile updated successfully.');
+            // Redirect or update UI as needed
+          },
+          error: function(xhr, status, error) {
+            alert('Error updating profile: ' + error);
+          }
+        });
       });
     });
   </script>

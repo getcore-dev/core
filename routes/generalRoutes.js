@@ -11,6 +11,11 @@ const utilFunctions = require("../utils/utilFunctions");
 const githubService = require("../services/githubService");
 const postQueries = require("../queries/postQueries");
 const { util } = require("chai");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
+const { BlobServiceClient } = require("@azure/storage-blob");
+const AZURE_STORAGE_CONNECTION_STRING =
+  process.env.AZURE_STORAGE_CONNECTION_STRING; // Ensure this is set in your environment variables
 
 // Home page
 router.get("/", viewController.renderHomePage);
@@ -30,7 +35,7 @@ router.post("/edits", checkAuthenticated, async (req, res) => {
 
   try {
     for (let field in updates) {
-      if (updates.hasOwnProperty(field)) {
+      if (Object.hasOwnProperty.call(updates, field)) {
         await userQueries.updateField(userId, field, updates[field]);
       }
     }
@@ -109,23 +114,49 @@ router.get("/edit-profile", checkAuthenticated, async (req, res) => {
   res.render("edit-profile.ejs", { user: req.user, edit_user: full_user });
 });
 
-router.post("/edit-profile", checkAuthenticated, async (req, res) => {
-  const updates = req.body;
-  const userId = req.user.id;
+router.post(
+  "/edit-profile",
+  checkAuthenticated,
+  upload.single("avatar"),
+  async (req, res) => {
+    const updates = req.body;
+    const userId = req.user.id;
+    const file = req.file; // This contains your uploaded file
 
-  try {
-    for (let field in updates) {
-      if (updates.hasOwnProperty(field)) {
-        await userQueries.updateField(userId, field, updates[field]);
+    try {
+      // Handle file upload to Azure Blob Storage if there's a file
+      if (file) {
+        const blobServiceClient = BlobServiceClient.fromConnectionString(
+          AZURE_STORAGE_CONNECTION_STRING
+        );
+        const containerClient =
+          blobServiceClient.getContainerClient("coreavatars");
+        const blobName = "profiles/" + userId + "/" + file.originalname;
+        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+        const containerName = "coreavatars";
+
+        await blockBlobClient.uploadFile(file.path); // Uploads the file to Azure Blob Storage
+
+        const pictureUrl = `https://${blobServiceClient.accountName}.blob.core.windows.net/${containerName}/${blobName}`;
+        updates["avatar"] = pictureUrl;
       }
-    }
 
-    res.redirect("/profile/" + req.user.username);
-  } catch (err) {
-    console.error("Error updating user fields:", err.message);
-    res.status(500).send("Internal Server Error");
+      console.log("Updates:", updates);
+
+      // Update other user fields
+      for (let field in updates) {
+        if (Object.hasOwnProperty.call(updates, field)) {
+          await userQueries.updateField(userId, field, updates[field]);
+        }
+      }
+
+      res.redirect("/profile/" + req.user.username);
+    } catch (err) {
+      console.error("Error updating user fields:", err.message);
+      res.status(500).send("Internal Server Error");
+    }
   }
-});
+);
 
 // Error handling middleware
 router.use((error, req, res, next) => {
