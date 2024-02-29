@@ -1,0 +1,56 @@
+:root {
+    /* Color variables */
+    --primary-text-color: #1D2935;
+    --navbar-background-color: #F6F8FA;
+    --border-color: #D8E0E9;
+    --hover-background-color: #ddd;
+    --active-indicator-color: #0e6655;
+    --notification-background-color: #fff;
+    --dark-mode-background-color: #1B1F22;
+    --dark-mode-text-color: #fff;
+    --dark-mode-body-color: #16191B;
+    --dark-mode-border-color: #272D31;
+    --dark-mode-hover-background-color: #444;
+    --primary-text-color: #1D2935;
+    --light-mode-main-color: #fff;
+    --light-mode-body-color: #F6F8FA;
+    --border-color: #D8E0E9;
+}
+
+.post-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#posts-container {
+    box-sizing: border-box;
+    padding: 0 12px;
+}
+
+.user {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    padding: 6px 8px;
+    margin: 5px 0;
+    background-color: var(--light-mode-body-color);
+    border-radius: 6px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.post {
+    margin: 0;
+    margin-bottom: 20px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .user {
+        background-color: var(--dark-mode-main-color);
+    }
+}    

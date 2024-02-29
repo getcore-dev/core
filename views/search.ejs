@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/navbar.css" />
     <link rel="stylesheet" href="/css/communities.css" />
     <link rel="stylesheet" href="/css/com-btn-container.css" />
+    <link rel="stylesheet" href="/css/search.css" />
     <link rel="shortcut icon" href="/img/core.png" />
     <title>Search Results - <%= searchTerm %></title>
 </head>
@@ -16,36 +17,57 @@
 
     <div class="container">
         <div id="posts-container" class="column">
-            <h2>Search Results for '<%= searchTerm %>'</h2>
-            <% if (results.length > 0) { %>
+            <h3>Search Results for '<%= searchTerm %>'</h3>
+            <h3>Users</h3>
+            <% if (users.length > 0) { %>
             <div class="posts">
-                    <% results.forEach(function(post) { %>
-                <div class="post">
+                <% users.forEach(function(user) { %>
+                <div class="user" onclick="window.location.href='/profile/<%= user.username %>'">
+                    <div class="user-image">
+                        <img id="user-avatar" src="<%= user.avatar %>">
+                    </div>
+                    <div class="user-info">
+                        <p><%= user.firstname %> <%= user.lastname %></p>
+                <p><%= user.username%></p>
+                    </div>
+                </div>
+                                    <% }); %>
+        <% } else { %>
+                <p>No users found.</p>
+                <% } %>
+
+            <h3>Jobs</h3>
+            <% if (jobs.length > 0) { %>
+                <div class="job">
+                 idk implement later.
+                </div>
+            <% } else { %>
+                <p>No jobs found.</p>
+            <% } %>
+
+
+            <h3>Posts</h3>
+            <% if (posts.length > 0) { %>
+                <div class="posts">
+                    <% posts.forEach(function(post) { %>
+                    <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
                     <div class="post-content">
                     
                     <div class="post-header">
                         <h3><%= post.title %></h3>
-                        <span>Posted on: <%= new Date(post.created_at).toLocaleDateString() %></span>
+                        <span><%= new Date(post.created_at).toLocaleDateString() %></span>
                     </div>
                     <div class="post-content">
                         <p><%= post.content %></p>
                                 <% if (post.link) { %>
-                        <a href="<%= post.link %>" target="_blank">Read More</a>
                                 <% } %>
-                    </div>
-                    <div class="post-footer">
-                        <span class="react-like">👍 <%= post.react_like %></span>
-                        <span class="react-love">❤️ <%= post.react_love %></span>
-                        <span class="react-curious">🤔 <%= post.react_curious %></span>
-                        <span class="react-interesting">💡 <%= post.react_interesting %></span>
-                        <span class="react-celebrate">🎉 <%= post.react_celebrate %></span>
                     </div>
                     </div>
                 </div>
                     <% }); %>
             </div>
             <% } else { %>
-            <p>No results found for '<%= searchTerm %>'.</p>
+            <p>No results found.</p>
             <% } %>
         </div>
     </div>
