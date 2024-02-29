@@ -198,7 +198,7 @@
             <% if (post.post_type == 'blog') { %>
             padding: 0;
             <% } %>">
-<% if ((post.post_type == 'discussion' && !post.linkPreview) || post.post_type == 'project') { %>
+<% if ((post.post_type == 'discussion' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog') { %>
               <%- post.content %>
             <% } else { %>
 

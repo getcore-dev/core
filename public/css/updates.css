@@ -68,7 +68,7 @@ div.commit-title {
   .commit {
     background: var(--light-mode-body-color);
     border-radius: 6px;
-    padding: 5px;
+    padding: 14px 9px;
     max-width: 100%;
     margin: 0px 13px;
 }
@@ -91,7 +91,6 @@ div.commit-title {
   align-items: flex-start;
   margin-bottom: 8px;
   flex-direction: column;
-  max-width: 50%;
   padding: 4px;
   }
 
@@ -181,7 +180,6 @@ div.commit-title {
 
     .commit {
       background-color: var(--dark-mode-main-color);
-      border: 1px solid var(--dark-mode-border-color);
     }
 
     div.commit-title {
@@ -202,9 +200,8 @@ div.commit-title {
 
     .commit-body {
       display: flex;
-      align-items: flex-start;
-      flex-direction: column;
-      align-content: space-between;
+      flex-direction: row;
+      align-items: center;
       justify-content: space-between;
     }
 

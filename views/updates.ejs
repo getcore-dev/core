@@ -61,6 +61,14 @@
                   <%= formattedDate %>
                 </div>
               </div>
+            </div>
+            <div class="commit-body">
+              <div class="commit-author">
+                <img src="<%= commits[i].author.avatar_url %>" alt="avatar" />
+                <div class="commit-author-name">
+                  <%= commits[i].commit.author.name %>
+                </div>
+              </div>
               <div class="commit-stats">
                 <p class="commit-author-name">Lines Changed:</p>
                 <div class="commit-stats-container">
@@ -74,14 +82,6 @@
                       - <%= commits[i].linesDeleted %>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-            <div class="commit-body">
-              <div class="commit-author">
-                <img src="<%= commits[i].author.avatar_url %>" alt="avatar" />
-                <div class="commit-author-name">
-                  <%= commits[i].commit.author.name %>
                 </div>
               </div>
             </div>

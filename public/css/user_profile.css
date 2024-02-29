@@ -392,6 +392,7 @@ main {
   .link-display {
     background-color: var(--dark-mode-border-color);
     border-color: var(--dark-mode-border-color);
+    color: var(--dark-mode-text-color);
   }
 
   .post, .comment {
