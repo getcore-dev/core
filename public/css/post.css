@@ -302,8 +302,7 @@ a.comment-url:visited {
 .post-title {
   font-size: 25px;
   color: #333;
-
-  margin-top: 15px;
+  margin-top: 0px;
 }
 
 div .user-info, .header {
@@ -349,8 +348,32 @@ div .user-info, .header {
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-bottom: 10px;
+  margin-top: 15px;
+  margin-bottom: 17px;
 }
+
+.link-image {
+  box-sizing: border-box; /* Keeps padding and border sizes inside the box's total width and height */
+  width: 100%;
+  display: inline-block; 
+  vertical-align: top; /* Helps remove unwanted space below the image */
+  line-height: 0; /* Removes space caused by line height */
+}
+
+.large-preview-image {
+  border-radius: 6px;
+  margin: 0 !important;
+  width: 100%; /* Maintains aspect ratio */
+  height: auto; /* Ensures the height scales with the width */
+  display: block; /* Removes any default inline margins, ensuring the img fits snugly within its container */
+}
+
+.link-info {
+  display: flex;
+  margin-bottom: 10px;
+  flex-direction: column;
+}
+
 
 .github-repo-description {
   max-width: 100%; /* Adjust to your layout */
@@ -1017,6 +1040,10 @@ p.preview-description {
   .sidebar {
     overflow: hidden;
   }
+
+  #github-link-preview {
+    margin: 23px 0px;
+    }
   
   main {
     display: flex;
@@ -1062,7 +1089,7 @@ p.preview-description {
   
   .post-title {
     font-weight: 500;
-    margin-top: 4px;
+    margin-top: 0;
     font-size: 21px;
   }
 

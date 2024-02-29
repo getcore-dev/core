@@ -51,10 +51,10 @@
           </div>
         </div>
       </div>
-        <% } %>
-      </div>
+      <% } %>
+    </div>
 
-      <% const jobPostings = [
+    <% const jobPostings = [
         {
           companyName: "Amazon",
           jobTitle: "Data Scientist",
@@ -91,82 +91,82 @@
           companyLogo: "/src/googlelogo.png"
           },
       ]; %>
-      <div class="jobs-container">
-        <div class="job-header">
-          <h3>Openings</h3>
-        </div>
-        <div class="jobslist">
+    <div class="jobs-container">
+      <div class="job-header">
+        <h3>Openings</h3>
+      </div>
+      <div class="jobslist">
 
-          <% jobPostings.forEach(job => { %>
-          <div class="job">
-            <div class="job-content">
-              <div class="jobs-header">
-                <div class="company-logo-container">
-                  <img src="<%= job.companyLogo %>" alt="Company Logo" class="company-logo" />
-                </div>
-                <div class="job-title-location">
-                  <div class="job-posting-header">
-                    <div class="company-name"><%= job.companyName %> </div>
-                  </div>
-                  <div class="job-title"><%= job.jobTitle %></div>
-                </div>
+        <% jobPostings.forEach(job => { %>
+        <div class="job">
+          <div class="job-content">
+            <div class="jobs-header">
+              <div class="company-logo-container">
+                <img src="<%= job.companyLogo %>" alt="Company Logo" class="company-logo" />
               </div>
-              <div class="job-body">
-                <div class="job-desc"><%= job.jobOverview %></div>
-              </div>
-              <div class="job-flairs">
-                <span class="job-flair"><%= job.jobType %></span>
-                <span class="job-flair" id="pay-flair"><%= job.jobSalary %></span>
-                <span class="job-flair" id="location-flair"><%= job.jobLocation %></span>
-                <span class="job-flair" id="job-posting-deadline"><%= job.jobBenefits %></span>
+              <div class="job-title-location">
+                <div class="job-posting-header">
+                  <div class="company-name"><%= job.companyName %> </div>
+                </div>
+                <div class="job-title"><%= job.jobTitle %></div>
               </div>
             </div>
+            <div class="job-body">
+              <div class="job-desc"><%= job.jobOverview %></div>
+            </div>
+            <div class="job-flairs">
+              <span class="job-flair"><%= job.jobType %></span>
+              <span class="job-flair" id="pay-flair"><%= job.jobSalary %></span>
+              <span class="job-flair" id="location-flair"><%= job.jobLocation %></span>
+              <span class="job-flair" id="job-posting-deadline"><%= job.jobBenefits %></span>
+            </div>
           </div>
-          <% }); %>
         </div>
+        <% }); %>
+      </div>
 
-        <div class="see-more">
-          <img src="./src/core.png" class="company-logo" id="see-more-core-logo">
-          <span id="see-more-separator">&#183;</span>
-          <a href="/jobs">See More</a>
-        </div>
+      <div class="see-more">
+        <img src="./src/core.png" class="company-logo" id="see-more-core-logo">
+        <span id="see-more-separator">&#183;</span>
+        <a href="/jobs">See More</a>
       </div>
     </div>
+  </div>
 
-    <script>
-      function showLoader() {
-        document.getElementById('loadingAnimation').style.display = 'block';
+  <script>
+    function showLoader() {
+      document.getElementById('loadingAnimation').style.display = 'block';
+    }
+
+    function hideLoader() {
+      document.getElementById('loadingAnimation').style.display = 'none';
+    }
+
+    function toggleFilterMenu() {
+      const filterMenu = document.getElementById('filterMenu');
+      const buttonRect = document.getElementById('filter-button').getBoundingClientRect();
+
+      if (filterMenu.style.display === 'block') {
+        filterMenu.style.display = 'none';
+      } else {
+        filterMenu.style.display = 'block';
       }
-
-      function hideLoader() {
-        document.getElementById('loadingAnimation').style.display = 'none';
-      }
-
-      function toggleFilterMenu() {
-        const filterMenu = document.getElementById('filterMenu');
-        const buttonRect = document.getElementById('filter-button').getBoundingClientRect();
-
-        if (filterMenu.style.display === 'block') {
-          filterMenu.style.display = 'none';
-        } else {
-          filterMenu.style.display = 'block';
-        }
-      }
+    }
 
 
-      function fetchAndDisplayPosts(communityId = null) {
-        const apiUrl = communityId ? `/api/communities/${communityId}/posts` : '/api/posts';
-        console.log(apiUrl);
-        console.log(communityId)
-        fetch(apiUrl)
-          .then(response => response.json())
-          .then(posts => {
-            const postsContainer = document.getElementById('posts-container');
-            const fetchPromises = [];
+    function fetchAndDisplayPosts(communityId = null) {
+      const apiUrl = communityId ? `/api/communities/${communityId}/posts` : '/api/posts';
+      console.log(apiUrl);
+      console.log(communityId)
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(posts => {
+          const postsContainer = document.getElementById('posts-container');
+          const fetchPromises = [];
 
-            const communityHeader = document.createElement('div');
-            communityHeader.className = 'community-header';
-            communityHeader.innerHTML = `
+          const communityHeader = document.createElement('div');
+          communityHeader.className = 'community-header';
+          communityHeader.innerHTML = `
         <div class="post-header-title">
           <h3>Posts</h3>
         </div>
@@ -191,376 +191,378 @@ expand_more
           <% } %>
           </div>  
 `;
-            postsContainer.appendChild(communityHeader);
+          postsContainer.appendChild(communityHeader);
 
 
-            posts.forEach(post => {
-              // Main post div
-              const postDiv = document.createElement('div');
-              postDiv.className = 'post';
+          posts.forEach(post => {
+            // Main post div
+            const postDiv = document.createElement('div');
+            postDiv.className = 'post';
 
-              // Post content div
-              const postContentDiv = document.createElement('div');
-              postContentDiv.className = 'post-content';
+            // Post content div
+            const postContentDiv = document.createElement('div');
+            postContentDiv.className = 'post-content';
 
-              // Post header div
-              const postHeaderDiv = document.createElement('div');
-              postHeaderDiv.className = 'post-header';
-              postHeaderDiv.onclick = () => window.location.href = '/posts/' + post.id;
-
-
-              const postHeaderUsernameDiv = document.createElement('div');
-              postHeaderUsernameDiv.className = 'post-header-username';
-
-              // avatar div
-              const avatarDiv = document.createElement('div');
-              avatarDiv.className = 'avatar';
-              const avatarImg = document.createElement('img');
-              avatarImg.src = post.avatar;
-              avatarDiv.appendChild(avatarImg);
-              postHeaderUsernameDiv.appendChild(avatarDiv);
-
-              // Username, community and current job div
-              const usernameDiv = document.createElement('div');
-              usernameDiv.className = 'username';
-              const usernameLink = document.createElement('a');
-              usernameLink.className = 'username-link';
-              usernameLink.href = '/profile/' + post.username;
-              usernameLink.innerHTML = '<strong>' + post.username + '</strong>';
-              usernameDiv.appendChild(usernameLink);
+            // Post header div
+            const postHeaderDiv = document.createElement('div');
+            postHeaderDiv.className = 'post-header';
+            postHeaderDiv.onclick = () => window.location.href = '/posts/' + post.id;
 
 
-              const communityText = document.createElement('span');
-              communityText.className = 'communities-text';
-              communityText.innerText = " posted a " + post.post_type + " in ";
-              usernameDiv.appendChild(communityText);
-              style = "font-weight: 200;"
-              const communityLink = document.createElement('a');
-              communityLink.href = '/communities/' + post.communities_id;
-              communityLink.className = 'community';
-              communityLink.innerText = "";
-              usernameDiv.appendChild(communityLink);
-              fetchPromises.push(fetchCommunity(post.communities_id, communityLink));
+            const postHeaderUsernameDiv = document.createElement('div');
+            postHeaderUsernameDiv.className = 'post-header-username';
+
+            // avatar div
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = 'avatar';
+            const avatarImg = document.createElement('img');
+            avatarImg.src = post.avatar;
+            avatarDiv.appendChild(avatarImg);
+            postHeaderUsernameDiv.appendChild(avatarDiv);
+
+            // Username, community and current job div
+            const usernameDiv = document.createElement('div');
+            usernameDiv.className = 'username';
+            const usernameLink = document.createElement('a');
+            usernameLink.className = 'username-link';
+            usernameLink.href = '/profile/' + post.username;
+            usernameLink.innerHTML = '<strong>' + post.username + '</strong>';
+            usernameDiv.appendChild(usernameLink);
 
 
-
-              const postDateDiv = document.createElement('div');
-              postDateDiv.className = 'post-date';
-              postDateDiv.innerText = formatDate(post.created_at);
-              usernameDiv.appendChild(postDateDiv);
-
-
-              postHeaderUsernameDiv.appendChild(usernameDiv);
-              postHeaderDiv.appendChild(postHeaderUsernameDiv);
-              const threeDotsDiv = document.createElement('div');
-              threeDotsDiv.className = 'three-dots';
-              threeDotsDiv.innerHTML = '<span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>';
-              postHeaderDiv.appendChild(threeDotsDiv);
-
-              postContentDiv.appendChild(postHeaderDiv);
-
-              // Title div
-              const titleDiv = document.createElement('div');
-              titleDiv.className = 'title';
-              titleDiv.innerText = post.title;
-              titleDiv.onclick = () => window.location.href = '/posts/' + post.id;
-
-              postContentDiv.appendChild(titleDiv);
-
-              const linkPreviewDiv = document.createElement('div');
-              linkPreviewDiv.className = 'link-preview';
-              postContentDiv.appendChild(linkPreviewDiv);
-
-              if (post.link) {
-                const linkDiv = document.createElement('div');
-                linkDiv.className = 'link';
-                linkDiv.innerHTML = '<div class="placeholder-link-preview">Loading link preview...</div>'; // Placeholder
-                linkPreviewDiv.appendChild(linkDiv);
-                fetchPromises.push(fetchLinkPreview(post.link, linkDiv));
-              }
-
-
-              if ((post.post_type == "discussion" || post.post_type == "project") && post.link) {
-                // just chill 
-              } else {
-                linkPreviewDiv.style.background = "none";
-                const descriptionDiv = document.createElement('div');
-                descriptionDiv.className = 'description';
-                descriptionDiv.append(`${post.content}`);
-
-                linkPreviewDiv.appendChild(descriptionDiv);
-              }
-
-              // Votes div
-              const votesDiv = document.createElement("div");
-              votesDiv.className = "votes";
-
-              // Reaction interactions div
-              const reactionInteractionsDiv = document.createElement("div");
-              reactionInteractionsDiv.className = "reaction-interactions";
-
-              // boost button
-              const boostButton = document.createElement("button");
-              boostButton.className = "boost-button";
-              boostButton.innerHTML = `⚡️ <span class='boost-count'>${post.boostCount}</span>`;
-
-              boostButton.onclick = () => interactWithPost(post.id, "<%= user %>", "BOOST");
-
-              reactionInteractionsDiv.appendChild(boostButton);
-
-
-              const mainReactionButton = document.createElement("button");
-              mainReactionButton.className = "main-reaction-button";
-              mainReactionButton.innerText = "😀";
-              reactionInteractionsDiv.appendChild(mainReactionButton);
-
-              const reactionMenu = document.createElement("div");
-              reactionMenu.className = "reaction-menu";
-
-              document.body.appendChild(reactionMenu);
-
-              mainReactionButton.onmouseover = function() {
-                reactionMenu.style.display = "block";
-              };
+            const communityText = document.createElement('span');
+            communityText.className = 'communities-text';
+            communityText.innerText = " posted a " + post.post_type + " in ";
+            usernameDiv.appendChild(communityText);
+            style = "font-weight: 200;"
+            const communityLink = document.createElement('a');
+            communityLink.href = '/communities/' + post.communities_id;
+            communityLink.className = 'community';
+            communityLink.innerText = "";
+            usernameDiv.appendChild(communityLink);
+            fetchPromises.push(fetchCommunity(post.communities_id, communityLink));
 
 
 
-              // Reaction buttons
-              const reactionTypes = [{
-                  type: "LOVE",
-                  icon: "❤️"
-                },
-                {
-                  type: "LIKE",
-                  icon: "👍"
-                },
-                {
-                  type: "CURIOUS",
-                  icon: "🤔"
-                },
-                {
-                  type: "INTERESTING",
-                  icon: "💡"
-                },
-                {
-                  type: "CELEBRATE",
-                  icon: "🎉"
-                },
-              ];
+            const postDateDiv = document.createElement('div');
+            postDateDiv.className = 'post-date';
+            postDateDiv.innerText = formatDate(post.created_at);
+            usernameDiv.appendChild(postDateDiv);
 
-              reactionTypes.forEach(reaction => {
-                if (post[reaction.type.toLowerCase() + 'Count'] > 0) {
-                  const button = document.createElement("button");
-                  button.className = `reaction-button ${reaction.type.toLowerCase()}-button`;
-                  button.onclick = () => interactWithPost(post.id, "<%= user %>", reaction.type);
 
-                  const icon = document.createElement("span");
-                  icon.innerText = reaction.icon;
+            postHeaderUsernameDiv.appendChild(usernameDiv);
+            postHeaderDiv.appendChild(postHeaderUsernameDiv);
+            const threeDotsDiv = document.createElement('div');
+            threeDotsDiv.className = 'three-dots';
+            threeDotsDiv.innerHTML = '<span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>';
+            postHeaderDiv.appendChild(threeDotsDiv);
 
-                  const countText = document.createElement("span");
-                  countText.className = "reaction-count";
-                  countText.innerText = ` ${post[reaction.type.toLowerCase() + 'Count']}`;
+            postContentDiv.appendChild(postHeaderDiv);
 
-                  button.appendChild(icon);
-                  button.appendChild(countText);
-                  reactionInteractionsDiv.appendChild(button);
-                }
-              });
+            // Title div
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'title';
+            titleDiv.innerText = post.title;
+            titleDiv.onclick = () => window.location.href = '/posts/' + post.id;
 
-              reactionTypes.forEach(reaction => {
+            postContentDiv.appendChild(titleDiv);
+
+            const linkPreviewDiv = document.createElement('div');
+            linkPreviewDiv.className = 'link-preview';
+            linkPreviewDiv.onclick = () => window.location.href = '/posts/' + post.id;
+
+            postContentDiv.appendChild(linkPreviewDiv);
+
+            if (post.link) {
+              const linkDiv = document.createElement('div');
+              linkDiv.className = 'link';
+              linkDiv.innerHTML = '<div class="placeholder-link-preview">Loading link preview...</div>'; // Placeholder
+              linkPreviewDiv.appendChild(linkDiv);
+              fetchPromises.push(fetchLinkPreview(post.link, linkDiv));
+            }
+
+
+            if ((post.post_type == "discussion" || post.post_type == "project") && post.link) {
+              // just chill 
+            } else {
+              linkPreviewDiv.style.background = "none";
+              const descriptionDiv = document.createElement('div');
+              descriptionDiv.className = 'description';
+              descriptionDiv.append(`${post.content}`);
+
+              linkPreviewDiv.appendChild(descriptionDiv);
+            }
+
+            // Votes div
+            const votesDiv = document.createElement("div");
+            votesDiv.className = "votes";
+
+            // Reaction interactions div
+            const reactionInteractionsDiv = document.createElement("div");
+            reactionInteractionsDiv.className = "reaction-interactions";
+
+            // boost button
+            const boostButton = document.createElement("button");
+            boostButton.className = "boost-button";
+            boostButton.innerHTML = `⚡️ <span class='boost-count'>${post.boostCount}</span>`;
+
+            boostButton.onclick = () => interactWithPost(post.id, "<%= user %>", "BOOST");
+
+            reactionInteractionsDiv.appendChild(boostButton);
+
+
+            const mainReactionButton = document.createElement("button");
+            mainReactionButton.className = "main-reaction-button";
+            mainReactionButton.innerText = "😀";
+            reactionInteractionsDiv.appendChild(mainReactionButton);
+
+            const reactionMenu = document.createElement("div");
+            reactionMenu.className = "reaction-menu";
+
+            document.body.appendChild(reactionMenu);
+
+            mainReactionButton.onmouseover = function() {
+              reactionMenu.style.display = "block";
+            };
+
+
+
+            // Reaction buttons
+            const reactionTypes = [{
+                type: "LOVE",
+                icon: "❤️"
+              },
+              {
+                type: "LIKE",
+                icon: "👍"
+              },
+              {
+                type: "CURIOUS",
+                icon: "🤔"
+              },
+              {
+                type: "INTERESTING",
+                icon: "💡"
+              },
+              {
+                type: "CELEBRATE",
+                icon: "🎉"
+              },
+            ];
+
+            reactionTypes.forEach(reaction => {
+              if (post[reaction.type.toLowerCase() + 'Count'] > 0) {
                 const button = document.createElement("button");
-                button.innerText = reaction.icon;
+                button.className = `reaction-button ${reaction.type.toLowerCase()}-button`;
                 button.onclick = () => interactWithPost(post.id, "<%= user %>", reaction.type);
-                reactionMenu.appendChild(button);
-              });
 
-              let showMenuTimeout; // Variable to hold the timeout for showing the menu
-              let hideMenuTimeout; // Variable to hold the timeout for hiding the menu
+                const icon = document.createElement("span");
+                icon.innerText = reaction.icon;
 
-              mainReactionButton.addEventListener('mouseenter', (event) => {
-                // Schedule to show the menu after a delay when hovering over the button
-                showMenuTimeout = setTimeout(() => {
-                  let rect = mainReactionButton.getBoundingClientRect();
-                  reactionMenu.style.left = `${rect.left + window.scrollX}px`;
-                  reactionMenu.style.top = `${rect.top + window.scrollY - reactionMenu.offsetHeight + 30}px`;
-                  reactionMenu.style.display = 'flex';
-                  reactionMenu.style.opacity = '1';
-                  // Schedule to hide the menu if it's shown but the mouse hasn't moved towards it
-                  hideMenuTimeout = setTimeout(() => {
-                    reactionMenu.style.opacity = '0';
-                    reactionMenu.style.display = 'none';
-                  }, 2000); // Change this delay as needed
-                }, 200); // Delay before menu is shown to check intention
-              });
+                const countText = document.createElement("span");
+                countText.className = "reaction-count";
+                countText.innerText = ` ${post[reaction.type.toLowerCase() + 'Count']}`;
 
-              mainReactionButton.addEventListener('mouseleave', () => {
-                // Cancel showing the menu if mouse leaves the button before it's shown
-                clearTimeout(showMenuTimeout);
-                // Start hiding the menu immediately if it's already shown
-                clearTimeout(hideMenuTimeout);
-                hideMenuTimeout = setTimeout(() => {
-                  reactionMenu.style.opacity = '0';
-                  reactionMenu.style.display = 'none';
-                }, 200); // Delay before hiding menu
-              });
-
-              reactionMenu.addEventListener('mouseenter', () => {
-                // Cancel hiding the menu when mouse enters the menu area
-                clearTimeout(hideMenuTimeout);
-              });
-
-              reactionMenu.addEventListener('mouseleave', () => {
-                // Schedule to hide the menu after a delay when the mouse leaves the menu area
-                hideMenuTimeout = setTimeout(() => {
-                  reactionMenu.style.opacity = '0';
-                  reactionMenu.style.display = 'none';
-                }, 500); // Delay before hiding menu
-              });
-
-              votesDiv.appendChild(reactionInteractionsDiv);
-              postContentDiv.appendChild(votesDiv);
-
-              const commentsDiv = document.createElement('div');
-              commentsDiv.className = 'comments';
-              commentsDiv.innerHTML = 'Loading comments...'; // Placeholder
-              votesDiv.appendChild(commentsDiv);
-              fetchPromises.push(fetchComments(post.id, commentsDiv));
-
-
-              postDiv.appendChild(postContentDiv);
-              postsContainer.appendChild(postDiv);
+                button.appendChild(icon);
+                button.appendChild(countText);
+                reactionInteractionsDiv.appendChild(button);
+              }
             });
-            return Promise.all(fetchPromises);
 
-          })
-          .catch(error => console.error('Error fetching posts:', error));
+            reactionTypes.forEach(reaction => {
+              const button = document.createElement("button");
+              button.innerText = reaction.icon;
+              button.onclick = () => interactWithPost(post.id, "<%= user %>", reaction.type);
+              reactionMenu.appendChild(button);
+            });
+
+            let showMenuTimeout; // Variable to hold the timeout for showing the menu
+            let hideMenuTimeout; // Variable to hold the timeout for hiding the menu
+
+            mainReactionButton.addEventListener('mouseenter', (event) => {
+              // Schedule to show the menu after a delay when hovering over the button
+              showMenuTimeout = setTimeout(() => {
+                let rect = mainReactionButton.getBoundingClientRect();
+                reactionMenu.style.left = `${rect.left + window.scrollX}px`;
+                reactionMenu.style.top = `${rect.top + window.scrollY - reactionMenu.offsetHeight + 30}px`;
+                reactionMenu.style.display = 'flex';
+                reactionMenu.style.opacity = '1';
+                // Schedule to hide the menu if it's shown but the mouse hasn't moved towards it
+                hideMenuTimeout = setTimeout(() => {
+                  reactionMenu.style.opacity = '0';
+                  reactionMenu.style.display = 'none';
+                }, 2000); // Change this delay as needed
+              }, 200); // Delay before menu is shown to check intention
+            });
+
+            mainReactionButton.addEventListener('mouseleave', () => {
+              // Cancel showing the menu if mouse leaves the button before it's shown
+              clearTimeout(showMenuTimeout);
+              // Start hiding the menu immediately if it's already shown
+              clearTimeout(hideMenuTimeout);
+              hideMenuTimeout = setTimeout(() => {
+                reactionMenu.style.opacity = '0';
+                reactionMenu.style.display = 'none';
+              }, 200); // Delay before hiding menu
+            });
+
+            reactionMenu.addEventListener('mouseenter', () => {
+              // Cancel hiding the menu when mouse enters the menu area
+              clearTimeout(hideMenuTimeout);
+            });
+
+            reactionMenu.addEventListener('mouseleave', () => {
+              // Schedule to hide the menu after a delay when the mouse leaves the menu area
+              hideMenuTimeout = setTimeout(() => {
+                reactionMenu.style.opacity = '0';
+                reactionMenu.style.display = 'none';
+              }, 500); // Delay before hiding menu
+            });
+
+            votesDiv.appendChild(reactionInteractionsDiv);
+            postContentDiv.appendChild(votesDiv);
+
+            const commentsDiv = document.createElement('div');
+            commentsDiv.className = 'comments';
+            commentsDiv.innerHTML = 'Loading comments...'; // Placeholder
+            votesDiv.appendChild(commentsDiv);
+            fetchPromises.push(fetchComments(post.id, commentsDiv));
+
+
+            postDiv.appendChild(postContentDiv);
+            postsContainer.appendChild(postDiv);
+          });
+          return Promise.all(fetchPromises);
+
+        })
+        .catch(error => console.error('Error fetching posts:', error));
+    }
+
+    <% if (communityId) {%>
+    document.addEventListener("DOMContentLoaded", function() {
+      const communityActionBtn = document.getElementById("communityActionBtn");
+      const memberCountElement = document.querySelector('.community-member-count');
+
+      function updateMemberCount(isJoining) {
+        let memberCount = parseInt(memberCountElement.textContent.split(' ')[0]);
+        if (isJoining) {
+          memberCountElement.textContent = `${memberCount + 1} members`; // Increment on join
+        } else {
+          memberCountElement.textContent = `${Math.max(0, memberCount - 1)} members`; // Decrement on leave, prevent negative numbers
+        }
       }
 
-      <% if (communityId) {%>
-      document.addEventListener("DOMContentLoaded", function() {
-        const communityActionBtn = document.getElementById("communityActionBtn");
-        const memberCountElement = document.querySelector('.community-member-count');
+      // Function to toggle community membership
+      function toggleCommunityMembership() {
+        const action = communityActionBtn.dataset.action; // "join" or "leave"
+        const url = `/communities/<%= community.id %>/${action}`;
 
-        function updateMemberCount(isJoining) {
-          let memberCount = parseInt(memberCountElement.textContent.split(' ')[0]);
-          if (isJoining) {
-            memberCountElement.textContent = `${memberCount + 1} members`; // Increment on join
-          } else {
-            memberCountElement.textContent = `${Math.max(0, memberCount - 1)} members`; // Decrement on leave, prevent negative numbers
-          }
-        }
+        fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              // Authorization header if needed
+            },
+          })
+          .then(response => {
+            if (response.ok) {
+              return response.json(); // Adjust based on actual response
+            }
+            throw new Error('Failed to perform action');
+          })
+          .then(data => {
+            // Toggle button state
+            if (action === "join") {
+              communityActionBtn.textContent = "Leave";
+              communityActionBtn.dataset.action = "leave";
+              updateMemberCount(true); // Optimistically increment member count
 
-        // Function to toggle community membership
-        function toggleCommunityMembership() {
-          const action = communityActionBtn.dataset.action; // "join" or "leave"
-          const url = `/communities/<%= community.id %>/${action}`;
+            } else {
+              communityActionBtn.textContent = "Join";
+              communityActionBtn.dataset.action = "join";
+              updateMemberCount(false); // Optimistically decrement member count
 
-          fetch(url, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                // Authorization header if needed
-              },
-            })
-            .then(response => {
-              if (response.ok) {
-                return response.json(); // Adjust based on actual response
-              }
-              throw new Error('Failed to perform action');
-            })
-            .then(data => {
-              // Toggle button state
-              if (action === "join") {
-                communityActionBtn.textContent = "Leave";
-                communityActionBtn.dataset.action = "leave";
-                updateMemberCount(true); // Optimistically increment member count
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert("Error performing action.");
+          });
+      }
 
-              } else {
-                communityActionBtn.textContent = "Join";
-                communityActionBtn.dataset.action = "join";
-                updateMemberCount(false); // Optimistically decrement member count
+      // Function to check membership and update button
+      function checkMembershipAndUpdateButton() {
+        fetch(`/communities/<%= community.id %>/isMember`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.isMember) {
+              communityActionBtn.textContent = "Leave";
+              communityActionBtn.dataset.action = "leave";
+            } else {
+              communityActionBtn.textContent = "Join";
+              communityActionBtn.dataset.action = "join";
+            }
+            communityActionBtn.addEventListener("click", toggleCommunityMembership);
+          })
+          .catch(error => console.error('Error checking membership:', error));
 
-              }
-            })
-            .catch(error => {
-              console.error('Error:', error);
-              alert("Error performing action.");
-            });
-        }
-
-        // Function to check membership and update button
-        function checkMembershipAndUpdateButton() {
-          fetch(`/communities/<%= community.id %>/isMember`)
-            .then(response => response.json())
-            .then(data => {
-              if (data.isMember) {
-                communityActionBtn.textContent = "Leave";
-                communityActionBtn.dataset.action = "leave";
-              } else {
-                communityActionBtn.textContent = "Join";
-                communityActionBtn.dataset.action = "join";
-              }
-              communityActionBtn.addEventListener("click", toggleCommunityMembership);
-            })
-            .catch(error => console.error('Error checking membership:', error));
-
-          fetch(`/api/communities/${communityId}`)
-            .then(response => response.json())
-            .then(community => {
-              document.querySelector('.community-member-count').textContent = `${community.MemberCount} members`;
-            })
-            .catch(error => console.error('Error fetching updated community details:', error));
-        }
-
-        // Initially check membership and set button state
-        checkMembershipAndUpdateButton();
-      });
-      <% }%>
-
-      function fetchCommunity(community_id, container) {
-        return fetch(`/api/communities/${community_id}`)
+        fetch(`/api/communities/${communityId}`)
           .then(response => response.json())
           .then(community => {
-            container.innerHTML = "/" + community.shortname;
-          });
+            document.querySelector('.community-member-count').textContent = `${community.MemberCount} members`;
+          })
+          .catch(error => console.error('Error fetching updated community details:', error));
       }
 
+      // Initially check membership and set button state
+      checkMembershipAndUpdateButton();
+    });
+    <% }%>
 
-      function fetchTags(post_id, container) {
-        return fetch(`/api/tags/${post_id}`)
-          .then(response => response.json())
-          .then(tags => {
-            container.innerHTML = tags.map(tag => `<span id="post-flair">${tag.name}</span>`).join(' ');
-          });
-      }
-
-      document.addEventListener("DOMContentLoaded", function() {
-        var deadlineElements = document.querySelectorAll('#job-posting-deadline');
-        var currentDate = new Date();
-        var deadlineDate = new Date(currentDate.getTime() + (24 * 60 * 60 * 1000)); // Adds one day
-
-        var month = deadlineDate.getMonth() + 1; // getMonth() returns 0-11
-        var day = deadlineDate.getDate(); // getDate() returns 1-31
-
-        // Ensure month and day are always two digits
-        var formattedMonth = month < 10 ? '0' + month : month;
-        var formattedDay = day < 10 ? '0' + day : day;
-
-        var formattedDeadline = formattedMonth + '/' + formattedDay;
-
-        deadlineElements.forEach(function(elem) {
-          elem.textContent = 'Exp: ' + formattedDeadline;
+    function fetchCommunity(community_id, container) {
+      return fetch(`/api/communities/${community_id}`)
+        .then(response => response.json())
+        .then(community => {
+          container.innerHTML = "/" + community.shortname;
         });
+    }
+
+
+    function fetchTags(post_id, container) {
+      return fetch(`/api/tags/${post_id}`)
+        .then(response => response.json())
+        .then(tags => {
+          container.innerHTML = tags.map(tag => `<span id="post-flair">${tag.name}</span>`).join(' ');
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      var deadlineElements = document.querySelectorAll('#job-posting-deadline');
+      var currentDate = new Date();
+      var deadlineDate = new Date(currentDate.getTime() + (24 * 60 * 60 * 1000)); // Adds one day
+
+      var month = deadlineDate.getMonth() + 1; // getMonth() returns 0-11
+      var day = deadlineDate.getDate(); // getDate() returns 1-31
+
+      // Ensure month and day are always two digits
+      var formattedMonth = month < 10 ? '0' + month : month;
+      var formattedDay = day < 10 ? '0' + day : day;
+
+      var formattedDeadline = formattedMonth + '/' + formattedDay;
+
+      deadlineElements.forEach(function(elem) {
+        elem.textContent = 'Exp: ' + formattedDeadline;
       });
+    });
 
 
-      function fetchLinkPreview(link, container) {
-        return fetch(`/api/link-preview/${encodeURIComponent(encodeURIComponent(link))}`)
-          .then(response => response.json())
-          .then(linkPreview => {
-            if (linkPreview) {
-              let imageUrl = linkPreview.image || linkPreview.favicon;
-              let htmlContent = `
+    function fetchLinkPreview(link, container) {
+      return fetch(`/api/link-preview/${encodeURIComponent(encodeURIComponent(link))}`)
+        .then(response => response.json())
+        .then(linkPreview => {
+          if (linkPreview) {
+            let imageUrl = linkPreview.image || linkPreview.favicon;
+            let htmlContent = `
           <div class="mini-link">
               <div class="mini-link-image">
                   ${imageUrl ? `<img src="${imageUrl}" alt="thumbnail" class="thumbnail-image" />` : ''}
@@ -570,131 +572,131 @@ expand_more
                   <div class="mini-link-desc">${linkPreview.description || ''}</div>
               </div>
           </div>`;
-              container.innerHTML = htmlContent;
-            }
-          });
-      }
-
-      function fetchComments(postId, container) {
-        return fetch(`/api/comments/${postId}`)
-          .then(response => response.json())
-          .then(comments => {
-            container.innerHTML = comments.length + ' comment' + (comments.length !== 1 ? 's' : '');
-          });
-      }
-
-      function formatDate(date) {
-        let postDate = new Date(date);
-        let today = new Date();
-        let formattedDate;
-
-        let diff = today - postDate;
-
-        // Convert time difference to different units
-        let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
-        let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
-        let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
-        let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
-
-        // Decide the format based on the time difference
-        if (minutes < 60) {
-          formattedDate = minutes + ' minutes ago';
-        } else if (hours < 24) {
-          formattedDate = hours + ' hours ago';
-        } else if (days < 365) {
-          formattedDate = days + ' days ago';
-        } else {
-          formattedDate = years + ' years ago';
-        }
-        return formattedDate;
-      }
-
-      function shortenContent(content) {
-        if (content.length > 130) {
-          return content.substring(0, 130) + '-...';
-        } else {
-          return content;
-        }
-      }
-
-      document.addEventListener("DOMContentLoaded", () => fetchAndDisplayPosts(<%= communityId %>));
-
-      function interactWithPost(postId, user, action) {
-        if (!user) {
-          window.location.href = '/login';
-          return;
-        }
-
-        fetch(`/posts/${postId}/react`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              user: user,
-              action: action
-            }) // Ensure action is in lowercase
-          })
-          .then(response => response.json())
-          .then(data => {
-            console.log('Success:', data);
-
-            // Update or create reaction buttons
-            reactionTypes.forEach(reaction => {
-              const reactionCount = data.reactions[reaction.type] || 0;
-              let reactionButton = document.querySelector(`.reaction-button.${reaction.type.toLowerCase()}-button`);
-
-              if (!reactionButton && reactionCount > 0) {
-                // Create a new reaction button if it doesn't exist and the count is positive
-                reactionButton = document.createElement("button");
-                reactionButton.className = `reaction-button ${reaction.type.toLowerCase()}-button`;
-                reactionButton.onclick = () => interactWithPost(postId, user, reaction.type);
-
-                const icon = document.createElement("span");
-                icon.innerText = reaction.icon;
-
-                const countText = document.createElement("span");
-                countText.className = "reaction-count";
-                countText.innerText = ` ${reactionCount}`;
-
-                reactionButton.appendChild(icon);
-                reactionButton.appendChild(countText);
-                reactionInteractionsDiv.appendChild(reactionButton);
-              } else if (reactionButton) {
-                // Update count of existing button
-                const countSpan = reactionButton.getElementsByClassName('reaction-count')[0];
-                countSpan.innerText = ` ${reactionCount}`;
-
-                // Update button color if needed
-                if (reaction.type.toLowerCase() === action.toLowerCase()) {
-                  reactionButton.style.color = "blue"; // Change color to indicate selected action
-                } else {
-                  reactionButton.style.color = "black"; // Reset color for other buttons
-                }
-              }
-            });
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
-      }
-
-
-
-      function filterPosts(communityName) {
-        // Get all post elements
-        const posts = document.querySelectorAll('.post');
-        posts.forEach((post) => {
-          // Check if post belongs to the selected community
-          const postCommunity = post.querySelector('.communities_id').textContent.trim();
-          if (communityName === 'All' || postCommunity === communityName) {
-            post.style.display = ''; // Show post
-          } else {
-            post.style.display = 'none'; // Hide post
+            container.innerHTML = htmlContent;
           }
         });
+    }
+
+    function fetchComments(postId, container) {
+      return fetch(`/api/comments/${postId}`)
+        .then(response => response.json())
+        .then(comments => {
+          container.innerHTML = comments.length + ' comment' + (comments.length !== 1 ? 's' : '');
+        });
+    }
+
+    function formatDate(date) {
+      let postDate = new Date(date);
+      let today = new Date();
+      let formattedDate;
+
+      let diff = today - postDate;
+
+      // Convert time difference to different units
+      let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+      let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+      let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+      let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+
+      // Decide the format based on the time difference
+      if (minutes < 60) {
+        formattedDate = minutes + ' minutes ago';
+      } else if (hours < 24) {
+        formattedDate = hours + ' hours ago';
+      } else if (days < 365) {
+        formattedDate = days + ' days ago';
+      } else {
+        formattedDate = years + ' years ago';
       }
-    </script>
+      return formattedDate;
+    }
+
+    function shortenContent(content) {
+      if (content.length > 130) {
+        return content.substring(0, 130) + '-...';
+      } else {
+        return content;
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => fetchAndDisplayPosts(<%= communityId %>));
+
+    function interactWithPost(postId, user, action) {
+      if (!user) {
+        window.location.href = '/login';
+        return;
+      }
+
+      fetch(`/posts/${postId}/react`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            user: user,
+            action: action
+          }) // Ensure action is in lowercase
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Success:', data);
+
+          // Update or create reaction buttons
+          reactionTypes.forEach(reaction => {
+            const reactionCount = data.reactions[reaction.type] || 0;
+            let reactionButton = document.querySelector(`.reaction-button.${reaction.type.toLowerCase()}-button`);
+
+            if (!reactionButton && reactionCount > 0) {
+              // Create a new reaction button if it doesn't exist and the count is positive
+              reactionButton = document.createElement("button");
+              reactionButton.className = `reaction-button ${reaction.type.toLowerCase()}-button`;
+              reactionButton.onclick = () => interactWithPost(postId, user, reaction.type);
+
+              const icon = document.createElement("span");
+              icon.innerText = reaction.icon;
+
+              const countText = document.createElement("span");
+              countText.className = "reaction-count";
+              countText.innerText = ` ${reactionCount}`;
+
+              reactionButton.appendChild(icon);
+              reactionButton.appendChild(countText);
+              reactionInteractionsDiv.appendChild(reactionButton);
+            } else if (reactionButton) {
+              // Update count of existing button
+              const countSpan = reactionButton.getElementsByClassName('reaction-count')[0];
+              countSpan.innerText = ` ${reactionCount}`;
+
+              // Update button color if needed
+              if (reaction.type.toLowerCase() === action.toLowerCase()) {
+                reactionButton.style.color = "blue"; // Change color to indicate selected action
+              } else {
+                reactionButton.style.color = "black"; // Reset color for other buttons
+              }
+            }
+          });
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    }
+
+
+
+    function filterPosts(communityName) {
+      // Get all post elements
+      const posts = document.querySelectorAll('.post');
+      posts.forEach((post) => {
+        // Check if post belongs to the selected community
+        const postCommunity = post.querySelector('.communities_id').textContent.trim();
+        if (communityName === 'All' || postCommunity === communityName) {
+          post.style.display = ''; // Show post
+        } else {
+          post.style.display = 'none'; // Hide post
+        }
+      });
+    }
+  </script>
 </body>
 
 </html>

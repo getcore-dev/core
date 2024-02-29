@@ -1,5 +1,6 @@
 const sql = require("mssql");
 const crypto = require("crypto");
+const tagQueries = require("./tagsQueries");
 
 const generateUniqueId = () => {
   // Use the last 4 characters of the current timestamp in base 36
@@ -25,6 +26,52 @@ const postQueries = {
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
+    }
+  },
+
+  editPost: async (postId, postData) => {
+    const transaction = new sql.Transaction(/* [connection] */);
+    try {
+      await transaction.begin();
+      const updateRequest = new sql.Request(transaction);
+
+      const trimmedLink = postData.link.trim();
+
+      await updateRequest.query`UPDATE posts SET title = ${postData.title}, content = ${postData.content}, link = ${trimmedLink}, updated_at = GETDATE() WHERE id = ${postId} AND deleted = 0`;
+
+      const deleteTagsRequest = new sql.Request(transaction);
+      await deleteTagsRequest.query`DELETE FROM post_tags WHERE post_id = ${postId}`;
+
+      console.log(postData.tags);
+      for (const tagNameOrId of postData.tags) {
+        const tagRequest = new sql.Request(transaction);
+        let tagId;
+        // Check if tagNameOrId is an ID (integer) or a new tag name (string)
+        if (isNaN(parseInt(tagNameOrId))) {
+          // It's a new tag name, check if it exists or create new
+          let tag = await tagQueries.findTagByName(tagNameOrId);
+          if (!tag) {
+            // Tag doesn't exist, create it
+            tag = await tagQueries.createTag(tagNameOrId); // Adjust to ensure it returns the new tag object
+            tagId = tag.id; // Assuming createTag returns the new tag object including its ID
+          } else {
+            tagId = tag.id; // Use existing tag ID
+          }
+        } else {
+          // It's an existing tag ID
+          tagId = tagNameOrId;
+        }
+
+        // Insert the mapping between the post and the tag using the tag ID
+        const insertPostTagRequest = new sql.Request(transaction);
+        await insertPostTagRequest.query`INSERT INTO post_tags (post_id, tag_id) VALUES (${postId}, ${tagId})`;
+      }
+
+      await transaction.commit();
+
+      return true;
+    } catch (err) {
+      return false;
     }
   },
 

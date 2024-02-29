@@ -70,6 +70,48 @@ const utilFunctions = {
     }
   },
 
+  getTagById: async (tagId) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM tags WHERE id = ${tagId}
+      `;
+      return result.recordset[0];
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getCommunityName: async (communityId, getFullName) => {
+    try {
+      if (getFullName) {
+        const result = await sql.query`
+        SELECT name FROM communities WHERE id = ${communityId}
+      `;
+        return result.recordset[0].name;
+      }
+      const result = await sql.query`
+        SELECT shortname FROM communities WHERE id = ${communityId}
+      `;
+      return result.recordset[0].shortname;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getAllTags: async () => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM tags
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getPostsForCommunity: async (communityId) => {
     try {
       const result = await sql.query`
@@ -136,7 +178,7 @@ const utilFunctions = {
   getPostData: async (postId) => {
     try {
       const result = await sql.query`
-        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type,
+        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.updated_at,
                 u.username, u.id as user_id, u.avatar, 
                 SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
                 SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
@@ -148,7 +190,7 @@ const utilFunctions = {
         INNER JOIN users u ON p.user_id = u.id
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
         WHERE p.id = ${postId}
-        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, u.avatar, u.id, p.post_type
+        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, u.avatar, u.id, p.post_type, p.updated_at
       `;
       const postData = result.recordset[0];
 
@@ -374,32 +416,49 @@ const utilFunctions = {
     `;
       const existingDataResult = await sql.query(existingDataQuery);
 
-      // Only fetch data from GitHub API if no recent data is available in your database
-      const apiUrl = `https://api.github.com/repos/${owner}/${repo}`;
-      const commitsUrl = `${apiUrl}/commits`;
-      const repoResponse = await axios.get(apiUrl, {
-        headers: { "User-Agent": "request" },
-        timeout: 5000,
-      });
-      const commitsResponse = await axios.get(commitsUrl, {
-        headers: { "User-Agent": "request" },
-        params: { per_page: 5 },
-        timeout: 5000,
-      });
+      let repoData, commitsData;
 
-      if (repoResponse.status !== 200 || commitsResponse.status !== 200) {
-        throw new Error(
-          `Request to GitHub API failed with status: ${repoResponse.status} or ${commitsResponse.status}`
+      // Check if data needs to be fetched or updated
+      if (
+        existingDataResult.recordset.length === 0 ||
+        existingDataResult.recordset[0].time_diff > 30
+      ) {
+        console.log("data old so fetching new");
+        // No existing data or data is older than 30 minutes, fetch new data from GitHub API
+        const apiUrl = `https://api.github.com/repos/${owner}/${repo}`;
+        const commitsUrl = `${apiUrl}/commits`;
+        const repoResponse = await axios.get(apiUrl, {
+          headers: { "User-Agent": "request" },
+          timeout: 5000,
+        });
+        const commitsResponse = await axios.get(commitsUrl, {
+          headers: { "User-Agent": "request" },
+          params: { per_page: 5 },
+          timeout: 5000,
+        });
+
+        if (repoResponse.status !== 200 || commitsResponse.status !== 200) {
+          throw new Error(
+            `Request to GitHub API failed with status: ${repoResponse.status} or ${commitsResponse.status}`
+          );
+        }
+
+        repoData = repoResponse.data;
+        commitsData = commitsResponse.data;
+      } else {
+        console.log("data exists no need to fetch");
+        // Use existing data if it's recent enough
+        repoData = JSON.parse(existingDataResult.recordset[0].raw_json);
+        commitsData = JSON.parse(
+          existingDataResult.recordset[0].raw_commits_json
         );
       }
 
-      const repoData = repoResponse.data;
-      const commitsData = commitsResponse.data;
       const rawRepoJson = JSON.stringify(repoData);
       const rawCommitsJson = JSON.stringify(commitsData);
 
-      if (existingDataResult.recordset.length > 0) {
-        // Data exists, so update it with the new data from GitHub if it's older than 30 minutes
+      if (existingDataResult.recordset.length > 0 && repoData && commitsData) {
+        // Data exists, so update it with the new data from GitHub
         const updateQuery = `
         UPDATE GitHubRepoData
         SET repo_name = '${repoData.name.replace(/'/g, "''")}',
@@ -409,11 +468,11 @@ const utilFunctions = {
         WHERE repo_url = '${url}'
       `;
         await sql.query(updateQuery);
-      } else {
+      } else if (!existingDataResult.recordset.length) {
         // No existing data, insert new data into GitHubRepoData table
         const insertQuery = `
-        INSERT INTO GitHubRepoData (id, repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
-        VALUES ('${repoData.id}', '${url}', '${repoData.name.replace(
+        INSERT INTO GitHubRepoData (repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
+        VALUES ('${url}', '${repoData.name.replace(
           /'/g,
           "''"
         )}', '${rawRepoJson.replace(/'/g, "''")}', '${rawCommitsJson.replace(
@@ -423,6 +482,7 @@ const utilFunctions = {
       `;
         await sql.query(insertQuery);
       }
+
       return {
         id: repoData.id,
         repo_url: repoData.html_url,

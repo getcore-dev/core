@@ -81,6 +81,16 @@ router.get("/comments/:commentId/replies", async (req, res) => {
   }
 });
 
+router.get("/tags", async (req, res) => {
+  try {
+    const tags = await utilFunctions.getAllTags();
+    res.json(tags);
+  } catch (err) {
+    console.error("Error fetching tags:", err);
+    res.status(500).send("Error fetching tags");
+  }
+});
+
 router.get("/posts", async (req, res) => {
   try {
     const posts = await utilFunctions.getPosts();

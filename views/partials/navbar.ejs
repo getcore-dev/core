@@ -106,7 +106,7 @@
                   <span class="material-symbols-outlined" id="nb-icon">close</span>
                 </button>
               </form>
-              <button id="expandSearch" class="inbox-button">
+              <button id="expandSearch" class="search-button">
                 <span class="material-symbols-outlined" id="nb-icon">search</span>
               </button>
             </div>
@@ -165,7 +165,6 @@
 </nav>
 
 <script>
-
   document.addEventListener('DOMContentLoaded', function() {
     const expandSearchBtn = document.getElementById('expandSearch');
     const searchForm = document.getElementById('searchForm');
@@ -181,6 +180,7 @@
       expandSearchBtn.style.display = 'block'; // Show the search icon again
     });
   });
+
   function getAllCommunities() {
     fetch('/api/communities') // Adjust this to your server's endpoint
       .then(response => response.json())

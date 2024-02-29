@@ -25,12 +25,21 @@ router.post(
   checkNotAuthenticated,
   // Validation and sanitation rules
   [
-    body('username').trim().isLength({ min: 3 }).withMessage('Username must be at least 3 characters long'),
-    body('email').trim().isEmail().normalizeEmail().withMessage('Invalid email address'),
-    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
-    body('zipcode').trim().isPostalCode('any').withMessage('Invalid zip code'),
-    body('firstname').trim().escape(),
-    body('lastname').trim().escape()
+    body("username")
+      .trim()
+      .isLength({ min: 3 })
+      .withMessage("Username must be at least 3 characters long"),
+    body("email")
+      .trim()
+      .isEmail()
+      .normalizeEmail()
+      .withMessage("Invalid email address"),
+    body("password")
+      .isLength({ min: 6 })
+      .withMessage("Password must be at least 6 characters long"),
+    body("zipcode").trim().isPostalCode("any").withMessage("Invalid zip code"),
+    body("firstname").trim().escape(),
+    body("lastname").trim().escape(),
   ],
   async (req, res, next) => {
     try {
@@ -39,7 +48,7 @@ router.post(
       if (!errors.isEmpty()) {
         // Handle the errors appropriately
         // e.g., return or render the page with error messages
-        return res.status(400).render('register', { errors: errors.array() });
+        return res.status(400).render("register", { errors: errors.array() });
       }
 
       // Continue with your existing code for user registration
@@ -71,12 +80,15 @@ router.post("/login", checkNotAuthenticated, (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) return next(err);
     if (!user) {
-      req.flash("error", info.message);
+      req.flash("error", info.message); // Assuming you have flash messages set up
       return res.redirect("/login");
     }
     req.logIn(user, (err) => {
       if (err) return next(err);
-      return res.redirect("/");
+      // Redirect user to the original URL or default to '/'
+      const redirectUrl = req.session.returnTo || "/";
+      delete req.session.returnTo; // Remove the property after using it
+      return res.redirect(redirectUrl);
     });
   })(req, res, next);
 });

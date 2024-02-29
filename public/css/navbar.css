@@ -176,19 +176,22 @@ h1, h2, h3, h4, h5, p {
 }
 
 
-.inbox-button, .logout-button, #search-button {
+.inbox-button, .logout-button, #search-button, .search-button {
   display: flex; 
   justify-content: center; 
   gap: 4px; 
   line-height: 1.5; 
   background-color: rgba(0,0,0,0);
   color: var(--primary-text-color);
-  margin: 0px 4px;
   font-size: var(--default-font-size); /* Button font size */
   border: 0;
   border-radius: 6px; 
   text-decoration: none; /* Remove underline */
   transition: background-color 0.15s, transform 0.15s; /* Transition effects */
+}
+
+.search-button {
+  padding: 0px;
 }
 
 
@@ -438,7 +441,7 @@ margin-top: 20px;
     display: flex;
     align-items: center;
     margin-top: 0px;
-
+    gap: 10px;
   } 
 
   #nb-icon {
@@ -463,8 +466,8 @@ margin-top: 20px;
   .nav-text-and-user-btns {
     position: relative;
     top: 13px;
-    right: 3px;
-  }
+    right: 28px;
+    }
 
   .notification-popup {
     position: absolute;

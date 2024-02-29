@@ -236,9 +236,10 @@ ORDER BY c.created_at DESC;`;
       postData.gitHubLinkPreview = await utilFunctions.getGitHubRepoPreview(
         postData.link
       );
-      postData.gitHubMatchUsername = postData.user.github_url == JSON.parse(postData.gitHubLinkPreview.raw_json).owner.login;
+      postData.gitHubMatchUsername =
+        postData.user.github_url ==
+        JSON.parse(postData.gitHubLinkPreview.raw_json).owner.login;
     }
-
 
     // Add link preview to postData if link exists
     if (postData.link) {
@@ -261,6 +262,50 @@ ORDER BY c.created_at DESC;`;
   } catch (err) {
     console.error("Database query error:", err);
     res.status(500).send("Error fetching post and comments");
+  }
+});
+
+router.get("/posts/:postId/edit", checkAuthenticated, async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const post = await postQueries.getPostById(postId);
+    if (post.user_id !== req.user.id) {
+      return res.status(403).send("You are not authorized to edit this post");
+    }
+    post.community_name = await utilFunctions.getCommunityName(
+      post.communities_id,
+      false
+    );
+    post.tags = await utilFunctions.getTags(postId);
+    console.log(post.tags);
+
+    res.render("edit-post.ejs", { user: req.user, post });
+  } catch (err) {
+    console.error("Database query error:", err);
+    res.status(500).send("Error fetching post");
+  }
+});
+
+router.put("/posts/:postId/edit", checkAuthenticated, async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    // Directly pass the tags from the body without converting them
+    const postData = {
+      ...req.body, // Spread other properties
+      tags: req.body.tags, // This can now be an array of IDs or names
+    };
+
+    console.log(postData);
+
+    const updatedPost = await postQueries.editPost(postId, postData);
+    if (updatedPost) {
+      res.redirect(`/posts/${postId}`);
+    } else {
+      throw new Error("Post update failed"); // Or handle more gracefully
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
   }
 });
 
