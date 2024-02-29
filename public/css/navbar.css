@@ -654,6 +654,18 @@ margin-top: 20px;
   .menu-content a {
     color: #fff;
   }
+  
+  #nb-icon {
+    color: var(--dark-mode-text-color);
+  }
+  
+  .search-input {
+     background-color: var(--dark-mode-border-color);
+     }
+  
+  .search-form {
+     background-color: var(--dark-mode-body-color);
+  }
 
 }
 
