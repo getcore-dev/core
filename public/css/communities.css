@@ -754,6 +754,10 @@ div .mini-link-desc {
     color: #eee;
   }
 
+  .job {
+    background-color: var(--dark-mode-main-color);
+  }
+
   .main-reaction-button:hover, .boost-button:hover, .reaction-button:hover {
     background-color: var(--dark-mode-border-color);
   }

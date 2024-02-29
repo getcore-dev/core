@@ -193,8 +193,6 @@
               // Main post div
               const postDiv = document.createElement('div');
               postDiv.className = 'post';
-              postDiv.onclick = () => window.location.href = '/posts/' + post.id;
-
 
               // Post content div
               const postContentDiv = document.createElement('div');
@@ -203,6 +201,8 @@
               // Post header div
               const postHeaderDiv = document.createElement('div');
               postHeaderDiv.className = 'post-header';
+              postHeaderDiv.onclick = () => window.location.href = '/posts/' + post.id;
+
 
               const postHeaderUsernameDiv = document.createElement('div');
               postHeaderUsernameDiv.className = 'post-header-username';
@@ -223,6 +223,7 @@
               usernameLink.href = '/profile/' + post.username;
               usernameLink.innerHTML = '<strong>' + post.username + '</strong>';
               usernameDiv.appendChild(usernameLink);
+
 
               const communityText = document.createElement('span');
               communityText.className = 'communities-text';
@@ -257,6 +258,8 @@
               const titleDiv = document.createElement('div');
               titleDiv.className = 'title';
               titleDiv.innerText = post.title;
+              titleDiv.onclick = () => window.location.href = '/posts/' + post.id;
+
               postContentDiv.appendChild(titleDiv);
 
               const linkPreviewDiv = document.createElement('div');
