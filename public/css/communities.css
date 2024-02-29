@@ -2,27 +2,34 @@
 
 :root {
   --primary-text-color: #1D2935;
-  --light-mode-main-color: #fff;
-  --light-mode-body-color: #F6F8FA;
-  --border-color: #D8E0E9;
+  --light-mode-body-color: #fff;
+  --light-mode-main-color: #F6F8FA;
+  --light-mode-hover-color: #E5EBF1;
+  --border-color: #DCE6F2;
+  --light-mode-button-color: #DCE6F2;
+  --light-mode-button-hover-color: #BECBDA;
+  --light-mode-text-color: #243342;
   --hover-background-color: #ddd;
   --active-indicator-color: #0e6655;
   --dark-mode-main-color: #1B1F22;
   --dark-mode-body-color: #16191B;
+  --dark-mode-hover-color: #24292D;
+  --dark-mode-button-hover-color: #363F44;
+  --dark-mode-lighter-color: #1F2427;
   --dark-mode-text-color: #fff;
-  --dark-mode-background-text-color: #A0AEBB;
   --dark-mode-border-color: #272D31;
   --dark-mode-hover-background-color: #444;
 }
 
 
 body {
+  color: var(--light-mode-text-color);
   font-family: 'Roboto', sans-serif;
 }
 
 .post, .job {
   display: flex; 
-  background: var(--light-mode-body-color);
+  background: var(--light-mode-main-color);
   border-radius: 6px;
   margin: 10px;
   flex-direction: row;
@@ -176,7 +183,7 @@ div.vote-interactions {
 }
 
 .reaction-button, .boost-button, .main-reaction-button {
-  background-color: var(--border-color);
+  background-color: var(--light-mode-button-color);
   border: 0;
   color: #666;
   border-radius: 6px;
@@ -186,7 +193,7 @@ div.vote-interactions {
 }
 
 .main-reaction-button:hover, .boost-button:hover, .reaction-button:hover {
-  background-color: #f1f1f1;
+  background-color: var(--light-mode-button-hover-color);
   cursor: pointer;
 }
 
@@ -195,10 +202,6 @@ div.vote-interactions {
   vertical-align: -2px;
 }
 
-.reaction-button:hover {
-  background-color: #f1f1f1;
-  cursor: pointer;
-}
 
 .reaction-button .material-symbols-outlined {
   font-size: 15px;
@@ -243,6 +246,7 @@ div.vote-interactions {
 .link-preview {
   background-color: var(--border-color);
   border-radius: 6px;
+  margin: 21px 0px;
 }
 
 .reaction-menu {
@@ -276,7 +280,6 @@ div.vote-interactions {
   font-size: 21px;
   font-weight: 500;
   margin: 12px 0px;
-  color: #333; 
 }
 
 
@@ -312,7 +315,6 @@ div.vote-interactions {
 .description {
   font-size: 14px;
   font-weight: normal;
-  padding-top: 5px;
   line-height: 1.5em; /* Adjust based on your design */
   overflow: hidden;
   display: -webkit-box;
@@ -326,10 +328,6 @@ div.vote-interactions {
   margin: 0px 4px;
   color: #69956e;
   font-weight: bold;
-}
-
-.title {
-  color: #333; 
 }
 
 .user-info, .post-info {
@@ -483,7 +481,7 @@ div .mini-link-title {
 }
 
 .mini-link-body {
-  color: #666;
+  color: var(--light-mode-text-color);
   margin-left: 6px;
 }
 
@@ -629,6 +627,10 @@ div .mini-link-desc {
   flex-direction: row;
 }
 
+.post:hover, .job:hover {
+  background-color: var(--light-mode-hover-color);
+}
+
 .company-logo-container {
   border-radius: 50%;
   display: flex;
@@ -711,8 +713,8 @@ div .mini-link-desc {
   }
 
   .community-selector .communities {
-    background-color: var(--light-mode-body-color);
-    border: 1px solid var(--light-mode-body-color);
+    background-color: var(--light-mode-main-color);
+    border: 1px solid var(--light-mode-main-color);
     border-radius: 6px; 
     padding:4px 6px;
 
@@ -732,6 +734,12 @@ div .mini-link-desc {
   .post {
     background: var(--light-mode-body-color);
   }
+
+  .post:hover {
+    background-color: var(--light-mode-hover-color);
+  }
+
+  
   .job-content {
       margin-left: 30px;
       margin-right: 10px;
@@ -793,13 +801,11 @@ div .mini-link-desc {
       background-color: var(--dark-mode-main-color);
 
   }
- .job-content:hover {
-      background-color: rgb(38,38,38);
-  }
 
 }
 @media (max-width: 768px) {
   .post {
+    background-color: var(--light-mode-main-color);
     border-radius: 6px;
     border: 0;
     padding: 0px;
@@ -882,6 +888,11 @@ div .mini-link-desc {
       background-color: #111; /* Dark background */
       color: #ddd; /* Light text */
   }
+  @media (max-width: 768px) {
+    .post {
+      background-color: var(--dark-mode-main-color);
+    }
+  }
 
   #see-more-core-logo {
     filter: invert(1);
@@ -946,7 +957,11 @@ div .mini-link-desc {
   /* Post styling adjustments */
 
   .post:hover, .job-content:hover, .com-btn:hover {
-      background-color: var(--dark-mode-body-color); /* Dark background on hover */
+      background-color: var(--dark-mode-hover-color); /* Dark background on hover */
+  }
+
+  .reaction-button:hover, .boost-button:hover, .main-reaction-button:hover {
+      background-color: #363F44; /* Darker background on hover */
   }
   
   .post-info {

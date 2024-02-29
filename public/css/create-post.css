@@ -124,7 +124,8 @@ div.form-group {
     border: 1px solid #0E954F;
     border: none;
     width: 100%;
-    margin-top: 30px;
+    margin-top: 15px;
+    margin-bottom: 15px;
     padding: 15px;
     color: white;
     border-radius: 6px;
@@ -182,7 +183,14 @@ div.form-group {
 .post-type {
     transition: background-color 0.3s ease;
     transition: border-color 0.3s ease;
+  }
 
+  .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: var(--light-mode-body-color) !important;
+    border-color: var(--border-color) !important;
+    color: var(--primary-text-color);
+    margin-top: 0px !important;
+    padding-top: 3px !important;
   }
 
 /* Responsive styles */
@@ -248,6 +256,16 @@ div.form-group {
         background-color: var(--dark-mode-main-color);
         border-color: var(--dark-mode-border-color);
         color: var(--dark-mode-text-color);
+    }
+    
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: var(--dark-mode-main-color) !important;
+        border-color: var(--dark-mode-border-color) !important;
+        color: var(--dark-mode-text-color);
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        border-color: var(--dark-mode-border-color) !important;
     }
 
     .main-container input[type="text"],

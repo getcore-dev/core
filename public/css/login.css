@@ -141,15 +141,21 @@ main {
     border-color: var(--dark-mode-border-color);
     }
 
-  .input-container input {
-    background-color: var(--dark-mode-body-color); /* Dark background for input fields */
-    border: 1px solid var(--dark-mode-border-color); /* Darker border for input fields */
+  .input-container input, input:-webkit-autofill,
+  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:focus
+  input:-webkit-autofill, 
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    -webkit-text-fill-color: #D2D7DB;
+    -webkit-box-shadow: 0 0 0px 1000px var(--dark-mode-main-color) inset;
+    transition: background-color 5000s ease-in-out 0s;
+    background-color: var(--dark-mode-main-color) !important; /* Dark background for input fields */
     color: #f4f4f4; /* Light text color */
-  }
-
-  .input-container input:-internal-autofill-selected {
-    background-color: var(--dark-mode-body-color) !important; /* Dark background for autofill */
-    color: #f4f4f4 !important; /* Light text color for autofill */
   }
 
   #login h1 {

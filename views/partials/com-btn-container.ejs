@@ -1,26 +1,4 @@
 <div id="com-btn-container" class="column">
-  <div class="com-btn-container-header">
-    <% if (user) { %>
-
-    <div class="user-info">
-      <div class="avatar-com-container">
-        <img src="<%= user.avatar %>" alt="Avatar" />
-      </div>
-      <div class="username">
-        <a class="user" href="/profile/<%= user.username %>">
-          <%= user.username %>
-        </a>
-      </div>
-
-    </div>
-
-    <% } else { %>
-    <div class="create-post-btn" onclick="window.location.href = '/login';">
-      <span class="material-symbols-outlined">login</span> Login
-    </div>
-    <% } %>
-  </div>
-
   <h4>Communities</h4>
   <div class="communities-container">
     loading...

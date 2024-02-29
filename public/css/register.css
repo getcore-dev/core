@@ -136,6 +136,24 @@ main {
       color: #f4f4f4;
   }
 
+  .input-container input, input:-webkit-autofill,
+  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:focus
+  input:-webkit-autofill, 
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    -webkit-text-fill-color: #D2D7DB;
+    -webkit-box-shadow: 0 0 0px 1000px var(--dark-mode-body-color) inset;
+    transition: background-color 5000s ease-in-out 0s;
+    background-color: var(--dark-mode-body-color) !important; /* Dark background for input fields */
+    color: var(--dark-mode-text-color); /* Light text color */
+    font-size: 14px;
+  }
+
   #registration, #login{
       border-color: var(--dark-mode-border-color);
       background: var(--dark-mode-main-color);
@@ -146,8 +164,7 @@ main {
   }
 
   .input-container input {
-      background-color: var(--dark-mode-body-color);
-      border: 1px solid var(--dark-mode-border-color);
+      background-color: var(--dark-mode-body-color) !important;
       color: #f4f4f4;
   }
 
