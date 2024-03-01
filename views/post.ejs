@@ -81,7 +81,6 @@
                   <span class="material-symbols-outlined">more_horiz</span>
                 </button>
                 <div class="dropdown-content" style="display: none;">
-                  hellloooo 123
                 </div>
               </div>
             </div>
@@ -183,13 +182,20 @@
                 <div class="sidebar-link-info">
                   <div class="sidebar-link-info-url">
                     <div class="github-repo-title">
-                      <% if (post.gitHubMatchUsername) { %>
 
-                      <% } %>
+
+
                       <h4>GitHub: <%= gitHubData.name %></h4>
+                                            <% if (post.gitHubMatchUsername) { %>
                       <span class="material-symbols-outlined" style=" font-weight: 500; color: green; font-size: 17px;">
                         done
                       </span>
+                                            <% } else { %>
+                                            <span class="material-symbols-outlined" style=" font-weight: 500; color: red; font-size: 17px;">
+                        close
+                      </span>
+                      <% } %>
+                                             
                     </div>
                     <div class="github-repo-description">
                       <p>
