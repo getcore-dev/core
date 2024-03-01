@@ -347,6 +347,7 @@ margin-top: 20px;
   margin-left: 17px;
   margin-left: 17px;
   margin-top: 19px;
+  white-space-collapse: collapse;
 }
 
 .nav-text-container a {

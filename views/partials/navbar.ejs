@@ -15,10 +15,10 @@
           <% if (postUser) { %>
           <a class="nav-text" href="/" style="font-weight: 400;"><strong>CORE</strong></a>/<%= community.shortname %></a>/<a class="navbar-user-info" href="/profile/<%= postUser %>"><%= postUser %></a>
           <% } else { %>
-          <a class="nav-text" href="/" style="font-weight: 400;"><strong>CORE</strong></a>/<a class="navbar-user-info" href="/communities/<%= community.id %>">/<%= community.shortname %></a>
+          <a class="nav-text" href="/" style="font-weight: 400;"><strong>CORE</strong></a>/<a class="navbar-user-info" href="/communities/<%= community.id %>"><%= community.shortname %></a>
           <% } %>
           <% } else { %>
-          <a class="nav-text" href="/" style="font-weight: 400;"><strong>CORE</strong></a>/
+          <a class="nav-text" href="/" style="font-weight: 400;"><strong>CORE</strong></a>/ 
           <% } %>
         </div>
         <div class="nav-btns">

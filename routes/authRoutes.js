@@ -54,14 +54,27 @@ router.post(
       // Continue with your existing code for user registration
       const userId = uuidv4();
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
-      await sql.query`INSERT INTO users (id, username, email, password, zipcode, firstname, lastname) VALUES (
-        ${userId},
-        ${req.body.username},
-        ${req.body.email},
-        ${hashedPassword},
-        ${req.body.zipcode},
-        ${req.body.firstname},
-        ${req.body.lastname})`;
+      await sql.query`INSERT INTO users (
+    id, 
+    username, 
+    email, 
+    password, 
+    zipcode, 
+    firstname, 
+    lastname, 
+    created_at, 
+    avatar
+) VALUES (
+    ${userId},
+    ${req.body.username},
+    ${req.body.email},
+    ${hashedPassword},
+    ${req.body.zipcode},
+    ${req.body.firstname},
+    ${req.body.lastname},
+    ${new Date()},
+    'img/default-avatar.png'
+)`;
 
       res.redirect("/login");
     } catch (error) {
