@@ -9,7 +9,7 @@
   --notification-background-color: #fff;
   --dark-mode-background-color: #1B1F22;
   --dark-mode-text-color: #fff;
-  --dark-mode-body-color: #16191B;
+  --dark-mode-body-color: #000;
   --dark-mode-border-color: #272D31;
   --dark-mode-hover-background-color: #444;
   --primary-text-color: #1D2935;
@@ -347,6 +347,7 @@ margin-top: 20px;
   margin-left: 17px;
   margin-left: 17px;
   margin-top: 19px;
+  white-space-collapse: collapse;
 }
 
 .nav-text-container a {
@@ -364,10 +365,9 @@ margin-top: 20px;
 }
 
 #user-avatar {
-  width: 45px;
+  width: 38px;
   border-radius: 50%;
-  height: 45px;
-  margin-top: -3px;
+  height: 38px;
 }
 #search-bar {
   padding: 4px 6px;
