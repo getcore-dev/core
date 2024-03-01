@@ -365,10 +365,9 @@ margin-top: 20px;
 }
 
 #user-avatar {
-  width: 45px;
+  width: 38px;
   border-radius: 50%;
-  height: 45px;
-  margin-top: -3px;
+  height: 38px;
 }
 #search-bar {
   padding: 4px 6px;
