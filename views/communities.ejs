@@ -133,7 +133,7 @@
     </div>
   </div>
 
-  <script>
+  <script defer>
     function showLoader() {
       document.getElementById('loadingAnimation').style.display = 'block';
     }
@@ -241,7 +241,7 @@ expand_more
             communityLink.className = 'community';
             communityLink.innerText = "";
             usernameDiv.appendChild(communityLink);
-            fetchPromises.push(fetchCommunity(post.communities_id, communityLink));
+            fetchCommunity(post.communities_id, communityLink);
 
 
 
@@ -526,15 +526,6 @@ expand_more
         .then(response => response.json())
         .then(community => {
           container.innerHTML = community.shortname;
-        });
-    }
-
-
-    function fetchTags(post_id, container) {
-      return fetch(`/api/tags/${post_id}`)
-        .then(response => response.json())
-        .then(tags => {
-          container.innerHTML = tags.map(tag => `<span id="post-flair">${tag.name}</span>`).join(' ');
         });
     }
 

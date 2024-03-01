@@ -16,6 +16,7 @@ const upload = multer({ dest: "uploads/" });
 const { BlobServiceClient } = require("@azure/storage-blob");
 const AZURE_STORAGE_CONNECTION_STRING =
   process.env.AZURE_STORAGE_CONNECTION_STRING; // Ensure this is set in your environment variables
+const cacheMiddleware = require("../middleware/cache");
 
 // Home page
 router.get("/", viewController.renderHomePage);
@@ -56,19 +57,28 @@ router.get("/404", (req, res) => {
   res.render("error.ejs", { user: req.user, error });
 });
 
-router.get("/profile/:username", viewController.renderUserProfile);
+router.get(
+  "/profile/:username",
+  cacheMiddleware(1200),
+  viewController.renderUserProfile
+);
 
 // Jobs page
-router.get("/jobs", (req, res) => {
+router.get("/jobs", cacheMiddleware(1200), (req, res) => {
   res.render("jobs.ejs", { user: req.user });
 });
 
 // Learning page
-router.get("/learning", checkAuthenticated, (req, res) => {
-  res.render("learning.ejs", { user: req.user });
-});
+router.get(
+  "/learning",
+  checkAuthenticated,
+  cacheMiddleware(1200),
+  (req, res) => {
+    res.render("learning.ejs", { user: req.user });
+  }
+);
 
-router.get("/updates", async (req, res) => {
+router.get("/updates", cacheMiddleware(1200), async (req, res) => {
   try {
     const commits = await githubService.fetchCommits();
 
@@ -102,11 +112,6 @@ router.get("/updates", async (req, res) => {
 router.get("/post/create", checkAuthenticated, async (req, res) => {
   const tags = await postQueries.getAllTags();
   res.render("create-post.ejs", { user: req.user, tags });
-});
-
-// Individual post page
-router.get("/post", async (req, res) => {
-  res.render("post.ejs", { user: req.user });
 });
 
 router.get("/edit-profile", checkAuthenticated, async (req, res) => {

@@ -14,6 +14,7 @@
   --dark-mode-hover-background-color: #444;
   --primary-text-color: #1D2935;
   --light-mode-main-color: #fff;
+  --light-mode-text-color: #243342;
   --light-mode-body-color: #F6F8FA;
   --border-color: #E5EAF0;
 
@@ -216,6 +217,44 @@ h1, h2, h3, h4, h5, p {
   padding-bottom: 6px;
   margin-top: 9px;
 }
+
+.menu-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 40px;
+  height: 25px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.menu-bar {
+  z-index: 1000;
+  width: 25px;
+  height: 2px;
+  background-color: var(--light-mode-text-color);
+  transition: all 0.3s ease;
+}
+
+.menu-button.active .top-bar {
+  transform: rotate(45deg) translate(7px, 7px);
+}
+
+.menu-button.active .middle-bar {
+  opacity: 0;
+}
+
+.menu-button.active .bottom-bar {
+  transform: rotate(-45deg) translate(4px, -4px);
+}
+
 
 .navbar-button:hover {
   cursor: pointer; /* Pointer cursor on hover */
@@ -519,8 +558,8 @@ margin-top: 20px;
 
   .hamburger-menu {
     position: absolute;
-    left: 10px; 
-    top: 12px; 
+    left: 12px;
+    top: 20px;
     z-index: 2;
   }
 
@@ -700,6 +739,10 @@ margin-top: 20px;
     background-color: var(--dark-mode-body-color); /* Darker background color for inputs */
     color: var(--navbar-background-color);
     border-color: var(--dark-mode-border-color); 
+  }
+
+  .menu-bar {
+    color: var(--dark-mode-text-color);
   }
 
   /* Navbar background and text colors */

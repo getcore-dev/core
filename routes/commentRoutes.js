@@ -66,7 +66,4 @@ router.delete("/comment/:commentId", checkAuthenticated, async (req, res) => {
   }
 });
 
-
-
-
 module.exports = router;

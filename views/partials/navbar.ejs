@@ -58,7 +58,13 @@
     <div class="top-bar">
       <div class="hamburger-menu">
 
-        <span class="material-symbols-outlined" id="menu-icon" style="z-index: 1000;"> menu </span>
+        <div class="menu-wrapper">
+          <button id="menu-button" class="menu-button">
+            <div class="menu-bar top-bar"></div>
+            <div class="menu-bar middle-bar"></div>
+            <div class="menu-bar bottom-bar"></div>
+          </button>
+        </div>
         <div class="menu-content" id="menu-content">
           <a href="/">
             <div class="menu-item">
@@ -175,6 +181,12 @@
 </nav>
 
 <script>
+  const menuButton = document.getElementById('menu-button');
+
+  menuButton.addEventListener('click', function() {
+    this.classList.toggle('active');
+  });
+
   document.addEventListener('DOMContentLoaded', function() {
     const expandSearchBtn = document.getElementById('expandSearch');
     const searchForm = document.getElementById('searchForm');
@@ -209,14 +221,13 @@
 
   getAllCommunities();
 
-  document.getElementById("menu-icon").onclick = function(event) {
+  document.getElementById("menu-button").onclick = function(event) {
     var content = document.getElementById("menu-content");
     var overlay = document.getElementById("overlay");
-    var menuIcon = document.getElementById("menu-icon");
+    var menuIcon = document.getElementById("menu-button");
 
     if (content.classList.contains("sidebar-open")) {
       content.classList.remove("sidebar-open");
-      menuIcon.textContent = 'menu';
       overlay.style.opacity = '0';
       setTimeout(() => {
         overlay.style.pointerEvents = 'none'; // Block clicks when the overlay is fully transparent
@@ -225,7 +236,6 @@
     } else {
       content.classList.add("sidebar-open");
       overlay.style.visibility = "visible";
-      menuIcon.textContent = 'close';
       overlay.style.opacity = '1';
       overlay.style.pointerEvents = 'auto';
       document.body.style.overflow = "hidden"; // Disable scrolling

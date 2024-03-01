@@ -398,6 +398,148 @@ const utilFunctions = {
     }
   },
 
+  upsertGitHubData: async (userData, reposData) => {
+    const pool = new sql.ConnectionPool(config); // Ensure 'config' is your SQL Server configuration
+    await pool.connect();
+
+    try {
+      const transaction = pool.transaction();
+      await transaction.begin();
+
+      let request = transaction.request(); // Use the request from the transaction
+
+      // Upsert user data
+      let userUpsertQuery = `
+        MERGE INTO GitHubUserData AS target
+        USING (SELECT ${userData.id} AS id) AS source
+        ON (target.id = source.id)
+        WHEN MATCHED THEN
+          UPDATE SET 
+            username = '${userData.username.replace(/'/g, "''")}', 
+            user_url = '${userData.user_url.replace(/'/g, "''")}', 
+            avatar_url = '${userData.avatar_url.replace(/'/g, "''")}', 
+            time_fetched = GETDATE(), 
+            raw_json = '${JSON.stringify(userData).replace(/'/g, "''")}'
+        WHEN NOT MATCHED THEN
+          INSERT (id, username, user_url, avatar_url, time_fetched, raw_json)
+          VALUES (${userData.id}, '${userData.username.replace(
+        /'/g,
+        "''"
+      )}', '${userData.user_url.replace(
+        /'/g,
+        "''"
+      )}', '${userData.avatar_url.replace(
+        /'/g,
+        "''"
+      )}', GETDATE(), '${JSON.stringify(userData).replace(/'/g, "''")}');
+      `;
+      await request.query(userUpsertQuery);
+
+      // Upsert repos data
+      for (const repo of reposData) {
+        let repoUpsertQuery = `
+          MERGE INTO GitHubUserRepos AS target
+          USING (SELECT ${repo.id} AS repo_id) AS source
+          ON (target.repo_id = source.repo_id)
+          WHEN MATCHED THEN
+            UPDATE SET 
+              user_id = ${userData.id},
+              repo_name = '${repo.name.replace(/'/g, "''")}',
+              repo_url = '${repo.html_url.replace(/'/g, "''")}',
+              description = '${(repo.description || "").replace(/'/g, "''")}',
+              stars = ${repo.stargazers_count},
+              time_fetched = GETDATE(),
+              raw_json = '${JSON.stringify(repo).replace(/'/g, "''")}'
+          WHEN NOT MATCHED THEN
+            INSERT (repo_id, user_id, repo_name, repo_url, description, stars, time_fetched, raw_json)
+            VALUES (${repo.id}, ${userData.id}, '${repo.name.replace(
+          /'/g,
+          "''"
+        )}', '${repo.html_url.replace(/'/g, "''")}', '${(
+          repo.description || ""
+        ).replace(/'/g, "''")}', ${
+          repo.stargazers_count
+        }, GETDATE(), '${JSON.stringify(repo).replace(/'/g, "''")}');
+        `;
+        await request.query(repoUpsertQuery);
+      }
+
+      // Commit transaction
+      await transaction.commit();
+    } catch (error) {
+      console.error("Error updating GitHub data:", error);
+      if (pool.connected) {
+        await pool.close();
+      }
+      throw error; // Rethrow the error for further handling
+    }
+
+    if (pool.connected) {
+      await pool.close();
+    }
+  },
+
+  getGitHubUserReposPreview: async (url) => {
+    const isGitHubUserUrl = /^https?:\/\/github\.com\/[^\/]+\/?$/.test(url);
+    if (!isGitHubUserUrl) {
+      throw new Error("URL must be a GitHub user profile URL");
+    }
+
+    const [, username] = url.match(/github\.com\/([^\/]+)/);
+
+    try {
+      const userApiUrl = `https://api.github.com/users/${username}`;
+      const reposApiUrl = `${userApiUrl}/repos`;
+
+      const [userResponse, reposResponse] = await Promise.all([
+        axios.get(userApiUrl, {
+          headers: { "User-Agent": "request" },
+          timeout: 5000,
+        }),
+        axios.get(reposApiUrl, {
+          headers: { "User-Agent": "request" },
+          params: { per_page: 5 },
+          timeout: 5000,
+        }),
+      ]);
+
+      if (userResponse.status !== 200 || reposResponse.status !== 200) {
+        throw new Error(
+          `Request to GitHub API failed with status: ${userResponse.status} or ${reposResponse.status}`
+        );
+      }
+
+      const userData = userResponse.data;
+      const reposData = reposResponse.data;
+
+      // Convert data to JSON strings for storing
+      const rawUserJson = JSON.stringify(userData);
+      const rawReposJson = JSON.stringify(reposData);
+
+      // Here you would insert/update the data into your database as required.
+      // For example, you could update an existing user record with new repo data,
+      // or insert a new record if one doesn't exist.
+      // This part is omitted for brevity and should be implemented according to your application's needs.
+
+      return {
+        username: userData.login,
+        user_url: userData.html_url,
+        avatar_url: userData.avatar_url,
+        repos: reposData.map((repo) => ({
+          id: repo.id,
+          repo_url: repo.html_url,
+          repo_name: repo.name,
+          description: repo.description,
+          stars: repo.stargazers_count,
+        })),
+        time_fetched: new Date().toISOString(),
+      };
+    } catch (error) {
+      console.error("Error fetching GitHub user and repository data:", error);
+      throw error; // Re-throw the error for handling in the calling code
+    }
+  },
+
   getGitHubRepoPreview: async (url) => {
     const isGitHubUrl = /^https?:\/\/github\.com\/.+\/.+/.test(url);
     if (!isGitHubUrl) {
