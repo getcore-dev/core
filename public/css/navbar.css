@@ -229,7 +229,7 @@ h1, h2, h3, h4, h5, p {
   flex-direction: column;
   justify-content: space-around;
   width: 40px;
-  height: 25px;
+  height: 21px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -237,14 +237,14 @@ h1, h2, h3, h4, h5, p {
 
 .menu-bar {
   z-index: 1000;
-  width: 25px;
+  width: 19px;
   height: 2px;
   background-color: var(--light-mode-text-color);
   transition: all 0.3s ease;
 }
 
 .menu-button.active .top-bar {
-  transform: rotate(45deg) translate(7px, 7px);
+  transform: rotate(45deg) translate(4px, 4px);
 }
 
 .menu-button.active .middle-bar {
@@ -252,7 +252,7 @@ h1, h2, h3, h4, h5, p {
 }
 
 .menu-button.active .bottom-bar {
-  transform: rotate(-45deg) translate(4px, -4px);
+  transform: rotate(-45deg) translate(5px, -5px);
 }
 
 
@@ -558,8 +558,8 @@ margin-top: 20px;
 
   .hamburger-menu {
     position: absolute;
-    left: 12px;
-    top: 20px;
+    left: 15px;
+    top: 22px;
     z-index: 2;
   }
 
@@ -742,7 +742,7 @@ margin-top: 20px;
   }
 
   .menu-bar {
-    color: var(--dark-mode-text-color);
+    background-color: var(--dark-mode-text-color);
   }
 
   /* Navbar background and text colors */

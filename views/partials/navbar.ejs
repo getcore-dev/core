@@ -181,12 +181,6 @@
 </nav>
 
 <script>
-  const menuButton = document.getElementById('menu-button');
-
-  menuButton.addEventListener('click', function() {
-    this.classList.toggle('active');
-  });
-
   document.addEventListener('DOMContentLoaded', function() {
     const expandSearchBtn = document.getElementById('expandSearch');
     const searchForm = document.getElementById('searchForm');
@@ -221,44 +215,39 @@
 
   getAllCommunities();
 
-  document.getElementById("menu-button").onclick = function(event) {
-    var content = document.getElementById("menu-content");
-    var overlay = document.getElementById("overlay");
-    var menuIcon = document.getElementById("menu-button");
-
-    if (content.classList.contains("sidebar-open")) {
-      content.classList.remove("sidebar-open");
-      overlay.style.opacity = '0';
-      setTimeout(() => {
-        overlay.style.pointerEvents = 'none'; // Block clicks when the overlay is fully transparent
-      }, 500);
-      document.body.style.overflow = ""; // Enable scrolling
-    } else {
-      content.classList.add("sidebar-open");
-      overlay.style.visibility = "visible";
-      overlay.style.opacity = '1';
-      overlay.style.pointerEvents = 'auto';
-      document.body.style.overflow = "hidden"; // Disable scrolling
-    }
-    event.stopPropagation();
-  };
-
   document.addEventListener('click', function(event) {
     var content = document.getElementById("menu-content");
     var overlay = document.getElementById("overlay");
-    var menuIcon = document.getElementById("menu-icon");
+    var menuButton = document.getElementById("menu-button"); // Ensure this is the same ID as your menu button
+    var menuIcon = document.getElementById("menu-icon"); // Assuming you have an element with this ID for additional icons or text
 
-    if (!content.contains(event.target) && event.target !== menuIcon) {
+    // If clicking outside content and not on the menuIcon, close the sidebar and overlay if they are open
+    if (!content.contains(event.target) && event.target !== menuIcon && !menuButton.contains(event.target)) { // Added check for menuButton
       if (content.classList.contains("sidebar-open")) {
         content.classList.remove("sidebar-open");
         overlay.style.opacity = '0';
         setTimeout(() => {
           overlay.style.pointerEvents = 'none'; // Block clicks when the overlay is fully transparent
         }, 500);
-        menuIcon.textContent = 'menu';
+        if (menuButton.classList.contains('active')) { // Check if menu is active then toggle
+          menuButton.classList.toggle('active');
+        }
+        menuIcon.textContent = 'menu'; // If you have a text indicator that should switch back to 'menu'
+        document.body.style.overflow = ""; // Re-enable scrolling
+      }
+    } else if (event.target === menuButton || menuButton.contains(event.target)) { // If clicking on the menuButton
+      menuButton.classList.toggle('active');
+      content.classList.toggle("sidebar-open");
+      if (content.classList.contains("sidebar-open")) {
+        overlay.style.opacity = '1';
         overlay.style.pointerEvents = 'auto';
-        document.body.style.overflow = "hidden"; // Disable scrolling
-        document.body.style.overflow = "";
+        document.body.style.overflow = "hidden"; // Disable scrolling when sidebar is open
+      } else {
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+          overlay.style.pointerEvents = 'none';
+        }, 500);
+        document.body.style.overflow = ""; // Re-enable scrolling when sidebar is closed
       }
     }
   });
