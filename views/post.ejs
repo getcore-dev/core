@@ -634,25 +634,20 @@ const totalReplies = countAllReplies(comment.replies);
         <% } %>
         <% renderComments(post.comments); %>
         <div class="tags-div">
-          <% if (post.post_type == "project") { %>
-          <% 
-  let gitHubData;
-  try {
-    gitHubData = JSON.parse(post.gitHubLinkPreview.raw_json);
-  } catch(e) {
-    console.error('Error parsing JSON', e);
-    gitHubData = {}; // Set a default empty object in case of error
-  }
-%>
 
-
-          <% if (post.tags && post.tags.length > 0) { %>
           <div class="tags">
+            <% if (post.tags && post.tags.length > 0) { %>
             <% post.tags.forEach(tag => { %>
             <span class="tag-flair">
               <a href="#" class="tag"><%= tag.name %></a>
             </span>
             <% }); %>
+            <% } %>
+            <% if (post.post_type == "project") { %>
+
+            <% 
+let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {};
+%>
             <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
             <% gitHubData.topics.forEach(topic => { %>
             <span class="tag-flair" id="github-flair">
@@ -661,7 +656,6 @@ const totalReplies = countAllReplies(comment.replies);
             <% }); %>
             <% } %>
           </div>
-          <% } %>
           <% } %>
 
 
