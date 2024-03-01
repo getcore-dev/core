@@ -186,16 +186,16 @@
 
 
                       <h4>GitHub: <%= gitHubData.name %></h4>
-                                            <% if (post.gitHubMatchUsername) { %>
+                      <% if (post.gitHubMatchUsername) { %>
                       <span class="material-symbols-outlined" style=" font-weight: 500; color: green; font-size: 17px;">
                         done
                       </span> Verified
-                                            <% } else { %>
-                                            <span class="material-symbols-outlined" style=" font-weight: 500; color: red; font-size: 17px;">
+                      <% } else { %>
+                      <span class="material-symbols-outlined" style=" font-weight: 500; color: red; font-size: 17px;">
                         close
                       </span> Not verified
                       <% } %>
-                                             
+
                     </div>
                     <div class="github-repo-description">
                       <p>
@@ -389,47 +389,13 @@
             <button class="sort-option" onclick="sortComments('newest')">Newest</button>
           </div>
         </div>
-        <div class="tags-div">
-          <% if (post.post_type == "project") { %>
-          <% 
-  let gitHubData;
-  try {
-    gitHubData = JSON.parse(post.gitHubLinkPreview.raw_json);
-  } catch(e) {
-    console.error('Error parsing JSON', e);
-    gitHubData = {}; // Set a default empty object in case of error
-  }
-%>
-
-
-          <% if (post.tags && post.tags.length > 0) { %>
-          <div class="tags">
-            <% post.tags.forEach(tag => { %>
-            <span class="tag-flair">
-              <a href="#" class="tag"><%= tag.name %></a>
-            </span>
-            <% }); %>
-            <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
-            <% gitHubData.topics.forEach(topic => { %>
-            <span class="tag-flair" id="github-flair">
-              <a href="#" class="tag"><%= topic %></a>
-            </span>
-            <% }); %>
-            <% } %>
-          </div>
-          <% } %>
-          <% } %>
-
-
-        </div>
-
         <% if (user) { %>
         <div class="comment-form">
           <form action="/posts/<%= post.id %>/comments" method="POST">
             <textarea id="comment-form-textarea" name="comment"></textarea>
             <div class="button-container" style="display:none;">
               <button type="button" id="cancel-button">Cancel</button>
-              <button type="submit" id="submit-button" class="fab">Submit Comment</button>
+              <button type="submit" id="submit-button" class="fab">Submit</button>
             </div>
           </form>
         </div>
@@ -630,12 +596,28 @@ const totalReplies = countAllReplies(comment.replies);
                 <% } %>
               </div>
             </div>
+            <% if (level == 0) { %>
+
+            <div class="reply-form">
+              <form id="reply-form-<%= comment.id %>" action="/comments/<%= comment.id %>/replies" method="POST" style="display: block">
+                <div class="input-container">
+                  <textarea id="comment-<%= comment.id %>" name="comment" rows="1" required onclick="autoExpandTextarea(event); showReplyButtons('<%= comment.id %>')" maxlength="500" placeholder="Reply to <%= comment.user.username %>"></textarea>
+                  <div class="reply-buttons" id="reply-buttons-<%= comment.id %>" style="display: none;">
+                    <button id="cancel-button" type="button" class="fab" onclick="cancelReply('<%= comment.id %>')">Cancel</button>
+
+                    <button id="submit-button" type="submit" class="fab">Submit</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <% } %>
 
 
-            <% if (comment.replies && comment.replies.length > 0) { %>
-            <% var nestedLevel = level + 1; %>
-            <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
-            <div class="<%= divClass %>" id="nested-comments-<%= comment.id %>" style="
+          <% if (comment.replies && comment.replies.length > 0) { %>
+          <% var nestedLevel = level + 1; %>
+          <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
+          <div class="<%= divClass %>" id="nested-comments-<%= comment.id %>" style="
       <% if (nestedLevel < 4) { %>
       display: block;
       <% } else { %>
@@ -643,36 +625,49 @@ const totalReplies = countAllReplies(comment.replies);
       <% } %>
       ">
 
-              <% renderComments(comment.replies, nestedLevel); %>
-            </div>
-            <% } %>
+            <% renderComments(comment.replies, nestedLevel); %>
           </div>
-
-
-          <% if (level == 0) { %>
-
-          <div class="reply-form">
-            <form id="reply-form-<%= comment.id %>" action="/comments/<%= comment.id %>/replies" method="POST" style="display: block">
-              <div class="input-container">
-                <textarea id="comment-<%= comment.id %>" name="comment" rows="1" required onclick="autoExpandTextarea(event); showReplyButtons('<%= comment.id %>')" maxlength="500" placeholder="Reply to <%= comment.user.username %>..."></textarea>
-                <div class="reply-buttons" id="reply-buttons-<%= comment.id %>" style="display: none;">
-                  <button id="cancel-button" type="button" class="fab" onclick="cancelReply('<%= comment.id %>')">Cancel</button>
-
-                  <button id="submit-button" type="submit" class="fab">Submit</button>
-                </div>
-              </div>
-            </form>
-          </div>
-
-
+          <% } %>
         </div>
-        <% } %>
 
         <% }) %>
         <% } %>
         <% renderComments(post.comments); %>
+        <div class="tags-div">
+          <% if (post.post_type == "project") { %>
+          <% 
+  let gitHubData;
+  try {
+    gitHubData = JSON.parse(post.gitHubLinkPreview.raw_json);
+  } catch(e) {
+    console.error('Error parsing JSON', e);
+    gitHubData = {}; // Set a default empty object in case of error
+  }
+%>
 
+
+          <% if (post.tags && post.tags.length > 0) { %>
+          <div class="tags">
+            <% post.tags.forEach(tag => { %>
+            <span class="tag-flair">
+              <a href="#" class="tag"><%= tag.name %></a>
+            </span>
+            <% }); %>
+            <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
+            <% gitHubData.topics.forEach(topic => { %>
+            <span class="tag-flair" id="github-flair">
+              <a href="#" class="tag"><%= topic %></a>
+            </span>
+            <% }); %>
+            <% } %>
+          </div>
+          <% } %>
+          <% } %>
+
+
+        </div>
       </div>
+
     </div>
 
   </main>
@@ -681,17 +676,21 @@ const totalReplies = countAllReplies(comment.replies);
   <script>
     $(document).ready(function() {
       var easyMDE = new EasyMDE({
-        element: document.getElementById('comment-form-textarea')
+        element: document.getElementById('comment-form-textarea'),
+        placeholder: 'Reply to <%= post.user.username %>'
+
       });
 
       // Show buttons when the EasyMDE editor is focused
       easyMDE.codemirror.on("focus", function() {
-        $('.button-container').show(); // Use jQuery to show the buttons
+        $('.button-container').show();
+        $('.editor-toolbar').show();
       });
 
       $('#cancel-button').on('click', function() {
         easyMDE.value(''); // Clear the content of the EasyMDE editor
-        $('.button-container').hide(); // Use jQuery to hide the buttons
+        $('.button-container').hide();
+        $('.editor-toolbar').hide();
       });
 
       // Attach the submit event handler to the form

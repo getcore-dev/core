@@ -11,7 +11,7 @@
   --light-mode-text-color: #243342;
   --hover-background-color: #ddd;
   --active-indicator-color: #0e6655;
-  --dark-mode-main-color: #1B1F22;
+  --dark-mode-main-color: #16191B;
   --dark-mode-body-color: #000;
   --dark-mode-hover-color: #24292D;
   --dark-mode-button-hover-color: #363F44;
@@ -80,7 +80,7 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: 11px;
 }
 
 
@@ -246,7 +246,8 @@ div.vote-interactions {
 .link-preview {
   background-color: var(--border-color);
   border-radius: 6px;
-  margin: 21px 0px;
+  margin: 16px 0px;
+  margin-top: 10px;
 }
 
 .reaction-menu {
@@ -277,9 +278,10 @@ div.vote-interactions {
 }
 
 .title {
-  font-size: 21px;
+  font-size: 23px;
   font-weight: 500;
   margin: 12px 0px;
+  margin-bottom: 0px;
 }
 
 
@@ -510,7 +512,7 @@ div .mini-link-desc {
 /* Dark Mode Styles */
 
 .container {
-  background-color: #fff;
+  background-color: var(--light-mode-body-color);
   display: flex;
   height: calc(100dvh - 85px);
   overflow-y: hidden;
@@ -789,12 +791,12 @@ div .mini-link-desc {
   }
 
   body {
-      background-color: #16191B;
-      color: #fff;
+      background-color: var(--dark-mode-body-color);
+      color: var(--dark-mode-text-color);
   }
 
   .container {
-    background-color: #16191B;
+    background-color: var(--dark-mode-body-color);
   }
 
   .post, .job-content {
@@ -810,7 +812,7 @@ div .mini-link-desc {
     border: 0;
     padding: 0px;
     margin-top: 0px;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
     margin-left: 13px;
     margin-right: 13px;
     max-width: 100%;

@@ -7,7 +7,7 @@
   --hover-background-color: #ddd;
   --active-indicator-color: #0e6655;
   --notification-background-color: #fff;
-  --dark-mode-background-color: #1B1F22;
+  --dark-mode-background-color: #16191B;
   --dark-mode-text-color: #fff;
   --dark-mode-body-color: #000;
   --dark-mode-border-color: #272D31;
@@ -422,9 +422,10 @@ margin-top: 20px;
 
   .nav-text-container {
     font-size: 18px;
-    margin-left: -15px;
-    margin-top: 9px;
-  }
+    margin-left: 0;
+    margin-top: 0;
+    width: 300px;
+}
 
   .community-flair {
     font-size: 15px;
@@ -464,8 +465,8 @@ margin-top: 20px;
 
   .nav-text-and-user-btns {
     position: relative;
-    top: 13px;
-    right: 28px;
+    top: 23px;
+    right: -67px;
     }
 
   .notification-popup {

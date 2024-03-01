@@ -10,7 +10,7 @@
   --light-mode-text-color: #243342;
   --hover-background-color: #ddd;
   --active-indicator-color: #0e6655;
-  --dark-mode-main-color: #1B1F22;
+  --dark-mode-main-color: #16191B;
   --dark-mode-body-color: #000;
   --dark-mode-lighter-color: #0a0a0a;
   --dark-mode-text-color: #fff;
@@ -58,14 +58,14 @@ main {
 }
 
 .button-container {
-  margin-top: 6px;
+  margin-top: 10px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
 .button-container button {
-  padding: 6px 20px;
+  padding: 6px 13px;
   border-radius: 6px;
   border: 0;
 }
@@ -755,6 +755,22 @@ h4.preview-title {
   white-space: normal;
 }
 
+.editor-toolbar {
+  display: none;
+  border-radius: 6px;
+  border: 0;
+  margin-bottom: 10px;
+}
+
+.EasyMDEContainer .CodeMirror {
+  border-radius: 6px;
+}
+
+.EasyMDEContainer .CodeMirror, .EasyMDEContainer .CodeMirror-scroll {
+  min-height: 60px !important;
+  font-size: 16px;
+}
+
 
 p.preview-description {
     display: -webkit-box;
@@ -821,8 +837,8 @@ p.preview-description {
 }
 
 @media (prefers-color-scheme: dark) {
-  body {
-    background-color: var(--background-color); /* Dark background for body */
+  body, .main-container {
+    background-color: var(--dark-mode-body-color); /* Dark background for body */
     color: var(--dark-mode-text-color); /* Light text color for better readability */
   }
   
@@ -889,12 +905,13 @@ p.preview-description {
 
   .editor-toolbar {
     background-color: var(--dark-mode-main-color) !important;
-    border-color: var(--dark-mode-border-color) !important;
+    border: 0 !important;
   }
 
   .EasyMDEContainer .CodeMirror {
-    background-color: var(--dark-mode-body-color) !important;
-    border-color: var(--dark-mode-border-color) !important;
+    background-color: var(--dark-mode-main-color) !important;
+    border: 0 !important;
+    color: var(--dark-mode-text-color) !important;
   }
 
   .editor-toolbar button {
@@ -927,10 +944,6 @@ p.preview-description {
     color: #e0e0e0; /* Lighter text color for icons and links */
   }
 
-  .main-container {
-    background-color: var(--background-color); /* Dark background for main container */
-  }
-
   div .user-info, .header {
     color: var(--dark-mode-background-text-color); /* Lighter text color for user info and headers */
   }
@@ -946,8 +959,6 @@ p.preview-description {
   .input-container , .input-container textarea, .comment-container, .comment-container textarea {
     border: 0;
     color: var(--dark-mode-text-color);
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
   }
 
   .link-preview {
@@ -1081,6 +1092,7 @@ p.preview-description {
 
   #github-link-preview {
     margin: 14px 0px;
+    margin-top: 6px;
     }
   
   main {
@@ -1167,7 +1179,7 @@ p.preview-description {
   .input-container input, .input-container textarea {
     width: 100%;
     padding: 10px 10px;
-    margin: 8px 0;
+    margin: 0;
     box-sizing: border-box;
   }
 

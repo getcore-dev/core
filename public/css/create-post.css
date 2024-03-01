@@ -5,7 +5,7 @@
     --border-color: #D8E0E9;
     --hover-background-color: #ddd;
     --active-indicator-color: #0e6655;
-    --dark-mode-main-color: #1B1F22;
+    --dark-mode-main-color: #16191B;
     --dark-mode-body-color: #000;
     --dark-mode-text-color: #fff;
     --dark-mode-border-color: #272D31;
@@ -87,8 +87,9 @@ div.form-group {
 }
 
 .editor-toolbar {
-    display: none !important;
     border: 0 !important;
+        display: flex;
+        flex-direction: row;
 }
 
 .editor-statusbar {
@@ -150,6 +151,7 @@ div.form-group {
 .EasyMDEContainer .CodeMirror {
     border: 0 !important;
     border-radius: 6px;
+    min-height: 60px;
 }
 
 .main-container .post-title,
