@@ -35,7 +35,7 @@ const communityQueries = {
     try {
       const result = await sql.query`
         SELECT COUNT(*) FROM posts 
-        WHERE communities_id = ${communityId}`;
+        WHERE communities_id = ${communityId} AND deleted = 0`;
 
       return result.recordset[0][""];
     } catch (err) {

@@ -122,7 +122,6 @@ div.vote-interactions {
   align-items: flex-start;
   border-radius: 6px;
   width: 100%;
-  align-items: center;
   justify-content: space-between;
 }
 
@@ -252,8 +251,8 @@ div.vote-interactions {
 
 .reaction-menu {
   position: absolute;
+  display: none;
   transform: translateX(100%) translateY(-35%);
-  display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   justify-content: center;
@@ -278,7 +277,7 @@ div.vote-interactions {
 }
 
 .title {
-  font-size: 23px;
+  font-size: 20px;
   font-weight: 500;
   margin: 12px 0px;
   margin-bottom: 0px;
@@ -351,6 +350,10 @@ div.vote-interactions {
   gap: 4px;
 }
 
+
+.username {
+  max-width: 50%;
+}
 
 .username a, .communities-text {
   font-size: 15px;
@@ -829,7 +832,7 @@ div .mini-link-desc {
     overflow-y: hidden;
   }
   .title {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .post-info {

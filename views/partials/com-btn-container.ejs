@@ -1,18 +1,13 @@
 <div id="com-btn-container" class="column">
-  <h4>Communities</h4>
+  <h4><strong>Communities</strong></h4>
   <div class="communities-container">
-    loading...
+    loading
   </div>
-
   <br>
-  <h4>Trending Posts</h4>
+  <h4><strong>Trending Posts</strong></h4>
   <div class="trending-posts">
-    loading...
+    loading
   </div>
-
-  <br>
-  <h4>Recent Jobs</h4>
-
 </div>
 
 
@@ -27,6 +22,9 @@
         posts.forEach(post => {
           const postElement = document.createElement('div');
           postElement.className = 'trending-post';
+          postElement.onclick = () => {
+            window.location.href = `/posts/${post.id}`;
+          };
 
           // Add content to postElement here. Example:
           postElement.innerHTML = `
@@ -34,9 +32,9 @@
 trending_up
 </span> 
                 <div class="trending-post-content">
-                  <a href="/posts/${post.id}" class="trending-post-title">
-                    <p>${post.title} - ${post.username}</p> 
-                  </a>
+                    <div><p>${post.title} </p> </div>
+                    <div class="trending-post-user-info"><img class="trending-post-avatar" loading="lazy" src=${post.avatar}>
+                    <p>${post.username}</p></div>
                 </div>
 
             `;
@@ -61,13 +59,14 @@ trending_up
         communities.forEach(community => {
           const communityElement = document.createElement('div');
           communityElement.className = 'communities';
+          communityElement.onclick = () => {
+            window.location.href = `/communities/${community.id}`;
+          };
 
           // Add content to communityElement here. Example:
           communityElement.innerHTML = `
                 <span class="material-symbols-outlined">${community.mini_icon}</span>
-                <a href="/communities/${community.id}" class="community-link">
-                    <div class="community-name">${isMobile ? `${community.shortname}` : community.name}</div>
-                </a>
+                    <div class="community-name">${isMobile ? `/${community.shortname}` : community.name}</div>
             `;
 
           communitiesContainer.appendChild(communityElement);

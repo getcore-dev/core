@@ -4,10 +4,20 @@
     justify-content: space-between;
     margin: 10px ;
   }
+
+  .communities .community-name:hover {
+    text-decoration: underline;
+  }
+
+  .communities-container {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
   
 
   #com-btn-container {
-    padding: 15px 30px;
+    padding: 15px 15px;
     display: flex; 
     background-color: #F6F8FA;
     flex-direction: column;
@@ -49,6 +59,11 @@
   align-items: center;
   gap: 3px;
 }
+
+.trending-post-content {
+  display: flex;
+  flex-direction: column;
+}
 .trending-post {
   display: flex;
   flex-direction: row;
@@ -60,16 +75,6 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
-}
-
-.trending-post-content {
-  display: -webkit-box;
-  -webkit-line-clamp: 1; /* Limit the text block to just one line */
-  -webkit-box-orient: vertical;
-  overflow: hidden; /* Hide text that doesn't fit in the box */
-  text-overflow: ellipsis; /* Add an ellipsis at the end of the text that doesn't fit */
-  white-space: nowrap; /* Prevent text from wrapping to the next line */
-  max-width: 100%; /* Ensure it takes the full width of its container */
 }
 
 
@@ -97,11 +102,24 @@
     display: none; /* Hide scrollbar in WebKit browsers */
   }
 
+  .trending-post-user-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+  .trending-post-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 100%;
+  }
+
   #com-btn-container { 
-    width: 13%;
+    width: 15%;
     flex: none; /* This will prevent the container from growing */
     display: flex;
-    flex-direction: column; /* Stacks the buttons vertically */
+    flex-direction: column;
+    align-items: center;
     -webkit-scrollbar {
       display: none;
     }

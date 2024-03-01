@@ -185,15 +185,17 @@
 
 
 
-                      <h4>GitHub: <%= gitHubData.name %></h4>
+                      <p>
+                        <strong> GitHub: <%= gitHubData.name %> by <%= gitHubData.organization ? gitHubData.organization.login : gitHubData.owner ? gitHubData.owner.login : "N/A" %> </strong>
+                      </p>
                       <% if (post.gitHubMatchUsername) { %>
                       <span class="material-symbols-outlined" style=" font-weight: 500; color: green; font-size: 17px;">
                         done
-                      </span> Verified
+                      </span>
                       <% } else { %>
                       <span class="material-symbols-outlined" style=" font-weight: 500; color: red; font-size: 17px;">
                         close
-                      </span> Not verified
+                      </span>
                       <% } %>
 
                     </div>
@@ -201,35 +203,37 @@
                       <p>
                         <%= gitHubData.description %>
                       </p>
+                      <%= gitHubData.license ? gitHubData.license.name : 'No license' %>
                     </div>
                   </div>
                   <div class="github-repo-info">
                     <div class="tags">
+                      <span class=tag-flair>
+                        <span class="material-symbols-outlined">calendar_today</span>
+                        <a href="#" class="tag"> <%= new Date(gitHubData.pushed_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) %></a>
+                      </span>
                       <span class=tag-flair>
                         <span class="material-symbols-outlined">
                           code
                         </span>
                         <a href="#" class="tag"><%= gitHubData.language %></a>
                       </span>
-
                       <span class=tag-flair>
-                        <span class="material-symbols-outlined">
-                          bug_report
-                        </span>
-                        <a href="#" class="tag"><%= gitHubData.open_issues %></a>
+                        <span class="material-symbols-outlined">fork_right</span>
+                        <a href="#" class="tag"> <%= gitHubData.forks > 1000 ? (gitHubData.forks / 1000).toFixed(1) + 'k' : gitHubData.forks %> forks
+                        </a>
                       </span>
                       <span class=tag-flair>
-                        <span class="material-symbols-outlined">
-                          star
-                        </span>
-
-                        <a href="#" class="tag"><%= gitHubData.stargazers_count %></a>
+                        <span class="material-symbols-outlined">bug_report</span>
+                        <a href="#" class="tag"> <%= gitHubData.open_issues > 1000 ? (gitHubData.open_issues / 1000).toFixed(1) + 'k' : gitHubData.open_issues %> issues
+                        </a>
                       </span>
-
                       <span class=tag-flair>
-                        <a href="#" class="tag"> <%= new Date(gitHubData.pushed_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) %></a>
+                        <span class="material-symbols-outlined">star</span>
+                        <a href="#" class="tag">
+                          <%= gitHubData.stargazers_count > 1000 ? (gitHubData.stargazers_count / 1000).toFixed(1) + 'k' : gitHubData.stargazers_count %> stars
+                        </a>
                       </span>
-
                     </div>
                     <div class="commits">
                     </div>

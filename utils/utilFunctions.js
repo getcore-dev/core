@@ -151,7 +151,7 @@ const utilFunctions = {
   getTrendingPosts: async () => {
     try {
       const result = await sql.query`
-        SELECT TOP 5 * FROM (
+        SELECT TOP 7 * FROM (
           SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate,
           u.currentJob, u.username, u.avatar, u.currentCompany,
                 SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
@@ -166,7 +166,7 @@ const utilFunctions = {
           WHERE p.deleted = 0
           GROUP BY p.id, p.created_at, p.deleted, u.currentCompany, p.title, p.content, p.link, p.communities_id, u.username, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate
         ) AS SubQuery
-        ORDER BY (loveCount + boostCount + interestingCount + curiousCount + likeCount + celebrateCount) / NULLIF(DATEDIFF(hour, created_at, GETDATE()), 0) DESC
+        ORDER BY (loveCount + boostCount + interestingCount + curiousCount + likeCount + celebrateCount) DESC
       `;
       return result.recordset;
     } catch (err) {
@@ -471,8 +471,9 @@ const utilFunctions = {
       } else if (!existingDataResult.recordset.length) {
         // No existing data, insert new data into GitHubRepoData table
         const insertQuery = `
-        INSERT INTO GitHubRepoData (repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
-        VALUES ('${url}', '${repoData.name.replace(
+        INSERT INTO GitHubRepoData (id, repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
+        VALUES (${repoData.id},
+          '${url}', '${repoData.name.replace(
           /'/g,
           "''"
         )}', '${rawRepoJson.replace(/'/g, "''")}', '${rawCommitsJson.replace(
