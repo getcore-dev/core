@@ -70,11 +70,11 @@
         </div>
       </div>
       <div class="post">
-        <div class="header">
+        <div class="header" style="<% if (post.post_type == "blog") { %> justify-content: center; <% } %>">
           <div class="title">
             <div class="post-title-container">
               <div>
-                <h2 class="post-title"><%= post.title %></h2>
+                <h2 class="post-title" style="<% if (post.post_type == "blog") { %> font-size: 28px; font-weight: bold; <% } %>"><%= post.title %></h2>
               </div>
               <div class="dropdown">
                 <button class="dropbtn">
@@ -87,8 +87,8 @@
             </div>
 
             <p class="post-subtitle">
-              <%= post.post_type.charAt(0).toUpperCase() + post.post_type.slice(1) %> in
-              <%= post.community.name %>
+              <span class=tag-flair><%= post.post_type.charAt(0).toUpperCase() + post.post_type.slice(1) %> </span>
+              <a href="/communities/<%= post.community.id %>" style="text-decoration: none;">/<%= post.community.shortname %></a>
 
 
 
@@ -226,10 +226,6 @@
 
                     </div>
                     <div class="commits">
-                      <span class="material-symbols-outlined">
-                        history
-                      </span>
-                      <a href="#" class="tag"> <%= gitHubCommitData.length %> recent commits</a>
                     </div>
                   </div>
 
@@ -298,7 +294,9 @@
 
               <% } %>
               <div class="user-interactions">
-                <button id="reactionButton" class="reaction-button">😀</button>
+                <button id="reactionButton" class="reaction-button">
+                  <p>😀</p>
+                </button>
                 <div id="reactionPopup" class="reaction-popup" style="display:none;">
                   <button class="reaction-choice">❤️</button>
                   <button class="reaction-choice">👍</button>
@@ -348,7 +346,9 @@
                 <% } else { %>
                     window.location.href = "/login";
                 <% } %>
-            '><%= reaction.icon %> <%= reaction.count %></button>
+            '>
+                  <p><%= reaction.icon %> <%= reaction.count %></p>
+                </button>
                 <% } %>
                 <% }); %>
                 <% if (user && user.username === post.username) { %>
@@ -356,12 +356,12 @@
                 <form action="/post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
                   <input type="hidden" name="_method" value="DELETE" />
                   <button class="reaction-button" onclick="return confirmDeletion(this);">
-                    <p style="margin-top: -19px;margin-bottom: -18px;">🗑️</p>
+                    <p>🗑️</p>
                   </button>
                 </form>
 
                 <button class="reaction-button" onclick="window.location.href='/posts/<%= post.id %>/edit'">
-                  <p style="margin-top: -19px;margin-bottom: -18px;">📝</p>
+                  <p>📝</p>
                 </button>
                 <% } %>
               </div>
@@ -571,7 +571,9 @@
                 <% } else { %>
                     window.location.href = "/login";
                 <% } %>
-            '><%= reaction.icon %> <%= reaction.count %></button>
+            '>
+                    <p><%= reaction.icon %> <%= reaction.count %></p>
+                  </button>
                   <% } %>
                   <% }); %>
                   <% if (level == 0) { %>

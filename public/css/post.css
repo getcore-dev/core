@@ -339,7 +339,14 @@ div .user-info, .header {
   font-size: 15px;
   font-weight: 400;
   text-decoration: none;
+  white-space-collapse: collapse;
 }
+
+.reaction-button > p {
+  margin-bottom: 0 !important; 
+  font-size: 15px;
+}
+
 
 .reaction-button:hover, .main-reaction-button:hover, .boost-button:hover, #delete-post-button:hover, #delete-comment-button:hover {
   background-color: var(--light-mode-button-hover-color);
@@ -361,7 +368,7 @@ div .user-info, .header {
   align-items: center;
   gap: 4px;
   margin-top: 15px;
-  margin-bottom: 17px;
+  margin-bottom: 0px;
 }
 
 .link-image, .sidebar-poster-avatar {
@@ -1073,7 +1080,7 @@ p.preview-description {
   }
 
   #github-link-preview {
-    margin: 23px 0px;
+    margin: 14px 0px;
     }
   
   main {

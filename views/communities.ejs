@@ -641,6 +641,11 @@ expand_more
         .then(response => response.json())
         .then(data => {
           console.log('Success:', data);
+          const reactionMenu = document.querySelector(".reaction-menu");
+          if (reactionMenu) {
+            reactionMenu.style.opacity = '0';
+            reactionMenu.style.display = 'none';
+          }
 
           // Assuming the 'reactions' field directly contains the count values
           const reactionsData = data.newScore; // Adjust according to actual response structure
