@@ -275,7 +275,7 @@
               let htmlContent = `
           <div class="mini-link">
               <div class="mini-link-image">
-                  ${imageUrl ? `<img src="${imageUrl}" alt="thumbnail" class="thumbnail-image" />` : ''}
+                  ${imageUrl ? `<img src="${imageUrl}" alt="thumbnail" loading="lazy" class="thumbnail-image" />` : ''}
               </div>
               <div class="mini-link-body">
                   <div class="mini-link-title">${linkPreview.title || ''}</div>

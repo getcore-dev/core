@@ -73,7 +73,7 @@ router.post(
     ${req.body.firstname},
     ${req.body.lastname},
     ${new Date()},
-    'img/default-avatar.png'
+    '/img/default-avatar.png'
 )`;
 
       res.redirect("/login");
