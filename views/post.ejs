@@ -381,18 +381,6 @@
       </div>
 
       <div class="comments-section">
-
-        <div class="post-info">
-          <div class="post-counts">
-            <%= post.comments.length ? post.comments.length : 0 %> comments
-            •
-            <%= reactionsCount ? reactionsCount: 0 %> reaction<%= reactionsCount > 1 ? 's' : '' %>
-          </div>
-          <div class="sort-selector">
-            <button class="sort-option active" onclick="sortComments('best')">Best</button>
-            <button class="sort-option" onclick="sortComments('newest')">Newest</button>
-          </div>
-        </div>
         <% if (user) { %>
         <div class="comment-form">
           <form action="/posts/<%= post.id %>/comments" method="POST">
@@ -404,6 +392,17 @@
           </form>
         </div>
         <% } %>
+        <div class="post-info">
+          <div class="post-counts">
+            <%= post.comments.length ? post.comments.length : 0 %> comments
+            •
+            <%= reactionsCount ? reactionsCount: 0 %> reaction<%= reactionsCount > 1 ? 's' : '' %>
+          </div>
+          <div class="sort-selector">
+            <button class="sort-option active" onclick="sortComments('best')">Best</button>
+            <button class="sort-option" onclick="sortComments('newest')">Newest</button>
+          </div>
+        </div>
 
         <% function renderComments(comments, level = 0) { %>
 

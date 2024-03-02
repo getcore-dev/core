@@ -31,22 +31,18 @@ router.get("/getUsername/:id", cacheMiddleware(1200), async (req, res) => {
   }
 });
 
-router.get(
-  "/posts/:postId/comments",
-  cacheMiddleware(1200),
-  async (req, res) => {
-    try {
-      const postId = req.params.postId;
-      const comments = await utilFunctions.getComments(postId);
-      res.json(comments);
-    } catch (err) {
-      console.error("Error fetching comments:", err);
-      res.status(500).send("Error fetching comments");
-    }
+router.get("/posts/:postId/comments", async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const comments = await utilFunctions.getComments(postId);
+    res.json(comments);
+  } catch (err) {
+    console.error("Error fetching comments:", err);
+    res.status(500).send("Error fetching comments");
   }
-);
+});
 
-router.get("/posts/:postId", cacheMiddleware(1200), async (req, res) => {
+router.get("/posts/:postId", async (req, res) => {
   try {
     const postId = req.params.postId;
     const postData = await utilFunctions.getPostData(postId);
@@ -58,7 +54,7 @@ router.get("/posts/:postId", cacheMiddleware(1200), async (req, res) => {
   }
 });
 
-router.get("/communities", cacheMiddleware(1200), async (req, res) => {
+router.get("/communities", async (req, res) => {
   try {
     const communities = await utilFunctions.getAllCommunities();
     return res.json(communities);
@@ -68,19 +64,15 @@ router.get("/communities", cacheMiddleware(1200), async (req, res) => {
   }
 });
 
-router.get(
-  "/communities/:communityId/posts",
-  cacheMiddleware(1200),
-  async (req, res) => {
-    try {
-      const communityId = req.params.communityId;
-      const posts = await utilFunctions.getPostsForCommunity(communityId);
-      res.json(posts);
-    } catch (err) {
-      res.status(500).send("Error fetching posts");
-    }
+router.get("/communities/:communityId/posts", async (req, res) => {
+  try {
+    const communityId = req.params.communityId;
+    const posts = await utilFunctions.getPostsForCommunity(communityId);
+    res.json(posts);
+  } catch (err) {
+    res.status(500).send("Error fetching posts");
   }
-);
+});
 
 router.get(
   "/comments/:commentId/replies",
