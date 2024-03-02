@@ -331,95 +331,21 @@ const postQueries = {
     }
   },
 
-  isPostBoosted: async (postId, userId) => {
-    try {
-      const result = await sql.query`
-        SELECT action_type 
-        FROM userPostActions 
-        WHERE user_id = ${userId} AND post_id = ${postId}`;
-
-      return (
-        result.recordset.length > 0 && result.recordset[0].action_type === "B"
-      );
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err; // Rethrow the error for the caller to handle
-    }
-  },
-  isPostDetracted: async (postId, userId) => {
-    try {
-      const result = await sql.query`
-        SELECT action_type 
-        FROM userPostActions 
-        WHERE user_id = ${userId} AND post_id = ${postId}`;
-
-      return (
-        result.recordset.length > 0 && result.recordset[0].action_type === "D"
-      );
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err; // Rethrow the error for the caller to handle
-    }
-  },
-  removeBoost: async (postId, userId) => {
-    try {
-      // Update the boost count in posts table
-      await sql.query`
-        UPDATE posts 
-        SET boosts = boosts - 1 
-        WHERE id = ${postId}`;
-
-      // Delete the record in userPostActions to indicate this user has removed the boost
-      await sql.query`
-        DELETE FROM userPostActions 
-        WHERE user_id = ${userId} AND post_id = ${postId}`;
-
-      const newScore =
-        (await postQueries.getBoostCount(postId)) -
-        (await postQueries.getDetractCount(postId));
-      return newScore;
-    } catch (err) {
-      console.error("Database update error:", err);
-      throw err; // Rethrow the error for the caller to handle
-    }
-  },
-  getBoostCount: async (postId) => {
-    try {
-      const result = await sql.query`
-        SELECT boosts 
-        FROM posts 
-        WHERE id = ${postId}`;
-
-      return result.recordset[0].boosts;
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err; // Rethrow the error for the caller to handle
-    }
-  },
-  getDetractCount: async (postId) => {
-    try {
-      const result = await sql.query`
-        SELECT detracts 
-        FROM posts 
-        WHERE id = ${postId}`;
-
-      return result.recordset[0].detracts;
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err; // Rethrow the error for the caller to handle
-    }
-  },
   getUserInteractions: async (postId, userId) => {
     try {
       const result = await sql.query`
-      SELECT action_type 
-      FROM userPostActions 
-        WHERE user_id = ${userId} AND post_id = ${postId}`;
+    SELECT action_type 
+    FROM userPostActions 
+      WHERE user_id = ${userId} AND post_id = ${postId}`;
 
       if (result.recordset.length === 0) {
         return "";
       } else {
-        return result.recordset[0].action_type;
+        let actionType = result.recordset[0].action_type;
+        if (actionType.includes("B")) {
+          actionType = "BOOST";
+        }
+        return actionType;
       }
     } catch (err) {
       console.error("Database query error:", err);

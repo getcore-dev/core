@@ -16,6 +16,7 @@ const cache = new NodeCache({ stdTTL: 1200 }); // TTL is 20 minutes
 const utilFunctions = require("../utils/utilFunctions");
 const upload = multer({ storage });
 const marked = require("marked");
+const postQueries = require("../queries/postQueries");
 
 router.get("/getUsername/:id", cacheMiddleware(1200), async (req, res) => {
   const id = req.params.id;
@@ -99,7 +100,19 @@ router.get("/tags", async (req, res) => {
   }
 });
 
-router.get("/posts", cacheMiddleware(1200), async (req, res) => {
+router.get("/:postId/reactions/:userId", async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const userId = req.params.userId;
+    const reaction = await postQueries.getUserInteractions(postId, userId);
+    return res.json(reaction);
+  } catch (err) {
+    console.error("Error fetching reaction:", err);
+    res.status(500).send("Error fetching reaction");
+  }
+});
+
+router.get("/posts", async (req, res) => {
   try {
     const posts = await utilFunctions.getPosts();
 

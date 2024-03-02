@@ -24,7 +24,6 @@ const utilFunctions = {
         GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob,p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.link_description, p.link_image, p.link_title, p.post_type
         ORDER BY p.created_at DESC
       `;
-
       /*
       const postsToUpdate = result.recordset.filter(
         (post) => post.post_type == "post"
@@ -345,7 +344,6 @@ const utilFunctions = {
       const linkPreviewDataQuery = `SELECT * FROM LinkPreviewData WHERE link = '${url}'`;
       const linkPreviewDataResult = await sql.query(linkPreviewDataQuery);
 
-      
       if (linkPreviewDataResult.recordset.length > 0) {
         const linkPreviewData = linkPreviewDataResult.recordset[0];
         return {

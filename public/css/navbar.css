@@ -77,9 +77,12 @@ h1, h2, h3, h4, h5, p {
   display: flex; /* Use flexbox for alignment */
   justify-content: space-between; /* Space between search input and buttons */
   align-items: center; /* Align items vertically in the center */
-  width: 100%; /* Full width */
+  width: 100dvw; /* Full width */
   background-color: var(--light-mode-body-color); /* Adjust if necessary */
-  padding: 5px;
+  padding: 10px;
+  margin-top: 5px;
+  box-sizing: border-box;
+  height: 55px;
   height: 55px;
   border-radius: 4px; /* Rounded corners */
   position: fixed; /* Stick to the top */
@@ -93,10 +96,10 @@ h1, h2, h3, h4, h5, p {
   border: none;
   font-size: 16px;
   flex-grow: 1;
-  margin-top: 5px;
   background-color: var(--border-color);
   border-radius: 6px;
   margin-left: 10px;
+  margin-right: 10px;
   padding: 10px 10px;
 }
 
@@ -286,15 +289,24 @@ h1, h2, h3, h4, h5, p {
 }
 
 .notification-sender-avatar {
-  width: 32px;
-  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
   border-radius: 100%;
+  height: 32px;
+  width: 32px;
+  aspect-ratio: 1 / 1;
 }
 
+.avatar-dropdown-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
 .notification-item div {
   display: flex;
     flex-direction: row;
     align-items: center;
+    gap: 10px;
 }
 
 .notification-popup {
@@ -303,7 +315,7 @@ h1, h2, h3, h4, h5, p {
   border-left: 1px solid var(--dark-mode-border-color);
   border-right: 1px solid var(--dark-mode-border-color);
   border-bottom: 1px solid var(--dark-mode-border-color);
-  width: 200px;
+  width: 245px;
   max-height: 300px;
   overflow-y: auto;
   z-index: 5;
@@ -356,8 +368,11 @@ ul.notification-list {
   border-bottom: none;
 }
 
-.clear-btn {
-  float: right;
+
+button.clear-btn {
+  background-color: rgba(0, 0, 0, 0);
+  border: 0;
+  color: var(--light-mode-text-color);
 }
 
 .nav-links li {
@@ -536,7 +551,7 @@ margin-top: 20px;
 
   .notification-popup {
     position: absolute;
-    right: -14px;
+    right: -18px;
     top: 54px;
   }
 
@@ -686,7 +701,8 @@ margin-top: 20px;
   display: none;
   padding: 10px;
   margin-top: 52.8px;
-  width: 73px;}
+  width: 105px;
+}
 
 .avatar-dropdown a {
   padding: 5px;
@@ -751,6 +767,9 @@ margin-top: 20px;
      background-color: var(--dark-mode-main-color);
   }
 
+  button.clear-btn {
+    color: var(--dark-mode-text-color);
+  }
 }
 
 

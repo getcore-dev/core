@@ -12,7 +12,6 @@ const notificationQueries = {
         INNER JOIN users as receiver ON notifications.receiverUserId = receiver.id
         WHERE notifications.receiverUserId = ${userId} AND notifications.isRead = 0 
         ORDER BY notifications.createdAt DESC`;
-      console.log(result.recordset);
       return result.recordset;
     } catch (err) {
       console.error("Database query error:", err);

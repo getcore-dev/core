@@ -156,8 +156,6 @@
 
     function fetchAndDisplayPosts(communityId = null) {
       const apiUrl = communityId ? `/api/communities/${communityId}/posts` : '/api/posts';
-      console.log(apiUrl);
-      console.log(communityId)
       fetch(apiUrl)
         .then(response => response.json())
         .then(posts => {
@@ -525,8 +523,7 @@ expand_more
       return fetch(`/api/communities/${community_id}`)
         .then(response => response.json())
         .then(community => {
-          container.innerHTML = "/" +
-            community.shortname;
+          container.innerHTML = community.shortname;
         });
     }
 
