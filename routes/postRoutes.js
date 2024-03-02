@@ -148,7 +148,7 @@ router.post(
   }
 );
 
-router.get("/posts/:postId", cacheMiddleware(1200), async (req, res) => {
+router.get("/posts/:postId", async (req, res) => {
   try {
     const postId = req.params.postId;
 

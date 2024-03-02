@@ -381,7 +381,8 @@
       </div>
 
       <div class="comments-section">
-        <% if (user) { %>
+        <% let curUser = user %>
+        <% if (curUser) { %>
         <div class="comment-form">
           <form action="/posts/<%= post.id %>/comments" method="POST">
             <textarea id="comment-form-textarea" name="comment"></textarea>

@@ -183,13 +183,17 @@ div.vote-interactions {
   border-color: #BF2239;
 }
 
+.mini-link-url a {
+  text-decoration: none;
+}
+
 .reaction-button, .boost-button, .main-reaction-button {
   background-color: var(--light-mode-button-color);
   border: 0;
   color: var(--light-mode-secondary-text-color);
   border-radius: 6px;
-  padding: 6px 8px;
-  font-size: .90rem;
+  padding: 4px 8px;
+  font-size: .875rem;
   font-weight: 500;
 }
 
@@ -201,12 +205,6 @@ div.vote-interactions {
 .reaction-interactions .material-symbols-outlined {
   font-size: 14px;
   vertical-align: -2px;
-}
-
-
-.reaction-button .material-symbols-outlined {
-  font-size: 15px;
-  vertical-align: -3px;
 }
 
 #post-flair {

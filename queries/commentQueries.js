@@ -28,9 +28,10 @@ const commentQueries = {
           const username = await findById(userId).then((user) => user.username);
           // Check to avoid notifying if commenting on own post
           await notificationQueries.createNotification(
+            userId,
             originalPostAuthorId,
             "NEW_COMMENT",
-            `@${username} commented on your post`
+            postId
           );
         }
       }
@@ -92,9 +93,10 @@ const commentQueries = {
           const username = await findById(userId).then((user) => user.username);
           // Check to avoid notifying if commenting on own post
           await notificationQueries.createNotification(
-            originalPostAuthorId,
+            userId,
+            originalCommentAuthorId,
             "NEW_COMMENT",
-            `@${username} commented on your post`
+            postId
           );
         }
       }

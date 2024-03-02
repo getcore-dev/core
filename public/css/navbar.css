@@ -266,19 +266,45 @@ h1, h2, h3, h4, h5, p {
   padding: 5px 0px; /* Padding around the logo */
   object-fit: cover;
 }
+.notification-count {
+  background-color: #ff0000;
+  color: #fff;
+  border-radius: 50%;
+  padding: 1px;
+  font-size: 12px;
+  position: absolute;
+  height: 16px;
+  left: 57px;
+  text-align: center;
+  width: 16px;
+  aspect-ratio: 1/1;
+
+}
 
 .navbar-button.active {
   border-bottom: 1.5px solid var(--active-indicator-color); /* Active button indicator */
 }
 
+.notification-sender-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 100%;
+}
+
+.notification-item div {
+  display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 .notification-popup {
   position: absolute;
   background-color: var(--notification-background-color);
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+  border-left: 1px solid var(--dark-mode-border-color);
+  border-right: 1px solid var(--dark-mode-border-color);
+  border-bottom: 1px solid var(--dark-mode-border-color);
   width: 200px;
-  max-height: 400px;
+  max-height: 300px;
   overflow-y: auto;
   z-index: 5;
 }
@@ -510,8 +536,8 @@ margin-top: 20px;
 
   .notification-popup {
     position: absolute;
-    right: 0px;
-    top: 60px;
+    right: -14px;
+    top: 54px;
   }
 
 
@@ -655,12 +681,12 @@ margin-top: 20px;
   background-color: var(--light-mode-body-color);
   border-radius: 0px;
   border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
   display: none;
   padding: 10px;
   margin-top: 52.8px;
-  width: 150px;
-}
+  width: 73px;}
 
 .avatar-dropdown a {
   padding: 5px;
@@ -754,8 +780,6 @@ margin-top: 20px;
 
   .notification-popup {
     background-color: var(--dark-mode-background-color);
-    border-color: var(--dark-mode-border-color);
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
   }
   
   .notification-item {

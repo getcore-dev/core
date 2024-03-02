@@ -216,6 +216,36 @@
   getAllCommunities();
 
   document.addEventListener('click', function(event) {
+    var avatar = document.getElementById('user-avatar');
+    var avatarDropdown = document.querySelector('.avatar-dropdown');
+
+    if (avatar && avatar.contains(event.target)) {
+      if (avatarDropdown.style.display === 'block') {
+        avatarDropdown.style.display = 'none';
+      } else {
+        avatarDropdown.style.display = 'block';
+      }
+    } else if (!avatarDropdown.contains(event.target)) {
+      avatarDropdown.style.display = 'none';
+    }
+  });
+
+  document.addEventListener('click', function(event) {
+    var notificationPopup = document.getElementById('notification-popup');
+    var notificationBtn = document.getElementById('notification-btn');
+
+    if (notificationBtn.contains(event.target)) {
+      if (notificationPopup.style.display === 'block') {
+        notificationPopup.style.display = 'none';
+      } else {
+        notificationPopup.style.display = 'block';
+      }
+    } else if (!notificationPopup.contains(event.target)) {
+      notificationPopup.style.display = 'none';
+    }
+  });
+
+  document.addEventListener('click', function(event) {
     var content = document.getElementById("menu-content");
     var overlay = document.getElementById("overlay");
     var menuButton = document.getElementById("menu-button"); // Ensure this is the same ID as your menu button
@@ -232,7 +262,6 @@
         if (menuButton.classList.contains('active')) { // Check if menu is active then toggle
           menuButton.classList.toggle('active');
         }
-        menuIcon.textContent = 'menu'; // If you have a text indicator that should switch back to 'menu'
         document.body.style.overflow = ""; // Re-enable scrolling
       }
     } else if (event.target === menuButton || menuButton.contains(event.target)) { // If clicking on the menuButton
@@ -252,41 +281,37 @@
     }
   });
 
-
-
-
-  document.getElementById('notification-btn').addEventListener('click', function(event) {
-    document.getElementById('notification-popup').style.display = 'block';
-    event.stopPropagation();
-    fetchNotifications();
-  });
-
-  document.addEventListener('click', function(event) {
-    var notificationPopup = document.getElementById('notification-popup');
-    var notificationBtn = document.getElementById('notification-btn');
-
-    // Check if the click is outside the notification popup and not on the notification button
-    if (!notificationPopup.contains(event.target) && event.target !== notificationBtn) {
-      notificationPopup.style.display = 'none';
-    }
-  });
-
-  document.addEventListener('click', function(event) {
-    var avatar = document.getElementById('user-avatar');
-    var avatarDropdown = document.querySelector('.avatar-dropdown');
-
-    if (avatar && avatar.contains(event.target)) {
-      avatarDropdown.style.display = 'block';
-    } else {
-      avatarDropdown.style.display = 'none';
-    }
-  });
-
+  <% if (user) { %>
 
   async function fetchNotifications() {
     // Fetch notifications (adjust userId as needed)
-    const response = await fetch(`/notifications/unread/${user.id}`);
+    const response = await fetch('/notifications/unread/<%= user.id %>');
     const notifications = await response.json();
+    let notificationBtn = document.getElementById('notification-btn');
+    let notificationCount = document.getElementById('notification-count');
+
+    if (notifications.length > 0) {
+      notificationBtn.classList.add('active');
+
+      // If the notification count element doesn't exist, create it
+      if (!notificationCount) {
+        notificationCount = document.createElement('span');
+        notificationCount.id = 'notification-count';
+        notificationCount.classList.add('notification-count'); // Add any necessary classes for styling
+        notificationBtn.appendChild(notificationCount);
+      }
+
+      // Update the notification count
+      notificationCount.textContent = notifications.length;
+    } else {
+      notificationBtn.classList.remove('active');
+
+      // If the notification count element exists, remove it
+      if (notificationCount) {
+        notificationBtn.removeChild(notificationCount);
+      }
+    }
+
 
     // Clear current list
     const notificationList = document.getElementById('notification-list');
@@ -295,10 +320,24 @@
     // Populate list
     notifications.forEach(notification => {
       const li = document.createElement('li');
+      li.onclick = function() {
+        window.location.href = "/posts/" + notification.postId;
+      };
       li.classList.add('notification-item');
-      li.textContent = notification.message;
-
-      // Clear button for each notification
+      const notificationDiv = document.createElement('div');
+      const notificationSenderAvatar = document.createElement('img');
+      notificationSenderAvatar.src = notification.senderProfilePicture || '/img/default-avatar.png';
+      notificationSenderAvatar.classList.add('notification-sender-avatar');
+      notificationDiv.appendChild(notificationSenderAvatar);
+      const notificationText = document.createElement('span');
+      if (notification.type === 'NEW_COMMENT') {
+        notificationText.textContent = `${notification.senderUsername} commented on your post`;
+      } else if (notification.type === 'like') {
+        notificationText.textContent = `${notification.senderUsername} liked your post`;
+      } else if (notification.type === 'follow') {
+        notificationText.textContent = `${notification.senderUsername} followed you`;
+      }
+      notificationDiv.appendChild(notificationText);
       const clearBtn = document.createElement('button');
       clearBtn.classList.add('clear-btn');
       clearBtn.textContent = 'Clear';
@@ -306,8 +345,9 @@
         clearNotification(notification.id);
         li.remove();
       };
+      notificationDiv.appendChild(clearBtn);
+      li.appendChild(notificationDiv);
 
-      li.appendChild(clearBtn);
       notificationList.appendChild(li);
     });
   }
@@ -318,8 +358,6 @@
     });
   }
 
-  <% if (user) { %>
-
   document.getElementById('clear-all-btn').addEventListener('click', async function() {
     // Clear all notifications (adjust userId as needed)
     await fetch(`/notifications/markAllAsRead/${user.id}`, {
@@ -327,6 +365,8 @@
     });
     fetchNotifications(); // Refresh the list
   });
+
+  fetchNotifications();
 
   <% } %>
 </script>
