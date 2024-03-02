@@ -2,11 +2,11 @@
 <html>
 
 <head>
-  <title>CORE/<%= community.shortname%>/<%= post.title %> : <%= post.username %></title>
+  <title><%= post.title %></title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="description" content="<%= post.content.substring(0, 160) %>" />
-  <meta name="keywords" content="Your, Keywords, Here" />
+  <meta name="keywords" content="<%= post.tags.map(tag => tag.name).join(', ') %>" />
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article" />
