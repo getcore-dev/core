@@ -247,6 +247,7 @@ expand_more
 
             const postDateDiv = document.createElement('div');
             postDateDiv.className = 'post-date';
+            postDateDiv.id = 'secondary-text';
             postDateDiv.innerText = formatDate(post.created_at);
             usernameDiv.appendChild(postDateDiv);
 
@@ -561,8 +562,14 @@ expand_more
                   ${imageUrl ? `<img loading="lazy" src="${imageUrl}" alt="thumbnail" class="thumbnail-image" />` : ''}
               </div>
               <div class="mini-link-body">
+                  <div class="mini-link-body-header">
+                  <div class="mini-link-favicon">
+                    <img src="${linkPreview.favicon}" alt="" class="favicon" />
+                  </div>
+                  <div class="mini-link-url" id="main-text"><a>${new URL(linkPreview.url || '').hostname || ''}</a></div>
+                  </div>
                   <div class="mini-link-title">${linkPreview.title || ''}</div>
-                  <div class="mini-link-desc">${linkPreview.description || ''}</div>
+                  <div class="mini-link-desc" id="secondary-text">${linkPreview.description || ''}</div>
               </div>
           </div>`;
             container.innerHTML = htmlContent;

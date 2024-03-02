@@ -726,12 +726,12 @@ a.comment-user-info:hover {
 }
 
 .post-body {
-  font-size: 14px;
+  font-size: .875rem;
   white-space: pre-line;
 }
 
 .post-body p , .comment-body p {
-  line-height: 1.5em;
+  line-height: 1.25rem;
 }
 
 .preview-description {
@@ -1068,8 +1068,8 @@ p.preview-description {
   }
   
   .sidebar-link-image {
-    width: 100px;
-    height: 100px;
+    height: 160px;
+    aspect-ratio: 1 / 1;
   }
 
   .preview-image, .sidebar-avatar {
@@ -1135,7 +1135,7 @@ p.preview-description {
   }
 
   p.post-body {
-    font-size: 16px;
+    font-size: .875rem;
   }
   
   .post-title {

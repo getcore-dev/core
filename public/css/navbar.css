@@ -238,7 +238,7 @@ h1, h2, h3, h4, h5, p {
 .menu-bar {
   z-index: 1000;
   width: 19px;
-  height: 2px;
+  height: 1.5px;
   background-color: var(--light-mode-text-color);
   transition: all 0.3s ease;
 }
@@ -558,16 +558,10 @@ margin-top: 20px;
 
   .hamburger-menu {
     position: absolute;
-    left: 15px;
+    left: 11px;
     top: 22px;
     z-index: 2;
-  }
-
-
-  .hamburger-menu:hover {
-    cursor: pointer;
-    border-radius: 5px;
-  }
+  } 
 
   .logo img {
     position: absolute;

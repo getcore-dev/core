@@ -345,8 +345,7 @@ const utilFunctions = {
       const linkPreviewDataQuery = `SELECT * FROM LinkPreviewData WHERE link = '${url}'`;
       const linkPreviewDataResult = await sql.query(linkPreviewDataQuery);
 
-      // return data mapped to the proper format
-      // link = url, image_url = image, description = description, title = title
+      
       if (linkPreviewDataResult.recordset.length > 0) {
         const linkPreviewData = linkPreviewDataResult.recordset[0];
         return {
@@ -354,6 +353,7 @@ const utilFunctions = {
           image: linkPreviewData.image_url,
           description: linkPreviewData.description,
           title: linkPreviewData.title,
+          favicon: linkPreviewData.favicon,
         };
       }
 
@@ -376,19 +376,30 @@ const utilFunctions = {
         getMetaTag($, "author"),
       ]);
 
+      const favicon =
+        $('link[rel="shortcut icon"]').attr("href") ||
+        $('link[rel="icon"]').attr("href") ||
+        $('link[rel="alternate icon"]').attr("href");
+
+      if (favicon) {
+        // If favicon is a relative path, convert it to an absolute URL
+        if (!favicon.startsWith("http")) {
+          const urlObject = new URL(url);
+          favicon = urlObject.protocol + "//" + urlObject.host + favicon;
+        }
+      }
+
       const preview = {
         url,
         title: $("title").first().text(),
-        favicon:
-          $('link[rel="shortcut icon"]').attr("href") ||
-          $('link[rel="alternate icon"]').attr("href"),
+        favicon: favicon,
         description: metaTags[0],
         image: metaTags[1],
         author: metaTags[2],
       };
 
       // insert into LinkPreviewData table
-      const insertLinkPreviewDataQuery = `INSERT INTO LinkPreviewData (link, image_url, description, title) VALUES ('${preview.url}', '${preview.image}', '${preview.description}', '${preview.title}')`;
+      const insertLinkPreviewDataQuery = `INSERT INTO LinkPreviewData (link, image_url, description, title, favicon) VALUES ('${preview.url}', '${preview.image}', '${preview.description}', '${preview.title}', '${preview.favicon}')`;
       await sql.query(insertLinkPreviewDataQuery);
 
       return preview;
