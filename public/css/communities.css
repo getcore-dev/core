@@ -186,10 +186,10 @@ div.vote-interactions {
 .reaction-button, .boost-button, .main-reaction-button {
   background-color: var(--light-mode-button-color);
   border: 0;
-  color: #666;
+  color: var(--light-mode-secondary-text-color);
   border-radius: 6px;
   padding: 6px 8px;
-  font-size: 16px;
+  font-size: .90rem;
   font-weight: 500;
 }
 
@@ -311,8 +311,8 @@ div.vote-interactions {
 }
 
 .post-date {
-  font-size: 14px;
-  color: #666;
+  font-size: .7rem;
+  color: var(--light-mode-secondary-text-color);
 }
 
 .description {
@@ -343,9 +343,9 @@ div.vote-interactions {
 }
 
 .comments {
-  font-size: 14px;
+  font-size: .725rem;
   padding-right: 5px;
-  color: #666;
+  color: var(--light-mode-secondary-text-color);
   float: right;
   display: flex;
   align-items: center;
@@ -354,21 +354,21 @@ div.vote-interactions {
 
 
 .username {
-  max-width: 50%;
+  max-width: 100%;
 }
 
-.username a, .communities-text {
-  font-size: 15px;
-  font-weight: 400;
-  color: #333;
+.communities-text {
+  font-size: 16px;
+  color: var(--light-mode-secondary-text-color);
   text-decoration: none;
 }
 
-.username a {
+a.username-link, a.community {
   font-weight: 500;
+  text-decoration: none;
 }
 
-.username a:hover {
+a.username-link:hover, a.community:hover {
   color: #0e6655;
   text-decoration: underline;
 }
@@ -404,6 +404,7 @@ div .mini-link-title {
   text-overflow: ellipsis;
   white-space: normal;
   margin: 4px 0px;
+  font-size: .875rem;
 }
 
 .community-header, .job-header {
@@ -504,6 +505,7 @@ div .mini-link-desc {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
+  font-size: .825rem;
 }
 
 
@@ -753,10 +755,6 @@ div .mini-link-desc {
       margin-right: 10px;
   }
 
-  .comments {
-      font-size: 14px;
-  }
-
   .thumbnail {
     display: flex;
     align-items: center;
@@ -807,23 +805,28 @@ div .mini-link-desc {
       background-color: var(--dark-mode-main-color);
 
   }
+  .post-date {
+      color: var(--dark-mode-secondary-text-color);
+  }
 
 }
 @media (max-width: 768px) {
   .post {
+    margin: 0;
     background-color: var(--light-mode-main-color);
-    border-radius: 6px;
+    border-radius: 0px;
     border: 0;
     padding: 0px;
-    margin-top: 0px;
-    margin-bottom: 15px;
-    margin-left: 13px;
-    margin-right: 13px;
     max-width: 100%;
+    border-top: 1px solid var(--border-color);
   }
 
   .description {
     -webkit-line-clamp: 3;
+  }
+
+  .username a, .communities-text, .community a {
+    font-size: .8rem;
   }
 
   .job-flair {
@@ -833,7 +836,7 @@ div .mini-link-desc {
     overflow-y: hidden;
   }
   .title {
-    font-size: 16px;
+    font-size: 1rem;
   }
 
   .post-info {
@@ -905,7 +908,7 @@ div .mini-link-desc {
 }
 
 .mini-link-url a {
-  font-size: 12px;
+  font-size: .75rem;
 }
 
 .mini-link-favicon img {
@@ -934,6 +937,7 @@ div .mini-link-desc {
   @media (max-width: 768px) {
     .post {
       background-color: var(--dark-mode-main-color);
+      border-color: var(--dark-mode-border-color);
     }
   }
 
@@ -960,11 +964,11 @@ div .mini-link-desc {
   }
   .reaction-button {
     background-color: var(--dark-mode-border-color);
-    color: var(--dark-mode-text-color);
+    color: var(--dark-mode-secondary-text-color);
   }
   
   .comments {
-  color: var(--dark-mode-text-color);
+  color: var(--dark-mode-secondary-text-color);
   }
 
   .link-preview {
@@ -986,12 +990,12 @@ div .mini-link-desc {
       color: #ccc; /* Lighter text color for comments */
   }
 
-  .username a, .communities-text {
-    color: var(--dark-mode-background-text-color);
+  .communities-text {
+    color: var(--dark-mode-secondary-text-color);
   }
 
-  .username .username-link {
-    color: var(--active-indicator-color);
+  a.username-link, a.community {
+    color: var(--dark-mode-text-color);
   }
 
   .timestamp {

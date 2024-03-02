@@ -235,7 +235,6 @@ expand_more
             communityText.className = 'communities-text';
             communityText.innerText = " posted a " + post.post_type + " in ";
             usernameDiv.appendChild(communityText);
-            style = "font-weight: 200;"
             const communityLink = document.createElement('a');
             communityLink.href = '/communities/' + post.communities_id;
             communityLink.className = 'community';
@@ -526,7 +525,8 @@ expand_more
       return fetch(`/api/communities/${community_id}`)
         .then(response => response.json())
         .then(community => {
-          container.innerHTML = community.shortname;
+          container.innerHTML = "/" +
+            community.shortname;
         });
     }
 
