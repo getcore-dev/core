@@ -65,7 +65,7 @@ app.use((req, res, next) => {
 app.use(authRoutes);
 app.use(postRoutes);
 app.use(commentRoutes);
-app.use('/search', searchRoutes);
+app.use("/search", searchRoutes);
 app.use("/api", apiRoutes);
 app.use("/notifications", notificationRoutes);
 app.use("/communities", communityRoutes);
