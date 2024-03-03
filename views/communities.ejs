@@ -379,44 +379,38 @@ expand_more
             let showMenuTimeout; // Variable to hold the timeout for showing the menu
             let hideMenuTimeout; // Variable to hold the timeout for hiding the menu
 
-            mainReactionButton.addEventListener('mouseenter', (event) => {
-              // Schedule to show the menu after a delay when hovering over the button
-              showMenuTimeout = setTimeout(() => {
-                let rect = mainReactionButton.getBoundingClientRect();
-                reactionMenu.style.left = `${rect.left + window.scrollX}px`;
-                reactionMenu.style.top = `${rect.top + window.scrollY - reactionMenu.offsetHeight + 30}px`;
-                reactionMenu.style.display = 'flex';
-                reactionMenu.style.opacity = '1';
-                // Schedule to hide the menu if it's shown but the mouse hasn't moved towards it
-                hideMenuTimeout = setTimeout(() => {
-                  reactionMenu.style.opacity = '0';
-                  reactionMenu.style.display = 'none';
-                }, 2000); // Change this delay as needed
-              }, 200); // Delay before menu is shown to check intention
-            });
-
-            mainReactionButton.addEventListener('mouseleave', () => {
-              // Cancel showing the menu if mouse leaves the button before it's shown
+            // cancel showing menu if you click the button a second time otherwise show the menu
+            mainReactionButton.addEventListener('click', () => {
               clearTimeout(showMenuTimeout);
-              // Start hiding the menu immediately if it's already shown
-              clearTimeout(hideMenuTimeout);
-              hideMenuTimeout = setTimeout(() => {
+              if (reactionMenu.style.display === 'flex') {
                 reactionMenu.style.opacity = '0';
-                reactionMenu.style.display = 'none';
-              }, 200); // Delay before hiding menu
-            });
-
-            reactionMenu.addEventListener('mouseenter', () => {
-              // Cancel hiding the menu when mouse enters the menu area
-              clearTimeout(hideMenuTimeout);
+                setTimeout(() => { // Delay for opacity transition
+                  reactionMenu.style.display = 'none';
+                }, 200);
+              } else {
+                clearTimeout(showMenuTimeout);
+                showMenuTimeout = setTimeout(() => {
+                  let rect = mainReactionButton.getBoundingClientRect();
+                  reactionMenu.style.display = 'flex';
+                  reactionMenu.style.opacity = '0';
+                  reactionMenu.style.left = `${rect.left + window.scrollX}px`;
+                  reactionMenu.style.top = `${rect.top + window.scrollY - reactionMenu.offsetHeight - 5}px`;
+                  reactionMenu.style.opacity = '1';
+                  hideMenuTimeout = setTimeout(() => {
+                    reactionMenu.style.opacity = '0';
+                    reactionMenu.style.display = 'none';
+                  }, 2000);
+                }, 200);
+              }
             });
 
             reactionMenu.addEventListener('mouseleave', () => {
-              // Schedule to hide the menu after a delay when the mouse leaves the menu area
               hideMenuTimeout = setTimeout(() => {
                 reactionMenu.style.opacity = '0';
-                reactionMenu.style.display = 'none';
-              }, 500); // Delay before hiding menu
+                setTimeout(() => {
+                  reactionMenu.style.display = 'none';
+                }, 200);
+              }, 500);
             });
 
             votesDiv.appendChild(reactionInteractionsDiv);

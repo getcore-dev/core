@@ -253,23 +253,22 @@ div.vote-interactions {
 .reaction-menu {
   position: absolute;
   display: none;
-  transform: translateX(100%) translateY(-35%);
-  flex-direction: column;
+  flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-end;
   opacity: 0;
-  transition: opacity 0.1s ease;
+  transition: opacity 0.3s ease;
   background-color: var(--border-color);
   border: 1px solid var(--light-mode-button-hover-color);
-  border-radius: 6px;
+  border-radius: 10px;
   pointer-events: none;
   z-index: 999;
 }
 
 .reaction-menu button {
   pointer-events: auto;
-  font-size: 24px;
+  font-size: 1.2rem;
   padding: 10px;
   border: 0;
   background: 0;
@@ -788,8 +787,8 @@ div .mini-link-desc {
     background-color: var(--dark-mode-border-color);
   }
   .reaction-menu {
-    background-color: #333;
-    border: 1px solid #444;
+    background-color: var(--dark-mode-main-color);
+    border: 1px solid var(--dark-mode-border-color);
   }
 
   #post-flair {
