@@ -19,7 +19,7 @@
   #com-btn-container {
     padding: 15px 15px;
     display: flex; 
-    background-color: #F6F8FA;
+    background-color: white;
     flex-direction: column;
     overflow-x: hidden;
     scrollbar-width: none; 

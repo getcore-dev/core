@@ -1,48 +1,71 @@
+:root {
+  --primary-text-color: #1D2935;
+  --light-mode-body-color: #fff;
+  --light-mode-main-color: #F6F8FA;
+  --light-mode-hover-color: #E5EBF1;
+  --border-color: #DCE6F2;
+  --light-mode-button-color: #DCE6F2;
+  --light-mode-button-hover-color: #BECBDA;
+  --light-mode-text-color: #243342;
+  --light-mode-secondary-text-color: #586C7F;
+  --hover-background-color: #ddd;
+  --active-indicator-color: #0e6655;
+  --dark-mode-main-color: #16191B;
+  --dark-mode-body-color: #000;
+  --dark-mode-hover-color: #24292D;
+  --dark-mode-button-hover-color: #363F44;
+  --dark-mode-lighter-color: #1F2427;
+  --dark-mode-text-color: #fff;
+  --dark-mode-secondary-text-color: #999;
+  --dark-mode-border-color: #272D31;
+  --dark-mode-hover-background-color: #444;
+}
+
 .post-body h1 {
-    font-size: 2em; /* Adjust size as needed */
-    margin-top: 0.67em;
-    margin-bottom: 0.67em;
+    font-size: 2rem; /* Adjust size as needed */
+    margin-top: 0.67rem;
+    margin-bottom: 0.67rem;
     font-weight: bold;
   }
   
   .post-body h2 {
-    font-size: 1.5em; /* Adjust size as needed */
-    margin-top: 0.83em;
-    margin-bottom: 0.83em;
+    font-size: 1.5rem; /* Adjust size as needed */
+    margin-top: 0.83rem;
+    margin-bottom: 0.83rem;
     font-weight: bold;
   }
   
   .post-body h3 {
-    font-size: 1.17em; /* Adjust size as needed */
-    margin-top: 1em;
-    margin-bottom: 1em;
+    font-size: 1.17rem; /* Adjust size as needed */
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     font-weight: bold;
   }
   
   .post-body h4 {
-    font-size: 1em; /* Adjust size as needed */
-    margin-top: 1.33em;
-    margin-bottom: 1.33em;
+    font-size: 1rem; /* Adjust size as needed */
+    margin-top: 1.33rem;
+    margin-bottom: 1.33rem;
     font-weight: bold;
   }
   
   .post-body h5 {
-    font-size: 0.83em; /* Adjust size as needed */
-    margin-top: 1.67em;
-    margin-bottom: 1.67em;
+    font-size: 0.83rem; /* Adjust size as needed */
+    margin-top: 1.67rem;
+    margin-bottom: 1.67rem;
     font-weight: bold;
   }
   
   .post-body h6 {
-    font-size: 0.67em; /* Adjust size as needed */
-    margin-top: 2.33em;
-    margin-bottom: 2.33em;
+    font-size: 0.67rem; /* Adjust size as needed */
+    margin-top: 2.33rem;
+    margin-bottom: 2.33rem;
     font-weight: bold;
   }
   
   .post-body p {
     margin-top: 0;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
   }
   
   .post-body a {
@@ -54,7 +77,7 @@
   .post-body ol {
     padding-left: 20px;
     margin-top: 0;
-    margin-bottom: 1em;
+    margin-bottom: 1rem;
   }
   
   .post-body blockquote {
@@ -67,18 +90,18 @@
   
   .post-body code {
     font-family: monospace;
-    background-color: #f5f5f5; /* Adjust color as needed */
+    background-color: var(--border-color); /* Adjust color as needed */
     padding: 2px 4px;
     border-radius: 4px;
-    font-size: 0.9em;
+    font-size: 0.8rem;
   }
   
   .post-body pre {
-    background-color: #f5f5f5; /* Adjust color as needed */
-    border: 1px solid #ddd;
-    padding: 10px;
+    background-color: var(--border-color);
+    border: 1px solid var(--border-color);
+    padding: 7px;
     overflow: auto;
-    border-radius: 4px;
+    border-radius: 10px;
   }
   
   .post-body img {

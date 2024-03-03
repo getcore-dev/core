@@ -24,11 +24,15 @@
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/post.css" />
   <link rel="stylesheet" href="/css/post-formats.css" />
+  <link rel="stylesheet" href="/css/com-btn-container.css" />
+
 
   <link rel="shortcut icon" href="/img/core.png" />
   <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/googlecode.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
 
 </head>
 
@@ -37,6 +41,8 @@
   <%- include('partials/navbar', { pagePath: 'home' }) %>
 
   <main>
+    <%- include('partials/com-btn-container', { }) %>
+
     <div class="main-container">
       <% if (post.post_type != 'blog') { %>
       <% } %>
@@ -127,7 +133,7 @@
             <% if (post.post_type == 'blog') { %>
             padding: 0px 10px;
             <% } %>">
-              <% if ((post.post_type == 'discussion' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog') { %>
+              <% if ((post.post_type == 'discussion' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog' || post.post_type == 'question') { %>
               <% if (post.post_type == 'project') { %>
 
               <% 
@@ -580,6 +586,9 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
 
 
   </div>
+  <script>
+    hljs.highlightAll();
+  </script>
 
 
   <script>

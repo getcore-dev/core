@@ -44,8 +44,7 @@
 
 main {
   display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
+  flex-direction: row;
 }
 
 .EasyMDEContainer .CodeMirror-scroll {
@@ -178,6 +177,7 @@ pre code {
   flex-direction: row;
   justify-content: flex-start;
   gap: 1em;
+  margin-top: 14px;
 }
 
 .timestamp {
@@ -212,9 +212,7 @@ div .material-symbols-outlined:hover {
 
 
 .main-container {
-  width: 54%;
-  margin: 0px 20px;
-  padding-left: 20px;
+  width: 100%;
   background-color: var(--background-color);
   overflow-y: scroll;
 }
@@ -521,10 +519,12 @@ div .user-info, .header {
 .post-body {
   display: flex;
   flex-direction: column;
+  max-width: 720px;
 }
 
 .post-interactions-header {
   width: 100%;
+  max-width: 720px;
   box-sizing: border-box;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;

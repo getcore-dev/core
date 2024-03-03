@@ -10,6 +10,7 @@
 
   <link rel="shortcut icon" href="img/core.png" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
   <title>CORE/<%= communityId ? community.shortname : 'Home' %>
 
   </title>
@@ -280,16 +281,18 @@ expand_more
               fetchPromises.push(fetchLinkPreview(post.link, linkDiv));
             }
 
+            if (post.post_type != 'question') {
 
-            if ((post.post_type == "discussion" || post.post_type == "project") && post.link) {
-              // just chill 
-            } else {
-              linkPreviewDiv.style.background = "none";
-              const descriptionDiv = document.createElement('div');
-              descriptionDiv.className = 'description';
-              descriptionDiv.append(`${post.content}`);
+              if ((post.post_type == "discussion" || post.post_type == "project") && post.link) {
+                // just chill 
+              } else {
+                linkPreviewDiv.style.background = "none";
+                const descriptionDiv = document.createElement('div');
+                descriptionDiv.className = 'description';
+                descriptionDiv.append(`${post.content}`);
 
-              linkPreviewDiv.appendChild(descriptionDiv);
+                linkPreviewDiv.appendChild(descriptionDiv);
+              }
             }
 
             // Votes div

@@ -239,10 +239,10 @@
     var avatarDropdown = document.querySelector('.avatar-dropdown');
 
     if (avatar && avatar.contains(event.target)) {
-      if (avatarDropdown.style.display === 'block') {
+      if (avatarDropdown.style.display === 'flex') {
         avatarDropdown.style.display = 'none';
       } else {
-        avatarDropdown.style.display = 'block';
+        avatarDropdown.style.display = 'flex';
       }
     } else if (!avatarDropdown.contains(event.target)) {
       avatarDropdown.style.display = 'none';
