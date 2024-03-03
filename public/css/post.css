@@ -13,6 +13,7 @@
   --dark-mode-main-color: #16191B;
   --dark-mode-body-color: #000;
   --dark-mode-lighter-color: #0a0a0a;
+  --dark-mode-button-hover-color: #363F44;
   --dark-mode-secondary-text-color: #999;
   --dark-mode-text-color: #fff;
   --dark-mode-border-color: #272D31;
@@ -354,6 +355,32 @@ div .user-info, .header {
   cursor: pointer;
 }
 
+.reaction-popup {
+  position: absolute;
+  display: flex;
+  bottom: 37px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  transition: opacity 0.3s ease;
+  background-color: var(--light-mode-main-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.reaction-popup button {
+  pointer-events: auto;
+  font-size: 1.2rem;
+  padding: 10px;
+  border: 0;
+  background: 0;
+  border-radius: 6px;
+  transition: transform 2s ease;
+}
+
 
 #delete-post-button {
   padding: 5px 9px;
@@ -621,6 +648,7 @@ a.comment-user-info:hover {
 }
 
 .comment-user-interactions {
+  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -904,6 +932,15 @@ p.preview-description {
     background-color: var(--dark-mode-body-color);
   }
 
+  .reaction-popup {
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
+  }
+
+  .reaction-button:hover, .main-reaction-button:hover, .boost-button:hover, #delete-post-button:hover, #delete-comment-button:hover {
+    background-color: var(--dark-mode-button-hover-color);
+  }
+
   pre {
     background-color: var(--dark-mode-body-color); /* Dark background for code blocks */
     border-color: var(--dark-mode-border-color); /* Dark border color for code blocks */
@@ -1025,16 +1062,6 @@ p.preview-description {
   gap: 5px;
 }
 
-
-.reaction-popup {
-  position: absolute;
-  z-index: 100;
-  background-color: white;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
 
 .reaction-choice {
   cursor: pointer;

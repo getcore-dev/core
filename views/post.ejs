@@ -505,7 +505,7 @@
                 <% if (level == 0) {%>
                 <div class="comment-user-interactions">
                   <button id="reactionButton" class="reaction-button">😀</button>
-                  <div id="reactionPopup" class="reaction-popup" style="display:none;">
+                  <div id="reactionPopup" class="reaction-popup" style="display:none; position: absolute; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
                     <button class="reaction-choice">⚡️</button>
                     <button class="reaction-choice">❤️</button>
                     <button class="reaction-choice">👍</button>
@@ -995,18 +995,43 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
       });
     });
 
-    document.getElementById('reactionButton').addEventListener('click', function() {
-      var popup = document.getElementById('reactionPopup');
-      popup.style.display = popup.style.display === 'none' ? 'block' : 'none'; // Toggle display
+
+    let mainReactionButton = document.getElementById('reactionButton');
+    let reactionMenu = document.getElementById('reactionPopup');
+
+    let showMenuTimeout; // Variable to hold the timeout for showing the menu
+    let hideMenuTimeout; // Variable to hold the timeout for hiding the menu
+
+    // cancel showing menu if you click the button a second time otherwise show the menu
+    mainReactionButton.addEventListener('click', () => {
+      clearTimeout(showMenuTimeout);
+      if (reactionMenu.style.display === 'flex') {
+        reactionMenu.style.opacity = '0';
+        setTimeout(() => { // Delay for opacity transition
+          reactionMenu.style.display = 'none';
+        }, 200);
+      } else {
+        clearTimeout(showMenuTimeout);
+        showMenuTimeout = setTimeout(() => {
+          let rect = mainReactionButton.getBoundingClientRect();
+          reactionMenu.style.display = 'flex';
+          reactionMenu.style.opacity = '0';
+          reactionMenu.style.opacity = '1';
+          hideMenuTimeout = setTimeout(() => {
+            reactionMenu.style.opacity = '0';
+            reactionMenu.style.display = 'none';
+          }, 2000);
+        }, 200);
+      }
     });
 
-    // Close the popup if a reaction is selected
-    var choices = document.querySelectorAll('.reaction-choice');
-    choices.forEach(function(choice) {
-      choice.addEventListener('click', function() {
-        document.getElementById('reactionPopup').style.display = 'none';
-
-      });
+    reactionMenu.addEventListener('mouseleave', () => {
+      hideMenuTimeout = setTimeout(() => {
+        reactionMenu.style.opacity = '0';
+        setTimeout(() => {
+          reactionMenu.style.display = 'none';
+        }, 200);
+      }, 500);
     });
 
 
