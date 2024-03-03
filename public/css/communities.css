@@ -364,6 +364,7 @@ div.vote-interactions {
 a.username-link, a.community {
   font-weight: 500;
   text-decoration: none;
+  color: var(--light-mode-text-color)
 }
 
 a.username-link:hover, a.community:hover {

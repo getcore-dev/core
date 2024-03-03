@@ -95,101 +95,6 @@
 
           </div>
         </div>
-
-        <% if (post.post_type == 'project') { %>
-        <% 
-  let gitHubData;
-  let gitHubCommitData;
-  try {
-    gitHubData = JSON.parse(post.gitHubLinkPreview.raw_json);
-    gitHubCommitData = JSON.parse(post.gitHubLinkPreview.raw_commits_json);
-
-  } catch(e) {
-    console.error('Error parsing JSON', e);
-    gitHubData = {}; // Set a default empty object in case of error
-    gitHubCommitData = {};
-  }
-%>
-        <div class="sidebar" id="github-link-preview" style=" <% if (post.linkPreview && post.post_type != 'project') { %> max-width: 50%; <% } else { %> width: 100%; <% } %> ">
-          <div class=" sidebar-content" onclick="window.location.href='<%= post.linkPreview.url %>'">
-            <div class="sidebar-body">
-              <div class="sidebar-link-image">
-
-                <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
-                <% if (imageUrl) { %>
-                <img src="<%= imageUrl %>" alt="Preview" class="preview-image" />
-                <% } %>
-              </div>
-              <div class="sidebar-description">
-                <div class="sidebar-link-info">
-                  <div class="sidebar-link-info-url">
-                    <div class="github-repo-title">
-
-
-
-                      <p>
-                        <strong> GitHub: <%= gitHubData.name %> by <%= gitHubData.organization ? gitHubData.organization.login : gitHubData.owner ? gitHubData.owner.login : "N/A" %> </strong>
-                      </p>
-                      <% if (post.gitHubMatchUsername) { %>
-                      <span class="material-symbols-outlined" style=" font-weight: 500; color: green; font-size: 17px;">
-                        done
-                      </span>
-                      <% } else { %>
-                      <span class="material-symbols-outlined" style=" font-weight: 500; color: red; font-size: 17px;">
-                        close
-                      </span>
-                      <% } %>
-
-                    </div>
-                    <div class="github-repo-description">
-                      <p>
-                        <%= gitHubData.description %>
-                      </p>
-                      <%= gitHubData.license ? gitHubData.license.name : 'No license' %>
-                    </div>
-                  </div>
-                  <div class="github-repo-info">
-                    <div class="tags">
-                      <span class=tag-flair>
-                        <span class="material-symbols-outlined">calendar_today</span>
-                        <a href="#" class="tag"> <%= new Date(gitHubData.pushed_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) %></a>
-                      </span>
-                      <span class=tag-flair>
-                        <span class="material-symbols-outlined">
-                          code
-                        </span>
-                        <a href="#" class="tag"><%= gitHubData.language %></a>
-                      </span>
-                      <span class=tag-flair>
-                        <span class="material-symbols-outlined">fork_right</span>
-                        <a href="#" class="tag"> <%= gitHubData.forks > 1000 ? (gitHubData.forks / 1000).toFixed(1) + 'k' : gitHubData.forks %> forks
-                        </a>
-                      </span>
-                      <span class=tag-flair>
-                        <span class="material-symbols-outlined">bug_report</span>
-                        <a href="#" class="tag"> <%= gitHubData.open_issues > 1000 ? (gitHubData.open_issues / 1000).toFixed(1) + 'k' : gitHubData.open_issues %> issues
-                        </a>
-                      </span>
-                      <span class=tag-flair>
-                        <span class="material-symbols-outlined">star</span>
-                        <a href="#" class="tag">
-                          <%= gitHubData.stargazers_count > 1000 ? (gitHubData.stargazers_count / 1000).toFixed(1) + 'k' : gitHubData.stargazers_count %> stars
-                        </a>
-                      </span>
-                    </div>
-                    <div class="commits">
-                    </div>
-                  </div>
-
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <% } %>
-
         <div class="post-container">
           <div class="post-content" style="
           <% if (post.post_type == 'blog') { %>
@@ -223,7 +128,42 @@
             padding: 0px 10px;
             <% } %>">
               <% if ((post.post_type == 'discussion' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog') { %>
+              <% if (post.post_type == 'project') { %>
+
+              <% 
+  let gitHubData;
+  let gitHubCommitData;
+  try {
+    gitHubData = JSON.parse(post.gitHubLinkPreview.raw_json);
+    gitHubCommitData = JSON.parse(post.gitHubLinkPreview.raw_commits_json);
+
+  } catch(e) {
+    console.error('Error parsing JSON', e);
+    gitHubData = {}; // Set a default empty object in case of error
+    gitHubCommitData = {};
+  }
+%>
+              <div class="project-link">
+                <div class="project-link-image">
+                  <img src="<%= gitHubData.owner.avatar_url %>" alt="Preview" onerror="standby()" class="large-preview-image" />
+                </div>
+                <div class="project-link-header">
+
+                  <a href="<%= post.link %>" class="project-link-title">
+                    <img src="/src/github.png" alt="GitHub Logo" class="github-logo" style="display: inline-block; height: 16px; width: 16px; padding: 0; margin: 0; padding-right: 5px;" />
+                    <%= post.link %>
+                  </a>
+                  <div class="project-link-description">
+                    <%= gitHubData.description %>
+                  </div>
+                </div>
+              </div>
+
+              <% } %>
               <%- post.content %>
+
+
+
               <% } else if (post.post_type == 'discussion' && post.linkPreview) { %>
 
               <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
@@ -247,17 +187,18 @@
               </div>
 
               <% } %>
-              <div class="user-interactions">
+
+              <div class="user-interactions" style="<% if (post.post_type == "blog") { %>margin-bottom: 20px;<% } %>">
                 <button id="reactionButton" class="reaction-button">
                   <p>😀</p>
                 </button>
                 <div id="reactionPopup" class="reaction-popup" style="display:none;">
-                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user.username %>', 'boost')">⚡️</button>
-                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user.username %>', 'LOVE')">❤️</button>
-                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user.username %>', 'LIKE')">👍</button>
-                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user.username %>', 'CURIOUS')">🤔</button>
-                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user.username %>', 'INTERESTING')">💡</button>
-                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user.username %>', 'CELEBRATE')">🎉</button>
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'BOOST')">⚡️</button>
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'LOVE')">❤️</button>
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'LIKE')">👍</button>
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'CURIOUS')">🤔</button>
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'INTERESTING')">💡</button>
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'CELEBRATE')">🎉</button>
                 </div>
                 <% const reactionTypes = [
         {
@@ -295,8 +236,8 @@
                 <% reactionTypes.forEach(reaction => { %>
                 <% if (reaction.count > 0) { %>
                 <% reactionsCount += reaction.count; %>
-                <button class="reaction-button" id="<%= reaction.type %>" onclick='<% if (user) { %>interactWithPost("<%= post.id %>", "<%= user.username %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
-                  <span class="<%= reaction.type %>-image"><%= reaction.icon %></span> <span class="<%= reaction.type %>-count"><%= reaction.count %></span>
+                <button class="reaction-button" id="<%= reaction.type.toLowerCase() %>" onclick='<% if (user) { %>interactWithPost("<%= post.id %>", "<%= user %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
+                  <span class="<%= reaction.type.toLowerCase() %>-image"><%= reaction.icon %></span> <span class="<%= reaction.type.toLowerCase() %>-count"><%= reaction.count %></span>
                 </button>
                 <% } %>
                 <% }); %>
@@ -354,17 +295,17 @@
           <% } %>
           <div class="comment">
 
+            <div class="comment-avatar">
+              <% if (level == 0) { %>
+              <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+              <% } else { %>
+              <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar-nested" onerror="standby()" />
+              <% } %>
+            </div>
             <div class="comment-main">
 
               <div class="comment-content">
                 <div class="comment-header">
-                  <div class="repliers-avatar">
-                    <% if (level == 0) { %>
-                    <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
-                    <% } else { %>
-                    <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar-nested" onerror="standby()" />
-                    <% } %>
-                  </div>
                   <a class="comment-user-info" href="/profile/<%= comment.user.username %>">
                     <div class="repliers-info">
                       <%= comment.user.username%>
@@ -482,7 +423,7 @@
                   <% if (reaction.count > 0) { %>
                   <button class="reaction-button" id="<%= reaction.type %>" onclick='
                 <% if (user) { %>
-                    interactWithPost("<%= post.id %>", "<%= user.username %>", "<%= reaction.type %>")
+                    interactWithPost("<%= post.id %>", "<%= user %>", "<%= reaction.type %>")
                 <% } else { %>
                     window.location.href = "/login";
                 <% } %>
@@ -539,28 +480,29 @@ const totalReplies = countAllReplies(comment.replies);
                 <% } %>
               </div>
             </div>
-            <% if (level == 0) { %>
-
-            <div class="reply-form">
-              <form id="reply-form-<%= comment.id %>" action="/comments/<%= comment.id %>/replies" method="POST" style="display: block">
-                <div class="input-container">
-                  <textarea id="comment-<%= comment.id %>" name="comment" rows="1" required onclick="autoExpandTextarea(event); showReplyButtons('<%= comment.id %>')" maxlength="500" placeholder="Reply to <%= comment.user.username %>"></textarea>
-                  <div class="reply-buttons" id="reply-buttons-<%= comment.id %>" style="display: none;">
-                    <button id="cancel-button" type="button" class="fab" onclick="cancelReply('<%= comment.id %>')">Cancel</button>
-
-                    <button id="submit-button" type="submit" class="fab">Submit</button>
-                  </div>
-                </div>
-              </form>
-            </div>
           </div>
-          <% } %>
+          <% if (level == 0 && false) { %>
+
+          <div class="reply-form">
+            <form id="reply-form-<%= comment.id %>" action="/comments/<%= comment.id %>/replies" method="POST" style="display: block">
+              <div class="input-container">
+                <textarea id="comment-<%= comment.id %>" name="comment" rows="1" required onclick="autoExpandTextarea(event); showReplyButtons('<%= comment.id %>')" maxlength="500" placeholder="Reply to <%= comment.user.username %>"></textarea>
+                <div class="reply-buttons" id="reply-buttons-<%= comment.id %>" style="display: none;">
+                  <button id="cancel-button" type="button" class="fab" onclick="cancelReply('<%= comment.id %>')">Cancel</button>
+
+                  <button id="submit-button" type="submit" class="fab">Submit</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <% } %>
 
 
-          <% if (comment.replies && comment.replies.length > 0) { %>
-          <% var nestedLevel = level + 1; %>
-          <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
-          <div class="<%= divClass %>" id="nested-comments-<%= comment.id %>" style="
+        <% if (comment.replies && comment.replies.length > 0) { %>
+        <% var nestedLevel = level + 1; %>
+        <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
+        <div class="<%= divClass %>" id="nested-comments-<%= comment.id %>" style="
       <% if (nestedLevel < 4) { %>
       display: block;
       <% } else { %>
@@ -568,43 +510,46 @@ const totalReplies = countAllReplies(comment.replies);
       <% } %>
       ">
 
-            <% renderComments(comment.replies, nestedLevel); %>
-          </div>
-          <% } %>
+          <% renderComments(comment.replies, nestedLevel); %>
         </div>
-
-        <% }) %>
         <% } %>
-        <% renderComments(post.comments); %>
-        <div class="tags-div">
-
-          <div class="tags">
-            tags:
-            <% if (post.tags && post.tags.length > 0) { %>
-            <% post.tags.forEach(tag => { %>
-            <a href="#" class="tag"><%= tag.name %></a>
-            <% }); %>
-            <% } %>
-            <% if (post.post_type == "project") { %>
-
-            <% 
-let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {};
-%>
-            <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
-            <% gitHubData.topics.forEach(topic => { %>
-            <a href="#" class="tag"><%= topic %></a>
-            <% }); %>
-            <% } %>
-          </div>
-          <% } %>
-
-
-        </div>
       </div>
+
+      <% }) %>
+      <% } %>
+      <% renderComments(post.comments); %>
 
     </div>
 
+
+    </div>
+
+
   </main>
+  <div class="tags-div">
+
+    <div class="tags">
+      tags:
+      <% if (post.tags && post.tags.length > 0) { %>
+      <% post.tags.forEach(tag => { %>
+      <a href="#" class="tag"><%= tag.name %></a>
+      <% }); %>
+      <% } %>
+      <% if (post.post_type == "project") { %>
+
+      <% 
+let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {};
+%>
+      <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
+      <% gitHubData.topics.forEach(topic => { %>
+      <a href="#" class="tag"><%= topic %></a>
+      <% }); %>
+      <% } %>
+    </div>
+    <% } %>
+
+
+  </div>
 
 
   <script>
@@ -783,37 +728,91 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
           },
           body: JSON.stringify({
             user: user,
-            action: action.toLowerCase()
+            action: action.toLowerCase() // Ensure action is in lowercase
           })
         })
         .then(response => response.json())
         .then(data => {
-          console.log('Success:', data.message);
+          console.log('Success:', data);
           const reactionMenu = document.querySelector(".reaction-popup");
           if (reactionMenu) {
-            reactionMenu.style.display = 'none'; // Hide the reaction popup
+            reactionMenu.style.opacity = '0';
+            reactionMenu.style.display = 'none';
           }
 
-          // Using `data.newScore` directly based on the provided response example
-          const reactionsData = data.newScore;
+          // Assuming the 'reactions' field directly contains the count values
+          const reactionsData = data.newScore; // Adjust according to actual response structure
 
-          // Ensure reactionsData is not null or undefined, then proceed
-          if (reactionsData != null) {
-            Object.entries(reactionsData).forEach(([type, count]) => {
-              // Updated to handle cases where icon and text are separated
-              const reactionCountSpan = document.querySelector(`span.${type}-count`);
-              if (reactionCountSpan) {
-                reactionCountSpan.innerText = count;
+          const reactionTypes = [{
+              type: "LOVE",
+              icon: "❤️"
+            },
+            {
+              type: "LIKE",
+              icon: "👍"
+            },
+            {
+              type: "CURIOUS",
+              icon: "🤔"
+            },
+            {
+              type: "INTERESTING",
+              icon: "💡"
+            },
+            {
+              type: "CELEBRATE",
+              icon: "🎉"
+            },
+          ];
+
+          // Ensure you have a reference to the container where buttons should be placed
+          const reactionInteractionsDiv = document.querySelector("div.user-interactions");
+
+          reactionTypes.forEach(reaction => {
+            const reactionCount = reactionsData[reaction.type.toLowerCase()] || 0;
+            let reactionButton = document.querySelector(`button#${reaction.type.toLowerCase()}.reaction-button`);
+
+            if (reactionCount > 0) {
+              if (!reactionButton) {
+                // Create a new reaction button if it doesn't exist
+                reactionButton = document.createElement("button");
+                reactionButton.className = 'reaction-button';
+                reactionButton.id = reaction.type.toLowerCase();
+                reactionButton.onclick = () => interactWithPost(postId, user, reaction.type);
+
+                const icon = document.createElement("span");
+                icon.innerText = reaction.icon;
+
+                const countText = document.createElement("span");
+                countText.className = `${reaction.type.toLowerCase()}-count`;
+                countText.innerText = ` ${reactionCount}`;
+
+                reactionButton.appendChild(icon);
+                reactionButton.appendChild(countText);
+                reactionInteractionsDiv.appendChild(reactionButton);
+              } else {
+                // Update count of existing button
+                const countSpan = reactionButton.querySelector(`span.${reaction.type.toLowerCase()}-count`);
+                if (countSpan) countSpan.innerText = ` ${reactionCount}`;
               }
-              // Checks and updates for reaction not previously displayed due to zero count
-              else if (count > 0) {
-                // This could be expanded to dynamically add new buttons, if needed
-                console.log(`${type} reaction updated to show ${count}`);
+            } else if (reactionCount == 0) {
+              if (reactionButton) {
+                reactionButton.remove();
               }
-            });
-          } else {
-            console.error("No reaction data found in the response");
-          }
+            }
+
+            // Update button color if needed
+            if (reactionButton && reaction.type.toLowerCase() === action.toLowerCase()) {
+              // maybe add a lil reaction later idk
+            } else if (reactionButton) {
+              reactionButton.style.color = ""; // Reset to default styles for other buttons
+            }
+          });
+
+          const boostCount = reactionsData['boosts'] || 0;
+          let boostButton = document.querySelector('#boost');
+          const countSpan = boostButton.querySelector(`span.boost-count`);
+          countSpan.innerText = ` ${boostCount}`;
         })
         .catch((error) => {
           console.error('Error:', error);
@@ -907,16 +906,6 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
         }, 200);
       }
     });
-
-    reactionMenu.addEventListener('mouseleave', () => {
-      hideMenuTimeout = setTimeout(() => {
-        reactionMenu.style.opacity = '0';
-        setTimeout(() => {
-          reactionMenu.style.display = 'none';
-        }, 200);
-      }, 500);
-    });
-
 
 
     document.getElementById('comment').addEventListener('input', autoExpandTextarea);

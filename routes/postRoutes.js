@@ -234,6 +234,7 @@ ORDER BY c.created_at DESC;`;
     };
 
     if (postData.link && postData.post_type === "project") {
+      postData.gitHubfavicon = await utilFunctions.getFavicon(postData.link);
       postData.gitHubLinkPreview = await utilFunctions.getGitHubRepoPreview(
         postData.link
       );

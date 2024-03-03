@@ -8,6 +8,7 @@
   --light-mode-button-color: #DCE6F2;
   --light-mode-button-hover-color: #BECBDA;
   --light-mode-text-color: #243342;
+  --light-mode-secondary-text-color: #586C7F;
   --hover-background-color: #ddd;
   --active-indicator-color: #0e6655;
   --dark-mode-main-color: #16191B;
@@ -163,6 +164,11 @@ pre code {
   gap: 5px;
   align-items: center;
 }
+
+.sidebar-body {
+  display: flex;
+    flex-direction: row;
+}
 .user-interactions {
   margin: 2px 0px;
   display: flex;
@@ -228,18 +234,6 @@ div .material-symbols-outlined:hover {
   padding: 0px;
   box-sizing: border-box;
 }
-
-
-.sidebar {
-  background-color: var(--light-mode-main-color);
-  border: 0;
-  width: 100%;
-  box-sizing: border-box;
-  border-top: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--border-color);
-  
-}
-
 
 a.comment-url  {
   text-decoration: none;
@@ -444,6 +438,7 @@ div .user-info, .header {
 }
 
 .tags-div {
+  font-size: .85rem;
   text-align: center;
 }
 
@@ -520,6 +515,7 @@ div .user-info, .header {
   margin-top: 0;
   position: relative;
   border-bottom: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-color);
 }
 
 .post-body {
@@ -545,8 +541,14 @@ div .user-info, .header {
 
 .comment {
   display:flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
+  padding: 0 12px;
+  margin-bottom: 20px;
+}
+
+.comment-avatar {
+  padding-right: 8px;
 }
 
 .comment .comment {
@@ -575,11 +577,16 @@ div.repliers-avatar, div.repliees-avatar {
 
 }
 
+.nested-comment {
+  padding-left: 12px;
+}
+
 .comment-main {
   display:flex;
   flex-direction: column;
   width: 100%;
-  padding: 9px 0px;
+  padding: 0;
+  
   box-sizing: border-box;
   gap: 7px;
 }
@@ -599,8 +606,12 @@ div.repliers-avatar, div.repliees-avatar {
 .comment .avatar, .post-user-info-header .avatar {
   border-radius: 100%;
   height: 28px;
-  width: 28px;
+  aspect-ratio: 1/1;
   border: 1px solid var(--border-color);
+}
+
+.comment .avatar {
+  height: 35px;
 }
 
 .avatar-nested {
@@ -703,6 +714,13 @@ a.comment-user-info:hover {
   padding-top: 4px;
 }
 
+.comment-body p {
+  font-size: 1rem;
+}
+
+.comment-avatar img {
+  float: inline-start;
+}
 
 
 .main-container textarea#comment {
@@ -803,6 +821,7 @@ h4.preview-title {
 .editor-toolbar {
   display: none;
   border-top: 0 !important;
+  border-bottom: 1px solid var(--border-color) !important;
   border-left: 0 !important;
   border-right: 0 !important;
   border-radius: 0 !important;
@@ -812,6 +831,7 @@ h4.preview-title {
   border-radius: 0 !important;
   border-left: 0 !important;
   border-right: 0 !important;
+  border-top: 0 !important;
   border-bottom: 1px solid var(--border-color) !important;
 }
 
@@ -838,6 +858,40 @@ p.preview-description {
   border-radius: 6px;
 
   box-sizing: border-box;
+}
+
+
+.project-link {
+  background-color: var(--border-color);
+  border-radius: 18px;
+  padding: 13px 23px;
+  white-space-collapse: collapse;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.project-link-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.project-link-header a {
+  font-size: 0.775rem;
+  text-decoration: none !important;
+  color: var(--light-mode-secondary-text-color) !important;
+}
+
+.project-link-image img {
+  width: 80px;
+  height: 80px;
+  border-radius: 18px;
+  margin-right: 10px;
+}
+
+.project-link-header {
+  width: 74%;
 }
 
 .tag-flair {
@@ -1064,16 +1118,6 @@ p.preview-description {
   background-color: var(--border-color);
 } 
 
-
-.sidebar-body {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  box-sizing: border-box;
-  gap: 5px;
-}
-
-
 .reaction-choice {
   cursor: pointer;
   background: none;
@@ -1109,11 +1153,6 @@ p.preview-description {
       
   }
 
-  .sidebar-body {
-    max-height: 160px;
-    flex-direction: row;
-  }
-
   .sidebar-poster-avatar {
     width: 60px;
       height: 60px;
@@ -1135,10 +1174,6 @@ p.preview-description {
     height: 100%;
   }
 
-  .sidebar {
-    overflow: hidden;
-  }
-
   #github-link-preview {
     margin: 0;
     }
@@ -1152,12 +1187,6 @@ p.preview-description {
     width: 100%;
     flex-direction: row;
     gap: 7px;
-  }
-
-  .sidebar {
-    height: 30%;
-    margin-top: 10px;
-    margin-bottom: 0px;
   }
 
 

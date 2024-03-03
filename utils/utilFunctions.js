@@ -407,6 +407,36 @@ const utilFunctions = {
     }
   },
 
+  getFavicon: async (url) => {
+    try {
+      const response = await axios.get(url, { timeout: 5000 });
+      const { data, status } = response;
+
+      if (status !== 200) {
+        throw new Error(`Request failed with status code ${status}`);
+      }
+
+      const $ = cheerio.load(data);
+      const favicon =
+        $('link[rel="shortcut icon"]').attr("href") ||
+        $('link[rel="icon"]').attr("href") ||
+        $('link[rel="alternate icon"]').attr("href");
+
+        console.log(favicon);
+
+      if (favicon) {
+        // If favicon is a relative path, convert it to an absolute URL
+        if (!favicon.startsWith("http")) {
+          const urlObject = new URL(url);
+          favicon = urlObject.protocol + "//" + urlObject.host + favicon;
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching URL:", error);
+      return null;
+    }
+  },
+
   upsertGitHubData: async (userData, reposData) => {
     const pool = new sql.ConnectionPool(config); // Ensure 'config' is your SQL Server configuration
     await pool.connect();
