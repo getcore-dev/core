@@ -270,7 +270,8 @@ h1, h2, h3, h4, h5, p {
   object-fit: cover;
 }
 .notification-count {
-  background-color: #ff0000;
+  background-color: #D72638;
+  border: 1px solid #DD4050;
   color: #fff;
   border-radius: 50%;
   padding: 1px;
@@ -278,10 +279,11 @@ h1, h2, h3, h4, h5, p {
   position: absolute;
   height: 16px;
   left: 57px;
+  font-weight: bold;
   text-align: center;
   width: 16px;
   aspect-ratio: 1/1;
-
+  line-height: 1rem;
 }
 
 .navbar-button.active {
