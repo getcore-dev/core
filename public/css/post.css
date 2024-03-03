@@ -355,6 +355,11 @@ div .user-info, .header {
   cursor: pointer;
 }
 
+.dicussion-link {
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+}
+
 .reaction-popup {
   position: absolute;
   display: flex;
@@ -395,6 +400,7 @@ div .user-info, .header {
   display: flex;
   align-items: center;
   gap: 4px;
+  margin: 0 13px;
   margin-top: 5px;
   margin-bottom: 6px;
 }
@@ -437,6 +443,10 @@ div .user-info, .header {
   white-space: normal;
 }
 
+.tags-div {
+  text-align: center;
+}
+
 .github-repo-description p {
   max-width: 100%;
   margin: 0;
@@ -459,6 +469,7 @@ div .user-info, .header {
 }
 
 .post-info {
+  padding: 0 13px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -760,7 +771,7 @@ a.comment-user-info:hover {
 }
 
 .post-body {
-  font-size: .875rem;
+  font-size: .955rem;
   white-space: pre-line;
 }
 

@@ -39,42 +39,10 @@
   <main>
     <div class="main-container">
       <% if (post.post_type != 'blog') { %>
-
-      <div class="sidebar-container" style="<% if (post.linkPreview && post.post_type != 'project') { %>flex-direction: row; <% } else { %> flex-direction: column; gap: 0px; <% } %>">
-
-        <div class="sidebar" style="max-width: 100%">
-          <div class=" sidebar-content">
-            <div class="sidebar-body">
-              <div class="sidebar-poster-avatar">
-                <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" loading="lazy" class="sidebar-avatar" onerror="standby()" />
-              </div>
-              <div class="sidebar-poster">
-                <div class="sidebar-poster-info">
-                  <div class="sidebar-poster-name">
-                    <a href="/profile/<%= post.user.username %>" style="text-decoration: none;">
-                      <%= post.user.username %>
-                    </a>
-                    <%= post.user.points ? `(${post.user.points} points)` : '0'%> points
-
-                  </div>
-                  <div class="sidebar-poster-job">
-                    <% if (post.user.currentJob && post.user.currentCompany) { %>
-                    <%= post.user.currentJob %>@<strong><%= post.user.currentCompany %></strong>
-                    <% } else { %>
-                    No job information
-                    <% } %>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <% } %>
       <div class="post">
         <div class="header" style="<% if (post.post_type == "blog") { %> justify-content: center; <% } %>">
-          <div class="title">
+          <div class="title" style="<% if (post.post_type == "blog") { %> text-align: center; <% } %>">
             <div class="post-title-container">
               <div>
                 <h2 class="post-title" style="<% if (post.post_type == "blog") { %> font-size: 28px; font-weight: bold; <% } %>"><%= post.title %></h2>
@@ -88,7 +56,7 @@
               </div>
             </div>
 
-            <p class="post-subtitle">
+            <span class="post-subtitle">
               <span class=tag-flair><%= post.post_type.charAt(0).toUpperCase() + post.post_type.slice(1) %> </span>
               <% if (post.post_type == 'blog') { %>
               by <a href="/profile/<%= post.user.username %>" style="text-decoration: none;"><%= post.user.firstname %> <%= post.user.lastname %></a>
@@ -123,39 +91,7 @@
               }
             %>
               <%= formattedDate %>
-
-              <% if (post.updated_at) { %>
-              <span class="edited"> • Edited
-                <%
-              let postDate = new Date(post.updated_at);
-              let today = new Date();
-              let formattedDate;
-            
-              // Calculate time difference in milliseconds
-              let diff = today - postDate;
-            
-              // Convert time difference to different units
-              let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
-              let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
-              let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
-              let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
-            
-              // Decide the format based on the time difference
-              if (minutes < 60) {
-                formattedDate = minutes + 'm ago';
-              } else if (hours < 24) {
-                formattedDate = hours + 'h ago';
-              } else if (days < 365) {
-                formattedDate = days + 'd ago';
-              } else {
-                formattedDate = years + 'y ago';
-              }
-            %>
-                <%= formattedDate %>
-              </span>
-              <% } %>
-
-            </p>
+            </span>
 
           </div>
         </div>
@@ -292,19 +228,21 @@
 
               <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
               <% if (imageUrl) { %>
-              <div class="link-image">
-                <img src="<%= imageUrl %>" alt="Preview" class="large-preview-image" />
-              </div>
-              <% } %>
-              <div class="link-info">
-                <div class="link-info-title">
-                  <%= post.linkPreview.title %>
+              <div class="dicussion-link">
+                <div class="link-image">
+                  <img src="<%= imageUrl %>" alt="Preview" class="large-preview-image" />
                 </div>
-                <div class="link-info-description">
-                  <%= post.linkPreview.description %>
-                </div>
-                <div class="link-info-url">
-                  <%= post.linkPreview.url %>
+                <% } %>
+                <div class="link-info">
+                  <div class="link-info-title">
+                    <%= post.linkPreview.title %>
+                  </div>
+                  <div class="link-info-description">
+                    <%= post.linkPreview.description %>
+                  </div>
+                  <div class="link-info-url">
+                    <%= post.linkPreview.url %>
+                  </div>
                 </div>
               </div>
 
@@ -314,11 +252,12 @@
                   <p>😀</p>
                 </button>
                 <div id="reactionPopup" class="reaction-popup" style="display:none;">
-                  <button class="reaction-choice">❤️</button>
-                  <button class="reaction-choice">👍</button>
-                  <button class="reaction-choice">🤔</button>
-                  <button class="reaction-choice">💡</button>
-                  <button class="reaction-choice">🎉</button>
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user.username %>', 'boost')">⚡️</button>
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user.username %>', 'LOVE')">❤️</button>
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user.username %>', 'LIKE')">👍</button>
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user.username %>', 'CURIOUS')">🤔</button>
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user.username %>', 'INTERESTING')">💡</button>
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user.username %>', 'CELEBRATE')">🎉</button>
                 </div>
                 <% const reactionTypes = [
         {
@@ -356,20 +295,14 @@
                 <% reactionTypes.forEach(reaction => { %>
                 <% if (reaction.count > 0) { %>
                 <% reactionsCount += reaction.count; %>
-                <button class="reaction-button" onclick='
-                <% if (user) { %>
-                    interactWithPost(<%= post.id %>, "<%= user.username %>", "<%= reaction.type %>")
-                <% } else { %>
-                    window.location.href = "/login";
-                <% } %>
-            '>
-                  <p><%= reaction.icon %> <%= reaction.count %></p>
+                <button class="reaction-button" id="<%= reaction.type %>" onclick='<% if (user) { %>interactWithPost("<%= post.id %>", "<%= user.username %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
+                  <span class="<%= reaction.type %>-image"><%= reaction.icon %></span> <span class="<%= reaction.type %>-count"><%= reaction.count %></span>
                 </button>
                 <% } %>
                 <% }); %>
                 <% if (user && user.username === post.username) { %>
 
-                <form action="/post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
+                <form action=" /post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
                   <input type="hidden" name="_method" value="DELETE" />
                   <button class="reaction-button" onclick="return confirmDeletion(this);">
                     <p>🗑️</p>
@@ -547,9 +480,9 @@
     ]; %>
                   <% reactionTypes.forEach(reaction => { %>
                   <% if (reaction.count > 0) { %>
-                  <button class="reaction-button" onclick='
+                  <button class="reaction-button" id="<%= reaction.type %>" onclick='
                 <% if (user) { %>
-                    interactWithPost(<%= post.id %>, "<%= user.username %>", "<%= reaction.type %>")
+                    interactWithPost("<%= post.id %>", "<%= user.username %>", "<%= reaction.type %>")
                 <% } else { %>
                     window.location.href = "/login";
                 <% } %>
@@ -646,11 +579,10 @@ const totalReplies = countAllReplies(comment.replies);
         <div class="tags-div">
 
           <div class="tags">
+            tags:
             <% if (post.tags && post.tags.length > 0) { %>
             <% post.tags.forEach(tag => { %>
-            <span class="tag-flair">
-              <a href="#" class="tag"><%= tag.name %></a>
-            </span>
+            <a href="#" class="tag"><%= tag.name %></a>
             <% }); %>
             <% } %>
             <% if (post.post_type == "project") { %>
@@ -660,9 +592,7 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
 %>
             <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
             <% gitHubData.topics.forEach(topic => { %>
-            <span class="tag-flair" id="github-flair">
-              <a href="#" class="tag"><%= topic %></a>
-            </span>
+            <a href="#" class="tag"><%= topic %></a>
             <% }); %>
             <% } %>
           </div>
@@ -853,90 +783,43 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
           },
           body: JSON.stringify({
             user: user,
-            action: action.toLowerCase() // Ensure action is in lowercase
+            action: action.toLowerCase()
           })
         })
         .then(response => response.json())
         .then(data => {
-          console.log('Success:', data);
+          console.log('Success:', data.message);
+          const reactionMenu = document.querySelector(".reaction-popup");
+          if (reactionMenu) {
+            reactionMenu.style.display = 'none'; // Hide the reaction popup
+          }
 
-          // Assuming the 'reactions' field directly contains the count values
-          const reactionsData = data.newScore; // Adjust according to actual response structure
+          // Using `data.newScore` directly based on the provided response example
+          const reactionsData = data.newScore;
 
-          const reactionTypes = [{
-              type: "LOVE",
-              icon: "❤️"
-            },
-            {
-              type: "LIKE",
-              icon: "👍"
-            },
-            {
-              type: "CURIOUS",
-              icon: "🤔"
-            },
-            {
-              type: "INTERESTING",
-              icon: "💡"
-            },
-            {
-              type: "CELEBRATE",
-              icon: "🎉"
-            },
-          ];
-
-          // Ensure you have a reference to the container where buttons should be placed
-          const reactionInteractionsDiv = document.getElementById(`reaction-interactions ${postId}-reactions`); // Adjust ID as necessary
-
-          reactionTypes.forEach(reaction => {
-            const reactionCount = reactionsData[reaction.type.toLowerCase()] || 0;
-            let reactionButton = document.querySelector(`.reaction-button.${reaction.type.toLowerCase()}-button-${postId}`);
-
-            if (reactionCount > 0) {
-              if (!reactionButton) {
-                // Create a new reaction button if it doesn't exist
-                reactionButton = document.createElement("button");
-                reactionButton.className = `reaction-button ${reaction.type.toLowerCase()}-button-${postId}`;
-                reactionButton.onclick = () => interactWithPost(postId, user, reaction.type);
-
-                const icon = document.createElement("span");
-                icon.innerText = reaction.icon;
-
-                const countText = document.createElement("span");
-                countText.className = `reaction-count ${reaction.type.toLowerCase()}-count ${postId}`;
-                countText.innerText = ` ${reactionCount}`;
-
-                reactionButton.appendChild(icon);
-                reactionButton.appendChild(countText);
-                reactionInteractionsDiv.appendChild(reactionButton);
-              } else {
-                // Update count of existing button
-                const countSpan = reactionButton.querySelector(`.reaction-count ${reaction.type.toLowerCase()}-count ${postId}`);
-                if (countSpan) countSpan.innerText = ` ${reactionCount}`;
+          // Ensure reactionsData is not null or undefined, then proceed
+          if (reactionsData != null) {
+            Object.entries(reactionsData).forEach(([type, count]) => {
+              // Updated to handle cases where icon and text are separated
+              const reactionCountSpan = document.querySelector(`span.${type}-count`);
+              if (reactionCountSpan) {
+                reactionCountSpan.innerText = count;
               }
-            } else if (reactionCount == 0) {
-              if (reactionButton) {
-                reactionButton.remove();
+              // Checks and updates for reaction not previously displayed due to zero count
+              else if (count > 0) {
+                // This could be expanded to dynamically add new buttons, if needed
+                console.log(`${type} reaction updated to show ${count}`);
               }
-            }
-
-            // Update button color if needed
-            if (reactionButton && reaction.type.toLowerCase() === action.toLowerCase()) {
-              // maybe add a lil reaction later idk
-            } else if (reactionButton) {
-              reactionButton.style.color = ""; // Reset to default styles for other buttons
-            }
-          });
-
-          const boostCount = reactionsData['boosts'] || 0;
-          let boostButton = document.querySelector(`.boost-button.boost-button-${postId}`);
-          const countSpan = boostButton.querySelector(`span.boost-count-${postId}`);
-          countSpan.innerText = ` ${boostCount}`;
+            });
+          } else {
+            console.error("No reaction data found in the response");
+          }
         })
         .catch((error) => {
           console.error('Error:', error);
         });
     }
+
 
     function showReplyForm(commentId, event) {
       event.preventDefault();
