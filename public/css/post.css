@@ -76,7 +76,7 @@ main {
 
 
 .comment-form {
-  margin: 12px 0px;
+  margin: 0;
 }
 
 body {
@@ -232,9 +232,10 @@ div .material-symbols-outlined:hover {
 .sidebar {
   background-color: var(--light-mode-main-color);
   border: 0;
-  border-radius: 6px;
   width: 100%;
   box-sizing: border-box;
+  border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
   
 }
 
@@ -254,7 +255,6 @@ a.comment-url:visited {
 }
 
 .post {
-  border-radius: 6px;
   margin-bottom: 5px;
 }
 
@@ -335,7 +335,7 @@ div .user-info, .header {
   background-color: var(--light-mode-button-color);
   border: 0;
   color: var(--light-mode-text-color);
-  border-radius: 6px;
+  border-radius: 10px;
   padding: 5px 8px;
   font-size: 15px;
   font-weight: 400;
@@ -368,8 +368,8 @@ div .user-info, .header {
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-top: 15px;
-  margin-bottom: 0px;
+  margin-top: 5px;
+  margin-bottom: 6px;
 }
 
 .link-image, .sidebar-poster-avatar {
@@ -479,9 +479,9 @@ div .user-info, .header {
   display: flex;
   flex-direction: column;
   background-color: var(--light-mode-main-color);
-  border-radius: 6px;
-  margin-top: 10px;
+  margin-top: 0;
   position: relative;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .post-body {
@@ -705,7 +705,6 @@ a.comment-user-info:hover {
 .preview-image, .sidebar-avatar {
   width: 80px;
   height: 80px;
-  border-radius: 6px;
   object-fit: cover;
 }
 
@@ -764,13 +763,17 @@ h4.preview-title {
 
 .editor-toolbar {
   display: none;
-  border-radius: 6px;
-  border: 0;
-  margin-bottom: 10px;
+  border-top: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-radius: 0 !important;
 }
 
 .EasyMDEContainer .CodeMirror {
-  border-radius: 6px;
+  border-radius: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-bottom: 1px solid var(--border-color) !important;
 }
 
 .EasyMDEContainer .CodeMirror, .EasyMDEContainer .CodeMirror-scroll {
@@ -800,11 +803,11 @@ p.preview-description {
 
 .tag-flair {
   display: inline-block;
-  padding: 4px 5px;
+  padding: 4px 10px;
   margin: 2px;
-  background-color: #326D9A; 
-  border: 1px solid #5696C8; 
-  border-radius: 6px;
+  background-color: var(--dark-mode-main-color);
+  border: 1px solid var(--dark-mode-border-color);
+  border-radius: 5px;
   font-size: 14px;
   position: relative;
   color: white;
@@ -912,12 +915,12 @@ p.preview-description {
 
   .editor-toolbar {
     background-color: var(--dark-mode-main-color) !important;
-    border: 0 !important;
+    border-color: var(--dark-mode-border-color) !important;
   }
 
   .EasyMDEContainer .CodeMirror {
     background-color: var(--dark-mode-main-color) !important;
-    border: 0 !important;
+    border-color: var(--dark-mode-border-color) !important;
     color: var(--dark-mode-text-color) !important;
   }
 
@@ -953,6 +956,10 @@ p.preview-description {
 
   div .user-info, .header {
     color: var(--dark-mode-background-text-color); /* Lighter text color for user info and headers */
+  }
+  
+  .sidebar {
+    border-color: var(--dark-mode-border-color);
   }
 
   .communities_id {
@@ -1056,12 +1063,11 @@ p.preview-description {
 
   }
   .sidebar-container {
-    padding: 0px 12px;
+    padding: 0;
   }
     
   .post { 
-      padding: 0px 14px;
-      padding-top: 0px;
+      padding: 0;
       
   }
 
@@ -1084,9 +1090,6 @@ p.preview-description {
     aspect-ratio: 1/1;
     width: 60px;
     height: 60px;
-    border-radius: 6px;
-    border-bottom-right-radius: 0px;
-    border-top-right-radius: 0px;
     object-fit: cover;
   }
   .preview-image {
@@ -1099,8 +1102,7 @@ p.preview-description {
   }
 
   #github-link-preview {
-    margin: 14px 0px;
-    margin-top: 6px;
+    margin: 0;
     }
   
   main {
@@ -1131,8 +1133,8 @@ p.preview-description {
   }
 
   .comments-section {
-    margin: 0px 14px;
-    border-radius: 6px;
+    margin: 0;
+    margin-top: -2px;
     margin-bottom: 25px;
   }
 

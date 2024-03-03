@@ -38,6 +38,8 @@
 
   <main>
     <div class="main-container">
+      <% if (post.post_type != 'blog') { %>
+
       <div class="sidebar-container" style="<% if (post.linkPreview && post.post_type != 'project') { %>flex-direction: row; <% } else { %> flex-direction: column; gap: 0px; <% } %>">
 
         <div class="sidebar" style="max-width: 100%">
@@ -69,6 +71,7 @@
           </div>
         </div>
       </div>
+      <% } %>
       <div class="post">
         <div class="header" style="<% if (post.post_type == "blog") { %> justify-content: center; <% } %>">
           <div class="title">
@@ -87,6 +90,9 @@
 
             <p class="post-subtitle">
               <span class=tag-flair><%= post.post_type.charAt(0).toUpperCase() + post.post_type.slice(1) %> </span>
+              <% if (post.post_type == 'blog') { %>
+              by <a href="/profile/<%= post.user.username %>" style="text-decoration: none;"><%= post.user.firstname %> <%= post.user.lastname %></a>
+              <% } %>
               <a href="/communities/<%= post.community.id %>" style="text-decoration: none;">/<%= post.community.shortname %></a>
 
 
@@ -278,7 +284,7 @@
             <% } %>
             <div class="post-body" style="
             <% if (post.post_type == 'blog') { %>
-            padding: 0;
+            padding: 0px 10px;
             <% } %>">
               <% if ((post.post_type == 'discussion' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog') { %>
               <%- post.content %>

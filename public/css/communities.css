@@ -142,7 +142,8 @@ div.vote-interactions {
   margin: 7px 14px;
   flex-grow: 1; /* Take up remaining space */
   padding: 0; /* No padding */
-  padding-top: 5px;
+  padding-top: 1px;
+  margin-bottom: 2px;
 }
 
 .com-btn {
@@ -191,8 +192,8 @@ div.vote-interactions {
   background-color: var(--light-mode-button-color);
   border: 0;
   color: var(--light-mode-secondary-text-color);
-  border-radius: 6px;
-  padding: 4px 8px;
+  border-radius: 10px;
+  padding: 5px 8px;
   font-size: .875rem;
   font-weight: 500;
 }
@@ -244,7 +245,7 @@ div.vote-interactions {
 
 .link-preview {
   background-color: var(--border-color);
-  border-radius: 6px;
+  border-radius: 10px;
   margin: 16px 0px;
   margin-top: 10px;
 }
@@ -341,7 +342,7 @@ div.vote-interactions {
 }
 
 .comments {
-  font-size: .725rem;
+  font-size: .855rem;
   padding-right: 5px;
   color: var(--light-mode-secondary-text-color);
   float: right;
@@ -396,7 +397,7 @@ div .mini-link {
 
 div .mini-link-title {
   display: -webkit-box;
-  -webkit-line-clamp: 2; 
+  -webkit-line-clamp: 1; 
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -418,7 +419,7 @@ div .mini-link-title {
   border: 1px solid var(--border-color);
   color: inherit;
   border-radius: 6px;
-  padding: 6px 12px;
+  padding: 8px 16px;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
@@ -487,9 +488,13 @@ div .mini-link-title {
   justify-content: space-between;
 }
 
+.mini-link-url a {
+  text-decoration: none;
+}
+
 .mini-link-body {
   color: var(--light-mode-text-color);
-  margin-left: 6px;
+  margin: 12px;
 }
 
 .mini-link-url a {
@@ -723,8 +728,8 @@ div .mini-link-desc {
   .community-selector .communities {
     background-color: var(--light-mode-main-color);
     border: 1px solid var(--light-mode-main-color);
-    border-radius: 6px; 
-    padding:4px 6px;
+    border-radius: 10px;
+    padding: 4px 12px;
 
     display: flex;
     flex-direction: row;
@@ -896,7 +901,6 @@ div .mini-link-desc {
 }
 
 .mini-link-favicon {
-  background-color: white;
   width: min-content;
   border-radius: 100%;
   min-height: min-content;
@@ -912,6 +916,7 @@ div .mini-link-desc {
 .mini-link-favicon img {
   width: 16px;
   height: 16px;
+  background-color: white;
   box-sizing: border-box;
   border-radius: 100%;
   margin: 0;
