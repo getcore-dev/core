@@ -1030,8 +1030,16 @@ p.preview-description {
     color: var(--dark-mode-text-color) !important;
   }
 
+  .project-link {
+    background-color: var(--dark-mode-border-color);
+  }
+
   .editor-toolbar i.separator {
     border-color: var(--dark-mode-border-color) !important;
+  }
+  
+  .project-link-header a {
+    color: var(--dark-mode-secondary-text-color) !important;
   }
 
 

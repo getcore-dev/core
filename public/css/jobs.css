@@ -62,6 +62,10 @@ main {
     border-top-left-radius: 8px;
     border-top-right-radius: 8px; 
   }
+
+  .job {
+    border-top: 1px solid var(--border-color);
+  }
   
   .job-title-location {
     flex-grow: 1;
@@ -139,10 +143,6 @@ main {
 .job-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  margin: 4px 13px;
-  margin-bottom: 25px;
-  border-radius: 6px;
 }
 
 .job-content {
@@ -202,6 +202,10 @@ div .material-symbols-outlined {
   body , .job-content    {
       background-color: var(--dark-mode-body-color); /* Dark background */
       color: #fff; /* Light text */
+  }
+
+  .job {
+    border-color: var(--dark-mode-border-color);
   }
 
 

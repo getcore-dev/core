@@ -103,6 +103,10 @@ div.vote-interactions {
   padding: 5px 5px;
 }
 
+.post:hover, .job:hover {
+  background-color: var(--light-mode-hover-color);
+}
+
 .thumbnail-image {
   height: 109px;
   border-radius: 18px;
@@ -444,6 +448,10 @@ div .mini-link-title {
   padding: 4px 10px;
 }
 
+.mobile-jobs-container {
+  display: none;
+}
+
 #post-sort-button {
   border: 0;
   padding: 6px 3px;
@@ -641,10 +649,6 @@ div .mini-link-desc {
   flex-direction: row;
 }
 
-.post:hover, .job:hover {
-  background-color: var(--light-mode-hover-color);
-}
-
 .company-logo-container {
   border-radius: 50%;
   display: flex;
@@ -705,6 +709,10 @@ div .mini-link-desc {
     color: var(--primary-text-color)
   }
 
+  .mobile-jobs-container {
+    display: block;
+  }
+
   .community-selector {
     padding-top: 10px;
     padding-left: 13px;
@@ -755,7 +763,6 @@ div .mini-link-desc {
 
   
   .job-content {
-      margin-left: 30px;
       margin-right: 10px;
   }
 
@@ -768,52 +775,35 @@ div .mini-link-desc {
     height: calc(100dvh - 65px);
   }
 
-}
-
-@media (prefers-color-scheme: dark) {
-  .mini-link-body {
-    color: #eee;
+  .job-desc {
+    display: none;
+  }
+  
+  .job-flair {
+    display:none;
   }
 
-  #communityActionBtn {
-    background-color: var(--dark-mode-border-color);
-    color: var(--dark-mode-text-color);
+  #pay-flair, #location-flair {
+    display: inline-block;
   }
 
   .job {
-    background-color: var(--dark-mode-main-color);
+    border: 1px solid var(--border-color);
+    margin: 0;
   }
 
-  .main-reaction-button:hover, .boost-button:hover, .reaction-button:hover {
-    background-color: var(--dark-mode-border-color);
-  }
-  .reaction-menu {
-    background-color: var(--dark-mode-main-color);
-    border: 1px solid var(--dark-mode-border-color);
-  }
-
-  #post-flair {
-    background-color: #345995;
+  .jobslist {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; 
+    padding-left: 10px;
+    padding-right: 10px;
+    gap: 10px; 
   }
 
-  body {
-      background-color: var(--dark-mode-body-color);
-      color: var(--dark-mode-text-color);
-  }
-
-  .container {
-    background-color: var(--dark-mode-body-color);
-  }
-
-  .post, .job-content {
-      background-color: var(--dark-mode-main-color);
-
-  }
-  .post-date {
-      color: var(--dark-mode-secondary-text-color);
-  }
 
 }
+
+
 @media (max-width: 768px) {
   .post {
     margin: 0;
@@ -823,6 +813,11 @@ div .mini-link-desc {
     padding: 0px;
     max-width: 100%;
     border-top: 1px solid var(--border-color);
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
   }
 
   .description {
@@ -839,6 +834,7 @@ div .mini-link-desc {
   body {
     overflow-y: hidden;
   }
+  
   .title {
     font-size: 1rem;
   }
@@ -1061,3 +1057,59 @@ div .mini-link-desc {
   }
 
 }
+
+@media (prefers-color-scheme: dark) {
+  .mini-link-body {
+    color: #eee;
+  }
+
+  #communityActionBtn {
+    background-color: var(--dark-mode-border-color);
+    color: var(--dark-mode-text-color);
+  }
+
+  .job {
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
+  }
+
+  .job:hover .job-content:hover {
+    background-color: var(--dark-mode-hover-color) !important;
+  }
+
+  .main-reaction-button:hover, .boost-button:hover, .reaction-button:hover {
+    background-color: var(--dark-mode-border-color);
+  }
+  .reaction-menu {
+    background-color: var(--dark-mode-main-color);
+    border: 1px solid var(--dark-mode-border-color);
+  }
+
+  #post-flair {
+    background-color: #345995;
+  }
+
+  body {
+      background-color: var(--dark-mode-body-color);
+      color: var(--dark-mode-text-color);
+  }
+
+  .container {
+    background-color: var(--dark-mode-body-color);
+  }
+
+  .post, .job-content {
+      background-color: var(--dark-mode-main-color);
+
+  }
+
+  .job:hover {
+      background-color: var(--dark-mode-hover-color);
+
+  }
+
+  .post-date {
+      color: var(--dark-mode-secondary-text-color);
+  }
+
+} 
