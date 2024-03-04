@@ -168,7 +168,7 @@ div.vote-interactions {
   border: 1px solid #FF8370; 
   color: white;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: .825rem;
   position: relative;
 }
 
@@ -634,11 +634,11 @@ div .mini-link-desc {
 
 
 .company-name {
-  font-size: 15px;
+  font-size: .825rem;
 }
 
 .job-title {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: bold;
   margin: 0;
   margin-top: 2px;
@@ -750,7 +750,12 @@ div .mini-link-desc {
     font-weight: bold;
   }
   .community-header, .job-header {
-    margin: 9px 14px 13px 14px;
+    margin: 0 14px 6px 14px;
+    }
+
+    .job-header {
+      margin-top: 6px;
+      margin-bottom: 8px
     }
 
   .post {
