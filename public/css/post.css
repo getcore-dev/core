@@ -60,10 +60,12 @@ main {
 }
 
 .button-container {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  padding: 10px 12px;
+    background-color: var(--light-mode-hover-color);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 15px;
 }
 
 .button-container button {
@@ -115,9 +117,9 @@ img.linkimage {
 }
 
 pre {
-  border-radius: 5px; 
-  -moz-border-radius: 5px; 
-  -webkit-border-radius: 5px;
+  border-radius: 10px; 
+  -moz-border-radius: 10px; 
+  -webkit-border-radius: 10px;
   border: 1px solid var(--border-color);
   background: var(--light-mode-main-color);
   font: 13px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace;
@@ -127,10 +129,10 @@ pre {
 }
 
 code {
-  border-radius: 5px; 
-  -moz-border-radius: 5px; 
-  -webkit-border-radius: 5px; 
-  border: 1px solid #BCBEC0;
+  border-radius: 10px; 
+  -moz-border-radius: 10px; 
+  -webkit-border-radius: 10px; 
+  border: 1px solid var(--border-color);
   padding: 2px;
   font: 13px Monaco,Consolas,"Andale  Mono","DejaVu Sans Mono",monospace;
 }
@@ -264,6 +266,11 @@ a.comment-url:visited {
   line-height: normal; /* Adjust line height as needed */
 }
 
+.input-container textarea:focus, .comment-container textarea:focus {
+  outline: none; /* Remove the default focus outline */
+  border: 1px solid black;
+}
+
 /* Style for the send button */
 .input-container button.fab, .comment-container button.fab {
   background-color: var(--profile-background-color);
@@ -277,12 +284,9 @@ a.comment-url:visited {
 }
 
 
-.nested-comment.level-1 {
-  padding: 5px;
-}
-.nested-comment.level-1 {
+.nested-comment .comment {
   box-sizing: border-box;
-  padding: 2px;
+  padding-left: 10px;
 }
 
 .nested-comments-container {
@@ -325,8 +329,8 @@ div .user-info, .header {
 }
 
 .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button {
-  background-color: var(--light-mode-button-color);
-  border: 0;
+  background-color: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
   color: var(--light-mode-text-color);
   border-radius: 10px;
   padding: 5px 8px;
@@ -355,7 +359,8 @@ div .user-info, .header {
 .reaction-popup {
   position: absolute;
   display: flex;
-  bottom: 37px;
+  bottom: 48px;
+  left: 66px;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
@@ -367,6 +372,48 @@ div .user-info, .header {
   pointer-events: none;
   z-index: 999;
 }
+
+.solution {
+  display: flex;
+    flex-direction: column;
+    white-space-collapse: collapse;
+    background-color: #E3F2DC;
+    border: 2px solid #C3E3B5;
+    border-radius: 10px;
+    padding: 12px 10px;
+}
+
+.solution-header {
+  line-height: 1;
+  display: flex;
+  flex-direction: row;
+  white-space: nowrap;
+  align-items: center;
+  gap: 7px;
+}
+
+.solution-username a {
+  text-decoration: none !important;
+  color: var(--light-mode-text-color) !important;
+  font-weight: 500 !important;
+}
+
+.solution-avatar {
+  height: min-content
+}
+
+.solution-avatar img {
+  border-radius: 100%;
+  max-height: 35px;
+  aspect-ratio: 1/1;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.solution-username {
+  white-space-collapse: collapse;
+}
+
 
 .reaction-popup button {
   pointer-events: auto;
@@ -614,13 +661,6 @@ div.repliers-avatar, div.repliees-avatar {
   height: 35px;
 }
 
-.avatar-nested {
-  border-radius: 50%;
-  height: 24px;
-  width: 24px;
-  padding: 4px;
-}
-
 
 .post-content {
   padding: 9px 14px;
@@ -673,8 +713,8 @@ a.comment-user-info:hover {
   position: relative;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   gap: 6px;
+  width: 100%;
 }
 
 
@@ -743,9 +783,20 @@ a.comment-user-info:hover {
 .dropdown-content {
   display: none;
   position: absolute;
+  right: 0;
+  padding: 5px;
   background-color: var(--light-mode-main-color);
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
+  font-size: 16px;
+  font-size: 1rem;
+}
+
+.dropdown-content button {
+  border: 0;
+  background-color: rgba(0,0,0,0);
+  padding: 0;
+  margin: 0;
 }
 
 .comment-content {
@@ -755,7 +806,7 @@ a.comment-user-info:hover {
 }
 
 .dropdown .material-symbols-outlined {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 300;
 }
 
@@ -828,6 +879,8 @@ h4.preview-title {
 }
 
 .EasyMDEContainer .CodeMirror {
+  background-color: var(--light-mode-hover-color) !important; 
+  border-color: var(--border-color) !important;
   border-radius: 0 !important;
   border-left: 0 !important;
   border-right: 0 !important;
@@ -934,8 +987,6 @@ p.preview-description {
 }
 
 .reply-form {
-  margin-top: 10px;
-  margin-bottom: 15px;
   width: 100%;
 }
 
@@ -1114,13 +1165,6 @@ p.preview-description {
   color: white;
 }
 
-#cancel-button {
-  background-color: #D62828;
-  border: 2px solid #BE2323;
-  color: white;
-}
-
-
 /* Style for the send button on hover */
 .input-container button.fab:hover {
   background-color: var(--border-color);
@@ -1240,6 +1284,10 @@ p.preview-description {
   
   .post, .comment {
     padding-bottom: 0px;
+  }
+
+  .commment {
+    margin-bottom: 0;
   }
 
 

@@ -58,6 +58,19 @@
                   <span class="material-symbols-outlined">more_horiz</span>
                 </button>
                 <div class="dropdown-content" style="display: none;">
+                  <% if (user && user.username === post.username) { %>
+
+                  <form action=" /post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <button class="reaction-button" onclick="return confirmDeletion(this);">
+                      <p>🗑️</p>
+                    </button>
+                  </form>
+
+                  <button class="reaction-button" onclick="window.location.href='/posts/<%= post.id %>/edit'">
+                    <p>📝</p>
+                  </button>
+                  <% } %>
                 </div>
               </div>
             </div>
@@ -120,11 +133,23 @@
                 </a>
               </div>
               <div class="dropdown">
-                <button class="dropbtn">
+                <button class="dropbtn" onclick="showDropdown(event)">
                   <span class="material-symbols-outlined">more_horiz</span>
                 </button>
                 <div class="dropdown-content" style="display: none;">
-                  hellloooo 123
+                  <% if (user && user.username === post.username) { %>
+
+                  <form action=" /post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <button class="reaction-button" onclick="return confirmDeletion(this);">
+                      <p>Delete Post</p>
+                    </button>
+                  </form>
+
+                  <button class="reaction-button" onclick="window.location.href='/posts/<%= post.id %>/edit'">
+                    <p>Edit Post</p>
+                  </button>
+                  <% } %>
                 </div>
               </div>
             </div>
@@ -168,6 +193,26 @@
               <% } %>
               <%- post.content %>
 
+              <% if (post.post_type == 'question' && post.solution) { %>
+              <h3>Accepted solution by @<%= post.solution.user.username %></h3>
+              <div class="solution">
+                <div class="solution-header">
+                  <div class="solution-avatar">
+                    <img src="<%= post.solution.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+                  </div>
+                  <div class="solution-username">
+                    <a href="/profile/<%= post.solution.user.username %>">
+                      <%= post.solution.user.username %>
+                    </a>
+                  </div>
+                </div>
+                <div class="solution-body">
+                  <%- post.solution.comment %>
+                </div>
+
+              </div>
+              <% } %>
+
 
 
               <% } else if (post.post_type == 'discussion' && post.linkPreview) { %>
@@ -195,11 +240,12 @@
               <% } %>
 
               <div class="user-interactions" style="<% if (post.post_type == "blog") { %>margin-bottom: 20px;<% } %>">
-                <button id="reactionButton" class="reaction-button">
-                  <p>😀</p>
+                <button class="reaction-button" id="boost" onclick='<% if (user) { %>interactWithPost("<%= post.id %>", "<%= user %>", "boost")<% } else { %>window.location.href = "/login";<% } %>'>
+                  <span class="boost-image">⚡️</span> <span class="boost-count"><%= post.boostCount %></span>
                 </button>
-                <div id="reactionPopup" class="reaction-popup" style="display:none;">
-                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'BOOST')">⚡️</button>
+                <button class="mainReactionButton reaction-button" data-type="post" data-id="<%= post.id %>">😀
+                </button>
+                <div id="reactionPopup-post-<%= post.id %>" class="reaction-popup" style="display:none;">
                   <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'LOVE')">❤️</button>
                   <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'LIKE')">👍</button>
                   <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'CURIOUS')">🤔</button>
@@ -207,11 +253,6 @@
                   <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'CELEBRATE')">🎉</button>
                 </div>
                 <% const reactionTypes = [
-        {
-            type: "boost",
-            icon: "⚡️",
-            count: post.boostCount
-        },
         {
             type: "LOVE",
             icon: "❤️",
@@ -247,19 +288,6 @@
                 </button>
                 <% } %>
                 <% }); %>
-                <% if (user && user.username === post.username) { %>
-
-                <form action=" /post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
-                  <input type="hidden" name="_method" value="DELETE" />
-                  <button class="reaction-button" onclick="return confirmDeletion(this);">
-                    <p>🗑️</p>
-                  </button>
-                </form>
-
-                <button class="reaction-button" onclick="window.location.href='/posts/<%= post.id %>/edit'">
-                  <p>📝</p>
-                </button>
-                <% } %>
               </div>
             </div>
           </div>
@@ -305,7 +333,7 @@
               <% if (level == 0) { %>
               <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
               <% } else { %>
-              <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar-nested" onerror="standby()" />
+              <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
               <% } %>
             </div>
             <div class="comment-main">
@@ -351,6 +379,14 @@
                     <span class="material-symbols-outlined">more_horiz</span>
                   </button>
                   <div class="dropdown-content" style="display: none;">
+                    hello
+                    <% if (user && post.username === user.username && post.post_type == 'question') { %>
+                    <form id="answer-form-<%= comment.id %>" action="/posts/<%= post.id %>/answer/<%= comment.id %>" method="POST">
+                      <button type="submit">Solution</button>
+                    </form>
+
+
+                    <% } %>
 
 
                     <% if (user && user.username === comment.user.username) { %>
@@ -382,10 +418,12 @@
 
               <div class="user-actions">
 
-                <% if (level == 0) {%>
-                <div class="comment-user-interactions">
-                  <button id="reactionButton" class="reaction-button">😀</button>
-                  <div id="reactionPopup" class="reaction-popup" style="display:none; position: absolute; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
+                <div class="comment-user-interactions" data-type="comment" data-id="<%= comment.id %>">
+                  <button class="reaction-button" id="boost" onclick='<% if (user) { %>interactWithPost("<%= post.id %>", "<%= user %>", "boost")<% } else { %>window.location.href = "/login";<% } %>'>
+                    <p>⚡️ <%= comment.boostCount %></p>
+                  </button>
+                  <button class="mainReactionButton reaction-button" data-type="comment" data-id="<%= comment.id %>">😀</button>
+                  <div id="reactionPopup-comment-<%= comment.id %>" class="reaction-popup" style="display:none; position: absolute; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
                     <button class="reaction-choice">⚡️</button>
                     <button class="reaction-choice">❤️</button>
                     <button class="reaction-choice">👍</button>
@@ -394,11 +432,6 @@
                     <button class="reaction-choice">🎉</button>
                   </div>
                   <% const reactionTypes = [
-        {
-            type: "boost",
-            icon: "⚡️",
-            count: comment.boostCount
-        },
         {
             type: "LOVE",
             icon: "❤️",
@@ -427,18 +460,12 @@
     ]; %>
                   <% reactionTypes.forEach(reaction => { %>
                   <% if (reaction.count > 0) { %>
-                  <button class="reaction-button" id="<%= reaction.type %>" onclick='
-                <% if (user) { %>
-                    interactWithPost("<%= post.id %>", "<%= user %>", "<%= reaction.type %>")
-                <% } else { %>
-                    window.location.href = "/login";
-                <% } %>
-            '>
+                  <button class="reaction-button" id="<%= reaction.type %>" onclick='<% if (user) { %>interactWithPost("<%= post.id %>", "<%= user %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
                     <p><%= reaction.icon %> <%= reaction.count %></p>
                   </button>
                   <% } %>
                   <% }); %>
-                  <% if (level == 0) { %>
+
                   <div class="replies">
                     <a href="#" id="reply-button" onclick="showReplyForm('<%= comment.id %>', event)">
                       <% 
@@ -456,41 +483,14 @@ const totalReplies = countAllReplies(comment.replies);
                       </button>
                     </a>
                   </div>
-                  <% } %>
                 </div>
 
-                <% } %>
-
-                <% if (level >= 3) {%>
-                <div class="comment-chevron" onclick="toggleNestedComments(' <%= comment.id %>', <%= nestedLevel %>)">
-                  <% 
-function countAllReplies(replies) {
-    if (!replies || replies.length === 0) return 0;
-    let total = 0;
-    for (const reply of replies) {
-        total += 1 + countAllReplies(reply.replies);
-    }
-    return total;
-}
-const totalReplies = countAllReplies(comment.replies);
-%>
-
-                  <% if (totalReplies > 0) { %>
-                  <span class="material-symbols-outlined chevron">chevron_right</span>
-                  <% if (level >= 3) { %>
-                  <span class="replies-count" onclick="toggleNestedComments('<%= comment.id %>', <%= nestedLevel %>)">
-                    <%= totalReplies %> <% if (totalReplies === 1) { %> reply <% } else { %> replies <% } %>
-                  </span>
-                  <% } %> <% } %>
-                </div>
-                <% } %>
               </div>
+
             </div>
           </div>
-          <% if (level == 0 && false) { %>
-
           <div class="reply-form">
-            <form id="reply-form-<%= comment.id %>" action="/comments/<%= comment.id %>/replies" method="POST" style="display: block">
+            <form id="reply-form-<%= comment.id %>" action="/comments/<%= comment.id %>/replies" method="POST" style="display: none">
               <div class="input-container">
                 <textarea id="comment-<%= comment.id %>" name="comment" rows="1" required onclick="autoExpandTextarea(event); showReplyButtons('<%= comment.id %>')" maxlength="500" placeholder="Reply to <%= comment.user.username %>"></textarea>
                 <div class="reply-buttons" id="reply-buttons-<%= comment.id %>" style="display: none;">
@@ -501,14 +501,12 @@ const totalReplies = countAllReplies(comment.replies);
               </div>
             </form>
           </div>
-        </div>
-        <% } %>
 
 
-        <% if (comment.replies && comment.replies.length > 0) { %>
-        <% var nestedLevel = level + 1; %>
-        <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
-        <div class="<%= divClass %>" id="nested-comments-<%= comment.id %>" style="
+          <% if (comment.replies && comment.replies.length > 0) { %>
+          <% var nestedLevel = level + 1; %>
+          <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
+          <div class="<%= divClass %>" id="nested-comments-<%= comment.id %>" style="
       <% if (nestedLevel < 4) { %>
       display: block;
       <% } else { %>
@@ -516,16 +514,16 @@ const totalReplies = countAllReplies(comment.replies);
       <% } %>
       ">
 
-          <% renderComments(comment.replies, nestedLevel); %>
+            <% renderComments(comment.replies, nestedLevel); %>
+          </div>
+          <% } %>
         </div>
+
+        <% }) %>
         <% } %>
+        <% renderComments(post.comments); %>
+
       </div>
-
-      <% }) %>
-      <% } %>
-      <% renderComments(post.comments); %>
-
-    </div>
 
 
     </div>
@@ -914,40 +912,45 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
           postContent.classList.add('overflow');
         }
       });
-    });
 
+      // Variables to hold the timeouts for showing and hiding the menus
+      let showMenuTimeout;
+      let hideMenuTimeout;
 
-    let mainReactionButton = document.getElementById('reactionButton');
-    let reactionMenu = document.getElementById('reactionPopup');
+      // Add event listeners to all main reaction buttons
+      document.querySelectorAll('.mainReactionButton').forEach(button => {
+        button.addEventListener('click', (event) => {
+          // Determine which button was clicked
+          const clickedButton = event.target;
+          const buttonType = clickedButton.dataset.type; // 'post' or 'comment'
+          const buttonId = clickedButton.dataset.id; // Unique identifier for the post or comment
 
-    let showMenuTimeout; // Variable to hold the timeout for showing the menu
-    let hideMenuTimeout; // Variable to hold the timeout for hiding the menu
+          // Find the corresponding reaction menu based on the clicked button
+          const reactionMenu = document.getElementById(`reactionPopup-${buttonType}-${buttonId}`);
 
-    // cancel showing menu if you click the button a second time otherwise show the menu
-    mainReactionButton.addEventListener('click', () => {
-      clearTimeout(showMenuTimeout);
-      if (reactionMenu.style.display === 'flex') {
-        reactionMenu.style.opacity = '0';
-        setTimeout(() => { // Delay for opacity transition
-          reactionMenu.style.display = 'none';
-        }, 200);
-      } else {
-        clearTimeout(showMenuTimeout);
-        showMenuTimeout = setTimeout(() => {
-          let rect = mainReactionButton.getBoundingClientRect();
-          reactionMenu.style.display = 'flex';
-          reactionMenu.style.opacity = '0';
-          reactionMenu.style.opacity = '1';
-          hideMenuTimeout = setTimeout(() => {
+          // Cancel showing the menu if you click the button a second time; otherwise, show the menu
+          clearTimeout(showMenuTimeout);
+          if (reactionMenu.style.display === 'flex') {
             reactionMenu.style.opacity = '0';
-            reactionMenu.style.display = 'none';
-          }, 2000);
-        }, 200);
-      }
+            setTimeout(() => { // Delay for opacity transition
+              reactionMenu.style.display = 'none';
+            }, 200);
+          } else {
+            clearTimeout(showMenuTimeout);
+            showMenuTimeout = setTimeout(() => {
+              let rect = clickedButton.getBoundingClientRect();
+              reactionMenu.style.display = 'flex';
+              reactionMenu.style.opacity = '0';
+              reactionMenu.style.opacity = '1';
+              hideMenuTimeout = setTimeout(() => {
+                reactionMenu.style.opacity = '0';
+                reactionMenu.style.display = 'none';
+              }, 2000);
+            }, 200);
+          }
+        });
+      });
     });
-
-
-    document.getElementById('comment').addEventListener('input', autoExpandTextarea);
   </script>
 </body>
 

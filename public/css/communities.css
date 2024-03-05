@@ -711,6 +711,7 @@ div .mini-link-desc {
 
   .mobile-jobs-container {
     display: block;
+    margin-bottom: 21px;
   }
 
   .community-selector {
@@ -768,7 +769,7 @@ div .mini-link-desc {
 
   
   .job-content {
-      margin-right: 10px;
+      margin: 3px;
   }
 
   .thumbnail {
@@ -798,13 +799,23 @@ div .mini-link-desc {
   }
 
   .jobslist {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr; 
+    display: flex;
+    flex-direction: row;
     padding-left: 10px;
     padding-right: 10px;
     gap: 10px; 
+    overflow-x: auto;
+    -webkit-scrollbar {
+      display: none;
+    }
+    
+    -ms-overflow-style: none; 
+    scrollbar-width: none;
   }
 
+  .jobslist::-webkit-scrollbar {
+    display: none;
+  }
 
 }
 
@@ -818,6 +829,10 @@ div .mini-link-desc {
     padding: 0px;
     max-width: 100%;
     border-top: 1px solid var(--border-color);
+  }
+
+  .post:last-child {
+    border-bottom: 1px solid var(--border-color);
   }
   .container {
     display: flex;

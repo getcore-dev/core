@@ -214,23 +214,6 @@
     });
   });
 
-  function getAllCommunities() {
-    fetch('/api/communities') // Adjust this to your server's endpoint
-      .then(response => response.json())
-      .then(communities => {
-        const menuContent = document.getElementById('menu-communities');
-        const communityLinks = communities.map(community => {
-          return `
-          
-          <div class="menu-community">
-          <a href="/communities/${community.id}"><span id="menu-community-icon" class="material-symbols-outlined">${community.mini_icon}</span>${community.name}</a>
-          </div>`;
-        });
-        menuContent.innerHTML = communityLinks.join('');
-      });
-  }
-
-  getAllCommunities();
 
   <% if (user) { %>
 

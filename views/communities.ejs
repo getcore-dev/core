@@ -65,6 +65,46 @@
           jobBenefits: "Flexible Work Arrangements, Learning Stipends, Free Meals",
           companyLogo: "/src/googlelogo.png"
           },
+          {
+  companyName: "Meta",
+  jobTitle: "Machine Learning Engineer",
+  jobLocation: "Menlo Park, CA",
+  jobOverview: "Develop and deploy cutting-edge machine learning models to enhance user experience across Meta's products.",
+  jobType: "Full-Time",
+  jobSalary: "$180k/yr",
+  jobBenefits: "Generous Equity Package, Comprehensive Health Coverage, Relocation Assistance",
+  companyLogo: "/src/facebooklogo.png"
+},
+{
+  companyName: "Netflix",
+  jobTitle: "Data Analyst",
+  jobLocation: "Los Gatos, CA",
+  jobOverview: "Analyze user data to drive content acquisition and personalization strategies.",
+  jobType: "Full-Time",
+  jobSalary: "$120k/yr",
+  jobBenefits: "Flexible Work Arrangements, Unlimited Vacation, Free Netflix Subscription",
+  companyLogo: "/src/netflixlogo.png"
+},
+{
+  companyName: "Tesla",
+  jobTitle: "Electrical Engineer",
+  jobLocation: "Fremont, CA",
+  jobOverview: "Design and develop innovative electrical systems for Tesla's electric vehicles.",
+  jobType: "Full-Time",
+  jobSalary: "$130k/yr",
+  jobBenefits: "Competitive Equity Package, Discounts on Tesla Products, Wellness Programs",
+  companyLogo: "/src/teslalogo.png"
+},
+{
+  companyName: "Salesforce",
+  jobTitle: "Customer Success Manager",
+  jobLocation: "San Francisco, CA",
+  jobOverview: "Build strong relationships with clients and ensure their success with Salesforce products.",
+  jobType: "Full-Time",
+  jobSalary: "$110k/yr",
+  jobBenefits: "Generous Paid Time Off, Professional Development Opportunities, Wellness Stipends",
+  companyLogo: "/src/salesforcelogo.png"
+}
       ]; %>
 
       <% if (communityId != null) { %>
@@ -90,6 +130,7 @@
         </div>
       </div>
       <% } %>
+      <% if (typeof community === 'undefined' || community == null) { %>
 
       <div class="mobile-jobs-container">
         <div class="job-header">
@@ -123,14 +164,14 @@
             </div>
           </div>
           <% }); %>
-        </div>
-
-        <div class="see-more">
-          <img loading="lazy" src="./src/core.png" class="company-logo" id="see-more-core-logo">
-          <span id="see-more-separator">&#183;</span>
-          <a href="/jobs">See More</a>
+          <div class="see-more">
+            <img loading="lazy" src="./src/core.png" class="company-logo" id="see-more-core-logo">
+            <span id="see-more-separator">&#183;</span>
+            <a href="/jobs">See More</a>
+          </div>
         </div>
       </div>
+      <% } %>
     </div>
     <div class="jobs-container">
       <div class="job-header">

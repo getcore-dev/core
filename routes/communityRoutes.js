@@ -5,7 +5,7 @@ const { checkAuthenticated } = require("../middleware/authMiddleware");
 const communityQueries = require("../queries/communityQueries");
 const cacheMiddleware = require("../middleware/cache");
 
-router.get("/:communityId", cacheMiddleware(1200), async (req, res) => {
+router.get("/:communityId", async (req, res) => {
   const communityId = parseInt(req.params.communityId, 10); // Convert to integer
   if (isNaN(communityId)) {
     return res.status(400).send("Invalid community ID"); // Handle invalid IDs
@@ -47,25 +47,30 @@ router.get("/:communityId", cacheMiddleware(1200), async (req, res) => {
   }
 });
 
-router.get("/:communityId/isMember", cacheMiddleware(1200), checkAuthenticated, async (req, res) => {
-  const userId = req.user.id; // Assuming req.user is populated by your authentication middleware
-  const communityId = parseInt(req.params.communityId, 10);
+router.get(
+  "/:communityId/isMember",
+  cacheMiddleware(1200),
+  checkAuthenticated,
+  async (req, res) => {
+    const userId = req.user.id; // Assuming req.user is populated by your authentication middleware
+    const communityId = parseInt(req.params.communityId, 10);
 
-  if (isNaN(communityId)) {
-    return res.status(400).send("Invalid community ID");
-  }
+    if (isNaN(communityId)) {
+      return res.status(400).send("Invalid community ID");
+    }
 
-  try {
-    const isMember = await communityQueries.checkMembership(
-      userId,
-      communityId
-    );
-    res.json({ isMember });
-  } catch (error) {
-    console.error("Check membership error:", error);
-    res.status(500).send("Error checking membership status");
+    try {
+      const isMember = await communityQueries.checkMembership(
+        userId,
+        communityId
+      );
+      res.json({ isMember });
+    } catch (error) {
+      console.error("Check membership error:", error);
+      res.status(500).send("Error checking membership status");
+    }
   }
-});
+);
 
 router.post("/:communityId/join", checkAuthenticated, async (req, res) => {
   const userId = req.user.id; // Assuming req.user is populated by your authentication middleware

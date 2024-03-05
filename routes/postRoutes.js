@@ -148,6 +148,30 @@ router.post(
   }
 );
 
+router.post(
+  "/posts/:postId/answer/:commentId",
+  checkAuthenticated,
+  async (req, res) => {
+    try {
+      const postId = req.params.postId;
+      const commentId = req.params.commentId;
+      const userId = req.user.id;
+
+      console.log(postId, commentId, userId);
+
+      const result = await postQueries.acceptAnswer(postId, commentId, userId);
+
+      if (result) {
+        // redirect to the post page
+        res.redirect(`/posts/${postId}`);
+      }
+    } catch (err) {
+      console.error("Database error:", err);
+      res.status(500).send("Error accepting answer");
+    }
+  }
+);
+
 router.get("/posts/:postId", async (req, res) => {
   try {
     const postId = req.params.postId;
@@ -241,6 +265,15 @@ ORDER BY c.created_at DESC;`;
       postData.gitHubMatchUsername =
         postData.user.github_url ==
         JSON.parse(postData.gitHubLinkPreview.raw_json).owner.login;
+    }
+
+    if (postData.post_type === "question") {
+      postData.solution = await postQueries.getAcceptedAnswer(postId);
+      if (postData.solution) {
+        postData.solution.user = await getUserDetails(
+          postData.solution.user_id
+        );
+      }
     }
 
     // Add link preview to postData if link exists

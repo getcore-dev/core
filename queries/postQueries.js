@@ -28,6 +28,74 @@ const postQueries = {
       throw err;
     }
   },
+  acceptAnswer: async (postId, commentId, userId) => {
+    try {
+      // Check if the post exists
+      const postResult = await sql.query`
+        SELECT * FROM posts WHERE id = ${postId} AND deleted = 0`;
+      if (postResult.recordset.length === 0) {
+        throw new Error("Post not found");
+      }
+
+      // check if post is a question
+      if (postResult.recordset[0].post_type !== "question") {
+        throw new Error("Post is not a question");
+      }
+
+      // check if post is authored by the user
+      if (postResult.recordset[0].user_id !== userId) {
+        throw new Error("User is not the author of the post");
+      }
+
+      // check if comment exists
+      const commentResult = await sql.query`
+        SELECT * FROM comments WHERE id = ${commentId}`;
+      if (commentResult.recordset.length === 0) {
+        throw new Error("Comment not found");
+      }
+
+      // check if there is already an answer to the question
+      const answerResult = await sql.query`
+        SELECT * FROM QuestionSolutions WHERE OriginalPostID = ${postId}`;
+      if (answerResult.recordset.length > 0) {
+        // replace the accepted answer
+        const result = await sql.query`
+          UPDATE QuestionSolutions SET CommentID = ${commentId}, SolutionTimestamp = GETDATE() WHERE OriginalPostID = ${postId}`;
+        if (result.rowsAffected[0] === 0) {
+          throw new Error("Failed to accept the answer");
+        }
+        return true;
+      }
+
+      const result = await sql.query`
+        INSERT INTO QuestionSolutions (OriginalPostID, CommentID, SolutionTimestamp) VALUES (${postId}, ${commentId}, GETDATE())`;
+
+      if (result.rowsAffected[0] === 0) {
+        throw new Error("Failed to accept the answer");
+      } else {
+        return true;
+      }
+    } catch (err) {
+      console.error("Database update error:", err);
+      throw err;
+    }
+  },
+
+  getAcceptedAnswer: async (postId) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM QuestionSolutions WHERE OriginalPostID = ${postId}`;
+
+      // return the actual comment
+      const comment = await sql.query`
+        SELECT * FROM comments WHERE id = ${result.recordset[0].CommentID}`;
+
+      return comment.recordset[0];
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
 
   editPost: async (postId, postData) => {
     const transaction = new sql.Transaction(/* [connection] */);
