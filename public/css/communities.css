@@ -32,7 +32,7 @@ body {
 .post, .job {
   display: flex; 
   background: var(--light-mode-main-color);
-  border-radius: 6px;
+  border-radius: 10px;
   margin: 10px;
   flex-direction: row;
   justify-content: space-between; 
