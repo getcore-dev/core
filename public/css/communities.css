@@ -703,7 +703,9 @@ div .mini-link-desc {
 
 
 @media (max-width: 768px) {
-
+  .job { 
+    min-width: 180px;
+    }
   .communities a {
     text-decoration: none;
     color: var(--primary-text-color)
