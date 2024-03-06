@@ -125,5 +125,6 @@
     .post-body code {
       color: var(--dark-mode-text-color);
       background-color: var(--dark-mode-border-color);
+      border-color: var(--dark-mode-border-color);
     }
   }

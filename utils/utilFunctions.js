@@ -5,6 +5,16 @@ const NodeCache = require("node-cache");
 const cache = new NodeCache({ stdTTL: 1200 }); // TTL is 20 minutes
 
 const utilFunctions = {
+  uuid: () => {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        var r = (Math.random() * 16) | 0,
+          v = c === "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      }
+    );
+  },
   getPosts: async () => {
     try {
       // Query to get posts with boosts and detracts count
@@ -422,7 +432,7 @@ const utilFunctions = {
         $('link[rel="icon"]').attr("href") ||
         $('link[rel="alternate icon"]').attr("href");
 
-        console.log(favicon);
+      console.log(favicon);
 
       if (favicon) {
         // If favicon is a relative path, convert it to an absolute URL

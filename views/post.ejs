@@ -31,7 +31,9 @@
   <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/googlecode.min.css">
+  <link rel="stylesheet" id="hljs-style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/googlecode.min.css" media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/atom-one-dark.min.css" media="(prefers-color-scheme: dark)">
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
 
 </head>
@@ -418,18 +420,18 @@
 
               <div class="user-actions">
 
-                <div class="comment-user-interactions" data-type="comment" data-id="<%= comment.id %>">
-                  <button class="reaction-button" id="boost" onclick='<% if (user) { %>interactWithPost("<%= post.id %>", "<%= user %>", "boost")<% } else { %>window.location.href = "/login";<% } %>'>
-                    <p>⚡️ <%= comment.boostCount %></p>
+                <div class="comment-user-interactions <%= comment.id %>" data-type="comment" data-id="<%= comment.id %>">
+                  <button class="reaction-button" id="boost-<%= comment.id%>" onclick='<% if (user) { %>interactWithComment("<%= post.id %>", "<%= comment.id %>", "<%= user %>", "boost")<% } else { %>window.location.href = "/login";<% } %>'>
+                    <span class="boost-image">⚡️</span> <span class="boost-count"><%= comment.boostCount %></span>
                   </button>
                   <button class="mainReactionButton reaction-button" data-type="comment" data-id="<%= comment.id %>">😀</button>
                   <div id="reactionPopup-comment-<%= comment.id %>" class="reaction-popup" style="display:none; position: absolute; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
-                    <button class="reaction-choice">⚡️</button>
-                    <button class="reaction-choice">❤️</button>
-                    <button class="reaction-choice">👍</button>
-                    <button class="reaction-choice">🤔</button>
-                    <button class="reaction-choice">💡</button>
-                    <button class="reaction-choice">🎉</button>
+                    <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'BOOST')">⚡️</button>
+                    <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'LOVE')">❤️</button>
+                    <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'LIKE')">👍</button>
+                    <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'CURIOUS')">🤔</button>
+                    <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'INTERESTING')">💡</button>
+                    <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'CELEBRATE')">🎉</button>
                   </div>
                   <% const reactionTypes = [
         {
@@ -460,15 +462,16 @@
     ]; %>
                   <% reactionTypes.forEach(reaction => { %>
                   <% if (reaction.count > 0) { %>
-                  <button class="reaction-button" id="<%= reaction.type %>" onclick='<% if (user) { %>interactWithPost("<%= post.id %>", "<%= user %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
+                  <button class="reaction-button <%= comment.id %>" id="<%= reaction.type %>" onclick='<% if (user) { %>interactWithComment("<%= post.id %>", "<%= comment.id %>", "<%= user %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
                     <p><%= reaction.icon %> <%= reaction.count %></p>
                   </button>
                   <% } %>
                   <% }); %>
 
-                  <div class="replies">
-                    <a href="#" id="reply-button" onclick="showReplyForm('<%= comment.id %>', event)">
-                      <% 
+                </div>
+                <div class="replies">
+                  <a href="#" id="reply-button" onclick="showReplyForm('<%= comment.id %>', event)">
+                    <% 
 function countAllReplies(replies) {
     if (!replies || replies.length === 0) return 0;
     let total = 0;
@@ -479,12 +482,10 @@ function countAllReplies(replies) {
 }
 const totalReplies = countAllReplies(comment.replies);
 %>
-                      <button class="reaction-button">💬 <%= totalReplies%>
-                      </button>
-                    </a>
-                  </div>
+                    <button class="reaction-button">💬 <%= totalReplies%>
+                    </button>
+                  </a>
                 </div>
-
               </div>
 
             </div>
@@ -856,6 +857,109 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
         });
     }
 
+    function interactWithComment(postId, commentId, user, action) {
+      if (!user) {
+        window.location.href = '/login';
+        return;
+      }
+
+      fetch(`/posts/${postId}/comment/${commentId}/react`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            user: user,
+            action: action.toLowerCase() // Ensure action is in lowercase
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Success:', data);
+          const reactionMenu = document.querySelector(".reaction-popup");
+          if (reactionMenu) {
+            reactionMenu.style.opacity = '0';
+            reactionMenu.style.display = 'none';
+          }
+
+          // Assuming the 'reactions' field directly contains the count values
+          const reactionsData = data.newScore; // Adjust according to actual response structure
+
+          const reactionTypes = [{
+              type: "LOVE",
+              icon: "❤️"
+            },
+            {
+              type: "LIKE",
+              icon: "👍"
+            },
+            {
+              type: "CURIOUS",
+              icon: "🤔"
+            },
+            {
+              type: "INTERESTING",
+              icon: "💡"
+            },
+            {
+              type: "CELEBRATE",
+              icon: "🎉"
+            },
+          ];
+
+          // Ensure you have a reference to the container where buttons should be placed
+          const reactionInteractionsDiv = document.querySelector("div.comment-user-interactions." + commentId);
+
+          reactionTypes.forEach(reaction => {
+            const reactionCount = reactionsData[reaction.type.toLowerCase()] || 0;
+            let reactionButton = document.querySelector(`button#${reaction.type}.reaction-button.${commentId}`);
+
+            if (reactionCount > 0) {
+              if (!reactionButton) {
+                // Create a new reaction button if it doesn't exist
+                reactionButton = document.createElement("button");
+                reactionButton.className = `reaction-button ${commentId}`;
+                reactionButton.id = reaction.type;
+                reactionButton.onclick = () => interactWithComment(postId, commentId, user, reaction.type);
+
+                const icon = document.createElement("span");
+                icon.innerText = reaction.icon;
+
+                const countText = document.createElement("span");
+                countText.className = `${reaction.type.toLowerCase()}-count-${commentId}`;
+                countText.innerText = ` ${reactionCount}`;
+
+                reactionButton.appendChild(icon);
+                reactionButton.appendChild(countText);
+                reactionInteractionsDiv.appendChild(reactionButton);
+              } else {
+                // Update count of existing button
+                const countSpan = reactionButton.querySelector(`span.${reaction.type.toLowerCase()}-count`);
+                if (countSpan) countSpan.innerText = ` ${reactionCount}`;
+              }
+            } else if (reactionCount == 0) {
+              if (reactionButton) {
+                reactionButton.remove();
+              }
+            }
+
+            // Update button color if needed
+            if (reactionButton && reaction.type.toLowerCase() === action.toLowerCase()) {
+              // maybe add a lil reaction later idk
+            } else if (reactionButton) {
+              reactionButton.style.color = ""; // Reset to default styles for other buttons
+            }
+          });
+
+          const boostCount = reactionsData['boosts'] || 0;
+          let boostButton = document.querySelector('#boost-' + commentId);
+          const countSpan = boostButton.querySelector(`span.boost-count`);
+          countSpan.innerText = ` ${boostCount}`;
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    }
 
     function showReplyForm(commentId, event) {
       event.preventDefault();

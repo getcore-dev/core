@@ -66,12 +66,14 @@ main {
     flex-direction: row;
     justify-content: flex-end;
     gap: 15px;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .button-container button {
   padding: 6px 13px;
   border-radius: 6px;
   border: 0;
+  background-color: var(--border-color);
 }
 .button-container button:hover {
   cursor: pointer;
@@ -275,11 +277,11 @@ a.comment-url:visited {
 .input-container button.fab, .comment-container button.fab {
   background-color: var(--profile-background-color);
   color: var(--text-color);
-  border: 1px solid var(--border-color);
   padding: 7px 13px;
   font-size: 14px;
   cursor: pointer;
   border-radius: 5px;
+  border: 0;
   transition: background-color 0.15s;
 }
 
@@ -654,7 +656,6 @@ div.repliers-avatar, div.repliees-avatar {
   border-radius: 100%;
   height: 28px;
   aspect-ratio: 1/1;
-  border: 1px solid var(--border-color);
 }
 
 .comment .avatar {
@@ -692,7 +693,7 @@ div.repliers-avatar, div.repliees-avatar {
 .user-actions {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
+  justify-content: space-between;
 }
 
 #reply-button {
@@ -714,7 +715,7 @@ a.comment-user-info:hover {
   display: flex;
   flex-direction: row;
   gap: 6px;
-  width: 100%;
+  width: 60%;
 }
 
 
@@ -976,14 +977,16 @@ p.preview-description {
 
 .reply-buttons {
   width: 100%;
-  margin-top: 15px;
+  margin-top: 7px;
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
-  justify-content: space-between;
   gap: 14px;
-  padding-left: 5px;
-  padding-right: 5px;
+  justify-content: flex-end;
+}
+
+.reply-form .input-container {
+  padding: 6px 12px;
 }
 
 .reply-form {
@@ -1040,8 +1043,14 @@ p.preview-description {
     color: var(--dark-mode-text-color)
   }
 
-  .sidebar, .post-content {
+  .solution {
+    background-color: #27302B;
+    border-color: #37433D;
+  }
+
+  .sidebar, .post-content, .button-container {
     background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
   }
 
   .nested-comment.level-1 > .comment:first-child {
@@ -1051,6 +1060,10 @@ p.preview-description {
   .reaction-popup {
     background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-border-color);
+  }
+
+  .solution-username a {
+    color: var(--dark-mode-text-color) !important;
   }
 
   .reaction-button:hover, .main-reaction-button:hover, .boost-button:hover, #delete-post-button:hover, #delete-comment-button:hover {
@@ -1093,6 +1106,10 @@ p.preview-description {
     color: var(--dark-mode-secondary-text-color) !important;
   }
 
+  .button-container button {
+    color: var(--dark-mode-text-color);
+    background-color: var(--dark-mode-border-color);
+  }
 
   .main-container textarea#comment {
     background-color: var(--dark-mode-body-color); /* Dark background for code blocks */

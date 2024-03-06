@@ -398,6 +398,7 @@ const postQueries = {
       throw err;
     }
   },
+  
 
   getUserInteractions: async (postId, userId) => {
     try {

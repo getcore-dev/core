@@ -45,6 +45,53 @@ router.post(
   }
 );
 
+router.post(
+  "/posts/:postId/comment/:commentId/react",
+  checkAuthenticated,
+  async (req, res) => {
+    try {
+      const postId = req.params.postId;
+      const commentId = req.params.commentId;
+      const userId = req.user.id;
+      const action = req.body.action.toUpperCase(); // Convert action to uppercase for consistency
+
+      // Valid reactions
+      const validActions = [
+        "LOVE",
+        "LIKE",
+        "CURIOUS",
+        "INTERESTING",
+        "CELEBRATE",
+        "BOOST",
+      ];
+
+      if (!validActions.includes(action)) {
+        res.status(400).send("Invalid action");
+        return;
+      }
+
+      const newScore = await commentQueries.interactWithComment(
+        postId,
+        commentId,
+        userId,
+        action
+      );
+
+      if (newScore === 0) {
+        res.json({ message: "Action unchanged", newScore });
+      } else {
+        res.json({
+          message: `Comment ${action.toLowerCase()}ed successfully`,
+          newScore,
+        });
+      }
+    } catch (err) {
+      console.error("Database error:", err);
+      res.status(500).send("Error processing reaction");
+    }
+  }
+);
+
 // Route to delete a comment
 router.delete("/comment/:commentId", checkAuthenticated, async (req, res) => {
   const commentId = req.params.commentId;

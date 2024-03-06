@@ -88,67 +88,6 @@ router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
 });
 
 router.post(
-  "/comments/:commentId/boost",
-  checkAuthenticated,
-  async (req, res) => {
-    try {
-      const commentId = req.params.commentId;
-      const userId = req.user.id;
-      const action = req.body.action; // Action can be "boost" or "detract"
-
-      // Check if the post is already boosted or detracted by the user
-      const isBoosted = await commentQueries.isCommentBoosted(
-        commentId,
-        userId
-      );
-      const isDetracted = await commentQueries.isCommentDetracted(
-        commentId,
-        userId
-      );
-
-      if (action === "boost") {
-        if (isBoosted) {
-          // If already boosted, remove the boost
-          const newScore = await commentQueries.removeBoost(commentId, userId);
-          res.json({ message: "Boost removed", newScore });
-        } else {
-          console.log("Comment is not boosted. Adding the boost...");
-          // If not boosted, add the boost
-          await commentQueries.boostComment(commentId, userId);
-
-          // Get the number of boosts and detracts for the post
-          const boosts = await commentQueries.getBoostCount(commentId);
-          const detracts = await commentQueries.getDetractCount(commentId);
-
-          res.json({ message: "Boost successful", boosts, detracts });
-        }
-      } else if (action === "detract") {
-        if (isDetracted) {
-          console.log("Comment is already detracted. Removing the detract...");
-          // If already detracted, remove the detract
-          await commentQueries.removeDetract(commentId, userId);
-          res.json({ message: "Detract removed" });
-        } else {
-          // If not detracted, add the detract
-          await commentQueries.detractComment(commentId, userId);
-
-          // Get the number of boosts and detracts for the post
-          const boosts = await commentQueries.getBoostCount(commentId);
-          const detracts = await commentQueries.getDetractCount(commentId);
-
-          res.json({ message: "Detract successful", boosts, detracts });
-        }
-      } else {
-        res.status(400).send("Invalid action");
-      }
-    } catch (err) {
-      console.error("Database error:", err);
-      res.status(500).send("Error boosting/detracting comment");
-    }
-  }
-);
-
-router.post(
   "/posts/:postId/answer/:commentId",
   checkAuthenticated,
   async (req, res) => {
@@ -181,7 +120,7 @@ router.get("/posts/:postId", async (req, res) => {
     SELECT 
     c.id, c.created_at, c.deleted, c.comment, c.user_id, c.parent_comment_id, c.post_id,
     SUM(CASE WHEN uca.action_type = 'LOVE' THEN 1 ELSE 0 END) AS loveCount,
-    SUM(CASE WHEN uca.action_type = 'BOOST' THEN 1 ELSE 0 END) AS boostCount,
+    SUM(CASE WHEN uca.action_type = 'B' THEN 1 ELSE 0 END) AS boostCount,
     SUM(CASE WHEN uca.action_type = 'INTERESTING' THEN 1 ELSE 0 END) AS interestingCount,
     SUM(CASE WHEN uca.action_type = 'CURIOUS' THEN 1 ELSE 0 END) AS curiousCount,
     SUM(CASE WHEN uca.action_type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount,
