@@ -15,11 +15,13 @@ const userQueries = require("./queries/userQueries");
 const passportConfig = require("./config/passportConfig");
 const errorHandler = require("./middleware/errorHandling");
 const authRoutes = require("./routes/authRoutes");
+const searchRoutes = require("./routes/searchRoutes");
 const postRoutes = require("./routes/postRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const apiRoutes = require("./routes/apiRoutes");
 const generalRoutes = require("./routes/generalRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const communityRoutes = require("./routes/communityRoutes");
 
 const app = express();
 
@@ -50,6 +52,7 @@ app.use(
     cookie: { secure: environment.isProduction, maxAge: 1000 * 60 * 60 * 24 },
   })
 );
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride("_method"));
@@ -62,8 +65,10 @@ app.use((req, res, next) => {
 app.use(authRoutes);
 app.use(postRoutes);
 app.use(commentRoutes);
+app.use("/search", searchRoutes);
 app.use("/api", apiRoutes);
 app.use("/notifications", notificationRoutes);
+app.use("/communities", communityRoutes);
 app.use(generalRoutes);
 
 // Error handling
@@ -71,24 +76,8 @@ app.use(errorHandler);
 
 // Server start
 
-if (cluster.isMaster) {
-  // Fork workers for each CPU core
-  const numCPUs = os.cpus().length;
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
-
-  cluster.on("exit", (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died`);
-    cluster.fork(); // Optional: Start a new worker on death of the old one
-  });
-} else {
-  // Workers share the TCP connection in this server
-  app.listen(environment.port, () => {
-    console.log(
-      `Server running on http://localhost:${environment.port}, Worker PID: ${process.pid}`
-    );
-  });
-}
+app.listen(environment.port, () => {
+  console.log(`Server running on http://localhost:${environment.port}`);
+});
 
 module.exports = app;

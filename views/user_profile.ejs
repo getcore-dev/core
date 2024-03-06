@@ -1,199 +1,169 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    />
-    <link rel="stylesheet" href="/css/navbar.css" />
-    <link rel="stylesheet" href="/css/user_profile.css" />
-    <link rel="shortcut icon" href="img/core.png" />
-  </head>
-  <body>
-    <%- include('partials/navbar', { pagePath: 'communities' }) %>
-    <main>
-      <div id="profile" class="grid-container">
-        <div class="profile-info">
-                  <div class="profile-picture">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/user_profile.css" />
+  <link rel="shortcut icon" href="/img/core.png" />
+  <title>CORE/<%= otheruser.username %></title>
+</head>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'communities' }) %>
+  <main>
+
+    <div id="profile" class="grid-container">
+      <div class="profile-info">
+        <div class="profile-picture">
           <% if (otheruser.avatar) { %>
-          <img
-            id="profilePic"
-            src="<%= otheruser.avatar %>"
-            alt="Profile Picture"
-          />
+          <img id="profilePic" src="<%= otheruser.avatar %>" alt="Profile Picture" />
           <% } else { %>
           <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
-          <% } %> 
-          <% if (user && user.username === otheruser.username) { %>
-          <button onclick="editImage()">Edit</button>
-          <div id="imageEditControls" style="display: none">
-            <input id="imageUrl" type="text" placeholder="Enter image URL" />
-            <button onclick="submitImageEdit()">Update</button>
+          <% } %>
+
+          <% if (user && otheruser.username == user.username) { %>
+          <div class="edit-controls">
+            <button onclick=window.location.href='/edit-profile'>Edit Profile</button>
           </div>
           <% } %>
+
         </div>
         <div class="profile-details">
-          <h2><span class="material-symbols-outlined">person</span> <%= otheruser.username %></h2>
-          <div class="editable-field">
-            <span class="material-symbols-outlined">email</span><p id="email-display"><%= otheruser.email %></p>
-            <% if (user && otheruser.username == user.username) { %>
-            <button onclick="editField('email', this)">Edit</button>
-            <% } %>
+          <h2><%= otheruser.username %></h2>
+          <p id="firstname-display"><%= otheruser.firstname %> <%= otheruser.lastname %></p>
+
+          <p id="email-display"><%= otheruser.email %></p>
+          <div class="link-display">
+            <img src="/src/github.png" style="height:20px;width:20px;">
+
+            <p id="github-url-display"><% if (otheruser.github_url) { %>
+              <%= otheruser.github_url%>
+              <% } else { %>No Github URL yet.<% } %></p>
           </div>
-          <div class="editable-field">
-            <span class="material-symbols-outlined">badge</span><p id="firstname-display"><%= otheruser.firstname %></p>
-            <% if (user && otheruser.username == user.username) { %>
-            <button onclick="editField('firstname', this)">Edit</button>
-            <% } %>
+          <div class="link-display">
+            <img src="/src/leetcodeglyph.png" style="height:20px;width:20px;">
+
+            <p id="leetcode-url-display"><% if (otheruser.leetcode_url) { %>
+              <%= otheruser.leetcode_url%>
+              <% } else { %>No LeetCode URL yet.<% } %></p>
           </div>
-          <div class="editable-field">
-            <span class="material-symbols-outlined">badge</span><p id="lastname-display"><%= otheruser.lastname %></p>
-            <% if (user && otheruser.username == user.username) { %>
-            <button onclick="editField('lastname', this)">Edit</button>
-            <% } %>
-          </div>
-          <div class="editable-field">
-            <span class="material-symbols-outlined">code</span><p id="github-url-display"><% if (otheruser.github_url) { %><%- linkify(otheruser.github_url) %><% } else { %>No Github URL yet.<% } %></p>
-            <% if (user && otheruser.username == user.username) { %>
-              <button onclick="editField('github-url', this)">Edit</button>
-            <% } %>
-          </div>
-          <div class="editable-field">
-            <span class="material-symbols-outlined">code</span><p id="github-url-display"><% if (otheruser.leetcode_url) { %><%- linkify(otheruser.leetcode_url) %><% } else { %>No LeetCode URL yet.<% } %></p>
-            <% if (user && otheruser.username == user.username) { %>
-              <button onclick="editField('leetcode-url', this)">Edit</button>
-            <% } %>
+          <div class="link-display">
+            <img src="/src/linkedin.png" style="height:20px;width:20px;">
+            <p id="linkedin-url-display"><% if (otheruser.linkedin_url) { %>
+              <%= otheruser.linkedin_url%>
+              <% } else { %>No LinkedIn URL yet.<% } %></p>
           </div>
         </div>
-        </div>
 
-        <div class="current-job">
-          <h2>Current Job</h2>
-          <% if (otheruser.currentJob && otheruser.currentCompany) {%>
-          <p id="currentjob.company-display">
-            <strong>Company:</strong> <%= otheruser.currentCompany %>
-          </p>
-          <p id="currentjob.position-display">
-            <strong>Position:</strong> <%= otheruser.currentJob %>
-          </p>
-          <p id="currentjob.position-display">
-            <strong>Start Date: </strong> <%= otheruser.currentJob_startdate %>
-          </p>
-          <p id="currentjob.position-display">
-            <strong>Skills: </strong> <%= otheruser.currentJob_skills %>
-          </p>
-          <p id="currentjob.position-display">
-            <strong>Employment Type: </strong> <%= otheruser.currentJob_employment_type %>
+      </div>
+
+      <div class="current-job">
+        <% if (otheruser.currentJob && otheruser.currentCompany) {%>
+        <h4>
+          <%= otheruser.currentJob%> @ <%= otheruser.currentCompany %>
+        </h4>
+
+        <p id="currentjob.position-display">
+        </p>
+        <p id="currentjob.position-display">
+          <span class="flair" id="date-flair">
+            <%= new Date(otheruser.currentJob_begindate).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) %>
+          </span>
+          <span class="flair" id="emp-type-flair">
+            <%= otheruser.currentJob_employment_type %>
+          </span>
+          <% otheruser.currentJob_skills.split(',').forEach(function(skill) { %>
+          <span class="flair"><%= skill.trim() %></span>
+          <% }); %>
+        </p>
 
 
-          <button onclick="editField('currentjob.company', this)">Edit</button>
-          <% } else { %>
-          <p id="currentjob.company-display"></p>
-          <% if (user && otheruser.username == user.username) { %>
-          <button onclick="editField('currentjob.company', this)">
-            Add Company
-          </button>
-          <% } %> <% } %> <% if (otheruser.currentjob &&
+        <% } else { %>
+        <p id="currentjob.company-display"></p>
+        <% if (user && otheruser.username == user.username) { %>
+        Add Company
+        </button>
+        <% } %> <% } %> <% if (otheruser.currentjob &&
           otheruser.currentjob.position) { %>
-          <p id="currentjob.position-display">
-            <strong>Position:</strong> <%= otheruser.currentjob.position %>
-          </p>
-          <button onclick="editField('currentjob.position', this)">Edit</button>
-          <% } else { %>
-          <p id="currentjob.position-display"></p>
-          <% if (user && otheruser.username == user.username) { %>
-          <button onclick="editField('currentjob.position', this)">
-            Add Position
-          </button>
-          <% } %> <% } %>
+        <p id="currentjob.position-display">
+          <strong>Position:</strong> <%= otheruser.currentjob.position %>
+        </p>
+        <% } else { %>
+        <p id="currentjob.position-display"></p>
+        <% } %>
+      </div>
+
+      <div class="user-activity">
+        <div class="user-activity-header">
+          <div class="user-activity-title">
+            <h4><%=otheruser.username%>'s posts</h4>
+          </div>
+          <div class="user-activity-buttons">
+            <button class="sort-option active" showSection('posts')">Posts</button>
+            <button class="sort-option" onclick="showSection('comments')">Comments</button>
+          </div>
         </div>
 
-        <div class="learning-progress">
-          <h2>Learning Progress</h2>
-          <% if(otheruser.learningprogress) { %> <%
-          Object.keys(otheruser.learningprogress).forEach(function(key) { %>
-          <p>
-            <strong><%= key %>:</strong> <%= otheruser.learningprogress[key] %>
-            %
-          </p>
-          <% }); %> <% } else { %>
-          <p>No learning progress yet.</p>
-          <% } %>
-        </div>
-
-        <div class="achievements">
-          <h2>Achievements</h2>
-          <% if (otheruser.achievements && otheruser.achievements.length) { %>
-          <% otheruser.achievements.forEach(function(achievement) { %>
-          <p><%= achievement %></p>
-          <% }); %> <% } else { %>
-          <p>No achievements yet.</p>
-          <% } %>
-        </div>
-        <div class="posts">
-          <h2>Posts</h2>
+        <div id="posts" class="content">
           <% if (posts.length === 0) { %>
           <p>No posts yet.</p>
           <% } else { %>
           <div class="post-container">
             <% posts.forEach(function(post) { %>
-            <div class="post">
-              <h3 class="post-title">
-                <a href="/posts/<%= post.id %>"><%= post.title %></a>
-              </h3>
-              <p class="post-content"><%= post.content %></p>
-              <div class="post-meta">
-                <span class="post-score">Score: <%= post.score %></span>
-                <span class="post-date"
-                  ><%= new Date(post.createdAt).toLocaleDateString() %></span
-                >
-              </div>
+            <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
+              <h4 class="post-title">
+                <%= post.title %>
+              </h4>
+                <p class="post-content" style="font-size: 14px;"><%= post.content %></p>
+
             </div>
             <% }); %>
           </div>
           <% } %>
         </div>
-        <div class="comments">
-          <h2>Comment</h2>
+
+        <div id="comments" class="content" style="display:none;">
           <% if (comments.length === 0) { %>
           <p>No comments yet.</p>
           <% } else { %>
-          <div class="coments-container">
+          <div class="comments-container">
             <% comments.forEach(function(comment) { %>
             <div class="comment">
-              <p class="comment-author"><%= comment.author.username %> <% if (comment.receiver) { %> to <%= comment.receiver %> <% } %></p>
+              <h3 class="comment-title">
+                <a href="/posts/<%= comment.post_id %>"><%= comment.title %></a>
+              </h3>
+              <p class="comment-author">
+                <a href="/profile/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/profile/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
+              </p>
               <p class="comment-content"><%= comment.comment %></p>
-              <div class="comment-meta">
-                <span class="comment-score">Score: <%= comment.boosts - comment.detracts %></span>
-                <span class="comment-date"
-                  > Date:<%= new Date(comment.created_at).toLocaleDateString() %></span
-                >
             </div>
             <% }); %>
           </div>
           <% } %>
         </div>
       </div>
-    </main>
-    <script>
-      function editImage() {
-        // Show the URL input and update button
-        document.getElementById("imageEditControls").style.display = "block";
-      }
 
-      function submitImageEdit() {
-        // Get the new image URL from the input element
-        const imageUrl = document.getElementById("imageUrl").value;
+  </main>
+  <script>
+    function editImage() {
+      // Show the URL input and update button
+      document.getElementById("imageEditControls").style.display = "block";
+    }
 
-        // Hide the URL input and update button
-        document.getElementById("imageEditControls").style.display = "none";
+    function submitImageEdit() {
+      // Get the new image URL from the input element
+      const imageUrl = document.getElementById("imageUrl").value;
 
-        // Continue only if the imageUrl is not empty
-        if (imageUrl.trim() !== "") {
-          // Send the POST request to the `/edits` endpoint with the imageURL
-          fetch("/edits", {
+      // Hide the URL input and update button
+      document.getElementById("imageEditControls").style.display = "none";
+
+      // Continue only if the imageUrl is not empty
+      if (imageUrl.trim() !== "") {
+        // Send the POST request to the `/edits` endpoint with the imageURL
+        fetch("/edits", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -202,63 +172,6 @@
               avatar: imageUrl, // The 'avatar' field is being updated with the imageURL
             }),
           })
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error("Network response was not ok.");
-              }
-              return response.json();
-            })
-            .then((data) => {
-              console.log("Success:", data);
-              // Update the profile picture preview with the new URL
-              document.getElementById("profilePic").src = imageUrl;
-              // You can redirect or refresh the page if needed
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-              // You might want to show an error message to the user here
-            });
-        } else {
-          // If imageUrl is empty, display an error or reset the view
-          console.log("Image URL is required");
-          // You might want to show an error message to the user here
-        }
-      }
-
-      function editField(field, button) {
-        const displayElement = document.getElementById(`${field}-display`);
-        const currentValue = displayElement.innerText;
-
-        if (button.textContent === "Edit") {
-          // If the button is in 'Edit' state, create an input field
-          const inputField = document.createElement("input");
-          inputField.type = "text";
-          inputField.value = currentValue;
-          inputField.id = `${field}-input`;
-          inputField.classList.add("edit-input"); // Add this class to style the input
-
-          displayElement.parentNode.insertBefore(inputField, displayElement);
-          displayElement.style.display = "none"; // Hide the display element
-
-          button.textContent = "Submit"; // Change button text to 'Submit'
-          // Pass in the display element into the onclick handler
-          button.onclick = function () {
-            submitEdit(field, button, displayElement, inputField);
-          };
-        }
-      }
-
-      function submitEdit(field, button, displayElement, inputField) {
-        const newValue = inputField.value;
-
-        // Send the request to the server
-        fetch("/edits", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ [field]: newValue }), // Use computed property names
-        })
           .then((response) => {
             if (!response.ok) {
               throw new Error("Network response was not ok.");
@@ -266,23 +179,124 @@
             return response.json();
           })
           .then((data) => {
-            console.log("Success:", data);
 
-            // Update the display element and remove the textfield
-            displayElement.innerText = newValue;
-            displayElement.style.display = "block";
-            inputField.remove();
-
-            // Change the button text back to 'Edit' and restore the original onclick event
-            button.textContent = "Edit";
-            button.onclick = function () {
-              editField(field, button); // Restore the editField function
-            };
+            // Update the profile picture preview with the new URL
+            document.getElementById("profilePic").src = imageUrl;
+            // You can redirect or refresh the page if needed
           })
           .catch((error) => {
             console.error("Error:", error);
+            // You might want to show an error message to the user here
           });
+      } else {
+        // If imageUrl is empty, display an error or reset the view
+        // You might want to show an error message to the user here
       }
-    </script>
-  </body>
+    }
+
+    function editField(field, button) {
+      const displayElement = document.getElementById(`${field}-display`);
+      const currentValue = displayElement.innerText;
+
+      if (button.textContent === "Edit") {
+        // If the button is in 'Edit' state, create an input field
+        const inputField = document.createElement("input");
+        inputField.type = "text";
+        inputField.value = currentValue;
+        inputField.id = `${field}-input`;
+        inputField.classList.add("edit-input"); // Add this class to style the input
+
+        displayElement.parentNode.insertBefore(inputField, displayElement);
+        displayElement.style.display = "none"; // Hide the display element
+
+        button.textContent = "Submit"; // Change button text to 'Submit'
+        // Pass in the display element into the onclick handler
+        button.onclick = function() {
+          submitEdit(field, button, displayElement, inputField);
+        };
+      }
+    }
+
+    function submitEdit(field, button, displayElement, inputField) {
+      const newValue = inputField.value;
+
+      // Send the request to the server
+      fetch("/edits", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            [field]: newValue
+          }), // Use computed property names
+        })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok.");
+          }
+          return response.json();
+        })
+        .then((data) => {
+
+
+          // Update the display element and remove the textfield
+          displayElement.innerText = newValue;
+          displayElement.style.display = "block";
+          inputField.remove();
+
+          // Change the button text back to 'Edit' and restore the original onclick event
+          button.textContent = "Edit";
+          button.onclick = function() {
+            editField(field, button); // Restore the editField function
+          };
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+
+    function formatDate(date) {
+      let postDate = new Date(date);
+      let today = new Date();
+      let formattedDate;
+
+      let diff = today - postDate;
+
+      // Convert time difference to different units
+      let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+      let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+      let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+      let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+
+      // Decide the format based on the time difference
+      if (minutes < 60) {
+        formattedDate = minutes + ' minutes ago';
+      } else if (hours < 24) {
+        formattedDate = hours + ' hours ago';
+      } else if (days < 365) {
+        formattedDate = days + ' days ago';
+      } else {
+        formattedDate = years + ' years ago';
+      }
+      return formattedDate;
+    }
+
+    function showSection(section) {
+      // Hide both sections
+      document.getElementById('posts').style.display = 'none';
+      document.getElementById('comments').style.display = 'none';
+
+      // Remove active class from all buttons
+      var buttons = document.querySelectorAll('.user-activity-buttons button');
+      buttons.forEach(function(button) {
+        button.classList.remove('active');
+      });
+
+      // Show the selected section and add 'active' class to the corresponding button
+      document.getElementById(section).style.display = 'block';
+      document.querySelector('.user-activity-buttons button[onclick="showSection(\'' + section + '\')"]').classList.add('active');
+    }
+  </script>
+</body>
+
 </html>

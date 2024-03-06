@@ -1,172 +1,360 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>CORE: <%= post.title %></title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="<%= post.content.substring(0, 160) %>" />
-    <meta name="keywords" content="Your, Keywords, Here" />
-  
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="<%= post.title %>" />
-    <meta property="og:description" content="<%= post.content.substring(0, 160) %>" />
-    <meta property="og:image" content="<%= post.user.avatar || '/img/default-avatar.png' %>" />
-    <meta property="og:url" content="c-ore.dev/post/<%= post.id %>" />
-  
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:title" content="<%= post.title %>" />
-    <meta property="twitter:description" content="<%= post.content.substring(0, 160) %>" />
-    <meta property="twitter:image" content="<%= post.user.avatar || '/img/default-avatar.png' %>" />
-  
-    <link rel="stylesheet" href="/css/navbar.css" />
-    <link rel="stylesheet" href="/css/post.css" />
-    <link rel="shortcut icon" href="img/core.png" />
 
-  </head>
-  <body>
-    <%- include('partials/navbar', { pagePath: 'home' }) %>
+<head>
+  <title><%= post.title %></title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="<%= post.content.substring(0, 160) %>" />
+  <meta name="keywords" content="<%= post.tags.map(tag => tag.name).join(', ') %>" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="<%= post.title %>" />
+  <meta property="og:description" content="<%= post.content.substring(0, 160) %>" />
+  <meta property="og:image" content="<%= post.user.avatar || '/img/default-avatar.png' %>" />
+  <meta property="og:url" content="c-ore.dev/post/<%= post.id %>" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:title" content="<%= post.title %>" />
+  <meta property="twitter:description" content="<%= post.content.substring(0, 160) %>" />
+  <meta property="twitter:image" content="<%= post.user.avatar || '/img/default-avatar.png' %>" />
+
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/post.css" />
+  <link rel="stylesheet" href="/css/post-formats.css" />
+  <link rel="stylesheet" href="/css/com-btn-container.css" />
+
+
+  <link rel="shortcut icon" href="/img/core.png" />
+  <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+  <link rel="stylesheet" id="hljs-style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/googlecode.min.css" media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/atom-one-dark.min.css" media="(prefers-color-scheme: dark)">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
+
+</head>
+
+<body>
+
+  <%- include('partials/navbar', { pagePath: 'home' }) %>
+
+  <main>
+    <%- include('partials/com-btn-container', { }) %>
 
     <div class="main-container">
+      <% if (post.post_type != 'blog') { %>
+      <% } %>
       <div class="post">
-        <div class="header">
-          <a class="community" href="/"><%= post.community.name %></a>/
-          <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="header-avatar" onerror="standby()" />
+        <div class="header" style="<% if (post.post_type == "blog") { %> justify-content: center; <% } %>">
+          <div class="title" style="<% if (post.post_type == "blog") { %> text-align: center; <% } %>">
+            <div class="post-title-container">
+              <div>
+                <h2 class="post-title" style="<% if (post.post_type == "blog") { %> font-size: 28px; font-weight: bold; <% } %>"><%= post.title %></h2>
+              </div>
+              <div class="dropdown">
+                <button class="dropbtn">
+                  <span class="material-symbols-outlined">more_horiz</span>
+                </button>
+                <div class="dropdown-content" style="display: none;">
+                  <% if (user && user.username === post.username) { %>
 
-          <a class="user-info" href="/profile/<%= post.user.username %>"
-          >
-          <div class="header-text">
-          <%= post.user.username %></a
-        > 
-        </div>
-        <div class="timestamp">
-          <%
-        let postDate = new Date(post.created_at);
-        let today = new Date();
-        let formattedDate;
-      
-        // Calculate time difference in milliseconds
-        let diff = today - postDate;
-      
-        // Convert time difference to different units
-        let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
-        let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
-        let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
-        let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
-      
-        // Decide the format based on the time difference
-        if (minutes < 60) {
-          formattedDate = minutes + 'm ago';
-        } else if (hours < 24) {
-          formattedDate = hours + 'h ago';
-        } else if (days < 365) {
-          formattedDate = days + 'd ago';
-        } else {
-          formattedDate = years + 'y ago';
-        }
-      %>
-      <%= formattedDate %>
-        </div>
-      </div>
-        
-        <div class="title">
-          <h2 class="post-title"><%= post.title %></h2>
-        </div>
-      <div class="post-content">
+                  <form action=" /post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <button class="reaction-button" onclick="return confirmDeletion(this);">
+                      <p>🗑️</p>
+                    </button>
+                  </form>
 
-          <% if (post.linkPreview) { %>
-          <a href="<%= post.linkPreview.url %>">
-          <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %> 
-          <% if (imageUrl) { %>
-          <div class="link-preview">
-            <img src="<%= imageUrl %>" alt="Preview" class="preview-image" />
-            <% } %>
-            <div class="preview-text">
-              <h4 class="preview-title">
-                  <%= post.linkPreview.title %>
-              </h4>
-              <p class="preview-link">
-                <%= post.link %>
-              </p>
-              <p class="preview-description">
-                <%=post.linkPreview.description %>
-              </p>
+                  <button class="reaction-button" onclick="window.location.href='/posts/<%= post.id %>/edit'">
+                    <p>📝</p>
+                  </button>
+                  <% } %>
+                </div>
+              </div>
             </div>
-          </div> 
-        </a>
-          <% } %>
-          <p class="post-body"><%= post.content %></p>
-           <%= post.community_id %>
-        </div>        
-        <div class="user-interactions">
-          <div class="combined-score">
-            <span class="material-symbols-outlined" onclick="boostPost('<%= post.id %>', '<%= user %>')">thumb_up</span>
-            <div id="post-score-<%= post.id %>"><%= post.boosts - post.detracts %></div>
-            <span class="material-symbols-outlined" onclick="detractPost('<%= post.id %>', '<%= user %>')">thumb_down</span>
+
+            <span class="post-subtitle">
+              <span class=tag-flair><%= post.post_type.charAt(0).toUpperCase() + post.post_type.slice(1) %> </span>
+              <% if (post.post_type == 'blog') { %>
+              by <a href="/profile/<%= post.user.username %>" style="text-decoration: none;"><%= post.user.firstname %> <%= post.user.lastname %></a>
+              <% } %>
+              <a href="/communities/<%= post.community.id %>" style="text-decoration: none;">/<%= post.community.shortname %></a>
+
+
+
+              <%
+              let postDate = new Date(post.created_at);
+              let today = new Date();
+              let formattedDate;
+            
+              // Calculate time difference in milliseconds
+              let diff = today - postDate;
+            
+              // Convert time difference to different units
+              let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+              let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+              let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+              let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+            
+              // Decide the format based on the time difference
+              if (minutes < 60) {
+                formattedDate = minutes + 'm ago';
+              } else if (hours < 24) {
+                formattedDate = hours + 'h ago';
+              } else if (days < 365) {
+                formattedDate = days + 'd ago';
+              } else {
+                formattedDate = years + 'y ago';
+              }
+            %>
+              <%= formattedDate %>
+            </span>
+
           </div>
-          <% if (user && user.username === post.user.username) { %>
-            <div class="delete">
-              <form
-                action="/post/<%= post.id %>?_method=DELETE"
-                method="POST"
-              >
-                <input type="hidden" name="_method" value="DELETE" />
-                <a
-                  href="#"
-                  id="delete-post-button"
-                  onclick="return confirmDeletion(this);"
-                >
-                  <span class="material-symbols-outlined"> delete </span>
-                </a>
-              </form>
-            </div>
-          <% } %>
         </div>
-        <% if (user) { %>
-          <form id="comment-form" action="/posts/<%= post.id %>/comments" method="POST">
-            <div class="input-container">
-              <textarea id="comment" name="comment" required maxlength="500" placeholder="Add a comment..." oninput="autoResizeTextarea(this)"></textarea>
-              <button type="submit" class="fab">
-                Submit
-              </button>
+        <div class="post-container">
+          <div class="post-content" style="
+          <% if (post.post_type == 'blog') { %>
+          background-color: rgba(0, 0, 0, 0.00);
+          border: 0;
+          padding: 0;
+          <% } %>
+          ">
+            <% if (post.post_type != 'blog') { %>
+            <div class="post-interactions-header">
+              <div class="post-user-info-header">
+                <img class="avatar" src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" onerror="standby()" />
+                <a href="/profile/<%= post.user.username %>" class="post-user-info">
+                  <div class="post-user-info">
+                    <%= post.user.username %>
+                  </div>
+                </a>
+              </div>
+              <div class="dropdown">
+                <button class="dropbtn" onclick="showDropdown(event)">
+                  <span class="material-symbols-outlined">more_horiz</span>
+                </button>
+                <div class="dropdown-content" style="display: none;">
+                  <% if (user && user.username === post.username) { %>
+
+                  <form action=" /post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <button class="reaction-button" onclick="return confirmDeletion(this);">
+                      <p>Delete Post</p>
+                    </button>
+                  </form>
+
+                  <button class="reaction-button" onclick="window.location.href='/posts/<%= post.id %>/edit'">
+                    <p>Edit Post</p>
+                  </button>
+                  <% } %>
+                </div>
+              </div>
             </div>
-          </form>
-          <% } %>          
+            <% } %>
+            <div class="post-body" style="
+            <% if (post.post_type == 'blog') { %>
+            padding: 0px 10px;
+            <% } %>">
+              <% if ((post.post_type == 'discussion' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog' || post.post_type == 'question') { %>
+              <% if (post.post_type == 'project') { %>
+
+              <% 
+  let gitHubData;
+  let gitHubCommitData;
+  try {
+    gitHubData = JSON.parse(post.gitHubLinkPreview.raw_json);
+    gitHubCommitData = JSON.parse(post.gitHubLinkPreview.raw_commits_json);
+
+  } catch(e) {
+    console.error('Error parsing JSON', e);
+    gitHubData = {}; // Set a default empty object in case of error
+    gitHubCommitData = {};
+  }
+%>
+              <div class="project-link">
+                <div class="project-link-image">
+                  <img src="<%= gitHubData.owner.avatar_url %>" alt="Preview" onerror="standby()" class="large-preview-image" />
+                </div>
+                <div class="project-link-header">
+
+                  <a href="<%= post.link %>" class="project-link-title">
+                    <img src="/src/github.png" alt="GitHub Logo" class="github-logo" style="display: inline-block; background-color: white; border-radius: 100%; height: 16px; width: 16px; aspect-ratio: 1/1; padding: 0; margin: 0; margin-right: 5px;" />
+                    <%= post.link %>
+                  </a>
+                  <div class="project-link-description">
+                    <%= gitHubData.description %>
+                  </div>
+                </div>
+              </div>
+
+              <% } %>
+              <%- post.content %>
+
+              <% if (post.post_type == 'question' && post.solution) { %>
+              <h3>Accepted solution by @<%= post.solution.user.username %></h3>
+              <div class="solution">
+                <div class="solution-header">
+                  <div class="solution-avatar">
+                    <img src="<%= post.solution.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+                  </div>
+                  <div class="solution-username">
+                    <a href="/profile/<%= post.solution.user.username %>">
+                      <%= post.solution.user.username %>
+                    </a>
+                  </div>
+                </div>
+                <div class="solution-body">
+                  <%- post.solution.comment %>
+                </div>
+
+              </div>
+              <% } %>
+
+
+
+              <% } else if (post.post_type == 'discussion' && post.linkPreview) { %>
+
+              <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
+              <% if (imageUrl) { %>
+              <div class="dicussion-link">
+                <div class="link-image">
+                  <img src="<%= imageUrl %>" alt="Preview" class="large-preview-image" />
+                </div>
+                <% } %>
+                <div class="link-info">
+                  <div class="link-info-title">
+                    <%= post.linkPreview.title %>
+                  </div>
+                  <div class="link-info-description">
+                    <%= post.linkPreview.description %>
+                  </div>
+                  <div class="link-info-url">
+                    <%= post.linkPreview.url %>
+                  </div>
+                </div>
+              </div>
+
+              <% } %>
+
+              <div class="user-interactions" style="<% if (post.post_type == "blog") { %>margin-bottom: 20px;<% } %>">
+                <button class="reaction-button" id="boost" onclick='<% if (user) { %>interactWithPost("<%= post.id %>", "<%= user %>", "boost")<% } else { %>window.location.href = "/login";<% } %>'>
+                  <span class="boost-image">⚡️</span> <span class="boost-count"><%= post.boostCount %></span>
+                </button>
+                <button class="mainReactionButton reaction-button" data-type="post" data-id="<%= post.id %>">😀
+                </button>
+                <div id="reactionPopup-post-<%= post.id %>" class="reaction-popup" style="display:none;">
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'LOVE')">❤️</button>
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'LIKE')">👍</button>
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'CURIOUS')">🤔</button>
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'INTERESTING')">💡</button>
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'CELEBRATE')">🎉</button>
+                </div>
+                <% const reactionTypes = [
+        {
+            type: "LOVE",
+            icon: "❤️",
+            count: post.loveCount
+        },
+        {
+            type: "LIKE",
+            icon: "👍",
+            count: post.likeCount
+        },
+        {
+            type: "CURIOUS",
+            icon: "🤔",
+            count: post.curiousCount
+        },
+        {
+            type: "INTERESTING",
+            icon: "💡",
+            count: post.interestingCount
+        },
+        {
+            type: "CELEBRATE",
+            icon: "🎉",
+            count: post.celebrateCount
+        }
+    ]; %>
+                <% let reactionsCount = 0; %>
+                <% reactionTypes.forEach(reaction => { %>
+                <% if (reaction.count > 0) { %>
+                <% reactionsCount += reaction.count; %>
+                <button class="reaction-button" id="<%= reaction.type.toLowerCase() %>" onclick='<% if (user) { %>interactWithPost("<%= post.id %>", "<%= user %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
+                  <span class="<%= reaction.type.toLowerCase() %>-image"><%= reaction.icon %></span> <span class="<%= reaction.type.toLowerCase() %>-count"><%= reaction.count %></span>
+                </button>
+                <% } %>
+                <% }); %>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="comments-section">
-        <% function renderComments(comments, level = 0) { %> 
-          <% comments.forEach(comment =>
-        { %>
-          <% if (level == 0) { %>
-        <div class="comment-with-replies"> 
-          <% } %>
-        <div class="comment">
-          <div class="repliers-avatar">
-            <% if (level == 0) { %>
-            <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
-            <% } else { %>
-            <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar-nested" onerror="standby()" />
-            <% } %>
+        <% let curUser = user %>
+        <% if (curUser) { %>
+        <div class="comment-form">
+          <form action="/posts/<%= post.id %>/comments" method="POST">
+            <textarea id="comment-form-textarea" name="comment"></textarea>
+            <div class="button-container" style="display:none;">
+              <button type="button" id="cancel-button">Cancel</button>
+              <button type="submit" id="submit-button" class="fab">Submit</button>
+            </div>
+          </form>
+        </div>
+        <% } %>
+        <div class="post-info">
+          <div class="post-counts">
+            <%= post.comments.length ? post.comments.length : 0 %> comments
+            •
+            <%= reactionsCount ? reactionsCount: 0 %> reaction<%= reactionsCount > 1 ? 's' : '' %>
           </div>
-          <div class="comment-main">
+          <div class="sort-selector">
+            <button class="sort-option active" onclick="sortComments('best')">Best</button>
+            <button class="sort-option" onclick="sortComments('newest')">Newest</button>
+          </div>
+        </div>
 
-          <div class="comment-content">
+        <% function renderComments(comments, level = 0) { %>
 
-            <a class="comment-user-info" href="/profile/<%= comment.user.username %>">
-              <div class="repliers-info">
-                <%= comment.user.username%></a> 
-              </div>
-              <p>to</p>
-              <div class="repliees-info">
-                <a class="comment-user-info" href="/profile/<%= comment.parent_author.username %>"> 
-              </div>
 
-                <%= comment.parent_author.username %></a>
-            <span>&#183;</span>
-              
-            <% let commentDate = new Date(comment.created_at);
+        <% comments.forEach(comment =>
+        { %>
+        <% if (level == 0) { %>
+        <div class="comment-with-replies">
+          <% } %>
+          <div class="comment">
+
+            <div class="comment-avatar">
+              <% if (level == 0) { %>
+              <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+              <% } else { %>
+              <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+              <% } %>
+            </div>
+            <div class="comment-main">
+
+              <div class="comment-content">
+                <div class="comment-header">
+                  <a class="comment-user-info" href="/profile/<%= comment.user.username %>">
+                    <div class="repliers-info">
+                      <%= comment.user.username%>
+                    </div>
+                  </a>
+
+                  <p>to</p>
+                  <a class="comment-user-info" href="/profile/<%= comment.parent_author.username %>">
+                    <%= comment.parent_author.username %>
+                  </a>
+                  <span>&#183;</span>
+
+                  <% let commentDate = new Date(comment.created_at);
             let currentDate = new Date();
             let timeDifference = currentDate - commentDate;
             let minutes = Math.floor(timeDifference / 60000);
@@ -184,445 +372,690 @@
               timeSinceComment = 'Just now';
             }
             %>
-            <span class="comment-timestamp"><%= timeSinceComment %></p>
-          </div>
-          <div class="comment-body">
-            <%- linkify(comment.comment) %>
-          </div>
-          
-          
-          <% if (user) { %>
-          <form
-            action="/comments/<%= comment.id %>/replies"
-            method="POST"
-            class="reply-form"
-            style="display: none"
-          >
-            <textarea name="comment" required></textarea>
-            <button type="submit">Submit Reply</button>
-          </form>
-          <% } %>
+                  <span class="comment-timestamp"><%= timeSinceComment %></p>
 
-          
-          <div class="user-actions">
-            <div class="comment-chevron">
-              <% if (comment.replies && comment.replies.length > 0) { %>
-                <span class="material-symbols-outlined chevron" onclick="toggleNestedComments('<%= comment.id %>')">chevron_right</span>
-                <span class="replies-count" onclick="toggleNestedComments('<%= comment.id %>')"><%= comment.replies.length %> <% if (comment.replies.length === 1) { %> reply <% } else { %> replies <% } %></span>
-                </span>
-  
-                <% } %>
-            </div>
-            <% if (user) { %>
-            <div class="boosts">
-              <span
-                class="material-symbols-outlined"
-                onclick="boostComment('<%= post.id %>', '<%= user %>')"
-              >
-                thumb_up
-              </span>
-            </div>
-            <div class="score">
-              <%= comment.boosts - comment.detracts %>
-            </div>
-            <div class="detracts">
-              <span
-                class="material-symbols-outlined"
-                onclick="detractComment('<%= post.id %>', '<%= user %>')"
-              >
-                thumb_down
-              </span>
-            </div>
-            <div class="replies">
-            <a
-              href="#"
-              id="reply-button"
-              onclick="showReplyForm('<%= comment.id %>', event)"
-            >
-              <span class="material-symbols-outlined">reply</span> Reply
-            </a>
-            </div>
-            <div clas="delete">
-              <% if (user.username === comment.user.username) { %>
-                <form
-                  id="delete-comment-form-<%= comment.id %>"
-                  action="/comment/<%= comment.id %>?_method=DELETE"
-                  method="POST"
-                  onsubmit="return confirm('Are you sure you want to delete this comment?');"
-                >
-                  <input type="hidden" name="_method" value="DELETE" />
-                  <a
-                    href="#"
-                    class="delete-comment-button-<%= comment.id %>"
-                    onclick="document.getElementById('delete-comment-form-<%= comment.id %>').submit();"
-                  >
-                    <span class="material-symbols-outlined"> delete </span> Delete
-                  </a>
-                </form>
-                <% } %>
+                </div>
 
-            </div>
-            
-            <% } %>
-          </div>
-          </div> 
+                <div class="dropdown-<%= comment.id %>">
+                  <button class="dropbtn" onclick="showDropdown(event)">
+                    <span class="material-symbols-outlined">more_horiz</span>
+                  </button>
+                  <div class="dropdown-content" style="display: none;">
+                    hello
+                    <% if (user && post.username === user.username && post.post_type == 'question') { %>
+                    <form id="answer-form-<%= comment.id %>" action="/posts/<%= post.id %>/answer/<%= comment.id %>" method="POST">
+                      <button type="submit">Solution</button>
+                    </form>
 
-           
-          </div>
-          
-          
-          <form
-            id="reply-form-<%= comment.id %>"
-            action="/comments/<%= comment.id %>/replies"
-            method="POST"
-            style="display: none"
-          >
-            <div class="input-container">
-              <form onsubmit="submitForm('comment-form', event);">
-                <textarea id="comment" name="comment" rows="4" required oninput="autoExpandTextarea(event)" maxlength="500"></textarea>
-                <button type="submit" class="fab">
-                  Submit
-                </button>
+
+                    <% } %>
+
+
+                    <% if (user && user.username === comment.user.username) { %>
+
+                    <form id="delete-comment-form-<%= comment.id %>" class="reactionButton" action="/comment/<%= comment.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                      <input type="hidden" name="_method" value="DELETE" />
+                      <button type="submit" class="delete-comment-button-<%= comment.id %>">
+                        Delete
+                      </button>
+                    </form>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+              <div class="comment-body">
+                <p>
+                  <%- linkify(comment.comment) %>
+                </p>
+              </div>
+
+
+              <% if (user) { %>
+              <form action="/comments/<%= comment.id %>/replies" method="POST" class="reply-form" style="display: none">
+                <textarea name="comment" required></textarea>
+                <button type="submit">Submit Reply</button>
               </form>
+              <% } %>
+
+
+              <div class="user-actions">
+
+                <div class="comment-user-interactions <%= comment.id %>" data-type="comment" data-id="<%= comment.id %>">
+                  <button class="reaction-button" id="boost-<%= comment.id%>" onclick='<% if (user) { %>interactWithComment("<%= post.id %>", "<%= comment.id %>", "<%= user %>", "boost")<% } else { %>window.location.href = "/login";<% } %>'>
+                    <span class="boost-image">⚡️</span> <span class="boost-count"><%= comment.boostCount %></span>
+                  </button>
+                  <button class="mainReactionButton reaction-button" data-type="comment" data-id="<%= comment.id %>">😀</button>
+                  <div id="reactionPopup-comment-<%= comment.id %>" class="reaction-popup" style="display:none; position: absolute; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
+                    <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'BOOST')">⚡️</button>
+                    <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'LOVE')">❤️</button>
+                    <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'LIKE')">👍</button>
+                    <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'CURIOUS')">🤔</button>
+                    <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'INTERESTING')">💡</button>
+                    <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'CELEBRATE')">🎉</button>
+                  </div>
+                  <% const reactionTypes = [
+        {
+            type: "LOVE",
+            icon: "❤️",
+            count: comment.loveCount
+        },
+        {
+            type: "LIKE",
+            icon: "👍",
+            count: comment.likeCount
+        },
+        {
+            type: "CURIOUS",
+            icon: "🤔",
+            count: comment.curiousCount
+        },
+        {
+            type: "INTERESTING",
+            icon: "💡",
+            count: comment.interestingCount
+        },
+        {
+            type: "CELEBRATE",
+            icon: "🎉",
+            count: comment.celebrateCount
+        }
+    ]; %>
+                  <% reactionTypes.forEach(reaction => { %>
+                  <% if (reaction.count > 0) { %>
+                  <button class="reaction-button <%= comment.id %>" id="<%= reaction.type %>" onclick='<% if (user) { %>interactWithComment("<%= post.id %>", "<%= comment.id %>", "<%= user %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
+                    <p><%= reaction.icon %> <%= reaction.count %></p>
+                  </button>
+                  <% } %>
+                  <% }); %>
+
+                </div>
+                <div class="replies">
+                  <a href="#" id="reply-button" onclick="showReplyForm('<%= comment.id %>', event)">
+                    <% 
+function countAllReplies(replies) {
+    if (!replies || replies.length === 0) return 0;
+    let total = 0;
+    for (const reply of replies) {
+        total += 1 + countAllReplies(reply.replies);
+    }
+    return total;
+}
+const totalReplies = countAllReplies(comment.replies);
+%>
+                    <button class="reaction-button">💬 <%= totalReplies%>
+                    </button>
+                  </a>
+                </div>
+              </div>
+
             </div>
-          </form>
+          </div>
+          <div class="reply-form">
+            <form id="reply-form-<%= comment.id %>" action="/comments/<%= comment.id %>/replies" method="POST" style="display: none">
+              <div class="input-container">
+                <textarea id="comment-<%= comment.id %>" name="comment" rows="1" required onclick="autoExpandTextarea(event); showReplyButtons('<%= comment.id %>')" maxlength="500" placeholder="Reply to <%= comment.user.username %>"></textarea>
+                <div class="reply-buttons" id="reply-buttons-<%= comment.id %>" style="display: none;">
+                  <button id="cancel-button" type="button" class="fab" onclick="cancelReply('<%= comment.id %>')">Cancel</button>
+
+                  <button id="submit-button" type="submit" class="fab">Submit</button>
+                </div>
+              </div>
+            </form>
+          </div>
+
 
           <% if (comment.replies && comment.replies.length > 0) { %>
-            <% var nestedLevel = level + 1; %>
-            <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
-            <div class="<%= divClass %>" id="nested-comments-<%= comment.id %>" style="display: none;">
-              <% renderComments(comment.replies, nestedLevel); %>
-            </div>
-          <% } %>
-  
-          <% if (level == 0) { %>
+          <% var nestedLevel = level + 1; %>
+          <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
+          <div class="<%= divClass %>" id="nested-comments-<%= comment.id %>" style="
+      <% if (nestedLevel < 4) { %>
+      display: block;
+      <% } else { %>
+      display: none;
+      <% } %>
+      ">
+
+            <% renderComments(comment.replies, nestedLevel); %>
           </div>
           <% } %>
-      <% }) %> 
-    <% } %> 
-    <% renderComments(post.comments); %>
+        </div>
+
+        <% }) %>
+        <% } %>
+        <% renderComments(post.comments); %>
+
+      </div>
+
+
+    </div>
+
+
+  </main>
+  <div class="post-footer" style="text-align: center;">
+    <% if (post.updated_at) { %>
+    <%
+              let postDate = new Date(post.created_at);
+              let today = new Date();
+              let formattedDate;
+            
+              // Calculate time difference in milliseconds
+              let diff = today - postDate;
+            
+              // Convert time difference to different units
+              let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+              let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+              let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+              let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+            
+              // Decide the format based on the time difference
+              if (minutes < 60) {
+                formattedDate = minutes + 'm ago';
+              } else if (hours < 24) {
+                formattedDate = hours + 'h ago';
+              } else if (days < 365) {
+                formattedDate = days + 'd ago';
+              } else {
+                formattedDate = years + 'y ago';
+              }
+            %>
+    Edited at: <%= formattedDate %>
+    <% } %>
   </div>
+  <div class="tags-div">
 
-    <script>
-      
+    <div class="tags">
+      tags:
+      <% if (post.tags && post.tags.length > 0) { %>
+      <% post.tags.forEach(tag => { %>
+      <a href="#" class="tag"><%= tag.name %></a>
+      <% }); %>
+      <% } %>
+      <% if (post.post_type == "project") { %>
 
-function toggleNestedComments(commentId) {
-    var nestedComments = document.getElementById('nested-comments-' + commentId);
-    if (nestedComments.style.display === 'none') {
-      nestedComments.style.display = 'block';
-    } else {
-      nestedComments.style.display = 'none';
-    }
-  }
-      function detractPost(postId, user) {
-        if (!user) {
-          window.location.href = "/login"; // Redirect to the login page
-          return; // Stop further execution
-        }
-        fetch(`/posts/${postId}/boost`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ user: user, action: "detract" }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data); // Console log the JSON response
-            if (data.message === "Detract successful") {
-              // Increase the detract count in the view
-              const detractCountElement = document.getElementById(
-                `post-detracts-${postId}`
-              );
-              detractCountElement.innerText =
-                parseInt(detractCountElement.innerText) + 1;
+      <% 
+let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {};
+%>
+      <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
+      <% gitHubData.topics.forEach(topic => { %>
+      <a href="#" class="tag"><%= topic %></a>
+      <% }); %>
+      <% } %>
+    </div>
+    <% } %>
 
-              // Change color of trending down arrow
-              const trendingDownElement = document.querySelector(
-                `[onclick="detractPost('${postId}', '${user}')"]`
-              );
-              trendingDownElement.style.color = "red";
 
-              // Check if the post was boosted by the user
-              const boostCountElement = document.getElementById(
-                `post-boosts-${postId}`
-              );
-              if (boostCountElement.innerText > 0) {
-                const trendingUpElement = document.querySelector(
-                  `[onclick="boostPost('${postId}', '${user}')"]`
-                );
-                trendingUpElement.style.color = "black";
-                boostCountElement.innerText =
-                  parseInt(boostCountElement.innerText) - 1;
-              }
-            } else if (data.message === "Detract removed") {
-              // Decrease the detract count in the view
-              const detractCountElement = document.getElementById(
-                `post-detracts-${postId}`
-              );
-              detractCountElement.innerText =
-                parseInt(detractCountElement.innerText) - 1;
+  </div>
+  <script>
+    hljs.highlightAll();
+  </script>
 
-              // Change color of trending down arrow back to black
-              const trendingDownElement = document.querySelector(
-                `[onclick="detractPost('${postId}', '${user}')"]`
-              );
-              trendingDownElement.style.color = "black";
-            } else {
-              // Handle error
-            }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
-      }
 
-      function boostComment(commentId, user) {
-        if (!user) {
-          window.location.href = "/login"; // Redirect to the login page
-          return; // Stop further execution
-        }
-        fetch(`/comments/${commentId}/boost`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ user: user, action: "boost" }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data); // Console log the JSON response
-            if (data.message === "Boost successful") {
-              // Increase the boost count in the view
-              const boostCountElement = document.getElementById(
-                `comment-boosts-${commentId}`
-              );
-              boostCountElement.innerText =
-                parseInt(boostCountElement.innerText) + 1;
+  <script>
+    $(document).ready(function() {
+      var easyMDE = new EasyMDE({
+        element: document.getElementById('comment-form-textarea'),
+        placeholder: 'Reply to <%= post.user.username %>'
 
-              // Change color of trending up arrow
-              const trendingUpElement = document.querySelector(
-                `[onclick="boostComment('${commentId}', '${user}')"]`
-              );
-              trendingUpElement.style.color = "green";
+      });
 
-              // Check if the comment was detracted by the user
-              const detractCountElement = document.getElementById(
-                `comment-detracts-${commentId}`
-              );
-              if (detractCountElement.innerText > 0) {
-                // Decrease the detract count in the view
-                const trendingDownElement = document.querySelector(
-                  `[onclick="detractComment('${commentId}', '${user}')"]`
-                );
-                trendingDownElement.style.color = "black";
-                detractCountElement.innerText =
-                  parseInt(detractCountElement.innerText) - 1;
-              }
-            } else if (data.message === "Boost removed") {
-              // Decrease the boost count in the view
-              const boostCountElement = document.getElementById(
-                `comment-boosts-${commentId}`
-              );
-              boostCountElement.innerText =
-                parseInt(boostCountElement.innerText) - 1;
+      // Show buttons when the EasyMDE editor is focused
+      easyMDE.codemirror.on("focus", function() {
+        $('.button-container').show();
+        $('.editor-toolbar').show();
+      });
 
-              // Change color of trending up arrow back to black
-              const trendingUpElement = document.querySelector(
-                `[onclick="boostComment('${commentId}', '${user}')"]`
-              );
-              trendingUpElement.style.color = "black";
-            } else {
-              // Handle error
-            }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
-      }
+      $('#cancel-button').on('click', function() {
+        easyMDE.value(''); // Clear the content of the EasyMDE editor
+        $('.button-container').hide();
+        $('.editor-toolbar').hide();
+      });
 
-      function detractComment(commentId, user) {
-        if (!user) {
-          window.location.href = "/login"; // Redirect to the login page
-          return; // Stop further execution
-        }
-        fetch(`/comments/${commentId}/boost`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ user: user, action: "detract" }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data); // Console log the JSON response
-            if (data.message === "Detract successful") {
-              // Increase the detract count in the view
-              const detractCountElement = document.getElementById(
-                `comment-detracts-${commentId}`
-              );
-              detractCountElement.innerText =
-                parseInt(detractCountElement.innerText) + 1;
-
-              // Change color of trending down arrow
-              const trendingDownElement = document.querySelector(
-                `[onclick="detractComment('${commentId}', '${user}')"]`
-              );
-              trendingDownElement.style.color = "red";
-
-              // Check if the comment was boosted by the user
-              const boostCountElement = document.getElementById(
-                `comment-boosts-${commentId}`
-              );
-              if (boostCountElement.innerText > 0) {
-                const trendingUpElement = document.querySelector(
-                  `[onclick="boostComment('${commentId}', '${user}')"]`
-                );
-                trendingUpElement.style.color = "black";
-                boostCountElement.innerText =
-                  parseInt(boostCountElement.innerText) - 1;
-              }
-            } else if (data.message === "Detract removed") {
-              // Decrease the detract count in the view
-              const detractCountElement = document.getElementById(
-                `comment-detracts-${commentId}`
-              );
-              detractCountElement.innerText =
-                parseInt(detractCountElement.innerText) - 1;
-
-              // Change color of trending down arrow back to black
-              const trendingDownElement = document.querySelector(
-                `[onclick="detractComment('${commentId}', '${user}')"]`
-              );
-              trendingDownElement.style.color = "black";
-            } else {
-              // Handle error
-            }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
-      }
-
-      function boostPost(postId, user) {
-        if (!user) {
-          window.location.href = "/login"; // Redirect to the login page
-          return; // Stop further execution
-        }
-        fetch(`/posts/${postId}/boost`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ user: user, action: "boost" }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data); // Console log the JSON response
-            if (data.message === "Boost successful") {
-              // Increase the boost count in the view
-              const boostCountElement = document.getElementById(
-                `post-boosts-${postId}`
-              );
-              boostCountElement.innerText =
-                parseInt(boostCountElement.innerText) + 1;
-
-              // Change color of trending up arrow
-              const trendingUpElement = document.querySelector(
-                `[onclick="boostPost('${postId}', '${user}')"]`
-              );
-              trendingUpElement.style.color = "green";
-
-              // Check if the post was detracted by the user
-              const detractCountElement = document.getElementById(
-                `post-detracts-${postId}`
-              );
-              if (detractCountElement.innerText > 0) {
-                // Decrease the detract count in the view
-                const trendingDownElement = document.querySelector(
-                  `[onclick="detractPost('${postId}', '${user}')"]`
-                );
-                trendingDownElement.style.color = "black";
-                detractCountElement.innerText =
-                  parseInt(detractCountElement.innerText) - 1;
-              }
-            } else if (data.message === "Boost removed") {
-              // Decrease the boost count in the view
-              const boostCountElement = document.getElementById(
-                `post-boosts-${postId}`
-              );
-              boostCountElement.innerText =
-                parseInt(boostCountElement.innerText) - 1;
-
-              // Change color of trending up arrow back to black
-              const trendingUpElement = document.querySelector(
-                `[onclick="boostPost('${postId}', '${user}')"]`
-              );
-              trendingUpElement.style.color = "black";
-            } else {
-              // Handle error
-            }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
-      }
-
-      function submitForm(formId, event) {
-        event.preventDefault();
-        var form = document.getElementById(formId);
-
-        if (!form) {
-          console.error("Form not found: " + formId);
-          return false;
-        }
-
-        var isReplyForm = formId.startsWith("reply-form");
-
-        var inputField;
-        if (isReplyForm) {
-          inputField = form.querySelector("textarea");
+      // Attach the submit event handler to the form
+      $('comment-form-textarea').on('submit', function(e) {
+        // Check if the EasyMDE editor is empty
+        if (!easyMDE.value().trim()) {
+          e.preventDefault(); // Prevent form submission
+          alert("Please fill in the content."); // Display an error message
+          easyMDE.codemirror.focus(); // Focus the EasyMDE editor
         } else {
-          inputField = form.querySelector('input[name="comment"]');
-        }
+          // Save the content from EasyMDE to the textarea
+          easyMDE.codemirror.save();
 
-        // Check if the input field or textarea exists
-        if (!inputField) {
-          console.error("Input field not found in form: " + formId);
-          return false;
+          // If link field is hidden, remove its value before submitting
+          if ($('#link-field').is(':hidden')) {
+            $('#link').val('');
+          }
         }
+      });
+    });
 
-        // Validate input value
-        if (inputField.value.trim() === "") {
-          alert("Your message cannot be empty.");
-          return false;
-        } else {
-          // Submit the form
-          form.submit();
-        }
+
+
+    function showDropdown(event) {
+      event.stopPropagation(); // Stop the click from propagating to the document
+
+      // Find the dropdown content next to the clicked button
+      var dropdownContent = event.currentTarget.nextElementSibling;
+
+      // Check if the current dropdown is already open
+      var isCurrentlyShown = dropdownContent.style.display === 'block';
+
+      // Close all dropdowns first
+      closeAllDropdowns();
+
+      // If the dropdown was not already open, open it
+      if (!isCurrentlyShown) {
+        dropdownContent.style.display = 'block';
       }
-
-      function showReplyForm(commentId, event) {
-        event.preventDefault();
-        var form = document.getElementById("reply-form-" + commentId);
-        form.style.display = form.style.display === "none" ? "block" : "none";
-      }
-      function confirmDeletion(element) {
-    if (confirm('Are you sure you want to delete this post?')) {
-      element.closest('form').submit();
     }
-    return false;
-  }
-  function standby() {
-    document.getElementById('avatar').src = "/img/default-avatar.png"
-  }
 
-  function autoExpandTextarea(event) {
-    event.target.style.height = 'inherit';
-    event.target.style.height = `${event.target.scrollHeight}px`;
-  }
+    function closeAllDropdowns() {
+      const allDropdowns = document.querySelectorAll('.dropdown-content');
+      allDropdowns.forEach(function(dropdown) {
+        dropdown.style.display = 'none';
+      });
+    }
 
-  document.getElementById('comment').addEventListener('input', autoExpandTextarea);
-    </script>
-  </body>
+    // Attach an event listener to the document to close all dropdowns when clicking anywhere else
+    document.addEventListener('click', closeAllDropdowns);
+
+    // This function is to prevent the click inside the dropdown from propagating to the document
+    document.addEventListener('click', function(event) {
+      const withinBoundaries = event.composedPath().includes(event.target.closest('.dropdown-content'));
+
+      if (withinBoundaries) {
+        event.stopPropagation(); // Prevent the click from closing the dropdown immediately
+      }
+    }, true); // True here sets the listener to the capture phase
+    function showReplyButtons(commentId) {
+      // Show the reply buttons
+      var replyButtons = document.getElementById('reply-buttons-' + commentId);
+      replyButtons.style.display = 'flex';
+    }
+
+    function cancelReply(commentId) {
+      // Clear the textarea
+      var textarea = document.getElementById('comment-' + commentId);
+      textarea.value = '';
+      textarea.rows = 1;
+
+      // Hide the reply buttons
+      var replyButtons = document.getElementById('reply-buttons-' + commentId);
+      replyButtons.style.display = 'none';
+    }
+
+    function autoExpandTextarea(event) {
+      event.target.style.height = 'inherit';
+      event.target.style.height = `${event.target.scrollHeight}px`;
+    }
+    // JavaScript function to toggle nested comments
+    function toggleNestedComments(commentId, level) {
+      var nestedComments = document.getElementById('nested-comments-' + commentId);
+      if (nestedComments) {
+        var isDisplayed = nestedComments.style.display === 'block';
+        nestedComments.style.display = isDisplayed ? 'none' : 'block'; // Toggle display
+
+        // Change chevron direction based on visibility
+        var chevron = nestedComments.previousElementSibling.querySelector('.chevron');
+        if (chevron) {
+          chevron.textContent = isDisplayed ? 'chevron_right' : 'expand_more';
+        }
+
+        // Optionally, if you want to hide all deeper nested comments when collapsing one,
+        // you can add the following lines:
+        if (isDisplayed) {
+          var allNested = nestedComments.querySelectorAll('.nested-comment');
+          allNested.forEach(function(nested) {
+            nested.style.display = 'none'; // Hide all deeper nested comments
+            // Reset all chevrons in deeper nested comments
+            var innerChevrons = nested.previousElementSibling.querySelectorAll('.chevron');
+            innerChevrons.forEach(function(chevron) {
+              chevron.textContent = 'chevron_right';
+            });
+          });
+        }
+      }
+    }
+
+
+
+    function submitForm(formId, event) {
+      event.preventDefault();
+      var form = document.getElementById(formId);
+
+      if (!form) {
+        console.error("Form not found: " + formId);
+        return false;
+      }
+
+      var isReplyForm = formId.startsWith("reply-form");
+
+      var inputField;
+      if (isReplyForm) {
+        inputField = form.querySelector("textarea");
+      } else {
+        inputField = form.querySelector('input[name="comment"]');
+      }
+
+      // Check if the input field or textarea exists
+      if (!inputField) {
+        console.error("Input field not found in form: " + formId);
+        return false;
+      }
+
+      // Validate input value
+      if (inputField.value.trim() === "") {
+        alert("Your message cannot be empty.");
+        return false;
+      } else {
+        // Submit the form
+        form.submit();
+      }
+    }
+
+    function interactWithPost(postId, user, action) {
+      if (!user) {
+        window.location.href = '/login';
+        return;
+      }
+
+      fetch(`/posts/${postId}/react`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            user: user,
+            action: action.toLowerCase() // Ensure action is in lowercase
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Success:', data);
+          const reactionMenu = document.querySelector(".reaction-popup");
+          if (reactionMenu) {
+            reactionMenu.style.opacity = '0';
+            reactionMenu.style.display = 'none';
+          }
+
+          // Assuming the 'reactions' field directly contains the count values
+          const reactionsData = data.newScore; // Adjust according to actual response structure
+
+          const reactionTypes = [{
+              type: "LOVE",
+              icon: "❤️"
+            },
+            {
+              type: "LIKE",
+              icon: "👍"
+            },
+            {
+              type: "CURIOUS",
+              icon: "🤔"
+            },
+            {
+              type: "INTERESTING",
+              icon: "💡"
+            },
+            {
+              type: "CELEBRATE",
+              icon: "🎉"
+            },
+          ];
+
+          // Ensure you have a reference to the container where buttons should be placed
+          const reactionInteractionsDiv = document.querySelector("div.user-interactions");
+
+          reactionTypes.forEach(reaction => {
+            const reactionCount = reactionsData[reaction.type.toLowerCase()] || 0;
+            let reactionButton = document.querySelector(`button#${reaction.type.toLowerCase()}.reaction-button`);
+
+            if (reactionCount > 0) {
+              if (!reactionButton) {
+                // Create a new reaction button if it doesn't exist
+                reactionButton = document.createElement("button");
+                reactionButton.className = 'reaction-button';
+                reactionButton.id = reaction.type.toLowerCase();
+                reactionButton.onclick = () => interactWithPost(postId, user, reaction.type);
+
+                const icon = document.createElement("span");
+                icon.innerText = reaction.icon;
+
+                const countText = document.createElement("span");
+                countText.className = `${reaction.type.toLowerCase()}-count`;
+                countText.innerText = ` ${reactionCount}`;
+
+                reactionButton.appendChild(icon);
+                reactionButton.appendChild(countText);
+                reactionInteractionsDiv.appendChild(reactionButton);
+              } else {
+                // Update count of existing button
+                const countSpan = reactionButton.querySelector(`span.${reaction.type.toLowerCase()}-count`);
+                if (countSpan) countSpan.innerText = ` ${reactionCount}`;
+              }
+            } else if (reactionCount == 0) {
+              if (reactionButton) {
+                reactionButton.remove();
+              }
+            }
+
+            // Update button color if needed
+            if (reactionButton && reaction.type.toLowerCase() === action.toLowerCase()) {
+              // maybe add a lil reaction later idk
+            } else if (reactionButton) {
+              reactionButton.style.color = ""; // Reset to default styles for other buttons
+            }
+          });
+
+          const boostCount = reactionsData['boosts'] || 0;
+          let boostButton = document.querySelector('#boost');
+          const countSpan = boostButton.querySelector(`span.boost-count`);
+          countSpan.innerText = ` ${boostCount}`;
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    }
+
+    function interactWithComment(postId, commentId, user, action) {
+      if (!user) {
+        window.location.href = '/login';
+        return;
+      }
+
+      fetch(`/posts/${postId}/comment/${commentId}/react`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            user: user,
+            action: action.toLowerCase() // Ensure action is in lowercase
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Success:', data);
+          const reactionMenu = document.querySelector(".reaction-popup");
+          if (reactionMenu) {
+            reactionMenu.style.opacity = '0';
+            reactionMenu.style.display = 'none';
+          }
+
+          // Assuming the 'reactions' field directly contains the count values
+          const reactionsData = data.newScore; // Adjust according to actual response structure
+
+          const reactionTypes = [{
+              type: "LOVE",
+              icon: "❤️"
+            },
+            {
+              type: "LIKE",
+              icon: "👍"
+            },
+            {
+              type: "CURIOUS",
+              icon: "🤔"
+            },
+            {
+              type: "INTERESTING",
+              icon: "💡"
+            },
+            {
+              type: "CELEBRATE",
+              icon: "🎉"
+            },
+          ];
+
+          // Ensure you have a reference to the container where buttons should be placed
+          const reactionInteractionsDiv = document.querySelector("div.comment-user-interactions." + commentId);
+
+          reactionTypes.forEach(reaction => {
+            const reactionCount = reactionsData[reaction.type.toLowerCase()] || 0;
+            let reactionButton = document.querySelector(`button#${reaction.type}.reaction-button.${commentId}`);
+
+            if (reactionCount > 0) {
+              if (!reactionButton) {
+                // Create a new reaction button if it doesn't exist
+                reactionButton = document.createElement("button");
+                reactionButton.className = `reaction-button ${commentId}`;
+                reactionButton.id = reaction.type;
+                reactionButton.onclick = () => interactWithComment(postId, commentId, user, reaction.type);
+
+                const icon = document.createElement("span");
+                icon.innerText = reaction.icon;
+
+                const countText = document.createElement("span");
+                countText.className = `${reaction.type.toLowerCase()}-count-${commentId}`;
+                countText.innerText = ` ${reactionCount}`;
+
+                reactionButton.appendChild(icon);
+                reactionButton.appendChild(countText);
+                reactionInteractionsDiv.appendChild(reactionButton);
+              } else {
+                // Update count of existing button
+                const countSpan = reactionButton.querySelector(`span.${reaction.type.toLowerCase()}-count`);
+                if (countSpan) countSpan.innerText = ` ${reactionCount}`;
+              }
+            } else if (reactionCount == 0) {
+              if (reactionButton) {
+                reactionButton.remove();
+              }
+            }
+
+            // Update button color if needed
+            if (reactionButton && reaction.type.toLowerCase() === action.toLowerCase()) {
+              // maybe add a lil reaction later idk
+            } else if (reactionButton) {
+              reactionButton.style.color = ""; // Reset to default styles for other buttons
+            }
+          });
+
+          const boostCount = reactionsData['boosts'] || 0;
+          let boostButton = document.querySelector('#boost-' + commentId);
+          const countSpan = boostButton.querySelector(`span.boost-count`);
+          countSpan.innerText = ` ${boostCount}`;
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    }
+
+    function showReplyForm(commentId, event) {
+      event.preventDefault();
+      var form = document.getElementById("reply-form-" + commentId);
+      form.style.display = form.style.display === "none" ? "block" : "none";
+    }
+
+    function confirmDeletion(element) {
+      if (confirm('Are you sure you want to delete this post?')) {
+        element.closest('form').submit();
+      }
+      return false;
+    }
+
+    function standby() {
+      document.getElementById('avatar').src = "/img/default-avatar.png"
+    }
+
+    function autoExpandTextarea(event) {
+      event.target.style.height = 'inherit';
+      event.target.style.height = `${event.target.scrollHeight}px`;
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+      const posts = document.querySelectorAll('.post-container');
+
+      posts.forEach(post => {
+        const content = post.querySelector('.post-content');
+        const viewMore = post.querySelector('.view-more');
+
+        if (content.scrollHeight > content.clientHeight) {
+          // Content is longer than the max height
+          viewMore.style.display = 'block';
+
+          viewMore.addEventListener('click', function() {
+            if (content.style.maxHeight) {
+              // If max-height is set, remove it
+              content.style.maxHeight = null;
+              viewMore.textContent = 'View More';
+            } else {
+              // Set max-height to scrollHeight to expand
+              content.style.maxHeight = content.scrollHeight + 'px';
+              viewMore.textContent = 'View Less';
+            }
+          });
+        }
+      });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+      var postContents = document.querySelectorAll('.post-content');
+
+      postContents.forEach(function(postContent) {
+        if (postContent.scrollHeight > postContent.clientHeight) {
+          postContent.classList.add('overflow');
+        }
+      });
+
+      // Variables to hold the timeouts for showing and hiding the menus
+      let showMenuTimeout;
+      let hideMenuTimeout;
+
+      // Add event listeners to all main reaction buttons
+      document.querySelectorAll('.mainReactionButton').forEach(button => {
+        button.addEventListener('click', (event) => {
+          // Determine which button was clicked
+          const clickedButton = event.target;
+          const buttonType = clickedButton.dataset.type; // 'post' or 'comment'
+          const buttonId = clickedButton.dataset.id; // Unique identifier for the post or comment
+
+          // Find the corresponding reaction menu based on the clicked button
+          const reactionMenu = document.getElementById(`reactionPopup-${buttonType}-${buttonId}`);
+
+          // Cancel showing the menu if you click the button a second time; otherwise, show the menu
+          clearTimeout(showMenuTimeout);
+          if (reactionMenu.style.display === 'flex') {
+            reactionMenu.style.opacity = '0';
+            setTimeout(() => { // Delay for opacity transition
+              reactionMenu.style.display = 'none';
+            }, 200);
+          } else {
+            clearTimeout(showMenuTimeout);
+            showMenuTimeout = setTimeout(() => {
+              let rect = clickedButton.getBoundingClientRect();
+              reactionMenu.style.display = 'flex';
+              reactionMenu.style.opacity = '0';
+              reactionMenu.style.opacity = '1';
+              hideMenuTimeout = setTimeout(() => {
+                reactionMenu.style.opacity = '0';
+                reactionMenu.style.display = 'none';
+              }, 2000);
+            }, 200);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
 </html>

@@ -1,139 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Join</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="css/register.css" />
-    <link rel="stylesheet" href="css/navbar.css" />
-    <link rel="shortcut icon" href="img/core.png" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    />
-  </head>
-  <body>
-    <%- include('partials/navbar', { pagePath: 'home' }) %>
-    <main>
-      <div id="login">
-        <div class="user-res">Already a member? <a href="/login">Login</a></div>
-      </div>
-      <div id="registration">
-        <form action="/register" method="POST">
-          <div class="input-container">
-            <label for="firstname">First Name</label>
-            <input type="text" id="firstname" name="firstname" required />
-          </div>
-          <div class="input-container">
-            <label for="lastname">Last Name</label>
-            <input type="text" id="lastname" name="lastname" required />
-          </div>
-          <div class="input-container">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required />
-          </div>
 
-          <div class="input-container">
-            <label for="username">Username</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              required
-              maxlength="25"
-            />
-          </div>
+<head>
+  <title>CORE/register</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/register.css" />
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="shortcut icon" href="img/core.png" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
 
-          <div class="input-container">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required />
-            <span id="password-strength"></span>
-          </div>
-
-          <div class="input-container" id="confirmPasswordContainer" style="display: none;">
-            <label for="password2">Confirm Password</label>
-            <input type="password" id="password2" name="password2" required />
-            <span id="password-match"></span>
+<body>
+  <%- include('partials/navbar', { pagePath: 'home' }) %>
+  <main>
+    <div id="login">
+      <div class="user-res">Already a member? <a href="/login">Login</a></div>
+    </div>
+    <div id="registration">
+      <form action="/register" method="POST">
+        <div class="input-container">
+          <label for="firstname">First Name</label>
+          <input type="text" id="firstname" name="firstname" required />
         </div>
-        
+        <div class="input-container">
+          <label for="lastname">Last Name</label>
+          <input type="text" id="lastname" name="lastname" required />
+        </div>
+        <div class="input-container">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
 
-          <div class="input-container">
-            <label for="zipcode">Zip Code</label>
-            <input
-              type="text"
-              id="zipcode"
-              name="zipcode"
-              required
-              style="display: block"
-            />
-          </div>
-          <a href="/register" id="register-text" class="register-text">
-            <button type="submit" id="register-button">Join</button>
-          </a>
-        </form>
-      </div>
-    </main>
-    <script>
-      
-      document.addEventListener("DOMContentLoaded", function () {
-        var password = document.getElementById("password");
-        var confirmPassword = document.getElementById("password2");
-        var passwordStrengthText = document.getElementById("password-strength");
-        var passwordMatchText = document.getElementById("password-match");
+        <div class="input-container">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required maxlength="25" />
+        </div>
 
-        function checkPasswordStrength() {
-          var strength = 0;
-          if (password.value.length > 5) strength += 1;
-          if (password.value.match(/(?=.*[0-9])/)) strength += 1;
-          if (password.value.match(/(?=.*[!@#$%^&*])/)) strength += 1;
-          if (password.value.match(/(?=.*[a-z])/)) strength += 1;
-          if (password.value.match(/(?=.*[A-Z])/)) strength += 1;
+        <div class="input-container">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+          <span id="password-strength"></span>
+        </div>
 
-          switch (strength) {
-            case 1:
-            case 2:
-              passwordStrengthText.textContent = "Weak";
-              password.style.borderColor = "red";
-              break;
-            case 3:
-            case 4:
-              passwordStrengthText.textContent = "Medium";
-              password.style.borderColor = "yellow";
-              break;
-            case 5:
-              passwordStrengthText.textContent = "Strong";
-              password.style.borderColor = "green";
-              break;
-            default:
-              passwordStrengthText.textContent = "";
-              password.style.borderColor = "";
-          }
+        <div class="input-container" id="confirmPasswordContainer" style="display: none;">
+          <label for="password2">Confirm Password</label>
+          <input type="password" id="password2" name="password2" required />
+          <span id="password-match"></span>
+        </div>
+
+
+        <div class="input-container">
+          <label for="zipcode">Zip Code</label>
+          <input type="text" id="zipcode" name="zipcode" required style="display: block" />
+        </div>
+        <a href="/register" id="register-text" class="register-text">
+          <button type="submit" id="register-button">Join</button>
+        </a>
+      </form>
+    </div>
+  </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var password = document.getElementById("password");
+      var confirmPassword = document.getElementById("password2");
+      var passwordStrengthText = document.getElementById("password-strength");
+      var passwordMatchText = document.getElementById("password-match");
+
+      function checkPasswordStrength() {
+        var strength = 0;
+        if (password.value.length > 5) strength += 1;
+        if (password.value.match(/(?=.*[0-9])/)) strength += 1;
+        if (password.value.match(/(?=.*[!@#$%^&*])/)) strength += 1;
+        if (password.value.match(/(?=.*[a-z])/)) strength += 1;
+        if (password.value.match(/(?=.*[A-Z])/)) strength += 1;
+
+        switch (strength) {
+          case 1:
+          case 2:
+            passwordStrengthText.textContent = "Weak";
+            password.style.borderColor = "red";
+            break;
+          case 3:
+          case 4:
+            passwordStrengthText.textContent = "Medium";
+            password.style.borderColor = "yellow";
+            break;
+          case 5:
+            passwordStrengthText.textContent = "Strong";
+            password.style.borderColor = "green";
+            break;
+          default:
+            passwordStrengthText.textContent = "";
+            password.style.borderColor = "";
         }
+      }
 
-        function checkPasswordMatch() {
-          if (password.value === confirmPassword.value) {
-            passwordMatchText.textContent = "Passwords match";
-            confirmPassword.style.borderColor = "green";
-          } else {
-            passwordMatchText.textContent = "Passwords do not match";
-            confirmPassword.style.borderColor = "red";
-          }
+      function checkPasswordMatch() {
+        if (password.value === confirmPassword.value) {
+          passwordMatchText.textContent = "Passwords match";
+          confirmPassword.style.borderColor = "green";
+        } else {
+          passwordMatchText.textContent = "Passwords do not match";
+          confirmPassword.style.borderColor = "red";
         }
+      }
 
-        password.addEventListener("input", function () {
+      password.addEventListener("input", function() {
         checkPasswordStrength();
         if (password.value.length > 0) {
-            confirmPasswordContainer.style.display = "block"; // Show Confirm Password field
+          confirmPasswordContainer.style.display = "block"; // Show Confirm Password field
         } else {
-            confirmPasswordContainer.style.display = "none"; // Hide Confirm Password field
+          confirmPasswordContainer.style.display = "none"; // Hide Confirm Password field
         }
         checkPasswordMatch();
-        });
-
-        confirmPassword.addEventListener("input", checkPasswordMatch);
       });
 
-      
-    </script>
-  </body>
+      confirmPassword.addEventListener("input", checkPasswordMatch);
+    });
+  </script>
+</body>
+
 </html>

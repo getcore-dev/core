@@ -1,33 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CORE</title>
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    />
-    <link rel="stylesheet" href="css/navbar.css" />
-    <link rel="stylesheet" href="css/jobs.css" />
 
-    <link rel="shortcut icon" href="img/core.png" />
-  </head>
-  <body>
-    <%- include('partials/navbar', { pagePath: 'openings' }) %>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CORE/openings</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="css/jobs.css" />
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="stylesheet" href="./css/com-btn-container.css" />
+
+
+  <link rel="shortcut icon" href="img/core.png" />
+</head>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'openings' }) %>
+  <main>
+
+    <%- include('partials/com-btn-container', { }) %>
 
     <div class="jobs-container">
+      <h3>Openings</h3>
       <% const jobPostings = [
-        {
-          companyName: "Apple",
-          jobTitle: "Security Analyst",
-          jobLocation: "Boston, MA",
-          jobOverview: "Protect our digital assets and ensure compliance with the latest security standards.",
-          jobType: "Full-Time",
-          jobSalary: "$115k/year",
-          jobBenefits: "Health & Dental, Company Subscriptions, Paid Time Off",
-          companyLogo: "./src/applelogo.png"
-        },
         {
           companyName: "Amazon",
           jobTitle: "Data Scientist",
@@ -316,16 +311,16 @@
           companyLogo: "./src/didilogo.png"
           },
       ]; %>
-  
-      <% jobPostings.forEach(job => { %>
+      <div class="job-list">
+        <% jobPostings.forEach(job => { %>
         <div class="job">
           <div class="job-content">
-          <div class="job-header">
-            <div class="company-logo-container">
-              <img src="<%= job.companyLogo %>" alt="Company Logo" class="company-logo" />
-            </div>
-            <div class="job-title-location">
-              <div class="company-name"><%= job.companyName %></div>
+            <div class="job-header">
+              <div class="company-logo-container">
+                <img src="<%= job.companyLogo %>" alt="Company Logo" class="company-logo" />
+              </div>
+              <div class="job-title-location">
+                <div class="company-name"><%= job.companyName %></div>
                 <div class="job-title"><%= job.jobTitle %></div>
               </div>
             </div>
@@ -334,16 +329,18 @@
             </div>
             <div class="job-flairs">
               <span class="job-flair"><%= job.jobType %></span>
-              <span class="job-flair"><%= job.jobSalary %></span>
-              <span class="job-flair"><%= job.jobLocation %></span>
+              <span class="job-flair" id="pay-flair"><%= job.jobSalary %></span>
+              <span class="job-flair" id="location-flair"><%= job.jobLocation %></span>
             </div>
 
           </div>
         </div>
-          
-        </div>
-      <% }); %>
+        <% }); %>
+      </div>
     </div>
-    <script src="js/jobs.js"></script>
-  </body>
+    </div>
+  </main>
+  <script src="js/jobs.js"></script>
+</body>
+
 </html>

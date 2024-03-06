@@ -10,6 +10,13 @@ const userQueries = require("../queries/userQueries");
 const utilFunctions = require("../utils/utilFunctions");
 const githubService = require("../services/githubService");
 const postQueries = require("../queries/postQueries");
+const { util } = require("chai");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
+const { BlobServiceClient } = require("@azure/storage-blob");
+const AZURE_STORAGE_CONNECTION_STRING =
+  process.env.AZURE_STORAGE_CONNECTION_STRING; // Ensure this is set in your environment variables
+const cacheMiddleware = require("../middleware/cache");
 
 // Home page
 router.get("/", viewController.renderHomePage);
@@ -26,11 +33,10 @@ router.post("/edits", checkAuthenticated, async (req, res) => {
 
   // Exclude the userId from updates to avoid updating it
   delete updates.id;
-  console.log(userId, updates);
+
   try {
     for (let field in updates) {
-      if (updates.hasOwnProperty(field)) {
-        console.log(`Updating ${field} to ${updates[field]}`);
+      if (Object.hasOwnProperty.call(updates, field)) {
         await userQueries.updateField(userId, field, updates[field]);
       }
     }
@@ -51,19 +57,28 @@ router.get("/404", (req, res) => {
   res.render("error.ejs", { user: req.user, error });
 });
 
-router.get("/profile/:username", viewController.renderUserProfile);
+router.get(
+  "/profile/:username",
+  cacheMiddleware(1200),
+  viewController.renderUserProfile
+);
 
 // Jobs page
-router.get("/jobs", (req, res) => {
+router.get("/jobs", cacheMiddleware(1200), (req, res) => {
   res.render("jobs.ejs", { user: req.user });
 });
 
 // Learning page
-router.get("/learning", checkAuthenticated, (req, res) => {
-  res.render("learning.ejs", { user: req.user });
-});
+router.get(
+  "/learning",
+  checkAuthenticated,
+  cacheMiddleware(1200),
+  (req, res) => {
+    res.render("learning.ejs", { user: req.user });
+  }
+);
 
-router.get("/updates", async (req, res) => {
+router.get("/updates", cacheMiddleware(1200), async (req, res) => {
   try {
     const commits = await githubService.fetchCommits();
 
@@ -99,10 +114,54 @@ router.get("/post/create", checkAuthenticated, async (req, res) => {
   res.render("create-post.ejs", { user: req.user, tags });
 });
 
-// Individual post page
-router.get("/post", async (req, res) => {
-  res.render("post.ejs", { user: req.user });
+router.get("/edit-profile", checkAuthenticated, async (req, res) => {
+  const full_user = await userQueries.findById(req.user.id);
+  res.render("edit-profile.ejs", { user: req.user, edit_user: full_user });
 });
+
+router.post(
+  "/edit-profile",
+  checkAuthenticated,
+  upload.single("avatar"),
+  async (req, res) => {
+    const updates = req.body;
+    const userId = req.user.id;
+    const file = req.file; // This contains your uploaded file
+
+    try {
+      // Handle file upload to Azure Blob Storage if there's a file
+      if (file) {
+        const blobServiceClient = BlobServiceClient.fromConnectionString(
+          AZURE_STORAGE_CONNECTION_STRING
+        );
+        const containerClient =
+          blobServiceClient.getContainerClient("coreavatars");
+        const blobName = "profiles/" + userId + "/" + file.originalname;
+        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+        const containerName = "coreavatars";
+
+        await blockBlobClient.uploadFile(file.path); // Uploads the file to Azure Blob Storage
+
+        const pictureUrl = `https://${blobServiceClient.accountName}.blob.core.windows.net/${containerName}/${blobName}`;
+        updates["avatar"] = pictureUrl;
+      }
+
+      console.log("Updates:", updates);
+
+      // Update other user fields
+      for (let field in updates) {
+        if (Object.hasOwnProperty.call(updates, field)) {
+          await userQueries.updateField(userId, field, updates[field]);
+        }
+      }
+
+      res.redirect("/profile/" + req.user.username);
+    } catch (err) {
+      console.error("Error updating user fields:", err.message);
+      res.status(500).send("Internal Server Error");
+    }
+  }
+);
 
 // Error handling middleware
 router.use((error, req, res, next) => {

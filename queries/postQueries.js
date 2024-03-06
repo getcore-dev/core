@@ -1,6 +1,6 @@
 const sql = require("mssql");
 const crypto = require("crypto");
-const redisClient = require("../config/redisConfig"); // Adjust the path as necessary
+const tagQueries = require("./tagsQueries");
 
 const generateUniqueId = () => {
   // Use the last 4 characters of the current timestamp in base 36
@@ -13,87 +13,133 @@ const generateUniqueId = () => {
   return `${timestampPart}${randomPart}`;
 };
 
-const removeDuplicateActions = async (postId, userId, actionType) => {
-  try {
-    console.log(
-      `Removing duplicate ${actionType} actions for user ${userId} on post ${postId}`
-    );
-
-    // Check if there are duplicate actions for the same user and post with the specified action type
-    const duplicateActions = await sql.query`
-      SELECT id
-      FROM userPostActions
-      WHERE user_id = ${userId} AND post_id = ${postId} AND action_type = ${actionType}`;
-
-    // If there are duplicates, delete them
-    if (duplicateActions.recordset.length > 1) {
-      console.log(
-        `Found ${duplicateActions.recordset.length} duplicate ${actionType} actions.`
-      );
-
-      const duplicateIds = duplicateActions.recordset.map(
-        (action) => action.id
-      );
-      await sql.query`
-        DELETE FROM userPostActions
-        WHERE id IN (${duplicateIds.join(",")})`;
-
-      console.log(
-        `Deleted ${duplicateIds.length} duplicate ${actionType} actions.`
-      );
-    } else {
-      console.log(`No duplicate ${actionType} actions found.`);
-    }
-  } catch (err) {
-    console.error("Database delete error:", err);
-    throw err; // Rethrow the error for the caller to handle
-  }
-};
-const getScore = async (postId) => {
-  try {
-    // Get the sum of boosts for the specified post
-    const boostResult = await sql.query`
-      SELECT COUNT(*) AS boostCount
-      FROM userPostActions
-      WHERE post_id = ${postId} AND action_type = 'B'`;
-
-    const boostCount = boostResult.recordset[0].boostCount;
-
-    // Get the sum of detracts for the specified post
-    const detractResult = await sql.query`
-      SELECT COUNT(*) AS detractCount
-      FROM userPostActions
-      WHERE post_id = ${postId} AND action_type = 'D'`;
-
-    const detractCount = detractResult.recordset[0].detractCount;
-
-    // Calculate the score (boosts - detracts)
-    return { boostCount, detractCount, score: boostCount - detractCount };
-  } catch (err) {
-    console.error("Database query error:", err);
-    throw err; // Rethrow the error for the caller to handle
-  }
-};
-
 const postQueries = {
   getPosts: async () => {
     try {
-      const cacheKey = "posts_all";
-      // Try to get data from cache
-      const cachedPosts = await redisClient.get(cacheKey);
-      if (cachedPosts) {
-        return JSON.parse(cachedPosts);
-      }
-
-      const result = await sql.query("SELECT * FROM posts WHERE deleted = 0");
+      const result = await sql.query(
+        "SELECT * FROM posts WHERE deleted = 0 ORDER BY created_at DESC"
+      );
       const posts = result.recordset;
 
       // Cache the result for future requests
-      await redisClient.set(cacheKey, JSON.stringify(posts), "EX", 3600); // Expires in 1 hour
       return posts;
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
+    }
+  },
+  acceptAnswer: async (postId, commentId, userId) => {
+    try {
+      // Check if the post exists
+      const postResult = await sql.query`
+        SELECT * FROM posts WHERE id = ${postId} AND deleted = 0`;
+      if (postResult.recordset.length === 0) {
+        throw new Error("Post not found");
+      }
+
+      // check if post is a question
+      if (postResult.recordset[0].post_type !== "question") {
+        throw new Error("Post is not a question");
+      }
+
+      // check if post is authored by the user
+      if (postResult.recordset[0].user_id !== userId) {
+        throw new Error("User is not the author of the post");
+      }
+
+      // check if comment exists
+      const commentResult = await sql.query`
+        SELECT * FROM comments WHERE id = ${commentId}`;
+      if (commentResult.recordset.length === 0) {
+        throw new Error("Comment not found");
+      }
+
+      // check if there is already an answer to the question
+      const answerResult = await sql.query`
+        SELECT * FROM QuestionSolutions WHERE OriginalPostID = ${postId}`;
+      if (answerResult.recordset.length > 0) {
+        // replace the accepted answer
+        const result = await sql.query`
+          UPDATE QuestionSolutions SET CommentID = ${commentId}, SolutionTimestamp = GETDATE() WHERE OriginalPostID = ${postId}`;
+        if (result.rowsAffected[0] === 0) {
+          throw new Error("Failed to accept the answer");
+        }
+        return true;
+      }
+
+      const result = await sql.query`
+        INSERT INTO QuestionSolutions (OriginalPostID, CommentID, SolutionTimestamp) VALUES (${postId}, ${commentId}, GETDATE())`;
+
+      if (result.rowsAffected[0] === 0) {
+        throw new Error("Failed to accept the answer");
+      } else {
+        return true;
+      }
+    } catch (err) {
+      console.error("Database update error:", err);
+      throw err;
+    }
+  },
+
+  getAcceptedAnswer: async (postId) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM QuestionSolutions WHERE OriginalPostID = ${postId}`;
+
+      // return the actual comment
+      const comment = await sql.query`
+        SELECT * FROM comments WHERE id = ${result.recordset[0].CommentID}`;
+
+      return comment.recordset[0];
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  editPost: async (postId, postData) => {
+    const transaction = new sql.Transaction(/* [connection] */);
+    try {
+      await transaction.begin();
+      const updateRequest = new sql.Request(transaction);
+
+      const trimmedLink = postData.link.trim();
+
+      await updateRequest.query`UPDATE posts SET title = ${postData.title}, content = ${postData.content}, link = ${trimmedLink}, updated_at = GETDATE() WHERE id = ${postId} AND deleted = 0`;
+
+      const deleteTagsRequest = new sql.Request(transaction);
+      await deleteTagsRequest.query`DELETE FROM post_tags WHERE post_id = ${postId}`;
+
+      console.log(postData.tags);
+      for (const tagNameOrId of postData.tags) {
+        const tagRequest = new sql.Request(transaction);
+        let tagId;
+        // Check if tagNameOrId is an ID (integer) or a new tag name (string)
+        if (isNaN(parseInt(tagNameOrId))) {
+          // It's a new tag name, check if it exists or create new
+          let tag = await tagQueries.findTagByName(tagNameOrId);
+          if (!tag) {
+            // Tag doesn't exist, create it
+            tag = await tagQueries.createTag(tagNameOrId); // Adjust to ensure it returns the new tag object
+            tagId = tag.id; // Assuming createTag returns the new tag object including its ID
+          } else {
+            tagId = tag.id; // Use existing tag ID
+          }
+        } else {
+          // It's an existing tag ID
+          tagId = tagNameOrId;
+        }
+
+        // Insert the mapping between the post and the tag using the tag ID
+        const insertPostTagRequest = new sql.Request(transaction);
+        await insertPostTagRequest.query`INSERT INTO post_tags (post_id, tag_id) VALUES (${postId}, ${tagId})`;
+      }
+
+      await transaction.commit();
+
+      return true;
+    } catch (err) {
+      return false;
     }
   },
 
@@ -158,7 +204,15 @@ const postQueries = {
     }
   },
 
-  createPost: async (userId, title, content, link = "", community_id, tags) => {
+  createPost: async (
+    userId,
+    title,
+    content,
+    link = "",
+    community_id,
+    tags,
+    post_type
+  ) => {
     if (typeof link !== "string") {
       throw new Error("Link must be a string");
     }
@@ -167,29 +221,12 @@ const postQueries = {
       tags = tags.split(",").map((tag) => tag.trim());
     }
 
-    console.log(
-      "userId:",
-      userId,
-      "title:",
-      title,
-      "content:",
-      content,
-      "tags:",
-      tags,
-      "community_id:",
-      community_id,
-      "link:",
-      link,
-      "tags:",
-      tags
-    );
-
     try {
       // Insert the post into the posts table
       const uniqueId = generateUniqueId();
 
       // Insert into the posts table
-      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${community_id})`;
+      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id, post_type) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${community_id}, ${post_type})`;
 
       if (tags && tags.length > 0) {
         for (const tag of tags) {
@@ -211,7 +248,7 @@ const postQueries = {
       }
 
       // Record user's upvote and set boosts and detracts
-      await sql.query`INSERT INTO userpostactions (post_id, user_id, upvoted, boosts, detracts) VALUES (${uniqueId}, ${userId}, 1, 1, 0)`;
+      await sql.query`INSERT INTO UserPostActions (post_id, user_id, action_type) VALUES (${uniqueId}, ${userId}, 'B')`;
 
       return uniqueId;
     } catch (err) {
@@ -256,16 +293,29 @@ const postQueries = {
   interactWithPost: async (postId, userId, actionType) => {
     try {
       // Validate actionType
-      if (!["LOVE", "LIKE", "CURIOUS", "INTERESTING", "CELEBRATE"].includes(actionType)) {
+      if (
+        ![
+          "LOVE",
+          "LIKE",
+          "CURIOUS",
+          "INTERESTING",
+          "CELEBRATE",
+          "BOOST",
+        ].includes(actionType)
+      ) {
         throw new Error("Invalid action type");
       }
-  
+
+      if (actionType === "BOOST") {
+        actionType = "B";
+      }
+
       // Check if the user has already interacted with the post
       const userAction = await sql.query`
         SELECT action_type 
         FROM userPostActions 
         WHERE user_id = ${userId} AND post_id = ${postId}`;
-  
+
       if (userAction.recordset.length === 0) {
         // If no previous interaction, insert new action
         await sql.query`
@@ -283,19 +333,24 @@ const postQueries = {
           DELETE FROM userPostActions 
           WHERE user_id = ${userId} AND post_id = ${postId}`;
       }
-  
+
       // Recalculate and update the reactions count for the post
       const reactionCounts = await sql.query`
         SELECT action_type, COUNT(*) as count 
         FROM userPostActions 
         WHERE post_id = ${postId}
         GROUP BY action_type`;
-  
+
       // Initialize reaction counts
-      let loveCount = 0, likeCount = 0, curiousCount = 0, interestingCount = 0, celebrateCount = 0;
-  
+      let loveCount = 0,
+        likeCount = 0,
+        curiousCount = 0,
+        interestingCount = 0,
+        celebrateCount = 0,
+        boostCount = 0;
+
       // Update reaction counts based on the query result
-      reactionCounts.recordset.forEach(row => {
+      reactionCounts.recordset.forEach((row) => {
         switch (row.action_type) {
           case "LOVE":
             loveCount = row.count;
@@ -312,21 +367,32 @@ const postQueries = {
           case "CELEBRATE":
             celebrateCount = row.count;
             break;
+          case "B":
+            boostCount = row.count;
+            break;
         }
       });
-  
+
       // Update the post with new reaction counts
       await sql.query`
         UPDATE posts 
-        SET love = ${loveCount}, 
-            like = ${likeCount},
-            curious = ${curiousCount},
-            interesting = ${interestingCount},
-            celebrate = ${celebrateCount}
+        SET react_love = ${loveCount}, 
+        react_like = ${likeCount},
+        react_curious = ${curiousCount},
+        react_interesting = ${interestingCount},
+        react_celebrate = ${celebrateCount},
+        boosts = ${boostCount}
         WHERE id = ${postId}`;
-  
+
       // Return updated post info (or just the new reaction counts)
-      return { love: loveCount, like: likeCount, curious: curiousCount, interesting: interestingCount, celebrate: celebrateCount };
+      return {
+        love: loveCount,
+        like: likeCount,
+        curious: curiousCount,
+        interesting: interestingCount,
+        celebrate: celebrateCount,
+        boosts: boostCount,
+      };
     } catch (err) {
       console.error("Database update error:", err);
       throw err;
@@ -334,95 +400,21 @@ const postQueries = {
   },
   
 
-  isPostBoosted: async (postId, userId) => {
-    try {
-      const result = await sql.query`
-        SELECT action_type 
-        FROM userPostActions 
-        WHERE user_id = ${userId} AND post_id = ${postId}`;
-
-      return (
-        result.recordset.length > 0 && result.recordset[0].action_type === "B"
-      );
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err; // Rethrow the error for the caller to handle
-    }
-  },
-  isPostDetracted: async (postId, userId) => {
-    try {
-      const result = await sql.query`
-        SELECT action_type 
-        FROM userPostActions 
-        WHERE user_id = ${userId} AND post_id = ${postId}`;
-
-      return (
-        result.recordset.length > 0 && result.recordset[0].action_type === "D"
-      );
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err; // Rethrow the error for the caller to handle
-    }
-  },
-  removeBoost: async (postId, userId) => {
-    try {
-      // Update the boost count in posts table
-      await sql.query`
-        UPDATE posts 
-        SET boosts = boosts - 1 
-        WHERE id = ${postId}`;
-
-      // Delete the record in userPostActions to indicate this user has removed the boost
-      await sql.query`
-        DELETE FROM userPostActions 
-        WHERE user_id = ${userId} AND post_id = ${postId}`;
-
-      const newScore =
-        (await postQueries.getBoostCount(postId)) -
-        (await postQueries.getDetractCount(postId));
-      return newScore;
-    } catch (err) {
-      console.error("Database update error:", err);
-      throw err; // Rethrow the error for the caller to handle
-    }
-  },
-  getBoostCount: async (postId) => {
-    try {
-      const result = await sql.query`
-        SELECT boosts 
-        FROM posts 
-        WHERE id = ${postId}`;
-
-      return result.recordset[0].boosts;
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err; // Rethrow the error for the caller to handle
-    }
-  },
-  getDetractCount: async (postId) => {
-    try {
-      const result = await sql.query`
-        SELECT detracts 
-        FROM posts 
-        WHERE id = ${postId}`;
-
-      return result.recordset[0].detracts;
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err; // Rethrow the error for the caller to handle
-    }
-  },
   getUserInteractions: async (postId, userId) => {
     try {
       const result = await sql.query`
-      SELECT action_type 
-      FROM userPostActions 
-        WHERE user_id = ${userId} AND post_id = ${postId}`;
+    SELECT action_type 
+    FROM userPostActions 
+      WHERE user_id = ${userId} AND post_id = ${postId}`;
 
       if (result.recordset.length === 0) {
         return "";
       } else {
-        return result.recordset[0].action_type;
+        let actionType = result.recordset[0].action_type;
+        if (actionType.includes("B")) {
+          actionType = "BOOST";
+        }
+        return actionType;
       }
     } catch (err) {
       console.error("Database query error:", err);

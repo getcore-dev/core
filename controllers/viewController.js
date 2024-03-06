@@ -3,19 +3,14 @@ const utilFunctions = require("../utils/utilFunctions");
 const userQueries = require("../queries/userQueries");
 const postQueries = require("../queries/postQueries");
 
-async function timeAsyncOperation(operation, name) {
-  const start = Date.now();
-  const result = await operation;
-  const duration = Date.now() - start;
-  console.log(`${name} Time: ${duration}ms`);
-  return result;
-}
-
 const viewController = {
   renderHomePage: async (req, res) => {
     try {
       // Send basic post data to the client
-      res.render("communities.ejs", { user: req.user });
+      res.render("communities.ejs", {
+        user: req.user,
+        communityId: null,
+      });
     } catch (err) {
       res.render("error.ejs", {
         user: req.user,
@@ -36,8 +31,10 @@ const viewController = {
     try {
       const username = req.params.username;
       const otheruser = await userQueries.findByUsername(username);
-      const posts = await userQueries.getPostsByUserId(otheruser.id);
-      const comments = await userQueries.getCommentsByUserId(otheruser.id);
+      const posts = await userQueries.getPostsByUserIdUserProfile(otheruser.id);
+      const comments = await userQueries.getCommentsByUserIdUserProfile(
+        otheruser.id
+      );
 
       if (otheruser) {
         res.render("user_profile.ejs", {

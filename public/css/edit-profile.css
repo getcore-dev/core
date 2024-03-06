@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+:root {
+    --primary-text-color: #1D2935;
+    --light-mode-main-color: #fff;
+    --light-mode-body-color: #F6F8FA;
+    --border-color: #D8E0E9;
+    --hover-background-color: #ddd;
+    --active-indicator-color: #0e6655;
+    --dark-mode-main-color: #1B1F22;
+    --dark-mode-body-color: #000;
+    --dark-mode-text-color: #fff;
+    --dark-mode-border-color: #272D31;
+    --dark-mode-hover-background-color: #444;
+  }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+  }
+
+  .edit-profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    padding-left: 12px;
+  }
+
+.container {
+    display: flex;
+    flex-direction: column;
+    background: var(--light-mode-body-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin: 10px;
+    box-sizing: border-box;
+    margin-bottom: 25px;
+}
+
+.container input {
+    padding: 10px;
+    margin: 5px;
+    font-size: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.container label {
+    margin-left: 10px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.container select {
+    padding: 10px;
+    margin: 5px;
+    font-size: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.container input[type="file"] {
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.container  img {
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.container button {
+    padding: 10px;
+    margin: 5px;
+    background: #0C8346;
+    border: 1px solid #0E954F;
+    border-radius: 6px;
+    box-sizing: border-box;
+    color: var(--light-mode-main-color);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: var(--dark-mode-body-color);
+        color: var(--dark-mode-text-color);
+    }
+
+    .container {
+        background: var(--dark-mode-main-color);
+        border-color: var(--dark-mode-border-color);
+    }
+
+    .container img {
+        border-color: var(--dark-mode-border-color);
+    }
+
+    .container input {
+        background: var(--dark-mode-body-color);
+        color: var(--dark-mode-text-color);
+        border-color: var(--dark-mode-border-color);
+    }
+
+    .container select {
+        background: var(--dark-mode-body-color);
+        color: var(--dark-mode-text-color);
+        border-color: var(--dark-mode-border-color);
+    }
+
+    .container input[type="file"] {
+        background: var(--dark-mode-body-color);
+        color: var(--dark-mode-text-color);
+        border-color: var(--dark-mode-border-color);
+    }
+
+}

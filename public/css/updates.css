@@ -1,9 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+:root {
+  --primary-text-color: #1D2935;
+  --light-mode-main-color: #fff;
+  --light-mode-body-color: #F6F8FA;
+  --border-color: #D8E0E9;
+  --hover-background-color: #ddd;
+  --active-indicator-color: #0e6655;
+  --dark-mode-main-color: #1B1F22;
+  --dark-mode-body-color: #000;
+  --dark-mode-text-color: #fff;
+  --dark-mode-border-color: #272D31;
+  --dark-mode-hover-background-color: #444;
+}
+
+
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
 span.material-symbols-outlined {
   font-size: 14px;
 }
 
+#updates-header {
+  margin-top: 13px;
+  margin-left: 13px;
+  margin-right: 13px;
+}
+
 #loading-commit {
-  background-color: #f3f3f3;
+  background-color: var(--light-mode-main-color);
   animation: loadingAnimation 1.5s infinite;
 }
 
@@ -17,29 +45,57 @@ div.commit-title {
   color: #121212;
   text-decoration: none;
 }
-  .commit:hover {
-    background-color: #f5f5f5;
-  }
-  .commit {
-    border: 1px solid #eaecef;
-    border-radius: 6px;
-    padding: 5px;
-    margin: 10px;
-    margin-bottom: 5px;
-    margin-left: 10px;
-    margin-right: 10px;
+
+#commits-container {
+  margin-top: 10px;
+  margin-bottom: 25px;
+  max-width: 100vh;
+  display: flex;
+  justify-content: flex-start;
+
+}
+  #commit:hover {
+    cursor: pointer;
   }
 
-  .commit-header {
+  #commits {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
+    flex-direction: column;
+    max-width: 100vw;
+    gap: 16px;
+  }  
+  
+  .commit {
+    background: var(--light-mode-body-color);
+    border-radius: 6px;
+    padding: 8px 9px;
+    max-width: 100%;
+    margin: 0px 13px;
+}
+
+
+  .commit-top {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  box-sizing: border-box;
+}
+  .commit-title {
+    max-width: 100%;
+    inline-size: 100%;
+    overflow-wrap: break-word;
+  }
+  .commit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  flex-direction: column;
+  padding: 4px;
   }
 
   .commit-title {
     font-size: 14px;
-    padding: 4px;
     font-weight: 650;
   }
 
@@ -49,7 +105,7 @@ div.commit-title {
   }
 
   .commit-body {
-    padding: 5px;
+    margin: 0px 5px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -68,9 +124,11 @@ div.commit-title {
     border: 1px solid #eaecef;
   }
 
-  .commit-author-name {
+  .commit-author-name, .commit-author-name a {
     font-size: 14px;
-    font-weight: 450px;
+    margin-right: 3px;
+    font-weight: 600px;
+    color: black;
   }
 
   
@@ -81,7 +139,14 @@ div.commit-title {
 
   .commit-stats {
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+  }
+
+  .commit-stats-container {
+    display:flex;
+    flex-direction: row;
   }
 
   .commit-stats-item {
@@ -103,9 +168,9 @@ div.commit-title {
 
   @media (prefers-color-scheme: dark) {
     body {
-      background-color: #121212;
+      background-color: var(--dark-mode-body-color);
       color: #fff;
-  }
+    }
 
   @keyframes loadingAnimation {
     0% { background-color: #333; }
@@ -114,13 +179,9 @@ div.commit-title {
   }
 
     .commit {
-      background-color: rgb(30,30,30);
-      border: 1px solid #444;
+      background-color: var(--dark-mode-main-color);
     }
 
-    .commit:hover {
-      background-color: #444d56;
-    }
     div.commit-title {
       color: #c9d1d9;
     }
@@ -136,15 +197,11 @@ div.commit-title {
   }
 
   @media (max-width: 768px) {
-    body {
-      overflow-x: hidden; 
-    }
 
     .commit-body {
       display: flex;
-      align-items: flex-end;
       flex-direction: row;
-      align-content: space-between;
+      align-items: center;
       justify-content: space-between;
     }
 
@@ -156,8 +213,7 @@ div.commit-title {
     color: white;
     padding: 2px 6px;
     border-radius: 6px;
-  font: 12px ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
-    margin: 5px;
+    margin: 5px 2px;
   }
   
   .material-symbols-outlined {

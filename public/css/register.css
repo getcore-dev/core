@@ -1,4 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root {
+  --primary-text-color: #000;
+  --light-mode-main-color: #fff;
+  --light-mode-body-color: #F6F8FA;
+  --border-color: #D8E0E9;
+  --hover-background-color: #ddd;
+  --active-indicator-color: #0e6655;
+  --dark-mode-main-color: #1B1F22;
+  --dark-mode-body-color: #000;
+  --dark-mode-text-color: #fff;
+  --dark-mode-border-color: #272D31;
+  --dark-mode-hover-background-color: #444;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
 
 /* Original Styles */
 main {
@@ -7,7 +25,7 @@ main {
   gap: 15px;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 110px);
+  height: calc(100dvh);
   background-color: #fff;
   font-family: 'Inter', sans-serif;
 }
@@ -16,9 +34,8 @@ main {
 #login {
   padding: 20px 20px;
   border-radius: 6px;
-  box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
-  background-color: #f4f4f4;
-  border: 1px solid #ccc;
+  background-color: var(--light-mode-body-color);
+  border: 0;
   width: 350px; 
   box-sizing: border-box;
   text-align: center;
@@ -30,11 +47,16 @@ main {
 #registration {
   padding: 20px 20px;
   border-radius: 6px;
-  box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
-  background-color: #f4f4f4;
-  border: 1px solid #ccc;
+  background-color: var(--light-mode-body-color);
+  border: 0;
   width: 350px;
   box-sizing: border-box;
+}
+
+#registration form {
+  display:flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 
@@ -47,12 +69,12 @@ main {
 
 .input-container input {
   width: 100%;
-  padding: 8px 20px;
+  padding: 10px 20px;
   margin: 4px 0px;
   box-sizing: border-box;
-  border: 1px solid #ccc;
+  border: 0;
   border-radius: 6px;
-  background-color: #f8f9fa;
+  background-color: var(--light-mode-main-color) !important;
   font-size: 16px;
 }
 
@@ -92,12 +114,12 @@ main {
 
 #register-button {
   position: relative;
-  font-size: 12px;
+  font-size: 16px;
   width: 100%;
-  border: none;
   border-radius: 6px;
-  background: linear-gradient(to right, #ff9966, #ff5e62);
-  color: white;
+  background: #0C8346;
+  border: 1px solid #0E954F;
+    color: white;
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;
@@ -110,14 +132,31 @@ main {
 /* Dark Mode Styles */
 @media (prefers-color-scheme: dark) {
   main {
-      background-color: #1a1a1a;
+      background-color: var(--dark-mode-body-color);
       color: #f4f4f4;
   }
 
-  #registration {
-    
-      background: #333333;
-      box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
+  .input-container input, input:-webkit-autofill,
+  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:focus
+  input:-webkit-autofill, 
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    -webkit-text-fill-color: #D2D7DB;
+    -webkit-box-shadow: 0 0 0px 1000px var(--dark-mode-body-color) inset;
+    transition: background-color 5000s ease-in-out 0s;
+    background-color: var(--dark-mode-body-color) !important; /* Dark background for input fields */
+    color: var(--dark-mode-text-color); /* Light text color */
+    font-size: 14px;
+  }
+
+  #registration, #login{
+      border-color: var(--dark-mode-border-color);
+      background: var(--dark-mode-main-color);
     }
 
   #registration h1 {
@@ -125,8 +164,7 @@ main {
   }
 
   .input-container input {
-      background-color: #262626;
-      border: 2px solid #555;
+      background-color: var(--dark-mode-body-color) !important;
       color: #f4f4f4;
   }
 

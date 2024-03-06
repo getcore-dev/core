@@ -1,11 +1,83 @@
+:root {
+    --primary-text-color: #1D2935;
+    --light-mode-main-color: #fff;
+    --light-mode-body-color: #F6F8FA;
+    --border-color: #D8E0E9;
+    --hover-background-color: #ddd;
+    --active-indicator-color: #0e6655;
+    --dark-mode-main-color: #16191B;
+    --dark-mode-body-color: #000;
+    --dark-mode-text-color: #fff;
+    --dark-mode-border-color: #272D31;
+    --dark-mode-hover-background-color: #444;
+  }
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+label {
+    margin-top: 5px;
+    margin-bottom: 6px;
+}
+
+.editor-toolbar button {
+    color: var(--primary-text-color);
+}
+
 /* Specific styles for main container and its children */
 .main-container {
     max-width: 800px;
     margin: 40px auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    padding: 12px 17px;
+    background-color: var(--light-mode-body-color);
+    border: 0;
+    border-radius: 6px;
+}
+
+div.form-group:first-of-type {
+    margin-top: 0px;
+}
+
+div.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-top: 12px;
+}
+
+.post-selector {
+    display: flex;
+    flex-direction: row;
+    gap: 11px;
+    margin: 12px 13px;
+    margin-bottom: 18px;
+}
+
+.post-type {
+    border: 1px solid var(--border-color);
+    background-color: var(--border-color);
+    border-radius: 6px;
+    display: inline-flex;
+    padding: 2px 3px;
+}
+
+.post-type a {
+    text-decoration: none;
+    color: var(--primary-text-color);
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0px 12px;
+    margin-top: 16px;
+    margin-bottom: 12px;
 }
 
 .main-container form {
@@ -14,27 +86,55 @@
     gap: 10px;
 }
 
-.main-container input[type="text"],
-.main-container textarea {
-    width: calc(100% - 30px); /* Adjust width to account for padding */
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin: 15px 8px; /* Add margin for external spacing */
+.editor-toolbar {
+    border: 0 !important;
+        display: flex;
+        flex-direction: row;
+}
+
+.editor-statusbar {
+    display: none !important;
 }
 
 
-.main-container button {
-    background-color: green;
-    color: white;
+.main-container input[type="text"], .main-container textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    font-size: 16px;
+    border: 0;
+    border-radius: 6px;
+    margin: 9px 0px; /* Add margin for external spacing */
+}
+
+.EasyMDEContainer {
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.main-container select {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+
+.add-post-button {
+    background: #0C8346;
+    border: 1px solid #0E954F;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 15px;
+    color: white;
+    border-radius: 6px;
     cursor: pointer;
 }
 
-.main-container button:hover {
-    background-color: darkgreen;
+#tags-container {
+    margin: 12px 0px;
 }
 
 .main-container .post,
@@ -42,6 +142,16 @@
     padding: 20px;
     margin-bottom: 20px;
     border-bottom: 1px solid #eaeaea;
+}
+
+.select2-container--default .select2-selection--multiple {
+    border: 0 !important;
+}
+
+.EasyMDEContainer .CodeMirror {
+    border: 0 !important;
+    border-radius: 6px;
+    min-height: 60px;
 }
 
 .main-container .post-title,
@@ -72,12 +182,26 @@
     margin-left: 20px;
 }
 
+.post-type {
+    transition: background-color 0.3s ease;
+    transition: border-color 0.3s ease;
+  }
+
+  .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: var(--light-mode-body-color) !important;
+    border-color: var(--border-color) !important;
+    color: var(--primary-text-color);
+    margin-top: 0px !important;
+    padding-top: 3px !important;
+  }
+
 /* Responsive styles */
 @media screen and (max-width: 768px) {
     .main-container {
-        margin: 20px;
-        padding: 10px;
+        margin: 0px 12px;
+        margin-bottom: 50px;
     }
+    
 
     .main-container h2,
     .main-container .post-title,
@@ -92,29 +216,74 @@
     }
 }
 
+#confirm-google {
+    background-color: var(--light-mode-body-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
 /* Dark Mode Styles */
 @media (prefers-color-scheme: dark) {
     body {
-        background-color: #121212; /* Dark background for body */
-        color: #e0e0e0; /* Light text color for better readability */
+        background-color: var(--dark-mode-body-color);
+        color: var(--dark-mode-text-color);
+    }
+
+    #confirm-google {
+        background-color: var(--dark-mode-body-color);
+        border: 1px solid var(--dark-mode-border-color);
+        border-radius: 6px;
+    }
+
+    .post-type {
+        background-color: var(--dark-mode-border-color);
+        border-color: var(--dark-mode-border-color);
+    }
+
+    .post-type a {
+        color: var(--dark-mode-text-color);
+    }
+
+    .main-container select {
+        background-color: var(--dark-mode-body-color);
+        border-color: var(--dark-mode-border-color);
+        color: var(--dark-mode-text-color);
+    }
+
+    .editor-toolbar button {
+        color: var(--dark-mode-text-color);
     }
 
     .main-container {
-        background-color: #1e1e1e; /* Dark background for main container */
-        box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
-        color: #e0e0e0; /* Light text color for content within main container */
+        background-color: var(--dark-mode-main-color);
+        border-color: var(--dark-mode-border-color);
+        color: var(--dark-mode-text-color);
+    }
+    
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: var(--dark-mode-main-color) !important;
+        border-color: var(--dark-mode-border-color) !important;
+        color: var(--dark-mode-text-color);
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        border-color: var(--dark-mode-border-color) !important;
     }
 
     .main-container input[type="text"],
     .main-container textarea {
-        background-color: #262626; /* Dark background for input fields */
-        border-color: #555; /* Darker border for input fields */
-        color: #f4f4f4; /* Light text color for input fields */
+        background-color: var(--dark-mode-body-color);
+        border-color: var(--dark-mode-border-color);
+        color: var(--dark-mode-text-color);
     }
 
-    .main-container button {
-        background-color: #005f00; /* Darker green for buttons */
+    div.form-group .CodeMirror, div.form-group .select2-container--default .select2-selection--multiple, div.form-group .editor-toolbar, div.form-group .select2-dropdown select2-dropdown--above {
+        background-color: var(--dark-mode-body-color);
+        border: 0;
+
+        color: var(--dark-mode-text-color);
     }
+
 
     .main-container button:hover {
         background-color: #004400; /* Even darker green for button hover */
@@ -142,11 +311,4 @@
         color: #bbb; /* Lighter color for user info, headers, and community IDs */
     }
 
-    /* Adjustments for responsive design in dark mode */
-    @media screen and (max-width: 768px) {
-        .main-container {
-            background-color: #1e1e1e;
-            color: #e0e0e0;
-        }
-    }
 }

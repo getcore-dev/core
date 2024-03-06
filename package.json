@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev-start": "nodemon index.js",
-    "test": "echo \"No tests yet\"",
+    "test": "mocha",
     "start": "node index.js"
   },
   "keywords": [],
@@ -13,12 +13,14 @@
   "license": "ISC",
   "dependencies": {
     "@azure/msal-node": "^2.6.0",
+    "@azure/storage-blob": "^12.17.0",
     "axios": "^1.6.4",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "cheerio": "^1.0.0-rc.12",
     "cluster": "^0.7.7",
     "compression": "^1.7.4",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
@@ -28,8 +30,11 @@
     "express-rate-limit": "^7.1.4",
     "express-session": "^1.17.3",
     "express-validator": "^7.0.1",
+    "get-urls": "^12.1.0",
+    "is-base64": "^1.1.0",
     "jsonwebtoken": "^9.0.2",
     "lusca": "^1.7.0",
+    "marked": "^11.2.0",
     "method-override": "^3.0.0",
     "mssql": "^10.0.1",
     "multer": "^1.4.5-lts.1",
@@ -38,13 +43,17 @@
     "node-cache": "^5.1.2",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "redis": "^4.6.12",
+    "request": "^2.88.2",
     "sequelize": "^6.35.1",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "ws": "^8.16.0"
   },
   "devDependencies": {
     "chai": "^4.3.10",
-    "mocha": "^10.2.0",
+    "mocha": "^10.3.0",
     "nodemon": "^3.0.1",
     "supertest": "^6.3.3"
   }

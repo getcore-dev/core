@@ -9,10 +9,16 @@ const storage = multer.diskStorage({
     cb(null, "profile-" + Date.now() + ".jpg");
   },
 });
+const cacheMiddleware = require("../middleware/cache");
+
+const NodeCache = require("node-cache");
+const cache = new NodeCache({ stdTTL: 1200 }); // TTL is 20 minutes
 const utilFunctions = require("../utils/utilFunctions");
 const upload = multer({ storage });
+const marked = require("marked");
+const postQueries = require("../queries/postQueries");
 
-router.get("/getUsername/:id", async (req, res) => {
+router.get("/getUsername/:id", cacheMiddleware(1200), async (req, res) => {
   const id = req.params.id;
   try {
     const user = await userQueries.findById(id);
@@ -29,7 +35,7 @@ router.get("/getUsername/:id", async (req, res) => {
 router.get("/posts/:postId/comments", async (req, res) => {
   try {
     const postId = req.params.postId;
-    const comments = await utilFunctions.getCommentsForPost(postId); // Implement this function
+    const comments = await utilFunctions.getComments(postId);
     res.json(comments);
   } catch (err) {
     console.error("Error fetching comments:", err);
@@ -40,7 +46,8 @@ router.get("/posts/:postId/comments", async (req, res) => {
 router.get("/posts/:postId", async (req, res) => {
   try {
     const postId = req.params.postId;
-    const postData = await utilFunctions.getPostData(postId); // Implement this function
+    const postData = await utilFunctions.getPostData(postId);
+    postData.content = marked(postData.content);
     res.json(postData);
   } catch (err) {
     console.error("Error fetching post data:", err);
@@ -48,29 +55,83 @@ router.get("/posts/:postId", async (req, res) => {
   }
 });
 
-router.get("/comments/:commentId/replies", async (req, res) => {
+router.get("/communities", async (req, res) => {
   try {
-    const commentId = req.params.commentId;
-    const replies = await utilFunctions.getRepliesForComment(commentId); // Implement this function
-    res.json(replies);
+    const communities = await utilFunctions.getAllCommunities();
+    return res.json(communities);
   } catch (err) {
-    console.error("Error fetching replies:", err);
-    res.status(500).send("Error fetching replies");
+    console.error("Error fetching communities:", err);
+    res.status(500).send("Error fetching communities");
+  }
+});
+
+router.get("/communities/:communityId/posts", async (req, res) => {
+  try {
+    const communityId = req.params.communityId;
+    const posts = await utilFunctions.getPostsForCommunity(communityId);
+    res.json(posts);
+  } catch (err) {
+    res.status(500).send("Error fetching posts");
+  }
+});
+
+router.get(
+  "/comments/:commentId/replies",
+  cacheMiddleware(1200),
+  async (req, res) => {
+    try {
+      const commentId = req.params.commentId;
+      const replies = await utilFunctions.getRepliesForComment(commentId);
+      res.json(replies);
+    } catch (err) {
+      console.error("Error fetching replies:", err);
+      res.status(500).send("Error fetching replies");
+    }
+  }
+);
+
+router.get("/tags", async (req, res) => {
+  try {
+    const tags = await utilFunctions.getAllTags();
+    res.json(tags);
+  } catch (err) {
+    console.error("Error fetching tags:", err);
+    res.status(500).send("Error fetching tags");
+  }
+});
+
+router.get("/:postId/reactions/:userId", async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const userId = req.params.userId;
+    const reaction = await postQueries.getUserInteractions(postId, userId);
+    return res.json(reaction);
+  } catch (err) {
+    console.error("Error fetching reaction:", err);
+    res.status(500).send("Error fetching reaction");
   }
 });
 
 router.get("/posts", async (req, res) => {
   try {
-    console.log("Fetching posts...");
     const posts = await utilFunctions.getPosts();
+
     res.json(posts);
-    console.log(posts);
   } catch (err) {
     res.status(500).send(err.message);
   }
 });
 
-router.get("/user-details/:userId", async (req, res) => {
+router.get("/trending-posts", cacheMiddleware(1200), async (req, res) => {
+  try {
+    const posts = await utilFunctions.getTrendingPosts();
+    res.json(posts);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+router.get("/user-details/:userId", cacheMiddleware(1200), async (req, res) => {
   try {
     const userDetails = await utilFunctions.getUserDetails(req.params.userId);
     res.json(userDetails);
@@ -79,16 +140,23 @@ router.get("/user-details/:userId", async (req, res) => {
   }
 });
 
-router.get("/comments/:postId", async (req, res) => {
+router.get("/comments/:postId", cacheMiddleware(1200), async (req, res) => {
   try {
+    let cachedData = cache.get(req.params.postId);
+    if (cachedData) {
+      return res.json(cachedData);
+    }
+
     const comments = await utilFunctions.getComments(req.params.postId);
+
+    cache.set(req.params.postId, comments);
     res.json(comments);
   } catch (err) {
     res.status(500).send(err.message);
   }
 });
 
-router.get("/tags/:postId", async (req, res) => {
+router.get("/tags/:postId", cacheMiddleware(1200), async (req, res) => {
   try {
     const tags = await utilFunctions.getTags(req.params.postId);
     res.json(tags);
@@ -97,23 +165,26 @@ router.get("/tags/:postId", async (req, res) => {
   }
 });
 
-router.get("/communities/:communitiesId", async (req, res) => {
-  try {
-    const communities = await utilFunctions.getCommunities(
-      req.params.communitiesId
-    );
-    res.json(communities);
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
-});
+router.get(
+  "/communities/:communitiesId",
+  cacheMiddleware(1200),
+  async (req, res) => {
+    try {
+      const communities = await utilFunctions.getCommunities(
+        req.params.communitiesId
+      );
 
-router.get("/link-preview/:link", async (req, res) => {
+      res.json(communities);
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
+);
+
+router.get("/link-preview/:link", cacheMiddleware(1200), async (req, res) => {
   try {
     const link = decodeURIComponent(decodeURIComponent(req.params.link));
-    console.log("Link received for preview:", link);
     const linkPreview = await utilFunctions.getLinkPreview(link);
-    console.log("Link preview data:", linkPreview);
     res.json(linkPreview);
   } catch (err) {
     console.error("Error in link preview route:", err);
@@ -121,9 +192,8 @@ router.get("/link-preview/:link", async (req, res) => {
   }
 });
 
-router.get("/commits", async (req, res) => {
+router.get("/commits", cacheMiddleware(1200), async (req, res) => {
   try {
-    console.log("Fetching commits...");
     const commits = await utilFunctions.fetchCommits();
     res.json(commits);
   } catch (error) {

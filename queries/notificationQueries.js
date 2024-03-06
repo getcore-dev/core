@@ -6,11 +6,12 @@ const notificationQueries = {
   getUnreadNotifications: async (userId) => {
     try {
       const result = await sql.query`
-      SELECT notifications.*, users.username 
-      FROM notifications 
-      INNER JOIN users ON notifications.userId = users.id
-      WHERE notifications.userId = ${userId} AND notifications.isRead = 0 
-      ORDER BY notifications.createdAt DESC`;
+        SELECT notifications.*, sender.username as senderUsername, receiver.username as receiverUsername, sender.avatar as senderProfilePicture
+        FROM notifications 
+        INNER JOIN users as sender ON notifications.senderUserId = sender.id
+        INNER JOIN users as receiver ON notifications.receiverUserId = receiver.id
+        WHERE notifications.receiverUserId = ${userId} AND notifications.isRead = 0 
+        ORDER BY notifications.createdAt DESC`;
       return result.recordset;
     } catch (err) {
       console.error("Database query error:", err);
@@ -32,10 +33,15 @@ const notificationQueries = {
   },
 
   // Create a new notification
-  createNotification: async (userId, type, message) => {
+  createNotification: async (
+    senderUserId,
+    receiverUserId,
+    type,
+    postId = ""
+  ) => {
     try {
       const createdAt = new Date();
-      await sql.query`INSERT INTO notifications (userId, type, message, isRead, createdAt) VALUES (${userId}, ${type}, ${message}, 0, ${createdAt})`;
+      await sql.query`INSERT INTO notifications (type, isRead, createdAt, receiverUserId, senderUserId, postId) VALUES (${type}, 0, ${createdAt}, ${receiverUserId}, ${senderUserId}, ${postId})`;
     } catch (err) {
       console.error("Database insert error:", err);
       throw err;

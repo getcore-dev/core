@@ -1,8 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+:root {
+  --primary-text-color: #000;
+  --light-mode-main-color: #fff;
+  --light-mode-body-color: #F6F8FA;
+  --border-color: #D8E0E9;
+  --hover-background-color: #ddd;
+  --active-indicator-color: #0e6655;
+  --dark-mode-main-color: #16191B;
+  --dark-mode-body-color: #000;
+  --dark-mode-text-color: #fff;
+  --dark-mode-border-color: #272D31;
+  --dark-mode-hover-background-color: #444;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 body, h1, h2, h3, p {
     margin: 0px;
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Roboto', sans-serif;
   }
 
 
@@ -10,18 +24,25 @@ h1 {
     text-align: center;
 }
 
+main {
+  display: flex;
+  flex-direction: row;
+
+}
+
 
 .job-content {
+  background-color: var(--light-mode-body-color);
   display: flex;
   flex-direction: column; 
   justify-content: space-between; 
   position: relative; 
   flex: 1; 
-  border-top: 1px solid #aaa; 
   flex-grow: 1; /* Take up remaining space */
   padding-left: 5px; /* No padding */
   padding-right: 5px;
 }
+
 
 .job-content:hover {
   cursor: pointer;
@@ -32,6 +53,7 @@ h1 {
 }
 
 
+
   .job-header {
     padding: 5px;
     display: flex;
@@ -39,6 +61,10 @@ h1 {
     align-items: center;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px; 
+  }
+
+  .job {
+    border-top: 1px solid var(--border-color);
   }
   
   .job-title-location {
@@ -56,8 +82,8 @@ h1 {
   }
   
   .company-logo {
-    width: 32px; 
-    height: auto; 
+    width: 42px; 
+    height: 42px; 
     padding-right: 10px;
   }
   
@@ -67,9 +93,11 @@ h1 {
   }
 
   .job-body {
-    font-size: 14px;
-    padding-left: 10px;
-    padding-right: 10px;
+    background-color: var(--light-mode-body-color);
+    font-size: 16px;
+    padding: 5px 10px;
+    margin: 5px 0px;
+    border-radius: 6px;
     line-height: 1.4;
   }
 
@@ -80,7 +108,7 @@ h1 {
   
   @media (max-width: 768px) {
     .job-title-location {
-      font-size: 15px;
+      font-size: 18px;
     }
 
     .job-flairs {
@@ -98,27 +126,55 @@ h1 {
 }
 
 
+.jobs-container {
+  overflow-y: auto;
+  height: calc(100vh - 85px);
+  width: 100%;
+}
+
+.jobs-container h3 {
+  margin: 15px 20px;
+}
+
 .jobs-container::-webkit-scrollbar {
   display: none;
 }
 
+.job-list {
+  display: flex;
+  flex-direction: column;
+}
+
 .job-content {
-  padding: 5px;
+  padding: 8px 10px;
 }
 
 .job-flair {
   display: inline-block;
   padding: 2px 3px;
   margin: 2px;
-  background-color: rgba(14, 102, 85, 0.3); 
-  border: 1px solid rgba(14, 102, 85, 0.3); 
+  background-color: #DB504A;
+  border: 1px solid #FF8370; 
   color: white;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 14px;
   position: relative;
 }
 
+#pay-flair {
+  background: #0C8346;
+  border: 1px solid #0E954F;
+}
 
+#location-flair {
+  background-color: #6d93b1; 
+  border: 1px solid #6488a4; 
+}
+
+.job-content {
+  background: var(--light-mode-body-color);
+  border-radius: 6px;
+}
 
 
 .job-btn {
@@ -143,16 +199,37 @@ div .material-symbols-outlined {
 /* Dark Mode Styles */
 @media (prefers-color-scheme: dark) {
   /* General Background and Text Colors */
-  body {
-      background-color: rgb(30,30,30); /* Dark background */
+  body , .job-content    {
+      background-color: var(--dark-mode-body-color); /* Dark background */
       color: #fff; /* Light text */
   }
 
   .job {
-      background-color: rgb(30,30,30); /* Dark background for each job */
+    border-color: var(--dark-mode-border-color);
+  }
+
+
+  .job-list {
+    border-color: var(--dark-mode-border-color);
+  }
+
+  .job-body {
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-main-color);
+  }
+
+  .job-content {
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
   }
 
   .job:hover {
-    background-color: rgb(38,38,38);
+    background-color: var(--dark-mode-body-color);
+  }
+}
+
+@media (max-width: 768px) {
+  .jobs-container {
+    height: calc(100dvh - 65px);
   }
 }

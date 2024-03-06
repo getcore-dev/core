@@ -74,7 +74,6 @@ const jobQueries = {
           `No rows updated. Recruiter ID ${recruiterId} might not exist.`
         );
       } else if (result) {
-        console.log(`Update successful. Rows affected: ${result.rowsAffected}`);
       }
     } catch (err) {
       console.error("Database update error:", err.message);
@@ -93,4 +92,3 @@ const jobQueries = {
     }
   },
 };
-

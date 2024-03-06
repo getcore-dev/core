@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="/css/navbar.css" />
+    <link rel="stylesheet" href="/css/communities.css" />
+    <link rel="stylesheet" href="/css/com-btn-container.css" />
+    <link rel="stylesheet" href="/css/search.css" />
+    <link rel="shortcut icon" href="/img/core.png" />
+    <title>Search Results - <%= searchTerm %></title>
+</head>
+
+<body>
+    <%- include('partials/navbar', { pagePath: 'search', user: user }) %>
+
+    <div class="container">
+        <div id="posts-container" class="column">
+            <h3>Search Results for '<%= searchTerm %>'</h3>
+            <h3>Users</h3>
+            <% if (users.length > 0) { %>
+            <div class="posts">
+                <% users.forEach(function(user) { %>
+                <div class="user" onclick="window.location.href='/profile/<%= user.username %>'">
+                    <div class="user-image">
+                        <img id="user-avatar" src="<%= user.avatar %>">
+                    </div>
+                    <div class="user-info">
+                        <p><%= user.firstname %> <%= user.lastname %></p>
+                <p><%= user.username%></p>
+                    </div>
+                </div>
+                                    <% }); %>
+        <% } else { %>
+                <p>No users found.</p>
+                <% } %>
+
+            <h3>Jobs</h3>
+            <% if (jobs.length > 0) { %>
+                <div class="job">
+                 idk implement later.
+                </div>
+            <% } else { %>
+                <p>No jobs found.</p>
+            <% } %>
+
+
+            <h3>Posts</h3>
+            <% if (posts.length > 0) { %>
+                <div class="posts">
+                    <% posts.forEach(function(post) { %>
+                    <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
+                    <div class="post-content">
+                    
+                    <div class="post-header">
+                        <h3><%= post.title %></h3>
+                        <span><%= new Date(post.created_at).toLocaleDateString() %></span>
+                    </div>
+                    <div class="post-content">
+                        <p><%= post.content %></p>
+                                <% if (post.link) { %>
+                                <% } %>
+                    </div>
+                    </div>
+                </div>
+                    <% }); %>
+            </div>
+            <% } else { %>
+            <p>No results found.</p>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>

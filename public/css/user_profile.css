@@ -1,4 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+:root {
+  --primary-text-color: #1D2935;
+  --light-mode-main-color: #fff;
+  --light-mode-body-color: #F6F8FA;
+  --border-color: #D8E0E9;
+  --hover-background-color: #ddd;
+  --active-indicator-color: #0e6655;
+  --dark-mode-main-color: #1B1F22;
+  --dark-mode-body-color: #000;
+  --dark-mode-text-color: #fff;
+  --dark-mode-border-color: #272D31;
+  --dark-mode-hover-background-color: #444;
+  --font-family: 'Roboto', sans-serif;
+
+}
+
 
 main {
   display: flex;
@@ -7,19 +24,15 @@ main {
   margin: 0;
   overflow-x: hidden; /* prevent horizontal scrolling */
   overflow-y: hidden; /* allow vertical scrolling if needed */
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-family);
 }
 
-body {
-  overflow-y: hidden; /* allow vertical scrolling if needed */
-
-}
 
 #profile {
   display: grid;
   grid-template-columns: repeat(3, minmax(300px, 1fr)); /* Adjust the number of columns */
   gap: 20px;
-  padding: 70px;
+  padding: 30px;
   box-sizing: border-box;
   text-align: left;
   overflow-x: hidden; /* Updated to prevent horizontal scrolling */
@@ -28,8 +41,9 @@ body {
   width: 100%;
 }
 
+
 #profile.grid-container {
-  background-color: #fff;
+  background-color: var(--light-mode-main-color);
 }
 
 .profile-details .material-symbols-outlined {
@@ -49,10 +63,10 @@ body {
   flex-direction: column; /* stack items vertically */
   justify-content: flex-start; /* align items to the start */
   align-items: stretch; /* stretch items to fill the container */
-  border: 1px solid #ccc;
-  padding: 20px;
+  border: 0;
+  padding: 10px;
   border-radius: 6px;
-  background-color: #f4f4f4;
+  background-color: var(--light-mode-body-color);
 }
 
 
@@ -60,45 +74,27 @@ body {
 #profile h1 {
   text-align: center;
   margin-bottom: 24px;
-  color: #333;
+  color: var(--primary-text-color);
 }
 
 #profile p {
-  margin-bottom: 10px;
-  color: #666;
+  margin-bottom: 3px;
+  margin-top: 3px;
+  color: var(--primary-text-color);
 }
 
-.github-url-display a {
-  font-size: 12px;
-  color: #666;
+#profile a {
+  font-size: 14px;
+  color: var(--active-indicator-color);
 
 }
-
-
-/* Light mode styles (default) */
-:root {
-  --background-color: #f4f4f4;
-  --text-color: #333;
-  --secondary-text-color: #666;
-  --profile-background-color: #f4f4f4;
-  --section-background-color: #f4f4f4;
-  --border-color: #aaa;
+.editable-field a {
+  color: var(--active-indicator-color);
+  text-decoration: none;
 }
 
-/* Dark mode styles */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background-color: #111;
-    --text-color: #f0f0f0;
-    --secondary-text-color: #ddd;
-    --profile-background-color: #333;
-    --section-background-color: rgb(30,30,30);
-    --border-color: #444;
-  }
-
-  #profile {
-    box-shadow: 0px 0px 20px 0px rgba(255, 255, 255, 0.1); /* Adjusted box-shadow */
-  }
+.current-job p {
+  font-size: 14px;
 }
 
 main {
@@ -107,17 +103,16 @@ main {
 }
 
 #profile {
-  background: var(--profile-background-color);
-  /* other styles... */
+  background: var(--light-mode-body-color);
+
 }
 
 #profile > div {
-  border: 1px solid var(--border-color);
-  background-color: var(--section-background-color);
+  background-color: var(--light-mode-body-color);
 }
 
 #profile h1 {
-  color: var(--text-color);
+  color: var(--primary-text-color);
 }
 
 #profile p {
@@ -128,23 +123,70 @@ main {
 .profile-picture {
   display: flex;
   flex-direction: column;
+  justify-content: space-around;
   align-items: center;
-  margin-bottom: 20px;
-  margin-right: 15px;
+}
+
+
+.user-activity-buttons {
+  display: inline-flex;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+
+
+
+.user-activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 10px;
+  padding-top: 0px;
+}
+
+.sort-option {
+  background-color: var(--light-mode-main-color);
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.sort-option.active {
+  background-color: var(--light-mode-body-color); /* Active tab color */
+}
+
+.sort-option:focus {
+  outline: none;
+}
+
+.sort-option:not(:last-child) {
+  border-right: 1px solid var(--border-color);
+}
+
+
+.post {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Full width of posts container */
+  /* ... other styles ... */
 }
 
 .profile-picture img {
-  width: 100px; /* Adjust the size as needed */
-  height: 100px;
-  border-radius: 6px; /* Circular image */
+  width: 75px; /* Adjust the size as needed */
+  height: 75px;
+  border-radius: 50%; /* Circular image */
   object-fit: cover;
-  border: 1px solid #ccc; /* Border color similar to the navbar */
+  border: 1px solid var(--border-color); /* Border color similar to the navbar */
 }
 
 .profile-picture button, .profile-info button, .current-job button {
-  background-color: #f9f9f9; /* Same as navbar button */
+  background-color: var(--border-color); /* Same as navbar button */
   color: #000;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   padding: 5px 10px;
   font-size: 14px;
   cursor: pointer;
@@ -153,11 +195,6 @@ main {
   transition: background-color 0.15s;
 }
 
-.profile-picture {
-  display: flex;
-  flex-direction: row;
-
-}
 
 .profile-picture button:hover {
   background-color: #ddd;
@@ -188,6 +225,13 @@ main {
   transition: background-color 0.15s;
 }
 
+.link-display {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+}
+
 #imageEditControls button:hover, .profile-info button:hover, .current-job button:hover {
   background-color: #ddd;
 }
@@ -195,15 +239,203 @@ main {
 /* Add any additional styles for the profile picture area here */
 
 
+.post-content {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  line-height: 1.5em;
+  max-height: 3em; /* Max height for 2 lines */
+}
+
+.post-container, .comments-container {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 6px;
+  align-items: center;
+}
+
+.flair {
+  display: inline-block;
+  padding: 2px 3px;
+  margin: 2px;
+  background-color: #6d93b1; 
+  border: 1px solid #6488a4; 
+  color: white;
+  border-radius: 6px;
+  font-size: 14px;
+  position: relative;
+}
+
+#date-flair {
+  background-color: #39A77F; 
+  border: 1px solid #32936F;
+}
+
+#emp-type-flair {
+   background-color: #DB5461;
+   border-color: #D43545;
+}
+
+.post, .comment {
+  padding: 10px;
+  background-color: var(--border-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  width: 95%;
+  max-width: 95%;
+}
+
+.post:hover, .comment:hover {
+  background-color: var(--light-mode-body-color);
+  cursor: pointer;
+}
+
+.link-display {
+  display: inline-flex;
+  padding: 2px 3px;
+  margin: 2px;
+  background-color: var(--border-color); 
+  border: 1px solid var(--border-color); 
+  color: black;
+  border-radius: 6px;
+  font-size: 14px;
+  position: relative;
+}
+
+
+/* Grid container layout */
+#profile {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Three columns of equal size */
+  grid-template-rows: auto; /* Rows take size based on content */
+  grid-template-areas:
+    "info1 info1 info1"
+    "job job job"
+    "user-activity user-activity user-activity"; /* Posts will take up the entire bottom row spanning 3 columns */
+  gap: 30px;
+  /* ... other styles ... */
+}
+
+@media screen and (max-width: 768px) {
+
+  #profile {
+    max-height: calc(100dvh - 65px);
+  }
+  #profile {
+    padding: 15px;
+    gap: 10px;
+    grid-template-columns: repeat(2, 1fr); /* Two columns of equal size */
+    grid-template-areas:
+      "info1 info1"
+      "job job"
+      "user-activity user-activity";
+  }
+  
+}
+
+.profile-picture {
+  grid-area: picture;
+  /* ... other styles ... */
+}
+
+.comments {
+  grid-area: comments;
+}
+#profile > div.profile-info {
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  gap: 10px;
+
+}
+
+.profile-info {
+  display: flex;
+  grid-area: info1;
+}
+
+.current-job {
+  grid-area: info2;
+  /* ... other styles ... */
+}
+
+/* Current job spans all columns */
+.current-job {
+  grid-area: job;
+  /* ... other styles ... */
+}
+
+/* Learning progress, achievements, and posts */
+.learning-progress {
+  grid-area: learning;
+  /* ... other styles ... */
+}
+
+.user-activity {
+  grid-area: user-activity;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
-      background-color: #121212; /* Dark background for the body */
-      color: #e0e0e0; /* Light text color for better readability */
+      background-color: var(--dark-mode-body-color); /* Dark background for the body */
+      color: var(--dark-mode-text-color); /* Light text color for better readability */
+  }
+
+  .select2-dropdown {
+      background-color: var(--dark-mode-body-color);
+  }
+
+  .link-display {
+    background-color: var(--dark-mode-border-color);
+    border-color: var(--dark-mode-border-color);
+    color: var(--dark-mode-text-color);
+  }
+
+  .post, .comment {
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
+  }
+
+  .sort-option:not(:last-child) {
+    border-color: var(--dark-mode-border-color);
+  }
+
+  .sort-option {
+    background-color: var(--dark-mode-main-color);
+    color: var(--dark-mode-text-color);
+  }
+
+  .sort-option.active {
+    background-color: var(--dark-mode-body-color);
+  }
+
+  .user-activity-buttons {
+    border-color: var(--dark-mode-border-color);
+  }
+
+
+
+  .profile-picture img {
+    border-color: var(--dark-mode-border-color);
+  }
+
+  #posts {
+    background-color: var(--dark-mode-body-color);
+    border-color: var(--dark-mode-border-color);
+  }
+
+  #profile > div {
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
   }
 
   #profile.grid-container {
       /* Styles for the grid container */
-      background-color: rgb(17,17,17); /* Dark background for the profile container */
+      background-color: var(--dark-mode-body-color); /* Dark background for the profile container */
   }
 
   .profile-info, .current-job, .learning-progress, .achievements {
@@ -211,7 +443,6 @@ main {
       background-color: rgb(30,30,30); /* Darker background for sections */
       border-radius: 5px; /* Optional border radius */
       padding: 10px; /* Padding for these sections */
-      margin-bottom: 15px; /* Margin between sections */
   }
 
   .profile-info p, .current-job p, .learning-progress p, .achievements p {
@@ -226,9 +457,9 @@ main {
 .profile-info button, 
 .current-job button,
 #imageEditControls button {
-  background-color: #333; /* Dark background color for buttons */
+  background-color: var(--dark-mode-border-color); /* Dark background color for buttons */
   color: #f9f9f9; /* Light text color for contrast */
-  border: 1px solid #555; /* Dark border color */
+  border: 1px solid var(--dark-mode-border-color); /* Dark border color */
   padding: 5px 10px;
   font-size: 14px;
   cursor: pointer;
@@ -273,130 +504,11 @@ main {
   width: 180px;
 }
 
-.editable-field {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; 
-  margin-bottom: 10px;
-}
-
-.editable-field p {
-  margin-right: 10px; 
-}
-
-.profile-picture {
-  display: flex;
-  flex-direction: row;
-
-}
-
 .profilePic {
   position: relative;
 padding: auto;
 }
 
-/* Example adjustments for dark mode visibility */
-body {
-  background-color: #121212; /* Dark background for overall page */
-  color: #f9f9f9; /* Light color for overall text */
-}
-
-/* Adjustments for other elements might also be needed to match with the dark theme. */
 
 
-  
-
-}
-/* Grid container layout */
-#profile {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Three columns of equal size */
-  grid-template-rows: auto; /* Rows take size based on content */
-  grid-template-areas:
-    "info1 info1 info2"
-    "learning job job"
-    "posts posts posts"
-    "comments comments comments"; /* Posts will take up the entire bottom row spanning 3 columns */
-  gap: 30px;
-  /* ... other styles ... */
-}
-
-@media screen and (max-width: 768px) {
-
-  #profile {
-    max-height: calc(100vh - 110px);
-  }
-  #profile {
-    padding: 5px;
-    gap: 10px;
-    grid-template-columns: repeat(2, 1fr); /* Two columns of equal size */
-    grid-template-areas:
-      "info1 info1"
-      "info2 info2"
-      "learning learning"
-      "job job"
-      "posts posts"
-      "comments comments";
-  }
-  
-}
-
-.profile-picture {
-  grid-area: picture;
-  /* ... other styles ... */
-}
-
-.comments {
-  grid-area: comments;
-}
-#profile > div.profile-info {
-  display: flex;
-  flex-direction: row;
-}
-
-.profile-info {
-  display: flex;
-  grid-area: info1;
-}
-
-.current-job {
-  grid-area: info2;
-  /* ... other styles ... */
-}
-
-/* Current job spans all columns */
-.current-job {
-  grid-area: job;
-  /* ... other styles ... */
-}
-
-/* Learning progress, achievements, and posts */
-.learning-progress {
-  grid-area: learning;
-  /* ... other styles ... */
-}
-
-.achievements {
-  grid-area: info2;
-  /* ... other styles ... */
-}
-
-/* Posts container spans three columns at the bottom */
-.posts {
-  grid-area: posts;
-  /* ... other styles ... */
-}
-
-.post {
-  padding: 5px 4px;
-}
-
-
-
-/* Individual post styling */
-.post {
-  display: flex;
-  flex-direction: column;
-  width: 100%; /* Full width of posts container */
-  /* ... other styles ... */
 }

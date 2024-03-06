@@ -25,14 +25,23 @@ const commentQueries = {
 
         // Create a notification for the original post author
         if (originalPostAuthorId !== userId) {
-          const username = await findById(userId);
+          const username = await findById(userId).then((user) => user.username);
           // Check to avoid notifying if commenting on own post
           await notificationQueries.createNotification(
+            userId,
             originalPostAuthorId,
             "NEW_COMMENT",
-            `@${username} commented on your post`
+            postId
           );
         }
+
+        // boost your comment by default
+        await commentQueries.interactWithComment(
+          postId,
+          commentId,
+          userId,
+          "BOOST"
+        );
       }
 
       return commentId;
@@ -42,6 +51,128 @@ const commentQueries = {
     }
   },
 
+  interactWithComment: async (postId, commentId, userId, actionType) => {
+    try {
+      // Validate actionType
+      if (
+        ![
+          "LOVE",
+          "LIKE",
+          "CURIOUS",
+          "INTERESTING",
+          "CELEBRATE",
+          "BOOST",
+        ].includes(actionType)
+      ) {
+        throw new Error("Invalid action type");
+      }
+
+      if (actionType === "BOOST") {
+        actionType = "B";
+      }
+
+      // Check if the user has already interacted with the comment
+      const userAction = await sql.query`
+        SELECT action_type 
+        FROM userCommentActions 
+        WHERE user_id = ${userId} AND comment_id = ${commentId}`;
+
+      if (userAction.recordset.length === 0) {
+        // check if comments and user exists
+        const commentExists = await sql.query`
+          SELECT * FROM comments WHERE id = ${commentId}`;
+        const userExists = await sql.query`
+          SELECT * FROM users WHERE id = ${userId}`;
+
+        if (commentExists.recordset.length === 0) {
+          throw new Error(`Comment with id ${commentId} does not exist`);
+        }
+
+        if (userExists.recordset.length === 0) {
+          throw new Error(`User with id ${userId} does not exist`);
+        }
+
+        // If no existing interaction, insert new action
+        await sql.query`
+          INSERT INTO userCommentActions (user_id, comment_id, action_type, action_timestamp) 
+          VALUES (${userId}, ${commentId}, ${actionType}, ${GETDATE()})`;
+      } else if (userAction.recordset[0].action_type !== actionType) {
+        // If existing interaction is different, update action
+        await sql.query`
+          UPDATE userCommentActions 
+          SET action_type = ${actionType}
+          WHERE user_id = ${userId} AND comment_id = ${commentId}`;
+      } else {
+        // If user is repeating the same action, remove the action
+        await sql.query`
+          DELETE FROM userCommentActions 
+          WHERE user_id = ${userId} AND comment_id = ${commentId}`;
+      }
+
+      // Recalculate and update the reactions count for the comment
+      const reactionCounts = await sql.query`
+        SELECT action_type, COUNT(*) as count 
+        FROM userCommentActions 
+        WHERE comment_id = ${commentId}
+        GROUP BY action_type`;
+
+      // Initialize reaction counts
+      let loveCount = 0,
+        likeCount = 0,
+        curiousCount = 0,
+        interestingCount = 0,
+        celebrateCount = 0,
+        boostCount = 0;
+
+      // Update reaction counts based on the query result
+      reactionCounts.recordset.forEach((row) => {
+        switch (row.action_type) {
+          case "LOVE":
+            loveCount = row.count;
+            break;
+          case "LIKE":
+            likeCount = row.count;
+            break;
+          case "CURIOUS":
+            curiousCount = row.count;
+            break;
+          case "INTERESTING":
+            interestingCount = row.count;
+            break;
+          case "CELEBRATE":
+            celebrateCount = row.count;
+            break;
+          case "B":
+            boostCount = row.count;
+            break;
+        }
+      });
+
+      // Update the comment with new reaction counts
+      await sql.query`
+        UPDATE comments 
+        SET react_love = ${loveCount}, 
+        react_like = ${likeCount},
+        react_curious = ${curiousCount},
+        react_interesting = ${interestingCount},
+        react_celebrate = ${celebrateCount},
+        boosts = ${boostCount}
+        WHERE id = ${commentId}`;
+
+      // Return updated comment info (or just the new reaction counts)
+      return {
+        love: loveCount,
+        like: likeCount,
+        curious: curiousCount,
+        interesting: interestingCount,
+        celebrate: celebrateCount,
+        boosts: boostCount,
+      };
+    } catch (err) {
+      console.error("Database update error:", err);
+      throw err;
+    }
+  },
   getCommentsByPostId: async (postId) => {
     try {
       const result =
@@ -55,7 +186,23 @@ const commentQueries = {
 
   deleteCommentById: async (commentId) => {
     try {
-      await sql.query`UPDATE comments SET deleted = 1 WHERE id = ${commentId}`;
+      // check if comments exist where parent_comment_id = commentId
+      const result = await sql.query`
+        SELECT * FROM comments WHERE parent_comment_id = ${commentId}`;
+
+      if (result.recordset.length > 0) {
+        // If there are replies, set comment to deleted and user id to 0
+        await sql.query`
+          UPDATE comments 
+          SET comment = '[deleted]'
+          WHERE id = ${commentId}`;
+      } else {
+        // If there are no replies, delete the comment
+        await sql.query`DELETE FROM comments WHERE id = ${commentId}`;
+      }
+
+      // Delete all reactions to the comment
+      await sql.query`DELETE FROM userCommentActions WHERE comment_id = ${commentId}`;
     } catch (err) {
       console.error("Database delete error:", err);
       throw err; // Rethrow the error for the caller to handle
@@ -89,149 +236,24 @@ const commentQueries = {
 
         // Create a notification for the original comment author
         if (originalCommentAuthorId !== userId) {
-          // Check to avoid notifying if replying to own comment
+          const username = await findById(userId).then((user) => user.username);
+          // Check to avoid notifying if commenting on own post
           await notificationQueries.createNotification(
+            userId,
             originalCommentAuthorId,
-            "REPLY",
-            `User ${userId} replied to your comment`
+            "NEW_COMMENT",
+            postId
           );
         }
       }
+
+      // boost your comment by default
+      await commentQueries.interactWithComment(0, commentId, userId, "BOOST");
 
       return replyId;
     } catch (err) {
       console.error("Database insert error:", err);
       throw err; // Rethrow the error for the caller to handle
-    }
-  },
-
-  boostComment: async (commentId, userId) => {
-    try {
-      const userAction = await sql.query`
-        SELECT action_type 
-        FROM userCommentActions 
-        WHERE user_id = ${userId} AND comment_id = ${commentId}`;
-
-      if (userAction.recordset.length === 0) {
-        await sql.query`
-          UPDATE comments 
-          SET boosts = boosts + 1 
-          WHERE id = ${commentId}`;
-
-        await sql.query`
-          INSERT INTO userCommentActions (user_id, comment_id, action_type, action_timestamp) VALUES (${userId}, ${commentId}, 'B', GETDATE())`;
-      } else if (userAction.recordset[0].action_type === "D") {
-        await sql.query`
-          UPDATE comments 
-          SET boosts = boosts + 1,
-              detracts = detracts - 1
-          WHERE id = ${commentId}`;
-
-        await sql.query`
-          UPDATE userCommentActions 
-          SET action_type = 'B'
-          WHERE user_id = ${userId} AND comment_id = ${commentId}`;
-      } else {
-        console.log("User has already interacted with this comment.");
-      }
-    } catch (err) {
-      console.error("Database update error:", err);
-      throw err;
-    }
-  },
-  detractComment: async (commentId, userId) => {
-    try {
-      const userAction = await sql.query`
-        SELECT action_type 
-        FROM userCommentActions 
-        WHERE user_id = ${userId} AND comment_id = ${commentId}`;
-
-      if (userAction.recordset.length === 0) {
-        await sql.query`
-          UPDATE comments 
-          SET detracts = detracts + 1 
-          WHERE id = ${commentId}`;
-
-        await sql.query`
-          INSERT INTO userCommentActions (user_id, comment_id, action_type) 
-          VALUES (${userId}, ${commentId}, 'D')`;
-      } else if (userAction.recordset[0].action_type === "B") {
-        await sql.query`
-          UPDATE comments 
-          SET detracts = detracts + 1,
-              boosts = boosts - 1
-          WHERE id = ${commentId}`;
-
-        await sql.query`
-          UPDATE userCommentActions 
-          SET action_type = 'D'
-          WHERE user_id = ${userId} AND comment_id = ${commentId}`;
-      } else {
-        console.log("User has already interacted with this comment.");
-      }
-    } catch (err) {
-      console.error("Database update error:", err);
-      throw err;
-    }
-  },
-  isCommentBoosted: async (commentId, userId) => {
-    try {
-      const result = await sql.query`
-        SELECT action_type 
-        FROM userCommentActions 
-        WHERE user_id = ${userId} AND comment_id = ${commentId}`;
-
-      return (
-        result.recordset.length > 0 && result.recordset[0].action_type === "B"
-      );
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err;
-    }
-  },
-  isCommentDetracted: async (commentId, userId) => {
-    try {
-      const result = await sql.query`
-        SELECT action_type 
-        FROM userCommentActions 
-        WHERE user_id = ${userId} AND comment_id = ${commentId}`;
-
-      return (
-        result.recordset.length > 0 && result.recordset[0].action_type === "D"
-      );
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err;
-    }
-  },
-  removeBoost: async (commentId, userId) => {
-    try {
-      await sql.query`
-        UPDATE comments 
-        SET boosts = boosts - 1 
-        WHERE id = ${commentId}`;
-
-      await sql.query`
-        DELETE FROM userCommentActions 
-        WHERE user_id = ${userId} AND comment_id = ${commentId}`;
-
-      return await commentQueries.getBoostCount(commentId);
-    } catch (err) {
-      console.error("Database update error:", err);
-      throw err;
-    }
-  },
-  getBoostCount: async (commentId) => {
-    try {
-      const result = await sql.query`
-        SELECT boosts 
-        FROM comments 
-        WHERE id = ${commentId}`;
-
-      return result.recordset[0].boosts;
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err;
     }
   },
 };

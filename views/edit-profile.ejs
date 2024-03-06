@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CORE: Edit Profile</title>
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/edit-profile.css" />
+  <link rel="shortcut icon" href="img/core.png" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'edit' }) %>
+
+  <div class="edit-profile-header">
+    <h3>Edit Profile</h3>
+  </div>
+  <div class="container">
+    <img src="<%= edit_user.avatar %>" alt="avatar" id="avatar-preview" />
+    <label for="avatar">Avatar</label>
+    <input type="file" id="avatar" class="upload-avatar" name="avatar" accept="image/*">
+
+    <label for="firstname">First Name</label>
+    <input type="text" id="firstname" name="firstname" value="<%= edit_user.firstname %>" required>
+
+    <label for="lastname">Last Name</label>
+    <input type="text" id="lastname" name="lastname" value="<%= edit_user.lastname %>" required>
+
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" value="<%= edit_user.email %>" required>
+
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required>
+
+    <label for="confirm_password">Confirm Password</label>
+    <input type="password" id="confirm_password" name="confirm_password" required>
+
+    <label for="currentIndustry">Current Industry</label>
+    <select id="currentIndustry" name="currentIndustry">
+      <option value="software" <%= edit_user.currentIndustry === 'Software' ? 'selected' : '' %>>Software</option>
+      <option value="hardware" <%= edit_user.currentIndustry === 'Hardware' ? 'selected' : '' %>>Hardware</option>
+      <option value="biotech" <%= edit_user.currentIndustry === 'Biotech' ? 'selected' : '' %>>Biotech</option>
+      <option value="finance" <%= edit_user.currentIndustry === 'Finance' ? 'selected' : '' %>>Finance</option>
+      <option value="healthcare" <%= edit_user.currentIndustry === 'Healthcare' ? 'selected' : '' %>>Healthcare</option>
+      <option value="education" <%= edit_user.currentIndustry === 'Education' ? 'selected' : '' %>>Education</option>
+      <option value="other" <%= edit_user.currentIndustry === 'Other' ? 'selected' : '' %>>Other</option>
+    </select>
+
+    <label for="currentCompany">Current Company</label>
+    <input type="text" id="currentCompany" name="currentCompany" value="<%= edit_user.currentCompany %>" required>
+
+    <label for="currentTitle">Current Title</label>
+    <input type="text" id="currentJob" name="currentJob" value="<%= edit_user.currentJob %>" required>
+
+    <label for="currentJob_begindate">Current Job Start Date</label>
+    <input type="date" id="currentJob_begindate" name="currentJob_begindate" value="<%= edit_user.currentJob_begindate %>" required>
+
+    <label for="currentJobSkills">Current Job Skills</label>
+    <input type="text" id="currentJob_skills" name="currentJob_skills" value="<%= edit_user.currentJob_skills %>" required>
+
+    <label for="employment-type">Employment Type</label>
+    <select id="currentJob_employment_type" name="currentJob_employment_type">
+      <option value="full-time" <%= edit_user.currentJob_employment_type === 'Full-Time' ? 'selected' : '' %>>Full Time</option>
+      <option value="part-time" <%= edit_user.currentJob_employment_type === 'Part-Time' ? 'selected' : '' %>>Part Time</option>
+      <option value="contract" <%= edit_user.currentJob_employment_type === 'Contract' ? 'selected' : '' %>>Contract</option>
+      <option value="internship" <%= edit_user.currentJob_employment_type === 'Internship' ? 'selected' : '' %>>Internship</option>
+      <option value="freelance" <%= edit_user.currentJob_employment_type === 'Freelance' ? 'selected' : '' %>>Freelance</option>
+    </select>
+
+    <label for="github">Github Username</label>
+    <input type="text" id="github_url" name="github_url" value="<%= edit_user.github_url %>" required>
+
+    <label for="linkedin">LinkedIn</label>
+    <input type="text" id="linkedin_url" name="linkedin_url" value="<%= edit_user.linkedin_url %>" required>
+
+    <label for="leetcode">LeetCode Username</label>
+    <input type="text" id="leetcode_url" name="leetcode_url" value="<%= edit_user.leetcode_url %>" required>
+
+    <label for="currentLocation">Current Location</label>
+    <input type="text" id="zipcode" name="zipcode" value="<%= edit_user.zipcode %>" required>
+
+    <label for="recruiterId">Recruiter? Enter your ID here.</label>
+    <input type="text" id="recruiter_id" name="recruiter_id" value="<%= edit_user.recruiter_id %>" required>
+
+    <button id="submit">Submit</button>
+
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      $('#submit').click(function(e) {
+        e.preventDefault(); // Prevent the default button action
+
+        var formData = new FormData(); // Create a new FormData object
+
+        // Append file data from file input to formData
+        var avatarFile = $('#avatar')[0].files[0]; // Get the file from input
+        if (avatarFile) {
+          formData.append('avatar', avatarFile); // Append file to formData
+        }
+
+        // Append other form values to formData
+        $('input, select').each(function() {
+          // For each input and select element, add it to the FormData.
+          if (this.name && this.value) {
+            formData.append(this.name, this.value);
+          }
+        });
+
+        // Make the AJAX request
+        $.ajax({
+          url: '/edit-profile',
+          type: 'POST',
+          data: formData,
+          processData: false, // Important: tell jQuery not to process the data
+          contentType: false, // Important: tell jQuery not to set contentType
+          success: function(response) {
+            alert('Profile updated successfully.');
+            // Redirect or update UI as needed
+          },
+          error: function(xhr, status, error) {
+            alert('Error updating profile: ' + error);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
