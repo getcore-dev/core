@@ -192,8 +192,8 @@ div.vote-interactions {
 }
 
 .reaction-button, .boost-button, .main-reaction-button {
-  background-color: var(--light-mode-button-color);
-  border: 0;
+  background-color: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
   color: var(--light-mode-secondary-text-color);
   border-radius: 10px;
   padding: 5px 8px;
