@@ -86,6 +86,6 @@ li.notification-item {
 }
 
 .notification-selector-btn.active {
-    background-color: var(--border-color);
+    background-color: #214E34;
     color: var(--light-mode-main-color);
 }

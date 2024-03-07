@@ -60,8 +60,8 @@ main {
 }
 
 .button-container {
-  padding: 10px 12px;
-    background-color: var(--light-mode-hover-color);
+  padding: 5px 12px;
+    background-color: var(--light-mode-main-color);
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -872,20 +872,20 @@ h4.preview-title {
 
 .editor-toolbar {
   display: none;
-  border-top: 0 !important;
-  border-bottom: 1px solid var(--border-color) !important;
+  border-top: 1px solid var(--border-color) !important;
+  border-bottom: 0 !important;
   border-left: 0 !important;
   border-right: 0 !important;
   border-radius: 0 !important;
 }
 
 .EasyMDEContainer .CodeMirror {
-  background-color: var(--light-mode-hover-color) !important; 
+  background-color: var(--light-mode-main-color) !important; 
   border-color: var(--border-color) !important;
   border-radius: 0 !important;
   border-left: 0 !important;
   border-right: 0 !important;
-  border-top: 0 !important;
+  border-top: 1px solid var(--border-color) !important;
   border-bottom: 1px solid var(--border-color) !important;
 }
 
@@ -950,7 +950,7 @@ p.preview-description {
 
 .tag-flair {
   display: inline-block;
-  padding: 4px 10px;
+  padding: 2px 4px;
   margin: 2px;
   background-color: var(--dark-mode-main-color);
   border: 1px solid var(--dark-mode-border-color);
@@ -973,6 +973,13 @@ p.preview-description {
 .github-repo-info .tags .tag-flair {
   background: #0C8346;
   border: 1px solid #0E954F;
+}
+
+.add-comment-button {
+  background: var(--light-mode-body-color);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 5px 16px;
 }
 
 .reply-buttons {
@@ -1318,6 +1325,10 @@ p.preview-description {
 
   .comment-timestamp {
     font-size: 14px;
+  }
+  
+  .comment-form {
+    margin-bottom: 10px;
   }
 
   .comments-section h3 {

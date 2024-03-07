@@ -51,32 +51,6 @@
       <div class="post">
         <div class="header" style="<% if (post.post_type == "blog") { %> justify-content: center; <% } %>">
           <div class="title" style="<% if (post.post_type == "blog") { %> text-align: center; <% } %>">
-            <div class="post-title-container">
-              <div>
-                <h2 class="post-title" style="<% if (post.post_type == "blog") { %> font-size: 28px; font-weight: bold; <% } %>"><%= post.title %></h2>
-              </div>
-              <div class="dropdown">
-                <button class="dropbtn">
-                  <span class="material-symbols-outlined">more_horiz</span>
-                </button>
-                <div class="dropdown-content" style="display: none;">
-                  <% if (user && user.username === post.username) { %>
-
-                  <form action=" /post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
-                    <input type="hidden" name="_method" value="DELETE" />
-                    <button class="reaction-button" onclick="return confirmDeletion(this);">
-                      <p>🗑️</p>
-                    </button>
-                  </form>
-
-                  <button class="reaction-button" onclick="window.location.href='/posts/<%= post.id %>/edit'">
-                    <p>📝</p>
-                  </button>
-                  <% } %>
-                </div>
-              </div>
-            </div>
-
             <span class="post-subtitle">
               <span class=tag-flair><%= post.post_type.charAt(0).toUpperCase() + post.post_type.slice(1) %> </span>
               <% if (post.post_type == 'blog') { %>
@@ -113,7 +87,31 @@
             %>
               <%= formattedDate %>
             </span>
+            <div class="post-title-container">
+              <div>
+                <h2 class="post-title" style="<% if (post.post_type == "blog") { %> font-size: 28px; font-weight: bold; <% } %>"><%= post.title %></h2>
+              </div>
+              <div class="dropdown">
+                <button class="dropbtn">
+                  <span class="material-symbols-outlined">more_horiz</span>
+                </button>
+                <div class="dropdown-content" style="display: none;">
+                  <% if (user && user.username === post.username) { %>
 
+                  <form action=" /post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <button class="reaction-button" onclick="return confirmDeletion(this);">
+                      <p>🗑️</p>
+                    </button>
+                  </form>
+
+                  <button class="reaction-button" onclick="window.location.href='/posts/<%= post.id %>/edit'">
+                    <p>📝</p>
+                  </button>
+                  <% } %>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="post-container">
@@ -297,9 +295,24 @@
       </div>
 
       <div class="comments-section">
+        <div class="post-info">
+          <div class="post-counts">
+            <%= post.comments.length ? post.comments.length : 0 %> comments
+            •
+            <%= reactionsCount ? reactionsCount: 0 %> reaction<%= reactionsCount > 1 ? 's' : '' %>
+          </div>
+          <div class="add-comment-button" onclick="showCommentForm()">
+            <span class="material-symbols-outlined">add_comment</span>
+            Comment
+          </div>
+          <div class="sort-selector" style="display: none">
+            <button class="sort-option active" onclick="sortComments('best')">Best</button>
+            <button class="sort-option" onclick="sortComments('newest')">Newest</button>
+          </div>
+        </div>
         <% let curUser = user %>
         <% if (curUser) { %>
-        <div class="comment-form">
+        <div class="comment-form" style="display: none;">
           <form action="/posts/<%= post.id %>/comments" method="POST">
             <textarea id="comment-form-textarea" name="comment"></textarea>
             <div class="button-container" style="display:none;">
@@ -309,17 +322,6 @@
           </form>
         </div>
         <% } %>
-        <div class="post-info">
-          <div class="post-counts">
-            <%= post.comments.length ? post.comments.length : 0 %> comments
-            •
-            <%= reactionsCount ? reactionsCount: 0 %> reaction<%= reactionsCount > 1 ? 's' : '' %>
-          </div>
-          <div class="sort-selector">
-            <button class="sort-option active" onclick="sortComments('best')">Best</button>
-            <button class="sort-option" onclick="sortComments('newest')">Newest</button>
-          </div>
-        </div>
 
         <% function renderComments(comments, level = 0) { %>
 
@@ -671,6 +673,16 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
       // Show the reply buttons
       var replyButtons = document.getElementById('reply-buttons-' + commentId);
       replyButtons.style.display = 'flex';
+    }
+
+    function showCommentForm() {
+      var commentForm = document.querySelector('.comment-form');
+
+      if (commentForm.style.display === 'none') {
+        commentForm.style.display = 'block';
+      } else {
+        commentForm.style.display = 'none';
+      }
     }
 
     function cancelReply(commentId) {
