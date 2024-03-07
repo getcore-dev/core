@@ -28,6 +28,7 @@ const postQueries = {
       throw err;
     }
   },
+
   acceptAnswer: async (postId, commentId, userId) => {
     try {
       // Check if the post exists

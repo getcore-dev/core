@@ -55,6 +55,18 @@ router.get("/posts/:postId", async (req, res) => {
   }
 });
 
+router.get("/posts/:postId/getReaction", async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const userId = req.query.userId; // Assuming userId is sent as a query parameter
+    const reaction = await postQueries.getUserInteractions(postId, userId);
+    return res.json(reaction);
+  } catch (err) {
+    console.error("Error fetching reaction:", err);
+    res.status(500).send("Error fetching reaction");
+  }
+});
+
 router.get("/communities", async (req, res) => {
   try {
     const communities = await utilFunctions.getAllCommunities();

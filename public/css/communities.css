@@ -656,6 +656,11 @@ div .mini-link-desc {
   align-items: center;
 }
 
+.reaction-button.active {
+  background-color: var(--border-color);
+  border-color: #69a4e8;
+}
+
 .company-logo {
   padding: 8px;
   width: 24px;
