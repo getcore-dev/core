@@ -15,6 +15,9 @@
     let postUser = locals.post && locals.post.user && locals.post.user.username ? locals.post.user.username : null;
     let otherUser = locals.otheruser;
     
+    if (pagePath && !communityId && !postUser && !otherUser) {
+      navText += '<a class="navbar-user-info" href="' + pagePath + '" style="font-weight: normal;">' + pagePath + '</a>';
+    }
     if (communityId) {
       navText += '<a class="navbar-user-info" href="/communities/' + locals.community.id + '">' + locals.community.shortname + '/' + '</a>';
     }
@@ -128,16 +131,12 @@
             </div>
           </li>
           <% if (user) { %>
-          <li>
+          <li onclick="window.location.href='/notifications'">
             <a class="inbox-button <%= currentPath === '/' ? 'active' : '' %>" id="notification-btn">
               <span class="material-symbols-outlined" id="nb-icon">
                 notifications
               </span>
             </a>
-            <div id="notification-popup" class="notification-popup" style="display: none;">
-              <ul id="notification-list" class="notification-list">
-              </ul>
-            </div>
           </li>
           <% } else { %>
           <% } %>
@@ -232,21 +231,6 @@
     }
   });
 
-  document.addEventListener('click', function(event) {
-    var notificationPopup = document.getElementById('notification-popup');
-    var notificationBtn = document.getElementById('notification-btn');
-
-    if (notificationBtn.contains(event.target)) {
-      if (notificationPopup.style.display === 'block') {
-        notificationPopup.style.display = 'none';
-      } else {
-        notificationPopup.style.display = 'block';
-      }
-    } else if (!notificationPopup.contains(event.target)) {
-      notificationPopup.style.display = 'none';
-    }
-  });
-
   <% } %>
 
   document.addEventListener('click', function(event) {
@@ -284,88 +268,4 @@
       }
     }
   });
-
-  <% if (user) { %>
-
-  async function fetchNotifications() {
-    // Fetch notifications (adjust userId as needed)
-    const response = await fetch('/notifications/unread/<%= user.id %>');
-    const notifications = await response.json();
-    let notificationBtn = document.getElementById('notification-btn');
-    let notificationCount = document.getElementById('notification-count');
-
-    if (notifications.length > 0) {
-      notificationBtn.classList.add('active');
-
-      // If the notification count element doesn't exist, create it
-      if (!notificationCount) {
-        notificationCount = document.createElement('span');
-        notificationCount.id = 'notification-count';
-        notificationCount.classList.add('notification-count'); // Add any necessary classes for styling
-        notificationBtn.appendChild(notificationCount);
-      }
-
-      // Update the notification count
-      notificationCount.textContent = notifications.length;
-    } else {
-      notificationBtn.classList.remove('active');
-
-      // If the notification count element exists, remove it
-      if (notificationCount) {
-        notificationBtn.removeChild(notificationCount);
-      }
-    }
-
-
-    // Clear current list
-    const notificationList = document.getElementById('notification-list');
-    notificationList.innerHTML = '';
-
-    // Populate list
-    notifications.forEach(notification => {
-      const li = document.createElement('li');
-      li.classList.add('notification-item');
-      const notificationDiv = document.createElement('div');
-      const notificationSenderAvatar = document.createElement('img');
-      notificationSenderAvatar.src = notification.senderProfilePicture || '/img/default-avatar.png';
-      notificationSenderAvatar.classList.add('notification-sender-avatar');
-      notificationDiv.appendChild(notificationSenderAvatar);
-      const notificationText = document.createElement('span');
-      notificationText.onclick = function() {
-        window.location.href = "/posts/" + notification.postId;
-      };
-      if (notification.type === 'NEW_COMMENT') {
-        notificationText.textContent = `${notification.senderUsername} commented on your post`;
-      } else if (notification.type === 'like') {
-        notificationText.textContent = `${notification.senderUsername} liked your post`;
-      } else if (notification.type === 'follow') {
-        notificationText.textContent = `${notification.senderUsername} followed you`;
-      }
-      notificationDiv.appendChild(notificationText);
-      const clearBtn = document.createElement('button');
-      clearBtn.classList.add('clear-btn');
-      const clearIcon = document.createElement('span');
-      clearIcon.classList.add('material-symbols-outlined');
-      clearIcon.textContent = 'clear';
-      clearBtn.appendChild(clearIcon);
-      clearBtn.onclick = function() {
-        clearNotification(notification.id);
-        li.remove();
-      };
-      notificationDiv.appendChild(clearBtn);
-      li.appendChild(notificationDiv);
-
-      notificationList.appendChild(li);
-    });
-  }
-
-  async function clearNotification(notificationId) {
-    await fetch(`/notifications/${notificationId}`, {
-      method: 'DELETE'
-    });
-  }
-
-  fetchNotifications();
-
-  <% } %>
 </script>

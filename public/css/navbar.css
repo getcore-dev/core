@@ -310,12 +310,6 @@ h1, h2, h3, h4, h5, p {
   justify-content: space-between;
   padding: 0 9px;
 }
-.notification-item div {
-  display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-}
 
 .clear-btn .material-symbols-outlined {
   font-size: 1.35rem;
@@ -352,10 +346,6 @@ ul.notification-list {
   list-style: none; /* Remove list bullets */
 }
 
-.notification-item {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-}
 #clear-all-btn {
   margin: 3px 10px;
   text-align: center;
@@ -370,15 +360,6 @@ ul.notification-list {
   padding: 5px 10px; /* Button padding */
 
 }
-
-.notification-item:hover {
-  background-color: #f3f3f3;
-}
-
-.notification-item:last-child {
-  border-bottom: none;
-}
-
 
 button.clear-btn {
   background-color: rgba(0, 0, 0, 0);
@@ -825,18 +806,6 @@ margin-top: 20px;
 
   .notification-popup {
     background-color: var(--dark-mode-background-color);
-  }
-  
-  .notification-item {
-    border-color: var(--dark-mode-border-color);
-  }
-
-  .notification-item:hover {
-    background-color: var(--dark-mode-border-color);
-  }
-  
-  .notification-item:last-child {
-    border-bottom: none;
   }
 
   .inbox-button:hover {
