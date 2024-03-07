@@ -32,7 +32,7 @@ body {
 .post, .job {
   display: flex; 
   background: var(--light-mode-main-color);
-  border-radius: 6px;
+  border-radius: 10px;
   margin: 10px;
   flex-direction: row;
   justify-content: space-between; 
@@ -189,11 +189,12 @@ div.vote-interactions {
 
 .mini-link-url a {
   text-decoration: none;
+  color: var(--light-mode-secondary-text-color);
 }
 
 .reaction-button, .boost-button, .main-reaction-button {
-  background-color: var(--light-mode-button-color);
-  border: 0;
+  background-color: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
   color: var(--light-mode-secondary-text-color);
   border-radius: 10px;
   padding: 5px 8px;
@@ -703,7 +704,9 @@ div .mini-link-desc {
 
 
 @media (max-width: 768px) {
-
+  .job { 
+    min-width: 180px;
+    }
   .communities a {
     text-decoration: none;
     color: var(--primary-text-color)
