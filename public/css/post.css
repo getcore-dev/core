@@ -323,11 +323,30 @@ div .user-info, .header {
   text-decoration: none;
 }
 
+.post-userinfo {
+  display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+img.blog-avatar {
+  border-radius: 100%;
+  height: 28px;
+  aspect-ratio: 1/1;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.post-timestamp {
+  margin: 8px 0;
+}
+
 .post-title-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  margin-top: 0px;
 }
 
 .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button {
@@ -442,8 +461,8 @@ div .user-info, .header {
   align-items: center;
   gap: 4px;
   margin: 0 13px;
-  margin-top: 5px;
-  margin-bottom: 6px;
+  margin-top: 10px;
+  margin-bottom: 7px;
 }
 
 .link-image, .sidebar-poster-avatar {
@@ -1256,7 +1275,7 @@ p.preview-description {
   
   main {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     }
     
   .sidebar-container {

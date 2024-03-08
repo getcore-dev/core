@@ -9,7 +9,7 @@
       <div class="nav-text-and-user-btns">
         <div class="nav-text-container">
           <% 
-    let navText = '<a class="nav-text" href="/" style="font-weight: 400;"><strong>CORE</strong></a>/';
+    let navText = '/';
     let user = locals.user; 
     let communityId = locals.communityId;
     let postUser = locals.post && locals.post.user && locals.post.user.username ? locals.post.user.username : null;
@@ -117,14 +117,15 @@
           <li>
             <div class="search-container">
               <form id="searchForm" class="search-form" action="/search" method="get" style="display: none;">
-                <button type="button" class="cancel-btn">
-                  <span class="material-symbols-outlined" id="nb-icon">close</span>
-                </button>
                 <input type="text" name="searchTerm" placeholder="Search..." class="search-input">
+                <div class="search-results-container" style="display: none;"></div>
+
                 <button type="submit" class="search-btn">
                   <span class="material-symbols-outlined" id="nb-icon">search</span>
                 </button>
               </form>
+              <div class="overlay" style="display:none;"></div> <!-- Overlay element -->
+
               <button id="expandSearch" class="search-button">
                 <span class="material-symbols-outlined" id="nb-icon">search</span>
               </button>
@@ -200,18 +201,117 @@
   document.addEventListener('DOMContentLoaded', function() {
     const expandSearchBtn = document.getElementById('expandSearch');
     const searchForm = document.getElementById('searchForm');
-    const cancelBtn = document.querySelector('.cancel-btn');
+    const searchInput = document.querySelector('.search-input');
+    const overlay = document.querySelector('.overlay'); // Get the overlay element
+    const searchResultsContainer = document.querySelector('.search-results-container');
 
     expandSearchBtn.addEventListener('click', function() {
       searchForm.style.display = 'flex'; // Show the form
+      overlay.style.display = 'block'; // Show the overlay
       expandSearchBtn.style.display = 'none'; // Hide the search icon
+      searchInput.focus(); // Focus on the input field immediately
     });
 
-    cancelBtn.addEventListener('click', function() {
+    overlay.addEventListener('click', function() {
       searchForm.style.display = 'none'; // Hide the form
+      overlay.style.display = 'none'; // Hide the overlay
       expandSearchBtn.style.display = 'block'; // Show the search icon again
     });
+
+    // Optional: Close search when pressing ESC
+    document.addEventListener('keydown', function(event) {
+      if (event.key === "Escape") {
+        searchForm.style.display = 'none'; // Hide the form
+        overlay.style.display = 'none'; // Hide the overlay
+        expandSearchBtn.style.display = 'block'; // Show the search icon again
+      }
+    });
+
+    searchInput.addEventListener('input', function() {
+      const query = this.value;
+      if (query.length > 2) { // Trigger search after at least 3 characters
+        // Note: Replace '/search/' with the correct path if your application is under a different root
+        fetch(`/search/preview/?searchTerm=${encodeURIComponent(query)}`)
+          .then(response => response.json())
+          .then(data => {
+            displaySearchResults(data); // Implement this function based on how you want to display your results
+          })
+          .catch(error => {
+            console.error('Error fetching search results:', error);
+          });
+      } else {
+        searchResultsContainer.style.display = 'none';
+      }
+    });
+
+    function displaySearchResults(results) {
+      // Clear previous results
+      searchResultsContainer.innerHTML = '';
+      // Check if there are any results
+      if (results.posts.length > 0 || results.users.length > 0 || results.jobs.length > 0) {
+        // Check and append post result items if available
+        if (results.posts.length > 0) {
+          const postsHeading = document.createElement('h3');
+          postsHeading.textContent = 'Posts';
+          searchResultsContainer.appendChild(postsHeading);
+
+          results.posts.forEach(post => {
+            const postItem = document.createElement('div');
+            postItem.onclick = function() {
+              window.location.href = `/posts/${post.id}`;
+            };
+            postItem.textContent = `Post: ${post.title}`; // Label each result as 'Post'
+            searchResultsContainer.appendChild(postItem);
+          });
+        }
+
+        // Check and append user result items if available
+        if (results.users.length > 0) {
+          const usersHeading = document.createElement('h3');
+          usersHeading.textContent = 'Users';
+          searchResultsContainer.appendChild(usersHeading);
+
+          results.users.forEach(user => {
+            const userItem = document.createElement('div');
+            userItem.onclick = function() {
+              window.location.href = `/profile/${user.username}`;
+            };
+            const userImage = document.createElement('img');
+
+            userImage.src = user.avatar ? user.avatar : '/img/default-avatar.png'; // Set the image source to the user's profile picture URL or default picture
+            userImage.alt = `${user.username}'s profile picture`; // Set the alt text
+            userImage.style.width = '24px'; // Set the width of the image
+            userImage.style.height = '24px'; // Set the height of the image
+            userImage.style.borderRadius = '100%'; // Make the image round
+
+            userItem.textContent = `${user.username}`; // Label each result as 'User'
+            userItem.appendChild(userImage); // Append the image to the user item
+            searchResultsContainer.appendChild(userItem);
+          });
+        }
+
+        // Check and append job result items if available
+        if (results.jobs.length > 0) {
+          const jobsHeading = document.createElement('h3');
+          jobsHeading.textContent = 'Jobs';
+          searchResultsContainer.appendChild(jobsHeading);
+
+          results.jobs.forEach(job => {
+            const jobItem = document.createElement('div');
+            jobItem.textContent = `Job: ${job.title}`; // Label each result as 'Job'
+            searchResultsContainer.appendChild(jobItem);
+          });
+        }
+
+        searchResultsContainer.style.display = 'block';
+      } else {
+        searchResultsContainer.style.display = 'none';
+      }
+    }
+
+
   });
+
 
 
   <% if (user) { %>

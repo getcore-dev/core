@@ -49,16 +49,12 @@
       <% if (post.post_type != 'blog') { %>
       <% } %>
       <div class="post">
-        <div class="header" style="<% if (post.post_type == "blog") { %> justify-content: center; <% } %>">
-          <div class="title" style="<% if (post.post_type == "blog") { %> text-align: center; <% } %>">
+        <div class="header">
+          <div class="title">
             <span class="post-subtitle">
               <span class=tag-flair><%= post.post_type.charAt(0).toUpperCase() + post.post_type.slice(1) %> </span>
-              <% if (post.post_type == 'blog') { %>
-              by <a href="/profile/<%= post.user.username %>" style="text-decoration: none;"><%= post.user.firstname %> <%= post.user.lastname %></a>
-              <% } %>
+              <% if (post.post_type != "blog") { %>
               <a href="/communities/<%= post.community.id %>" style="text-decoration: none;">/<%= post.community.shortname %></a>
-
-
 
               <%
               let postDate = new Date(post.created_at);
@@ -86,11 +82,14 @@
               }
             %>
               <%= formattedDate %>
+
+              <% } %>
             </span>
             <div class="post-title-container">
               <div>
                 <h2 class="post-title" style="<% if (post.post_type == "blog") { %> font-size: 28px; font-weight: bold; <% } %>"><%= post.title %></h2>
               </div>
+
               <div class="dropdown">
                 <button class="dropbtn">
                   <span class="material-symbols-outlined">more_horiz</span>
@@ -112,8 +111,29 @@
                 </div>
               </div>
             </div>
+            <% if (post.post_type == 'blog') { %>
+            <div class="post-timestamp">
+              <%
+              let postDate = new Date(post.created_at);
+
+              // Format the date in the "MONTH DD, YYYY" format
+              formattedDate = postDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            %>
+              <%= formattedDate %>
+              <% } %>
+            </div>
+            <% if (post.post_type == 'blog') { %>
+
+            <div class="post-userinfo">
+              <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="blog-avatar" onerror="standby()" />
+              <a href="/profile/<%= post.user.username %>" style="text-decoration: none;"><%= post.user.firstname %> <%= post.user.lastname %></a>
+            </div>
+            <% } %>
+
           </div>
+
         </div>
+
         <div class="post-container">
           <div class="post-content" style="
           <% if (post.post_type == 'blog') { %>

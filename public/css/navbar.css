@@ -77,38 +77,72 @@ h1, h2, h3, h4, h5, p {
   display: inline-block; /* Align with other icons */
 }
 
+.search-results-container {
+  position: absolute; /* Position it below the search bar */
+  top: 61px;
+  left: 0;
+  width: 100%; /* Match the width of the search bar */
+  background-color: var(--light-mode-main-color); /* Match your design */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optional: add some shadow for better visibility */
+  max-height: 300px; /* Limit the height and make it scrollable */
+  overflow-y: auto;
+}
+.search-results-container > div {
+  padding: 10px; /* Spacing inside result items */
+  background-color: var(--light-mode-main-color); /* Match your design */
+  border-bottom: 1px solid var(--border-color); /* Separators between items */
+  cursor: pointer; /* Change cursor to pointer on hover */
+  display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.search-results-container > div:hover {
+  background-color: var(--border-color); /* Highlight item on hover */
+}
+
+.overlay {
+  position: fixed; /* Cover the whole screen */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5); /* Semi-transparent black */
+  z-index: 1; /* Ensure it's above other content but below the search form */
+}
+
+
+
 .search-form {
-  display: flex; /* Use flexbox for alignment */
-  justify-content: space-between; /* Space between search input and buttons */
-  align-items: center; /* Align items vertically in the center */
-  width: 100dvw; /* Full width */
-  background-color: var(--light-mode-main-color); /* Adjust if necessary */
+  display: flex;
   padding: 10px;
-  margin-top: 5px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100dvw;
+  background-color: var(--light-mode-main-color);
   box-sizing: border-box;
   height: 55px;
-  height: 55px;
-  border-radius: 4px; /* Rounded corners */
-  position: fixed; /* Stick to the top */
-  top: 0; /* Align to the top */
-  left: 0; /* Align to the left */
-  z-index: 1000; /* Ensure it's above other content */
+  height: 61px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
 }
 
 
 .search-input {
-  border: none;
   font-size: 16px;
   flex-grow: 1;
-  background-color: var(--border-color);
+  border: 1px solid var(--border-color);
+  background-color: var(--light-mode-body-color);
   border-radius: 6px;
-  margin-left: 10px;
-  margin-right: 10px;
   padding: 10px 10px;
 }
 
 .search-btn, .cancel-btn {
   background: none;
+  margin: 0;
+  padding: 0;
   border: none;
   cursor: pointer;
   display: flex; /* Align the icons properly */
