@@ -66,6 +66,7 @@ h1, h2, h3, h4, h5, p {
   display: flex;
   flex-direction: row;
   align-items: center;
+  font-size: 1.2rem;
 }
 
 .hamburger-menu {
@@ -718,8 +719,8 @@ margin-top: 20px;
 /* Dark Mode Styles for Navbar */
 
 #menu-community-icon {
-  font-size: 14px;
-  padding: 0px 5px;
+  font-size: 1.4rem;
+  padding: 0px .8rem;
   vertical-align: -2px;
 }
 

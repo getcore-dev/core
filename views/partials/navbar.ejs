@@ -256,7 +256,7 @@
             postItem.onclick = function() {
               window.location.href = `/posts/${post.id}`;
             };
-            postItem.textContent = `Post: ${post.title}`; // Label each result as 'Post'
+            postItem.textContent = `${post.title}`; // Label each result as 'Post'
             searchResultsContainer.appendChild(postItem);
           });
         }
