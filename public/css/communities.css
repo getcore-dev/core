@@ -466,21 +466,26 @@ div .mini-link-title {
 
 #filterMenu {
   display: none;
+  border-radius: 10px;
   position: absolute;
   right: 0;
+  padding: 10px 0;
   background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
   top: 38px;
   z-index: 10;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+
 }
 
 .filter-menu button {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   width: 100%;
+  font-size: 1rem;
   height: 35px;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   border: 0;
   background: 0;
   box-sizing: border-box;
@@ -695,9 +700,9 @@ div .mini-link-desc {
 }
 
 .community-content {
-  padding: 8px;
+  padding: 0px;
+  margin: 0px 13px;
   padding-bottom: 13px;
-
 }
 
 .community-title {
@@ -719,11 +724,11 @@ div .mini-link-desc {
 
   .mobile-jobs-container {
     display: block;
-    margin-bottom: 21px;
+    margin-bottom: 13px;
   }
 
   .community-selector {
-    padding-top: 10px;
+    padding-top: 15px;
     padding-left: 13px;
     padding-right: 13px;
     display: flex;
@@ -763,7 +768,7 @@ div .mini-link-desc {
     }
 
     .job-header {
-      margin-top: 6px;
+      margin-top: 14px;
       margin-bottom: 8px
     }
 

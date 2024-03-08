@@ -726,18 +726,20 @@ margin-top: 20px;
 
 .avatar-dropdown {
   position: absolute;
-  top: 0;
-  right: -16px;
+  top: 7px;
+  right: -10px;
   z-index: 2;
   background-color: var(--light-mode-main-color);
-  border-radius: 0px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   display: none;
-  padding: 10px 0;
+  padding: 10px 5px;
   margin-top: 52.8px;
-  width: 105px;
+  width: 125px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-color);
 }
 
 .avatar-dropdown-item .material-symbols-outlined {
