@@ -83,7 +83,6 @@ h1, h2, h3, h4, h5, p {
   left: 0;
   width: 100%; /* Match the width of the search bar */
   background-color: var(--light-mode-main-color); /* Match your design */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optional: add some shadow for better visibility */
   max-height: 300px; /* Limit the height and make it scrollable */
   overflow-y: auto;
 }
@@ -139,15 +138,20 @@ h1, h2, h3, h4, h5, p {
   padding: 10px 10px;
 }
 
-.search-btn, .cancel-btn {
+.search-btn {
   background: none;
   margin: 0;
+  margin-left: 7px;
   padding: 0;
   border: none;
   cursor: pointer;
   display: flex; /* Align the icons properly */
   justify-content: center; /* Center icons horizontally */
   align-items: center; /* Center icons vertically */
+}
+
+.search-results-container h3 {
+  margin: 10px;
 }
 
 /* Hide the form by default */
@@ -680,6 +684,7 @@ margin-top: 20px;
   justify-content: center;
   align-items: center;
   margin-right: 1px;
+  color: var(--light-mode-text-color);
 }
 
 .search-bar {
@@ -758,7 +763,7 @@ margin-top: 20px;
 }
 
 .menu-content a {
-  padding: 14px 0px 14px 40px;
+  padding: 14px 0px 14px 15px;
   text-decoration: none;
   font-size: 16px;
   color: var(--primary-text-color);

@@ -481,6 +481,7 @@ div .mini-link-title {
 .filter-menu button {
   display: flex;
   flex-direction: row;
+  color: var(--light-mode-text-color);
   width: 100%;
   font-size: 1rem;
   height: 35px;
