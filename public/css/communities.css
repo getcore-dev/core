@@ -424,7 +424,7 @@ div .mini-link-title {
   border: 1px solid var(--border-color);
   color: inherit;
   border-radius: 10px;
-  padding: 8px 16px;
+  padding: 8px 0;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
@@ -468,9 +468,9 @@ div .mini-link-title {
   display: none;
   position: absolute;
   right: 0;
-  background-color: var(--light-mode-body-color);
+  background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
-  top: 0;
+  top: 38px;
   z-index: 10;
 }
 

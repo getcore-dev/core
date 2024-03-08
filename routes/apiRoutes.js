@@ -67,7 +67,7 @@ router.get("/posts/:postId/getReaction", async (req, res) => {
   }
 });
 
-router.get("/communities", async (req, res) => {
+router.get("/communities", cacheMiddleware(1200), async (req, res) => {
   try {
     const communities = await utilFunctions.getAllCommunities();
     return res.json(communities);
@@ -126,8 +126,8 @@ router.get("/:postId/reactions/:userId", async (req, res) => {
 
 router.get("/posts", async (req, res) => {
   try {
-    const posts = await utilFunctions.getPosts();
-
+    const sortBy = req.query.sortBy || "best";
+    const posts = await utilFunctions.getPosts(sortBy);
     res.json(posts);
   } catch (err) {
     res.status(500).send(err.message);

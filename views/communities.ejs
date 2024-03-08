@@ -282,13 +282,19 @@
     }
 
 
-    function fetchAndDisplayPosts(communityId = null) {
-      const apiUrl = communityId ? `/api/communities/${communityId}/posts` : '/api/posts';
+    function fetchAndDisplayPosts(communityId = null, sortBy = 'best') {
+      const apiUrl = communityId ? `/api/communities/${communityId}/posts?sortBy=${sortBy}` : `/api/posts?sortBy=${sortBy}`;
       fetch(apiUrl)
         .then(response => response.json())
         .then(posts => {
           const postsContainer = document.getElementById('posts-container');
           const fetchPromises = [];
+
+          // Remove the existing header element
+          const existingHeader = postsContainer.querySelector('.community-header');
+          if (existingHeader) {
+            existingHeader.remove();
+          }
 
           const communityHeader = document.createElement('div');
           communityHeader.className = 'community-header';
@@ -297,26 +303,23 @@
           <h3>Posts</h3>
         </div>
         <div class=post-header-buttons style="position:relative;">
-          <button class="header-button" id="post-sort-button">Best
+          <button class="header-button" id="filter-button" onclick="toggleFilterMenu()">${sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
             <span class="material-symbols-outlined">
-expand_more
-</span>
-
-            </button>
-          <button class="header-button" id="filter-button" onclick="toggleFilterMenu()">
-            <span class="material-symbols-outlined">tune</span>
-            </button>
-            <div class="filter-menu" id="filterMenu">
-              <button class="filter-button" onclick="filterPosts('Trending')">Trending</button>
-              <button class="filter-button" onclick="filterPosts('New')">New</button>
-              <button class="filter-button" onclick="filterPosts('Top')">Top</button>
-              <button class="filter-button" onclick="filterPosts('Explore')">Explore</button>
-            </div> 
-           <% if (user) { %>
+              expand_more
+            </span>
+          </button>
+          <div class="filter-menu" id="filterMenu">
+            <button class="filter-button" onclick="filterPosts('trending')">Trending</button>
+            <button class="filter-button" onclick="filterPosts('new')">New</button>
+            <button class="filter-button" onclick="filterPosts('top')">Top</button>
+            <button class="filter-button" onclick="filterPosts('explore')">Explore</button>
+          </div>
+          <% if (user) { %>
             <button class="header-button" id="post-button" onclick="window.location.href='/post/create'" style="padding: 5px 17px;">+</button>
           <% } %>
-          </div>  
-`;
+        </div>
+      `;
+
           postsContainer.appendChild(communityHeader);
 
 
@@ -847,18 +850,16 @@ expand_more
 
 
 
-    function filterPosts(communityName) {
-      // Get all post elements
-      const posts = document.querySelectorAll('.post');
-      posts.forEach((post) => {
-        // Check if post belongs to the selected community
-        const postCommunity = post.querySelector('.communities_id').textContent.trim();
-        if (communityName === 'All' || postCommunity === communityName) {
-          post.style.display = ''; // Show post
-        } else {
-          post.style.display = 'none'; // Hide post
-        }
-      });
+    function filterPosts(filter) {
+      const postsContainer = document.getElementById('posts-container');
+      const posts = postsContainer.getElementsByClassName('post');
+
+      // Remove all elements with the 'post' class
+      while (posts.length > 0) {
+        posts[0].parentNode.removeChild(posts[0]);
+      }
+
+      fetchAndDisplayPosts(null, filter.toLowerCase());
     }
   </script>
 </body>
