@@ -89,3 +89,27 @@ li.notification-item {
     background-color: #214E34;
     color: var(--light-mode-main-color);
 }
+
+@media (prefers-color-scheme: dark) {
+    body, .container {
+        background-color: var(--dark-mode-body-color);
+        color: var(--dark-mode-text-color);
+    }
+
+    .notification-item {
+        background-color: var(--dark-mode-background-color);
+        border-color: var(--dark-mode-border-color);
+        color: var(--dark-mode-text-color);
+    }
+
+    .notification-item:last-child {
+        border-bottom: 1px solid var(--dark-mode-border-color);
+    }
+
+    .notification-selector-btn {
+        background-color: var(--dark-mode-background-color);
+        border: 1px solid var(--dark-mode-border-color);
+        color: var(--dark-mode-text-color);
+    }
+
+}

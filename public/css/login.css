@@ -35,15 +35,12 @@ main {
 
 #register {
   padding: 20px 20px;
-  border-radius: 6px;
   background-color: var(--light-mode-body-color);
   border: 0;
-  width: 350px; 
+  width: 100%;
   box-sizing: border-box;
-  text-align: center;
-  display:flex;
-  flex-direction: column;
-  gap: 4px;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 
 #register a, #forgot-pass a {
@@ -53,11 +50,12 @@ main {
 
 #login {
   padding: 20px 20px;
-  border-radius: 6px;
   background-color: var(--light-mode-body-color);
   border: 0;
-  width: 350px; 
+  width: 100%;
   box-sizing: border-box;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 
 #forgot-pass {
@@ -95,7 +93,7 @@ main {
   box-sizing: border-box;
   border-radius: 5px; /* This makes the input rounded */
   background-color: var(--light-mode-main-color) !important;
-  border: 0;
+  border: 1px solid var(--border-color) !important;
   font-size: 16px;
 }
 
@@ -156,6 +154,10 @@ main {
     transition: background-color 5000s ease-in-out 0s;
     background-color: var(--dark-mode-main-color) !important; /* Dark background for input fields */
     color: #f4f4f4; /* Light text color */
+  }
+
+  .input-container input {
+    border-color: var(--dark-mode-border-color) !important; /* Dark border color */
   }
 
   #login h1 {

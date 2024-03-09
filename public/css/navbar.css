@@ -809,8 +809,13 @@ margin-top: 20px;
   }
   
   .search-input {
-     background-color: var(--dark-mode-border-color);
+     background-color: var(--dark-mode-body-color);
      color: var(--dark-mode-text-color);
+     border-color: var(--dark-mode-border-color)
+     }
+
+     .search-results-container > div:hover {
+      background-color: var(--dark-mode-hover-background-color); /* Highlight item on hover */
      }
   
   .search-form {
@@ -919,6 +924,15 @@ margin-top: 20px;
 
   .menu-content a:hover {
       background-color: #555; /* Lighter background on hover */
+  }
+
+  .search-results-container > div {
+      background-color: var(--dark-mode-background-color);
+      border-color: var(--dark-mode-border-color);
+  }
+
+  .search-results-container {
+      background-color: var(--dark-mode-background-color); 
   }
 
   /* Search bar styling */
