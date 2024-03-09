@@ -28,6 +28,10 @@
           <input type="text" id="title" name="title" required />
         </div>
         <div class="form-group">
+          <label for="company_id">Company ID:</label>
+          <input type="number" id="company_id" name="company_id" required />
+        </div>
+        <div class="form-group">
           <label for="salary">Salary:</label>
           <input type="number" id="salary" name="salary" required />
         </div>
@@ -48,10 +52,6 @@
           <input type="date" id="postedDate" name="postedDate" required />
         </div>
         <div class="form-group">
-          <label for="company_id">Company ID:</label>
-          <input type="number" id="company_id" name="company_id" required />
-        </div>
-        <div class="form-group">
           <label for="link">Job Link:</label>
           <input type="text" id="link" name="link" />
         </div>
@@ -61,7 +61,8 @@
         </div>
         <div class="form-group">
           <label for="description">Job Description:</label>
-          <textarea id="description" name="description" required></textarea>
+          <div id="description-editor"></div>
+          <textarea id="description" name="description"></textarea>
         </div>
         <div class="form-group">
           <label for="recruiter_id">Recruiter ID:</label>
@@ -70,8 +71,7 @@
         <div class="form-group">
           <label>Skills:</label>
           <div id="tags-container">
-            <select class="tags-select2" name="skills[]" multiple="multiple">
-            </select>
+            <select class="tags-select2" name="skills[]" multiple="multiple"></select>
           </div>
         </div>
         <button class="add-post-button" type="submit">Submit Job Post</button>
@@ -80,28 +80,48 @@
   </main>
   <script>
     $(document).ready(function() {
+      // Fetch the skills data from the server
+      $.ajax({
+        url: '/api/skills',
+        method: 'GET',
+        success: function(skills) {
+          // Initialize Select2 with the fetched skills and enable "tags" option
           $('.tags-select2').select2({
-            width: '100%' // Full width of its container });
-            var easyMDE = new EasyMDE({
-              element: document.getElementById('description')
-            });
-
-            $('form').on('submit', function(e) {
-              var easyMDE = new EasyMDE({
-                element: document.getElementById('description')
-              });
-
-              // Check if the EasyMDE editor is empty
-              if (!easyMDE.value().trim()) {
-                e.preventDefault(); // Prevent form submission
-                alert("Please fill in the job description."); // Display an error message
-                easyMDE.codemirror.focus(); // Focus the EasyMDE editor
-              } else {
-                easyMDE.toTextArea();
-                easyMDE.codemirror.save();
-              }
-            });
+            width: '100%',
+            data: skills.map(function(skill) {
+              return {
+                id: skill.id,
+                text: skill.tagName
+              };
+            }),
+            tags: true,
+            tokenSeparators: [',', ' ']
           });
+        },
+        error: function() {
+          console.error('Error fetching skills data');
+        }
+      });
+
+      var easyMDE = new EasyMDE({
+        element: document.getElementById('description')
+      });
+      $('#description').hide(); // Hide the original textarea after initializing EasyMDE
+
+      // Form submission handling
+      $('form').on('submit', function(e) {
+        // Check if the EasyMDE editor is empty
+        if (!easyMDE.value().trim()) {
+          e.preventDefault(); // Prevent form submission
+          alert("Please fill in the job description."); // Display an error message
+          easyMDE.codemirror.focus(); // Focus on the EasyMDE editor
+        } else {
+          easyMDE.toTextArea(); // Sync content from EasyMDE to textarea
+          easyMDE.codemirror.save(); // Ensure the textarea gets the content
+          // Don't hide here as it's already hidden, proceed with the submission
+        }
+      });
+    });
   </script>
 </body>
 

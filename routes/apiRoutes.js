@@ -44,6 +44,26 @@ router.get("/job-postings", async (req, res) => {
   }
 });
 
+router.get("/skills", async (req, res) => {
+  try {
+    const skills = await jobQueries.getSkills();
+    res.json(skills);
+  } catch (err) {
+    console.error("Error fetching skills:", err);
+    res.status(500).send("Error fetching skills");
+  }
+});
+
+router.get("/jobs", async (req, res) => {
+  try {
+    const jobPostings = await jobQueries.getJobs();
+    res.json(jobPostings);
+  } catch (err) {
+    console.error("Error fetching job postings:", err);
+    res.status(500).send("Error fetching job postings");
+  }
+});
+
 router.get("/jobs/:id", async (req, res) => {
   try {
     const id = req.params.id;

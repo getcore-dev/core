@@ -1,5 +1,28 @@
+:root {
+    --primary-text-color: #1D2935;
+    --light-mode-body-color: #fff;
+    --light-mode-main-color: #F6F8FA;
+    --light-mode-hover-color: #E5EBF1;
+    --border-color: #DCE6F2;
+    --light-mode-button-color: #DCE6F2;
+    --light-mode-button-hover-color: #BECBDA;
+    --light-mode-text-color: #243342;
+    --light-mode-secondary-text-color: #586C7F;
+    --hover-background-color: #ddd;
+    --active-indicator-color: #0e6655;
+    --dark-mode-main-color: #16191B;
+    --dark-mode-body-color: #000;
+    --dark-mode-hover-color: #24292D;
+    --dark-mode-button-hover-color: #363F44;
+    --dark-mode-lighter-color: #1F2427;
+    --dark-mode-text-color: #fff;
+    --dark-mode-secondary-text-color: #999;
+    --dark-mode-border-color: #272D31;
+    --dark-mode-hover-background-color: #444;
+  }
+
 .job-listing {
-    background-color: #ffffff;
+    background-color: var(--light-mode-body-color);
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 24px;
@@ -13,10 +36,7 @@
   }
   
   .company-logo {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
+    max-height: 64px;
     margin-right: 16px;
   }
   
@@ -28,7 +48,7 @@
   
   .company-location {
     font-size: 14px;
-    color: #666666;
+    color: var(--light-mode-secondary-text-color);
     margin: 4px 0 0;
   }
   
@@ -78,6 +98,16 @@
   .apply-link {
     margin-top: 24px;
   }
+
+  .job-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 0 4px;
+  }
+  
+  .company-name {
+    color: var(--light-mode-text-color);
+  }
   
   .button {
     display: inline-block;
@@ -87,11 +117,29 @@
     text-align: center;
     text-decoration: none;
     background-color: #007bff;
-    color: #ffffff;
+    color: var(--light-mode-text-color);
     border-radius: 4px;
     transition: background-color 0.3s ease;
   }
   
   .button:hover {
     background-color: #0056b3;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .job-listing {
+      background-color: var(--dark-mode-body-color);
+    }
+  
+    .company-location {
+      color: var(--dark-mode-secondary-text-color);
+    }
+  
+    .salary-range {
+      color: #007bff;
+    }
+
+    .company-name {
+        color: var(--dark-mode-text-color);
+    }
   }

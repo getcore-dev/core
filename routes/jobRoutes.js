@@ -4,7 +4,8 @@ const jobQueries = require("../queries/jobQueries");
 
 router.get("/create", async (req, res) => {
   try {
-    res.render("create-job.ejs");
+    const skills = await jobQueries.getSkills();
+    res.render("create-job.ejs", { skills });
   } catch (err) {
     console.error("Error fetching job postings:", err);
     res.status(500).send("Error fetching job postings");
