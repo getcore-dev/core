@@ -97,7 +97,7 @@ div.form-group {
 }
 
 
-.main-container input[type="text"], .main-container textarea {
+.main-container input[type="text"], .main-container textarea, .main-container select, .main-container input[type="number"], .main-container input[type="date"] {
     width: 100%;
     box-sizing: border-box;
     padding: 8px;
@@ -276,7 +276,7 @@ div.form-group {
     }
 
     .main-container input[type="text"],
-    .main-container textarea {
+    .main-container textarea, .main-container input[type="number"], .main-container input[type="date"] {
         background-color: var(--dark-mode-body-color);
         border-color: var(--dark-mode-border-color);
         color: var(--dark-mode-text-color);

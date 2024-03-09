@@ -1,0 +1,97 @@
+.job-listing {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  
+  .company-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .company-logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 16px;
+  }
+  
+  .company-name {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .company-location {
+    font-size: 14px;
+    color: #666666;
+    margin: 4px 0 0;
+  }
+  
+  .job-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 0 8px;
+  }
+  
+  .salary-range {
+    font-size: 18px;
+    color: #007bff;
+    margin-bottom: 12px;
+  }
+  
+  .experience-level,
+  .job-location,
+  .posted-date {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  
+  .label {
+    font-weight: bold;
+    margin-right: 4px;
+  }
+  
+  .job-description,
+  .company-description {
+    margin-top: 24px;
+  }
+  
+  .job-description h4,
+  .company-description h4 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 0 8px;
+  }
+  
+  .job-description p,
+  .company-description p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+  }
+  
+  .apply-link {
+    margin-top: 24px;
+  }
+  
+  .button {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    background-color: #007bff;
+    color: #ffffff;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button:hover {
+    background-color: #0056b3;
+  }

@@ -17,6 +17,8 @@ const utilFunctions = require("../utils/utilFunctions");
 const upload = multer({ storage });
 const marked = require("marked");
 const postQueries = require("../queries/postQueries");
+const jobQueries = require("../queries/jobQueries");
+const sql = require("mssql");
 
 router.get("/getUsername/:id", cacheMiddleware(1200), async (req, res) => {
   const id = req.params.id;
@@ -32,6 +34,72 @@ router.get("/getUsername/:id", cacheMiddleware(1200), async (req, res) => {
   }
 });
 
+router.get("/job-postings", async (req, res) => {
+  try {
+    const jobPostings = await jobQueries.getJobs();
+    res.json(jobPostings);
+  } catch (err) {
+    console.error("Error fetching job postings:", err);
+    res.status(500).send("Error fetching job postings");
+  }
+});
+
+router.get("/jobs/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const jobPosting = await jobQueries.findById(id);
+    res.json(jobPosting);
+  } catch (err) {
+    console.error("Error fetching job posting:", err);
+    res.status(500).send("Error fetching job posting");
+  }
+});
+
+router.post("/job-postings", async (req, res) => {
+  try {
+    const {
+      title,
+      salary,
+      experienceLevel,
+      location,
+      postedDate,
+      company_id,
+      link,
+      expiration_date,
+      tags,
+      description,
+      salary_max,
+      recruiter_id,
+      skills,
+    } = req.body;
+
+    // Call the createJobPosting function
+    const jobPostingId = await jobQueries.createJobPosting(
+      title,
+      salary,
+      experienceLevel,
+      location,
+      postedDate,
+      company_id,
+      link,
+      expiration_date,
+      tags,
+      description,
+      salary_max,
+      recruiter_id,
+      skills
+    );
+
+    res
+      .status(201)
+      .json({ message: "Job posting created successfully", jobPostingId });
+  } catch (error) {
+    console.error("Error creating job posting:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while creating the job posting" });
+  }
+});
 router.get("/posts/:postId/comments", async (req, res) => {
   try {
     const postId = req.params.postId;
