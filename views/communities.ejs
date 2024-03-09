@@ -164,7 +164,7 @@
                 <div class="job-posting-header">
                   <div class="company-name"><%= job.companyName %> </div>
                 </div>
-                <div class="job-title"><%= job.jobTitle %></div>
+                <div class="job-title"><%= job.jobTitle.slice(0, 20) %></div>
               </div>
             </div>
             <div class="job-body">
@@ -210,15 +210,15 @@
                   <div class="job-posting-header">
                     <div class="company-name">${job.company_name}</div>
                   </div>
-                  <div class="job-title">${job.title}</div>
+                  <div class="job-title">${job.title.slice(0, 20)}</div>
                 </div>
               </div>
               <div class="job-body">
-                <div class="job-desc">${job.description.slice(0, 100)}...</div>
+                <div class="job-desc">${job.description.slice(0, 45)}...</div>
               </div>
               <div class="job-flairs">
                 <span class="job-flair">${job.experienceLevel}</span>
-                <span class="job-flair" id="pay-flair">${formatSalary(job.salary)} - ${formatSalary(job.salary_max)}</span>
+                <span class="job-flair" id="pay-flair">${formatSalary(job.salary_max)}</span>
 <span class="job-flair" id="location-flair">${formatLocation(job.location)}</span>
                 <span class="job-flair" id="job-posting-deadline">${job.postedDate}</span>
               </div>
@@ -235,8 +235,8 @@
       const parts = location.split(',').map(part => part.trim());
 
       if (parts.length >= 3) {
-        return `${parts[0]}, ${parts[1]}`;
-      } else if (parts.length === 2) {
+        return `${parts[1]}`;
+      } else if (parts.length === 1) {
         return location;
       } else {
         return location;

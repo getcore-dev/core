@@ -795,9 +795,6 @@ div .mini-link-desc {
     height: calc(100dvh - 65px);
   }
 
-  .job-desc {
-    display: none;
-  }
   
   .job-flair {
     display:none;
