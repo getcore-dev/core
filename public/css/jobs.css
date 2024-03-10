@@ -187,7 +187,7 @@ main {
   display: flex;
   align-items: center;
   padding: 11px;
-  padding-top: 0px;
+  padding-top: 6px;
 }
 
 .company-logo {
