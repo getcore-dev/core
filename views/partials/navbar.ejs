@@ -16,7 +16,7 @@
     let otherUser = locals.otheruser;
     
     if (pagePath && !communityId && !postUser && !otherUser) {
-      navText += '<a class="navbar-user-info" href="' + pagePath + '" style="font-weight: normal;">' + pagePath + '</a>';
+      navText += '<a class="navbar-user-info" href="' + pagePath + '" style="font-weight: bold;">' + pagePath + '</a>';
     }
     if (communityId) {
       navText += '<a class="navbar-user-info" href="/communities/' + locals.community.id + '">' + locals.community.shortname + '/' + '</a>';
