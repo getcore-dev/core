@@ -24,9 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
           <p class="experience-level">${job.experienceLevel}</p>
           <p class="posted-date">${formatDate(job.postedDate)}</p>
         </div>
-        <div class="apply-button">
-          <a href="${job.link}" target="_blank">Apply</a>
-        </div>
       </div>
           `;
 
