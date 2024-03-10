@@ -41,6 +41,10 @@ function lazyLoadJobDetails(jobId) {
                 <span class="label">Posted Date:</span>
                 <span class="value">${job.postedDate}</span>
               </div>
+              <div class="expiry-date">
+                <span class="label">Apply by:</span>
+                <span class="value">${job.expiration_date}</span>
+              </div>
               <div class="job-description">
                 <h4>Job Description</h4>
                 <p>${job.description}</p>
