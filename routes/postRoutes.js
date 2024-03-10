@@ -116,7 +116,7 @@ router.get("/posts/:postId", async (req, res) => {
     const postId = req.params.postId;
 
 
-    await sql.query(`UPDATE posts SET views = ISNULL(views, 0) + 1 WHERE id = @postId`, { postId });
+    await sql.query(`UPDATE posts SET views = ISNULL(views, 0) + 1 WHERE id = ${postId}`);
 
     // Fetch all comments related to the post
     const query = `
