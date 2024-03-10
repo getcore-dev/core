@@ -50,17 +50,31 @@ main {
   overflow-x: auto;
   margin: 18px 0px;
   margin-left: 13px;
+  margin-right: 13px;
   margin-top: 0;
+  -ms-overflow-style: none; 
+  scrollbar-width: none;
 }
 
+.jobs-sort-selector::-webkit-scrollbar {
+  display: none;
+}
 .jobs-sort-selector select {
   font-size: 16px;
+  width: auto; 
   padding: 7px 8px;
   background-color: var(--light-mode-body-color);
   border-color: var(--border-color);
   border-radius: 10px;
 }
 
+.create-job {
+  border: 0;
+  padding: 10px;
+  border: 1px solid var(--dark-mode-border-color);
+  background-color: #007bff;
+  border-radius: 10px;
+}
 .jobs-sort-selector option {
   font-size: 16px;
 }

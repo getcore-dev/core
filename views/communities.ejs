@@ -320,7 +320,7 @@
 
 
     function fetchAndDisplayPosts(communityId = null, sortBy = 'best') {
-      const apiUrl = communityId ? `/api/communities/${communityId}/posts?sortBy=${sortBy}` : `/api/posts?sortBy=${sortBy}`;
+      const apiUrl = communityId ? `/api/communities/${communityId}/posts?sortBy=${sortBy}&userId=<%= user.id %>` : `/api/posts?sortBy=${sortBy}&userId=<%= user.id %>`;
       fetch(apiUrl)
         .then(response => response.json())
         .then(posts => {
@@ -550,13 +550,15 @@
                 const countText = document.createElement("span");
                 countText.className = `reaction-count ${reaction.type.toLowerCase()}-count ${post.id}`
                 countText.innerText = ` ${post[reaction.type.toLowerCase() + 'Count']}`;
+                if (post.userReaction && post.userReaction.toLowerCase() === reaction.type.toLowerCase()) {
+                  button.classList.add('active');
+                }
 
                 button.appendChild(icon);
                 button.appendChild(countText);
                 reactionInteractionsDiv.appendChild(button);
               }
             });
-
             reactionTypes.forEach(reaction => {
               const button = document.createElement("button");
               button.innerText = reaction.icon;

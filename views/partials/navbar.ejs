@@ -294,7 +294,10 @@
 
           results.jobs.forEach(job => {
             const jobItem = document.createElement('div');
-            jobItem.textContent = `Job: ${job.title}`; // Label each result as 'Job'
+            jobItem.onclick = function() {
+              window.location.href = `/jobs/${job.id}`;
+            };
+            jobItem.textContent = `${job.title}`; // Label each result as 'Job'
             searchResultsContainer.appendChild(jobItem);
           });
         }

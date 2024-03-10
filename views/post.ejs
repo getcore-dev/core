@@ -484,7 +484,8 @@
     ]; %>
                   <% reactionTypes.forEach(reaction => { %>
                   <% if (reaction.count > 0) { %>
-                  <button class="reaction-button <%= comment.id %>" id="<%= reaction.type %>" onclick='<% if (user) { %>interactWithComment("<%= post.id %>", "<%= comment.id %>", "<%= user %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
+                  <button class="reaction-button <%= comment.id %>
+                  <% if (user && comment.userReaction && comment.userReaction.type === reaction.type) { %>active<% } %>" id="<%= reaction.type %>" onclick='<% if (user) { %>interactWithComment("<%= post.id %>", "<%= comment.id %>", "<%= user %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
                     <p><%= reaction.icon %> <%= reaction.count %></p>
                   </button>
                   <% } %>
@@ -871,6 +872,12 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
               }
             }
 
+            if (post.userReaction && post.userReaction.type.toLowerCase() === reaction.type.toLowerCase()) {
+              reactionButton.classList.add('active');
+            } else if (reactionButton) {
+              reactionButton.style.color = ""; // Reset to default styles for other buttons
+            }
+
             // Update button color if needed
             if (reactionButton && reaction.type.toLowerCase() === action.toLowerCase()) {
               // maybe add a lil reaction later idk
@@ -974,6 +981,7 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
                 reactionButton.remove();
               }
             }
+
 
             // Update button color if needed
             if (reactionButton && reaction.type.toLowerCase() === action.toLowerCase()) {

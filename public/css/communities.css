@@ -994,6 +994,11 @@ div .mini-link-desc {
     background-color: var(--dark-mode-body-color);
     color: var(--dark-mode-secondary-text-color);
   }
+
+  .reaction-button.active {
+    background-color: #3C4B64;
+    border-color: #3D5B8B;
+  }
   
   .comments {
   color: var(--dark-mode-secondary-text-color);
@@ -1028,6 +1033,10 @@ div .mini-link-desc {
 
   .timestamp {
     color: #ccc;
+  }
+
+  .post:last-child {
+    border-bottom: 1px solid var(--dark-mode-border-color);
   }
   /* Post styling adjustments */
 

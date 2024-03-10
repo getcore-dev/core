@@ -15,38 +15,32 @@ const utilFunctions = {
       }
     );
   },
-  getPosts: async (sortBy = "best") => {
+  getPosts: async (sortBy = "best", userId) => {
     try {
       const result = await sql.query`
-        SELECT
-          p.id,
-          p.created_at,
-          p.deleted,
-          p.title,
-          p.content,
-          p.link,
-          p.communities_id,
-          p.react_like,
-          p.react_love,
-          p.react_curious,
-          p.react_interesting,
-          p.react_celebrate,
-          p.post_type,
-          u.currentJob,
-          u.username,
-          u.avatar,
-          SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
-          SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-          SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
-          SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
-          SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
-          SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount
-        FROM posts p
-        INNER JOIN users u ON p.user_id = u.id
-        LEFT JOIN userPostActions upa ON p.id = upa.post_id
-        WHERE p.deleted = 0
-        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.link_description, p.link_image, p.link_title, p.post_type
-      `;
+      SELECT 
+        p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id,
+        p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type,
+        u.currentJob, u.username, u.avatar,
+        SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
+        SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
+        SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+        SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
+        SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
+        SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
+        (
+          SELECT TOP 1 upa2.action_type
+          FROM userPostActions upa2
+          WHERE upa2.post_id = p.id AND upa2.user_id = ${userId}
+        ) as userReaction
+      FROM posts p
+      INNER JOIN users u ON p.user_id = u.id
+      LEFT JOIN userPostActions upa ON p.id = upa.post_id
+      WHERE p.deleted = 0
+      GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob,
+               p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.link_description,
+               p.link_image, p.link_title, p.post_type
+    `;
 
       let sortedResult;
 
