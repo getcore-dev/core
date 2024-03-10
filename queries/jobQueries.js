@@ -1,94 +1,137 @@
 const sql = require("mssql");
 
 const jobQueries = {
-  getJobPostingsByCompany: async (companyId) => {
+  getJobs: async () => {
     try {
-      const result = await sql.query`
-            SELECT * FROM JobPostings WHERE company_id = ${companyId}`;
-      return result.recordset;
+      const result = await sql.query(`
+        SELECT 
+          JobPostings.*,
+          companies.name AS company_name,
+          companies.logo AS company_logo,
+          companies.location AS company_location,
+          companies.description AS company_description
+        FROM 
+          JobPostings
+        LEFT JOIN 
+          companies ON JobPostings.company_id = companies.id
+        ORDER BY 
+          JobPostings.postedDate DESC
+      `);
+      const jobs = result.recordset;
+      // Cache the result for future requests
+      return jobs;
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
     }
   },
-  addRecruiter: async (id, name, companyId) => {
+
+  getSkills: async () => {
     try {
-      const result = await sql.query`
-            INSERT INTO Recruiters (id, name, company_id) 
-            VALUES (${id}, ${name}, ${companyId})`;
-      return result.recordset;
+      const result = await sql.query`SELECT * FROM JobTags`;
+      const skills = result.recordset;
+      return skills;
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
     }
   },
-  assignRecruiterToJob: async (jobId, recruiterId) => {
+
+  findById: async (id) => {
     try {
       const result = await sql.query`
-            INSERT INTO JobPostingsRecruiters (JobID, RecruiterID) 
-            VALUES (${jobId}, ${recruiterId})`;
-      return result.recordset;
+        SELECT
+          JobPostings.*, 
+          companies.name AS company_name,
+          companies.logo AS company_logo,
+          companies.location AS company_location,
+          companies.description AS company_description
+        FROM
+          JobPostings
+        LEFT JOIN
+          companies ON JobPostings.company_id = companies.id
+        WHERE
+          JobPostings.id = ${id}
+      `;
+      const job = result.recordset[0];
+      return job;
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
     }
   },
-  getJobPostingsByRecruiter: async (recruiterId) => {
-    try {
-      const result = await sql.query`
-            SELECT jp.* FROM JobPostings jp
-            JOIN JobPostingsRecruiters jpr ON jp.id = jpr.JobID
-            WHERE jpr.RecruiterID = ${recruiterId}`;
-      return result.recordset;
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err;
+
+  createJobPosting: async (
+    title,
+    salary,
+    experienceLevel,
+    location,
+    postedDate,
+    company_id,
+    link = "",
+    expiration_date = null,
+    tags = [],
+    description,
+    salary_max = null,
+    recruiter_id = null,
+    skills = []
+  ) => {
+    if (typeof link !== "string") {
+      throw new Error("Link must be a string");
     }
-  },
-  getRecruitersByCompany: async (companyId) => {
-    try {
-      const result = await sql.query`
-            SELECT * FROM Recruiters WHERE company_id = ${companyId}`;
-      return result.recordset;
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err;
+    if (!Array.isArray(skills)) {
+      skills = skills.split(",").map((skill) => skill.trim());
     }
-  },
-  updateRecruiter: async (recruiterId, field, value) => {
+
+    console.log(
+      title,
+      salary,
+      experienceLevel,
+      location,
+      postedDate,
+      company_id,
+      link,
+      expiration_date,
+      tags,
+      description,
+      salary_max,
+      recruiter_id,
+      skills
+    );
+
     try {
-      const validFields = ["name", "company_id"];
-      if (!validFields.includes(field)) {
-        throw new Error(`Invalid field name: ${field}`);
+      // Insert the job posting into the JobPostings table
+      const result =
+        await sql.query`INSERT INTO JobPostings (title, salary, experienceLevel, location, postedDate, company_id, link, expiration_date, description, salary_max, recruiter_id)
+                                     OUTPUT INSERTED.id
+                                     VALUES (${title}, ${salary}, ${experienceLevel}, ${location}, ${postedDate}, ${company_id}, ${link}, ${expiration_date}, ${description}, ${salary_max}, ${recruiter_id})`;
+      const jobPostingId = result.recordset[0].id;
+
+      if (skills && skills.length > 0) {
+        for (const skill of skills) {
+          // Find or create the skill and get its id
+          let skillId;
+          const skillRecord =
+            await sql.query`SELECT id FROM JobTags WHERE tagName = ${skill}`;
+          if (skillRecord.recordset.length > 0) {
+            skillId = skillRecord.recordset[0].id;
+          } else {
+            // If skill does not exist, create it
+            const newSkill =
+              await sql.query`INSERT INTO JobTags (tagName) OUTPUT INSERTED.id VALUES (${skill})`;
+            skillId = newSkill.recordset[0].id;
+          }
+          // Associate the skill with the job posting
+          await sql.query`INSERT INTO JobPostingsTags (JobID, TagID) VALUES (${jobPostingId}, ${skillId})`;
+        }
       }
-      const query = `
-            UPDATE Recruiters 
-            SET ${field} = @value
-            WHERE id = @recruiterId`;
-      const request = new sql.Request();
-      request.input("value", sql.VarChar, value);
-      request.input("recruiterId", sql.VarChar, recruiterId);
-      const result = await request.query(query);
-      if (result && result.rowsAffected === 0) {
-        console.warn(
-          `No rows updated. Recruiter ID ${recruiterId} might not exist.`
-        );
-      } else if (result) {
-      }
+
+      return jobPostingId;
     } catch (err) {
-      console.error("Database update error:", err.message);
-      console.error("Error stack:", err.stack);
-      throw err;
-    }
-  },
-  deleteRecruiter: async (recruiterId) => {
-    try {
-      const result = await sql.query`
-            DELETE FROM Recruiters WHERE id = ${recruiterId}`;
-      return result.rowCount;
-    } catch (err) {
-      console.error("Database delete error:", err);
-      throw err;
+      console.error("Database insert error:", err);
+      throw err; // Rethrow the error for the caller to handle
     }
   },
 };
+
+module.exports = jobQueries;

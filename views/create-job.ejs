@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>CORE - Create Job Post</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="shortcut icon" href="img/core.png" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/create-post.css" />
+  <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+</head>
+<% if (!user) { %>
+<% if (!user.recruiter_id) { %>
+<script>
+  window.location.href = '/login';
+</script>
+<% } %>
+<% } %>
+
+
+<body> <%- include('partials/navbar', { pagePath: 'home' }) %> <main>
+    <div class="post-header">
+      <h2 id="post-header-title">Create a Job Post</h2>
+    </div>
+    <div class="main-container">
+
+      <form action="/api/job-postings" method="POST">
+        <div class="form-group">
+          <label for="title">Title:</label>
+          <input type="text" id="title" name="title" required />
+        </div>
+        <div class="form-group">
+          <label for="company_id">Company ID:</label>
+          <input type="number" id="company_id" name="company_id" required />
+        </div>
+        <div class="form-group">
+          <label for="salary">Salary:</label>
+          <input type="number" id="salary" name="salary" required />
+        </div>
+        <div class="form-group">
+          <label for="salary_max">Maximum Salary:</label>
+          <input type="number" id="salary_max" name="salary_max" />
+        </div>
+        <div class="form-group">
+          <label for="experienceLevel">Experience Level:</label>
+          <input type="text" id="experienceLevel" name="experienceLevel" required />
+        </div>
+        <div class="form-group">
+          <label for="location">Location:</label>
+          <input type="text" id="location" name="location" required />
+        </div>
+        <div class="form-group">
+          <label for="postedDate">Posted Date:</label>
+          <input type="date" id="postedDate" name="postedDate" required />
+        </div>
+        <div class="form-group">
+          <label for="link">Job Link:</label>
+          <input type="text" id="link" name="link" />
+        </div>
+        <div class="form-group">
+          <label for="expiration_date">Expiration Date:</label>
+          <input type="date" id="expiration_date" name="expiration_date" />
+        </div>
+        <div class="form-group">
+          <label for="description">Job Description:</label>
+          <div id="description-editor"></div>
+          <textarea id="description" name="description"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="recruiter_id">Recruiter ID:</label>
+          <input type="text" id="recruiter_id" name="recruiter_id" />
+        </div>
+        <div class="form-group">
+          <label>Skills:</label>
+          <div id="tags-container">
+            <select class="tags-select2" name="skills[]" multiple="multiple"></select>
+          </div>
+        </div>
+        <button class="add-post-button" type="submit">Submit Job Post</button>
+      </form>
+    </div>
+  </main>
+  <script>
+    $(document).ready(function() {
+      // Fetch the skills data from the server
+      $.ajax({
+        url: '/api/skills',
+        method: 'GET',
+        success: function(skills) {
+          // Initialize Select2 with the fetched skills and enable "tags" option
+          $('.tags-select2').select2({
+            width: '100%',
+            data: skills.map(function(skill) {
+              return {
+                id: skill.id,
+                text: skill.tagName
+              };
+            }),
+            tags: true,
+            tokenSeparators: [',', ' ']
+          });
+        },
+        error: function() {
+          console.error('Error fetching skills data');
+        }
+      });
+
+      var easyMDE = new EasyMDE({
+        element: document.getElementById('description')
+      });
+      $('#description').hide(); // Hide the original textarea after initializing EasyMDE
+
+      // Form submission handling
+      $('form').on('submit', function(e) {
+        // Check if the EasyMDE editor is empty
+        if (!easyMDE.value().trim()) {
+          e.preventDefault(); // Prevent form submission
+          alert("Please fill in the job description."); // Display an error message
+          easyMDE.codemirror.focus(); // Focus on the EasyMDE editor
+        } else {
+          easyMDE.toTextArea(); // Sync content from EasyMDE to textarea
+          easyMDE.codemirror.save(); // Ensure the textarea gets the content
+          // Don't hide here as it's already hidden, proceed with the submission
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

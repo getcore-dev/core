@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/communities.css" />
+  <link rel="stylesheet" href="/css/com-btn-container.css" />
+  <link rel="stylesheet" href="/css/notifications.css" />
+
+  <link rel="shortcut icon" href="/img/core.png" />
+  <title>CORE/Notifications</title>
+</head>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'notifications', user: user }) %>
+
+  <div class="container">
+    <div class="notification-container-header">
+      <div class="notification-selector">
+        <button class="notification-selector-btn">All</button>
+        <button class="notification-selector-btn">Unread</button>
+        <button class="notification-selector-btn">Read</button>
+      </div>
+      <h3>Notifications</h3>
+    </div>
+    <div id="notification-list" class="column">
+    </div>
+  </div>
+
+  <script>
+    <% if (user) { %>
+
+    async function fetchNotifications(type = 'unread') {
+      // Fetch notifications based on the specified type
+      const response = await fetch(`/notifications/${type}/<%= user.id %>`);
+      const notifications = await response.json();
+      let notificationBtn = document.getElementById('notification-btn');
+
+      const notificationList = document.getElementById('notification-list');
+      notificationList.innerHTML = ''; // Clear previous notifications
+
+      // Populate list
+      notifications.forEach(notification => {
+        const li = document.createElement('li');
+        li.classList.add('notification-item');
+        const notificationDiv = document.createElement('div');
+        const notificationSenderAvatar = document.createElement('img');
+        notificationSenderAvatar.src = notification.senderProfilePicture || '/img/default-avatar.png';
+        notificationSenderAvatar.classList.add('notification-sender-avatar');
+        notificationDiv.appendChild(notificationSenderAvatar);
+        const notificationHeader = document.createElement('span');
+        const notificationText = document.createElement('span');
+        notificationTextDiv = document.createElement('div');
+        notificationTextDiv.classList.add('notification-text-div');
+        notificationHeader.classList.add('notification-header');
+        notificationText.classList.add('notification-text');
+        notificationText.onclick = function() {
+          window.location.href = "/posts/" + notification.postId;
+        };
+
+        if (notification.type === 'NEW_COMMENT') {
+          notificationHeader.textContent = '💬 New Comment';
+          notificationText.textContent = `${notification.senderUsername} commented on your post`;
+        } else if (notification.type === ['like', 'love', 'celebrate', 'curious', 'boost']) {
+          notificationHeader.textContent = '🎉 New Reaction';
+          notificationText.textContent = `${notification.senderUsername} liked your post`;
+        } else if (notification.type === 'follow') {
+          notificationHeader.textContent = '👤 New Follower';
+          notificationText.textContent = `${notification.senderUsername} followed you`;
+        }
+        notificationTextDiv.appendChild(notificationHeader);
+        notificationTextDiv.appendChild(notificationText);
+        notificationDiv.appendChild(notificationTextDiv);
+        const clearBtn = document.createElement('button');
+        clearBtn.classList.add('clear-btn');
+        const clearIcon = document.createElement('span');
+        clearIcon.classList.add('material-symbols-outlined');
+        clearIcon.textContent = 'clear';
+        clearBtn.appendChild(clearIcon);
+        clearBtn.onclick = function() {
+          clearNotification(notification.id);
+          li.remove();
+        };
+        notificationDiv.appendChild(clearBtn);
+        li.appendChild(notificationDiv);
+
+        notificationList.appendChild(li); // Append the notification element to the list
+      });
+    }
+
+    async function clearNotification(notificationId) {
+      await fetch(`/notifications/${notificationId}`, {
+        method: 'DELETE'
+      });
+    }
+
+    fetchNotifications();
+    const notificationSelectorButtons = document.querySelectorAll('.notification-selector-btn');
+    let activeButton = null; // Track the currently active button
+
+    // Function to set the active button
+    function setActiveButton(button) {
+      if (activeButton) {
+        activeButton.classList.remove('active');
+      }
+      button.classList.add('active');
+      activeButton = button;
+    }
+
+    notificationSelectorButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const type = button.textContent.toLowerCase();
+        fetchNotifications(type);
+        setActiveButton(button);
+      });
+    });
+
+    // Set the "Unread" button as active on initial load
+    const unreadButton = document.querySelector('.notification-selector-btn:nth-child(2)');
+    setActiveButton(unreadButton);
+    fetchNotifications('unread');
+    <% } %>
+  </script>
+</body>
+
+</html>

@@ -64,7 +64,7 @@ router.get(
 );
 
 // Jobs page
-router.get("/jobs", cacheMiddleware(1200), (req, res) => {
+router.get("/jobs", (req, res) => {
   res.render("jobs.ejs", { user: req.user });
 });
 

@@ -1,0 +1,62 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const jobId = extractJobIdFromUrl();
+  lazyLoadJobDetails(jobId);
+});
+
+function extractJobIdFromUrl() {
+  const urlParts = window.location.pathname.split("/");
+  return urlParts[urlParts.length - 1];
+}
+
+function lazyLoadJobDetails(jobId) {
+  fetch(`/api/jobs/${jobId}`)
+    .then((response) => response.json())
+    .then((job) => {
+      const jobDetailsContainer = document.querySelector(
+        ".job-details-container"
+      );
+      jobDetailsContainer.innerHTML = `
+          <div class="job-listing">
+            <div class="company-info">
+              <img src="${job.company_logo}" alt="${job.company_name} logo" class="company-logo" />
+              <div class="company-details">
+                <h3 class="company-name">${job.company_name}</h3>
+                <p class="company-location">${job.company_location}</p>
+              </div>
+            </div>
+            <div class="job-details">
+              <h2 class="job-title">${job.title}</h2>
+              <div class="salary-range">
+                <span class="salary-min">$${job.salary}</span> - <span class="salary-max">$${job.salary_max}</span>
+              </div>
+              <div class="experience-level">
+                <span class="label">Experience Level:</span>
+                <span class="value">${job.experienceLevel}</span>
+              </div>
+              <div class="job-location">
+                <span class="label">Location:</span>
+                <span class="value">${job.location}</span>
+              </div>
+              <div class="posted-date">
+                <span class="label">Posted Date:</span>
+                <span class="value">${job.postedDate}</span>
+              </div>
+              <div class="job-description">
+                <h4>Job Description</h4>
+                <p>${job.description}</p>
+              </div>
+              <div class="company-description">
+                <h4>Company Description</h4>
+                <p>${job.company_description}</p>
+              </div>
+              <div class="apply-link">
+                <a href="${job.link}" target="_blank" class="button">Apply Now</a>
+              </div>
+            </div>
+          </div>
+        `;
+    })
+    .catch((error) => {
+      console.error("Error fetching job details:", error);
+    });
+}

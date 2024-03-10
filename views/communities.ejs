@@ -17,7 +17,7 @@
 </head>
 
 <body>
-  <%- include('partials/navbar', { pagePath: 'communities', user: user}) %>
+  <%- include('partials/navbar', { pagePath: 'home', user: user}) %>
 
   <div class="container">
 
@@ -137,38 +137,12 @@
           <h3>Openings</h3>
         </div>
         <div class="jobslist">
-
-          <% jobPostings.forEach(job => { %>
-          <div class="job">
-            <div class="job-content">
-              <div class="jobs-header">
-                <div class="company-logo-container">
-                  <img loading="lazy" src="<%= job.companyLogo %>" alt="Company Logo" class="company-logo" />
-                </div>
-                <div class="job-title-location">
-                  <div class="job-posting-header">
-                    <div class="company-name"><%= job.companyName %> </div>
-                  </div>
-                  <div class="job-title"><%= job.jobTitle %></div>
-                </div>
-              </div>
-              <div class="job-body">
-                <div class="job-desc"><%= job.jobOverview %></div>
-              </div>
-              <div class="job-flairs">
-                <span class="job-flair"><%= job.jobType %></span>
-                <span class="job-flair" id="pay-flair"><%= job.jobSalary %></span>
-                <span class="job-flair" id="location-flair"><%= job.jobLocation %></span>
-                <span class="job-flair" id="job-posting-deadline"><%= job.jobBenefits %></span>
-              </div>
-            </div>
-          </div>
-          <% }); %>
-          <div class="see-more">
-            <img loading="lazy" src="./src/core.png" class="company-logo" id="see-more-core-logo">
-            <span id="see-more-separator">&#183;</span>
-            <a href="/jobs">See More</a>
-          </div>
+          <!-- Job previews will be dynamically loaded here -->
+        </div>
+        <div class="see-more">
+          <img loading="lazy" src="./src/core.png" class="company-logo" id="see-more-core-logo">
+          <span id="see-more-separator">&#183;</span>
+          <a href="/jobs">See More</a>
         </div>
       </div>
       <% } %>
@@ -190,7 +164,7 @@
                 <div class="job-posting-header">
                   <div class="company-name"><%= job.companyName %> </div>
                 </div>
-                <div class="job-title"><%= job.jobTitle %></div>
+                <div class="job-title"><%= job.jobTitle.slice(0, 20) %></div>
               </div>
             </div>
             <div class="job-body">
@@ -216,6 +190,115 @@
   </div>
 
   <script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchJobPreviews();
+    });
+
+    function fetchJobPreviews() {
+      fetch('/api/jobs')
+        .then(response => response.json())
+        .then(jobs => {
+          const jobslistContainer = document.querySelector('.jobslist');
+          jobslistContainer.innerHTML = jobs.map(job => `
+          <div class="job" onclick="window.location.href='/jobs/${job.id}'">
+            <div class="job-content">
+              <div class="jobs-header">
+                <div class="company-logo-container">
+                  <img loading="lazy" src="${job.company_logo}" alt="Company Logo" class="company-logo" />
+                </div>
+                <div class="job-title-location">
+                  <div class="job-posting-header">
+                    <div class="company-name">${job.company_name}</div>
+                  </div>
+                  <div class="job-title">${job.title.slice(0, 20)}</div>
+                </div>
+              </div>
+              <div class="job-body">
+                <div class="job-desc">${job.description.slice(0, 45)}...</div>
+              </div>
+              <div class="job-flairs">
+                <span class="job-flair">${job.experienceLevel}</span>
+                <span class="job-flair" id="pay-flair">${formatSalary(job.salary_max)}</span>
+<span class="job-flair" id="location-flair">${formatLocation(job.location)}</span>
+                <span class="job-flair" id="job-posting-deadline">${job.postedDate}</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+        })
+        .catch(error => {
+          console.error('Error fetching job previews:', error);
+        });
+    }
+
+    function formatLocation(location) {
+      const parts = location.split(',').map(part => part.trim());
+
+      if (parts.length >= 3) {
+        return `${parts[1]}`;
+      } else if (parts.length === 1) {
+        return location;
+      } else {
+        return location;
+      }
+    }
+
+    function formatSalary(salary) {
+      if (salary >= 1000000) {
+        return '$' + (salary / 1000000).toFixed(1) + 'M';
+      } else if (salary >= 1000) {
+        return '$' + (salary / 1000).toFixed(0) + 'k';
+      } else {
+        return '$' + salary;
+      }
+    }
+
+    function applyTint() {
+      const jobContainers = document.querySelectorAll('.job');
+
+      jobContainers.forEach(jobContainer => {
+        const logoImg = jobContainer.querySelector('.company-logo');
+
+        if (logoImg) {
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+
+          const img = new Image();
+          img.crossOrigin = 'Anonymous';
+          img.src = logoImg.src;
+
+          img.addEventListener('load', () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            context.drawImage(img, 0, 0);
+
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+
+            let r = 0,
+              g = 0,
+              b = 0;
+            for (let i = 0, l = data.length; i < l; i += 4) {
+              r += data[i];
+              g += data[i + 1];
+              b += data[i + 2];
+            }
+
+            const totalPixels = data.length / 4;
+            r = Math.round(r / totalPixels);
+            g = Math.round(g / totalPixels);
+            b = Math.round(b / totalPixels);
+
+            const averageColor = `rgba(${r}, ${g}, ${b}, 0.1)`; // Adjust the alpha value here
+            jobContainer.style.backgroundColor = averageColor;
+            jobContainer.style.border = `1px solid ${averageColor}`;
+          });
+        }
+      });
+    }
+
+    window.addEventListener('load', applyTint);
+
     function showLoader() {
       document.getElementById('loadingAnimation').style.display = 'block';
     }
@@ -236,13 +319,26 @@
     }
 
 
-    function fetchAndDisplayPosts(communityId = null) {
-      const apiUrl = communityId ? `/api/communities/${communityId}/posts` : '/api/posts';
+    function fetchAndDisplayPosts(communityId = null, sortBy = 'best') {
+      const loggedIn = typeof user !== 'undefined' && user !== null;
+      let apiUrl;
+
+      if (loggedIn) {
+        apiUrl = communityId ? `/api/communities/${communityId}/posts?sortBy=${sortBy}&userId=${user.id}` : `/api/posts?sortBy=${sortBy}&userId=${user.id}`;
+      } else {
+        apiUrl = communityId ? `/api/communities/${communityId}/posts?sortBy=${sortBy}` : `/api/posts?sortBy=${sortBy}`;
+      }
       fetch(apiUrl)
         .then(response => response.json())
         .then(posts => {
           const postsContainer = document.getElementById('posts-container');
           const fetchPromises = [];
+
+          // Remove the existing header element
+          const existingHeader = postsContainer.querySelector('.community-header');
+          if (existingHeader) {
+            existingHeader.remove();
+          }
 
           const communityHeader = document.createElement('div');
           communityHeader.className = 'community-header';
@@ -251,26 +347,40 @@
           <h3>Posts</h3>
         </div>
         <div class=post-header-buttons style="position:relative;">
-          <button class="header-button" id="post-sort-button">Best
+                  <% if (user) { %>
+            <button class="header-button" id="post-button" onclick="window.location.href='/post/create'" style="padding: 6px 13px; margin-right: 7px;">+</button>
+          <% } %>
+          <button class="header-button" id="filter-button" onclick="toggleFilterMenu()">${sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
             <span class="material-symbols-outlined">
-expand_more
-</span>
+              expand_more
+            </span>
+          </button>
+          <div class="filter-menu" id="filterMenu">
+            <button class="filter-button" onclick="filterPosts('trending')">
+              <span style="margin-left: 10px;">Trending</span>
+                            <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">trending_up</span>
+
+              </button>
+            <button class="filter-button" onclick="filterPosts('new')">
+            <span style="margin-left: 10px;">New</span>
+                        <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">new_releases</span>
 
             </button>
-          <button class="header-button" id="filter-button" onclick="toggleFilterMenu()">
-            <span class="material-symbols-outlined">tune</span>
+            <button class="filter-button" onclick="filterPosts('top')">
+            <span style="margin-left: 10px;">Top</span>
+            <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">star</span>
+
             </button>
-            <div class="filter-menu" id="filterMenu">
-              <button class="filter-button" onclick="filterPosts('Trending')">Trending</button>
-              <button class="filter-button" onclick="filterPosts('New')">New</button>
-              <button class="filter-button" onclick="filterPosts('Top')">Top</button>
-              <button class="filter-button" onclick="filterPosts('Explore')">Explore</button>
-            </div> 
-           <% if (user) { %>
-            <button class="header-button" id="post-button" onclick="window.location.href='/post/create'" style="padding: 5px 17px;">+</button>
-          <% } %>
-          </div>  
-`;
+            <button class="filter-button" onclick="filterPosts('explore')">
+            <span style="margin-left: 10px;">Explore</span>
+            <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">explore</span>
+
+            </button>
+          </div>
+
+        </div>
+      `;
+
           postsContainer.appendChild(communityHeader);
 
 
@@ -385,9 +495,10 @@ expand_more
             reactionInteractionsDiv.className = `reaction-interactions ${post.id}-reactions`;
             reactionInteractionsDiv.id = `reaction-interactions ${post.id}-reactions`;
 
+
             // boost button
             const boostButton = document.createElement("button");
-            boostButton.className = `boost-button boost-button-${post.id}`;
+            boostButton.className = `reaction-button boost-button-${post.id}`;
             boostButton.innerHTML = `⚡️ <span class='boost-count-${post.id}'>${post.boostCount}</span>`;
 
             boostButton.onclick = () => interactWithPost(post.id, "<%= user %>", "BOOST");
@@ -446,13 +557,15 @@ expand_more
                 const countText = document.createElement("span");
                 countText.className = `reaction-count ${reaction.type.toLowerCase()}-count ${post.id}`
                 countText.innerText = ` ${post[reaction.type.toLowerCase() + 'Count']}`;
+                if (post.userReaction && post.userReaction.toLowerCase() === reaction.type.toLowerCase()) {
+                  button.classList.add('active');
+                }
 
                 button.appendChild(icon);
                 button.appendChild(countText);
                 reactionInteractionsDiv.appendChild(button);
               }
             });
-
             reactionTypes.forEach(reaction => {
               const button = document.createElement("button");
               button.innerText = reaction.icon;
@@ -709,7 +822,7 @@ expand_more
           },
           body: JSON.stringify({
             user: user,
-            action: action.toLowerCase() // Ensure action is in lowercase
+            action: action.toLowerCase()
           })
         })
         .then(response => response.json())
@@ -721,9 +834,7 @@ expand_more
             reactionMenu.style.display = 'none';
           }
 
-          // Assuming the 'reactions' field directly contains the count values
-          const reactionsData = data.newScore; // Adjust according to actual response structure
-
+          const reactionsData = data.newScore;
           const reactionTypes = [{
               type: "LOVE",
               icon: "❤️"
@@ -743,77 +854,75 @@ expand_more
             {
               type: "CELEBRATE",
               icon: "🎉"
-            },
+            }
           ];
 
-          // Ensure you have a reference to the container where buttons should be placed
-          const reactionInteractionsDiv = document.getElementById(`reaction-interactions ${postId}-reactions`); // Adjust ID as necessary
+          const reactionInteractionsDiv = document.getElementById(`reaction-interactions ${postId}-reactions`);
 
           reactionTypes.forEach(reaction => {
             const reactionCount = reactionsData[reaction.type.toLowerCase()] || 0;
-            let reactionButton = document.querySelector(`.reaction-button.${reaction.type.toLowerCase()}-button-${postId}`);
+            const reactionButton = document.querySelector(`.reaction-button.${reaction.type.toLowerCase()}-button-${postId}`);
 
-            if (reactionCount > 0) {
-              if (!reactionButton) {
-                // Create a new reaction button if it doesn't exist
-                reactionButton = document.createElement("button");
-                reactionButton.className = `reaction-button ${reaction.type.toLowerCase()}-button-${postId}`;
-                reactionButton.onclick = () => interactWithPost(postId, user, reaction.type);
-
-                const icon = document.createElement("span");
-                icon.innerText = reaction.icon;
-
-                const countText = document.createElement("span");
-                countText.className = `reaction-count ${reaction.type.toLowerCase()}-count ${postId}`;
-                countText.innerText = ` ${reactionCount}`;
-
-                reactionButton.appendChild(icon);
-                reactionButton.appendChild(countText);
-                reactionInteractionsDiv.appendChild(reactionButton);
-              } else {
-                // Update count of existing button
-                const countSpan = reactionButton.querySelector(`.reaction-count ${reaction.type.toLowerCase()}-count ${postId}`);
-                if (countSpan) countSpan.innerText = ` ${reactionCount}`;
-              }
-            } else if (reactionCount == 0) {
-              if (reactionButton) {
-                reactionButton.remove();
-              }
-            }
-
-            // Update button color if needed
-            if (reactionButton && reaction.type.toLowerCase() === action.toLowerCase()) {
-              // maybe add a lil reaction later idk
-            } else if (reactionButton) {
-              reactionButton.style.color = ""; // Reset to default styles for other buttons
+            if (reactionButton) {
+              updateReactionButton(reactionButton, reactionCount, reaction.type, postId);
+            } else if (reactionCount > 0) {
+              createReactionButton(reactionInteractionsDiv, reaction, reactionCount, postId, user);
             }
           });
 
           const boostCount = reactionsData['boosts'] || 0;
-          let boostButton = document.querySelector(`.boost-button.boost-button-${postId}`);
-          const countSpan = boostButton.querySelector(`span.boost-count-${postId}`);
-          countSpan.innerText = ` ${boostCount}`;
+          const boostButton = document.querySelector(`.reaction-button.boost-button-${postId}`);
+          if (boostButton) {
+            const countSpan = boostButton.querySelector(`span.boost-count-${postId}`);
+            countSpan.innerText = ` ${boostCount}`;
+          }
         })
         .catch((error) => {
           console.error('Error:', error);
         });
     }
 
+    function createReactionButton(container, reaction, count, postId, user) {
+      const reactionButton = document.createElement("button");
+      reactionButton.className = `reaction-button ${reaction.type.toLowerCase()}-button-${postId} ${count > 0 ? 'active' : ''}`;
+      reactionButton.onclick = () => interactWithPost(postId, user, reaction.type);
+
+      const icon = document.createElement("span");
+      icon.innerText = reaction.icon;
+
+      const countText = document.createElement("span");
+      countText.className = `reaction-count ${reaction.type.toLowerCase()}-count ${postId}`;
+      countText.innerText = ` ${count}`;
+
+      reactionButton.appendChild(icon);
+      reactionButton.appendChild(countText);
+      container.appendChild(reactionButton);
+    }
+
+    function updateReactionButton(reactionButton, count, reactionType, postId) {
+      const countSpan = reactionButton.querySelector(`.reaction-count.${reactionType.toLowerCase()}-count.${postId}`);
+      countSpan.innerText = ` ${count}`;
+
+      if (count === 0) {
+        reactionButton.classList.remove('active');
+      } else {
+        reactionButton.classList.add('active');
+      }
+    }
 
 
 
-    function filterPosts(communityName) {
-      // Get all post elements
-      const posts = document.querySelectorAll('.post');
-      posts.forEach((post) => {
-        // Check if post belongs to the selected community
-        const postCommunity = post.querySelector('.communities_id').textContent.trim();
-        if (communityName === 'All' || postCommunity === communityName) {
-          post.style.display = ''; // Show post
-        } else {
-          post.style.display = 'none'; // Hide post
-        }
-      });
+
+    function filterPosts(filter) {
+      const postsContainer = document.getElementById('posts-container');
+      const posts = postsContainer.getElementsByClassName('post');
+
+      // Remove all elements with the 'post' class
+      while (posts.length > 0) {
+        posts[0].parentNode.removeChild(posts[0]);
+      }
+
+      fetchAndDisplayPosts(null, filter.toLowerCase());
     }
   </script>
 </body>

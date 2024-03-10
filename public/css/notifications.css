@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+:root {
+    /* Color variables */
+    --primary-text-color: #1D2935;
+    --navbar-background-color: #F6F8FA;
+    --hover-background-color: #ddd;
+    --active-indicator-color: #0e6655;
+    --notification-background-color: #fff;
+    --dark-mode-background-color: #16191B;
+    --dark-mode-text-color: #fff;
+    --dark-mode-body-color: #000;
+    --dark-mode-border-color: #272D31;
+    --dark-mode-hover-background-color: #444;
+    --primary-text-color: #1D2935;
+    --light-mode-main-color: #fff;
+    --light-mode-text-color: #243342;
+    --light-mode-body-color: #F6F8FA;
+    --border-color: #DCE6F2;
+    --font-family: 'Roboto', sans-serif;
+  }
+
+  body, .container {
+    font-family: var(--font-family);
+    background-color: var(--light-mode-main-color);
+    color: var(--light-mode-text-color);
+  }
+li.notification-item {
+    list-style-type: none;
+}
+
+.notification-text-div {
+    display: flex;
+    flex-direction: column;
+}
+
+.notification-selector-btn {
+    cursor: pointer;
+    background-color: var(--light-mode-body-color);
+    border: 1px solid var(--light-mode-body-color);
+    border-radius: 10px;
+    padding: 8px 16px;
+    text-align: left;
+    font-weight: bold;
+    font-size: .9em;
+    color: var(--light-mode-text-color);
+}
+
+.notification-selector {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 6px 0px;
+}
+
+.notification-header {
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.notification-container-header {
+    margin: 0 14px 6px 14px;
+    margin-top: 6px;
+    margin-bottom: 8px;
+}
+
+.notification-item {
+    border-top: 1px solid var(--border-color);
+    background-color: var(--light-mode-body-color);
+    padding: 10px;
+}
+
+.notification-item:last-child {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.clear-btn {
+    margin-left: auto;
+}
+
+.notification-item > div {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.notification-selector-btn.active {
+    background-color: #214E34;
+    color: var(--light-mode-main-color);
+}
+
+@media (prefers-color-scheme: dark) {
+    body, .container {
+        background-color: var(--dark-mode-body-color);
+        color: var(--dark-mode-text-color);
+    }
+
+    .notification-item {
+        background-color: var(--dark-mode-background-color);
+        border-color: var(--dark-mode-border-color);
+        color: var(--dark-mode-text-color);
+    }
+
+    .notification-item:last-child {
+        border-bottom: 1px solid var(--dark-mode-border-color);
+    }
+
+    .notification-selector-btn {
+        background-color: var(--dark-mode-background-color);
+        border: 1px solid var(--dark-mode-border-color);
+        color: var(--dark-mode-text-color);
+    }
+
+}

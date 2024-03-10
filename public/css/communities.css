@@ -424,7 +424,7 @@ div .mini-link-title {
   border: 1px solid var(--border-color);
   color: inherit;
   border-radius: 10px;
-  padding: 8px 16px;
+  padding: 8px 0;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
@@ -466,21 +466,27 @@ div .mini-link-title {
 
 #filterMenu {
   display: none;
+  border-radius: 10px;
   position: absolute;
   right: 0;
-  background-color: var(--light-mode-body-color);
+  padding: 10px 0;
+  background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
-  top: 0;
+  top: 38px;
   z-index: 10;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+
 }
 
 .filter-menu button {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  color: var(--light-mode-text-color);
   width: 100%;
+  font-size: 1rem;
   height: 35px;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   border: 0;
   background: 0;
   box-sizing: border-box;
@@ -656,6 +662,11 @@ div .mini-link-desc {
   align-items: center;
 }
 
+.reaction-button.active {
+  background-color: var(--border-color);
+  border-color: #69a4e8;
+}
+
 .company-logo {
   padding: 8px;
   width: 24px;
@@ -690,9 +701,9 @@ div .mini-link-desc {
 }
 
 .community-content {
-  padding: 8px;
+  padding: 0px;
+  margin: 0px 13px;
   padding-bottom: 13px;
-
 }
 
 .community-title {
@@ -714,11 +725,11 @@ div .mini-link-desc {
 
   .mobile-jobs-container {
     display: block;
-    margin-bottom: 21px;
+    margin-bottom: 13px;
   }
 
   .community-selector {
-    padding-top: 10px;
+    padding-top: 15px;
     padding-left: 13px;
     padding-right: 13px;
     display: flex;
@@ -758,7 +769,7 @@ div .mini-link-desc {
     }
 
     .job-header {
-      margin-top: 6px;
+      margin-top: 14px;
       margin-bottom: 8px
     }
 
@@ -784,9 +795,6 @@ div .mini-link-desc {
     height: calc(100dvh - 65px);
   }
 
-  .job-desc {
-    display: none;
-  }
   
   .job-flair {
     display:none;
@@ -981,13 +989,15 @@ div .mini-link-desc {
     background-color: var(--dark-mode-border-color);
   }
 
-  .main-reaction-button, .boost-button { 
-    background-color: var(--dark-mode-border-color);
-    color: var(--dark-mode-text-color);
-  }
-  .reaction-button {
-    background-color: var(--dark-mode-border-color);
+  .reaction-button, .main-reaction-button, .boost-button {
+    border-color: var(--dark-mode-border-color);
+    background-color: var(--dark-mode-body-color);
     color: var(--dark-mode-secondary-text-color);
+  }
+
+  .reaction-button.active {
+    background-color: #3C4B64;
+    border-color: #3D5B8B;
   }
   
   .comments {
@@ -1023,6 +1033,10 @@ div .mini-link-desc {
 
   .timestamp {
     color: #ccc;
+  }
+
+  .post:last-child {
+    border-bottom: 1px solid var(--dark-mode-border-color);
   }
   /* Post styling adjustments */
 
@@ -1092,8 +1106,8 @@ div .mini-link-desc {
   }
 
   .job {
-    background-color: var(--dark-mode-main-color);
-    border-color: var(--dark-mode-border-color);
+    background-color: var(--dark-mode-main-color) !important;
+    border-color: var(--dark-mode-border-color) !important;
   }
 
   .job:hover .job-content:hover {
@@ -1121,7 +1135,7 @@ div .mini-link-desc {
     background-color: var(--dark-mode-body-color);
   }
 
-  .post, .job-content {
+  .post {
       background-color: var(--dark-mode-main-color);
 
   }

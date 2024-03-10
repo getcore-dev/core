@@ -60,8 +60,8 @@ main {
 }
 
 .button-container {
-  padding: 10px 12px;
-    background-color: var(--light-mode-hover-color);
+  padding: 5px 12px;
+    background-color: var(--light-mode-main-color);
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -323,11 +323,30 @@ div .user-info, .header {
   text-decoration: none;
 }
 
+.post-userinfo {
+  display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+img.blog-avatar {
+  border-radius: 100%;
+  height: 28px;
+  aspect-ratio: 1/1;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.post-timestamp {
+  margin: 8px 0;
+}
+
 .post-title-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  margin-top: 0px;
 }
 
 .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button {
@@ -442,8 +461,8 @@ div .user-info, .header {
   align-items: center;
   gap: 4px;
   margin: 0 13px;
-  margin-top: 5px;
-  margin-bottom: 6px;
+  margin-top: 10px;
+  margin-bottom: 7px;
 }
 
 .link-image, .sidebar-poster-avatar {
@@ -628,6 +647,7 @@ div.repliers-avatar, div.repliees-avatar {
 
 .nested-comment {
   padding-left: 12px;
+  border-left: 1px solid var(--border-color);
 }
 
 .comment-main {
@@ -872,20 +892,20 @@ h4.preview-title {
 
 .editor-toolbar {
   display: none;
-  border-top: 0 !important;
-  border-bottom: 1px solid var(--border-color) !important;
+  border-top: 1px solid var(--border-color) !important;
+  border-bottom: 0 !important;
   border-left: 0 !important;
   border-right: 0 !important;
   border-radius: 0 !important;
 }
 
 .EasyMDEContainer .CodeMirror {
-  background-color: var(--light-mode-hover-color) !important; 
+  background-color: var(--light-mode-main-color) !important; 
   border-color: var(--border-color) !important;
   border-radius: 0 !important;
   border-left: 0 !important;
   border-right: 0 !important;
-  border-top: 0 !important;
+  border-top: 1px solid var(--border-color) !important;
   border-bottom: 1px solid var(--border-color) !important;
 }
 
@@ -950,7 +970,7 @@ p.preview-description {
 
 .tag-flair {
   display: inline-block;
-  padding: 4px 10px;
+  padding: 2px 4px;
   margin: 2px;
   background-color: var(--dark-mode-main-color);
   border: 1px solid var(--dark-mode-border-color);
@@ -973,6 +993,13 @@ p.preview-description {
 .github-repo-info .tags .tag-flair {
   background: #0C8346;
   border: 1px solid #0E954F;
+}
+
+.add-comment-button {
+  background: var(--light-mode-body-color);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 5px 16px;
 }
 
 .reply-buttons {
@@ -1033,8 +1060,8 @@ p.preview-description {
 .sort-option.active {
   background-color: var(--dark-mode-border-color); /* Active tab color */
 }
-  .reaction-button { 
-  background-color: var(--dark-mode-border-color);
+  .reaction-button, .add-comment-button { 
+  background-color: var(--dark-mode-body-color);
   border-color: var(--dark-mode-border-color);
   color: var(--dark-mode-background-text-color);
   }
@@ -1249,7 +1276,7 @@ p.preview-description {
   
   main {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     }
     
   .sidebar-container {
@@ -1318,6 +1345,10 @@ p.preview-description {
 
   .comment-timestamp {
     font-size: 14px;
+  }
+  
+  .comment-form {
+    margin-bottom: 10px;
   }
 
   .comments-section h3 {

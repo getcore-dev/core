@@ -19,6 +19,22 @@ const notificationQueries = {
     }
   },
 
+  getReadNotifications: async (userId) => {
+    try {
+      const result = await sql.query`
+        SELECT notifications.*, sender.username as senderUsername, receiver.username as receiverUsername, sender.avatar as senderProfilePicture
+        FROM notifications 
+        INNER JOIN users as sender ON notifications.senderUserId = sender.id
+        INNER JOIN users as receiver ON notifications.receiverUserId = receiver.id
+        WHERE notifications.receiverUserId = ${userId} AND notifications.isRead = 1 
+        ORDER BY notifications.createdAt DESC`;
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   // Mark a specific notification as read
   markAsRead: async (notificationId) => {
     try {
@@ -52,9 +68,12 @@ const notificationQueries = {
   getAllNotifications: async (userId) => {
     try {
       const result = await sql.query`
-        SELECT * FROM notifications 
-        WHERE userId = ${userId} 
-        ORDER BY createdAt DESC`;
+      SELECT notifications.*, sender.username as senderUsername, receiver.username as receiverUsername, sender.avatar as senderProfilePicture
+      FROM notifications 
+      INNER JOIN users as sender ON notifications.senderUserId = sender.id
+      INNER JOIN users as receiver ON notifications.receiverUserId = receiver.id
+      WHERE notifications.receiverUserId = ${userId}
+      ORDER BY notifications.createdAt DESC`;
       return result.recordset;
     } catch (err) {
       console.error("Database query error:", err);

@@ -15,64 +15,74 @@ const utilFunctions = {
       }
     );
   },
-  getPosts: async () => {
+  getPosts: async (sortBy = "best", userId) => {
     try {
-      // Query to get posts with boosts and detracts count
       const result = await sql.query`
-        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type,
+      SELECT 
+        p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id,
+        p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type,
         u.currentJob, u.username, u.avatar,
-              SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
-              SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-              SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
-              SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
-              SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
-              SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount
-        FROM posts p
-        INNER JOIN users u ON p.user_id = u.id
-        LEFT JOIN userPostActions upa ON p.id = upa.post_id
-        WHERE p.deleted = 0
-        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob,p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.link_description, p.link_image, p.link_title, p.post_type
-        ORDER BY p.created_at DESC
-      `;
-      /*
-      const postsToUpdate = result.recordset.filter(
-        (post) => post.post_type == "post"
-      );
-      for (let post of postsToUpdate) {
-        await sql.query`
-          UPDATE posts
-          SET post_type = 'discussion'
-          WHERE id = ${post.id}
-        `;
-        // Reflect the change in the local object to ensure the updated data is returned
-        post.post_type = "discussion";
-      }
-      */
+        SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
+        SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
+        SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+        SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
+        SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
+        SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
+        (
+          SELECT TOP 1 upa2.action_type
+          FROM userPostActions upa2
+          WHERE upa2.post_id = p.id AND upa2.user_id = ${userId}
+        ) as userReaction
+      FROM posts p
+      INNER JOIN users u ON p.user_id = u.id
+      LEFT JOIN userPostActions upa ON p.id = upa.post_id
+      WHERE p.deleted = 0
+      GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob,
+               p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.link_description,
+               p.link_image, p.link_title, p.post_type
+    `;
 
-      /*
-      // Optionally, update the posts table if there's a discrepancy
-      for (let post of result.recordset) {
-        if (
-          post.likeCount !== post.react_like ||
-          post.loveCount !== post.react_love ||
-          post.interestingCount !== post.react_interesting ||
-          post.curiousCount !== post.react_curious ||
-          post.celebrateCount !== post.react_celebrate
-        ) {
-          await sql.query`
-            UPDATE posts
-            SET react_like = ${post.likeCount},
-                react_love = ${post.loveCount},
-                react_interesting = ${post.interestingCount},
-                react_curious = ${post.curiousCount},
-                react_celebrate = ${post.celebrateCount}
-            WHERE id = ${post.id}
-          `;
-        }
-      }
-      */
+      let sortedResult;
 
-      return result.recordset;
+      switch (sortBy) {
+        case "trending":
+        case "top":
+          sortedResult = result.recordset.sort((a, b) => {
+            const totalReactionsA =
+              a.loveCount +
+              a.boostCount +
+              a.interestingCount +
+              a.curiousCount +
+              a.likeCount +
+              a.celebrateCount;
+            const totalReactionsB =
+              b.loveCount +
+              b.boostCount +
+              b.interestingCount +
+              b.curiousCount +
+              b.likeCount +
+              b.celebrateCount;
+            return totalReactionsB - totalReactionsA;
+          });
+          break;
+        case "new":
+          sortedResult = result.recordset.sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+          break;
+        case "explore":
+          // Implement your own logic for explore sorting
+          sortedResult = result.recordset.sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+          break;
+        default:
+          sortedResult = result.recordset.sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+      }
+
+      return sortedResult;
     } catch (err) {
       console.error("Database query error:", err);
       throw err;

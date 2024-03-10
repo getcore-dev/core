@@ -117,19 +117,40 @@ router.get("/posts/:postId", async (req, res) => {
 
     // Fetch all comments related to the post
     const query = `
-    SELECT 
-    c.id, c.created_at, c.deleted, c.comment, c.user_id, c.parent_comment_id, c.post_id,
-    SUM(CASE WHEN uca.action_type = 'LOVE' THEN 1 ELSE 0 END) AS loveCount,
-    SUM(CASE WHEN uca.action_type = 'B' THEN 1 ELSE 0 END) AS boostCount,
-    SUM(CASE WHEN uca.action_type = 'INTERESTING' THEN 1 ELSE 0 END) AS interestingCount,
-    SUM(CASE WHEN uca.action_type = 'CURIOUS' THEN 1 ELSE 0 END) AS curiousCount,
-    SUM(CASE WHEN uca.action_type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount,
-    SUM(CASE WHEN uca.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) AS celebrateCount
-FROM comments c
-LEFT JOIN UserCommentActions uca ON c.id = uca.comment_id
-WHERE c.post_id = '${postId}' AND c.deleted = 0
-GROUP BY c.id, c.created_at, c.deleted, c.comment, c.user_id, c.parent_comment_id, c.post_id
-ORDER BY c.created_at DESC;`;
+    SELECT
+      c.id,
+      c.created_at,
+      c.deleted,
+      c.comment,
+      c.user_id,
+      c.parent_comment_id,
+      c.post_id,
+      SUM(CASE WHEN uca.action_type = 'LOVE' THEN 1 ELSE 0 END) AS loveCount,
+      SUM(CASE WHEN uca.action_type = 'B' THEN 1 ELSE 0 END) AS boostCount,
+      SUM(CASE WHEN uca.action_type = 'INTERESTING' THEN 1 ELSE 0 END) AS interestingCount,
+      SUM(CASE WHEN uca.action_type = 'CURIOUS' THEN 1 ELSE 0 END) AS curiousCount,
+      SUM(CASE WHEN uca.action_type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount,
+      SUM(CASE WHEN uca.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) AS celebrateCount,
+      (
+        SELECT TOP 1 uca2.action_type
+        FROM UserCommentActions uca2
+        WHERE uca2.comment_id = c.id AND uca2.user_id = ${
+          req.params.user ? req.params.user.id : "NULL"
+        }
+      ) AS userReaction
+    FROM comments c
+    LEFT JOIN UserCommentActions uca ON c.id = uca.comment_id
+    WHERE c.post_id = '${postId}' AND c.deleted = 0
+    GROUP BY
+      c.id,
+      c.created_at,
+      c.deleted,
+      c.comment,
+      c.user_id,
+      c.parent_comment_id,
+      c.post_id
+    ORDER BY c.created_at DESC;
+  `;
 
     const result = await sql.query(query);
 

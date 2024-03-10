@@ -21,321 +21,57 @@
     <%- include('partials/com-btn-container', { }) %>
 
     <div class="jobs-container">
-      <h3>Openings</h3>
-      <% const jobPostings = [
-        {
-          companyName: "Amazon",
-          jobTitle: "Data Scientist",
-          jobLocation: "Seattle, WA",
-          jobOverview: "Utilize large datasets to uncover insights and inform business strategy decisions.",
-          jobType: "Full-Time",
-          jobSalary: "$150k/year",
-          jobBenefits: "401k, Flexible Hours, Relocation Assistance",
-          
-          companyLogo: "./src/amazonlogo.png"
-          },
-          
-          {
-          companyName: "Microsoft",
-          jobTitle: "Software Engineer",
-          jobLocation: "Redmond, WA",
-          jobOverview: "Design, build and manage cloud-based products using cutting edge technology.",
-          
-          jobType: "Full-Time",
-          jobSalary: "$130k/year",
-          jobBenefits: "Unlimited PTO, Equity Compensation, 401k Matching",
-          companyLogo: "./src/microsoftlogo.png"
-          },
-          
-          {
-          companyName: "Google",
-          jobTitle: "Product Manager",
-          
-          jobLocation: "Mountain View, CA",
-          jobOverview: "Lead cross-functional teams to deliver innovative Google products.",
-          jobType: "Full-Time",
-          jobSalary: "$160k/year",
-          jobBenefits: "Flexible Work Arrangements, Learning Stipends, Free Meals",
-          companyLogo: "./src/googlelogo.png"
-          },
-          
-          {
-          companyName: "Facebook",
-          jobTitle: "UI/UX Designer",
-          jobLocation: "Menlo Park, CA",
-          
-          jobOverview: "Create intuitive, engaging user experiences across our family of apps.",
-          jobType: "Full-Time",
-          jobSalary: "$135k/year",
-          jobBenefits: "Onsite Healthcare, Generous Leave, Development Programs",
-          companyLogo: "./src/facebooklogo.png"
-          },
-          
-          {
-          companyName: "Uber",
-          jobTitle: "Data Analyst",
-          jobLocation: "San Francisco, CA",
-          jobOverview: "Use SQL and Python to unlock insights to help enhance operations.",
-          
-          jobType: "Full-Time",
-          jobSalary: "$110k/year",
-          jobBenefits: "Flexible Schedule, Commuter Benefits, Catered Lunches",
-          companyLogo: "./src/uberlogo.png"
-          },
-          
-          {
-          companyName: "Airbnb",
-          
-          jobTitle: "Front End Engineer",
-          jobLocation: "San Francisco, CA",
-          jobOverview: "Develop robust web apps that connect people around the world.",
-          
-          jobType: "Full-Time",
-          jobSalary: "$140k/year",
-          jobBenefits: "Equity Awards, Annual Travel Stipends, 401k Plan",
-          companyLogo: "./src/airbnblogo.png",
-          },
-          
-          {
-          companyName: "Netflix",
-          jobTitle: "Cloud Architect",
-          
-          jobLocation: "Los Angeles, CA",
-          jobOverview: "Design and optimize cloud infrastructure powering our streaming platform.",
-          jobType: "Full-Time",
-          jobSalary: "$175k/year",
-          jobBenefits: "Unlimited Vacation Days, Stock Options, Full Medical Coverage",
-          
-          companyLogo: "./src/netflixlogo.png"
-          },
-          
-          {
-          companyName: "Tesla",
-          jobTitle: "Electrical Engineer",
-          jobLocation: "Fremont, CA",
-          jobOverview: "Help build batteries and powertrain components for eco-friendly vehicles.",
-          jobType: "Full-Time",
-          
-          jobSalary: "$125k/year",
-          jobBenefits: "Equity Awards, Clean Energy Credits, On-Site Fitness & Health",
-          companyLogo: "./src/teslalogo.png"
-          },
-          
-          {
-          companyName: "IBM",
-          jobTitle: "Cloud Developer",
-          jobLocation: "Raleigh, NC",
-          
-          jobOverview: "Write and manage code for industry-leading cloud computing products.",
-          
-          jobType: "Full-Time",
-          jobSalary: "$115k/year",
-          jobBenefits: "Flexible Work Options, Professional Development Funds, Wellness Programs",
-          
-          companyLogo: "./src/ibmlogo.png"
-          },
-          
-          {
-          companyName: "Intel",
-          
-          jobTitle: "Computer Architect",
-          jobLocation: "Santa Clara, CA",
-          jobOverview: "Design innovative chip architectures to power leading tech products.",
-          jobType: "Full-Time",
-          jobSalary: "$150k/year",
-          
-          jobBenefits: "Equity Compensation, Onsite Services, Health Premiums",
-          companyLogo: "./src/intellogo.png"
-          },
-          
-          {
-          
-          companyName: "Oracle",
-          jobTitle: "Database Administrator",
-          
-          jobLocation: "Austin, TX",
-          jobOverview: "Install, maintain, and optimize enterprise database management systems.",
-          
-          jobType: "Full-Time",
-          jobSalary: "$120k/year",
-          jobBenefits: "Flexible Working, 401k Matching, Professional Development",
-          
-          companyLogo: "./src/oraclelogo.png"
-          },
-          
-          {
-          companyName: "SAP",
-          jobTitle: "Sales Executive",
-          jobLocation: "Newtown Square, PA",
-          
-          jobOverview: "Strategize and close high value software and service deals globally.",
-          
-          jobType: "Full-Time",
-          jobSalary: "$130k/year + Commission",
-          
-          jobBenefits: "Stock Awards, Car Allowance, Expense Account",
-          companyLogo: "./src/saplogo.png"
-          
-          },
-          
-          {
-          companyName: "Samsung",
-          
-          jobTitle: "Embedded Software Engineer",
-          jobLocation: "San Jose, CA",
-          jobOverview: "Develop firmware and operating systems for smart consumer devices.",
-          
-          jobType: "Full-Time",
-          jobSalary: "$135k/year",
-          jobBenefits: "Equity Compensation, 401k Matching, Wellness Reimbursement",
-          companyLogo: "./src/samsunglogo.png"
-          },
-          
-          {
-          
-          companyName: "Qualcomm",
-          
-          jobTitle: "Computer Vision Engineer",
-          jobLocation: "San Diego, CA",
-          jobOverview: "Create software that can process, analyze, and understand digital images.",
-          
-          jobType: "Full-Time",
-          jobSalary: "$140k/year",
-          
-          jobBenefits: "Paid Time Off, Tuition Reimbursement, Healthcare Plan",
-          companyLogo: "./src/qualcommlogo.png"
-          },
-          
-          {
-          companyName: "Cisco",
-          
-          jobTitle: "Network Engineer",
-          
-          jobLocation: "San Jose, CA",
-          jobOverview: "Architect, implement and support networking solutions for global enterprise.",
-          jobType: "Full-Time",
-          
-          jobSalary: "$115k/year",
-          jobBenefits: "Profit Sharing, Certification Training, 401k Match",
-          companyLogo: "./src/ciscologo.png"
-          
-          },
-          
-          {
-          companyName: "PayPal",
-          
-          jobTitle: "Fraud Analyst",
-          jobLocation: "San Jose, CA",
-          
-          jobOverview: "Detect fraudulent activity and minimize risk exposure for PayPal.",
-          jobType: "Full-Time",
-          jobSalary: "$105k/year",
-          jobBenefits: "Unlimited PTO, Stock Options, Adoption/Surrogacy Benefits",
-          companyLogo: "./src/paypallogo.png"
-          },
-          
-          {
-          
-          companyName: "eBay",
-          
-          jobTitle: "Backend Engineer",
-          jobLocation: "San Jose, CA",
-          jobOverview: "Scale our platform and ensure smooth transactions for millions daily.",
-          
-          jobType: "Full-Time",
-          jobSalary: "$125k/year",
-          jobBenefits: "Flexible Working, Generous Leave, Equity Compensation",
-          
-          companyLogo: "./src/ebaylogo.png"
-          
-          },
-          
-          {
-          companyName: "HP",
-          
-          jobTitle: "Technical Support Specialist",
-          
-          jobLocation: "Boise, ID",
-          
-          jobOverview: "Provide excellent technical support to troubleshoot issues.",
-          jobType: "Full-Time",
-          jobSalary: "$68k/year",
-          jobBenefits: "Retirement Savings, Employee Discounts, Healthcare",
-          
-          companyLogo: "./src/hplogo.png"
-          },
-          
-          {
-          companyName: "Dell",
-          jobTitle: "QA Test Automation Engineer",
-          jobLocation: "Austin, TX",
-          
-          jobOverview: "Automate test cases for flagship hardware and software products.",
-          
-          jobType: "Full-Time",
-          jobSalary: "$105k/year",
-          jobBenefits: "Unlimited PTO, Equity Awards, Onsite Fitness Center",
-          
-          companyLogo: "./src/delllogo.png"
-          },
-          
-          {
-          companyName: "Adobe",
-          
-          jobTitle: "Software Development Engineer",
-          
-          jobLocation: "San Jose, CA",
-          jobOverview: "Build the next generation of Adobe's industry leading creative tools.",
-          
-          jobType: "Full-Time",
-          jobSalary: "$135k/year",
-          
-          jobBenefits: "Learning Allowances, Equity Awards, 3 Weeks Minimum PTO",
-          companyLogo: "./src/adobelogo.png"
-          
-          },
-          
-          {
-          
-          companyName: "Didi",
-          
-          jobTitle: "Data Scientist",
-          jobLocation: "Beijing, China",
-          
-          jobOverview: "Extract insights from massive mobility datasets to help us serve.",
-          jobType: "Full-Time",
-          
-          jobSalary: "$120k/year",
-          jobBenefits: "Annual Travel Allowance, Onsite Healthcare Clinic",
-          
-          companyLogo: "./src/didilogo.png"
-          },
-      ]; %>
-      <div class="job-list">
-        <% jobPostings.forEach(job => { %>
-        <div class="job">
-          <div class="job-content">
-            <div class="job-header">
-              <div class="company-logo-container">
-                <img src="<%= job.companyLogo %>" alt="Company Logo" class="company-logo" />
-              </div>
-              <div class="job-title-location">
-                <div class="company-name"><%= job.companyName %></div>
-                <div class="job-title"><%= job.jobTitle %></div>
-              </div>
-            </div>
-            <div class="job-body">
-              <div class="job-overview"><%= job.jobOverview %></div>
-            </div>
-            <div class="job-flairs">
-              <span class="job-flair"><%= job.jobType %></span>
-              <span class="job-flair" id="pay-flair"><%= job.jobSalary %></span>
-              <span class="job-flair" id="location-flair"><%= job.jobLocation %></span>
-            </div>
-
-          </div>
+      <div class="jobs-container-header">
+        <h3>Openings</h3>
+      </div>
+      <div class="jobs-sort-selector">
+        <% if (user && user.recruiter_id) { %>
+        <div class="create-job-button">
+          <button class="create-job" onclick="window.location.href='/jobs/create';">+</button>
         </div>
-        <% }); %>
+        <% } %>
+        <div class="sort-by">
+          <label for="sort-by"></label>
+          <select name="sort-by" id="sort-by">
+            <option value="relevance">Relevance</option>
+            <option value="newest">Newest</option>
+            <option value="salary">Salary</option>
+            <option value="location">Location</option>
+          </select>
+        </div>
+        <div class="filter-by">
+          <label for="filter-by"></label>
+          <select name="filter-by" id="filter-by">
+            <option value="all">All</option>
+            <option value="full-time">Full-Time</option>
+            <option value="part-time">Part-Time</option>
+            <option value="contract">Contract</option>
+            <option value="internship">Internship</option>
+          </select>
+        </div>
+
+        <div class="location-filter">
+          <select name="location-filter" id="location-filter">
+            <option value="remote">Remote</option>
+            <option value="seattle">Seattle</option>
+            <option value="san-francisco">San Francisco</option>
+            <option value="los-angeles">Los Angeles</option>
+            <option value="new-york">New York</option>
+            <option value="austin">Austin</option>
+            <option value="chicago">Chicago</option>
+            <option value="boston">Boston</option>
+            <option value="raleigh">Raleigh</option>
+            <option value="san-jose">San Jose</option>
+            <option value="mountain-view">Mountain View</option>
+            <option value="menlo-park">Menlo Park</option>
+            <option value="palo-alto">Palo Alto</option>
+            <option value="santa-clara">Santa Clara</option>
+          </select>
+        </div>
+
+      </div>
+      <div class="job-list">
+
       </div>
     </div>
     </div>

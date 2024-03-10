@@ -4,6 +4,8 @@ const searchController = require("../controllers/searchController");
 const cacheMiddleware = require("../middleware/cache");
 
 // Route for search
-router.get("/", cacheMiddleware(1200), searchController.searchAll);
+router.get("/", searchController.searchAll);
+
+router.get("/preview", searchController.searchPreview);
 
 module.exports = router;
