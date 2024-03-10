@@ -214,7 +214,7 @@ router.get("/:postId/reactions/:userId", async (req, res) => {
 
 router.get("/posts", async (req, res) => {
   try {
-    const user = req.user;
+    const user = req.user ? req.user : null;
     const sortBy = req.query.sortBy || "best";
     const posts = await utilFunctions.getPosts(sortBy, user ? user.id : null);
     console.log(posts);

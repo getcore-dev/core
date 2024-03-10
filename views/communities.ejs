@@ -320,7 +320,14 @@
 
 
     function fetchAndDisplayPosts(communityId = null, sortBy = 'best') {
-      const apiUrl = communityId ? `/api/communities/${communityId}/posts?sortBy=${sortBy}&userId=<%= user.id %>` : `/api/posts?sortBy=${sortBy}&userId=<%= user.id %>`;
+      const loggedIn = typeof user !== 'undefined' && user !== null;
+      let apiUrl;
+
+      if (loggedIn) {
+        apiUrl = communityId ? `/api/communities/${communityId}/posts?sortBy=${sortBy}&userId=${user.id}` : `/api/posts?sortBy=${sortBy}&userId=${user.id}`;
+      } else {
+        apiUrl = communityId ? `/api/communities/${communityId}/posts?sortBy=${sortBy}` : `/api/posts?sortBy=${sortBy}`;
+      }
       fetch(apiUrl)
         .then(response => response.json())
         .then(posts => {
