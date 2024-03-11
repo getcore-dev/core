@@ -197,6 +197,14 @@
     gitHubData = {}; // Set a default empty object in case of error
     gitHubCommitData = {};
   }
+
+  function formatDate(dateString) {
+  const date = new Date(dateString);
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${month}/${day}/${year}`;
+}
 %>
               <div class="project-link">
                 <div class="project-link-image">
@@ -208,8 +216,43 @@
                     <img src="/src/github.png" alt="GitHub Logo" class="github-logo" style="display: inline-block; background-color: white; border-radius: 100%; height: 16px; width: 16px; aspect-ratio: 1/1; padding: 0; margin: 0; margin-right: 5px;" />
                     <%= post.link %>
                   </a>
-                  <div class="project-link-description">
-                    <%= gitHubData.description %>
+                  <div>
+                    <div class="project-link-info">
+                      <h5 style="line-height: 1; margin: 2px 0;"><%= gitHubData.name %> <span><span class="material-symbols-outlined">
+                            history
+                          </span><%= formatDate(gitHubData.pushed_at) %></span>
+                      </h5>
+                      <div class="project-link-description">
+                        <%= gitHubData.description %>
+                      </div>
+                      <br>
+                      <div class="project-link-stats">
+                        <h5 style="line-height: 1; margin: 2px 0;">Stats </h5>
+                        <span class="tag-flair"><span class="material-symbols-outlined">
+                            code
+                          </span><%= gitHubData.language %></span>
+                        <span class="tag-flair"><span class="material-symbols-outlined">
+                            bug_report
+                          </span><%= gitHubData.open_issues %></span>
+
+                        <span class="tag-flair"><span class="material-symbols-outlined">
+                            star
+                          </span><%= gitHubData.stargazers_count %> stars</span>
+                        <span class="tag-flair"><span class="material-symbols-outlined">
+                            fork_right
+                          </span><%= gitHubData.forks %> forks</span>
+                        <span class="tag-flair"><span class="material-symbols-outlined">
+                            tag
+                          </span><%= gitHubData.size %></span>
+                      </div>
+                    </div>
+                    <div class="project-link-topics">
+                      <h5 style="line-height: 1; margin: 2px 0;">Tags</h5>
+                      <% gitHubData.topics.forEach(function(topic) { %>
+                      <span class="tag-flair"><%= topic %></span>
+                      <% }); %>
+                    </div>
+                    <span><%= gitHubData.license %></span>
                   </div>
                 </div>
               </div>

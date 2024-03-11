@@ -116,7 +116,7 @@
     text-align: center;
     text-decoration: none;
     background-color: #007bff;
-    color: var(--light-mode-text-color);
+    color: white;
     border-radius: 4px;
     transition: background-color 0.3s ease;
   }
