@@ -26,9 +26,6 @@ function lazyLoadJobDetails(jobId) {
             </div>
             <div class="job-details">
               <h2 class="job-title">${job.title}</h2>
-              <div class="salary-range">
-                <span class="salary-min">$${job.salary}</span> - <span class="salary-max">$${job.salary_max}</span>
-              </div>
               <div class="experience-level">
                 <span class="label">Experience Level:</span>
                 <span class="value">${job.experienceLevel}</span>
@@ -45,6 +42,9 @@ function lazyLoadJobDetails(jobId) {
                 <span class="label">Apply by:</span>
                 <span class="value">${job.expiration_date}</span>
               </div>
+              <div class="salary-range">
+              <span class="salary-min">$${job.salary}</span> - <span class="salary-max">$${job.salary_max}</span>
+            </div>
               <div class="job-description">
                 <h4>Job Description</h4>
                 <p>${job.description}</p>

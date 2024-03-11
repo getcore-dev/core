@@ -350,8 +350,8 @@ img.blog-avatar {
 }
 
 .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button {
-  background-color: var(--light-mode-body-color);
-  border: 1px solid var(--border-color);
+  background-color: var(--border-color);
+  border: 0;
   color: var(--light-mode-text-color);
   border-radius: 10px;
   padding: 5px 8px;
@@ -396,12 +396,12 @@ img.blog-avatar {
 
 .solution {
   display: flex;
-    flex-direction: column;
-    white-space-collapse: collapse;
-    background-color: #E3F2DC;
-    border: 2px solid #C3E3B5;
-    border-radius: 10px;
-    padding: 12px 10px;
+  flex-direction: column;
+  white-space-collapse: collapse;
+  background-color: #d3e9d3;
+  /* border: 2px solid #C3E3B5; */
+  border-radius: 10px;
+  padding: 18px 21px;
 }
 
 .solution-header {
@@ -580,8 +580,8 @@ img.blog-avatar {
   background-color: var(--light-mode-main-color);
   margin-top: 0;
   position: relative;
-  border-bottom: 1px solid var(--border-color);
-  border-top: 1px solid var(--border-color);
+  /* border-bottom: 1px solid var(--border-color); */
+  /* border-top: 1px solid var(--border-color); */
 }
 
 .post-body {
@@ -996,10 +996,10 @@ p.preview-description {
 }
 
 .add-comment-button {
-  background: var(--light-mode-body-color);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 5px 16px;
+  background: var(--border-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 5px 16px;
 }
 
 .reply-buttons {

@@ -90,6 +90,7 @@
                 <h2 class="post-title" style="<% if (post.post_type == "blog") { %> font-size: 28px; font-weight: bold; <% } %>"><%= post.title %></h2>
               </div>
 
+
               <div class="dropdown">
                 <button class="dropbtn">
                   <span class="material-symbols-outlined">more_horiz</span>
@@ -110,6 +111,9 @@
                   <% } %>
                 </div>
               </div>
+            </div>
+            <div class="views-div">
+              <%= post.views %> view<%- post.views > 1 ? 's' : '' %>
             </div>
             <% if (post.post_type == 'blog') { %>
             <div class="post-timestamp">
@@ -584,9 +588,6 @@ const totalReplies = countAllReplies(comment.replies);
     Edited: <%= formattedDate %>
     <% } %>
   </div>
-			<div class="views-div">
-				<%= post.views %>
-			</div>
   <div class="tags-div">
 
     <div class="tags">
