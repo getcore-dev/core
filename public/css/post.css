@@ -461,8 +461,8 @@ img.blog-avatar {
   align-items: center;
   gap: 4px;
   margin: 0 13px;
-  margin-top: 10px;
-  margin-bottom: 7px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .link-image, .sidebar-poster-avatar {
@@ -535,8 +535,8 @@ img.blog-avatar {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 18px;
+  padding-bottom: 18px;
 }
 .sort-selector {
   display: inline-flex;
@@ -655,9 +655,7 @@ div.repliers-avatar, div.repliees-avatar {
   flex-direction: column;
   width: 100%;
   padding: 0;
-  
   box-sizing: border-box;
-  gap: 7px;
 }
 
 .post-user-info {
@@ -712,6 +710,7 @@ div.repliers-avatar, div.repliees-avatar {
 
 .user-actions {
   display: flex;
+  margin-top: 3px;
   align-items: center;
   justify-content: space-between;
 }
