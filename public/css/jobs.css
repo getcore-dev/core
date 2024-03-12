@@ -66,12 +66,15 @@ main {
   background-color: var(--light-mode-body-color);
   border-color: var(--border-color);
   border-radius: 10px;
+  -webkit-appearance: none;
+-moz-appearance: none;
+appearance: none;
 }
 
 .create-job {
   border: 0;
   padding: 10px;
-  border: 1px solid var(--dark-mode-border-color);
+  color: white;
   background-color: #007bff;
   border-radius: 10px;
 }
