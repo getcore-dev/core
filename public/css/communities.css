@@ -721,6 +721,11 @@ div .mini-link-desc {
   .job { 
     min-width: 200px;
     }
+    
+    #posts-container {
+      border: 0;
+      }
+      
   .communities a {
     text-decoration: none;
     color: var(--primary-text-color)
