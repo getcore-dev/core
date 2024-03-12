@@ -1255,6 +1255,9 @@ p.preview-description {
     max-width: 100%;
     box-sizing: border-box;
   }
+  main {
+    max-height: 100%;
+    }
   
   .post-content {
     margin-bottom: 2px;
