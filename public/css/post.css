@@ -1059,7 +1059,7 @@ p.preview-description {
   background-color: var(--dark-mode-border-color); /* Active tab color */
 }
   .reaction-button, .add-comment-button { 
-  background-color: var(--dark-mode-body-color);
+  background-color: var(--dark-mode-border-color);
   border-color: var(--dark-mode-border-color);
   color: var(--dark-mode-background-text-color);
   }
