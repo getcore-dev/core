@@ -101,11 +101,10 @@ main {
 
   .job {
     background-color: var(--light-mode-body-color);
-    border-top: 1px solid var(--border-color);
-  }
-
-  .job:last-child {
-    border-bottom: 1px solid var(--border-color);
+    margin: 0 13px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 0;
   }
   
   .job-title-location {
@@ -192,7 +191,6 @@ main {
 
 .company-logo {
   width: 64px;
-  height: 64px;
   margin-right: 16px;
 }
 
@@ -211,7 +209,6 @@ main {
 .experience-level,
 .posted-date {
   font-size: 14px;
-  margin: 4px 0;
 }
 
 .apply-button {
@@ -306,10 +303,6 @@ div .material-symbols-outlined {
   .job {
     background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-border-color);
-  }
-
-  .job:last-child {
-    border-bottom: 1px solid var(--dark-mode-border-color);
   }
 
   .jobs-sort-selector select { 

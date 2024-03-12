@@ -177,7 +177,6 @@ h1, h2, h3, h4, h5, p {
 .navbar {
   background-color: var(--navbar-background-color); 
   color: var(--primary-text-color); 
-  border-bottom: 1px solid var(--border-color);
   display: flex; 
   flex-direction: column;
   align-items: center; 
@@ -276,7 +275,7 @@ h1, h2, h3, h4, h5, p {
   flex-direction: column;
   justify-content: space-around;
   width: 40px;
-  height: 17px;
+  height: 20px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -284,14 +283,14 @@ h1, h2, h3, h4, h5, p {
 
 .menu-bar {
   z-index: 1000;
-  width: 15px;
-  height: 1.5px;
+  width: 18px;
+  height: 2px;
   background-color: var(--light-mode-text-color);
   transition: all 0.3s ease;
 }
 
 .menu-button.active .top-bar {
-  transform: rotate(45deg) translate(3px, 3px);
+  transform: rotate(45deg) translate(4px, 4px);
 }
 
 .menu-button.active .middle-bar {
@@ -679,7 +678,7 @@ margin-top: 20px;
 
 
 #nb-icon {
-  font-size: 20px;
+  font-size: 23px;
   font-weight: 400;
   display: flex;
   justify-content: center;

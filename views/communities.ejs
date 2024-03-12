@@ -26,87 +26,12 @@
 
     <div id="posts-container" class="column">
       <% if (typeof community === 'undefined' || community == null) { %>
+      <h5 style="margin-left: 13px;
+    margin-top: 10px;">Communities</h5>
+
       <div class="community-selector">
       </div>
       <% } %>
-      <% const jobPostings = [
-        {
-          companyName: "Amazon",
-          jobTitle: "Data Scientist",
-          jobLocation: "Seattle, WA",
-          jobOverview: "Utilize large datasets to uncover insights and inform business strategy decisions.",
-          jobType: "Full-Time",
-          jobSalary: "$150k/yr",
-          jobBenefits: "401k, Flexible Hours, Relocation Assistance",
-          
-          companyLogo: "/src/amazonlogo.png"
-          },
-          
-          {
-          companyName: "Microsoft",
-          jobTitle: "Software Engineer",
-          jobLocation: "Redmond, WA",
-          jobOverview: "Design, build and manage cloud-based products using cutting edge technology.",
-          
-          jobType: "Full-Time",
-          jobSalary: "$130k/yr",
-          jobBenefits: "Unlimited PTO, Equity Compensation, 401k Matching",
-          companyLogo: "/src/microsoftlogo.png"
-          },
-          
-          {
-          companyName: "Google",
-          jobTitle: "Product Manager",
-          
-          jobLocation: "Remote",
-          jobOverview: "Lead cross-functional teams to deliver innovative Google products.",
-          jobType: "Full-Time",
-          jobSalary: "$160k/yr",
-          jobBenefits: "Flexible Work Arrangements, Learning Stipends, Free Meals",
-          companyLogo: "/src/googlelogo.png"
-          },
-          {
-  companyName: "Meta",
-  jobTitle: "Machine Learning Engineer",
-  jobLocation: "Menlo Park, CA",
-  jobOverview: "Develop and deploy cutting-edge machine learning models to enhance user experience across Meta's products.",
-  jobType: "Full-Time",
-  jobSalary: "$180k/yr",
-  jobBenefits: "Generous Equity Package, Comprehensive Health Coverage, Relocation Assistance",
-  companyLogo: "/src/facebooklogo.png"
-},
-{
-  companyName: "Netflix",
-  jobTitle: "Data Analyst",
-  jobLocation: "Los Gatos, CA",
-  jobOverview: "Analyze user data to drive content acquisition and personalization strategies.",
-  jobType: "Full-Time",
-  jobSalary: "$120k/yr",
-  jobBenefits: "Flexible Work Arrangements, Unlimited Vacation, Free Netflix Subscription",
-  companyLogo: "/src/netflixlogo.png"
-},
-{
-  companyName: "Tesla",
-  jobTitle: "Electrical Engineer",
-  jobLocation: "Fremont, CA",
-  jobOverview: "Design and develop innovative electrical systems for Tesla's electric vehicles.",
-  jobType: "Full-Time",
-  jobSalary: "$130k/yr",
-  jobBenefits: "Competitive Equity Package, Discounts on Tesla Products, Wellness Programs",
-  companyLogo: "/src/teslalogo.png"
-},
-{
-  companyName: "Salesforce",
-  jobTitle: "CS Manager",
-  jobLocation: "Remote",
-  jobOverview: "Build strong relationships with clients and ensure their success with Salesforce products.",
-  jobType: "Full-Time",
-  jobSalary: "$110k/yr",
-  jobBenefits: "Generous Paid Time Off, Professional Development Opportunities, Wellness Stipends",
-  companyLogo: "/src/salesforcelogo.png"
-}
-      ]; %>
-
       <% if (communityId != null) { %>
       <div class="post" style="margin-bottom: 0px; margin-top: 10px; border: 0; background-color: rgba(0,0,0,0);">
         <div class="community-content">
@@ -134,15 +59,10 @@
 
       <div class="mobile-jobs-container">
         <div class="job-header">
-          <h3>Openings</h3>
+          <h5>Openings</h5>
         </div>
         <div class="jobslist">
           <!-- Job previews will be dynamically loaded here -->
-        </div>
-        <div class="see-more">
-          <img loading="lazy" src="./src/core.png" class="company-logo" id="see-more-core-logo">
-          <span id="see-more-separator">&#183;</span>
-          <a href="/jobs">See More</a>
         </div>
       </div>
       <% } %>
@@ -151,36 +71,6 @@
       <div class="job-header">
         <h3>Openings</h3>
       </div>
-      <div class="jobslist">
-
-        <% jobPostings.forEach(job => { %>
-        <div class="job">
-          <div class="job-content">
-            <div class="jobs-header">
-              <div class="company-logo-container">
-                <img loading="lazy" src="<%= job.companyLogo %>" alt="Company Logo" class="company-logo" />
-              </div>
-              <div class="job-title-location">
-                <div class="job-posting-header">
-                  <div class="company-name"><%= job.companyName %> </div>
-                </div>
-                <div class="job-title"><%= job.jobTitle.slice(0, 20) %></div>
-              </div>
-            </div>
-            <div class="job-body">
-              <div class="job-desc"><%= job.jobOverview %></div>
-            </div>
-            <div class="job-flairs">
-              <span class="job-flair"><%= job.jobType %></span>
-              <span class="job-flair" id="pay-flair"><%= job.jobSalary %></span>
-              <span class="job-flair" id="location-flair"><%= job.jobLocation %></span>
-              <span class="job-flair" id="job-posting-deadline"><%= job.jobBenefits %></span>
-            </div>
-          </div>
-        </div>
-        <% }); %>
-      </div>
-
       <div class="see-more">
         <img loading="lazy" src="./src/core.png" class="company-logo" id="see-more-core-logo">
         <span id="see-more-separator">&#183;</span>
@@ -210,7 +100,7 @@
                   <div class="job-posting-header">
                     <div class="company-name">${job.company_name}</div>
                   </div>
-                  <div class="job-title">${job.title.slice(0, 20)}</div>
+                  <div class="job-title">${job.title.slice(0, 40)}</div>
                 </div>
               </div>
               <div class="job-body">
@@ -225,6 +115,7 @@
             </div>
           </div>
         `).join('');
+          jobslistContainer.innerHTML += '<div class="see-more"><img loading="lazy" src="./src/core.png" class="company-logo" id="see-more-core-logo"><span id="see-more-separator">&#183;</span><a href="/jobs">See More</a></div>';
         })
         .catch(error => {
           console.error('Error fetching job previews:', error);
@@ -291,7 +182,6 @@
 
             const averageColor = `rgba(${r}, ${g}, ${b}, 0.1)`; // Adjust the alpha value here
             jobContainer.style.backgroundColor = averageColor;
-            jobContainer.style.border = `1px solid ${averageColor}`;
           });
         }
       });
@@ -344,7 +234,7 @@
           communityHeader.className = 'community-header';
           communityHeader.innerHTML = `
         <div class="post-header-title">
-          <h3>Posts</h3>
+          <h5>Posts</h5>
         </div>
         <div class=post-header-buttons style="position:relative;">
                   <% if (user) { %>
@@ -499,9 +389,9 @@
             // boost button
             const boostButton = document.createElement("button");
             boostButton.className = `reaction-button boost-button-${post.id}`;
-if (post.userReaction === 'B') {
-  boostButton.classList.add('active');
-}
+            if (post.userReaction === 'B') {
+              boostButton.classList.add('active');
+            }
 
             boostButton.innerHTML = `⚡️ <span class='boost-count-${post.id}'>${post.boostCount}</span>`;
 
@@ -553,9 +443,9 @@ if (post.userReaction === 'B') {
               if (post[reaction.type.toLowerCase() + 'Count'] > 0) {
                 const button = document.createElement("button");
                 button.className = `reaction-button ${reaction.type.toLowerCase()}-button-${post.id}`;
-if (post.userReaction && post.userReaction.toLowerCase() === reaction.type.toLowerCase()) {
-      button.classList.add('active');
-    }
+                if (post.userReaction && post.userReaction.toLowerCase() === reaction.type.toLowerCase()) {
+                  button.classList.add('active');
+                }
                 button.onclick = () => interactWithPost(post.id, "<%= user %>", reaction.type);
 
                 const icon = document.createElement("span");
