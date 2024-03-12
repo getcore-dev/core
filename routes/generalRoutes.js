@@ -16,7 +16,6 @@ const upload = multer({ dest: "uploads/" });
 const { BlobServiceClient } = require("@azure/storage-blob");
 const AZURE_STORAGE_CONNECTION_STRING =
   process.env.AZURE_STORAGE_CONNECTION_STRING; // Ensure this is set in your environment variables
-const cacheMiddleware = require("../middleware/cache");
 
 // Home page
 router.get("/", viewController.renderHomePage);
@@ -57,11 +56,7 @@ router.get("/404", (req, res) => {
   res.render("error.ejs", { user: req.user, error });
 });
 
-router.get(
-  "/profile/:username",
-  cacheMiddleware(1200),
-  viewController.renderUserProfile
-);
+router.get("/profile/:username", viewController.renderUserProfile);
 
 // Jobs page
 router.get("/jobs", (req, res) => {
@@ -72,13 +67,12 @@ router.get("/jobs", (req, res) => {
 router.get(
   "/learning",
   checkAuthenticated,
-  cacheMiddleware(1200),
   (req, res) => {
     res.render("learning.ejs", { user: req.user });
   }
 );
 
-router.get("/updates", cacheMiddleware(1200), async (req, res) => {
+router.get("/updates", async (req, res) => {
   try {
     const commits = await githubService.fetchCommits();
 

@@ -18,66 +18,65 @@
 
 <body>
   <%- include('partials/navbar', { pagePath: 'home', user: user}) %>
+  <main>
+    <div class="container">
 
-  <div class="container">
-
-    <%- include('partials/com-btn-container', { }) %>
+      <%- include('partials/com-btn-container', { }) %>
 
 
-    <div id="posts-container" class="column">
-      <% if (typeof community === 'undefined' || community == null) { %>
-      <h5 style="margin-left: 13px;
+      <div id="posts-container" class="column">
+        <% if (typeof community === 'undefined' || community == null) { %>
+        <h5 style="margin-left: 13px;
     margin-top: 10px;">Communities</h5>
 
-      <div class="community-selector">
-      </div>
-      <% } %>
-      <% if (communityId != null) { %>
-      <div class="post" style="margin-bottom: 0px; margin-top: 10px; border: 0; background-color: rgba(0,0,0,0);">
-        <div class="community-content">
-          <div class="community-info">
-            <div class="community-title">
-              <span class="comm-title">
-                <h2 style="font-weight: 500"><%= community.name%></h2>
-              </span>
-              <span class="comm-short-title">/<%= community.shortname %></span>
-              <button class="btn" id="communityActionBtn" data-action="join">Join</button>
+        <div class="community-selector">
+        </div>
+        <% } %>
+        <% if (communityId != null) { %>
+        <div class="post" style="margin-bottom: 0px; margin-top: 10px; border: 0; background-color: rgba(0,0,0,0);">
+          <div class="community-content">
+            <div class="community-info">
+              <div class="community-title">
+                <span class="comm-title">
+                  <h2 style="font-weight: 500"><%= community.name%></h2>
+                </span>
+                <span class="comm-short-title">/<%= community.shortname %></span>
+                <button class="btn" id="communityActionBtn" data-action="join">Join</button>
 
-            </div>
-            <div class="community-flairs">
-              <span class="community-flair">👤 <%= community.MemberCount ? community.MemberCount : 0 %> members</span>
-              <span class="community-flair">✉️ <%= communityPostCount %> posts</span>
-              <span class="community-flair">🟢 1 active</span>
-            </div>
-            <div class="community-picture">
+              </div>
+              <div class="community-flairs">
+                <span class="community-flair">👤 <%= community.MemberCount ? community.MemberCount : 0 %> members</span>
+                <span class="community-flair">✉️ <%= communityPostCount %> posts</span>
+                <span class="community-flair">🟢 1 active</span>
+              </div>
+              <div class="community-picture">
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <% } %>
-      <% if (typeof community === 'undefined' || community == null) { %>
+        <% } %>
+        <% if (typeof community === 'undefined' || community == null) { %>
 
-      <div class="mobile-jobs-container">
+        <div class="mobile-jobs-container">
+          <div class="job-header">
+            <h5>Openings</h5>
+          </div>
+          <div class="jobslist">
+
+          </div>
+        </div>
+        <% } %>
+      </div>
+      <div class="jobs-container">
         <div class="job-header">
-          <h5>Openings</h5>
+          <h3>Openings</h3>
         </div>
         <div class="jobslist">
-          <!-- Job previews will be dynamically loaded here -->
+
         </div>
       </div>
-      <% } %>
     </div>
-    <div class="jobs-container">
-      <div class="job-header">
-        <h3>Openings</h3>
-      </div>
-      <div class="see-more">
-        <img loading="lazy" src="./src/core.png" class="company-logo" id="see-more-core-logo">
-        <span id="see-more-separator">&#183;</span>
-        <a href="/jobs">See More</a>
-      </div>
-    </div>
-  </div>
+  </main>
 
   <script defer>
     document.addEventListener('DOMContentLoaded', () => {
@@ -88,7 +87,13 @@
       fetch('/api/jobs')
         .then(response => response.json())
         .then(jobs => {
-          const jobslistContainer = document.querySelector('.jobslist');
+          const isMobile = window.matchMedia('(max-width: 768px)').matches;
+          let jobslistContainer;
+          if (isMobile) {
+            jobslistContainer = document.querySelector('#posts-container > div.mobile-jobs-container > div.jobslist');
+          } else {
+            jobslistContainer = document.querySelector('body > main > div.container > div.jobs-container > div.jobslist');
+          }
           jobslistContainer.innerHTML = jobs.map(job => `
           <div class="job" onclick="window.location.href='/jobs/${job.id}'">
             <div class="job-content">
@@ -248,22 +253,22 @@
           <div class="filter-menu" id="filterMenu">
             <button class="filter-button" onclick="filterPosts('trending')">
               <span style="margin-left: 10px;">Trending</span>
-                            <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">trending_up</span>
+                            <span class="material-symbols-outlined" style="font-weight: 300; font-size: 20px;">trending_up</span>
 
               </button>
             <button class="filter-button" onclick="filterPosts('new')">
             <span style="margin-left: 10px;">New</span>
-                        <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">new_releases</span>
+                        <span class="material-symbols-outlined" style="font-weight: 300; font-size: 20px;">new_releases</span>
 
             </button>
             <button class="filter-button" onclick="filterPosts('top')">
             <span style="margin-left: 10px;">Top</span>
-            <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">star</span>
+            <span class="material-symbols-outlined" style="font-weight: 300; font-size: 20px;">star</span>
 
             </button>
             <button class="filter-button" onclick="filterPosts('explore')">
             <span style="margin-left: 10px;">Explore</span>
-            <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">explore</span>
+            <span class="material-symbols-outlined" style="font-weight: 300; font-size: 20px;">explore</span>
 
             </button>
           </div>
@@ -314,7 +319,7 @@
 
             const postTypeDiv = document.createElement("span");
             postTypeDiv.className = "communities-text";
-            postTypeDiv.innerText = " posted a " + post.post_type + " in ";
+            postTypeDiv.innerText = " posted a " + post.post_type + " in " + post.community_name;
 
 
             usernameDiv.appendChild(postTypeDiv);
@@ -323,7 +328,7 @@
             communityLink.className = 'community';
             communityLink.innerText = "";
             usernameDiv.appendChild(communityLink);
-            fetchCommunity(post.communities_id, communityLink);
+
 
 
 
@@ -607,13 +612,6 @@
     });
     <% }%>
 
-    function fetchCommunity(community_id, container) {
-      return fetch(`/api/communities/${community_id}`)
-        .then(response => response.json())
-        .then(community => {
-          container.innerHTML = community.shortname;
-        });
-    }
 
     document.addEventListener("DOMContentLoaded", function() {
       var deadlineElements = document.querySelectorAll('#job-posting-deadline');

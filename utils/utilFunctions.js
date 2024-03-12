@@ -19,27 +19,31 @@ const utilFunctions = {
     try {
       const result = await sql.query`
       SELECT 
-        p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id,
-        p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views,
-        u.currentJob, u.username, u.avatar,
-        SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
-        SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-        SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
-        SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
-        SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
-        SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
-        (
-          SELECT TOP 1 upa2.action_type
-          FROM userPostActions upa2
-          WHERE upa2.post_id = p.id AND upa2.user_id = ${userId}
-        ) as userReaction
-      FROM posts p
-      INNER JOIN users u ON p.user_id = u.id
-      LEFT JOIN userPostActions upa ON p.id = upa.post_id
-      WHERE p.deleted = 0
-      GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob,
-               p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.link_description,
-               p.link_image, p.link_title, p.post_type, p.views
+  p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id,
+  p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views,
+  u.currentJob, u.username, u.avatar,
+  c.name AS community_name, c.shortname AS community_shortname,
+  SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
+  SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
+  SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+  SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
+  SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
+  SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
+  (
+    SELECT TOP 1 upa2.action_type
+    FROM userPostActions upa2
+    WHERE upa2.post_id = p.id AND upa2.user_id = ${userId}
+  ) as userReaction
+FROM posts p
+INNER JOIN users u ON p.user_id = u.id
+LEFT JOIN userPostActions upa ON p.id = upa.post_id
+LEFT JOIN communities c ON p.communities_id = c.id 
+WHERE p.deleted = 0
+GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, 
+         u.avatar, u.currentJob, c.name, c.shortname,
+         p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate,
+         p.post_type, p.views
+
     `;
 
       let sortedResult;
@@ -194,38 +198,55 @@ const utilFunctions = {
     }
   },
 
-getPostData: async (postId) => {
+  getPostData: async (postId) => {
     try {
-        // Increment views counter or set to 1 if it is NULL
-        await sql.query`UPDATE posts SET views = ISNULL(views, 0) + 1 WHERE id = ${postId}`;
+      await sql.query`UPDATE posts SET views = ISNULL(views, 0) + 1 WHERE id = ${postId}`;
 
-        // Fetch the post data after updating views
-        const result = await sql.query`
-            SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.updated_at, p.views,
-            u.username, u.id as user_id, u.avatar,
-            SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
-            SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-            SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
-            SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
-            SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
-            SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount
-            FROM posts p
-            INNER JOIN users u ON p.user_id = u.id
-            LEFT JOIN userPostActions upa ON p.id = upa.post_id
-            WHERE p.id = ${postId}
-            GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, u.avatar, u.id, p.post_type, p.updated_at, p.views
-        `;
-        const postData = result.recordset[0];
-        if (postData) {
-            postData.user = await utilFunctions.getUserDetails(postData.user_id);
-            postData.score = postData.boostCount - postData.detractCount;
-        }
-        return postData;
+      const result = await sql.query`
+  SELECT 
+    p.id, 
+    p.created_at, 
+    p.deleted, 
+    p.title, 
+    p.content, 
+    p.link, 
+    p.communities_id, 
+    p.link_description, 
+    p.link_image, 
+    p.link_title, 
+    p.react_like, 
+    p.react_love, 
+    p.react_curious, 
+    p.react_interesting, 
+    p.react_celebrate, 
+    p.post_type, 
+    p.updated_at, 
+    p.views,
+    u.username, 
+    u.id as user_id, 
+    u.avatar,
+    ISNULL(u2.username, 'unknown') AS user_username, -- Get username from user details, default to 'unknown'
+    ISNULL(u2.avatar, null) AS user_avatar, -- Get avatar from user details
+    SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
+    SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
+    SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+    SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
+    SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
+    SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount
+  FROM posts p
+  INNER JOIN users u ON p.user_id = u.id
+  LEFT JOIN userPostActions upa ON p.id = upa.post_id
+  LEFT JOIN users u2 ON u.id = u2.id -- This line added to include user details directly
+  WHERE p.id = ${postId}
+  GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, u.avatar, u.id, p.post_type, p.updated_at, p.views, u2.username, u2.avatar
+`;
+      const postData = result.recordset[0];
+      return postData;
     } catch (err) {
-        console.error("Database query error:", err);
-        throw err;
+      console.error("Database query error:", err);
+      throw err;
     }
-},
+  },
 
   getAllCommunities: async () => {
     try {

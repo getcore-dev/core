@@ -144,6 +144,12 @@
               <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar">
 
               <div class="avatar-dropdown" style="display: none;">
+                <div class="avatar-dropdown-user-info">
+                  <div class="avatar-dropdown-user-info-info">
+                    <%= user.firstname %> <%= user.lastname %>
+                  </div>
+                </div>
+
                 <a href="/profile/<%= user.username %>">
                   <div class="avatar-dropdown-item">
                     <span class="material-symbols-outlined" id="nb-icon">
@@ -152,16 +158,6 @@
                     Profile
                   </div>
                 </a>
-                <% if (user) { %>
-                <a href="/edit-profile">
-                  <div class="avatar-dropdown-item">
-                    <span class="material-symbols-outlined" id="nb-icon">
-                      settings
-                    </span>
-                    Settings
-                  </div>
-                </a>
-                <% } %>
                 <a href="#" onclick="document.getElementById('logoutForm').submit()">
                   <div class="avatar-dropdown-item">
                     <span class="material-symbols-outlined" id="nb-icon">

@@ -10,10 +10,9 @@ const { getLinkPreview } = require("../utils/utilFunctions");
 const userQueries = require("../queries/userQueries");
 const marked = require("marked");
 const { util } = require("chai");
-const cacheMiddleware = require("../middleware/cache");
 
 // Route for viewing all posts
-router.get("/posts", cacheMiddleware(1200), async (req, res) => {
+router.get("/posts", async (req, res) => {
   try {
     const posts = await postQueries.getPosts();
     res.render("posts.ejs", { user: req.user, error: null, posts: posts });

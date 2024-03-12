@@ -297,6 +297,12 @@ h1, h2, h3, h4, h5, p {
   opacity: 0;
 }
 
+.avatar-dropdown-item #nb-icon {
+  padding: 0;
+  margin: 0;
+  font-size: 1.2rem;
+}
+
 .menu-button.active .bottom-bar {
   transform: rotate(-45deg) translate(4px, -4px);
 }
@@ -627,6 +633,10 @@ margin-top: 20px;
     overflow-x: hidden;
   }
 
+  .avatar-dropdown {
+    right: -10px;
+  }
+
 
 
   .user-links .user-avatar img {
@@ -732,10 +742,9 @@ margin-top: 20px;
 .avatar-dropdown {
   position: absolute;
   top: 7px;
-  right: -10px;
   z-index: 2;
   background-color: var(--light-mode-main-color);
-  border-radius: 10px;
+  border-radius: 3px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -744,7 +753,6 @@ margin-top: 20px;
   margin-top: 52.8px;
   width: 125px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-  border: 1px solid var(--border-color);
 }
 
 .avatar-dropdown-item .material-symbols-outlined {

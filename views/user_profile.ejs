@@ -35,26 +35,34 @@
           <h2><%= otheruser.username %></h2>
           <p id="firstname-display"><%= otheruser.firstname %> <%= otheruser.lastname %></p>
 
-          <p id="email-display"><%= otheruser.email %></p>
           <div class="link-display">
             <img src="/src/github.png" style="height:20px;width:20px;">
 
             <p id="github-url-display"><% if (otheruser.github_url) { %>
-              <%= otheruser.github_url%>
-              <% } else { %>No Github URL yet.<% } %></p>
+              <a href="https://github.com/<%= otheruser.github_url%>">
+                <%= otheruser.github_url%>
+              </a>
+              <% } else { %>No Github URL yet.<% } %>
+            </p>
           </div>
           <div class="link-display">
             <img src="/src/leetcodeglyph.png" style="height:20px;width:20px;">
 
             <p id="leetcode-url-display"><% if (otheruser.leetcode_url) { %>
-              <%= otheruser.leetcode_url%>
-              <% } else { %>No LeetCode URL yet.<% } %></p>
+              <a href="https://leetcode.com/<%= otheruser.leetcode_url%>">
+                <%= otheruser.leetcode_url%>
+              </a>
+              <% } else { %>No LeetCode URL yet.<% } %>
+            </p>
           </div>
           <div class="link-display">
             <img src="/src/linkedin.png" style="height:20px;width:20px;">
             <p id="linkedin-url-display"><% if (otheruser.linkedin_url) { %>
-              <%= otheruser.linkedin_url%>
-              <% } else { %>No LinkedIn URL yet.<% } %></p>
+              <a href="https://www.linkedin.com/in/<%= otheruser.linkedin_url%>">
+                <%= otheruser.linkedin_url%>
+              </a>
+              <% } else { %>No LinkedIn URL yet.<% } %>
+            </p>
           </div>
         </div>
 
@@ -117,7 +125,7 @@
               <h4 class="post-title">
                 <%= post.title %>
               </h4>
-                <p class="post-content" style="font-size: 14px;"><%= post.content %></p>
+              <p class="post-content" style="font-size: 14px;"><%= post.content %></p>
 
             </div>
             <% }); %>

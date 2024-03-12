@@ -23,6 +23,10 @@
   --dark-mode-hover-background-color: #444;
 }
 
+main {
+  display: flex;
+    justify-content: center;
+}
 
 body {
   color: var(--light-mode-text-color);
@@ -30,16 +34,16 @@ body {
 }
 
 .post, .job {
-  display: flex; 
+  display: flex;
   background: var(--light-mode-main-color);
   border-radius: 10px;
   margin: 10px;
   flex-direction: row;
-  justify-content: space-between; 
-  position: relative; 
+  justify-content: space-between;
+  position: relative;
   height: auto;
-  flex: 0 1 auto; 
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1); 
+  flex: 0 1 auto;
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
   overflow-y: none;
 }
 
@@ -287,6 +291,9 @@ div.vote-interactions {
   margin-bottom: 0px;
 }
 
+#posts-container > h5 {
+  display: none;
+}
 
 
 #date-icon, #user-icon, #comments-icon, #score-icon {
@@ -411,7 +418,7 @@ div .mini-link-title {
 }
 
 .community-header, .job-header {
-  margin: 20px 10px 0px 10px;
+  margin: 10px 10px 0px 10px;
 }
 
 .mini-link-image {
@@ -544,6 +551,7 @@ div .mini-link-desc {
   overflow-y: hidden;
   flex-wrap: nowrap;
   flex-direction: row;
+  max-width: 1200px;
   justify-content: space-between;
 }
   
@@ -563,14 +571,14 @@ div .mini-link-desc {
 
 
 #posts-container {
+  border-right: 1px solid var(--border-color);
   width: 53%;
   flex: none;
   flex-direction: column;
   -webkit-scrollbar {
     display: none;
   }
-  
-  -ms-overflow-style: none; 
+  -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
@@ -601,18 +609,16 @@ div .mini-link-desc {
 }
 
 .jobs-container {
-  width: 28%;
+  width: 24%;
   max-width: 500px;
   flex: none;
   display: flex;
   flex-direction: column;
   margin: 0px;
-  margin-right: 1%;
   -webkit-scrollbar {
     display: none;
   }
-  
-  -ms-overflow-style: none; 
+  -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
@@ -826,6 +832,14 @@ div .mini-link-desc {
 
 }
 
+.post, body > main > div.container > div.jobs-container > div.jobslist .job {
+  border: 1px solid var(--border-color);
+}
+
+body > main > div.container > div.jobs-container > div.jobslist .job .job-content {
+  padding: 10px;
+
+}
 
 @media (max-width: 768px) {
   .post {
@@ -1044,7 +1058,13 @@ div .mini-link-desc {
   .post-info {
       color: #ccc; /* Lighter text color for post information */
   }
+  .post, body > main > div.container > div.jobs-container > div.jobslist .job {
+    border-color: var(--dark-mode-border-color);
+  }
 
+  #posts-container {
+    border-color: var(--dark-mode-border-color);
+  }
 
   /* Adjustments for buttons and interactive elements */
 
