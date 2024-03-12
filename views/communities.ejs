@@ -311,10 +311,18 @@
             usernameDiv.appendChild(usernameLink);
 
 
-            const communityText = document.createElement('span');
-            communityText.className = 'communities-text';
-            communityText.innerText = " posted a " + post.post_type + " in ";
-            usernameDiv.appendChild(communityText);
+            const viewsTextDiv = document.createElement('div');
+            viewsTextDiv.className = 'views-text';
+            viewsTextDiv.innerText = post.views + " views";
+
+
+						const postTypeDiv = document.createElement("div");
+						postTypeDiv.className = "posttype-text";
+						postTypeDiv.innerText = post.post_type;
+
+
+						usernameDiv.appendChild(postTypeDiv);
+            usernameDiv.appendChild(viewsTextDiv);
             const communityLink = document.createElement('a');
             communityLink.href = '/communities/' + post.communities_id;
             communityLink.className = 'community';
