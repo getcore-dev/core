@@ -140,12 +140,12 @@ div.vote-interactions {
   align-items: center;
 }
 
-.post-content, .job-content {
+.post-content {
   position: relative;
   margin: 7px 14px;
   flex-grow: 1; /* Take up remaining space */
   padding: 0; /* No padding */
-  padding-top: 1px;
+  padding-top: 8px;
   margin-bottom: 2px;
 }
 
@@ -780,7 +780,7 @@ div .mini-link-desc {
 
   
   .job-content {
-      margin: 7px;
+      margin: 8px 10px;
   }
 
   .thumbnail {
