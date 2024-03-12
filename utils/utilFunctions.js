@@ -20,7 +20,7 @@ const utilFunctions = {
       const result = await sql.query`
       SELECT 
         p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id,
-        p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type,
+        p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views,
         u.currentJob, u.username, u.avatar,
         SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
         SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
@@ -39,7 +39,7 @@ const utilFunctions = {
       WHERE p.deleted = 0
       GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob,
                p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.link_description,
-               p.link_image, p.link_title, p.post_type
+               p.link_image, p.link_title, p.post_type, p.views
     `;
 
       let sortedResult;
