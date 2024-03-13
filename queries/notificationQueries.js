@@ -19,6 +19,19 @@ const notificationQueries = {
     }
   },
 
+  getUnreadNotificationCount: async (userId) => {
+    try {
+      const result = await sql.query`
+        SELECT COUNT(*) as count
+        FROM notifications
+        WHERE receiverUserId = ${userId} AND isRead = 0`;
+      return result.recordset[0].count;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getReadNotifications: async (userId) => {
     try {
       const result = await sql.query`

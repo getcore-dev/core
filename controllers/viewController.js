@@ -30,6 +30,7 @@ const viewController = {
   renderUserProfile: async (req, res) => {
     try {
       const username = req.params.username;
+      const userId = req.user ? req.user.id : null;
       const otheruser = await userQueries.findByUsername(username);
       const posts = await userQueries.getPostsByUserIdUserProfile(otheruser.id);
       const comments = await userQueries.getCommentsByUserIdUserProfile(
@@ -37,6 +38,11 @@ const viewController = {
       );
 
       if (otheruser) {
+        let isFollowing = false;
+        if (userId) {
+          isFollowing = await userQueries.isFollowing(userId, otheruser.id);
+        }
+
         res.render("user_profile.ejs", {
           otheruser: otheruser,
           user: req.user,
@@ -44,6 +50,7 @@ const viewController = {
           comments: comments,
           editfunction: userQueries.updateField,
           linkify: utilFunctions.linkify,
+          isFollowing: isFollowing,
         });
       } else {
         res.render("404.ejs", { user: req.user });

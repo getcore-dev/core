@@ -92,22 +92,26 @@
 
 
               <div class="dropdown">
-                <button class="dropbtn">
+                <button class="dropbtn" onclick="showDropdown(event)">
                   <span class="material-symbols-outlined">more_horiz</span>
                 </button>
                 <div class="dropdown-content" style="display: none;">
+
                   <% if (user && user.username === post.username) { %>
+                  <div class="dropdown-item">
 
-                  <form action=" /post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
-                    <input type="hidden" name="_method" value="DELETE" />
-                    <button class="reaction-button" onclick="return confirmDeletion(this);">
-                      <p>🗑️</p>
+                    <form action=" /post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
+                      <input type="hidden" name="_method" value="DELETE" />
+                      <button class="reaction-button" onclick="return confirmDeletion(this);">
+                        <p>Delete Post</p>
+                      </button>
+                    </form>
+                  </div>
+                  <div class="dropdown-item">
+                    <button class="reaction-button" onclick="window.location.href = '/posts/<%= post.id %>/edit'">
+                      <p>Edit Post</p>
                     </button>
-                  </form>
-
-                  <button class="reaction-button" onclick="window.location.href='/posts/<%= post.id %>/edit'">
-                    <p>📝</p>
-                  </button>
+                  </div>
                   <% } %>
                 </div>
               </div>
@@ -155,26 +159,6 @@
                     <%= post.user.username %>
                   </div>
                 </a>
-              </div>
-              <div class="dropdown">
-                <button class="dropbtn" onclick="showDropdown(event)">
-                  <span class="material-symbols-outlined">more_horiz</span>
-                </button>
-                <div class="dropdown-content" style="display: none;">
-                  <% if (user && user.username === post.username) { %>
-
-                  <form action=" /post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
-                    <input type="hidden" name="_method" value="DELETE" />
-                    <button class="reaction-button" onclick="return confirmDeletion(this);">
-                      <p>Delete Post</p>
-                    </button>
-                  </form>
-
-                  <button class="reaction-button" onclick="window.location.href='/posts/<%= post.id %>/edit'">
-                    <p>Edit Post</p>
-                  </button>
-                  <% } %>
-                </div>
               </div>
             </div>
             <% } %>
@@ -302,7 +286,7 @@
               <% } %>
 
               <div class="user-interactions" style="<% if (post.post_type == "blog") { %>margin-bottom: 20px;<% } %>">
-                <button class="reaction-button" id="boost" onclick='<% if (user) { %>interactWithPost("<%= post.id %>", "<%= user %>", "boost")<% } else { %>window.location.href = "/login";<% } %>'>
+                <button class="reaction-button<% if (post.userReaction === 'B') { %> active<% } %>" id="boost" onclick='<% if (user) { %>interactWithPost("<%= post.id %>", "<%= user %>", "boost")<% } else { %>window.location.href = "/login";<% } %>'>
                   <span class="boost-image">⚡️</span> <span class="boost-count"><%= post.boostCount %></span>
                 </button>
                 <button class="mainReactionButton reaction-button" data-type="post" data-id="<%= post.id %>">😀
@@ -345,8 +329,9 @@
                 <% reactionTypes.forEach(reaction => { %>
                 <% if (reaction.count > 0) { %>
                 <% reactionsCount += reaction.count; %>
-                <button class="reaction-button" id="<%= reaction.type.toLowerCase() %>" onclick='<% if (user) { %>interactWithPost("<%= post.id %>", "<%= user %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
-                  <span class="<%= reaction.type.toLowerCase() %>-image"><%= reaction.icon %></span> <span class="<%= reaction.type.toLowerCase() %>-count"><%= reaction.count %></span>
+                <button class="reaction-button<% if (post.userReaction === reaction.type) { %> active<% } %>" id="<%= reaction.type.toLowerCase() %>" onclick='<% if (user) { %>interactWithPost("<%= post.id %>", "<%= user %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
+                  <span class="<%= reaction.type.toLowerCase() %>-image"><%= reaction.icon %></span>
+                  <span class="<%= reaction.type.toLowerCase() %>-count"><%= reaction.count %></span>
                 </button>
                 <% } %>
                 <% }); %>
@@ -484,9 +469,10 @@
                 <div class="user-actions">
 
                   <div class="comment-user-interactions <%= comment.id %>" data-type="comment" data-id="<%= comment.id %>">
-                    <button class="reaction-button" id="boost-<%= comment.id%>" onclick='<% if (user) { %>interactWithComment("<%= post.id %>", "<%= comment.id %>", "<%= user %>", "boost")<% } else { %>window.location.href = "/login";<% } %>'>
+                    <button class="reaction-button<% if (comment.userReaction && comment.userReaction.toLowerCase() === 'b') { %> active<% } %>" id="boost-<%= comment.id%>" onclick='<% if (user) { %>interactWithComment("<%= post.id %>", "<%= comment.id %>", "<%= user %>", "boost")<% } else { %>window.location.href = "/login";<% } %>'>
                       <span class="boost-image">⚡️</span> <span class="boost-count"><%= comment.boostCount %></span>
                     </button>
+
                     <button class="mainReactionButton reaction-button" data-type="comment" data-id="<%= comment.id %>">😀</button>
                     <div id="reactionPopup-comment-<%= comment.id %>" class="reaction-popup" style="display:none; position: absolute; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
                       <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'BOOST')">⚡️</button>
@@ -525,8 +511,8 @@
     ]; %>
                     <% reactionTypes.forEach(reaction => { %>
                     <% if (reaction.count > 0) { %>
-                    <button class="reaction-button <%= comment.id %>
-                  <% if (user && comment.userReaction && comment.userReaction.type === reaction.type) { %>active<% } %>" id="<%= reaction.type %>" onclick='<% if (user) { %>interactWithComment("<%= post.id %>", "<%= comment.id %>", "<%= user %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
+                    <button class="reaction-button <%= comment.id %> <% if (user && comment.userReaction && comment.userReaction.toLowerCase() === reaction.type.toLowerCase()) { %>active<% } %>" id="<%= reaction.type %>" onclick='<% if (user) { %>interactWithComment("<%= post.id %>", "<%= comment.id %>", "<%= user %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
+
                       <p><%= reaction.icon %> <%= reaction.count %></p>
                     </button>
                     <% } %>
@@ -588,10 +574,9 @@ const totalReplies = countAllReplies(comment.replies);
           <% } %>
           <% renderComments(post.comments); %>
 
-        </div>
-        <div class="post-footer" style="text-align: center;">
-          <% if (post.updated_at) { %>
-          <%
+          <div class="post-footer" style="text-align: center;">
+            <% if (post.updated_at) { %>
+            <%
               let postDate = new Date(post.created_at);
               let today = new Date();
               let formattedDate;
@@ -616,32 +601,33 @@ const totalReplies = countAllReplies(comment.replies);
                 formattedDate = years + 'y ago';
               }
             %>
-          Edited: <%= formattedDate %>
-          <% } %>
-        </div>
-        <div class="tags-div">
-
-          <div class="tags">
-            tags:
-            <% if (post.tags && post.tags.length > 0) { %>
-            <% post.tags.forEach(tag => { %>
-            <a href="#" class="tag"><%= tag.name %></a>
-            <% }); %>
-            <% } %>
-            <% if (post.post_type == "project") { %>
-
-            <% 
-let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {};
-%>
-            <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
-            <% gitHubData.topics.forEach(topic => { %>
-            <a href="#" class="tag"><%= topic %></a>
-            <% }); %>
+            Edited: <%= formattedDate %>
             <% } %>
           </div>
-          <% } %>
+          <div class="tags-div">
+
+            <div class="tags">
+              tags:
+              <% if (post.tags && post.tags.length > 0) { %>
+              <% post.tags.forEach(tag => { %>
+              <a href="#" class="tag"><%= tag.name %></a>
+              <% }); %>
+              <% } %>
+              <% if (post.post_type == "project") { %>
+
+              <% 
+let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {};
+%>
+              <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
+              <% gitHubData.topics.forEach(topic => { %>
+              <a href="#" class="tag"><%= topic %></a>
+              <% }); %>
+              <% } %>
+            </div>
+            <% } %>
 
 
+          </div>
         </div>
 
       </div>
@@ -700,14 +686,14 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
       var dropdownContent = event.currentTarget.nextElementSibling;
 
       // Check if the current dropdown is already open
-      var isCurrentlyShown = dropdownContent.style.display === 'block';
+      var isCurrentlyShown = dropdownContent.style.display === 'flex';
 
       // Close all dropdowns first
       closeAllDropdowns();
 
       // If the dropdown was not already open, open it
       if (!isCurrentlyShown) {
-        dropdownContent.style.display = 'block';
+        dropdownContent.style.display = 'flex';
       }
     }
 
@@ -927,6 +913,7 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
 
           const boostCount = reactionsData['boosts'] || 0;
           let boostButton = document.querySelector('#boost');
+
           const countSpan = boostButton.querySelector(`span.boost-count`);
           countSpan.innerText = ` ${boostCount}`;
         })

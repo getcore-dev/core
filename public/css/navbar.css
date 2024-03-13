@@ -111,6 +111,60 @@ h1, h2, h3, h4, h5, p {
   z-index: 1; /* Ensure it's above other content but below the search form */
 }
 
+.latest-commit-banner {
+  position: absolute;
+  background-color: var(--active-indicator-color);
+  width: 100%;
+  color: white;
+  padding: 10px;
+  z-index: 3;
+  box-sizing: border-box;
+}
+
+.latest-commit-main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+
+#closeCommitBanner {
+  border: 0;
+  background-color: transparent;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.latest-commit-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+
+.latest-commit-message,
+.latest-commit-author,
+.latest-commit-date {
+  margin: 0 10px;
+}
+
+.count-bubble {
+  background-color: #D72638;
+  border: 1px solid #DD4050;
+  color: #fff;
+  border-radius: 50%;
+  padding: 1px;
+  font-size: 12px;
+  position: absolute;
+  height: 16px;
+  margin-left: 21px;
+  font-weight: bold;
+  text-align: center;
+  width: 16px;
+  aspect-ratio: 1/1;
+  line-height: 1rem;
+}
+
 
 
 .search-form {
@@ -317,22 +371,6 @@ h1, h2, h3, h4, h5, p {
   max-height: 65px; /* Maximum height of the logo */
   padding: 5px 0px; /* Padding around the logo */
   object-fit: cover;
-}
-.notification-count {
-  background-color: #D72638;
-  border: 1px solid #DD4050;
-  color: #fff;
-  border-radius: 50%;
-  padding: 1px;
-  font-size: 12px;
-  position: absolute;
-  height: 16px;
-  margin-left: 21px;
-  font-weight: bold;
-  text-align: center;
-  width: 16px;
-  aspect-ratio: 1/1;
-  line-height: 1rem;
 }
 
 .navbar-button.active {

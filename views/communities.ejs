@@ -24,7 +24,7 @@
       <%- include('partials/com-btn-container', { }) %>
 
 
-      <div id="posts-container" class="column">
+      <div id="posts-container" data-community-id="<%= communityId %>" class="column">
         <% if (typeof community === 'undefined' || community == null) { %>
         <h5 style="margin-left: 13px;
     margin-top: 10px;">Communities</h5>
@@ -33,7 +33,7 @@
         </div>
         <% } %>
         <% if (communityId != null) { %>
-        <div class="post" style="margin-bottom: 0px; margin-top: 10px; border: 0; background-color: rgba(0,0,0,0);">
+        <div class="community" style="margin: 0 13px; margin-bottom: 0px; margin-top: 10px; border: 0; background-color: rgba(0,0,0,0);">
           <div class="community-content">
             <div class="community-info">
               <div class="community-title">
@@ -43,6 +43,9 @@
                 <span class="comm-short-title">/<%= community.shortname %></span>
                 <button class="btn" id="communityActionBtn" data-action="join">Join</button>
 
+              </div>
+              <div class="comm-description">
+                <%= community.description%>
               </div>
               <div class="community-flairs">
                 <span class="community-flair">👤 <%= community.MemberCount ? community.MemberCount : 0 %> members</span>
@@ -239,17 +242,18 @@
           communityHeader.className = 'community-header';
           communityHeader.innerHTML = `
         <div class="post-header-title">
-          <h5>Posts</h5>
+          <h5>${sortBy.charAt(0).toUpperCase() + sortBy.slice(1)} Posts</h5> 
         </div>
         <div class=post-header-buttons style="position:relative;">
+                  <button class="header-button" id="filter-button" onclick="toggleFilterMenu()">
+<span class="material-symbols-outlined">
+filter_list
+</span>
+          </button>
                   <% if (user) { %>
             <button class="header-button" id="post-button" onclick="window.location.href='/post/create'" style="padding: 6px 13px; margin-right: 7px;">+</button>
           <% } %>
-          <button class="header-button" id="filter-button" onclick="toggleFilterMenu()">${sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
-            <span class="material-symbols-outlined">
-              expand_more
-            </span>
-          </button>
+
           <div class="filter-menu" id="filterMenu">
             <button class="filter-button" onclick="filterPosts('trending')">
               <span style="margin-left: 10px;">Trending</span>
@@ -527,6 +531,13 @@
           });
           return Promise.all(fetchPromises);
 
+          if (posts.length === 0) {
+            const noPostsDiv = document.createElement('div');
+            noPostsDiv.className = 'no-posts';
+            noPostsDiv.innerText = 'No posts to show';
+            postsContainer.appendChild(noPostsDiv);
+          }
+
         })
         .catch(error => console.error('Error fetching posts:', error));
     }
@@ -702,7 +713,22 @@
       }
     }
 
-    document.addEventListener("DOMContentLoaded", () => fetchAndDisplayPosts(<%= communityId %>));
+    function filterPosts(filter) {
+      const postsContainer = document.getElementById('posts-container');
+      const communityId = postsContainer.dataset.communityId;
+      const posts = postsContainer.getElementsByClassName('post');
+
+      while (posts.length > 0) {
+        posts[0].parentNode.removeChild(posts[0]);
+      }
+
+      fetchAndDisplayPosts(communityId, filter.toLowerCase());
+    }
+    document.addEventListener("DOMContentLoaded", () => {
+      const postsContainer = document.getElementById('posts-container');
+      const communityId = postsContainer.dataset.communityId;
+      fetchAndDisplayPosts(communityId);
+    });
 
     function interactWithPost(postId, user, action) {
       if (!user) {
@@ -803,21 +829,6 @@
       } else {
         reactionButton.classList.add('active');
       }
-    }
-
-
-
-
-    function filterPosts(filter) {
-      const postsContainer = document.getElementById('posts-container');
-      const posts = postsContainer.getElementsByClassName('post');
-
-      // Remove all elements with the 'post' class
-      while (posts.length > 0) {
-        posts[0].parentNode.removeChild(posts[0]);
-      }
-
-      fetchAndDisplayPosts(null, filter.toLowerCase());
     }
   </script>
 </body>

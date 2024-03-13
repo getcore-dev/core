@@ -38,7 +38,7 @@
 #com-btn-container {
   padding: 15px 15px;
   display: flex;
-  background-color: var(--light-mode-body-color);
+  background-color: var(--light-mode-main-color);
   flex-direction: column;
   overflow-x: hidden;
   scrollbar-width: none;

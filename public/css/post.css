@@ -50,7 +50,7 @@ main {
 }
 
 .main-container {
-  max-height: 100vh;
+  max-height: calc(100vh - 85px);
   overflow: hidden;
 }
 
@@ -816,12 +816,16 @@ a.comment-user-info:hover {
 .dropdown-content {
   display: none;
   position: absolute;
-  padding: 5px;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
   background-color: var(--light-mode-main-color);
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
   font-size: 16px;
   font-size: 1rem;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .dropdown-content button {
@@ -953,6 +957,11 @@ p.preview-description {
   box-sizing: border-box;
 }
 
+.reaction-button.active {
+  background-color: #2fa8dd4a;
+  color: #3073c1;
+  border-color: #69a4e8;
+}
 
 .project-link {
   background-color: var(--border-color);
@@ -1018,6 +1027,11 @@ p.preview-description {
   border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 5px 16px;
+}
+
+.add-comment-button:hover {
+  cursor: pointer;
+background-color: var(--light-mode-button-hover-color);
 }
 
 .reply-buttons {
@@ -1212,7 +1226,9 @@ p.preview-description {
     color: #e0e0e0; /* Light text color for preview titles and descriptions */
   }
 
-  /* Add any additional dark mode styles for other elements as needed */
+  .add-comment-button:hover {
+    background-color: var(--dark-mode-button-hover-color);
+  }
 }
 
 /* Style for the comment input field */
@@ -1266,7 +1282,10 @@ p.preview-description {
   .sidebar-container {
     margin-top: 0px;
     padding-top: 2px;
+  }
 
+  .dropdown-content {
+    right: 0;
   }
   .sidebar-container {
     padding: 0;
@@ -1337,6 +1356,7 @@ p.preview-description {
   }
   .main-container {
     width: 100%;
+    max-height: calc(100vh - 65px);
   }
 
 

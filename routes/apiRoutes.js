@@ -9,6 +9,7 @@ const storage = multer.diskStorage({
     cb(null, "profile-" + Date.now() + ".jpg");
   },
 });
+const githubService = require("../services/githubService");
 const cacheMiddleware = require("../middleware/cache");
 const NodeCache = require("node-cache");
 const cache = new NodeCache({ stdTTL: 1200 }); // TTL is 20 minutes
@@ -18,6 +19,20 @@ const marked = require("marked");
 const postQueries = require("../queries/postQueries");
 const jobQueries = require("../queries/jobQueries");
 const sql = require("mssql");
+
+const renderer = new marked.Renderer();
+renderer.image = function (href, title, text) {
+  // Return HTML string with the image and its alt text as a caption below
+  return `
+      <div class="image-container">
+          <img src="${href}" alt="${text}">
+          <p class="alt-text">${text}</p>
+      </div>
+  `;
+};
+marked.setOptions({
+  renderer: renderer,
+});
 
 router.get("/getUsername/:id", async (req, res) => {
   const id = req.params.id;
@@ -133,7 +148,8 @@ router.get("/posts/:postId/comments", async (req, res) => {
 router.get("/posts/:postId", async (req, res) => {
   try {
     const postId = req.params.postId;
-    const postData = await utilFunctions.getPostData(postId);
+    const user = req.user ? req.user : null;
+    const postData = await utilFunctions.getPostData(postId, user);
     postData.content = marked(postData.content);
     res.json(postData);
   } catch (err) {
@@ -207,12 +223,20 @@ router.get("/:postId/reactions/:userId", async (req, res) => {
   }
 });
 
+router.get("/get-latest-commit", cacheMiddleware(1200), async (req, res) => {
+  try {
+    const latestCommit = await githubService.getLatestCommit();
+    res.json(latestCommit);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching latest commit" });
+  }
+});
+
 router.get("/posts", async (req, res) => {
   try {
     const user = req.user ? req.user : null;
     const sortBy = req.query.sortBy || "best";
     const posts = await utilFunctions.getPosts(sortBy, user ? user.id : null);
-    console.log(posts);
     res.json(posts);
   } catch (err) {
     res.status(500).send(err.message);
