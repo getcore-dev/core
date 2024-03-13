@@ -15,7 +15,7 @@ const utilFunctions = {
       }
     );
   },
-  getPosts: async (sortBy = "best", userId) => {
+  getPosts: async (sortBy = "trending", userId) => {
     try {
       const result = await sql.query`
       SELECT 
@@ -50,6 +50,16 @@ GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, 
 
       switch (sortBy) {
         case "trending":
+          sortedResult = result.recordset.sort((a, b) => {
+            const dateA = new Date(a.created_at);
+            const dateB = new Date(b.created_at);
+            const timeDiffA = Math.abs(Date.now() - dateA.getTime());
+            const timeDiffB = Math.abs(Date.now() - dateB.getTime());
+            const weightedViewsA = a.views / timeDiffA;
+            const weightedViewsB = b.views / timeDiffB;
+            return weightedViewsB - weightedViewsA;
+          });
+          break;
         case "top":
           sortedResult = result.recordset.sort((a, b) => {
             const totalReactionsA =
@@ -75,10 +85,7 @@ GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, 
           );
           break;
         case "explore":
-          // Implement your own logic for explore sorting
-          sortedResult = result.recordset.sort(
-            (a, b) => new Date(b.created_at) - new Date(a.created_at)
-          );
+          sortedResult = result.recordset.sort((a, b) => b.views - a.views);
           break;
         default:
           sortedResult = result.recordset.sort(
