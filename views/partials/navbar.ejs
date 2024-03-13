@@ -205,21 +205,35 @@
     const banner = document.getElementById('latestCommitBanner');
     const closeButton = document.getElementById('closeCommitBanner');
 
-    // Function to fetch and display the latest commit information
+
+    function createHashFromString(string) {
+      var hash = 0,
+        i, chr;
+      if (string.length === 0) return hash;
+      for (i = 0; i < string.length; i++) {
+        chr = string.charCodeAt(i);
+        hash = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+      }
+      return hash;
+    }
+
     function fetchLatestCommit() {
       fetch('/api/get-latest-commit')
         .then(response => response.json())
         .then(data => {
           const commitMessage = data.message;
-          const commitAuthor = data.author;
-          const commitDate = new Date(data.date).toLocaleString();
-          document.querySelector('.latest-commit-message').textContent = commitMessage + ' by ' + commitAuthor;
-          document.querySelector('.latest-commit-date').textContent = "Updated at: " + commitDate.split(',')[0] + ' ' + commitDate.split(',')[1];
+          const commitHash = createHashFromString(commitMessage);
+          const storedHash = localStorage.getItem('commitBannerClosed');
 
-          // Check if the banner has been closed before
-          const isBannerClosed = localStorage.getItem('commitBannerClosed');
-          if (!isBannerClosed) {
+          if (storedHash !== String(commitHash)) {
+            const commitAuthor = data.author;
+            const commitDate = new Date(data.date).toLocaleString();
+            document.querySelector('.latest-commit-message').textContent = commitMessage + ' by ' + commitAuthor;
+            document.querySelector('.latest-commit-date').textContent = "Updated at: " + commitDate.split(',')[0] + ' ' + commitDate.split(',')[1];
             banner.style.display = 'block';
+          } else {
+            banner.style.display = 'none';
           }
         })
         .catch(error => {
@@ -230,7 +244,10 @@
     // Function to close the banner and store the state in localStorage
     function closeBanner() {
       banner.style.display = 'none';
-      localStorage.setItem('commitBannerClosed', 'true');
+      // Get the commit message again to create a hash
+      const commitMessage = document.querySelector('.latest-commit-message').textContent;
+      const commitHash = createHashFromString(commitMessage.split(' by ')[0]); // Assuming commit message is before ' by '
+      localStorage.setItem('commitBannerClosed', String(commitHash));
     }
 
     // Event listener for the close button
