@@ -10,7 +10,12 @@ const userQueries = {
           SELECT COUNT(*) 
           FROM user_relationships 
           WHERE followed_id = u.id
-        ) AS followerCount
+        ) AS followerCount,
+        (
+          SELECT COUNT(*) 
+          FROM user_relationships 
+          WHERE follower_id = u.id
+        ) AS followingCount
       FROM users u
       WHERE u.username = ${username}`;
 
@@ -265,7 +270,7 @@ const userQueries = {
   getFollowing: async (userId) => {
     try {
       const result = await sql.query`
-        SELECT u.id, u.username
+        SELECT u.id, u.username, u.avatar, u.firstname, u.lastname
         FROM users u
         JOIN user_relationships r ON u.id = r.followed_id
         WHERE r.follower_id = ${userId}`;
@@ -279,7 +284,7 @@ const userQueries = {
   getFollowers: async (userId) => {
     try {
       const result = await sql.query`
-        SELECT u.id, u.username
+        SELECT u.id, u.username, u.avatar, u.firstname, u.lastname
         FROM users u
         JOIN user_relationships r ON u.id = r.follower_id
         WHERE r.followed_id = ${userId}`;

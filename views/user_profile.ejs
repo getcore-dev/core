@@ -50,7 +50,13 @@
             <p id="linkedin-url-display"> <% if (otheruser.linkedin_url) { %> <a href="https://www.linkedin.com/in/<%= otheruser.linkedin_url %>"><%= otheruser.linkedin_url %></a> <% } else { %> No LinkedIn URL yet. <% } %> </p>
           </div>
           <div class="follower-count">
-            <p>Followers: <span id="followerCount"><%= otheruser.followerCount %></span></p>
+            <div class="link-display">
+              <p><a href="/profile/<%= otheruser.username %>/followers">Followers: <span id="followerCount"> <%= otheruser.followerCount %> </a></span></p>
+            </div>
+            <div class="link-display">
+              <p><a href="/profile/<%= otheruser.username %>/following">Following: <span id="followCount"> <%= otheruser.followingCount %></a></span></p>
+            </div>
+
           </div>
         </div>
 

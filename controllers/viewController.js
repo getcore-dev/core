@@ -19,6 +19,37 @@ const viewController = {
     }
   },
 
+  renderFollowers: async (req, res) => {
+    try {
+      const username = req.params.username;
+      const user = await userQueries.findByUsername(username);
+      const followers = await userQueries.getFollowers(user.id);
+      res.render("user_followers.ejs", { user: req.user, followers });
+    } catch (err) {
+      res.render("error.ejs", {
+        user: req.user,
+        error: { message: err.message },
+      });
+    }
+  },
+
+  renderFollowing: async (req, res) => {
+    try {
+      const username = req.params.username;
+      const user = await userQueries.findByUsername(username);
+      const following = await userQueries.getFollowing(user.id);
+      res.render("user_following.ejs", {
+        user: req.user,
+        followers: following, // lmfao. 
+      });
+    } catch (err) {
+      res.render("error.ejs", {
+        user: req.user,
+        error: { message: err.message },
+      });
+    }
+  },
+
   renderLogin: async (req, res) => {
     res.render("login.ejs", { user: req.user });
   },

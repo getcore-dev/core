@@ -19,31 +19,48 @@ const utilFunctions = {
     try {
       const result = await sql.query`
       SELECT 
-  p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id,
-  p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views,
-  u.currentJob, u.username, u.avatar,
-  c.name AS community_name, c.shortname AS community_shortname,
-  SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
-  SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-  SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
-  SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
-  SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
-  SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
-  (
-    SELECT TOP 1 upa2.action_type
-    FROM userPostActions upa2
-    WHERE upa2.post_id = p.id AND upa2.user_id = ${userId}
-  ) as userReaction
-FROM posts p
-INNER JOIN users u ON p.user_id = u.id
-LEFT JOIN userPostActions upa ON p.id = upa.post_id
-LEFT JOIN communities c ON p.communities_id = c.id 
-WHERE p.deleted = 0
-GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, 
-         u.avatar, u.currentJob, c.name, c.shortname,
-         p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate,
-         p.post_type, p.views
-
+        p.id, 
+        p.created_at, 
+        p.deleted, 
+        p.title, 
+        p.content, 
+        p.link, 
+        p.communities_id, 
+        p.react_like, 
+        p.react_love, 
+        p.react_curious, 
+        p.react_interesting, 
+        p.react_celebrate, 
+        p.post_type, 
+        p.views, 
+        u.currentJob, 
+        u.username, 
+        u.avatar,
+        CASE WHEN ur.follower_id IS NOT NULL THEN 1 ELSE 0 END AS is_following,
+        c.name AS community_name, 
+        c.shortname AS community_shortname,
+        SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
+        SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
+        SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+        SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
+        SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
+        SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
+        (
+          SELECT TOP 1 upa2.action_type 
+          FROM userPostActions upa2
+          WHERE upa2.post_id = p.id AND upa2.user_id = ${userId}
+        ) as userReaction
+      FROM posts p
+      INNER JOIN users u ON p.user_id = u.id
+      LEFT JOIN userPostActions upa ON p.id = upa.post_id
+      LEFT JOIN communities c ON p.communities_id = c.id
+      LEFT JOIN user_relationships ur ON u.id = ur.followed_id AND ur.follower_id = ${userId}
+      WHERE p.deleted = 0
+      GROUP BY 
+        p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, 
+        p.communities_id, u.avatar, u.currentJob, c.name, c.shortname, 
+        p.react_like, p.react_love, p.react_curious, p.react_interesting, 
+        p.react_celebrate, p.post_type, p.views, ur.follower_id
     `;
 
       let sortedResult;
@@ -52,21 +69,73 @@ GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, 
         case "trending":
           const now = new Date();
           sortedResult = result.recordset.sort((a, b) => {
-            const hoursA = (now - new Date(a.postDate)) / (1000 * 60 * 60);
-            const hoursB = (now - new Date(b.postDate)) / (1000 * 60 * 60);
-            // 'viewsWeight' can be used to adjust the impact of views on the score
-            const viewsWeight = 1;
-            // 'ageWeight' affects how quickly the score decreases with the age of the post
-            const ageWeight = 48;
-            const scoreA =
-              a.views / viewsWeight / Math.pow((hoursA + 2) / ageWeight, 1.2);
-            const scoreB =
-              b.views / viewsWeight / Math.pow((hoursB + 2) / ageWeight, 1.2);
-            return scoreB - scoreA;
+            const minutesA = (now - new Date(a.created_at)) / (1000 * 60);
+            const minutesB = (now - new Date(b.created_at)) / (1000 * 60);
+
+            const reactionsA =
+              a.loveCount * 5 +
+              a.boostCount * 4 +
+              a.interestingCount * 3 +
+              a.curiousCount * 2 +
+              a.likeCount +
+              a.celebrateCount * 3;
+            const reactionsB =
+              b.loveCount * 5 +
+              b.boostCount * 4 +
+              b.interestingCount * 3 +
+              b.curiousCount * 2 +
+              b.likeCount +
+              b.celebrateCount * 3;
+
+            const reactionsPerMinuteA = reactionsA / minutesA;
+            const reactionsPerMinuteB = reactionsB / minutesB;
+
+            const followingWeightA = a.is_following ? 1.2 : 1;
+            const followingWeightB = b.is_following ? 1.2 : 1;
+
+            return (
+              reactionsPerMinuteB * followingWeightB -
+              reactionsPerMinuteA * followingWeightA
+            );
           });
           break;
 
         case "top":
+          sortedResult = result.recordset.sort((a, b) => {
+            const weightedReactionsA =
+              a.loveCount * 5 +
+              a.boostCount * 4 +
+              a.interestingCount * 3 +
+              a.curiousCount * 2 +
+              a.likeCount +
+              a.celebrateCount * 3;
+            const weightedReactionsB =
+              b.loveCount * 5 +
+              b.boostCount * 4 +
+              b.interestingCount * 3 +
+              b.curiousCount * 2 +
+              b.likeCount +
+              b.celebrateCount * 3;
+            return weightedReactionsB - weightedReactionsA;
+          });
+          break;
+
+        case "new":
+          sortedResult = result.recordset.sort((a, b) => {
+            const dateA = new Date(a.created_at);
+            const dateB = new Date(b.created_at);
+
+            const followingWeightA = a.is_following ? 1.00005 : 1;
+            const followingWeightB = b.is_following ? 1.00005 : 1;
+
+            if (dateB - dateA === 0) {
+              return followingWeightB - followingWeightA;
+            }
+            return (dateB - dateA) * (followingWeightB - followingWeightA);
+          });
+          break;
+
+        case "explore":
           sortedResult = result.recordset.sort((a, b) => {
             const totalReactionsA =
               a.loveCount +
@@ -82,17 +151,14 @@ GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, 
               b.curiousCount +
               b.likeCount +
               b.celebrateCount;
-            return totalReactionsB - totalReactionsA;
+            const viewsWeightA = Math.log(a.views + 1);
+            const viewsWeightB = Math.log(b.views + 1);
+            return (
+              totalReactionsB * viewsWeightB - totalReactionsA * viewsWeightA
+            );
           });
           break;
-        case "new":
-          sortedResult = result.recordset.sort(
-            (a, b) => new Date(b.created_at) - new Date(a.created_at)
-          );
-          break;
-        case "explore":
-          sortedResult = result.recordset.sort((a, b) => b.views - a.views);
-          break;
+
         default:
           sortedResult = result.recordset.sort(
             (a, b) => new Date(b.created_at) - new Date(a.created_at)
@@ -251,7 +317,6 @@ GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, 
           p.react_interesting, p.react_celebrate, u.avatar, u.id, p.post_type, p.updated_at,
           p.views, u2.username, u2.avatar, upa2.action_type
       `;
-
 
       const postData = result.recordset[0];
       return postData;

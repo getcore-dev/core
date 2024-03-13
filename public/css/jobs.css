@@ -80,7 +80,16 @@ appearance: none;
 
 h3.job-title {
   margin: 0;
+  margin: .4rem 0;
+  font-size: 1rem;
+}
+
+p.job-description {
+  margin: 0;
   margin-bottom: 5px;
+  font-size: 0.9rem;
+  max-height: 53px;
+  overflow: hidden;
 }
 
 .company-info img {

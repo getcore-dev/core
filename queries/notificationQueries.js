@@ -77,6 +77,18 @@ const notificationQueries = {
     }
   },
 
+  // delete notification if it is unread and action is undone
+  deleteNotification: async (notificationId) => {
+    try {
+      await sql.query`
+        DELETE FROM notifications 
+        WHERE id = ${notificationId}`;
+    } catch (err) {
+      console.error("Database delete error:", err);
+      throw err;
+    }
+  },
+
   // Fetch all notifications for a specific user
   getAllNotifications: async (userId) => {
     try {

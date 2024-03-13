@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <p class="company-name">${job.company_name}</p>
         </div>
           <h3 class="job-title">${job.title}</h3>
+          <p class="job-description">${job.description}</p>
           <div class="job-posting- flairs">
           <span class="job-flair" id="location-flair"><p class="job-location">${
             job.location

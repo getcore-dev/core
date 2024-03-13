@@ -59,6 +59,10 @@ router.get("/404", (req, res) => {
 
 router.get("/profile/:username", viewController.renderUserProfile);
 
+router.get("/profile/:username/followers", viewController.renderFollowers);
+
+router.get("/profile/:username/following", viewController.renderFollowing);
+
 // Jobs page
 router.get("/jobs", (req, res) => {
   res.render("jobs.ejs", { user: req.user });

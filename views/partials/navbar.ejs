@@ -335,7 +335,7 @@
             postItem.onclick = function() {
               window.location.href = `/posts/${post.id}`;
             };
-            postItem.textContent = `${post.title}`; // Label each result as 'Post'
+            postItem.textContent = `${post.post_type} - ${post.title}`; // Label each result as 'Post'
             searchResultsContainer.appendChild(postItem);
           });
         }
@@ -359,7 +359,7 @@
             userImage.style.height = '24px'; // Set the height of the image
             userImage.style.borderRadius = '100%'; // Make the image round
 
-            userItem.textContent = `${user.username}`; // Label each result as 'User'
+            userItem.innerHTML = `${user.firstname} ${user.lastname} (${user.username})`; // Label each result as 'User'
             userItem.appendChild(userImage); // Append the image to the user item
             searchResultsContainer.appendChild(userItem);
           });
