@@ -45,7 +45,6 @@
 main {
   display: flex;
   flex-direction: row;
-  max-height: calc(100vh - 85px);
   overflow: hidden;
 }
 
@@ -1279,9 +1278,6 @@ background-color: var(--light-mode-button-hover-color);
     max-width: 100%;
     box-sizing: border-box;
   }
-  main {
-    max-height: 100%;
-    }
   
   .post-content {
     margin-bottom: 2px;
