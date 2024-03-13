@@ -523,6 +523,8 @@ margin-top: 20px;
   width: 38px;
   border-radius: 50%;
   height: 38px;
+  object-fit: cover; 
+  overflow: hidden;
 }
 #search-bar {
   padding: 4px 6px;

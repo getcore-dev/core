@@ -929,6 +929,8 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
   width: 30px;
   height: 30px;
   border-radius: 100%;
+  object-fit: cover; 
+  overflow: hidden;
 }
 
 .see-more {
