@@ -22,53 +22,53 @@
 
     <div class="jobs-container">
       <div class="jobs-container-header">
-        <h3>Openings</h3>
-      </div>
-      <div class="jobs-sort-selector">
-        <% if (user && user.recruiter_id) { %>
-        <div class="create-job-button">
-          <button class="create-job" onclick="window.location.href='/jobs/create';">+</button>
-        </div>
-        <% } %>
-        <div class="sort-by">
-          <label for="sort-by"></label>
-          <select name="sort-by" id="sort-by">
-            <option value="relevance">Relevance</option>
-            <option value="newest">Newest</option>
-            <option value="salary">Salary</option>
-            <option value="location">Location</option>
-          </select>
-        </div>
-        <div class="filter-by">
-          <label for="filter-by"></label>
-          <select name="filter-by" id="filter-by">
-            <option value="all">All</option>
-            <option value="full-time">Full-Time</option>
-            <option value="part-time">Part-Time</option>
-            <option value="contract">Contract</option>
-            <option value="internship">Internship</option>
-          </select>
-        </div>
+        <h5>Openings</h5>
+        <div class="jobs-sort-selector">
+          <% if (user && user.recruiter_id) { %>
+          <div class="create-job-button">
+            <button class="create-job" onclick="window.location.href='/jobs/create';">+</button>
+          </div>
+          <% } %>
+          <div class="sort-by">
+            <label for="sort-by"></label>
+            <select name="sort-by" id="sort-by">
+              <option value="relevance">Relevance</option>
+              <option value="newest">Newest</option>
+              <option value="salary">Salary</option>
+              <option value="location">Location</option>
+            </select>
+          </div>
+          <div class="filter-by">
+            <label for="filter-by"></label>
+            <select name="filter-by" id="filter-by">
+              <option value="all">All</option>
+              <option value="full-time">Full-Time</option>
+              <option value="part-time">Part-Time</option>
+              <option value="contract">Contract</option>
+              <option value="internship">Internship</option>
+            </select>
+          </div>
 
-        <div class="location-filter">
-          <select name="location-filter" id="location-filter">
-            <option value="remote">Remote</option>
-            <option value="seattle">Seattle</option>
-            <option value="san-francisco">San Francisco</option>
-            <option value="los-angeles">Los Angeles</option>
-            <option value="new-york">New York</option>
-            <option value="austin">Austin</option>
-            <option value="chicago">Chicago</option>
-            <option value="boston">Boston</option>
-            <option value="raleigh">Raleigh</option>
-            <option value="san-jose">San Jose</option>
-            <option value="mountain-view">Mountain View</option>
-            <option value="menlo-park">Menlo Park</option>
-            <option value="palo-alto">Palo Alto</option>
-            <option value="santa-clara">Santa Clara</option>
-          </select>
-        </div>
+          <div class="location-filter">
+            <select name="location-filter" id="location-filter">
+              <option value="remote">Remote</option>
+              <option value="seattle">Seattle</option>
+              <option value="san-francisco">San Francisco</option>
+              <option value="los-angeles">Los Angeles</option>
+              <option value="new-york">New York</option>
+              <option value="austin">Austin</option>
+              <option value="chicago">Chicago</option>
+              <option value="boston">Boston</option>
+              <option value="raleigh">Raleigh</option>
+              <option value="san-jose">San Jose</option>
+              <option value="mountain-view">Mountain View</option>
+              <option value="menlo-park">Menlo Park</option>
+              <option value="palo-alto">Palo Alto</option>
+              <option value="santa-clara">Santa Clara</option>
+            </select>
+          </div>
 
+        </div>
       </div>
       <div class="job-list">
 
