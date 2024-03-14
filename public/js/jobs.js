@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
           <h3 class="job-title">${job.title}</h3>
           <p class="job-description">${job.description}</p>
-          <div class="job-posting- flairs">
+          <div class="job-posting-flairs">
           <span class="job-flair" id="location-flair"><p class="job-location">${
             job.location
           }</p></span>
@@ -53,3 +53,30 @@ function formatDate(dateString) {
   const year = date.getFullYear();
   return `${month}/${day}/${year}`;
 }
+function getAllCompanies() {
+  fetch("/api/companies") // Adjust this to your server's endpoint
+    .then((response) => response.json())
+    .then((companies) => {
+      const containerClassName = ".companies-selectors";
+      const companiesContainer = document.querySelector(containerClassName);
+
+      companiesContainer.innerHTML = ""; // Clear existing communities
+      companies.forEach((company) => {
+        const companyElement = document.createElement("div");
+        companyElement.className = "company";
+        companyElement.onclick = () => {
+          window.location.href = `/companies/${company.id}`;
+        };
+
+        companyElement.innerHTML = `
+              <img class="company-mini-logo" src="${company.logo}">
+              <div class="community-name">${company.name}</div>
+          `;
+
+        companiesContainer.appendChild(companyElement);
+      });
+    })
+    .catch((error) => console.error("Error fetching communities:", error));
+}
+
+getAllCompanies();

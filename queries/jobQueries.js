@@ -26,6 +26,17 @@ const jobQueries = {
     }
   },
 
+  getCompanies: async () => {
+    try {
+      const result = await sql.query`SELECT TOP 20 * FROM companies`;
+      const companies = result.recordset;
+      return companies;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getSkills: async () => {
     try {
       const result = await sql.query`SELECT * FROM JobTags`;
@@ -82,7 +93,6 @@ const jobQueries = {
     if (!Array.isArray(skills)) {
       skills = skills.split(",").map((skill) => skill.trim());
     }
-
 
     try {
       // Insert the job posting into the JobPostings table

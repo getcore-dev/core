@@ -1,5 +1,4 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-
 <nav class="navbar">
   <div class="nav-bar">
     <div class="logo">
@@ -9,6 +8,16 @@
       <div class="nav-text-and-user-btns">
         <div class="nav-text-container">
           <% 
+
+function getTintFromName(name) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const color = (hash & 0x00FFFFFF).toString(16).toUpperCase();
+  const tintColor = `#${color}90`; // Append "80" to the color to make it lighter
+  return tintColor;
+}
     let navText = '/';
     let user = locals.user; 
     let communityId = locals.communityId;
@@ -27,6 +36,11 @@
     if (otherUser) {
       navText += '<a class="navbar-user-info" href="/profile/' + otherUser.username + '" style="font-weight: normal;">' + otherUser.username + '/' + '</a>';
     }
+
+                let navbarTint = '';
+            if (locals.community) {
+              navbarTint = getTintFromName(locals.community.name);
+            }
 
   %>
           <%- navText %>
@@ -189,6 +203,17 @@
     </div>
   </div>
 </nav>
+<style>
+  <% if (navbarTint) {
+    %>.navbar {
+      background-color: <%=navbarTint %>;
+    }
+
+    <%
+  }
+
+  %>
+</style>
 
 <div class="latest-commit-banner" id="latestCommitBanner" style="display: none;">
   <div class="latest-commit-info">
