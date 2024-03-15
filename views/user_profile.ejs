@@ -40,15 +40,6 @@
         <div class="profile-details">
           <h2><%= otheruser.username %></h2>
           <p id="firstname-display"><%= otheruser.firstname %> <%= otheruser.lastname %></p>
-          <div class="link-display"> <img src="/src/github.png" style="height:20px;width:20px;">
-            <p id="github-url-display"> <% if (otheruser.github_url) { %> <a href="https://github.com/<%= otheruser.github_url %>"><%= otheruser.github_url %></a> <% } else { %> No Github URL yet. <% } %> </p>
-          </div>
-          <div class="link-display"> <img src="/src/leetcodeglyph.png" style="height:20px;width:20px;">
-            <p id="leetcode-url-display"> <% if (otheruser.leetcode_url) { %> <a href="https://leetcode.com/<%= otheruser.leetcode_url %>"><%= otheruser.leetcode_url %></a> <% } else { %> No LeetCode URL yet. <% } %> </p>
-          </div>
-          <div class="link-display"> <img src="/src/linkedin.png" style="height:20px;width:20px;">
-            <p id="linkedin-url-display"> <% if (otheruser.linkedin_url) { %> <a href="https://www.linkedin.com/in/<%= otheruser.linkedin_url %>"><%= otheruser.linkedin_url %></a> <% } else { %> No LinkedIn URL yet. <% } %> </p>
-          </div>
           <div class="follower-count">
             <div class="link-display">
               <p><a href="/profile/<%= otheruser.username %>/followers">Followers: <span id="followerCount"> <%= otheruser.followerCount %> </a></span></p>
@@ -96,6 +87,22 @@
         <% } else { %>
         <p id="currentjob.position-display"></p>
         <% } %>
+      </div>
+
+      <div class="user-links">
+        <div class="link-display"> <img src="/src/github.png" style="height:20px;width:20px;">
+          <p id="github-url-display"> <% if (otheruser.github_url) { %> <a href="https://github.com/<%= otheruser.github_url %>"><%= otheruser.github_url %></a> <% } else { %> No Github URL yet. <% } %> </p>
+        </div>
+        <div class="link-display"> <img src="/src/leetcodeglyph.png" style="height:20px;width:20px;">
+          <p id="leetcode-url-display"> <% if (otheruser.leetcode_url) { %> <a href="https://leetcode.com/<%= otheruser.leetcode_url %>"><%= otheruser.leetcode_url %></a> <% } else { %> No LeetCode URL yet. <% } %> </p>
+        </div>
+        <div class="link-display"> <img src="/src/linkedin.png" style="height:20px;width:20px;">
+          <p id="linkedin-url-display"> <% if (otheruser.linkedin_url) { %> <a href="https://www.linkedin.com/in/<%= otheruser.linkedin_url %>"><%= otheruser.linkedin_url %></a> <% } else { %> No LinkedIn URL yet. <% } %> </p>
+        </div>
+      </div>
+      <div class="github-commit-graph">
+        <h4>GitHub Commit History</h4>
+        <div id="commit-graph-container"></div>
       </div>
 
       <div class="user-activity">
@@ -150,6 +157,68 @@
 
   </main>
   <script>
+    async function fetchCommitGraph() {
+      const username = '<%= otheruser.github_url %>';
+      const response = await fetch(`/api/github-commit-graph/${username}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        displayCommitGraph(data.commitGraph);
+      } else {
+        console.error('Failed to fetch commit graph:', data.error);
+        // Display an error message to the user
+      }
+    }
+
+    function displayCommitGraph(commitGraph) {
+      const container = document.getElementById('commit-graph-container');
+
+      // Create a container element for the commit graph
+      const graphContainer = document.createElement('div');
+      graphContainer.classList.add('commit-graph');
+
+      // Create a div for each row of commit data
+      commitGraph.forEach(rowData => {
+        const rowDiv = document.createElement('div');
+        rowDiv.classList.add('commit-row');
+
+        rowData.forEach(cellData => {
+          const cellDiv = document.createElement('div');
+          cellDiv.classList.add('commit-cell');
+          cellDiv.setAttribute('data-date', cellData.date);
+          cellDiv.setAttribute('data-count', cellData.count);
+
+          // Set the background color based on the commit count
+          const color = getColorForCommitCount(cellData.count);
+          cellDiv.style.backgroundColor = color;
+
+          rowDiv.appendChild(cellDiv);
+        });
+
+        graphContainer.appendChild(rowDiv);
+      });
+
+      container.appendChild(graphContainer);
+    }
+
+    function getColorForCommitCount(count) {
+      if (count === 0) {
+        return '#ebedf0';
+      } else if (count === 1) {
+        return '#9be9a8';
+      } else if (count === 2) {
+        return '#40c463';
+      } else if (count === 3) {
+        return '#30a14e';
+      } else {
+        return '#216e39';
+      }
+    }
+
+    // Call the function to fetch and display the commit graph
+    fetchCommitGraph();
+
+
     document.getElementById('followForm').addEventListener('submit', async (event) => {
       event.preventDefault();
       const form = event.target;

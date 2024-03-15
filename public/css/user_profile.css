@@ -311,6 +311,10 @@ main {
 }
 
 
+.user-links {
+  grid-area: user-links;
+}
+
 /* Grid container layout */
 #profile {
   display: grid;
@@ -318,10 +322,11 @@ main {
   grid-template-rows: auto; /* Rows take size based on content */
   grid-template-areas:
     "info1 info1 info1"
-    "job job job"
+    "job job user-links"
     "user-activity user-activity user-activity"; /* Posts will take up the entire bottom row spanning 3 columns */
   gap: 30px;
-  /* ... other styles ... */
+  min-height: 0;  /* NEW */
+  min-width: 0;
 }
 
 @media screen and (max-width: 768px) {
@@ -333,14 +338,43 @@ main {
     padding: 15px;
     gap: 10px;
     grid-template-columns: repeat(2, 1fr); /* Two columns of equal size */
+    padding-bottom: 200px !important;
     grid-template-areas:
       "info1 info1"
-      "job job"
+      "job user-links"
+      "git-graph git-graph"
       "user-activity user-activity";
   }
+
+  
   
 }
 
+.commit-graph {
+  display: flex;
+  flex-direction: column;
+}
+
+.commit-row {
+  display: flex;
+}
+
+#commit-graph-container {
+  overflow-x: auto;
+}
+
+.commit-cell {
+  min-width: 10px;
+  min-height: 10px;
+  height: 10px;
+  width: 10px;
+  margin: 1px;
+  border-radius: 2px;
+}
+
+.github-commit-graph {
+  grid-area: git-graph;
+}
 .profile-picture {
   grid-area: picture;
   /* ... other styles ... */

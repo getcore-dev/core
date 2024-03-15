@@ -19,6 +19,8 @@ const marked = require("marked");
 const postQueries = require("../queries/postQueries");
 const jobQueries = require("../queries/jobQueries");
 const sql = require("mssql");
+const axios = require("axios");
+const cheerio = require("cheerio");
 
 const renderer = new marked.Renderer();
 renderer.image = function (href, title, text) {
@@ -57,6 +59,53 @@ router.get("/job-postings", async (req, res) => {
     res.status(500).send("Error fetching job postings");
   }
 });
+
+router.get(
+  "/github-commit-graph/:username",
+  cacheMiddleware(2400),
+  async (req, res) => {
+    try {
+      const username = req.params.username;
+      const url = `https://github.com/${username}`;
+
+      const headers = {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+      };
+
+      const response = await axios.get(url, { headers, timeout: 5000 });
+      const { data, status } = response;
+
+      if (status !== 200) {
+        throw new Error(`Request failed with status code ${status}`);
+      }
+
+      const $ = cheerio.load(data);
+
+      const commitGraph = [];
+
+      $("tbody tr").each((rowIndex, rowElement) => {
+        const rowData = [];
+
+        $(rowElement)
+          .find("td:not(.ContributionCalendar-label)")
+          .each((cellIndex, cellElement) => {
+            const date = $(cellElement).attr("data-date");
+            const count = parseInt($(cellElement).attr("data-level"), 10);
+
+            rowData.push({ date, count });
+          });
+
+        commitGraph.push(rowData);
+      });
+
+      res.json({ username, commitGraph });
+    } catch (error) {
+      console.error("Error fetching GitHub commit graph:", error);
+      res.status(500).json({ error: "Failed to fetch GitHub commit graph" });
+    }
+  }
+);
 
 router.get("/skills", async (req, res) => {
   try {

@@ -528,6 +528,40 @@ const utilFunctions = {
       return null;
     }
   },
+  getGitHubCommitGraph: async (username) => {
+    try {
+      const url = `https://github.com/${username}`;
+
+      const headers = {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+      };
+
+      const response = await axios.get(url, { headers, timeout: 5000 });
+      const { data, status } = response;
+
+      if (status !== 200) {
+        throw new Error(`Request failed with status code ${status}`);
+      }
+
+      const $ = cheerio.load(data);
+
+      const commitGraph = [];
+
+      $("svg.js-calendar-graph-svg rect").each((index, element) => {
+        const date = $(element).attr("data-date");
+        const count = parseInt($(element).attr("data-count"), 10);
+        const level = $(element).attr("data-level");
+
+        commitGraph.push({ date, count, level });
+      });
+
+      return commitGraph;
+    } catch (error) {
+      console.error("Error fetching GitHub commit graph:", error);
+      return null;
+    }
+  },
 
   getFavicon: async (url) => {
     try {

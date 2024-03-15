@@ -40,7 +40,7 @@ const viewController = {
       const following = await userQueries.getFollowing(user.id);
       res.render("user_following.ejs", {
         user: req.user,
-        followers: following, // lmfao. 
+        followers: following, // lmfao.
       });
     } catch (err) {
       res.render("error.ejs", {

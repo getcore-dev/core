@@ -568,7 +568,7 @@ margin-top: 20px;
   body {
     padding-top: constant(safe-area-inset-top); 
     padding-top: env(safe-area-inset-top);
-    background-color: #000;
+    background-color: var(--light-mode-main-color);
   }
   .nav-btns {
     display: none;
