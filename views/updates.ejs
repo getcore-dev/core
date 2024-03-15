@@ -17,7 +17,17 @@
   <main>
     <div id="updates-header">
       <div id="updates-title">
-        <h2>Updates</h2>
+
+        <h4>Updates</h4>
+      </div>
+      <div id="updates-info-header" style="
+    display: flex;
+    justify-content: space-around;
+">
+
+        <h5>Title</h5>
+        <h5>Author</h5>
+        <h5>Lines Changed</h5>
       </div>
     </div>
     <div id="commits-container">
@@ -69,18 +79,17 @@
                   <%= commits[i].commit.author.name %>
                 </div>
               </div>
-              <div class="commit-stats">
-                <p class="commit-author-name">Lines Changed:</p>
-                <div class="commit-stats-container">
-                  <div class="commit-stats-item" style="background-color: #12542489;">
-                    <div class="commit-stats-item-value">
-                      + <%= commits[i].linesAdded %>
-                    </div>
+            </div>
+            <div class="commit-stats">
+              <div class="commit-stats-container">
+                <div class="commit-stats-item" style="background-color: #12542489;">
+                  <div class="commit-stats-item-value">
+                    + <%= commits[i].linesAdded %>
                   </div>
-                  <div class="commit-stats-item" style="background-color: #7e0d0da7;">
-                    <div class="commit-stats-item-value">
-                      - <%= commits[i].linesDeleted %>
-                    </div>
+                </div>
+                <div class="commit-stats-item" style="background-color: #7e0d0da7;">
+                  <div class="commit-stats-item-value">
+                    - <%= commits[i].linesDeleted %>
                   </div>
                 </div>
               </div>

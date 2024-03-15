@@ -1014,7 +1014,7 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
 
   .reaction-button, .main-reaction-button, .boost-button {
     border-color: var(--dark-mode-border-color);
-    background-color: var(--dark-mode-body-color);
+    background-color: var(--dark-mode-border-color);
     color: var(--dark-mode-secondary-text-color);
   }
   

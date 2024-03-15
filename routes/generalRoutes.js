@@ -15,6 +15,8 @@ const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 const { BlobServiceClient } = require("@azure/storage-blob");
 const notificationQueries = require("../queries/notificationQueries");
+const cacheMiddleware = require("../middleware/cache");
+const { cache } = require("ejs");
 const AZURE_STORAGE_CONNECTION_STRING =
   process.env.AZURE_STORAGE_CONNECTION_STRING; // Ensure this is set in your environment variables
 

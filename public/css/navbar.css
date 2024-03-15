@@ -229,8 +229,9 @@ h1, h2, h3, h4, h5, p {
 
 
 .navbar {
-  background-color: var(--navbar-background-color); 
+  background-color: var(--light-mode-main-color); 
   color: var(--primary-text-color); 
+  border-bottom: 1px solid var(--light-mode-body-color);
   display: flex; 
   flex-direction: column;
   align-items: center; 
@@ -567,7 +568,7 @@ margin-top: 20px;
   body {
     padding-top: constant(safe-area-inset-top); 
     padding-top: env(safe-area-inset-top);
-    background-color: var(--light-mode-main-color);
+    background-color: #000;
   }
   .nav-btns {
     display: none;
@@ -887,7 +888,8 @@ margin-top: 20px;
   }
 
   .navbar {
-    background-color: var(--dark-mode-background-color);
+    background-color: var(--dark-mode-body-color);
+    border-color: var(--dark-mode-main-color);
     color: var(--dark-mode-text-color);
     border-color: var(--dark-mode-border-color);
 }

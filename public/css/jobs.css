@@ -401,6 +401,8 @@ div .material-symbols-outlined {
     background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffffff"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>');
+
   }
 
 
@@ -408,11 +410,17 @@ div .material-symbols-outlined {
     border-color: var(--dark-mode-border-color);
   }
 
+
   .job-body {
     background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-main-color);
   }
 
+
+  .company {
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-main-color);
+  }
   .job-content {
     background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-border-color);

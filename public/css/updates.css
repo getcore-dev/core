@@ -2,14 +2,23 @@
 
 :root {
   --primary-text-color: #1D2935;
-  --light-mode-main-color: #fff;
-  --light-mode-body-color: #F6F8FA;
-  --border-color: #D8E0E9;
+  --light-mode-body-color: #fff;
+  --light-mode-main-color: #F6F8FA;
+  --light-mode-hover-color: #E5EBF1;
+  --border-color: #DCE6F2;
+  --light-mode-button-color: #DCE6F2;
+  --light-mode-button-hover-color: #BECBDA;
+  --light-mode-text-color: #243342;
+  --light-mode-secondary-text-color: #586C7F;
   --hover-background-color: #ddd;
   --active-indicator-color: #0e6655;
-  --dark-mode-main-color: #1B1F22;
+  --dark-mode-main-color: #16191B;
   --dark-mode-body-color: #000;
+  --dark-mode-hover-color: #24292D;
+  --dark-mode-button-hover-color: #363F44;
+  --dark-mode-lighter-color: #1F2427;
   --dark-mode-text-color: #fff;
+  --dark-mode-secondary-text-color: #999;
   --dark-mode-border-color: #272D31;
   --dark-mode-hover-background-color: #444;
 }
@@ -30,15 +39,8 @@ span.material-symbols-outlined {
   margin-right: 13px;
 }
 
-#loading-commit {
-  background-color: var(--light-mode-main-color);
-  animation: loadingAnimation 1.5s infinite;
-}
-
-@keyframes loadingAnimation {
-  0% { background-color: #e0e0e0; }
-  50% { background-color: #f3f3f3; }
-  100% { background-color: #e0e0e0; }
+#updates-title {
+  margin-bottom: 18px;
 }
 
 div.commit-title {
@@ -68,9 +70,11 @@ div.commit-title {
   .commit {
     background: var(--light-mode-body-color);
     border-radius: 6px;
-    padding: 8px 9px;
+    padding: 8px 11px;
     max-width: 100%;
     margin: 0px 13px;
+    display: flex;
+    justify-content: space-between;
 }
 
 
@@ -78,6 +82,7 @@ div.commit-title {
   display: flex;
   justify-content: space-between;
   flex-direction: row;
+  max-width: 33%;
   box-sizing: border-box;
 }
   .commit-title {
@@ -106,6 +111,7 @@ div.commit-title {
 
   .commit-body {
     margin: 0px 5px;
+    max-width: 33%;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -138,6 +144,7 @@ div.commit-title {
   }
 
   .commit-stats {
+    max-width: 33%;
     display: flex;
     flex-direction: column;
     align-items: center;

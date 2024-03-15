@@ -568,15 +568,15 @@ const totalReplies = countAllReplies(comment.replies);
               <% renderComments(comment.replies, nestedLevel); %>
             </div>
             <% } %>
-          </div>
 
-          <% }) %>
-          <% } %>
-          <% renderComments(post.comments); %>
 
-          <div class="post-footer" style="text-align: center;">
-            <% if (post.updated_at) { %>
-            <%
+            <% }) %>
+            <% } %>
+
+            <% renderComments(post.comments); %>
+            <div class="post-footer" style="text-align: center;">
+              <% if (post.updated_at) { %>
+              <%
               let postDate = new Date(post.created_at);
               let today = new Date();
               let formattedDate;
@@ -601,32 +601,33 @@ const totalReplies = countAllReplies(comment.replies);
                 formattedDate = years + 'y ago';
               }
             %>
-            Edited: <%= formattedDate %>
-            <% } %>
-          </div>
-          <div class="tags-div">
-
-            <div class="tags">
-              tags:
-              <% if (post.tags && post.tags.length > 0) { %>
-              <% post.tags.forEach(tag => { %>
-              <a href="#" class="tag"><%= tag.name %></a>
-              <% }); %>
-              <% } %>
-              <% if (post.post_type == "project") { %>
-
-              <% 
-let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {};
-%>
-              <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
-              <% gitHubData.topics.forEach(topic => { %>
-              <a href="#" class="tag"><%= topic %></a>
-              <% }); %>
+              Edited: <%= formattedDate %>
               <% } %>
             </div>
-            <% } %>
+            <div class="tags-div">
+
+              <div class="tags">
+                tags:
+                <% if (post.tags && post.tags.length > 0) { %>
+                <% post.tags.forEach(tag => { %>
+                <a href="#" class="tag"><%= tag.name %></a>
+                <% }); %>
+                <% } %>
+                <% if (post.post_type == "project") { %>
+
+                <% 
+let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {};
+%>
+                <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
+                <% gitHubData.topics.forEach(topic => { %>
+                <a href="#" class="tag"><%= topic %></a>
+                <% }); %>
+                <% } %>
+              </div>
+              <% } %>
 
 
+            </div>
           </div>
         </div>
 

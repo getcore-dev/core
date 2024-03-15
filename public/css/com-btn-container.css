@@ -210,7 +210,7 @@ height: auto;
 
 @media (prefers-color-scheme: dark) {
   #com-btn-container {
-      background-color: var(--dark-mode-background-color);
+    background-color: var(--dark-mode-body-color);
     }
   
     .com-btn, .job-btn {
@@ -225,7 +225,7 @@ height: auto;
 
 #com-btn-container {
   border-right: 1px solid var(--dark-mode-border-color);
-  border-left: 1px solid var(--dark-mode-border-color);
+
 }
   
 }
