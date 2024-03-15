@@ -20,11 +20,43 @@
 main {
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center; /* align to the center */
   margin: 0;
   overflow-x: hidden; /* prevent horizontal scrolling */
   overflow-y: hidden; /* allow vertical scrolling if needed */
   font-family: var(--font-family);
+}
+
+.profile-header {
+  width: 100%;
+  margin-top: 13px;
+  display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.follower-stats {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding-right: 15px;
+}
+
+.follower-stats a {
+  text-decoration: none;
+  color: var(--primary-text-color);
+}
+
+.edit-controls-and-follow-button {
+  display: flex;
+    margin-left: auto;
+    align-items: center;
+}
+
+.profile-header-title {
+  padding-left: 15px;
 }
 
 
@@ -59,10 +91,7 @@ main {
 
 /* Style for each section */
 #profile > div {
-  display: flex; /* use flexbox for each child container */
-  flex-direction: column; /* stack items vertically */
-  justify-content: flex-start; /* align items to the start */
-  align-items: stretch; /* stretch items to fill the container */
+  display: inline-block; /* use flexbox for each child container */
   border: 0;
   padding: 10px;
   border-radius: 6px;
@@ -329,10 +358,12 @@ main {
   min-width: 0;
 }
 
+
 @media screen and (max-width: 768px) {
 
-  #profile {
+  .main-container {
     max-height: calc(100dvh - 65px);
+    overflow-y: auto
   }
   #profile {
     padding: 15px;
@@ -343,6 +374,7 @@ main {
       "info1 info1"
       "job user-links"
       "git-graph git-graph"
+      "git-repos git-repos"
       "user-activity user-activity";
   }
 
@@ -370,6 +402,10 @@ main {
   width: 10px;
   margin: 1px;
   border-radius: 2px;
+}
+
+.github-commit-repos {
+  grid-area: git-repos;
 }
 
 .github-commit-graph {

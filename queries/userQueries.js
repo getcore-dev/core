@@ -39,7 +39,7 @@ const userQueries = {
   getPostsByUserIdUserProfile: async (userId) => {
     try {
       const result = await sql.query`
-      SELECT * FROM posts WHERE user_id = ${userId} AND deleted = 0 ORDER BY created_at DESC OFFSET 0 ROWS FETCH NEXT 3 ROWS ONLY`;
+      SELECT * FROM posts WHERE user_id = ${userId} AND deleted = 0 ORDER BY created_at DESC OFFSET 0 ROWS FETCH NEXT 6 ROWS ONLY`;
       return result.recordset;
     } catch (err) {
       console.error("Database query error:", err);
@@ -96,7 +96,7 @@ const userQueries = {
       WHERE comments.user_id = ${userId} AND comments.deleted = 0 
       ORDER BY comments.created_at DESC 
       OFFSET 0 ROWS 
-      FETCH NEXT 3 ROWS ONLY`;
+      FETCH NEXT 10 ROWS ONLY`;
       const comments = result.recordset;
 
       const enrichedComments = await Promise.all(

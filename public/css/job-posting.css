@@ -35,9 +35,8 @@
     margin-bottom: 16px;
   }
   
-  .company-logo {
-    max-width: 64px;
-    margin-right: 16px;
+  img.company-logo {
+    max-height: 55px !important;
   }
   
   .company-name {

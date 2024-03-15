@@ -14,18 +14,38 @@
 <body>
   <%- include('partials/navbar', { pagePath: 'communities' }) %>
   <main>
+    <div class="main-container">
+      <div class="profile-header">
+        <div class="profile-header-title">
+          <h5><%= otheruser.username %></h5>
+        </div>
+        <div class="follower-stats">
+          <h5>
+            <a href="/profile/<%= otheruser.username %>/followers">Followers: <span id="followerCount"> <%= otheruser.followerCount %> </a></span>
+          </h5>
+          <h5>
+            <a href="/profile/<%= otheruser.username %>/following">Following: <span id="followCount"> <%= otheruser.followingCount %></a></span>
+          </h5>
+        </div>
+      </div>
+      <div id="profile" class="grid-container">
 
-    <div id="profile" class="grid-container">
-      <div class="profile-info">
-        <div class="profile-picture">
-          <% if (otheruser.avatar) { %>
-          <img id="profilePic" src="<%= otheruser.avatar %>" alt="Profile Picture" />
-          <% } else { %>
-          <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
-          <% } %>
+        <div class="profile-info">
+          <div class="profile-picture">
+            <% if (otheruser.avatar) { %>
+            <img id="profilePic" src="<%= otheruser.avatar %>" alt="Profile Picture" />
+            <% } else { %>
+            <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
+            <% } %>
 
+
+          </div>
+          <div class="profile-details">
+            <h2><%= otheruser.username %></h2>
+            <p id="firstname-display"><%= otheruser.firstname %> <%= otheruser.lastname %></p>
+          </div>
           <% if (user) { %>
-          <div class="edit-controls">
+          <div class="edit-controls-and-follow-button">
             <% if (otheruser.username === user.username) { %>
             <button onclick="window.location.href='/edit-profile'">Edit Profile</button>
             <% } else { %>
@@ -37,126 +57,169 @@
           <% } %>
 
         </div>
-        <div class="profile-details">
-          <h2><%= otheruser.username %></h2>
-          <p id="firstname-display"><%= otheruser.firstname %> <%= otheruser.lastname %></p>
-          <div class="follower-count">
-            <div class="link-display">
-              <p><a href="/profile/<%= otheruser.username %>/followers">Followers: <span id="followerCount"> <%= otheruser.followerCount %> </a></span></p>
-            </div>
-            <div class="link-display">
-              <p><a href="/profile/<%= otheruser.username %>/following">Following: <span id="followCount"> <%= otheruser.followingCount %></a></span></p>
-            </div>
 
-          </div>
-        </div>
+        <div class="current-job">
+          <% if (otheruser.currentJob && otheruser.currentCompany) {%>
+          <h4>
+            <%= otheruser.currentJob%> @ <%= otheruser.currentCompany %>
+          </h4>
 
-      </div>
-
-      <div class="current-job">
-        <% if (otheruser.currentJob && otheruser.currentCompany) {%>
-        <h4>
-          <%= otheruser.currentJob%> @ <%= otheruser.currentCompany %>
-        </h4>
-
-        <p id="currentjob.position-display">
-        </p>
-        <p id="currentjob.position-display">
-          <span class="flair" id="date-flair">
-            <%= new Date(otheruser.currentJob_begindate).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) %>
-          </span>
-          <span class="flair" id="emp-type-flair">
-            <%= otheruser.currentJob_employment_type %>
-          </span>
-          <% otheruser.currentJob_skills.split(',').forEach(function(skill) { %>
-          <span class="flair"><%= skill.trim() %></span>
-          <% }); %>
-        </p>
+          <p id="currentjob.position-display">
+          </p>
+          <p id="currentjob.position-display">
+            <span class="flair" id="date-flair">
+              <%= new Date(otheruser.currentJob_begindate).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) %>
+            </span>
+            <span class="flair" id="emp-type-flair">
+              <%= otheruser.currentJob_employment_type %>
+            </span>
+            <% otheruser.currentJob_skills.split(',').forEach(function(skill) { %>
+            <span class="flair"><%= skill.trim() %></span>
+            <% }); %>
+          </p>
 
 
-        <% } else { %>
-        <p id="currentjob.company-display"></p>
-        <% if (user && otheruser.username == user.username) { %>
-        Add Company
-        </button>
-        <% } %> <% } %> <% if (otheruser.currentjob &&
+          <% } else { %>
+          <p id="currentjob.company-display"></p>
+          <% if (user && otheruser.username == user.username) { %>
+          Add Company
+          </button>
+          <% } %> <% } %> <% if (otheruser.currentjob &&
           otheruser.currentjob.position) { %>
-        <p id="currentjob.position-display">
-          <strong>Position:</strong> <%= otheruser.currentjob.position %>
-        </p>
-        <% } else { %>
-        <p id="currentjob.position-display"></p>
-        <% } %>
-      </div>
-
-      <div class="user-links">
-        <div class="link-display"> <img src="/src/github.png" style="height:20px;width:20px;">
-          <p id="github-url-display"> <% if (otheruser.github_url) { %> <a href="https://github.com/<%= otheruser.github_url %>"><%= otheruser.github_url %></a> <% } else { %> No Github URL yet. <% } %> </p>
-        </div>
-        <div class="link-display"> <img src="/src/leetcodeglyph.png" style="height:20px;width:20px;">
-          <p id="leetcode-url-display"> <% if (otheruser.leetcode_url) { %> <a href="https://leetcode.com/<%= otheruser.leetcode_url %>"><%= otheruser.leetcode_url %></a> <% } else { %> No LeetCode URL yet. <% } %> </p>
-        </div>
-        <div class="link-display"> <img src="/src/linkedin.png" style="height:20px;width:20px;">
-          <p id="linkedin-url-display"> <% if (otheruser.linkedin_url) { %> <a href="https://www.linkedin.com/in/<%= otheruser.linkedin_url %>"><%= otheruser.linkedin_url %></a> <% } else { %> No LinkedIn URL yet. <% } %> </p>
-        </div>
-      </div>
-      <div class="github-commit-graph">
-        <h4>GitHub Commit History</h4>
-        <div id="commit-graph-container"></div>
-      </div>
-
-      <div class="user-activity">
-        <div class="user-activity-header">
-          <div class="user-activity-title">
-            <h4><%=otheruser.username%>'s posts</h4>
-          </div>
-          <div class="user-activity-buttons">
-            <button class="sort-option active" showSection('posts')">Posts</button>
-            <button class="sort-option" onclick="showSection('comments')">Comments</button>
-          </div>
-        </div>
-
-        <div id="posts" class="content">
-          <% if (posts.length === 0) { %>
-          <p>No posts yet.</p>
+          <p id="currentjob.position-display">
+            <strong>Position:</strong> <%= otheruser.currentjob.position %>
+          </p>
           <% } else { %>
-          <div class="post-container">
-            <% posts.forEach(function(post) { %>
-            <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
-              <h4 class="post-title">
-                <%= post.title %>
-              </h4>
-              <p class="post-content" style="font-size: 14px;"><%= post.content %></p>
-
-            </div>
-            <% }); %>
-          </div>
+          <p id="currentjob.position-display"></p>
           <% } %>
         </div>
 
-        <div id="comments" class="content" style="display:none;">
-          <% if (comments.length === 0) { %>
-          <p>No comments yet.</p>
-          <% } else { %>
-          <div class="comments-container">
-            <% comments.forEach(function(comment) { %>
-            <div class="comment">
-              <h3 class="comment-title">
-                <a href="/posts/<%= comment.post_id %>"><%= comment.title %></a>
-              </h3>
-              <p class="comment-author">
-                <a href="/profile/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/profile/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
-              </p>
-              <p class="comment-content"><%= comment.comment %></p>
-            </div>
-            <% }); %>
+        <div class="user-links">
+          <div class="link-display"> <img src="/src/github.png" style="height:20px;width:20px;">
+            <p id="github-url-display"> <% if (otheruser.github_url) { %> <a href="https://github.com/<%= otheruser.github_url %>"><%= otheruser.github_url %></a> <% } else { %> No Github URL yet. <% } %> </p>
           </div>
-          <% } %>
+          <div class="link-display"> <img src="/src/leetcodeglyph.png" style="height:20px;width:20px;">
+            <p id="leetcode-url-display"> <% if (otheruser.leetcode_url) { %> <a href="https://leetcode.com/<%= otheruser.leetcode_url %>"><%= otheruser.leetcode_url %></a> <% } else { %> No LeetCode URL yet. <% } %> </p>
+          </div>
+          <div class="link-display"> <img src="/src/linkedin.png" style="height:20px;width:20px;">
+            <p id="linkedin-url-display"> <% if (otheruser.linkedin_url) { %> <a href="https://www.linkedin.com/in/<%= otheruser.linkedin_url %>"><%= otheruser.linkedin_url %></a> <% } else { %> No LinkedIn URL yet. <% } %> </p>
+          </div>
+        </div>
+        <div class="github-commit-graph">
+          <h4>GitHub Commit History</h4>
+          <div id="commit-graph-container"></div>
+        </div>
+        <div class="github-commit-repos">
+          <h4>Public Repositories</h3>
+            <table id="repo-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Stars</th>
+                  <th>Language</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="user-activity">
+          <div class="user-activity-header">
+            <div class="user-activity-title">
+              <h4><%=otheruser.username%>'s posts</h4>
+            </div>
+            <div class="user-activity-buttons">
+              <button class="sort-option posts-button active" onclick="showSection('posts')">Posts</button>
+              <button class="sort-option comments-button" onclick="showSection('comments')">Comments</button>
+            </div>
+          </div>
+
+          <div id="posts" class="content">
+            <% if (posts.length === 0) { %>
+            <p>No posts yet.</p>
+            <% } else { %>
+            <div class="post-container">
+              <% posts.forEach(function(post) { %>
+              <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
+                <h4 class="post-title">
+                  <%= post.title %>
+                </h4>
+                <p class="post-content" style="font-size: 14px;"><%= post.content %></p>
+
+              </div>
+              <% }); %>
+            </div>
+            <% } %>
+          </div>
+
+          <div id="comments" class="content" style="display:none;">
+            <% if (comments.length === 0) { %>
+            <p>No comments yet.</p>
+            <% } else { %>
+            <div class="comments-container">
+              <% comments.forEach(function(comment) { %>
+              <div class="comment">
+                <h3 class="comment-title">
+                  <a href="/posts/<%= comment.post_id %>"><%= comment.title %></a>
+                </h3>
+                <p class="comment-author">
+                  <a href="/profile/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/profile/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
+                </p>
+                <p class="comment-content"><%= comment.comment %></p>
+              </div>
+              <% }); %>
+            </div>
+            <% } %>
+          </div>
         </div>
       </div>
-
   </main>
   <script>
+    async function fetchRepositories() {
+      const username = '<%= otheruser.github_url %>';
+      const response = await fetch(`/api/github-repos/${username}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        displayRepositories(data.repositories);
+      } else {
+        console.error('Failed to fetch repositories:', data.error);
+        // Display an error message to the user
+      }
+    }
+
+    function displayRepositories(repositories) {
+      const tableBody = document.querySelector('#repo-table tbody');
+
+      repositories.forEach(repo => {
+        const row = document.createElement('tr');
+
+        const nameCell = document.createElement('td');
+        const nameLink = document.createElement('a');
+        nameLink.href = repo.url;
+        nameLink.textContent = repo.name;
+        nameCell.appendChild(nameLink);
+        row.appendChild(nameCell);
+
+        const descriptionCell = document.createElement('td');
+        descriptionCell.textContent = repo.description || '';
+        row.appendChild(descriptionCell);
+
+        const starsCell = document.createElement('td');
+        starsCell.textContent = repo.stars;
+        row.appendChild(starsCell);
+
+        const languageCell = document.createElement('td');
+        languageCell.textContent = repo.language || '';
+        row.appendChild(languageCell);
+
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Call the function to fetch and display the repositories
+    fetchRepositories();
     async function fetchCommitGraph() {
       const username = '<%= otheruser.github_url %>';
       const response = await fetch(`/api/github-commit-graph/${username}`);
@@ -369,15 +432,17 @@
       document.getElementById('posts').style.display = 'none';
       document.getElementById('comments').style.display = 'none';
 
-      // Remove active class from all buttons
-      var buttons = document.querySelectorAll('.user-activity-buttons button');
-      buttons.forEach(function(button) {
+      // Show the selected section
+      document.getElementById(section).style.display = 'block';
+
+      // Update the active class on the buttons
+      document.querySelectorAll('.sort-option').forEach(button => {
         button.classList.remove('active');
       });
 
-      // Show the selected section and add 'active' class to the corresponding button
-      document.getElementById(section).style.display = 'block';
-      document.querySelector('.user-activity-buttons button[onclick="showSection(\'' + section + '\')"]').classList.add('active');
+      document.querySelector(`.${section}-button`).classList.add('active');
+
+
     }
   </script>
 </body>

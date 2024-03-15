@@ -32,8 +32,3 @@ padding: 100px 0px;
   
   }
   
-  /* Hover effect for complete buttons */
-  .data-structures-container,
-  .algorithms-container {
-    max-width: 23%; /* Set a maximum width of 30% for each container */
-  }

@@ -202,6 +202,15 @@ function getTintFromName(name) {
       </div>
     </div>
   </div>
+  <div class="latest-commit-banner" id="latestCommitBanner" style="display: none;">
+    <div class="latest-commit-info">
+      <div class="latest-commit-main">
+        <span class="latest-commit-message"></span>
+        <span class="latest-commit-date"></span>
+      </div>
+      <button id="closeCommitBanner">X</button>
+    </div>
+  </div>
 </nav>
 <style>
   <% if (navbarTint) {
@@ -215,15 +224,6 @@ function getTintFromName(name) {
   %>
 </style>
 
-<div class="latest-commit-banner" id="latestCommitBanner" style="display: none;">
-  <div class="latest-commit-info">
-    <div class="latest-commit-main">
-      <span class="latest-commit-message"></span>
-      <span class="latest-commit-date"></span>
-    </div>
-    <button id="closeCommitBanner">X</button>
-  </div>
-</div>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {

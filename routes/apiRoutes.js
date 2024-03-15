@@ -107,6 +107,43 @@ router.get(
   }
 );
 
+router.get(
+  "/github-repos/:username",
+  cacheMiddleware(2400),
+  async (req, res) => {
+    try {
+      const username = req.params.username;
+      const url = `https://api.github.com/users/${username}/repos`;
+
+      const headers = {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+      };
+
+      const response = await axios.get(url, { headers, timeout: 5000 });
+      const { data, status } = response;
+
+      if (status !== 200) {
+        throw new Error(`Request failed with status code ${status}`);
+      }
+
+      const repositories = data.map((repo) => ({
+        name: repo.name,
+        description: repo.description,
+        url: repo.html_url,
+        stars: repo.stargazers_count,
+        forks: repo.forks_count,
+        language: repo.language,
+      }));
+
+      res.json({ username, repositories });
+    } catch (error) {
+      console.error("Error fetching GitHub repositories:", error);
+      res.status(500).json({ error: "Failed to fetch GitHub repositories" });
+    }
+  }
+);
+
 router.get("/skills", async (req, res) => {
   try {
     const skills = await jobQueries.getSkills();

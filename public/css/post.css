@@ -440,7 +440,7 @@ img.blog-avatar {
 
 .solution-avatar img {
   border-radius: 100%;
-  max-height: 35px;
+  max-height: 35px !important;
   object-fit: cover; 
   overflow: hidden;
   aspect-ratio: 1/1;
