@@ -348,6 +348,24 @@ filter_list
             const threeDotsDiv = document.createElement('div');
             threeDotsDiv.className = 'three-dots';
             threeDotsDiv.innerHTML = '<span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>';
+            threeDotsDiv.onclick = async (event) => {
+              event.stopPropagation(); // Prevent the click event from propagating to the post header
+
+              if (navigator.share) {
+                try {
+                  await navigator.share({
+                    title: post.title,
+                    text: post.content,
+                    url: window.location.origin + '/posts/' + post.id,
+                  });
+                } catch (error) {
+                  console.error('Error sharing:', error);
+                }
+              } else {
+                console.warn('Web Share API not supported');
+                // Fallback to custom share menu or other sharing method
+              }
+            };
             postHeaderDiv.appendChild(threeDotsDiv);
 
             postContentDiv.appendChild(postHeaderDiv);

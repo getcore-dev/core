@@ -2,18 +2,25 @@
 
 :root {
   --primary-text-color: #1D2935;
-  --light-mode-main-color: #fff;
   --light-mode-body-color: #F6F8FA;
-  --border-color: #D8E0E9;
+  --light-mode-main-color: #fff;
+  --light-mode-hover-color: #E5EBF1;
+  --border-color: #DCE6F2;
+  --light-mode-button-color: #DCE6F2;
+  --light-mode-button-hover-color: #BECBDA;
+  --light-mode-text-color: #243342;
+  --light-mode-secondary-text-color: #586C7F;
   --hover-background-color: #ddd;
   --active-indicator-color: #0e6655;
-  --dark-mode-main-color: #1B1F22;
+  --dark-mode-main-color: #16191B;
   --dark-mode-body-color: #000;
+  --dark-mode-hover-color: #24292D;
+  --dark-mode-button-hover-color: #363F44;
+  --dark-mode-lighter-color: #1F2427;
   --dark-mode-text-color: #fff;
+  --dark-mode-secondary-text-color: #999;
   --dark-mode-border-color: #272D31;
   --dark-mode-hover-background-color: #444;
-  --font-family: 'Roboto', sans-serif;
-
 }
 
 
@@ -94,8 +101,8 @@ main {
   display: inline-block; /* use flexbox for each child container */
   border: 0;
   padding: 10px;
-  border-radius: 6px;
-  background-color: var(--light-mode-body-color);
+  border-radius: 10px;
+  background: none;
 }
 
 
@@ -114,7 +121,7 @@ main {
 
 #profile a {
   font-size: 14px;
-  color: var(--active-indicator-color);
+  color: var(--primary-text-color);
 
 }
 .editable-field a {
@@ -137,7 +144,7 @@ main {
 }
 
 #profile > div {
-  background-color: var(--light-mode-body-color);
+  background: none;
 }
 
 #profile h1 {
@@ -213,10 +220,10 @@ main {
 }
 
 .profile-picture button, .profile-info button, .current-job button {
-  background-color: var(--border-color); /* Same as navbar button */
-  color: #000;
-  border: 1px solid var(--border-color);
-  padding: 5px 10px;
+  background-color: var(--light-mode-body-color); /* Same as navbar button */
+  color: var(--light-mode-text-color);
+  border: 0;
+  padding: 7px 10px;
   font-size: 14px;
   cursor: pointer;
   border-radius: 6px;
@@ -261,30 +268,48 @@ main {
   align-items: center;
 }
 
-#imageEditControls button:hover, .profile-info button:hover, .current-job button:hover {
-  background-color: #ddd;
-}
-
-/* Add any additional styles for the profile picture area here */
 
 
 .post-content {
   display: -webkit-box;
-  -webkit-line-clamp: 2; 
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
   line-height: 1.5em;
-  max-height: 3em; /* Max height for 2 lines */
+  max-height: 19em;
 }
 
 .post-container, .comments-container {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 15px;
   margin: 6px;
+  margin-top: 12px;
+}
+
+.comment-author-avatar {
+  object-fit: cover;
+  overflow: hidden;
+  max-height: 26px;
+  height: 26px;
+  width: 26px;
+  max-width: 26px;
+  border-radius: 50%;
+}
+
+.post-info, .comment-info {
+  margin-top: 8px;
+  display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.comment-header {
+  display: flex;
   align-items: center;
+  gap: 8px;
 }
 
 .flair {
@@ -311,11 +336,16 @@ main {
 
 .post, .comment {
   padding: 10px;
-  background-color: var(--border-color);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  width: 95%;
-  max-width: 95%;
+  background-color: var(--light-mode-body-color);
+  border: 0;
+  border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.post-title, .comment-title {
+  margin-bottom: 9px;
 }
 
 .post:hover, .comment:hover {
@@ -325,17 +355,18 @@ main {
 
 .link-display {
   display: inline-flex;
-  padding: 3px 9px;
+  padding: 5px 9px;
   margin: 4px;
-  background-color: var(--border-color); 
-  border: 1px solid var(--border-color); 
-  color: black;
+  background-color: var(--light-mode-body-color); 
+  border: 0;
+  color: var(--light-mode-text-color);
   border-radius: 6px;
   font-size: 14px;
   position: relative;
 }
 
 .link-display a {
+  color: var(--primary-text-color) !important;
   text-decoration: none;
 }
 
@@ -361,6 +392,11 @@ main {
 
 @media screen and (max-width: 768px) {
 
+  .profile-info, .user-activity {
+    background: none !important;
+    padding: 0 !important;
+  }
+
   .main-container {
     max-height: calc(100dvh - 65px);
     overflow-y: auto
@@ -385,6 +421,11 @@ main {
 .commit-graph {
   display: flex;
   flex-direction: column;
+  padding-top: 9px;
+}
+
+#repo-table {
+  padding-top: 9px;
 }
 
 .commit-row {
@@ -464,19 +505,48 @@ main {
   }
 
   .link-display {
-    background-color: var(--dark-mode-border-color);
-    border-color: var(--dark-mode-border-color);
+    background-color: var(--dark-mode-main-color);
     color: var(--dark-mode-text-color);
   }
 
   .post, .comment {
     background-color: var(--dark-mode-main-color);
-    border-color: var(--dark-mode-border-color);
   }
 
   .sort-option:not(:last-child) {
     border-color: var(--dark-mode-border-color);
   }
+  .follower-stats a {
+    color: var(--dark-mode-text-color);
+  }
+
+
+  .commit-cell[data-count="0"] {
+    background-color: var(--dark-mode-main-color) !important;
+  }
+
+  .commit-cell[data-count="1"] {
+    background-color: #50905b !important;
+  }
+
+  .commit-cell[data-count="2"] {
+    background-color: #396846 !important;
+  }
+
+  .commit-cell[data-count="3"] {
+    background-color: #245534 !important;
+  }
+
+  .commit-cell[data-count="4"] {
+    background-color: #1a3d25 !important;
+  }
+
+  .commit-cell[data-count="5"] {
+    background-color: #0f2716 !important;
+  }
+
+
+
 
   .sort-option {
     background-color: var(--dark-mode-main-color);
@@ -503,43 +573,44 @@ main {
   }
 
   #profile > div {
-    background-color: var(--dark-mode-main-color);
-    border-color: var(--dark-mode-border-color);
+    background-color: var(--dark-mode-body-color);
   }
 
   #profile.grid-container {
-      /* Styles for the grid container */
-      background-color: var(--dark-mode-body-color); /* Dark background for the profile container */
+
+      background-color: var(--dark-mode-body-color);
+  }
+
+  #profile a {
+    color: var(--dark-mode-text-color);
+  }
+
+
+  .link-display a {
+    color: var(--dark-mode-text-color) !important;
+  }
+
+  .post:hover, .comment:hover {
+    background-color: var(--dark-mode-hover-background-color);
   }
 
   .profile-info, .current-job, .learning-progress, .achievements {
-      /* Styles for different sections within the profile */
-      background-color: rgb(30,30,30); /* Darker background for sections */
-      border-radius: 5px; /* Optional border radius */
-      padding: 10px; /* Padding for these sections */
+      background-color: rgb(30,30,30);
+      border-radius: 5px; 
+      padding: 10px; 
   }
 
   .profile-info p, .current-job p, .learning-progress p, .achievements p {
-      color: #d0d0d0; /* Lighter text color for content */
+      color: #d0d0d0; 
   }
 
 
-  /* Dark Mode Theme */
-
-/* Common button styles for dark mode */
 .profile-picture button, 
 .profile-info button, 
 .current-job button,
 #imageEditControls button {
-  background-color: var(--dark-mode-border-color); /* Dark background color for buttons */
-  color: #f9f9f9; /* Light text color for contrast */
-  border: 1px solid var(--dark-mode-border-color); /* Dark border color */
-  padding: 5px 10px;
-  font-size: 14px;
-  cursor: pointer;
-  border-radius: 5px;
-  margin-bottom: 5px;
-  transition: background-color 0.15s;
+  background-color: var(--dark-mode-main-color); 
+  color: var(--dark-mode-text-color);
 }
 .edit-input {
   /* Visually match the button and the field */
@@ -557,14 +628,14 @@ main {
 #imageEditControls button:hover, 
 .profile-info button:hover, 
 .current-job button:hover {
-  background-color: #444; /* Slightly lighter for hover effect */
+  background-color: #444; 
 }
 
 /* Styling for input fields in dark mode */
 #imageEditControls input[type="text"], 
 .profile-info input[type="text"], 
 .current-job input[type="text"] {
-  background-color: #222; /* Darker background color for inputs */
+  background-color: #222;
   color: #f9f9f9;
   padding: 5px;
   font-size: 14px;

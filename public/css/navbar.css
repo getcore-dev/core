@@ -116,8 +116,8 @@ h1, h2, h3, h4, h5, p {
   background-color: var(--active-indicator-color);
   width: 100%;
   color: white;
-  padding: 10px;
-  top: -7px;
+  padding: 3px;
+  padding-top: 0;
   z-index: 3;
   box-sizing: border-box;
 }
@@ -133,7 +133,7 @@ h1, h2, h3, h4, h5, p {
   border: 0;
   background-color: transparent;
   color: white;
-  font-size: 1.2rem;
+  font-size: .9rem;
 }
 
 .latest-commit-info {
@@ -150,11 +150,10 @@ h1, h2, h3, h4, h5, p {
 }
 
 .count-bubble {
-  background-color: #D72638;
-  border: 1px solid #DD4050;
+  background-color: #ff6070;
+  border: 1px solid #ba5b65;
   color: #fff;
   border-radius: 50%;
-  padding: 1px;
   font-size: 12px;
   position: absolute;
   height: 16px;
@@ -788,9 +787,8 @@ margin-top: 20px;
 .avatar-dropdown {
   position: absolute;
   top: 7px;
-  z-index: 2;
-  background-color: var(--light-mode-main-color);
-  border-radius: 3px;
+  z-index: 4;
+  background-color: var(--light-mode-body-color);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -914,7 +912,7 @@ margin-top: 20px;
   }
 
   .avatar-dropdown {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-body-color);
     border-color: var(--dark-mode-border-color)
   }
 
@@ -945,7 +943,6 @@ margin-top: 20px;
   }
 
   .avatar-dropdown a {
-    background-color: var(--dark-mode-main-color);
     color: var(--dark-mode-text-color)
   }
   

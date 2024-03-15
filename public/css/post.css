@@ -460,7 +460,12 @@ img.blog-avatar {
   border: 0;
   background: 0;
   border-radius: 6px;
-  transition: transform 2s ease;
+  transition: transform .5s ease;
+}
+
+.reaction-popup button:hover {
+  transform: scale(1.2);
+  background: var(--light-mode-hover-color);
 }
 
 
@@ -820,12 +825,17 @@ a.comment-user-info:hover {
   max-width: 100%;
 }
 
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
 .dropdown-content {
   display: none;
   position: absolute;
   padding: 12px;
   border-radius: 6px;
-  border: 1px solid var(--border-color);
+  border: 0;
   background-color: var(--light-mode-main-color);
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
@@ -839,6 +849,8 @@ a.comment-user-info:hover {
   border: 0;
   background-color: rgba(0,0,0,0);
   padding: 0;
+  color: black;
+  font-size: .875rem;
   margin: 0;
 }
 
@@ -971,9 +983,9 @@ p.preview-description {
 }
 
 .reaction-button.active {
-  background-color: #2fa8dd4a;
+  background-color: #b8e9ff4a;
   color: #3073c1;
-  border-color: #69a4e8;
+  border: 1px solid #afd4ff;
 }
 
 .project-link {
@@ -1085,6 +1097,7 @@ background-color: var(--light-mode-button-hover-color);
 
   .dropdown-content {
     background-color: var(--dark-mode-main-color);
+    border: 0;
     color: var(--dark-mode-text-color);
   }
   
@@ -1132,6 +1145,14 @@ background-color: var(--light-mode-button-hover-color);
   .reaction-popup {
     background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-border-color);
+  }
+
+  .reaction-popup button:hover {
+    background: var(--dark-mode-button-hover-color);
+  }
+
+  .dropdown-content button {
+    color: var(--dark-mode-text-color);
   }
 
   .solution-username a {
@@ -1182,6 +1203,11 @@ background-color: var(--light-mode-button-hover-color);
   
   .project-link-header a {
     color: var(--dark-mode-secondary-text-color) !important;
+  }
+  .reaction-button.active {
+    background-color: #1c2830;
+    color: #3073c1;
+    border: 1px solid #224368;
   }
 
   .button-container button {

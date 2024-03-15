@@ -39,7 +39,20 @@ const userQueries = {
   getPostsByUserIdUserProfile: async (userId) => {
     try {
       const result = await sql.query`
-      SELECT * FROM posts WHERE user_id = ${userId} AND deleted = 0 ORDER BY created_at DESC OFFSET 0 ROWS FETCH NEXT 6 ROWS ONLY`;
+      SELECT 
+        p.*,
+        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count,
+        (SELECT COUNT(*) FROM UserPostActions upa WHERE upa.post_id = p.id) AS reaction_count
+      FROM 
+        posts p
+      WHERE 
+        p.user_id = ${userId} AND 
+        p.deleted = 0
+      ORDER BY 
+        p.created_at DESC
+      OFFSET 0 ROWS
+      FETCH NEXT 6 ROWS ONLY;
+    `;
       return result.recordset;
     } catch (err) {
       console.error("Database query error:", err);

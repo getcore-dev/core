@@ -114,7 +114,7 @@ p.job-description {
 }
 
 .company-mini-logo {
-  max-height: 20px;
+  max-height: 18px;
   object-fit: cover; 
   overflow: hidden;
 }
@@ -159,8 +159,8 @@ p.job-description {
 
 .create-job {
   border: 0;
-  padding: 8px;
-  color: white;
+  padding: 8px 14px;
+    color: white;
   background-color: #007bff;
   border-radius: 10px;
 }
@@ -339,7 +339,7 @@ p.job-description {
 .job-flair {
   display: inline-block;
   padding: 1px 3px;
-  margin-bottom: 2px;
+  margin-bottom: 6px;
   background-color: #DB504A;
   border: 1px solid #FF8370; 
   color: white;

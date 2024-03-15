@@ -285,6 +285,11 @@ div.vote-interactions {
   transition: transform 2s ease;
 }
 
+.reaction-menu button:hover {
+  transform: scale(1.2);
+  background: var(--light-mode-hover-color);
+}
+
 .title {
   font-size: 20px;
   font-weight: 500;
@@ -541,6 +546,11 @@ div .mini-link-desc {
   color: white;
 }
 
+#post-button:hover {
+  background: #0a532e;
+  border-color: #07341d;
+}
+
 
 
 /* Dark Mode Styles */
@@ -671,9 +681,9 @@ div .mini-link-desc {
 
 
 .reaction-button.active {
-  background-color: #2fa8dd4a;
+  background-color: #b8e9ff4a;
   color: #3073c1;
-  border-color: #69a4e8;
+  border: 1px solid #afd4ff;
 }
 
 .company-logo {
@@ -772,6 +782,11 @@ div .mini-link-desc {
     display: flex;
     flex-direction: row;
     align-items: center;
+  }
+
+  .community-selector .communities:hover {
+    cursor: pointer;
+    background-color: var(--light-mode-hover-color);
   }
 
   .community-name {
@@ -1035,6 +1050,15 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
   color: var(--dark-mode-text-color);
   }
 
+  .reaction-button.active {
+    background-color: #1c2830;
+    color: #3073c1;
+    border: 1px solid #224368;
+  }
+
+  .community-selector .communities:hover {
+    background-color: var(--dark-mode-hover-color);
+  }
 
 
   .comments {
@@ -1055,12 +1079,16 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
 
   /* Post styling adjustments */
 
-  .post:hover, .job-content:hover, .com-btn:hover {
+  .post:hover, .job:hover, .com-btn:hover {
       background-color: var(--dark-mode-hover-color); /* Dark background on hover */
   }
 
   .reaction-button:hover, .boost-button:hover, .main-reaction-button:hover {
       background-color: #363F44; /* Darker background on hover */
+  }
+
+  .reaction-menu button:hover {
+      background: var(--dark-mode-hover-color);
   }
   
   .post-info {
@@ -1130,7 +1158,7 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
     background-color: var(--dark-mode-main-color) !important;
   }
 
-  .job:hover .job-content:hover {
+  .job:hover {
     background-color: var(--dark-mode-hover-color) !important;
   }
 

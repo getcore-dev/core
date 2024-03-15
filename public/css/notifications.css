@@ -1,23 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 :root {
-    /* Color variables */
     --primary-text-color: #1D2935;
-    --navbar-background-color: #F6F8FA;
+    --light-mode-body-color: #F6F8FA;
+    --light-mode-main-color: #fff;
+    --light-mode-hover-color: #E5EBF1;
+    --border-color: #DCE6F2;
+    --light-mode-button-color: #DCE6F2;
+    --light-mode-button-hover-color: #BECBDA;
+    --light-mode-text-color: #243342;
+    --light-mode-secondary-text-color: #586C7F;
     --hover-background-color: #ddd;
     --active-indicator-color: #0e6655;
-    --notification-background-color: #fff;
-    --dark-mode-background-color: #16191B;
-    --dark-mode-text-color: #fff;
+    --dark-mode-main-color: #16191B;
     --dark-mode-body-color: #000;
+    --dark-mode-hover-color: #24292D;
+    --dark-mode-button-hover-color: #363F44;
+    --dark-mode-lighter-color: #1F2427;
+    --dark-mode-text-color: #fff;
+    --dark-mode-secondary-text-color: #999;
     --dark-mode-border-color: #272D31;
     --dark-mode-hover-background-color: #444;
-    --primary-text-color: #1D2935;
-    --light-mode-main-color: #fff;
-    --light-mode-text-color: #243342;
-    --light-mode-body-color: #F6F8FA;
-    --border-color: #DCE6F2;
-    --font-family: 'Roboto', sans-serif;
   }
 
   body, .container {
@@ -85,8 +88,13 @@ li.notification-item {
     gap: 10px;
 }
 
+.notification-item:hover {
+    background-color: var(--light-mode-hover-color);
+}
+
 .notification-selector-btn.active {
-    background-color: #214E34;
+    background-color: #489769;
+    border: 1px solid #318755;
     color: var(--light-mode-main-color);
 }
 
@@ -100,6 +108,10 @@ li.notification-item {
         background-color: var(--dark-mode-background-color);
         border-color: var(--dark-mode-border-color);
         color: var(--dark-mode-text-color);
+    }
+
+    .notification-item:hover {
+        background-color: var(--dark-mode-hover-color);
     }
 
     .notification-item:last-child {

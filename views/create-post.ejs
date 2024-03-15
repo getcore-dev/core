@@ -26,8 +26,8 @@
     </div>
 
     <div class="post-selector">
-      <div class="post-type" style="background-color:#0C8346;border-color:#0E954F; color: white;">
-        <a href="#" class="post-type-button" id="discussion">Discussion</a>
+      <div class="post-type" style="background-color: #489769;border: 1px solid #318755;">
+        <a href="#" class="post-type-button" id="discussion" style="color:white">Discussion</a>
       </div>
       <div class="post-type">
         <a href="#" class="post-type-button" id="question">Question</a>
@@ -119,17 +119,22 @@
       $('#post_type').val(selectedPostType); // Set the hidden input field's value
       $('.post-type').css('background-color', '');
       $('.post-type').css('border-color', '');
+      $('.post-type a').css('color', '');
 
-      $(this).closest('.post-type').css('background-color', '#0C8346');
-      $(this).closest('.post-type').css('border-color', '#0E954F');
+      $(this).closest('.post-type').css('background-color', '#489769');
+      $(this).closest('.post-type').css('border', '1px solid #318755');
+      $(this).closest('.post-type a').css('color', 'white');
     });
 
 
 
     $(document).ready(function() {
       $('.tags-select2').select2({
-        width: '100%' // Full width of its container
+        width: '100%', // Full width of its container
+        tags: true, // Allows user to create new tags
+        tokenSeparators: [',', ' '] // Optional: Defines separators for tokenization
       });
+
 
       var easyMDE = new EasyMDE({
         element: document.getElementById('content')

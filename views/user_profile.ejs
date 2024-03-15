@@ -31,14 +31,12 @@
       <div id="profile" class="grid-container">
 
         <div class="profile-info">
-          <div class="profile-picture">
+          <div class="profile-picture" data-hue-rotate="0">
             <% if (otheruser.avatar) { %>
             <img id="profilePic" src="<%= otheruser.avatar %>" alt="Profile Picture" />
             <% } else { %>
             <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
             <% } %>
-
-
           </div>
           <div class="profile-details">
             <h2><%= otheruser.username %></h2>
@@ -60,16 +58,18 @@
 
         <div class="current-job">
           <% if (otheruser.currentJob && otheruser.currentCompany) {%>
+          <h5> <%= otheruser.currentCompany %>
+          </h5>
           <h4>
-            <%= otheruser.currentJob%> @ <%= otheruser.currentCompany %>
+            <%= otheruser.currentJob%>
           </h4>
+          <p>
+            Started: <%= new Date(otheruser.currentJob_begindate).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) %>
+          </p>
 
           <p id="currentjob.position-display">
           </p>
           <p id="currentjob.position-display">
-            <span class="flair" id="date-flair">
-              <%= new Date(otheruser.currentJob_begindate).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) %>
-            </span>
             <span class="flair" id="emp-type-flair">
               <%= otheruser.currentJob_employment_type %>
             </span>
@@ -134,7 +134,34 @@
               <button class="sort-option comments-button" onclick="showSection('comments')">Comments</button>
             </div>
           </div>
+          <%
+                function formatDate(date) {
+      let postDate = new Date(date);
+      let today = new Date();
+      let formattedDate;
 
+      let diff = today - postDate;
+
+      // Convert time difference to different units
+      let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+      let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+      let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+      let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+
+      // Decide the format based on the time difference
+      if (minutes < 60) {
+        formattedDate = minutes + ' minutes ago';
+      } else if (hours < 24) {
+        formattedDate = hours + ' hours ago';
+      } else if (days < 365) {
+        formattedDate = days + ' days ago';
+      } else {
+        formattedDate = years + ' years ago';
+      }
+      return formattedDate;
+    }
+
+%>
           <div id="posts" class="content">
             <% if (posts.length === 0) { %>
             <p>No posts yet.</p>
@@ -146,7 +173,29 @@
                   <%= post.title %>
                 </h4>
                 <p class="post-content" style="font-size: 14px;"><%= post.content %></p>
+                <div class="post-info">
+                  <span>
+                    <p>
+                      <%= formatDate(post.created_at) %>
+                    </p>
+                  </span>
+                  <span>
+                    <p>
+                      <%= post.views%> views
+                    </p>
+                  </span>
 
+                  <span>
+                    <p>
+                      <%= post.comment_count %> comments
+                    </p>
+                  </span>
+                  <span>
+                    <p>
+                      <%= post.reaction_count %> reactions
+                    </p>
+                  </span>
+                </div>
               </div>
               <% }); %>
             </div>
@@ -159,14 +208,27 @@
             <% } else { %>
             <div class="comments-container">
               <% comments.forEach(function(comment) { %>
-              <div class="comment">
-                <h3 class="comment-title">
-                  <a href="/posts/<%= comment.post_id %>"><%= comment.title %></a>
-                </h3>
-                <p class="comment-author">
-                  <a href="/profile/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/profile/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
-                </p>
-                <p class="comment-content"><%= comment.comment %></p>
+              <div class="com" onclick="window.location.href='/posts/<%= comment.post_id %>'">
+                <div class="comment-header">
+                  <img class="comment-author-avatar" src="<%= comment.author.avatar %>" alt="Avatar" />
+                  <p class="comment-author">
+
+                    <a href="/profile/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/profile/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
+                  </p>
+                </div>
+                <div class="comment">
+                  <h4 class="comment-title">
+                    <%= comment.title %>
+                  </h4>
+                  <p class="comment-content"><%= comment.comment %></p>
+                  <div class="comment-info">
+                    <span>
+                      <p>
+                        <%= formatDate(comment.created_at) %>
+                      </p>
+                    </span>
+                  </div>
+                </div>
               </div>
               <% }); %>
             </div>
@@ -176,6 +238,20 @@
       </div>
   </main>
   <script>
+    function toggleProfileTint() {
+      // Select all profile-related div elements
+      const profileElements = document.querySelectorAll('.profile-info, .current-job, .user-links, .github-commit-graph, .github-commit-repos, .user-activity');
+
+      // Toggle the 'profile-tint' class on each element
+      profileElements.forEach(element => {
+        element.classList.toggle('profile-tint');
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      toggleProfileTint(); // Apply the tint when the page loads
+    });
+
     async function fetchRepositories() {
       const username = '<%= otheruser.github_url %>';
       const response = await fetch(`/api/github-repos/${username}`);
@@ -218,8 +294,6 @@
       });
     }
 
-    // Call the function to fetch and display the repositories
-    fetchRepositories();
     async function fetchCommitGraph() {
       const username = '<%= otheruser.github_url %>';
       const response = await fetch(`/api/github-commit-graph/${username}`);
@@ -277,11 +351,25 @@
         return '#216e39';
       }
     }
+    if ('<%= otheruser.github_url %>') {
+      fetchRepositories();
+      fetchCommitGraph();
+    } else {
+      // Display a message when no GitHub information is available
+      const repoTableBody = document.querySelector('#repo-table tbody');
+      const row = document.createElement('tr');
+      const cell = document.createElement('td');
+      cell.setAttribute('colspan', '4');
+      cell.textContent = 'No GitHub information available.';
+      row.appendChild(cell);
+      repoTableBody.appendChild(row);
 
-    // Call the function to fetch and display the commit graph
-    fetchCommitGraph();
-
-
+      const commitGraphContainer = document.getElementById('commit-graph-container');
+      const message = document.createElement('p');
+      message.textContent = 'No GitHub information available.';
+      commitGraphContainer.appendChild(message);
+    }
+    <% if (user) { %>
     document.getElementById('followForm').addEventListener('submit', async (event) => {
       event.preventDefault();
       const form = event.target;
@@ -293,6 +381,7 @@
       document.getElementById('followerCount').textContent = data.followerCount;
       form.action = form.action.includes('follow') ? form.action.replace('follow', 'unfollow') : form.action.replace('unfollow', 'follow');
     });
+    <% } %>
 
     function editImage() {
       // Show the URL input and update button

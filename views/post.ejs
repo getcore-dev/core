@@ -96,7 +96,16 @@
                   <span class="material-symbols-outlined">more_horiz</span>
                 </button>
                 <div class="dropdown-content" style="display: none;">
-
+                  <div class="dropdown-item">
+                    <button class="reaction-button" onclick="window.location.href = '/posts/<%= post.id %>/report'">
+                      <p>Report Post</p>
+                    </button>
+                  </div>
+                  <div class="dropdown-item">
+                    <button class="reaction-button" onclick="sharePost('<%= post.id %>', '<%= post.title %>', '<%= post.content %>')">
+                      <p>Share Post</p>
+                    </button>
+                  </div>
                   <% if (user && user.username === post.username) { %>
                   <div class="dropdown-item">
 
@@ -425,7 +434,7 @@
 
                   </div>
 
-                  <div class="dropdown-<%= comment.id %>">
+                  <div class="dropdown-<%= comment.id %>" style="position: relative; display: inline-block;">
                     <button class="dropbtn" onclick="showDropdown(event)">
                       <span class="material-symbols-outlined">more_horiz</span>
                     </button>
@@ -640,6 +649,20 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
 
 
   <script>
+    function sharePost(postId, postTitle, postContent) {
+      if (navigator.share) {
+        navigator.share({
+            title: postTitle,
+            text: postContent,
+            url: window.location.origin + '/posts/' + postId,
+          })
+          .then(() => console.log('Successful share'))
+          .catch((error) => console.log('Error sharing:', error));
+      } else {
+        console.log('Web Share API not supported');
+        // Fallback to custom share menu or other sharing method
+      }
+    }
     $(document).ready(function() {
       var easyMDE = new EasyMDE({
         element: document.getElementById('comment-form-textarea'),
