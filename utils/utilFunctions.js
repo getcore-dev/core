@@ -255,22 +255,32 @@ const utilFunctions = {
   getTrendingPosts: async () => {
     try {
       const result = await sql.query`
-        SELECT TOP 7 * FROM (
-          SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate,
-          u.currentJob, u.username, u.avatar, u.currentCompany,
-                SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
-                SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-                SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
-                SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
-                SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
-                SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount
+        SELECT TOP 7 *
+        FROM (
+          SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id,
+                 p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.views,
+                 u.currentJob, u.username, u.avatar, u.currentCompany,
+                 SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
+                 SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
+                 SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+                 SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
+                 SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
+                 SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
+                 DATEDIFF(MINUTE, p.created_at, GETDATE()) as minutesElapsed,
+                 (SELECT shortname FROM communities WHERE id = p.communities_id) AS community_name,
+                 (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count
           FROM posts p
           INNER JOIN users u ON p.user_id = u.id
           LEFT JOIN userPostActions upa ON p.id = upa.post_id
           WHERE p.deleted = 0
-          GROUP BY p.id, p.created_at, p.deleted, u.currentCompany, p.title, p.content, p.link, p.communities_id, u.username, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate
+          GROUP BY p.id, p.created_at, p.deleted, u.currentCompany, p.title, p.content, p.link, p.communities_id,
+                   u.username, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious,
+                   p.react_interesting, p.react_celebrate, p.views
         ) AS SubQuery
-        ORDER BY (loveCount + boostCount + interestingCount + curiousCount + likeCount + celebrateCount) DESC
+        ORDER BY (
+          (loveCount * 5 + boostCount * 3 + interestingCount * 3 + curiousCount * 1  + likeCount * 1 + celebrateCount * 3) * 100 +
+          views
+        ) / (minutesElapsed + 1) DESC
       `;
       return result.recordset;
     } catch (err) {

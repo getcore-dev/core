@@ -16,7 +16,13 @@
     fetch('/api/trending-posts') // Adjust this to your server's endpoint
       .then(response => response.json())
       .then(posts => {
-        const trendingPostsContainer = document.querySelector('.trending-posts');
+        const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
+        let trendingPostsContainer;
+        if (!isMobile) {
+          trendingPostsContainer = document.querySelector('.trending-posts');
+        } else {
+          trendingPostsContainer = document.querySelector('.mobile-trending-posts');
+        }
         trendingPostsContainer.innerHTML = ''; // Clear existing posts
 
         posts.forEach(post => {
@@ -32,9 +38,11 @@
 trending_up
 </span> 
                 <div class="trending-post-content">
-                    <div><p>${post.title} </p> </div>
-                    <div class="trending-post-user-info"><img class="trending-post-avatar" loading="lazy" src=${post.avatar}>
-                    <p>${post.username}</p></div>
+                  <div class="trending-post-user-info">
+                    <p><strong>${post.username}</strong> in /${post.community_name}</p>
+                    </div>
+                                        <div><p>${post.title} </p> </div>
+
                 </div>
 
             `;

@@ -24,6 +24,12 @@
   margin: 10px ;
 }
 
+.mobile-trending-posts {
+  box-sizing: border-box;
+    padding: 25px 27px;
+    padding-top: 10px;
+}
+
 .communities .community-name:hover {
   text-decoration: underline;
 }
@@ -233,4 +239,12 @@ height: auto;
   #com-btn-container {
       display: none;
     }
+
+    .trending-post {
+      margin-bottom: 10px;
+    }
+
+    .trending-post a:hover {
+      background-color: #555; /* Lighter background on hover */
+  }
 }

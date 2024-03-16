@@ -168,6 +168,7 @@ div.vote-interactions {
 .job-flair {
   display: inline-block;
   padding: 2px 3px;
+  margin-bottom: 4px;
   background-color: #DB504A;
   border: 1px solid #FF8370; 
   color: white;
