@@ -1,22 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 :root {
-  /* Color variables */
   --primary-text-color: #1D2935;
-  --navbar-background-color: #F6F8FA;
+  --light-mode-body-color: #fff;
+  --light-mode-main-color: #F6F8FA;
+  --light-mode-hover-color: #E5EBF1;
+  --border-color: #DCE6F2;
+  --light-mode-button-color: #DCE6F2;
+  --light-mode-button-hover-color: #BECBDA;
+  --light-mode-text-color: #243342;
+  --light-mode-secondary-text-color: #586C7F;
   --hover-background-color: #ddd;
   --active-indicator-color: #0e6655;
-  --notification-background-color: #fff;
-  --dark-mode-background-color: #16191B;
-  --dark-mode-text-color: #fff;
+  --dark-mode-main-color: #16191B;
   --dark-mode-body-color: #000;
+  --dark-mode-hover-color: #24292D;
+  --dark-mode-button-hover-color: #363F44;
+  --dark-mode-lighter-color: #1F2427;
+  --dark-mode-text-color: #1D2935;
+  --dark-mode-secondary-text-color: #999;
   --dark-mode-border-color: #272D31;
   --dark-mode-hover-background-color: #444;
-  --primary-text-color: #1D2935;
-  --light-mode-main-color: #fff;
-  --light-mode-text-color: #243342;
-  --light-mode-body-color: #F6F8FA;
-  --border-color: #E5EAF0;
 
   /* Font and size variables */
   --font-family: 'Roboto', sans-serif;
@@ -961,9 +965,9 @@ margin-top: 20px;
 
 .menu-content {
   z-index: 100;
-  background-color: var(--dark-mode-background-color);
+  background-color: var(--dark-mode-body-color);
   border-right: 1px solid var(--dark-mode-border-color);
-  color: #fff; /* Light text color */
+  color: var(--dark-mode-text-color); /* Light text color */
 }
 
 .menu-content a {
