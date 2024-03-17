@@ -493,6 +493,10 @@ button.clear-btn {
   will-change: transform; /* Prepare the browser for transform changes */
 }
 
+a > .menu-item { 
+font-weight: bold;
+}
+
 .nav-text:hover {
   text-decoration: underline; /* Underline on hover */
 }
@@ -611,6 +615,7 @@ margin-top: 20px;
   }
 
   .notification-count {
+    display: none;
     left: 57px;
     margin-left: 0;
   }

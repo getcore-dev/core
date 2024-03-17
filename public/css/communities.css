@@ -89,7 +89,9 @@ body {
   gap: 11px;
 }
 
-
+.job-flairs {
+margin-top: 5px;
+}
 
 div.vote-interactions {
   display: flex;
