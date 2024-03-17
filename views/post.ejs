@@ -653,6 +653,15 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
               <div class="post" style="margin: 0 13px; margin-bottom: 15px;">
                 <div class="post-content">
                   <div class="post-header" onclick="window.location.href='/posts/<%= post.id %>'">
+                  <% 
+                    function formatDate(dateString) {
+  const date = new Date(dateString);
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${month}/${day}/${year}`;
+}
+%>
                     <div class="post-header-username">
                       <div class="avatar">
                         <img src="<%= post.avatar %>" loading="lazy">
