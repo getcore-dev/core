@@ -485,7 +485,7 @@ button.clear-btn {
   overflow-x: hidden;
   transition: transform 0.3s ease-out; /* Updated for smoother transition */
   padding-top: 65px;
-  background-color: var(--light-mode-body-color);
+  background-color: var(--light-mode-main-color);
   z-index: 4;
   width: 249px;
   overflow-y: auto;

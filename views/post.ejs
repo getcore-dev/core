@@ -96,6 +96,15 @@
                   <span class="material-symbols-outlined">more_horiz</span>
                 </button>
                 <div class="dropdown-content" style="display: none;">
+                  <% if (user) { %>
+                  <div class="dropdown-item">
+                    <form id="favoriteForm" data-post-id="<%= post.id %>">
+                      <button class="reaction-button" type="submit">
+                        <p>Favorite Post</p>
+                      </button>
+                    </form>
+                  </div>
+                  <% } %>
                   <div class="dropdown-item">
                     <button class="reaction-button" onclick="window.location.href = '/posts/<%= post.id %>/report'">
                       <p>Report Post</p>
@@ -649,6 +658,32 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
 
 
   <script>
+    document.getElementById('favoriteForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const postId = this.dataset.postId;
+      const url = `/favorites/${postId}`;
+
+      fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert(data.message);
+          } else {
+            alert('Error: ' + data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred while adding the post to favorites.');
+        });
+    });
+
     function sharePost(postId, postTitle, postContent) {
       if (navigator.share) {
         navigator.share({

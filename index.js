@@ -18,6 +18,7 @@ const jobRoutes = require("./routes/jobRoutes");
 const searchRoutes = require("./routes/searchRoutes");
 const postRoutes = require("./routes/postRoutes");
 const commentRoutes = require("./routes/commentRoutes");
+const favoriteRoutes = require("./routes/favoriteRoutes");
 const apiRoutes = require("./routes/apiRoutes");
 const generalRoutes = require("./routes/generalRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
@@ -74,6 +75,7 @@ app.use("/search", searchRoutes);
 app.use("/jobs", jobRoutes);
 app.use("/api", apiRoutes);
 app.use("/notifications", notificationRoutes);
+app.use("/favorites", favoriteRoutes);
 app.use("/communities", communityRoutes);
 app.use(generalRoutes);
 

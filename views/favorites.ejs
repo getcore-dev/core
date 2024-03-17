@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/user_profile.css" />
+  <link rel="shortcut icon" href="/img/core.png" />
+</head>
+
+<style>
+  :root {
+    --primary-text-color: #1D2935;
+    --light-mode-body-color: #F6F8FA;
+    --light-mode-main-color: #fff;
+    --light-mode-hover-color: #E5EBF1;
+    --border-color: #DCE6F2;
+    --light-mode-button-color: #DCE6F2;
+    --light-mode-button-hover-color: #BECBDA;
+    --light-mode-text-color: #243342;
+    --light-mode-secondary-text-color: #586C7F;
+    --hover-background-color: #ddd;
+    --active-indicator-color: #0e6655;
+    --dark-mode-main-color: #16191B;
+    --dark-mode-body-color: #000;
+    --dark-mode-hover-color: #24292D;
+    --dark-mode-button-hover-color: #363F44;
+    --dark-mode-lighter-color: #1F2427;
+    --dark-mode-text-color: #fff;
+    --dark-mode-secondary-text-color: #999;
+    --dark-mode-border-color: #272D31;
+    --dark-mode-hover-background-color: #444;
+  }
+
+  main {
+    display: block;
+  }
+
+  .favorite {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    border-radius: 10px;
+    background-color: var(--light-mode-body-color);
+    width: 100%;
+    padding: 16px 21px;
+    box-sizing: border-box;
+  }
+
+  .favorites {
+    padding: 0px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .favorite:hover {
+    background-color: var(--light-mode-hover-color);
+    cursor: pointer;
+  }
+
+  .favorites-header {
+    margin: 13px 10px;
+  }
+
+  .favorites-footer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    flex-direction: row;
+  }
+
+  .dropdown-content {
+    display: none;
+  }
+
+  .favorite-title {
+    max-width: 85%;
+  }
+
+  .favorite-header {
+    display: flex;
+    flex-direction row;
+    justify-content: space-between;
+  }
+
+  button.dropbtn {
+    background-color: transparent;
+    border: none;
+    color: var(--light-mode-secondary-text-color);
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .dropdown-content.show {
+    display: block;
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-content a {
+    color: var(--light-mode-secondary-text-color);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+
+  .dropdown-content {
+    position: absolute;
+    background-color: var(--light-mode-main-color);
+    min-width: 160px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .favorite {
+      background-color: var(--dark-mode-main-color);
+    }
+
+    .favorite:hover {
+      background-color: var(--dark-mode-hover-background-color);
+    }
+  }
+</style>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'favorite' }) %>
+  <main>
+    <h5 class="favorites-header">Favorites</h5>
+    <div class="favorites">
+      <% favorites.forEach((favorite) => { %>
+      <div class="favorite" onclick="window.location.href='/posts/<%= favorite.post_id %>'">
+        <div class="favorite-header">
+          <div class="favorite-title">
+            <h3>
+              <%= favorite.title %>
+            </h3>
+          </div>
+          <div class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(event)">
+              <span class="material-symbols-outlined">
+                more_horiz
+              </span>
+            </button>
+            <div class="dropdown-content">
+              <form action="/favorites/<%= favorite.post_id %>?_method=DELETE" method="POST">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit">Delete</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <p>
+          <%= favorite.content %>
+        </p>
+        <div class="favorites-footer">
+          <p>
+            <%= favorite.username %>
+          </p>
+          <p>
+            <%
+            function formatDate(dateString) {
+      const date = new Date(dateString);
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${month}/${day}/${year}`;
+    }%>
+            <%= formatDate(favorite.created_at) %>
+          </p>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+  </main>
+
+  <script>
+    function toggleDropdown(event) {
+      event.stopPropagation();
+      const dropdownContent = event.target.closest('.dropdown').querySelector('.dropdown-content');
+      dropdownContent.classList.toggle('show');
+    }
+
+    document.addEventListener('click', function(event) {
+      const dropdowns = document.querySelectorAll('.dropdown-content');
+      dropdowns.forEach(function(dropdown) {
+        if (!dropdown.contains(event.target)) {
+          dropdown.classList.remove('show');
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
