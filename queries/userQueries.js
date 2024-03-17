@@ -182,24 +182,20 @@ const userQueries = {
       throw new Error(`Invalid field name: ${field}`);
     }
 
-    // Check if the field is a URL field
-    if (["leetcode_url", "linkedin_url", "github_url"].includes(field)) {
-      // Check if the value is a full URL or just a username
-      if (!value.startsWith("http://") && !value.startsWith("https://")) {
-        // If it's just a username, modify the value to include the base URL
-        switch (field) {
-          case "leetcode_url":
-            value = `https://leetcode.com/${value}`;
-            break;
-          case "linkedin_url":
-            value = `https://www.linkedin.com/in/${value}`;
-            break;
-          case "github_url":
-            value = `https://github.com/${value}`;
-            break;
-        }
-      }
-    }
+ if (["leetcode_url", "linkedin_url", "github_url"].includes(field)) {
+  // Extract the username from the provided value
+  switch (field) {
+    case "leetcode_url":
+      value = value.replace(/^https?:\/\/leetcode.com\//i, "");
+      break;
+    case "linkedin_url":
+      value = value.replace(/^https?:\/\/(?:www\.)?linkedin.com\/in\//i, "");
+      break;
+    case "github_url":
+      value = value.replace(/^https?:\/\/github.com\//i, "");
+      break;
+  }
+}
 
     // Check if the field is recruiter_id
     if (field === "recruiter_id") {
