@@ -96,6 +96,12 @@ align-items: center;
 gap: 8px;
 }
 
+.trending-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .trending-posts {
 display: flex;
 flex-direction: column;

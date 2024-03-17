@@ -255,8 +255,8 @@ const utilFunctions = {
   getTrendingPosts: async () => {
     try {
       const result = await sql.query`
-        SELECT TOP 7 *
-        FROM (
+      SELECT TOP 7 *
+      FROM (
           SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id,
                  p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.views,
                  u.currentJob, u.username, u.avatar, u.currentCompany,
@@ -276,11 +276,8 @@ const utilFunctions = {
           GROUP BY p.id, p.created_at, p.deleted, u.currentCompany, p.title, p.content, p.link, p.communities_id,
                    u.username, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious,
                    p.react_interesting, p.react_celebrate, p.views
-        ) AS SubQuery
-        ORDER BY (
-          (loveCount * 5 + boostCount * 3 + interestingCount * 3 + curiousCount * 1  + likeCount * 1 + celebrateCount * 3) * 100 +
-          views
-        ) / (minutesElapsed + 1) DESC
+      ) AS SubQuery
+      ORDER BY ((loveCount * 5 + boostCount * 3 + interestingCount * 3 + curiousCount * 1 + likeCount * 1 + celebrateCount * 3) * 100 + views) / POWER(minutesElapsed / 60 + 1, 1.1) DESC;
       `;
       return result.recordset;
     } catch (err) {

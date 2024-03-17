@@ -260,12 +260,21 @@ router.get("/posts/:postId", async (req, res) => {
     // render markup content in html
     postData.content = marked.parse(postData.content);
 
+    const similarPosts = await postQueries.fetchSimilarPosts(
+      user,
+      postId,
+      postData.communities_id,
+      postData.tags,
+      postData.title
+    );
+
     res.render("post.ejs", {
       post: postData,
       user: req.user,
       communityId: postData.communities_id,
       community: postData.community,
       linkify: utilFunctions.linkify,
+      similarPosts: similarPosts,
     });
   } catch (err) {
     console.error("Database query error:", err);

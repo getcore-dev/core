@@ -47,6 +47,7 @@ body {
   overflow-y: none;
 }
 
+
 .post:hover {
   cursor: pointer;
 }
@@ -880,7 +881,6 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
     padding: 0px;
     margin-bottom: 20px;
     max-width: 100%;
-    /* border: 1px solid var(--border-color); */
   }
 
   .container {

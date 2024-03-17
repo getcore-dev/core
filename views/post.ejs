@@ -27,6 +27,7 @@
   <link rel="stylesheet" href="/css/com-btn-container.css" />
 
 
+
   <link rel="shortcut icon" href="/img/core.png" />
   <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -646,6 +647,60 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
 
 
             </div>
+            <div id="posts-container" <% if (similarPosts.length > 0) { %> <div class="similar-posts">
+              <h2>Similar Posts</h2>
+              <% similarPosts.forEach(post => { %>
+              <div class="post" style="margin: 0 13px; margin-bottom: 15px;">
+                <div class="post-content">
+                  <div class="post-header" onclick="window.location.href='/posts/<%= post.id %>'">
+                    <div class="post-header-username">
+                      <div class="avatar">
+                        <img src="<%= post.avatar %>" loading="lazy">
+                      </div>
+                      <div class="username">
+                        <a href="/profile/<%= post.username %>" class="username-link"><strong><%= post.username %></strong></a>
+                        <span class="communities-text"> posted a <%= post.post_type %> in <%= post.community_name %></span>
+                        <a href="/communities/<%= post.communities_id %>" class="community"></a>
+                        <div class="post-date" id="secondary-text"><%= formatDate(post.created_at) %> • <%= post.views %> views</div>
+                      </div>
+                    </div>
+                    <div class="three-dots">
+                      <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>
+                    </div>
+                  </div>
+                  <div class="title" onclick="window.location.href='/posts/<%= post.id %>'"><%= post.title %></div>
+                  <div class="link-preview" onclick="window.location.href='/posts/<%= post.id %>'">
+                    <% if (post.link) { %>
+                    <div class="link">
+                      <div class="placeholder-link-preview">Loading link preview...</div>
+                    </div>
+                    <% } %>
+                    <% if (post.post_type !== 'question' && (!post.link || (post.post_type !== 'discussion' && post.post_type !== 'project'))) { %>
+                    <div class="description">
+                      <%- post.content %>
+                    </div>
+                    <% } %>
+                  </div>
+                  <div class="votes">
+                    <div class="reaction-interactions <%= post.id %>-reactions" id="reaction-interactions <%= post.id %>-reactions">
+                      <button class="reaction-button boost-button-<%= post.id %> <%= post.userReaction === 'B' ? 'active' : '' %>">⚡️ <span class="boost-count-<%= post.id %>"><%= post.boostCount %></span></button>
+                      <button class="main-reaction-button">😀</button>
+                      <% reactionTypes.forEach(reaction => { %>
+                      <% if (post[reaction.type.toLowerCase() + 'Count'] > 0) { %>
+                      <button class="reaction-button <%= reaction.type.toLowerCase() %>-button-<%= post.id %> <%= post.userReaction && post.userReaction.toLowerCase() === reaction.type.toLowerCase() ? 'active' : '' %>" onclick="interactWithPost('<%= post.id %>', '<%= user %>', '<%= reaction.type %>')">
+                        <span><%= reaction.icon %></span>
+                        <span class="reaction-count <%= reaction.type.toLowerCase() %>-count <%= post.id %>"><%= post[reaction.type.toLowerCase() + 'Count'] %></span>
+                      </button>
+                      <% } %>
+                      <% }) %>
+                    </div>
+                    <div class="comments">Loading comments...</div>
+                  </div>
+                </div>
+              </div>
+              <% }) %>
+            </div>
+            <% } %>
           </div>
         </div>
 

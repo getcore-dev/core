@@ -25,23 +25,26 @@
         }
         trendingPostsContainer.innerHTML = ''; // Clear existing posts
 
-        posts.forEach(post => {
+        posts.forEach(trending_post => {
           const postElement = document.createElement('div');
           postElement.className = 'trending-post';
           postElement.onclick = () => {
-            window.location.href = `/posts/${post.id}`;
+            window.location.href = `/posts/${trending_post.id}`;
           };
 
           // Add content to postElement here. Example:
           postElement.innerHTML = `
+                <div class="trending-info">
+                  ${trending_post.views}
                 <span class="material-symbols-outlined" style="color: var(--active-indicator-color);">
 trending_up
 </span> 
+</div>
                 <div class="trending-post-content">
                   <div class="trending-post-user-info">
-                    <p><strong>${post.username}</strong> in /${post.community_name}</p>
+                    <p><strong>${trending_post.username}</strong> in /${trending_post.community_name}</p>
                     </div>
-                                        <div><p>${post.title} </p> </div>
+                                        <div><p>${trending_post.title} </p> </div>
 
                 </div>
 

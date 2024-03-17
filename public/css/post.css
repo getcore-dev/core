@@ -973,6 +973,35 @@ p.preview-description {
 
 }
 
+.link-preview {
+  background-color: var(--light-mode-body-color);
+}
+
+.post-header-username {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar img {
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  object-fit: cover; 
+  overflow: hidden;
+}
+
+.post-header {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: flex-start;
+  border-radius: 6px;
+  width: 100%;
+  justify-content: space-between;
+}
+
 .input-container, .comment-container{
   display: flex;
   flex-direction:column;
