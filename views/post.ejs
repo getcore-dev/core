@@ -642,13 +642,11 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
                 <a href="#" class="tag"><%= topic %></a>
                 <% }); %>
                 <% } %>
-              </div>
               <% } %>
-
-
+              </div>
             </div>
             <div id="posts-container" <% if (similarPosts.length > 0) { %> <div class="similar-posts">
-              <h2>Similar Posts</h2>
+              <h3>Similar Posts</h3>
               <% similarPosts.forEach(post => { %>
               <div class="post" style="margin: 0 13px; margin-bottom: 15px;">
                 <div class="post-content">
