@@ -642,16 +642,18 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
                 <a href="#" class="tag"><%= topic %></a>
                 <% }); %>
                 <% } %>
-              <% } %>
+                <% } %>
               </div>
             </div>
-            <div id="posts-container" <% if (similarPosts.length > 0) { %> <div class="similar-posts">
+            <div class="header" style="justify-content: center;">
               <h3>Similar Posts</h3>
-              <% similarPosts.forEach(post => { %>
+            </div>
+            <div id="posts-container" <% if (similarPosts.length > 0) { %> <div class="similar-posts">
+              <% similarPosts.forEach(similarPost => { %>
               <div class="post" style="margin: 0 13px; margin-bottom: 15px;">
-                <div class="post-content">
-                  <div class="post-header" onclick="window.location.href='/posts/<%= post.id %>'">
-                  <% 
+                <div class="post-content" style="border-radius: 10px;">
+                  <div class="post-header" onclick="window.location.href='/posts/<%= similarPost.id %>'">
+                    <% 
                     function formatDate(dateString) {
   const date = new Date(dateString);
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -662,46 +664,48 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
 %>
                     <div class="post-header-username">
                       <div class="avatar">
-                        <img src="<%= post.avatar %>" loading="lazy">
+                        <img src="<%= similarPost.avatar %>" loading="lazy">
                       </div>
                       <div class="username">
-                        <a href="/profile/<%= post.username %>" class="username-link"><strong><%= post.username %></strong></a>
-                        <span class="communities-text"> posted a <%= post.post_type %> in <%= post.community_name %></span>
-                        <a href="/communities/<%= post.communities_id %>" class="community"></a>
-                        <div class="post-date" id="secondary-text"><%= formatDate(post.created_at) %> • <%= post.views %> views</div>
+                        <a href="/profile/<%= similarPost.username %>" class="username-link"><strong><%= similarPost.username %></strong></a>
+                        <span class="communities-text"> posted a <%= similarPost.post_type %> in <%= similarPost.community_name %></span>
+                        <a href="/communities/<%= similarPost.communities_id %>" class="community"></a>
+                        <div class="post-date" id="secondary-text"><%= formatDate(similarPost.created_at) %> • <%= similarPost.views %> views</div>
                       </div>
                     </div>
                     <div class="three-dots">
                       <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>
                     </div>
                   </div>
-                  <div class="title" onclick="window.location.href='/posts/<%= post.id %>'"><%= post.title %></div>
-                  <div class="link-preview" onclick="window.location.href='/posts/<%= post.id %>'">
-                    <% if (post.link) { %>
+                  <div class="title" onclick="window.location.href='/posts/<%= post.id %>'"><%= similarPost.title %></div>
+                  <div class="link-preview" onclick="window.location.href='/posts/<%= similarPost.id %>'">
+                    <% if (similarPost.link) { %>
                     <div class="link">
-                      <div class="placeholder-link-preview">Loading link preview...</div>
+                      <%= similarPost.link %>
                     </div>
                     <% } %>
-                    <% if (post.post_type !== 'question' && (!post.link || (post.post_type !== 'discussion' && post.post_type !== 'project'))) { %>
+                    <% if (similarPost.post_type !== 'question' && (!similarPost.link || (similarPost.post_type !== 'discussion' && similarPost.post_type !== 'project'))) { %>
                     <div class="description">
-                      <%- post.content %>
+                      <%- similarPost.content %>
                     </div>
                     <% } %>
                   </div>
                   <div class="votes">
-                    <div class="reaction-interactions <%= post.id %>-reactions" id="reaction-interactions <%= post.id %>-reactions">
-                      <button class="reaction-button boost-button-<%= post.id %> <%= post.userReaction === 'B' ? 'active' : '' %>">⚡️ <span class="boost-count-<%= post.id %>"><%= post.boostCount %></span></button>
+                    <div class="reaction-interactions <%= similarPost.id %>-reactions" id="reaction-interactions <%= similarPost.id %>-reactions">
+                      <button class="reaction-button boost-button-<%= similarPost.id %> <%= similarPost.userReaction === 'B' ? 'active' : '' %>">⚡️ <span class="boost-count-<%= similarPost.id %>"><%= post.boostCount %></span></button>
                       <button class="main-reaction-button">😀</button>
                       <% reactionTypes.forEach(reaction => { %>
-                      <% if (post[reaction.type.toLowerCase() + 'Count'] > 0) { %>
-                      <button class="reaction-button <%= reaction.type.toLowerCase() %>-button-<%= post.id %> <%= post.userReaction && post.userReaction.toLowerCase() === reaction.type.toLowerCase() ? 'active' : '' %>" onclick="interactWithPost('<%= post.id %>', '<%= user %>', '<%= reaction.type %>')">
+                      <% if (similarPost[reaction.type.toLowerCase() + 'Count'] > 0) { %>
+                      <button class="reaction-button <%= reaction.type.toLowerCase() %>-button-<%= similarPost.id %> <%= similarPost.userReaction && similarPost.userReaction.toLowerCase() === reaction.type.toLowerCase() ? 'active' : '' %>" onclick="interactWithPost('<%= similarPost.id %>', '<%= user %>', '<%= reaction.type %>')">
                         <span><%= reaction.icon %></span>
-                        <span class="reaction-count <%= reaction.type.toLowerCase() %>-count <%= post.id %>"><%= post[reaction.type.toLowerCase() + 'Count'] %></span>
+                        <span class="reaction-count <%= reaction.type.toLowerCase() %>-count <%= similarPost.id %>"><%= similarPost[reaction.type.toLowerCase() + 'Count'] %></span>
                       </button>
                       <% } %>
                       <% }) %>
                     </div>
-                    <div class="comments">Loading comments...</div>
+                    <div class="comments">
+                      <%= similarPost.commentCount %> comment<%= similarPost.commentCount > 1 ? 's' : '' %>
+                    </div>
                   </div>
                 </div>
               </div>

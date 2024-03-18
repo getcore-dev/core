@@ -30,11 +30,12 @@ const postQueries = {
   },
 
   fetchSimilarPosts: async (user, postId, communityId, tags, title) => {
-  const tagsCondition = tags && tags.length > 0
-    ? `t.name IN (${tags.map((tag) => `'${tag}'`).join(",")})`
-    : "1=1"; // Always true condition when tags is empty or undefined
+    const tagsCondition =
+      tags && tags.length > 0
+        ? `t.name IN (${tags.map((tag) => `'${tag}'`).join(",")})`
+        : "1=1";
 
-  const query = `
+    const query = `
     SELECT TOP 3
       p.id,
       p.title,
@@ -58,7 +59,12 @@ const postQueries = {
         SELECT TOP 1 upa2.action_type
         FROM userPostActions upa2
         WHERE upa2.post_id = p.id AND upa2.user_id = ${user ? user.id : null}
-      ) AS userReaction
+      ) AS userReaction,
+      (
+        SELECT COUNT(*)
+        FROM comments c
+        WHERE c.post_id = p.id
+      ) AS commentCount
     FROM posts p
     JOIN users u ON p.user_id = u.id
     JOIN communities c ON p.communities_id = c.id
@@ -86,9 +92,9 @@ const postQueries = {
     ORDER BY p.created_at DESC;
   `;
 
-  const result = await sql.query(query);
-  return result.recordset;
-},
+    const result = await sql.query(query);
+    return result.recordset;
+  },
 
   acceptAnswer: async (postId, commentId, userId) => {
     try {
