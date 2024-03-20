@@ -660,6 +660,7 @@ font-weight: bold;
 
   .latest-commit-banner {
     top: 45px;
+    padding-top: 0px;
   }
 
 
