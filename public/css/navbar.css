@@ -335,7 +335,7 @@ h1, h2, h3, h4, h5, p {
   flex-direction: column;
   justify-content: space-around;
   width: 40px;
-  height: 20px;
+  height: 18px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -343,8 +343,8 @@ h1, h2, h3, h4, h5, p {
 
 .menu-bar {
   z-index: 1000;
-  width: 18px;
-  height: 2px;
+  width: 14px;
+  height: 1.2px;
   background-color: var(--light-mode-text-color);
   transition: all 0.3s ease;
 }
@@ -660,7 +660,7 @@ font-weight: bold;
 
   .latest-commit-banner {
     top: 45px;
-    padding-top: 0px;
+    margin-top: 0px;
   }
 
 
