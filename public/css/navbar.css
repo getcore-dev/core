@@ -121,7 +121,7 @@ h1, h2, h3, h4, h5, p {
   width: 100%;
   color: white;
   padding: 3px;
-  padding-top: 0;
+  margin-top: -10px;
   z-index: 3;
   box-sizing: border-box;
 }

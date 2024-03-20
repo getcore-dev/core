@@ -56,7 +56,7 @@
             <span class="post-subtitle">
               <span class=tag-flair><%= post.post_type.charAt(0).toUpperCase() + post.post_type.slice(1) %> </span>
               <% if (post.post_type != "blog") { %>
-              <a href="/communities/<%= post.community.id %>" style="text-decoration: none;">/<%= post.community.shortname %></a>
+              <a id="community-header-text" href="/communities/<%= post.community.id %>" style="text-decoration: none;">/<%= post.community.shortname %></a>
 
               <%
               let postDate = new Date(post.created_at);
@@ -594,59 +594,6 @@
             <% } %>
 
             <% renderComments(post.comments); %>
-            <div class="post-footer" style="text-align: center;">
-              <% if (post.updated_at) { %>
-              <%
-              let postDate = new Date(post.created_at);
-              let today = new Date();
-              let formattedDate;
-            
-              // Calculate time difference in milliseconds
-              let diff = today - postDate;
-            
-              // Convert time difference to different units
-              let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
-              let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
-              let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
-              let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
-            
-              // Decide the format based on the time difference
-              if (minutes < 60) {
-                formattedDate = minutes + 'm ago';
-              } else if (hours < 24) {
-                formattedDate = hours + 'h ago';
-              } else if (days < 365) {
-                formattedDate = days + 'd ago';
-              } else {
-                formattedDate = years + 'y ago';
-              }
-            %>
-              Edited: <%= formattedDate %>
-              <% } %>
-            </div>
-            <div class="tags-div">
-
-              <div class="tags">
-                tags:
-                <% if (post.tags && post.tags.length > 0) { %>
-                <% post.tags.forEach(tag => { %>
-                <a href="#" class="tag"><%= tag.name %></a>
-                <% }); %>
-                <% } %>
-                <% if (post.post_type == "project") { %>
-
-                <% 
-                let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {};
-                %>
-                <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
-                <% gitHubData.topics.forEach(topic => { %>
-                <a href="#" class="tag"><%= topic %></a>
-                <% }); %>
-                <% } %>
-                <% } %>
-              </div>
-            </div>
-
             <% if (similarPosts.length > 0) { %>
             <div class="header" style="justify-content: center;">
               <h3>Similar Posts</h3>
@@ -715,6 +662,58 @@
               <% }) %>
             </div>
             <% } %>
+            <div class="post-footer" style="text-align: center;">
+              <% if (post.updated_at) { %>
+              <%
+              let postDate = new Date(post.created_at);
+              let today = new Date();
+              let formattedDate;
+            
+              // Calculate time difference in milliseconds
+              let diff = today - postDate;
+            
+              // Convert time difference to different units
+              let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+              let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+              let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+              let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+            
+              // Decide the format based on the time difference
+              if (minutes < 60) {
+                formattedDate = minutes + 'm ago';
+              } else if (hours < 24) {
+                formattedDate = hours + 'h ago';
+              } else if (days < 365) {
+                formattedDate = days + 'd ago';
+              } else {
+                formattedDate = years + 'y ago';
+              }
+              %>
+              Edited: <%= formattedDate %>
+              <% } %>
+              <div class="tags-div">
+
+                <div class="tags">
+                  tags:
+                  <% if (post.tags && post.tags.length > 0) { %>
+                  <% post.tags.forEach(tag => { %>
+                  <a href="#" class="tag"><%= tag.name %></a>
+                  <% }); %>
+                  <% } %>
+                  <% if (post.post_type == "project") { %>
+
+                  <% 
+                let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {};
+                %>
+                  <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
+                  <% gitHubData.topics.forEach(topic => { %>
+                  <a href="#" class="tag"><%= topic %></a>
+                  <% }); %>
+                  <% } %>
+                  <% } %>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

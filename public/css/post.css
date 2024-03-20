@@ -388,6 +388,7 @@ img.blog-avatar {
   border: 1px solid var(--border-color);
   background-color: var(--border-color);
   border-radius: 18px;
+  margin-bottom: 18px;
   white-space-collapse: collapse;
   box-sizing: border-box;
   display: flex;
@@ -728,6 +729,10 @@ div.repliers-avatar, div.repliees-avatar {
 .comments-section {
   display: flex;
   flex-direction: column;
+}
+
+.similar-posts .post-content {
+  border: 1px solid var(--border-color);
 }
 
 .comments-section h3 {
@@ -1185,6 +1190,10 @@ background-color: var(--light-mode-button-hover-color);
   }
   .post-content {
     background-color: var(--dark-mode-body-color);
+  }
+
+  .similar-posts .post-content {
+    border: 1px solid var(--dark-mode-border-color);
   }
   .sidebar, .similar-posts .post-content, .button-container {
     background-color: var(--dark-mode-main-color);
