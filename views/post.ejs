@@ -44,6 +44,7 @@
   <%- include('partials/navbar', { pagePath: 'home' }) %>
 
   <main>
+
     <%- include('partials/com-btn-container', { }) %>
 
     <div class="main-container">
@@ -189,26 +190,26 @@
               <% if (post.post_type == 'project') { %>
 
               <% 
-  let gitHubData;
-  let gitHubCommitData;
-  try {
-    gitHubData = JSON.parse(post.gitHubLinkPreview.raw_json);
-    gitHubCommitData = JSON.parse(post.gitHubLinkPreview.raw_commits_json);
+                let gitHubData;
+                let gitHubCommitData;
+                try {
+                  gitHubData = JSON.parse(post.gitHubLinkPreview.raw_json);
+                  gitHubCommitData = JSON.parse(post.gitHubLinkPreview.raw_commits_json);
 
-  } catch(e) {
-    console.error('Error parsing JSON', e);
-    gitHubData = {}; // Set a default empty object in case of error
-    gitHubCommitData = {};
-  }
+                } catch(e) {
+                  console.error('Error parsing JSON', e);
+                  gitHubData = {}; // Set a default empty object in case of error
+                  gitHubCommitData = {};
+                }
 
-  function formatDate(dateString) {
-  const date = new Date(dateString);
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const year = date.getFullYear();
-  return `${month}/${day}/${year}`;
-}
-%>
+                function formatDate(dateString) {
+                const date = new Date(dateString);
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${month}/${day}/${year}`;
+              }
+              %>
               <div class="project-link">
                 <div class="project-link-image">
                   <img src="<%= gitHubData.owner.avatar_url %>" alt="Preview" onerror="standby()" class="large-preview-image" />
@@ -343,7 +344,7 @@
             icon: "🎉",
             count: post.celebrateCount
         }
-    ]; %>
+        ]; %>
                 <% let reactionsCount = 0; %>
                 <% reactionTypes.forEach(reaction => { %>
                 <% if (reaction.count > 0) { %>
@@ -527,7 +528,7 @@
             icon: "🎉",
             count: comment.celebrateCount
         }
-    ]; %>
+        ]; %>
                     <% reactionTypes.forEach(reaction => { %>
                     <% if (reaction.count > 0) { %>
                     <button class="reaction-button <%= comment.id %> <% if (user && comment.userReaction && comment.userReaction.toLowerCase() === reaction.type.toLowerCase()) { %>active<% } %>" id="<%= reaction.type %>" onclick='<% if (user) { %>interactWithComment("<%= post.id %>", "<%= comment.id %>", "<%= user %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
@@ -541,16 +542,16 @@
                   <div class="replies">
                     <a href="#" id="reply-button" onclick="showReplyForm('<%= comment.id %>', event)">
                       <% 
-function countAllReplies(replies) {
-    if (!replies || replies.length === 0) return 0;
-    let total = 0;
-    for (const reply of replies) {
-        total += 1 + countAllReplies(reply.replies);
-    }
-    return total;
-}
-const totalReplies = countAllReplies(comment.replies);
-%>
+        function countAllReplies(replies) {
+            if (!replies || replies.length === 0) return 0;
+            let total = 0;
+            for (const reply of replies) {
+                total += 1 + countAllReplies(reply.replies);
+            }
+            return total;
+        }
+        const totalReplies = countAllReplies(comment.replies);
+        %>
                       <button class="reaction-button">💬 <%= totalReplies%>
                       </button>
                     </a>
@@ -635,8 +636,8 @@ const totalReplies = countAllReplies(comment.replies);
                 <% if (post.post_type == "project") { %>
 
                 <% 
-let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {};
-%>
+                let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {};
+                %>
                 <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
                 <% gitHubData.topics.forEach(topic => { %>
                 <a href="#" class="tag"><%= topic %></a>
@@ -645,23 +646,25 @@ let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_
                 <% } %>
               </div>
             </div>
+
+            <% if (similarPosts.length > 0) { %>
             <div class="header" style="justify-content: center;">
               <h3>Similar Posts</h3>
             </div>
-            <div id="posts-container" <% if (similarPosts.length > 0) { %> <div class="similar-posts">
+            <div class="similar-posts">
               <% similarPosts.forEach(similarPost => { %>
               <div class="post" style="margin: 0 13px; margin-bottom: 15px;">
                 <div class="post-content" style="border-radius: 10px;">
                   <div class="post-header" onclick="window.location.href='/posts/<%= similarPost.id %>'">
                     <% 
                     function formatDate(dateString) {
-  const date = new Date(dateString);
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const year = date.getFullYear();
-  return `${month}/${day}/${year}`;
-}
-%>
+                    const date = new Date(dateString);
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const year = date.getFullYear();
+                    return `${month}/${day}/${year}`;
+                  }
+                  %>
                     <div class="post-header-username">
                       <div class="avatar">
                         <img src="<%= similarPost.avatar %>" loading="lazy">

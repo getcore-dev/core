@@ -72,7 +72,7 @@
       </div>
       <div class="jobs-container">
         <div class="job-header">
-          <h3>Openings</h3>
+          <h5>Openings</h5>
         </div>
         <div class="jobslist">
 
@@ -148,51 +148,6 @@
         return '$' + salary;
       }
     }
-
-    function applyTint() {
-      const jobContainers = document.querySelectorAll('.job');
-
-      jobContainers.forEach(jobContainer => {
-        const logoImg = jobContainer.querySelector('.company-logo');
-
-        if (logoImg) {
-          const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d');
-
-          const img = new Image();
-          img.crossOrigin = 'Anonymous';
-          img.src = logoImg.src;
-
-          img.addEventListener('load', () => {
-            canvas.width = img.width;
-            canvas.height = img.height;
-            context.drawImage(img, 0, 0);
-
-            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imageData.data;
-
-            let r = 0,
-              g = 0,
-              b = 0;
-            for (let i = 0, l = data.length; i < l; i += 4) {
-              r += data[i];
-              g += data[i + 1];
-              b += data[i + 2];
-            }
-
-            const totalPixels = data.length / 4;
-            r = Math.round(r / totalPixels);
-            g = Math.round(g / totalPixels);
-            b = Math.round(b / totalPixels);
-
-            const averageColor = `rgba(${r}, ${g}, ${b}, 0.1)`; // Adjust the alpha value here
-            jobContainer.style.backgroundColor = averageColor;
-          });
-        }
-      });
-    }
-
-    window.addEventListener('load', applyTint);
 
     function showLoader() {
       document.getElementById('loadingAnimation').style.display = 'block';
@@ -284,6 +239,8 @@ filter_list
             // Main post div
             const postDiv = document.createElement('div');
             postDiv.className = 'post';
+            postDiv.onclick = () => window.location.href = '/posts/' + post.id;
+
 
             // Post content div
             const postContentDiv = document.createElement('div');
@@ -292,7 +249,6 @@ filter_list
             // Post header div
             const postHeaderDiv = document.createElement('div');
             postHeaderDiv.className = 'post-header';
-            postHeaderDiv.onclick = () => window.location.href = '/posts/' + post.id;
 
 
             const postHeaderUsernameDiv = document.createElement('div');
@@ -422,7 +378,7 @@ filter_list
 
             boostButton.innerHTML = `⚡️ <span class='boost-count-${post.id}'>${post.boostCount}</span>`;
 
-            boostButton.onclick = () => interactWithPost(post.id, "<%= user %>", "BOOST");
+            boostButton.onclick = () => interactWithPost(event, post.id, "<%= user %>", "BOOST");
 
             reactionInteractionsDiv.appendChild(boostButton);
 
@@ -473,7 +429,7 @@ filter_list
                 if (post.userReaction && post.userReaction.toLowerCase() === reaction.type.toLowerCase()) {
                   button.classList.add('active');
                 }
-                button.onclick = () => interactWithPost(post.id, "<%= user %>", reaction.type);
+                button.onclick = () => interactWithPost(event, post.id, "<%= user %>", reaction.type);
 
                 const icon = document.createElement("span");
                 icon.innerText = reaction.icon;
@@ -490,7 +446,7 @@ filter_list
             reactionTypes.forEach(reaction => {
               const button = document.createElement("button");
               button.innerText = reaction.icon;
-              button.onclick = () => interactWithPost(post.id, "<%= user %>", reaction.type);
+              button.onclick = () => interactWithPost(event, post.id, "<%= user %>", reaction.type);
               reactionMenu.appendChild(button);
             });
 
@@ -745,7 +701,8 @@ filter_list
       fetchAndDisplayPosts(communityId);
     });
 
-    function interactWithPost(postId, user, action) {
+    function interactWithPost(event, postId, user, action) {
+      event.stopPropagation();
       if (!user) {
         window.location.href = '/login';
         return;

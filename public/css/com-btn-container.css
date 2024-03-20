@@ -40,6 +40,11 @@
   gap: 10px;
 }
 
+.trending-post-content:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 
 #com-btn-container {
   padding: 15px 15px;
@@ -49,7 +54,7 @@
   overflow-x: hidden;
   scrollbar-width: none;
   overflow-y: auto;
-  height: calc(100dvh - 115px);
+  height: calc(100dvh - 95px);
 }
 
 .communities {
@@ -57,6 +62,18 @@
   flex-direction: row;
   gap: 8px;
   align-items: center;
+}
+
+.communities:hover {
+  cursor: pointer;
+}
+
+.trending-post-content, .communities {
+  font-size: .9rem;
+}
+
+#com-btn-container.column h5 {
+  padding-bottom: 8px;
 }
 
 .create-post-btn {
@@ -100,6 +117,7 @@ gap: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-weight: bold;
 }
 
 .trending-posts {
@@ -160,7 +178,7 @@ height: auto;
 }
 
 #com-btn-container {
-  border-right: 1px solid #D8E0E9;
+  border-right: 1px solid var(--border-color);
 }
 
 #com-btn-container a {
@@ -212,7 +230,8 @@ height: auto;
 }
 
 .communities .material-symbols-outlined, .trending-post .material-symbols-outlined {
-  font-size: 19px;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 #com-btn-container a:hover {

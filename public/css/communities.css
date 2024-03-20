@@ -36,6 +36,7 @@ body {
 .post, .job {
   display: flex;
   background: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   margin: 10px;
   flex-direction: row;
@@ -295,7 +296,7 @@ div.vote-interactions {
 }
 
 .title {
-  font-size: 20px;
+  font-size: 1rem;
   font-weight: 500;
   margin: 12px 0px;
   margin-bottom: 0px;
@@ -562,7 +563,7 @@ div .mini-link-desc {
 .container {
   background-color: var(--light-mode-main-color);
   display: flex;
-  height: calc(100dvh - 85px);
+  height: calc(100dvh - 65px);
   overflow-y: hidden;
   flex-wrap: nowrap;
   flex-direction: row;
@@ -816,7 +817,7 @@ div .mini-link-desc {
 
   
   .job-content {
-      margin: 8px 10px;
+      margin: 13px 10px;
   }
 
   .thumbnail {
@@ -876,11 +877,15 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
     margin: 0;
     background-color: var(--light-mode-body-color);
     border-radius: 10px;
-    border: 0;
     margin: 0 13px;
+    border-width: .5px;
     padding: 0px;
     margin-bottom: 20px;
     max-width: 100%;
+  }
+
+  .job {
+    border-width: .5px;
   }
 
   .container {
@@ -1097,8 +1102,8 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
   .post-info {
       color: #ccc; /* Lighter text color for post information */
   }
-  .post, body > main > div.container > div.jobs-container > div.jobslist .job {
-    border-color: var(--dark-mode-border-color);
+  #posts-container > div.mobile-jobs-container > div.jobslist > div {
+        border-color: var(--dark-mode-border-color);
   }
 
   #posts-container {

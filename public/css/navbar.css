@@ -2,8 +2,8 @@
 
 :root {
   --primary-text-color: #1D2935;
-  --light-mode-body-color: #fff;
-  --light-mode-main-color: #F6F8FA;
+  --light-mode-body-color: #F6F8FA;
+  --light-mode-main-color: #fff;
   --light-mode-hover-color: #E5EBF1;
   --border-color: #DCE6F2;
   --light-mode-button-color: #DCE6F2;
@@ -27,7 +27,7 @@
   --default-font-size: 14px;
   --navbar-button-font-size: 16px;
   --nav-text-font-size: 20px;
-  --navbar-height: 85px;
+  --navbar-height: 65px;
   --mobile-navbar-height: 65px;
   --logo-max-height: 65px;
   --mobile-logo-max-height: 45px;
@@ -154,6 +154,7 @@ h1, h2, h3, h4, h5, p {
 }
 
 .count-bubble {
+  display: none;
   background-color: #ff6070;
   border: 1px solid #ba5b65;
   color: #fff;
@@ -315,7 +316,7 @@ h1, h2, h3, h4, h5, p {
   color: var(--primary-text-color);
   padding: 3px 5px;
   margin-left: 12px;
-  font-size: 16px;
+  font-size: .9rem;
   text-decoration: none;
   transition: background-color 0.15s, transform 0.15s;
   z-index: 2;
@@ -368,13 +369,13 @@ h1, h2, h3, h4, h5, p {
 
 
 .navbar-button:hover {
-  cursor: pointer; /* Pointer cursor on hover */
+  cursor: pointer;
 }
 
 
 .logo img {
-  max-height: 65px; /* Maximum height of the logo */
-  padding: 5px 0px; /* Padding around the logo */
+  max-height: 50px;
+  padding: 5px 0px;
   object-fit: cover;
 }
 
@@ -405,14 +406,6 @@ h1, h2, h3, h4, h5, p {
   color: var(--light-mode-text-color);
 }
 
-.notification-popup {
-  position: absolute;
-  background-color: var(--light-mode-main-color);
-  width: 245px;
-  max-height: 300px;
-  overflow-y: auto;
-  z-index: 5;
-}
 
 #overlay {
   position: fixed;
@@ -504,13 +497,14 @@ font-weight: bold;
 .nav-text-container {
   white-space: pre;
   font-weight: 400;
-  font-size: 20px;
+  font-size: 17px;
   display: flex;
   align-items: center;
-margin-top: 20px;
+  margin-top: 20px;
   margin-left: 17px;
   margin-left: 17px;
-  margin-top: 19px;
+  margin-top: 11px;
+  margin-bottom: -6px;
   white-space-collapse: collapse;
 }
 
@@ -547,7 +541,7 @@ margin-top: 20px;
 }
 
 .user-links {
-  margin-top: 20px;
+  margin-top: 13px
 }
 
 
@@ -611,6 +605,7 @@ margin-top: 20px;
   } 
 
   #nb-icon {
+    font-size: 23px;
     padding: 11px 4px;
   }
 
@@ -742,7 +737,7 @@ margin-top: 20px;
 
 
 #nb-icon {
-  font-size: 23px;
+  font-size: 19px;
   font-weight: 400;
   display: flex;
   justify-content: center;
@@ -1008,8 +1003,8 @@ margin-top: 20px;
 
   @media (max-width: 768px) {
     body {
-      padding-top: calc(constant(safe-area-inset-top) + var(--navbar-height) - 19px); 
-      padding-top: calc(env(safe-area-inset-top) + var(--navbar-height) - 19px);
+      padding-top: calc(constant(safe-area-inset-top) + var(--navbar-height)); 
+      padding-top: calc(env(safe-area-inset-top) + var(--navbar-height));
       background-color: var(--dark-mode-body-color);
     }
   }

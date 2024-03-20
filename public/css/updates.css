@@ -73,6 +73,8 @@ div.commit-title {
     padding: 8px 11px;
     max-width: 100%;
     margin: 0px 13px;
+    justify-content: space-between;
+    border: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
 }
@@ -187,6 +189,7 @@ div.commit-title {
 
     .commit {
       background-color: var(--dark-mode-main-color);
+      border-color: var(--dark-mode-border-color);
     }
 
     div.commit-title {
@@ -212,6 +215,10 @@ div.commit-title {
       justify-content: space-between;
     }
 
+  }
+
+  .commit {
+    border-width: .5px;
   }
 
   .commit-stats-item {

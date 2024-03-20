@@ -28,6 +28,11 @@ body, h1, h2, h3, p {
     font-family: 'Roboto', sans-serif;
   }
 
+  body {
+    display: flex;
+    justify-content: center;
+  }
+
 
 h1 {
     text-align: center;
@@ -36,6 +41,7 @@ h1 {
 main {
   display: flex;
   flex-direction: row;
+  max-width: 1200px;
 
 }
 
@@ -193,7 +199,7 @@ p.job-description {
     margin: 0 13px;
     border-radius: 10px;
     margin-bottom: 20px;
-    border: 0;
+    border: 1px solid var(--border-color);
   }
   
   .job-title-location {
@@ -431,6 +437,13 @@ div .material-symbols-outlined {
 }
 
 @media (max-width: 768px) {
+  body {
+    display: block;
+  }
+
+  .job {
+    border-width: .5px;
+  }
   .jobs-container {
     height: calc(100dvh - 65px);
   }
