@@ -1191,7 +1191,8 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
     background-color: var(--dark-mode-body-color);
   }
 
-  .post {
+  .post, body > main > div.container > div.jobs-container > div.jobslist .job{
+    border-color: var(--dark-mode-border-color);
       background-color: var(--dark-mode-main-color);
 
   }
