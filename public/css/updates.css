@@ -51,7 +51,6 @@ div.commit-title {
 #commits-container {
   margin-top: 10px;
   margin-bottom: 25px;
-  max-width: 100vh;
   display: flex;
   justify-content: flex-start;
 
@@ -63,15 +62,14 @@ div.commit-title {
   #commits {
     display: flex;
     flex-direction: column;
-    max-width: 100vw;
     gap: 16px;
+    width: 100%;
   }  
   
   .commit {
     background: var(--light-mode-body-color);
     border-radius: 6px;
     padding: 8px 11px;
-    max-width: 100%;
     margin: 0px 13px;
     justify-content: space-between;
     border: 1px solid var(--border-color);

@@ -381,9 +381,10 @@ main {
   grid-template-columns: repeat(3, 1fr); /* Three columns of equal size */
   grid-template-rows: auto; /* Rows take size based on content */
   grid-template-areas:
-    "info1 info1 info1"
-    "job job user-links"
-    "user-activity user-activity user-activity"; /* Posts will take up the entire bottom row spanning 3 columns */
+  "info1 info1 job"
+  "git-graph git-graph user-links"
+  "git-repos git-repos git-repos"
+  "user-activity user-activity user-activity"; /* Posts will take up the entire bottom row spanning 3 columns */
   gap: 30px;
   min-height: 0;  /* NEW */
   min-width: 0;

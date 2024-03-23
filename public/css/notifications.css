@@ -28,6 +28,11 @@
     background-color: var(--light-mode-main-color);
     color: var(--light-mode-text-color);
   }
+
+  .container {
+    flex-direction: column;
+    max-width: none;
+  }
 li.notification-item {
     list-style-type: none;
 }

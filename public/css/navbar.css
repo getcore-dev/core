@@ -556,6 +556,7 @@ font-weight: bold;
 }
 
 .nav-avatar {
+  position: relative;
   display: flex;
   align-items: center; 
   padding-left: 2px;
@@ -791,15 +792,15 @@ font-weight: bold;
 
 .avatar-dropdown {
   position: absolute;
-  top: 7px;
+  top: 52px;
   z-index: 4;
+  right: 0;
   background-color: var(--light-mode-main-color);
   display: flex;
   flex-direction: column;
   align-items: center;
   display: none;
   padding: 10px 5px;
-  margin-top: 52.8px;
   width: 125px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
 }

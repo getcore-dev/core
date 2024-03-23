@@ -32,7 +32,7 @@
   <script>
     <% if (user) { %>
 
-    async function fetchNotifications(type = 'unread') {
+    async function fetchNotifications(type = 'all') {
       // Fetch notifications based on the specified type
       const response = await fetch(`/notifications/${type}/<%= user.id %>`);
       const notifications = await response.json();
@@ -123,10 +123,9 @@
       });
     });
 
-    // Set the "Unread" button as active on initial load
-    const unreadButton = document.querySelector('.notification-selector-btn:nth-child(2)');
-    setActiveButton(unreadButton);
-    fetchNotifications('unread');
+    const allButton = document.querySelector('.notification-selector-btn:nth-child(1)');
+    setActiveButton(allButton);
+    fetchNotifications('all');
     <% } %>
   </script>
 </body>

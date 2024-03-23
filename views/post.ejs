@@ -153,7 +153,7 @@
             <% if (post.post_type == 'blog') { %>
 
             <div class="post-userinfo">
-              <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="blog-avatar" onerror="standby()" />
+              <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="blog-avatar" />
               <a href="/profile/<%= post.user.username %>" style="text-decoration: none;"><%= post.user.firstname %> <%= post.user.lastname %></a>
             </div>
             <% } %>
@@ -173,7 +173,7 @@
             <% if (post.post_type != 'blog') { %>
             <div class="post-interactions-header">
               <div class="post-user-info-header">
-                <img class="avatar" src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" onerror="standby()" />
+                <img class="avatar" src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" onerror="" />
                 <a href="/profile/<%= post.user.username %>" class="post-user-info">
                   <div class="post-user-info">
                     <%= post.user.username %>
@@ -212,7 +212,7 @@
               %>
               <div class="project-link">
                 <div class="project-link-image">
-                  <img src="<%= gitHubData.owner.avatar_url %>" alt="Preview" onerror="standby()" class="large-preview-image" />
+                  <img src="<%= gitHubData.owner.avatar_url %>" alt="Preview" class="large-preview-image" />
                 </div>
                 <div class="project-link-header">
 
@@ -263,7 +263,7 @@
               <div class="solution">
                 <div class="solution-header">
                   <div class="solution-avatar">
-                    <img src="<%= post.solution.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+                    <img src="<%= post.solution.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" />
                   </div>
                   <div class="solution-username">
                     <a href="/profile/<%= post.solution.user.username %>">
@@ -402,9 +402,9 @@
 
               <div class="comment-avatar">
                 <% if (level == 0) { %>
-                <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+                <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" />
                 <% } else { %>
-                <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onerror="standby()" />
+                <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" />
                 <% } %>
               </div>
               <div class="comment-main">
@@ -1165,10 +1165,6 @@
         element.closest('form').submit();
       }
       return false;
-    }
-
-    function standby() {
-      document.getElementById('avatar').src = "/img/default-avatar.png"
     }
 
     function autoExpandTextarea(event) {

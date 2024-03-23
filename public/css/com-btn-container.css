@@ -231,7 +231,7 @@ height: auto;
 }
 
 .communities .material-symbols-outlined, .trending-post .material-symbols-outlined {
-  font-size: 18px;
+  font-size: 1rem;
   font-weight: bold;
 }
 

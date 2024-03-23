@@ -1081,7 +1081,7 @@ p.preview-description {
   display: inline-block;
   padding: 4px 6px;
   background-color: var(--dark-mode-main-color);
-  border: 1px solid var(--dark-mode-border-color);
+  margin: 1px;
   border-radius: 5px;
   font-size: .875rem;
   position: relative;

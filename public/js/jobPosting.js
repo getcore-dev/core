@@ -8,6 +8,14 @@ function extractJobIdFromUrl() {
   return urlParts[urlParts.length - 1];
 }
 
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${month}/${day}/${year}`;
+}
+
 function lazyLoadJobDetails(jobId) {
   fetch(`/api/jobs/${jobId}`)
     .then((response) => response.json())
@@ -18,7 +26,9 @@ function lazyLoadJobDetails(jobId) {
       jobDetailsContainer.innerHTML = `
           <div class="job-listing">
             <div class="company-info">
-              <img src="${job.company_logo}" alt="${job.company_name} logo" class="company-logo" />
+              <img src="${job.company_logo}" alt="${
+        job.company_name
+      } logo" class="company-logo" />
               <div class="company-details">
                 <h3 class="company-name">${job.company_name}</h3>
                 <p class="company-location">${job.company_location}</p>
@@ -36,14 +46,17 @@ function lazyLoadJobDetails(jobId) {
               </div>
               <div class="posted-date">
                 <span class="label">Posted Date:</span>
-                <span class="value">${job.postedDate}</span>
+                <span class="value">${formatDate(job.postedDate)}</span>
               </div>
               <div class="expiry-date">
                 <span class="label">Apply by:</span>
-                <span class="value">${job.expiration_date}</span>
+                <span class="value">${formatDate(job.expiration_date)}</span>
               </div>
               <div class="salary-range">
-              <span class="salary-min">$${job.salary}</span> - <span class="salary-max">$${job.salary_max}</span>
+              <span class="label">Salary Range:</span>
+              <span class="salary-min">$${
+                job.salary
+              }</span> - <span class="salary-max">$${job.salary_max}</span>
             </div>
               <div class="job-description">
                 <h4>Job Description</h4>
@@ -54,7 +67,9 @@ function lazyLoadJobDetails(jobId) {
                 <p>${job.company_description}</p>
               </div>
               <div class="apply-link">
-                <a href="${job.link}" target="_blank" class="button">Apply Now</a>
+                <a href="${
+                  job.link
+                }" target="_blank" class="button">Apply Now</a>
               </div>
             </div>
           </div>

@@ -29,7 +29,7 @@ router.post(
       .trim()
       .isLength({ min: 5 })
       .withMessage("Username must be at least 5 characters long"),
-    body("email")
+    body("")
       .trim()
       .isEmail()
       .normalizeEmail()

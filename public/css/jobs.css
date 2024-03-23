@@ -120,7 +120,7 @@ p.job-description {
 }
 
 .company-mini-logo {
-  max-height: 18px;
+  max-height: 15px;
   object-fit: cover; 
   overflow: hidden;
 }
@@ -135,6 +135,11 @@ p.job-description {
   padding: 0px 12px;
   align-items: center;
   max-height: 46px;
+  white-space: nowrap;
+}
+
+.company:hover, select:hover, .create-job:hover {
+  cursor: pointer;
 }
 
 
