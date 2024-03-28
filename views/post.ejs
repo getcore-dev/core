@@ -186,7 +186,7 @@
             <% if (post.post_type == 'blog') { %>
             padding: 0px 10px;
             <% } %>">
-              <% if ((post.post_type == 'post' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog' || post.post_type == 'question') { %>
+              <% if ((post.post_type == 'post' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog' || post.post_type == 'question' || (post.post_type == 'discussion' && !post.linkPreview)) { %>
               <% if (post.post_type == 'project') { %>
 
               <% 
@@ -280,7 +280,7 @@
 
 
 
-              <% } else if (post.post_type == 'post' && post.linkPreview) { %>
+              <% } else if ((post.post_type == 'post' || post.post_type == 'discussion') && post.linkPreview) { %>
 
               <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
               <% if (imageUrl) { %>
@@ -302,7 +302,7 @@
                 </div>
               </div>
               <%- post.content %>
-
+              hellooo
               <% } %>
 
               <div class="user-interactions" style="<% if (post.post_type == "blog") { %>margin-bottom: 20px;<% } %>">
