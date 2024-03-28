@@ -186,7 +186,7 @@
             <% if (post.post_type == 'blog') { %>
             padding: 0px 10px;
             <% } %>">
-              <% if ((post.post_type == 'discussion' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog' || post.post_type == 'question') { %>
+              <% if ((post.post_type == 'post' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog' || post.post_type == 'question') { %>
               <% if (post.post_type == 'project') { %>
 
               <% 
@@ -280,7 +280,7 @@
 
 
 
-              <% } else if (post.post_type == 'discussion' && post.linkPreview) { %>
+              <% } else if (post.post_type == 'post' && post.linkPreview) { %>
 
               <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
               <% if (imageUrl) { %>
@@ -634,7 +634,7 @@
                       <%= similarPost.link %>
                     </div>
                     <% } %>
-                    <% if (similarPost.post_type !== 'question' && (!similarPost.link || (similarPost.post_type !== 'discussion' && similarPost.post_type !== 'project'))) { %>
+                    <% if (similarPost.post_type !== 'question' && (!similarPost.link || (similarPost.post_type !== 'post' && similarPost.post_type !== 'project'))) { %>
                     <div class="description">
                       <%- similarPost.content %>
                     </div>

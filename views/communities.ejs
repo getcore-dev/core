@@ -115,7 +115,6 @@
                 <span class="job-flair">${job.experienceLevel}</span>
                 <span class="job-flair" id="pay-flair">${formatSalary(job.salary_max)}</span>
 <span class="job-flair" id="location-flair">${formatLocation(job.location)}</span>
-                <span class="job-flair" id="job-posting-deadline">${job.postedDate}</span>
               </div>
             </div>
           </div>
@@ -308,8 +307,6 @@ filter_list
               if (navigator.share) {
                 try {
                   await navigator.share({
-                    title: post.title,
-                    text: post.content,
                     url: window.location.origin + '/posts/' + post.id,
                   });
                 } catch (error) {
