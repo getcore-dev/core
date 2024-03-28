@@ -1021,23 +1021,15 @@
                 const countSpan = reactionButton.querySelector(`span.${reaction.type.toLowerCase()}-count`);
                 if (countSpan) countSpan.innerText = ` ${reactionCount}`;
               }
-            } else if (reactionCount == 0) {
-              if (reactionButton) {
-                reactionButton.remove();
-              }
+            } else if (reactionButton) {
+              // Remove the button if the reaction count is 0
+              reactionButton.remove();
             }
 
-            if (post.userReaction && post.userReaction.type.toLowerCase() === reaction.type.toLowerCase()) {
+            if (data.userReaction && data.userReaction.toLowerCase() === reaction.type.toLowerCase()) {
               reactionButton.classList.add('active');
             } else if (reactionButton) {
-              reactionButton.style.color = ""; // Reset to default styles for other buttons
-            }
-
-            // Update button color if needed
-            if (reactionButton && reaction.type.toLowerCase() === action.toLowerCase()) {
-              // maybe add a lil reaction later idk
-            } else if (reactionButton) {
-              reactionButton.style.color = ""; // Reset to default styles for other buttons
+              reactionButton.classList.remove('active');
             }
           });
 
@@ -1046,6 +1038,13 @@
 
           const countSpan = boostButton.querySelector(`span.boost-count`);
           countSpan.innerText = ` ${boostCount}`;
+
+          // Update boost button active status
+          if (data.userReaction && data.userReaction.toLowerCase() === 'b') {
+            boostButton.classList.add('active');
+          } else {
+            boostButton.classList.remove('active');
+          }
         })
         .catch((error) => {
           console.error('Error:', error);
@@ -1129,21 +1128,19 @@
                 reactionInteractionsDiv.appendChild(reactionButton);
               } else {
                 // Update count of existing button
-                const countSpan = reactionButton.querySelector(`span.${reaction.type.toLowerCase()}-count`);
+                const countSpan = reactionButton.querySelector(`span.${reaction.type.toLowerCase()}-count-${commentId}`);
                 if (countSpan) countSpan.innerText = ` ${reactionCount}`;
               }
-            } else if (reactionCount == 0) {
-              if (reactionButton) {
-                reactionButton.remove();
-              }
+            } else if (reactionButton) {
+              // Remove the button if the reaction count is 0
+              reactionButton.remove();
             }
 
-
-            // Update button color if needed
-            if (reactionButton && reaction.type.toLowerCase() === action.toLowerCase()) {
-              // maybe add a lil reaction later idk
+            // Update button active status
+            if (data.userReaction && data.userReaction.toLowerCase() === reaction.type.toLowerCase()) {
+              reactionButton.classList.add('active');
             } else if (reactionButton) {
-              reactionButton.style.color = ""; // Reset to default styles for other buttons
+              reactionButton.classList.remove('active');
             }
           });
 
@@ -1151,6 +1148,13 @@
           let boostButton = document.querySelector('#boost-' + commentId);
           const countSpan = boostButton.querySelector(`span.boost-count`);
           countSpan.innerText = ` ${boostCount}`;
+
+          // Update boost button active status
+          if (data.userReaction && data.userReaction.toLowerCase() === 'b') {
+            boostButton.classList.add('active');
+          } else {
+            boostButton.classList.remove('active');
+          }
         })
         .catch((error) => {
           console.error('Error:', error);

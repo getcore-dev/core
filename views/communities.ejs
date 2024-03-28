@@ -453,6 +453,8 @@ filter_list
 
             // cancel showing menu if you click the button a second time otherwise show the menu
             mainReactionButton.addEventListener('click', () => {
+              event.stopPropagation();
+
               clearTimeout(showMenuTimeout);
               if (reactionMenu.style.display === 'flex') {
                 reactionMenu.style.opacity = '0';
@@ -701,6 +703,7 @@ filter_list
 
     function interactWithPost(event, postId, user, action) {
       event.stopPropagation();
+
       if (!user) {
         window.location.href = '/login';
         return;
@@ -726,6 +729,7 @@ filter_list
           }
 
           const reactionsData = data.newScore;
+
           const reactionTypes = [{
               type: "LOVE",
               icon: "❤️"
@@ -752,20 +756,54 @@ filter_list
 
           reactionTypes.forEach(reaction => {
             const reactionCount = reactionsData[reaction.type.toLowerCase()] || 0;
-            const reactionButton = document.querySelector(`.reaction-button.${reaction.type.toLowerCase()}-button-${postId}`);
+            let reactionButton = document.querySelector(`.reaction-button.${reaction.type.toLowerCase()}-button-${postId}`);
 
-            if (reactionButton) {
-              updateReactionButton(reactionButton, reactionCount, reaction.type, postId);
-            } else if (reactionCount > 0) {
-              createReactionButton(reactionInteractionsDiv, reaction, reactionCount, postId, user);
+            if (reactionCount > 0) {
+              if (!reactionButton) {
+                // Create a new reaction button if it doesn't exist
+                reactionButton = createReactionButton(reactionInteractionsDiv, reaction, reactionCount, postId, user);
+              } else {
+                // Update count of existing button
+                updateReactionButton(reactionButton, reactionCount, reaction.type, postId);
+              }
+            } else if (reactionButton) {
+              // Remove the button if the reaction count is 0
+              reactionButton.remove();
+            }
+
+            // Update button active status
+            if (data.userReaction && data.userReaction.toLowerCase() === reaction.type.toLowerCase()) {
+              reactionButton.classList.add('active');
+            } else if (reactionButton) {
+              reactionButton.classList.remove('active');
             }
           });
 
           const boostCount = reactionsData['boosts'] || 0;
-          const boostButton = document.querySelector(`.reaction-button.boost-button-${postId}`);
-          if (boostButton) {
-            const countSpan = boostButton.querySelector(`span.boost-count-${postId}`);
-            countSpan.innerText = ` ${boostCount}`;
+          let boostButton = document.querySelector(`.reaction-button.boost-button-${postId}`);
+
+          if (boostCount > 0) {
+            if (!boostButton) {
+              // Create a new boost button if it doesn't exist
+              boostButton = createReactionButton(reactionInteractionsDiv, {
+                type: "BOOST",
+                icon: "⚡️"
+              }, boostCount, postId, user);
+            } else {
+              // Update count of existing boost button
+              const countSpan = boostButton.querySelector(`span.boost-count-${postId}`);
+              countSpan.innerText = ` ${boostCount}`;
+            }
+          } else if (boostButton) {
+            // Remove the boost button if the boost count is 0
+            boostButton.remove();
+          }
+
+          // Update boost button active status
+          if (data.userReaction && data.userReaction.toLowerCase() === 'b') {
+            boostButton.classList.add('active');
+          } else if (boostButton) {
+            boostButton.classList.remove('active');
           }
         })
         .catch((error) => {
@@ -775,30 +813,26 @@ filter_list
 
     function createReactionButton(container, reaction, count, postId, user) {
       const reactionButton = document.createElement("button");
-      reactionButton.className = `reaction-button ${reaction.type.toLowerCase()}-button-${postId} ${count > 0 ? 'active' : ''}`;
-      reactionButton.onclick = () => interactWithPost(postId, user, reaction.type);
+      reactionButton.className = `reaction-button ${reaction.type.toLowerCase()}-button-${postId}`;
+      reactionButton.onclick = (event) => interactWithPost(event, postId, user, reaction.type);
 
       const icon = document.createElement("span");
       icon.innerText = reaction.icon;
 
       const countText = document.createElement("span");
-      countText.className = `reaction-count ${reaction.type.toLowerCase()}-count ${postId}`;
+      countText.className = `reaction-count ${reaction.type.toLowerCase()}-count-${postId}`;
       countText.innerText = ` ${count}`;
 
       reactionButton.appendChild(icon);
       reactionButton.appendChild(countText);
       container.appendChild(reactionButton);
+
+      return reactionButton;
     }
 
     function updateReactionButton(reactionButton, count, reactionType, postId) {
-      const countSpan = reactionButton.querySelector(`.reaction-count.${reactionType.toLowerCase()}-count.${postId}`);
+      const countSpan = reactionButton.querySelector(`.reaction-count.${reactionType.toLowerCase()}-count-${postId}`);
       countSpan.innerText = ` ${count}`;
-
-      if (count === 0) {
-        reactionButton.classList.remove('active');
-      } else {
-        reactionButton.classList.add('active');
-      }
     }
   </script>
 </body>
