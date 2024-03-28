@@ -113,7 +113,7 @@
                     </button>
                   </div>
                   <div class="dropdown-item">
-                    <button class="reaction-button" onclick="sharePost('<%= post.id %>', '<%= post.title %>', '<%= post.content %>')">
+                    <button class="reaction-button" onclick="sharePost('{{ post.id }}')">
                       <p>Share Post</p>
                     </button>
                   </div>
@@ -186,7 +186,7 @@
             <% if (post.post_type == 'blog') { %>
             padding: 0px 10px;
             <% } %>">
-              <% if ((post.post_type == 'discussion' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog' || post.post_type == 'question') { %>
+              <% if ((post.post_type == 'post' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog' || post.post_type == 'question') { %>
               <% if (post.post_type == 'project') { %>
 
               <% 
@@ -280,7 +280,7 @@
 
 
 
-              <% } else if (post.post_type == 'discussion' && post.linkPreview) { %>
+              <% } else if (post.post_type == 'post' && post.linkPreview) { %>
 
               <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
               <% if (imageUrl) { %>
@@ -634,7 +634,7 @@
                       <%= similarPost.link %>
                     </div>
                     <% } %>
-                    <% if (similarPost.post_type !== 'question' && (!similarPost.link || (similarPost.post_type !== 'discussion' && similarPost.post_type !== 'project'))) { %>
+                    <% if (similarPost.post_type !== 'question' && (!similarPost.link || (similarPost.post_type !== 'post' && similarPost.post_type !== 'project'))) { %>
                     <div class="description">
                       <%- similarPost.content %>
                     </div>
@@ -722,6 +722,23 @@
 
   <script>
     hljs.highlightAll();
+    async function sharePost(postId) {
+      const url = `${window.location.origin}/posts/${postId}`;
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            url: url,
+          });
+        } catch (err) {
+          console.error('Error sharing:', err);
+        }
+      } else {
+        // Fallback for browsers that don't support the Web Share API
+        console.log('Web Share API not supported');
+        // You can provide an alternative sharing method here, such as copying the URL to clipboard
+      }
+    }
   </script>
 
 
@@ -752,20 +769,6 @@
         });
     });
 
-    function sharePost(postId, postTitle, postContent) {
-      if (navigator.share) {
-        navigator.share({
-            title: postTitle,
-            text: postContent,
-            url: window.location.origin + '/posts/' + postId,
-          })
-          .then(() => console.log('Successful share'))
-          .catch((error) => console.log('Error sharing:', error));
-      } else {
-        console.log('Web Share API not supported');
-        // Fallback to custom share menu or other sharing method
-      }
-    }
     $(document).ready(function() {
       var easyMDE = new EasyMDE({
         element: document.getElementById('comment-form-textarea'),
@@ -1018,23 +1021,15 @@
                 const countSpan = reactionButton.querySelector(`span.${reaction.type.toLowerCase()}-count`);
                 if (countSpan) countSpan.innerText = ` ${reactionCount}`;
               }
-            } else if (reactionCount == 0) {
-              if (reactionButton) {
-                reactionButton.remove();
-              }
+            } else if (reactionButton) {
+              // Remove the button if the reaction count is 0
+              reactionButton.remove();
             }
 
-            if (post.userReaction && post.userReaction.type.toLowerCase() === reaction.type.toLowerCase()) {
+            if (data.userReaction && data.userReaction.toLowerCase() === reaction.type.toLowerCase()) {
               reactionButton.classList.add('active');
             } else if (reactionButton) {
-              reactionButton.style.color = ""; // Reset to default styles for other buttons
-            }
-
-            // Update button color if needed
-            if (reactionButton && reaction.type.toLowerCase() === action.toLowerCase()) {
-              // maybe add a lil reaction later idk
-            } else if (reactionButton) {
-              reactionButton.style.color = ""; // Reset to default styles for other buttons
+              reactionButton.classList.remove('active');
             }
           });
 
@@ -1043,6 +1038,13 @@
 
           const countSpan = boostButton.querySelector(`span.boost-count`);
           countSpan.innerText = ` ${boostCount}`;
+
+          // Update boost button active status
+          if (data.userReaction && data.userReaction.toLowerCase() === 'b') {
+            boostButton.classList.add('active');
+          } else {
+            boostButton.classList.remove('active');
+          }
         })
         .catch((error) => {
           console.error('Error:', error);
@@ -1126,21 +1128,19 @@
                 reactionInteractionsDiv.appendChild(reactionButton);
               } else {
                 // Update count of existing button
-                const countSpan = reactionButton.querySelector(`span.${reaction.type.toLowerCase()}-count`);
+                const countSpan = reactionButton.querySelector(`span.${reaction.type.toLowerCase()}-count-${commentId}`);
                 if (countSpan) countSpan.innerText = ` ${reactionCount}`;
               }
-            } else if (reactionCount == 0) {
-              if (reactionButton) {
-                reactionButton.remove();
-              }
+            } else if (reactionButton) {
+              // Remove the button if the reaction count is 0
+              reactionButton.remove();
             }
 
-
-            // Update button color if needed
-            if (reactionButton && reaction.type.toLowerCase() === action.toLowerCase()) {
-              // maybe add a lil reaction later idk
+            // Update button active status
+            if (data.userReaction && data.userReaction.toLowerCase() === reaction.type.toLowerCase()) {
+              reactionButton.classList.add('active');
             } else if (reactionButton) {
-              reactionButton.style.color = ""; // Reset to default styles for other buttons
+              reactionButton.classList.remove('active');
             }
           });
 
@@ -1148,6 +1148,13 @@
           let boostButton = document.querySelector('#boost-' + commentId);
           const countSpan = boostButton.querySelector(`span.boost-count`);
           countSpan.innerText = ` ${boostCount}`;
+
+          // Update boost button active status
+          if (data.userReaction && data.userReaction.toLowerCase() === 'b') {
+            boostButton.classList.add('active');
+          } else {
+            boostButton.classList.remove('active');
+          }
         })
         .catch((error) => {
           console.error('Error:', error);

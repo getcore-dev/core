@@ -73,9 +73,11 @@
             <span class="flair" id="emp-type-flair">
               <%= otheruser.currentJob_employment_type %>
             </span>
+            <% if (otheruser.currentJob_skills) { %>
             <% otheruser.currentJob_skills.split(',').forEach(function(skill) { %>
             <span class="flair"><%= skill.trim() %></span>
             <% }); %>
+            <% } %>
           </p>
 
 
