@@ -186,42 +186,171 @@ router.get("/jobs/:id", async (req, res) => {
 
 router.post("/job-postings", async (req, res) => {
   try {
-    const {
-      title,
-      salary,
-      experienceLevel,
-      location,
-      postedDate,
-      company_id,
-      link,
-      expiration_date,
-      tags,
-      description,
-      salary_max,
-      recruiter_id,
-      skills,
-    } = req.body;
+    const { link } = req.body;
 
-    // Call the createJobPosting function
-    const jobPostingId = await jobQueries.createJobPosting(
-      title,
-      salary,
-      experienceLevel,
-      location,
-      postedDate,
-      company_id,
-      link,
-      expiration_date,
-      tags,
-      description,
-      salary_max,
-      recruiter_id,
-      skills
-    );
+    const chatGPTModule = await import("chatgpt");
+    console.log(chatGPTModule);
 
-    res
-      .status(201)
-      .json({ message: "Job posting created successfully", jobPostingId });
+    if (link && link.includes("greenhouse.io")) {
+      const api = new chatGPTModule.ChatGPTAPI({
+        apiKey: process.env.OPENAI_API_KEY,
+      });
+
+      const headers = {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+      };
+
+      const linkresponse = await axios.get(link, { headers, timeout: 5000 });
+      const { data, status } = linkresponse;
+
+      // Remove HTML tags and scripts
+      const cleanedData = data.replace(
+        /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+        ""
+      );
+      const textContent = cleanedData.replace(/<(?:.|\n)*?>/gm, "");
+
+      const prompt = `Please extract the following information from this Greenhouse job posting data: ${textContent}
+      - Job title
+      - Company name
+      - Location
+      - Salary (integer only, no currency symbol)
+      - Salary_max (integer only, no currency symbol)
+      - Experience level (internship, full time, part time, contract)
+      - Skills (as a comma-separated list)
+      - Tags (as a comma-separated list)
+      - Job description
+      - Company logo URL
+      
+      Provide the extracted information in JSON format.`;
+
+      const response = await api.sendMessage(prompt);
+      console.log("Raw response text:", response.text);
+
+      // Remove triple backticks and any other non-JSON characters
+      const cleanedResponse = response.text
+        .replace(/^`{3}(json)?|`{3}$/g, "")
+        .trim();
+
+      let extractedData;
+      try {
+        extractedData = JSON.parse(cleanedResponse);
+      } catch (error) {
+        console.error("Error parsing JSON response:", error);
+        // Handle the error and return an appropriate response
+        res.status(500).json({
+          error: "Failed to parse the JSON response from the ChatGPT API",
+        });
+        return;
+      }
+
+      const {
+        title,
+        company,
+        location,
+        salary,
+        salary_max,
+        experienceLevel,
+        skills,
+        tags,
+        description,
+        logo_url,
+      } = extractedData;
+
+      // Check if the company exists in the database
+      let company_id = await sql.query(
+        "SELECT id FROM companies WHERE name = $1",
+        [company]
+      );
+
+      if (company_id.rows.length === 0) {
+        // If the company doesn't exist, create a new company record
+        const insertCompanyResult = await sql.query(
+          "INSERT INTO companies (name, logo_url) VALUES ($1, $2) RETURNING id",
+          [company, logo_url]
+        );
+        company_id = insertCompanyResult.rows[0].id;
+      } else {
+        company_id = company_id.rows[0].id;
+      }
+
+      let numericSalary;
+      if (salary) {
+        // Remove any non-numeric characters from the salary string
+        const cleanedSalary = salary.replace(/[^0-9.-]+/g, "");
+        numericSalary = parseInt(cleanedSalary, 10); // Convert to integer
+      } else {
+        numericSalary = null; // or any default value you want to use
+      }
+
+      let numericSalaryMax;
+      if (salary_max) {
+        // Remove any non-numeric characters from the salary_max string
+        const cleanedSalaryMax = salary_max.replace(/[^0-9.-]+/g, "");
+        numericSalaryMax = parseInt(cleanedSalaryMax, 10); // Convert to integer
+      } else {
+        numericSalaryMax = null; // or any default value you want to use
+      }
+
+      // Create the job posting with the extracted details
+      const jobPostingId = await jobQueries.createJobPosting(
+        title,
+        numericSalary,
+        experienceLevel,
+        location,
+        new Date(), // postedDate
+        company_id,
+        link,
+        null, // expiration_date
+        tags.split(",").map((tag) => tag.trim()),
+        description,
+        numericSalaryMax, // Pass the cleaned salary_max value
+        null, // recruiter_id
+        skills.split(",").map((skill) => skill.trim())
+      );
+
+      res
+        .status(201)
+        .json({ message: "Job posting created successfully", jobPostingId });
+    } else {
+      // Handle regular job posting creation
+      const {
+        title,
+        salary,
+        experienceLevel,
+        location,
+        postedDate,
+        company_id,
+        link,
+        expiration_date,
+        tags,
+        description,
+        salary_max,
+        recruiter_id,
+        skills,
+      } = req.body;
+
+      const jobPostingId = await jobQueries.createJobPosting(
+        title,
+        salary,
+        experienceLevel,
+        location,
+        postedDate,
+        company_id,
+        link,
+        expiration_date,
+        tags,
+        description,
+        salary_max,
+        recruiter_id,
+        skills
+      );
+
+      res
+        .status(201)
+        .json({ message: "Job posting created successfully", jobPostingId });
+    }
   } catch (error) {
     console.error("Error creating job posting:", error);
     res
