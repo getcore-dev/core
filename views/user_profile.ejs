@@ -21,10 +21,10 @@
         </div>
         <div class="follower-stats">
           <h5>
-            <a href="/profile/<%= otheruser.username %>/followers">Followers: <span id="followerCount"> <%= otheruser.followerCount %> </a></span>
+            <a href="/u/<%= otheruser.username %>/followers">Followers: <span id="followerCount"> <%= otheruser.followerCount %> </a></span>
           </h5>
           <h5>
-            <a href="/profile/<%= otheruser.username %>/following">Following: <span id="followCount"> <%= otheruser.followingCount %></a></span>
+            <a href="/u/<%= otheruser.username %>/following">Following: <span id="followCount"> <%= otheruser.followingCount %></a></span>
           </h5>
         </div>
       </div>
@@ -215,7 +215,7 @@
                   <img class="comment-author-avatar" src="<%= comment.author.avatar %>" alt="Avatar" />
                   <p class="comment-author">
 
-                    <a href="/profile/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/profile/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
+                    <a href="/u/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/u/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
                   </p>
                 </div>
                 <div class="comment">

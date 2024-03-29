@@ -72,7 +72,7 @@ visibility
             const communityElement = document.createElement('div');
             communityElement.className = 'communities';
             communityElement.onclick = () => {
-              window.location.href = `/communities/${community.id}`;
+              window.location.href = `/c/${community.shortname}`;
             };
 
             const tint = getTintFromName(community.name);

@@ -67,6 +67,7 @@ const viewController = {
       const comments = await userQueries.getCommentsByUserIdUserProfile(
         otheruser.id
       );
+      await userQueries.removeDuplicateFollows();
 
       if (otheruser) {
         let isFollowing = false;

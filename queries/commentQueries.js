@@ -9,6 +9,20 @@ function GETDATE() {
 }
 
 const commentQueries = {
+  removeDuplicateActions: async () => {
+    try {
+      const result = await sql.query`
+        WITH cte AS (
+          SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id, comment_id, action_type ORDER BY action_timestamp DESC) AS rn
+          FROM userCommentActions
+        )
+        DELETE FROM cte WHERE rn > 1`;
+    } catch (err) {
+      console.error("Database delete error:", err);
+      throw err; // Rethrow the error for the caller to handle
+    }
+  },
+
   addComment: async (postId, userId, commentText) => {
     try {
       // Insert the comment into the database
@@ -53,7 +67,6 @@ const commentQueries = {
 
   interactWithComment: async (postId, commentId, userId, actionType) => {
     try {
-      // Validate actionType
       if (
         ![
           "LOVE",

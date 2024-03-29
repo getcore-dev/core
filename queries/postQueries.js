@@ -31,11 +31,35 @@ const postQueries = {
 
   viewPost: async (postId) => {
     try {
-      const result = await sql.query`
-        UPDATE posts 
-        SET views = views + 1 
-        WHERE id = ${postId}`;
+      // Check the current value of views for the post
+      const checkResult = await sql.query`
+        SELECT views FROM posts WHERE id = ${postId}
+      `;
 
+      if (checkResult.recordset.length === 0) {
+        throw new Error("Post not found.");
+      }
+
+      const currentViews = checkResult.recordset[0].views;
+
+      let updateQuery;
+      if (currentViews === null || isNaN(currentViews) || currentViews < 0) {
+        // If views is null, NaN, or negative, set it to 1
+        updateQuery = sql.query`
+          UPDATE posts 
+          SET views = 1
+          WHERE id = ${postId}
+        `;
+      } else {
+        // Otherwise, increment views by 1
+        updateQuery = sql.query`
+          UPDATE posts 
+          SET views = views + 1
+          WHERE id = ${postId}
+        `;
+      }
+
+      const result = await updateQuery;
       return result.rowsAffected[0] > 0;
     } catch (err) {
       console.error("Database update error:", err);
@@ -295,7 +319,7 @@ const postQueries = {
       const uniqueId = generateUniqueId();
 
       // Insert into the posts table
-      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id, post_type) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${community_id}, ${post_type})`;
+      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id, post_type, views) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${community_id}, ${post_type}, 1)`;
 
       if (tags && tags.length > 0) {
         for (const tag of tags) {
@@ -468,6 +492,19 @@ const postQueries = {
     }
   },
 
+  removeDuplicateActions: async () => {
+    try {
+      const result = await sql.query`
+        WITH cte AS (
+          SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id, post_id, action_type ORDER BY action_timestamp DESC) AS rn
+          FROM userPostActions
+        )
+        DELETE FROM cte WHERE rn > 1`;
+    } catch (err) {
+      console.error("Database delete error:", err);
+      throw err; // Rethrow the error for the caller to handle
+    }
+  },
   getUserInteractions: async (postId, userId) => {
     try {
       const result = await sql.query`

@@ -498,8 +498,7 @@ const utilFunctions = {
             getMetaTag($, "image"),
             getMetaTag($, "author"),
           ]);
-
-          const favicon =
+          let favicon =
             $('link[rel="shortcut icon"]').attr("href") ||
             $('link[rel="icon"]').attr("href") ||
             $('link[rel="alternate icon"]').attr("href");
@@ -526,13 +525,49 @@ const utilFunctions = {
         }
       } catch (error) {
         console.error("Error fetching URL with GET request:", error);
+
+        // If the simple GET request fails, try using Axios
+        try {
+          const response = await axios.get(url, { headers, timeout: 5000 });
+          const { data, status } = response;
+          if (status === 200) {
+            const $ = cheerio.load(data);
+            const metaTags = await Promise.all([
+              getMetaTag($, "description"),
+              getMetaTag($, "image"),
+              getMetaTag($, "author"),
+            ]);
+            let favicon =
+              $('link[rel="shortcut icon"]').attr("href") ||
+              $('link[rel="icon"]').attr("href") ||
+              $('link[rel="alternate icon"]').attr("href");
+
+            if (favicon && !favicon.startsWith("http")) {
+              const urlObject = new URL(url);
+              favicon = urlObject.protocol + "//" + urlObject.host + favicon;
+            }
+
+            const preview = {
+              url,
+              title: $("title").first().text(),
+              favicon,
+              description: metaTags[0],
+              image: metaTags[1],
+              author: metaTags[2],
+            };
+
+            // Insert into LinkPreviewData table
+            const insertLinkPreviewDataQuery = `INSERT INTO LinkPreviewData (link, image_url, description, title, favicon) VALUES ('${preview.url}', '${preview.image}', '${preview.description}', '${preview.title}', '${preview.favicon}')`;
+            await sql.query(insertLinkPreviewDataQuery);
+
+            return preview;
+          }
+        } catch (error) {
+          console.error("Error fetching URL with Axios:", error);
+        }
       }
 
-      // If the simple GET request fails, try using a headless browser
-      // Implement the headless browser logic here
-      // ...
-
-      // If the headless browser also fails, return null
+      // If both GET request and Axios fail, return null
       return null;
     } catch (error) {
       console.error("Error fetching URL:", error);

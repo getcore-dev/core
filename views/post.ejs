@@ -56,7 +56,7 @@
             <span class="post-subtitle">
               <span class=tag-flair><%= post.post_type.charAt(0).toUpperCase() + post.post_type.slice(1) %> </span>
               <% if (post.post_type != "blog") { %>
-              <a id="community-header-text" href="/communities/<%= post.community.id %>" style="text-decoration: none;">/<%= post.community.shortname %></a>
+              <a id="community-header-text" href="/c/<%= post.community.shortname %>" style="text-decoration: none;">/<%= post.community.shortname %></a>
               <span> • </span>
               <%= post.views %> view<%- post.views > 1 ? 's' : '' %>
               <span> • </span>
@@ -104,36 +104,37 @@
                   <% if (user) { %>
                   <div class="dropdown-item">
                     <form id="favoriteForm" data-post-id="<%= post.id %>">
-                      <button class="reaction-button" type="submit">
+                      <button type="submit">
+                        <span class="material-symbols-outlined">favorite</span>
                         <p>Favorite Post</p>
                       </button>
                     </form>
                   </div>
                   <% } %>
                   <div class="dropdown-item">
-                    <button class="reaction-button" onclick="window.location.href = '/posts/<%= post.id %>/report'">
-                      <p>Report Post</p>
-                    </button>
-                  </div>
-                  <div class="dropdown-item">
-                    <button class="reaction-button" onclick="sharePost('{{ post.id }}')">
+                    <button onclick="sharePost('{{ post.id }}')">
+                      <span class="material-symbols-outlined">share</span>
                       <p>Share Post</p>
                     </button>
                   </div>
                   <% if (user && user.username === post.username) { %>
                   <div class="dropdown-item">
+                    <button onclick="window.location.href = '/posts/<%= post.id %>/edit'">
+                      <span class="material-symbols-outlined">edit</span>
+                      <p>Edit Post</p>
+                    </button>
+                  </div>
+                  <% } %>
+                  <% if (user && user.username === post.username) { %>
 
-                    <form action=" /post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
+                  <div class="dropdown-item">
+                    <form action="/post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
                       <input type="hidden" name="_method" value="DELETE" />
-                      <button class="reaction-button" onclick="return confirmDeletion(this);">
+                      <button onclick="return confirmDeletion(this);">
+                        <span class="material-symbols-outlined">delete</span>
                         <p>Delete Post</p>
                       </button>
                     </form>
-                  </div>
-                  <div class="dropdown-item">
-                    <button class="reaction-button" onclick="window.location.href = '/posts/<%= post.id %>/edit'">
-                      <p>Edit Post</p>
-                    </button>
                   </div>
                   <% } %>
                 </div>
@@ -154,7 +155,7 @@
 
             <div class="post-userinfo">
               <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="blog-avatar" />
-              <a href="/profile/<%= post.user.username %>" style="text-decoration: none;"><%= post.user.firstname %> <%= post.user.lastname %></a>
+              <a href="/u/<%= post.user.username %>" style="text-decoration: none;"><%= post.user.firstname %> <%= post.user.lastname %></a>
             </div>
             <% } %>
 
@@ -174,7 +175,7 @@
             <div class="post-interactions-header">
               <div class="post-user-info-header">
                 <img class="avatar" src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" onerror="" />
-                <a href="/profile/<%= post.user.username %>" class="post-user-info">
+                <a href="/u/<%= post.user.username %>" class="post-user-info">
                   <div class="post-user-info">
                     <%= post.user.username %>
                   </div>
@@ -266,7 +267,7 @@
                     <img src="<%= post.solution.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" />
                   </div>
                   <div class="solution-username">
-                    <a href="/profile/<%= post.solution.user.username %>">
+                    <a href="/u/<%= post.solution.user.username %>">
                       <%= post.solution.user.username %>
                     </a>
                   </div>
@@ -411,14 +412,14 @@
 
                 <div class="comment-content">
                   <div class="comment-header">
-                    <a class="comment-user-info" href="/profile/<%= comment.user.username %>">
+                    <a class="comment-user-info" href="/u/<%= comment.user.username %>">
                       <div class="repliers-info">
                         <%= comment.user.username%>
                       </div>
                     </a>
 
                     <p>to</p>
-                    <a class="comment-user-info" href="/profile/<%= comment.parent_author.username %>">
+                    <a class="comment-user-info" href="/u/<%= comment.parent_author.username %>">
                       <%= comment.parent_author.username %>
                     </a>
                     <span>&#183;</span>
@@ -605,8 +606,8 @@
             </div>
             <div class="similar-posts">
               <% similarPosts.forEach(similarPost => { %>
-              <div class="post" style="margin: 0 13px; margin-bottom: 15px;">
-                <div class="post-content" style="border-radius: 10px;">
+              <div class="post">
+                <div class="post-content">
                   <div class="post-header" onclick="window.location.href='/posts/<%= similarPost.id %>'">
                     <% 
                     function formatDate(dateString) {
@@ -622,9 +623,9 @@
                         <img src="<%= similarPost.avatar %>" loading="lazy">
                       </div>
                       <div class="username">
-                        <a href="/profile/<%= similarPost.username %>" class="username-link"><strong><%= similarPost.username %></strong></a>
+                        <a href="/u/<%= similarPost.username %>" class="username-link"><strong><%= similarPost.username %></strong></a>
                         <span class="communities-text"> posted a <%= similarPost.post_type %> in <%= similarPost.community_name %></span>
-                        <a href="/communities/<%= similarPost.communities_id %>" class="community"></a>
+                        <a href="/c/<%= similarPost.communities_id %>" class="community"></a>
                         <div class="post-date" id="secondary-text"><%= formatDate(similarPost.created_at) %> • <%= similarPost.views %> views</div>
                       </div>
                     </div>
@@ -876,6 +877,17 @@
       var replyButtons = document.getElementById('reply-buttons-' + commentId);
       replyButtons.style.display = 'none';
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var editPostButton = document.getElementById('editPostButton');
+      if (editPostButton) {
+        editPostButton.addEventListener('click', function() {
+          console.log('Edit button clicked');
+          var postId = this.dataset.postId;
+          window.location.href = '/posts/' + postId + '/edit';
+        });
+      }
+    });
 
     function autoExpandTextarea(event) {
       event.target.style.height = 'inherit';

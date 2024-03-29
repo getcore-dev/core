@@ -73,7 +73,7 @@
           notificationHeader.textContent = '👤 New Follower';
           notificationText.textContent = `${notification.senderUsername} followed you`;
           notificationText.onclick = function() {
-            window.location.href = "/profile/" + notification.senderUsername;
+            window.location.href = "/u/" + notification.senderUsername;
           };
         }
         notificationTextDiv.appendChild(notificationHeader);

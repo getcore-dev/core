@@ -77,6 +77,16 @@ h1, h2, h3, h4, h5, p {
   display: none;
 }
 
+#nb-icon {
+  font-size: 19px;
+  font-weight: 400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 1px;
+  color: var(--light-mode-text-color);
+}
+
 .search-container {
   position: relative;
   display: inline-block; /* Align with other icons */
@@ -335,7 +345,7 @@ h1, h2, h3, h4, h5, p {
   flex-direction: column;
   justify-content: space-around;
   width: 40px;
-  height: 18px;
+  height: 20px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -344,7 +354,7 @@ h1, h2, h3, h4, h5, p {
 .menu-bar {
   z-index: 1000;
   width: 14px;
-  height: 1.2px;
+  height: 1.5px;
   background-color: var(--light-mode-text-color);
   transition: all 0.3s ease;
 }
@@ -359,9 +369,10 @@ h1, h2, h3, h4, h5, p {
 
 .avatar-dropdown-item #nb-icon {
   padding: 0;
-  margin: 0;
+  margin: 4px 10px !important;
   font-size: 1.2rem;
 }
+
 
 .menu-button.active .bottom-bar {
   transform: rotate(-45deg) translate(4px, -4px);
@@ -390,15 +401,6 @@ h1, h2, h3, h4, h5, p {
   width: 32px;
   aspect-ratio: 1 / 1;
 }
-
-.avatar-dropdown-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 9px;
-}
-
 .clear-btn .material-symbols-outlined {
   font-size: 1.35rem;
   font-weight: 300;
@@ -741,16 +743,6 @@ font-weight: bold;
 
 
 
-#nb-icon {
-  font-size: 19px;
-  font-weight: 400;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 1px;
-  color: var(--light-mode-text-color);
-}
-
 .search-bar {
   display: flex;
   justify-content: center;
@@ -800,17 +792,19 @@ font-weight: bold;
   right: 0;
   background-color: var(--light-mode-main-color);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   display: none;
   padding: 10px 5px;
-  width: 125px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .avatar-dropdown-item .material-symbols-outlined {
   padding-left: 0 !important;
   padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  white-space-collapse: collapse; 
 }
 
 .avatar-dropdown a {

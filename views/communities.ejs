@@ -123,7 +123,9 @@
             </div>
             <div class="job-title">${job.title.slice(0, 40)}</div>
             <div class="job-flairs">
-              <span class="job-flair" id="pay-flair">${formatSalary(job.salary_max)}</span>
+              <span class="job-flair" id="pay-flair">$${Math.floor(
+            (job.salary + job.salary_max) / 2 / 1000
+          )}k</span>
               <span class="job-flair" id="location-flair" data-location="${formatLocation(job.location)}">${formatLocation(job.location)}</span>
             </div>
           </div>
@@ -286,7 +288,7 @@ filter_list
             usernameDiv.className = 'username';
             const usernameLink = document.createElement('a');
             usernameLink.className = 'username-link';
-            usernameLink.href = '/profile/' + post.username;
+            usernameLink.href = '/u/' + post.username;
             usernameLink.innerHTML = '<strong>' + post.username + '</strong>';
             usernameDiv.appendChild(usernameLink);
 
@@ -299,7 +301,7 @@ filter_list
 
             usernameDiv.appendChild(postTypeDiv);
             const communityLink = document.createElement('a');
-            communityLink.href = '/communities/' + post.communities_id;
+            communityLink.href = '/c/' + post.communities_id;
             communityLink.className = 'community';
             communityLink.innerText = "";
             usernameDiv.appendChild(communityLink);
@@ -558,7 +560,7 @@ filter_list
       // Function to toggle community membership
       function toggleCommunityMembership() {
         const action = communityActionBtn.dataset.action; // "join" or "leave"
-        const url = `/communities/<%= community.id %>/${action}`;
+        const url = `/c/<%= community.name %>/${action}`;
 
         fetch(url, {
             method: "POST",
@@ -595,7 +597,7 @@ filter_list
 
       // Function to check membership and update button
       function checkMembershipAndUpdateButton() {
-        fetch(`/communities/<%= community.id %>/isMember`)
+        fetch(`/c/<%= community.name %>/isMember`)
           .then(response => response.json())
           .then(data => {
             if (data.isMember) {
