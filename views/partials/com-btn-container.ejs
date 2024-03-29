@@ -66,23 +66,31 @@ visibility
         const containerClassName = isMobile ? '.community-selector' : '.communities-container';
         const communitiesContainer = document.querySelector(containerClassName);
 
-        communitiesContainer.innerHTML = ''; // Clear existing communities
-        communities.forEach(community => {
-          const communityElement = document.createElement('div');
-          communityElement.className = 'communities';
-          communityElement.onclick = () => {
-            window.location.href = `/communities/${community.id}`;
-          };
+        if (communitiesContainer) {
+          communitiesContainer.innerHTML = ''; // Clear existing communities
+          communities.forEach(community => {
+            const communityElement = document.createElement('div');
+            communityElement.className = 'communities';
+            communityElement.onclick = () => {
+              window.location.href = `/communities/${community.id}`;
+            };
 
-          const tint = isMobile ? getTintFromName(community.name) : '';
+            const tint = getTintFromName(community.name);
 
-          communityElement.innerHTML = `
-                <span class="material-symbols-outlined" style="${isMobile ? `color: ${tint};` : ''}">${community.mini_icon}</span>
-                <div class="community-name">${isMobile ? community.shortname : community.name}</div>
-            `;
+            communityElement.innerHTML = `
+  <span class="material-symbols-outlined" style="${isMobile ? `color: ${tint};` : ''}">
+    ${community.mini_icon}
+  </span>
+  <div class="community-name">
+    <p class="community-text" style="color: inherit;">${isMobile ? community.shortname : community.name}</p>
+  </div>
+`;
 
-          communitiesContainer.appendChild(communityElement);
-        });
+            communityElement.style.setProperty('--tint-color', tint);
+
+            communitiesContainer.appendChild(communityElement);
+          });
+        }
       })
       .catch(error => console.error('Error fetching communities:', error));
   }

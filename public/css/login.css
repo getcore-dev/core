@@ -174,3 +174,9 @@ main {
 
   /* Additional dark mode styles can be added as needed */
 }
+
+@media screen and (max-width: 600px){
+  main {
+    height: calc(100dvh - 58px);
+  }
+}

@@ -30,10 +30,6 @@
     padding-top: 10px;
 }
 
-.communities .community-name:hover {
-  text-decoration: underline;
-}
-
 .communities-container {
   display: flex;
   flex-direction: column;
@@ -273,4 +269,8 @@ height: auto;
     .trending-post a:hover {
       background-color: #555; /* Lighter background on hover */
   }
+}
+
+.communities:hover .community-name .community-text {
+  color: var(--tint-color) !important;
 }

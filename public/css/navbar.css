@@ -28,7 +28,7 @@
   --navbar-button-font-size: 16px;
   --nav-text-font-size: 20px;
   --navbar-height: 65px;
-  --mobile-navbar-height: 65px;
+  --mobile-navbar-height: 58px;
   --logo-max-height: 65px;
   --mobile-logo-max-height: 45px;
   --search-bar-width: 170px;
@@ -375,7 +375,6 @@ h1, h2, h3, h4, h5, p {
 
 .logo img {
   max-height: 50px;
-  padding: 5px 0px;
   object-fit: cover;
 }
 
@@ -584,7 +583,7 @@ font-weight: bold;
   .nav-text-container {
     font-size: 18px;
     margin-left: 0;
-    margin-top: 0;
+    margin-top: -4px;
     width: 300px;
 }
 
@@ -701,13 +700,13 @@ font-weight: bold;
   .hamburger-menu {
     position: absolute;
     left: 14px;
-    top: 24px;
+    top: 20px;
     z-index: 2;
   } 
 
   .logo img {
     position: absolute;
-    top: 5px;
+    top: 8px;
     left: 54px;
     max-height: 45px;
     z-index: 1000;

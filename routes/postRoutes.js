@@ -13,8 +13,8 @@ const { util } = require("chai");
 const rateLimit = require("express-rate-limit");
 
 const viewLimiter = rateLimit({
-  windowMs: 8 * 60 * 60 * 1000, // 8 hours in milliseconds
-  max: 1, // Allow 1 view per IP address within the time window
+  windowMs: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+  max: 3, // Allow 3 views per IP address within the time window
   handler: (req, res, next) => {
     // Set a custom property to indicate that the rate limit is exceeded
     req.rateLimit = {
@@ -24,6 +24,11 @@ const viewLimiter = rateLimit({
     next();
   },
   keyGenerator: (req) => req.ip, // Use the IP address as the key
+  skip: (req) => {
+    // Skip rate limiting if the last view was more than 8 hours ago
+    const eightHoursAgo = Date.now() - 8 * 60 * 60 * 1000;
+    return req.rateLimit.resetTime && req.rateLimit.resetTime < eightHoursAgo;
+  },
 });
 
 // Route for viewing all posts

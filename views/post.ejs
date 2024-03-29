@@ -57,6 +57,9 @@
               <span class=tag-flair><%= post.post_type.charAt(0).toUpperCase() + post.post_type.slice(1) %> </span>
               <% if (post.post_type != "blog") { %>
               <a id="community-header-text" href="/communities/<%= post.community.id %>" style="text-decoration: none;">/<%= post.community.shortname %></a>
+              <span> • </span>
+              <%= post.views %> view<%- post.views > 1 ? 's' : '' %>
+              <span> • </span>
 
               <%
               let postDate = new Date(post.created_at);
@@ -135,9 +138,6 @@
                   <% } %>
                 </div>
               </div>
-            </div>
-            <div class="views-div">
-              <%= post.views %> view<%- post.views > 1 ? 's' : '' %>
             </div>
             <% if (post.post_type == 'blog') { %>
             <div class="post-timestamp">
@@ -592,8 +592,13 @@
 
             <% }) %>
             <% } %>
-
+            <% if (post.comments.length === 0) { %>
+            <div class="no-comments">
+              No comments yet, start a discussion!
+            </div>
+            <% } else { %>
             <% renderComments(post.comments); %>
+            <% } %>
             <% if (similarPosts.length > 0) { %>
             <div class="header" style="justify-content: center;">
               <h3>Similar Posts</h3>
