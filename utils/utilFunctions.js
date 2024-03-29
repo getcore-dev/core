@@ -288,7 +288,6 @@ const utilFunctions = {
 
   getPostData: async (postId, user) => {
     try {
-      await sql.query`UPDATE posts SET views = ISNULL(views, 0) + 1 WHERE id = ${postId}`;
 
       let userId;
       if (user) {

@@ -10,6 +10,26 @@ const { getLinkPreview } = require("../utils/utilFunctions");
 const userQueries = require("../queries/userQueries");
 const marked = require("marked");
 const { util } = require("chai");
+const rateLimit = require("express-rate-limit");
+
+const viewLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+  max: 3, // Allow 3 views per IP address within the time window
+  handler: (req, res, next) => {
+    // Set a custom property to indicate that the rate limit is exceeded
+    req.rateLimit = {
+      exceeded: true,
+    };
+    // Call next() to continue processing the request without incrementing the view count
+    next();
+  },
+  keyGenerator: (req) => req.ip, // Use the IP address as the key
+  skip: (req) => {
+    // Skip rate limiting if the last view was more than 8 hours ago
+    const eightHoursAgo = Date.now() - 8 * 60 * 60 * 1000;
+    return req.rateLimit.resetTime && req.rateLimit.resetTime < eightHoursAgo;
+  },
+});
 
 // Route for viewing all posts
 router.get("/posts", async (req, res) => {
@@ -110,11 +130,14 @@ router.post(
   }
 );
 
-router.get("/posts/:postId", async (req, res) => {
+router.get("/posts/:postId", viewLimiter, async (req, res) => {
   try {
     const postId = req.params.postId;
     let user = req.user;
 
+    if (!req.rateLimit || !req.rateLimit.exceeded) {
+      postQueries.viewPost(postId);
+    }
     // Fetch all comments related to the post
     const query = `
     SELECT

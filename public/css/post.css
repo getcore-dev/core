@@ -562,7 +562,6 @@ img.blog-avatar {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-top: 18px;
   padding-bottom: 18px;
 }
 .sort-selector {
@@ -709,12 +708,20 @@ div.repliers-avatar, div.repliees-avatar {
   height: 35px;
 }
 
+.title {
+  width: 100%;
+}
 
 .post-content {
-  padding: 9px 14px;
+  padding: 0px 14px;
   font-size: 14px;
   color: var(--light-mode-text-color);
   gap: 10px;
+}
+
+.similar-posts .post-content {
+padding: 9px 14px;
+padding-top: 18px;
 }
 
 .comment-header {
@@ -914,6 +921,15 @@ a.comment-user-info:hover {
 
 .post-body {
   font-size: .955rem;
+}
+
+.no-comments {
+  font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 50px;
+    padding-top: 50px;
 }
 
 .post-body p , .comment-body p {
@@ -1465,7 +1481,7 @@ div.username {
   }
   .main-container {
     width: 100%;
-    max-height: calc(100vh - 65px);
+    max-height: calc(100vh - 58px);
   }
 
   .main-container > .comments-section {

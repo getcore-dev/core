@@ -57,6 +57,9 @@
               <span class=tag-flair><%= post.post_type.charAt(0).toUpperCase() + post.post_type.slice(1) %> </span>
               <% if (post.post_type != "blog") { %>
               <a id="community-header-text" href="/communities/<%= post.community.id %>" style="text-decoration: none;">/<%= post.community.shortname %></a>
+              <span> • </span>
+              <%= post.views %> view<%- post.views > 1 ? 's' : '' %>
+              <span> • </span>
 
               <%
               let postDate = new Date(post.created_at);
@@ -136,9 +139,6 @@
                 </div>
               </div>
             </div>
-            <div class="views-div">
-              <%= post.views %> view<%- post.views > 1 ? 's' : '' %>
-            </div>
             <% if (post.post_type == 'blog') { %>
             <div class="post-timestamp">
               <%
@@ -186,7 +186,7 @@
             <% if (post.post_type == 'blog') { %>
             padding: 0px 10px;
             <% } %>">
-              <% if ((post.post_type == 'post' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog' || post.post_type == 'question') { %>
+              <% if ((post.post_type == 'post' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog' || post.post_type == 'question' || (post.post_type == 'discussion' && !post.linkPreview)) { %>
               <% if (post.post_type == 'project') { %>
 
               <% 
@@ -280,7 +280,7 @@
 
 
 
-              <% } else if (post.post_type == 'post' && post.linkPreview) { %>
+              <% } else if ((post.post_type == 'post' || post.post_type == 'discussion') && post.linkPreview) { %>
 
               <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
               <% if (imageUrl) { %>
@@ -302,7 +302,7 @@
                 </div>
               </div>
               <%- post.content %>
-
+              hellooo
               <% } %>
 
               <div class="user-interactions" style="<% if (post.post_type == "blog") { %>margin-bottom: 20px;<% } %>">
@@ -592,8 +592,13 @@
 
             <% }) %>
             <% } %>
-
+            <% if (post.comments.length === 0) { %>
+            <div class="no-comments">
+              No comments yet, start a discussion!
+            </div>
+            <% } else { %>
             <% renderComments(post.comments); %>
+            <% } %>
             <% if (similarPosts.length > 0) { %>
             <div class="header" style="justify-content: center;">
               <h3>Similar Posts</h3>

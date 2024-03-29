@@ -29,6 +29,20 @@ const postQueries = {
     }
   },
 
+  viewPost: async (postId) => {
+    try {
+      const result = await sql.query`
+        UPDATE posts 
+        SET views = views + 1 
+        WHERE id = ${postId}`;
+
+      return result.rowsAffected[0] > 0;
+    } catch (err) {
+      console.error("Database update error:", err);
+      throw err;
+    }
+  },
+
   fetchSimilarPosts: async (user, postId, communityId, tags, title) => {
     const tagsCondition =
       tags && tags.length > 0
@@ -83,7 +97,6 @@ const postQueries = {
     const result = await sql.query(query);
     return result.recordset;
   },
-  
 
   acceptAnswer: async (postId, commentId, userId) => {
     try {

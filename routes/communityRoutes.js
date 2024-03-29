@@ -46,29 +46,25 @@ router.get("/:communityId", async (req, res) => {
   }
 });
 
-router.get(
-  "/:communityId/isMember",
-  checkAuthenticated,
-  async (req, res) => {
-    const userId = req.user.id; // Assuming req.user is populated by your authentication middleware
-    const communityId = parseInt(req.params.communityId, 10);
+router.get("/:communityId/isMember", checkAuthenticated, async (req, res) => {
+  const userId = req.user.id; // Assuming req.user is populated by your authentication middleware
+  const communityId = parseInt(req.params.communityId, 10);
 
-    if (isNaN(communityId)) {
-      return res.status(400).send("Invalid community ID");
-    }
-
-    try {
-      const isMember = await communityQueries.checkMembership(
-        userId,
-        communityId
-      );
-      res.json({ isMember });
-    } catch (error) {
-      console.error("Check membership error:", error);
-      res.status(500).send("Error checking membership status");
-    }
+  if (isNaN(communityId)) {
+    return res.status(400).send("Invalid community ID");
   }
-);
+
+  try {
+    const isMember = await communityQueries.checkMembership(
+      userId,
+      communityId
+    );
+    res.json({ isMember });
+  } catch (error) {
+    console.error("Check membership error:", error);
+    res.status(500).send("Error checking membership status");
+  }
+});
 
 router.post("/:communityId/join", checkAuthenticated, async (req, res) => {
   const userId = req.user.id; // Assuming req.user is populated by your authentication middleware
