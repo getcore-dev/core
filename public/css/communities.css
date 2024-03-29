@@ -786,7 +786,7 @@ div .mini-link-desc {
 
   .community-selector .communities {
     background-color: var(--light-mode-body-color);
-    border: 1px solid var(--light-mode-body-color);
+    border: 1px solid var(--border-color);
     border-radius: 10px;
     padding: 0px 12px;
 
@@ -869,7 +869,7 @@ div .mini-link-desc {
 
 }
 
-.post, body > main > div.container > div.jobs-container > div.jobslist .job {
+body > main > div.container > div.jobs-container > div.jobslist .job {
   border: 1px solid var(--border-color);
 }
 
@@ -881,11 +881,11 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
 @media (max-width: 768px) {
   .post {
     margin: 0;
-    background-color: var(--light-mode-body-color);
-    border-radius: 10px;
-    /* margin: 0 13px; */
+    background-color: var(--light-mode-main-color);
+    border-radius: 0;
     padding: 0px;
-    border-bottom: 1px solid var(--dark-mode-border-color);
+    border: 0;
+    border-top: 1px solid var(--border-color);
     max-width: 100%;
   }
 
@@ -1052,7 +1052,7 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
   
   .community-selector .communities {
   background-color: var(--dark-mode-main-color);
-  border-color: var(--dark-mode-main-color);
+  border-color: var(--dark-mode-border-color);
   }
   
   .communities a {

@@ -66,42 +66,51 @@ router.get(
   async (req, res) => {
     try {
       const username = req.params.username;
-      const url = `https://github.com/${username}`;
-
+      const apiUrl = `https://api.github.com/search/commits`;
       const headers = {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+        "User-Agent": "CORE",
+        Authorization: `Bearer ${process.env.GITHUB_ACCESS_TOKEN}`,
       };
+      const commitGraph = {};
+      const oneYearAgo = new Date();
+      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+      const oneYearAgoDate = oneYearAgo.toISOString().split("T")[0];
+      let page = 1;
+      const commitsPerPage = 100;
 
-      const response = await axios.get(url, { headers, timeout: 5000 });
-      const { data, status } = response;
+      while (true) {
+        const response = await axios.get(apiUrl, {
+          headers,
+          params: {
+            q: `author:${username} committer-date:>=${oneYearAgoDate}`,
+            sort: "committer-date",
+            order: "desc",
+            per_page: commitsPerPage,
+            page: page,
+          },
+        });
 
-      if (status !== 200) {
-        throw new Error(`Request failed with status code ${status}`);
+        if (response.status !== 200) {
+          throw new Error(`GitHub API returned status code ${response.status}`);
+        }
+
+        const commits = response.data.items;
+        commits.forEach((commit) => {
+          const date = commit.commit.committer.date.split("T")[0];
+          commitGraph[date] = (commitGraph[date] || 0) + 1;
+        });
+
+        if (commits.length < commitsPerPage) {
+          break;
+        }
+        page++;
       }
 
-      const $ = cheerio.load(data);
-
-      const commitGraph = [];
-
-      $("tbody tr").each((rowIndex, rowElement) => {
-        const rowData = [];
-
-        $(rowElement)
-          .find("td:not(.ContributionCalendar-label)")
-          .each((cellIndex, cellElement) => {
-            const date = $(cellElement).attr("data-date");
-            const count = parseInt($(cellElement).attr("data-level"), 10);
-
-            rowData.push({ date, count });
-          });
-
-        commitGraph.push(rowData);
-      });
-
+      console.log(commitGraph);
       res.json({ username, commitGraph });
     } catch (error) {
       console.error("Error fetching GitHub commit graph:", error);
+      console.error("Error details:", error.response?.data);
       res.status(500).json({ error: "Failed to fetch GitHub commit graph" });
     }
   }

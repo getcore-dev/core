@@ -210,7 +210,7 @@
                 return `${month}/${day}/${year}`;
               }
               %>
-              <div class="project-link">
+              <div class="project-link" onclick="window.location.href='<%= post.link %>'">
                 <div class="project-link-image">
                   <img src="<%= gitHubData.owner.avatar_url %>" alt="Preview" class="large-preview-image" />
                 </div>
@@ -284,7 +284,7 @@
 
               <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
               <% if (imageUrl) { %>
-              <div class="dicussion-link">
+              <div class="dicussion-link" onclick="window.location.href='<%= post.link %>'">
                 <div class="link-image">
                   <img src="<%= imageUrl %>" alt="Preview" class="large-preview-image" />
                 </div>

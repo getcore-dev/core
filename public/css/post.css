@@ -1488,9 +1488,10 @@ div.username {
     padding-bottom: 50px;
   }
 
-
-
-
+  .large-preview-image {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
 
   .post {
     margin: 0px;

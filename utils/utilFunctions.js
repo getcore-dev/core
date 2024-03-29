@@ -288,7 +288,6 @@ const utilFunctions = {
 
   getPostData: async (postId, user) => {
     try {
-
       let userId;
       if (user) {
         userId = user.id;
@@ -462,16 +461,16 @@ const utilFunctions = {
         $(`meta[property="og:${name}"]`).attr("content")
       );
     };
+
     try {
       // Ensure the URL is a string
       if (typeof url !== "string") {
         throw new Error("URL must be a string");
       }
 
-      // check if url exists in the LinkPreviewData table
+      // Check if the URL exists in the LinkPreviewData table
       const linkPreviewDataQuery = `SELECT * FROM LinkPreviewData WHERE link = '${url}'`;
       const linkPreviewDataResult = await sql.query(linkPreviewDataQuery);
-
       if (linkPreviewDataResult.recordset.length > 0) {
         const linkPreviewData = linkPreviewDataResult.recordset[0];
         return {
@@ -488,52 +487,59 @@ const utilFunctions = {
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
       };
 
-      const response = await axios.get(url, { headers, timeout: 5000 });
-      const { data, status } = response;
+      // Try fetching the URL with a simple GET request
+      try {
+        const response = await axios.get(url, { headers, timeout: 5000 });
+        const { data, status } = response;
+        if (status === 200) {
+          const $ = cheerio.load(data);
+          const metaTags = await Promise.all([
+            getMetaTag($, "description"),
+            getMetaTag($, "image"),
+            getMetaTag($, "author"),
+          ]);
 
-      if (status !== 200) {
-        throw new Error(`Request failed with status code ${status}`);
-      }
+          const favicon =
+            $('link[rel="shortcut icon"]').attr("href") ||
+            $('link[rel="icon"]').attr("href") ||
+            $('link[rel="alternate icon"]').attr("href");
 
-      const $ = cheerio.load(data);
-      const metaTags = await Promise.all([
-        getMetaTag($, "description"),
-        getMetaTag($, "image"),
-        getMetaTag($, "author"),
-      ]);
+          if (favicon && !favicon.startsWith("http")) {
+            const urlObject = new URL(url);
+            favicon = urlObject.protocol + "//" + urlObject.host + favicon;
+          }
 
-      const favicon =
-        $('link[rel="shortcut icon"]').attr("href") ||
-        $('link[rel="icon"]').attr("href") ||
-        $('link[rel="alternate icon"]').attr("href");
+          const preview = {
+            url,
+            title: $("title").first().text(),
+            favicon,
+            description: metaTags[0],
+            image: metaTags[1],
+            author: metaTags[2],
+          };
 
-      if (favicon) {
-        // If favicon is a relative path, convert it to an absolute URL
-        if (!favicon.startsWith("http")) {
-          const urlObject = new URL(url);
-          favicon = urlObject.protocol + "//" + urlObject.host + favicon;
+          // Insert into LinkPreviewData table
+          const insertLinkPreviewDataQuery = `INSERT INTO LinkPreviewData (link, image_url, description, title, favicon) VALUES ('${preview.url}', '${preview.image}', '${preview.description}', '${preview.title}', '${preview.favicon}')`;
+          await sql.query(insertLinkPreviewDataQuery);
+
+          return preview;
         }
+      } catch (error) {
+        console.error("Error fetching URL with GET request:", error);
       }
 
-      const preview = {
-        url,
-        title: $("title").first().text(),
-        favicon: favicon,
-        description: metaTags[0],
-        image: metaTags[1],
-        author: metaTags[2],
-      };
+      // If the simple GET request fails, try using a headless browser
+      // Implement the headless browser logic here
+      // ...
 
-      // insert into LinkPreviewData table
-      const insertLinkPreviewDataQuery = `INSERT INTO LinkPreviewData (link, image_url, description, title, favicon) VALUES ('${preview.url}', '${preview.image}', '${preview.description}', '${preview.title}', '${preview.favicon}')`;
-      await sql.query(insertLinkPreviewDataQuery);
-
-      return preview;
+      // If the headless browser also fails, return null
+      return null;
     } catch (error) {
       console.error("Error fetching URL:", error);
       return null;
     }
   },
+
   getGitHubCommitGraph: async (username) => {
     try {
       const url = `https://github.com/${username}`;
