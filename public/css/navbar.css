@@ -580,6 +580,10 @@ font-weight: bold;
     font-size: 16px;
   }
 
+  .menu-content {
+    height: calc(100dvh - 58px);
+  }
+
   .nav-text-container {
     font-size: 18px;
     margin-left: 0;
@@ -897,9 +901,8 @@ font-weight: bold;
 
   .navbar {
     background-color: var(--dark-mode-body-color);
-    border-color: var(--dark-mode-main-color);
     color: var(--dark-mode-text-color);
-    border-color: var(--dark-mode-border-color);
+    border-color: var(--dark-mode-main-color);
 }
 
   .notification-popup {
@@ -984,7 +987,7 @@ font-weight: bold;
 
   .search-results-container > div {
       background-color: var(--dark-mode-background-color);
-      border-color: var(--dark-mode-border-color);
+      border-color: var(--dark-mode-main-color);
   }
 
   .search-results-container {
@@ -1004,8 +1007,8 @@ font-weight: bold;
 
   @media (max-width: 768px) {
     body {
-      padding-top: calc(constant(safe-area-inset-top) + var(--navbar-height)); 
-      padding-top: calc(env(safe-area-inset-top) + var(--navbar-height));
+      padding-top: calc(constant(safe-area-inset-top) + var(--mobile-navbar-height)); 
+      padding-top: calc(env(safe-area-inset-top) + var(--mobile-navbar-height));
       background-color: var(--dark-mode-body-color);
     }
   }
