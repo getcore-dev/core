@@ -276,39 +276,39 @@ router.post("/job-postings", async (req, res) => {
       }
 
       let numericSalary;
-      if (salary) {
-        // Remove any non-numeric characters from the salary string
-        const cleanedSalary = salary.replace(/[^0-9.-]+/g, "");
-        numericSalary = parseInt(cleanedSalary, 10); // Convert to integer
-      } else {
-        numericSalary = null; // or any default value you want to use
-      }
+if (salary) {
+  // Remove any non-numeric characters from the salary string
+  const cleanedSalary = salary.replace(/[^0-9.-]+/g, "");
+  numericSalary = parseInt(cleanedSalary, 10); // Convert to integer
+} else {
+  numericSalary = null; // or any default value you want to use
+}
 
-      let numericSalaryMax;
-      if (salary_max) {
-        // Remove any non-numeric characters from the salary_max string
-        const cleanedSalaryMax = salary_max.replace(/[^0-9.-]+/g, "");
-        numericSalaryMax = parseInt(cleanedSalaryMax, 10); // Convert to integer
-      } else {
-        numericSalaryMax = null; // or any default value you want to use
-      }
+let numericSalaryMax;
+if (salary_max) {
+  // Remove any non-numeric characters from the salary_max string
+  const cleanedSalaryMax = salary_max.replace(/[^0-9.-]+/g, "");
+  numericSalaryMax = parseInt(cleanedSalaryMax, 10); // Convert to integer
+} else {
+  numericSalaryMax = null; // or any default value you want to use
+}
 
-      // Create the job posting with the extracted details
-      const jobPostingId = await jobQueries.createJobPosting(
-        title,
-        numericSalary,
-        experienceLevel,
-        location,
-        new Date(), // postedDate
-        company_id,
-        link,
-        null, // expiration_date
-        tags.split(",").map((tag) => tag.trim()),
-        description,
-        numericSalaryMax, // Pass the cleaned salary_max value
-        null, // recruiter_id
-        skills.split(",").map((skill) => skill.trim())
-      );
+// Create the job posting with the extracted details
+const jobPostingId = await jobQueries.createJobPosting(
+  title,
+  numericSalary,
+  experienceLevel,
+  location,
+  new Date(), // postedDate
+  company_id,
+  link,
+  null, // expiration_date
+  tags.split(",").map((tag) => tag.trim()),
+  description,
+  numericSalaryMax, // Pass the cleaned salary_max value
+  null, // recruiter_id
+  skills.split(",").map((skill) => skill.trim())
+);
 
       res
         .status(201)
