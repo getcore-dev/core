@@ -186,12 +186,65 @@ router.get("/jobs/:id", async (req, res) => {
 
 router.post("/job-postings", async (req, res) => {
   try {
+    const {
+      title,
+      company,
+      company_description,
+      location,
+      salary,
+      salary_max,
+      experienceLevel,
+      skills,
+      tags,
+      description,
+      logo_url,
+    } = req.body;
+
+    // Check if the company exists in the database
+    let companyId = await jobQueries.getCompanyIdByName(company);
+
+    if (!companyId) {
+      companyId = await jobQueries.createCompany(
+        company,
+        logo_url,
+        location,
+        company_description
+      );
+    }
+
+    const jobPostingId = await jobQueries.createJobPosting(
+      title,
+      salary,
+      experienceLevel,
+      location,
+      new Date(),
+      companyId,
+      "",
+      null,
+      tags.split(",").map((tag) => tag.trim()),
+      description,
+      salary_max,
+      null,
+      skills.split(",").map((skill) => skill.trim())
+    );
+
+    res
+      .status(201)
+      .json({ message: "Job posting created successfully", jobPostingId });
+  } catch (error) {
+    console.error("Error creating job posting:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while creating the job posting" });
+  }
+});
+
+router.post("/extract-job-details", async (req, res) => {
+  try {
     const { link } = req.body;
-
     const chatGPTModule = await import("chatgpt");
-    console.log(chatGPTModule);
 
-    if (link && link.includes("greenhouse.io")) {
+    if (link) {
       const api = new chatGPTModule.ChatGPTAPI({
         apiKey: process.env.OPENAI_API_KEY,
       });
@@ -201,8 +254,8 @@ router.post("/job-postings", async (req, res) => {
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
       };
 
-      const linkresponse = await axios.get(link, { headers, timeout: 5000 });
-      const { data, status } = linkresponse;
+      const linkResponse = await axios.get(link, { headers, timeout: 5000 });
+      const { data } = linkResponse;
 
       // Remove HTML tags and scripts
       const cleanedData = data.replace(
@@ -212,16 +265,17 @@ router.post("/job-postings", async (req, res) => {
       const textContent = cleanedData.replace(/<(?:.|\n)*?>/gm, "");
 
       const prompt = `Please extract the following information from this Greenhouse job posting data: ${textContent}
-      - Job title
-      - Company name
-      - Location
-      - Salary (integer only, no currency symbol)
-      - Salary_max (integer only, no currency symbol)
-      - Experience level (internship, full time, part time, contract)
-      - Skills (as a comma-separated list)
-      - Tags (as a comma-separated list)
-      - Job description
-      - Company logo URL
+      - title (e.g., Software Engineer, Data Analyst, do not include intern or seniority in the title)
+      - company_name
+      - company_description
+      - location (City, State, Country)
+      - salary (integer only, no currency symbol, multiply by 2080 if salary is in hourly wage)
+      - salary_max (integer only, no currency symbol, multiply by 2080 if salary is in hourly wage)
+      - experience_level (internship, full time, part time, contract)
+      - skills (prefer single word skills, as a comma-separated list)
+      - tags (prefer things that a person would search, single word tags, keep it simple. as a comma-separated list)
+      - description (description of the job)
+      - company_logo (logo URL of the company)
       
       Provide the extracted information in JSON format.`;
 
@@ -233,131 +287,33 @@ router.post("/job-postings", async (req, res) => {
         .replace(/^`{3}(json)?|`{3}$/g, "")
         .trim();
 
+      console.log("Cleaned response:", cleanedResponse);
+
       let extractedData;
       try {
         extractedData = JSON.parse(cleanedResponse);
       } catch (error) {
         console.error("Error parsing JSON response:", error);
-        // Handle the error and return an appropriate response
         res.status(500).json({
           error: "Failed to parse the JSON response from the ChatGPT API",
         });
         return;
       }
 
-      const {
-        title,
-        company,
-        location,
-        salary,
-        salary_max,
-        experienceLevel,
-        skills,
-        tags,
-        description,
-        logo_url,
-      } = extractedData;
+      console.log("Extracted data:", extractedData);
 
-      // Check if the company exists in the database
-      let company_id = await sql.query(
-        "SELECT id FROM companies WHERE name = $1",
-        [company]
-      );
-
-      if (company_id.rows.length === 0) {
-        // If the company doesn't exist, create a new company record
-        const insertCompanyResult = await sql.query(
-          "INSERT INTO companies (name, logo_url) VALUES ($1, $2) RETURNING id",
-          [company, logo_url]
-        );
-        company_id = insertCompanyResult.rows[0].id;
-      } else {
-        company_id = company_id.rows[0].id;
-      }
-
-      let numericSalary;
-if (salary) {
-  // Remove any non-numeric characters from the salary string
-  const cleanedSalary = salary.replace(/[^0-9.-]+/g, "");
-  numericSalary = parseInt(cleanedSalary, 10); // Convert to integer
-} else {
-  numericSalary = null; // or any default value you want to use
-}
-
-let numericSalaryMax;
-if (salary_max) {
-  // Remove any non-numeric characters from the salary_max string
-  const cleanedSalaryMax = salary_max.replace(/[^0-9.-]+/g, "");
-  numericSalaryMax = parseInt(cleanedSalaryMax, 10); // Convert to integer
-} else {
-  numericSalaryMax = null; // or any default value you want to use
-}
-
-// Create the job posting with the extracted details
-const jobPostingId = await jobQueries.createJobPosting(
-  title,
-  numericSalary,
-  experienceLevel,
-  location,
-  new Date(), // postedDate
-  company_id,
-  link,
-  null, // expiration_date
-  tags.split(",").map((tag) => tag.trim()),
-  description,
-  numericSalaryMax, // Pass the cleaned salary_max value
-  null, // recruiter_id
-  skills.split(",").map((skill) => skill.trim())
-);
-
-      res
-        .status(201)
-        .json({ message: "Job posting created successfully", jobPostingId });
+      res.json(extractedData);
     } else {
-      // Handle regular job posting creation
-      const {
-        title,
-        salary,
-        experienceLevel,
-        location,
-        postedDate,
-        company_id,
-        link,
-        expiration_date,
-        tags,
-        description,
-        salary_max,
-        recruiter_id,
-        skills,
-      } = req.body;
-
-      const jobPostingId = await jobQueries.createJobPosting(
-        title,
-        salary,
-        experienceLevel,
-        location,
-        postedDate,
-        company_id,
-        link,
-        expiration_date,
-        tags,
-        description,
-        salary_max,
-        recruiter_id,
-        skills
-      );
-
-      res
-        .status(201)
-        .json({ message: "Job posting created successfully", jobPostingId });
+      res.status(400).json({ error: "Invalid Greenhouse job link" });
     }
   } catch (error) {
-    console.error("Error creating job posting:", error);
+    console.error("Error extracting job details:", error);
     res
       .status(500)
-      .json({ error: "An error occurred while creating the job posting" });
+      .json({ error: "An error occurred while extracting job details" });
   }
 });
+
 router.get("/posts/:postId/comments", async (req, res) => {
   try {
     const postId = req.params.postId;

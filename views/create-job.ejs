@@ -15,25 +15,71 @@
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
-<% if (!user) { %>
-<% if (!user.recruiter_id) { %>
-<script>
-  window.location.href = '/login';
-</script>
-<% } %>
-<% } %>
 
-
-<body> <%- include('partials/navbar', { pagePath: 'home' }) %> <main>
+<body>
+  <%- include('partials/navbar', { pagePath: 'home' }) %>
+  <main>
     <div class="post-header">
       <h2 id="post-header-title">Create a Job Post</h2>
     </div>
     <div class="main-container">
-
-      <form action="/api/job-postings" method="POST">
+      <form id="jobPostForm">
         <div class="form-group">
           <label for="link">Paste Greenhouse Job Link:</label>
           <input type="text" id="link" name="link" />
+        </div>
+        <button class="add-post-button" type="submit">Extract Job Details</button>
+      </form>
+      <form id="editJobPostForm" style="display: none;">
+        <div class="form-group">
+          <label for="title">Job Title:</label>
+          <input type="text" id="title" name="title" required />
+        </div>
+        <div class="form-group">
+          <label for="company">Company Name:</label>
+          <input type="text" id="company" name="company" required />
+        </div>
+        <div class="form-group">
+          <label for="company_description">Company Description:</label>
+          <textarea id="company_description" name="company_description"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="location">Location:</label>
+          <input type="text" id="location" name="location" required />
+        </div>
+        <div class="form-group">
+          <label for="salary">Salary:</label>
+          <input type="number" id="salary" name="salary" />
+        </div>
+        <div class="form-group">
+          <label for="salary_max">Salary Max:</label>
+          <input type="number" id="salary_max" name="salary_max" />
+        </div>
+        <div class="form-group">
+          <label for="experienceLevel">Experience Level:</label>
+          <select id="experienceLevel" name="experienceLevel" required>
+            <option value="">Select Experience Level</option>
+            <option value="internship">Internship</option>
+            <option value="full-time">Full Time</option>
+            <option value="part-time">Part Time</option>
+            <option value="contract">Contract</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="skills">Skills:</label>
+          <input type="text" id="skills" name="skills" />
+        </div>
+        <div class="form-group">
+          <label for="tags">Tags:</label>
+          <input type="text" id="tags" name="tags" />
+        </div>
+        <div class="form-group">
+          <label for="description">Job Description:</label>
+          <textarea id="description" name="description" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="logo_url">Company Logo URL:</label>
+          <input type="text" id="logo_url" name="logo_url" />
         </div>
         <button class="add-post-button" type="submit">Submit Job Post</button>
       </form>
@@ -41,29 +87,59 @@
   </main>
   <script>
     $(document).ready(function() {
-      // Form submission handling
-      $('form').on('submit', function(e) {
-        // Prevent the default form submission
+      // Form submission handling for extracting job details
+      $('#jobPostForm').on('submit', function(e) {
         e.preventDefault();
-
-        // Get the job link value
         var jobLink = $('#link').val();
-
-        // Send an AJAX request to the server
         $.ajax({
-          url: '/api/job-postings',
+          url: '/api/extract-job-details',
           method: 'POST',
           data: {
             link: jobLink
           },
           success: function(response) {
-            // Handle the successful response
-            alert('Job posting created successfully!');
-            // Reset the form
-            $('form')[0].reset();
+            console.log(response);
+            // Populate the form fields with the extracted job details
+            $('#title').val(response.title);
+            $('#company').val(response.company_name);
+            $('#company_description').val(response.company_description);
+            $('#location').val(response.location);
+            $('#salary').val(response.salary);
+            $('#salary_max').val(response.salary_max);
+            $('#experienceLevel').val(response.experience_level);
+            $('#skills').val(response.skills);
+            $('#tags').val(response.tags);
+            $('#description').val(response.description);
+            $('#logo_url').val(response.company_logo);
+
+            // Show the edit form and hide the extract form
+            $('#jobPostForm').hide();
+            $('#editJobPostForm').show();
           },
           error: function(xhr, status, error) {
-            // Handle the error response
+            alert('An error occurred while extracting job details.');
+            console.error(error);
+          }
+        });
+      });
+
+      // Form submission handling for submitting the edited job post
+      $('#editJobPostForm').on('submit', function(e) {
+        e.preventDefault();
+        var formData = $(this).serialize();
+        $.ajax({
+          url: '/api/job-postings',
+          method: 'POST',
+          data: formData,
+          success: function(response) {
+            alert('Job posting created successfully!');
+            // Reset the forms
+            $('#jobPostForm')[0].reset();
+            $('#editJobPostForm')[0].reset();
+            $('#editJobPostForm').hide();
+            $('#jobPostForm').show();
+          },
+          error: function(xhr, status, error) {
             alert('An error occurred while creating the job posting.');
             console.error(error);
           }

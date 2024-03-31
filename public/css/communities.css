@@ -831,6 +831,12 @@ div .mini-link-desc {
     align-items: center;
   }
 
+  .post, body > main > div.container > div.jobs-container > div.jobslist .job {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    border-radius: 10px;
+  }
+
   .container {
     height: calc(100dvh - 58px);
   }
@@ -870,7 +876,8 @@ div .mini-link-desc {
 }
 
 body > main > div.container > div.jobs-container > div.jobslist .job {
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--dark-mode-main-color);
+  border-radius: 10px;
 }
 
 body > main > div.container > div.jobs-container > div.jobslist .job .job-content {
@@ -1193,9 +1200,7 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
   }
 
   .post, body > main > div.container > div.jobs-container > div.jobslist .job {
-    border: 0;
-    border-top: 1px solid var(--dark-mode-main-color);
-    border-radius: 0;
+    border-color: var(--dark-mode-border-color);
     background-color: var(--dark-mode-body-color);
   }
 

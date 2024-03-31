@@ -71,7 +71,6 @@ const jobQueries = {
       throw err;
     }
   },
-
   createJobPosting: async (
     title,
     salary,
@@ -96,28 +95,62 @@ const jobQueries = {
 
     try {
       // Insert the job posting into the JobPostings table
-      const result =
-        await sql.query`INSERT INTO JobPostings (title, salary, experienceLevel, location, postedDate, company_id, link, expiration_date, description, salary_max, recruiter_id)
-                                     OUTPUT INSERTED.id
-                                     VALUES (${title}, ${salary}, ${experienceLevel}, ${location}, ${postedDate}, ${company_id}, ${link}, ${expiration_date}, ${description}, ${salary_max}, ${recruiter_id})`;
+      const result = await sql.query`
+      INSERT INTO JobPostings (
+        title,
+        salary,
+        experienceLevel,
+        location,
+        postedDate,
+        company_id,
+        link,
+        expiration_date,
+        description,
+        salary_max,
+        recruiter_id
+      )
+      OUTPUT INSERTED.id
+      VALUES (
+        ${title},
+        ${salary},
+        ${experienceLevel},
+        ${location},
+        ${postedDate},
+        ${company_id},
+        ${link},
+        ${expiration_date},
+        ${description},
+        ${salary_max},
+        ${recruiter_id}
+      )
+    `;
+
       const jobPostingId = result.recordset[0].id;
 
       if (skills && skills.length > 0) {
         for (const skill of skills) {
           // Find or create the skill and get its id
           let skillId;
-          const skillRecord =
-            await sql.query`SELECT id FROM JobTags WHERE tagName = ${skill}`;
+          const skillRecord = await sql.query`
+            SELECT id FROM JobTags WHERE tagName = ${skill}
+          `;
           if (skillRecord.recordset.length > 0) {
             skillId = skillRecord.recordset[0].id;
           } else {
             // If skill does not exist, create it
-            const newSkill =
-              await sql.query`INSERT INTO JobTags (tagName) OUTPUT INSERTED.id VALUES (${skill})`;
+            const newSkill = await sql.query`
+              INSERT INTO JobTags (tagName)
+              OUTPUT INSERTED.id
+              VALUES (${skill})
+            `;
             skillId = newSkill.recordset[0].id;
           }
+
           // Associate the skill with the job posting
-          await sql.query`INSERT INTO JobPostingsTags (JobID, TagID) VALUES (${jobPostingId}, ${skillId})`;
+          await sql.query`
+            INSERT INTO JobPostingsTags (JobID, TagID)
+            VALUES (${jobPostingId}, ${skillId})
+          `;
         }
       }
 
@@ -125,6 +158,38 @@ const jobQueries = {
     } catch (err) {
       console.error("Database insert error:", err);
       throw err; // Rethrow the error for the caller to handle
+    }
+  },
+
+  getCompanyIdByName: async (name) => {
+    try {
+      const result = await sql.query`
+        SELECT id FROM companies WHERE name = ${name}
+      `;
+
+      if (result.recordset.length === 0) {
+        return null;
+      }
+
+      return result.recordset[0].id;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  createCompany: async (name, logo_url, location, description) => {
+    try {
+      const result = await sql.query`
+        INSERT INTO companies (name, logo, location, description)
+        OUTPUT INSERTED.id
+        VALUES (${name}, '/src/business.png', ${location}, ${description})
+      `;
+      const companyId = result.recordset[0].id;
+      return companyId;
+    } catch (err) {
+      console.error("Database insert error:", err);
+      throw err;
     }
   },
 };

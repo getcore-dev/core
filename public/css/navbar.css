@@ -629,7 +629,11 @@ font-weight: bold;
   .user-btns {
     position: absolute;
     right: 15px;
-    top: 11px;
+    top: 7px;
+  }
+
+  .user-btns #nb-icon {
+    font-weight: 300;
   }
 
   #search-bar {
