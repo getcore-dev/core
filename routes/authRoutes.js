@@ -11,6 +11,20 @@ const {
 const { body, validationResult } = require("express-validator");
 const { v4: uuidv4 } = require("uuid");
 
+// GitHub authentication route
+router.get("/auth/github", passport.authenticate("github"));
+
+router.get(
+  "/auth/github/callback",
+  passport.authenticate("github", { failureRedirect: "/login" }),
+  (req, res) => {
+    // Redirect user to the original URL or default to '/'
+    const redirectUrl = req.session.returnTo || "/";
+    delete req.session.returnTo; // Remove the property after using it
+    res.redirect(redirectUrl);
+  }
+);
+
 // Register route
 router.get("/register", checkNotAuthenticated, async (req, res) => {
   res.render("register.ejs", { user: req.user });
@@ -29,7 +43,7 @@ router.post(
       .trim()
       .isLength({ min: 5 })
       .withMessage("Username must be at least 5 characters long"),
-    body("")
+    body("email")
       .trim()
       .isEmail()
       .normalizeEmail()
@@ -50,27 +64,28 @@ router.post(
 
       const userId = uuidv4();
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
       await sql.query`INSERT INTO users (
-    id, 
-    username, 
-    email, 
-    password, 
-    zipcode, 
-    firstname, 
-    lastname, 
-    created_at, 
-    avatar
-) VALUES (
-    ${userId},
-    ${req.body.username},
-    ${req.body.email},
-    ${hashedPassword},
-    '11111',
-    ${req.body.firstname},
-    ${req.body.lastname},
-    ${new Date()},
-    '/img/default-avatar.png'
-)`;
+        id,
+        username,
+        email,
+        password,
+        zipcode,
+        firstname,
+        lastname,
+        created_at,
+        avatar
+      ) VALUES (
+        ${userId},
+        ${req.body.username},
+        ${req.body.email},
+        ${hashedPassword},
+        '11111',
+        ${req.body.firstname},
+        ${req.body.lastname},
+        ${new Date()},
+        '/img/default-avatar.png'
+      )`;
 
       res.redirect("/login");
     } catch (error) {
