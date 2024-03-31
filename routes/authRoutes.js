@@ -3,7 +3,6 @@ const router = express.Router();
 const passport = require("passport");
 const bcrypt = require("bcrypt");
 const sql = require("mssql");
-const userQueries = require("../queries/userQueries");
 const {
   checkAuthenticated,
   checkNotAuthenticated,
@@ -97,7 +96,10 @@ router.post(
 
 // Login route
 router.get("/login", checkNotAuthenticated, async (req, res) => {
-  res.render("login.ejs", { user: req.user });
+  res.render("login.ejs", {
+    user: req.user,
+    githubClientId: process.env.GITHUB_CLIENT_ID,
+  });
 });
 
 router.post("/login", checkNotAuthenticated, (req, res, next) => {

@@ -51,7 +51,10 @@ const viewController = {
   },
 
   renderLogin: async (req, res) => {
-    res.render("login.ejs", { user: req.user });
+    res.render("login.ejs", {
+      user: req.user,
+      githubClientId: process.env.GITHUB_CLIENT_ID,
+    });
   },
 
   renderRegister: async (req, res) => {

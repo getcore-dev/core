@@ -285,6 +285,38 @@ const userQueries = {
       throw err;
     }
   },
+  updateGitHubId: async (userId, githubId) => {
+    await sql.query`
+      UPDATE users
+      SET github_id = ${githubId}
+      WHERE id = ${userId}
+    `;
+  },
+
+  findByGitHubUsername: async (githubUsername) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM users WHERE github_url = ${githubUsername}`;
+      return result.recordset[0];
+    } catch (err) {
+      console.error(`Error finding user by GitHub username: ${githubUsername}`);
+      throw err;
+    }
+  },
+
+  createUserFromGitHubProfile: async (profile) => {
+    try {
+      const result = await sql.query`
+        INSERT INTO users (github_url, username, avatar, email)
+        OUTPUT INSERTED.*
+        VALUES (${profile.username}, ${profile.username}, ${profile.photos[0].value}, ${profile.emails[0].value})`;
+
+      return result.recordset[0];
+    } catch (err) {
+      console.error("Database insert error:", err);
+      throw err;
+    }
+  },
   removeDuplicateFollows: async () => {
     try {
       const result = await sql.query`

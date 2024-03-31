@@ -40,7 +40,10 @@ passportConfig.initialize(
   passport,
   userQueries.findByEmail,
   userQueries.findById,
-  userQueries.findByUsername
+  userQueries.findByUsername,
+  userQueries.findByGitHubUsername,
+  userQueries.updateGitHubId,
+  userQueries.createUserFromGitHubProfile
 );
 
 // Express app setup

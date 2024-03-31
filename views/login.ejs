@@ -20,22 +20,25 @@
 
     </div>
     <div id="login">
- <a href="https://github.com/login/oauth/authorize?client_id=b37718dbac10df16ec0c&redirect_uri=/auth/github/callback" class="github-login-btn">
-    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo">
-    Login with GitHub
-  </a>
-      <% if (messages.error) {%> <%= messages.error %> <% } %>
+      <a href="https://github.com/login/oauth/authorize?client_id=<%= encodeURIComponent(githubClientId) %>&redirect_uri=<%= encodeURIComponent('/auth/github/callback') %>" class="github-login-btn">
+        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo">
+        Login with GitHub
+      </a>
+      <% if (messages.error) { %>
+      <div class="error-message">
+        <%= messages.error %>
+      </div>
+      <% } %>
       <form action="/login" method="POST">
         <div class="input-container">
           <label for="username">Username</label>
-          <input type="text" name="username" required maxlength="50" />
+          <input type="text" name="username" id="username" placeholder="Enter your username" required>
         </div>
 
         <div class="input-container">
           <label for="password">Password</label>
+          <input type="password" name="password" id="password" placeholder="Enter your password" required>
           <a href="#" id="forgot-pass">Forgot?</a>
-
-          <input type="password" name="password" required id="password" />
         </div>
         <button type="submit" id="login-button">
           <p id="login-text">Login</p>
