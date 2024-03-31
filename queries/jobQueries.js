@@ -183,7 +183,7 @@ const jobQueries = {
       const result = await sql.query`
         INSERT INTO companies (name, logo, location, description)
         OUTPUT INSERTED.id
-        VALUES (${name}, '/src/business.png', ${location}, ${description})
+        VALUES (${name}, ${logo_url}, ${location}, ${description})
       `;
       const companyId = result.recordset[0].id;
       return companyId;
