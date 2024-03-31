@@ -26,6 +26,27 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
+.github-login-btn {
+  display: inline-flex;
+  align-items: center;
+  background-color: #24292e;
+  color: #fff;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.github-login-btn img {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.github-login-btn:hover {
+  background-color: #0366d6;
+}
+
 main {
   display: flex;
   flex-direction: column;
