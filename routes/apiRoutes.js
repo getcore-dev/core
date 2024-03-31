@@ -267,15 +267,15 @@ router.post("/extract-job-details", async (req, res) => {
       const prompt = `Please extract the following information from this Greenhouse job posting data: ${textContent}
       - title (e.g., Software Engineer, Data Analyst, do not include intern or seniority in the title)
       - company_name
-      - company_description
+      - company_description (write a short paragraph about the company, where they're located, their mission, etc)
       - location (City, State, Country)
       - salary (integer only, no currency symbol, multiply by 2080 if salary is in hourly wage)
       - salary_max (integer only, no currency symbol, multiply by 2080 if salary is in hourly wage)
       - experience_level (internship, full time, part time, contract)
       - skills (prefer single word skills, as a comma-separated list)
       - tags (prefer things that a person would search, single word tags, keep it simple. as a comma-separated list)
-      - description (description of the job)
-      - company_logo (logo URL of the company)
+      - description (a paragraph description of the job, use the HTML source as inspiration and try to add more relevant information that's not redundant)
+      - company_logo (logo URL of the company, try to extract it from the HTML source or provide a relevant URL if available)
       
       Provide the extracted information in JSON format.`;
 
