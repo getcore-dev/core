@@ -14,7 +14,7 @@ const rateLimit = require("express-rate-limit");
 
 const viewLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-  max: 3, // Allow 3 views per IP address within the time window
+  max: 3, // Allow 3 views per IP address and post within the time window
   handler: (req, res, next) => {
     // Set a custom property to indicate that the rate limit is exceeded
     req.rateLimit = {
@@ -23,7 +23,7 @@ const viewLimiter = rateLimit({
     // Call next() to continue processing the request without incrementing the view count
     next();
   },
-  keyGenerator: (req) => req.ip, // Use the IP address as the key
+  keyGenerator: (req) => `${req.ip}_${req.params.postId}`, // Use the IP address and postId as the key
   skip: (req) => {
     // Skip rate limiting if the last view was more than 8 hours ago
     const eightHoursAgo = Date.now() - 8 * 60 * 60 * 1000;
@@ -134,6 +134,10 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
   try {
     const postId = req.params.postId;
     let user = req.user;
+
+    // remove any duplicate actions on load
+    commentQueries.removeDuplicateActions();
+    postQueries.removeDuplicateActions();
 
     if (!req.rateLimit || !req.rateLimit.exceeded) {
       postQueries.viewPost(postId);

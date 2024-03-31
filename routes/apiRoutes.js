@@ -66,42 +66,51 @@ router.get(
   async (req, res) => {
     try {
       const username = req.params.username;
-      const url = `https://github.com/${username}`;
-
+      const apiUrl = `https://api.github.com/search/commits`;
       const headers = {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+        "User-Agent": "CORE",
+        Authorization: `Bearer ${process.env.GITHUB_ACCESS_TOKEN}`,
       };
+      const commitGraph = {};
+      const oneYearAgo = new Date();
+      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+      const oneYearAgoDate = oneYearAgo.toISOString().split("T")[0];
+      let page = 1;
+      const commitsPerPage = 100;
 
-      const response = await axios.get(url, { headers, timeout: 5000 });
-      const { data, status } = response;
+      while (true) {
+        const response = await axios.get(apiUrl, {
+          headers,
+          params: {
+            q: `author:${username} committer-date:>=${oneYearAgoDate}`,
+            sort: "committer-date",
+            order: "desc",
+            per_page: commitsPerPage,
+            page: page,
+          },
+        });
 
-      if (status !== 200) {
-        throw new Error(`Request failed with status code ${status}`);
+        if (response.status !== 200) {
+          throw new Error(`GitHub API returned status code ${response.status}`);
+        }
+
+        const commits = response.data.items;
+        commits.forEach((commit) => {
+          const date = commit.commit.committer.date.split("T")[0];
+          commitGraph[date] = (commitGraph[date] || 0) + 1;
+        });
+
+        if (commits.length < commitsPerPage) {
+          break;
+        }
+        page++;
       }
 
-      const $ = cheerio.load(data);
-
-      const commitGraph = [];
-
-      $("tbody tr").each((rowIndex, rowElement) => {
-        const rowData = [];
-
-        $(rowElement)
-          .find("td:not(.ContributionCalendar-label)")
-          .each((cellIndex, cellElement) => {
-            const date = $(cellElement).attr("data-date");
-            const count = parseInt($(cellElement).attr("data-level"), 10);
-
-            rowData.push({ date, count });
-          });
-
-        commitGraph.push(rowData);
-      });
-
+      console.log(commitGraph);
       res.json({ username, commitGraph });
     } catch (error) {
       console.error("Error fetching GitHub commit graph:", error);
+      console.error("Error details:", error.response?.data);
       res.status(500).json({ error: "Failed to fetch GitHub commit graph" });
     }
   }
@@ -179,35 +188,44 @@ router.post("/job-postings", async (req, res) => {
   try {
     const {
       title,
-      salary,
-      experienceLevel,
+      company,
+      company_description,
       location,
-      postedDate,
-      company_id,
-      link,
-      expiration_date,
+      salary,
+      salary_max,
+      experienceLevel,
+      skills,
       tags,
       description,
-      salary_max,
-      recruiter_id,
-      skills,
+      logo_url,
     } = req.body;
 
-    // Call the createJobPosting function
+    // Check if the company exists in the database
+    let companyId = await jobQueries.getCompanyIdByName(company);
+
+    if (!companyId) {
+      companyId = await jobQueries.createCompany(
+        company,
+        logo_url,
+        location,
+        company_description
+      );
+    }
+
     const jobPostingId = await jobQueries.createJobPosting(
       title,
       salary,
       experienceLevel,
       location,
-      postedDate,
-      company_id,
-      link,
-      expiration_date,
-      tags,
+      new Date(),
+      companyId,
+      "",
+      null,
+      tags.split(",").map((tag) => tag.trim()),
       description,
       salary_max,
-      recruiter_id,
-      skills
+      null,
+      skills.split(",").map((skill) => skill.trim())
     );
 
     res
@@ -220,6 +238,82 @@ router.post("/job-postings", async (req, res) => {
       .json({ error: "An error occurred while creating the job posting" });
   }
 });
+
+router.post("/extract-job-details", async (req, res) => {
+  try {
+    const { link } = req.body;
+    const chatGPTModule = await import("chatgpt");
+
+    if (link) {
+      const api = new chatGPTModule.ChatGPTAPI({
+        apiKey: process.env.OPENAI_API_KEY,
+      });
+
+      const headers = {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+      };
+
+      const linkResponse = await axios.get(link, { headers, timeout: 5000 });
+      const { data } = linkResponse;
+
+      // Remove HTML tags and scripts
+      const cleanedData = data.replace(
+        /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+        ""
+      );
+      const textContent = cleanedData.replace(/<(?:.|\n)*?>/gm, "");
+
+      const prompt = `Please extract the following information from this Greenhouse job posting data: ${textContent}
+      - title (e.g., Software Engineer, Data Analyst, do not include intern or seniority in the title)
+      - company_name
+      - company_description (write a short paragraph about the company, where they're located, their mission, etc)
+      - location (City, State, Country)
+      - salary (integer only, no currency symbol, multiply by 2080 if salary is in hourly wage)
+      - salary_max (integer only, no currency symbol, multiply by 2080 if salary is in hourly wage)
+      - experience_level (internship, full time, part time, contract)
+      - skills (prefer single word skills, as a comma-separated list)
+      - tags (prefer things that a person would search, single word tags, keep it simple. as a comma-separated list)
+      - description (a paragraph description of the job, use the HTML source as inspiration and try to add more relevant information that's not redundant)
+      - company_logo (logo URL of the company, try to extract it from the HTML source or provide a relevant URL if available)
+      
+      Provide the extracted information in JSON format.`;
+
+      const response = await api.sendMessage(prompt);
+      console.log("Raw response text:", response.text);
+
+      // Remove triple backticks and any other non-JSON characters
+      const cleanedResponse = response.text
+        .replace(/^`{3}(json)?|`{3}$/g, "")
+        .trim();
+
+      console.log("Cleaned response:", cleanedResponse);
+
+      let extractedData;
+      try {
+        extractedData = JSON.parse(cleanedResponse);
+      } catch (error) {
+        console.error("Error parsing JSON response:", error);
+        res.status(500).json({
+          error: "Failed to parse the JSON response from the ChatGPT API",
+        });
+        return;
+      }
+
+      console.log("Extracted data:", extractedData);
+
+      res.json(extractedData);
+    } else {
+      res.status(400).json({ error: "Invalid Greenhouse job link" });
+    }
+  } catch (error) {
+    console.error("Error extracting job details:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while extracting job details" });
+  }
+});
+
 router.get("/posts/:postId/comments", async (req, res) => {
   try {
     const postId = req.params.postId;

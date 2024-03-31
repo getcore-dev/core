@@ -21,9 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
           <h3 class="job-title">${job.title}</h3>
           <p class="job-description">${job.description}</p>
           <div class="job-posting-flairs">
-          <span class="job-flair" id="location-flair"><p class="job-location">${
+          <span class="job-flair" id="location-flair"><p class="job-location">${formatLocation(
             job.location
-          }</p></span>
+          )}</p></span>
           <span class="job-flair" id="pay-flair"><p class="salary-range">$${Math.floor(
             (job.salary + job.salary_max) / 2 / 1000
           )}k</p></span>
@@ -53,6 +53,19 @@ function formatDate(dateString) {
   const year = date.getFullYear();
   return `${month}/${day}/${year}`;
 }
+
+function formatLocation(location) {
+  const parts = location.split(",").map((part) => part.trim());
+
+  if (parts.length >= 3) {
+    return `${parts[1]}`;
+  } else if (parts.length === 1) {
+    return location;
+  } else {
+    return location;
+  }
+}
+
 function getAllCompanies() {
   fetch("/api/companies") // Adjust this to your server's endpoint
     .then((response) => response.json())

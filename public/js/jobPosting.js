@@ -16,6 +16,16 @@ function formatDate(dateString) {
   return `${month}/${day}/${year}`;
 }
 
+function formatSalary(salary) {
+  if (salary >= 1000000) {
+    return "$" + (salary / 1000000).toFixed(1) + "M";
+  } else if (salary >= 1000) {
+    return "$" + (salary / 1000).toFixed(0) + "k";
+  } else {
+    return "$" + salary;
+  }
+}
+
 function lazyLoadJobDetails(jobId) {
   fetch(`/api/jobs/${jobId}`)
     .then((response) => response.json())
@@ -54,9 +64,11 @@ function lazyLoadJobDetails(jobId) {
               </div>
               <div class="salary-range">
               <span class="label">Salary Range:</span>
-              <span class="salary-min">$${
+              <span class="salary-min">${formatSalary(
                 job.salary
-              }</span> - <span class="salary-max">$${job.salary_max}</span>
+              )}</span> - <span class="salary-max">${formatSalary(
+        job.salary_max
+      )}</span>
             </div>
               <div class="job-description">
                 <h4>Job Description</h4>

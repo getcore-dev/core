@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Edit Community</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="shortcut icon" href="img/core.png" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+</head>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'jobs' }) %>
+
+  <h1>Edit Community</h1>
+  <form action="/update-community" method="POST">
+    <input type="hidden" name="id" value="<%= community.id %>">
+    <div>
+      <label for="description">Description:</label>
+      <textarea id="description" name="description"><%= community.description %></textarea>
+    </div>
+    <div>
+      <label for="rules">Rules:</label>
+      <textarea id="rules" name="rules"><%= community.Rules %></textarea>
+    </div>
+    <div>
+      <label for="privacySetting">Privacy Setting:</label>
+      <select id="privacySetting" name="PrivacySetting">
+        <option value="public" <%= community.PrivacySetting === 'public' ? 'selected' : '' %>>Public</option>
+        <option value="private" <%= community.PrivacySetting === 'private' ? 'selected' : '' %>>Private</option>
+      </select>
+    </div>
+    <div>
+      <label for="jobsEnabled">Jobs Enabled:</label>
+      <input type="checkbox" id="jobsEnabled" name="JobsEnabled" <%= community.JobsEnabled ? 'checked' : '' %>>
+    </div>
+    <div>
+      <label for="banList">Ban List:</label>
+      <select id="banList" name="BanList" multiple>
+        <% if (community.BanList && community.BanList.length > 0) { %>
+        <% community.BanList.forEach(function(username) { %>
+        <option value="<%= username %>" selected><%= username %></option>
+        <% }); %>
+        <% } %>
+      </select>
+    </div>
+    <div>
+      <label for="tags">Tags:</label>
+      <input type="text" id="tags" name="Tags" value="<%= community.Tags && community.Tags.length > 0 ? community.Tags.join(', ') : '' %>">
+    </div>
+    <div>
+      <label for="miniIcon">Mini Icon:</label>
+      <input type="text" id="miniIcon" name="mini_icon" value="<%= community.mini_icon %>">
+    </div>
+    <div>
+      <label for="moderators">Moderators:</label>
+      <select id="moderators" name="ModeratorIDs" multiple>
+        <% if (community.ModeratorIDs && community.ModeratorIDs.length > 0) { %>
+        <% community.ModeratorIDs.forEach(function(moderatorId) { %>
+        <option value="<%= moderatorId %>" selected><%= moderatorId %></option>
+        <% }); %>
+        <% } %>
+      </select>
+    </div>
+    <button type="submit">Update Community</button>
+  </form>
+  <script>
+    $(document).ready(function() {
+      $('#banList').select2({
+        tags: true,
+        tokenSeparators: [',', ' '],
+        ajax: {
+          url: '/autocomplete/users',
+          dataType: 'json',
+          processResults: function(data) {
+            return {
+              results: data.map(function(item) {
+                return {
+                  id: item.username,
+                  text: item.username
+                };
+              })
+            };
+          }
+        }
+      });
+
+      $('#moderators').select2({
+        ajax: {
+          url: '/autocomplete/users',
+          dataType: 'json',
+          processResults: function(data) {
+            return {
+              results: data.map(function(item) {
+                return {
+                  id: item.id,
+                  text: item.username
+                };
+              })
+            };
+          }
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

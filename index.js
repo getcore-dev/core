@@ -76,7 +76,7 @@ app.use("/jobs", jobRoutes);
 app.use("/api", apiRoutes);
 app.use("/notifications", notificationRoutes);
 app.use("/favorites", favoriteRoutes);
-app.use("/communities", communityRoutes);
+app.use("/c", communityRoutes);
 app.use(generalRoutes);
 
 // Error handling

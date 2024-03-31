@@ -22,7 +22,7 @@
             <% if (users.length > 0) { %>
             <div class="posts">
                 <% users.forEach(function(user) { %>
-                <div class="user" onclick="window.location.href='/profile/<%= user.username %>'">
+                <div class="user" onclick="window.location.href='/u/<%= user.username %>'">
                     <div class="user-image">
                         <img id="user-avatar" src="<%= user.avatar %>">
                     </div>

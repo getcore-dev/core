@@ -59,11 +59,11 @@ router.get("/404", (req, res) => {
   res.render("error.ejs", { user: req.user, error });
 });
 
-router.get("/profile/:username", viewController.renderUserProfile);
+router.get("/u/:username", viewController.renderUserProfile);
 
-router.get("/profile/:username/followers", viewController.renderFollowers);
+router.get("/u/:username/followers", viewController.renderFollowers);
 
-router.get("/profile/:username/following", viewController.renderFollowing);
+router.get("/u/:username/following", viewController.renderFollowing);
 
 // Jobs page
 router.get("/jobs", (req, res) => {
@@ -150,7 +150,7 @@ router.post(
         }
       }
 
-      res.redirect("/profile/" + req.user.username);
+      res.redirect("/u/" + req.user.username);
     } catch (err) {
       console.error("Error updating user fields:", err.message);
       res.status(500).send("Internal Server Error");
@@ -172,6 +172,7 @@ router.post(
         "follow",
         null
       );
+      await userQueries.removeDuplicateFollows();
       const updatedFollowerCount = await userQueries.getFollowerCount(
         followedId
       );
@@ -191,6 +192,8 @@ router.post(
       const followerId = req.user.id;
       const followedId = req.params.followedId;
       await userQueries.unfollowUser(followerId, followedId);
+
+      await userQueries.removeDuplicateFollows();
       const updatedFollowerCount = await userQueries.getFollowerCount(
         followedId
       );

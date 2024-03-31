@@ -75,7 +75,7 @@
     <h5 class="followers-header">Followers</h5>
     <div class="followers">
       <% followers.forEach((follower) => { %>
-      <div class="follower" onclick="window.location.href='/profile/<%= follower.username %>'">
+      <div class="follower" onclick="window.location.href='/u/<%= follower.username %>'">
         <img id="user-avatar" src="<%= follower.avatar %>" alt="<%= follower.username %>" />
         <h3>
           <%= follower.username %>

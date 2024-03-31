@@ -62,17 +62,16 @@ div.commit-title {
   #commits {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    /* gap: 16px; */
     width: 100%;
   }  
   
   .commit {
-    background: var(--light-mode-body-color);
-    border-radius: 6px;
+    background: var(--light-mode-main-color);
+    border-radius: 0;
     padding: 8px 11px;
-    margin: 0px 13px;
-    justify-content: space-between;
-    border: 1px solid var(--border-color);
+    justify-content: space-around;
+    border-top: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
 }
@@ -82,7 +81,7 @@ div.commit-title {
   display: flex;
   justify-content: space-between;
   flex-direction: row;
-  max-width: 33%;
+  min-width: 33%;
   box-sizing: border-box;
 }
   .commit-title {
@@ -94,9 +93,10 @@ div.commit-title {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 8px;
   flex-direction: column;
   padding: 4px;
+  /* min-width: 33%; */
+  /* width: 33%; */
   }
 
   .commit-title {
@@ -110,8 +110,7 @@ div.commit-title {
   }
 
   .commit-body {
-    margin: 0px 5px;
-    max-width: 33%;
+    min-width: 33%;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -144,7 +143,7 @@ div.commit-title {
   }
 
   .commit-stats {
-    max-width: 33%;
+    min-width: 33%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -215,9 +214,6 @@ div.commit-title {
 
   }
 
-  .commit {
-    border-width: .5px;
-  }
 
   .commit-stats-item {
     display: flex;

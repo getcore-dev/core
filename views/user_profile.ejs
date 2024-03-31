@@ -21,10 +21,10 @@
         </div>
         <div class="follower-stats">
           <h5>
-            <a href="/profile/<%= otheruser.username %>/followers">Followers: <span id="followerCount"> <%= otheruser.followerCount %> </a></span>
+            <a href="/u/<%= otheruser.username %>/followers">Followers: <span id="followerCount"> <%= otheruser.followerCount %> </a></span>
           </h5>
           <h5>
-            <a href="/profile/<%= otheruser.username %>/following">Following: <span id="followCount"> <%= otheruser.followingCount %></a></span>
+            <a href="/u/<%= otheruser.username %>/following">Following: <span id="followCount"> <%= otheruser.followingCount %></a></span>
           </h5>
         </div>
       </div>
@@ -215,7 +215,7 @@
                   <img class="comment-author-avatar" src="<%= comment.author.avatar %>" alt="Avatar" />
                   <p class="comment-author">
 
-                    <a href="/profile/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/profile/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
+                    <a href="/u/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/u/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
                   </p>
                 </div>
                 <div class="comment">
@@ -297,8 +297,8 @@
     }
 
     async function fetchCommitGraph() {
-      const username = '<%= otheruser.github_url %>';
-      const response = await fetch(`/api/github-commit-graph/${username}`);
+      const git_username = '<%= otheruser.github_url %>';
+      const response = await fetch(`/api/github-commit-graph/${git_username}`);
       const data = await response.json();
 
       if (response.ok) {
@@ -311,31 +311,48 @@
 
     function displayCommitGraph(commitGraph) {
       const container = document.getElementById('commit-graph-container');
-
       // Create a container element for the commit graph
       const graphContainer = document.createElement('div');
       graphContainer.classList.add('commit-graph');
 
-      // Create a div for each row of commit data
-      commitGraph.forEach(rowData => {
+      // Get the dates from the commitGraph keys
+      const dates = Object.keys(commitGraph);
+      // Sort the dates in descending order (most recent first)
+      dates.sort((a, b) => new Date(b) - new Date(a));
+
+      // Find the start and end dates
+      const startDate = new Date(dates[0]);
+      const endDate = new Date(dates[dates.length - 1]);
+
+      // Calculate the number of weeks between start and end dates
+      const weeksDiff = Math.ceil((startDate - endDate) / (7 * 24 * 60 * 60 * 1000));
+
+      // Create a div for each day of the week (7 rows)
+      for (let i = 0; i < 7; i++) {
         const rowDiv = document.createElement('div');
         rowDiv.classList.add('commit-row');
 
-        rowData.forEach(cellData => {
+        // Create a div for each week of commit data (number of weeks columns)
+        for (let j = 0; j < weeksDiff; j++) {
+          const date = new Date(startDate);
+          date.setDate(startDate.getDate() - j * 7 - i);
+          const dateString = date.toISOString().split('T')[0];
+          const count = commitGraph[dateString] || 0;
+
           const cellDiv = document.createElement('div');
           cellDiv.classList.add('commit-cell');
-          cellDiv.setAttribute('data-date', cellData.date);
-          cellDiv.setAttribute('data-count', cellData.count);
+          cellDiv.setAttribute('data-date', dateString);
+          cellDiv.setAttribute('data-count', count);
 
           // Set the background color based on the commit count
-          const color = getColorForCommitCount(cellData.count);
+          const color = getColorForCommitCount(count);
           cellDiv.style.backgroundColor = color;
 
           rowDiv.appendChild(cellDiv);
-        });
+        }
 
         graphContainer.appendChild(rowDiv);
-      });
+      }
 
       container.appendChild(graphContainer);
     }

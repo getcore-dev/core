@@ -157,91 +157,94 @@ const userQueries = {
   },
 
   updateField: async (userId, field, value) => {
-  try {
-    const validFields = [
-      "firstname",
-      "lastname",
-      "avatar",
-      "email",
-      "github_url",
-      "recruiter_id",
-      "leetcode_url",
-      "linkedin_url",
-      "zipcode",
-      "currentJob_employment_type",
-      "currentJob_skills",
-      "currentJob",
-      "currentCompany",
-      "currentIndustry",
-      "password",
-      "currentJob_begindate",
-    ];
+    try {
+      const validFields = [
+        "firstname",
+        "lastname",
+        "avatar",
+        "email",
+        "github_url",
+        "recruiter_id",
+        "leetcode_url",
+        "linkedin_url",
+        "zipcode",
+        "currentJob_employment_type",
+        "currentJob_skills",
+        "currentJob",
+        "currentCompany",
+        "currentIndustry",
+        "password",
+        "currentJob_begindate",
+      ];
 
-    // Check if the field is valid
-    if (!validFields.includes(field)) {
-      throw new Error(`Invalid field name: ${field}`);
-    }
+      // Check if the field is valid
+      if (!validFields.includes(field)) {
+        throw new Error(`Invalid field name: ${field}`);
+      }
 
- if (["leetcode_url", "linkedin_url", "github_url"].includes(field)) {
-  // Extract the username from the provided value
-  switch (field) {
-    case "leetcode_url":
-      value = value.replace(/^https?:\/\/leetcode.com\//i, "");
-      break;
-    case "linkedin_url":
-      value = value.replace(/^https?:\/\/(?:www\.)?linkedin.com\/in\//i, "");
-      break;
-    case "github_url":
-      value = value.replace(/^https?:\/\/github.com\//i, "");
-      break;
-  }
-}
+      if (["leetcode_url", "linkedin_url", "github_url"].includes(field)) {
+        // Extract the username from the provided value
+        switch (field) {
+          case "leetcode_url":
+            value = value.replace(/^https?:\/\/leetcode.com\//i, "");
+            break;
+          case "linkedin_url":
+            value = value.replace(
+              /^https?:\/\/(?:www\.)?linkedin.com\/in\//i,
+              ""
+            );
+            break;
+          case "github_url":
+            value = value.replace(/^https?:\/\/github.com\//i, "");
+            break;
+        }
+      }
 
-    // Check if the field is recruiter_id
-    if (field === "recruiter_id") {
-      // Query the Recruiters table to check if the recruiter_id exists
-      const recruiterQuery = `
+      // Check if the field is recruiter_id
+      if (field === "recruiter_id") {
+        // Query the Recruiters table to check if the recruiter_id exists
+        const recruiterQuery = `
         SELECT COUNT(*) AS count
         FROM Recruiters
         WHERE recruiter_id = @recruiterId`;
-      const recruiterRequest = new sql.Request();
-      recruiterRequest.input("recruiterId", sql.VarChar, value);
-      const recruiterResult = await recruiterRequest.query(recruiterQuery);
-      
-      // If the count is 0, the recruiter_id is invalid
-      if (recruiterResult.recordset[0].count === 0) {
-        throw new Error(`Invalid recruiter_id: ${value}`);
-      }
-    }
+        const recruiterRequest = new sql.Request();
+        recruiterRequest.input("recruiterId", sql.VarChar, value);
+        const recruiterResult = await recruiterRequest.query(recruiterQuery);
 
-    // Construct the query with the safe field name
-    const query = `
+        // If the count is 0, the recruiter_id is invalid
+        if (recruiterResult.recordset[0].count === 0) {
+          throw new Error(`Invalid recruiter_id: ${value}`);
+        }
+      }
+
+      // Construct the query with the safe field name
+      const query = `
       UPDATE users
       SET ${field} = @value
       WHERE id = @userId`;
 
-    // Prepare and execute the query
-    const request = new sql.Request();
-    request.input("value", sql.VarChar, value); // assuming the type is VarChar
-    request.input("userId", sql.VarChar, userId);
-    const result = await request.query(query);
+      // Prepare and execute the query
+      const request = new sql.Request();
+      request.input("value", sql.VarChar, value); // assuming the type is VarChar
+      request.input("userId", sql.VarChar, userId);
+      const result = await request.query(query);
 
-    if (result && result.rowsAffected === 0) {
-      console.warn(`No rows updated. User ID ${userId} might not exist.`);
-    } else if (result) {
-      // Convert result to JSON string
-      const jsonString = JSON.stringify(result);
+      if (result && result.rowsAffected === 0) {
+        console.warn(`No rows updated. User ID ${userId} might not exist.`);
+      } else if (result) {
+        // Convert result to JSON string
+        const jsonString = JSON.stringify(result);
+      }
+    } catch (err) {
+      console.error("Database update error:", err.message);
+      console.error("Error stack:", err.stack);
+      // Additional information for debugging
+      console.error(
+        `Failed to update field ${field} for user ID: ${userId} with value: ${value}`
+      );
+      throw err;
     }
-  } catch (err) {
-    console.error("Database update error:", err.message);
-    console.error("Error stack:", err.stack);
-    // Additional information for debugging
-    console.error(
-      `Failed to update field ${field} for user ID: ${userId} with value: ${value}`
-    );
-    throw err;
-  }
-},
+  },
   followUser: async (followerId, followedId) => {
     try {
       // Check if the follow relationship already exists
@@ -277,6 +280,27 @@ const userQueries = {
       }
 
       return true;
+    } catch (err) {
+      console.error("Database delete error:", err);
+      throw err;
+    }
+  },
+  removeDuplicateFollows: async () => {
+    try {
+      const result = await sql.query`
+        WITH cte AS (
+          SELECT
+            *,
+            ROW_NUMBER() OVER (
+              PARTITION BY follower_id, followed_id
+              ORDER BY created_at DESC
+            ) AS rn
+          FROM user_relationships
+        )
+        DELETE FROM cte
+        WHERE rn > 1`;
+
+      return result.rowsAffected[0];
     } catch (err) {
       console.error("Database delete error:", err);
       throw err;

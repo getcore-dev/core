@@ -739,7 +739,17 @@ padding-top: 18px;
 }
 
 .similar-posts .post-content {
-  border: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-color);
+}
+
+.similar-posts .post-content:hover {
+  background-color: var(--light-mode-hover-color);
+  cursor: pointer;
+}
+
+
+.similar-posts .post:last-child {
+  border-bottom: 1px solid var(--border-color);
 }
 
 .comments-section h3 {
@@ -853,6 +863,9 @@ a.comment-user-info:hover {
   padding: 12px;
   border-radius: 6px;
   border: 0;
+  width: 100px;
+    display: flex;
+    flex-direction: column;
   background-color: var(--light-mode-main-color);
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
@@ -862,10 +875,20 @@ a.comment-user-info:hover {
   gap: 10px;
 }
 
+.dropdown-item button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dropdown-item button .material-symbols-outlined {
+  margin-right: auto;
+}
+
 .dropdown-content button {
   border: 0;
   background-color: rgba(0,0,0,0);
-  padding: 0;
   color: black;
   font-size: .875rem;
   margin: 0;
@@ -1488,9 +1511,10 @@ div.username {
     padding-bottom: 50px;
   }
 
-
-
-
+  .large-preview-image {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
 
   .post {
     margin: 0px;

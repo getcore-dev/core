@@ -28,13 +28,13 @@ function getTintFromName(name) {
       navText += '<a class="navbar-user-info" href="' + pagePath + '" style="font-weight: bold;">' + pagePath + '</a>';
     }
     if (communityId) {
-      navText += '<a class="navbar-user-info" href="/communities/' + locals.community.id + '">' + locals.community.shortname + '/' + '</a>';
+      navText += '<a class="navbar-user-info" href="/c/' + locals.community.shortname + '">' + locals.community.shortname + '/' + '</a>';
     }
     if (postUser) {
-      navText += '<a class="navbar-user-info" href="/profile/' + postUser + '" style="font-weight: normal;">' + postUser + '/' + '</a>';
+      navText += '<a class="navbar-user-info" href="/u/' + postUser + '" style="font-weight: normal;">' + postUser + '/' + '</a>';
     }
     if (otherUser) {
-      navText += '<a class="navbar-user-info" href="/profile/' + otherUser.username + '" style="font-weight: normal;">' + otherUser.username + '/' + '</a>';
+      navText += '<a class="navbar-user-info" href="/u/' + otherUser.username + '" style="font-weight: normal;">' + otherUser.username + '/' + '</a>';
     }
 
                 let navbarTint = '';
@@ -61,7 +61,7 @@ function getTintFromName(name) {
               <a href="/learning" class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>">
                 Learning</a>
             </li>
-            <% } else { %> <% } %>
+            <% } %>
             <li>
               <a href="/updates" class="navbar-button <%= currentPath === '/updates' ? 'active' : '' %>">
                 Updates</a>
@@ -86,17 +86,27 @@ function getTintFromName(name) {
           <a href="/">
             <div class="menu-item">
               <span class="material-symbols-outlined" id="menu-community-icon">
-                groups
+                home
               </span>
               Home
             </div>
           </a>
+
           <a href="/jobs">
             <div class="menu-item">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 work
               </span>
               Openings
+            </div>
+          </a>
+          <a href="/c">
+            <div class="menu-item">
+              <span class="material-symbols-outlined" id="menu-community-icon">
+                forum
+              </span>
+              Communities
+
             </div>
           </a>
           <a href="/updates">
@@ -164,12 +174,11 @@ function getTintFromName(name) {
 
               <div class="avatar-dropdown" style="display: none;">
 
-                <a href="/profile/<%= user.username %>">
+                <a href="/u/<%= user.username %>">
                   <div class="avatar-dropdown-item">
                     <span class="material-symbols-outlined" id="nb-icon">
                       person
                     </span>
-                    Profile
                   </div>
                 </a>
                 <a href="#" onclick="document.getElementById('logoutForm').submit()">
@@ -177,13 +186,12 @@ function getTintFromName(name) {
                     <span class="material-symbols-outlined" id="nb-icon">
                       logout
                     </span>
-                    Log out
                   </div>
                 </a>
               </div>
             </div>
             <% } else if (user && !user.avatar) { %>
-            <a href="/profile/<%= user.username %>" class="inbox-button">
+            <a href="/u/<%= user.username %>" class="inbox-button">
               <span class="material-symbols-outlined" id="nb-icon">
                 person
               </span>
@@ -389,7 +397,7 @@ function getTintFromName(name) {
           results.users.forEach(user => {
             const userItem = document.createElement('div');
             userItem.onclick = function() {
-              window.location.href = `/profile/${user.username}`;
+              window.location.href = `/u/${user.username}`;
             };
             const userImage = document.createElement('img');
 

@@ -112,7 +112,8 @@ p.job-description {
   box-sizing: border-box;
   line-height: 1.5em;
   margin: 0;
-  margin: 16px 0;
+  font-size: .875rem;
+  margin: 11px 0;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -200,11 +201,11 @@ p.job-description {
   }
 
   .job {
-    background-color: var(--light-mode-body-color);
-    margin: 0 13px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    border: 1px solid var(--border-color);
+    background-color: var(--light-mode-main-color);
+    margin: 0;
+    border-radius: 0;
+    margin-bottom: 0;
+    border-top: 1px solid var(--border-color);
   }
   
   .job-title-location {
@@ -288,7 +289,7 @@ p.job-description {
 .job-preview {
   display: flex;
   align-items: center;
-  padding: 11px;
+  padding: 14px 18px;
   padding-top: 6px;
 }
 
@@ -349,8 +350,8 @@ p.job-description {
 
 .job-flair {
   display: inline-block;
-  padding: 1px 3px;
-  margin-bottom: 6px;
+  padding: 2px 4px;
+  margin-bottom: 2px;
   background-color: #DB504A;
   border: 1px solid #FF8370; 
   color: white;
@@ -403,7 +404,7 @@ div .material-symbols-outlined {
   }
 
   .job {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-body-color);
     border-color: var(--dark-mode-border-color);
   }
 

@@ -19,6 +19,17 @@ const notificationQueries = {
     }
   },
 
+  deleteDuplicateNotifications: async (userId, type, postId) => {
+    try {
+      await sql.query`
+        DELETE FROM notifications
+        WHERE receiverUserId = ${userId} AND type = ${type} AND postId = ${postId}`;
+    } catch (err) {
+      console.error("Database delete error:", err);
+      throw err;
+    }
+  },
+
   getUnreadNotificationCount: async (userId) => {
     try {
       const result = await sql.query`
