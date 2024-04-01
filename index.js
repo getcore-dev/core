@@ -42,7 +42,10 @@ passportConfig.initialize(
   userQueries.findById,
   userQueries.findByUsername,
   userQueries.findByGitHubUsername,
+  userQueries.findByGithubId,
   userQueries.updateGitHubId,
+  userQueries.updateGitHubUsername,
+  userQueries.updateUserGitHubAccessToken,
   userQueries.createUserFromGitHubProfile
 );
 

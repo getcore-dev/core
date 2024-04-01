@@ -9,7 +9,10 @@ function initialize(
   getUserById,
   getUserByUsername,
   getUserByGitHubUsername,
+  getUserByGitHubId,
   updateUserGitHubId,
+  updateUserGitHubAccessToken,
+  updateUserGitHubUsername,
   createUserFromGitHubProfile
 ) {
   const authenticateUser = async (username, password, done) => {
@@ -48,17 +51,31 @@ function initialize(
           const githubUsername = profile.username;
 
           // Check if the user exists based on the GitHub username
-          const existingUser = await getUserByGitHubUsername(githubUsername);
+          const existingUser =
+            (await getUserByGitHubUsername(githubUsername)) ||
+            (await getUserByGitHubId(profile.id));
 
           if (existingUser) {
-            // Update the user's GitHub ID if it doesn't exist
+            await userQueries.updateUserGitHubAccessToken(
+              existingUser.id,
+              accessToken
+            );
             if (!existingUser.github_id) {
               await updateUserGitHubId(existingUser.id, profile.id);
             }
+
+            if (!existingUser.github_url) {
+              await updateUserGitHubUsername(existingUser.id, githubUsername);
+            }
+
             return done(null, existingUser);
           } else {
             // Create a new user in your database
             const newUser = await createUserFromGitHubProfile(profile);
+            await userQueries.updateUserGitHubAccessToken(
+              newUser.id,
+              accessToken
+            );
             return done(null, newUser);
           }
         } catch (error) {

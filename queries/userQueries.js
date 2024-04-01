@@ -293,6 +293,14 @@ const userQueries = {
     `;
   },
 
+  updateGitHubUsername: async (userId, githubUsername) => {
+    await sql.query`
+      UPDATE users
+      SET github_url = ${githubUsername}
+      WHERE id = ${userId}
+    `;
+  },
+
   findByGitHubUsername: async (githubUsername) => {
     try {
       const result = await sql.query`
@@ -304,12 +312,46 @@ const userQueries = {
     }
   },
 
+  findByGithubId: async (githubId) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM users WHERE github_id = ${githubId}`;
+      return result.recordset[0];
+    } catch (err) {
+      console.error(`Error finding user by GitHub ID: ${githubId}`);
+      throw err;
+    }
+  },
+
+  updateUserGitHubAccessToken: async (userId, accessToken) => {
+    try {
+      const result = await sql.query`
+        UPDATE users
+        SET github_access_token = ${accessToken}
+        WHERE id = ${userId}`;
+
+      if (result && result.rowsAffected === 0) {
+        throw new Error(`User ID ${userId} not found`);
+      }
+    } catch (err) {
+      console.error("Database update error:", err.message);
+      console.error("Error stack:", err.stack);
+
+      // Additional information for debugging
+      console.error(
+        `Failed to update GitHub access token for user ID: ${userId}`
+      );
+
+      throw err;
+    }
+  },
+
   createUserFromGitHubProfile: async (profile) => {
     try {
       const result = await sql.query`
-        INSERT INTO users (github_url, username, avatar, email)
+        INSERT INTO users (github_url, username, avatar, email, github_id, created_at)
         OUTPUT INSERTED.*
-        VALUES (${profile.username}, ${profile.username}, ${profile.photos[0].value}, ${profile.emails[0].value})`;
+        VALUES (${profile.username}, ${profile.username}, ${profile.photos[0].value}, ${profile.emails[0].value}, ${profile.id}, GETDATE())`;
 
       return result.recordset[0];
     } catch (err) {

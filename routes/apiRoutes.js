@@ -66,11 +66,21 @@ router.get(
   async (req, res) => {
     try {
       const username = req.params.username;
+      const user = await userQueries.findByGitHubUsername(username);
+
+      if (!user || !user.githubAccessToken) {
+        return res
+          .status(404)
+          .json({ error: "User not found or access token not available" });
+      }
+
+      const accessToken = user.githubAccessToken;
       const apiUrl = `https://api.github.com/search/commits`;
       const headers = {
         "User-Agent": "CORE",
-        Authorization: `Bearer ${process.env.GITHUB_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${accessToken}`,
       };
+
       const commitGraph = {};
       const oneYearAgo = new Date();
       oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
@@ -122,13 +132,21 @@ router.get(
   async (req, res) => {
     try {
       const username = req.params.username;
-      const url = `https://api.github.com/users/${username}/repos`;
+      const user = await userQueries.findByGitHubUsername(username);
 
+      if (!user || !user.githubAccessToken) {
+        return res
+          .status(404)
+          .json({ error: "User not found or access token not available" });
+      }
+
+      const accessToken = user.githubAccessToken;
+      const url = `https://api.github.com/users/${username}/repos`;
       const headers = {
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+        Authorization: `Bearer ${accessToken}`,
       };
-
       const response = await axios.get(url, { headers, timeout: 5000 });
       const { data, status } = response;
 
