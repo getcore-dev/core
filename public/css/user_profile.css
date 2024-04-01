@@ -506,7 +506,7 @@ main {
   }
 
   .link-display {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
 
@@ -630,6 +630,10 @@ main {
 .profile-info button:hover, 
 .current-job button:hover {
   background-color: #444; 
+}
+
+#profile > div.current-job, #profile > div.user-links, #profile > div.profile-info  {
+  background: var(--dark-mode-main-color);
 }
 
 /* Styling for input fields in dark mode */

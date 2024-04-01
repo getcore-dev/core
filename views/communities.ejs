@@ -375,16 +375,22 @@ filter_list
 
             if (post.post_type != 'question') {
 
-              if ((post.post_type == "discussion" || post.post_type == "project") && post.link) {
+              if (((post.post_type == "discussion" || post.post_type == "project") && post.link)) {
                 // just chill 
               } else {
                 linkPreviewDiv.style.background = "none";
+                linkPreviewDiv.style.border = "none";
                 const descriptionDiv = document.createElement('div');
                 descriptionDiv.className = 'description';
                 descriptionDiv.append(`${post.content}`);
 
                 linkPreviewDiv.appendChild(descriptionDiv);
               }
+            }
+
+            if (post.post_type == 'question') {
+              linkPreviewDiv.style.background = "none";
+              linkPreviewDiv.style.border = "none";
             }
 
             // Votes div

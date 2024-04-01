@@ -385,7 +385,7 @@ img.blog-avatar {
 
 .dicussion-link {
   border: 1px solid var(--border-color);
-  background-color: var(--border-color);
+  background-color: var(--light-mode-body-color);
   border-radius: 18px;
   margin-bottom: 18px;
   white-space-collapse: collapse;
@@ -1082,7 +1082,8 @@ p.preview-description {
 }
 
 .project-link {
-  background-color: var(--border-color);
+  background-color: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
   border-radius: 18px;
   padding: 13px 23px;
   white-space-collapse: collapse;
@@ -1104,14 +1105,14 @@ p.preview-description {
 .project-link-image img {
   width: 80px;
   height: 80px;
-  border-radius: 18px;
+  border-radius: 18px !important;
   margin-right: 10px;
-  padding-right: 10px;
 }
 
 .project-link-image {
   height: 80px;
   float: left;
+  padding-right: 10px;
 }
 
 .tag-flair {
@@ -1262,7 +1263,7 @@ p.preview-description {
   }
 
   .dicussion-link {
-    background-color: var(--dark-mode-border-color);
+    background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
@@ -1283,7 +1284,8 @@ p.preview-description {
   }
 
   .project-link {
-    background-color: var(--dark-mode-border-color);
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
   }
 
   .editor-toolbar i.separator {

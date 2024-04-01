@@ -78,7 +78,7 @@ main {
   padding: 7px 8px;
   color: var(--light-mode-text-color);
   background-color: var(--light-mode-body-color);
-  border: 0;
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -131,7 +131,7 @@ p.job-description {
   flex-direction: row;
   gap: 5px;
   background-color: var(--light-mode-body-color);
-  border: 1px solid var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   padding: 0px 12px;
   align-items: center;

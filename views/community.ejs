@@ -31,7 +31,7 @@
     --dark-mode-text-color: #fff;
     --dark-mode-secondary-text-color: #999;
     --dark-mode-border-color: #272D31;
-  --dark-mode-hover-background-color: #151515;
+    --dark-mode-hover-background-color: #151515;
   }
 
   main {
@@ -62,6 +62,20 @@
     font-size: 20px;
     margin-right: 10px;
   }
+
+  @media (prefers-color-scheme: dark) {
+    .community-entry {
+      background-color: var(--dark-mode-body-color);
+      border-color: var(--dark-mode-main-color);
+    }
+
+    .community-entry:hover {
+      background-color: var(--dark-mode-hover-background-color);
+    }
+
+    .community-entry:last-child {
+      border-color: var(--dark-mode-main-color);
+    }
 </style>
 
 <body>

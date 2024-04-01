@@ -232,7 +232,6 @@
                       </div>
                       <br>
                       <div class="project-link-stats">
-                        <h5 style="line-height: 1; margin: 2px 0;">Stats </h5>
                         <span class="tag-flair"><span class="material-symbols-outlined">
                             code
                           </span><%= gitHubData.language %></span>
@@ -247,8 +246,9 @@
                             fork_right
                           </span><%= gitHubData.forks %> forks</span>
                         <span class="tag-flair"><span class="material-symbols-outlined">
-                            tag
-                          </span><%= gitHubData.size %></span>
+                            update
+                          </span><%= gitHubData.updated_at.substring(0, 10) %></span>
+                        %></span>
                       </div>
                       <span><%= gitHubData.license %></span>
                     </div>
