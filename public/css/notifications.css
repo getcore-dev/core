@@ -75,7 +75,7 @@ li.notification-item {
 
 .notification-item {
     border-top: 1px solid var(--border-color);
-    background-color: var(--light-mode-body-color);
+    background-color: var(--light-mode-main-color);
     padding: 10px;
 }
 
@@ -110,7 +110,7 @@ li.notification-item {
     }
 
     .notification-item {
-        background-color: var(--dark-mode-background-color);
+        background-color: var(--dark-mode-body-color);
         border-color: var(--dark-mode-border-color);
         color: var(--dark-mode-text-color);
     }

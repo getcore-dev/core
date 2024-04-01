@@ -185,7 +185,7 @@ div.commit-title {
   }
 
     .commit {
-      background-color: var(--dark-mode-main-color);
+      background-color: var(--dark-mode-body-color);
       border-color: var(--dark-mode-border-color);
     }
 

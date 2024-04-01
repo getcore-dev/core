@@ -330,11 +330,19 @@ const utilFunctions = {
     }
   },
 
-  getAllCommunities: async () => {
+  getAllCommunities: async (user) => {
     try {
-      const result = await sql.query`
-        SELECT id, name, mini_icon, shortname FROM communities WHERE PrivacySetting = 'Public'
+      let query = sql.query`
+        SELECT c.id, c.name, c.mini_icon, c.shortname, 
+          CASE WHEN cm.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_member
+        FROM communities c
+        LEFT JOIN community_memberships cm ON c.id = cm.community_id AND cm.user_id = ${
+          user ? user.id : null
+        }
+        WHERE c.PrivacySetting = 'Public'
       `;
+
+      const result = await query;
       return result.recordset;
     } catch (err) {
       console.error("Database query error:", err);

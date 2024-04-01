@@ -1378,9 +1378,8 @@ p.preview-description {
 }
 
 #submit-button {
-  background-color: #036016;
-  border: 2px solid #04771B;
-  color: white;
+  flex: 0;
+  margin: 0;
 }
 
 /* Style for the send button on hover */

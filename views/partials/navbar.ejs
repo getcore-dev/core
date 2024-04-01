@@ -249,6 +249,131 @@ function getTintFromName(name) {
 
 
 <script>
+  function getTrendingPosts() {
+    fetch('/api/trending-posts') // Adjust this to your server's endpoint
+      .then(response => response.json())
+      .then(posts => {
+        const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
+        let trendingPostsContainer;
+        if (!isMobile) {
+          trendingPostsContainer = document.querySelector('.trending-posts');
+        } else {
+          trendingPostsContainer = document.querySelector('.mobile-trending-posts');
+        }
+        trendingPostsContainer.innerHTML = ''; // Clear existing posts
+
+        posts.forEach(trending_post => {
+          const postElement = document.createElement('div');
+          postElement.className = 'trending-post';
+          postElement.onclick = () => {
+            window.location.href = `/posts/${trending_post.id}`;
+          };
+
+          // Add content to postElement here. Example:
+          postElement.innerHTML = `
+                <div class="trending-info">
+                  ${trending_post.views}
+                <span class="material-symbols-outlined" style="color: var(--active-indicator-color);">
+      visibility
+      </span> 
+      </div>
+                <div class="trending-post-content">
+                  <div class="trending-post-user-info">
+                    <p><strong>${trending_post.username}</strong> in /${trending_post.community_name}</p>
+                    </div>
+                                        <div><p>${trending_post.title} </p> </div>
+
+                </div>
+
+            `;
+
+          trendingPostsContainer.appendChild(postElement);
+        });
+      })
+      .catch(error => console.error('Error fetching trending posts:', error));
+  }
+
+  function getAllCommunities() {
+    fetch('/api/communities') // Adjust this to your server's endpoint
+      .then(response => response.json())
+      .then(communities => {
+        // Use window.matchMedia to check for mobile devices
+        const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
+        // Select the container based on whether or not it is a mobile device
+        const containerClassName = isMobile ? '.community-selector' : '.communities-container';
+        const communitiesContainer = document.querySelector(containerClassName);
+
+        if (communitiesContainer) {
+          communitiesContainer.innerHTML = ''; // Clear existing communities
+          communities.forEach(community => {
+            if (community.is_member) {
+
+              const communityElement = document.createElement('div');
+              communityElement.className = 'communities active';
+              communityElement.onclick = () => {
+                window.location.href = `/c/${community.shortname}`;
+              };
+
+
+              const tint = getTintFromName(community.name);
+
+              communityElement.innerHTML = `
+                <span class="material-symbols-outlined" style="${isMobile ? `color: ${tint};` : ''}">
+                  ${community.mini_icon}
+                </span>
+                <div class="community-name">
+                  <p class="community-text" style="color: inherit;">${isMobile ? community.shortname : community.name}</p>
+                </div>
+              `;
+
+              communityElement.style.setProperty('--tint-color', tint);
+
+              communitiesContainer.appendChild(communityElement);
+            }
+          });
+          communities.forEach(community => {
+            if (!community.is_member) {
+
+              const communityElement = document.createElement('div');
+              communityElement.className = 'communities';
+              communityElement.onclick = () => {
+                window.location.href = `/c/${community.shortname}`;
+              };
+
+              const tint = getTintFromName(community.name);
+
+              communityElement.innerHTML = `
+                <span class="material-symbols-outlined" style="${isMobile ? `color: ${tint};` : ''}">
+                  ${community.mini_icon}
+                </span>
+                <div class="community-name">
+                  <p class="community-text" style="color: inherit;">${isMobile ? community.shortname : community.name}</p>
+                </div>
+              `;
+
+              communityElement.style.setProperty('--tint-color', tint);
+
+              communitiesContainer.appendChild(communityElement);
+            }
+          });
+        }
+      })
+      .catch(error => console.error('Error fetching communities:', error));
+  }
+
+  function getTintFromName(name) {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const color = (hash & 0x00FFFFFF).toString(16).toUpperCase();
+    const tintColor = `#${color}90`; // Append "80" to the color to make it lighter
+    return tintColor;
+  }
+
+
+  getAllCommunities();
+  getTrendingPosts();
   document.addEventListener('DOMContentLoaded', function() {
     const banner = document.getElementById('latestCommitBanner');
     const closeButton = document.getElementById('closeCommitBanner');

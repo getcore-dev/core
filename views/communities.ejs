@@ -603,7 +603,7 @@ filter_list
 
       // Function to check membership and update button
       function checkMembershipAndUpdateButton() {
-        fetch(`/c/<%= community.name %>/isMember`)
+        fetch(`/c/<%= community.shortname %>/isMember`)
           .then(response => response.json())
           .then(data => {
             if (data.isMember) {

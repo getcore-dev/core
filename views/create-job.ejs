@@ -25,10 +25,10 @@
     <div class="main-container">
       <form id="jobPostForm">
         <div class="form-group">
-          <label for="link">Paste Greenhouse Job Link:</label>
+          <label for="link">Job Link:</label>
           <input type="text" id="link" name="link" />
         </div>
-        <button class="add-post-button" type="submit">Extract Job Details</button>
+        <button id="submit-button" type="submit">Extract Job Details</button>
       </form>
       <form id="editJobPostForm" style="display: none;">
         <div class="form-group">
@@ -81,7 +81,7 @@
           <label for="logo_url">Company Logo URL:</label>
           <input type="text" id="logo_url" name="logo_url" />
         </div>
-        <button class="add-post-button" type="submit">Submit Job Post</button>
+        <button id="submit-button" type="submit">Submit Job Post</button>
       </form>
     </div>
   </main>
@@ -106,7 +106,7 @@
             $('#location').val(response.location);
             $('#salary').val(response.salary);
             $('#salary_max').val(response.salary_max);
-            $('#experienceLevel').val(response.experience_level);
+            $('#experienceLevel').val(response.experience_level.toLowerCase());
             $('#skills').val(response.skills);
             $('#tags').val(response.tags);
             $('#description').val(response.description);

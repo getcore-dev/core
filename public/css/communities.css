@@ -314,9 +314,6 @@ div.vote-interactions {
   margin-bottom: 0px;
 }
 
-#posts-container > h5 {
-  display: none;
-}
 
 
 #date-icon, #user-icon, #comments-icon, #score-icon {
@@ -705,6 +702,7 @@ div .mini-link-desc {
   border: 1px solid #afd4ff;
 }
 
+
 .company-logo {
   padding-right: 6px;
   width: 24px;
@@ -897,6 +895,7 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
 
 }
 
+
 @media (max-width: 768px) {
   .post {
     margin: 0;
@@ -906,6 +905,15 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
     border: 0;
     border-top: 1px solid var(--border-color);
     max-width: 100%;
+  }
+  .communities.active {
+    border: 1px solid #afd4ff !important;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .communities.active {
+      border: 1px solid #224368 !important;
+    }
   }
 
   .container {
@@ -949,6 +957,7 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
   .mini-link {
     max-width: 100%;
   }
+
 
   .thumbnail-image {
     width: 100px;

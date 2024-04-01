@@ -282,13 +282,13 @@ router.post("/extract-job-details", async (req, res) => {
       );
       const textContent = cleanedData.replace(/<(?:.|\n)*?>/gm, "");
 
-      const prompt = `Please extract the following information from this Greenhouse job posting data: ${textContent}
+      const prompt = `Please extract the following information from this job posting data:  ${textContent}
       - title (e.g., Software Engineer, Data Analyst, do not include intern or seniority in the title)
-      - company_name
+      - company_name (as simple as possible, not amazon inc, just Amazon. If it's a startup, use the startup name)
       - company_description (write a short paragraph about the company, where they're located, their mission, etc)
-      - location (City, State, Country)
-      - salary (integer only, no currency symbol, multiply by 2080 if salary is in hourly wage)
-      - salary_max (integer only, no currency symbol, multiply by 2080 if salary is in hourly wage)
+      - location (City, State(full name), Country)
+      - salary (integer only, no currency symbol, multiply by 2080 if salary is in hourly wage, if salary is in monthly multiply by 12)
+      - salary_max (integer only, no currency symbol, multiply by 2080 if salary is in hourly wage, if salary is in monthly multiply by 12, if no maximum salary, give the same value as salary)
       - experience_level (internship, full time, part time, contract)
       - skills (prefer single word skills, as a comma-separated list)
       - tags (prefer things that a person would search, single word tags, keep it simple. as a comma-separated list)
@@ -322,7 +322,7 @@ router.post("/extract-job-details", async (req, res) => {
 
       res.json(extractedData);
     } else {
-      res.status(400).json({ error: "Invalid Greenhouse job link" });
+      res.status(400).json({ error: "Invalid job link" });
     }
   } catch (error) {
     console.error("Error extracting job details:", error);
@@ -370,7 +370,8 @@ router.get("/posts/:postId/getReaction", async (req, res) => {
 
 router.get("/communities", async (req, res) => {
   try {
-    const communities = await utilFunctions.getAllCommunities();
+    const user = req.user; // Assuming the user object is attached to the request by middleware
+    const communities = await utilFunctions.getAllCommunities(user);
     return res.json(communities);
   } catch (err) {
     console.error("Error fetching communities:", err);

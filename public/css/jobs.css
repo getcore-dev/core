@@ -430,7 +430,7 @@ div .material-symbols-outlined {
 
   .company {
     background-color: var(--dark-mode-main-color);
-    border-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
   }
   .job-content {
     background-color: var(--dark-mode-main-color);

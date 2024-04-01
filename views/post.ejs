@@ -384,8 +384,8 @@
             <form action="/posts/<%= post.id %>/comments" method="POST">
               <textarea id="comment-form-textarea" name="comment"></textarea>
               <div class="button-container" style="display:none;">
-                <button type="button" id="cancel-button">Cancel</button>
-                <button type="submit" id="submit-button" class="fab">Submit</button>
+                <button type="button" id="cancel-button-normal">Cancel</button>
+                <button type="submit" id="submit-button-normal" class="fab">Submit</button>
               </div>
             </form>
           </div>
@@ -566,9 +566,9 @@
                 <div class="input-container">
                   <textarea id="comment-<%= comment.id %>" name="comment" rows="1" required onclick="autoExpandTextarea(event); showReplyButtons('<%= comment.id %>')" maxlength="500" placeholder="Reply to <%= comment.user.username %>"></textarea>
                   <div class="reply-buttons" id="reply-buttons-<%= comment.id %>" style="display: none;">
-                    <button id="cancel-button" type="button" class="fab" onclick="cancelReply('<%= comment.id %>')">Cancel</button>
+                    <button id="cancel-button-normal" type="button" class="fab" onclick="cancelReply('<%= comment.id %>')">Cancel</button>
 
-                    <button id="submit-button" type="submit" class="fab">Submit</button>
+                    <button id="submit-button-normal" type="submit" class="fab">Submit</button>
                   </div>
                 </div>
               </form>
@@ -788,7 +788,7 @@
         $('.editor-toolbar').show();
       });
 
-      $('#cancel-button').on('click', function() {
+      $('#cancel-button-normal').on('click', function() {
         easyMDE.value(''); // Clear the content of the EasyMDE editor
         $('.button-container').hide();
         $('.editor-toolbar').hide();
