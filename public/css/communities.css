@@ -14,13 +14,13 @@
   --active-indicator-color: #0e6655;
   --dark-mode-main-color: #16191B;
   --dark-mode-body-color: #000;
-  --dark-mode-hover-color: #24292D;
+  --dark-mode-hover-color: #1b1f22;
   --dark-mode-button-hover-color: #363F44;
   --dark-mode-lighter-color: #1F2427;
   --dark-mode-text-color: #fff;
   --dark-mode-secondary-text-color: #999;
   --dark-mode-border-color: #272D31;
-  --dark-mode-hover-background-color: #444;
+  --dark-mode-hover-background-color: #151515;
 }
 
 main {
@@ -205,17 +205,24 @@ div.vote-interactions {
   color: var(--light-mode-secondary-text-color);
 }
 
-.reaction-button, .boost-button, .main-reaction-button {
-  background-color: var(--border-color);
-  border: 0;
-  color: var(--light-mode-secondary-text-color);
-  border-radius: 10px;
+.reaction-button, .main-reaction-button, .boost-button {
+  background-color: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
+  color: var(--light-mode-text-color);
+  border-radius: 20px;
   padding: 5px 8px;
-  font-size: .875rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 400;
+  text-decoration: none;
+  white-space-collapse: collapse;
 }
 
-.main-reaction-button:hover, .boost-button:hover, .reaction-button:hover {
+.reaction-button > p {
+  margin-bottom: 0 !important; 
+  font-size: 1rem;
+}
+
+.reaction-button:hover, .main-reaction-button:hover, .boost-button:hover {
   background-color: var(--light-mode-button-hover-color);
   cursor: pointer;
 }
@@ -841,6 +848,10 @@ div .mini-link-desc {
     height: calc(100dvh - 58px);
   }
 
+  .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button, .add-comment-button {
+    padding: 4px 7px;
+  }
+
   
   .job-flair {
     display:none;
@@ -1048,6 +1059,11 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
     background-color: var(--dark-mode-border-color);
     color: var(--dark-mode-secondary-text-color);
   }
+
+  .reaction-button:hover, .main-reaction-button:hover, .boost-button:hover {
+    background-color: var(--dark-mode-hover-color) !important;
+    pointer-events: auto;
+  }
   
   .comments {
   color: var(--dark-mode-secondary-text-color);
@@ -1096,7 +1112,7 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
   /* Post styling adjustments */
 
   .post:hover, .job:hover, .com-btn:hover {
-      background-color: var(--dark-mode-hover-color); /* Dark background on hover */
+      background-color: var(--dark-mode-hover-background-color);
   }
 
   .reaction-button:hover, .boost-button:hover, .main-reaction-button:hover {

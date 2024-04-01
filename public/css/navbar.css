@@ -14,13 +14,13 @@
   --active-indicator-color: #0e6655;
   --dark-mode-main-color: #16191B;
   --dark-mode-body-color: #000;
-  --dark-mode-hover-color: #24292D;
+  --dark-mode-hover-color: #1b1f22;
   --dark-mode-button-hover-color: #363F44;
   --dark-mode-lighter-color: #1F2427;
   --dark-mode-text-color: #fff;
   --dark-mode-secondary-text-color: #999;
   --dark-mode-border-color: #272D31;
-  --dark-mode-hover-background-color: #444;
+  --dark-mode-hover-background-color: #151515;
 
   /* Font and size variables */
   --font-family: 'Roboto', sans-serif;

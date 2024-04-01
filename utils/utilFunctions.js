@@ -71,7 +71,6 @@ const utilFunctions = {
           sortedResult = result.recordset.sort((a, b) => {
             const minutesA = (now - new Date(a.created_at)) / (1000 * 60);
             const minutesB = (now - new Date(b.created_at)) / (1000 * 60);
-
             const reactionsA =
               a.loveCount * 5 +
               a.boostCount * 4 +
@@ -86,16 +85,15 @@ const utilFunctions = {
               b.curiousCount * 2 +
               b.likeCount +
               b.celebrateCount * 3;
-
-            const reactionsPerMinuteA = reactionsA / minutesA;
-            const reactionsPerMinuteB = reactionsB / minutesB;
-
+            const reactionsPerMinuteA = reactionsA / (minutesA + 1);
+            const reactionsPerMinuteB = reactionsB / (minutesB + 1);
             const followingWeightA = a.is_following ? 1.2 : 1;
             const followingWeightB = b.is_following ? 1.2 : 1;
-
+            const ageWeightA = Math.exp(-minutesA / (24 * 60)); // Exponential decay based on age
+            const ageWeightB = Math.exp(-minutesB / (24 * 60));
             return (
-              reactionsPerMinuteB * followingWeightB -
-              reactionsPerMinuteA * followingWeightA
+              reactionsPerMinuteB * followingWeightB * ageWeightB -
+              reactionsPerMinuteA * followingWeightA * ageWeightA
             );
           });
           break;
@@ -116,7 +114,12 @@ const utilFunctions = {
               b.curiousCount * 2 +
               b.likeCount +
               b.celebrateCount * 3;
-            return weightedReactionsB - weightedReactionsA;
+            const commentsWeightA = Math.log(a.commentCount + 1); // Log scale for comment count
+            const commentsWeightB = Math.log(b.commentCount + 1);
+            return (
+              weightedReactionsB * commentsWeightB -
+              weightedReactionsA * commentsWeightA
+            );
           });
           break;
 
@@ -124,14 +127,7 @@ const utilFunctions = {
           sortedResult = result.recordset.sort((a, b) => {
             const dateA = new Date(a.created_at);
             const dateB = new Date(b.created_at);
-
-            const followingWeightA = a.is_following ? 1.00005 : 1;
-            const followingWeightB = b.is_following ? 1.00005 : 1;
-
-            if (dateB - dateA === 0) {
-              return followingWeightB - followingWeightA;
-            }
-            return (dateB - dateA) * (followingWeightB - followingWeightA);
+            return dateB - dateA;
           });
           break;
 
@@ -151,10 +147,13 @@ const utilFunctions = {
               b.curiousCount +
               b.likeCount +
               b.celebrateCount;
-            const viewsWeightA = Math.log(a.views + 1);
+            const viewsWeightA = Math.log(a.views + 1); // Log scale for views
             const viewsWeightB = Math.log(b.views + 1);
+            const diversityWeightA = 1 / (a.is_following ? 2 : 1); // Penalize posts from followed users
+            const diversityWeightB = 1 / (b.is_following ? 2 : 1);
             return (
-              totalReactionsB * viewsWeightB - totalReactionsA * viewsWeightA
+              totalReactionsB * viewsWeightB * diversityWeightB -
+              totalReactionsA * viewsWeightA * diversityWeightA
             );
           });
           break;

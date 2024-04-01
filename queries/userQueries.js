@@ -327,7 +327,7 @@ const userQueries = {
     try {
       const result = await sql.query`
         UPDATE users
-        SET github_access_token = ${accessToken}
+        SET githubAccessToken = ${accessToken}
         WHERE id = ${userId}`;
 
       if (result && result.rowsAffected === 0) {

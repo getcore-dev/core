@@ -18,7 +18,7 @@
   --dark-mode-secondary-text-color: #999;
   --dark-mode-text-color: #fff;
   --dark-mode-border-color: #272D31;
-  --dark-mode-hover-background-color: #444;
+  --dark-mode-hover-background-color: #151515;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -361,13 +361,13 @@ img.blog-avatar {
   margin-top: 0px;
 }
 
-.reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button {
-  background-color: var(--border-color);
-  border: 0;
+.reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button, .add-comment-button {
+  background-color: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
   color: var(--light-mode-text-color);
-  border-radius: 10px;
+  border-radius: 20px;
   padding: 5px 8px;
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 400;
   text-decoration: none;
   white-space-collapse: collapse;
@@ -375,11 +375,10 @@ img.blog-avatar {
 
 .reaction-button > p {
   margin-bottom: 0 !important; 
-  font-size: 15px;
+  font-size: 1rem;
 }
 
-
-.reaction-button:hover, .main-reaction-button:hover, .boost-button:hover, #delete-post-button:hover, #delete-comment-button:hover {
+.reaction-button:hover, .main-reaction-button:hover, .boost-button:hover, #delete-post-button:hover, #delete-comment-button:hover, .add-comment-button:hover {
   background-color: var(--light-mode-button-hover-color);
   cursor: pointer;
 }
@@ -783,7 +782,7 @@ a.comment-user-info:hover {
   position: relative;
   display: flex;
   flex-direction: row;
-  gap: 6px;
+  gap: 10px;
   width: 60%;
 }
 
@@ -1141,17 +1140,6 @@ p.preview-description {
   border: 1px solid #0E954F;
 }
 
-.add-comment-button {
-  background: var(--border-color);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  padding: 5px 16px;
-}
-
-.add-comment-button:hover {
-  cursor: pointer;
-background-color: var(--light-mode-button-hover-color);
-}
 
 .reply-buttons {
   width: 100%;
@@ -1213,8 +1201,8 @@ background-color: var(--light-mode-button-hover-color);
   background-color: var(--dark-mode-border-color); /* Active tab color */
 }
   .reaction-button, .add-comment-button, .main-reaction-button {
-  background-color: var(--dark-mode-border-color);
-  border-color: var(--dark-mode-border-color);
+  background-color: var(--dark-mode-main-color);
+  border: 1px solid var(--dark-mode-border-color);
   color: var(--dark-mode-background-text-color);
   }
 
@@ -1230,12 +1218,13 @@ background-color: var(--light-mode-button-hover-color);
     background-color: var(--dark-mode-body-color);
   }
 
-  .similar-posts .post-content {
-    border: 1px solid var(--dark-mode-border-color);
-  }
   .sidebar, .similar-posts .post-content, .button-container {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-body-color);
     border-color: var(--dark-mode-border-color);
+  }
+
+  .similar-posts .post-content:hover {
+    background-color: var(--dark-mode-hover-background-color);
   }
 
   .nested-comment.level-1 > .comment:first-child {
@@ -1260,7 +1249,7 @@ background-color: var(--light-mode-button-hover-color);
   }
 
   .reaction-button:hover, .main-reaction-button:hover, .boost-button:hover, #delete-post-button:hover, #delete-comment-button:hover {
-    background-color: var(--dark-mode-button-hover-color);
+    background-color: var(--dark-mode-hover-color) !important;
   }
 
   pre {
@@ -1308,6 +1297,10 @@ background-color: var(--light-mode-button-hover-color);
     background-color: #1c2830;
     color: #3073c1;
     border: 1px solid #224368;
+  }
+
+  .similar-posts .post:last-child {
+    border-color: var(--dark-mode-border-color);
   }
 
   .button-container button {
@@ -1415,7 +1408,7 @@ div.username {
 @media screen and (max-width: 600px) {
 
   .user-interactions {
-    gap: 7px;
+    gap: 10px;
   }
   .sidebar-link-info-title, .sidebar-link-info-url {
     max-width: 100%;
@@ -1498,6 +1491,20 @@ div.username {
   .link-image {
     width: 100%;
   }
+
+  .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button, .add-comment-button {
+    padding: 4px 6px;
+  }
+
+  .add-comment-button {
+    padding: 4px 11px;
+  }
+
+  #reply-button .reaction-button {
+    padding: 4px 8px;
+  }
+
+  
 
   .link-image img {
     width: 100%;

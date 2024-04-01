@@ -143,8 +143,8 @@ main {
 
 }
 
-#profile > div {
-  background: none;
+#profile > div.current-job, #profile > div.user-links, #profile > div.profile-info  {
+  background: var(--light-mode-body-color);
 }
 
 #profile h1 {
@@ -357,7 +357,7 @@ main {
   display: inline-flex;
   padding: 5px 9px;
   margin: 4px;
-  background-color: var(--light-mode-body-color); 
+  background-color: var(--border-color); 
   border: 0;
   color: var(--light-mode-text-color);
   border-radius: 6px;

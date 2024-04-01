@@ -70,9 +70,6 @@
       <option value="freelance" <%= edit_user.currentJob_employment_type === 'Freelance' ? 'selected' : '' %>>Freelance</option>
     </select>
 
-    <label for="github">Github Username</label>
-    <input type="text" id="github_url" name="github_url" value="<%= edit_user.github_url %>" required>
-
     <label for="linkedin">LinkedIn</label>
     <input type="text" id="linkedin_url" name="linkedin_url" value="<%= edit_user.linkedin_url %>" required>
 
@@ -81,9 +78,6 @@
 
     <label for="currentLocation">Current Location</label>
     <input type="text" id="zipcode" name="zipcode" value="<%= edit_user.zipcode %>" required>
-
-    <label for="recruiterId">Recruiter? Enter your ID here.</label>
-    <input type="text" id="recruiter_id" name="recruiter_id" value="<%= edit_user.recruiter_id %>" required>
 
     <button id="submit">Submit</button>
 
