@@ -26,7 +26,7 @@
       <form id="jobPostForm">
         <div class="form-group">
           <label for="link">Job Link:</label>
-          <input type="text" id="link" name="link" />
+          <input type="text" id="job-link" name="link" />
         </div>
         <button id="submit-button" type="submit">Extract Job Details</button>
       </form>
@@ -59,10 +59,10 @@
           <label for="experienceLevel">Experience Level:</label>
           <select id="experienceLevel" name="experienceLevel" required>
             <option value="">Select Experience Level</option>
-            <option value="internship">Internship</option>
-            <option value="full-time">Full Time</option>
-            <option value="part-time">Part Time</option>
-            <option value="contract">Contract</option>
+            <option value="Internship">Internship</option>
+            <option value="Full Time">Full Time</option>
+            <option value="Part Time">Part Time</option>
+            <option value="Contract">Contract</option>
           </select>
         </div>
         <div class="form-group">
@@ -81,6 +81,10 @@
           <label for="logo_url">Company Logo URL:</label>
           <input type="text" id="logo_url" name="logo_url" />
         </div>
+        <div class="form-group">
+          <label for="link">Application Link:</label>
+          <input type="text" id="link" name="link" />
+        </div>
         <button id="submit-button" type="submit">Submit Job Post</button>
       </form>
     </div>
@@ -90,7 +94,7 @@
       // Form submission handling for extracting job details
       $('#jobPostForm').on('submit', function(e) {
         e.preventDefault();
-        var jobLink = $('#link').val();
+        var jobLink = $('#extract-link').val();
         $.ajax({
           url: '/api/extract-job-details',
           method: 'POST',
@@ -106,11 +110,12 @@
             $('#location').val(response.location);
             $('#salary').val(response.salary);
             $('#salary_max').val(response.salary_max);
-            $('#experienceLevel').val(response.experience_level.toLowerCase());
+            $('#experienceLevel').val(response.experience_level);
             $('#skills').val(response.skills);
             $('#tags').val(response.tags);
             $('#description').val(response.description);
             $('#logo_url').val(response.company_logo);
+$('#link').val(jobLink);
 
             // Show the edit form and hide the extract form
             $('#jobPostForm').hide();
