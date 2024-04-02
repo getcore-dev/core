@@ -19,14 +19,6 @@
         <div class="profile-header-title">
           <h5><%= otheruser.username %></h5>
         </div>
-        <div class="follower-stats">
-          <h5>
-            <a href="/u/<%= otheruser.username %>/followers">Followers: <span id="followerCount"> <%= otheruser.followerCount %> </a></span>
-          </h5>
-          <h5>
-            <a href="/u/<%= otheruser.username %>/following">Following: <span id="followCount"> <%= otheruser.followingCount %></a></span>
-          </h5>
-        </div>
       </div>
       <div id="profile" class="grid-container">
 
@@ -39,16 +31,26 @@
             <% } %>
           </div>
           <div class="profile-details">
-            <h2><%= otheruser.username %></h2>
-            <p id="firstname-display"><%= otheruser.firstname %> <%= otheruser.lastname %></p>
+            <h2><%= otheruser.firstname %> <%= otheruser.lastname%></h2>
+            <p id="firstname-display"> @<%= otheruser.username %></p>
+            <div class="followers-info">
+              <div class="link-display">
+                <a href="/u/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row;">Followers: <span id="followerCount"> <%= otheruser.followerCount %> </a></span>
+              </div>
+              <div class="link-display">
+                <a href="/u/<%= otheruser.username %>/following" style="display: flex; flex-direction:row;">Following: <span id="followCount"> <%= otheruser.followingCount %></a></span>
+              </div>
+            </div>
           </div>
           <% if (user) { %>
           <div class="edit-controls-and-follow-button">
             <% if (otheruser.username === user.username) { %>
-            <button onclick="window.location.href='/edit-profile'">Edit Profile</button>
+            <button id="edit-button" onclick="window.location.href='/edit-profile'" style="margin-bottom: auto;">
+              <span class="material-symbols-outlined">more_horiz</span>
+            </button>
             <% } else { %>
             <form id="followForm" action="/users/<%= otheruser.id %>/<%= isFollowing ? 'unfollow' : 'follow' %>" method="POST">
-              <button type="submit" id="followButton"><%= isFollowing ? 'Unfollow' : 'Follow' %></button>
+              <button type="submit" id="followButton" style="margin-bottom: auto;"><%= isFollowing ? 'Unfollow' : 'Follow' %></button>
             </form>
             <% } %>
           </div>
@@ -294,6 +296,18 @@
 
         tableBody.appendChild(row);
       });
+
+      if (repositories.length === 0) {
+        const tableHead = document.querySelector('#repo-table thead');
+
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        tableHead.style.display = 'none';
+        cell.setAttribute('colspan', '4');
+        cell.textContent = 'No public repositories found.';
+        row.appendChild(cell);
+        tableBody.appendChild(row);
+      }
     }
 
     async function fetchCommitGraph() {

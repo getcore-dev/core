@@ -214,10 +214,19 @@ main {
   /* ... other styles ... */
 }
 
+.followers-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+}
+
 .profile-picture img {
   width: 75px; /* Adjust the size as needed */
   height: 75px;
   border-radius: 50%; /* Circular image */
+  box-shadow: 0 2px 20px rgb(25 116 48);
+  border: 4px solid #4c8d6b !important;
   object-fit: cover;
   border: 1px solid var(--border-color); /* Border color similar to the navbar */
 }
@@ -327,6 +336,10 @@ main {
   position: relative;
 }
 
+button#edit-button {
+  background: none;
+}
+
 #date-flair {
   background-color: #39A77F; 
   border: 1px solid #32936F;
@@ -378,14 +391,22 @@ main {
   grid-area: user-links;
 }
 
+#profile > .user-links {
+  margin: 0;
+}
+
+.github-commit-graph, .user-links {
+  text-align: center;
+}
+
 /* Grid container layout */
 #profile {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* Three columns of equal size */
   grid-template-rows: auto; /* Rows take size based on content */
   grid-template-areas:
-  "info1 info1 job"
-  "git-graph git-graph user-links"
+  "info1 user-links job"
+  "git-graph git-graph git-graph"
   "git-repos git-repos git-repos"
   "user-activity user-activity user-activity"; /* Posts will take up the entire bottom row spanning 3 columns */
   gap: 30px;
@@ -426,6 +447,7 @@ main {
   display: flex;
   flex-direction: column;
   padding-top: 9px;
+  align-items: center !important;
 }
 
 #repo-table {
