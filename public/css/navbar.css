@@ -466,8 +466,9 @@ button.clear-btn {
 .nav-bar {
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  width: 60%;
+  justify-content: space-between;
+  max-width: 1180px;
+  width: 100%;
   gap: 15%;
 }
 
@@ -643,7 +644,7 @@ font-weight: bold;
   .nav-text-and-user-btns {
     position: relative;
     top: 23px;
-    right: -67px;
+    left: 111px;
     }
 
   .notification-popup {

@@ -63,9 +63,10 @@ main {
   flex-direction: row;
   gap: 10px;
   overflow-x: auto;
-  margin-left: 13px;
-  margin-top: 0;
-  -ms-overflow-style: none; 
+  /* margin-left: 13px; */
+  margin-top: 11px;
+  margin-bottom: 7px;
+  -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
@@ -279,11 +280,11 @@ p.job-description {
 
 .jobs-container-header {
   margin: 0 14px 6px 14px;
-  margin-top: 14px;
-    margin-bottom: 8px;
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: baseline;
+  flex-direction: column;
 }
 
 .job-preview {

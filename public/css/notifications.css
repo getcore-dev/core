@@ -31,8 +31,13 @@
 
   .container {
     flex-direction: column;
-    max-width: none;
     align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  main {
+    max-width: 1200px;
   }
 li.notification-item {
     list-style-type: none;
@@ -143,8 +148,7 @@ li.notification-item {
         min-width: 100%;
     }
 
-    .notification-container-header {
-
-        margin-right: auto;
-        }
+    .container {
+        width: 100%;
+    }
 }

@@ -216,7 +216,7 @@ router.post("/job-postings", async (req, res) => {
       tags,
       description,
       logo_url,
-      link
+      link,
     } = req.body;
 
     // Check if the company exists in the database
@@ -270,7 +270,14 @@ router.post("/extract-job-details", async (req, res) => {
 
       const headers = {
         "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
+        Accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Accept-Encoding": "gzip, deflate, br",
+        Connection: "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "Cache-Control": "max-age=0",
       };
 
       const linkResponse = await axios.get(link, { headers, timeout: 5000 });

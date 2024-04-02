@@ -66,6 +66,9 @@ main {
   padding-left: 15px;
 }
 
+.main-container {
+  max-width: 1200px;
+}
 
 #profile {
   display: grid;
@@ -400,7 +403,7 @@ main {
 
   .main-container {
     max-height: calc(100dvh - 58px);
-    overflow-y: auto
+    overflow-y: auto;
   }
   #profile {
     padding: 15px;

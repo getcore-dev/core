@@ -28,6 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="company-info">
                 <img src="${job.company_logo}" alt="${job.company_name} logo" />
                 <p class="company-name">${job.company_name}</p>
+                <span class="material-symbols-outlined" style="margin-left:auto;font-size:1.2rem;">star</span>
+
               </div>
               <h3 class="job-title">${job.title}</h3>
               <h5 class="job-subtitle">${job.location}</h5> 
