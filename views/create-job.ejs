@@ -94,7 +94,7 @@
       // Form submission handling for extracting job details
       $('#jobPostForm').on('submit', function(e) {
         e.preventDefault();
-        var jobLink = $('#extract-link').val();
+        var jobLink = $('#job-link').val();
         $.ajax({
           url: '/api/extract-job-details',
           method: 'POST',
