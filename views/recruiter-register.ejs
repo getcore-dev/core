@@ -1,109 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Join</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="css/register.css" />
-    <link rel="stylesheet" href="css/navbar.css" />
-    <link rel="shortcut icon" href="img/core.png" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    />
-  </head>
-  <body>
-    <%- include('partials/navbar', { pagePath: 'home' }) %>
-    <main>
-      <div id="registration">
-        <h1>Recruiter Registration</h1>
-        <form action="/register-recruiter" method="POST">
-          <div class="input-container">
-            <input
-              type="text"
-              id="firstname"
-              name="firstname"
-              placeholder="First Name"
-              required
-            />
-          </div>
-          <div class="input-container">
-            <input
-              type="text"
-              id="lastname"
-              name="lastname"
-              placeholder="Last Name"
-              required
-            />
-          </div>
-          <div class="input-container">
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Work Email"
-              required
-            />
-          </div>
-          <div class="input-container">
-            <input
-              type="text"
-              id="company"
-              name="company"
-              placeholder="Company Name"
-              required
-            />
-          </div>
-          <div class="input-container">
-            <input
-              type="text"
-              id="companyLocation"
-              name="companyLocation"
-              placeholder="Company Location"
-              required
-            />
-          </div>
-          <div class="input-container">
-            <input
-              type="text"
-              id="username"
-              name="username"
-              placeholder="Username"
-              required
-              maxlength="25"
-            />
-          </div>
-          <div class="input-container">
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Password"
-              required
-            />
-          </div>
-          <div class="input-container">
-            <input
-              type="text"
-              id="zipcode"
-              name="zipcode"
-              placeholder="Zip Code"
-              required
-              style="display: block"
-            />
-          </div>
-          <button
-            type="submit"
-            id="register-button"
-            style="position: relative; top: 34.5px; left: 157px"
-          >
-            Register
-          </button>
-        </form>
-        <a href="/login" id="login-text"
-          ><button id="login-button">Login</button></a
-        >
-      </div>
-    </main>
-  </body>
+
+<head>
+  <title>Join</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/register.css" />
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="shortcut icon" href="/img/core.png" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'home' }) %>
+  <main>
+    <div id="registration">
+      <h1>Recruiter Registration</h1>
+      <form action="/register-recruiter" method="POST">
+        <div class="input-container">
+          <input type="text" id="firstname" name="firstname" placeholder="First Name" required />
+        </div>
+        <div class="input-container">
+          <input type="text" id="lastname" name="lastname" placeholder="Last Name" required />
+        </div>
+        <div class="input-container">
+          <input type="email" id="email" name="email" placeholder="Work Email" required />
+        </div>
+        <div class="input-container">
+          <input type="text" id="company" name="company" placeholder="Company Name" required />
+        </div>
+        <div class="input-container">
+          <input type="text" id="companyLocation" name="companyLocation" placeholder="Company Location" required />
+        </div>
+        <div class="input-container">
+          <input type="text" id="username" name="username" placeholder="Username" required maxlength="25" />
+        </div>
+        <div class="input-container">
+          <input type="password" id="password" name="password" placeholder="Password" required />
+        </div>
+        <div class="input-container">
+          <input type="text" id="zipcode" name="zipcode" placeholder="Zip Code" required style="display: block" />
+        </div>
+        <button type="submit" id="register-button" style="position: relative; top: 34.5px; left: 157px">
+          Register
+        </button>
+      </form>
+      <a href="/login" id="login-text"><button id="login-button">Login</button></a>
+    </div>
+  </main>
+</body>
+
 </html>

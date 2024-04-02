@@ -360,6 +360,18 @@ p.job-description {
   position: relative;
 }
 
+.job-posting-flairs {
+  display: flex;
+  flex-direction: row;
+  gap: 7px;
+}
+
+.job-main {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
 #pay-flair {
   background: #0C8346;
   border: 1px solid #0E954F;

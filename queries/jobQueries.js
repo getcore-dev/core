@@ -6,17 +6,21 @@ const jobQueries = {
       const result = await sql.query(`
         SELECT 
           JobPostings.*,
-          companies.name AS company_name,
+          companies.name AS company_name, 
           companies.logo AS company_logo,
           companies.location AS company_location,
-          companies.description AS company_description
-        FROM 
-          JobPostings
-        LEFT JOIN 
-          companies ON JobPostings.company_id = companies.id
-        ORDER BY 
-          JobPostings.postedDate DESC
+          companies.description AS company_description,
+          (
+            SELECT STRING_AGG(JobTags.tagName, ', ') 
+            FROM JobPostingsTags 
+            INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+            WHERE JobPostingsTags.jobId = JobPostings.id
+          ) AS tags
+        FROM JobPostings
+        LEFT JOIN companies ON JobPostings.company_id = companies.id
+        ORDER BY JobPostings.postedDate DESC
       `);
+
       const jobs = result.recordset;
       // Cache the result for future requests
       return jobs;
@@ -51,18 +55,21 @@ const jobQueries = {
   findById: async (id) => {
     try {
       const result = await sql.query`
-        SELECT
-          JobPostings.*, 
+        SELECT 
+          JobPostings.*,
           companies.name AS company_name,
           companies.logo AS company_logo,
           companies.location AS company_location,
-          companies.description AS company_description
-        FROM
-          JobPostings
-        LEFT JOIN
-          companies ON JobPostings.company_id = companies.id
-        WHERE
-          JobPostings.id = ${id}
+          companies.description AS company_description,
+          (
+            SELECT STRING_AGG(JobTags.tagName, ', ') 
+            FROM JobPostingsTags 
+            INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+            WHERE JobPostingsTags.jobId = JobPostings.id
+          ) AS tags
+        FROM JobPostings
+        LEFT JOIN companies ON JobPostings.company_id = companies.id
+        WHERE JobPostings.id = ${id}
       `;
       const job = result.recordset[0];
       return job;

@@ -49,6 +49,12 @@ body {
 }
 
 
+.job {
+  width: auto;
+  flex: auto;
+}
+
+
 .post:hover {
   cursor: pointer;
 }
@@ -751,9 +757,10 @@ div .mini-link-desc {
 
 
 @media (max-width: 768px) {
-  .job { 
-    min-width: 200px;
-    }
+  .jobslist .job { 
+    min-width: 160px;
+    max-width: 200px;
+  }
     
     #posts-container {
       border: 0;
@@ -866,6 +873,7 @@ div .mini-link-desc {
 
   .jobslist {
     display: flex;
+    flex-wrap: nowrap; /* Prevent wrapping of job elements */
     flex-direction: row;
     padding-left: 10px;
     padding-right: 10px;

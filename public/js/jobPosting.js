@@ -33,6 +33,16 @@ function lazyLoadJobDetails(jobId) {
       const jobDetailsContainer = document.querySelector(
         ".job-details-container"
       );
+      const tagsArray = job.tags ? job.tags[1].split(", ") : [];
+      const maxTags = 50; // Adjust this value based on your desired maximum number of tags
+      const displayedTags = tagsArray.slice(0, maxTags);
+      const tagsHTML = displayedTags
+        .map(
+          (tag) =>
+            `<span class="job-flair" id="location-flair" style="margin:2px;">${tag}</span>`
+        )
+        .join("");
+      const remainingTags = tagsArray.length - maxTags;
       jobDetailsContainer.innerHTML = `
           <div class="job-listing">
             <div class="company-info">
@@ -70,6 +80,14 @@ function lazyLoadJobDetails(jobId) {
         job.salary_max
       )}</span>
             </div>
+            <div class="job-skills">
+            ${tagsHTML}
+            ${
+              remainingTags > 0
+                ? `<span class="see-more">+${remainingTags} more</span>`
+                : ""
+            }
+            </div>
               <div class="job-description">
                 <h4>Job Description</h4>
                 <p>${job.description}</p>
@@ -81,7 +99,7 @@ function lazyLoadJobDetails(jobId) {
               <div class="apply-link">
                 <a href="${
                   job.link
-                }" target="_blank" class="button">Apply Now</a>
+                }" target="_blank" id="submit-button">Apply Now</a>
               </div>
             </div>
           </div>
