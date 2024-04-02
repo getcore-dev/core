@@ -238,14 +238,13 @@ router.post("/job-postings", async (req, res) => {
       location,
       new Date(),
       companyId,
-      "",
+      link,
       null,
       tags.split(",").map((tag) => tag.trim()),
       description,
       salary_max,
       null,
-      skills.split(",").map((skill) => skill.trim()),
-      link
+      skills.split(",").map((skill) => skill.trim())
     );
 
     res
