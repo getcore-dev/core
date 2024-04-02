@@ -32,6 +32,7 @@
   .container {
     flex-direction: column;
     max-width: none;
+    align-items: center;
   }
 li.notification-item {
     list-style-type: none;
@@ -57,9 +58,14 @@ li.notification-item {
 .notification-selector {
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: 2rem;
     overflow-x: auto;
     padding: 6px 0px;
+}
+
+#notification-list {
+    min-width: 600px;
+    max-width: 700px;
 }
 
 .notification-header {
@@ -129,4 +135,16 @@ li.notification-item {
         color: var(--dark-mode-text-color);
     }
 
+}
+
+@media (max-width: 768px) {
+
+    #notification-list {
+        min-width: 100%;
+    }
+
+    .notification-container-header {
+
+        margin-right: auto;
+        }
 }

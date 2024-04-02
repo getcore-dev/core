@@ -751,6 +751,10 @@ div .mini-link-desc {
   gap: 5px;
 }
 
+#posts-container > h5 {
+  display: none;
+}
+
 .comm-description {
   padding: 5px 0;
 }
@@ -760,6 +764,10 @@ div .mini-link-desc {
   .jobslist .job { 
     min-width: 160px;
     max-width: 200px;
+  }
+
+  #posts-container > h5 {
+    display: block;
   }
     
     #posts-container {

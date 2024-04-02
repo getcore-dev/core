@@ -216,13 +216,26 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
 
       // Fetch the user reaction for the current comment
       if (user) {
+        const sqlRequest = new sql.Request();
+        sqlRequest.input("commentId", sql.Int, comment.id);
+        sqlRequest.input("userId", sql.Int, user.id);
+
         const reactionQuery = `
-        SELECT action_type
-        FROM UserCommentActions
-        WHERE comment_id = CAST('${comment.id}' AS VARCHAR(50)) AND user_id = CAST(${user.id} AS NVARCHAR(50));
-      `;
-        const reactionResult = await sql.query(reactionQuery);
-        comment.userReaction = reactionResult.recordset[0]?.action_type || null;
+          SELECT action_type
+          FROM UserCommentActions
+          WHERE comment_id = @commentId AND user_id = @userId;
+        `;
+
+        try {
+          const reactionResult = await sqlRequest.query(reactionQuery);
+          comment.userReaction =
+            reactionResult.recordset && reactionResult.recordset[0]
+              ? reactionResult.recordset[0].action_type
+              : null;
+        } catch (error) {
+          console.error("Database query error:", error);
+          // Handle the error appropriately
+        }
       } else {
         comment.userReaction = null;
       }

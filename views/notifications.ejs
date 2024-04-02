@@ -16,18 +16,20 @@
 
 <body>
   <%- include('partials/navbar', { pagePath: 'notifications', user: user }) %>
-
-  <div class="container">
-    <div class="notification-container-header">
-      <div class="notification-selector">
-        <button class="notification-selector-btn">All</button>
-        <button class="notification-selector-btn">Unread</button>
-        <button class="notification-selector-btn">Read</button>
+  <main>
+    <%- include('partials/com-btn-container', { }) %>
+    <div class="container">
+      <div class="notification-container-header">
+        <div class="notification-selector">
+          <button class="notification-selector-btn">All</button>
+          <button class="notification-selector-btn">Unread</button>
+          <button class="notification-selector-btn">Read</button>
+        </div>
+      </div>
+      <div id="notification-list" class="column">
       </div>
     </div>
-    <div id="notification-list" class="column">
-    </div>
-  </div>
+  </main>
 
   <script>
     <% if (user) { %>
@@ -60,19 +62,19 @@
         if (notification.type === 'NEW_COMMENT') {
           notificationHeader.textContent = '💬 New Comment';
           notificationText.textContent = `${notification.senderUsername} commented on your post`;
-          notificationText.onclick = function() {
+          notificationDiv.onclick = function() {
             window.location.href = "/posts/" + notification.postId;
           };
         } else if (notification.type === ['like', 'love', 'celebrate', 'curious', 'boost']) {
           notificationHeader.textContent = '🎉 New Reaction';
           notificationText.textContent = `${notification.senderUsername} liked your post`;
-          notificationText.onclick = function() {
+          notificationDiv.onclick = function() {
             window.location.href = "/posts/" + notification.postId;
           };
         } else if (notification.type === 'follow') {
           notificationHeader.textContent = '👤 New Follower';
           notificationText.textContent = `${notification.senderUsername} followed you`;
-          notificationText.onclick = function() {
+          notificationDiv.onclick = function() {
             window.location.href = "/u/" + notification.senderUsername;
           };
         }
