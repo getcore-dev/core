@@ -216,6 +216,7 @@ router.post("/job-postings", async (req, res) => {
       tags,
       description,
       logo_url,
+      link
     } = req.body;
 
     // Check if the company exists in the database
@@ -237,7 +238,7 @@ router.post("/job-postings", async (req, res) => {
       location,
       new Date(),
       companyId,
-      "",
+      link,
       null,
       tags.split(",").map((tag) => tag.trim()),
       description,
@@ -287,13 +288,16 @@ router.post("/extract-job-details", async (req, res) => {
       - company_name (as simple as possible, not amazon inc, just Amazon. If it's a startup, use the startup name)
       - company_description (write a short paragraph about the company, where they're located, their mission, etc)
       - location (City, State(full name), Country)
-      - salary (integer only, no currency symbol, multiply by 2080 if salary is in hourly wage, if salary is in monthly multiply by 12)
-      - salary_max (integer only, no currency symbol, multiply by 2080 if salary is in hourly wage, if salary is in monthly multiply by 12, if no maximum salary, give the same value as salary)
-      - experience_level (internship, full time, part time, contract)
-      - skills (prefer single word skills, as a comma-separated list)
-      - tags (prefer things that a person would search, single word tags, keep it simple. as a comma-separated list)
-      - description (a paragraph description of the job, use the HTML source as inspiration and try to add more relevant information that's not redundant)
+      - salary (integer only, no currency symbol, no matter what format the salary in (hourly, monthly, weekly) convert to yearly salary)
+      - salary_max (integer only, no currency symbol, no matter what format the salary in (hourly, monthly, weekly) convert to yearly salary)
+      - experience_level ("Internship", "Entry Level", "Junior", "Mid Level", "Senior" or "Lead" only)
+      - skills (6-10 skills, prefer single word skills, as a comma-separated list)
+      - tags (at least 10 tags relevant to the job posting)
+      - description (try to take up to 3 paragraphs from the original source)
       - company_logo (logo URL of the company, try to extract it from the HTML source or provide a relevant URL if available)
+      - benefits (as a comma-separated list) 
+      
+      
       
       Provide the extracted information in JSON format.`;
 
