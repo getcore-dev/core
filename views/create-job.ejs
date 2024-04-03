@@ -17,16 +17,15 @@
 </head>
 
 <body>
-  <%- include('partials/navbar', { pagePath: 'home' }) %>
+  <%- include('partials/navbar', { pagePath: 'jobs/create' }) %>
   <main>
     <div class="post-header">
-      <h2 id="post-header-title">Create a Job Post</h2>
+      <h5 id="post-header-title">Create a job listing</h5>
     </div>
     <div class="main-container">
       <form id="jobPostForm">
         <div class="form-group">
-          <label for="link">Job Link:</label>
-          <input type="text" id="job-link" name="link" />
+          <input type="text" id="job-link" name="link" placeholder="Job URL"/>
         </div>
         <button id="submit-button" type="submit">Extract Job Details</button>
       </form>
