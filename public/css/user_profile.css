@@ -443,6 +443,11 @@ button#edit-button {
   
 }
 
+
+.profile-details > h2, .profile-details > p#firstname-display {
+  margin-left: 4px;
+}
+
 .commit-graph {
   display: flex;
   flex-direction: column;
@@ -498,6 +503,7 @@ button#edit-button {
 .profile-info {
   display: flex;
   grid-area: info1;
+  margin-bottom: 20px;
 }
 
 .current-job {
@@ -623,8 +629,6 @@ button#edit-button {
 
   .profile-info, .current-job, .learning-progress, .achievements {
       background-color: rgb(30,30,30);
-      border-radius: 5px; 
-      padding: 10px; 
   }
 
   .profile-info p, .current-job p, .learning-progress p, .achievements p {

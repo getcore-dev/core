@@ -606,9 +606,9 @@
             </div>
             <div class="similar-posts">
               <% similarPosts.forEach(similarPost => { %>
-              <div class="post">
+              <div class="post" onclick="window.location.href='/posts/<%= similarPost.id %>'">
                 <div class="post-content">
-                  <div class="post-header" onclick="window.location.href='/posts/<%= similarPost.id %>'">
+                  <div class="post-header">
                     <% 
                     function formatDate(dateString) {
                     const date = new Date(dateString);
@@ -633,8 +633,8 @@
                       <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>
                     </div>
                   </div>
-                  <div class="title" onclick="window.location.href='/posts/<%= post.id %>'"><%= similarPost.title %></div>
-                  <div class="link-preview" onclick="window.location.href='/posts/<%= similarPost.id %>'">
+                  <div class="title"><%= similarPost.title %></div>
+                  <div class="link-preview">
                     <% if (similarPost.link) { %>
                     <div class="link">
                       <%= similarPost.link %>

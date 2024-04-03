@@ -295,6 +295,14 @@ a.comment-url:visited {
   transition: background-color 0.15s;
 }
 
+.link-preview {
+  background-color: var(--light-mode-body-color);
+  border-radius: 18px;
+  margin: 16px 0px;
+  border: 1px solid var(--border-color);
+  margin-top: 10px;
+}
+
 
 .nested-comment .comment {
   box-sizing: border-box;
@@ -1228,6 +1236,12 @@ p.preview-description {
     background-color: var(--dark-mode-hover-background-color);
   }
 
+  .link-preview {
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
+  }
+  
+
   .nested-comment.level-1 > .comment:first-child {
     background-color: var(--dark-mode-body-color);
   }
@@ -1350,10 +1364,6 @@ p.preview-description {
   .input-container , .input-container textarea, .comment-container, .comment-container textarea {
     border: 0;
     color: var(--dark-mode-text-color);
-  }
-
-  .link-preview {
-    background: none;
   }
 
   .preview-title, .preview-description {

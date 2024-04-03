@@ -148,6 +148,15 @@ li.notification-item {
         min-width: 100%;
     }
 
+    .notification-container-header {
+        width: 100%;
+        padding-left: 20px;
+    }
+
+    .notification-selector {
+        gap: 15px;
+    }
+
     .container {
         width: 100%;
     }
