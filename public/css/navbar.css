@@ -371,7 +371,7 @@ h1, h2, h3, h4, h5, p {
 .avatar-dropdown-item #nb-icon {
   padding: 0;
   margin: 4px 10px !important;
-  font-size: 23px;
+  font-size: 19px;
 }
 
 
@@ -479,7 +479,7 @@ button.clear-btn {
   left: 0;
   height: calc(100dvh - 65px);
   overflow-x: hidden;
-  transition: transform 0.3s ease-out; /* Updated for smoother transition */
+  transition: transform 0.4s cubic-bezier(0.87, 0.08, 0.43, 1.03); /* Updated for smoother transition */
   padding-top: 65px;
   background-color: var(--light-mode-main-color);
   z-index: 4;
@@ -547,7 +547,7 @@ font-weight: bold;
 }
 
 .user-links {
-  margin-top: 13px
+  margin-top: 0;
 }
 
 
@@ -680,7 +680,9 @@ font-weight: bold;
     width: 100%;
   }
 
-
+  .avatar-dropdown-item #nb-icon {
+    font-size: 23px;
+  }
 
   .navbar-button {
     padding: 7px 9px;
@@ -845,14 +847,14 @@ font-weight: bold;
 }
 
 .user-links.slide-left {
-  transform: translateX(-145px); /* Adjust the value based on the desired slide distance */
+  transform: translateX(-115px); /* Adjust the value based on the desired slide distance */
 }
 
 .user-links {
   position: relative;
   display: flex;
   align-items: center;
-  transition: transform 0.2s ease-out;
+  transition: transform 0.30s linear;
 }
 
 .nav-avatar {
@@ -861,7 +863,6 @@ font-weight: bold;
 }
 
 .avatar-dropdown {
-  border-left: 1px solid var(--border-color);
   position: absolute;
   right: 0;
   z-index: 1;
@@ -870,15 +871,18 @@ font-weight: bold;
   flex-direction: row;
   align-items: center;
   padding: 10px;
-  transform: translateX(100%);
-  transition: transform 0.17s ease-out;
+  transform: translateX(30%);
+  transition: transform 0.23s linear;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
 }
 
 .avatar-dropdown.open {
   transform: translateX(-30px);
+  transition: opacity 0.3s ease;
   opacity: 1;
+  pointer-events: all;
   visibility: visible;
 }
 
@@ -1054,10 +1058,6 @@ font-weight: bold;
 }
 .navbar-user-info {
   color: #fff;
-}
-
-.avatar-dropdown {
-  border-left: 1px solid var(--dark-mode-border-color);
 }
 
   .menu-content a:hover {
@@ -1338,6 +1338,10 @@ height: auto;
   div.nav-text-container.hidden {
     opacity: 0;
   }
+
+  .user-links.slide-left {
+    transform: translateX(-130px); /* Adjust the value based on the desired slide distance */
+  }  
 
   #com-btn-container {
       display: none;
