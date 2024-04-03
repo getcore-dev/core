@@ -120,8 +120,8 @@ div.form-group {
     margin-top: 5px;
     border-radius: 10px;
     margin-bottom: 10px;
-}
-
+    }
+    
 .main-container select {
     padding: 8px;
     border: 0;
@@ -129,9 +129,14 @@ div.form-group {
     border-radius: 6px;
 }
 
-select#community_choice, input#title, input#link, #EasyMDEContainer, tags-select {
+select#community_choice, input#title, input#link, #EasyMDEContainer, tags-select, div.CodeMirror-code, textarea.select2-search__field {
     font-size: 1.2rem !important;
     }
+    
+i.fa {
+    font-size: 1.1rem !important;
+    }
+    
 
 
 .add-post-button {
