@@ -533,6 +533,7 @@ font-weight: bold;
   height: 38px;
   object-fit: cover; 
   overflow: hidden;
+  z-index: 10;
 }
 #search-bar {
   padding: 4px 6px;
@@ -638,6 +639,7 @@ font-weight: bold;
 
   .user-btns #nb-icon {
     font-weight: 300;
+    z-index: 2;
   }
 
   #search-bar {
@@ -675,6 +677,7 @@ font-weight: bold;
   .latest-commit-banner {
     top: 45px;
     margin-top: 0px;
+    width: 100%;
   }
 
 
@@ -849,7 +852,7 @@ font-weight: bold;
   position: relative;
   display: flex;
   align-items: center;
-  transition: transform 0.3s ease-out;
+  transition: transform 0.2s ease-out;
 }
 
 .nav-avatar {
@@ -868,7 +871,7 @@ font-weight: bold;
   align-items: center;
   padding: 10px;
   transform: translateX(100%);
-  transition: transform 0.3s ease-out;
+  transition: transform 0.17s ease-out;
   opacity: 0;
   visibility: hidden;
 }

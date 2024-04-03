@@ -451,6 +451,7 @@ button#edit-button {
 }
 
 #repo-table {
+  width: 100%;
   padding-top: 9px;
 }
 

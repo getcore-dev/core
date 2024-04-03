@@ -119,7 +119,6 @@
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Description</th>
                   <th>Stars</th>
                   <th>Language</th>
                 </tr>
@@ -281,10 +280,6 @@
         nameLink.textContent = repo.name;
         nameCell.appendChild(nameLink);
         row.appendChild(nameCell);
-
-        const descriptionCell = document.createElement('td');
-        descriptionCell.textContent = repo.description || '';
-        row.appendChild(descriptionCell);
 
         const starsCell = document.createElement('td');
         starsCell.textContent = repo.stars;
