@@ -32,50 +32,58 @@
       </form>
       <form id="editJobPostForm" style="display: none;">
         <div class="form-group">
-          <label for="title">Job Title:</label>
-          <input type="text" id="title" name="title" required />
+          <label for="link">Application Link:</label>
+          <input type="text" id="link" name="link" />
         </div>
         <div class="form-group">
           <label for="company">Company Name:</label>
-          <input type="text" id="company" name="company" required />
-        </div>
-        <div class="form-group">
-          <label for="company_description">Company Description:</label>
-          <textarea id="company_description" name="company_description"></textarea>
-        </div>
-        <div class="form-group">
-          <label for="location">Location:</label>
-          <input type="text" id="location" name="location" required />
-        </div>
-        <div class="form-group">
-          <label for="salary">Salary:</label>
-          <input type="number" id="salary" name="salary" />
-        </div>
-        <div class="form-group">
-          <label for="salary_max">Salary Max:</label>
-          <input type="number" id="salary_max" name="salary_max" />
-        </div>
-<div class="form-group"> <label for="experienceLevel">Experience Level:</label> <select id="experienceLevel" name="experienceLevel" required> <option value="">Select Experience Level</option> <option value="Internship">Internship</option> <option value="Entry Level">Entry Level</option> <option value="Junior">Junior (1-3 years)</option> <option value="Mid Level">Mid Level (3-5 years)</option> <option value="Senior">Senior (5+ years)</option> <option value="Lead">Lead/Manager</option> </select> </div>
-
-        <div class="form-group">
-          <label for="skills">Skills:</label>
-          <input type="text" id="skills" name="skills" />
-        </div>
-        <div class="form-group">
-          <label for="tags">Tags:</label>
-          <input type="text" id="tags" name="tags" />
-        </div>
-        <div class="form-group">
-          <label for="description">Job Description:</label>
-          <textarea id="description" name="description" required></textarea>
+          <input type="text" id="company" name="company" placeholder="Job Company Name" required />
         </div>
         <div class="form-group">
           <label for="logo_url">Company Logo URL:</label>
           <input type="text" id="logo_url" name="logo_url" />
         </div>
         <div class="form-group">
-          <label for="link">Application Link:</label>
-          <input type="text" id="link" name="link" />
+          <label for="company_description">Company Description:</label>
+          <textarea id="company_description" name="company_description" placeholder="Summary of the company (optional)"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="title">Job Title:</label>
+          <input type="text" id="title" name="title" placeholder="Job Title" required />
+        </div>
+        <div class="form-group">
+          <label for="description">Job Description:</label>
+          <textarea id="description" name="description" placeholder="Job Description" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="benefits">Job Benefits:</label>
+          <textarea id="benefits" name="benefits" placeholder="Job Benefits" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="additional-info">Additional Information:</label>
+          <textarea id="additional-information" name="additional-information" placeholder="Additional Information" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="location">Location:</label>
+          <input type="text" id="location" name="location" placeholder="City, State, Country" required />
+        </div>
+        <div class="form-group">
+          <label for="salary">Salary:</label>
+          <input type="number" id="salary" name="salary" placeholder="Annual Salary" />
+        </div>
+        <div class="form-group">
+          <label for="salary_max">Salary Max:</label>
+          <input type="number" id="salary_max" name="salary_max" placeholder="Max Annual Salary (optional)" />
+        </div>
+<div class="form-group"> <label for="experienceLevel">Experience Level:</label> <select id="experienceLevel" name="experienceLevel" required> <option value="">Select Experience Level</option> <option value="Internship">Internship</option> <option value="Entry Level">Entry Level</option> <option value="Junior">Junior (1-3 years)</option> <option value="Mid Level">Mid Level (3-5 years)</option> <option value="Senior">Senior (5+ years)</option> <option value="Lead">Lead/Manager</option> </select> </div>
+
+        <div class="form-group">
+          <label for="skills">Skills:</label>
+          <input type="text" id="skills" name="skills" placeholder="Skills (comma separated)" />
+        </div>
+        <div class="form-group">
+          <label for="tags">Tags:</label>
+          <input type="text" id="tags" name="tags" placeholder="Tags (comma separated"/>
         </div>
         <button id="submit-button" type="submit">Submit Job Post</button>
       </form>
