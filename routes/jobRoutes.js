@@ -20,7 +20,7 @@ router.get("/:id", async (req, res) => {
   try {
     const id = req.params.id;
 
-    res.render("job-posting.ejs", { job_id: id });
+    res.render("job-posting.ejs", { job_id: id, user: req.user });
   } catch (err) {
     console.error("Error fetching job postings:", err);
     res.status(500).send("Error fetching job postings");
