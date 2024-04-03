@@ -47,16 +47,16 @@
         <input type="hidden" id="post_type" name="post_type" value="discussion" />
         <div class="form-group" id="community">
           <label for="community">Community:</label>
-          <select id="community_choice" name="community_id">
+          <select id="community_choice" name="community_id" placeholder
           </select>
         </div>
         <div class="form-group">
           <input type="hidden" name="userId" value="<%= user.id %>" />
           <label for="title">Title:</label>
-          <input type="text" id="title" name="title" required />
+          <input type="text" id="title" name="title" placeholder="Title" style="font-size: 1.3rem;" required />
           <div class="form-group" id="link-field">
             <label for="link" id="link-label">Link:</label>
-            <input type="text" id="link" name="link" />
+            <input type="text" id="link" name="link" placeholder="Link" />
           </div>
           <div class="form-group">
             <label for="content">Content:</label>
@@ -132,6 +132,7 @@
       $('.tags-select2').select2({
         width: '100%', // Full width of its container
         tags: true, // Allows user to create new tags
+placeholder: "Tags",
         tokenSeparators: [',', ' '] // Optional: Defines separators for tokenization
       });
 

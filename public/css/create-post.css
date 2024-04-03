@@ -110,10 +110,10 @@ div.form-group {
     box-sizing: border-box;
     padding: 8px;
     font-size: 16px;
-    border: 1px solid var(--border-color);
+    border: 0;
     border-radius: 6px;
     margin: 9px 0px; /* Add margin for external spacing */
-    background: var(--light-mode-body-color);
+    background: 0;
 }
 
 .EasyMDEContainer {
@@ -125,7 +125,8 @@ div.form-group {
 .main-container select {
     padding: 8px;
     font-size: 16px;
-    border: 1px solid var(--border-color);
+    border: 0;
+    background: 0;
     border-radius: 6px;
 }
 
@@ -258,17 +259,18 @@ div.form-group {
 
 .editor-toolbar {
     margin-bottom: 10px;
-    border: 1px solid var(--border-color) !important;
+    font-size: 1.1rem;
+    border: 0 !important;
     border-radius: 10px !important;
-    background: var(--light-mode-body-color);
+    background: 0;
 }
 
 .select2-container--default.select2-container--focus .select2-selection--multiple {
-    border: 1px solid var(--border-color) !important;
+    border: 0 !important;
 }
 
 .select2-container--default .select2-selection--multiple {
-    border: 1px solid var(--border-color) !important;
+    border: 0 !important;
 }
 
 /* Dark Mode Styles */
@@ -294,8 +296,8 @@ div.form-group {
     }
 
     .main-container select {
-        background-color: var(--dark-mode-main-color);
-        border-color: var(--dark-mode-border-color);
+        background-color: 0;
+        border-color: 0;
         color: var(--dark-mode-text-color);
     }
 
@@ -311,26 +313,25 @@ div.form-group {
     
     
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
-        background-color: var(--dark-mode-main-color) !important;
-        border-color: var(--dark-mode-border-color) !important;
+        background-color: 0 !important;
+        border-color: 0 !important;
         color: var(--dark-mode-text-color);
     }
 
     .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-        border-color: var(--dark-mode-border-color) !important;
+        border-color: 0 !important;
     }
 
     .main-container input[type="text"],
     .main-container textarea, .main-container input[type="number"], .main-container input[type="date"] {
-        background-color: var(--dark-mode-main-color);
-        border-color: var(--dark-mode-border-color);
+        background: 0;
+        border: 0;
         color: var(--dark-mode-text-color);
     }
 
     div.form-group .CodeMirror, div.form-group .select2-container--default .select2-selection--multiple, div.form-group .editor-toolbar, div.form-group .select2-dropdown select2-dropdown--above {
-        background-color: var(--dark-mode-main-color) !important;
-        border: 1px solid var(--dark-mode-border-color) !important;
-
+        background: 0;
+        border: 0;
         color: var(--dark-mode-text-color);
     }
 
@@ -341,7 +342,7 @@ div.form-group {
 
     .main-container .post,
     .main-container .comment {
-        border-bottom-color: #333; /* Darker border color for posts and comments */
+        border-bottom-color: var(--dark-mode-border-color); /* Darker border color for posts and comments */
     }
 
     .main-container .post-title,
