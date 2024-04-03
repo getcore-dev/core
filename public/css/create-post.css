@@ -82,8 +82,7 @@ div.form-group {
 .post-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin: 0px 12px;
+    margin: 0px 14px;
     margin-top: 16px;
     margin-bottom: 12px;
 }
@@ -120,8 +119,8 @@ div.form-group {
     margin-top: 5px;
     border-radius: 10px;
     margin-bottom: 10px;
-}
-
+    }
+    
 .main-container select {
     padding: 8px;
     border: 0;
@@ -129,9 +128,14 @@ div.form-group {
     border-radius: 6px;
 }
 
-select#community_choice, input#title, input#link, #EasyMDEContainer, tags-select {
+select#community_choice, input#title, input#link, #EasyMDEContainer, tags-select, div.CodeMirror-code, textarea.select2-search__field {
     font-size: 1.2rem !important;
     }
+    
+i.fa {
+    font-size: 1.1rem !important;
+    }
+    
 
 
 .add-post-button {
@@ -211,10 +215,10 @@ select#community_choice, input#title, input#link, #EasyMDEContainer, tags-select
   }
 
   .EasyMDEContainer .CodeMirror {
-    background: var(--light-mode-body-color);
+    background: 0;
     box-sizing: border-box;
     height: auto;
-    border: 1px solid var(--border-color) !important;
+    border: 0 !important;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     padding: 10px;
