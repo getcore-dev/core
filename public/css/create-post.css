@@ -132,6 +132,10 @@ select#community_choice, input#title, input#link, #EasyMDEContainer, tags-select
     font-size: 1.2rem !important;
     }
     
+    textarea.select2-search__field {
+        height: 1.4rem;
+        font-weight: 300;
+        }
 i.fa {
     font-size: 1.1rem !important;
     }
@@ -270,6 +274,8 @@ i.fa {
     border: 0 !important;
     border-radius: 10px !important;
     background: 0;
+    position: fixed;
+    bottom: 0;
 }
 
 .select2-container--default.select2-container--focus .select2-selection--multiple {
