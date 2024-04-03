@@ -18,7 +18,7 @@ function getTintFromName(name) {
   const tintColor = `#${color}90`; // Append "80" to the color to make it lighter
   return tintColor;
 }
-    let navText = '/';
+    let navText = '';
     let user = locals.user; 
     let communityId = locals.communityId;
     let postUser = locals.post && locals.post.user && locals.post.user.username ? locals.post.user.username : null;
@@ -167,17 +167,26 @@ function getTintFromName(name) {
           <% } else { %>
           <% } %>
 
+        </ul>
+        <ul class="user-links">
           <li>
             <% if (user && user.avatar) { %>
             <div class="nav-avatar">
               <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar">
 
-              <div class="avatar-dropdown" style="display: none;">
+              <div class="avatar-dropdown">
 
                 <a href="/u/<%= user.username %>">
                   <div class="avatar-dropdown-item">
                     <span class="material-symbols-outlined" id="nb-icon">
                       person
+                    </span>
+                  </div>
+                </a>
+                <a href="/favorites">
+                  <div class="avatar-dropdown-item">
+                    <span class="material-symbols-outlined" id="nb-icon">
+                      star
                     </span>
                   </div>
                 </a>
@@ -205,7 +214,7 @@ function getTintFromName(name) {
             <% } %>
             </a>
           </li>
-        </ul>
+          <ul>
       </div>
     </div>
   </div>
@@ -216,8 +225,8 @@ function getTintFromName(name) {
         <span class="latest-commit-date"></span>
       </div>
       <button id="closeCommitBanner">
-<span class="material-symbols-outlined">close</span>
-</button>
+        <span class="material-symbols-outlined">close</span>
+      </button>
     </div>
   </div>
 </nav>
@@ -569,19 +578,15 @@ function getTintFromName(name) {
 
   <% if (user) { %>
 
-  document.addEventListener('click', function(event) {
-    var avatar = document.getElementById('user-avatar');
-    var avatarDropdown = document.querySelector('.avatar-dropdown');
+  const userAvatar = document.getElementById('user-avatar');
+  const avatarDropdown = document.querySelector('.avatar-dropdown');
+  const userLinks = document.querySelector('.user-links');
+  const userText = document.querySelector('.nav-text-container');
 
-    if (avatar && avatar.contains(event.target)) {
-      if (avatarDropdown.style.display === 'flex') {
-        avatarDropdown.style.display = 'none';
-      } else {
-        avatarDropdown.style.display = 'flex';
-      }
-    } else if (!avatarDropdown.contains(event.target)) {
-      avatarDropdown.style.display = 'none';
-    }
+  userAvatar.addEventListener('click', () => {
+    avatarDropdown.classList.toggle('open');
+    userLinks.classList.toggle('slide-left');
+    userText.classList.toggle('hidden');
   });
 
   <% } %>

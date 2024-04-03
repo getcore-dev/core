@@ -31,8 +31,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 <span class="material-symbols-outlined" style="margin-left:auto;font-size:1.2rem;">star</span>
 
               </div>
-              <h3 class="job-title">${job.title}</h3>
-              <h5 class="job-subtitle">${job.location}</h5> 
+              
+              <h3 class="job-title">${
+                job.title
+              } <span style="margin-left: auto; float: right;">${
+          job.experienceLevel
+        }</span></h3>
+              <h5 class="job-subtitle">
+              <span style="margin-left: auto; float:right;">USD $${Math.floor(
+                (job.salary + job.salary_max) / 2 / 1000
+              )}k</span>
+              ${job.location}
+              </h5> 
               <div class="job-main">
                 <div class="job-description">
                   <p class="job-description">${job.description}</p>
@@ -48,11 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     ? `<span class="see-more">+${remainingTags} more</span>`
                     : ""
                 }
-                <span class="job-flair" id="pay-flair" style="margin-left: auto">
-                  <p class="salary-range">$${Math.floor(
-                    (job.salary + job.salary_max) / 2 / 1000
-                  )}k</p>
-                </span>
               </div>
             </div>
           </div>

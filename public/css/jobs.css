@@ -332,6 +332,10 @@ p.job-description {
   transition: background-color 0.3s ease;
 }
 
+.job-buttons {
+  align-content: center;
+}
+
 .apply-button a:hover {
   background-color: #0056b3;
 }
@@ -454,6 +458,8 @@ div .material-symbols-outlined {
     background-color: var(--dark-mode-body-color);
   }
 }
+
+
 
 @media (max-width: 768px) {
   body {
