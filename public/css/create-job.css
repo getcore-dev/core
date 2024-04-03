@@ -1,0 +1,13 @@
+input {
+font-size: 1.2rem;
+}
+
+textarea#company_description, textarea#description, textarea#benefits, textarea#additional-information {
+    font-size: 1.2rem;
+    min-height: 200px;
+}
+
+select {
+font-size: 1.2rem;
+}
+
