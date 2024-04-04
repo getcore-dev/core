@@ -46,8 +46,7 @@
       <form action="/posts" method="POST">
         <input type="hidden" id="post_type" name="post_type" value="discussion" />
         <div class="form-group" id="community">
-          <select id="community_choice" name="community_id" placeholder
-          </select>
+          <select id="community_choice" name="community_id" placeholder="Communities" </select>
         </div>
         <div class="form-group">
           <input type="hidden" name="userId" value="<%= user.id %>" />
@@ -127,14 +126,14 @@
       $('.tags-select2').select2({
         width: '100%', // Full width of its container
         tags: true, // Allows user to create new tags
-placeholder: "Tags",
+        placeholder: "Tags",
         tokenSeparators: [',', ' '] // Optional: Defines separators for tokenization
       });
 
 
       var easyMDE = new EasyMDE({
         element: document.getElementById('content'),
-placeholder: "Body text"
+        placeholder: "Body text"
       });
 
       $('form').on('submit', function(e) {

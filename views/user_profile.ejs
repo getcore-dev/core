@@ -56,6 +56,12 @@
         <div class="current-job">
           <% if (otheruser.currentJob && otheruser.currentCompany) {%>
           <h5> <%= otheruser.currentCompany %>
+            <% if (otheruser.recruiter_id) { %>
+            <span>
+              <span class="material-symbols-outlined" style="margin-left: 10px;font-size: 1rem; vertical-align: -3px;">
+                contact_mail
+              </span>Verified Recruiter</span>
+            <% } %>
           </h5>
           <h4>
             <%= otheruser.currentJob%>

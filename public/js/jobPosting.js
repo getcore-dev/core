@@ -39,7 +39,7 @@ function lazyLoadJobDetails(jobId) {
       const tagsHTML = displayedTags
         .map(
           (tag) =>
-            `<span class="job-flair" id="location-flair" style="margin:2px;">${tag}</span>`
+            `<span class="job-flair" style="margin:4px 5px 0px 0px;">${tag}</span>`
         )
         .join("");
       const remainingTags = tagsArray.length - maxTags;
@@ -88,13 +88,13 @@ function lazyLoadJobDetails(jobId) {
                 : ""
             }
             </div>
+            <div class="company-description">
+            <h4>Company Description</h4>
+            <p>${job.company_description}</p>
+          </div>
               <div class="job-description">
                 <h4>Job Description</h4>
                 <p>${job.description}</p>
-              </div>
-              <div class="company-description">
-                <h4>Company Description</h4>
-                <p>${job.company_description}</p>
               </div>
               <div class="apply-link">
                 <a href="${

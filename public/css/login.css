@@ -24,16 +24,21 @@
 
 body {
   font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
 }
 
 .github-login-btn {
   display: inline-flex;
   align-items: center;
-  background-color: #24292e;
-  margin-bottom: 10px;
+  background: none;
+  border: 2px solid #114736;
+  margin-bottom: 25px;
   color: #fff;
-  padding: 10px 20px;
+  padding: 20px 20px;
   text-decoration: none;
+  width: 100%;
+  justify-content: center;
+  box-sizing: border-box;
   border-radius: 10px;
   transition: background-color 0.3s ease;
 }
@@ -45,14 +50,13 @@ body {
 }
 
 .github-login-btn:hover {
-  background-color: #0366d6;
+  background-color: #114736;
 }
 
 main {
   display: flex;
+  margin-top: 80px;
   flex-direction: column;
-  justify-content: center;
-  gap: 15px;
   align-items: center;
   height: calc(100dvh - 65px);
   background-color: var(--light-mode-main-color);
@@ -170,14 +174,14 @@ main {
   }
 
   #login {
-    background: var(--dark-mode-main-color); /* Dark background for login */
-    border-color: var(--dark-mode-border-color);
+    background: none; /* Dark background for login */
+    border-color: none;
   }
 
   #register
   {
-    background: var(--dark-mode-main-color); /* Dark background for login */
-    border-color: var(--dark-mode-border-color);
+    background: none; /* Dark background for login */
+    border-color: none;
     }
 
   .input-container input, input:-webkit-autofill,

@@ -3,11 +3,21 @@ font-size: 1.2rem;
 }
 
 textarea#company_description, textarea#description, textarea#benefits, textarea#additional-information {
+    font-family: var(--font-family);
     font-size: 1.2rem;
     min-height: 200px;
 }
 
 select {
 font-size: 1.2rem;
+}
+
+.main-container input[type="text"], .main-container textarea, .main-container select, .main-container input[type="number"], .main-container input[type="date"] {
+    font-size: 1.2rem;
+    font-family: var(--font-family);
+}
+
+.post-header {
+    margin-bottom: 0;
 }
 

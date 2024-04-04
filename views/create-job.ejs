@@ -26,7 +26,7 @@
     <div class="main-container">
       <form id="jobPostForm">
         <div class="form-group">
-          <input type="text" id="job-link" name="link" placeholder="Job URL"/>
+          <input type="text" id="job-link" name="link" placeholder="Job URL" />
         </div>
         <button id="submit-button" type="submit">Extract Job Details</button>
       </form>
@@ -61,7 +61,7 @@
         </div>
         <div class="form-group">
           <label for="additional-info">Additional Information:</label>
-          <textarea id="additional-information" name="additional-information" placeholder="Additional Information" required></textarea>
+          <textarea id="additional-information" name="additional-information" placeholder="Additional Information"></textarea>
         </div>
         <div class="form-group">
           <label for="location">Location:</label>
@@ -75,7 +75,15 @@
           <label for="salary_max">Salary Max:</label>
           <input type="number" id="salary_max" name="salary_max" placeholder="Max Annual Salary (optional)" />
         </div>
-<div class="form-group"> <label for="experienceLevel">Experience Level:</label> <select id="experienceLevel" name="experienceLevel" required> <option value="">Select Experience Level</option> <option value="Internship">Internship</option> <option value="Entry Level">Entry Level</option> <option value="Junior">Junior (1-3 years)</option> <option value="Mid Level">Mid Level (3-5 years)</option> <option value="Senior">Senior (5+ years)</option> <option value="Lead">Lead/Manager</option> </select> </div>
+        <div class="form-group"> <label for="experienceLevel">Experience Level:</label> <select id="experienceLevel" name="experienceLevel" required>
+            <option value="">Select Experience Level</option>
+            <option value="Internship">Internship</option>
+            <option value="Entry Level">Entry Level</option>
+            <option value="Junior">Junior (1-3 years)</option>
+            <option value="Mid Level">Mid Level (3-5 years)</option>
+            <option value="Senior">Senior (5+ years)</option>
+            <option value="Lead">Lead/Manager</option>
+          </select> </div>
 
         <div class="form-group">
           <label for="skills">Skills:</label>
@@ -83,7 +91,7 @@
         </div>
         <div class="form-group">
           <label for="tags">Tags:</label>
-          <input type="text" id="tags" name="tags" placeholder="Tags (comma separated"/>
+          <input type="text" id="tags" name="tags" placeholder="Tags (comma separated" />
         </div>
         <button id="submit-button" type="submit">Submit Job Post</button>
       </form>
@@ -114,8 +122,11 @@
             $('#skills').val(response.skills);
             $('#tags').val(response.tags);
             $('#description').val(response.description);
+            $('#benefits').val(response.benefits);
+            $('#additional-information').val(response.additional_information);
             $('#logo_url').val(response.company_logo);
-$('#link').val(jobLink);
+            $('#link').val(jobLink);
+            
 
             // Show the edit form and hide the extract form
             $('#jobPostForm').hide();

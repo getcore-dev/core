@@ -202,7 +202,7 @@ router.get("/jobs/:id", async (req, res) => {
   }
 });
 
-router.post("/job-postings", async (req, res) => {
+router.post("/job-postings", checkAuthenticated, async (req, res) => {
   try {
     const {
       title,
@@ -217,10 +217,13 @@ router.post("/job-postings", async (req, res) => {
       description,
       logo_url,
       link,
+      benefits,
+      additional_information,
     } = req.body;
 
     // Check if the company exists in the database
-    let companyId = await jobQueries.getCompanyIdByName(company);
+    let companyId = await jobQueries.getCompanyIdByName(company).id;
+    const user = req.user;
 
     if (!companyId) {
       companyId = await jobQueries.createCompany(
@@ -243,13 +246,16 @@ router.post("/job-postings", async (req, res) => {
       tags.split(",").map((tag) => tag.trim()),
       description,
       salary_max,
-      null,
-      skills.split(",").map((skill) => skill.trim())
+      user.recruiter_id,
+      skills.split(",").map((skill) => skill.trim()),
+      benefits,
+      additional_information
     );
 
-    res
-      .status(201)
-      .json({ message: "Job posting created successfully", jobPostingId });
+    res.status(201).json({
+      message: "Job posting created successfully",
+      jobPostingId: jobPostingId.toString(),
+    });
   } catch (error) {
     console.error("Error creating job posting:", error);
     res
@@ -299,37 +305,62 @@ router.post("/extract-job-details", async (req, res) => {
       - salary_max (integer only, no currency symbol, no matter what format the salary in (hourly, monthly, weekly) convert to yearly salary)
       - experience_level ("Internship", "Entry Level", "Junior", "Mid Level", "Senior" or "Lead" only)
       - skills (6-10 skills, prefer single word skills, as a comma-separated list)
-      - tags (at least 10 tags relevant to the job posting)
+      - tags (at least 10, these should be different from skills and are things commonly searched related to the job. e.g., "remote", "healthcare", "startup" as a comma-separated list)
       - description (try to take up to 3 paragraphs from the original source)
       - company_logo (logo URL of the company, try to extract it from the HTML source or provide a relevant URL if available)
       - benefits (as a comma-separated list) 
-      
+      - additional_information (blank if nothing detected in the job posting, otherwise provide any additional information that you think is relevant to the job posting)
       
       
       Provide the extracted information in JSON format.`;
 
       const response = await api.sendMessage(prompt);
-      console.log("Raw response text:", response.text);
+      //console.log("Raw response text:", response.text);
 
       // Remove triple backticks and any other non-JSON characters
       const cleanedResponse = response.text
         .replace(/^`{3}(json)?|`{3}$/g, "")
         .trim();
 
-      console.log("Cleaned response:", cleanedResponse);
+      //console.log("Cleaned response:", cleanedResponse);
 
       let extractedData;
       try {
         extractedData = JSON.parse(cleanedResponse);
       } catch (error) {
-        console.error("Error parsing JSON response:", error);
+        console.error(
+          `Failed to parse JSON response: ${cleanedResponse}` + error
+        );
         res.status(500).json({
           error: "Failed to parse the JSON response from the ChatGPT API",
         });
         return;
       }
 
-      console.log("Extracted data:", extractedData);
+      //console.log("Extracted data:", extractedData);
+
+      try {
+        if (extractedData.company_name) {
+          // Check if the company exists in the database
+          let company = await jobQueries.getCompanyIdByName(
+            extractedData.company_name
+          );
+
+          if (!company) {
+            company = await jobQueries.createCompany(
+              extractedData.company_name,
+              extractedData.company_logo,
+              extractedData.location,
+              extractedData.company_description
+            );
+          } else {
+            extractedData.company_description = company.description;
+            extractedData.company_logo = company.logo;
+          }
+        }
+      } catch {
+        console.log(`Error creating company: ${extractedData.company_name}`);
+      }
 
       res.json(extractedData);
     } else {

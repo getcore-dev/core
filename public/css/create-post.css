@@ -15,7 +15,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 body {
-    font-family: 'Robo=to', sans-serif;
+    font-family: 'Roboto', sans-serif;
 }
 
 main {
@@ -58,9 +58,9 @@ div.form-group {
 .post-selector {
     display: flex;
     flex-direction: row;
-    gap: 11px;
-    margin: 12px 13px;
-    margin-bottom: 18px;
+    gap: 6px;
+    margin: 0px 13px;
+    margin-bottom: 0px;
 }
 
 .post-type {
@@ -190,6 +190,10 @@ i.fa {
     margin-bottom: 20px;
 }
 
+.select2-container .select2-search--inline .select2-search__field {
+    height: 2rem !important; 
+}
+
 .main-container .post-content,
 .main-container .comment-content {
     font-size: 16px;
@@ -239,6 +243,9 @@ i.fa {
         margin-bottom: 50px;
     }
     
+    main {
+        align-items: flex-start;
+    }
 
     .main-container h2,
     .main-container .post-title,
@@ -293,6 +300,12 @@ i.fa {
         color: var(--dark-mode-text-color);
     }
 
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: var(--dark-mode-body-color) !important;
+        border-color: var(--dark-mode-border-color) !important;
+        color: var(--dark-mode-text-color);
+    }
+
     #confirm-google {
         background-color: var(--dark-mode-body-color);
         border: 1px solid var(--dark-mode-border-color);
@@ -343,9 +356,18 @@ i.fa {
     }
 
     div.form-group .CodeMirror, div.form-group .select2-container--default .select2-selection--multiple, div.form-group .editor-toolbar, div.form-group .select2-dropdown select2-dropdown--above {
-        background: 0;
+        background: 0 !important;
         border: 0;
         color: var(--dark-mode-text-color);
+    }
+
+    .select2-results__option--selectable {
+        background-color: var(--dark-mode-body-color);
+        color: var(--dark-mode-text-color);
+    }
+
+    .select2-container--open .select2-dropdown--above {
+        border-color: var(--dark-mode-border-color);
     }
 
 

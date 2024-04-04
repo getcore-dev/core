@@ -11,7 +11,9 @@
 </head>
 
 <body>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <%- include('partials/navbar', { pagePath: 'home' }) %>
+
   <main>
     <div id="register">
       <div class="user-res">
@@ -20,26 +22,20 @@
 
     </div>
     <div id="login">
-      <a href="https://github.com/login/oauth/authorize?client_id=<%= encodeURIComponent(githubClientId) %>&redirect_uri=<%= encodeURIComponent('https://c-ore.dev/auth/github/callback') %>" class="github-login-btn">
+      <a href="https://github.com/login/oauth/authorize?client_id=b37718dbac10df16ec0c&redirect_uri=https%3A%2F%2Fc-ore.dev%2Fauth%2Fgithub%2Fcallback" class="github-login-btn">
         <img src="/src/github.png" alt="GitHub Logo" style="background: white; border-radius: 100%;">
         Sign in with GitHub
       </a>
-      <% if (messages.error) { %>
-      <div class="error-message">
-        <%= messages.error %>
-      </div>
-      <% } %>
+
       <form action="/login" method="POST">
         <div class="input-container">
-          <label for="username">Username</label>
-          <input type="text" name="username" id="username" placeholder="Enter your username" required>
+          <input type="text" name="username" id="username" placeholder="Username" required>
         </div>
 
         <div class="input-container">
-          <label for="password">Password</label>
           <a href="#" id="forgot-pass">Forgot?</a>
 
-          <input type="password" name="password" id="password" placeholder="Enter your password" required>
+          <input type="password" name="password" id="password" placeholder="Password" required>
         </div>
         <button type="submit" id="login-button">
           <p id="login-text">Login</p>
