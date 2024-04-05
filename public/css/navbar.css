@@ -129,7 +129,7 @@ h1, h2, h3, h4, h5, p {
 .latest-commit-banner {
   position: relative;
   background-color: var(--active-indicator-color);
-  width: 53%;
+  width: 100%;
   color: white;
   padding: 3px;
   margin-top: -7px;
