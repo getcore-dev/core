@@ -225,8 +225,6 @@ main {
   width: 75px; /* Adjust the size as needed */
   height: 75px;
   border-radius: 50%; /* Circular image */
-  box-shadow: 0 2px 20px rgb(25 116 48);
-  border: 4px solid #4c8d6b !important;
   object-fit: cover;
   border: 1px solid var(--border-color); /* Border color similar to the navbar */
 }

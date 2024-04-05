@@ -20,7 +20,8 @@
         <div class="profile-info">
           <div class="profile-picture" data-hue-rotate="0">
             <% if (otheruser.avatar) { %>
-            <img id="profilePic" src="<%= otheruser.avatar %>" alt="Profile Picture" />
+            <img id="profilePic" src="<%= otheruser.avatar %>" alt="Profile Picture" style="  box-shadow: 0 2px 20px <%= otheruser.profile_border_color%>;
+  border: 4px solid <%= otheruser.profile_border_color%> !important;" />
             <% } else { %>
             <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
             <% } %>

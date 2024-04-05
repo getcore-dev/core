@@ -174,6 +174,7 @@ const userQueries = {
         "currentCompany",
         "currentIndustry",
         "password",
+        "profile_border_color",
         "currentJob_begindate",
       ];
 

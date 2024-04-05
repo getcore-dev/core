@@ -17,6 +17,7 @@ const { BlobServiceClient } = require("@azure/storage-blob");
 const notificationQueries = require("../queries/notificationQueries");
 const cacheMiddleware = require("../middleware/cache");
 const { cache } = require("ejs");
+const sharp = require("sharp"); // Example library for image processing
 const AZURE_STORAGE_CONNECTION_STRING =
   process.env.AZURE_STORAGE_CONNECTION_STRING; // Ensure this is set in your environment variables
 
@@ -136,11 +137,15 @@ router.post(
         const blobName = "profiles/" + userId + "/" + file.originalname;
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
         const containerName = "coreavatars";
-
         await blockBlobClient.uploadFile(file.path); // Uploads the file to Azure Blob Storage
-
         const pictureUrl = `https://${blobServiceClient.accountName}.blob.core.windows.net/${containerName}/${blobName}`;
         updates["avatar"] = pictureUrl;
+
+        // get dominant hex color from image
+
+        const dominantColor = await utilFunctions.getDominantColor(pictureUrl);
+
+        updates["profile_border_color"] = dominantColor;
       }
 
       // Update other user fields
