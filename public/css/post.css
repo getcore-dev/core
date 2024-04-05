@@ -383,7 +383,7 @@ img.blog-avatar {
 
 .reaction-button > p {
   margin-bottom: 0 !important; 
-  font-size: 1rem;
+  font-size: .8rem;
 }
 
 .reaction-button:hover, .main-reaction-button:hover, .boost-button:hover, #delete-post-button:hover, #delete-comment-button:hover, .add-comment-button:hover {
