@@ -30,10 +30,9 @@ body {
 .github-login-btn {
   display: inline-flex;
   align-items: center;
-  background: none;
-  border: 2px solid #114736;
+  background: #000;
   margin-bottom: 25px;
-  color: var(--light-mode-text-color);
+  color: var(--dark-mode-text-color);
   padding: 20px 20px;
   text-decoration: none;
   width: 100%;

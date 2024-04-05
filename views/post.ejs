@@ -55,7 +55,6 @@
           <div class="title">
             <span class="post-subtitle">
               <span class=tag-flair><%= post.post_type.charAt(0).toUpperCase() + post.post_type.slice(1) %> </span>
-              <% if (post.post_type != "blog") { %>
               <a id="community-header-text" href="/c/<%= post.community.shortname %>" style="text-decoration: none;">/<%= post.community.shortname %></a>
               <span> • </span>
               <%= post.views %> view<%- post.views > 1 ? 's' : '' %>
@@ -88,11 +87,58 @@
             %>
               <%= formattedDate %>
 
+              <% if (post.updated_at) { %>
+              <span> • </span>
+              <%
+              let postDate = new Date(post.created_at);
+              let today = new Date();
+              let formattedDate;
+            
+              // Calculate time difference in milliseconds
+              let diff = today - postDate;
+            
+              // Convert time difference to different units
+              let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+              let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+              let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+              let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+            
+              // Decide the format based on the time difference
+              if (minutes < 60) {
+                formattedDate = minutes + 'm ago';
+              } else if (hours < 24) {
+                formattedDate = hours + 'h ago';
+              } else if (days < 365) {
+                formattedDate = days + 'd ago';
+              } else {
+                formattedDate = years + 'y ago';
+              }
+              %>
+              Updated: <%= formattedDate %>
               <% } %>
             </span>
             <div class="post-title-container">
               <div>
-                <h2 class="post-title" style="<% if (post.post_type == "blog") { %> font-size: 28px; font-weight: bold; <% } %>"><%= post.title %></h2>
+                <h2 class="post-title" style="<% if (post.post_type == "blog") { %> font-size: 28px; font-weight: bold; font-family: 'Inter', sans-serif !important;<% } %>"><%= post.title %>
+
+                  <% if (post.post_type == 'blog') { %>
+                  <span class="post-timestamp" style="text-decoration: none; font-weight: 300;">
+                    <%
+              let postDate = new Date(post.created_at);
+
+              // Format the date in the "MONTH DD, YYYY" format
+              formattedDate = postDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            %>
+                    <%= formattedDate %>
+                  </span>
+                  <% } %>
+                </h2>
+
+                <% if (post.post_type == "blog") { %>
+                <div class="post-subtitle">
+                  <p><%= post.subtitle %></p>
+                </div>
+                <% } %>
               </div>
 
 
@@ -103,12 +149,11 @@
                 <div class="dropdown-content" style="display: none;">
                   <% if (user) { %>
                   <div class="dropdown-item">
-                    <form id="favoriteForm" data-post-id="<%= post.id %>">
-                      <button type="submit">
-                        <span class="material-symbols-outlined">favorite</span>
-                        <p>Favorite Post</p>
-                      </button>
-                    </form>
+                    <span>
+                      <form id="favorite-form-<%= post.id %>" action="/favorites/post/<%= post.id %>" method="POST">
+                        <button type="submit">Favorite Post</button>
+                      </form>
+                    </span>
                   </div>
                   <% } %>
                   <div class="dropdown-item">
@@ -139,17 +184,6 @@
                   <% } %>
                 </div>
               </div>
-            </div>
-            <% if (post.post_type == 'blog') { %>
-            <div class="post-timestamp">
-              <%
-              let postDate = new Date(post.created_at);
-
-              // Format the date in the "MONTH DD, YYYY" format
-              formattedDate = postDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-            %>
-              <%= formattedDate %>
-              <% } %>
             </div>
             <% if (post.post_type == 'blog') { %>
 
@@ -452,9 +486,21 @@
                     </button>
                     <div class="dropdown-content" style="display: none;">
                       <% if (user && post.username === user.username && post.post_type == 'question') { %>
-                      <form id="answer-form-<%= comment.id %>" action="/posts/<%= post.id %>/answer/<%= comment.id %>" method="POST">
-                        <button type="submit">Accept Solution</button>
-                      </form>
+                      <span>
+                        <form id="answer-form-<%= comment.id %>" action="/posts/<%= post.id %>/answer/<%= comment.id %>" method="POST">
+                          <button type="submit">Accept Solution</button>
+                        </form>
+                      </span>
+
+
+                      <% } %>
+
+                      <% if (user) { %>
+                      <span>
+                        <form id="favorite-form-<%= comment.id %>" action="/favorites/comment/<%= post.id %>/<%= comment.id %>" method="POST">
+                          <button type="submit">Favorite Comment</button>
+                        </form>
+                      </span>
 
 
                       <% } %>
@@ -462,12 +508,14 @@
 
                       <% if (user && user.username === comment.user.username) { %>
 
-                      <form id="delete-comment-form-<%= comment.id %>" class="reactionButton" action="/comment/<%= comment.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');">
-                        <input type="hidden" name="_method" value="DELETE" />
-                        <button type="submit" class="delete-comment-button-<%= comment.id %>">
-                          Delete Comment
-                        </button>
-                      </form>
+                      <span>
+                        <form id="delete-comment-form-<%= comment.id %>" class="reactionButton" action="/comment/<%= comment.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                          <input type="hidden" name="_method" value="DELETE" />
+                          <button type="submit" class="delete-comment-button-<%= comment.id %>">
+                            Delete Comment
+                          </button>
+                        </form>
+                      </span>
                       <% } %>
                     </div>
                   </div>
@@ -669,34 +717,6 @@
             </div>
             <% } %>
             <div class="post-footer" style="text-align: center;">
-              <% if (post.updated_at) { %>
-              <%
-              let postDate = new Date(post.created_at);
-              let today = new Date();
-              let formattedDate;
-            
-              // Calculate time difference in milliseconds
-              let diff = today - postDate;
-            
-              // Convert time difference to different units
-              let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
-              let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
-              let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
-              let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
-            
-              // Decide the format based on the time difference
-              if (minutes < 60) {
-                formattedDate = minutes + 'm ago';
-              } else if (hours < 24) {
-                formattedDate = hours + 'h ago';
-              } else if (days < 365) {
-                formattedDate = days + 'd ago';
-              } else {
-                formattedDate = years + 'y ago';
-              }
-              %>
-              Edited: <%= formattedDate %>
-              <% } %>
               <div class="tags-div">
 
                 <div class="tags">
@@ -749,32 +769,6 @@
 
 
   <script>
-    document.getElementById('favoriteForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-
-      const postId = this.dataset.postId;
-      const url = `/favorites/${postId}`;
-
-      fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            alert(data.message);
-          } else {
-            alert('Error: ' + data.message);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('An error occurred while adding the post to favorites.');
-        });
-    });
-
     $(document).ready(function() {
       var easyMDE = new EasyMDE({
         element: document.getElementById('comment-form-textarea'),

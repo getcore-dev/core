@@ -103,7 +103,7 @@ main {
 #profile > div {
   display: inline-block; /* use flexbox for each child container */
   border: 0;
-  padding: 10px;
+  padding: 10px 15px;
   border-radius: 10px;
   background: none;
 }
@@ -221,6 +221,10 @@ main {
 
 }
 
+#edit-button .material-symbols-outlined {
+  font-size: 22px;
+}
+
 .profile-picture img {
   width: 75px; /* Adjust the size as needed */
   height: 75px;
@@ -295,7 +299,6 @@ main {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  margin: 6px;
   margin-top: 12px;
 }
 
@@ -311,16 +314,31 @@ main {
 
 .post-info, .comment-info {
   margin-top: 8px;
+  font-size: .8rem;
   display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.comment-author a {
+  text-decoration: none;
 }
 
 .comment-header {
   display: flex;
   align-items: center;
   gap: 8px;
+  padding-bottom: 10px;
 }
+
+.comment-content, .post-content {
+  font-size: .875rem;
+}
+
+.post-info .link-display {
+  padding: 2px 6px;
+}
+
 
 .flair {
   display: inline-block;
@@ -393,8 +411,16 @@ button#edit-button {
   margin: 0;
 }
 
-.github-commit-graph, .user-links {
+.user-links {
   text-align: center;
+}
+
+th {
+  font-size: .875rem;
+}
+
+td {
+  font-size: .825rem;
 }
 
 /* Grid container layout */
@@ -450,7 +476,19 @@ button#edit-button {
   display: flex;
   flex-direction: column;
   padding-top: 9px;
-  align-items: center !important;
+}
+
+#commit-graph-container {
+  -webkit-scrollbar {
+    display: none;
+  }
+  
+  -ms-overflow-style: none; 
+  scrollbar-width: none;
+}
+
+#commit-graph-container::-webkit-scrollbar {
+  display: none;
 }
 
 #repo-table {
@@ -494,8 +532,8 @@ button#edit-button {
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
-  gap: 10px;
-
+  gap: 20px;
+  justify-content: space-around;
 }
 
 .profile-info {

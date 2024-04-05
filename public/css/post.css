@@ -343,8 +343,11 @@ div .user-info, .header {
 
 .post-userinfo {
   display: flex;
-    align-items: center;
-    gap: 8px;
+  align-items: center;
+  margin-top: 7px;
+  gap: 8px;
+  margin-bottom: 32px;
+  font-size: .875rem;
 }
 
 img.blog-avatar {
@@ -358,7 +361,9 @@ img.blog-avatar {
 }
 
 .post-timestamp {
+  font-size: .725rem;
   margin: 8px 0;
+  vertical-align: 1px;
 }
 
 .post-title-container {
@@ -494,7 +499,7 @@ img.blog-avatar {
   align-items: center;
   gap: 4px;
   margin: 0 13px;
-  margin-top: 15px;
+  margin-top: 11px;
   margin-bottom: 15px;
 }
 
@@ -1117,6 +1122,10 @@ p.preview-description {
   margin-right: 10px;
 }
 
+.post-subtitle, .post-timestamp {
+  color: #7f8188;
+}
+
 .project-link-image {
   height: 80px;
   float: left;
@@ -1319,6 +1328,10 @@ p.preview-description {
     border-color: var(--dark-mode-border-color);
   }
 
+  .post-title {
+    color: var(--dark-mode-text-color);
+  }
+
   .button-container button {
     color: var(--dark-mode-text-color);
     background-color: var(--dark-mode-border-color);
@@ -1339,10 +1352,6 @@ p.preview-description {
 
   a:-webkit-any-link {
     color: #fff; /* Adjusted color for dark mode */
-  }
-
-  a .material-symbols-outlined, .user-info:hover, .boosts:hover, .detracts:hover, #reply-button, .user-actions a, .post-title {
-    color: #e0e0e0; /* Lighter text color for icons and links */
   }
 
   div .user-info, .header {
@@ -1385,6 +1394,11 @@ p.preview-description {
 .sidebar-poster-name a {
   color: var(--active-indicator-color);
   font-weight: bold;
+}
+
+.post-subtitle {
+  margin-top: 7px;
+
 }
 
 #submit-button {
@@ -1563,6 +1577,7 @@ div.username {
 
   .post-subtitle {
     font-size: 14px;
+    
   }
 
   .timestamp {

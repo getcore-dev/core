@@ -51,7 +51,7 @@ const userQueries = {
       ORDER BY 
         p.created_at DESC
       OFFSET 0 ROWS
-      FETCH NEXT 6 ROWS ONLY;
+      FETCH NEXT 10 ROWS ONLY;
     `;
       return result.recordset;
     } catch (err) {

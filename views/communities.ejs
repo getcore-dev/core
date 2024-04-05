@@ -89,10 +89,10 @@
     function getTintFromName(name) {
       let hash = 0;
       for (let i = 0; i < name.length; i++) {
-        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+        hash = name.charCodeAt(i) + ((hash << 18) - hash);
       }
       const color = (hash & 0x00FFFFFF).toString(16).toUpperCase();
-      const tintColor = `#${color}90`; // Append "80" to the color to make it lighter
+      const tintColor = `#${color}95`;
       return tintColor;
     }
 
@@ -382,7 +382,12 @@ filter_list
                 linkPreviewDiv.style.border = "none";
                 const descriptionDiv = document.createElement('div');
                 descriptionDiv.className = 'description';
-                descriptionDiv.append(`${post.content}`);
+
+                if (post.post_type != 'blog') {
+                  descriptionDiv.append(`${post.content}`);
+                } else {
+                  descriptionDiv.append(`${post.subtitle}`);
+                }
 
                 linkPreviewDiv.appendChild(descriptionDiv);
               }

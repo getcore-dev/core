@@ -9,15 +9,15 @@
         <div class="nav-text-container">
           <% 
 
-function getTintFromName(name) {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const color = (hash & 0x00FFFFFF).toString(16).toUpperCase();
-  const tintColor = `#${color}90`; // Append "80" to the color to make it lighter
-  return tintColor;
-}
+    function getTintFromName(name) {
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 18) - hash);
+      }
+      const color = (hash & 0x00FFFFFF).toString(16).toUpperCase();
+      const tintColor = `#${color}95`; 
+      return tintColor;
+    }
     let navText = '‎ ';
     let user = locals.user; 
     let communityId = locals.communityId;
@@ -246,6 +246,8 @@ function getTintFromName(name) {
 
     .tag-flair {
       background-color: <%=navbarTint %> !important;
+      border: 1px solid <%=navbarTint %>20 !important;
+
     }
 
     #community-header-text:hover {
@@ -379,13 +381,12 @@ function getTintFromName(name) {
   function getTintFromName(name) {
     let hash = 0;
     for (let i = 0; i < name.length; i++) {
-      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      hash = name.charCodeAt(i) + ((hash << 18) - hash);
     }
     const color = (hash & 0x00FFFFFF).toString(16).toUpperCase();
-    const tintColor = `#${color}90`; // Append "80" to the color to make it lighter
+    const tintColor = `#${color}95`;
     return tintColor;
   }
-
 
   getAllCommunities();
   getTrendingPosts();

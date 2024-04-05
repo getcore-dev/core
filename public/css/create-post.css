@@ -55,6 +55,33 @@ div.form-group {
     margin-top: 12px;
 }
 
+.form-group input{
+    font-size: 1.2rem !important;
+}
+
+#submit-button[disabled] {
+    background-color: #c4c4c4;
+    cursor: not-allowed;
+    border-color: #929292;
+  }
+
+#confirmation-question {
+    display: flex;
+    gap: 10px;
+    margin: 0px 0px 15px;
+    flex-direction: row;
+}
+
+.CodeMirror-wrap pre.CodeMirror-line, .CodeMirror-wrap pre.CodeMirror-line-like {
+    font-size: 1.2rem !important;
+    font-weight: inherit;
+}
+
+.select2-container .select2-search--inline .select2-search__field {
+    margin-top: 4px !important;
+    margin-bottom: -5px !important;
+}
+
 .post-selector {
     display: flex;
     flex-direction: row;

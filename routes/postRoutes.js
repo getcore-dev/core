@@ -142,8 +142,7 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
     if (!req.rateLimit || !req.rateLimit.exceeded) {
       postQueries.viewPost(postId);
     }
-    // Fetch all comments related to the post
-    const query = `
+    let query = `
     SELECT
       c.id,
       c.created_at,
@@ -157,17 +156,21 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
       SUM(CASE WHEN uca.action_type = 'INTERESTING' THEN 1 ELSE 0 END) AS interestingCount,
       SUM(CASE WHEN uca.action_type = 'CURIOUS' THEN 1 ELSE 0 END) AS curiousCount,
       SUM(CASE WHEN uca.action_type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount,
-      SUM(CASE WHEN uca.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) AS celebrateCount,
+      SUM(CASE WHEN uca.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) AS celebrateCount`;
+
+    if (user && user.id) {
+      query += `,
       (
         SELECT TOP 1 uca2.action_type
         FROM UserCommentActions uca2
-        WHERE uca2.comment_id = c.id AND uca2.user_id = ${
-          req.params.user ? req.params.user.id : "NULL"
-        }
-      ) AS userReaction
+        WHERE uca2.comment_id = c.id AND uca2.user_id = @userId
+      ) AS userReaction`;
+    }
+
+    query += `
     FROM comments c
     LEFT JOIN UserCommentActions uca ON c.id = uca.comment_id
-    WHERE c.post_id = '${postId}' AND c.deleted = 0
+    WHERE c.post_id = @postId AND c.deleted = 0
     GROUP BY
       c.id,
       c.created_at,
@@ -176,10 +179,16 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
       c.user_id,
       c.parent_comment_id,
       c.post_id
-    ORDER BY c.created_at DESC;
-  `;
+    ORDER BY c.created_at DESC;`;
 
-    const result = await sql.query(query);
+    const request = new sql.Request();
+    request.input("postId", sql.VarChar, postId);
+
+    if (user && user.id) {
+      request.input("userId", sql.VarChar, user.id);
+    }
+
+    const result = await request.query(query);
 
     // Function to nest comments
     function nestComments(commentList) {
@@ -210,21 +219,20 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
     // Nest comments
     const nestedComments = nestComments(result.recordset);
 
-    // Recursive function to fetch user and parent author details for each comment
     const fetchUserAndParentDetails = async (comment) => {
       comment.user = await getUserDetails(comment.user_id);
 
       // Fetch the user reaction for the current comment
       if (user) {
         const sqlRequest = new sql.Request();
-        sqlRequest.input("commentId", sql.Int, comment.id);
-        sqlRequest.input("userId", sql.Int, user.id);
+        sqlRequest.input("commentId", sql.VarChar, comment.id);
+        sqlRequest.input("userId", sql.VarChar, user.id);
 
         const reactionQuery = `
-          SELECT action_type
-          FROM UserCommentActions
-          WHERE comment_id = @commentId AND user_id = @userId;
-        `;
+      SELECT action_type
+      FROM UserCommentActions
+      WHERE comment_id = @commentId AND user_id = @userId;
+    `;
 
         try {
           const reactionResult = await sqlRequest.query(reactionQuery);

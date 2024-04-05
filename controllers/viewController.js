@@ -83,7 +83,6 @@ const viewController = {
           user: req.user,
           posts: posts,
           comments: comments,
-          editfunction: userQueries.updateField,
           linkify: utilFunctions.linkify,
           isFollowing: isFollowing,
         });

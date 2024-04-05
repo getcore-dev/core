@@ -11,6 +11,12 @@
   <title>CORE/<%= otheruser.username %></title>
 </head>
 
+<style>
+  .link-display {
+    background: <%=otheruser.profile_border_color%>40 !important;
+  }
+</style>
+
 <body>
   <%- include('partials/navbar', { pagePath: 'communities' }) %>
   <main>
@@ -54,15 +60,9 @@
 
         </div>
 
-        <div class="current-job">
+        <div class="current-job" style="background:<%= otheruser.profile_border_color%>20 !important;">
           <% if (otheruser.currentJob && otheruser.currentCompany) {%>
           <h5> <%= otheruser.currentCompany %>
-            <% if (otheruser.recruiter_id) { %>
-            <span>
-              <span class="material-symbols-outlined" style="margin-left: 10px;font-size: 1rem; vertical-align: -3px;">
-                contact_mail
-              </span>Verified Recruiter</span>
-            <% } %>
           </h5>
           <h4>
             <%= otheruser.currentJob%>
@@ -100,7 +100,7 @@
           <% } %>
         </div>
 
-        <div class="user-links">
+        <div class="user-links" style="background:<%= otheruser.profile_border_color%>20 !important;">
           <div class="link-display"> <img src="/src/github.png" style="height:20px;width:20px;">
             <p id="github-url-display"> <% if (otheruser.github_url) { %> <a href="https://github.com/<%= otheruser.github_url %>"><%= otheruser.github_url %></a> <% } else { %> No Github URL yet. <% } %> </p>
           </div>
@@ -112,11 +112,11 @@
           </div>
         </div>
         <div class="github-commit-graph">
-          <h4>GitHub Commit History</h4>
+          <h5>GitHub Activity</h5>
           <div id="commit-graph-container"></div>
         </div>
-        <div class="github-commit-repos">
-          <h4>Public Repositories</h3>
+        <div class="github-commit-repos" style="background:<%= otheruser.profile_border_color%>20 !important;">
+          <h5>GitHub Repositories</h5>
             <table id="repo-table">
               <thead>
                 <tr>
@@ -132,7 +132,7 @@
         <div class="user-activity">
           <div class="user-activity-header">
             <div class="user-activity-title">
-              <h4><%=otheruser.username%>'s posts</h4>
+              <h4><%=otheruser.username%>'s activity</h4>
             </div>
             <div class="user-activity-buttons">
               <button class="sort-option posts-button active" onclick="showSection('posts')">Posts</button>
@@ -173,29 +173,32 @@
             <% } else { %>
             <div class="post-container">
               <% posts.forEach(function(post) { %>
-              <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
-                <h4 class="post-title">
+              <div class="post" onclick="window.location.href='/posts/<%= post.id %>'" style="background:<%= otheruser.profile_border_color%>20 !important;">
+                <h5 class="post-title">
                   <%= post.title %>
-                </h4>
+                </h5>
+                <h5>
+                  <%= post.communities_id %>
+                </h5>
                 <p class="post-content" style="font-size: 14px;"><%= post.content %></p>
                 <div class="post-info">
-                  <span>
+                  <span class="link-display">
                     <p>
                       <%= formatDate(post.created_at) %>
                     </p>
                   </span>
-                  <span>
+                  <span class="link-display">
                     <p>
                       <%= post.views%> views
                     </p>
-                  </span>
+                  </span class="link-display">
 
-                  <span>
+                  <span class="link-display">
                     <p>
                       <%= post.comment_count %> comments
                     </p>
                   </span>
-                  <span>
+                  <span class="link-display">
                     <p>
                       <%= post.reaction_count %> reactions
                     </p>
@@ -221,10 +224,10 @@
                     <a href="/u/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/u/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
                   </p>
                 </div>
-                <div class="comment">
-                  <h4 class="comment-title">
+                <div class="comment" style="background:<%= otheruser.profile_border_color%>20 !important;">
+                  <h5 class="comment-title">
                     <%= comment.title %>
-                  </h4>
+                  </h5>
                   <p class="comment-content"><%= comment.comment %></p>
                   <div class="comment-info">
                     <span>
@@ -243,20 +246,6 @@
       </div>
   </main>
   <script>
-    function toggleProfileTint() {
-      // Select all profile-related div elements
-      const profileElements = document.querySelectorAll('.profile-info, .current-job, .user-links, .github-commit-graph, .github-commit-repos, .user-activity');
-
-      // Toggle the 'profile-tint' class on each element
-      profileElements.forEach(element => {
-        element.classList.toggle('profile-tint');
-      });
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      toggleProfileTint(); // Apply the tint when the page loads
-    });
-
     async function fetchRepositories() {
       const username = '<%= otheruser.github_url %>';
       const response = await fetch(`/api/github-repos/${username}`);
@@ -370,7 +359,7 @@
 
     function getColorForCommitCount(count) {
       if (count === 0) {
-        return '#ebedf0';
+        return '<%= otheruser.profile_border_color%>20';
       } else if (count === 1) {
         return '#9be9a8';
       } else if (count === 2) {
@@ -381,9 +370,10 @@
         return '#216e39';
       }
     }
+
     if ('<%= otheruser.github_url %>') {
-      fetchRepositories();
       fetchCommitGraph();
+      fetchRepositories();
     } else {
       // Display a message when no GitHub information is available
       const repoTableBody = document.querySelector('#repo-table tbody');

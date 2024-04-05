@@ -564,6 +564,8 @@ div .mini-link-desc {
   background: #0C8346;
   border: 1px solid #0E954F;
   color: white;
+  font-size: 1.2rem;
+  padding: 5px 19px !important;
 }
 
 #post-button:hover {
@@ -673,7 +675,9 @@ div .mini-link-desc {
   cursor: pointer;
 }
 
-/* Job-specific Styles */
+.community-flairs {
+  font-size: .825rem;
+}
 
 
 .company-name {

@@ -25,6 +25,7 @@ const utilFunctions = {
         p.deleted, 
         p.title, 
         p.content, 
+        p.subtitle,
         p.link, 
         p.communities_id, 
         p.react_like, 
@@ -58,7 +59,7 @@ const utilFunctions = {
       LEFT JOIN user_relationships ur ON u.id = ur.followed_id AND ur.follower_id = ${userId}
       WHERE p.deleted = 0
       GROUP BY 
-        p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, 
+        p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.subtitle, 
         p.communities_id, u.avatar, u.currentJob, c.name, c.shortname, 
         p.react_like, p.react_love, p.react_curious, p.react_interesting, 
         p.react_celebrate, p.post_type, p.views, ur.follower_id
@@ -258,7 +259,7 @@ const utilFunctions = {
   getPostsForCommunity: async (communityId) => {
     try {
       const result = await sql.query`
-        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views,
+        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views,
         u.currentJob, u.username, u.avatar,
         c.name AS community_name, c.shortname AS community_shortname,
               SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
@@ -272,7 +273,7 @@ const utilFunctions = {
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
         LEFT JOIN communities c ON p.communities_id = c.id
         WHERE p.communities_id = ${communityId} AND p.deleted = 0
-        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views, c.name, c.shortname
+        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.subtitle, p.link, p.communities_id, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views, c.name, c.shortname
         ORDER BY p.created_at DESC
       `;
       return result.recordset;
@@ -298,7 +299,7 @@ const utilFunctions = {
       const result = await sql.query`
       SELECT TOP 7 *
       FROM (
-          SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id,
+          SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id,
                  p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.views,
                  u.currentJob, u.username, u.avatar, u.currentCompany,
                  SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
@@ -314,7 +315,7 @@ const utilFunctions = {
           INNER JOIN users u ON p.user_id = u.id
           LEFT JOIN userPostActions upa ON p.id = upa.post_id
           WHERE p.deleted = 0
-          GROUP BY p.id, p.created_at, p.deleted, u.currentCompany, p.title, p.content, p.link, p.communities_id,
+          GROUP BY p.id, p.created_at, p.deleted, u.currentCompany, p.title, p.content, p.subtitle, p.link, p.communities_id,
                    u.username, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious,
                    p.react_interesting, p.react_celebrate, p.views
       ) AS SubQuery
@@ -338,7 +339,7 @@ const utilFunctions = {
 
       const result = await sql.query`
         SELECT 
-          p.id, p.created_at, p.deleted, p.title, p.content, p.link, p.communities_id, 
+          p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, 
           p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, 
           p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.updated_at, 
           p.views, u.username, u.id as user_id, u.avatar,
@@ -358,7 +359,7 @@ const utilFunctions = {
         LEFT JOIN userPostActions upa2 ON p.id = upa2.post_id AND upa2.user_id = ${userId}
         WHERE p.id = ${postId}
         GROUP BY 
-          p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.communities_id,
+          p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.subtitle, p.link, p.communities_id,
           p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious,
           p.react_interesting, p.react_celebrate, u.avatar, u.id, p.post_type, p.updated_at,
           p.views, u2.username, u2.avatar, upa2.action_type

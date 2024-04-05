@@ -76,6 +76,7 @@ main {
 .jobs-sort-selector select {
   font-size: 16px;
   width: auto; 
+  margin-bottom: 5px;
   padding: 7px 8px;
   color: var(--light-mode-text-color);
   background-color: var(--light-mode-body-color);
@@ -97,6 +98,7 @@ main {
   align-items: center;
   gap: 10px;
   padding-top: 8px;
+  width: 100%;
 }
 
 h3.job-title {

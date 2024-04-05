@@ -31,30 +31,11 @@
     --dark-mode-text-color: #fff;
     --dark-mode-secondary-text-color: #999;
     --dark-mode-border-color: #272D31;
-  --dark-mode-hover-background-color: #151515;
+    --dark-mode-hover-background-color: #151515;
   }
 
   main {
     display: block;
-  }
-
-  .favorite {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    border-radius: 10px;
-    background-color: var(--light-mode-body-color);
-    width: 100%;
-    padding: 16px 21px;
-    box-sizing: border-box;
-  }
-
-  .favorites {
-    padding: 0px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
   }
 
   .favorite:hover {
@@ -64,6 +45,95 @@
 
   .favorites-header {
     margin: 13px 10px;
+  }
+
+  .favorites-type-button .material-symbols-outlined {
+    font-size: 1rem;
+  }
+
+  .favorites-footer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    flex-direction: row;
+    font-size: .825rem;
+  }
+
+  .dropdown-content {
+    display: none;
+  }
+
+  .favorite-title {
+    max-width: 85%;
+  }
+
+  .favorite-header {
+    display: flex;
+    width: 100%;
+    flex-direction row;
+    justify-content: space-between;
+  }
+
+  .favorites-footer p {
+    background: var(--border-color);
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+
+  .dropbtn .material-symbols-outlined {
+    font-size: 1.2rem;
+  }
+
+  .favorite {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    background: none;
+    border-top: 1px solid var(--border-color);
+    width: 100%;
+    padding: 10px 17px;
+    box-sizing: border-box;
+  }
+
+  .favorites {
+    /* padding: 0px 14px; */
+    display: flex;
+    flex-direction: column;
+  }
+
+  .favorite:hover {
+    background-color: var(--light-mode-hover-color);
+    cursor: pointer;
+  }
+
+  .favorites-header {
+    margin: 13px 10px;
+  }
+
+  .favorites-type-button {
+    cursor: pointer;
+    background-color: var(--light-mode-body-color);
+    border: 1px solid var(--light-mode-body-color);
+    border-radius: 10px;
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: bold;
+    font-size: .9em;
+    color: var(--light-mode-text-color);
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+  }
+
+  .favorites-type-button.active {
+    background-color: #798494;
+    border: 1px solid #414d53;
+    color: var(--light-mode-main-color);
+  }
+
+  .favorites-type-button .material-symbols-outlined {
+    font-size: 1rem;
   }
 
   .favorites-footer {
@@ -117,6 +187,29 @@
     min-width: 160px;
   }
 
+  #favorites-header {
+    margin: 13px 13px;
+  }
+
+  div.favorites-type-selector {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 11px;
+    overflow-x: auto;
+
+    -webkit-scrollbar {
+      display: none;
+    }
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  div.favorites-type-selector::-webkit-scrollbar {
+    display: none;
+  }
+
   @media (prefers-color-scheme: dark) {
     .favorite {
       background-color: var(--dark-mode-main-color);
@@ -131,56 +224,221 @@
 <body>
   <%- include('partials/navbar', { pagePath: 'favorites' }) %>
   <main>
-    <h5 class="favorites-header">Favorites</h5>
-    <div class="favorites">
-      <% favorites.forEach((favorite) => { %>
-      <div class="favorite" onclick="window.location.href='/posts/<%= favorite.post_id %>'">
-        <div class="favorite-header">
-          <div class="favorite-title">
-            <h3>
-              <%= favorite.title %>
-            </h3>
-          </div>
-          <div class="dropdown">
-            <button class="dropbtn" onclick="toggleDropdown(event)">
-              <span class="material-symbols-outlined">
-                more_horiz
-              </span>
-            </button>
-            <div class="dropdown-content">
-              <form action="/favorites/<%= favorite.post_id %>?_method=DELETE" method="POST">
-                <input type="hidden" name="_method" value="DELETE">
-                <button type="submit">Delete</button>
-              </form>
-            </div>
+    <div id="favorites-header">
+      <h5 class="favorites-header">Favorites</h5>
+      <div class="favorites-type-selector">
+        <button class="favorites-type-button" onclick="getFavorites('all')">
+          <span class="material-symbols-outlined">
+            favorite
+          </span>
+          <p>All</p>
+        </button>
+        <button class="favorites-type-button" onclick="getFavorites('posts')">
+          <span class="material-symbols-outlined">
+            article
+          </span>
+          <p>Posts</p>
+        </button>
+        <button class="favorites-type-button" onclick="getFavorites('jobs')">
+          <span class="material-symbols-outlined">
+            work
+          </span>
+          <p>Jobs</p>
+        </button>
+        <button class="favorites-type-button" onclick="getFavorites('comments')">
+          <span class="material-symbols-outlined">
+            comment
+          </span>
+          <p>Comments</p>
+        </button>
+      </div>
+    </div>
+    <div class="favorites" id="favoritesContainer">
+
+    </div>
+  </main>
+
+  <script>
+    const notificationSelectorButtons = document.querySelectorAll('.favorites-type-button');
+    let activeButton = null; // Track the currently active button
+
+    // Function to set the active button
+    function setActiveButton(button) {
+      if (activeButton) {
+        activeButton.classList.remove('active');
+      }
+      button.classList.add('active');
+      activeButton = button;
+    }
+
+    notificationSelectorButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const type = button.textContent.toLowerCase();
+        setActiveButton(button);
+      });
+    });
+
+    const allButton = document.querySelector('.favorites-type-button:nth-child(1)');
+    setActiveButton(allButton);
+
+    async function getFavorites(type = '') {
+      try {
+        const response = await fetch(`/favorites/${type}`);
+        const data = await response.json();
+        const favorites = data.favorites;
+        renderFavorites(favorites, type);
+      } catch (error) {
+        console.error('Error fetching favorites:', error);
+      }
+    }
+
+    function renderFavorites(favorites, type) {
+      const favoritesContainer = document.getElementById('favoritesContainer');
+      favoritesContainer.innerHTML = '';
+
+      if (type === 'all') {
+        renderFavoritePosts(favorites.posts);
+        renderFavoriteComments(favorites.comments);
+        renderFavoriteJobs(favorites.jobs);
+      } else if (type === 'posts') {
+        renderFavoritePosts(favorites);
+      } else if (type === 'comments') {
+        renderFavoriteComments(favorites);
+      } else if (type === 'jobs') {
+        renderFavoriteJobs(favorites);
+      }
+    }
+
+    function renderFavoritePosts(posts) {
+      const favoritesContainer = document.getElementById('favoritesContainer');
+
+      posts.forEach((post) => {
+        const favoriteElement = document.createElement('div');
+        favoriteElement.classList.add('favorite');
+        favoriteElement.onclick = () => {
+          window.location.href = `/posts/${post.post_id}`;
+        };
+
+        favoriteElement.innerHTML = `
+      <div class="favorite-header">
+        <div class="favorite-title">
+          <h5>${post.title}</h5>
+        </div>
+        <div class="dropdown">
+          <button class="dropbtn" onclick="toggleDropdown(event)">
+            <span class="material-symbols-outlined">
+              more_horiz
+            </span>
+          </button>
+          <div class="dropdown-content">
+            <form action="/favorites/post/${post.post_id}?_method=DELETE" method="POST">
+              <input type="hidden" name="_method" value="DELETE">
+              <button type="submit">Delete</button>
+            </form>
           </div>
         </div>
-        <div class="favorites-footer">
-          <p>
-            <%= favorite.username %>
-          </p>
-          <p>
-            <%
-            function formatDate(dateString) {
+      </div>
+      <div class="favorites-footer">
+        <p>${post.username}</p>
+        <p>${post.community_name}</p>
+        <p>${formatDate(post.created_at[1])}</p>
+      </div>
+    `;
+
+        favoritesContainer.appendChild(favoriteElement);
+      });
+    }
+
+    function renderFavoriteComments(comments) {
+      const favoritesContainer = document.getElementById('favoritesContainer');
+
+      comments.forEach((comment) => {
+        const favoriteElement = document.createElement('div');
+        favoriteElement.classList.add('favorite');
+        favoriteElement.onclick = () => {
+          window.location.href = `/posts/${comment.post_id[1]}#${comment.comment_id}`;
+        };
+
+        favoriteElement.innerHTML = `
+      <div class="favorite-header">
+        <div class="favorite-title">
+        
+        <h5>${comment.comment}</h5>
+        </div>
+        <div class="dropdown">
+          <button class="dropbtn" onclick="toggleDropdown(event)">
+            <span class="material-symbols-outlined">
+              more_horiz
+            </span>
+          </button>
+          <div class="dropdown-content">
+            <form action="/favorites/comment/${comment.post_id[1]}/${comment.comment_id}?_method=DELETE" method="POST">
+              <input type="hidden" name="_method" value="DELETE">
+              <button type="submit">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="favorites-footer">
+        <p>${formatDate(comment.created_at[1])}</p>
+      </div>
+    `;
+
+        favoritesContainer.appendChild(favoriteElement);
+      });
+    }
+
+    function renderFavoriteJobs(jobs) {
+      const favoritesContainer = document.getElementById('favoritesContainer');
+
+      jobs.forEach((job) => {
+        const favoriteElement = document.createElement('div');
+        favoriteElement.classList.add('favorite');
+        favoriteElement.onclick = () => {
+          window.location.href = `/jobs/${job.id[1]}`;
+        };
+
+        favoriteElement.innerHTML = `
+      <div class="favorite-header">
+        <div class="favorite-title">
+                  <h5>${job.company_name}</h5>
+          <h5>${job.title}</h5>
+        </div>
+        <div class="dropdown">
+          <button class="dropbtn" onclick="toggleDropdown(event)">
+            <span class="material-symbols-outlined">
+              more_horiz
+            </span>
+          </button>
+          <div class="dropdown-content">
+            <form action="/favorites/jobs/${job.job_id}?_method=DELETE" method="POST">
+              <input type="hidden" name="_method" value="DELETE">
+              <button type="submit">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="favorites-footer">
+        <p>${formatDate(job.created_at)}</p>
+      </div>
+    `;
+
+        favoritesContainer.appendChild(favoriteElement);
+      });
+    }
+
+    function toggleDropdown(event) {
+      event.stopPropagation();
+      const dropdownContent = event.target.closest('.dropdown').querySelector('.dropdown-content');
+      dropdownContent.classList.toggle('show');
+    }
+
+    function formatDate(dateString) {
       const date = new Date(dateString);
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
       const year = date.getFullYear();
       return `${month}/${day}/${year}`;
-    }%>
-            <%= formatDate(favorite.created_at) %>
-          </p>
-        </div>
-      </div>
-      <% }) %>
-    </div>
-  </main>
-
-  <script>
-    function toggleDropdown(event) {
-      event.stopPropagation();
-      const dropdownContent = event.target.closest('.dropdown').querySelector('.dropdown-content');
-      dropdownContent.classList.toggle('show');
     }
 
     document.addEventListener('click', function(event) {
@@ -191,6 +449,8 @@
         }
       });
     });
+
+    getFavorites('all');
   </script>
 </body>
 

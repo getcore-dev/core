@@ -50,7 +50,9 @@
         </div>
         <div class="form-group">
           <input type="hidden" name="userId" value="<%= user.id %>" />
-          <input type="text" id="title" name="title" placeholder="Title" style="font-size: 1.3rem;" required />
+          <input type="text" id="title" name="title" placeholder="Title" required />
+          <input type="text" id="subtitle" name="subtitle" placeholder="Subtitle" />
+
           <div class="form-group" id="link-field">
             <input type="text" id="link" name="link" placeholder="Link" />
           </div>
@@ -89,22 +91,32 @@
         case 'discussion':
           headerText = 'Create a Discussion';
           $('#link-field').show();
+          $('#subtitle').hide();
           $('#link-label').text('Link:');
-          $('#confirmation-question').hide(); // Hide the confirmation question
+          $('#confirmation-question').hide();
+          $('#submit-button').prop('disabled', false);
+
           break;
         case 'question':
           headerText = 'Create a Question';
           $('#link-field').hide();
-          $('#confirmation-question').show(); // Show the confirmation question
+          $('#submit-button').prop('disabled', true);
+          $('#confirmation-question').show();
+          $('#subtitle').hide();
           break;
         case 'blog':
           headerText = 'Create a Blog';
+          $('#subtitle').show();
           $('#link-field').hide();
-          $('#confirmation-question').hide(); // Hide the confirmation question
+          $('#confirmation-question').hide();
+          $('#submit-button').prop('disabled', false);
+
           break;
         case 'project':
           headerText = 'Create a Project';
           $('#link-field').show();
+          $('#subtitle').hide();
+          $('#submit-button').prop('disabled', false);
           $('#link-label').text('GitHub URL:');
           $('#confirmation-question').hide(); // Hide the confirmation question
           break;
@@ -120,9 +132,19 @@
       $(this).closest('.post-type a').css('color', 'white');
     });
 
+    $('#confirm-google').change(function() {
+      if ($(this).is(':checked')) {
+        $('#submit-button').prop('disabled', false);
+      } else {
+        $('#submit-button').prop('disabled', true);
+      }
+    });
+
 
 
     $(document).ready(function() {
+      $('#subtitle').hide();
+
       $('.tags-select2').select2({
         width: '100%', // Full width of its container
         tags: true, // Allows user to create new tags
