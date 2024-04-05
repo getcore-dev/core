@@ -361,7 +361,7 @@ h1, h2, h3, h4, h5, p {
 }
 
 .menu-button.active .top-bar {
-  transform: rotate(45deg) translate(4px, 4px);
+  transform: rotate(45deg) translate(5px, 5px);
 }
 
 .menu-button.active .middle-bar {
