@@ -87,6 +87,10 @@ main {
   justify-content: center;
 }
 
+.input-container input {
+  border: 1px solid var(--border-color) !important;
+}
+
 #password-strength, #password-match {
   display: block;
   margin-top: 5px;
@@ -151,6 +155,11 @@ main {
     color: var(--dark-mode-text-color); /* Light text color */
     font-size: 14px;
   }
+
+  .input-container input {
+  border-color: var(--dark-mode-border-color) !important;
+}
+
 
   #registration, #login{
       border-color: none;

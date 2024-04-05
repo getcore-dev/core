@@ -33,7 +33,7 @@ body {
   background: none;
   border: 2px solid #114736;
   margin-bottom: 25px;
-  color: #fff;
+  color: var(--light-mode-text-color);
   padding: 20px 20px;
   text-decoration: none;
   width: 100%;
@@ -207,6 +207,10 @@ main {
 
   #login h1 {
     color: #f4f4f4; /* Light color for headings */
+  }
+
+  .github-login-btn {
+    color: var(--dark-mode-text-color);
   }
 
   /* Additional dark mode styles can be added as needed */
