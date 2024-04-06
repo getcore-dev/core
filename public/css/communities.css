@@ -37,7 +37,7 @@ body {
   display: flex;
   background: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
-  border-radius: 10px;
+  border-radius: 18px;
   margin: 10px;
   flex-direction: row;
   justify-content: space-between;
@@ -85,8 +85,8 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 11px;
-  margin-top: 15px;
+  margin-bottom: 6px;
+  margin-top: 9px;
 }
 
 .reaction-interactions {
@@ -276,9 +276,9 @@ div.vote-interactions {
 .link-preview {
   background-color: var(--light-mode-body-color);
   border-radius: 18px;
-  margin: 16px 0px;
+  margin: 0px 0px;
   border: 1px solid var(--border-color);
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .reaction-menu {
@@ -685,11 +685,13 @@ div .mini-link-desc {
 }
 
 .job-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   font-size: 1rem;
   font-weight: bold;
   margin: 0;
   margin: 4px 0;
-  max-height: 2.3rem;
   overflow: hidden;
 }
 
@@ -766,8 +768,7 @@ div .mini-link-desc {
 
 @media (max-width: 768px) {
   .jobslist .job { 
-    min-width: 160px;
-    max-width: 200px;
+    min-width: 200px;
   }
 
   #posts-container > h5 {
@@ -785,8 +786,8 @@ div .mini-link-desc {
 
   .mobile-jobs-container {
     display: block;
-    margin-bottom: 13px;
-  }
+    margin-bottom: 6px;
+    }
 
   .community-selector {
     padding-top: 8px;
@@ -848,8 +849,9 @@ div .mini-link-desc {
 
   
   .job-content {
-      margin: 8px 10px;
-  }
+    width: 100%;
+    margin: 12px 15px;
+    }
 
   .thumbnail {
     display: flex;

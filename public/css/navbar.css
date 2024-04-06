@@ -49,9 +49,10 @@ h1, h2, h3, h4, h5, p {
   padding: 0; 
 }
 
-
-
-
+a {
+  text-decoration: none;
+  color: var(--light-mode-text-color);
+}
 
 .top-bar {
   display: flex;
@@ -915,6 +916,10 @@ font-weight: bold;
   }
 
 @media (prefers-color-scheme: dark) {
+  a {
+    color: var(--dark-mode-text-color);
+  }
+
   .menu-content {
     background-color: var(--dark-mode-main-color);
   }

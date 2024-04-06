@@ -71,18 +71,6 @@
             Started: <%= new Date(otheruser.currentJob_begindate).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) %>
           </p>
 
-          <p id="currentjob.position-display">
-          </p>
-          <p id="currentjob.position-display">
-            <span class="flair" id="emp-type-flair">
-              <%= otheruser.currentJob_employment_type %>
-            </span>
-            <% if (otheruser.currentJob_skills) { %>
-            <% otheruser.currentJob_skills.split(',').forEach(function(skill) { %>
-            <span class="flair"><%= skill.trim() %></span>
-            <% }); %>
-            <% } %>
-          </p>
 
 
           <% } else { %>
@@ -90,43 +78,43 @@
           <% if (user && otheruser.username == user.username) { %>
           Add Company
           </button>
-          <% } %> <% } %> <% if (otheruser.currentjob &&
+          <% } %> <% } %>
+          <% if (otheruser.currentjob &&
           otheruser.currentjob.position) { %>
           <p id="currentjob.position-display">
             <strong>Position:</strong> <%= otheruser.currentjob.position %>
           </p>
           <% } else { %>
-          <p id="currentjob.position-display"></p>
           <% } %>
         </div>
 
         <div class="user-links" style="background:<%= otheruser.profile_border_color%>20 !important;">
-          <div class="link-display"> <img src="/src/github.png" style="height:20px;width:20px;">
+          <div class="social-display"> <img src="/src/github.png" style="height:20px;width:20px;">
             <p id="github-url-display"> <% if (otheruser.github_url) { %> <a href="https://github.com/<%= otheruser.github_url %>"><%= otheruser.github_url %></a> <% } else { %> No Github URL yet. <% } %> </p>
           </div>
-          <div class="link-display"> <img src="/src/leetcodeglyph.png" style="height:20px;width:20px;">
+          <div class="social-display"> <img src="/src/leetcodeglyph.png" style="height:20px;width:20px;">
             <p id="leetcode-url-display"> <% if (otheruser.leetcode_url) { %> <a href="https://leetcode.com/<%= otheruser.leetcode_url %>"><%= otheruser.leetcode_url %></a> <% } else { %> No LeetCode URL yet. <% } %> </p>
           </div>
-          <div class="link-display"> <img src="/src/linkedin.png" style="height:20px;width:20px;">
+          <div class="social-display"> <img src="/src/linkedin.png" style="height:20px;width:20px;">
             <p id="linkedin-url-display"> <% if (otheruser.linkedin_url) { %> <a href="https://www.linkedin.com/in/<%= otheruser.linkedin_url %>"><%= otheruser.linkedin_url %></a> <% } else { %> No LinkedIn URL yet. <% } %> </p>
           </div>
         </div>
-        <div class="github-commit-graph">
+        <div class="github-commit-graph" >
           <h5>GitHub Activity</h5>
           <div id="commit-graph-container"></div>
         </div>
         <div class="github-commit-repos" style="background:<%= otheruser.profile_border_color%>20 !important;">
           <h5>GitHub Repositories</h5>
-            <table id="repo-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Stars</th>
-                  <th>Language</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
+          <table id="repo-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Stars</th>
+                <th>Language</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
 
         <div class="user-activity">

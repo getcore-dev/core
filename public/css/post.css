@@ -203,9 +203,6 @@ div .material-symbols-outlined {
 
 }
 
-a:-webkit-any-link {
-  color: #111; /* Adjusted color for dark mode */
-}
 
 .user-info:hover {
   color: green;
@@ -654,7 +651,8 @@ img.blog-avatar {
 }
 
 .comment-avatar {
-  padding-right: 8px;
+  padding-left: 7px;
+  padding-right: 13px;
 }
 
 .comment .comment {
@@ -1348,10 +1346,6 @@ p.preview-description {
 
   #verified, a #verified {
     color: #3cb371; /* Adjusted color for dark mode */
-  }
-
-  a:-webkit-any-link {
-    color: #fff; /* Adjusted color for dark mode */
   }
 
   div .user-info, .header {
