@@ -41,6 +41,6 @@ We welcome contributions from the community to improve Core. If you’d like to 
 
 Support:
 
-If you encounter any issues or have questions about Core, please don’t hesitate to reach out to us at support@core.com We’re here to help!
+If you encounter any issues or have questions about Core, please don’t hesitate to reach out to us at support@c-ore.dev We’re here to help!
 
 Thank you for choosing Core! We hope you enjoy the platform and find it valuable for your projects and opportunities. Happy sharing and collaborating!
