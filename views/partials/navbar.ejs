@@ -24,18 +24,6 @@
     let postUser = locals.post && locals.post.user && locals.post.user.username ? locals.post.user.username : null;
     let otherUser = locals.otheruser;
     
-    if (pagePath && !communityId && !postUser && !otherUser) {
-      navText += '<a class="navbar-user-info" href="' + pagePath + '" style="font-weight: bold;">' + pagePath + '</a>';
-    }
-    if (communityId) {
-      navText += '<a class="navbar-user-info" href="/c/' + locals.community.shortname + '">' + locals.community.shortname + '/' + '</a>';
-    }
-    if (postUser) {
-      navText += '<a class="navbar-user-info" href="/u/' + postUser + '" style="font-weight: normal;">' + postUser + '/' + '</a>';
-    }
-    if (otherUser) {
-      navText += '<a class="navbar-user-info" href="/u/' + otherUser.username + '" style="font-weight: normal;">' + otherUser.username + '/' + '</a>';
-    }
 
                 let navbarTint = '';
             if (locals.community) {

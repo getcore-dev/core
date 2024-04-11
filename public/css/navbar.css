@@ -134,7 +134,7 @@ a {
   color: white;
   padding: 3px;
   margin-top: -7px;
-  z-index: 3;
+  z-index: 2;
   box-sizing: border-box;
 }
 
@@ -400,6 +400,7 @@ a {
   min-height: 32px;
   border-radius: 100%;
   height: 32px;
+  object-fit: cover;
   width: 32px;
   aspect-ratio: 1 / 1;
 }

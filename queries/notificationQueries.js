@@ -104,7 +104,7 @@ const notificationQueries = {
   getAllNotifications: async (userId) => {
     try {
       const result = await sql.query`
-      SELECT notifications.*, sender.username as senderUsername, receiver.username as receiverUsername, sender.avatar as senderProfilePicture
+      SELECT notifications.*, sender.username as senderUsername, receiver.username as receiverUsername, sender.avatar as senderProfilePicture, sender.profile_border_color as senderProfileColor
       FROM notifications 
       INNER JOIN users as sender ON notifications.senderUserId = sender.id
       INNER JOIN users as receiver ON notifications.receiverUserId = receiver.id

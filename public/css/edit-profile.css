@@ -46,6 +46,7 @@
 
 #avatar-preview {
     width: 150px;
+    object-fit: cover;
     box-shadow: 0 2px 20px rgb(25 116 48);
     border: 4px solid #4c8d6b !important;
     height: 150px;

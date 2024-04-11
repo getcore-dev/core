@@ -102,10 +102,25 @@ li.notification-item {
     display: flex;
     flex-direction: row;
     gap: 10px;
+    align-items: center;
 }
 
 .notification-item:hover {
     background-color: var(--light-mode-hover-color);
+}
+
+.notification-is-read-indicator.unread {
+    background-color: var(--active-indicator-color);
+    border-radius: 50%;
+    height: 10px;
+    width: 10px;
+}
+
+.notification-is-read-indicator.read {
+    background: none;
+    border-radius: 50%;
+    height: 10px;
+    width: 10px;
 }
 
 .notification-selector-btn.active {
@@ -143,6 +158,14 @@ li.notification-item {
 }
 
 @media (max-width: 768px) {
+    main {
+        display: block;
+        overflow-x: hidden;
+    }
+
+    .container {
+        overflow-x: hidden;
+    }
 
     #notification-list {
         min-width: 100%;
@@ -155,9 +178,5 @@ li.notification-item {
 
     .notification-selector {
         gap: 15px;
-    }
-
-    .container {
-        width: 100%;
     }
 }
