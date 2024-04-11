@@ -112,7 +112,7 @@
       <% communities.forEach((community) => { %>
       <% if (!community.isMember) { %>
       <div class="community-entry" onclick="window.location.href='/c/<%= community.name %>'">
-        <span class="material-symbols-outlined"><%= community.mini_icon %></span>
+        <span class="material-symbols-outlined" style="color:<%= community.community_color %>;"><%= community.mini_icon %></span>
 
         <span class="community-info">
           <%= community.name%>

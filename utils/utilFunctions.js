@@ -40,6 +40,7 @@ const utilFunctions = {
         u.avatar,
         CASE WHEN ur.follower_id IS NOT NULL THEN 1 ELSE 0 END AS is_following,
         c.name AS community_name, 
+        c.community_color as community_color,
         c.shortname AS community_shortname,
         SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
         SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
@@ -60,7 +61,7 @@ const utilFunctions = {
       WHERE p.deleted = 0
       GROUP BY 
         p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.subtitle, 
-        p.communities_id, u.avatar, u.currentJob, c.name, c.shortname, 
+        p.communities_id, u.avatar, u.currentJob, c.name, c.shortname, c.community_color,
         p.react_like, p.react_love, p.react_curious, p.react_interesting, 
         p.react_celebrate, p.post_type, p.views, ur.follower_id
     `;
@@ -261,7 +262,7 @@ const utilFunctions = {
       const result = await sql.query`
         SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views,
         u.currentJob, u.username, u.avatar,
-        c.name AS community_name, c.shortname AS community_shortname,
+        c.name AS community_name, c.shortname AS community_shortname, c.community_color AS community_color,
               SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
               SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
               SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
@@ -273,7 +274,7 @@ const utilFunctions = {
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
         LEFT JOIN communities c ON p.communities_id = c.id
         WHERE p.communities_id = ${communityId} AND p.deleted = 0
-        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.subtitle, p.link, p.communities_id, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views, c.name, c.shortname
+        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.subtitle, p.link, p.communities_id, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views, c.name, c.shortname, c.community_color
         ORDER BY p.created_at DESC
       `;
       return result.recordset;

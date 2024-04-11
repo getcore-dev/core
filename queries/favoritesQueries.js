@@ -173,7 +173,7 @@ const favoritesQueries = {
   getFavoritePosts: async (userId) => {
     try {
       const result = await sql.query`
-        SELECT f.*, p.title, p.content, p.user_id, p.created_at, p.updated_at, p.communities_id, u.username, u.avatar, c.shortname as community_name
+        SELECT f.*, p.title, p.content, p.user_id, p.created_at, p.updated_at, p.communities_id, u.username, u.avatar, u.profile_border_color, c.shortname as community_name, c.community_color AS community_color, c.mini_icon AS community_icon
         FROM favorites f
         INNER JOIN posts p ON f.post_id = p.id
         INNER JOIN users u ON p.user_id = u.id

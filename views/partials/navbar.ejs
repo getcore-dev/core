@@ -27,7 +27,7 @@
 
                 let navbarTint = '';
             if (locals.community) {
-              navbarTint = getTintFromName(locals.community.name);
+              navbarTint = locals.community.community_color;
             }
 
   %>
@@ -91,7 +91,7 @@
           <a href="/c">
             <div class="menu-item">
               <span class="material-symbols-outlined" id="menu-community-icon">
-                forum
+                group
               </span>
               Communities
 
@@ -100,7 +100,7 @@
           <a href="/updates">
             <div class="menu-item">
               <span class="material-symbols-outlined" id="menu-community-icon">
-                commit
+                settings
               </span>
               Updates
 
@@ -320,7 +320,7 @@
               };
 
 
-              const tint = getTintFromName(community.name);
+              const tint = community.community_color;
 
               communityElement.innerHTML = `
                 <span class="material-symbols-outlined" style="${isMobile ? `color: ${tint};` : ''}">
@@ -345,7 +345,7 @@
                 window.location.href = `/c/${community.shortname}`;
               };
 
-              const tint = getTintFromName(community.name);
+              const tint = community.community_color;
 
               communityElement.innerHTML = `
                 <span class="material-symbols-outlined" style="${isMobile ? `color: ${tint};` : ''}">

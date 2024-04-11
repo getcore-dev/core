@@ -45,6 +45,7 @@ li.notification-item {
 
 .notification-text-div {
     display: flex;
+    margin-left: 10px;
     flex-direction: column;
 }
 

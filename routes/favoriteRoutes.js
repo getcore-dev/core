@@ -18,7 +18,7 @@ router.get("/", checkAuthenticated, async (req, res) => {
 router.get("/posts", checkAuthenticated, async (req, res) => {
   try {
     const userId = req.user.id;
-    const favorites = await favoritesQueries.getFavorites(userId);
+    const favorites = await favoritesQueries.getFavoritePosts(userId);
     res.json({ favorites });
   } catch (err) {
     console.error("Error getting favorite posts:", err);

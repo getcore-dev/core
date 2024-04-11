@@ -20,7 +20,7 @@
     <%- include('partials/com-btn-container', { }) %>
     <div class="container">
       <div class="notification-container-header">
-      <h5> Notifications </h5>
+        <h5> Notifications </h5>
       </div>
       <div id="notification-list" class="column">
       </div>
@@ -108,31 +108,7 @@
         method: 'DELETE'
       });
     }
-
     fetchNotifications();
-    const notificationSelectorButtons = document.querySelectorAll('.notification-selector-btn');
-    let activeButton = null; // Track the currently active button
-
-    // Function to set the active button
-    function setActiveButton(button) {
-      if (activeButton) {
-        activeButton.classList.remove('active');
-      }
-      button.classList.add('active');
-      activeButton = button;
-    }
-
-    notificationSelectorButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const type = button.textContent.toLowerCase();
-        fetchNotifications(type);
-        setActiveButton(button);
-      });
-    });
-
-    const unreadButton = document.querySelector('.notification-selector-btn:nth-child(2)');
-    setActiveButton(unreadButton);
-    fetchNotifications('unread');
     <% } %>
   </script>
 </body>

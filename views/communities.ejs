@@ -25,13 +25,6 @@
 
 
       <div id="posts-container" data-community-id="<%= communityId %>" class="column">
-        <% if (typeof community === 'undefined' || community == null) { %>
-        <h5 style="margin-left: 13px;
-    margin-top: 10px;">Communities</h5>
-
-        <div class="community-selector">
-        </div>
-        <% } %>
         <% if (communityId != null) { %>
         <div class="community" style="margin: 0 13px; margin-bottom: 0px; margin-top: 10px; border: 0; background-color: rgba(0,0,0,0);">
           <div class="community-content">
@@ -92,7 +85,17 @@
         hash = name.charCodeAt(i) + ((hash << 18) - hash);
       }
       const color = (hash & 0x00FFFFFF).toString(16).toUpperCase();
-      const tintColor = `#${color}95`;
+      const tintColor = `#${color}45`;
+      return tintColor;
+    }
+
+    function getTintFromNameSecondary(name) {
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 18) - hash);
+      }
+      const color = (hash & 0x00FFFFFF).toString(16).toUpperCase();
+      const tintColor = `#${color}65`;
       return tintColor;
     }
 
@@ -140,6 +143,8 @@
             const locationFlair = jobElement.querySelector('#location-flair');
             const location = locationFlair.dataset.location;
             locationFlair.style.setProperty('--location-color', getTintFromName(location));
+            locationFlair.style.setProperty('--location-color-text', getTintFromNameSecondary(location));
+
           });
         })
         .catch(error => {
@@ -223,7 +228,7 @@ filter_list
 </span>
           </button>
                   <% if (user) { %>
-            <button class="header-button" id="post-button" onclick="window.location.href='/post/create'" style="padding: 6px 13px; margin-right: 7px;">+</button>
+            <button class="header-button" id="post-button" onclick="window.location.href='/post/create'" style="padding: 6px 13px;;">+</button>
           <% } %>
 
           <div class="filter-menu" id="filterMenu">
@@ -314,7 +319,7 @@ filter_list
             postDateDiv.id = 'secondary-text';
             const communityName = document.createElement('span');
             communityName.innerText = post.community_name;
-            communityName.style.color = getTintFromName(post.community_name);
+            communityName.style.color = post.community_color;
             postDateDiv.appendChild(communityName);
 
             const dateText = document.createElement('span');
@@ -413,23 +418,9 @@ filter_list
             reactionInteractionsDiv.id = `reaction-interactions ${post.id}-reactions`;
 
 
-            // boost button
-            const boostButton = document.createElement("button");
-            boostButton.className = `reaction-button boost-button-${post.id}`;
-            if (post.userReaction === 'B') {
-              boostButton.classList.add('active');
-            }
-
-            boostButton.innerHTML = `⚡️ <span class='boost-count-${post.id}'>${post.boostCount}</span>`;
-
-            boostButton.onclick = () => interactWithPost(event, post.id, "<%= user %>", "BOOST");
-
-            reactionInteractionsDiv.appendChild(boostButton);
-
-
             const mainReactionButton = document.createElement("button");
             mainReactionButton.className = "main-reaction-button";
-            mainReactionButton.innerText = "😀";
+            mainReactionButton.innerText = "🚀";
             reactionInteractionsDiv.appendChild(mainReactionButton);
 
             const reactionMenu = document.createElement("div");
@@ -466,30 +457,34 @@ filter_list
               },
             ];
 
+            const topReactions = reactionTypes.filter(reaction => post[reaction.type.toLowerCase() + 'Count'] > 0)
+              .sort((a, b) => post[b.type.toLowerCase() + 'Count'] - post[a.type.toLowerCase() + 'Count'])
+              .slice(0, 3);
+
+            let totalReactions = 0;
             reactionTypes.forEach(reaction => {
-              if (post[reaction.type.toLowerCase() + 'Count'] > 0) {
-                const button = document.createElement("button");
-                button.className = `reaction-button ${reaction.type.toLowerCase()}-button-${post.id}`;
-                if (post.userReaction && post.userReaction.toLowerCase() === reaction.type.toLowerCase()) {
-                  button.classList.add('active');
-                }
-                button.onclick = () => interactWithPost(event, post.id, "<%= user %>", reaction.type);
-
-                const icon = document.createElement("span");
-                icon.innerText = reaction.icon;
-
-                const countText = document.createElement("span");
-                countText.className = `reaction-count ${reaction.type.toLowerCase()}-count ${post.id}`
-                countText.innerText = ` ${post[reaction.type.toLowerCase() + 'Count']}`;
-
-                button.appendChild(icon);
-                button.appendChild(countText);
-                reactionInteractionsDiv.appendChild(button);
-              }
+              totalReactions += post[reaction.type.toLowerCase() + 'Count'];
             });
+            const topReactionsDiv = document.createElement("div");
+            topReactions.forEach(reaction => {
+              const icon = document.createElement("span");
+              icon.className = `reaction-icon ${reaction.type.toLowerCase()}-icon-${post.id}`;
+              icon.innerText = reaction.icon;
+              topReactionsDiv.className = `top-reactions ${reaction.type.toLowerCase()}-top-reactions-${post.id}`;
+              topReactionsDiv.appendChild(icon);
+            });
+
+            if (totalReactions > 0) {
+              reactionInteractionsDiv.appendChild(topReactionsDiv);
+            }
+
+            const totalReactionsText = document.createElement("span");
+            totalReactionsText.className = `total-reactions-count ${post.id}`;
+            totalReactionsText.innerText = totalReactions > 0 ? `${totalReactions} reactions` : "0 reactions";
+            reactionInteractionsDiv.appendChild(totalReactionsText);
             reactionTypes.forEach(reaction => {
               const button = document.createElement("button");
-              button.innerText = reaction.icon;
+              button.innerText = reaction.icon + ' ' + post[reaction.type.toLowerCase() + 'Count'];
               button.onclick = () => interactWithPost(event, post.id, "<%= user %>", reaction.type);
               reactionMenu.appendChild(button);
             });
@@ -768,89 +763,6 @@ filter_list
         .then(response => response.json())
         .then(data => {
           console.log('Success:', data);
-          const reactionMenu = document.querySelector(".reaction-menu");
-          if (reactionMenu) {
-            reactionMenu.style.opacity = '0';
-            reactionMenu.style.display = 'none';
-          }
-
-          const reactionsData = data.newScore;
-
-          const reactionTypes = [{
-              type: "LOVE",
-              icon: "❤️"
-            },
-            {
-              type: "LIKE",
-              icon: "👍"
-            },
-            {
-              type: "CURIOUS",
-              icon: "🤔"
-            },
-            {
-              type: "INTERESTING",
-              icon: "💡"
-            },
-            {
-              type: "CELEBRATE",
-              icon: "🎉"
-            }
-          ];
-
-          const reactionInteractionsDiv = document.getElementById(`reaction-interactions ${postId}-reactions`);
-
-          reactionTypes.forEach(reaction => {
-            const reactionCount = reactionsData[reaction.type.toLowerCase()] || 0;
-            let reactionButton = document.querySelector(`.reaction-button.${reaction.type.toLowerCase()}-button-${postId}`);
-
-            if (reactionCount > 0) {
-              if (!reactionButton) {
-                // Create a new reaction button if it doesn't exist
-                reactionButton = createReactionButton(reactionInteractionsDiv, reaction, reactionCount, postId, user);
-              } else {
-                // Update count of existing button
-                updateReactionButton(reactionButton, reactionCount, reaction.type, postId);
-              }
-            } else if (reactionButton) {
-              // Remove the button if the reaction count is 0
-              reactionButton.remove();
-            }
-
-            // Update button active status
-            if (data.userReaction && data.userReaction.toLowerCase() === reaction.type.toLowerCase()) {
-              reactionButton.classList.add('active');
-            } else if (reactionButton) {
-              reactionButton.classList.remove('active');
-            }
-          });
-
-          const boostCount = reactionsData['boosts'] || 0;
-          let boostButton = document.querySelector(`.reaction-button.boost-button-${postId}`);
-
-          if (boostCount > 0) {
-            if (!boostButton) {
-              // Create a new boost button if it doesn't exist
-              boostButton = createReactionButton(reactionInteractionsDiv, {
-                type: "BOOST",
-                icon: "⚡️"
-              }, boostCount, postId, user);
-            } else {
-              // Update count of existing boost button
-              const countSpan = boostButton.querySelector(`span.boost-count-${postId}`);
-              countSpan.innerText = ` ${boostCount}`;
-            }
-          } else if (boostButton) {
-            // Remove the boost button if the boost count is 0
-            boostButton.remove();
-          }
-
-          // Update boost button active status
-          if (data.userReaction && data.userReaction.toLowerCase() === 'b') {
-            boostButton.classList.add('active');
-          } else if (boostButton) {
-            boostButton.classList.remove('active');
-          }
         })
         .catch((error) => {
           console.error('Error:', error);

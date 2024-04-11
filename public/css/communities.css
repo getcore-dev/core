@@ -178,7 +178,7 @@ div.vote-interactions {
 
 .job-flair {
   display: inline-block;
-  padding: 2px 3px;
+  padding: 3px 5px;
   background-color: #DB504A;
   border: 1px solid #FF8370; 
   color: white;
@@ -189,7 +189,8 @@ div.vote-interactions {
 
 .job-flair#location-flair {
   background-color: var(--location-color);
-  border-color: var(--location-color);
+  border: 0;
+  color: var(--location-color-text);
 }
 
 .job-flair#location-flair:hover {
@@ -197,8 +198,9 @@ div.vote-interactions {
 }
 
 #pay-flair {
-  background: #0C8346;
-  border: 1px solid #0E954F;
+  background: #5cb989;
+  color: #26704a;
+  border: 0;
 }
 
 #job-posting-deadline {
@@ -285,7 +287,7 @@ div.vote-interactions {
   position: absolute;
   top: 0;
   display: none;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-end;
@@ -377,7 +379,21 @@ div.vote-interactions {
   color: #666; /* Lighter text color */
 }
 
-.comments {
+.top-reactions .reaction-icon:nth-child(1) {
+  z-index: 2;
+}
+
+.top-reactions .reaction-icon:nth-child(2) {
+  margin-left: -5px;
+  z-index: 1;
+}
+
+.top-reactions .reaction-icon:nth-child(3) {
+  margin-left: -10px;
+  z-index: 0;
+}
+
+.comments, .total-reactions-count {
   font-size: .855rem;
   padding-right: 5px;
   color: var(--light-mode-secondary-text-color);
@@ -561,11 +577,11 @@ div .mini-link-desc {
 
 
 #post-button {
-  background: #0C8346;
-  border: 1px solid #0E954F;
+  background: #2ab16c;
+  border: 1px solid #2d9961;
   color: white;
   font-size: 1.2rem;
-  padding: 5px 19px !important;
+  padding: 5px 12px !important;
 }
 
 #post-button:hover {
@@ -693,6 +709,9 @@ div .mini-link-desc {
   margin: 0;
   margin: 4px 0;
   overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* Number of lines you want */
+  -webkit-box-orient: vertical;
 }
 
 .jobs-header {
@@ -717,8 +736,7 @@ div .mini-link-desc {
 
 .company-logo {
   padding-right: 6px;
-  width: 24px;
-  height: auto;
+  height: 24px;
 }
 .job-header {
   margin-top: 26px;
@@ -831,8 +849,8 @@ div .mini-link-desc {
     font-weight: bold;
   }
   .community-header, .job-header {
-    margin: 0 14px 6px 14px;
-    }
+    margin: 0 7px 6px 10px;
+      }
 
     .job-header {
       margin-top: 14px;

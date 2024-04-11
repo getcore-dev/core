@@ -77,6 +77,7 @@
   .favorites-footer p {
     background: var(--border-color);
     padding: 4px 8px;
+    color: var(--light-mode-secondary-text-color);
     border-radius: 6px;
   }
 
@@ -129,7 +130,7 @@
   .favorites-type-button.active {
     background-color: #798494;
     border: 1px solid #414d53;
-    color: var(--light-mode-main-color);
+    color: var(--light-mode-text-color);
   }
 
   .favorites-type-button .material-symbols-outlined {
@@ -212,7 +213,24 @@
 
   @media (prefers-color-scheme: dark) {
     .favorite {
+      background-color: var(--dark-mode-body-color);
+      border-color: var(--dark-mode-border-color);
+    }
+
+    .favorites-footer p {
+      background: var(--dark-mode-lighter-color);
+    }
+
+    .favorites-type-button {
+      background-color: var(--dark-mode-lighter-color);
+      border: 1px solid var(--dark-mode-border-color);
+      color: var(--dark-mode-text-color);
+    }
+
+    .favorites-type-button.active {
       background-color: var(--dark-mode-main-color);
+      border: 1px solid var(--dark-mode-border-color);
+      color: var(--dark-mode-text-color);
     }
 
     .favorite:hover {
@@ -339,8 +357,8 @@
         </div>
       </div>
       <div class="favorites-footer">
-        <p>${post.username}</p>
-        <p>${post.community_name}</p>
+        <p style="color: ${post.profile_border_color}ff; background: ${post.profile_border_color}35;">${post.username}</p>
+        <p style="color: ${post.community_color}95; background: ${post.community_color}35;">${post.community_name}</p>
         <p>${formatDate(post.created_at[1])}</p>
       </div>
     `;

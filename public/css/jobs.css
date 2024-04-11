@@ -73,9 +73,17 @@ main {
 .jobs-sort-selector::-webkit-scrollbar {
   display: none;
 }
+
+div.job-filters {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
 .jobs-sort-selector select {
   font-size: 16px;
   width: auto; 
+  max-width: 110px;
   margin-bottom: 5px;
   padding: 7px 8px;
   color: var(--light-mode-text-color);
@@ -283,7 +291,7 @@ p.job-description {
 .jobs-container-header {
   margin: 0 14px 6px 14px;
   margin-top: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 0px;
   display: flex;
   align-items: baseline;
   flex-direction: column;

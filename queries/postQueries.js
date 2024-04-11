@@ -86,7 +86,7 @@ const postQueries = {
     let query = `
       SELECT TOP 3
         p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
-        u.username, u.avatar, u.currentJob, c.name AS community_name,
+        u.username, u.avatar, u.currentJob, c.name AS community_name, c.community_color as community_color,
         p.post_type, p.views,
         SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) AS loveCount,
         SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) AS boostCount,
@@ -114,7 +114,7 @@ const postQueries = {
           OR ${tagsCondition}
         )
       GROUP BY p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
-               u.username, u.avatar, u.currentJob, c.name, p.post_type, p.views
+               u.username, u.avatar, u.currentJob, c.name, p.post_type, p.views, c.community_color
       ORDER BY p.created_at DESC;
     `;
 
