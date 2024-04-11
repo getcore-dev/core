@@ -103,29 +103,23 @@ const utilFunctions = {
 
         case "top":
           sortedResult = result.recordset.sort((a, b) => {
-            const weightedReactionsA =
-              a.loveCount * 5 +
-              a.boostCount * 4 +
-              a.interestingCount * 3 +
-              a.curiousCount * 2 +
+            const totalReactionsA =
+              a.loveCount +
+              a.boostCount +
+              a.interestingCount +
+              a.curiousCount +
               a.likeCount +
-              a.celebrateCount * 3;
-            const weightedReactionsB =
-              b.loveCount * 5 +
-              b.boostCount * 4 +
-              b.interestingCount * 3 +
-              b.curiousCount * 2 +
+              a.celebrateCount;
+            const totalReactionsB =
+              b.loveCount +
+              b.boostCount +
+              b.interestingCount +
+              b.curiousCount +
               b.likeCount +
-              b.celebrateCount * 3;
-            const commentsWeightA = Math.log(a.commentCount + 1); // Log scale for comment count
-            const commentsWeightB = Math.log(b.commentCount + 1);
-            return (
-              weightedReactionsB * commentsWeightB -
-              weightedReactionsA * commentsWeightA
-            );
+              b.celebrateCount;
+            return totalReactionsB - totalReactionsA;
           });
           break;
-
         case "new":
           sortedResult = result.recordset.sort((a, b) => {
             const dateA = new Date(a.created_at);

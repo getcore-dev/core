@@ -129,12 +129,12 @@ a {
 
 .latest-commit-banner {
   position: relative;
-  background-color: var(--active-indicator-color);
+  background-color: #bb4242;
   width: 100%;
   color: white;
-  padding: 3px;
-  margin-top: -7px;
-  z-index: 2;
+  padding: 0;
+  margin-top: -3px;
+  z-index: 1;
   box-sizing: border-box;
 }
 
@@ -149,7 +149,10 @@ a {
   border: 0;
   background-color: transparent;
   color: white;
-  font-size: .9rem;
+}
+
+#closeCommitBanner .material-symbols-outlined {
+  font-size: 1.2rem;
 }
 
 .latest-commit-info {
@@ -163,6 +166,7 @@ a {
 .latest-commit-author,
 .latest-commit-date {
   margin: 0 10px;
+  font-size: .9rem
 }
 
 .count-bubble {
@@ -492,7 +496,7 @@ button.clear-btn {
 }
 
 a > .menu-item { 
-font-weight: bold;
+font-weight: 400;
 }
 
 .nav-text:hover {
@@ -675,7 +679,7 @@ font-weight: bold;
 
   .latest-commit-banner {
     top: 45px;
-    margin-top: 0px;
+    margin-top: 3px;
     width: 100%;
   }
 
@@ -1241,7 +1245,9 @@ height: auto;
 }
 
 #com-btn-container {
+  margin-right: auto;
   width: 20%;
+  max-width: 300px;
   flex: none; /* This will prevent the container from growing */
   display: flex;
   flex-direction: column;

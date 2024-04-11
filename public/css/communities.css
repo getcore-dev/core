@@ -24,8 +24,7 @@
 }
 
 main {
-  display: flex;
-    justify-content: center;
+  /* display: flex; */
 }
 
 body {
@@ -182,7 +181,7 @@ div.vote-interactions {
   background-color: #DB504A;
   border: 1px solid #FF8370; 
   color: white;
-  border-radius: 6px;
+  border-radius: 5px;
   font-size: .825rem;
   position: relative;
 }
@@ -606,7 +605,7 @@ div .mini-link-desc {
   overflow-y: hidden;
   flex-wrap: nowrap;
   flex-direction: row;
-  max-width: 1200px;
+  /* max-width: 1200px; */
   justify-content: space-between;
 }
   
@@ -628,6 +627,7 @@ div .mini-link-desc {
 #posts-container {
   border-right: 1px solid var(--border-color);
   width: 53%;
+  max-width: 800px;
   flex: none;
   flex-direction: column;
   -webkit-scrollbar {
@@ -665,14 +665,15 @@ div .mini-link-desc {
 
 .jobs-container {
   width: 24%;
-  max-width: 500px;
+  margin-right: auto;
+  max-width: 300px;
   flex: none;
   display: flex;
   flex-direction: column;
-  margin: 0px;
   -webkit-scrollbar {
     display: none;
   }
+  ;
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -898,6 +899,7 @@ div .mini-link-desc {
 
   
   .job-flair {
+    border-radius: 9px;
     display:none;
   }
 
