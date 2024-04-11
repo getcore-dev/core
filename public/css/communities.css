@@ -393,7 +393,7 @@ div.vote-interactions {
   z-index: 0;
 }
 
-.comments, .total-reactions-count, .top-reactions .reaction-icon {
+.comments, .total-reactions-count {
   font-size: .855rem;
   padding-right: 5px;
   color: var(--light-mode-secondary-text-color);
@@ -401,6 +401,10 @@ div.vote-interactions {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.top-reactions .reaction-icon {
+  font-size: .855rem;
 }
 
 
