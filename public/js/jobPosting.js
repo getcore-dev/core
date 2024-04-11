@@ -57,50 +57,52 @@ function lazyLoadJobDetails(jobId) {
             <div class="job-details">
               <h2 class="job-title">${job.title}</h2>
               <div class="experience-level">
-                <span class="label">Experience Level:</span>
+              <span class="material-symbols-outlined">
+              badge
+              </span>
                 <span class="value">${job.experienceLevel}</span>
               </div>
               <div class="job-location">
-                <span class="label">Location:</span>
+              <span class="material-symbols-outlined">
+              map
+              </span>
                 <span class="value">${job.location}</span>
               </div>
-              <div class="posted-date">
-                <span class="label">Posted Date:</span>
-                <span class="value">${formatDate(job.postedDate)}</span>
-              </div>
-              <div class="expiry-date">
-                <span class="label">Apply by:</span>
-                <span class="value">${formatDate(job.expiration_date)}</span>
-              </div>
               <div class="salary-range">
-              <span class="label">Salary Range:</span>
+              <span class="material-symbols-outlined">
+payments
+</span>
               <span class="salary-min">${formatSalary(
                 job.salary
               )}</span> - <span class="salary-max">${formatSalary(
         job.salary_max
       )}</span>
             </div>
-            <div class="job-skills">
-            ${tagsHTML}
-            ${
-              remainingTags > 0
-                ? `<span class="see-more">+${remainingTags} more</span>`
-                : ""
-            }
-            </div>
-            <div class="company-description">
-            <h4>Company Description</h4>
-            <p>${job.company_description}</p>
+            <div class="posted-date">
+            <span class="value">${formatDate(job.postedDate)}</span>
           </div>
               <div class="job-description">
-                <h4>Job Description</h4>
                 <p>${job.description}</p>
               </div>
-              <div class="apply-link">
-                <a href="${
-                  job.link
-                }" target="_blank" id="submit-button">Apply Now</a>
+              <br>
+              <div class="job-skills">
+              <h4> Job Skills </h4>
+              ${tagsHTML}
+              ${
+                remainingTags > 0
+                  ? `<span class="see-more">+${remainingTags} more</span>`
+                  : ""
+              }
               </div>
+              <div class="company-description">
+              <h4>Company Description</h4>
+              <p>${job.company_description}</p>
+            </div>
+            <div class="apply-link">
+            <button id="submit-button" onclick="window.location.href='${
+              job.link
+            }'">Apply Now</button>
+          </div>
             </div>
           </div>
         `;
@@ -109,3 +111,4 @@ function lazyLoadJobDetails(jobId) {
       console.error("Error fetching job details:", error);
     });
 }
+

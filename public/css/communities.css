@@ -94,7 +94,7 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 11px;
+  gap: 6.5px;
 }
 
 .job-flairs {
@@ -384,12 +384,12 @@ div.vote-interactions {
 }
 
 .top-reactions .reaction-icon:nth-child(2) {
-  margin-left: -5px;
+  margin-left: -3px;
   z-index: 1;
 }
 
 .top-reactions .reaction-icon:nth-child(3) {
-  margin-left: -10px;
+  margin-left: -3px;
   z-index: 0;
 }
 

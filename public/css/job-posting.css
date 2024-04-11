@@ -59,8 +59,15 @@ img.company-logo {
 .experience-level,
 .job-location, .expiry-date, 
 .posted-date, .salary-range {
-  font-size: 1rem;
-  margin-bottom: 8px;
+  display: inline-block;
+  padding: 2px 4px;
+  margin-bottom: 2px;
+  background-color: #B4C4AE;
+  border: 1px solid #B4C4AE;
+  color: white;
+  border-radius: 6px;
+  font-size: .875rem;
+  position: relative;
 }
 
 .label {
@@ -68,7 +75,6 @@ img.company-logo {
   margin-right: 4px;
 }
 
-.job-description,
 .company-description {
   margin-top: 24px;
 }
