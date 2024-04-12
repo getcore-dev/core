@@ -23,10 +23,6 @@
   --dark-mode-hover-background-color: #151515;
 }
 
-main {
-  /* display: flex; */
-}
-
 body {
   color: var(--light-mode-text-color);
   font-family: 'Roboto', sans-serif;
@@ -376,20 +372,6 @@ div.vote-interactions {
 .timestamp {
   font-size: 14px;
   color: #666; /* Lighter text color */
-}
-
-.top-reactions .reaction-icon:nth-child(1) {
-  z-index: 2;
-}
-
-.top-reactions .reaction-icon:nth-child(2) {
-  margin-left: -3px;
-  z-index: 1;
-}
-
-.top-reactions .reaction-icon:nth-child(3) {
-  margin-left: -3px;
-  z-index: 0;
 }
 
 .comments, .total-reactions-count {
@@ -1152,8 +1134,8 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
   }
 
 
-  .comments {
-      color: #ccc; /* Lighter text color for comments */
+  .comments, .total-reactions-count {
+      color: var(--dark-mode-secondary-text-color);
   }
 
   .communities-text {

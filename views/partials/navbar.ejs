@@ -143,17 +143,6 @@
               </button>
             </div>
           </li>
-          <% if (user) { %>
-          <li onclick="window.location.href='/notifications'">
-            <a class="inbox-button <%= currentPath === '/' ? 'active' : '' %>" id="notification-btn">
-              <span class="material-symbols-outlined" id="nb-icon">
-                notifications
-              </span>
-              <span id="unreadCount" class="count-bubble"></span>
-            </a>
-          </li>
-          <% } else { %>
-          <% } %>
 
         </ul>
         <ul class="user-links">
@@ -163,6 +152,18 @@
               <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar">
 
               <div class="avatar-dropdown">
+
+                <% if (user) { %>
+
+                <a href="/notifications">
+                  <div class="avatar-dropdown-item">
+                    <span class="material-symbols-outlined" id="nb-icon">
+                      notifications
+                    </span>
+                    <span id="unreadCount" class="count-bubble"></span>
+                  </div>
+                </a>
+                <% } %>
 
                 <a href="/u/<%= user.username %>">
                   <div class="avatar-dropdown-item">

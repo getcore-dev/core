@@ -351,7 +351,7 @@ a {
   flex-direction: column;
   justify-content: space-around;
   width: 40px;
-  height: 20px;
+  height: 25px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -359,14 +359,14 @@ a {
 
 .menu-bar {
   z-index: 1000;
-  width: 14px;
+  width: 20px;
   height: 1.5px;
   background-color: var(--light-mode-text-color);
   transition: all 0.3s ease;
 }
 
 .menu-button.active .top-bar {
-  transform: rotate(45deg) translate(5px, 5px);
+  transform: rotate(45deg) translate(6px, 6px);
 }
 
 .menu-button.active .middle-bar {
@@ -381,7 +381,7 @@ a {
 
 
 .menu-button.active .bottom-bar {
-  transform: rotate(-45deg) translate(4px, -4px);
+  transform: rotate(-45deg) translate(5px, -5px);
 }
 
 
@@ -619,7 +619,7 @@ font-weight: 400;
   } 
 
   #nb-icon {
-    font-size: 23px;
+    font-size: 30px;
     padding: 11px 4px;
   }
 
@@ -637,7 +637,7 @@ font-weight: 400;
   .user-btns {
     position: absolute;
     right: 15px;
-    top: 7px;
+    top: 3px;
   }
 
   .user-btns #nb-icon {
@@ -684,7 +684,7 @@ font-weight: 400;
   }
 
   .avatar-dropdown-item #nb-icon {
-    font-size: 23px;
+    font-size: 30px;
   }
 
   .navbar-button {
@@ -722,7 +722,7 @@ font-weight: 400;
   .hamburger-menu {
     position: absolute;
     left: 14px;
-    top: 20px;
+    top: 17px;
     z-index: 2;
   } 
 
@@ -850,7 +850,7 @@ font-weight: 400;
 }
 
 .user-links.slide-left {
-  transform: translateX(-115px); /* Adjust the value based on the desired slide distance */
+  opacity: 0;
 }
 
 .user-links {
@@ -875,7 +875,7 @@ font-weight: 400;
   align-items: center;
   padding: 10px;
   transform: translateX(30%);
-  transition: transform 0.23s linear;
+  transition: transform 0.3s ease;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -883,7 +883,7 @@ font-weight: 400;
 
 .avatar-dropdown.open {
   transform: translateX(-30px);
-  transition: opacity 0.3s ease;
+  transition: transform 0.3s ease;
   opacity: 1;
   pointer-events: all;
   visibility: visible;
