@@ -48,9 +48,11 @@ function lazyLoadJobDetails(jobId) {
             <div class="company-info">
               <img src="${job.company_logo}" alt="${
         job.company_name
-      } logo" class="company-logo" />
+      } logo" class="thumbnail thumbnail-small thumbnail-regular" />
               <div class="company-details">
-                <h3 class="company-name">${job.company_name}</h3>
+                <h3 class="company-name" onclick="window.location.href='/jobs/company/${
+                  job.company_id
+                }'">${job.company_name}</h3>
                 <p class="company-location">${job.company_location}</p>
               </div>
             </div>
@@ -111,4 +113,3 @@ payments
       console.error("Error fetching job details:", error);
     });
 }
-

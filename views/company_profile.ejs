@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CORE/</title>
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/company_profile.css" />
+
+  <link rel="shortcut icon" href="/img/core.png" />
+</head>
+<style>
+</style>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'company' }) %>
+  <main>
+    <div class="company-header">
+      <div class="company-image">
+        <img class="thumbnail thumbnail-small thumbnail-regular" src="<%= company.logo %>" alt="Company Logo" />
+      </div>
+      <div class="company-info">
+        <span class="company-name"><%= company.name %></span>
+        <span class="company-location"><%= company.location %></span>
+      </div>
+    </div>
+
+    <span class="company-description"><%= company.description %></span>
+    <br>
+    <br>
+    <div class="company-flair">
+      <% if (company.founded)  { %>
+
+      <span class="company-flair-item">
+        <span class="material-symbols-outlined">
+          factory
+        </span>
+        <%= company.industry %> </span>
+      <% } %>
+      <% if (company.size)  { %>
+
+      <span class="company-flair-item">
+        <span class="material-symbols-outlined">
+          person
+        </span>
+        <%= company.size %> employees </span>
+      <% } %>
+      <% if (company.founded)  { %>
+      <span class="company-flair-item">
+        <span class="material-symbols-outlined">
+          handshake
+        </span>
+        <%= company.founded.toDateString() %> </span>
+      <% } %>
+    </div>
+    <br>
+    <div class="jobs">
+      <h3>Open Jobs</h3>
+      <br>
+      <div class="job-list">
+        <% jobs.forEach(job => { %>
+        <div class="job-entry" onclick="window.location.href='/jobs/<%= job.id %>'">
+          <span class="job-title"><%= job.title %></span>
+          <span class="job-location"><%= job.location %></span>
+          <span class="job-type"><%= job.type %></span>
+          <span class="job-salary
+            <% if (job.salary) { %>"><%= job.salary %>
+            <% } else { %>">Not specified
+            <% } %>
+          </span>
+          <span class="job-description"><%= job.description %></span>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+
+
+  </main>
+
+</body>
+
+</html>

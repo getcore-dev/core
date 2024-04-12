@@ -577,6 +577,29 @@ font-weight: 400;
   padding-left: 2px;
 }
 
+.thumbnail {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 5px;
+}
+
+.thumbnail-medium {
+  width: 70px;
+  height: 70px;
+}
+
+.thumbnail-large {
+  width: 100px;
+  height: 100px;
+}
+
+.thumbnail-regular {
+  border-radius: 0;
+}
+
+
 
 #nb-icon {
   padding: 9px;
@@ -590,7 +613,6 @@ font-weight: 400;
   }
 
   main {
-    height: 100vh;
     background-color: var(--light-mode-main-color) !important;
   }
 

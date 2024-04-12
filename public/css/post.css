@@ -1530,7 +1530,7 @@ div.username {
   }
   .main-container {
     width: 100%;
-    max-height: calc(100vh - 58px);
+    height: calc(100vh - var(--mobile-navbar-height));
   }
 
   .main-container > .comments-section {

@@ -21,6 +21,10 @@
   --dark-mode-hover-background-color: #151515;
 }
 
+main {
+  height: calc(100vh - var(--navbar-height));
+}
+
 .job-listing {
   background-color: var(--light-mode-main-color);
   border-radius: 8px;

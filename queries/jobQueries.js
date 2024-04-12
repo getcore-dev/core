@@ -30,6 +30,34 @@ const jobQueries = {
     }
   },
 
+  getJobsByCompany: async (companyId) => {
+    try {
+      const result = await sql.query`
+        SELECT
+          JobPostings.*,
+          companies.name AS company_name,
+          companies.logo AS company_logo,
+          companies.location AS company_location,
+          companies.description AS company_description,
+          (
+            SELECT STRING_AGG(JobTags.tagName, ', ') 
+            FROM JobPostingsTags 
+            INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+            WHERE JobPostingsTags.jobId = JobPostings.id
+          ) AS tags
+        FROM JobPostings
+        LEFT JOIN companies ON JobPostings.company_id = companies.id
+        WHERE JobPostings.company_id = ${companyId}
+        ORDER BY JobPostings.postedDate DESC
+      `;
+      const jobs = result.recordset;
+      return jobs;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getCompanies: async () => {
     try {
       const result = await sql.query`SELECT TOP 20 * FROM companies`;
@@ -202,6 +230,28 @@ const jobQueries = {
     }
   },
 
+  getCompanyByName: async (name) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM companies WHERE name = ${name}
+      `;
+      return result;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+  getCompanyById: async (id) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM companies WHERE id = ${id}
+      `;
+      return result.recordset[0];
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
   getCompanyIdByName: async (name) => {
     try {
       const result = await sql.query`

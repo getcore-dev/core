@@ -1,0 +1,73 @@
+main {
+    height: calc(100vh - var(--navbar-height));
+    background-color: var(--light-mode-main-color);
+    padding: 0 13px;
+    padding-top: 16px;
+  }
+
+.company-header {
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.company-flair {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+}
+
+.company-flair-item {
+    display: inline-flex;
+    padding: 2px 3px;
+    margin: 2px;
+    background-color: #6d93b1; 
+    border: 1px solid #6488a4; 
+    color: white;
+    border-radius: 6px;
+    font-size: .875rem;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+  }
+
+
+  .job-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .company-flair-item .material-symbols-outlined {
+    font-size: 1.2rem;
+  }
+
+.company-name {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.company-location {
+    font-size: 14px;
+    color: var(--light-mode-secondary-text-color);
+    margin: 4px 0 0;
+}
+
+.company-info {
+    display: flex;
+    flex-direction: column;
+}
+
+
+  @media screen and (max-width: 600px) {
+    main {
+      height: calc(100vh - var(--mobile-navbar-height));
+    }
+  }
+
+

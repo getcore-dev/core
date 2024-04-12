@@ -176,10 +176,6 @@ p.job-description {
   display: none;
 }
 
-.company-info img {
-  max-height: 24px;
-}
-
 .create-job {
   border: 0;
   padding: 8px 14px;
