@@ -349,7 +349,7 @@ div .user-info, .header {
 
 img.blog-avatar {
   border-radius: 100%;
-  height: 28px;
+  height: 24px;
   aspect-ratio: 1/1;
   object-fit: cover; 
   overflow: hidden;

@@ -38,8 +38,18 @@
     display: block;
   }
 
+  .community-flair {
+    padding: 2px 5px;
+    border-radius: 5px;
+    color: white;
+    font-size: 12px;
+    margin-right: 5px;
+  }
+
   .communities-header {
     margin: 13px 10px;
+    margin-top: 14px;
+    margin-bottom: 8px;
   }
 
   .community-entry {
@@ -69,6 +79,10 @@
       border-color: var(--dark-mode-main-color);
     }
 
+    .community-flair {
+      background-color: var(--dark-mode-lighter-color);
+    }
+
     .community-entry:hover {
       background-color: var(--dark-mode-hover-background-color);
     }
@@ -87,13 +101,15 @@
       <% communities.forEach((community) => { %>
       <% if (community.isMember) { %>
       <div class="community-entry" onclick="window.location.href='/c/<%= community.shortname %>'">
-        <span class="material-symbols-outlined"><%= community.mini_icon %></span>
+        <span class="material-symbols-outlined" style="color:<%= community.community_color %>;"><%= community.mini_icon %></span>
         <span class="community-info">
           <%= community.name%>
           <span> - </span>
-          /<%= community.shortname%>
+          <span style="color:<%= community.community_color %>;">/<%= community.shortname%> </span>
           <br>
-          <%= community.MemberCount%> member
+          <span class="community-flairs">
+            <span class="community-flair" style="background-color:<%= community.community_color %>85;"><%= community.MemberCount%> member</span>
+          </span>
         </span>
         <span class="material-symbols-outlined" style="margin-left: auto;" onclick="leaveCommunity(event, '<%= community.shortname %>')">close</span>
         <% if (community.isModerator) { %>
@@ -107,11 +123,11 @@
     <br>
     <% } %>
 
-    <h5 class="communities-header">Communities</h5>
+    <h5 class="communities-header">Explore Communities</h5>
     <div class="communities-list">
       <% communities.forEach((community) => { %>
       <% if (!community.isMember) { %>
-      <div class="community-entry" onclick="window.location.href='/c/<%= community.name %>'">
+      <div class="community-entry" onclick="window.location.href='/c/<%= community.shortname %>'">
         <span class="material-symbols-outlined" style="color:<%= community.community_color %>;"><%= community.mini_icon %></span>
 
         <span class="community-info">
@@ -119,7 +135,11 @@
           <span> - </span>
           /<%= community.shortname%>
           <br>
-          <%= community.MemberCount%> member
+          <span id="secondary-text"><%= community.description%></span>
+          <br>
+          <span class="community-flairs">
+            <span class="community-flair" style="background-color:<%= community.community_color %>85;"><%= community.MemberCount%> member</span>
+          </span>
         </span>
 
         <% if (user) { %>

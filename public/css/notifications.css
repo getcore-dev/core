@@ -74,25 +74,45 @@ li.notification-item {
     max-width: 700px;
 }
 
-.notification-header {
+li.notification-item.read {
+    color: var(--light-mode-secondary-text-color);
+}
+
+li.notification-item.unread {
     font-weight: bold;
-    font-size: 1em;
+}
+
+
+
+.notification-header {
+    font-size: .925rem;
+}
+
+.notification-text {
+    padding-top: 5px;
+    padding-bottom: 2px;
+    font-size: .825rem;
 }
 
 .notification-container-header {
     margin: 0 14px 6px 14px;
-    margin-top: 6px;
+    margin-top: 14px;
     margin-bottom: 8px;
 }
 
 .notification-item {
     border-top: 1px solid var(--border-color);
     background-color: var(--light-mode-main-color);
-    padding: 10px;
+    padding: 10px 0;
 }
 
 .notification-item:last-child {
     border-bottom: 1px solid var(--border-color);
+}
+
+.time-flair {
+    font-size: .75rem;
+    color: var(--light-mode-secondary-text-color);
 }
 
 .clear-btn {
@@ -155,6 +175,10 @@ li.notification-item {
         border: 1px solid var(--dark-mode-border-color);
         color: var(--dark-mode-text-color);
     }
+
+    li.notification-item.read {
+        color: var(--dark-mode-secondary-text-color);
+    }  
 
 }
 

@@ -122,7 +122,7 @@
                 <h2 class="post-title" style="<% if (post.post_type == "blog") { %> font-size: 28px; font-weight: bold; font-family: 'Inter', sans-serif !important;<% } %>"><%= post.title %>
 
                   <% if (post.post_type == 'blog') { %>
-                  <span class="post-timestamp" style="text-decoration: none; font-weight: 300;">
+                  <span class="post-timestamp" style="text-decoration: none; font-weight: 500;">
                     <%
               let postDate = new Date(post.created_at);
 
@@ -189,7 +189,7 @@
 
             <div class="post-userinfo">
               <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="blog-avatar" />
-              <a href="/u/<%= post.user.username %>" style="text-decoration: none;"><%= post.user.firstname %> <%= post.user.lastname %></a>
+              <a href="/u/<%= post.user.username %>" style="text-decoration: none; font-weight:bold;"><%= post.user.username %></a>
             </div>
             <% } %>
 

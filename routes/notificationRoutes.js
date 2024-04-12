@@ -76,7 +76,7 @@ router.post("/create", async (req, res) => {
 router.delete("/:notificationId", async (req, res) => {
   try {
     const notificationId = req.params.notificationId;
-    await notificationQueries.markAsRead(notificationId);
+    await notificationQueries.deleteNotification(notificationId);
     res.send("Notification deleted");
   } catch (err) {
     res.status(500).send(err.message);

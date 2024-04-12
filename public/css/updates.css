@@ -34,9 +34,9 @@ span.material-symbols-outlined {
 }
 
 #updates-header {
-  margin-top: 13px;
-  margin-left: 13px;
-  margin-right: 13px;
+  padding-top: 13px;
+  padding-left: 13px;
+  padding-right: 13px;
 }
 
 #updates-title {

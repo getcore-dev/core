@@ -282,7 +282,7 @@ div.vote-interactions {
   position: absolute;
   top: 0;
   display: none;
-  flex-direction: column;
+  flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-end;
@@ -303,6 +303,8 @@ div.vote-interactions {
   background: 0;
   border-radius: 6px;
   transition: transform 2s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .reaction-menu button:hover {

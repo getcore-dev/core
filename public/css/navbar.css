@@ -106,8 +106,8 @@ a {
 .search-results-container > div {
   padding: 10px; /* Spacing inside result items */
   background-color: var(--light-mode-main-color); /* Match your design */
-  border-bottom: 1px solid var(--border-color); /* Separators between items */
-  cursor: pointer; /* Change cursor to pointer on hover */
+  border-bottom: 1px solid var(--light-mode-secondary-text-color);
+    cursor: pointer; /* Change cursor to pointer on hover */
   display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -169,6 +169,10 @@ a {
   font-size: .9rem
 }
 
+#secondary-text {
+  color: var(--light-mode-secondary-text-color);
+}
+
 .count-bubble {
   display: none;
   background-color: #ff6070;
@@ -178,6 +182,7 @@ a {
   font-size: 12px;
   position: absolute;
   height: 16px;
+  top: 14px;
   margin-left: 21px;
   font-weight: bold;
   text-align: center;
@@ -208,7 +213,7 @@ a {
 .search-input {
   font-size: 16px;
   flex-grow: 1;
-  border: 1px solid var(--border-color);
+  border: 0;
   background-color: var(--light-mode-body-color);
   border-radius: 6px;
   padding: 10px 10px;
@@ -252,8 +257,8 @@ a {
 .navbar {
   background-color: var(--light-mode-main-color); 
   color: var(--primary-text-color); 
-  border-bottom: 1px solid var(--light-mode-body-color);
-  display: flex; 
+  border-bottom: 1px solid var(--light-mode-secondary-text-color);
+    display: flex; 
   flex-direction: column;
   align-items: center; 
   position: fixed;
@@ -351,6 +356,7 @@ a {
   flex-direction: column;
   justify-content: space-around;
   width: 40px;
+  padding: 0;
   height: 25px;
   background: transparent;
   border: none;
@@ -400,18 +406,15 @@ a {
 }
 
 .notification-sender-avatar {
-  min-width: 32px;
-  min-height: 32px;
   border-radius: 100%;
-  height: 32px;
+  height: 40px;
   object-fit: cover;
-  width: 32px;
   aspect-ratio: 1 / 1;
 }
 .clear-btn .material-symbols-outlined {
-  font-size: 1.35rem;
+  font-size: 1.65rem;
   font-weight: 300;
-  color: var(--light-mode-text-color);
+  color: var(--light-mode-secondary-text-color);
 }
 
 
@@ -583,8 +586,15 @@ font-weight: 400;
   body {
     padding-top: constant(safe-area-inset-top); 
     padding-top: env(safe-area-inset-top);
-    background-color: var(--light-mode-main-color);
+    background-color: var(--dark-mode-body-color);
   }
+
+  main {
+    height: 100vh;
+    background-color: var(--light-mode-main-color) !important;
+  }
+
+
   .nav-btns {
     display: none;
   }
@@ -721,7 +731,7 @@ font-weight: 400;
 
   .hamburger-menu {
     position: absolute;
-    left: 14px;
+    left: 16px;
     top: 17px;
     z-index: 2;
   } 
@@ -729,7 +739,7 @@ font-weight: 400;
   .logo img {
     position: absolute;
     top: 8px;
-    left: 54px;
+    left: 50px;
     max-height: 45px;
     z-index: 1000;
   }
@@ -973,6 +983,10 @@ font-weight: 400;
   button.clear-btn {
     color: var(--dark-mode-text-color);
   }
+
+  #secondary-text {
+    color: var(--dark-mode-secondary-text-color);
+  }
 }
 
 
@@ -1038,7 +1052,7 @@ font-weight: 400;
   }
   
   .clear-btn .material-symbols-outlined {
-    color: var(--dark-mode-text-color);
+    color: var(--dark-mode-secondary-text-color);
   }
 
   /* Navbar button styling */
