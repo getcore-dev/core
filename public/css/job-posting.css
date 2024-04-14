@@ -27,7 +27,6 @@ main {
 
 .job-listing {
   background-color: var(--light-mode-main-color);
-  border-radius: 8px;
   padding: 10px 14px;
   margin-bottom: 24px;
 }

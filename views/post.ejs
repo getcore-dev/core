@@ -158,14 +158,12 @@
                   <% } %>
                   <div class="dropdown-item">
                     <button onclick="sharePost('{{ post.id }}')">
-                      <span class="material-symbols-outlined">share</span>
                       <p>Share Post</p>
                     </button>
                   </div>
                   <% if (user && user.username === post.username) { %>
                   <div class="dropdown-item">
                     <button onclick="window.location.href = '/posts/<%= post.id %>/edit'">
-                      <span class="material-symbols-outlined">edit</span>
                       <p>Edit Post</p>
                     </button>
                   </div>
@@ -176,7 +174,6 @@
                     <form action="/post/<%= post.id %>?_method=DELETE" method="POST" style="display: flex;">
                       <input type="hidden" name="_method" value="DELETE" />
                       <button onclick="return confirmDeletion(this);">
-                        <span class="material-symbols-outlined">delete</span>
                         <p>Delete Post</p>
                       </button>
                     </form>
