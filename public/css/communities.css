@@ -184,7 +184,7 @@ div.vote-interactions {
 
 .job-flair#location-flair {
   background-color: var(--location-color);
-  border: 0;
+  border: 1px solid var(--location-color-text);
   color: var(--location-color-text);
 }
 
@@ -193,9 +193,9 @@ div.vote-interactions {
 }
 
 #pay-flair {
-  background: #5cb989;
+  background: #5cb98947;
   color: #26704a;
-  border: 0;
+  border: 1px solid #26704a;
 }
 
 #job-posting-deadline {
@@ -874,7 +874,7 @@ div .mini-link-desc {
   }
 
   .container {
-    height: calc(100dvh - 58px);
+    height: calc(100dvh - var(--mobile-navbar-height)) !important;
   }
 
   .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button, .add-comment-button {

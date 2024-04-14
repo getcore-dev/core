@@ -16,6 +16,16 @@ function formatDate(dateString) {
   return `${month}/${day}/${year}`;
 }
 
+function getTintFromName(name) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 18) - hash);
+  }
+  const color = (hash & 0x00ffffff).toString(16).toUpperCase();
+  const tintColor = `#${color}`;
+  return tintColor;
+}
+
 function formatSalary(salary) {
   if (salary >= 1000000) {
     return "$" + (salary / 1000000).toFixed(1) + "M";
@@ -39,7 +49,9 @@ function lazyLoadJobDetails(jobId) {
       const tagsHTML = displayedTags
         .map(
           (tag) =>
-            `<span class="job-flair" style="margin:4px 5px 0px 0px;">${tag}</span>`
+            `<span class="job-flair" style="margin:4px 5px 0px 0px; background-color: ${getTintFromName(
+              tag
+            )}9c; border: 1px solid ${getTintFromName(tag)};">${tag}</span>`
         )
         .join("");
       const remainingTags = tagsArray.length - maxTags;

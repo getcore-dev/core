@@ -276,7 +276,7 @@ p.job-description {
 
 .jobs-container {
   overflow-y: auto;
-  height: calc(100vh - 85px);
+  height: calc(100vh - var(--navbar-height));
   width: 100%;
 }
 
@@ -363,8 +363,8 @@ p.job-description {
   display: inline-block;
   padding: 2px 4px;
   margin-bottom: 2px;
-  background-color: #7D869C;
-  border: 1px solid #7D869C; 
+  background-color: #7d869cab;
+  border: 1px solid #7d869cc9; 
   color: white;
   border-radius: 6px;
   font-size: 14px;
@@ -386,11 +386,6 @@ p.job-description {
 #pay-flair {
   background: #0C8346;
   border: 1px solid #0E954F;
-}
-
-#location-flair {
-  background-color: #6d93b1; 
-  border: 1px solid #6488a4; 
 }
 
 .job-content {

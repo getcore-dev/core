@@ -22,7 +22,7 @@
 }
 
 main {
-  height: calc(100vh - var(--navbar-height));
+  height: calc(100dvh - var(--navbar-height));
 }
 
 .job-listing {
@@ -66,8 +66,8 @@ img.company-logo {
   display: inline-block;
   padding: 2px 4px;
   margin-bottom: 2px;
-  background-color: #B4C4AE;
-  border: 1px solid #B4C4AE;
+  background-color: #b4c4ae66;
+  border: 1px solid #b4c4ae9e;
   color: white;
   border-radius: 6px;
   font-size: .875rem;

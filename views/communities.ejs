@@ -95,7 +95,7 @@
         hash = name.charCodeAt(i) + ((hash << 18) - hash);
       }
       const color = (hash & 0x00FFFFFF).toString(16).toUpperCase();
-      const tintColor = `#${color}99`;
+      const tintColor = `#${color}`;
       return tintColor;
     }
 

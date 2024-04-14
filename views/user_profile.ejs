@@ -13,7 +13,7 @@
 
 <style>
   .link-display {
-    background: <%=otheruser.profile_border_color%>40 !important;
+    background: <%=otheruser.profile_border_color%>52 !important;
   }
 </style>
 
@@ -60,7 +60,7 @@
 
         </div>
 
-        <div class="current-job" style="background:<%= otheruser.profile_border_color%>20 !important;">
+        <div class="current-job" style="background:<%= otheruser.profile_border_color%>52 !important;">
           <% if (otheruser.currentJob && otheruser.currentCompany) {%>
           <h5> <%= otheruser.currentCompany %>
           </h5>
@@ -88,7 +88,7 @@
           <% } %>
         </div>
 
-        <div class="user-links" style="background:<%= otheruser.profile_border_color%>20 !important;">
+        <div class="user-links" style="background:<%= otheruser.profile_border_color%>52 !important;">
           <div class="social-display"> <img src="/src/github.png" style="height:20px;width:20px;">
             <p id="github-url-display"> <% if (otheruser.github_url) { %> <a href="https://github.com/<%= otheruser.github_url %>"><%= otheruser.github_url %></a> <% } else { %> No Github URL yet. <% } %> </p>
           </div>
@@ -99,11 +99,11 @@
             <p id="linkedin-url-display"> <% if (otheruser.linkedin_url) { %> <a href="https://www.linkedin.com/in/<%= otheruser.linkedin_url %>"><%= otheruser.linkedin_url %></a> <% } else { %> No LinkedIn URL yet. <% } %> </p>
           </div>
         </div>
-        <div class="github-commit-graph" >
+        <div class="github-commit-graph">
           <h5>GitHub Activity</h5>
           <div id="commit-graph-container"></div>
         </div>
-        <div class="github-commit-repos" style="background:<%= otheruser.profile_border_color%>20 !important;">
+        <div class="github-commit-repos" style="background:<%= otheruser.profile_border_color%>52 !important;">
           <h5>GitHub Repositories</h5>
           <table id="repo-table">
             <thead>
@@ -161,7 +161,7 @@
             <% } else { %>
             <div class="post-container">
               <% posts.forEach(function(post) { %>
-              <div class="post" onclick="window.location.href='/posts/<%= post.id %>'" style="background:<%= otheruser.profile_border_color%>20 !important;">
+              <div class="post" onclick="window.location.href='/posts/<%= post.id %>'" style="background:<%= otheruser.profile_border_color%>52 !important;">
                 <h5 class="post-title">
                   <%= post.title %>
                 </h5>
@@ -212,7 +212,7 @@
                     <a href="/u/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/u/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
                   </p>
                 </div>
-                <div class="comment" style="background:<%= otheruser.profile_border_color%>20 !important;">
+                <div class="comment" style="background:<%= otheruser.profile_border_color%>52 !important;">
                   <h5 class="comment-title">
                     <%= comment.title %>
                   </h5>

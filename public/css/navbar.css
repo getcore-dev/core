@@ -28,7 +28,7 @@
   --navbar-button-font-size: 16px;
   --nav-text-font-size: 20px;
   --navbar-height: 65px;
-  --mobile-navbar-height: 58px;
+  --mobile-navbar-height: 50px;
   --logo-max-height: 65px;
   --mobile-logo-max-height: 45px;
   --search-bar-width: 170px;
@@ -257,7 +257,7 @@ a {
 .navbar {
   background-color: var(--light-mode-main-color); 
   color: var(--primary-text-color); 
-  border-bottom: 1px solid var(--light-mode-secondary-text-color);
+  border-bottom: .75px solid var(--light-mode-secondary-text-color);
     display: flex; 
   flex-direction: column;
   align-items: center; 
@@ -357,7 +357,7 @@ a {
   justify-content: space-around;
   width: 40px;
   padding: 0;
-  height: 25px;
+  height: 22px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -365,7 +365,7 @@ a {
 
 .menu-bar {
   z-index: 1000;
-  width: 20px;
+  width: 18px;
   height: 1.5px;
   background-color: var(--light-mode-text-color);
   transition: all 0.3s ease;
@@ -577,6 +577,10 @@ font-weight: 400;
   padding-left: 2px;
 }
 
+.secondary-text {
+  color: var(--light-mode-secondary-text-color);
+}
+
 .thumbnail {
   width: 50px;
   height: 50px;
@@ -609,7 +613,7 @@ font-weight: 400;
   body {
     padding-top: constant(safe-area-inset-top); 
     padding-top: env(safe-area-inset-top);
-    background-color: var(--dark-mode-body-color);
+    background-color: #000 !important;
   }
 
   main {
@@ -651,7 +655,7 @@ font-weight: 400;
   } 
 
   #nb-icon {
-    font-size: 30px;
+    font-size: 27px;
     padding: 11px 4px;
   }
 
@@ -662,6 +666,10 @@ font-weight: 400;
   }
 
 
+  body, main { 
+    height: calc(100dvh - var(--mobile-navbar-height)) !important;
+  }
+
 
 
 
@@ -669,7 +677,7 @@ font-weight: 400;
   .user-btns {
     position: absolute;
     right: 15px;
-    top: 3px;
+    top: 1px;
   }
 
   .user-btns #nb-icon {
@@ -710,13 +718,13 @@ font-weight: 400;
   }
 
   .latest-commit-banner {
-    top: 45px;
+    top: 36px;
     margin-top: 3px;
     width: 100%;
   }
 
   .avatar-dropdown-item #nb-icon {
-    font-size: 30px;
+    font-size: 27px;
   }
 
   .navbar-button {
@@ -754,13 +762,13 @@ font-weight: 400;
   .hamburger-menu {
     position: absolute;
     left: 16px;
-    top: 17px;
+    top: 14px;
     z-index: 2;
   } 
 
   .logo img {
     position: absolute;
-    top: 8px;
+    top: 3px;
     left: 50px;
     max-height: 45px;
     z-index: 1000;
@@ -976,12 +984,16 @@ font-weight: 400;
   select:-webkit-autofill:hover,
   select:-webkit-autofill:focus {
     -webkit-text-fill-color: #D2D7DB;
-    -webkit-box-shadow: 0 0 0px 1000px var(--dark-mode-body-color) inset;
+    -webkit-box-shadow: 0 0 0px 1000px var(--dark-mode-body-color) inset !;
     transition: background-color 5000s ease-in-out 0s;
     background-color: var(--dark-mode-body-color) !important; /* Dark background for input fields */
     color: #f4f4f4; /* Light text color */
     font-size: 16px;
     border: 0;
+  }
+
+  .secondary-text {
+    color: var(--dark-mode-secondary-text-color);
   }
   
   #nb-icon {
@@ -1129,9 +1141,14 @@ font-weight: 400;
 
   @media (max-width: 768px) {
     body {
-      padding-top: calc(constant(safe-area-inset-top) + var(--mobile-navbar-height)); 
-      padding-top: calc(env(safe-area-inset-top) + var(--mobile-navbar-height));
-      background-color: var(--dark-mode-body-color);
+      padding-top: calc(constant(safe-area-inset-top) + var(--mobile-navbar-height)) !important; 
+      padding-top: calc(env(safe-area-inset-top) + var(--mobile-navbar-height)) !important;
+      background-color: #000 !important;
+    }
+
+    main {
+      background-color: var(--dark-mode-body-color) !important;
+      color: var(--dark-mode-text-color);
     }
   }
 }

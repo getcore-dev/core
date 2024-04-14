@@ -50,7 +50,7 @@ main {
 }
 
 .main-container {
-  max-height: calc(100vh - 65px);
+  max-height: calc(100dvh - var(--navbar-height));
   overflow: hidden;
 }
 
@@ -1424,10 +1424,15 @@ div.username {
   font-size: .9rem;
 }
 
+
 @media screen and (max-width: 600px) {
 
   .user-interactions {
     gap: 10px;
+  }
+
+  .similar-posts-header {
+    margin-top: 60px;
   }
   .sidebar-link-info-title, .sidebar-link-info-url {
     max-width: 100%;
@@ -1530,8 +1535,9 @@ div.username {
   }
   .main-container {
     width: 100%;
-    height: calc(100vh - var(--mobile-navbar-height));
+    height: calc( - var(--mobile-navbar-height)) !important;
   }
+
 
   .main-container > .comments-section {
     padding-bottom: 50px;
@@ -1597,6 +1603,7 @@ div.username {
 
   body {
     overflow: hidden;
+    height: calc(100dvh - var(--mobile-navbar-height));
   }
 
   .comment-body {

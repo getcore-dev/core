@@ -22,7 +22,7 @@
       </div>
       <div class="company-info">
         <span class="company-name"><%= company.name %></span>
-        <span class="company-location"><%= company.location %></span>
+        <span class="company-location secondary-text"><%= company.location %></span>
       </div>
     </div>
 
@@ -59,24 +59,99 @@
       <h3>Open Jobs</h3>
       <br>
       <div class="job-list">
-        <% jobs.forEach(job => { %>
-        <div class="job-entry" onclick="window.location.href='/jobs/<%= job.id %>'">
-          <span class="job-title"><%= job.title %></span>
-          <span class="job-location"><%= job.location %></span>
-          <span class="job-type"><%= job.type %></span>
-          <span class="job-salary
-            <% if (job.salary) { %>"><%= job.salary %>
-            <% } else { %>">Not specified
-            <% } %>
-          </span>
-          <span class="job-description"><%= job.description %></span>
-        </div>
-        <% }) %>
       </div>
     </div>
 
 
   </main>
+
+  <script>
+    function getTintFromName(name) {
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 18) - hash);
+      }
+      const color = (hash & 0x00ffffff).toString(16).toUpperCase();
+      const tintColor = `#${color}`;
+      return tintColor;
+    }
+
+    function renderJobPostings(jobPostings) {
+      const jobListContainer = document.querySelector(".job-list");
+      jobListContainer.innerHTML = ""; // Clear existing job postings
+
+      jobPostings.forEach((job) => {
+        const jobElement = document.createElement("div");
+        jobElement.classList.add("job");
+        jobElement.onclick = () => {
+          window.location.href = `/jobs/${job.id}`;
+        };
+        const tagsArray = job.tags ?
+          job.tags[1] ?
+          job.tags[1].split(", ") : [] : [];
+        const maxTags = 3; // Adjust this value based on your desired maximum number of tags
+        const displayedTags = tagsArray.slice(0, maxTags);
+        const tagsHTML = displayedTags
+          .map(
+            (tag) =>
+            `<span class="job-flair" style="background-color: ${getTintFromName(
+            tag
+          )}9c; border: 1px solid ${getTintFromName(tag)};">${tag}</span>`
+          )
+          .join("");
+        const remainingTags = tagsArray.length - maxTags;
+        jobElement.innerHTML = `
+      <div class="job-preview">
+        <div class="job-info">
+          <div class="company-info">
+            <img class="thumbnail thubmnail-small" src="${
+              job.company_logo
+            }" alt="${job.company_name} logo" />
+            <p class="company-name">${job.company_name}</p>
+            <form id="favorite-form-${job.id}" action="/favorites/jobs/${
+      job.id
+    }" method="POST" style="margin-left: auto;">
+              <button type="submit" style="margin-left:auto; background: 0; border:0;">                
+                <span class="material-symbols-outlined" style="font-size:1.2rem;">star</span>
+              </button>
+            </form>
+          </div>
+          <h3 class="job-title">${
+            job.title
+          } <span style="margin-left: auto; float: right;">${
+      job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1)
+    }</span></h3>
+          <h5 class="job-subtitle secondary-text">
+            <span style="margin-left: auto; float:right;">USD $${Math.floor(
+              (job.salary + job.salary_max) / 2 / 1000
+            )}k</span>
+            ${job.location}
+          </h5> 
+          <div class="job-main">
+            <div class="job-description">
+              <p class="job-description">${job.description}</p>
+            </div>
+            <div class="job-buttons">
+              <button class="job-apply" id="submit-button-normal" style="padding: 5px 10px">Apply</button>
+            </div>
+          </div>
+          <div class="job-posting-flairs">
+            ${tagsHTML}
+            ${
+              remainingTags > 0
+                ? `<span class="see-more">+${remainingTags} more</span>`
+                : ""
+            }
+          </div>
+        </div>
+      </div>
+    `;
+        jobListContainer.appendChild(jobElement);
+      });
+    }
+
+    renderJobPostings(<%- JSON.stringify(jobs) %>);
+  </script>
 
 </body>
 

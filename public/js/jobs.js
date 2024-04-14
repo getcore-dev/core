@@ -52,6 +52,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+function getTintFromName(name) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 18) - hash);
+  }
+  const color = (hash & 0x00ffffff).toString(16).toUpperCase();
+  const tintColor = `#${color}`;
+  return tintColor;
+}
+
 function renderJobPostings(jobPostings) {
   const jobListContainer = document.querySelector(".job-list");
   jobListContainer.innerHTML = ""; // Clear existing job postings
@@ -70,14 +80,21 @@ function renderJobPostings(jobPostings) {
     const maxTags = 3; // Adjust this value based on your desired maximum number of tags
     const displayedTags = tagsArray.slice(0, maxTags);
     const tagsHTML = displayedTags
-      .map((tag) => `<span class="job-flair" id="location-flair">${tag}</span>`)
+      .map(
+        (tag) =>
+          `<span class="job-flair" style="background-color: ${getTintFromName(
+            tag
+          )}9c; border: 1px solid ${getTintFromName(tag)};">${tag}</span>`
+      )
       .join("");
     const remainingTags = tagsArray.length - maxTags;
     jobElement.innerHTML = `
       <div class="job-preview">
         <div class="job-info">
           <div class="company-info">
-            <img src="${job.company_logo}" alt="${job.company_name} logo" />
+            <img class="thumbnail thubmnail-small" src="${
+              job.company_logo
+            }" alt="${job.company_name} logo" />
             <p class="company-name">${job.company_name}</p>
             <form id="favorite-form-${job.id}" action="/favorites/jobs/${
       job.id
@@ -92,7 +109,7 @@ function renderJobPostings(jobPostings) {
           } <span style="margin-left: auto; float: right;">${
       job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1)
     }</span></h3>
-          <h5 class="job-subtitle">
+          <h5 class="job-subtitle secondary-text">
             <span style="margin-left: auto; float:right;">USD $${Math.floor(
               (job.salary + job.salary_max) / 2 / 1000
             )}k</span>

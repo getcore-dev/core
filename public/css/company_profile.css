@@ -1,5 +1,5 @@
 main {
-    height: calc(100vh - var(--navbar-height));
+    height: calc(100dvh - var(--navbar-height));
     background-color: var(--light-mode-main-color);
     padding: 0 13px;
     padding-top: 16px;
@@ -54,7 +54,6 @@ main {
 
 .company-location {
     font-size: 14px;
-    color: var(--light-mode-secondary-text-color);
     margin: 4px 0 0;
 }
 
@@ -63,11 +62,102 @@ main {
     flex-direction: column;
 }
 
+p.job-description {
+    inline-size: min-content;
+    white-space: normal;
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+    line-height: 1.5em;
+    margin: 0;
+    font-size: .875rem;
+    margin: 11px 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
 
-  @media screen and (max-width: 600px) {
-    main {
-      height: calc(100vh - var(--mobile-navbar-height));
-    }
+  .job-posting-flairs {
+    display: flex;
+    flex-direction: row;
+    gap: 7px;
   }
 
 
+  .job-buttons {
+    align-content: center;
+  }
+
+  .job-main {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+.job-info .company-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding-top: 8px;
+    width: 100%;
+  }
+
+  
+
+.job-flair {
+    display: inline-block;
+    padding: 2px 4px;
+    margin-bottom: 2px;
+    background-color: #7d869cab;
+    border: 1px solid #7d869cc9; 
+    color: white;
+    border-radius: 6px;
+    font-size: 14px;
+    position: relative;
+  }
+
+  .job {
+    background-color: var(--light-mode-main-color);
+    margin: 0;
+    border-radius: 0;
+    margin-bottom: 0;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .job-preview {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    padding-top: 6px;
+  }
+
+  .job-info {
+    flex-grow: 1;
+  }
+
+
+
+
+  @media screen and (max-width: 600px) {
+    main {
+      height: calc(100dvh - var(--mobile-navbar-height));
+    }
+
+    .job-flairs {
+        padding-bottom: 5px;
+      }
+
+      
+  }
+
+
+
+  @media (prefers-color-scheme: dark) {
+
+    .job {
+        background-color: var(--dark-mode-body-color);
+        border-color: var(--dark-mode-border-color);
+      }
+  }
