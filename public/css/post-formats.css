@@ -111,6 +111,7 @@
     border: 0;
     max-height: 333px;
     border-radius: 18px;
+    object-fit: cover;
   }
 
   .post-body .image-container {
@@ -120,6 +121,13 @@
 
   .post-body > :first-child {
     margin-top: 0;
+  }
+
+  @media (max-width: 768px) {
+.post-body .link-image img {
+  max-height: 150px;
+  object-fit: cover;
+}
   }
   
 

@@ -590,6 +590,7 @@ div .mini-link-desc {
   flex-direction: row;
   /* max-width: 1200px; */
   justify-content: space-between;
+  z-index: 1;
 }
   
 .column {

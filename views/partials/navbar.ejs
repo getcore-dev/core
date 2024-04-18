@@ -214,25 +214,72 @@
   <div class="second-nav-bar">
     <div class="second-nav-btns">
       <ul class="second-nav-links">
-        <li>
-          <a href="/" class="navbar-button <%= currentPath === '/' ? 'active' : '' %>">
-            Community
-          </a>
-        </li>
-        <li>
-          <a href="/jobs" class="navbar-button <%= currentPath === '/jobs' ? 'active' : '' %>">Openings</a>
-        </li>
-        <% if (user) { %>
-        <li>
-          <a href="/learning" class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>">
-            Learning</a>
-        </li>
-        <% } %>
-        <li>
-          <a href="/updates" class="navbar-button <%= currentPath === '/updates' ? 'active' : '' %>">
-            Updates</a>
-        </li>
+        <li class="dropdown"> <a href="#" class="navbar-button dropdown-toggle <%= currentPath === '/' || currentPath.startsWith('/posts/') || currentPath === '/jobs' || currentPath.startsWith('/jobs/') || currentPath === '/learning' || currentPath === '/updates' ? 'active' : '' %>"> <% if (currentPath === '/' || currentPath.startsWith('/posts/')) { %>
+            <% if (typeof post !== 'undefined') { %>
 
+            <span class="material-symbols-outlined" id="second-nav-icon">
+              group
+            </span>
+            <u>Community</u> / <%= post.community.shortname %> / <%= post.title %>
+            <% } else { %>
+            <span class="material-symbols-outlined" id="second-nav-icon">
+              group
+            </span>
+            <u>Community</u>
+            <% } %>
+            <% } else if (currentPath === '/jobs' || currentPath.startsWith('/jobs/')) { %>
+            <% if (typeof job !== 'undefined') { %>
+            <span class="material-symbols-outlined" id="second-nav-icon">
+              factory
+            </span>
+            <u>Openings</u> > <%= job.title %>
+            <% } else { %>
+            <span class="material-symbols-outlined" id="second-nav-icon">
+              factory
+            </span>
+            <u>Openings</u>
+            <% } %>
+            <% } else if (currentPath === '/learning') { %>
+            <span class="material-symbols-outlined" id="second-nav-icon">
+              book
+            </span>
+            <u>Learning</u>
+            <% } else if (currentPath === '/updates') { %>
+            <span class="material-symbols-outlined" id="second-nav-icon">
+              settings
+            </span>
+            <u>Updates</u>
+            <% } %>
+            <span class="material-symbols-outlined" id="second-nav-icon">
+              arrow_drop_down
+            </span>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a href="/">
+                <span class="material-symbols-outlined" id="second-nav-icon">
+                  group
+                </span>
+                Community</a>
+            </li>
+            <li><a href="/jobs">
+                <span class="material-symbols-outlined" id="second-nav-icon" style="margin-right: auto">
+                  factory
+                </span>
+                Openings</a></li>
+            <% if (user) { %>
+            <li><a href="/learning">
+                <span class="material-symbols-outlined" id="second-nav-icon">
+                  book
+                </span>Learning</a></li>
+            <% } %> <li>
+              <a href="/updates">
+                <span class="material-symbols-outlined" id="second-nav-icon">
+                  settings
+                </span>Updates</a>
+            </li>
+          </ul>
+        </li>
       </ul>
     </div>
   </div>
@@ -448,6 +495,16 @@
           console.error('Error fetching latest commit:', error);
         });
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const dropdownToggle = document.querySelector('.dropdown-toggle');
+      const dropdownMenu = document.querySelector('.dropdown-menu');
+
+      dropdownToggle.addEventListener('click', function(event) {
+        event.preventDefault();
+        dropdownMenu.classList.toggle('show');
+      });
+    });
 
     // Function to close the banner and store the state in localStorage
     function closeBanner() {
