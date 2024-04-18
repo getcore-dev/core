@@ -29,6 +29,7 @@
   --nav-text-font-size: 20px;
   --navbar-height: 65px;
   --mobile-navbar-height: 50px;
+  --mobile-second-navbar-height: 30px;
   --logo-max-height: 65px;
   --mobile-logo-max-height: 45px;
   --search-bar-width: 170px;
@@ -257,7 +258,7 @@ a {
 .navbar {
   background-color: var(--light-mode-main-color); 
   color: var(--primary-text-color); 
-  border-bottom: .75px solid var(--light-mode-secondary-text-color);
+  border-bottom: .75px solid var(--border-color);
     display: flex; 
   flex-direction: column;
   align-items: center; 
@@ -268,8 +269,12 @@ a {
   z-index: 1;
 }
 
+second-nav-bar {
+  display: none;
+}
+
 /* Navbar Links Style */
-.nav-links {
+.nav-links, .second-nav-links {
   list-style: none; /* Remove list bullets */
   margin: 0;
   display: flex; /* Display links inline */
@@ -282,6 +287,17 @@ a {
   padding-bottom: 7px;
   justify-content: center;
   padding-inline-start: 0px;
+}
+
+.second-nav-links {
+  justify-content: flex-start;
+}
+
+.second-nav-links .navbar-button {
+  margin-top: 4px;
+  padding: 1px 9px;
+  font-size: .725rem;
+  color: var(--light-mode-secondary-text-color);
 }
 
 .nav-links::-webkit-scrollbar {
@@ -613,7 +629,7 @@ font-weight: 400;
   body {
     padding-top: constant(safe-area-inset-top); 
     padding-top: env(safe-area-inset-top);
-    background-color: #000 !important;
+    background-color: var(--light-mode-main-color) !important;
   }
 
   main {
@@ -657,6 +673,18 @@ font-weight: 400;
   #nb-icon {
     font-size: 27px;
     padding: 11px 4px;
+  }
+
+  .second-nav-bar {
+    display: block;
+    background-color: var(--light-mode-main-color); 
+    color: var(--primary-text-color); 
+    border-bottom: .75px solid var(--border-color);
+    position: fixed;
+    width: 100%;
+    height: var(--mobile-second-navbar-height);
+    top: calc(var(--mobile-navbar-height) + .73px);
+    z-index: 1;
   }
 
   .notification-count {
@@ -741,7 +769,7 @@ font-weight: 400;
   }
 
   body {
-    padding-top: var(--mobile-navbar-height); /* Reduced padding for mobile */
+    padding-top: calc(var(--mobile-navbar-height) + var(--mobile-second-navbar-height)); /* Reduced padding for mobile */
     overflow-x: hidden;
   }
 

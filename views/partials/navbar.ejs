@@ -30,7 +30,7 @@
               navbarTint = locals.community.community_color;
             }
 
-  %>
+    %>
           <%- navText %>
         </div>
 
@@ -211,6 +211,32 @@
       </div>
     </div>
   </div>
+  <div class="second-nav-bar">
+    <div class="second-nav-btns">
+      <ul class="second-nav-links">
+        <li>
+          <a href="/" class="navbar-button <%= currentPath === '/' ? 'active' : '' %>">
+            Community
+          </a>
+        </li>
+        <li>
+          <a href="/jobs" class="navbar-button <%= currentPath === '/jobs' ? 'active' : '' %>">Openings</a>
+        </li>
+        <% if (user) { %>
+        <li>
+          <a href="/learning" class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>">
+            Learning</a>
+        </li>
+        <% } %>
+        <li>
+          <a href="/updates" class="navbar-button <%= currentPath === '/updates' ? 'active' : '' %>">
+            Updates</a>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+
   <div class="latest-commit-banner" id="latestCommitBanner" style="display: none;">
     <div class="latest-commit-info">
       <div class="latest-commit-main">
@@ -226,6 +252,10 @@
 <style>
   <% if (navbarTint) {
     %>.navbar {
+      border-color: <%=navbarTint %>;
+    }
+
+    .second-nav-bar {
       border-color: <%=navbarTint %>;
     }
 
