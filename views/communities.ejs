@@ -772,30 +772,6 @@ filter_list
           console.error('Error:', error);
         });
     }
-
-    function createReactionButton(container, reaction, count, postId, user) {
-      const reactionButton = document.createElement("button");
-      reactionButton.className = `reaction-button ${reaction.type.toLowerCase()}-button-${postId}`;
-      reactionButton.onclick = (event) => interactWithPost(event, postId, user, reaction.type);
-
-      const icon = document.createElement("span");
-      icon.innerText = reaction.icon;
-
-      const countText = document.createElement("span");
-      countText.className = `reaction-count ${reaction.type.toLowerCase()}-count-${postId}`;
-      countText.innerText = ` ${count}`;
-
-      reactionButton.appendChild(icon);
-      reactionButton.appendChild(countText);
-      container.appendChild(reactionButton);
-
-      return reactionButton;
-    }
-
-    function updateReactionButton(reactionButton, count, reactionType, postId) {
-      const countSpan = reactionButton.querySelector(`.reaction-count.${reactionType.toLowerCase()}-count-${postId}`);
-      countSpan.innerText = ` ${count}`;
-    }
   </script>
 </body>
 

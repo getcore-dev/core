@@ -220,7 +220,7 @@
             <span class="material-symbols-outlined" id="second-nav-icon">
               group
             </span>
-            <u>Community</u> / <%= post.community.shortname %> / <%= post.title %>
+            <u>Community</u> / <%= post.community.shortname %> / <%= post.title.length > 20 ? post.title.substring(0, 20) + '...' : post.title %>
             <% } else { %>
             <span class="material-symbols-outlined" id="second-nav-icon">
               group
@@ -320,7 +320,7 @@
       color: <%=navbarTint %> !important;
     }
 
-    .nested-comment {
+    .nested-comment>.comment {
       border-color: <%=navbarTint %> !important;
     }
 

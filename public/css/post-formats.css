@@ -34,9 +34,21 @@
     margin-bottom: 0.83rem;
     font-weight: bold;
   }
+
+  .link-info-description {
+    font-size: .85rem;
+    margin-top: 0.37rem;
+    margin-bottom: 0.17rem;
+  }
+
+  .link-info-url {
+    font-size: .75rem;
+    margin-top: 0.17rem;
+    margin-bottom: 0.17rem;
+  }
   
   .post-body h3 {
-    font-size: 1.17rem; /* Adjust size as needed */
+    font-size: 1rem; /* Adjust size as needed */
     margin-top: 1rem;
     margin-bottom: 1rem;
     font-weight: bold;
@@ -65,7 +77,7 @@
   
   .post-body p {
     margin-top: 0;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0;
   }
   
   .post-body a {

@@ -119,10 +119,10 @@
             </span>
             <div class="post-title-container">
               <div>
-                <h2 class="post-title" style="<% if (post.post_type == "blog") { %> font-size: 28px; font-weight: bold; font-family: 'Inter', sans-serif !important;<% } %>"><%= post.title %>
+                <h2 class="post-title" style="<% if (post.post_type == "blog") { %> font-size: 1.15rem; font-weight: bold; font-family: 'Inter', sans-serif !important;<% } %>"><%= post.title %>
 
                   <% if (post.post_type == 'blog') { %>
-                  <span class="post-timestamp" style="text-decoration: none; font-weight: 500;">
+                  <span class="post-timestamp secondary-text" style="text-decoration: none; font-weight: 550;">
                     <%
               let postDate = new Date(post.created_at);
 
@@ -216,7 +216,7 @@
             <% } %>
             <div class="post-body" style="
             <% if (post.post_type == 'blog') { %>
-            padding: 0px 10px;
+            padding: 0px 13px;
             <% } %>">
               <% if ((post.post_type == 'post' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog' || post.post_type == 'question' || (post.post_type == 'discussion' && !post.linkPreview)) { %>
               <% if (post.post_type == 'project') { %>
@@ -334,15 +334,10 @@
                 </div>
               </div>
               <%- post.content %>
-              hellooo
               <% } %>
 
               <div class="user-interactions" style="<% if (post.post_type == "blog") { %>margin-bottom: 20px;<% } %>">
-                <button class="reaction-button<% if (post.userReaction === 'B') { %> active<% } %>" id="boost" onclick='<% if (user) { %>interactWithPost("<%= post.id %>", "<%= user %>", "boost")<% } else { %>window.location.href = "/login";<% } %>'>
-                  <span class="boost-image">⚡️</span> <span class="boost-count"><%= post.boostCount %></span>
-                </button>
-                <button class="mainReactionButton reaction-button" data-type="post" data-id="<%= post.id %>">😀
-                </button>
+                <button class="mainReactionButton reaction-button" data-type="post" data-id="<%= post.id %>">🚀</button>
                 <div id="reactionPopup-post-<%= post.id %>" class="reaction-popup" style="display:none;">
                   <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'LOVE')">❤️</button>
                   <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'LIKE')">👍</button>
@@ -351,41 +346,32 @@
                   <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'CELEBRATE')">🎉</button>
                 </div>
                 <% const reactionTypes = [
-        {
-            type: "LOVE",
-            icon: "❤️",
-            count: post.loveCount
-        },
-        {
-            type: "LIKE",
-            icon: "👍",
-            count: post.likeCount
-        },
-        {
-            type: "CURIOUS",
-            icon: "🤔",
-            count: post.curiousCount
-        },
-        {
-            type: "INTERESTING",
-            icon: "💡",
-            count: post.interestingCount
-        },
-        {
-            type: "CELEBRATE",
-            icon: "🎉",
-            count: post.celebrateCount
-        }
-        ]; %>
-                <% let reactionsCount = 0; %>
+                  { type: "BOOST", icon: "⚡️" },
+    { type: "LOVE", icon: "❤️" },
+    { type: "LIKE", icon: "👍" },
+    { type: "CURIOUS", icon: "🤔" },
+    { type: "INTERESTING", icon: "💡" },
+    { type: "CELEBRATE", icon: "🎉" }
+  ]; %>
+                <% const topReactions = reactionTypes.filter(reaction => post[reaction.type.toLowerCase() + 'Count'] > 0)
+    .sort((a, b) => post[b.type.toLowerCase() + 'Count'] - post[a.type.toLowerCase() + 'Count'])
+    .slice(0, 3); %>
+                <% let totalReactions = 0; %>
                 <% reactionTypes.forEach(reaction => { %>
-                <% if (reaction.count > 0) { %>
-                <% reactionsCount += reaction.count; %>
-                <button class="reaction-button<% if (post.userReaction === reaction.type) { %> active<% } %>" id="<%= reaction.type.toLowerCase() %>" onclick='<% if (user) { %>interactWithPost("<%= post.id %>", "<%= user %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
-                  <span class="<%= reaction.type.toLowerCase() %>-image"><%= reaction.icon %></span>
-                  <span class="<%= reaction.type.toLowerCase() %>-count"><%= reaction.count %></span>
-                </button>
+                <% totalReactions += post[reaction.type.toLowerCase() + 'Count']; %>
+                <% }); %>
+                <div class="top-reactions">
+                  <% topReactions.forEach(reaction => { %>
+                  <span class="reaction-icon <%= reaction.type.toLowerCase() %>-icon-<%= post.id %>"><%= reaction.icon %></span>
+                  <% }); %>
+                </div>
+                <% if (totalReactions > 0) { %>
+                <span class="total-reactions-count <%= post.id %>"><%= totalReactions %> reactions</span>
+                <% } else { %>
+                <span class="total-reactions-count <%= post.id %>">0 reactions</span>
                 <% } %>
+                <% reactionTypes.forEach(reaction => { %>
+                <% const reactionCount = post[reaction.type.toLowerCase() + 'Count']; %>
                 <% }); %>
               </div>
             </div>
@@ -398,7 +384,13 @@
             <div class="post-counts">
               <%= post.comments.length ? post.comments.length : 0 %> comments
               •
-              <%= reactionsCount ? reactionsCount: 0 %> reaction<%= reactionsCount > 1 ? 's' : '' %>
+              <% 
+    let reactionsCount = 0;
+    reactionTypes.forEach(reaction => {
+      reactionsCount += post[reaction.type.toLowerCase() + 'Count'] || 0;
+    });
+    %>
+              <%= reactionsCount %> reaction<%= reactionsCount !== 1 ? 's' : '' %>
             </div>
             <div class="add-comment-button" onclick=" <% if (user) { %>showCommentForm()<% } else { %>window.location.href = '/login';<% } %>">
               <span class="material-symbols-outlined">add_comment</span>
@@ -478,8 +470,8 @@
                   </div>
 
                   <div class="dropdown-<%= comment.id %>" style="position: relative; display: inline-block;">
-                    <button class="dropbtn" onclick="showDropdown(event)">
-                      <span class="material-symbols-outlined">more_horiz</span>
+                    <button class="dropbtn" onclick="showDropdown(event)" style="z-index:0;">
+                      <span class="material-symbols-outlined" style="z-index:0;">more_horiz</span>
                     </button>
                     <div class="dropdown-content" style="display: none;">
                       <% if (user && post.username === user.username && post.post_type == 'question') { %>
@@ -532,78 +524,6 @@
                 <% } %>
 
 
-                <div class="user-actions">
-
-                  <div class="comment-user-interactions <%= comment.id %>" data-type="comment" data-id="<%= comment.id %>">
-                    <button class="reaction-button<% if (comment.userReaction && comment.userReaction.toLowerCase() === 'b') { %> active<% } %>" id="boost-<%= comment.id%>" onclick='<% if (user) { %>interactWithComment("<%= post.id %>", "<%= comment.id %>", "<%= user %>", "boost")<% } else { %>window.location.href = "/login";<% } %>'>
-                      <span class="boost-image">⚡️</span> <span class="boost-count"><%= comment.boostCount %></span>
-                    </button>
-
-                    <button class="mainReactionButton reaction-button" data-type="comment" data-id="<%= comment.id %>">😀</button>
-                    <div id="reactionPopup-comment-<%= comment.id %>" class="reaction-popup" style="display:none; position: absolute; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
-                      <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'BOOST')">⚡️</button>
-                      <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'LOVE')">❤️</button>
-                      <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'LIKE')">👍</button>
-                      <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'CURIOUS')">🤔</button>
-                      <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'INTERESTING')">💡</button>
-                      <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'CELEBRATE')">🎉</button>
-                    </div>
-                    <% const reactionTypes = [
-        {
-            type: "LOVE",
-            icon: "❤️",
-            count: comment.loveCount
-        },
-        {
-            type: "LIKE",
-            icon: "👍",
-            count: comment.likeCount
-        },
-        {
-            type: "CURIOUS",
-            icon: "🤔",
-            count: comment.curiousCount
-        },
-        {
-            type: "INTERESTING",
-            icon: "💡",
-            count: comment.interestingCount
-        },
-        {
-            type: "CELEBRATE",
-            icon: "🎉",
-            count: comment.celebrateCount
-        }
-        ]; %>
-                    <% reactionTypes.forEach(reaction => { %>
-                    <% if (reaction.count > 0) { %>
-                    <button class="reaction-button <%= comment.id %> <% if (user && comment.userReaction && comment.userReaction.toLowerCase() === reaction.type.toLowerCase()) { %>active<% } %>" id="<%= reaction.type %>" onclick='<% if (user) { %>interactWithComment("<%= post.id %>", "<%= comment.id %>", "<%= user %>", "<%= reaction.type %>")<% } else { %>window.location.href = "/login";<% } %>'>
-
-                      <p><%= reaction.icon %> <%= reaction.count %></p>
-                    </button>
-                    <% } %>
-                    <% }); %>
-
-                  </div>
-                  <div class="replies">
-                    <a href="#" id="reply-button" onclick="showReplyForm('<%= comment.id %>', event)">
-                      <% 
-        function countAllReplies(replies) {
-            if (!replies || replies.length === 0) return 0;
-            let total = 0;
-            for (const reply of replies) {
-                total += 1 + countAllReplies(reply.replies);
-            }
-            return total;
-        }
-        const totalReplies = countAllReplies(comment.replies);
-        %>
-                      <button class="reaction-button">💬 <%= totalReplies%>
-                      </button>
-                    </a>
-                  </div>
-                </div>
-
               </div>
             </div>
             <div class="reply-form">
@@ -617,6 +537,71 @@
                   </div>
                 </div>
               </form>
+
+            </div>
+            <div class="user-actions">
+              <div class="comment-user-interactions <%= comment.id %>" data-type="comment" data-id="<%= comment.id %>">
+
+                <button class="mainReactionButton reaction-button" data-type="comment" data-id="<%= comment.id %>">🚀</button>
+                <div id="reactionPopup-comment-<%= comment.id %>" class="reaction-popup" style="display:none; position: absolute; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
+                  <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'BOOST')">⚡️</button>
+                  <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'LOVE')">❤️</button>
+                  <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'LIKE')">👍</button>
+                  <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'CURIOUS')">🤔</button>
+                  <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'INTERESTING')">💡</button>
+                  <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'CELEBRATE')">🎉</button>
+                </div>
+
+                <% const reactionTypes = [
+                      { type: "BOOST", icon: "⚡️"},
+                      { type: "LOVE", icon: "❤️" },
+                      { type: "LIKE", icon: "👍" }, 
+                      { type: "CURIOUS", icon: "🤔" },
+                      { type: "INTERESTING", icon: "💡" },
+                      { type: "CELEBRATE", icon: "🎉" }
+                    ]; %>
+
+                <% const topReactions = reactionTypes.filter(reaction => comment[reaction.type.toLowerCase() + 'Count'] > 0)
+                  .sort((a, b) => comment[b.type.toLowerCase() + 'Count'] - comment[a.type.toLowerCase() + 'Count'])
+                  .slice(0, 3); %>
+
+                <% let totalReactions = 0; %>
+                <% reactionTypes.forEach(reaction => { %>
+                <% totalReactions += comment[reaction.type.toLowerCase() + 'Count']; %>
+                <% }); %>
+
+                <div class="top-reactions">
+                  <% topReactions.forEach(reaction => { %>
+                  <span class="reaction-icon <%= reaction.type.toLowerCase() %>-icon-<%= comment.id %>"><%= reaction.icon %></span>
+                  <% }); %>
+                </div>
+                <% if (totalReactions > 0) { %>
+                <span class="total-reactions-count <%= post.id %>"><%= totalReactions %> reactions</span>
+                <% } else { %>
+                <span class="total-reactions-count <%= post.id %>">0 reactions</span>
+                <% } %>
+
+                <% reactionTypes.forEach(reaction => { %>
+                <% const reactionCount = comment[reaction.type.toLowerCase() + 'Count']; %>
+                <% }); %>
+              </div>
+
+              <div class="replies">
+                <a href="#" id="reply-button" onclick="showReplyForm('<%= comment.id %>', event)">
+                  <% 
+                        function countAllReplies(replies) {
+                          if (!replies || replies.length === 0) return 0;
+                          let total = 0;
+                          for (const reply of replies) {
+                            total += 1 + countAllReplies(reply.replies);
+                          }
+                          return total;
+                        }
+                        const totalReplies = countAllReplies(comment.replies);
+                      %>
+                  <button class="reaction-button">💬 <%= totalReplies %></button>
+                </a>
+              </div>
             </div>
 
 
@@ -693,7 +678,6 @@
                   </div>
                   <div class="votes">
                     <div class="reaction-interactions <%= similarPost.id %>-reactions" id="reaction-interactions <%= similarPost.id %>-reactions">
-                      <button class="reaction-button boost-button-<%= similarPost.id %> <%= similarPost.userReaction === 'B' ? 'active' : '' %>">⚡️ <span class="boost-count-<%= similarPost.id %>"><%= post.boostCount %></span></button>
                       <button class="main-reaction-button">😀</button>
                       <% reactionTypes.forEach(reaction => { %>
                       <% if (similarPost[reaction.type.toLowerCase() + 'Count'] > 0) { %>
@@ -967,92 +951,7 @@
         })
         .then(response => response.json())
         .then(data => {
-          console.log('Success:', data);
-          const reactionMenu = document.querySelector(".reaction-popup");
-          if (reactionMenu) {
-            reactionMenu.style.opacity = '0';
-            reactionMenu.style.display = 'none';
-          }
-
-          // Assuming the 'reactions' field directly contains the count values
-          const reactionsData = data.newScore; // Adjust according to actual response structure
-
-          const reactionTypes = [{
-              type: "LOVE",
-              icon: "❤️"
-            },
-            {
-              type: "LIKE",
-              icon: "👍"
-            },
-            {
-              type: "CURIOUS",
-              icon: "🤔"
-            },
-            {
-              type: "INTERESTING",
-              icon: "💡"
-            },
-            {
-              type: "CELEBRATE",
-              icon: "🎉"
-            },
-          ];
-
-          // Ensure you have a reference to the container where buttons should be placed
-          const reactionInteractionsDiv = document.querySelector("div.user-interactions");
-
-          reactionTypes.forEach(reaction => {
-            const reactionCount = reactionsData[reaction.type.toLowerCase()] || 0;
-            let reactionButton = document.querySelector(`button#${reaction.type.toLowerCase()}.reaction-button`);
-
-            if (reactionCount > 0) {
-              if (!reactionButton) {
-                // Create a new reaction button if it doesn't exist
-                reactionButton = document.createElement("button");
-                reactionButton.className = 'reaction-button';
-                reactionButton.id = reaction.type.toLowerCase();
-                reactionButton.onclick = () => interactWithPost(postId, user, reaction.type);
-
-                const icon = document.createElement("span");
-                icon.innerText = reaction.icon;
-
-                const countText = document.createElement("span");
-                countText.className = `${reaction.type.toLowerCase()}-count`;
-                countText.innerText = ` ${reactionCount}`;
-
-                reactionButton.appendChild(icon);
-                reactionButton.appendChild(countText);
-                reactionInteractionsDiv.appendChild(reactionButton);
-              } else {
-                // Update count of existing button
-                const countSpan = reactionButton.querySelector(`span.${reaction.type.toLowerCase()}-count`);
-                if (countSpan) countSpan.innerText = ` ${reactionCount}`;
-              }
-            } else if (reactionButton) {
-              // Remove the button if the reaction count is 0
-              reactionButton.remove();
-            }
-
-            if (data.userReaction && data.userReaction.toLowerCase() === reaction.type.toLowerCase()) {
-              reactionButton.classList.add('active');
-            } else if (reactionButton) {
-              reactionButton.classList.remove('active');
-            }
-          });
-
-          const boostCount = reactionsData['boosts'] || 0;
-          let boostButton = document.querySelector('#boost');
-
-          const countSpan = boostButton.querySelector(`span.boost-count`);
-          countSpan.innerText = ` ${boostCount}`;
-
-          // Update boost button active status
-          if (data.userReaction && data.userReaction.toLowerCase() === 'b') {
-            boostButton.classList.add('active');
-          } else {
-            boostButton.classList.remove('active');
-          }
+          location.reload();
         })
         .catch((error) => {
           console.error('Error:', error);
@@ -1077,92 +976,8 @@
         })
         .then(response => response.json())
         .then(data => {
-          console.log('Success:', data);
-          const reactionMenu = document.querySelector(".reaction-popup");
-          if (reactionMenu) {
-            reactionMenu.style.opacity = '0';
-            reactionMenu.style.display = 'none';
-          }
+          location.reload();
 
-          // Assuming the 'reactions' field directly contains the count values
-          const reactionsData = data.newScore; // Adjust according to actual response structure
-
-          const reactionTypes = [{
-              type: "LOVE",
-              icon: "❤️"
-            },
-            {
-              type: "LIKE",
-              icon: "👍"
-            },
-            {
-              type: "CURIOUS",
-              icon: "🤔"
-            },
-            {
-              type: "INTERESTING",
-              icon: "💡"
-            },
-            {
-              type: "CELEBRATE",
-              icon: "🎉"
-            },
-          ];
-
-          // Ensure you have a reference to the container where buttons should be placed
-          const reactionInteractionsDiv = document.querySelector("div.comment-user-interactions." + commentId);
-
-          reactionTypes.forEach(reaction => {
-            const reactionCount = reactionsData[reaction.type.toLowerCase()] || 0;
-            let reactionButton = document.querySelector(`button#${reaction.type}.reaction-button.${commentId}`);
-
-            if (reactionCount > 0) {
-              if (!reactionButton) {
-                // Create a new reaction button if it doesn't exist
-                reactionButton = document.createElement("button");
-                reactionButton.className = `reaction-button ${commentId}`;
-                reactionButton.id = reaction.type;
-                reactionButton.onclick = () => interactWithComment(postId, commentId, user, reaction.type);
-
-                const icon = document.createElement("span");
-                icon.innerText = reaction.icon;
-
-                const countText = document.createElement("span");
-                countText.className = `${reaction.type.toLowerCase()}-count-${commentId}`;
-                countText.innerText = ` ${reactionCount}`;
-
-                reactionButton.appendChild(icon);
-                reactionButton.appendChild(countText);
-                reactionInteractionsDiv.appendChild(reactionButton);
-              } else {
-                // Update count of existing button
-                const countSpan = reactionButton.querySelector(`span.${reaction.type.toLowerCase()}-count-${commentId}`);
-                if (countSpan) countSpan.innerText = ` ${reactionCount}`;
-              }
-            } else if (reactionButton) {
-              // Remove the button if the reaction count is 0
-              reactionButton.remove();
-            }
-
-            // Update button active status
-            if (data.userReaction && data.userReaction.toLowerCase() === reaction.type.toLowerCase()) {
-              reactionButton.classList.add('active');
-            } else if (reactionButton) {
-              reactionButton.classList.remove('active');
-            }
-          });
-
-          const boostCount = reactionsData['boosts'] || 0;
-          let boostButton = document.querySelector('#boost-' + commentId);
-          const countSpan = boostButton.querySelector(`span.boost-count`);
-          countSpan.innerText = ` ${boostCount}`;
-
-          // Update boost button active status
-          if (data.userReaction && data.userReaction.toLowerCase() === 'b') {
-            boostButton.classList.add('active');
-          } else {
-            boostButton.classList.remove('active');
-          }
         })
         .catch((error) => {
           console.error('Error:', error);

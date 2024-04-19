@@ -229,9 +229,6 @@ div .material-symbols-outlined:hover {
 }
 
 
-.post-body p { 
-  margin-bottom: 10px;
-  }
 
 .sidebar-container {
   width: 100%;
@@ -343,7 +340,7 @@ div .user-info, .header {
   align-items: center;
   margin-top: 7px;
   gap: 8px;
-  margin-bottom: 32px;
+  margin-bottom: 9px;
   font-size: .875rem;
 }
 
@@ -371,7 +368,7 @@ img.blog-avatar {
   margin-top: 0px;
 }
 
-.reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button, .add-comment-button {
+.reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button {
   background-color: var(--light-mode-body-color);
   border: 1px solid var(--border-color);
   color: var(--light-mode-text-color);
@@ -388,9 +385,14 @@ img.blog-avatar {
   font-size: .8rem;
 }
 
-.reaction-button:hover, .main-reaction-button:hover, .boost-button:hover, #delete-post-button:hover, #delete-comment-button:hover, .add-comment-button:hover {
+.reaction-button:hover, .main-reaction-button:hover, .boost-button:hover, #delete-post-button:hover, #delete-comment-button:hover {
   background-color: var(--light-mode-button-hover-color);
   cursor: pointer;
+}
+
+.replies .reaction-button {
+  background: 0;
+  border: 0;
 }
 
 .dicussion-link {
@@ -408,8 +410,8 @@ img.blog-avatar {
 .reaction-popup {
   position: absolute;
   display: flex;
-  bottom: 48px;
-  left: 66px;
+  bottom: 33px;
+  left: 10px;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
@@ -497,7 +499,7 @@ img.blog-avatar {
   gap: 4px;
   margin: 0 13px;
   margin-top: 11px;
-  margin-bottom: 15px;
+  margin-bottom: 6px;
 }
 
 .link-image, .sidebar-poster-avatar {
@@ -566,12 +568,11 @@ img.blog-avatar {
 }
 
 .post-info {
-  padding: 0 13px;
+  padding: 16px 13px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 18px;
 }
 .sort-selector {
   display: inline-flex;
@@ -639,6 +640,8 @@ img.blog-avatar {
 .dropbtn {
   background-color: rgba(0,0,0,0);
   border: 0; 
+  padding: 0;
+  margin: 0;
   color: var(--primary-text-color);
 }
 
@@ -678,11 +681,15 @@ div.repliers-avatar, div.repliees-avatar {
   display: flex;
   align-items: center;
   margin-right: 7px;
-
 }
 
-.nested-comment {
-  padding-left: 12px;
+.total-reactions-count, .add-comment-button {
+  font-size: .8rem;
+  color: var(--light-mode-secondary-text-color);
+}
+
+.nested-comment > .comment {
+  margin-left: 12px;
   border-left: 2px solid var(--active-indicator-color);
 }
 
@@ -726,17 +733,12 @@ div.repliers-avatar, div.repliees-avatar {
   padding: 0px 14px;
   font-size: 14px;
   color: var(--light-mode-text-color);
-  gap: 10px;
+  gap: 4px;
 }
 
 .similar-posts .post-content {
 padding: 9px 14px;
 padding-top: 18px;
-}
-
-.comment-header {
-  color: var(--text-color);
-  font-size: 15px;
 }
 
 .comment-header a {
@@ -772,6 +774,9 @@ padding-top: 18px;
   display: flex;
   margin-top: 3px;
   align-items: center;
+  padding: 6px 13px;
+  padding-top: 0;
+  padding-right: 9px;
   justify-content: space-between;
 }
 
@@ -783,7 +788,12 @@ padding-top: 18px;
 }
 
 a.comment-user-info {
-  font-weight: 600;
+  font-weight: 400;
+}
+
+.comment-header {
+  font-size: .825rem !important;
+  color: var(--light-mode-text-color) !important;
 }
 a.comment-user-info:hover {
   text-decoration: underline;
@@ -795,6 +805,7 @@ a.comment-user-info:hover {
   flex-direction: row;
   gap: 10px;
   width: 60%;
+  align-items: center;
 }
 
 
@@ -832,10 +843,11 @@ a.comment-user-info:hover {
   font-size: 16px;
   padding: 6px 0px;
   padding-top: 4px;
+  padding-bottom: 0;
 }
 
 .comment-body p {
-  font-size: 1rem;
+  font-size: .875rem;
 }
 
 .comment-avatar img {
@@ -966,7 +978,11 @@ a.comment-user-info:hover {
 }
 
 .post-body p , .comment-body p {
-  line-height: 1.25rem;
+  line-height: 1.65rem;
+}
+
+.post-body p {
+  font-size: .925rem;
 }
 
 .preview-description {
@@ -1132,7 +1148,7 @@ p.preview-description {
 
 .tag-flair {
   display: inline-block;
-  padding: 4px 6px;
+  padding: 1px 6px;
   background-color: var(--dark-mode-main-color);
   margin: 1px;
   border-radius: 5px;
@@ -1216,7 +1232,7 @@ p.preview-description {
 .sort-option.active {
   background-color: var(--dark-mode-border-color); /* Active tab color */
 }
-  .reaction-button, .add-comment-button, .main-reaction-button {
+  .reaction-button, .main-reaction-button {
   background-color: var(--dark-mode-main-color);
   border: 1px solid var(--dark-mode-border-color);
   color: var(--dark-mode-background-text-color);
@@ -1322,6 +1338,11 @@ p.preview-description {
     border: 1px solid #224368;
   }
 
+
+  .comment-header {
+    color: var(--dark-mode-text-color) !important;
+  }
+
   .similar-posts .post:last-child {
     border-color: var(--dark-mode-border-color);
   }
@@ -1342,6 +1363,10 @@ p.preview-description {
 
   .reaction-button, #delete-post-button, #delete-comment-button {
     border-color: var(--dark-mode-border-color);
+  }
+
+  .total-reactions-count, #reply-button .reaction-button, .add-comment-button {
+    color: var(--dark-mode-secondary-text-color);
   }
 
   #verified, a #verified {
@@ -1373,9 +1398,6 @@ p.preview-description {
     color: #e0e0e0; /* Light text color for preview titles and descriptions */
   }
 
-  .add-comment-button:hover {
-    background-color: var(--dark-mode-button-hover-color);
-  }
 }
 
 /* Style for the comment input field */
@@ -1516,13 +1538,10 @@ div.username {
     width: 100%;
   }
 
-  .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button, .add-comment-button {
+  .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button {
     padding: 4px 6px;
   }
 
-  .add-comment-button {
-    padding: 4px 11px;
-  }
 
   #reply-button .reaction-button {
     padding: 4px 8px;
@@ -1572,7 +1591,7 @@ div.username {
   .post-title {
     font-weight: 500;
     margin-top: 0;
-    font-size: 21px;
+    font-size: 1.05rem;
   }
 
   .post-subtitle {
@@ -1590,6 +1609,7 @@ div.username {
   
   .post, .comment {
     padding-bottom: 0px;
+    margin-bottom: 0;
   }
 
   .commment {

@@ -29,7 +29,7 @@
   --nav-text-font-size: 20px;
   --navbar-height: 65px;
   --mobile-navbar-height: 50px;
-  --mobile-second-navbar-height: 30px;
+  --mobile-second-navbar-height: 34px;
   --logo-max-height: 65px;
   --mobile-logo-max-height: 45px;
   --search-bar-width: 170px;
@@ -303,7 +303,7 @@ second-nav-bar {
 .second-nav-links .navbar-button {
   margin-top: 6px;
   padding: 0;
-  font-size: .725rem;
+  font-size: .855rem;
   font-weight: 500;
   color: var(--light-mode-secondary-text-color);
 }
@@ -462,16 +462,19 @@ ul.notification-list {
 ul.dropdown-menu {
   list-style: none;;
   flex-direction: column;
-  gap: 5px;
+  gap: 10px;
 }
 
 ul.dropdown-menu a {
-  font-size: .725rem;
+  font-size: .855rem;
   color: var(--light-mode-secondary-text-color);
 }
 
 ul.dropdown-menu li, ul.dropdown-menu li a {
   width: 100% !important;
+}
+ul.dropdown-menu li {
+  padding: 5px 0;
 }
 
 #clear-all-btn {
@@ -665,6 +668,10 @@ font-weight: 400;
   border-radius: 0;
 }
 
+.dropdown {
+  display: none;
+}
+
 
 
 #nb-icon {
@@ -676,6 +683,10 @@ font-weight: 400;
     padding-top: constant(safe-area-inset-top); 
     padding-top: env(safe-area-inset-top);
     background-color: var(--light-mode-main-color) !important;
+  }
+
+  .dropdown {
+    display: block;
   }
 
   main {
