@@ -1208,7 +1208,7 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
   }
 
   .job {
-    background-color: var(--dark-mode-body-color) !important;
+    background-color: var(--dark-mode-main-color) !important;
   }
 
   .main-reaction-button:hover, .boost-button:hover, .reaction-button:hover {
