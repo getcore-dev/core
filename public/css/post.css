@@ -1,46 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-:root {
-  --primary-text-color: #1D2935;
-  --light-mode-body-color: #fff;
-  --light-mode-main-color: #F6F8FA;
-  --light-mode-hover-color: #E5EBF1;
-  --border-color: #DCE6F2;
-  --light-mode-button-color: #DCE6F2;
-  --light-mode-button-hover-color: #BECBDA;
-  --light-mode-text-color: #243342;
-  --light-mode-secondary-text-color: #586C7F;
-  --hover-background-color: #ddd;
-  --active-indicator-color: #0e6655;
-  --dark-mode-main-color: #16191B;
-  --dark-mode-body-color: #000;
-  --dark-mode-lighter-color: #0a0a0a;
-  --dark-mode-button-hover-color: #363F44;
-  --dark-mode-secondary-text-color: #999;
-  --dark-mode-text-color: #fff;
-  --dark-mode-border-color: #272D31;
-  --dark-mode-hover-background-color: #151515;
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Dark mode styles */
-    --background-color: #16191B;
-    --text-color: #e0e0e0;
-    --secondary-text-color: #999;
-    --profile-background-color: #1B1F22;
-    --section-background-color: #333;
-    --border-color: #272D31;
-    --link-color: #fff;
-    --hover-text-color: #e0e0e0;
-    --comment-hover-bg-color: #333;
-    --input-bg-color: #1B1F22;
-    --input-border-color: #555;
-    --input-text-color: #f4f4f4;
-    --link-preview-border-color: #555;
-    --community-id-bg-color: #006400;
-    --community-id-text-color: white;
-  }
-}
 
 main {
   display: flex;

@@ -15,6 +15,11 @@
   .link-display {
     background: <%=otheruser.profile_border_color%>52 !important;
   }
+
+  .navbar,
+  .second-nav-bar {
+    border-color: <%=otheruser.profile_border_color%> !important;
+  }
 </style>
 
 <body>
@@ -37,10 +42,10 @@
             <p id="firstname-display"> @<%= otheruser.username %></p>
             <div class="followers-info">
               <div class="link-display">
-                <a href="/u/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row;">Followers: <span id="followerCount"> <%= otheruser.followerCount %> </a></span>
+                <a href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row;">Followers: <span id="followerCount"> <%= otheruser.followerCount %> </a></span>
               </div>
               <div class="link-display">
-                <a href="/u/<%= otheruser.username %>/following" style="display: flex; flex-direction:row;">Following: <span id="followCount"> <%= otheruser.followingCount %></a></span>
+                <a href="/user/<%= otheruser.username %>/following" style="display: flex; flex-direction:row;">Following: <span id="followCount"> <%= otheruser.followingCount %></a></span>
               </div>
             </div>
           </div>
@@ -58,6 +63,12 @@
           </div>
           <% } %>
 
+        </div>
+
+        <div class="user-bio" style="background: 0 !important; padding-top: 0;">
+          <p>
+            <%= otheruser.bio %>
+          </p>
         </div>
 
         <div class="current-job" style="background:<%= otheruser.profile_border_color%>52 !important;">
@@ -209,7 +220,7 @@
                   <img class="comment-author-avatar" src="<%= comment.author.avatar %>" alt="Avatar" />
                   <p class="comment-author">
 
-                    <a href="/u/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/u/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
+                    <a href="/user/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/user/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
                   </p>
                 </div>
                 <div class="comment" style="background:<%= otheruser.profile_border_color%>52 !important;">

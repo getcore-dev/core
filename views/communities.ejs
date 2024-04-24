@@ -228,7 +228,7 @@ filter_list
 </span>
           </button>
                   <% if (user) { %>
-            <button class="header-button" id="post-button" onclick="window.location.href='/post/create'" style="padding: 6px 13px;;">+</button>
+            <button class="header-button" id="post-button" onclick="window.location.href='/create'" style="padding: 6px 13px;;">+</button>
           <% } %>
 
           <div class="filter-menu" id="filterMenu">
@@ -293,7 +293,7 @@ filter_list
             usernameDiv.className = 'username';
             const usernameLink = document.createElement('a');
             usernameLink.className = 'username-link';
-            usernameLink.href = '/u/' + post.username;
+            usernameLink.href = '/user/' + post.username;
             usernameLink.innerHTML = '<strong>' + post.username + '</strong>';
             usernameDiv.appendChild(usernameLink);
 
@@ -423,6 +423,7 @@ filter_list
             mainReactionButton.innerText = "🚀";
             reactionInteractionsDiv.appendChild(mainReactionButton);
 
+
             const reactionMenu = document.createElement("div");
             reactionMenu.className = "reaction-menu";
 
@@ -460,6 +461,11 @@ filter_list
                 icon: "🎉"
               },
             ];
+
+            if (post.userReaction != null && reactionTypes.find(reaction => reaction.type === post.userReaction)) {
+              mainReactionButton.innerText = reactionTypes.find(reaction => reaction.type === post.userReaction).icon;
+              mainReactionButton.classList.add('active');
+            }
 
             const topReactions = reactionTypes.filter(reaction => post[reaction.type.toLowerCase() + 'Count'] > 0)
               .sort((a, b) => post[b.type.toLowerCase() + 'Count'] - post[a.type.toLowerCase() + 'Count'])
@@ -748,6 +754,34 @@ filter_list
 
     function interactWithPost(event, postId, user, action) {
       event.stopPropagation();
+      const mainReactionButton = document.querySelector(`.${postId}-reactions .main-reaction-button`);
+
+      const reactionTypes = [{
+          type: "BOOST",
+          icon: "⚡️"
+        },
+        {
+          type: "LOVE",
+          icon: "❤️"
+        },
+        {
+          type: "LIKE",
+          icon: "👍"
+        },
+        {
+          type: "CURIOUS",
+          icon: "🤔"
+        },
+        {
+          type: "INTERESTING",
+          icon: "💡"
+        },
+        {
+          type: "CELEBRATE",
+          icon: "🎉"
+        },
+      ];
+
 
       if (!user) {
         window.location.href = '/login';
@@ -767,6 +801,7 @@ filter_list
         .then(response => response.json())
         .then(data => {
           console.log('Success:', data);
+          mainReactionButton.innerText = reactionTypes.find(reaction => reaction.type === action).icon;
         })
         .catch((error) => {
           console.error('Error:', error);

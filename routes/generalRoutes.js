@@ -60,11 +60,11 @@ router.get("/404", (req, res) => {
   res.render("error.ejs", { user: req.user, error });
 });
 
-router.get("/u/:username", viewController.renderUserProfile);
+router.get("/user/:username", viewController.renderUserProfile);
 
-router.get("/u/:username/followers", viewController.renderFollowers);
+router.get("/user/:username/followers", viewController.renderFollowers);
 
-router.get("/u/:username/following", viewController.renderFollowing);
+router.get("/user/:username/following", viewController.renderFollowing);
 
 // Jobs page
 router.get("/jobs", (req, res) => {
@@ -107,7 +107,7 @@ router.get("/updates", async (req, res) => {
 });
 
 // Post creation page
-router.get("/post/create", checkAuthenticated, async (req, res) => {
+router.get("/create", checkAuthenticated, async (req, res) => {
   const tags = await postQueries.getAllTags();
   res.render("create-post.ejs", { user: req.user, tags });
 });
@@ -155,7 +155,7 @@ router.post(
         }
       }
 
-      res.redirect("/u/" + req.user.username);
+      res.redirect("/user/" + req.user.username);
     } catch (err) {
       console.error("Error updating user fields:", err.message);
       res.status(500).send("Internal Server Error");

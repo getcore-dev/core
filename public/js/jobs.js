@@ -92,7 +92,7 @@ function renderJobPostings(jobPostings) {
       <div class="job-preview">
         <div class="job-info">
           <div class="company-info">
-            <img class="thumbnail thubmnail-small" src="${
+            <img class="thumbnail thubmnail-tiny" src="${
               job.company_logo
             }" alt="${job.company_name} logo" />
             <p class="company-name">${job.company_name}</p>

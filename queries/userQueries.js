@@ -162,6 +162,7 @@ const userQueries = {
         "firstname",
         "lastname",
         "avatar",
+        "bio",
         "email",
         "github_url",
         "recruiter_id",

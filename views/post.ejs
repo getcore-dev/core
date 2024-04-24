@@ -186,7 +186,7 @@
 
             <div class="post-userinfo">
               <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="blog-avatar" />
-              <a href="/u/<%= post.user.username %>" style="text-decoration: none; font-weight:bold;"><%= post.user.username %></a>
+              <a href="/user/<%= post.user.username %>" style="text-decoration: none; font-weight:bold;"><%= post.user.username %></a>
             </div>
             <% } %>
 
@@ -206,7 +206,7 @@
             <div class="post-interactions-header">
               <div class="post-user-info-header">
                 <img class="avatar" src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" onerror="" />
-                <a href="/u/<%= post.user.username %>" class="post-user-info">
+                <a href="/user/<%= post.user.username %>" class="post-user-info">
                   <div class="post-user-info">
                     <%= post.user.username %>
                   </div>
@@ -298,7 +298,7 @@
                     <img src="<%= post.solution.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" />
                   </div>
                   <div class="solution-username">
-                    <a href="/u/<%= post.solution.user.username %>">
+                    <a href="/user/<%= post.solution.user.username %>">
                       <%= post.solution.user.username %>
                     </a>
                   </div>
@@ -337,7 +337,22 @@
               <% } %>
 
               <div class="user-interactions" style="<% if (post.post_type == "blog") { %>margin-bottom: 20px;<% } %>">
-                <button class="mainReactionButton reaction-button" data-type="post" data-id="<%= post.id %>">🚀</button>
+                <button class="mainReactionButton reaction-button<% if (post.userReaction) { %> active <% }%>" data-type="post" data-id="<%= post.id %>">
+                  <% if (post.userReaction) { %>
+                  <% const reactionTypes = [
+                  { type: "BOOST", icon: "⚡️" },
+                  { type: "LOVE", icon: "❤️" },
+                  { type: "LIKE", icon: "👍" },
+                  { type: "CURIOUS", icon: "🤔" },
+                  { type: "INTERESTING", icon: "💡" },
+                  { type: "CELEBRATE", icon: "🎉" }
+                  ]; %>
+                  <%= reactionTypes.find(reaction => reaction.type === post.userReaction).icon %>
+                  <% } else { %>
+                  🚀
+                  <% } %>
+
+                </button>
                 <div id="reactionPopup-post-<%= post.id %>" class="reaction-popup" style="display:none;">
                   <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'LOVE')">❤️</button>
                   <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'LIKE')">👍</button>
@@ -435,14 +450,14 @@
 
                 <div class="comment-content">
                   <div class="comment-header">
-                    <a class="comment-user-info" href="/u/<%= comment.user.username %>">
+                    <a class="comment-user-info" href="/user/<%= comment.user.username %>">
                       <div class="repliers-info">
                         <%= comment.user.username%>
                       </div>
                     </a>
 
                     <p>to</p>
-                    <a class="comment-user-info" href="/u/<%= comment.parent_author.username %>">
+                    <a class="comment-user-info" href="/user/<%= comment.parent_author.username %>">
                       <%= comment.parent_author.username %>
                     </a>
                     <span>&#183;</span>
@@ -542,7 +557,21 @@
             <div class="user-actions">
               <div class="comment-user-interactions <%= comment.id %>" data-type="comment" data-id="<%= comment.id %>">
 
-                <button class="mainReactionButton reaction-button" data-type="comment" data-id="<%= comment.id %>">🚀</button>
+                <button class="mainReactionButton reaction-button <% if (comment.userReaction) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>">
+                  <% if (comment.userReaction) { %>
+                  <% const reactionTypes = [
+                  { type: "B", icon: "⚡️" },
+                  { type: "LOVE", icon: "❤️" },
+                  { type: "LIKE", icon: "👍" },
+                  { type: "CURIOUS", icon: "🤔" },
+                  { type: "INTERESTING", icon: "💡" },
+                  { type: "CELEBRATE", icon: "🎉" }
+                  ]; %>
+                  <%= reactionTypes.find(reaction => reaction.type === comment.userReaction).icon %>
+                  <% } else { %>
+                  🚀
+                  <% } %>
+                </button>
                 <div id="reactionPopup-comment-<%= comment.id %>" class="reaction-popup" style="display:none; position: absolute; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
                   <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'BOOST')">⚡️</button>
                   <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'LOVE')">❤️</button>
@@ -653,7 +682,7 @@
                         <img src="<%= similarPost.avatar %>" loading="lazy">
                       </div>
                       <div class="username">
-                        <a href="/u/<%= similarPost.username %>" class="username-link"><strong><%= similarPost.username %></strong></a>
+                        <a href="/user/<%= similarPost.username %>" class="username-link"><strong><%= similarPost.username %></strong></a>
                         <span class="communities-text"> posted a <%= similarPost.post_type %> in <%= similarPost.community_name %></span>
                         <a href="/c/<%= similarPost.communities_id %>" class="community"></a>
                         <div class="post-date" id="secondary-text"><%= formatDate(similarPost.created_at) %> • <%= similarPost.views %> views</div>

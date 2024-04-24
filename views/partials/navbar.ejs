@@ -3,7 +3,7 @@
   <div class="nav-bar">
     <div class="logo">
       <div class="logo-img">
-        <a href="/"> <img src="/img/core.png" alt="CORE" /> </a>
+        <a href="/"> <img class="core-header-img" src="/img/core.png" alt="CORE" /> </a>
       </div>
       <div class="nav-text-and-user-btns">
         <div class="nav-text-container">
@@ -165,7 +165,7 @@
                 </a>
                 <% } %>
 
-                <a href="/u/<%= user.username %>">
+                <a href="/user/<%= user.username %>">
                   <div class="avatar-dropdown-item">
                     <span class="material-symbols-outlined" id="nb-icon">
                       person
@@ -190,7 +190,7 @@
             </div>
             <% } else if (user && !user.avatar) { %>
             <div class="nav-avatar">
-              <a href="/u/<%= user.username %>" class="inbox-button">
+              <a href="/user/<%= user.username %>" class="inbox-button">
                 <span class="material-symbols-outlined" id="nb-icon">
                   person
                 </span>
@@ -214,42 +214,33 @@
   <div class="second-nav-bar">
     <div class="second-nav-btns">
       <ul class="second-nav-links">
-        <li class="dropdown"> <a href="#" class="navbar-button dropdown-toggle <%= currentPath === '/' || currentPath.startsWith('/posts/') || currentPath === '/jobs' || currentPath.startsWith('/jobs/') || currentPath === '/learning' || currentPath === '/updates' ? 'active' : '' %>"> <% if (currentPath === '/' || currentPath.startsWith('/posts/')) { %>
+        <li class="dropdown">
+          <a href="#" class="navbar-button dropdown-toggle <%= currentPath === '/' || currentPath.startsWith('/posts/') || currentPath === '/jobs' || currentPath.startsWith('/jobs/') || currentPath === '/learning' || currentPath.startsWith('/user/') || currentPath == '/favorites' || currentPath === '/updates' ? 'active' : '' %>">
+            <% if (currentPath === '/' || currentPath.startsWith('/posts/')) { %>
             <% if (typeof post !== 'undefined') { %>
 
-            <span class="material-symbols-outlined" id="second-nav-icon">
-              group
-            </span>
-            <u>Community</u> / <%= post.community.shortname %> / <%= post.title.length > 20 ? post.title.substring(0, 20) + '...' : post.title %>
+            Community / <%= post.community.shortname %> / <%= post.title.length > 20 ? post.title.substring(0, 20) + '...' : post.title %>
             <% } else { %>
-            <span class="material-symbols-outlined" id="second-nav-icon">
-              group
-            </span>
-            <u>Community</u>
+            Community
             <% } %>
             <% } else if (currentPath === '/jobs' || currentPath.startsWith('/jobs/')) { %>
             <% if (typeof job !== 'undefined') { %>
-            <span class="material-symbols-outlined" id="second-nav-icon">
-              factory
-            </span>
-            <u>Openings</u> > <%= job.title %>
+            Openings > <%= job.title %>
             <% } else { %>
-            <span class="material-symbols-outlined" id="second-nav-icon">
-              factory
-            </span>
-            <u>Openings</u>
+            Openings
             <% } %>
             <% } else if (currentPath === '/learning') { %>
-            <span class="material-symbols-outlined" id="second-nav-icon">
-              book
-            </span>
-            <u>Learning</u>
+            Learning
             <% } else if (currentPath === '/updates') { %>
-            <span class="material-symbols-outlined" id="second-nav-icon">
-              settings
-            </span>
-            <u>Updates</u>
+            Updates
+            <% } else if (currentPath.startsWith('/user/')) { %>
+            <% if (typeof otheruser !== 'undefined') { %>
+            <%= otheruser.username %> / <%= otheruser.firstname %> <%= otheruser.lastname %>
             <% } %>
+            <% }  else if (currentPath === '/favorites') { %>
+            Favorites
+            <% } %>
+
             <span class="material-symbols-outlined" id="second-nav-icon">
               arrow_drop_down
             </span>
@@ -257,27 +248,31 @@
           <ul class="dropdown-menu">
             <li>
               <a href="/">
-                <span class="material-symbols-outlined" id="second-nav-icon">
-                  group
-                </span>
                 Community</a>
             </li>
-            <li><a href="/jobs">
-                <span class="material-symbols-outlined" id="second-nav-icon" style="margin-right: auto">
-                  factory
-                </span>
-                Openings</a></li>
-            <% if (user) { %>
-            <li><a href="/learning">
-                <span class="material-symbols-outlined" id="second-nav-icon">
-                  book
-                </span>Learning</a></li>
-            <% } %> <li>
-              <a href="/updates">
-                <span class="material-symbols-outlined" id="second-nav-icon">
-                  settings
-                </span>Updates</a>
+            <li>
+              <a href="/jobs">
+                Openings
+              </a>
+
             </li>
+            <li>
+              <a href="/updates">
+                Updates</a>
+            </li>
+            <% if (user) { %>
+            <li>
+              <a href="/learning">
+                Learning
+              </a>
+            </li>
+            <li>
+              <a href="/favorites">
+                Favorites
+              </a>
+            </li>
+
+            <% } %>
           </ul>
         </li>
       </ul>
@@ -540,6 +535,7 @@
   });
   document.addEventListener('DOMContentLoaded', function() {
     const expandSearchBtn = document.getElementById('expandSearch');
+    const coreImage = document.querySelector('.core-header-img');
     const searchForm = document.getElementById('searchForm');
     const searchInput = document.querySelector('.search-input');
     const overlay = document.querySelector('.overlay'); // Get the overlay element
@@ -547,6 +543,7 @@
 
     expandSearchBtn.addEventListener('click', function() {
       searchForm.style.display = 'flex'; // Show the form
+      coreImage.style.display = 'none'; // Hide the logo
       overlay.style.display = 'block'; // Show the overlay
       expandSearchBtn.style.display = 'none'; // Hide the search icon
       searchInput.focus(); // Focus on the input field immediately
@@ -554,6 +551,7 @@
 
     overlay.addEventListener('click', function() {
       searchForm.style.display = 'none'; // Hide the form
+      coreImage.style.display = 'block'; // Show the logo
       overlay.style.display = 'none'; // Hide the overlay
       expandSearchBtn.style.display = 'block'; // Show the search icon again
     });
@@ -562,6 +560,7 @@
     document.addEventListener('keydown', function(event) {
       if (event.key === "Escape") {
         searchForm.style.display = 'none'; // Hide the form
+        coreImage.style.display = 'block'; // Show the logo
         overlay.style.display = 'none'; // Hide the overlay
         expandSearchBtn.style.display = 'block'; // Show the search icon again
       }
@@ -614,7 +613,7 @@
           results.users.forEach(user => {
             const userItem = document.createElement('div');
             userItem.onclick = function() {
-              window.location.href = `/u/${user.username}`;
+              window.location.href = `/user/${user.username}`;
             };
             const userImage = document.createElement('img');
 

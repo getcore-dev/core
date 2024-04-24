@@ -1,29 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-
-:root {
-  --primary-text-color: #1D2935;
-  --light-mode-body-color: #F6F8FA;
-  --light-mode-main-color: #fff;
-  --light-mode-hover-color: #E5EBF1;
-  --border-color: #DCE6F2;
-  --light-mode-button-color: #DCE6F2;
-  --light-mode-button-hover-color: #BECBDA;
-  --light-mode-text-color: #243342;
-  --light-mode-secondary-text-color: #586C7F;
-  --hover-background-color: #ddd;
-  --active-indicator-color: #0e6655;
-  --dark-mode-main-color: #16191B;
-  --dark-mode-body-color: #000;
-  --dark-mode-hover-color: #24292D;
-  --dark-mode-button-hover-color: #363F44;
-  --dark-mode-lighter-color: #1F2427;
-  --dark-mode-text-color: #fff;
-  --dark-mode-secondary-text-color: #999;
-  --dark-mode-border-color: #272D31;
-  --dark-mode-hover-background-color: #444;
-}
-
-
 main {
   display: flex;
   justify-content: center;
@@ -412,12 +387,17 @@ button#edit-button {
   grid-area: user-links;
 }
 
+.user-bio {
+  grid-area: user-bio;
+}
+
 .social-display {
   display: flex;
   flex-direction: row;
   gap: 7px;
   align-items: center;
 }
+
 
 #profile > .user-links {
   margin: 0;
@@ -455,16 +435,18 @@ td {
   }
 
   .main-container {
-    max-height: calc(100dvh - 58px);
+    max-height: calc(100dvh - var(--mobile-navbar-height));
     overflow-y: auto;
   }
   #profile {
     padding: 15px;
+    padding-top: 0;
     gap: 10px;
     grid-template-columns: repeat(2, 1fr); /* Two columns of equal size */
     padding-bottom: 200px !important;
     grid-template-areas:
       "info1 info1"
+      "user-bio user-bio"
       "job user-links"
       "git-graph git-graph"
       "git-repos git-repos"

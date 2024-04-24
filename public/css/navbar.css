@@ -12,14 +12,14 @@
   --light-mode-secondary-text-color: #586C7F;
   --hover-background-color: #ddd;
   --active-indicator-color: #0e6655;
-  --dark-mode-main-color: #16191B;
+  --dark-mode-main-color: #0b0c0c;
   --dark-mode-body-color: #000;
   --dark-mode-hover-color: #1b1f22;
   --dark-mode-button-hover-color: #363F44;
   --dark-mode-lighter-color: #1F2427;
   --dark-mode-text-color: #fff;
   --dark-mode-secondary-text-color: #999;
-  --dark-mode-border-color: #272D31;
+  --dark-mode-border-color: #181a1b;
   --dark-mode-hover-background-color: #151515;
 
   /* Font and size variables */
@@ -125,7 +125,7 @@ a {
   width: 100%;
   height: 100%;
   background: rgba(0,0,0,0.5); /* Semi-transparent black */
-  z-index: 1; /* Ensure it's above other content but below the search form */
+  z-index: -11; /* Ensure it's above other content but below the search form */
 }
 
 .latest-commit-banner {
@@ -266,7 +266,7 @@ a {
   width: 100%;
   height: var(--navbar-height);
   top: 0;
-  z-index: 1;
+  z-index: 10;
 }
 
 second-nav-bar {
@@ -294,7 +294,7 @@ second-nav-bar {
 }
 
 #second-nav-icon {
-  font-size: .925rem !important;
+  font-size: 1rem !important;
   font-weight: 400 !important;
   color: var(--light-mode-secondary-text-color);
   vertical-align: -4px;
@@ -304,7 +304,7 @@ second-nav-bar {
   margin-top: 6px;
   padding: 0;
   font-size: .855rem;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--light-mode-secondary-text-color);
 }
 
@@ -364,7 +364,7 @@ second-nav-bar {
   font-size: .9rem;
   text-decoration: none;
   transition: background-color 0.15s, transform 0.15s;
-  z-index: 2;
+  z-index: 3;
   padding-bottom: 6px;
   margin-top: 9px;
 }
@@ -475,6 +475,7 @@ ul.dropdown-menu li, ul.dropdown-menu li a {
 }
 ul.dropdown-menu li {
   padding: 5px 0;
+  text-align: center;
 }
 
 #clear-all-btn {
@@ -531,7 +532,7 @@ button.clear-btn {
   transition: transform 0.3s ease-out;
   padding-top: 65px;
   background-color: var(--light-mode-main-color);
-  z-index: 5;
+  z-index: 2;
   width: 100%;
   overflow-y: auto;
   transform: translateY(-100vh); /* Start off-screen */
@@ -652,6 +653,17 @@ font-weight: 400;
   border-radius: 50%;
   object-fit: cover;
   margin-right: 5px;
+}
+
+
+.thumbnail-tiny {
+  width: 30px;
+  height: 30px;
+}
+
+.thumbnail-small {
+  width: 50px;
+  height: 50px;
 }
 
 .thumbnail-medium {
@@ -782,12 +794,11 @@ li.dropdown {
     position: absolute;
     right: 15px;
     top: 1px;
-    z-index: 10;
+    z-index: 500;
   }
 
   .user-btns #nb-icon {
     font-weight: 300;
-    z-index: 2;
   }
 
   #search-bar {
@@ -873,10 +884,10 @@ li.dropdown {
 
   .logo img {
     position: absolute;
-    top: 3px;
-    left: 50px;
-    max-height: 45px;
-    z-index: 1000;
+    top: 6px;
+    left: 48px;
+    max-height: 38px;
+    z-index: 999;
   }
 }
 
@@ -1207,7 +1218,6 @@ li.dropdown {
 
 
 .menu-content {
-  z-index: 5;
   background-color: var(--dark-mode-body-color);
   border-right: 1px solid var(--dark-mode-border-color);
   color: var(--dark-mode-text-color); /* Light text color */
@@ -1254,7 +1264,7 @@ li.dropdown {
 
 #second-nav-icon, .second-nav-links .navbar-button, ul.dropdown-menu a {
 
-  color: var(--dark-mode-secondary-text-color);
+  color: var(--dark-mode-text-color);
 }
 
 .dropdown-menu {

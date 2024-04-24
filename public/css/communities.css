@@ -1,28 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
-:root {
-  --primary-text-color: #1D2935;
-  --light-mode-body-color: #fff;
-  --light-mode-main-color: #F6F8FA;
-  --light-mode-hover-color: #E5EBF1;
-  --border-color: #DCE6F2;
-  --light-mode-button-color: #DCE6F2;
-  --light-mode-button-hover-color: #BECBDA;
-  --light-mode-text-color: #243342;
-  --light-mode-secondary-text-color: #586C7F;
-  --hover-background-color: #ddd;
-  --active-indicator-color: #0e6655;
-  --dark-mode-main-color: #16191B;
-  --dark-mode-body-color: #000;
-  --dark-mode-hover-color: #1b1f22;
-  --dark-mode-button-hover-color: #363F44;
-  --dark-mode-lighter-color: #1F2427;
-  --dark-mode-text-color: #fff;
-  --dark-mode-secondary-text-color: #999;
-  --dark-mode-border-color: #272D31;
-  --dark-mode-hover-background-color: #151515;
-}
-
 body {
   color: var(--light-mode-text-color);
   font-family: 'Roboto', sans-serif;
@@ -718,7 +695,7 @@ div .mini-link-desc {
 }
 
 
-.reaction-button.active {
+.main-reaction-button.active {
   background-color: #b8e9ff4a;
   color: #3073c1;
   border: 1px solid #afd4ff;
@@ -1125,7 +1102,7 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
   color: var(--dark-mode-text-color);
   }
 
-  .reaction-button.active {
+  .main-reaction-button.active {
     background-color: #1c2830;
     color: #3073c1;
     border: 1px solid #224368;

@@ -31,7 +31,7 @@
     --dark-mode-text-color: #fff;
     --dark-mode-secondary-text-color: #999;
     --dark-mode-border-color: #272D31;
-  --dark-mode-hover-background-color: #151515;
+    --dark-mode-hover-background-color: #151515;
   }
 
   main {
@@ -59,7 +59,7 @@
 
   @media (prefers-color-scheme: dark) {
     .follower {
-      background-color: var(--dark-mode-main-color);
+      background-color: var(--dark-mode-body-color);
     }
 
     .follower:hover {
@@ -75,7 +75,7 @@
     <h5 class="followers-header">Followers</h5>
     <div class="followers">
       <% followers.forEach((follower) => { %>
-      <div class="follower" onclick="window.location.href='/u/<%= follower.username %>'">
+      <div class="follower" onclick="window.location.href='/user/<%= follower.username %>'">
         <img id="user-avatar" src="<%= follower.avatar %>" alt="<%= follower.username %>" />
         <h3>
           <%= follower.username %>

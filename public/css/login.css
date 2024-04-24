@@ -1,25 +1,3 @@
-hi:root {
-  --primary-text-color: #1D2935;
-  --light-mode-body-color: #F6F8FA;
-  --light-mode-main-color: #fff;
-  --light-mode-hover-color: #E5EBF1;
-  --border-color: #DCE6F2;
-  --light-mode-button-color: #DCE6F2;
-  --light-mode-button-hover-color: #BECBDA;
-  --light-mode-text-color: #243342;
-  --light-mode-secondary-text-color: #586C7F;
-  --hover-background-color: #ddd;
-  --active-indicator-color: #0e6655;
-  --dark-mode-main-color: #16191B;
-  --dark-mode-body-color: #000;
-  --dark-mode-hover-color: #1b1f22;
-  --dark-mode-button-hover-color: #363F44;
-  --dark-mode-lighter-color: #1F2427;
-  --dark-mode-text-color: #fff;
-  --dark-mode-secondary-text-color: #999;
-  --dark-mode-border-color: #272D31;
-  --dark-mode-hover-background-color: #151515;
-}
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 body {
@@ -30,7 +8,8 @@ body {
 .github-login-btn {
   display: inline-flex;
   align-items: center;
-  background: #000;
+  border: 1px solid #443eaa;
+  background: #2f2998;
   margin-bottom: 25px;
   color: var(--dark-mode-text-color);
   padding: 20px 20px;
