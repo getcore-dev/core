@@ -746,7 +746,7 @@ font-weight: 400;
 
   .second-nav-bar {
     display: block;
-    background-color: var(--light-mode-main-color); 
+    background-color: var(--light-mode-hover-color); 
     color: var(--primary-text-color); 
     border-bottom: .75px solid var(--border-color);
     position: fixed;
@@ -1152,7 +1152,7 @@ li.dropdown {
   }
 
   .navbar, .second-nav-bar {
-    background-color: var(--dark-mode-body-color);
+    background-color: var(--dark-mode-main-color);
     color: var(--dark-mode-text-color);
     border-color: var(--dark-mode-main-color);
 }
