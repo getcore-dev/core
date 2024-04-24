@@ -22,6 +22,7 @@ body {
 
 
 .job {
+  background: var(--light-mode-hover-color);
   width: auto;
   flex: auto;
 }
