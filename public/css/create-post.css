@@ -19,7 +19,6 @@ label {
     color: var(--primary-text-color);
 }
 
-/* Specific styles for main container and its children */
 .main-container {
     max-width: 800px;
     width: 100%;
@@ -123,7 +122,7 @@ div.form-group {
     padding: 8px;
     font-size: 16px;
     border-radius: 6px;
-    margin: 9px 0px; /* Add margin for external spacing */
+    margin: 9px 0px; 
 }
 
 .EasyMDEContainer {
@@ -134,8 +133,8 @@ div.form-group {
     
 .main-container select {
     padding: 8px;
-    border: 0;
-    background: 0;
+    border: 1px solid var(--border-color);
+    background: var(--light-mode-main-color);
     border-radius: 6px;
 }
 
@@ -226,7 +225,7 @@ i.fa {
   }
 
   .select2-container--default .select2-selection--multiple .select2-selection__choice {
-    background-color: var(--light-mode-body-color) !important;
+    background-color: var(--light-mode-main-color) !important;
     border-color: var(--border-color) !important;
     color: var(--primary-text-color);
     margin-top: 0px !important;
@@ -234,10 +233,10 @@ i.fa {
   }
 
   .EasyMDEContainer .CodeMirror {
-    background: 0;
+    background: var(--light-mode-main-color);
     box-sizing: border-box;
     height: auto;
-    border: 0 !important;
+    border: 1px solid var(--border-color) !important;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     padding: 10px;
@@ -278,7 +277,7 @@ i.fa {
 }
 
 .select2-selection--multiple {
-    background-color: var(--light-mode-body-color) !important;
+    background-color: var(--light-mode-main-color) !important;
     border-radius: 4px;
     cursor: text;
     padding-bottom: 5px;
@@ -312,7 +311,7 @@ i.fa {
     }
 
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
-        background-color: var(--dark-mode-body-color) !important;
+        background-color: var(--dark-mode-main-color) !important;
         border-color: var(--dark-mode-border-color) !important;
         color: var(--dark-mode-text-color);
     }
@@ -359,14 +358,14 @@ i.fa {
 
     .main-container input[type="text"],
     .main-container textarea, .main-container input[type="number"], .main-container input[type="date"] {
-        background: 0;
-        border: 0;
+        background: var(--dark-mode-main-color);
+        border-color: var(--dark-mode-border-color);
         color: var(--dark-mode-text-color);
     }
 
     div.form-group .CodeMirror, div.form-group .select2-container--default .select2-selection--multiple, div.form-group .editor-toolbar, div.form-group .select2-dropdown select2-dropdown--above {
-        background: 0 !important;
-        border: 0;
+        background: var(--dark-mode-main-color);
+        border-color: var(--dark-mode-border-color);
         color: var(--dark-mode-text-color);
     }
 
@@ -381,12 +380,12 @@ i.fa {
 
 
     .main-container button:hover {
-        background-color: #004400; /* Even darker green for button hover */
+        background-color: #004400; 
     }
 
     .main-container .post,
     .main-container .comment {
-        border-bottom-color: var(--dark-mode-border-color); /* Darker border color for posts and comments */
+        border-bottom-color: var(--dark-mode-border-color); 
     }
 
     .main-container .post-title,
@@ -397,13 +396,13 @@ i.fa {
     .detracts:hover, 
     #reply-button, 
     .user-actions a {
-        color: #e0e0e0; /* Lighter text color for titles and links */
+        color: #e0e0e0; 
     }
 
     div .user-info, 
     .header, 
     .communities_id {
-        color: #bbb; /* Lighter color for user info, headers, and community IDs */
+        color: #bbb; 
     }
 
 }
