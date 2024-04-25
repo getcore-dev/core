@@ -40,10 +40,6 @@ div.form-group {
     margin-top: 12px;
 }
 
-.form-group input{
-    font-size: 1.2rem !important;
-}
-
 #submit-button[disabled] {
     background-color: #c4c4c4;
     cursor: not-allowed;
@@ -95,7 +91,6 @@ div.form-group {
     display: flex;
     justify-content: space-between;
     margin: 0px 14px;
-    margin-top: 16px;
     margin-bottom: 12px;
 }
 
@@ -106,7 +101,8 @@ div.form-group {
 }
 
 .editor-toolbar {
-    border: 0 !important;
+    border: 1px solid var(--border-color);
+    background-color: var(--light-mode-body-color);
         display: flex;
         flex-direction: row;
 }
@@ -120,6 +116,8 @@ div.form-group {
     width: 100%;
     box-sizing: border-box;
     padding: 8px;
+    background-color: var(--light-mode-body-color);
+    border: 1px solid var(--border-color);
     font-size: 16px;
     border-radius: 6px;
     margin: 9px 0px; 
@@ -134,20 +132,20 @@ div.form-group {
 .main-container select {
     padding: 8px;
     border: 1px solid var(--border-color);
-    background: var(--light-mode-main-color);
+    background: var(--light-mode-body-color);
     border-radius: 6px;
 }
 
 select#community_choice, input#title, input#link, #EasyMDEContainer, tags-select, div.CodeMirror-code, textarea.select2-search__field {
-    font-size: 1.2rem !important;
+    font-size: 16px !important;
     }
     
     textarea.select2-search__field {
-        height: 1.4rem;
+        height: 16px;
         font-weight: 300;
         }
 i.fa {
-    font-size: 1.1rem !important;
+    font-size: 16px !important;
     }
     
 
@@ -233,7 +231,7 @@ i.fa {
   }
 
   .EasyMDEContainer .CodeMirror {
-    background: var(--light-mode-main-color);
+    background: var(--light-mode-body-color);
     box-sizing: border-box;
     height: auto;
     border: 1px solid var(--border-color) !important;
@@ -243,6 +241,10 @@ i.fa {
     font: inherit;
     z-index: 0;
     word-wrap: break-word;
+}
+
+.CodeMirror-wrap pre.CodeMirror-line, .CodeMirror-wrap pre.CodeMirror-line-like {
+    font-size: 16px !important;
 }
 
 /* Responsive styles */
@@ -285,22 +287,28 @@ i.fa {
     position: relative;
 }
 
+.select2-container--default .select2-search--inline .select2-search__field, .select2-container--default .select2-selection--multiple {
+    background-color: var(--light-mode-body-color) !important;
+    font-weight: inherit;
+    font-size: 16px;
+}
+
 .editor-toolbar {
     margin-bottom: 10px;
     font-size: 1.1rem;
-    border: 0 !important;
+    border: 1px solid var(--border-color) !important;
     border-radius: 10px !important;
-    background: 0;
+    background: var(--light-mode-body-color) !important;
     position: fixed;
     bottom: 0;
 }
 
 .select2-container--default.select2-container--focus .select2-selection--multiple {
-    border: 0 !important;
+    border: 1px solid var(--border-color) !important;
 }
 
 .select2-container--default .select2-selection--multiple {
-    border: 0 !important;
+    border: 1px solid var(--border-color) !important;
 }
 
 /* Dark Mode Styles */
@@ -359,13 +367,25 @@ i.fa {
     .main-container input[type="text"],
     .main-container textarea, .main-container input[type="number"], .main-container input[type="date"] {
         background: var(--dark-mode-main-color);
-        border-color: var(--dark-mode-border-color);
+        border: 1px solid var(--dark-mode-border-color);
         color: var(--dark-mode-text-color);
     }
 
     div.form-group .CodeMirror, div.form-group .select2-container--default .select2-selection--multiple, div.form-group .editor-toolbar, div.form-group .select2-dropdown select2-dropdown--above {
+        background: var(--dark-mode-main-color) !important;
+        border: 1px solid var(--dark-mode-border-color) !important;
+        color: var(--dark-mode-text-color);
+    }
+
+    .main-container select {
         background: var(--dark-mode-main-color);
         border-color: var(--dark-mode-border-color);
+        color: var(--dark-mode-text-color);
+    }
+
+    .select2-container--default .select2-search--inline .select2-search__field {
+        background: var(--dark-mode-main-color) !important;
+        border: 1px solid var(--dark-mode-border-color);
         color: var(--dark-mode-text-color);
     }
 

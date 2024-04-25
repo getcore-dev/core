@@ -12,7 +12,9 @@
 </head>
 
 <style>
-  .link-display {
+  .link-display,
+  #edit-button,
+  #followButton {
     background: <%=otheruser.profile_border_color%>52 !important;
   }
 
@@ -39,28 +41,30 @@
           <div class="profile-details">
             <h2><%= otheruser.firstname %> <%= otheruser.lastname%></h2>
             <p id="firstname-display"> @<%= otheruser.username %></p>
+            <% if (user) { %>
+            <div class="edit-controls-and-follow-button">
+              <% if (otheruser.username === user.username) { %>
+              <button id="edit-button" onclick="window.location.href='/edit-profile'" style="margin-bottom: auto;">
+                Edit
+              </button>
+              <% } else { %>
+              <form id="followForm" action="/users/<%= otheruser.id %>/<%= isFollowing ? 'unfollow' : 'follow' %>" method="POST">
+                <button type="submit" id="followButton" style="margin-bottom: auto;"><%= isFollowing ? 'Unfollow' : 'Follow' %></button>
+              </form>
+              <% } %>
+            </div>
+            <% } %>
             <div class="followers-info">
               <div class="link-display">
-                <a href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row;">Followers: <span id="followerCount"> <%= otheruser.followerCount %> </a></span>
+                <a href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:column;">Followers: <span id="followerCount"> <%= otheruser.followerCount %> </a></span>
               </div>
               <div class="link-display">
-                <a href="/user/<%= otheruser.username %>/following" style="display: flex; flex-direction:row;">Following: <span id="followCount"> <%= otheruser.followingCount %></a></span>
+                <a href="/user/<%= otheruser.username %>/following" style="display: flex; flex-direction:column;">Following: <span id="followCount"> <%= otheruser.followingCount %></a></span>
               </div>
             </div>
+
           </div>
-          <% if (user) { %>
-          <div class="edit-controls-and-follow-button">
-            <% if (otheruser.username === user.username) { %>
-            <button id="edit-button" onclick="window.location.href='/edit-profile'" style="margin-bottom: auto;">
-              <span class="material-symbols-outlined">more_horiz</span>
-            </button>
-            <% } else { %>
-            <form id="followForm" action="/users/<%= otheruser.id %>/<%= isFollowing ? 'unfollow' : 'follow' %>" method="POST">
-              <button type="submit" id="followButton" style="margin-bottom: auto;"><%= isFollowing ? 'Unfollow' : 'Follow' %></button>
-            </form>
-            <% } %>
-          </div>
-          <% } %>
+
 
         </div>
 

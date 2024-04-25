@@ -39,8 +39,22 @@
 
         <h3>Jobs</h3>
         <% if (jobs.length > 0) { %>
-        <div class="job">
-          idk implement later.
+        <div class="jobs">
+          <% jobs.forEach(function(job) { %>
+          <div class="job" onclick="window.location.href='/jobs/<%= job.id %>'">
+            <div class="job-content">
+              <div class="job-header
+                <h3><%= job.title %></h3>
+                <span><%= job.company %></span>
+                <span><%= job.location %></span>
+                </div>
+                <div class=" job-content">
+                <p><%= job.description %></p>
+                <p><%= job.salary %></p>
+              </div>
+            </div>
+          </div>
+          <% }); %>
         </div>
         <% } else { %>
         <p>No jobs found.</p>

@@ -574,7 +574,17 @@
                   { type: "INTERESTING", icon: "💡" },
                   { type: "CELEBRATE", icon: "🎉" }
                   ]; %>
+
+                  <% if (comment.userReaction == "B") {
+                  comment.userReaction = "BOOST";
+                  } %>
+
+                  <% if (comment.userReaction != null && reactionTypes.find(reaction => reaction.type === comment.userReaction)) { %>
+
                   <%= reactionTypes.find(reaction => reaction.type === comment.userReaction).icon %>
+                  <% } else { %>
+                  🚀
+                  <% } %>
                   <% } else { %>
                   🚀
                   <% } %>

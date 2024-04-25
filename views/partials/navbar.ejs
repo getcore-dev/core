@@ -129,7 +129,7 @@
           <li>
             <div class="search-container">
               <form id="searchForm" class="search-form" action="/search" method="get" style="display: none;">
-                <input type="text" name="searchTerm" placeholder="Search..." class="search-input">
+                <input type="text" name="searchTerm" placeholder="Search" class="search-input">
                 <div class="search-results-container" style="display: none;"></div>
 
                 <button type="submit" class="search-btn">
@@ -139,7 +139,11 @@
               <div class="overlay" style="display:none;"></div> <!-- Overlay element -->
 
               <button id="expandSearch" class="search-button">
-                <input type="text" name="searchTerm" placeholder="Search..." class="mobile-search-input">
+                <form id="searchForm" class="mobile-search-form" action="/search" method="get" style="display: block;">
+                  <input type="text" name="searchTerm" placeholder="Search" class="mobile-search-input">
+                  <button type="submit" class="search-btn">
+                  </button>
+                </form>
               </button>
             </div>
           </li>
@@ -215,30 +219,46 @@
     <div class="second-nav-btns">
       <ul class="second-nav-links">
         <li class="dropdown">
-          <a href="#" class="navbar-button dropdown-toggle <%= currentPath === '/' || currentPath.startsWith('/posts/') || currentPath === '/jobs' || currentPath.startsWith('/jobs/') || currentPath === '/learning' || currentPath.startsWith('/user/') || currentPath == '/favorites' || currentPath.startsWith('/c/') || currentPath === '/c' || currentPath === '/updates' ? 'active' : '' %>">
-            <% if (currentPath === '/' || currentPath.startsWith('/posts/')) { %>
-            <% if (typeof post !== 'undefined') { %>
+          <% 
+const pathTitles = {
+  '/': 'Community',
+  '/jobs': 'Openings',
+  '/learning': 'Learning',
+  '/updates': 'Updates',
+  '/c': 'Communities',
+  '/favorites': 'Favorites',
+  '/create': 'Create',
+  '/notifications': 'Notifications',
+  '/posts': 'Community',
+};
 
-            Community / <%= post.community.shortname %>
-            <% } else { %>
-            Community
-            <% } %>
-            <% } else if (currentPath === '/jobs' || currentPath.startsWith('/jobs/')) { %>
-            Openings
-            <% } else if (currentPath === '/learning') { %>
-            Learning
-            <% } else if (currentPath === '/updates') { %>
-            Updates
-            <% } else if (currentPath === '/c') { %>
-            Communities
-            <% } else if (currentPath.startsWith('/user/')) { %>
-            <% if (typeof otheruser !== 'undefined') { %>
-            <%= otheruser.username %> / <%= otheruser.firstname %> <%= otheruser.lastname %>
-            <% } %>
-            <% }  else if (currentPath === '/favorites') { %>
-            Favorites
-            <% } %>
+const getTitle = (path) => {
+  if (path === '/' && typeof post !== 'undefined') {
+    return `Community / ${post.community.shortname}`;
+  } else if (path.startsWith('/user/') && typeof otheruser !== 'undefined') {
+    if (path.includes('followers') || path.includes('following')) {
+      return `@${otheruser.username}/${path.includes('followers') ? 'Followers' : 'Following'}`;
+    } else {
+      return `@${otheruser.username}/${otheruser.firstname} ${otheruser.lastname}`;
+    }
+  } else if (path.startsWith('/c/') && typeof community !== 'undefined') {
+    return `/${community.shortname}`;
+  } else if (path.startsWith('/jobs/') && typeof job !== 'undefined') {
+    return `Openings / ${job.title}`;
+  } else if (path.startsWith('/posts/') && typeof post !== 'undefined') {
+    return `/${post.community.shortname}/${post.username}`;
+  } else {
+    return pathTitles[path] || '';
+  }
+};
 
+const isActive = (path) => {
+  return currentPath === path || currentPath.startsWith(`${path}/`);
+};
+%>
+
+          <a href="#" class="navbar-button dropdown-toggle <%= isActive('/') || isActive('/jobs') || isActive('/posts') || isActive('/learning') || isActive('/create') || isActive('/notifications') ||  isActive('/user') || isActive('/favorites') || isActive('/c') || isActive('/updates') ? 'active' : '' %>">
+            <%= getTitle(currentPath) %>
             <span class="material-symbols-outlined" id="second-nav-icon">
               arrow_drop_down
             </span>
@@ -325,6 +345,16 @@
 
 
 <script>
+  document.getElementById('searchForm').addEventListener('submit', function(event) {
+    const searchInput = document.getElementById('searchInput');
+    const searchTerm = searchInput.value.trim();
+
+    if (searchTerm === '') {
+      event.preventDefault(); // Prevent form submission if search term is blank
+      alert('Please enter a search term.'); // Display an alert to the user
+    }
+  });
+
   function getTrendingPosts() {
     fetch('/api/trending-posts') // Adjust this to your server's endpoint
       .then(response => response.json())

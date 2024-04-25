@@ -24,7 +24,11 @@ const viewController = {
       const username = req.params.username;
       const user = await userQueries.findByUsername(username);
       const followers = await userQueries.getFollowers(user.id);
-      res.render("user_followers.ejs", { user: req.user, followers });
+      res.render("user_followers.ejs", {
+        user: req.user,
+        otheruser: user,
+        followers,
+      });
     } catch (err) {
       res.render("error.ejs", {
         user: req.user,
@@ -40,6 +44,7 @@ const viewController = {
       const following = await userQueries.getFollowing(user.id);
       res.render("user_following.ejs", {
         user: req.user,
+        otheruser: user,
         followers: following, // lmfao.
       });
     } catch (err) {

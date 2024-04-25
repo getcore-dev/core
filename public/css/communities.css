@@ -190,7 +190,7 @@ div.vote-interactions {
   background-color: var(--light-mode-body-color);
   border: 1px solid var(--border-color);
   color: var(--light-mode-text-color);
-  border-radius: 20px;
+  border-radius: 50%;
   padding: 5px 8px;
   font-size: .8rem;
   font-weight: 400;
@@ -495,7 +495,7 @@ div .mini-link-title {
   top: 42px;
   z-index: 10;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-  width: 100px;
+  width: 72px;
 }
 
 #filterMenu.show {
@@ -869,7 +869,7 @@ div .mini-link-desc {
   }
 
   .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button, .add-comment-button {
-    padding: 4px 7px;
+    padding: 4px 6px;
   }
 
   
@@ -1146,7 +1146,7 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
   /* Post styling adjustments */
 
   .post:hover, .job:hover, .com-btn:hover {
-      background-color: var(--dark-mode-hover-background-color);
+      background-color: var(--dark-mode-hover-color);
   }
 
   .reaction-button:hover, .boost-button:hover, .main-reaction-button:hover {

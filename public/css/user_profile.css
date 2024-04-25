@@ -10,6 +10,26 @@ main {
   font-family: var(--font-family);
 }
 
+#followButton, #followForm, #edit-button {
+  width: 100%;
+}
+
+#followButton, #edit-button {
+  margin-top: 10px;
+}
+
+.followers-info .link-display {
+  margin: 0;
+}
+
+.followers-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 4px;
+  margin-top: 10px;
+}
+
 .profile-header {
   width: 100%;
   margin-top: 13px;

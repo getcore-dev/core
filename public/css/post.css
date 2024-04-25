@@ -672,6 +672,10 @@ div.repliers-avatar, div.repliees-avatar {
     font-weight: 500;
 }
 
+.reaction-icon {
+  font-size: .855rem;
+}
+
 .post-user-info-header {
   display: flex;
   flex-direction: row;

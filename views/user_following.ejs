@@ -11,29 +11,6 @@
 </head>
 
 <style>
-  :root {
-    --primary-text-color: #1D2935;
-    --light-mode-body-color: #F6F8FA;
-    --light-mode-main-color: #fff;
-    --light-mode-hover-color: #E5EBF1;
-    --border-color: #DCE6F2;
-    --light-mode-button-color: #DCE6F2;
-    --light-mode-button-hover-color: #BECBDA;
-    --light-mode-text-color: #243342;
-    --light-mode-secondary-text-color: #586C7F;
-    --hover-background-color: #ddd;
-    --active-indicator-color: #0e6655;
-    --dark-mode-main-color: #16191B;
-    --dark-mode-body-color: #000;
-    --dark-mode-hover-color: #24292D;
-    --dark-mode-button-hover-color: #363F44;
-    --dark-mode-lighter-color: #1F2427;
-    --dark-mode-text-color: #fff;
-    --dark-mode-secondary-text-color: #999;
-    --dark-mode-border-color: #272D31;
-    --dark-mode-hover-background-color: #151515;
-  }
-
   main {
     display: block;
   }
@@ -46,7 +23,7 @@
     background-color: var(--light-mode-body-color);
     border-bottom: 1px solid var(--border-color);
     width: 100%;
-    padding: 10px 0px;
+    padding: 10px 13px;
   }
 
   .follower-info {
@@ -83,7 +60,7 @@
     <div class="followers">
       <% followers.forEach((follower) => { %>
       <div class="follower" onclick="window.location.href='/user/<%= follower.username %>'">
-        <img id="follower-avatar" src="<%= follower.avatar %>" alt="<%= follower.username %>" />
+        <img class="thumbnail thumbnail-tiny" src="<%= follower.avatar %>" alt="<%= follower.username %>" />
         <div class="follower-info">
           <h3>
             <%= follower.firstname %>
