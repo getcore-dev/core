@@ -192,10 +192,16 @@ a {
   line-height: 1rem;
 }
 
-
+.mobile-search-input {
+  width: 53vw;
+  padding: 8px 19px;
+  border-radius: 5px;
+  border: 1px solid var(--light-mode-button-hover-color);
+  background: var(--light-mode-hover-color);
+}
 
 .search-form {
-  display: flex;
+  display: inline-flex;
   padding: 10px;
   justify-content: space-between;
   align-items: center;
@@ -204,7 +210,7 @@ a {
   box-sizing: border-box;
   height: 55px;
   height: 61px;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   z-index: 1000;
@@ -511,6 +517,7 @@ button.clear-btn {
 
 .user-btns {
   display:flex;
+  align-items: flex-end;
 }
 
 .nav-bar {
@@ -1530,7 +1537,7 @@ height: auto;
   }
 
   .user-links.slide-left {
-    transform: translateX(-130px); /* Adjust the value based on the desired slide distance */
+    transform: translateX(-20px); /* Adjust the value based on the desired slide distance */
   }  
 
   #com-btn-container {

@@ -139,7 +139,7 @@
               <div class="overlay" style="display:none;"></div> <!-- Overlay element -->
 
               <button id="expandSearch" class="search-button">
-                <span class="material-symbols-outlined" id="nb-icon">search</span>
+                <input type="text" name="searchTerm" placeholder="Search..." class="mobile-search-input">
               </button>
             </div>
           </li>
@@ -149,7 +149,7 @@
           <li>
             <% if (user && user.avatar) { %>
             <div class="nav-avatar">
-              <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar">
+              <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar" style="margin-top:3px;">
 
               <div class="avatar-dropdown">
 
@@ -297,9 +297,6 @@
       border-color: <%=navbarTint %>;
     }
 
-    .second-nav-bar {
-      border-color: <%=navbarTint %>;
-    }
 
     .comm-short-title {
       color: <%=navbarTint %> !important;
@@ -497,7 +494,11 @@
 
       dropdownToggle.addEventListener('click', function(event) {
         event.preventDefault();
-        dropdownMenu.classList.toggle('show');
+        if (dropdownMenu.style.display === 'flex') {
+          dropdownMenu.style.display = 'none';
+        } else {
+          dropdownMenu.style.display = 'flex';
+        }
       });
     });
 
@@ -532,126 +533,6 @@
       unreadCountElement.style.display = 'none';
     }
     <% } %>
-  });
-  document.addEventListener('DOMContentLoaded', function() {
-    const expandSearchBtn = document.getElementById('expandSearch');
-    const coreImage = document.querySelector('.core-header-img');
-    const searchForm = document.getElementById('searchForm');
-    const searchInput = document.querySelector('.search-input');
-    const overlay = document.querySelector('.overlay'); // Get the overlay element
-    const searchResultsContainer = document.querySelector('.search-results-container');
-
-    expandSearchBtn.addEventListener('click', function() {
-      searchForm.style.display = 'flex'; // Show the form
-      coreImage.style.display = 'none'; // Hide the logo
-      overlay.style.display = 'block'; // Show the overlay
-      expandSearchBtn.style.display = 'none'; // Hide the search icon
-      searchInput.focus(); // Focus on the input field immediately
-    });
-
-    overlay.addEventListener('click', function() {
-      searchForm.style.display = 'none'; // Hide the form
-      coreImage.style.display = 'block'; // Show the logo
-      overlay.style.display = 'none'; // Hide the overlay
-      expandSearchBtn.style.display = 'block'; // Show the search icon again
-    });
-
-    // Optional: Close search when pressing ESC
-    document.addEventListener('keydown', function(event) {
-      if (event.key === "Escape") {
-        searchForm.style.display = 'none'; // Hide the form
-        coreImage.style.display = 'block'; // Show the logo
-        overlay.style.display = 'none'; // Hide the overlay
-        expandSearchBtn.style.display = 'block'; // Show the search icon again
-      }
-    });
-
-    searchInput.addEventListener('input', function() {
-      const query = this.value;
-      if (query.length > 2) { // Trigger search after at least 3 characters
-        // Note: Replace '/search/' with the correct path if your application is under a different root
-        fetch(`/search/preview/?searchTerm=${encodeURIComponent(query)}`)
-          .then(response => response.json())
-          .then(data => {
-            displaySearchResults(data); // Implement this function based on how you want to display your results
-          })
-          .catch(error => {
-            console.error('Error fetching search results:', error);
-          });
-      } else {
-        searchResultsContainer.style.display = 'none';
-      }
-    });
-
-    function displaySearchResults(results) {
-      // Clear previous results
-      searchResultsContainer.innerHTML = '';
-      // Check if there are any results
-      if (results.posts.length > 0 || results.users.length > 0 || results.jobs.length > 0) {
-        // Check and append post result items if available
-        if (results.posts.length > 0) {
-          const postsHeading = document.createElement('h3');
-          postsHeading.textContent = 'Posts';
-          searchResultsContainer.appendChild(postsHeading);
-
-          results.posts.forEach(post => {
-            const postItem = document.createElement('div');
-            postItem.onclick = function() {
-              window.location.href = `/posts/${post.id}`;
-            };
-            postItem.textContent = `${post.post_type} - ${post.title}`; // Label each result as 'Post'
-            searchResultsContainer.appendChild(postItem);
-          });
-        }
-
-        // Check and append user result items if available
-        if (results.users.length > 0) {
-          const usersHeading = document.createElement('h3');
-          usersHeading.textContent = 'Users';
-          searchResultsContainer.appendChild(usersHeading);
-
-          results.users.forEach(user => {
-            const userItem = document.createElement('div');
-            userItem.onclick = function() {
-              window.location.href = `/user/${user.username}`;
-            };
-            const userImage = document.createElement('img');
-
-            userImage.src = user.avatar ? user.avatar : '/img/default-avatar.png'; // Set the image source to the user's profile picture URL or default picture
-            userImage.alt = `${user.username}'s profile picture`; // Set the alt text
-            userImage.style.width = '24px'; // Set the width of the image
-            userImage.style.height = '24px'; // Set the height of the image
-            userImage.style.borderRadius = '100%'; // Make the image round
-
-            userItem.innerHTML = `${user.firstname} ${user.lastname} (${user.username})`; // Label each result as 'User'
-            userItem.appendChild(userImage); // Append the image to the user item
-            searchResultsContainer.appendChild(userItem);
-          });
-        }
-
-        // Check and append job result items if available
-        if (results.jobs.length > 0) {
-          const jobsHeading = document.createElement('h3');
-          jobsHeading.textContent = 'Jobs';
-          searchResultsContainer.appendChild(jobsHeading);
-
-          results.jobs.forEach(job => {
-            const jobItem = document.createElement('div');
-            jobItem.onclick = function() {
-              window.location.href = `/jobs/${job.id}`;
-            };
-            jobItem.textContent = `${job.title}`; // Label each result as 'Job'
-            searchResultsContainer.appendChild(jobItem);
-          });
-        }
-
-        searchResultsContainer.style.display = 'block';
-      } else {
-        searchResultsContainer.style.display = 'none';
-      }
-    }
-
-
   });
 
 
