@@ -347,13 +347,20 @@
                   { type: "INTERESTING", icon: "💡" },
                   { type: "CELEBRATE", icon: "🎉" }
                   ]; %>
+                  <% if (post.userReaction == "B") { 
+                  post.userReaction = "BOOST";
+                 } %>
+                  <% if (post.userReaction != null && reactionTypes.find(reaction => reaction.type === post.userReaction)) { %>
                   <%= reactionTypes.find(reaction => reaction.type === post.userReaction).icon %>
                   <% } else { %>
                   🚀
                   <% } %>
-
+                  <% } else { %>
+                  🚀
+                  <% } %>
                 </button>
                 <div id="reactionPopup-post-<%= post.id %>" class="reaction-popup" style="display:none;">
+                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'BOOST')">⚡️</button>
                   <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'LOVE')">❤️</button>
                   <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'LIKE')">👍</button>
                   <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'CURIOUS')">🤔</button>
@@ -560,7 +567,7 @@
                 <button class="mainReactionButton reaction-button <% if (comment.userReaction) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>">
                   <% if (comment.userReaction) { %>
                   <% const reactionTypes = [
-                  { type: "B", icon: "⚡️" },
+                  { type: "BOOST", icon: "⚡️" },
                   { type: "LOVE", icon: "❤️" },
                   { type: "LIKE", icon: "👍" },
                   { type: "CURIOUS", icon: "🤔" },

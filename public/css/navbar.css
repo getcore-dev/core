@@ -193,6 +193,7 @@ a {
 }
 
 .mobile-search-input {
+  font-size: 16px;
   width: 53vw;
   padding: 8px 19px;
   border-radius: 5px;
@@ -749,7 +750,7 @@ font-weight: 400;
 
   #nb-icon {
     font-size: 27px;
-    padding: 11px 4px;
+    padding: 7px 4px;
   }
 
   .second-nav-bar {
