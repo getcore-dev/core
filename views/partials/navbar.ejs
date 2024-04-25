@@ -215,24 +215,22 @@
     <div class="second-nav-btns">
       <ul class="second-nav-links">
         <li class="dropdown">
-          <a href="#" class="navbar-button dropdown-toggle <%= currentPath === '/' || currentPath.startsWith('/posts/') || currentPath === '/jobs' || currentPath.startsWith('/jobs/') || currentPath === '/learning' || currentPath.startsWith('/user/') || currentPath == '/favorites' || currentPath === '/updates' ? 'active' : '' %>">
+          <a href="#" class="navbar-button dropdown-toggle <%= currentPath === '/' || currentPath.startsWith('/posts/') || currentPath === '/jobs' || currentPath.startsWith('/jobs/') || currentPath === '/learning' || currentPath.startsWith('/user/') || currentPath == '/favorites' || currentPath.startsWith('/c/') || currentPath === '/c' || currentPath === '/updates' ? 'active' : '' %>">
             <% if (currentPath === '/' || currentPath.startsWith('/posts/')) { %>
             <% if (typeof post !== 'undefined') { %>
 
-            Community / <%= post.community.shortname %> / <%= post.title.length > 20 ? post.title.substring(0, 20) + '...' : post.title %>
+            Community / <%= post.community.shortname %>
             <% } else { %>
             Community
             <% } %>
             <% } else if (currentPath === '/jobs' || currentPath.startsWith('/jobs/')) { %>
-            <% if (typeof job !== 'undefined') { %>
-            Openings > <%= job.title %>
-            <% } else { %>
             Openings
-            <% } %>
             <% } else if (currentPath === '/learning') { %>
             Learning
             <% } else if (currentPath === '/updates') { %>
             Updates
+            <% } else if (currentPath === '/c') { %>
+            Communities
             <% } else if (currentPath.startsWith('/user/')) { %>
             <% if (typeof otheruser !== 'undefined') { %>
             <%= otheruser.username %> / <%= otheruser.firstname %> <%= otheruser.lastname %>
@@ -246,6 +244,9 @@
             </span>
           </a>
           <ul class="dropdown-menu">
+            <li>
+              <a><strong> Navigation </strong></a>
+            </li>
             <li>
               <a href="/">
                 Community</a>
@@ -488,19 +489,20 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      const dropdownToggle = document.querySelector('.dropdown-toggle');
-      const dropdownMenu = document.querySelector('.dropdown-menu');
+    const dropdownToggle = document.querySelector('.navbar-button.dropdown-toggle');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
 
-      dropdownToggle.addEventListener('click', function(event) {
-        event.preventDefault();
-        if (dropdownMenu.style.display === 'flex') {
-          dropdownMenu.style.display = 'none';
-        } else {
-          dropdownMenu.style.display = 'flex';
-        }
-      });
+    dropdownToggle.addEventListener('click', (event) => {
+      event.preventDefault(); // Prevent the default link behavior
+      dropdownMenu.classList.toggle('show');
     });
+
+    document.addEventListener('click', (event) => {
+      if (!dropdownToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
+        dropdownMenu.classList.remove('show');
+      }
+    });
+
 
     // Function to close the banner and store the state in localStorage
     function closeBanner() {

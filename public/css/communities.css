@@ -258,7 +258,7 @@ div.vote-interactions {
 
 .reaction-menu {
   position: absolute;
-  top: 0;
+  bottom: 31px;
   display: none;
   flex-direction: row;
   flex-wrap: wrap;
@@ -273,10 +273,16 @@ div.vote-interactions {
   z-index: 999;
 }
 
+.reaction-menu.show {
+  display: flex;
+  opacity: 1;
+  pointer-events: all;
+}
+
 .reaction-menu button {
   pointer-events: auto;
-  font-size: 1.2rem;
-  padding: 10px;
+  font-size: .975rem;
+  padding: 6px;
   border: 0;
   background: 0;
   border-radius: 6px;
@@ -483,14 +489,18 @@ div .mini-link-title {
   display: none;
   position: absolute;
   right: 0;
-  padding: 10px 0;
+  padding: 2px 0;
   background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
   top: 42px;
   z-index: 10;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-  width: 82px;
+  width: 100px;
+}
 
+#filterMenu.show {
+  display: flex;
+  flex-direction: column;
 }
 
 .filter-menu button {
@@ -498,7 +508,7 @@ div .mini-link-title {
   flex-direction: row;
   color: var(--light-mode-text-color);
   width: 100%;
-  font-size: 1rem;
+  font-size: .855rem;
   height: 35px;
   align-items: center;
   justify-content: space-between;
@@ -1145,6 +1155,10 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
 
   .reaction-menu button:hover {
       background: var(--dark-mode-hover-color);
+  }
+
+  .reaction-menu button {
+    color: var(--dark-mode-text-color);
   }
   
   .post-info {

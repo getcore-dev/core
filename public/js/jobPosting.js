@@ -43,6 +43,13 @@ function lazyLoadJobDetails(jobId) {
       const jobDetailsContainer = document.querySelector(
         ".job-details-container"
       );
+      const secondNavBarText = document.querySelector(
+        "a.navbar-button.dropdown-toggle"
+      );
+      secondNavBarText.innerHTML =
+        "Openings / " +
+        job.title +
+        ' <span class="material-symbols-outlined">arrow_drop_down</span>';
       const tagsArray = job.tags ? job.tags[1].split(", ") : [];
       const maxTags = 50; // Adjust this value based on your desired maximum number of tags
       const displayedTags = tagsArray.slice(0, maxTags);

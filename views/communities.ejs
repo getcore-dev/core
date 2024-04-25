@@ -184,13 +184,14 @@
 
     function toggleFilterMenu() {
       const filterMenu = document.getElementById('filterMenu');
-      const buttonRect = document.getElementById('filter-button').getBoundingClientRect();
+      const filterButton = document.getElementById('filter-button');
+      filterMenu.classList.toggle('show');
 
-      if (filterMenu.style.display === 'block') {
-        filterMenu.style.display = 'none';
-      } else {
-        filterMenu.style.display = 'block';
-      }
+      document.addEventListener('click', (event) => {
+        if (!filterMenu.contains(event.target) && !filterButton.contains(event.target)) {
+          filterMenu.classList.remove('show');
+        }
+      });
     }
 
 
@@ -232,6 +233,11 @@ filter_list
           <% } %>
 
           <div class="filter-menu" id="filterMenu">
+            <button class="filter-button" onclick="filterPosts('trending')">
+            <span style="text-align: center; width: 100%;">
+            <strong>Sort By</strong>
+            </span>
+              </button>
             <button class="filter-button" onclick="filterPosts('trending')">
               <span style="margin-left: 10px;">Trending</span>
                             <span class="material-symbols-outlined" style="font-weight: 300; font-size: 20px;">trending_up</span>
@@ -425,13 +431,9 @@ filter_list
 
 
             const reactionMenu = document.createElement("div");
-            reactionMenu.className = "reaction-menu";
+            reactionMenu.className = `${post.id} reaction-menu`;
 
-            document.body.appendChild(reactionMenu);
-
-            mainReactionButton.onmouseover = function() {
-              reactionMenu.style.display = "block";
-            };
+            reactionInteractionsDiv.appendChild(reactionMenu);
 
 
 
@@ -461,6 +463,7 @@ filter_list
                 icon: "🎉"
               },
             ];
+
 
             if (post.userReaction != null && reactionTypes.find(reaction => reaction.type === post.userReaction)) {
               mainReactionButton.innerText = reactionTypes.find(reaction => reaction.type === post.userReaction).icon;
@@ -505,37 +508,13 @@ filter_list
             // cancel showing menu if you click the button a second time otherwise show the menu
             mainReactionButton.addEventListener('click', () => {
               event.stopPropagation();
-
-              clearTimeout(showMenuTimeout);
-              if (reactionMenu.style.display === 'flex') {
-                reactionMenu.style.opacity = '0';
-                setTimeout(() => { // Delay for opacity transition
-                  reactionMenu.style.display = 'none';
-                }, 200);
-              } else {
-                clearTimeout(showMenuTimeout);
-                showMenuTimeout = setTimeout(() => {
-                  let rect = mainReactionButton.getBoundingClientRect();
-                  reactionMenu.style.display = 'flex';
-                  reactionMenu.style.opacity = '0';
-                  reactionMenu.style.left = `${rect.left + window.scrollX}px`;
-                  reactionMenu.style.top = `${rect.top + window.scrollY - reactionMenu.offsetHeight - 5}px`;
-                  reactionMenu.style.opacity = '1';
-                  hideMenuTimeout = setTimeout(() => {
-                    reactionMenu.style.opacity = '0';
-                    reactionMenu.style.display = 'none';
-                  }, 2000);
-                }, 200);
-              }
+              reactionMenu.classList.toggle('show');
             });
 
-            reactionMenu.addEventListener('mouseleave', () => {
-              hideMenuTimeout = setTimeout(() => {
-                reactionMenu.style.opacity = '0';
-                setTimeout(() => {
-                  reactionMenu.style.display = 'none';
-                }, 200);
-              }, 500);
+            document.addEventListener('click', (event) => {
+              if (!mainReactionButton.contains(event.target) && !reactionMenu.contains(event.target)) {
+                reactionMenu.classList.remove('show');
+              }
             });
 
             votesDiv.appendChild(reactionInteractionsDiv);
