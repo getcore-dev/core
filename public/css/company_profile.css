@@ -54,7 +54,7 @@ main {
 
 .company-location {
     font-size: 14px;
-    margin: 4px 0 0;
+  margin: 0;
 }
 
 .company-info {
@@ -129,7 +129,7 @@ p.job-description {
   .job-preview {
     display: flex;
     align-items: center;
-    padding: 14px 18px;
+    padding: 6px 7px;
     padding-top: 6px;
   }
 

@@ -7,6 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
       jobPostings = data; // Assign the fetched data to jobPostings
       renderJobPostings(jobPostings); // Initial rendering of job postings
       populateLocationFilter(); // Populate location filter options
+      populateJobTitleFilter(); // Populate job title filter options
+      populateEmploymentTypeFilter(); // Populate employment type filter options
+      populateSalaryFilter(); // Populate salary filter options
     })
     .catch((error) => {
       console.error("Error fetching job postings:", error);
@@ -23,19 +26,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function filterJobs() {
     const selectedLocation = locationFilter.value;
-    const selectedExperience = experienceFilter.value;
+    const selectedJobTitle = jobTitleFilter.value;
+    const selectedEmploymentType = employmentTypeFilter.value;
     const selectedSalary = salaryFilter.value;
 
     const filteredJobPostings = jobPostings.filter((job) => {
       const locationMatch =
         !selectedLocation || job.location === selectedLocation;
-      const experienceMatch =
-        !selectedExperience || job.experienceLevel === selectedExperience;
+      const jobTitleMatch = !selectedJobTitle || job.title === selectedJobTitle;
+      const employmentTypeMatch =
+        !selectedEmploymentType ||
+        job.employmentType === selectedEmploymentType;
       const salaryMatch =
         !selectedSalary ||
-        checkSalaryRange(job.salary, job.salary_max, selectedSalary);
+        Math.floor((job.salary + job.salary_max) / 2 / 1000) >=
+          parseInt(selectedSalary);
 
-      return locationMatch && experienceMatch && salaryMatch;
+      return (
+        locationMatch && jobTitleMatch && employmentTypeMatch && salaryMatch
+      );
     });
 
     renderJobPostings(filteredJobPostings);
@@ -48,6 +57,44 @@ document.addEventListener("DOMContentLoaded", () => {
       option.value = location;
       option.textContent = location;
       locationFilter.appendChild(option);
+    });
+  }
+  function populateJobTitleFilter() {
+    const jobTitles = [...new Set(jobPostings.map((job) => job.title))];
+    jobTitles.forEach((title) => {
+      const option = document.createElement("option");
+      option.value = title;
+      option.textContent = title;
+      jobTitleFilter.appendChild(option);
+    });
+  }
+
+  function populateEmploymentTypeFilter() {
+    const employmentTypes = [
+      ...new Set(jobPostings.map((job) => job.experienceLevel)),
+    ];
+    employmentTypes.forEach((type) => {
+      const option = document.createElement("option");
+      option.value = type;
+      option.textContent = type;
+      employmentTypeFilter.appendChild(option);
+    });
+  }
+
+  function populateSalaryFilter() {
+    const salaries = [
+      ...new Set(
+        jobPostings.map((job) =>
+          Math.floor((job.salary + job.salary_max) / 2 / 1000)
+        )
+      ),
+    ];
+    salaries.sort((a, b) => a - b);
+    salaries.forEach((salary) => {
+      const option = document.createElement("option");
+      option.value = salary;
+      option.textContent = `USD $${salary}k`;
+      salaryFilter.appendChild(option);
     });
   }
 });
@@ -92,7 +139,7 @@ function renderJobPostings(jobPostings) {
       <div class="job-preview">
         <div class="job-info">
           <div class="company-info">
-            <img class="thumbnail thubmnail-tiny" src="${
+            <img class="thumbnail thumbnail-tiny" src="${
               job.company_logo
             }" alt="${job.company_name} logo" />
             <p class="company-name">${job.company_name}</p>

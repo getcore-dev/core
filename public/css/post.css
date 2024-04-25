@@ -358,7 +358,8 @@ img.blog-avatar {
   border: 1px solid var(--border-color);
   background-color: var(--light-mode-body-color);
   border-radius: 18px;
-  margin-bottom: 18px;
+  margin-bottom: 10px;
+  margin-top: 7px !important;
   white-space-collapse: collapse;
   box-sizing: border-box;
   display: flex;
@@ -648,8 +649,14 @@ div.repliers-avatar, div.repliees-avatar {
 }
 
 .nested-comment > .comment {
-  margin-left: 12px;
+  padding-left: 26px;
   border-left: 2px solid var(--active-indicator-color);
+  box-sizing: border-box;
+}
+
+.nested-comment > .nested-comment {
+  padding-left: 26px;
+  box-sizing: border-box;
 }
 
 .comment-main {
