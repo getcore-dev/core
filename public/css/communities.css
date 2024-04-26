@@ -445,10 +445,14 @@ div .mini-link-title {
   border: 1px solid var(--border-color);
   color: inherit;
   border-radius: 10px;
-  padding: 8px 0;
+  padding: 8px 8px;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
+}
+
+.header-button:hover {
+  background-color: var(--light-mode-hover-color);
 }
 
 
@@ -1143,18 +1147,8 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
     color: #ccc;
   }
 
-  /* Post styling adjustments */
-
-  .post:hover, .job:hover, .com-btn:hover {
-      background-color: var(--dark-mode-hover-color);
-  }
-
-  .reaction-button:hover, .boost-button:hover, .main-reaction-button:hover {
-      background-color: #363F44; /* Darker background on hover */
-  }
-
-  .reaction-menu button:hover {
-      background: var(--dark-mode-hover-color);
+  .header-button:hover, .reaction-button:hover, .boost-button:hover, .main-reaction-button:hover, .reaction-menu button:hover, .post:hover, .job:hover, .com-btn:hover {
+      background-color: var(--dark-mode-hover-color); 
   }
 
   .reaction-menu button {
