@@ -418,7 +418,11 @@ const utilFunctions = {
         SELECT * FROM comments WHERE post_id = ${postId} AND deleted = 0
       `;
       const commentList = result.recordset;
-      return await utilFunctions.getNestedComments(commentList);
+      const totalComments = commentList.length; // Count the total number of comments
+
+      const nestedComments = await utilFunctions.getNestedComments(commentList);
+
+      return { comments: nestedComments, totalComments };
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -928,23 +932,29 @@ const utilFunctions = {
   getNestedComments: async (commentList) => {
     const commentMap = {};
 
-    // Create a map of comments
     commentList.forEach((comment) => {
-      commentMap[comment.id] = { ...comment, replies: [] };
+      if (!comment.deleted) {
+        commentMap[comment.id] = { ...comment, replies: [] };
+      }
     });
 
     const nestedComments = [];
     for (let comment of commentList) {
-      if (comment.parent_comment_id && commentMap[comment.parent_comment_id]) {
-        commentMap[comment.parent_comment_id].replies.push(
-          commentMap[comment.id]
-        );
-      } else {
-        nestedComments.push(commentMap[comment.id]);
+      if (!comment.deleted) {
+        if (
+          comment.parent_comment_id &&
+          commentMap[comment.parent_comment_id]
+        ) {
+          commentMap[comment.parent_comment_id].replies.push(
+            commentMap[comment.id]
+          );
+        } else {
+          nestedComments.push(commentMap[comment.id]);
+        }
       }
     }
 
-    // Fetch user details for each comment
+    // Fetch user details for each non-deleted comment
     for (let comment of nestedComments) {
       comment.user = await utilFunctions.getUserDetails(comment.user_id);
       for (let reply of comment.replies) {

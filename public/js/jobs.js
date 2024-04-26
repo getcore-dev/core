@@ -174,7 +174,7 @@ function renderJobPostings(jobPostings) {
             ${tagsHTML}
             ${
               remainingTags > 0
-                ? `<span class="see-more">+${remainingTags} more</span>`
+                ? `<span class="see-more" id="secondary-text">+${remainingTags} more</span>`
                 : ""
             }
           </div>

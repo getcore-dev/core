@@ -30,9 +30,8 @@ main {
     background-color: var(--light-mode-main-color);
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: space-between;
     gap: 15px;
-    border-bottom: 1px solid var(--border-color);
 }
 
 .button-container button {
@@ -232,8 +231,9 @@ a.comment-url:visited {
 }
 
 .input-container textarea:focus, .comment-container textarea:focus {
-  outline: none; /* Remove the default focus outline */
-  border: 1px solid black;
+  outline: none;
+  border-color: #15516e !important;
+  box-shadow: 0 0 5px 2px rgba(21, 81, 110, 0.5);
 }
 
 /* Style for the send button */
@@ -249,10 +249,9 @@ a.comment-url:visited {
 }
 
 .link-preview {
-  background-color: var(--light-mode-body-color);
+  background-color: none;
   border-radius: 18px;
   margin: 16px 0px;
-  border: 1px solid var(--border-color);
   margin-top: 10px;
 }
 
@@ -529,6 +528,7 @@ img.blog-avatar {
 
 .post-info {
   padding: 16px 13px;
+  padding-top: 0;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -616,6 +616,8 @@ img.blog-avatar {
 .comment-avatar {
   padding-left: 7px;
   padding-right: 13px;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .comment .comment {
@@ -707,8 +709,8 @@ div.repliers-avatar, div.repliees-avatar {
 }
 
 .similar-posts .post-content {
-padding: 9px 14px;
-padding-top: 18px;
+padding: 12px 14px;
+padding-top: 6px;
 }
 
 .comment-header a {
@@ -720,18 +722,10 @@ padding-top: 18px;
   flex-direction: column;
 }
 
-.similar-posts .post-content {
-  border-top: 1px solid var(--border-color);
-}
 
 .similar-posts .post-content:hover {
   background-color: var(--light-mode-hover-color);
   cursor: pointer;
-}
-
-
-.similar-posts .post:last-child {
-  border-bottom: 1px solid var(--border-color);
 }
 
 .comments-section h3 {
@@ -747,7 +741,7 @@ padding-top: 18px;
   padding: 6px 13px;
   padding-top: 0;
   padding-right: 9px;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 #reply-button {
@@ -762,9 +756,15 @@ a.comment-user-info {
 }
 
 .comment-header {
-  font-size: .825rem !important;
+  font-size: .925rem !important;
   color: var(--light-mode-text-color) !important;
 }
+
+.comment-header a {
+  font-weight: bold;
+}
+
+
 a.comment-user-info:hover {
   text-decoration: underline;
 }
@@ -773,11 +773,13 @@ a.comment-user-info:hover {
   position: relative;
   display: flex;
   flex-direction: row;
-  gap: 10px;
-  width: 60%;
+  gap: 8px;
   align-items: center;
 }
 
+.dropbtn .material-symbols-outlined {
+  font-size: 20px;
+}
 
 .user-actions a {
   text-decoration: none;
@@ -786,7 +788,7 @@ a.comment-user-info:hover {
 }
 
 .comment-timestamp {
-  font-size: 14px;
+  font-size: .8rem;
 }
 
 
@@ -836,6 +838,7 @@ a.comment-user-info:hover {
   max-height: auto;
   max-width: 92%;
   display: flex;
+  flex-direction: column;
   padding: 3px;
   margin: 4px 4px;
 }
@@ -1014,13 +1017,17 @@ p.preview-description {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: normal;
+}
 
+.link {
+  font-size: .775rem;
 }
 
 .votes {
   display: flex;
     flex-direction: row;
     justify-content: space-between;
+    font-size: .8rem;
 }
 
 .link-preview {
@@ -1044,6 +1051,7 @@ p.preview-description {
 
 .description {
   font-size: .875rem;
+  color: var(--light-mode-text-color);
   font-weight: normal;
   line-height: 1.5em; /* Adjust based on your design */
   overflow: hidden;
@@ -1068,8 +1076,11 @@ p.preview-description {
   flex-direction:column;
   justify-content: space-between;
   border-radius: 6px;
-
   box-sizing: border-box;
+}
+
+.input-container textarea {
+  border: 1px solid var(--border-color);
 }
 
 .reaction-button.active {
@@ -1097,6 +1108,14 @@ p.preview-description {
   font-size: 0.775rem;
   text-decoration: none !important;
   color: var(--light-mode-secondary-text-color) !important;
+}
+
+.post-content > .title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 12px 0px;
+  margin-bottom: 0px;
+  color: var(--light-mode-text-color);
 }
 
 .project-link-image img {
@@ -1150,7 +1169,7 @@ p.preview-description {
   flex-direction: row;
   box-sizing: border-box;
   gap: 14px;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 .reply-form .input-container {
@@ -1191,6 +1210,7 @@ p.preview-description {
   
   .input-container textarea, .comment-container textarea {
   background-color: var(--dark-mode-main-color);
+  border-color: var(--dark-mode-border-color);
   color: var(--dark-mode-text-color);
   }
 
@@ -1222,7 +1242,6 @@ p.preview-description {
 
   .sidebar, .similar-posts .post-content, .button-container {
     background-color: var(--dark-mode-body-color);
-    border-color: var(--dark-mode-border-color);
   }
 
   .similar-posts .post-content:hover {
@@ -1230,8 +1249,7 @@ p.preview-description {
   }
 
   .link-preview {
-    background-color: var(--dark-mode-main-color);
-    border-color: var(--dark-mode-border-color);
+    color: var(--dark-mode-text-color);
   }
   
 
@@ -1280,6 +1298,14 @@ p.preview-description {
     border-color: var(--dark-mode-border-color) !important;
   }
 
+  .post-content > .title {
+    color: var(--dark-mode-text-color);
+  }
+
+  .description {
+    color: var(--dark-mode-text-color);
+  }
+
   .EasyMDEContainer .CodeMirror {
     background-color: var(--dark-mode-main-color) !important;
     border-color: var(--dark-mode-border-color) !important;
@@ -1311,10 +1337,6 @@ p.preview-description {
 
   .comment-header {
     color: var(--dark-mode-text-color) !important;
-  }
-
-  .similar-posts .post:last-child {
-    border-color: var(--dark-mode-border-color);
   }
 
   .post-title {
@@ -1359,7 +1381,7 @@ p.preview-description {
     color: #d0d0d0; /* Lighter text color for content */
   }
 
-  .input-container , .input-container textarea, .comment-container, .comment-container textarea {
+  .input-container , .comment-container, .comment-container textarea {
     border: 0;
     color: var(--dark-mode-text-color);
   }
@@ -1405,15 +1427,12 @@ p.preview-description {
   font-size: 24px;
 }
 
-.post-content > .title {
-  font-size: 1rem;
-  font-weight: 500;
-  margin: 12px 0px;
-  margin-bottom: 0px;
-}
-
 div.username {
   font-size: .9rem;
+}
+
+.post-date, .post-date a {
+  font-size: .7rem;
 }
 
 
@@ -1424,7 +1443,9 @@ div.username {
   }
 
   .similar-posts-header {
-    margin-top: 60px;
+    border-top: 1px solid var(--dark-mode-border-color);
+    padding-top: 13px;
+    border-bottom: 1px solid var(--dark-mode-border-color);
   }
   .sidebar-link-info-title, .sidebar-link-info-url {
     max-width: 100%;
@@ -1617,6 +1638,7 @@ div.username {
   .input-container input, .input-container textarea {
     width: 100%;
     padding: 10px 10px;
+    font-size: 16px;
     margin: 0;
     box-sizing: border-box;
   }

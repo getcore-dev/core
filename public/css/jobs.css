@@ -86,13 +86,13 @@ div.job-filters {
   flex-direction: row;
   align-items: center;
   gap: 10px;
-  padding-top: 8px;
+  padding-top: 0px;
   width: 100%;
 }
 
 h3.job-title {
   margin: 0;
-  margin: .4rem 0;
+  margin-top: 3px;
   font-size: 1rem;
 }
 
@@ -105,7 +105,7 @@ p.job-description {
   line-height: 1.5em;
   margin: 0;
   font-size: .875rem;
-  margin: 11px 0;
+  margin: 5px 0;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -274,11 +274,14 @@ p.job-description {
   flex-direction: column;
 }
 
+.see-more {
+  font-size: .825rem;
+}
+
 .job-preview {
   display: flex;
   align-items: center;
-  padding: 14px 18px;
-  padding-top: 6px;
+  padding: 6px 18px;
 }
 
 .company-logo {
@@ -342,19 +345,21 @@ p.job-description {
 
 .job-flair {
   display: inline-block;
-  padding: 2px 4px;
+  padding: 3px 5px;
+  margin:6px 8px 0px 0px;
   margin-bottom: 2px;
   background-color: #7d869cab;
   border: 1px solid #7d869cc9; 
   color: white;
-  border-radius: 6px;
-  font-size: 14px;
+  border-radius: 9px;
+  font-size: .825rem;
   position: relative;
 }
 
 .job-posting-flairs {
   display: flex;
   flex-direction: row;
+  align-items: center;
   gap: 7px;
 }
 

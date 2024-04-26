@@ -403,21 +403,25 @@
 
         <div class="comments-section">
           <div class="post-info">
-            <div class="post-counts">
-              <%= post.comments.length ? post.comments.length : 0 %> comments
-              •
+            <div class="post-counts" id="secondary-text">
               <% 
-    let reactionsCount = 0;
-    reactionTypes.forEach(reaction => {
-      reactionsCount += post[reaction.type.toLowerCase() + 'Count'] || 0;
-    });
-    %>
-              <%= reactionsCount %> reaction<%= reactionsCount !== 1 ? 's' : '' %>
+                        function countAllReplies(replies) {
+                          if (!replies || replies.length === 0) return 0;
+                          let total = 0;
+                          for (const reply of replies) {
+                            total += 1 + countAllReplies(reply.replies);
+                          }
+                          return total;
+                        }
+                        const totalReplies = countAllReplies(post.comments);
+                      %>
+              <%= totalReplies %> comment<%= totalReplies !== 1 ? 's' : '' %>
             </div>
-            <div class="add-comment-button" onclick=" <% if (user) { %>showCommentForm()<% } else { %>window.location.href = '/login';<% } %>">
-              <span class="material-symbols-outlined">add_comment</span>
-              Comment
+            <% if (user) { %>
+            <div class="add-comment-button" id="secondary-text" onclick="<% if (user) { %>showCommentForm()<% } else { %>window.location.href = '/login';<% } %>">
+              Add Comment
             </div>
+            <% } %>
             <div class="sort-selector" style="display: none">
               <button class="sort-option active" onclick="sortComments('best')">Best</button>
               <button class="sort-option" onclick="sortComments('newest')">Newest</button>
@@ -487,7 +491,7 @@
               timeSinceComment = 'Just now';
             }
             %>
-                    <span class="comment-timestamp"><%= timeSinceComment %></p>
+                    <span class="comment-timestamp" id="secondary-text"><%= timeSinceComment %></p>
 
                   </div>
 
@@ -630,11 +634,7 @@
                 <% reactionTypes.forEach(reaction => { %>
                 <% const reactionCount = comment[reaction.type.toLowerCase() + 'Count']; %>
                 <% }); %>
-              </div>
-
-              <div class="replies">
-                <a href="#" id="reply-button" onclick="showReplyForm('<%= comment.id %>', event)">
-                  <% 
+                <% 
                         function countAllReplies(replies) {
                           if (!replies || replies.length === 0) return 0;
                           let total = 0;
@@ -645,8 +645,18 @@
                         }
                         const totalReplies = countAllReplies(comment.replies);
                       %>
-                  <button class="reaction-button">💬 <%= totalReplies %></button>
+                <span class="total-reactions-count">
+                  <%= totalReplies%> replies
+                </span>
+              </div>
+
+              <div class="replies">
+                <% if (user) { %>
+
+                <a href="#" id="reply-button" onclick="<% if (user) { %>showReplyForm('<%= comment.id %>', event)<% } else { %>window.location.href = '/login';<% } %>">
+                  <button class="reaction-button">Add Reply</button>
                 </a>
+                <% } %>
               </div>
             </div>
 
@@ -700,9 +710,11 @@
                       </div>
                       <div class="username">
                         <a href="/user/<%= similarPost.username %>" class="username-link"><strong><%= similarPost.username %></strong></a>
-                        <span class="communities-text"> posted a <%= similarPost.post_type %> in <%= similarPost.community_name %></span>
-                        <a href="/c/<%= similarPost.communities_id %>" class="community"></a>
-                        <div class="post-date" id="secondary-text"><%= formatDate(similarPost.created_at) %> • <%= similarPost.views %> views</div>
+                        <div class="post-date" id="secondary-text">
+                          <a style="color: <%= similarPost.community_color %>;" href="/c/<%= similarPost.communities_id %>" class="community"><%= similarPost.community_name %></a>
+
+                          <%= formatDate(similarPost.created_at) %> • <%= similarPost.views %> views
+                        </div>
                       </div>
                     </div>
                     <div class="three-dots">
@@ -713,6 +725,9 @@
                   <div class="link-preview">
                     <% if (similarPost.link) { %>
                     <div class="link">
+                      <span class="material-symbols-outlined" style="color: var(--active-indicator-color);">
+                        link
+                      </span>
                       <%= similarPost.link %>
                     </div>
                     <% } %>
@@ -724,15 +739,7 @@
                   </div>
                   <div class="votes">
                     <div class="reaction-interactions <%= similarPost.id %>-reactions" id="reaction-interactions <%= similarPost.id %>-reactions">
-                      <button class="main-reaction-button">😀</button>
-                      <% reactionTypes.forEach(reaction => { %>
-                      <% if (similarPost[reaction.type.toLowerCase() + 'Count'] > 0) { %>
-                      <button class="reaction-button <%= reaction.type.toLowerCase() %>-button-<%= similarPost.id %> <%= similarPost.userReaction && similarPost.userReaction.toLowerCase() === reaction.type.toLowerCase() ? 'active' : '' %>" onclick="interactWithPost('<%= similarPost.id %>', '<%= user %>', '<%= reaction.type %>')">
-                        <span><%= reaction.icon %></span>
-                        <span class="reaction-count <%= reaction.type.toLowerCase() %>-count <%= similarPost.id %>"><%= similarPost[reaction.type.toLowerCase() + 'Count'] %></span>
-                      </button>
-                      <% } %>
-                      <% }) %>
+                      <%= similarPost.totalReactionCount %> reactions
                     </div>
                     <div class="comments">
                       <%= similarPost.commentCount %> comment<%= similarPost.commentCount > 1 ? 's' : '' %>
@@ -809,8 +816,19 @@
         $('.editor-toolbar').show();
       });
 
-      $('#cancel-button-normal').on('click', function() {
-        easyMDE.value(''); // Clear the content of the EasyMDE editor
+      easyMDE.codemirror.on("blur", function() {
+        $('.button-container').hide();
+      });
+
+$('#cancel-button-normal').on('click', function() {
+  easyMDE.value(''); // Clear the content of the EasyMDE editor
+  $('.button-container').hide();
+  $(this).closest('.input-container').find('textarea').hide(); // Hide the textarea within the input-container
+  $(this).closest('.reply-buttons').hide(); // Hide the reply buttons
+  $('.editor-toolbar').hide();
+});
+
+      easyMDE.codemirror.on("inactive", function() {
         $('.button-container').hide();
         $('.editor-toolbar').hide();
       });

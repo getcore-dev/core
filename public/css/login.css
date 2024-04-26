@@ -8,17 +8,19 @@ body {
 .github-login-btn {
   display: inline-flex;
   align-items: center;
-  border: 1px solid #443eaa;
-  background: #2f2998;
-  margin-bottom: 25px;
-  color: var(--dark-mode-text-color);
-  padding: 20px 20px;
+  border-color:#443eaa !important;
+  background-color: #2f2998 !important;
   text-decoration: none;
-  width: 100%;
   justify-content: center;
   box-sizing: border-box;
-  border-radius: 10px;
-  transition: background-color 0.3s ease;
+  margin-bottom: 15px !important;
+}
+
+.login-buttons-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .github-login-btn img {
@@ -49,7 +51,7 @@ main {
 
 #register {
   max-width: 500px;
-  padding: 20px 20px;
+  padding: 16px 20px;
   border-radius: 16px;
   background-color: none;
   border: 0;
@@ -65,7 +67,7 @@ main {
 
 #login {
   max-width: 500px;
-  padding: 20px 20px;
+  padding: 12px 20px;
   border-radius: 10px;
   background-color: none;
   width: 100%;
@@ -115,6 +117,13 @@ main {
   background-color: var(--light-mode-body-color) !important;
   border: 1px solid var(--border-color) !important;
   font-size: 16px;
+  transition: box-shadow 0.3s ease;
+}
+
+.input-container input:focus {
+  outline: none;
+  border-color: #15516e !important;
+  box-shadow: 0 0 5px 2px rgba(21, 81, 110, 0.5);
 }
 
 .input-container {
@@ -181,6 +190,7 @@ main {
   }
 
   .input-container input {
+    background-color: var(--dark-mode-main-color) !important; 
     border-color: var(--dark-mode-border-color) !important; 
   }
 

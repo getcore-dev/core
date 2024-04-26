@@ -94,7 +94,13 @@ const jobQueries = {
             FROM JobPostingsTags 
             INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
             WHERE JobPostingsTags.jobId = JobPostings.id
-          ) AS tags
+          ) AS tags,
+          (
+            SELECT STRING_AGG(skills.name, ', ')
+            FROM job_skills
+            INNER JOIN skills ON job_skills.skill_id = skills.id
+            WHERE job_skills.job_id = JobPostings.id
+          ) AS skills
         FROM JobPostings
         LEFT JOIN companies ON JobPostings.company_id = companies.id
         WHERE JobPostings.id = ${id}

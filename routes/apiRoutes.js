@@ -513,18 +513,15 @@ router.get("/user-details/:userId", async (req, res) => {
 });
 
 router.get("/comments/:postId", async (req, res) => {
+  const postId = req.params.postId;
   try {
-    let cachedData = cache.get(req.params.postId);
-    if (cachedData) {
-      return res.json(cachedData);
-    }
-
-    const comments = await utilFunctions.getComments(req.params.postId);
-
-    cache.set(req.params.postId, comments);
-    res.json(comments);
+    const { comments, totalComments } = await utilFunctions.getComments(postId);
+    res.json({ comments, totalComments });
   } catch (err) {
-    res.status(500).send(err.message);
+    console.error("Error fetching comments:", err);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching comments" });
   }
 });
 

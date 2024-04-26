@@ -11,7 +11,7 @@
   --light-mode-text-color: #243342;
   --light-mode-secondary-text-color: #586C7F;
   --hover-background-color: #ddd;
-  --active-indicator-color: #0e6655;
+  --active-indicator-color: #5083ca;
   --dark-mode-main-color: #0b0c0c;
   --dark-mode-body-color: #000;
   --dark-mode-hover-color: #1b1f22;
@@ -197,8 +197,14 @@ a {
   width: 59vw;
   padding: 6px 7px;
   border-radius: 5px;
-  border: 1px solid var(--light-mode-hover-color);
+  border: 1px solid var(--border-color);
   background: var(--light-mode-hover-color);
+}
+
+.mobile-search-input:focus {
+  outline: none;
+  border-color: #15516e !important;
+  box-shadow: 0 0 5px 2px rgba(21, 81, 110, 0.5);
 }
 
 .search-form {
@@ -308,10 +314,10 @@ second-nav-bar {
 }
 
 .second-nav-links .navbar-button {
-  margin-top: 6px;
+  margin-top: 8px;
   padding: 0;
   font-size: .855rem;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--light-mode-secondary-text-color);
 }
 
@@ -599,9 +605,9 @@ font-weight: 400;
 }
 
 #user-avatar {
-  width: 38px;
+  width: 34px;
   border-radius: 50%;
-  height: 38px;
+  height: 34px;
   object-fit: cover; 
   overflow: hidden;
   z-index: 10;
@@ -766,7 +772,7 @@ font-weight: 400;
     display: block;
     background-color: var(--light-mode-hover-color); 
     color: var(--primary-text-color); 
-    border-bottom: .75px solid var(--border-color);
+    border-top: .75px solid var(--border-color);
     position: fixed;
     width: 100%;
     height: var(--mobile-second-navbar-height);
@@ -914,13 +920,25 @@ li.dropdown {
   font-size: 12px;
 }
 
-#submit-button, #cancel-button {
+input:focus {
+  outline: none;
+  border-color: #15516e !important;
+  box-shadow: 0 0 5px 2px rgba(21, 81, 110, 0.5);
+}
+
+select:focus {
+  outline: none;
+  border-color: #15516e !important;
+  box-shadow: 0 0 5px 2px rgba(21, 81, 110, 0.5);
+}
+
+#submit-button, #cancel-button, #regular-button {
   font-size: 16px;
   width: 100%;
   border: none;
   border-radius: 10px;
-  background: #0C8346;
-  border: 1px solid #0E954F;
+  background: #1a643e;
+  border: 1px solid #218652;
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -933,8 +951,8 @@ li.dropdown {
   cursor: pointer;
 }
 
-#submit-button-normal, #cancel-button-normal {
-  font-size: 1rem;
+#submit-button-normal, #cancel-button-normal, #regular-button-normal {
+  font-size: .875rem;
   border: none;
   width: auto;
   flex: 0;
@@ -944,16 +962,22 @@ li.dropdown {
   border: 1px solid #0E954F;
   color: white;
   cursor: pointer;
+  word-wrap: break-word;
   transition: all 0.3s ease;
   text-decoration: none;
   cursor: pointer;
-  padding: 10px 20px;
+  padding: 8px 18px;
   cursor: pointer;
 }
 
 #cancel-button, #cancel-button-normal {
   border: 1px solid #c44a4a;
   background-color: #a13030;
+}
+
+#regular-button, #regular-button-normal {
+  background: #285994;
+  border: 1px solid #3d88e1;
 }
 
 .navbar-user-info {
@@ -1183,7 +1207,7 @@ li.dropdown {
 .mobile-search-input {
   background-color: var(--dark-mode-main-color);
   color: var(--dark-mode-text-color);
-  border-color: var(--dark-mode-main-color);
+  border-color: var(--dark-mode-border-color);
 }
 
 .second-nav-bar { 

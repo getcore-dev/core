@@ -389,13 +389,24 @@ filter_list
                 descriptionDiv.className = 'description';
 
                 if (post.post_type != 'blog') {
-                  let contentWithoutMarkdown = post.content.replace(/(?:\r\n|\r|\n)/g, '<br />').replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1').replace(/__(.*?)__/g, '$1').replace(/_(.*?)_/g, '$1');
+                  let contentWithoutMarkdown = post.content
+                    .replace(/(?:\r\n|\r|\n)/g, ' ') // Replace newline characters with a space
+                    .replace(/\*\*(.*?)\*\*/g, '$1')
+                    .replace(/\*(.*?)\*/g, '$1')
+                    .replace(/__(.*?)__/g, '$1')
+                    .replace(/_(.*?)_/g, '$1');
                   descriptionDiv.append(`${contentWithoutMarkdown}`);
                 } else {
                   if (post.subtitle) {
                     descriptionDiv.append(`${post.subtitle}`);
                   } else {
-                    descriptionDiv.append(`${post.content}`);
+                    let contentWithoutMarkdown = post.content
+                      .replace(/(?:\r\n|\r|\n)/g, ' ') // Replace newline characters with a space
+                      .replace(/\*\*(.*?)\*\*/g, '$1')
+                      .replace(/\*(.*?)\*/g, '$1')
+                      .replace(/__(.*?)__/g, '$1')
+                      .replace(/_(.*?)_/g, '$1');
+                    descriptionDiv.append(`${contentWithoutMarkdown}`);
                   }
                 }
 
@@ -669,8 +680,9 @@ filter_list
     function fetchComments(postId, container) {
       return fetch(`/api/comments/${postId}`)
         .then(response => response.json())
-        .then(comments => {
-          container.innerHTML = comments.length + ' comment' + (comments.length !== 1 ? 's' : '');
+        .then(data => {
+          const totalComments = data.totalComments;
+          container.innerHTML = totalComments + ' comment' + (totalComments !== 1 ? 's' : '');
         });
     }
 

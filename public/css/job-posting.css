@@ -40,14 +40,22 @@ img.company-logo {
 .job-location, .expiry-date, 
 .posted-date, .salary-range {
   display: inline-block;
-  padding: 2px 4px;
+  padding: 3px 5px;
   margin-bottom: 2px;
-  background-color: #b4c4ae66;
-  border: 1px solid #b4c4ae9e;
+  background-color: #2f2f2f66;
+  border: 1px solid #4949499e;
   color: white;
-  border-radius: 6px;
-  font-size: .875rem;
+  border-radius: 9px;
+  font-size: .825rem;
   position: relative;
+}
+
+.job-benefits ul {
+  padding: 0 14px;
+  margin: 0;
+  line-height: 1.5;
+  font-size: .875rem;
+
 }
 
 .label {
@@ -55,32 +63,34 @@ img.company-logo {
   margin-right: 4px;
 }
 
-.company-description {
-  margin-top: 24px;
-}
-
 .job-description h4,
-.company-description h4 {
-  font-size: 1rem;
+.company-description h4,
+.job-benefits h4, 
+.job-skills h4 {
+  font-size: 1.1rem;
   font-weight: bold;
-  margin: 0 0 8px;
+  margin: 16px 0 8px 0;
 }
 
 .job-description p,
 .company-description p {
-  font-size: 1rem;
+  font-size: .875rem;
   line-height: 1.5;
   margin: 0;
 }
 
-.apply-link {
+.interact-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
   margin-top: 24px;
+  margin-bottom: 40px;
 }
 
 .job-title {
   font-size: 1.2rem;
   font-weight: bold;
-  margin: 0 0 4px;
+  margin: 0 0 7px;
 }
 
 .company-name {

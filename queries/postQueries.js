@@ -72,52 +72,33 @@ const postQueries = {
       tags && tags.length > 0
         ? `t.name IN (${tags.map((tag) => `'${tag}'`).join(",")})`
         : "1=1";
-
     let userReactionSubquery = "";
     if (user) {
-      userReactionSubquery = `,
-        (
-          SELECT TOP 1 upa.action_type
-          FROM userPostActions upa
-          WHERE upa.post_id = p.id AND upa.user_id = '${user.id}'
-        ) AS userReaction`;
+      userReactionSubquery = `, ( SELECT TOP 1 upa.action_type FROM userPostActions upa WHERE upa.post_id = p.id AND upa.user_id = '${user.id}' ) AS userReaction`;
     }
-
     let query = `
       SELECT TOP 3
         p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
-        u.username, u.avatar, u.currentJob, c.name AS community_name, c.community_color as community_color,
+        u.username, u.avatar, u.currentJob,
+        c.name AS community_name, c.community_color as community_color,
         p.post_type, p.views,
-        SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) AS loveCount,
-        SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) AS boostCount,
-        SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) AS interestingCount,
-        SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) AS curiousCount,
-        SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount,
-        SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) AS celebrateCount,
-        (
-          SELECT COUNT(*)
-          FROM comments c
-          WHERE c.post_id = p.id
-        ) AS commentCount
+        (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
+        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount
         ${userReactionSubquery}
       FROM posts p
       JOIN users u ON p.user_id = u.id
       JOIN communities c ON p.communities_id = c.id
       LEFT JOIN post_tags pt ON p.id = pt.post_id
       LEFT JOIN tags t ON pt.tag_id = t.id
-      LEFT JOIN userPostActions upa ON p.id = upa.post_id
-      WHERE p.id != '${postId}'
-        AND p.deleted = 0
-        AND (
-          p.communities_id = '${communityId}'
-          OR p.title LIKE '%${title.replace(/[^\w\s]/gi, "")}%'
-          OR ${tagsCondition}
-        )
+      WHERE p.id != '${postId}' AND p.deleted = 0
+        AND (p.communities_id = '${communityId}' OR p.title LIKE '%${title.replace(
+      /[^\w\s]/gi,
+      ""
+    )}%' OR ${tagsCondition})
       GROUP BY p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
                u.username, u.avatar, u.currentJob, c.name, p.post_type, p.views, c.community_color
       ORDER BY p.created_at DESC;
     `;
-
     const result = await sql.query(query);
     return result.recordset;
   },
