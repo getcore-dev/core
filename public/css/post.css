@@ -651,7 +651,7 @@ div.repliers-avatar, div.repliees-avatar {
 }
 
 .nested-comment > .comment {
-  padding-left: 26px;
+  margin-left: 26px;
   border-left: 2px solid var(--active-indicator-color);
   box-sizing: border-box;
 }
