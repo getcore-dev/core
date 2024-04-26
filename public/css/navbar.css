@@ -4,7 +4,7 @@
   --primary-text-color: #1D2935;
   --light-mode-body-color: #F6F8FA;
   --light-mode-main-color: #fff;
-  --light-mode-hover-color: #f2f3f4;
+  --light-mode-hover-color: #eef3f7;
   --border-color: #DCE6F2;
   --light-mode-button-color: #DCE6F2;
   --light-mode-button-hover-color: #BECBDA;
@@ -194,17 +194,17 @@ a {
 
 .mobile-search-input {
   font-size: 16px;
-  width: 59vw;
+  width: 62vw;
   padding: 6px 7px;
   border-radius: 5px;
   border: 1px solid var(--border-color);
   background: var(--light-mode-hover-color);
 }
 
-.mobile-search-input:focus {
+.mobile-search-input:focus, .EasyMDEContainer .CodeMirror.CodeMirror-focused, .select2-container--default.select2-container--focus .select2-selection--multiple {
   outline: none;
-  border-color: #15516e !important;
-  box-shadow: 0 0 5px 2px rgba(21, 81, 110, 0.5);
+  border-color: #a0cfe6 !important;
+  box-shadow: 0 0 3px 1px rgba(160, 207, 230, 0.5);
 }
 
 .search-form {
@@ -318,7 +318,7 @@ second-nav-bar {
   padding: 0;
   font-size: .855rem;
   font-weight: 500;
-  color: var(--light-mode-secondary-text-color);
+  color: var(--light-mode-text-color);
 }
 
 .nav-links::-webkit-scrollbar {
@@ -816,7 +816,7 @@ li.dropdown {
 
   .user-btns {
     position: absolute;
-    right: 15px;
+    right: 7px;
     top: 1px;
     z-index: 500;
   }
@@ -920,16 +920,10 @@ li.dropdown {
   font-size: 12px;
 }
 
-input:focus {
+input:focus, textarea:focus, select:focus {
   outline: none;
-  border-color: #15516e !important;
-  box-shadow: 0 0 5px 2px rgba(21, 81, 110, 0.5);
-}
-
-select:focus {
-  outline: none;
-  border-color: #15516e !important;
-  box-shadow: 0 0 5px 2px rgba(21, 81, 110, 0.5);
+  border-color: #a0cfe6 !important;
+  box-shadow: 0 0 3px 1px rgba(160, 207, 230, 0.5);
 }
 
 #submit-button, #cancel-button, #regular-button {
@@ -937,8 +931,8 @@ select:focus {
   width: 100%;
   border: none;
   border-radius: 10px;
-  background: #1a643e;
-  border: 1px solid #218652;
+  background: #41ae65;
+  border: 2px solid #4b9263;
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -958,8 +952,8 @@ select:focus {
   flex: 0;
   margin: 0;
   border-radius: 10px;
-  background: #0C8346;
-  border: 1px solid #0E954F;
+  background: #41ae65;
+  border: 2px solid #4b9263;
   color: white;
   cursor: pointer;
   word-wrap: break-word;
@@ -971,13 +965,18 @@ select:focus {
 }
 
 #cancel-button, #cancel-button-normal {
-  border: 1px solid #c44a4a;
-  background-color: #a13030;
+  border: 2px solid #ae4444;
+  background-color: #cd3a3a;
 }
 
 #regular-button, #regular-button-normal {
   background: #285994;
-  border: 1px solid #3d88e1;
+  border: 2px solid #3d88e1;
+}
+
+.select2-container--open .select2-dropdown--above {
+  border-color: var(--border-color) !important;
+  background-color: var(--light-mode-body-color);
 }
 
 .navbar-user-info {
@@ -1044,7 +1043,7 @@ select:focus {
 .user-links {
   display: flex;
   align-items: center;
-  transition: transform 0.3s ease-out;
+  transition: transform 0.1s ease-out;
 }
 
 
@@ -1056,7 +1055,7 @@ select:focus {
   position: relative;
   display: flex;
   align-items: center;
-  transition: transform 0.30s linear;
+  transition: transform 0.1s linear;
 }
 
 .nav-avatar {
@@ -1073,6 +1072,7 @@ select:focus {
   flex-direction: row;
   align-items: center;
   padding: 10px;
+  padding-top: 18px;
   transform: translateX(30%);
   transition: transform 0.3s ease;
   opacity: 0;
@@ -1237,6 +1237,10 @@ select:focus {
       color: #fff; /* Light text color for links */
   }
 
+  .mobile-search-input:focus, .EasyMDEContainer .CodeMirror.CodeMirror-focused, .select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #15516e !important;
+    box-shadow: 0 0 3px 1px rgba(21, 81, 110, 0.5);
+  }
   .nav-text {
     color: #fff;
   }
@@ -1291,9 +1295,15 @@ select:focus {
       background-color: #555; /* Lighter background on hover */
   }
 
-  .search-results-container > div {
-      background-color: var(--dark-mode-background-color);
-      border-color: var(--dark-mode-main-color);
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #15516e !important;
+    box-shadow: 0 0 3px 1px rgba(21, 81, 110, 0.5);
+  }
+
+  .search-results-container > div, .select2-container--open .select2-dropdown--above {
+      background-color: var(--dark-mode-main-color);
+      border-color: var(--dark-mode-border-color);
   }
 
   .search-results-container {
@@ -1309,6 +1319,11 @@ select:focus {
   .search-bar input[type="search"]:focus,
   .search-bar input[type="search"]:hover {
       background-color: #666; /* Darker background on focus/hover */
+  }
+
+  #submit-button, #submit-button-normal {
+    background: #0C8346;
+    border: 2px solid #0E954F;
   }
 
   @media (max-width: 768px) {
@@ -1586,7 +1601,7 @@ height: auto;
   }
 
   .user-links.slide-left {
-    transform: translateX(-20px); /* Adjust the value based on the desired slide distance */
+    transform: translateX(-60px); 
   }  
 
   #com-btn-container {

@@ -456,12 +456,12 @@ div .mini-link-title {
 }
 
 
-#filter-button {
+#filter-button, #post-button {
   border: 0;
   position: relative;
 }
 
-#filter-button .material-symbols-outlined {
+#filter-button .material-symbols-outlined, #post-button .material-symbols-outlined {
   font-size: 20px;
   vertical-align: -3px;
   font-weight: 400;
@@ -492,7 +492,7 @@ div .mini-link-title {
 #filterMenu {
   display: none;
   position: absolute;
-  right: 0;
+right: 0;
   padding: 2px 0;
   background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
@@ -556,20 +556,6 @@ div .mini-link-desc {
   text-overflow: ellipsis;
   white-space: normal;
   font-size: .825rem;
-}
-
-
-#post-button {
-  background: #1a643e;
-  border: 1px solid #218652;
-  color: white;
-  font-size: 1.2rem;
-  padding: 5px 12px !important;
-}
-
-#post-button:hover {
-  background: #0a532e;
-  border-color: #07341d;
 }
 
 

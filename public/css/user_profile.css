@@ -15,7 +15,7 @@ main {
 }
 
 #followButton, #edit-button {
-  margin-top: 10px;
+  margin-top: 4px;
 }
 
 .followers-info .link-display {
@@ -96,10 +96,10 @@ main {
 
 /* Style for each section */
 #profile > div, .post, .comment {
-  display: inline-block; /* use flexbox for each child container */
+  display: inline-block;
   border: 0;
-  padding: 15px 14px;
-  border-radius: 18px;
+  padding: 12px 10px;
+  border-radius: 12px;
   background: none;
 }
 
@@ -114,11 +114,12 @@ main {
 #profile p {
   margin-bottom: 3px;
   margin-top: 3px;
+  font-size: .875rem;
   color: var(--primary-text-color);
 }
 
 #profile a {
-  font-size: 14px;
+  font-size: .875rem;
   color: var(--primary-text-color);
 
 }
@@ -149,6 +150,8 @@ main {
 #profile > div.current-job, #profile > div.user-links, #profile > div.profile-info  {
   background: var(--light-mode-body-color);
 }
+
+
 
 #profile h1 {
   color: var(--primary-text-color);
@@ -458,6 +461,13 @@ td {
     max-height: calc(100dvh - var(--mobile-navbar-height));
     overflow-y: auto;
   }
+
+  .profile-info .profile-picture {
+    width: 30%;
+}
+   .profile-info .profile-details {
+    width: 70%;
+  }
   #profile {
     padding: 15px;
     padding-top: 0;
@@ -525,6 +535,12 @@ td {
 
 .github-commit-repos {
   grid-area: git-repos;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.github-commit-repos h5 {
+  padding: 5px 8px;
+  font-size: .925rem;
 }
 
 .github-commit-graph {
@@ -542,7 +558,7 @@ td {
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
-  gap: 20px;
+  gap: 12px;
   justify-content: space-between;
   align-items: center;
 }
@@ -550,7 +566,7 @@ td {
 .profile-info {
   display: flex;
   grid-area: info1;
-  padding-bottom: 15px !important;
+  padding-bottom: 6px !important;
   padding-top: 15px !important;
 }
 

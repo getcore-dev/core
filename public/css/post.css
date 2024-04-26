@@ -22,11 +22,18 @@ main {
 }
 
 .editor-toolbar {
-  background-color: var(--light-mode-main-color) !important;
+  background-color: var(--light-mode-body-color) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 12px !important;
+  margin: 0 12px;
+  margin-bottom: 10px;
+  display: none;
+
 }
 
 .button-container {
-  padding: 5px 12px;
+  padding: 7px 12px;
+  padding-bottom: 3px;
     background-color: var(--light-mode-main-color);
     display: flex;
     flex-direction: row;
@@ -68,9 +75,6 @@ a .material-symbols-outlined {
   vertical-align: -3px;
 }
 
-div.user-interactions {
-  padding-bottom: 0px;
-}
 img.linkimage {
   width: 200px;
 }
@@ -124,6 +128,7 @@ pre code {
 
 .replies {
   display: flex;
+  margin-left: 5px;
   flex-direction: row;
 }
 
@@ -135,12 +140,18 @@ pre code {
   align-items: center;
 }
 
+.top-reactions {
+  display: flex;
+  flex-direction: row;
+  gap: -2px;
+}
+
 .sidebar-body {
   display: flex;
     flex-direction: row;
 }
 .user-interactions {
-  margin: 2px 0px;
+  margin: 5px 0px;
   display: flex;
   align-items: center;
   align-content: stretch;
@@ -148,7 +159,6 @@ pre code {
   flex-direction: row;
   justify-content: flex-start;
   gap: 1em;
-  margin-top: 14px;
 }
 
 .timestamp {
@@ -230,11 +240,6 @@ a.comment-url:visited {
   line-height: normal; /* Adjust line height as needed */
 }
 
-.input-container textarea:focus, .comment-container textarea:focus {
-  outline: none;
-  border-color: #15516e !important;
-  box-shadow: 0 0 5px 2px rgba(21, 81, 110, 0.5);
-}
 
 /* Style for the send button */
 .input-container button.fab, .comment-container button.fab {
@@ -351,6 +356,7 @@ img.blog-avatar {
 .replies .reaction-button {
   background: 0;
   border: 0;
+  font-size: .8rem;
 }
 
 .dicussion-link {
@@ -527,8 +533,7 @@ img.blog-avatar {
 }
 
 .post-info {
-  padding: 16px 13px;
-  padding-top: 0;
+  padding: 8px 13px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -650,6 +655,16 @@ div.repliers-avatar, div.repliees-avatar {
   color: var(--light-mode-secondary-text-color);
 }
 
+.add-comment-button {
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.add-comment-button:hover, #reply-button:hover {
+  background-color: var(--light-mode-hover-color);
+  cursor: pointer;
+}
+
 .nested-comment > .comment {
   margin-left: 26px;
   border-left: 2px solid var(--active-indicator-color);
@@ -744,11 +759,17 @@ padding-top: 6px;
   justify-content: flex-start;
 }
 
+.similar-posts .post {
+  margin-bottom: 10px;
+
+}
+
 #reply-button {
   text-decoration: none;
-  color: #333;
-  font-size: 14px;
+  color: var(--light-mode-text-color);
+  font-size: .8rem;
   vertical-align: 5px;
+  border-radius: 6px;
 }
 
 a.comment-user-info {
@@ -977,23 +998,12 @@ h4.preview-title {
   white-space: normal;
 }
 
-.editor-toolbar {
-  display: none;
-  border-top: 1px solid var(--border-color) !important;
-  border-bottom: 0 !important;
-  border-left: 0 !important;
-  border-right: 0 !important;
-  border-radius: 0 !important;
-}
-
 .EasyMDEContainer .CodeMirror {
-  background-color: var(--light-mode-main-color) !important; 
+  background-color: var(--light-mode-body-color) !important;
   border-color: var(--border-color) !important;
-  border-radius: 0 !important;
-  border-left: 0 !important;
-  border-right: 0 !important;
-  border-top: 1px solid var(--border-color) !important;
-  border-bottom: 1px solid var(--border-color) !important;
+  margin: 0 12px;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 12px !important;
 }
 
 .image-container {
@@ -1078,6 +1088,7 @@ p.preview-description {
 }
 
 .input-container textarea {
+  background-color: var(--light-mode-body-color);
   border: 1px solid var(--border-color);
 }
 
@@ -1250,6 +1261,9 @@ p.preview-description {
     color: var(--dark-mode-text-color);
   }
   
+  .add-comment-button:hover, #reply-button:hover {
+    background-color: var(--dark-mode-hover-color);
+  }
 
   .nested-comment.level-1 > .comment:first-child {
     background-color: var(--dark-mode-body-color);
@@ -1652,4 +1666,5 @@ div.username {
       border-color: var(--dark-mode-border-color);
     }
 
+  }
 }

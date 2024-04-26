@@ -120,11 +120,7 @@ main {
   transition: box-shadow 0.3s ease;
 }
 
-.input-container input:focus {
-  outline: none;
-  border-color: #15516e !important;
-  box-shadow: 0 0 5px 2px rgba(21, 81, 110, 0.5);
-}
+
 
 .input-container {
   margin-bottom: 10px;

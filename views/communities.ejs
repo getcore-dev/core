@@ -54,7 +54,7 @@
         <% if (typeof community === 'undefined' || community == null) { %>
 
         <div class="mobile-jobs-container">
-          <div class="job-header">
+          <div class="job-header" id="secondary-text">
             <h5>Openings</h5>
           </div>
           <div class="jobslist">
@@ -229,7 +229,11 @@ filter_list
 </span>
           </button>
                   <% if (user) { %>
-            <button class="header-button" id="post-button" onclick="window.location.href='/create'" style="padding: 6px 13px;;">+</button>
+            <button class="header-button" id="post-button" onclick="window.location.href='/create'">
+            <span class="material-symbols-outlined">
+add
+</span>
+            </button>
           <% } %>
 
           <div class="filter-menu" id="filterMenu">

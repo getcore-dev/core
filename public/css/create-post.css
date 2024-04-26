@@ -59,7 +59,7 @@ div.form-group {
 }
 
 .select2-container .select2-search--inline .select2-search__field {
-    margin-top: 4px !important;
+    margin-top: 8px !important;
     margin-bottom: -5px !important;
 }
 
@@ -90,8 +90,8 @@ div.form-group {
 .post-header {
     display: flex;
     justify-content: space-between;
-    margin: 0px 14px;
-    margin-bottom: 12px;
+    margin: 7px 14px;
+    margin-bottom: 6px;
 }
 
 .main-container form {
@@ -199,7 +199,7 @@ i.fa {
 }
 
 .select2-container .select2-search--inline .select2-search__field {
-    height: 2rem !important; 
+    height: calc(16px + .7rem) !important;
 }
 
 .main-container .post-content,

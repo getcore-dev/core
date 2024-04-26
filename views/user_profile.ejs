@@ -16,6 +16,32 @@
   #edit-button,
   #followButton {
     background: <%=otheruser.profile_border_color%>52 !important;
+    border: 1px solid <%=otheruser.profile_border_color%>70 !important;
+  }
+
+  #repo-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  #repo-table th,
+  #repo-table td {
+    border-bottom: 1px solid <%=otheruser.profile_border_color%>70;
+    padding: 8px;
+    text-align: left;
+  }
+
+  #repo-table th {
+    border: 0;
+    margin-top: 5px;
+  }
+
+  #repo-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  #repo-table tr:nth-child(even) {
+    background-color: <%=otheruser.profile_border_color%>52;
   }
 
   .navbar {
@@ -55,12 +81,9 @@
             </div>
             <% } %>
             <div class="followers-info">
-              <div class="link-display">
-                <a href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:column;">Followers: <span id="followerCount"> <%= otheruser.followerCount %> </a></span>
-              </div>
-              <div class="link-display">
-                <a href="/user/<%= otheruser.username %>/following" style="display: flex; flex-direction:column;">Following: <span id="followCount"> <%= otheruser.followingCount %></a></span>
-              </div>
+
+              <a href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; gap: 5px;"><span id="followerCount"> <%= otheruser.followerCount %> Followers </a></span>
+              <a href="/user/<%= otheruser.username %>/following" style="display: flex; flex-direction:row; gap: 5px;"><span id="followCount"> <%= otheruser.followingCount %> Following</a></span>
             </div>
 
           </div>
@@ -257,8 +280,22 @@
         displayRepositories(data.repositories);
       } else {
         console.error('Failed to fetch repositories:', data.error);
-        // Display an error message to the user
+        displayNoRepositoriesMessage();
       }
+    }
+
+    function displayNoRepositoriesMessage() {
+      const tableBody = document.querySelector('#repo-table tbody');
+      const tableHead = document.querySelector('#repo-table thead');
+
+      tableHead.style.display = 'none';
+
+      const row = document.createElement('tr');
+      const cell = document.createElement('td');
+      cell.setAttribute('colspan', '3');
+      cell.textContent = 'No GitHub repositories found.';
+      row.appendChild(cell);
+      tableBody.appendChild(row);
     }
 
     function displayRepositories(repositories) {
@@ -304,11 +341,22 @@
       const data = await response.json();
 
       if (response.ok) {
-        displayCommitGraph(data.commitGraph);
+        if (Object.keys(data.commitGraph).length === 0) {
+          displayNoCommitGraphMessage();
+        } else {
+          displayCommitGraph(data.commitGraph);
+        }
       } else {
         console.error('Failed to fetch commit graph:', data.error);
-        // Display an error message to the user
+        displayNoCommitGraphMessage();
       }
+    }
+
+    function displayNoCommitGraphMessage() {
+      const container = document.getElementById('commit-graph-container');
+      const message = document.createElement('p');
+      message.textContent = 'No GitHub activity found.';
+      container.appendChild(message);
     }
 
     function displayCommitGraph(commitGraph) {
@@ -377,19 +425,8 @@
       fetchCommitGraph();
       fetchRepositories();
     } else {
-      // Display a message when no GitHub information is available
-      const repoTableBody = document.querySelector('#repo-table tbody');
-      const row = document.createElement('tr');
-      const cell = document.createElement('td');
-      cell.setAttribute('colspan', '4');
-      cell.textContent = 'No GitHub information available.';
-      row.appendChild(cell);
-      repoTableBody.appendChild(row);
-
-      const commitGraphContainer = document.getElementById('commit-graph-container');
-      const message = document.createElement('p');
-      message.textContent = 'No GitHub information available.';
-      commitGraphContainer.appendChild(message);
+      displayNoCommitGraphMessage();
+      displayNoRepositoriesMessage();
     }
     <% if (user) { %>
     document.getElementById('followForm').addEventListener('submit', async (event) => {

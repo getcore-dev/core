@@ -153,7 +153,7 @@
           <li>
             <% if (user && user.avatar) { %>
             <div class="nav-avatar">
-              <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar" style="margin-top:7px;">
+              <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar" style="margin-top:6px;">
 
               <div class="avatar-dropdown">
 
@@ -202,8 +202,8 @@
             </div>
             <% } else if (!user) { %>
             <div class="nav-avatar">
-              <a href=" /login" class="inbox-button">
-                <span class="material-symbols-outlined" id="nb-icon">
+              <a href="/login" class="inbox-button" style="padding-top: 7px;">
+                <span class="material-symbols-outlined" id="nb-icon" style="padding: 3px 4px;">
                   person
                 </span>
               </a>
