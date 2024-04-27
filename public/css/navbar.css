@@ -194,7 +194,7 @@ a {
 
 .mobile-search-input {
   font-size: 16px;
-  width: 63vw;
+  width: 62vw;
   padding: 5px 10px;
   border-radius: 11px;
   border: 1px solid var(--light-mode-hover-color);
@@ -392,10 +392,10 @@ second-nav-bar {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  width: 18px;
+  width: 16px;
   padding: 0;
   z-index: 100;
-  height: 22px;
+  height: 20px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -403,7 +403,7 @@ second-nav-bar {
 
 .menu-bar {
   z-index: 2;
-  width: 18px;
+  width: 16px;
   height: 1.7px;
   background-color: var(--light-mode-text-color);
   transition: all 0.3s ease;
@@ -864,7 +864,7 @@ li.dropdown {
   }
 
   .avatar-dropdown-item #nb-icon {
-    font-size: 27px;
+    font-size: 25px;
   }
 
   .navbar-button {
@@ -901,8 +901,8 @@ li.dropdown {
 
   .hamburger-menu {
     position: absolute;
-    left: 16px;
-    top: 14px;
+    left: 18px;
+    top: 16px;
     z-index: 100;
   } 
   

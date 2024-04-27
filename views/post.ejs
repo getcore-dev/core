@@ -353,10 +353,10 @@
                   <% if (post.userReaction != null && reactionTypes.find(reaction => reaction.type === post.userReaction)) { %>
                   <%= reactionTypes.find(reaction => reaction.type === post.userReaction).icon %>
                   <% } else { %>
-                  🚀
+                  <span class="material-symbols-outlined">add_reaction</span>
                   <% } %>
                   <% } else { %>
-                  🚀
+                  <span class="material-symbols-outlined">add_reaction</span>
                   <% } %>
                 </button>
                 <div id="reactionPopup-post-<%= post.id %>" class="reaction-popup" style="display:none;">
@@ -587,10 +587,10 @@
 
                   <%= reactionTypes.find(reaction => reaction.type === comment.userReaction).icon %>
                   <% } else { %>
-                  🚀
+                  <span class="material-symbols-outlined">add_reaction</span>
                   <% } %>
                   <% } else { %>
-                  🚀
+                  <span class="material-symbols-outlined">add_reaction</span>
                   <% } %>
                 </button>
                 <div id="reactionPopup-comment-<%= comment.id %>" class="reaction-popup" style="display:none; position: absolute; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
@@ -820,13 +820,13 @@
         $('.button-container').hide();
       });
 
-$('#cancel-button-normal').on('click', function() {
-  easyMDE.value(''); // Clear the content of the EasyMDE editor
-  $('.button-container').hide();
-  $(this).closest('.input-container').find('textarea').hide(); // Hide the textarea within the input-container
-  $(this).closest('.reply-buttons').hide(); // Hide the reply buttons
-  $('.editor-toolbar').hide();
-});
+      $('#cancel-button-normal').on('click', function() {
+        easyMDE.value(''); // Clear the content of the EasyMDE editor
+        $('.button-container').hide();
+        $(this).closest('.input-container').find('textarea').hide(); // Hide the textarea within the input-container
+        $(this).closest('.reply-buttons').hide(); // Hide the reply buttons
+        $('.editor-toolbar').hide();
+      });
 
       easyMDE.codemirror.on("inactive", function() {
         $('.button-container').hide();

@@ -375,7 +375,7 @@ img.blog-avatar {
 .reaction-popup {
   position: absolute;
   display: flex;
-  bottom: 33px;
+  bottom: 52px;
   left: 10px;
   flex-direction: row;
   flex-wrap: wrap;
