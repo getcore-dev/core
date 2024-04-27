@@ -821,7 +821,8 @@ div .mini-link-desc {
     font-weight: bold;
   }
   .community-header, .job-header {
-    margin: 0 7px 6px 10px;
+    margin: 0 7px 0 10px;
+    color: var(--light-mode-secondary-text-color);
       }
 
     .job-header {
@@ -1059,6 +1060,9 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
       border-color: var(--dark-mode-main-color);
     }
   }
+    .community-header, .job-header {
+      color: var(--dark-mode-secondary-text-color) !important;
+      }
 
   #see-more-core-logo {
     filter: invert(1);
