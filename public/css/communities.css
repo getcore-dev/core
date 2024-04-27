@@ -8,8 +8,8 @@ body {
 .post, .job {
   display: flex;
   background: var(--light-mode-main-color);
-  border: 1px solid var(--border-color);
-  border-radius: 18px;
+  border: 1px solid var(--light-mode-main-color);
+  border-radius: 16px;
   margin: 10px;
   flex-direction: row;
   justify-content: space-between;

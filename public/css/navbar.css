@@ -194,10 +194,10 @@ a {
 
 .mobile-search-input {
   font-size: 16px;
-  width: 62vw;
-  padding: 6px 7px;
-  border-radius: 5px;
-  border: 1px solid var(--border-color);
+  width: 63vw;
+  padding: 5px 10px;
+  border-radius: 11px;
+  border: 1px solid var(--light-mode-hover-color);
   background: var(--light-mode-hover-color);
 }
 
@@ -318,7 +318,7 @@ second-nav-bar {
   padding: 0;
   font-size: .855rem;
   font-weight: 500;
-  color: var(--light-mode-text-color);
+  color: var(--light-mode-secondary-text-color);
 }
 
 .nav-links::-webkit-scrollbar {
@@ -1336,7 +1336,7 @@ input:focus, textarea:focus, select:focus {
 
 #second-nav-icon, .second-nav-links .navbar-button, ul.dropdown-menu a {
 
-  color: var(--dark-mode-text-color);
+  color: var(--dark-mode-secondary-text-color);
 }
 
 .dropdown-menu {
