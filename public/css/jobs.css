@@ -113,10 +113,10 @@ p.job-description {
   width: 100%;
   overflow: hidden;
   box-sizing: border-box;
-  line-height: 1.5em;
+  line-height: 1.125rem;
   margin: 0;
   font-size: .875rem;
-  margin: 5px 0;
+  margin: 2px 0;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 3;
