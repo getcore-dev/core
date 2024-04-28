@@ -40,20 +40,65 @@
           <input type="text" id="company" name="company" placeholder="Job Company Name" required />
         </div>
         <div class="form-group">
-          <label for="logo_url">Company Logo URL:</label>
-          <input type="text" id="logo_url" name="logo_url" />
-        </div>
-        <div class="form-group">
-          <label for="company_description">Company Description:</label>
-          <textarea id="company_description" name="company_description" placeholder="Summary of the company (optional)"></textarea>
-        </div>
-        <div class="form-group">
           <label for="title">Job Title:</label>
           <input type="text" id="title" name="title" placeholder="Job Title" required />
         </div>
         <div class="form-group">
           <label for="description">Job Description:</label>
           <textarea id="description" name="description" placeholder="Job Description" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="preferred-qualifications">Preferred Qualifications:</label>
+          <textarea id="preferred-qualifications" name="preferred-qualifications" placeholder="Preferred Qualifications"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="minimum-qualifications">Minimum Qualifications:</label>
+          <textarea id="minimum-qualifications" name="minimum-qualifications" placeholder="Minimum Qualifications"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="responsibilities">Responsibilities:</label>
+          <textarea id="responsibilities" name="responsibilities" placeholder="Responsibilities"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="requirements">Requirements:</label>
+          <textarea id="requirements" name="requirements" placeholder="Requirements"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="nice-to-have">Nice to Have:</label>
+          <textarea id="nice-to-have" name="nice-to-have" placeholder="Nice to Have"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="schedule">Schedule:</label>
+          <input type="text" id="schedule" name="schedule" placeholder="Schedule" />
+        </div>
+        <div class="form-group">
+          <label for="hours-per-week">Hours per Week:</label>
+          <input type="number" id="hours-per-week" name="hours-per-week" placeholder="Hours per Week" />
+        </div>
+        <div class="form-group">
+          <label for="h1b-visa-sponsorship">H1B Visa Sponsorship:</label>
+          <select id="h1b-visa-sponsorship" name="h1b-visa-sponsorship">
+            <option value="true">Yes</option>
+            <option value="false" selected>No</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="is-remote">Remote:</label>
+          <select id="is-remote" name="is-remote">
+            <option value="true">Yes</option>
+            <option value="false" selected>No</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="equal-opportunity-employer-info">Equal Opportunity Employer Info:</label>
+          <textarea id="equal-opportunity-employer-info" name="equal-opportunity-employer-info" placeholder="Equal Opportunity Employer Info"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="relocation">Relocation Assistance:</label>
+          <select id="relocation" name="relocation">
+            <option value="true">Yes</option>
+            <option value="false" selected>No</option>
+          </select>
         </div>
         <div class="form-group">
           <label for="benefits">Job Benefits:</label>
@@ -114,7 +159,6 @@
             // Populate the form fields with the extracted job details
             $('#title').val(response.title);
             $('#company').val(response.company_name);
-            $('#company_description').val(response.company_description);
             $('#location').val(response.location);
             $('#salary').val(response.salary);
             $('#salary_max').val(response.salary_max);
@@ -126,7 +170,17 @@
             $('#additional-information').val(response.additional_information);
             $('#logo_url').val(response.company_logo);
             $('#link').val(jobLink);
-            
+            $('#preferred-qualifications').val(response.PreferredQualifications);
+            $('#minimum-qualifications').val(response.MinimumQualifications);
+            $('#responsibilities').val(response.Responsibilities);
+            $('#requirements').val(response.Requirements);
+            $('#nice-to-have').val(response.NiceToHave);
+            $('#schedule').val(response.Schedule);
+            $('#hours-per-week').val(response.HoursPerWeek);
+            $('#h1b-visa-sponsorship').val(response.H1BVisaSponsorship ? 'true' : 'false');
+            $('#is-remote').val(response.IsRemote ? 'true' : 'false');
+            $('#equal-opportunity-employer-info').val(response.EqualOpportunityEmployerInfo);
+            $('#relocation').val(response.relocation ? 'true' : 'false');
 
             // Show the edit form and hide the extract form
             $('#jobPostForm').hide();

@@ -336,7 +336,7 @@
               <%- post.content %>
               <% } %>
 
-              <div class="user-interactions" style="<% if (post.post_type == "blog") { %>margin-bottom: 20px;<% } %>">
+              <div class="user-interactions">
                 <button class="mainReactionButton reaction-button<% if (post.userReaction) { %> active <% }%>" data-type="post" data-id="<%= post.id %>">
                   <% if (post.userReaction) { %>
                   <% const reactionTypes = [

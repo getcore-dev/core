@@ -11,7 +11,7 @@ main {
 .company-info {
   display: flex;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 img.company-logo {
@@ -63,13 +63,10 @@ img.company-logo {
   margin-right: 4px;
 }
 
-.job-description h4,
-.company-description h4,
-.job-benefits h4, 
-.job-skills h4 {
+.job-details h4 {
   font-size: 1.1rem;
   font-weight: bold;
-  margin: 16px 0 8px 0;
+  margin: 11px 0 3px 0;
 }
 
 .job-description p,

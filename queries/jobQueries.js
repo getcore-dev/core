@@ -127,23 +127,19 @@ const jobQueries = {
     recruiter_id,
     skills = [],
     benefits = [],
-    additional_information = ""
+    additional_information = "",
+    preferredQualifications,
+    minimumQualifications,
+    responsibilities,
+    requirements,
+    niceToHave,
+    schedule,
+    hoursPerWeek,
+    h1bVisaSponsorship,
+    isRemote,
+    equalOpportunityEmployerInfo,
+    relocation
   ) => {
-    console.log("skills", skills);
-    console.log("benefits", benefits);
-    console.log("description", description);
-    console.log("title", title);
-    console.log("salary", salary);
-    console.log("experienceLevel", experienceLevel);
-    console.log("location", location);
-    console.log("postedDate", postedDate);
-    console.log("company_id", company_id);
-    console.log("link", link);
-    console.log("expiration_date", expiration_date);
-    console.log("recruiter_id", recruiter_id);
-    console.log("additional_information", additional_information);
-    console.log("tags", tags);
-
     if (typeof link !== "string") {
       throw new Error("Link must be a string");
     }
@@ -166,14 +162,57 @@ const jobQueries = {
       // Insert the job posting into the JobPostings table
       const result = await sql.query`
       INSERT INTO JobPostings (
-        title, salary, experienceLevel, location, postedDate, company_id, link,
-        expiration_date, description, salary_max, recruiter_id, additional_information, benefits
+        title,
+        salary,
+        experienceLevel,
+        location,
+        postedDate,
+        company_id,
+        link,
+        expiration_date,
+        description,
+        salary_max,
+        recruiter_id,
+        additional_information,
+        benefits,
+        preferredQualifications,
+        minimumQualifications,
+        responsibilities,
+        requirements,
+        niceToHave,
+        schedule,
+        hoursPerWeek,
+        h1bVisaSponsorship,
+        isRemote,
+        equalOpportunityEmployerInfo,
+        relocation
       )
       OUTPUT INSERTED.id
       VALUES (
-        ${title}, ${salary}, ${experienceLevel}, ${location}, ${postedDate}, ${company_id},
-        ${link}, ${expiration_date}, ${description}, ${salary_max}, ${recruiter_id},
-        ${additional_information}, ${formattedBenefits}
+        ${title},
+        ${salary},
+        ${experienceLevel},
+        ${location},
+        ${postedDate},
+        ${company_id},
+        ${link},
+        ${expiration_date},
+        ${description},
+        ${salary_max},
+        ${recruiter_id},
+        ${additional_information},
+        ${formattedBenefits},
+        ${preferredQualifications},
+        ${minimumQualifications},
+        ${responsibilities},
+        ${requirements},
+        ${niceToHave},
+        ${schedule},
+        ${hoursPerWeek},
+        ${h1bVisaSponsorship},
+        ${isRemote},
+        ${equalOpportunityEmployerInfo},
+        ${relocation}
       )
     `;
 
@@ -275,12 +314,21 @@ const jobQueries = {
     }
   },
 
-  createCompany: async (name, logo_url, location, description) => {
+  createCompany: async (
+    name,
+    logo_url,
+    location,
+    description,
+    industry,
+    size,
+    stock_symbol,
+    founded
+  ) => {
     try {
       const result = await sql.query`
-        INSERT INTO companies (name, logo, location, description)
+        INSERT INTO companies (name, logo, location, description, industry, size, stock_symbol, founded)
         OUTPUT INSERTED.id
-        VALUES (${name}, ${logo_url}, ${location}, ${description})
+        VALUES (${name}, ${logo_url}, ${location}, ${description}, ${industry}, ${size}, ${stock_symbol}, ${founded})
       `;
       const companyId = result.recordset[0].id;
       return companyId;

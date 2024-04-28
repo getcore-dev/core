@@ -207,7 +207,6 @@ router.post("/job-postings", checkAuthenticated, async (req, res) => {
     const {
       title,
       company,
-      company_description,
       location,
       salary,
       salary_max,
@@ -215,23 +214,33 @@ router.post("/job-postings", checkAuthenticated, async (req, res) => {
       skills,
       tags,
       description,
-      logo_url,
       link,
       benefits,
       additional_information,
+      preferredQualifications,
+      minimumQualifications,
+      responsibilities,
+      requirements,
+      niceToHave,
+      schedule,
+      hoursPerWeek,
+      h1bVisaSponsorship,
+      isRemote,
+      equalOpportunityEmployerInfo,
+      relocation,
     } = req.body;
+    console.log(req.body);
 
     // Check if the company exists in the database
-    let companyId = await jobQueries.getCompanyIdByName(company).id;
+    let companyObject = await jobQueries.getCompanyIdByName(company);
+    console.log(companyObject);
+    let companyId = companyObject ? companyObject.id : null;
+    console.log(companyId);
     const user = req.user;
 
     if (!companyId) {
-      companyId = await jobQueries.createCompany(
-        company,
-        logo_url,
-        location,
-        company_description
-      );
+      console.log(`Error creating company: ${company}`);
+      return res.status(400).json({ error: "Company does not exist" });
     }
 
     const jobPostingId = await jobQueries.createJobPosting(
@@ -249,7 +258,18 @@ router.post("/job-postings", checkAuthenticated, async (req, res) => {
       user.recruiter_id,
       skills.split(",").map((skill) => skill.trim()),
       benefits,
-      additional_information
+      additional_information,
+      preferredQualifications,
+      minimumQualifications,
+      responsibilities,
+      requirements,
+      niceToHave,
+      schedule,
+      hoursPerWeek,
+      h1bVisaSponsorship,
+      isRemote,
+      equalOpportunityEmployerInfo,
+      relocation
     );
 
     res.status(201).json({
@@ -298,20 +318,33 @@ router.post("/extract-job-details", async (req, res) => {
 
       const prompt = `Please extract the following information from this job posting data:  ${textContent}
       - title (e.g., Software Engineer, Data Analyst, do not include intern or seniority in the title)
-      - company_name (as simple as possible, not amazon inc, just Amazon. If it's a startup, use the startup name)
-      - company_description (write a short paragraph about the company, where they're located, their mission, etc)
-      - location (City, State(full name), Country)
+      - company_name NVARCHAR(50) (as simple as possible, not amazon inc, just Amazon. If it's a startup, use the startup name)
+      - company_description NVARCHAR(MAX)(write a short paragraph about the company, where they're located, their mission, etc)
+      - company_industry (e.g., Technology, Healthcare, Finance, etc.)
+      - company_size (e.g., 1-10, 11-50, 51-200, 201-500, 501-1000, 1001-5000, 5001-10000, 10001+)
+      - company_stock_symbol (if public, otherwise leave blank)
+      - company_logo (in the format of /src/<company-name>logo.png)
+      - company_founded (year founded, if available, otherwise leave blank, format in SQL datetime format)
+      - location (City, State(full name), Country(full name), if remote N/A)
       - salary (integer only, no currency symbol, no matter what format the salary in (hourly, monthly, weekly) convert to yearly salary)
       - salary_max (integer only, no currency symbol, no matter what format the salary in (hourly, monthly, weekly) convert to yearly salary)
       - experience_level ("Internship", "Entry Level", "Junior", "Mid Level", "Senior" or "Lead" only)
       - skills (6-10 skills, prefer single word skills, as a comma-separated list)
       - tags (at least 10, these should be different from skills and are things commonly searched related to the job. e.g., "remote", "healthcare", "startup" as a comma-separated list)
       - description (try to take up to 3 paragraphs from the original source)
-      - company_logo (logo URL of the company, try to extract it from the HTML source or provide a relevant URL if available)
       - benefits (as a comma-separated list) 
       - additional_information (blank if nothing detected in the job posting, otherwise provide any additional information that you think is relevant to the job posting)
-      
-      
+      - PreferredQualifications (if available)
+      - MinimumQualifications (if available)
+      - Responsibilities (responsibilities of the job)
+      - Requirements (requirements of the job)
+      - NiceToHave (nice to have skills or experience)
+      - Schedule (mon-fri, 9-5, etc.)
+      - HoursPerWeek (integer only)
+      - H1BVisaSponsorship BIT
+      - IsRemote BIT
+      - EqualOpportunityEmployerInfo NVARCHAR(MAX)
+      - Relocation BIT
       Provide the extracted information in JSON format.`;
 
       const response = await api.sendMessage(prompt);
@@ -337,7 +370,7 @@ router.post("/extract-job-details", async (req, res) => {
         return;
       }
 
-      //console.log("Extracted data:", extractedData);
+      console.log("Extracted data:", extractedData);
 
       try {
         if (extractedData.company_name) {
@@ -346,16 +379,18 @@ router.post("/extract-job-details", async (req, res) => {
             extractedData.company_name
           );
 
+          // create it if not
           if (!company) {
             company = await jobQueries.createCompany(
               extractedData.company_name,
               extractedData.company_logo,
               extractedData.location,
-              extractedData.company_description
+              extractedData.company_description,
+              extractedData.company_industry,
+              extractedData.company_size,
+              extractedData.company_stock_symbol,
+              extractedData.company_founded
             );
-          } else {
-            extractedData.company_description = company.description;
-            extractedData.company_logo = company.logo;
           }
         }
       } catch {

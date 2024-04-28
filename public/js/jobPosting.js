@@ -83,7 +83,7 @@ function lazyLoadJobDetails(jobId) {
       jobDetailsContainer.innerHTML = `
         <div class="job-listing">
           <div class="company-info">
-            <img src="${job.company_logo}" alt="${
+            <img src="${job.company_logo}" style="width: auto;" alt="${
         job.company_name
       } logo" class="thumbnail thumbnail-small thumbnail-regular" />
             <div class="company-details">
@@ -124,11 +124,57 @@ function lazyLoadJobDetails(jobId) {
               <h4>Company Description</h4>
               <p>${job.company_description}</p>
             </div>
+            <div class="minimum-qualifications">
+              <h4>Minimum Qualifications</h4>
+              <p>${job.MinimumQualifications || "No qualifications listed"}</p>
+            </div>
+            <div class="preferred-qualifications">
+              <h4>Preferred Qualifications</h4>
+              <p>${
+                job.PreferredQualifications || "No qualifications listed"
+              }</p>
+            </div>
             <div class="job-benefits">
               <h4>Job Benefits</h4>
               <ul>
                 ${formattedBenefits || "<li>No benefits listed</li>"}
               </ul>
+            </div>
+            <div class="job-responsibilities">
+              <h4>Responsibilities</h4>
+              <p>${job.Responsibilities || "No responsibilities listed"}</p>
+            </div>
+            <div class="job-requirements">
+              <h4>Requirements</h4>
+              <p>${job.Requirements || "No requirements listed"}</p>
+            </div>
+            <div class="job-nice-to-have">
+              <h4>Nice to Have</h4>
+              <p>${job.NiceToHave || "No nice-to-have listed"}</p>
+            </div>
+            <div class="job-schedule">
+              <h4>Schedule</h4>
+              <p>${job.schedule || "No schedule listed"}</p>
+            </div>
+            <div class="job-hours-per-week">
+              <h4>Hours per Week</h4>
+              <p>${job.hoursPerWeek || "No hours per week listed"}</p>
+            </div>
+            <div class="job-h1b-visa-sponsorship">
+              <h4>H1B Visa Sponsorship</h4>
+              <p>${job.h1bVisaSponsorship ? "Yes" : "No"}</p>
+            </div>
+            <div class="job-is-remote">
+              <h4>Remote</h4>
+              <p>${job.isRemote ? "Yes" : "No"}</p>
+            </div>
+            <div class="job-equal-opportunity-employer-info">
+              <h4>Equal Opportunity Employer Info</h4>
+              <p>${job.equalOpportunityEmployerInfo || "No info listed"}</p>
+            </div>
+            <div class="job-relocation">
+              <h4>Relocation</h4>
+              <p>${job.relocation ? "Yes" : "No"}</p>
             </div>
 
             <br>

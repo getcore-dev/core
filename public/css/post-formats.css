@@ -15,14 +15,14 @@
 
   .link-info-description {
     font-size: .85rem;
-    margin-top: 0.37rem;
+    margin-top: 0.17rem;
     margin-bottom: 0.17rem;
   }
 
   .link-info-url {
+    color: var(--active-indicator-color);
     font-size: .75rem;
     margin-top: 0.17rem;
-    margin-bottom: 0.17rem;
   }
   
   .post-body h3 {
@@ -115,7 +115,7 @@
 
   @media (max-width: 768px) {
 .post-body .link-image img {
-  max-height: 150px;
+  max-height: 130px;
   object-fit: cover;
 }
   }

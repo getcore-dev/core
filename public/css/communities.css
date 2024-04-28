@@ -249,10 +249,10 @@ div.vote-interactions {
 }
 
 .link-preview {
-  background-color: var(--light-mode-body-color);
+  background-color: var(--light-mode-hover-color);
   border-radius: 18px;
   margin: 0px 0px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--light-mode-hover-color);
   margin-top: 5px;
 }
 

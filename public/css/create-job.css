@@ -1,19 +1,19 @@
 input {
-font-size: 1.2rem;
+font-size: 16px;
 }
 
 textarea#company_description, textarea#description, textarea#benefits, textarea#additional-information {
     font-family: var(--font-family);
-    font-size: 1.2rem;
+    font-size: 16px;
     min-height: 200px;
 }
 
 select {
-font-size: 1.2rem;
+font-size: 16px;
 }
 
 .main-container input[type="text"], .main-container textarea, .main-container select, .main-container input[type="number"], .main-container input[type="date"] {
-    font-size: 1.2rem;
+    font-size: 16px;
     font-family: var(--font-family);
 }
 

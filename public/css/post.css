@@ -260,6 +260,11 @@ a.comment-url:visited {
   margin-top: 10px;
 }
 
+.similar-posts .link-preview {
+  margin-top: 0;
+  padding-top: 0;
+}
+
 
 .nested-comment .comment {
   box-sizing: border-box;
@@ -360,9 +365,9 @@ img.blog-avatar {
 }
 
 .dicussion-link {
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--light-mode-body-color);
   background-color: var(--light-mode-body-color);
-  border-radius: 18px;
+  border-radius: 14px;
   margin-bottom: 10px;
   margin-top: 7px !important;
   white-space-collapse: collapse;
@@ -489,7 +494,8 @@ img.blog-avatar {
 
 .link-info {
   display: flex;
-  margin: 14px;
+  margin: 10px;
+  margin-bottom: 5px;
   margin-top: 8px;
   flex-direction: column;
   justify-content: center;
@@ -725,7 +731,7 @@ div.repliers-avatar, div.repliees-avatar {
 
 .similar-posts .post-content {
 padding: 12px 14px;
-padding-top: 6px;
+padding-top: 10px;
 }
 
 .comment-header a {
@@ -760,8 +766,23 @@ padding-top: 6px;
 }
 
 .similar-posts .post {
+  margin: 0 14px;
   margin-bottom: 10px;
+  border-radius: 14px;
+  border: 1px solid var(--light-mode-hover-color);
+  background: var(--light-mode-hover-color);
+  box-sizing: border-box;
+}
+.similar-posts .post:hover {
+  background: var(--light-mode-hover-color);
+}
 
+.similar-posts .post-content {
+  background: 0;
+}
+
+.similar-posts .post-content:hover {
+  background: 0;
 }
 
 #reply-button {
@@ -1122,7 +1143,7 @@ p.preview-description {
 .post-content > .title {
   font-size: 1rem;
   font-weight: 500;
-  margin: 12px 0px;
+  margin: 3px 0px;
   margin-bottom: 0px;
   color: var(--light-mode-text-color);
 }
@@ -1353,6 +1374,10 @@ p.preview-description {
 
   .post-title {
     color: var(--dark-mode-text-color);
+  }
+
+  .similar-posts .post:hover {
+    background: var(--dark-mode-hover-color);
   }
 
   .button-container button {
