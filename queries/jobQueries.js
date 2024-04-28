@@ -89,6 +89,10 @@ const jobQueries = {
           companies.logo AS company_logo,
           companies.location AS company_location,
           companies.description AS company_description,
+          companies.industry AS company_industry,
+          companies.size AS company_size,
+          companies.stock_symbol AS company_stock_symbol,
+          companies.founded AS company_founded,
           (
             SELECT STRING_AGG(JobTags.tagName, ', ') 
             FROM JobPostingsTags 

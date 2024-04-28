@@ -90,6 +90,17 @@ div.job-filters {
   width: 100%;
 }
 
+.job-flair p {
+  display: -webkit-box;
+  -webkit-line-clamp: 1; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space-collapse: collapse;
+  white-space: nowrap;
+  margin: 0;
+}
+
 h3.job-title {
   margin: 0;
   margin-top: 3px;
@@ -345,13 +356,13 @@ p.job-description {
 
 .job-flair {
   display: inline-block;
-  padding: 3px 5px;
-  margin:6px 8px 0px 0px;
-  margin-bottom: 2px;
+  padding: 4px 5px;
+  margin: 3px 7px 0px 0px;
+  margin-bottom: 3px;
   background-color: #7d869cab;
-  border: 1px solid #7d869cc9; 
+  border: 1px solid #7d869cc9;
   color: white;
-  border-radius: 9px;
+  border-radius: 7px;
   font-size: .825rem;
   position: relative;
 }

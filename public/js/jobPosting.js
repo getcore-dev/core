@@ -96,29 +96,37 @@ function lazyLoadJobDetails(jobId) {
 
           <div class="job-details">
             <h2 class="job-title">${job.title}</h2>
-            <div class="experience-level">
+            <div class="job-flair">
               <span class="material-symbols-outlined">badge</span>
               <span class="value">${job.experienceLevel}</span>
             </div>
-            <div class="job-location">
+            <div class="job-flair">
               <span class="material-symbols-outlined">map</span>
               <span class="value">${job.location}</span>
             </div>
-            <div class="salary-range">
-              <span class="material-symbols-outlined">payments</span>
-              <span class="salary-min">${formatSalary(
-                job.salary
-              )}</span> - <span class="salary-max">${formatSalary(
-        job.salary_max
-      )}</span>
-            </div>
-            <div class="posted-date">
-              <span class="value">${formatDate(job.postedDate)}</span>
+            <div class="job-flair">
+            <span class="material-symbols-outlined">person</span>
+            <span class="value">${
+              job.company_size || "Unknown"
+            } employees</span>
+          </div>
+          <div class="job-flair">
+          <span class="material-symbols-outlined">factory</span>
+            <span class="value">${job.company_industry || "Unknown"}</span>
+          </div>
+          <div class="job-flair">
+          <span class="value">${formatDate(job.postedDate)}</span>
             </div>
             <div class="job-description">
             <h4>Job Description</h4>
 
               <p>${job.description}</p>
+            </div>
+            <div class="job-salary">
+              <h4>Salary</h4>
+              <p>The annual expected salary for this role: <strong style="color: green;">${formatSalary(
+                job.salary
+              )} - ${formatSalary(job.salary_max)}</strong></p>
             </div>
             <div class="company-description">
               <h4>Company Description</h4>

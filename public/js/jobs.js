@@ -131,7 +131,9 @@ function renderJobPostings(jobPostings) {
         (tag) =>
           `<span class="job-flair" style="background-color: ${getTintFromName(
             tag
-          )}9c; border: 1px solid ${getTintFromName(tag)};">${tag}</span>`
+          )}9c; border: 1px solid ${getTintFromName(
+            tag
+          )};"><p>${tag}</p></span>`
       )
       .join("");
     const remainingTags = tagsArray.length - maxTags;

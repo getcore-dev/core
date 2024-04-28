@@ -69,9 +69,8 @@ img.company-logo {
   margin: 11px 0 3px 0;
 }
 
-.job-description p,
-.company-description p {
-  font-size: .875rem;
+.job-details p {
+  font-size: .925rem;
   line-height: 1.5;
   margin: 0;
 }

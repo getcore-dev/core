@@ -974,8 +974,8 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
 
 
   .thumbnail-image {
-    width: 100px;
-    height: 100px;
+    width: 75px;
+    height: 75px;
     aspect-ratio: 1 / 1;
     object-fit: cover;
   }

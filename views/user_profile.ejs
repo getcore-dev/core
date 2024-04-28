@@ -26,7 +26,6 @@
 
   #repo-table th,
   #repo-table td {
-    border-bottom: 1px solid <%=otheruser.profile_border_color%>70;
     padding: 8px;
     text-align: left;
   }
@@ -41,8 +40,17 @@
   }
 
   #repo-table tr:nth-child(even) {
+    background-color: <%=otheruser.profile_border_color%>24;
+  }
+
+  #repo-table tr:hover {
     background-color: <%=otheruser.profile_border_color%>52;
   }
+
+  #repo-table thead tr:hover {
+    background-color: transparent;
+  }
+
 
   .navbar {
     border-color: <%=otheruser.profile_border_color%> !important;
