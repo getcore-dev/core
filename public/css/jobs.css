@@ -374,6 +374,10 @@ p.job-description {
   gap: 7px;
 }
 
+.job-posting-flairs .job-flair {
+  margin: 0;
+  }
+
 .job-main {
   display: flex;
   flex-direction: row;
