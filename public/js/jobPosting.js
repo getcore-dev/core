@@ -103,20 +103,18 @@ function lazyLoadJobDetails(jobId) {
 
           <div class="job-details">
             <h2 class="job-title">${job.title}</h2>
-<div class="job-post-date">
      <p id="secondary-text">
-    <span class="value">This job was posted on ${formatDate(job.postedDate)}</span>
+    This job was posted on ${formatDate(job.postedDate)}
     </p>
-    </div>
-    <div class="experience-level">
-    ${job.experienceLevel}
-    </div>
     <div class="job-is-remote">
               <h4>Location/Remote</h4>
               <p>${job.location}</p>
               <p>Remote available?: ${job.isRemote ? "Yes" : "No"}</p>
               
             </div>
+                <div class="job-experience-level">
+    <p>${job.experienceLevel}</p>
+    </div>
             <div class="job-description">
             <h4>Job Description</h4>
 
