@@ -156,7 +156,7 @@ div.vote-interactions {
   border: 1px solid #FF8370; 
   color: white;
   border-radius: 5px;
-  font-size: .825rem;
+  font-size: .725rem;
   position: relative;
 }
 
@@ -690,6 +690,7 @@ div .mini-link-desc {
   display: flex;
   flex-direction: row;
   align-items: center;
+  gap: 13px;
 }
 
 .company-logo-container {
@@ -707,8 +708,7 @@ div .mini-link-desc {
 
 
 .company-logo {
-  padding-right: 6px;
-  height: 24px;
+  height: 20px;
 }
 .job-header {
   margin-top: 26px;
@@ -860,7 +860,7 @@ div .mini-link-desc {
   }
 
   .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button, .add-comment-button {
-    padding: 4px 6px;
+    padding: 4px;
   }
 
   
