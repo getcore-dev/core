@@ -908,9 +908,9 @@ li.dropdown {
   
   .logo img {
     position: absolute;
-    top: 6px;
-    left: 43px;
-    max-height: 38px;
+    top: 9px;
+    left: 46px;
+    max-height: 34px;
     z-index: 999;
   }
 }
