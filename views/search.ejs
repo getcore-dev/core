@@ -18,73 +18,81 @@
 
   <div class="container">
     <div id="posts-container" class="column">
-      <h3>Search Results for '<%= searchTerm %>'</h3>
-      <h3>Users</h3>
-      <% if (users.length > 0) { %>
-      <div class="posts">
-        <% users.forEach(function(user) { %>
-        <div class="user" onclick="window.location.href='/user/<%= user.username %>'">
-          <div class="user-image">
-            <img id="user-avatar" src="<%= user.avatar %>">
-          </div>
-          <div class="user-info">
-            <p><%= user.firstname %> <%= user.lastname %></p>
-            <p><%= user.username%></p>
-          </div>
-        </div>
-        <% }); %>
-        <% } else { %>
-        <p>No users found.</p>
-        <% } %>
-
-        <h3>Jobs</h3>
-        <% if (jobs.length > 0) { %>
-        <div class="jobs">
-          <% jobs.forEach(function(job) { %>
-          <div class="job" onclick="window.location.href='/jobs/<%= job.id %>'">
-            <div class="job-content">
-              <div class="job-header
-                <h3><%= job.title %></h3>
-                <span><%= job.company %></span>
-                <span><%= job.location %></span>
-                </div>
-                <div class=" job-content">
-                <p><%= job.description %></p>
-                <p><%= job.salary %></p>
-              </div>
-            </div>
-          </div>
-          <% }); %>
-        </div>
-        <% } else { %>
-        <p>No jobs found.</p>
-        <% } %>
-
-
-        <h3>Posts</h3>
-        <% if (posts.length > 0) { %>
+      <h2>Search Results for '<%= searchTerm %>'</h3>
+        <h3>Users</h3>
+        <% if (users.length > 0) { %>
         <div class="posts">
-          <% posts.forEach(function(post) { %>
-          <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
-            <div class="post-content">
-
-              <div class="post-header">
-                <h3><%= post.title %></h3>
-                <span><%= new Date(post.created_at).toLocaleDateString() %></span>
-              </div>
-              <div class="post-content">
-                <p><%= post.content %></p>
-                <% if (post.link) { %>
-                <% } %>
-              </div>
+          <% users.forEach(function(user) { %>
+          <div class="user" onclick="window.location.href='/user/<%= user.username %>'">
+            <div class="user-image">
+              <% if (user.avatar) { %>
+              <img id="user-avatar" src="<%= user.avatar %>" alt="Profile Picture" style="  box-shadow: 0 1px 10px <%= user.profile_border_color%>;
+  border: 1px solid <%= user.profile_border_color%> !important;" />
+              <% } else { %>
+              <img id="user-avatar" src="/img/default-avatar.png" alt="Avatar" class="avatar" />
+              <% } %>
+            </div>
+            <div class="search-user-info">
+              <p><%= user.firstname %> <%= user.lastname %></p>
+              <p><%= user.username%></p>
             </div>
           </div>
           <% }); %>
+          <% } else { %>
+          <p>No users found.</p>
+          <% } %>
+
+          <h3>Jobs</h3>
+          <% if (jobs.length > 0) { %>
+          <div class="jobs">
+            <% jobs.forEach(function(job) { %>
+            <div class="job" onclick="window.location.href='/jobs/<%= job.id %>'">
+              <div class="job-content">
+                <div class="job-header">
+                  <p><%= job.company_name %></p>
+                  <img class="thumbnail thumbnail-regular thumbnail-tiny" src="<%= job.company_logo %>" alt="Company Logo" />
+
+                  <h4><%= job.title %></h4>
+                  <p><%= job.location %></p>
+                </div>
+                <div class="job-posting-content">
+                  <p class="description"><%= job.description %></p>
+                  <p>$<%= job.salary %></p>
+                </div>
+              </div>
+            </div>
+            <% }); %>
+          </div>
+          <% } else { %>
+          <p>No jobs found.</p>
+          <% } %>
+
+
+          <h3>Posts</h3>
+          <% if (posts.length > 0) { %>
+          <div class="posts">
+            <% posts.forEach(function(post) { %>
+            <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
+              <div class="post-content">
+
+                <div class="post-header">
+                  <p><a href="/c/<%=post.community_name%>">/<%= post.community_name %></a> by <a href="/user/<%= post.author_username %>"><%= post.author_username %></a> </p>
+                  <h4><%= post.title %></h4>
+                  <p><%= new Date(post.created_at).toLocaleDateString() %></p>
+                </div>
+                <div class="search-post-content">
+                  <p class="description"><%= post.content %></p>
+                  <% if (post.link) { %>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+            <% }); %>
+          </div>
+          <% } else { %>
+          <p>No results found.</p>
+          <% } %>
         </div>
-        <% } else { %>
-        <p>No results found.</p>
-        <% } %>
-      </div>
     </div>
 </body>
 

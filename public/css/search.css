@@ -7,16 +7,69 @@
 #posts-container {
     box-sizing: border-box;
     padding: 0 12px;
+    margin-top: 17px;
 }
 
-.user {
+.user, .post {
     display: flex;
     flex-direction: row;
     gap: 1em;
     padding: 6px 8px;
+    border-radius: 16px;
     margin: 5px 0;
-    background-color: var(--light-mode-body-color);
-    border-radius: 6px;
+    background: 0;
+    border: 0;
+}
+
+.user {
+    margin: 0;
+    margin-bottom: 14px;
+}
+
+.user:hover {
+    background-color: var(--light-mode-hover-color);
+}
+
+.job-header {
+    margin: 0;
+    position: relative;
+}
+
+.job-header h4 {
+    max-width: 70%;
+}
+
+.job-header img.thumbnail {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+
+
+#posts-container h2 {
+    font-size: 1.15rem;
+}
+
+.job {
+    background: var(--light-mode-main-color);
+}
+
+#posts-container h3 {
+    font-size: 1rem;
+    margin-top: 12px;
+    margin-bottom: 14px;
+    color: var(--light-mode-text-color);
+}
+
+#posts-container h4 {
+    font-size: .935rem;
+    color: var(--light-mode-text-color);
+}
+
+#posts-container p {
+    font-size: .825rem;
+    color: var(--light-mode-text-color);
 }
 
 .user-info {

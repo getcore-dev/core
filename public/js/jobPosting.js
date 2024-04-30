@@ -163,14 +163,19 @@ function lazyLoadJobDetails(jobId) {
                 job.company_id
               }'">${job.company_name}</h3>
               <div class="company-information">
-              <p class="company-location">${
-                job.company_location.split(",")[0]
-              }</p>
-              <p id="secondary-text" class="company-size"> ${
-                job.company_size || "Unknown"
-              } employees
+              <p class="company-location">
+              <span class="material-symbols-outlined">
+location_city
+</span>${job.company_location.split(",")[0]}</p>
+              <p id="secondary-text" class="company-size"> 
+              <span class="material-symbols-outlined">
+group
+</span>${job.company_size || "Unknown"} employees
             </p>
             <p id="secondary-text" class="company-industry"> 
+            <span class="material-symbols-outlined">
+factory
+</span>
             ${job.company_industry || "Unknown"}
             </p>
             </div>

@@ -64,6 +64,7 @@ a {
 .user-links {
   list-style: none; /* Remove list bullets */
   margin: 0;
+  top: -27px;
   padding-left: 0;
   display: flex; /* Display links inline */
 
@@ -91,28 +92,29 @@ a {
 }
 
 .search-container {
+  display: none;
   position: relative;
-  display: inline-block; /* Align with other icons */
 }
 
 .search-results-container {
   position: absolute; /* Position it below the search bar */
-  top: 61px;
+  top: var(--navbar-height);
   left: 0;
   width: 100%; /* Match the width of the search bar */
   background-color: var(--light-mode-main-color); /* Match your design */
   max-height: 300px; /* Limit the height and make it scrollable */
   overflow-y: auto;
+  border-bottom: 1px solid var(--light-mode-hover-color);
 }
 .search-results-container > div {
-  padding: 10px; /* Spacing inside result items */
-  background-color: var(--light-mode-main-color); /* Match your design */
-  border-bottom: 1px solid var(--light-mode-secondary-text-color);
-    cursor: pointer; /* Change cursor to pointer on hover */
+  padding: 9px 13px;
+  background-color: var(--light-mode-main-color);
+  border-bottom: 1px solid var(--light-mode-hover-color);
+  cursor: pointer;
   display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 .search-results-container > div:hover {
   background-color: var(--border-color); /* Highlight item on hover */
@@ -702,6 +704,8 @@ font-weight: 400;
 
 .thumbnail-regular {
   border-radius: 0;
+  max-width: none;
+  width: max-content
 }
 
 .dropdown {
@@ -756,6 +760,11 @@ font-weight: 400;
   ul {
     padding-inline-start: 0px;
   }
+
+  .search-container {
+    display: inline-block; 
+  }
+
   .user-links {
     display: flex;
     align-items: center;
@@ -814,6 +823,10 @@ li.dropdown {
     border: 0;
   }
 
+  .search-results-container {
+    top: var(--mobile-navbar-height);
+  }
+
   .user-btns {
     position: absolute;
     right: 7px;
@@ -858,7 +871,7 @@ li.dropdown {
   }
 
   .latest-commit-banner {
-    top: 36px;
+    top: 71px;
     margin-top: 3px;
     width: 100%;
   }
@@ -895,6 +908,10 @@ li.dropdown {
     border-radius: 50%;
     width: 16px;
     vertical-align: -1px;
+  }
+
+  .user-links {
+    top: 0;
   }
 
 
