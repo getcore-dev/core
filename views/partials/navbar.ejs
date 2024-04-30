@@ -545,8 +545,9 @@ function fetchLatestCommit() {
     // Event listener for the close button
     closeButton.addEventListener('click', closeBanner);
 
-    // Fetch the latest commit information on page load
+    if (<%= user %>) {
     fetchLatestCommit();
+} 
   });
 
   document.addEventListener('DOMContentLoaded', async () => {
