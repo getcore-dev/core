@@ -587,6 +587,7 @@ img.blog-avatar {
   background-color: var(--light-mode-main-color);
   margin-top: 0;
   position: relative;
+  box-sizing: border-box;
 }
 
 .trending-posts .post-content {
@@ -1273,6 +1274,10 @@ p.preview-description {
   .sidebar, .similar-posts .post-content, .button-container {
     background-color: var(--dark-mode-body-color);
   }
+  
+  .similar-posts .post {
+    border-color: var(--dark-mode-border-color);
+    }
 
   .similar-posts .post-content:hover {
     background-color: var(--dark-mode-hover-background-color);
@@ -1568,7 +1573,7 @@ div.username {
   }
 
   .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button {
-    padding: 4px 6px;
+    padding: 4px;
   }
 
 
