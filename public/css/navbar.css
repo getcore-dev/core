@@ -932,7 +932,7 @@ input:focus, textarea:focus, select:focus {
   border: none;
   border-radius: 10px;
   background: #41ae65;
-  border: 2px solid #4b9263;
+  border: 1px solid #4b9263;
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -952,8 +952,8 @@ input:focus, textarea:focus, select:focus {
   flex: 0;
   margin: 0;
   border-radius: 10px;
-  background: #41ae65;
-  border: 2px solid #4b9263;
+  background: #1ca449;
+  border: 1px solid #4b9263;
   color: white;
   cursor: pointer;
   word-wrap: break-word;
@@ -965,13 +965,13 @@ input:focus, textarea:focus, select:focus {
 }
 
 #cancel-button, #cancel-button-normal {
-  border: 2px solid #ae4444;
+  border: 1px solid #ae4444;
   background-color: #cd3a3a;
 }
 
 #regular-button, #regular-button-normal {
   background: #285994;
-  border: 2px solid #3d88e1;
+  border: 1px solid #3d88e1;
 }
 
 .select2-container--open .select2-dropdown--above {

@@ -30,6 +30,85 @@ const jobQueries = {
     }
   },
 
+  // get jobs with similar tags/skills
+  getSimilarJobs: async (jobId) => {
+    try {
+      const result = await sql.query(`
+        SELECT 
+          JobPostings.*, 
+          companies.name AS company_name, 
+          companies.logo AS company_logo, 
+          companies.location AS company_location, 
+          companies.description AS company_description,
+          (
+            SELECT STRING_AGG(JobTags.tagName, ', ')
+            FROM JobPostingsTags
+            INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+            WHERE JobPostingsTags.jobId = JobPostings.id
+          ) AS tags
+        FROM JobPostings
+        LEFT JOIN companies ON JobPostings.company_id = companies.id
+        WHERE JobPostings.id != ${jobId}
+          AND JobPostings.id IN (
+            SELECT jobId
+            FROM JobPostingsTags
+            WHERE tagId IN (
+              SELECT tagId
+              FROM JobPostingsTags
+              WHERE jobId = ${jobId}
+            )
+          )
+        ORDER BY JobPostings.postedDate DESC
+      `);
+
+      const jobs = result.recordset;
+      return jobs;
+    } catch (err) {
+      console.error("Database query error:");
+      throw err;
+    }
+  },
+
+  // get jobs with similar tags/skills by the same company
+  getSimilarJobsByCompany: async (companyId, jobId) => {
+    try {
+      const result = await sql.query(`
+        SELECT
+          JobPostings.*,
+          companies.name AS company_name,
+          companies.logo AS company_logo,
+          companies.location AS company_location,
+          companies.description AS company_description,
+          (
+            SELECT STRING_AGG(JobTags.tagName, ', ')
+            FROM JobPostingsTags
+            INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+            WHERE JobPostingsTags.jobId = JobPostings.id
+          ) AS tags
+        FROM JobPostings
+        LEFT JOIN companies ON JobPostings.company_id = companies.id
+        WHERE JobPostings.company_id = ${companyId}
+          AND JobPostings.id != ${jobId}
+          AND JobPostings.id IN (
+            SELECT jobId
+            FROM JobPostingsTags
+            WHERE tagId IN (
+              SELECT tagId
+              FROM JobPostingsTags
+              WHERE jobId = ${jobId}
+            )
+          )
+        ORDER BY JobPostings.postedDate DESC
+      `);
+
+      const jobs = result.recordset;
+      return jobs;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getJobsByCompany: async (companyId) => {
     try {
       const result = await sql.query`

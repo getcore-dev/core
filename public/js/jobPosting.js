@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const jobId = extractJobIdFromUrl();
   lazyLoadJobDetails(jobId);
+  getSimilarJobs(jobId);
 });
 
 function extractJobIdFromUrl() {
@@ -36,6 +37,77 @@ function formatSalary(salary) {
   } else {
     return "$" + salary;
   }
+}
+
+function getSimilarJobs(jobId) {
+  fetch(`/api/jobs/${jobId}/similar`)
+    .then((response) => response.json())
+    .then((jobs) => {
+      const similarJobsContainer = document.querySelector(".similar-jobs");
+
+      if (jobs.length === 0) {
+        similarJobsContainer.innerHTML = `
+      `;
+        return;
+      }
+      similarJobsContainer.innerHTML = `
+        <h4>More similar jobs</h4>
+        <div class="similar-jobs-list">
+          ${jobs
+            .map(
+              (job) => `
+            <div class="similar-job">
+              <a href="/jobs/${job.id}">
+                <img src="${job.company_logo}" alt="${job.company_name} logo" class="thumbnail thumbnail-tiny thumbnail-regular" />
+                <p id="secondary-text">${job.company_name}</p>
+                <h4>${job.title}</h4>
+              </a>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+      `;
+    })
+    .catch((error) => {
+      console.error("Error fetching similar jobs:", error);
+    });
+}
+
+function getSimilarJobsByCompany(jobId, companyName) {
+  fetch(`/api/jobs/${jobId}/similar-company`)
+    .then((response) => response.json())
+    .then((jobs) => {
+      const similarJobsContainer = document.querySelector(
+        ".similar-jobs-company"
+      );
+      if (jobs.length === 0) {
+        similarJobsContainer.innerHTML = `
+      `;
+        return;
+      }
+      similarJobsContainer.innerHTML = `
+        <h4>Similar job postings by ${companyName}</h4>
+        <div class="similar-jobs-list">
+          ${jobs
+            .map(
+              (job) => `
+            <div class="similar-job">
+              <a href="/jobs/${job.id}">
+                <img src="${job.company_logo}" alt="${job.company_name} logo" class="thumbnail thumbnail-tiny thumbnail-regular" />
+                <p id="secondary-text">${job.company_name}</p>
+                <h4>${job.title}</h4>
+              </a>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+      `;
+    })
+    .catch((error) => {
+      console.error("Error fetching similar jobs:", error);
+    });
 }
 
 function lazyLoadJobDetails(jobId) {
@@ -90,122 +162,157 @@ function lazyLoadJobDetails(jobId) {
               <h3 class="company-name" onclick="window.location.href='/jobs/company/${
                 job.company_id
               }'">${job.company_name}</h3>
-              <p class="company-location">${job.company_location}</p>
+              <div class="company-information">
+              <p class="company-location">${
+                job.company_location.split(",")[0]
+              }</p>
               <p id="secondary-text" class="company-size"> ${
-              job.company_size || "Unknown"
-            } employees
+                job.company_size || "Unknown"
+              } employees
             </p>
             <p id="secondary-text" class="company-industry"> 
             ${job.company_industry || "Unknown"}
             </p>
             </div>
+            </div>
           </div>
 
           <div class="job-details">
             <h2 class="job-title">${job.title}</h2>
-     <p id="secondary-text">
-    This job was posted on ${formatDate(job.postedDate)}
-    </p>
+            <div class="job-experience-level">
+            <p>${job.experienceLevel}</p>
+            </div>
     <div class="job-is-remote">
               <h4>Location/Remote</h4>
               <p>${job.location}</p>
               <p>Remote available?: ${job.isRemote ? "Yes" : "No"}</p>
-              
             </div>
-                <div class="job-experience-level">
-    <p>${job.experienceLevel}</p>
-    </div>
+            <div class="job-salary">
+            <h4>Salary</h4>
+            <p>The annual expected salary for this role: <strong style="color: green;">${formatSalary(
+              job.salary
+            )} - ${formatSalary(job.salary_max)}</strong></p>
+          </div>
             <div class="job-description">
             <h4>Job Description</h4>
 
               <p>${job.description}</p>
             </div>
-            <div class="job-salary">
-              <h4>Salary</h4>
-              <p>The annual expected salary for this role: <strong style="color: green;">${formatSalary(
-                job.salary
-              )} - ${formatSalary(job.salary_max)}</strong></p>
+            ${
+              job.Requirements
+                ? `
+            <div class="job-requirements">
+              <h4>Requirements</h4>
+              <p>${job.Requirements}</p>
             </div>
+            `
+                : ""
+            }
+
+            ${
+              job.Responsibilities
+                ? `
+            <div class="job-responsibilities">
+              <h4>Responsibilities</h4>
+              <p>${job.Responsibilities}</p>
+            </div>
+            `
+                : ""
+            }
             <div class="company-description">
               <h4>Company Description</h4>
               <p>${job.company_description}</p>
             </div>
-            ${job.MinimumQualifications ? `
+            
+            ${
+              job.MinimumQualifications
+                ? `
 <div class="minimum-qualifications">
   <h4>Minimum Qualifications</h4>
   <p>${job.MinimumQualifications}</p>
 </div>
-` : ""}
+`
+                : ""
+            }
 
-${job.PreferredQualifications ? `
+${
+  job.PreferredQualifications
+    ? `
 <div class="preferred-qualifications">
   <h4>Preferred Qualifications</h4>
   <p>${job.PreferredQualifications}</p>
 </div>
-` : ""}
+`
+    : ""
+}
 
-${formattedBenefits ? `
+${
+  formattedBenefits
+    ? `
 <div class="job-benefits">
   <h4>Job Benefits</h4>
   <ul>
     ${formattedBenefits}
   </ul>
 </div>
-` : ""}
+`
+    : ""
+}
 
-${job.Responsibilities ? `
-<div class="job-responsibilities">
-  <h4>Responsibilities</h4>
-  <p>${job.Responsibilities}</p>
-</div>
-` : ""}
-
-${job.Requirements ? `
-<div class="job-requirements">
-  <h4>Requirements</h4>
-  <p>${job.Requirements}</p>
-</div>
-` : ""}
-
-${job.NiceToHave ? `
+${
+  job.NiceToHave
+    ? `
 <div class="job-nice-to-have">
   <h4>Nice to Have</h4>
   <p>${job.NiceToHave}</p>
 </div>
-` : ""}
+`
+    : ""
+}
 
-${job.schedule ? `
+${
+  job.schedule
+    ? `
 <div class="job-schedule">
   <h4>Schedule</h4>
   <p>${job.schedule}</p>
 </div>
-` : ""}
+`
+    : ""
+}
 
-${job.hoursPerWeek ? `
+${
+  job.hoursPerWeek
+    ? `
 <div class="job-hours-per-week">
   <h4>Hours per Week</h4>
   <p>${job.hoursPerWeek}</p>
 </div>
-` : ""}
+`
+    : ""
+}
 
 <div class="job-h1b-visa-sponsorship">
   <h4>H1B Visa Sponsorship</h4>
   <p>${job.h1bVisaSponsorship ? "Yes" : "No"}</p>
 </div>
 
-${job.equalOpportunityEmployerInfo ? `
+${
+  job.equalOpportunityEmployerInfo
+    ? `
 <div class="job-equal-opportunity-employer-info">
   <h4>Equal Opportunity Employer Info</h4>
   <p>${job.equalOpportunityEmployerInfo}</p>
 </div>
-` : ""}
+`
+    : ""
+}
 
 <div class="job-relocation">
   <h4>Relocation</h4>
   <p>${job.relocation ? "Yes" : "No"}</p>
 </div>
 
-            <br>
             <div class="job-skills">
               <h4>Required Skills</h4>
               ${skillsHTML}
@@ -215,7 +322,6 @@ ${job.equalOpportunityEmployerInfo ? `
                   : ""
               }
             </div>
-            <br>
             <div class="job-skills">
               <h4>Tags</h4>
               ${tagsHTML}
@@ -224,8 +330,11 @@ ${job.equalOpportunityEmployerInfo ? `
                   ? `<span class="see-more" id="secondary-text">+${remainingTags} more</span>`
                   : ""
               }
-            </div>
 
+            </div>
+            <p id="secondary-text" class="post-date-text">
+            This job was posted on ${formatDate(job.postedDate)}
+            </p>
             <div class="interact-buttons">
               <div class="apply-button-container">
               <button id="submit-button-normal" onclick="window.location.href='${
@@ -241,9 +350,13 @@ ${job.equalOpportunityEmployerInfo ? `
               </div>
               
             </div>
+            <div class="similar-jobs"></div>
+            <div class="similar-jobs-company"></div>
           </div>
         </div>
       `;
+
+      getSimilarJobsByCompany(jobId, job.company_name);
     })
     .catch((error) => {
       console.error("Error fetching job details:", error);

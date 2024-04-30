@@ -202,6 +202,33 @@ router.get("/jobs/:id", async (req, res) => {
   }
 });
 
+router.get("/jobs/:id/similar", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const jobPosting = await jobQueries.findById(id);
+    const similarJobs = await jobQueries.getSimilarJobs(jobPosting.id);
+    res.json(similarJobs);
+  } catch (err) {
+    console.error("Error fetching similar jobs:", err);
+    res.status(500).send("Error fetching similar jobs");
+  }
+});
+
+router.get("/jobs/:id/similar-company", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const jobPosting = await jobQueries.findById(id);
+    const similarJobs = await jobQueries.getSimilarJobsByCompany(
+      jobPosting.company_id,
+      jobPosting.id
+    );
+    res.json(similarJobs);
+  } catch (err) {
+    console.error("Error fetching similar jobs:", err);
+    res.status(500).send("Error fetching similar jobs");
+  }
+});
+
 router.post("/job-postings", checkAuthenticated, async (req, res) => {
   try {
     const {

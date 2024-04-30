@@ -498,25 +498,25 @@ const isActive = (path) => {
       return hash;
     }
 
-function fetchLatestCommit() {
-  fetch('/api/get-latest-commit')
-    .then(response => response.json())
-    .then(data => {
-      const commitMessage = data.message;
-      const commitHash = createHashFromString(commitMessage);
-      const storedHash = localStorage.getItem('commitBannerClosed');
+    function fetchLatestCommit() {
+      fetch('/api/get-latest-commit')
+        .then(response => response.json())
+        .then(data => {
+          const commitMessage = data.message;
+          const commitHash = createHashFromString(commitMessage);
+          const storedHash = localStorage.getItem('commitBannerClosed');
 
-      if (storedHash !== String(commitHash)) {
-        document.querySelector('.latest-commit-message').innerHTML = `Website was just updated. <a href="#" class="update-notes">Update Notes #${commitHash}</a>`;
-        banner.style.display = 'block';
-      } else {
-        banner.style.display = 'none';
-      }
-    })
-    .catch(error => {
-      console.error('Error fetching latest commit:', error);
-    });
-}
+          if (storedHash !== String(commitHash)) {
+            document.querySelector('.latest-commit-message').innerHTML = `Website was just updated. <a href="#" class="update-notes">Update Notes #${commitHash}</a>`;
+            banner.style.display = 'block';
+          } else {
+            banner.style.display = 'none';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching latest commit:', error);
+        });
+    }
 
     const dropdownToggle = document.querySelector('.navbar-button.dropdown-toggle');
     const dropdownMenu = document.querySelector('.dropdown-menu');
@@ -544,10 +544,7 @@ function fetchLatestCommit() {
 
     // Event listener for the close button
     closeButton.addEventListener('click', closeBanner);
-
-    if (<%= user %>) {
     fetchLatestCommit();
-} 
   });
 
   document.addEventListener('DOMContentLoaded', async () => {
