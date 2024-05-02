@@ -199,7 +199,7 @@ a {
   width: 62vw;
   padding: 6px 10px;
   border-radius: 11px;
-  border: 1px solid var(--light-mode-hover-color);
+  border: 1px solid var(--border-color);
   background: var(--light-mode-hover-color);
 }
 
@@ -830,7 +830,7 @@ li.dropdown {
   .user-btns {
     position: absolute;
     right: 7px;
-    top: 2px;
+    top: 0;
     z-index: 500;
   }
 
@@ -925,7 +925,7 @@ li.dropdown {
   
   .logo img {
     position: absolute;
-    top: 8pm;
+    top: 7.4px;
     left: 46px;
     max-height: 34px;
     z-index: 999;
