@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const jobId = extractJobIdFromUrl();
   lazyLoadJobDetails(jobId);
-  getSimilarJobs(jobId);
 });
 
 function extractJobIdFromUrl() {
@@ -22,11 +21,52 @@ function getTintFromName(name) {
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
-  const hue = hash % 360;
-  const saturation = 50;
-  const lightness = 50;
-  const tintColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-  return tintColor;
+  hash = hash & 0x00ffffff; // Ensure hash is within the range of 0x00ffffff
+
+  // Convert hash to a hexadecimal string and pad with leading zeros
+  const colorHex = ("00000" + hash.toString(16)).slice(-6);
+  const tintColor = `#${colorHex}65`;
+
+  // Blend with a desaturated base color (e.g., gray)
+  const baseColor = "#808080"; // Light gray
+  const blendedColor = blendColors(tintColor, baseColor, 0.5);
+  return blendedColor;
+}
+
+function getTintFromNameSecondary(name) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  hash = hash & 0x00ffffff; // Ensure hash is within the range of 0x00ffffff
+
+  // Convert hash to a hexadecimal string and pad with leading zeros
+  const colorHex = ("00000" + hash.toString(16)).slice(-6);
+  const tintColor = `#${colorHex}`;
+
+  // Blend with a desaturated base color (e.g., gray)
+  const baseColor = "#404040"; // Dark gray
+  const blendedColor = blendColors(tintColor, baseColor, 0.5);
+  return blendedColor;
+}
+
+function blendColors(color1, color2, ratio) {
+  const r1 = parseInt(color1.slice(1, 3), 16);
+  const g1 = parseInt(color1.slice(3, 5), 16);
+  const b1 = parseInt(color1.slice(5, 7), 16);
+
+  const r2 = parseInt(color2.slice(1, 3), 16);
+  const g2 = parseInt(color2.slice(3, 5), 16);
+  const b2 = parseInt(color2.slice(5, 7), 16);
+
+  const r = Math.round(r1 * ratio + r2 * (1 - ratio));
+  const g = Math.round(g1 * ratio + g2 * (1 - ratio));
+  const b = Math.round(b1 * ratio + b2 * (1 - ratio));
+
+  const blendedColor = `#${r.toString(16).padStart(2, "0")}${g
+    .toString(16)
+    .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+  return blendedColor;
 }
 
 function formatSalary(salary) {
@@ -54,17 +94,44 @@ function getSimilarJobs(jobId) {
         <h4>More similar jobs</h4>
         <div class="similar-jobs-list">
           ${jobs
-            .map(
-              (job) => `
+            .map((job) => {
+              const tagsArray =
+                job.tags && job.tags[1] ? job.tags[1].split(", ") : [];
+              const maxTags = 3;
+              const displayedTags = tagsArray.slice(0, maxTags);
+              const tagsHTML = displayedTags
+                .map(
+                  (tag) =>
+                    `<span class="job-flair" onclick="window.location.href='/jobs/tags/${tag}'"
+                    style="background-color: ${getTintFromName(
+                      tag
+                    )}; border: 1px solid ${getTintFromNameSecondary(
+                      tag
+                    )};"><p>${tag}</p></span>`
+                )
+                .join("");
+              const remainingTags = tagsArray.length - maxTags;
+
+              return `
             <div class="similar-job">
               <a href="/jobs/${job.id}">
-                <img src="${job.company_logo}" alt="${job.company_name} logo" class="thumbnail thumbnail-tiny thumbnail-regular" />
+                <img src="${job.company_logo}" alt="${
+                job.company_name
+              } logo" class="thumbnail thumbnail-tiny thumbnail-regular" />
                 <p id="secondary-text">${job.company_name}</p>
                 <h4>${job.title}</h4>
+                <div class="job-tags">
+                  ${tagsHTML}
+                  ${
+                    remainingTags > 0
+                      ? `<span class="see-more" id="secondary-text">+${remainingTags} more</span>`
+                      : ""
+                  }
+                </div>
               </a>
             </div>
-          `
-            )
+          `;
+            })
             .join("")}
         </div>
       `;
@@ -90,17 +157,45 @@ function getSimilarJobsByCompany(jobId, companyName) {
         <h4>Similar job postings by ${companyName}</h4>
         <div class="similar-jobs-list">
           ${jobs
-            .map(
-              (job) => `
+            .map((job) => {
+              const tagsArray =
+                job.tags && job.tags[1] ? job.tags[1].split(", ") : [];
+              const maxTags = 3;
+              const displayedTags = tagsArray.slice(0, maxTags);
+              const tagsHTML = displayedTags
+                .map(
+                  (tag) =>
+                    `<span class="job-flair" onclick="window.location.href='/jobs/tags/${tag}'"
+                    style="background-color: ${getTintFromName(
+                      tag
+                    )}; border: 1px solid ${getTintFromNameSecondary(
+                      tag
+                    )};"><p>${tag}</p></span>`
+                )
+                .join("");
+              const remainingTags = tagsArray.length - maxTags;
+
+              return `
             <div class="similar-job">
               <a href="/jobs/${job.id}">
-                <img src="${job.company_logo}" alt="${job.company_name} logo" class="thumbnail thumbnail-tiny thumbnail-regular" />
+                <img src="${job.company_logo}" alt="${
+                job.company_name
+              } logo" class="thumbnail thumbnail-tiny thumbnail-regular" />
                 <p id="secondary-text">${job.company_name}</p>
                 <h4>${job.title}</h4>
+                <div class="job-tags">
+                  ${tagsHTML}
+                  ${
+                    remainingTags > 0
+                      ? `<span class="see-more" id="secondary-text">+${remainingTags} more</span>`
+                      : ""
+                  }
+                </div>
+
               </a>
             </div>
-          `
-            )
+          `;
+            })
             .join("")}
         </div>
       `;
@@ -140,12 +235,25 @@ function lazyLoadJobDetails(jobId) {
       const displayedSkills = skillsArray.slice(0, maxSkills);
 
       const tagsHTML = displayedTags
-        .map((tag) => `<span class="job-flair">${tag}</span>`)
+        .map(
+          (tag) =>
+            `<span class="job-flair" onclick="window.location.href='/jobs/tags/${tag}'"
+            style="background-color: ${getTintFromName(
+              tag
+            )}; border: 1px solid ${getTintFromNameSecondary(
+              tag
+            )};"><p>${tag}</p></span>`
+        )
         .join("");
       const skillsHTML = displayedSkills
         .map(
           (skill) =>
-            `<span class="job-flair" style="background-color: #7d959cab; border-color: #7d9c84c9;">${skill}</span>`
+            `<span class="job-flair" onclick="window.location.href='/jobs/tags/${skill}'"
+            style="background-color: ${getTintFromName(
+              skill
+            )}; border: 1px solid ${getTintFromNameSecondary(
+              skill
+            )};"><p>${skill}</p></span>`
         )
         .join("");
 
@@ -196,7 +304,9 @@ factory
             <h4>Salary</h4>
             <p>The annual expected salary for this role: <strong style="color: green;">${formatSalary(
               job.salary
-            )} - ${formatSalary(job.salary_max)}</strong></p>
+            )} ${
+        job.salary_max ? "to " + formatSalary(job.salary_max) : ""
+      }</strong></p>
           </div>
             <div class="job-description">
             <h4>Job Description</h4>
@@ -337,9 +447,7 @@ ${
               }
 
             </div>
-            <p id="secondary-text" class="post-date-text">
-            This job was posted on ${formatDate(job.postedDate)}
-            </p>
+
             <div class="interact-buttons">
               <div class="apply-button-container">
               <button id="submit-button-normal" onclick="window.location.href='${
@@ -356,12 +464,15 @@ ${
               </div>
               
             </div>
+            <p id="secondary-text" class="post-date-text">
+            This job was posted on ${formatDate(job.postedDate)}
+            </p>
             <div class="similar-jobs"></div>
             <div class="similar-jobs-company"></div>
           </div>
         </div>
       `;
-
+      getSimilarJobs(jobId);
       getSimilarJobsByCompany(jobId, job.company_name);
     })
     .catch((error) => {

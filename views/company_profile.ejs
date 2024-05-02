@@ -95,9 +95,8 @@
         jobElement.onclick = () => {
           window.location.href = `/jobs/${job.id}`;
         };
-        const tagsArray = job.tags ?
-          job.tags[1] ?
-          job.tags[1].split(", ") : [] : [];
+        const tagsArray = job.tags && job.tags[1] ? job.tags[1].split(", ") : [];
+
         const maxTags = 3; // Adjust this value based on your desired maximum number of tags
         const displayedTags = tagsArray.slice(0, maxTags);
         const tagsHTML = displayedTags
@@ -110,53 +109,53 @@
           .join("");
         const remainingTags = tagsArray.length - maxTags;
         jobElement.innerHTML = `
-      <div class="job-preview">
-        <div class="job-info">
-          <div class="company-info">
-            <img class="thumbnail thumbnail-tiny" src="${
-              job.company_logo
-            }" alt="${job.company_name} logo" />
-            <p class="company-name">${job.company_name}</p>
-            <form id="favorite-form-${job.id}" action="/favorites/jobs/${
-      job.id
-    }" method="POST" style="margin-left: auto;">
-              <button type="submit" style="margin-left:auto; background: 0; border:0;">                
-                <span class="material-symbols-outlined" style="font-size:1.2rem;">star</span>
-              </button>
-            </form>
-          </div>
-          <h3 class="job-title">${
-            job.title
-          } <span style="margin-left: auto; float: right;">${
-      job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1)
-    }</span></h3>
-          <h5 class="job-subtitle secondary-text">
-            <span style="margin-left: auto; float:right;">USD $${Math.floor(
-              (job.salary + job.salary_max) / 2 / 1000
-            )}k</span>
-            ${job.location}
-          </h5> 
-          <div class="job-main">
-            <div class="job-description">
-              <p class="job-description">${job.description}</p>
+            <div class="job-preview">
+              <div class="job-info">
+                <div class="company-info">
+                  <img class="thumbnail thumbnail-tiny" src="${
+                    job.company_logo
+                  }" alt="${job.company_name} logo" />
+                  <p class="company-name">${job.company_name}</p>
+                  <form id="favorite-form-${job.id}" action="/favorites/jobs/${
+            job.id
+          }" method="POST" style="margin-left: auto;">
+                    <button type="submit" style="margin-left:auto; background: 0; border:0;">                
+                      <span class="material-symbols-outlined" style="font-size:1.2rem;">star</span>
+                    </button>
+                  </form>
+                </div>
+                <h3 class="job-title">${
+                  job.title
+                } <span style="margin-left: auto; float: right;">${
+            job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1)
+          }</span></h3>
+                <h5 class="job-subtitle secondary-text">
+                  <span style="margin-left: auto; float:right;">USD $${Math.floor(
+                    (job.salary + job.salary_max) / 2 / 1000
+                  )}k</span>
+                  ${job.location}
+                </h5> 
+                <div class="job-main">
+                  <div class="job-description">
+                    <p class="job-description">${job.description}</p>
+                  </div>
+                  <div class="job-buttons">
+                    <button class="job-apply" id="submit-button-normal" style="padding: 5px 10px">Apply</button>
+                  </div>
+                </div>
+                <div class="job-posting-flairs">
+                  ${tagsHTML}
+                  ${
+                    remainingTags > 0
+                      ? `<span class="see-more">+${remainingTags} more</span>`
+                      : ""
+                  }
+                </div>
+              </div>
             </div>
-            <div class="job-buttons">
-              <button class="job-apply" id="submit-button-normal" style="padding: 5px 10px">Apply</button>
-            </div>
-          </div>
-          <div class="job-posting-flairs">
-            ${tagsHTML}
-            ${
-              remainingTags > 0
-                ? `<span class="see-more">+${remainingTags} more</span>`
-                : ""
-            }
-          </div>
-        </div>
-      </div>
-    `;
-        jobListContainer.appendChild(jobElement);
-      });
+          `;
+              jobListContainer.appendChild(jobElement);
+            });
     }
 
     renderJobPostings(<%- JSON.stringify(jobs) %>);

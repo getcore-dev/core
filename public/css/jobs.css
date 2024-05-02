@@ -204,7 +204,7 @@ p.job-description {
     margin: 0;
     border-radius: 0;
     margin-bottom: 0;
-    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
   }
   
   .job-title-location {
@@ -389,7 +389,7 @@ p.job-description {
   border: 1px solid #7d869cc9;
   color: white;
   border-radius: 9px;
-  font-size: .725rem;
+  font-size: .925rem;
   position: relative;
 }
 
@@ -398,6 +398,11 @@ p.job-description {
   flex-direction: row;
   align-items: center;
   gap: 7px;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: auto;
+  margin-top: 5px;
 }
 
 .job-posting-flairs .job-flair {
@@ -493,10 +498,6 @@ div .material-symbols-outlined {
 @media (max-width: 768px) {
   body {
     display: block;
-  }
-
-  .job {
-    border-width: .5px;
   }
   .jobs-container {
     height: calc(100dvh - 58px);

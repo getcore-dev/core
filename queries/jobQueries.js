@@ -24,7 +24,7 @@ const jobQueries = {
       throw err;
     }
   },
-  
+
   getJobsCount: async () => {
     try {
       const result = await sql.query(`
@@ -37,42 +37,88 @@ const jobQueries = {
       throw err;
     }
   },
+  getJobsByTag: async (tagId, limit = 10, offset = 0) => {
+    try {
+      const result = await sql.query(`
+        SELECT JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
+        (
+          SELECT STRING_AGG(JobTags.tagName, ', ')
+          FROM JobPostingsTags
+          INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+          WHERE JobPostingsTags.jobId = JobPostings.id
+        ) AS tags
+        FROM JobPostings
+        LEFT JOIN companies ON JobPostings.company_id = companies.id
+        WHERE JobPostings.id IN (
+          SELECT jobId
+          FROM JobPostingsTags
+          WHERE tagId = ${tagId}
+        )
+        ORDER BY JobPostings.postedDate DESC
+        OFFSET ${offset} ROWS
+        FETCH NEXT ${limit} ROWS ONLY
+      `);
+      const jobs = result.recordset;
+      return jobs;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getTagId: async (tagName) => {
+    try {
+      const result = await sql.query`
+        SELECT id FROM JobTags WHERE tagName = ${tagName}
+      `;
+      return result.recordset[0].id;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
 
   // get jobs with similar tags/skills
   getSimilarJobs: async (jobId) => {
     try {
       const result = await sql.query(`
-        SELECT 
+        SELECT TOP 5
           JobPostings.*, 
           companies.name AS company_name, 
           companies.logo AS company_logo, 
           companies.location AS company_location, 
           companies.description AS company_description,
           (
-            SELECT STRING_AGG(JobTags.tagName, ', ')
-            FROM JobPostingsTags
+            SELECT STRING_AGG(JobTags.tagName, ', ') 
+            FROM JobPostingsTags 
             INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
             WHERE JobPostingsTags.jobId = JobPostings.id
-          ) AS tags
+          ) AS tags,
+          (
+            SELECT STRING_AGG(skills.name, ', ')
+            FROM job_skills
+            INNER JOIN skills ON job_skills.skill_id = skills.id
+            WHERE job_skills.job_id = JobPostings.id
+          ) AS skills,
+          (
+            SELECT COUNT(*)
+            FROM JobPostingsTags AS jpt1
+            WHERE jpt1.jobId = JobPostings.id AND jpt1.tagId IN (
+              SELECT tagId
+              FROM JobPostingsTags AS jpt2
+              WHERE jpt2.jobId = ${jobId}
+            )
+          ) AS similar_tag_count
         FROM JobPostings
         LEFT JOIN companies ON JobPostings.company_id = companies.id
         WHERE JobPostings.id != ${jobId}
-          AND JobPostings.id IN (
-            SELECT jobId
-            FROM JobPostingsTags
-            WHERE tagId IN (
-              SELECT tagId
-              FROM JobPostingsTags
-              WHERE jobId = ${jobId}
-            )
-          )
-        ORDER BY JobPostings.postedDate DESC
+        ORDER BY similar_tag_count DESC, JobPostings.postedDate DESC
       `);
 
       const jobs = result.recordset;
       return jobs;
     } catch (err) {
-      console.error("Database query error:");
+      console.error("Database query error:", err);
       throw err;
     }
   },
@@ -81,33 +127,40 @@ const jobQueries = {
   getSimilarJobsByCompany: async (companyId, jobId) => {
     try {
       const result = await sql.query(`
-        SELECT
-          JobPostings.*,
-          companies.name AS company_name,
-          companies.logo AS company_logo,
-          companies.location AS company_location,
-          companies.description AS company_description,
-          (
-            SELECT STRING_AGG(JobTags.tagName, ', ')
-            FROM JobPostingsTags
-            INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
-            WHERE JobPostingsTags.jobId = JobPostings.id
-          ) AS tags
-        FROM JobPostings
-        LEFT JOIN companies ON JobPostings.company_id = companies.id
-        WHERE JobPostings.company_id = ${companyId}
-          AND JobPostings.id != ${jobId}
-          AND JobPostings.id IN (
-            SELECT jobId
-            FROM JobPostingsTags
-            WHERE tagId IN (
-              SELECT tagId
-              FROM JobPostingsTags
-              WHERE jobId = ${jobId}
-            )
-          )
-        ORDER BY JobPostings.postedDate DESC
-      `);
+      SELECT TOP 5
+      JobPostings.*,
+      companies.name AS company_name,
+      companies.logo AS company_logo,
+      companies.location AS company_location,
+      companies.description AS company_description,
+      (
+        SELECT STRING_AGG(JobTags.tagName, ', ') 
+        FROM JobPostingsTags 
+        INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+        WHERE JobPostingsTags.jobId = JobPostings.id
+      ) AS tags,
+      (
+        SELECT STRING_AGG(skills.name, ', ')
+        FROM job_skills
+        INNER JOIN skills ON job_skills.skill_id = skills.id
+        WHERE job_skills.job_id = JobPostings.id
+      ) AS skills
+    FROM JobPostings
+    LEFT JOIN companies ON JobPostings.company_id = companies.id
+    WHERE JobPostings.company_id = ${companyId}
+      AND JobPostings.id != ${jobId}
+      AND JobPostings.id IN (
+        SELECT jobId
+        FROM JobPostingsTags
+        WHERE tagId IN (
+          SELECT tagId
+          FROM JobPostingsTags
+          WHERE jobId = ${jobId}
+        )
+      )
+    ORDER BY JobPostings.postedDate DESC
+    
+    `);
 
       const jobs = result.recordset;
       return jobs;
@@ -131,7 +184,13 @@ const jobQueries = {
             FROM JobPostingsTags 
             INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
             WHERE JobPostingsTags.jobId = JobPostings.id
-          ) AS tags
+          ) AS tags,
+          (
+            SELECT STRING_AGG(skills.name, ', ')
+            FROM job_skills
+            INNER JOIN skills ON job_skills.skill_id = skills.id
+            WHERE job_skills.job_id = JobPostings.id
+          ) AS skills
         FROM JobPostings
         LEFT JOIN companies ON JobPostings.company_id = companies.id
         WHERE JobPostings.company_id = ${companyId}

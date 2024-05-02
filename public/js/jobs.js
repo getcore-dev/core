@@ -115,7 +115,8 @@ function renderJobPostings(jobPostings) {
     const tagsHTML = displayedTags
       .map(
         (tag) =>
-          `<span class="job-flair" style="background-color: ${getTintFromName(
+          `<span class="job-flair" onclick="window.location.href='/jobs/tags/${tag}'"
+          style="background-color: ${getTintFromName(
             tag
           )}; border: 1px solid ${getTintFromNameSecondary(
             tag
@@ -199,9 +200,12 @@ function renderTopTagsAndCount(topTags) {
 
   topTags.forEach((tag) => {
     const tagElement = document.createElement("div");
-    tagElement.innerHTML = `<span class="job-flair" style="background-color: ${getTintFromName(
+    tagElement.innerHTML = `<span class="job-flair" onclick="window.location.href='/jobs/tags/${
       tag.tagName
-    )}; border: 1px solid ${getTintFromNameSecondary(tag.tagName)};"><p>${
+    }'"
+     style="background-color: ${getTintFromName(
+       tag.tagName
+     )}; border: 1px solid ${getTintFromNameSecondary(tag.tagName)};"><p>${
       tag.tagName
     }</p><p>${tag.count}</p></span>`;
     topTagsContainer.appendChild(tagElement);

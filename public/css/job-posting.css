@@ -99,20 +99,26 @@ img.company-logo {
 
 div.similar-job {
   margin-top: 10px;
-  min-width: 150px;
+  min-width: 170px;
     display: flex;
     background: var(--light-mode-hover-color);
     border-radius: 18px;
     padding: 13px 17px;
-    max-height: 130px;
+    max-height: 170px;
     position: relative;
+}
+
+.similar-jobs-company, .similar-jobs {
+  margin-top: 30px;
 }
 
 div.similar-job img.thumbnail {
   position: absolute !important;
   width: auto !important;
   right: 10px;
-  bottom: 8px;
+  border-radius: 50%;
+  top: 8px;
+  opacity: 0.5;
 }
 
 div.similar-job h4 {
@@ -148,6 +154,9 @@ div.similar-job h4 {
   margin-bottom: 40px;
 }
 
+.job-tags p {
+  font-size: .825rem;
+}
 
 
 .job-title {

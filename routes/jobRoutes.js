@@ -28,15 +28,26 @@ router.get("/company/:id", async (req, res) => {
   }
 });
 
-router.get("/getTopTags", async (req, res) => {
+router.get("/tags/:tag", async (req, res) => {
   try {
-    const tags = await jobQueries.getCountOfTopJobTags();
-    res.json(tags);
+    const tag = req.params.tag;
+    const tagId = await jobQueries.getTagId(tag);
+    const jobs = await jobQueries.getJobsByTag(tagId);
+    res.render("tag.ejs", { tag, jobs, user: req.user });
   } catch (err) {
-    console.error("Error fetching tags:", err);
-    res.status(500).send("Error fetching tags");
+    console.error("Error fetching job postings:", err);
+    res.status(500).send("Error fetching job postings");
   }
-});
+}),
+  router.get("/getTopTags", async (req, res) => {
+    try {
+      const tags = await jobQueries.getCountOfTopJobTags();
+      res.json(tags);
+    } catch (err) {
+      console.error("Error fetching tags:", err);
+      res.status(500).send("Error fetching tags");
+    }
+  });
 
 router.get("/delete/:id", checkAuthenticated, async (req, res) => {
   try {

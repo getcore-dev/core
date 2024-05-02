@@ -251,7 +251,10 @@ const getTitle = (path) => {
     return `Openings / ${job.title}`;
   } else if (path.startsWith('/posts/') && typeof post !== 'undefined') {
     return `/${post.community.shortname}/${post.username}`;
-  } else {
+  } else if (path.startsWith('/jobs/tags/') && typeof tag !== 'undefined') {
+    return `Openings / ${tag}`;
+  }
+  else {
     return pathTitles[path] || '';
   }
 };

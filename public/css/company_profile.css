@@ -70,7 +70,6 @@ main {
   }
 
 .company-name {
-    font-size: 20px;
     font-weight: bold;
     margin: 0;
 }
@@ -83,29 +82,35 @@ main {
 .company-info {
     display: flex;
     flex-direction: column;
+    
 }
 
 p.job-description {
-    inline-size: min-content;
-    white-space: normal;
-    width: 100%;
-    overflow: hidden;
-    box-sizing: border-box;
-    line-height: 1.5em;
-    margin: 0;
-    font-size: .875rem;
-    margin: 11px 0;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+  inline-size: min-content;
+  white-space: normal;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  line-height: 1.125rem;
+  margin: 0;
+  font-size: .875rem;
+  margin: 2px 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
   }
 
   .job-posting-flairs {
     display: flex;
     flex-direction: row;
-    gap: 7px;
     align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-x: auto;
+    margin-top: 5px;
   }
 
 
@@ -117,29 +122,43 @@ p.job-description {
     display: flex;
     flex-direction: row;
     gap: 10px;
+    width: 100%;
+  }
+
+  h3.job-title {
+    margin: 0;
+    margin-top: 3px;
+    font-size: 1rem;
   }
 
 .job-info .company-info {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    padding-top: 8px;
-    width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding-top: 0px;
+  width: 100%;
   }
+
+
+.see-more {
+  font-size: .825rem;
+}
 
   
 
 .job-flair {
-    display: inline-block;
-    padding: 2px 4px;
-    margin-bottom: 2px;
-    background-color: #7d869cab;
-    border: 1px solid #7d869cc9; 
-    color: white;
-    border-radius: 6px;
-    font-size: 14px;
-    position: relative;
+  display: inline-flex;
+  gap: 5px;
+  padding: 3px 5px;
+  margin: 3px 7px 0px 0px;
+  margin-bottom: 3px;
+  background-color: #7d869cab;
+  border: 1px solid #7d869cc9;
+  color: white;
+  border-radius: 9px;
+  font-size: .925rem;
+  position: relative;
   }
 
   .job {
@@ -147,7 +166,7 @@ p.job-description {
     margin: 0;
     border-radius: 0;
     margin-bottom: 0;
-    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
   }
 
   .job-preview {
@@ -159,6 +178,8 @@ p.job-description {
 
   .job-info {
     flex-grow: 1;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
 
