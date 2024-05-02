@@ -21,12 +21,14 @@
     <%- include('partials/com-btn-container', { }) %>
 
     <div class="jobs-container">
-      <% if (user && user.recruiter_id) { %>
-      <div class="create-job-button">
-        <button class="create-job" onclick="window.location.href='/jobs/create';">+</button>
-      </div>
-      <% } %>
-      <div class="top-tags">
+      <div class="jobs-header">
+        <% if (user && user.recruiter_id) { %>
+        <div class="create-job-button">
+          <button class="create-job" onclick="window.location.href='/jobs/create';">+</button>
+        </div>
+        <% } %>
+        <div class="top-tags">
+        </div>
       </div>
 
       <div class="job-list">

@@ -205,12 +205,37 @@
             <% if (post.post_type != 'blog') { %>
             <div class="post-interactions-header">
               <div class="post-user-info-header">
-                <img class="avatar" src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" onerror="" />
-                <a href="/user/<%= post.user.username %>" class="post-user-info">
-                  <div class="post-user-info">
-                    <%= post.user.username %>
+                <div class="tags-div">
+
+                  <div class="tags">
+                    <% if (post.tags && post.tags.length > 0) { %>
+                    <% post.tags.forEach(tag => { %>
+                    <span class="tag" onclick="window.location.href='/jobs/tags/<%= tag.name %>'">
+                      <p><%= tag.name %></p>
+                    </span>
+                    <% }); %>
+                    <% } %>
+                    <% if (post.post_type == "project") { %>
+
+                    <% 
+                let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {};
+                %>
+                    <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
+                    <% gitHubData.topics.forEach(topic => { %>
+                    <a href="/jobs/tags/<%= topic %>" class="tag"><%= topic %></a>
+                    <% }); %>
+                    <% } %>
+                    <% } %>
                   </div>
-                </a>
+                </div>
+                <div class="post-user-information">
+                  <img class="avatar" src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" onerror="" />
+                  <a href="/user/<%= post.user.username %>" class="post-user-info">
+                    <div class="post-user-info">
+                      <%= post.user.username %>
+                    </div>
+                  </a>
+                </div>
               </div>
             </div>
             <% } %>
@@ -751,28 +776,6 @@
             </div>
             <% } %>
             <div class="post-footer" style="text-align: center;">
-              <div class="tags-div">
-
-                <div class="tags">
-                  tags:
-                  <% if (post.tags && post.tags.length > 0) { %>
-                  <% post.tags.forEach(tag => { %>
-                  <a href="#" class="tag"><%= tag.name %></a>
-                  <% }); %>
-                  <% } %>
-                  <% if (post.post_type == "project") { %>
-
-                  <% 
-                let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {};
-                %>
-                  <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
-                  <% gitHubData.topics.forEach(topic => { %>
-                  <a href="#" class="tag"><%= topic %></a>
-                  <% }); %>
-                  <% } %>
-                  <% } %>
-                </div>
-              </div>
             </div>
           </div>
         </div>

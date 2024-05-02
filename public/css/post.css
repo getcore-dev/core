@@ -590,6 +590,10 @@ img.blog-avatar {
   box-sizing: border-box;
 }
 
+.similar-posts .post-content {
+  background: none !important;
+}
+
 .trending-posts .post-content {
     background-color: var(--light-mode-main-color);
 }
@@ -705,6 +709,8 @@ div.repliers-avatar, div.repliees-avatar {
   flex-direction: row;
   align-items: center;
   gap: 10px;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .comment .avatar, .post-user-info-header .avatar {
@@ -771,11 +777,11 @@ padding-top: 10px;
   margin-bottom: 10px;
   border-radius: 14px;
   border: 1px solid var(--border-color);
-  background: var(--light-mode-main-color);
+  background: var(--light-mode-hover-color);
   box-sizing: border-box;
 }
 .similar-posts .post:hover {
-  background: var(--light-mode-hover-color);
+  background: var(--border-color);
 }
 
 .similar-posts .post-content {
@@ -859,9 +865,6 @@ a.comment-user-info:hover {
   padding: 0;
 }
 
-.comment-body p {
-  font-size: .875rem;
-}
 
 .comment-avatar img {
   float: inline-start;
@@ -934,6 +937,8 @@ a.comment-user-info:hover {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin-top: 2px;
+  margin-bottom: 3px;
 }
 
 .dropdown .material-symbols-outlined {
@@ -992,10 +997,10 @@ a.comment-user-info:hover {
 }
 
 .post-body p , .comment-body p {
-  line-height: 1.65rem;
+  line-height: 1.15rem;
 }
 
-.post-body p {
+.post-body p, .comment-body p {
   font-size: .925rem;
 }
 
@@ -1166,15 +1171,39 @@ p.preview-description {
   padding-right: 10px;
 }
 
+.post-user-information {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+
+}
+
+.tag {
+  display: inline-flex;
+  gap: 5px;
+  padding: 3px 5px;
+  margin: 3px 7px 0px 0px;
+  margin-bottom: 3px;
+  background-color: #7d869cab;
+  border: 1px solid #7d869cc9;
+  color: white;
+  border-radius: 9px;
+  font-size: .925rem;
+  position: relative;
+}
+
+#community-header-text {
+  font-weight: bold;
+}
+
 .tag-flair {
   display: inline-block;
-  padding: 1px 6px;
-  background-color: var(--dark-mode-main-color);
   margin: 1px;
   border-radius: 5px;
   font-size: .875rem;
   position: relative;
-  color: white;
+  color: var(--light-mode-text-color);
 }
 
 #github-flair {
@@ -1271,11 +1300,12 @@ p.preview-description {
     background-color: var(--dark-mode-body-color);
   }
 
-  .sidebar, .similar-posts .post-content, .button-container {
+  .sidebar, .button-container {
     background-color: var(--dark-mode-body-color);
   }
   
-  .similar-posts .post {
+    .similar-posts .post {
+      background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-border-color);
     }
 
@@ -1339,6 +1369,11 @@ p.preview-description {
   .post-content > .title {
     color: var(--dark-mode-text-color);
   }
+
+  .similar-posts .post-content {
+    background: none !important;
+  }
+  
 
   .description {
     color: var(--dark-mode-text-color);

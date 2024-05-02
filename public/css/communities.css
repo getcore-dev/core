@@ -8,7 +8,7 @@ body {
 .post, .job {
   display: flex;
   background: var(--light-mode-main-color);
-  border: 1px solid var(--light-mode-main-color);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   margin: 10px;
   flex-direction: row;
@@ -252,7 +252,7 @@ div.vote-interactions {
   background-color: var(--light-mode-hover-color);
   border-radius: 18px;
   margin: 0px 0px;
-  border: 1px solid var(--light-mode-hover-color);
+  border: 1px solid var(--border-color);
   margin-top: 5px;
 }
 
@@ -691,8 +691,9 @@ div .mini-link-desc {
 }
 
 .load-more-button {
-  background: none !important;
-  color: var(--light-mode-text-color) !important;
+  background: var(--light-mode-body-color) !important;
+  color: var(--light-mode-secondary-text-color) !important;
+  border-color: var(--border-color) !important;
   box-sizing: border-box;
 }
 
@@ -1133,6 +1134,13 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
     border: 1px solid #224368;
   }
 
+  .load-more-button {
+    background: var(--dark-mode-main-color) !important;
+    color: var(--dark-mode-secondary-text-color) !important;
+    border-color: var(--dark-mode-border-color) !important;
+    box-sizing: border-box;
+  }
+
   .community-selector .communities:hover {
     background-color: var(--dark-mode-hover-color);
   }
@@ -1166,8 +1174,8 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
       color: #ccc; /* Lighter text color for post information */
   }
   #posts-container > div.mobile-jobs-container > div.jobslist > div {
-        border-color: var(--dark-mode-main-color);
-  }
+    border-color: var(--dark-mode-border-color);
+    }
 
   #posts-container {
     border-color: var(--dark-mode-border-color);

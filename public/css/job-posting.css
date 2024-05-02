@@ -102,6 +102,7 @@ div.similar-job {
   min-width: 170px;
     display: flex;
     background: var(--light-mode-hover-color);
+    border: 1px solid var(--border-color);
     border-radius: 18px;
     padding: 13px 17px;
     max-height: 170px;
@@ -194,6 +195,11 @@ div.similar-job h4 {
 @media (prefers-color-scheme: dark) {
   .job-listing {
     background-color: var(--dark-mode-body-color);
+  }
+
+  div.similar-job { 
+    background: var(--dark-mode-hover-color);
+    border-color: var(--dark-mode-border-color);
   }
 
   .company-location {

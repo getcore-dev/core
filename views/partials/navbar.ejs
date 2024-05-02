@@ -249,6 +249,8 @@ const getTitle = (path) => {
     return `/${community.shortname}`;
   } else if (path.startsWith('/jobs/') && typeof job !== 'undefined') {
     return `Openings / ${job.title}`;
+    } else if (path.startsWith('/posts/') && path.includes('edit') && typeof post !== 'undefined') {
+    return `Edit / ${post.title}`;
   } else if (path.startsWith('/posts/') && typeof post !== 'undefined') {
     return `/${post.community.shortname}/${post.username}`;
   } else if (path.startsWith('/jobs/tags/') && typeof tag !== 'undefined') {
@@ -324,16 +326,15 @@ const isActive = (path) => {
       border-color: <%=navbarTint %>;
     }
 
+    #community-header-text:hover {
+      color: <%=navbarTint %> !important;
+    }
+
 
     .comm-short-title {
       color: <%=navbarTint %> !important;
     }
 
-    .tag-flair {
-      background-color: <%=navbarTint %> !important;
-      border: 1px solid <%=navbarTint %>20 !important;
-
-    }
 
     #community-header-text:hover {
       color: <%=navbarTint %> !important;

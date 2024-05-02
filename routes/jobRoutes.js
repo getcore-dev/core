@@ -32,6 +32,9 @@ router.get("/tags/:tag", async (req, res) => {
   try {
     const tag = req.params.tag;
     const tagId = await jobQueries.getTagId(tag);
+    if (!tagId) {
+      res.status(404).send("Tag not found");
+    }
     const jobs = await jobQueries.getJobsByTag(tagId);
     res.render("tag.ejs", { tag, jobs, user: req.user });
   } catch (err) {

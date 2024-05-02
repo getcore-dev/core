@@ -1218,13 +1218,13 @@ input:focus, textarea:focus, select:focus {
   .navbar, .second-nav-bar, .search-results-container {
     background-color: var(--dark-mode-body-color);
     color: var(--dark-mode-text-color);
-    border-color: var(--dark-mode-main-color) !important;
+    border-color: var(--dark-mode-border-color) !important;
 }
 
 .mobile-search-input {
   background-color: var(--dark-mode-main-color);
   color: var(--dark-mode-text-color);
-  border-color: var(--dark-mode-main-color);
+  border-color: var(--dark-mode-border-color);
 }
 
 .second-nav-bar { 

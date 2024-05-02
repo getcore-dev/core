@@ -393,6 +393,15 @@ p.job-description {
   position: relative;
 }
 
+.jobs-header {
+  display: flex;
+  align-items: center;
+}
+
+.create-job-button {
+  padding-left: 13px;
+}
+
 .job-posting-flairs {
   display: flex;
   flex-direction: row;
