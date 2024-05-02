@@ -21,34 +21,19 @@
     <%- include('partials/com-btn-container', { }) %>
 
     <div class="jobs-container">
-      <div class="jobs-container-header">
-        <div class="jobs-sort-selector">
-          <% if (user && user.recruiter_id) { %>
-          <div class="create-job-button">
-            <button class="create-job" onclick="window.location.href='/jobs/create';">+</button>
-          </div>
-          <% } %>
-          <div class="job-filters">
-            <p>
-              I want to find a <a id="secondary-text"><u>position</u></a> <span class="material-symbols-outlined" id="second-nav-icon">
-                arrow_drop_down
-              </span>
-              <a id="secondary-text"><u>job</u></a>
-              <span class="material-symbols-outlined" id="second-nav-icon">
-                arrow_drop_down
-              </span>
-              in <a id="secondary-text"><u>location</u></a> <span class="material-symbols-outlined" id="second-nav-icon">
-                arrow_drop_down
-              </span>
-              making at least $<a id="secondary-text"><u>000000</u></a> <span class="material-symbols-outlined" id="second-nav-icon">
-                arrow_drop_down
-              </span>
-            </p>
-          </div>
-        </div>
+      <% if (user && user.recruiter_id) { %>
+      <div class="create-job-button">
+        <button class="create-job" onclick="window.location.href='/jobs/create';">+</button>
       </div>
+      <% } %>
+      <div class="top-tags">
+      </div>
+
       <div class="job-list">
 
+      </div>
+      <div class="load-more">
+        <button class="load-more-btn" id="regular-button">Load More</button>
       </div>
     </div>
     </div>

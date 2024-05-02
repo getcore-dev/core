@@ -16,55 +16,68 @@ const utilFunctions = {
       }
     );
   },
-  getPosts: async (sortBy = "trending", userId) => {
+  getPosts: async (sortBy = "trending", userId, page = 1, limit = 10) => {
     try {
+      const offset = (page - 1) * limit;
       const result = await sql.query`
       SELECT 
-        p.id, 
-        p.created_at, 
-        p.deleted, 
-        p.title, 
-        p.content, 
-        p.subtitle,
-        p.link, 
-        p.communities_id, 
-        p.react_like, 
-        p.react_love, 
-        p.react_curious, 
-        p.react_interesting, 
-        p.react_celebrate, 
-        p.post_type, 
-        p.views, 
-        u.currentJob, 
-        u.username, 
-        u.avatar,
-        CASE WHEN ur.follower_id IS NOT NULL THEN 1 ELSE 0 END AS is_following,
-        c.name AS community_name, 
-        c.community_color as community_color,
-        c.shortname AS community_shortname,
-        SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
-        SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-        SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
-        SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
-        SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
-        SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
-        (
-          SELECT TOP 1 upa2.action_type 
-          FROM userPostActions upa2
-          WHERE upa2.post_id = p.id AND upa2.user_id = ${userId}
-        ) as userReaction
-      FROM posts p
-      INNER JOIN users u ON p.user_id = u.id
-      LEFT JOIN userPostActions upa ON p.id = upa.post_id
-      LEFT JOIN communities c ON p.communities_id = c.id
-      LEFT JOIN user_relationships ur ON u.id = ur.followed_id AND ur.follower_id = ${userId}
-      WHERE p.deleted = 0
-      GROUP BY 
-        p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.subtitle, 
-        p.communities_id, u.avatar, u.currentJob, c.name, c.shortname, c.community_color,
-        p.react_like, p.react_love, p.react_curious, p.react_interesting, 
-        p.react_celebrate, p.post_type, p.views, ur.follower_id
+      p.id,
+      p.created_at, 
+      p.deleted, 
+      p.title, 
+      p.content, 
+      p.subtitle,
+      p.link, 
+      p.communities_id, 
+      p.react_like, 
+      p.react_love, 
+      p.react_curious, 
+      p.react_interesting, 
+      p.react_celebrate, 
+      p.post_type, 
+      p.views, 
+      u.currentJob, 
+      u.username, 
+      u.avatar,
+      CASE WHEN ur.follower_id IS NOT NULL THEN 1 ELSE 0 END AS is_following,
+      c.name AS community_name, 
+      c.community_color as community_color,
+      c.shortname AS community_shortname,
+      SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
+      SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
+      SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+      SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
+      SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
+      SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
+      (
+        SELECT TOP 1 upa2.action_type 
+        FROM userPostActions upa2
+        WHERE upa2.post_id = p.id AND upa2.user_id = ${userId}
+      ) as userReaction
+    FROM posts p
+    INNER JOIN users u ON p.user_id = u.id
+    LEFT JOIN userPostActions upa ON p.id = upa.post_id
+    LEFT JOIN communities c ON p.communities_id = c.id
+    LEFT JOIN user_relationships ur ON u.id = ur.followed_id AND ur.follower_id = ${userId}
+    WHERE p.deleted = 0
+    GROUP BY 
+      p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.subtitle, 
+      p.communities_id, u.avatar, u.currentJob, c.name, c.shortname, c.community_color,
+      p.react_like, p.react_love, p.react_curious, p.react_interesting, 
+      p.react_celebrate, p.post_type, p.views, ur.follower_id
+    ORDER BY p.created_at DESC -- Add an ORDER BY clause
+    OFFSET ${offset} ROWS
+    FETCH NEXT ${limit} ROWS ONLY
     `;
+
+      const countResult = await sql.query`
+        SELECT COUNT(*) AS totalCount
+        FROM posts p
+        WHERE p.deleted = 0
+      `;
+
+      const totalCount = countResult.recordset[0].totalCount;
+      const totalPages = Math.ceil(totalCount / limit);
 
       let sortedResult;
 
@@ -161,7 +174,11 @@ const utilFunctions = {
           );
       }
 
-      return sortedResult;
+      return {
+        posts: sortedResult,
+        currentPage: page,
+        totalPages: totalPages,
+      };
     } catch (err) {
       console.error("Database query error:", err);
       throw err;

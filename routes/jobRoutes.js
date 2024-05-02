@@ -28,6 +28,28 @@ router.get("/company/:id", async (req, res) => {
   }
 });
 
+router.get("/getTopTags", async (req, res) => {
+  try {
+    const tags = await jobQueries.getCountOfTopJobTags();
+    res.json(tags);
+  } catch (err) {
+    console.error("Error fetching tags:", err);
+    res.status(500).send("Error fetching tags");
+  }
+});
+
+router.get("/delete/:id", checkAuthenticated, async (req, res) => {
+  try {
+    const jobId = req.params.id;
+    // delete the job and tags and skills associated with it
+    await jobQueries.deleteJob(jobId);
+    res.redirect("/jobs");
+  } catch (err) {
+    console.error("Error deleting job:", err);
+    res.status(500).send("Error deleting job");
+  }
+});
+
 router.get("/:id", async (req, res) => {
   try {
     const id = req.params.id;

@@ -686,6 +686,16 @@ div .mini-link-desc {
   -webkit-box-orient: vertical;
 }
 
+.load-more {
+  padding: 0 13px;
+}
+
+.load-more-button {
+  background: none !important;
+  color: var(--light-mode-text-color) !important;
+  box-sizing: border-box;
+}
+
 .jobs-header {
   display: flex;
   flex-direction: row;
@@ -751,6 +761,13 @@ div .mini-link-desc {
   display: none;
 }
 
+.company-name {
+  display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
 .comm-description {
   padding: 5px 0;
 }
@@ -758,7 +775,7 @@ div .mini-link-desc {
 
 @media (max-width: 768px) {
   .jobslist .job { 
-    min-width: 200px;
+    min-width: 190px;
   }
 
   #posts-container > h5 {
@@ -841,7 +858,7 @@ div .mini-link-desc {
   
   .job-content {
     width: 100%;
-    margin: 11px 16px;
+    margin: 11px 12px;
   }
 
   .thumbnail {

@@ -349,7 +349,8 @@ ${
               <div class="favorite-button-container">
               <form id="favorite-form-${job.id}" action="/favorites/jobs/${
         job.id
-      }" method="POST" style="margin-left: auto;">
+      }" method="POST" style="margin-left: auto;" onsubmit="handleFavoriteFormSubmit(event)">
+
       <button id="regular-button-normal">Favorite</button>
               </form>
               </div>
@@ -365,5 +366,36 @@ ${
     })
     .catch((error) => {
       console.error("Error fetching job details:", error);
+    });
+}
+
+function handleFavoriteFormSubmit(event) {
+  event.preventDefault(); // Prevent the default form submission
+
+  const form = event.target;
+  const formData = new FormData(form);
+
+  fetch(form.action, {
+    method: form.method,
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const message = data.message; // Assuming the response contains a 'message' property
+
+      const banner = document.getElementById("latestCommitBanner");
+      const messageElement = banner.querySelector(".latest-commit-message");
+      messageElement.textContent = message;
+
+      banner.style.display = "block"; // Show the banner
+
+      // Optionally, you can hide the banner after a certain duration
+      setTimeout(() => {
+        banner.style.display = "none";
+      }, 3000); // Hide the banner after 3 seconds (adjust as needed)
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      // Handle any errors that occurred during the form submission
     });
 }

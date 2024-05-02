@@ -354,8 +354,33 @@ p.job-description {
   padding: 8px 10px;
 }
 
+.load-more {
+  padding: 0 13px;
+}
+
+.load-more-btn {
+  background: none !important;
+  color: var(--light-mode-text-color) !important;
+  box-sizing: border-box;
+}
+
+.top-tags {
+  display: flex;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  padding: 0 13px;
+  max-width: 100%;
+  overflow-x: auto;
+  margin-top: 5px;
+}
+
+.top-tags > div {
+  flex-shrink: 1; /* Allow divs to shrink to fit the container */
+}
+
 .job-flair {
-  display: inline-block;
+  display: inline-flex;
+  gap: 5px;
   padding: 3px 5px;
   margin: 3px 7px 0px 0px;
   margin-bottom: 3px;

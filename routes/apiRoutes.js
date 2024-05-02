@@ -183,8 +183,21 @@ router.get("/skills", async (req, res) => {
 
 router.get("/jobs", async (req, res) => {
   try {
-    const jobPostings = await jobQueries.getJobs();
-    res.json(jobPostings);
+    const page = parseInt(req.query.page) || 1; // Get the page number from query parameters, default to 1
+    const limit = parseInt(req.query.limit) || 10; // Get the number of items per page, default to 10
+
+    const offset = (page - 1) * limit; // Calculate the offset based on page and limit
+
+    const [jobPostings, totalCount] = await Promise.all([
+      jobQueries.getJobs(limit, offset),
+      jobQueries.getJobsCount(),
+    ]);
+
+    res.json({
+      jobPostings,
+      currentPage: page,
+      totalPages: Math.ceil(totalCount / limit),
+    });
   } catch (err) {
     console.error("Error fetching job postings:", err);
     res.status(500).send("Error fetching job postings");
@@ -436,6 +449,189 @@ router.post("/extract-job-details", async (req, res) => {
   }
 });
 
+router.post("/auto-create-job-posting", async (req, res) => {
+  try {
+    const { link } = req.body;
+    const chatGPTModule = await import("chatgpt");
+
+    if (link) {
+      const api = new chatGPTModule.ChatGPTAPI({
+        apiKey: process.env.OPENAI_API_KEY,
+      });
+
+      const headers = {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
+        Accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Accept-Encoding": "gzip, deflate, br",
+        Connection: "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "Cache-Control": "max-age=0",
+      };
+
+      const linkResponse = await axios.get(link, { headers, timeout: 5000 });
+      const { data } = linkResponse;
+
+      // Remove HTML tags and scripts
+      const cleanedData = data.replace(
+        /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+        ""
+      );
+      const textContent = cleanedData.replace(/<(?:.|\n)*?>/gm, "");
+
+      const prompt = `Please extract the following information from this job posting data:  ${textContent}
+      - title (e.g., Software Engineer, Data Analyst, do not include intern or seniority in the title)
+      - company_name NVARCHAR(50) (as simple as possible, not amazon inc, just Amazon. If it's a startup, use the startup name)
+      - company_description NVARCHAR(MAX)(write a short paragraph about the company, where they're located, their mission, etc)
+      - company_industry (e.g., Technology, Healthcare, Finance, etc.)
+      - company_size (e.g., 1-10, 11-50, 51-200, 201-500, 501-1000, 1001-5000, 5001-10000, 10001+)
+      - company_stock_symbol (if public, otherwise leave blank)
+      - company_logo (in the format of /src/<company-name>logo.png do not include space in the company logo)
+      - company_founded (year founded, if available, otherwise leave blank, format in SQL datetime format)
+      - location (City, State(full name), Country(full name), if remote N/A)
+      - salary (integer only, no currency symbol, no matter what format the salary in (hourly, monthly, weekly) convert to yearly salary)
+      - salary_max (integer only, no currency symbol, no matter what format the salary in (hourly, monthly, weekly) convert to yearly salary)
+      - experience_level ("Internship", "Entry Level", "Junior", "Mid Level", "Senior" or "Lead" only)
+      - skills (6-10 skills, prefer single word skills, as a comma-separated list)
+      - tags (at least 10, these should be different from skills and are things commonly searched related to the job. e.g., "remote", "healthcare", "startup" as a comma-separated list)
+      - description (try to take up to 3 paragraphs from the original source)
+      - benefits (as a comma-separated list) 
+      - additional_information (blank if nothing detected in the job posting, otherwise provide any additional information that you think is relevant to the job posting)
+      - PreferredQualifications (if available)
+      - MinimumQualifications (if available)
+      - Responsibilities (responsibilities of the job)
+      - Requirements (requirements of the job)
+      - NiceToHave (nice to have skills or experience)
+      - Schedule (mon-fri, 9-5, etc.)
+      - HoursPerWeek (integer only)
+      - H1BVisaSponsorship BIT
+      - IsRemote BIT
+      - EqualOpportunityEmployerInfo NVARCHAR(MAX)
+      - Relocation BIT
+      Provide the extracted information in JSON format.`;
+
+      const response = await api.sendMessage(prompt);
+      const cleanedResponse =
+        response.text.replace(/`+/g, "").match(/\{.*\}/s)?.[0] || "";
+
+      let extractedData;
+      try {
+        extractedData = JSON.parse(cleanedResponse);
+      } catch (error) {
+        console.error(
+          `Failed to parse JSON response: ${cleanedResponse}` + error
+        );
+        res.status(500).json({
+          error: "Failed to parse the JSON response from the ChatGPT API",
+        });
+        return;
+      }
+
+      console.log("Extracted data:", extractedData);
+
+      // Check if the extracted data contains an error message
+      if (extractedData.error) {
+        console.log(
+          `Skipping job posting due to ChatGPT error: ${extractedData.error}`
+        );
+        res
+          .status(200)
+          .json({ message: "Job posting skipped due to ChatGPT error" });
+        return;
+      }
+
+      // Check if the extracted data is complete
+      const requiredFields = [
+        "title",
+        "company_name",
+        "location",
+        "salary",
+        "experience_level",
+        "skills",
+        "tags",
+        "description",
+      ];
+      const isComplete = requiredFields.every((field) =>
+        extractedData.hasOwnProperty(field)
+      );
+
+      if (isComplete) {
+        try {
+          // Check if the company exists in the database
+          let company = await jobQueries.getCompanyIdByName(
+            extractedData.company_name
+          );
+
+          // Create it if not
+          if (!company) {
+            company = await jobQueries.createCompany(
+              extractedData.company_name,
+              extractedData.company_logo,
+              extractedData.location,
+              extractedData.company_description,
+              extractedData.company_industry,
+              extractedData.company_size,
+              extractedData.company_stock_symbol,
+              extractedData.company_founded
+            );
+          }
+
+          // Create the job posting
+          const jobPostingId = await jobQueries.createJobPosting(
+            extractedData.title,
+            extractedData.salary,
+            extractedData.experience_level,
+            extractedData.location,
+            new Date(),
+            company.id,
+            link,
+            null,
+            extractedData.tags.split(",").map((tag) => tag.trim()),
+            extractedData.description,
+            extractedData.salary_max,
+            1,
+            extractedData.skills.split(",").map((skill) => skill.trim()),
+            extractedData.benefits,
+            extractedData.additional_information,
+            extractedData.PreferredQualifications,
+            extractedData.MinimumQualifications,
+            extractedData.Responsibilities,
+            extractedData.Requirements,
+            extractedData.NiceToHave,
+            extractedData.Schedule,
+            extractedData.HoursPerWeek,
+            extractedData.H1BVisaSponsorship,
+            extractedData.IsRemote,
+            extractedData.EqualOpportunityEmployerInfo,
+            extractedData.Relocation
+          );
+
+          res.status(201).json({
+            message: "Job posting created successfully",
+            jobPostingId: jobPostingId.toString(),
+          });
+        } catch (error) {
+          console.error("Error creating job posting:", error);
+          res.status(500).json({
+            error: "An error occurred while creating the job posting",
+          });
+        }
+      } else {
+        res.status(200).json({ message: "Job posting not created" });
+      }
+    } else {
+      res.status(400).json({ error: "Invalid job link" });
+    }
+  } catch (error) {
+    console.error("Error extracting job details:", error);
+    res.status(500).json({
+      error: "An error occurred while extracting job details",
+    });
+  }
+});
+
 router.get("/posts/:postId/comments", async (req, res) => {
   try {
     const postId = req.params.postId;
@@ -547,12 +743,17 @@ router.get("/get-latest-commit", cacheMiddleware(1200), async (req, res) => {
 
 router.get("/posts", async (req, res) => {
   try {
-    const user = req.user ? req.user : null;
-    const sortBy = req.query.sortBy || "best";
-    const posts = await utilFunctions.getPosts(sortBy, user ? user.id : null);
+    const sortBy = req.query.sortBy || "trending";
+    const userId = req.query.userId;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10; // Number of posts per page
+    const offset = (page - 1) * limit;
+
+    const posts = await utilFunctions.getPosts(sortBy, userId, page, limit);
     res.json(posts);
   } catch (err) {
-    res.status(500).send(err.message);
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

@@ -1,29 +1,37 @@
 const sql = require("mssql");
 
 const jobQueries = {
-  getJobs: async () => {
+  getJobs: async (limit, offset) => {
     try {
       const result = await sql.query(`
-        SELECT 
-          JobPostings.*,
-          companies.name AS company_name, 
-          companies.logo AS company_logo,
-          companies.location AS company_location,
-          companies.description AS company_description,
-          (
-            SELECT STRING_AGG(JobTags.tagName, ', ') 
-            FROM JobPostingsTags 
-            INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
-            WHERE JobPostingsTags.jobId = JobPostings.id
-          ) AS tags
+        SELECT JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
+        (
+          SELECT STRING_AGG(JobTags.tagName, ', ')
+          FROM JobPostingsTags
+          INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+          WHERE JobPostingsTags.jobId = JobPostings.id
+        ) AS tags
         FROM JobPostings
         LEFT JOIN companies ON JobPostings.company_id = companies.id
         ORDER BY JobPostings.postedDate DESC
+        OFFSET ${offset} ROWS
+        FETCH NEXT ${limit} ROWS ONLY
       `);
-
       const jobs = result.recordset;
-      // Cache the result for future requests
       return jobs;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+  
+  getJobsCount: async () => {
+    try {
+      const result = await sql.query(`
+        SELECT COUNT(*) AS count
+        FROM JobPostings
+      `);
+      return result.recordset[0].count;
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -242,62 +250,105 @@ const jobQueries = {
       .join(",");
 
     try {
+      // Check for exact duplicates based on title and company ID
+      const exactDuplicateCheck = await sql.query`
+        SELECT COUNT(*) AS count
+        FROM JobPostings
+        WHERE title = ${title} AND company_id = ${company_id}
+      `;
+
+      const exactDuplicateCount = exactDuplicateCheck.recordset[0].count;
+
+      // If an exact duplicate exists, return null
+      if (exactDuplicateCount > 0) {
+        console.log("Exact duplicate job posting detected, not inserting.");
+        return null;
+      }
+
+      // Check for potential duplicates based on additional criteria
+      const duplicateCheck = await sql.query`
+        SELECT COUNT(*) AS count
+        FROM JobPostings
+        WHERE
+          title = ${title} AND
+          experienceLevel = ${experienceLevel} AND
+          location = ${location} AND
+          company_id = ${company_id} AND
+          description = ${description} AND
+          (
+            (salary IS NULL AND ${salary} IS NULL) OR
+            (salary IS NOT NULL AND ${salary} IS NOT NULL AND salary = ${salary})
+          ) AND
+          (
+            (salary_max IS NULL AND ${salary_max} IS NULL) OR
+            (salary_max IS NOT NULL AND ${salary_max} IS NOT NULL AND salary_max = ${salary_max})
+          )
+      `;
+
+      const duplicateCount = duplicateCheck.recordset[0].count;
+
+      // If there are at least 5 matching columns, consider it a duplicate
+      if (duplicateCount >= 5) {
+        console.log("Potential duplicate job posting detected, not inserting.");
+        return null;
+      }
+
       // Insert the job posting into the JobPostings table
       const result = await sql.query`
-      INSERT INTO JobPostings (
-        title,
-        salary,
-        experienceLevel,
-        location,
-        postedDate,
-        company_id,
-        link,
-        expiration_date,
-        description,
-        salary_max,
-        recruiter_id,
-        additional_information,
-        benefits,
-        preferredQualifications,
-        minimumQualifications,
-        responsibilities,
-        requirements,
-        niceToHave,
-        schedule,
-        hoursPerWeek,
-        h1bVisaSponsorship,
-        isRemote,
-        equalOpportunityEmployerInfo,
-        relocation
-      )
-      OUTPUT INSERTED.id
-      VALUES (
-        ${title},
-        ${salary},
-        ${experienceLevel},
-        ${location},
-        ${postedDate},
-        ${company_id},
-        ${link},
-        ${expiration_date},
-        ${description},
-        ${salary_max},
-        ${recruiter_id},
-        ${additional_information},
-        ${formattedBenefits},
-        ${preferredQualifications},
-        ${minimumQualifications},
-        ${responsibilities},
-        ${requirements},
-        ${niceToHave},
-        ${schedule},
-        ${hoursPerWeek},
-        ${h1bVisaSponsorship},
-        ${isRemote},
-        ${equalOpportunityEmployerInfo},
-        ${relocation}
-      )
-    `;
+        INSERT INTO JobPostings (
+          title,
+          salary,
+          experienceLevel,
+          location,
+          postedDate,
+          company_id,
+          link,
+          expiration_date,
+          description,
+          salary_max,
+          recruiter_id,
+          additional_information,
+          benefits,
+          preferredQualifications,
+          minimumQualifications,
+          responsibilities,
+          requirements,
+          niceToHave,
+          schedule,
+          hoursPerWeek,
+          h1bVisaSponsorship,
+          isRemote,
+          equalOpportunityEmployerInfo,
+          relocation
+        )
+        OUTPUT INSERTED.id
+        VALUES (
+          ${title},
+          ${salary},
+          ${experienceLevel},
+          ${location},
+          ${postedDate},
+          ${company_id},
+          ${link},
+          ${expiration_date},
+          ${description},
+          ${salary_max},
+          ${recruiter_id},
+          ${additional_information},
+          ${formattedBenefits},
+          ${preferredQualifications},
+          ${minimumQualifications},
+          ${responsibilities},
+          ${requirements},
+          ${niceToHave},
+          ${schedule},
+          ${hoursPerWeek},
+          ${h1bVisaSponsorship},
+          ${isRemote},
+          ${equalOpportunityEmployerInfo},
+          ${relocation}
+        )
+      `;
 
       const jobPostingId = result.recordset[0].id;
 
@@ -413,10 +464,41 @@ const jobQueries = {
         OUTPUT INSERTED.id
         VALUES (${name}, ${logo_url}, ${location}, ${description}, ${industry}, ${size}, ${stock_symbol}, ${founded})
       `;
-      const companyId = result.recordset[0].id;
-      return companyId;
+      const companyObject = result.recordset[0];
+      return companyObject;
     } catch (err) {
       console.error(`Database insert error: ${err} in createCompany`);
+      throw err;
+    }
+  },
+  deleteJob: async (jobId) => {
+    try {
+      await sql.query`
+        DELETE FROM JobPostingsTags WHERE jobId = ${jobId}
+      `;
+      await sql.query`
+        DELETE FROM job_skills WHERE job_id = ${jobId}
+      `;
+      await sql.query`
+      DELETE FROM JobPostings WHERE id = ${jobId}
+    `;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+  getCountOfTopJobTags: async () => {
+    try {
+      const result = await sql.query`
+        SELECT TOP 9 tagName, COUNT(tagId) AS count
+        FROM JobPostingsTags
+        INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+        GROUP BY tagId, tagName
+        ORDER BY count DESC
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
       throw err;
     }
   },

@@ -61,7 +61,6 @@ const favoritesQueries = {
                 INSERT INTO favorites_jobs (user_id, job_posting_id, created_at)
                 VALUES (${userId}, ${jobId}, GETDATE())`;
 
-      return "Job successfully added to favorites.";
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -83,7 +82,6 @@ const favoritesQueries = {
                 DELETE FROM favorites_jobs
                 WHERE user_id = ${userId} AND job_posting_id = ${jobId}`;
 
-      return "Job successfully removed from favorites.";
     } catch (err) {
       console.error("Database query error:", err);
       throw err;

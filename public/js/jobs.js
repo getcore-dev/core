@@ -1,112 +1,98 @@
 let jobPostings = []; // Declare jobPostings in a higher scope
+let currentPage = 1;
+const itemsPerPage = 10;
+let isLoading = false;
 
 document.addEventListener("DOMContentLoaded", () => {
-  fetch("/api/job-postings") // Replace with your actual API route
+  fetchJobPostings(currentPage);
+  getTopTags();
+  document
+    .querySelector(".load-more-btn")
+    .addEventListener("click", handleLoadMore);
+});
+
+function handleLoadMore() {
+  currentPage++;
+  fetchJobPostings(currentPage);
+}
+
+function fetchJobPostings(page) {
+  isLoading = true;
+
+  fetch(`/api/jobs?page=${page}&limit=${itemsPerPage}`)
     .then((response) => response.json())
     .then((data) => {
-      jobPostings = data; // Assign the fetched data to jobPostings
-      renderJobPostings(jobPostings); // Initial rendering of job postings
-      populateLocationFilter(); // Populate location filter options
-      populateJobTitleFilter(); // Populate job title filter options
-      populateEmploymentTypeFilter(); // Populate employment type filter options
-      populateSalaryFilter(); // Populate salary filter options
+      jobPostings = [...jobPostings, ...data.jobPostings];
+      renderJobPostings(jobPostings);
+      updateLoadMoreButton();
+      isLoading = false;
     })
     .catch((error) => {
       console.error("Error fetching job postings:", error);
+      isLoading = false;
     });
+}
 
-  const locationFilter = document.getElementById("location-filter");
-  const experienceFilter = document.getElementById("experience-filter");
-  const salaryFilter = document.getElementById("salary-filter");
-
-  // Add event listeners to the filters
-  locationFilter.addEventListener("change", filterJobs);
-  experienceFilter.addEventListener("change", filterJobs);
-  salaryFilter.addEventListener("change", filterJobs);
-
-  function filterJobs() {
-    const selectedLocation = locationFilter.value;
-    const selectedJobTitle = jobTitleFilter.value;
-    const selectedEmploymentType = employmentTypeFilter.value;
-    const selectedSalary = salaryFilter.value;
-
-    const filteredJobPostings = jobPostings.filter((job) => {
-      const locationMatch =
-        !selectedLocation || job.location === selectedLocation;
-      const jobTitleMatch = !selectedJobTitle || job.title === selectedJobTitle;
-      const employmentTypeMatch =
-        !selectedEmploymentType ||
-        job.employmentType === selectedEmploymentType;
-      const salaryMatch =
-        !selectedSalary ||
-        Math.floor((job.salary + job.salary_max) / 2 / 1000) >=
-          parseInt(selectedSalary);
-
-      return (
-        locationMatch && jobTitleMatch && employmentTypeMatch && salaryMatch
-      );
-    });
-
-    renderJobPostings(filteredJobPostings);
+function updateLoadMoreButton() {
+  const loadMoreBtn = document.querySelector(".load-more-btn");
+  if (jobPostings.length === 0 || jobPostings.length % itemsPerPage !== 0) {
+    loadMoreBtn.style.display = "none";
+  } else {
+    loadMoreBtn.style.display = "block";
   }
-
-  function populateLocationFilter() {
-    const locations = [...new Set(jobPostings.map((job) => job.location))];
-    locations.forEach((location) => {
-      const option = document.createElement("option");
-      option.value = location;
-      option.textContent = location;
-      locationFilter.appendChild(option);
-    });
-  }
-  function populateJobTitleFilter() {
-    const jobTitles = [...new Set(jobPostings.map((job) => job.title))];
-    jobTitles.forEach((title) => {
-      const option = document.createElement("option");
-      option.value = title;
-      option.textContent = title;
-      jobTitleFilter.appendChild(option);
-    });
-  }
-
-  function populateEmploymentTypeFilter() {
-    const employmentTypes = [
-      ...new Set(jobPostings.map((job) => job.experienceLevel)),
-    ];
-    employmentTypes.forEach((type) => {
-      const option = document.createElement("option");
-      option.value = type;
-      option.textContent = type;
-      employmentTypeFilter.appendChild(option);
-    });
-  }
-
-  function populateSalaryFilter() {
-    const salaries = [
-      ...new Set(
-        jobPostings.map((job) =>
-          Math.floor((job.salary + job.salary_max) / 2 / 1000)
-        )
-      ),
-    ];
-    salaries.sort((a, b) => a - b);
-    salaries.forEach((salary) => {
-      const option = document.createElement("option");
-      option.value = salary;
-      option.textContent = `USD $${salary}k`;
-      salaryFilter.appendChild(option);
-    });
-  }
-});
+}
 
 function getTintFromName(name) {
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 18) - hash);
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
-  const color = (hash & 0x00ffffff).toString(16).toUpperCase();
-  const tintColor = `#${color}`;
-  return tintColor;
+  hash = hash & 0x00ffffff; // Ensure hash is within the range of 0x00ffffff
+
+  // Convert hash to a hexadecimal string and pad with leading zeros
+  const colorHex = ("00000" + hash.toString(16)).slice(-6);
+  const tintColor = `#${colorHex}65`;
+
+  // Blend with a desaturated base color (e.g., gray)
+  const baseColor = "#808080"; // Light gray
+  const blendedColor = blendColors(tintColor, baseColor, 0.5);
+  return blendedColor;
+}
+
+function getTintFromNameSecondary(name) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  hash = hash & 0x00ffffff; // Ensure hash is within the range of 0x00ffffff
+
+  // Convert hash to a hexadecimal string and pad with leading zeros
+  const colorHex = ("00000" + hash.toString(16)).slice(-6);
+  const tintColor = `#${colorHex}`;
+
+  // Blend with a desaturated base color (e.g., gray)
+  const baseColor = "#404040"; // Dark gray
+  const blendedColor = blendColors(tintColor, baseColor, 0.5);
+  return blendedColor;
+}
+
+function blendColors(color1, color2, ratio) {
+  const r1 = parseInt(color1.slice(1, 3), 16);
+  const g1 = parseInt(color1.slice(3, 5), 16);
+  const b1 = parseInt(color1.slice(5, 7), 16);
+
+  const r2 = parseInt(color2.slice(1, 3), 16);
+  const g2 = parseInt(color2.slice(3, 5), 16);
+  const b2 = parseInt(color2.slice(5, 7), 16);
+
+  const r = Math.round(r1 * ratio + r2 * (1 - ratio));
+  const g = Math.round(g1 * ratio + g2 * (1 - ratio));
+  const b = Math.round(b1 * ratio + b2 * (1 - ratio));
+
+  const blendedColor = `#${r.toString(16).padStart(2, "0")}${g
+    .toString(16)
+    .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+  return blendedColor;
 }
 
 function renderJobPostings(jobPostings) {
@@ -131,7 +117,7 @@ function renderJobPostings(jobPostings) {
         (tag) =>
           `<span class="job-flair" style="background-color: ${getTintFromName(
             tag
-          )}9c; border: 1px solid ${getTintFromName(
+          )}; border: 1px solid ${getTintFromNameSecondary(
             tag
           )};"><p>${tag}</p></span>`
       )
@@ -145,6 +131,13 @@ function renderJobPostings(jobPostings) {
               job.company_logo
             }" alt="${job.company_name} logo" />
             <p class="company-name">${job.company_name}</p>
+            
+            <a href="/jobs/delete/${
+              job.id
+            }" style="margin-left:auto; background: 0; border:0;">
+            <span class="material-symbols-outlined" style="font-size:1.2rem;">delete</span> Delete
+            </a>
+            
             <form id="favorite-form-${job.id}" action="/favorites/jobs/${
       job.id
     }" method="POST" style="margin-left: auto;">
@@ -203,6 +196,32 @@ function formatDate(dateString) {
   const day = String(date.getDate()).padStart(2, "0");
   const year = date.getFullYear();
   return `${month}/${day}/${year}`;
+}
+
+function renderTopTagsAndCount(topTags) {
+  const topTagsContainer = document.querySelector(".top-tags");
+  topTagsContainer.innerHTML = ""; // Clear existing top tags
+
+  topTags.forEach((tag) => {
+    const tagElement = document.createElement("div");
+    tagElement.innerHTML = `<span class="job-flair" style="background-color: ${getTintFromName(
+      tag.tagName
+    )}; border: 1px solid ${getTintFromNameSecondary(tag.tagName)};"><p>${
+      tag.tagName
+    }</p><p>${tag.count}</p></span>`;
+    topTagsContainer.appendChild(tagElement);
+  });
+}
+
+function getTopTags() {
+  fetch("/jobs/getTopTags")
+    .then((response) => response.json())
+    .then((tags) => {
+      renderTopTagsAndCount(tags);
+    })
+    .catch((error) => {
+      console.error("Error fetching top tags:", error);
+    });
 }
 
 function formatLocation(location) {
