@@ -16,9 +16,14 @@ const utilFunctions = {
       }
     );
   },
-  getPosts: async (sortBy = "trending", userId, page = 1, limit = 10) => {
+  getPosts: async (
+    sortBy = "trending",
+    userId,
+    page = 1,
+    limit = 10,
+    offset
+  ) => {
     try {
-      const offset = (page - 1) * limit;
       const result = await sql.query`
       SELECT 
       p.id,
@@ -268,7 +273,14 @@ const utilFunctions = {
     }
   },
 
-  getPostsForCommunity: async (communityId) => {
+  getPostsForCommunity: async (
+    communityID,
+    sortBy = "trending",
+    userId,
+    page = 1,
+    limit = 10,
+    offset
+  ) => {
     try {
       const result = await sql.query`
         SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views,
@@ -284,11 +296,121 @@ const utilFunctions = {
         INNER JOIN users u ON p.user_id = u.id
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
         LEFT JOIN communities c ON p.communities_id = c.id
-        WHERE p.communities_id = ${communityId} AND p.deleted = 0
+        WHERE p.communities_id = ${communityID} AND p.deleted = 0
         GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.subtitle, p.link, p.communities_id, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views, c.name, c.shortname, c.community_color
         ORDER BY p.created_at DESC
+        OFFSET ${offset} ROWS
+        FETCH NEXT ${limit} ROWS ONLY
       `;
-      return result.recordset;
+      const countResult = await sql.query`
+      SELECT COUNT(*) AS totalCount
+      FROM posts p
+      WHERE p.deleted = 0 AND p.communities_id = ${communityID}
+      `;
+
+      const totalCount = countResult.recordset[0].totalCount;
+      const totalPages = Math.ceil(totalCount / limit);
+
+      let sortedResult;
+
+      switch (sortBy) {
+        case "trending":
+          const now = new Date();
+          sortedResult = result.recordset.sort((a, b) => {
+            const minutesA = (now - new Date(a.created_at)) / (1000 * 60);
+            const minutesB = (now - new Date(b.created_at)) / (1000 * 60);
+            const reactionsA =
+              a.loveCount * 5 +
+              a.boostCount * 4 +
+              a.interestingCount * 3 +
+              a.curiousCount * 2 +
+              a.likeCount +
+              a.celebrateCount * 3;
+            const reactionsB =
+              b.loveCount * 5 +
+              b.boostCount * 4 +
+              b.interestingCount * 3 +
+              b.curiousCount * 2 +
+              b.likeCount +
+              b.celebrateCount * 3;
+            const reactionsPerMinuteA = reactionsA / (minutesA + 1);
+            const reactionsPerMinuteB = reactionsB / (minutesB + 1);
+            const followingWeightA = a.is_following ? 1.2 : 1;
+            const followingWeightB = b.is_following ? 1.2 : 1;
+            const ageWeightA = Math.exp(-minutesA / (24 * 60)); // Exponential decay based on age
+            const ageWeightB = Math.exp(-minutesB / (24 * 60));
+            return (
+              reactionsPerMinuteB * followingWeightB * ageWeightB -
+              reactionsPerMinuteA * followingWeightA * ageWeightA
+            );
+          });
+          break;
+
+        case "top":
+          sortedResult = result.recordset.sort((a, b) => {
+            const totalReactionsA =
+              a.loveCount +
+              a.boostCount +
+              a.interestingCount +
+              a.curiousCount +
+              a.likeCount +
+              a.celebrateCount;
+            const totalReactionsB =
+              b.loveCount +
+              b.boostCount +
+              b.interestingCount +
+              b.curiousCount +
+              b.likeCount +
+              b.celebrateCount;
+            return totalReactionsB - totalReactionsA;
+          });
+          break;
+        case "new":
+          sortedResult = result.recordset.sort((a, b) => {
+            const dateA = new Date(a.created_at);
+            const dateB = new Date(b.created_at);
+            return dateB - dateA;
+          });
+          break;
+
+        case "explore":
+          sortedResult = result.recordset.sort((a, b) => {
+            const totalReactionsA =
+              a.loveCount +
+              a.boostCount +
+              a.interestingCount +
+              a.curiousCount +
+              a.likeCount +
+              a.celebrateCount;
+            const totalReactionsB =
+              b.loveCount +
+              b.boostCount +
+              b.interestingCount +
+              b.curiousCount +
+              b.likeCount +
+              b.celebrateCount;
+            const viewsWeightA = Math.log(a.views + 1); // Log scale for views
+            const viewsWeightB = Math.log(b.views + 1);
+            const diversityWeightA = 1 / (a.is_following ? 2 : 1); // Penalize posts from followed users
+            const diversityWeightB = 1 / (b.is_following ? 2 : 1);
+            return (
+              totalReactionsB * viewsWeightB * diversityWeightB -
+              totalReactionsA * viewsWeightA * diversityWeightA
+            );
+          });
+          break;
+
+        default:
+          sortedResult = result.recordset.sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+      }
+
+      return {
+        posts: sortedResult,
+        currentPage: page,
+        totalPages: totalPages,
+      };
     } catch (err) {
       console.error("Database query error:", err);
       throw err;

@@ -273,7 +273,7 @@ a {
 .navbar {
   background-color: var(--light-mode-main-color); 
   color: var(--primary-text-color); 
-  border-bottom: .75px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
     display: flex; 
   flex-direction: column;
   align-items: center; 
@@ -1215,10 +1215,10 @@ input:focus, textarea:focus, select:focus {
     color: var(--dark-mode-text-color);
   }
 
-  .navbar, .second-nav-bar {
+  .navbar, .second-nav-bar, .search-results-container {
     background-color: var(--dark-mode-body-color);
     color: var(--dark-mode-text-color);
-    border-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-main-color) !important;
 }
 
 .mobile-search-input {

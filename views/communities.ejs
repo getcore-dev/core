@@ -75,10 +75,6 @@
   </main>
 
   <script defer>
-    document.addEventListener('DOMContentLoaded', () => {
-      fetchJobPreviews();
-    });
-
     function getTintFromName(name) {
       let hash = 0;
       for (let i = 0; i < name.length; i++) {
@@ -114,26 +110,26 @@
             jobslistContainer = document.querySelector('body > main > div.container > div.jobs-container > div.jobslist');
           }
           jobslistContainer.innerHTML = jobs.map(job => `
-        <div class="job" onclick="window.location.href='/jobs/${job.id}'">
-          <div class="job-content">
-            <div class="jobs-header">
-              <div class="company-logo-container">
-                <img loading="lazy" src="${job.company_logo}" alt="Company Logo" class="company-logo" />
-              </div>
-              <div class="job-title-location">
-                <div class="job-posting-header">
-                  <div class="company-name">${job.company_name}</div>
+              <div class="job" onclick="window.location.href='/jobs/${job.id}'">
+                <div class="job-content">
+                  <div class="jobs-header">
+                    <div class="company-logo-container">
+                      <img loading="lazy" src="${job.company_logo}" alt="Company Logo" class="company-logo" />
+                    </div>
+                    <div class="job-title-location">
+                      <div class="job-posting-header">
+                        <div class="company-name">${job.company_name}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="job-title">${job.title.slice(0, 40)}</div>
+                  <div class="job-flairs">
+                    <span class="job-flair" id="pay-flair">$${Math.floor((job.salary + job.salary_max) / 2 / 1000)}k</span>
+                    <span class="job-flair" id="location-flair" data-location="${job.location}">${job.experienceLevel}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="job-title">${job.title.slice(0, 40)}</div>
-            <div class="job-flairs">
-              <span class="job-flair" id="pay-flair">$${Math.floor((job.salary + job.salary_max) / 2 / 1000)}k</span>
-              <span class="job-flair" id="location-flair" data-location="${job.location}">${job.experienceLevel}</span>
-            </div>
-          </div>
-        </div>
-      `).join('');
+            `).join('');
           jobslistContainer.innerHTML += '<div class="see-more"><img loading="lazy" src="./src/core.png" class="company-logo" id="see-more-core-logo"><span id="see-more-separator">&#183;</span><a href="/jobs">See More</a></div>';
 
           // Set the --location-color CSS variable for each job element
@@ -237,7 +233,7 @@
                 </button>
               </div>
             </div>
-    `;
+     `;
 
         postsContainer.appendChild(communityHeader);
       }
@@ -248,11 +244,10 @@
 
       fetch(apiUrl)
         .then(response => response.json())
-        .then(posts => {
+        .then(data => {
           const fetchPromises = [];
-
-          posts = posts.posts;
-
+          const posts = data.posts;
+          const totalPages = data.totalPages;
           posts.forEach(post => {
             // Main post div
             const postDiv = document.createElement('div');
@@ -529,7 +524,7 @@
           });
           Promise.all(fetchPromises)
             .then(() => {
-              if (posts.length > 0) {
+              if (posts.length > 0 && page < totalPages) {
                 const loadMoreDiv = document.createElement('div');
                 loadMoreDiv.className = 'load-more';
                 const loadMoreButton = document.createElement('button');
@@ -537,9 +532,7 @@
                 loadMoreButton.id = 'regular-button';
                 loadMoreButton.innerText = 'Load More';
                 loadMoreButton.onclick = () => {
-                  const currentPage = parseInt(loadMoreButton.dataset.currentPage) || page;
-                  const nextPage = currentPage + 1;
-                  loadMoreButton.dataset.currentPage = nextPage;
+                  const nextPage = page + 1;
                   fetchAndDisplayPosts(communityId, sortBy, nextPage);
                 };
                 loadMoreDiv.appendChild(loadMoreButton);
@@ -626,13 +619,6 @@
             communityActionBtn.addEventListener("click", toggleCommunityMembership);
           })
           .catch(error => console.error('Error checking membership:', error));
-
-        fetch(`/api/communities/${communityId}`)
-          .then(response => response.json())
-          .then(community => {
-            document.querySelector('.community-member-count').textContent = `${community.MemberCount} members`;
-          })
-          .catch(error => console.error('Error fetching updated community details:', error));
       }
 
       // Initially check membership and set button state
@@ -745,6 +731,9 @@
       const postsContainer = document.getElementById('posts-container');
       const communityId = postsContainer.dataset.communityId;
       fetchAndDisplayPosts(communityId);
+      if (!communityId) {
+        fetchJobPreviews();
+      }
     });
 
     function interactWithPost(event, postId, user, action) {

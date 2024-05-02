@@ -692,7 +692,19 @@ router.get("/companies", async (req, res) => {
 router.get("/communities/:communityId/posts", async (req, res) => {
   try {
     const communityId = req.params.communityId;
-    const posts = await utilFunctions.getPostsForCommunity(communityId);
+    const page = parseInt(req.query.page) || 1;
+    const sortBy = req.query.sortBy || "trending";
+    const userId = req.query.userId;
+    const limit = 10; // Number of posts per page
+    const offset = (page - 1) * limit;
+    const posts = await utilFunctions.getPostsForCommunity(
+      communityId,
+      sortBy,
+      userId,
+      page,
+      limit,
+      offset
+    );
     res.json(posts);
   } catch (err) {
     res.status(500).send("Error fetching posts");
@@ -749,7 +761,13 @@ router.get("/posts", async (req, res) => {
     const limit = 10; // Number of posts per page
     const offset = (page - 1) * limit;
 
-    const posts = await utilFunctions.getPosts(sortBy, userId, page, limit);
+    const posts = await utilFunctions.getPosts(
+      sortBy,
+      userId,
+      page,
+      limit,
+      offset
+    );
     res.json(posts);
   } catch (err) {
     console.error(err);

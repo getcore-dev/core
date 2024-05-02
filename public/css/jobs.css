@@ -356,6 +356,7 @@ p.job-description {
 
 .load-more {
   padding: 0 13px;
+  margin-bottom: 50px;
 }
 
 .load-more-btn {
@@ -407,6 +408,7 @@ p.job-description {
   display: flex;
   flex-direction: row;
   gap: 10px;
+  width: 100%;
 }
 
 #pay-flair {

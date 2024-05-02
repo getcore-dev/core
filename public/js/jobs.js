@@ -131,12 +131,7 @@ function renderJobPostings(jobPostings) {
               job.company_logo
             }" alt="${job.company_name} logo" />
             <p class="company-name">${job.company_name}</p>
-            
-            <a href="/jobs/delete/${
-              job.id
-            }" style="margin-left:auto; background: 0; border:0;">
-            <span class="material-symbols-outlined" style="font-size:1.2rem;">delete</span> Delete
-            </a>
+          
             
             <form id="favorite-form-${job.id}" action="/favorites/jobs/${
       job.id
