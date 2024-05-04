@@ -27,9 +27,11 @@ exports.searchUsers = async (req, res) => {
     const { searchTerm } = req.query;
     const userResults = await searchService.findUsers(searchTerm);
 
-    res.render("search-users.ejs", {
+    res.render("search.ejs", {
       searchTerm: searchTerm,
+      posts: [],
       users: userResults.recordset,
+      jobs: [],
       user: req.user,
     });
   } catch (error) {
@@ -43,9 +45,11 @@ exports.searchPosts = async (req, res) => {
     const { searchTerm } = req.query;
     const postResults = await searchService.findPosts(searchTerm);
 
-    res.render("search-posts.ejs", {
+res.render("search.ejs", {
       searchTerm: searchTerm,
       posts: postResults.recordset,
+      users: [],
+      jobs: [],
       user: req.user,
     });
   } catch (error) {
@@ -59,8 +63,10 @@ exports.searchJobs = async (req, res) => {
     const { searchTerm } = req.query;
     const jobResults = await searchService.findJobs(searchTerm);
 
-    res.render("search-jobs.ejs", {
+    res.render("search.ejs", {
       searchTerm: searchTerm,
+      posts: [],
+      users: [],
       jobs: jobResults.recordset,
       user: req.user,
     });
