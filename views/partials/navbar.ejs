@@ -374,52 +374,50 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
           mobileSearchResults.innerHTML = '';
-
-          if (data.posts.length > 0 || data.users.length > 0 || data.jobs.length > 0) {
-            const categories = ['posts', 'users', 'jobs'];
-            categories.forEach(category => {
-              const categoryElement = document.createElement('button');
-              categoryElement.textContent = `Search ${category}`;
-              categoryElement.onclick = () => {
-                window.location.href = `/search/${category}?searchTerm=${encodeURIComponent(searchTerm)}`;
-              };
-              mobileSearchResults.appendChild(categoryElement);
+          // Add clickable divs for specific searches in 'jobs', 'posts', and 'users'
+          const categories = ['jobs', 'posts', 'users'];
+          categories.forEach(category => {
+            const searchOptionElement = document.createElement('div');
+            searchOptionElement.textContent = `"${searchTerm}" in ${category}`;
+            searchOptionElement.className = 'search-category-option'; // Add some CSS class for styling
+            searchOptionElement.addEventListener('click', function() {
+              window.location.href = `/${category}?searchTerm=${encodeURIComponent(searchTerm)}`;
             });
+            mobileSearchResults.appendChild(searchOptionElement);
+          });
 
-            // Display post results
-            data.posts.forEach(post => {
-              const postElement = document.createElement('div');
-              postElement.textContent = post.title;
-              postElement.addEventListener('click', function() {
-                window.location.href = `/posts/${post.id}`; // Assuming the post URL structure
-              });
-              mobileSearchResults.appendChild(postElement);
+          // Display the actual search results for posts, users, jobs
+          // Display post results
+          data.posts.forEach(post => {
+            const postElement = document.createElement('div');
+            postElement.textContent = post.title;
+            postElement.addEventListener('click', function() {
+              window.location.href = `/posts/${post.id}`; // Assuming the post URL structure
             });
+            mobileSearchResults.appendChild(postElement);
+          });
 
-            // Display user results
-            data.users.forEach(user => {
-              const userElement = document.createElement('div');
-              userElement.textContent = user.username;
-              userElement.addEventListener('click', function() {
-                window.location.href = `/user/${user.username}`; // Assuming the user URL structure
-              });
-              mobileSearchResults.appendChild(userElement);
+          // Display user results
+          data.users.forEach(user => {
+            const userElement = document.createElement('div');
+            userElement.textContent = user.username;
+            userElement.addEventListener('click', function() {
+              window.location.href = `/user/${user.username}`; // Assuming the user URL structure
             });
+            mobileSearchResults.appendChild(userElement);
+          });
 
-            // Display job results
-            data.jobs.forEach(job => {
-              const jobElement = document.createElement('div');
-              jobElement.textContent = job.title;
-              jobElement.addEventListener('click', function() {
-                window.location.href = `/jobs/${job.id}`; // Assuming the job URL structure
-              });
-              mobileSearchResults.appendChild(jobElement);
+          // Display job results
+          data.jobs.forEach(job => {
+            const jobElement = document.createElement('div');
+            jobElement.textContent = job.title;
+            jobElement.addEventListener('click', function() {
+              window.location.href = `/jobs/${job.id}`; // Assuming the job URL structure
             });
+            mobileSearchResults.appendChild(jobElement);
+          });
 
-            mobileSearchResults.style.display = 'block';
-          } else {
-            mobileSearchResults.style.display = 'none';
-          }
+          mobileSearchResults.style.display = 'block';
         })
         .catch(error => {
           console.error('Error fetching search results:', error);
