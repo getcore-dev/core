@@ -22,6 +22,54 @@ exports.searchAll = async (req, res) => {
   }
 };
 
+exports.searchUsers = async (req, res) => {
+  try {
+    const { searchTerm } = req.query;
+    const userResults = await searchService.findUsers(searchTerm);
+
+    res.render("search-users.ejs", {
+      searchTerm: searchTerm,
+      users: userResults.recordset,
+      user: req.user,
+    });
+  } catch (error) {
+    console.error("Search error:", error);
+    res.status(500).send("Server error occurred while searching users");
+  }
+};
+
+exports.searchPosts = async (req, res) => {
+  try {
+    const { searchTerm } = req.query;
+    const postResults = await searchService.findPosts(searchTerm);
+
+    res.render("search-posts.ejs", {
+      searchTerm: searchTerm,
+      posts: postResults.recordset,
+      user: req.user,
+    });
+  } catch (error) {
+    console.error("Search error:", error);
+    res.status(500).send("Server error occurred while searching posts");
+  }
+};
+
+exports.searchJobs = async (req, res) => {
+  try {
+    const { searchTerm } = req.query;
+    const jobResults = await searchService.findJobs(searchTerm);
+
+    res.render("search-jobs.ejs", {
+      searchTerm: searchTerm,
+      jobs: jobResults.recordset,
+      user: req.user,
+    });
+  } catch (error) {
+    console.error("Search error:", error);
+    res.status(500).send("Server error occurred while searching jobs");
+  }
+};
+
 exports.searchPreview = async (req, res) => {
   try {
     const { searchTerm } = req.query;
