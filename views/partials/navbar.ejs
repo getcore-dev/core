@@ -352,80 +352,90 @@ const isActive = (path) => {
 
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const mobileSearchForm = document.getElementById('mobileSearchForm');
-    const mobileSearchInput = document.getElementById('mobileSearchInput');
-    const mobileSearchResults = document.getElementById('mobileSearchResults');
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileSearchForm = document.getElementById('mobileSearchForm');
+  const mobileSearchInput = document.getElementById('mobileSearchInput');
+  const mobileSearchResults = document.getElementById('mobileSearchResults');
 
-    mobileSearchForm.addEventListener('submit', function(event) {
-      const searchTerm = mobileSearchInput.value.trim();
+  mobileSearchForm.addEventListener('submit', function(event) {
+    const searchTerm = mobileSearchInput.value.trim();
 
-      if (searchTerm === '') {
-        event.preventDefault(); // Prevent form submission if search term is blank
-        alert('Please enter a search term.'); // Display an alert to the user
-      }
-    });
-
-    mobileSearchInput.addEventListener('input', function() {
-      const searchTerm = this.value.trim();
-
-      if (searchTerm.length > 0) {
-        fetch(`/search/preview?searchTerm=${encodeURIComponent(searchTerm)}`)
-          .then(response => response.json())
-          .then(data => {
-            mobileSearchResults.innerHTML = '';
-
-            if (data.posts.length > 0 || data.users.length > 0 || data.jobs.length > 0) {
-              // Display post results
-              data.posts.forEach(post => {
-                const postElement = document.createElement('div');
-                postElement.textContent = post.title;
-                postElement.addEventListener('click', function() {
-                  window.location.href = `/posts/${post.id}`; // Assuming the post URL structure
-                });
-                mobileSearchResults.appendChild(postElement);
-              });
-
-              // Display user results
-              data.users.forEach(user => {
-                const userElement = document.createElement('div');
-                userElement.textContent = user.username;
-                userElement.addEventListener('click', function() {
-                  window.location.href = `/user/${user.username}`; // Assuming the user URL structure
-                });
-                mobileSearchResults.appendChild(userElement);
-              });
-
-              // Display job results
-              data.jobs.forEach(job => {
-                const jobElement = document.createElement('div');
-                jobElement.textContent = job.title;
-                jobElement.addEventListener('click', function() {
-                  window.location.href = `/jobs/${job.id}`; // Assuming the job URL structure
-                });
-                mobileSearchResults.appendChild(jobElement);
-              });
-
-              mobileSearchResults.style.display = 'block';
-            } else {
-              mobileSearchResults.style.display = 'none';
-            }
-          })
-          .catch(error => {
-            console.error('Error fetching search results:', error);
-          });
-      } else {
-        mobileSearchResults.innerHTML = '';
-        mobileSearchResults.style.display = 'none';
-      }
-    });
-
-    document.addEventListener('click', function(event) {
-      if (!mobileSearchInput.contains(event.target)) {
-        mobileSearchResults.style.display = 'none';
-      }
-    });
+    if (searchTerm === '') {
+      event.preventDefault(); // Prevent form submission if search term is blank
+      alert('Please enter a search term.'); // Display an alert to the user
+    }
   });
+
+  mobileSearchInput.addEventListener('input', function() {
+    const searchTerm = this.value.trim();
+
+    if (searchTerm.length > 0) {
+      fetch(`/search/preview?searchTerm=${encodeURIComponent(searchTerm)}`)
+        .then(response => response.json())
+        .then(data => {
+          mobileSearchResults.innerHTML = '';
+
+          if (data.posts.length > 0 || data.users.length > 0 || data.jobs.length > 0) {
+            const categories = ['posts', 'users', 'jobs'];
+            categories.forEach(category => {
+              const categoryElement = document.createElement('button');
+              categoryElement.textContent = `Search ${category}`;
+              categoryElement.onclick = () => {
+                window.location.href = `/search/${category}?searchTerm=${encodeURIComponent(searchTerm)}`;
+              };
+              mobileSearchResults.appendChild(categoryElement);
+            });
+
+            // Display post results
+            data.posts.forEach(post => {
+              const postElement = document.createElement('div');
+              postElement.textContent = post.title;
+              postElement.addEventListener('click', function() {
+                window.location.href = `/posts/${post.id}`; // Assuming the post URL structure
+              });
+              mobileSearchResults.appendChild(postElement);
+            });
+
+            // Display user results
+            data.users.forEach(user => {
+              const userElement = document.createElement('div');
+              userElement.textContent = user.username;
+              userElement.addEventListener('click', function() {
+                window.location.href = `/user/${user.username}`; // Assuming the user URL structure
+              });
+              mobileSearchResults.appendChild(userElement);
+            });
+
+            // Display job results
+            data.jobs.forEach(job => {
+              const jobElement = document.createElement('div');
+              jobElement.textContent = job.title;
+              jobElement.addEventListener('click', function() {
+                window.location.href = `/jobs/${job.id}`; // Assuming the job URL structure
+              });
+              mobileSearchResults.appendChild(jobElement);
+            });
+
+            mobileSearchResults.style.display = 'block';
+          } else {
+            mobileSearchResults.style.display = 'none';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching search results:', error);
+        });
+    } else {
+      mobileSearchResults.innerHTML = '';
+      mobileSearchResults.style.display = 'none';
+    }
+  });
+
+  document.addEventListener('click', function(event) {
+    if (!mobileSearchInput.contains(event.target)) {
+      mobileSearchResults.style.display = 'none';
+    }
+  });
+});
 
   document.getElementById('searchForm').addEventListener('submit', function(event) {
     const searchInput = document.getElementById('searchInput');
