@@ -6,9 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="/css/navbar.css" />
-  <link rel="stylesheet" href="/css/communities.css" />
-  <link rel="stylesheet" href="/css/com-btn-container.css" />
   <link rel="stylesheet" href="/css/search.css" />
+
+  <link rel="stylesheet" href="/css/jobs.css" />
+
   <link rel="shortcut icon" href="/img/core.png" />
   <title>Search Results - <%= searchTerm %></title>
 </head>
@@ -19,8 +20,8 @@
   <div class="container">
     <div id="posts-container" class="column">
       <h2>Search Results for '<%= searchTerm %>'</h3>
-        <h3>Users</h3>
         <% if (users.length > 0) { %>
+        <h3>Users</h3>
         <div class="posts">
           <% users.forEach(function(user) { %>
           <div class="user" onclick="window.location.href='/user/<%= user.username %>'">
@@ -39,37 +40,66 @@
           </div>
           <% }); %>
           <% } else { %>
-          <p>No users found.</p>
           <% } %>
 
-          <h3>Jobs</h3>
           <% if (jobs.length > 0) { %>
+          <h3>Jobs</h3>
           <div class="jobs">
-            <% jobs.forEach(function(job) { %>
+            <% jobs.forEach((job) => { %>
             <div class="job" onclick="window.location.href='/jobs/<%= job.id %>'">
-              <div class="job-content">
-                <div class="job-header">
-                  <p><%= job.company_name %></p>
-                  <img class="thumbnail thumbnail-regular thumbnail-tiny" src="<%= job.company_logo %>" alt="Company Logo" />
-
-                  <h4><%= job.title %></h4>
-                  <p><%= job.location %></p>
-                </div>
-                <div class="job-posting-content">
-                  <p class="description"><%= job.description %></p>
-                  <p>$<%= job.salary %></p>
+              <div class="job-preview">
+                <div class="job-info">
+                  <div class="company-info">
+                    <img class="thumbnail thumbnail-tiny" src="<%= job.company_logo %>" alt="<%= job.company_name %> logo" />
+                    <p class="company-name"><%= job.company_name %></p>
+                    <form id="favorite-form-<%= job.id %>" action="/favorites/jobs/<%= job.id %>" method="POST" style="margin-left: auto;">
+                      <button type="submit" style="margin-left:auto; background: 0; border:0;">
+                        <span class="material-symbols-outlined" style="font-size:1.2rem;">star</span>
+                      </button>
+                    </form>
+                  </div>
+                  <h3 class="job-title">
+                    <%= job.title %>
+                    <span style="margin-left: auto; float: right;"><%= job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1) %></span>
+                  </h3>
+                  <h5 class="job-subtitle secondary-text">
+                    <span style="margin-left: auto; float:right;">USD $<%= Math.floor((job.salary + job.salary_max) / 2 / 1000) %>k</span>
+                    <%= job.location %>
+                  </h5>
+                  <div class="job-main">
+                    <div class="job-description">
+                      <p class="job-description"><%= job.description %></p>
+                    </div>
+                    <div class="job-buttons">
+                      <button class="job-apply" id="submit-button-normal" style="padding: 5px 10px">Apply</button>
+                    </div>
+                  </div>
+                  <div class="job-posting-flairs">
+                    <% const tagsArray = job.tags && job.tags[1] ? job.tags[1].split(", ") : []; %>
+                    <% const maxTags = 3; %>
+                    <% const displayedTags = tagsArray.slice(0, maxTags); %>
+                    <% displayedTags.forEach((tag) => { %>
+                    <span class="job-flair" style="background-color: <%= getTintFromName(tag) %>9c; border: 1px solid <%= getTintFromName(tag) %>;">
+                      <p><%= tag %></p>
+                    </span>
+                    <% }); %>
+                    <% const remainingTags = tagsArray.length - maxTags; %>
+                    <% if (remainingTags > 0) { %>
+                    <span class="see-more">+<%= remainingTags %> more</span>
+                    <% } %>
+                  </div>
                 </div>
               </div>
             </div>
             <% }); %>
           </div>
           <% } else { %>
-          <p>No jobs found.</p>
           <% } %>
 
 
-          <h3>Posts</h3>
           <% if (posts.length > 0) { %>
+          <h3>Posts</h3>
+
           <div class="posts">
             <% posts.forEach(function(post) { %>
             <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
@@ -89,8 +119,6 @@
             </div>
             <% }); %>
           </div>
-          <% } else { %>
-          <p>No results found.</p>
           <% } %>
         </div>
     </div>

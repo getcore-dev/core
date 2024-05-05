@@ -60,49 +60,15 @@
       <input type="password" id="confirm_password" name="confirm_password" required>
     </span>
 
-    <span>
-      <label for="currentIndustry">Current Industry</label>
-      <select id="currentIndustry" name="currentIndustry">
-        <option value="software" <%= edit_user.currentIndustry === 'Software' ? 'selected' : '' %>>Software</option>
-        <option value="hardware" <%= edit_user.currentIndustry === 'Hardware' ? 'selected' : '' %>>Hardware</option>
-        <option value="biotech" <%= edit_user.currentIndustry === 'Biotech' ? 'selected' : '' %>>Biotech</option>
-        <option value="finance" <%= edit_user.currentIndustry === 'Finance' ? 'selected' : '' %>>Finance</option>
-        <option value="healthcare" <%= edit_user.currentIndustry === 'Healthcare' ? 'selected' : '' %>>Healthcare</option>
-        <option value="education" <%= edit_user.currentIndustry === 'Education' ? 'selected' : '' %>>Education</option>
-        <option value="other" <%= edit_user.currentIndustry === 'Other' ? 'selected' : '' %>>Other</option>
-      </select>
-    </span>
+    <div id="job-experiences">
+      <h3>Job Experiences</h3>
+      <button type="button" id="addJobExperience">Add Job Experience</button>
+    </div>
 
-    <span>
-      <label for="currentCompany">Current Company</label>
-      <input type="text" id="currentCompany" name="currentCompany" value="<%= edit_user.currentCompany %>" required>
-    </span>
-
-    <span>
-      <label for="currentTitle">Current Title</label>
-      <input type="text" id="currentJob" name="currentJob" value="<%= edit_user.currentJob %>" required>
-    </span>
-
-    <span>
-      <label for="currentJob_begindate">Current Job Start Date</label>
-      <input type="date" id="currentJob_begindate" name="currentJob_begindate" value="<%= edit_user.currentJob_begindate %>" required>
-    </span>
-
-    <span>
-      <label for="currentJobSkills">Current Job Skills</label>
-      <input type="text" id="currentJob_skills" name="currentJob_skills" value="<%= edit_user.currentJob_skills %>" required>
-    </span>
-
-    <span>
-      <label for="employment-type">Employment Type</label>
-      <select id="currentJob_employment_type" name="currentJob_employment_type">
-        <option value="full-time" <%= edit_user.currentJob_employment_type === 'Full-Time' ? 'selected' : '' %>>Full Time</option>
-        <option value="part-time" <%= edit_user.currentJob_employment_type === 'Part-Time' ? 'selected' : '' %>>Part Time</option>
-        <option value="contract" <%= edit_user.currentJob_employment_type === 'Contract' ? 'selected' : '' %>>Contract</option>
-        <option value="internship" <%= edit_user.currentJob_employment_type === 'Internship' ? 'selected' : '' %>>Internship</option>
-        <option value="freelance" <%= edit_user.currentJob_employment_type === 'Freelance' ? 'selected' : '' %>>Freelance</option>
-      </select>
-    </span>
+    <div id="education-experiences">
+      <h3>Education Experiences</h3>
+      <button type="button" id="addEducationExperience">Add Education Experience</button>
+    </div>
 
     <span>
       <label for="linkedin">LinkedIn</label>
@@ -163,6 +129,32 @@
       avatarOverlay.style.opacity = '0';
     });
     $(document).ready(function() {
+      $('#addJobExperience').click(function() {
+        $('#job-experiences').append(`
+            <div class="job-experience">
+                <input type="text" name="job_title[]" placeholder="Job Title" required>
+                <input type="text" name="company_name[]" placeholder="Company Name" required>
+                <input type="date" name="job_start_date[]" placeholder="Start Date" required>
+                <input type="date" name="job_end_date[]" placeholder="End Date">
+                <textarea name="job_description[]" placeholder="Job Description"></textarea>
+                <input type="text" name="job_skills[]" placeholder="Skills (comma-separated)">
+            </div>
+        `);
+      });
+
+      // Function to add education experience fields
+      $('#addEducationExperience').click(function() {
+        $('#education-experiences').append(`
+            <div class="education-experience">
+                <input type="text" name="school_name[]" placeholder="School Name" required>
+                <input type="text" name="degree[]" placeholder="Degree" required>
+                <input type="date" name="education_start_date[]" placeholder="Start Date" required>
+                <input type="date" name="education_end_date[]" placeholder="End Date">
+                <textarea name="education_description[]" placeholder="Description"></textarea>
+                <input type="text" name="education_skills[]" placeholder="Skills (comma-separated)">
+            </div>
+        `);
+      });
       $('#submit').click(function(e) {
         e.preventDefault(); // Prevent the default button action
 
