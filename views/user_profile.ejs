@@ -30,6 +30,10 @@
     text-align: left;
   }
 
+  .post:hover {
+    background: <%=otheruser.profile_border_color%>92 !important;
+  }
+
   #repo-table th {
     border: 0;
     margin-top: 5px;
@@ -77,6 +81,11 @@
             <p id="firstname-display"> @<%= otheruser.username %></p>
             <% if (user) { %>
             <div class="edit-controls-and-follow-button">
+              <% if (otheruser.username === user.username) { %>
+              <button id="edit-button" onclick="window.location.href='/edit-experience'" style="margin-bottom: auto;">
+                Add Experience
+              </button>
+              <% } %>
               <% if (otheruser.username === user.username) { %>
               <button id="edit-button" onclick="window.location.href='/edit-profile'" style="margin-bottom: auto;">
                 Edit
@@ -209,9 +218,6 @@
               <div class="post" onclick="window.location.href='/posts/<%= post.id %>'" style="background:<%= otheruser.profile_border_color%>52 !important;">
                 <h5 class="post-title">
                   <%= post.title %>
-                </h5>
-                <h5>
-                  <%= post.communities_id %>
                 </h5>
                 <p class="post-content" style="font-size: 14px;"><%= post.content %></p>
                 <div class="post-info">

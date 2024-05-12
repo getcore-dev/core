@@ -204,6 +204,17 @@ router.get("/jobs", async (req, res) => {
   }
 });
 
+router.get("/job-experience/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const jobExperience = await jobQueries.getUserJobExperience(userId);
+    res.json(jobExperience);
+  } catch (err) {
+    console.error("Error fetching job experience:", err);
+    res.status(500).send("Error fetching job experience");
+  }
+});
+
 router.get("/jobs/:id", async (req, res) => {
   try {
     const id = req.params.id;

@@ -53,6 +53,7 @@ main {
 
 .edit-controls-and-follow-button {
   display: flex;
+  gap: 13px;
     margin-left: auto;
     align-items: center;
 }
@@ -391,7 +392,6 @@ button#edit-button {
 .link-display {
   display: inline-flex;
   padding: 5px 9px;
-  margin: 4px;
   background-color: var(--border-color); 
   border: 0;
   color: var(--light-mode-text-color);

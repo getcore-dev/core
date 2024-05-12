@@ -98,6 +98,62 @@ main {
   cursor: pointer;
 }
 
+.input-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.floating-label {
+  display: none;
+  font-size: .725rem;
+  position: absolute;
+  pointer-events: none;
+  left: 15px;
+  top: 14px;
+  transition: 0.2s ease all;
+  color: var(--light-mode-secondary-text-color);
+}
+
+.floating-label.active {
+  display: block;
+}
+
+
+
+input[type="text"]:focus + .floating-label,
+input[type="password"]:focus + .floating-label,
+input[type="text"]:not(:placeholder-shown) + .floating-label,
+input[type="password"]:not(:placeholder-shown) + .floating-label {
+  top: -20px;
+  color: #333;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #333;
+}
+
+.toggle-password .material-symbols-outlined {
+  font-size: 20px;
+}
+
+input:focus + .floating-label,
+input:not(:placeholder-shown) + .floating-label,
+.toggle-password:focus ~ .floating-label {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-150%); /* Move label up when active */
+  font-size: 12px;
+  color: #333;
+}
+
+
 #login-button:hover {
   background: #0c6537;
   border-color: #0e8045;
@@ -110,7 +166,7 @@ main {
 
 .input-container input {
   width: 100%;
-  padding: 10px 20px;
+  padding: 15px 14px;
   margin: 8px 0;
   box-sizing: border-box;
   border-radius: 10px; 
@@ -118,6 +174,11 @@ main {
   border: 1px solid var(--border-color) !important;
   font-size: 16px;
   transition: box-shadow 0.3s ease;
+}
+
+.input-container input.active {
+  padding: 9px 14px;
+  padding-top: 21px;
 }
 
 

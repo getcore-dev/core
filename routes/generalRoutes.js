@@ -20,7 +20,6 @@ const { cache } = require("ejs");
 const sharp = require("sharp"); // Example library for image processing
 const AZURE_STORAGE_CONNECTION_STRING =
   process.env.AZURE_STORAGE_CONNECTION_STRING; // Ensure this is set in your environment variables
-const experienceQueries = require("../queries/experienceQueries");
 
 // Home page
 router.get("/", viewController.renderHomePage);
@@ -118,6 +117,10 @@ router.get("/edit-profile", checkAuthenticated, async (req, res) => {
   res.render("edit-profile.ejs", { user: req.user, edit_user: full_user });
 });
 
+router.get("/edit-experience", checkAuthenticated, async (req, res) => {
+  res.render("edit-experience.ejs", { user: req.user });
+});
+
 router.post(
   "/edit-profile",
   checkAuthenticated,
@@ -147,34 +150,6 @@ router.post(
         const dominantColor = await utilFunctions.getDominantColor(pictureUrl);
 
         updates["profile_border_color"] = dominantColor;
-      }
-
-      if (updates.job_title && updates.job_title.length) {
-        for (let i = 0; i < updates.job_title.length; i++) {
-          await experienceQueries.addJobExperience(
-            userId,
-            updates.job_title[i],
-            updates.company_name[i],
-            updates.job_start_date[i],
-            updates.job_end_date[i],
-            updates.job_description[i],
-            updates.job_skills[i].split(",")
-          );
-        }
-      }
-
-      if (updates.school_name && updates.school_name.length) {
-        for (let i = 0; i < updates.school_name.length; i++) {
-          await experienceQueries.addEducationExperience(
-            userId,
-            updates.school_name[i],
-            updates.degree[i],
-            updates.education_start_date[i],
-            updates.education_end_date[i],
-            updates.education_description[i],
-            updates.education_skills[i].split(",")
-          );
-        }
       }
 
       // Update other user fields

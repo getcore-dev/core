@@ -943,7 +943,7 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 0 3px 1px rgba(160, 207, 230, 0.5);
 }
 
-#submit-button, #cancel-button, #regular-button {
+#submit-button, #cancel-button, #regular-button, .submit-button, .cancel-button, .regular-button {
   font-size: 16px;
   width: 100%;
   border: none;
@@ -962,7 +962,9 @@ input:focus, textarea:focus, select:focus {
   cursor: pointer;
 }
 
-#submit-button-normal, #cancel-button-normal, #regular-button-normal {
+
+
+#submit-button-normal, #cancel-button-normal, #regular-button-normal, .submit-button-normal, .cancel-button-normal, .regular-button-normal {
   font-size: .875rem;
   border: none;
   width: auto;
@@ -981,12 +983,12 @@ input:focus, textarea:focus, select:focus {
   cursor: pointer;
 }
 
-#cancel-button, #cancel-button-normal {
+#cancel-button, #cancel-button-normal, .cancel-button, .cancel-button-normal {
   border: 1px solid #ae4444;
   background-color: #cd3a3a;
 }
 
-#regular-button, #regular-button-normal {
+#regular-button, #regular-button-normal, .regular-button, .regular-button-normal {
   background: #285994;
   border: 1px solid #3d88e1;
 }
@@ -1264,6 +1266,10 @@ input:focus, textarea:focus, select:focus {
   }
   .nav-text {
     color: #fff;
+  }
+
+  .search-category-option {
+    color: var(--dark-mode-secondary-text-color);
   }
 
   .nav-text:hover {

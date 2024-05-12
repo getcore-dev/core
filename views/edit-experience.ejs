@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CORE/</title>
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/edit-experience.css" />
+  <link rel="shortcut icon" href="/img/core.png" />
+</head>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'edit-experience' }) %>
+  <div class="edit-form-container">
+    <h1>Edit Experience</h1>
+
+    <h2>Job Experience</h2>
+    <form id="jobExperienceForm" action="/jobs/update-experiences" method="POST">
+      <div id="jobExperienceContainer"></div>
+      <button type="button" class="regular-button" id="addJobExperience">Add Job Experience</button>
+      <button type="submit" id="submit-button">Save Changes</button>
+    </form>
+
+    <template id="jobExperienceTemplate">
+      <div class="jobExperience" id="${experienceData.id || ''}">
+        <input type="hidden" name="id" value="${experienceData.id || ''}">
+        <label for="title">Title:</label>
+        <input type="text" name="title" required>
+
+        <label for="employmentType">Employment Type:</label>
+        <input type="text" name="employmentType" required>
+
+        <label for="companyName">Company Name:</label>
+        <input type="text" name="companyName" required>
+
+        <label for="location">Location:</label>
+        <input type="text" name="location" required>
+
+        <label for="startDate">Start Date:</label>
+        <input type="date" name="startDate" required>
+
+        <label for="endDate">End Date:</label>
+        <input type="date" name="endDate">
+
+        <label for="description">Description:</label>
+        <textarea name="description" required></textarea>
+
+        <label for="tags">Tags (comma-separated):</label>
+        <input type="text" name="tags">
+
+        <button type="button" id="cancel-button" class="removeJobExperience">Remove</button>
+      </div>
+    </template>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const jobExperienceContainer = document.getElementById('jobExperienceContainer');
+      const addJobExperienceButton = document.getElementById('addJobExperience');
+      const jobExperienceTemplate = document.getElementById('jobExperienceTemplate');
+
+      function addExperience(experienceData = {}) {
+        const newExperience = jobExperienceTemplate.content.cloneNode(true);
+        const experienceFields = newExperience.querySelectorAll('input, textarea');
+        experienceFields.forEach(field => {
+          field.value = experienceData[field.name] || '';
+        });
+        const removeButton = newExperience.querySelector('.removeJobExperience');
+        removeButton.addEventListener('click', function() {
+          newExperience.remove();
+        });
+        jobExperienceContainer.appendChild(newExperience);
+      }
+
+      addJobExperienceButton.addEventListener('click', function() {
+        addExperience();
+      });
+
+      const userID = '<%= user.id %>';
+      fetch(`/api/job-experience/${userID}`)
+        .then(response => response.json())
+        .then(data => {
+          data.forEach(experience => {
+            addExperience(experience);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching job experience data:', error);
+        });
+    });
+  </script>
+</body>
+
+</html>

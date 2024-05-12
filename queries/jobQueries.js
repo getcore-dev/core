@@ -1,4 +1,5 @@
 const sql = require("mssql");
+const { get } = require("request");
 
 const jobQueries = {
   getJobs: async (limit, offset) => {
@@ -556,6 +557,103 @@ const jobQueries = {
         ORDER BY count DESC
       `;
       return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getUserJobExperience: async (userId) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM job_experiences WHERE userId = ${userId}
+      `;
+      
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  clearUserJobExperience: async (userId) => {
+    try {
+      await sql.query`
+        DELETE FROM job_experiences WHERE userId = ${userId}
+      `;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  clearUserJobExperienceTags: async (userId) => {
+    try {
+      await sql.query`
+        DELETE FROM job_experiences_tags WHERE experienceId IN (
+          SELECT id FROM job_experiences WHERE userId = ${userId}
+        )
+      `;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  addJobExperience: async (userId, title, employmentType, companyName, location, startDate, endDate, description, tags, experienceId = null) => {
+    try {
+      let result;
+  
+      if (experienceId) {
+        // Update existing job experience
+        await sql.query`
+          UPDATE job_experiences
+          SET title = ${title},
+              employmentType = ${employmentType},
+              companyName = ${companyName},
+              location = ${location},
+              startDate = ${startDate},
+              endDate = ${endDate},
+              description = ${description}
+          WHERE id = ${experienceId}
+        `;
+        result = { recordset: [{ id: experienceId }] };
+      } else {
+        // Insert new job experience
+        result = await sql.query`
+          INSERT INTO job_experiences (userId, title, employmentType, companyName, location, startDate, endDate, description)
+          OUTPUT INSERTED.id
+          VALUES (${userId}, ${title}, ${employmentType}, ${companyName}, ${location}, ${startDate}, ${endDate}, ${description})
+        `;
+      }
+  
+      const experienceId = result.recordset[0].id;
+  
+      if (tags) {
+        const tagArray = tags.split(",").map((tag) => tag.trim());
+        for (const tag of tagArray) {
+          console.log("tag", tag);
+          let tagId;
+          const tagRecord = await sql.query`
+            SELECT id FROM JobTags WHERE tagName = ${tag}
+          `;
+          if (tagRecord.recordset.length > 0) {
+            tagId = tagRecord.recordset[0].id;
+          } else {
+            const newTag = await sql.query`
+              INSERT INTO JobTags (tagName)
+              OUTPUT INSERTED.id
+              VALUES (${tag})
+            `;
+            tagId = newTag.recordset[0].id;
+          }
+          // Associate the tag with the job experience
+          await sql.query`
+            INSERT INTO job_experiences_tags (experienceId, tagId)
+            VALUES (${experienceId}, ${tagId})
+          `;
+        }
+      }
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
