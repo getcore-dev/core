@@ -38,6 +38,22 @@ const jobQueries = {
       throw err;
     }
   },
+
+  getRecentJobCount: async () => {
+    try {
+      const result = await sql.query(`
+        SELECT COUNT(*) AS jobCount
+        FROM JobPostings
+        WHERE postedDate >= DATEADD(day, -30, GETDATE())
+      `);
+      const jobCount = result.recordset[0].jobCount;
+      return jobCount;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getJobsByTag: async (tagId, limit = 10, offset = 0) => {
     try {
       const result = await sql.query(`
@@ -568,7 +584,7 @@ const jobQueries = {
       const result = await sql.query`
         SELECT * FROM job_experiences WHERE userId = ${userId}
       `;
-      
+
       return result.recordset;
     } catch (err) {
       console.error("Database query error:", err);
@@ -600,10 +616,21 @@ const jobQueries = {
     }
   },
 
-  addJobExperience: async (userId, title, employmentType, companyName, location, startDate, endDate, description, tags, experienceId = null) => {
+  addJobExperience: async (
+    userId,
+    title,
+    employmentType,
+    companyName,
+    location,
+    startDate,
+    endDate,
+    description,
+    tags,
+    experienceId = null
+  ) => {
     try {
       let result;
-  
+
       if (experienceId) {
         // Update existing job experience
         await sql.query`
@@ -626,9 +653,9 @@ const jobQueries = {
           VALUES (${userId}, ${title}, ${employmentType}, ${companyName}, ${location}, ${startDate}, ${endDate}, ${description})
         `;
       }
-  
+
       const experienceId = result.recordset[0].id;
-  
+
       if (tags) {
         const tagArray = tags.split(",").map((tag) => tag.trim());
         for (const tag of tagArray) {

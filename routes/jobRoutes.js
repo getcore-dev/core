@@ -5,6 +5,7 @@ const {
   checkAuthenticated,
   checkNotAuthenticated,
 } = require("../middleware/authMiddleware");
+const cacheMiddleware = require("../middleware/cache");
 
 router.get("/create", checkAuthenticated, async (req, res) => {
   try {
@@ -106,13 +107,23 @@ router.get("/tags/:tag", async (req, res) => {
     res.status(500).send("Error fetching job postings");
   }
 });
-router.get("/getTopTags", async (req, res) => {
+router.get("/getTopTags", cacheMiddleware(3600), async (req, res) => {
   try {
     const tags = await jobQueries.getCountOfTopJobTags();
     res.json(tags);
   } catch (err) {
     console.error("Error fetching tags:", err);
     res.status(500).send("Error fetching tags");
+  }
+});
+
+router.get("/getRecentJobs", cacheMiddleware(3600), async (req, res) => {
+  try {
+    const jobCount = await jobQueries.getRecentJobCount();
+    res.json(jobCount);
+  } catch (err) {
+    console.error("Error fetching recent jobs:", err);
+    res.json(0);
   }
 });
 

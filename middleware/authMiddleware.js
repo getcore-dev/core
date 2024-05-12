@@ -14,4 +14,14 @@ function checkNotAuthenticated(req, res, next) {
   next();
 }
 
-module.exports = { checkAuthenticated, checkNotAuthenticated };
+function checkAdmin(req, res, next) {
+  if (req.isAuthenticated() && req.user.isAdmin) {
+    return next();
+  }
+  req.session.returnTo = req.originalUrl; // Optionally save the URL they were trying to access
+  res
+    .status(403)
+    .send("Access Denied: You do not have permission to view this page.");
+}
+
+module.exports = { checkAuthenticated, checkNotAuthenticated, checkAdmin };

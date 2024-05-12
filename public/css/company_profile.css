@@ -150,9 +150,8 @@ p.job-description {
 .job-flair {
   display: inline-flex;
   gap: 5px;
-  padding: 3px 5px;
-  margin: 3px 7px 0px 0px;
-  margin-bottom: 3px;
+  padding: 2px 4px;
+  margin: 0;
   background-color: #7d869cab;
   border: 1px solid #7d869cc9;
   color: white;
@@ -169,11 +168,17 @@ p.job-description {
     border-bottom: 1px solid var(--border-color);
   }
 
+  .tag-search-header {
+    width: 100%;
+    margin-bottom: 0px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--light-mode-body-color);
+  }
+
   .job-preview {
     display: flex;
     align-items: center;
-    padding: 6px 7px;
-    padding-top: 6px;
+    padding: 12px 7px; 
   }
 
   .job-info {

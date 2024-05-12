@@ -358,7 +358,7 @@
         if (Object.keys(data.commitGraph).length === 0) {
           displayNoCommitGraphMessage();
         } else {
-          displayCommitGraph(data.commitGraph);
+          displayCommitGraph(data.commitGraph, data.commitCount);
         }
       } else {
         console.error('Failed to fetch commit graph:', data.error);
@@ -373,11 +373,15 @@
       container.appendChild(message);
     }
 
-    function displayCommitGraph(commitGraph) {
+    function displayCommitGraph(commitGraph, commitCount) {
       const container = document.getElementById('commit-graph-container');
       // Create a container element for the commit graph
       const graphContainer = document.createElement('div');
       graphContainer.classList.add('commit-graph');
+
+      const commitCountElement = document.createElement('p');
+      commitCountElement.textContent = `${commitCount} recent commits`;
+      graphContainer.appendChild(commitCountElement);
 
       // Get the dates from the commitGraph keys
       const dates = Object.keys(commitGraph);

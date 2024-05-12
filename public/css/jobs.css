@@ -292,7 +292,7 @@ p.job-description {
 .job-preview {
   display: flex;
   align-items: center;
-  padding: 6px 18px;
+  padding: 12px 0; 
 }
 
 .company-logo {
@@ -365,24 +365,33 @@ p.job-description {
   box-sizing: border-box;
 }
 
-.top-tags {
+.salary-filter input, select {
+  width: 100px;
+  padding: 4px 3px;
+}
+ 
+
+.tag-item {
   display: flex;
-  flex-wrap: wrap;
-  box-sizing: border-box;
-  padding: 0 13px;
-  max-width: 100%;
-  overflow-x: auto;
-  margin-top: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    justify-content: space-between;
 }
 
-.top-tags > div {
-  flex-shrink: 1; /* Allow divs to shrink to fit the container */
+.dropdown-content {
+    position: absolute;
+    background-color: var(--light-mode-main-color);
+    max-width: 135px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    padding: 2px 5px;
+    z-index: 2;
+    align-items: flex-start;
 }
 
 .job-flair {
   display: inline-flex;
   gap: 5px;
-  padding: 3px 5px;
+  padding: 2px 4px;
   margin: 3px 7px 0px 0px;
   margin-bottom: 3px;
   background-color: #7d869cab;
@@ -395,7 +404,20 @@ p.job-description {
 
 .jobs-header {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+}
+
+.dropdown-button {
+  background: none;
+  border: none;
+  color: var(--light-mode-text-color);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 6px;
+}
+
+.dropdown-button .material-symbols-outlined {
+  font-size: 1.3rem;
 }
 
 .create-job-button {
@@ -509,6 +531,7 @@ div .material-symbols-outlined {
     display: block;
   }
   .jobs-container {
+    padding: 0 13px;
     height: calc(100dvh - 58px);
   }
 }

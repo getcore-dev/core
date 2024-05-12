@@ -87,6 +87,7 @@ router.get(
       const oneYearAgoDate = oneYearAgo.toISOString().split("T")[0];
       let page = 1;
       const commitsPerPage = 100;
+      let commitCount = 0;
 
       while (true) {
         const response = await axios.get(apiUrl, {
@@ -105,6 +106,7 @@ router.get(
         }
 
         const commits = response.data.items;
+        commitCount += commits.length;
         commits.forEach((commit) => {
           const date = commit.commit.committer.date.split("T")[0];
           commitGraph[date] = (commitGraph[date] || 0) + 1;
@@ -116,8 +118,8 @@ router.get(
         page++;
       }
 
-      console.log(commitGraph);
-      res.json({ username, commitGraph });
+      //console.log(commitGraph);
+      res.json({ username, commitGraph, commitCount });
     } catch (error) {
       console.error("Error fetching GitHub commit graph:", error);
       console.error("Error details:", error.response?.data);
@@ -280,17 +282,17 @@ router.post("/job-postings", checkAuthenticated, async (req, res) => {
       equalOpportunityEmployerInfo,
       relocation,
     } = req.body;
-    console.log(req.body);
+    //console.log(req.body);
 
     // Check if the company exists in the database
     let companyObject = await jobQueries.getCompanyIdByName(company);
-    console.log(companyObject);
+    //console.log(companyObject);
     let companyId = companyObject ? companyObject.id : null;
-    console.log(companyId);
+    //console.log(companyId);
     const user = req.user;
 
     if (!companyId) {
-      console.log(`Error creating company: ${company}`);
+      //console.log(`Error creating company: ${company}`);
       return res.status(400).json({ error: "Company does not exist" });
     }
 
@@ -421,7 +423,7 @@ router.post("/extract-job-details", async (req, res) => {
         return;
       }
 
-      console.log("Extracted data:", extractedData);
+      //console.log("Extracted data:", extractedData);
 
       try {
         if (extractedData.company_name) {
@@ -445,7 +447,7 @@ router.post("/extract-job-details", async (req, res) => {
           }
         }
       } catch {
-        console.log(`Error creating company: ${extractedData.company_name}`);
+        //console.log(`Error creating company: ${extractedData.company_name}`);
       }
 
       res.json(extractedData);
@@ -540,13 +542,11 @@ router.post("/auto-create-job-posting", async (req, res) => {
         return;
       }
 
-      console.log("Extracted data:", extractedData);
+      //console.log("Extracted data:", extractedData);
 
       // Check if the extracted data contains an error message
       if (extractedData.error) {
-        console.log(
-          `Skipping job posting due to ChatGPT error: ${extractedData.error}`
-        );
+        //console.log(`Skipping job posting due to ChatGPT error: ${extractedData.error}`);
         res
           .status(200)
           .json({ message: "Job posting skipped due to ChatGPT error" });
@@ -679,7 +679,7 @@ router.get("/posts/:postId/getReaction", async (req, res) => {
   }
 });
 
-router.get("/communities", async (req, res) => {
+router.get("/communities", cacheMiddleware(2400), async (req, res) => {
   try {
     const user = req.user; // Assuming the user object is attached to the request by middleware
     const communities = await utilFunctions.getAllCommunities(user);
@@ -786,7 +786,7 @@ router.get("/posts", async (req, res) => {
   }
 });
 
-router.get("/trending-posts", async (req, res) => {
+router.get("/trending-posts", cacheMiddleware(2400), async (req, res) => {
   try {
     const posts = await utilFunctions.getTrendingPosts();
     res.json(posts);

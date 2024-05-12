@@ -58,7 +58,8 @@ const utilFunctions = {
         SELECT TOP 1 upa2.action_type 
         FROM userPostActions upa2
         WHERE upa2.post_id = p.id AND upa2.user_id = ${userId}
-      ) as userReaction
+      ) as userReaction,
+      (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count
     FROM posts p
     INNER JOIN users u ON p.user_id = u.id
     LEFT JOIN userPostActions upa ON p.id = upa.post_id

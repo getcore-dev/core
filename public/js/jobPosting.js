@@ -91,7 +91,7 @@ function getSimilarJobs(jobId) {
         return;
       }
       similarJobsContainer.innerHTML = `
-        <h4>More similar jobs</h4>
+        <h4>Related Jobs</h4>
         <div class="similar-jobs-list">
           ${jobs
             .map((job) => {
@@ -118,7 +118,9 @@ function getSimilarJobs(jobId) {
                 <img src="${job.company_logo}" alt="${
                 job.company_name
               } logo" class="thumbnail thumbnail-tiny thumbnail-regular" />
-                <p id="secondary-text">${job.company_name}</p>
+                <p id="secondary-text" style="max-width: 85%;">${
+                  job.company_name
+                }</p>
                 <h4>${job.title}</h4>
                 <div class="job-tags">
                   ${tagsHTML}
@@ -154,7 +156,7 @@ function getSimilarJobsByCompany(jobId, companyName) {
         return;
       }
       similarJobsContainer.innerHTML = `
-        <h4>Similar job postings by ${companyName}</h4>
+        <h4>More jobs at ${companyName}</h4>
         <div class="similar-jobs-list">
           ${jobs
             .map((job) => {
@@ -427,6 +429,8 @@ ${
   <h4>Relocation</h4>
   <p>${job.relocation ? "Yes" : "No"}</p>
 </div>
+<div class="similar-jobs"></div>
+<div class="similar-jobs-company"></div>
 
             <div class="job-skills">
               <h4>Required Skills</h4>
@@ -467,8 +471,6 @@ ${
             <p id="secondary-text" class="post-date-text">
             This job was posted on ${formatDate(job.postedDate)}
             </p>
-            <div class="similar-jobs"></div>
-            <div class="similar-jobs-company"></div>
           </div>
         </div>
       `;

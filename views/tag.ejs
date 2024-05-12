@@ -23,21 +23,21 @@
     <% if (jobs.length > 0) { %>
     <%
     function getTintFromName(name) {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  hash = hash & 0x00ffffff; // Ensure hash is within the range of 0x00ffffff
+        let hash = 0;
+        for (let i = 0; i < name.length; i++) {
+          hash = name.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        hash = hash & 0x00ffffff; // Ensure hash is within the range of 0x00ffffff
 
-  // Convert hash to a hexadecimal string and pad with leading zeros
-  const colorHex = ("00000" + hash.toString(16)).slice(-6);
-  const tintColor = `#${colorHex}65`;
+        // Convert hash to a hexadecimal string and pad with leading zeros
+        const colorHex = ("00000" + hash.toString(16)).slice(-6);
+        const tintColor = `#${colorHex}65`;
 
-  // Blend with a desaturated base color (e.g., gray)
-  const baseColor = "#808080"; // Light gray
-  const blendedColor = blendColors(tintColor, baseColor, 0.5);
-  return blendedColor;
-}
+        // Blend with a desaturated base color (e.g., gray)
+        const baseColor = "#808080"; // Light gray
+        const blendedColor = blendColors(tintColor, baseColor, 0.5);
+        return blendedColor;
+    }
 
 function getTintFromNameSecondary(name) {
   let hash = 0;
@@ -99,9 +99,6 @@ function blendColors(color1, color2, ratio) {
             <div class="job-main">
               <div class="job-description">
                 <p class="job-description"><%= job.description %></p>
-              </div>
-              <div class="job-buttons">
-                <button class="job-apply" id="submit-button-normal" style="padding: 5px 10px">Apply</button>
               </div>
             </div>
             <div class="job-posting-flairs">

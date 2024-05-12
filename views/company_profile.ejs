@@ -139,9 +139,6 @@
                   <div class="job-description">
                     <p class="job-description">${job.description}</p>
                   </div>
-                  <div class="job-buttons">
-                    <button class="job-apply" id="submit-button-normal" style="padding: 5px 10px">Apply</button>
-                  </div>
                 </div>
                 <div class="job-posting-flairs">
                   ${tagsHTML}
@@ -154,8 +151,8 @@
               </div>
             </div>
           `;
-              jobListContainer.appendChild(jobElement);
-            });
+        jobListContainer.appendChild(jobElement);
+      });
     }
 
     renderJobPostings(<%- JSON.stringify(jobs) %>);

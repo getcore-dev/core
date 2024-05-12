@@ -495,7 +495,7 @@ td {
 .commit-graph {
   display: flex;
   flex-direction: column;
-  padding-top: 9px;
+  padding-top: 1px;
 }
 
 #commit-graph-container {

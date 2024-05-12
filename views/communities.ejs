@@ -514,9 +514,8 @@
 
             const commentsDiv = document.createElement('div');
             commentsDiv.className = 'comments';
-            commentsDiv.innerHTML = 'Loading comments...'; // Placeholder
+            commentsDiv.innerHTML = post.comment_count + ' comments';
             votesDiv.appendChild(commentsDiv);
-            fetchPromises.push(fetchComments(post.id, commentsDiv));
 
 
             postDiv.appendChild(postContentDiv);
@@ -673,14 +672,6 @@
         });
     }
 
-    function fetchComments(postId, container) {
-      return fetch(`/api/comments/${postId}`)
-        .then(response => response.json())
-        .then(data => {
-          const totalComments = data.totalComments;
-          container.innerHTML = totalComments + ' comment' + (totalComments !== 1 ? 's' : '');
-        });
-    }
 
     function formatDate(date) {
       let postDate = new Date(date);

@@ -99,7 +99,7 @@ img.company-logo {
 
 div.similar-job {
   margin-top: 10px;
-  min-width: 170px;
+  min-width: 230px;
     display: flex;
     background: var(--light-mode-hover-color);
     border: 1px solid var(--border-color);
