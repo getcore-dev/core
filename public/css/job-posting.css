@@ -198,7 +198,7 @@ div.similar-job h4 {
   }
 
   div.similar-job { 
-    background: var(--dark-mode-hover-color);
+    background: var(--dark-mode-main-color);
     border-color: var(--dark-mode-border-color);
   }
 

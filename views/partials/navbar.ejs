@@ -566,8 +566,12 @@ const isActive = (path) => {
     return tintColor;
   }
 
-  getAllCommunities();
+  // if the user is not on mobile, get all communities
+  if (!window.matchMedia("only screen and (max-width: 768px)").matches) {
+    getAllCommunities();
+  }
   getTrendingPosts();
+
   document.addEventListener('DOMContentLoaded', function() {
     const banner = document.getElementById('latestCommitBanner');
     const closeButton = document.getElementById('closeCommitBanner');

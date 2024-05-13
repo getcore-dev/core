@@ -6,7 +6,6 @@ let filters = {
   experienceLevel: [],
   location: [],
   title: [],
-  isRemote: null,
   salary: { min: null, max: null },
 };
 
@@ -15,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .querySelector(".load-more-btn")
     .addEventListener("click", handleLoadMore);
-  getTopTags();
   getRecentJobs();
 });
 
@@ -23,7 +21,6 @@ function setupDynamicFilters() {
   setupFilter("experienceLevel");
   setupFilter("location");
   setupFilter("title");
-  setupRemoteToggle();
   setupSalaryFilter();
 }
 function setupFilter(filterType) {
@@ -44,34 +41,17 @@ function setupFilter(filterType) {
   });
 }
 
-function setupRemoteToggle() {
-  const remoteContainer = document.querySelector(".isRemote-filter");
-  const toggle = document.createElement("input");
-  toggle.type = "checkbox";
-  const label = document.createElement("label");
-  label.innerHTML = "Remote";
-  remoteContainer.appendChild(label);
-  remoteContainer.appendChild(toggle);
-  toggle.addEventListener("change", (e) => {
-    filters.isRemote = e.target.checked;
-    renderJobPostings();
-  });
-}
-
 function setupSalaryFilter() {
   const salaryContainer = document.querySelector(".salary-filter");
   salaryContainer.innerHTML = `
     <input type="number" placeholder="Min salary" id="min-salary">
-    <input type="number" placeholder="Max salary" id="max-salary">
     <button onclick="applySalaryFilter()">Apply</button>
   `;
 }
 
 function applySalaryFilter() {
   const minSalary = document.getElementById("min-salary").value;
-  const maxSalary = document.getElementById("max-salary").value;
   filters.salary.min = minSalary ? parseInt(minSalary) : null;
-  filters.salary.max = maxSalary ? parseInt(maxSalary) : null;
   renderJobPostings();
 }
 
@@ -180,8 +160,6 @@ function renderJobPostings() {
       filters.title.length > 0 &&
       !job.title.toLowerCase().includes(filters.title.toLowerCase())
     )
-      return false;
-    if (filters.isRemote !== null && job.isRemote !== filters.isRemote)
       return false;
     if (filters.salary.min !== null && job.salary < filters.salary.min)
       return false;
@@ -292,58 +270,6 @@ function formatDate(dateString) {
   const day = String(date.getDate()).padStart(2, "0");
   const year = date.getFullYear();
   return `${month}/${day}/${year}`;
-}
-
-function renderTopTagsAndCount(topTags) {
-  const topTagsContainer = document.querySelector(".top-tags");
-  topTagsContainer.innerHTML = ""; // Clear existing top tags
-
-  // Creating a dropdown container
-  const dropdownContainer = document.createElement("div");
-  dropdownContainer.classList.add("dropdown");
-
-  // Button to toggle dropdown
-  const dropdownButton = document.createElement("button");
-  dropdownButton.innerHTML =
-    "<span class='material-symbols-outlined'>label</span>";
-  dropdownButton.classList.add("dropdown-button");
-  dropdownContainer.appendChild(dropdownButton);
-
-  // Dropdown content, initially hidden
-  const dropdownContent = document.createElement("div");
-  dropdownContent.classList.add("dropdown-content");
-  dropdownContent.style.display = "none";
-
-  // Populate dropdown content
-  topTags.forEach((tag) => {
-    const tagItem = document.createElement("div");
-    tagItem.classList.add("tag-item");
-    tagItem.innerHTML = `<span class="tagname">${tag.tagName}</span> <span class="tagcount">${tag.count}</span>`;
-    tagItem.onclick = function () {
-      window.location.href = `/jobs/tags/${tag.tagName}`;
-    };
-    dropdownContent.appendChild(tagItem);
-  });
-
-  // Append dropdown content to the dropdown container
-  dropdownContainer.appendChild(dropdownContent);
-  topTagsContainer.appendChild(dropdownContainer);
-
-  // Toggle dropdown visibility on button click
-  dropdownButton.onclick = function () {
-    dropdownContent.style.display =
-      dropdownContent.style.display === "none" ? "block" : "none";
-  };
-}
-function getTopTags() {
-  fetch("/jobs/getTopTags")
-    .then((response) => response.json())
-    .then((tags) => {
-      renderTopTagsAndCount(tags);
-    })
-    .catch((error) => {
-      console.error("Error fetching top tags:", error);
-    });
 }
 
 function renderRecentJobs(count) {

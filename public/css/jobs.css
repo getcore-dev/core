@@ -345,6 +345,10 @@ p.job-description {
   display: none;
 }
 
+.filter-container {
+  text-align: center;
+}
+
 .job-list {
   display: flex;
   flex-direction: column;
@@ -355,7 +359,6 @@ p.job-description {
 }
 
 .load-more {
-  padding: 0 13px;
   margin-bottom: 50px;
 }
 
@@ -365,10 +368,38 @@ p.job-description {
   box-sizing: border-box;
 }
 
-.salary-filter input, select {
-  width: 100px;
-  padding: 4px 3px;
+.salary-filter input {
+  width: 90px;
+  font-size: 16px;
+  padding: 8px 10px;
+  border-radius: 11px;
+  border: 1px solid var(--border-color);
+  background: var(--light-mode-hover-color);
 }
+
+.salary-filter button {
+  border-radius: 11px;
+  background: #41ae65;
+  border: 1px solid #4b9263;
+  padding: 8px;
+  color: var(--dark-mode-text-color);
+}
+
+div.recent-jobs {
+  margin: 7px 0 12px 0;
+}
+
+select {
+  width: 70%;
+  padding: 10px 3px;
+  margin: 5px 0;
+  font-size: 16px;
+  border-radius: 11px;
+  border: 1px solid var(--border-color);
+  background: var(--light-mode-hover-color);
+}
+
+
  
 
 .tag-item {
@@ -405,6 +436,7 @@ p.job-description {
 .jobs-header {
   display: flex;
   flex-direction: column;
+  margin: 39px 0;
 }
 
 .dropdown-button {
@@ -521,6 +553,24 @@ div .material-symbols-outlined {
 
   .job:hover {
     background-color: var(--dark-mode-body-color);
+  }
+
+  select { 
+    background-color: var(--dark-mode-main-color);
+        color: var(--dark-mode-text-color);
+        border-color: var(--dark-mode-border-color);
+  }
+
+  .salary-filter input {
+    background-color: var(--dark-mode-main-color);
+    color: var(--dark-mode-text-color);
+    border-color: var(--dark-mode-border-color);
+  }
+
+  .load-more-btn {
+    background: var(--dark-mode-main-color) !important;
+    color: var(--dark-mode-text-color) !important;
+    border-color: var(--dark-mode-border-color) !important;
   }
 }
 
