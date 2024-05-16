@@ -7,30 +7,25 @@
       </div>
       <div class="nav-text-and-user-btns">
         <div class="nav-text-container">
-          <% 
+          <% function getTintFromName(name) {
+              let hash = 0;
+              for (let i = 0; i < name.length; i++) {
+                hash = name.charCodeAt(i) + ((hash << 18) - hash);
+              }
+              const color = (hash & 0x00FFFFFF).toString(16).toUpperCase();
+              const tintColor = `#${color}95`; 
+              return tintColor;
+            }
+            let navText = '‎ ';
+            let user = locals.user; 
+            let communityId = locals.communityId;
+            let postUser = locals.post && locals.post.user && locals.post.user.username ? locals.post.user.username : null;
+            let otherUser = locals.otheruser;
+            let navbarTint = '';
 
-    function getTintFromName(name) {
-      let hash = 0;
-      for (let i = 0; i < name.length; i++) {
-        hash = name.charCodeAt(i) + ((hash << 18) - hash);
-      }
-      const color = (hash & 0x00FFFFFF).toString(16).toUpperCase();
-      const tintColor = `#${color}95`; 
-      return tintColor;
-    }
-    let navText = '‎ ';
-    let user = locals.user; 
-    let communityId = locals.communityId;
-    let postUser = locals.post && locals.post.user && locals.post.user.username ? locals.post.user.username : null;
-    let otherUser = locals.otheruser;
-    
-
-                let navbarTint = '';
             if (locals.community) {
               navbarTint = locals.community.community_color;
-            }
-
-    %>
+            }%>
           <%- navText %>
         </div>
 
@@ -70,6 +65,11 @@
             <div class="menu-bar bottom-bar"></div>
           </button>
         </div>
+        <button id="expandSearch" class="search-button">
+          <form id="mobileSearchForm" class="mobile-search-form" action="/search" method="get">
+            <input type="text" name="searchTerm" id="mobileSearchInput" placeholder="Search" class="mobile-search-input">
+          </form>
+        </button>
         <div class="menu-content" id="menu-content">
           <a href="/">
             <div class="menu-item">
@@ -140,11 +140,6 @@
               </form>
               <div class="overlay" style="display:none;"></div> <!-- Overlay element -->
 
-              <button id="expandSearch" class="search-button">
-                <form id="mobileSearchForm" class="mobile-search-form" action="/search" method="get">
-                  <input type="text" name="searchTerm" id="mobileSearchInput" placeholder="Search" class="mobile-search-input">
-                </form>
-              </button>
 
             </div>
           </li>
@@ -155,7 +150,17 @@
             <% if (user && user.avatar) { %>
             <div class="nav-avatar">
               <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar" style="margin-top:6px;">
+              <div class="avatar-online-status" style="
+              background: <%= user.profile_border_color %>;
+              height: 10px;
+              width: 10px;
+              z-index: 10;
+              border-radius: 50%;
 
+              position: absolute;
+              bottom: -3px;
+              right: 0;
+              "> </div>
               <div class="avatar-dropdown">
 
                 <% if (user) { %>
@@ -240,9 +245,9 @@ const getTitle = (path) => {
     return `Community / ${post.community.shortname}`;
   } else if (path.startsWith('/user/') && typeof otheruser !== 'undefined') {
     if (path.includes('followers') || path.includes('following')) {
-      return `@${otheruser.username}/${path.includes('followers') ? 'Followers' : 'Following'}`;
+      return `@${otheruser.username} / ${path.includes('followers') ? 'Followers' : 'Following'}`;
     } else {
-      return `@${otheruser.username}/${otheruser.firstname} ${otheruser.lastname}`;
+      return `@${otheruser.username} / ${otheruser.firstname} ${otheruser.lastname}`;
     }
   } else if (path.startsWith('/c/') && typeof community !== 'undefined') {
     return `/${community.shortname}`;
@@ -251,7 +256,7 @@ const getTitle = (path) => {
     } else if (path.startsWith('/posts/') && path.includes('edit') && typeof post !== 'undefined') {
     return `Edit / ${post.title}`;
   } else if (path.startsWith('/posts/') && typeof post !== 'undefined') {
-    return `/${post.community.shortname}/${post.username}`;
+    return `${post.community.shortname} / ${post.username}`;
   } else if (path.startsWith('/jobs/tags/') && typeof tag !== 'undefined') {
     return `Openings / ${tag}`;
   }
@@ -677,11 +682,13 @@ const isActive = (path) => {
   const avatarDropdown = document.querySelector('.avatar-dropdown');
   const userLinks = document.querySelector('.user-links');
   const userText = document.querySelector('.nav-text-container');
+  const searchInput = document.querySelector('.mobile-search-input');
 
   userAvatar.addEventListener('click', () => {
     avatarDropdown.classList.toggle('open');
     userLinks.classList.toggle('slide-left');
     userText.classList.toggle('hidden');
+    searchInput.classList.toggle('hidden');
   });
 
   <% } %>

@@ -22,7 +22,7 @@ body {
 
 
 .job {
-  background: var(--light-mode-hover-color);
+  background: #f6fafe;
   width: auto;
   flex: auto;
 }
@@ -71,7 +71,13 @@ body {
 }
 
 .job-flairs {
-margin-top: 5px;
+  display: flex;
+  gap: 5px;
+  flex-direction: row;
+}
+
+.job-title-location {
+  width: 30%;
 }
 
 div.vote-interactions {
@@ -98,9 +104,10 @@ div.vote-interactions {
   height: 109px;
   border-radius: 18px;
   aspect-ratio: 1 / 1;
+  border: 1px solid var(--border-color);
   object-fit: cover;
-  border-top-right-radius: 0px;
-  border-bottom-right-radius: 0px;
+  margin: 8px 0;
+  margin-left: 8px;
 }
 
 .current-job {
@@ -191,7 +198,10 @@ div.vote-interactions {
   border: 1px solid var(--border-color);
   color: var(--light-mode-text-color);
   border-radius: 50%;
-  padding: 5px 8px;
+  padding: 0;
+  height: 24px;
+  width: 24px;
+
   font-size: .8rem;
   font-weight: 400;
   text-decoration: none;
@@ -249,11 +259,11 @@ div.vote-interactions {
 }
 
 .link-preview {
-  background-color: var(--light-mode-hover-color);
+  background-color: #f6fafe;
   border-radius: 18px;
   margin: 0px 0px;
   border: 1px solid var(--border-color);
-  margin-top: 5px;
+  margin: 10px 0;
 }
 
 .reaction-menu {
@@ -322,7 +332,6 @@ div.vote-interactions {
   gap: 5px;
 }
 
-/* Styles for Post Elements */
 .user-info, .post-info, .description, .reactions {
   font-size: 16px; 
   color: #333;
@@ -336,10 +345,17 @@ div.vote-interactions {
 .description {
   font-size: 14px;
   font-weight: normal;
-  line-height: 1.5em; /* Adjust based on your design */
+  line-height: 1.5em;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 6; /* Number of lines you want */
+  -webkit-line-clamp: 6; 
+  -webkit-box-orient: vertical;
+}
+
+.mini-link-description {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; 
   -webkit-box-orient: vertical;
 }
 
@@ -371,7 +387,7 @@ div.vote-interactions {
 }
 
 .top-reactions .reaction-icon {
-  font-size: .725rem;
+  font-size: .955rem;
 }
 
 
@@ -437,7 +453,7 @@ div .mini-link-title {
 }
 
 .mini-link-image {
-  display: flex;
+  flex-shrink: 0;
 }
 
 .header-button {
@@ -701,7 +717,7 @@ div .mini-link-desc {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 13px;
+  gap: 7px;
 }
 
 .company-logo-container {
@@ -720,6 +736,7 @@ div .mini-link-desc {
 
 .company-logo {
   height: 20px;
+  border-radius: 50%;
 }
 .job-header {
   margin-top: 26px;
@@ -859,7 +876,8 @@ div .mini-link-desc {
   
   .job-content {
     width: 100%;
-    margin: 11px 12px;
+    padding: 11px 12px;
+    box-sizing: border-box;
   }
 
   .thumbnail {
@@ -877,9 +895,6 @@ div .mini-link-desc {
     height: calc(100dvh - var(--mobile-navbar-height)) !important;
   }
 
-  .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button, .add-comment-button {
-    padding: 4px;
-  }
 
   
   .job-flair {
@@ -996,7 +1011,9 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
     height: 75px;
     aspect-ratio: 1 / 1;
     object-fit: cover;
+    display: block;
   }
+
   #posts-container {
     width: 100%;
     max-width: 100%;
@@ -1025,7 +1042,7 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
 
 .see-more a {
   font-size: 15px;
-    color: #065;
+    color: var(--active-indicator-color);
     text-decoration: none;
 }
 
@@ -1152,6 +1169,10 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
 
   .communities-text {
     color: var(--dark-mode-secondary-text-color);
+  }
+
+  .thumbnail-image {
+    border-color: var(--dark-mode-border-color);
   }
 
   a.username-link, a.community {

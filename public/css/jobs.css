@@ -209,6 +209,7 @@ p.job-description {
   
   .job-title-location {
     flex-grow: 1;
+    width: 35%;
   }
   
   .company-logo-container {

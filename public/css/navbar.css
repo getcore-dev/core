@@ -57,7 +57,6 @@ a {
 
 .top-bar {
   display: flex;
-  margin-right: 13px;
   flex-direction: row;
 }
 
@@ -104,12 +103,10 @@ a {
   background-color: var(--light-mode-main-color); /* Match your design */
   max-height: 300px; /* Limit the height and make it scrollable */
   overflow-y: auto;
-  border-bottom: 1px solid var(--light-mode-hover-color);
 }
 .search-results-container > div {
   padding: 9px 13px;
   background-color: var(--light-mode-main-color);
-  border-bottom: 1px solid var(--light-mode-hover-color);
   cursor: pointer;
   display: flex;
   flex-direction: row;
@@ -196,11 +193,37 @@ a {
 
 .mobile-search-input {
   font-size: 16px;
-  width: 62vw;
+  width: 58vw;
+  max-width: 100%;
   padding: 6px 10px;
   border-radius: 11px;
   border: 1px solid var(--border-color);
   background: var(--light-mode-hover-color);
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-search-input.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+
+.avatar-online-status {
+  border: 2px solid var(--light-mode-main-color);
+}
+
+@media (min-width: 400px) {
+  .mobile-search-input {
+    width: 61.5vw; /* Adjust width for medium-sized screens */
+  }
+}
+
+@media (min-width: 700px) {
+  .mobile-search-input {
+    width: 78vw; /* Adjust width for medium-sized screens */
+  }
 }
 
 .mobile-search-input:focus, .EasyMDEContainer .CodeMirror.CodeMirror-focused, .select2-container--default.select2-container--focus .select2-selection--multiple {
@@ -274,7 +297,7 @@ a {
   background-color: var(--light-mode-main-color); 
   color: var(--primary-text-color); 
   border-bottom: 1px solid var(--border-color);
-    display: flex; 
+  display: flex; 
   flex-direction: column;
   align-items: center; 
   position: fixed;
@@ -284,7 +307,7 @@ a {
   z-index: 10;
 }
 
-second-nav-bar {
+.second-nav-bar {
   display: none;
 }
 
@@ -311,16 +334,16 @@ second-nav-bar {
 #second-nav-icon {
   font-size: 1rem !important;
   font-weight: 400 !important;
-  color: var(--light-mode-secondary-text-color);
-  vertical-align: -4px;
+  color: var(--light-mode-text-color);
+  vertical-align: -3px;
 }
 
 .second-nav-links .navbar-button {
-  margin-top: 8px;
+  margin-top: 7px;
   padding: 0;
   font-size: .855rem;
   font-weight: 500;
-  color: var(--light-mode-secondary-text-color);
+  color: var(--light-mode-text-color);
 }
 
 .nav-links::-webkit-scrollbar {
@@ -358,6 +381,9 @@ second-nav-bar {
 
 .search-button {
   padding: 0px;
+  position: absolute;
+  bottom: -4px;
+  left: 75px;
 }
 
 
@@ -397,7 +423,7 @@ second-nav-bar {
   width: 16px;
   padding: 0;
   z-index: 100;
-  height: 25px;
+  height: 24px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -406,17 +432,17 @@ second-nav-bar {
 .menu-bar {
   z-index: 2;
   width: 16px;
-  height: 1.7px;
+  height: 1.7px !important;
   background-color: var(--light-mode-text-color);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
 .menu-button.active .top-bar {
-  transform: translate(0px, 14.5px);
+  transform: translate(0px, 16px);
 }
 
 .menu-button.active .middle-bar {
-  transform: translate(0px, 7px);
+  transform: translate(0px, 8px);
 }
 
 .avatar-dropdown-item #nb-icon {
@@ -635,6 +661,10 @@ font-weight: 400;
   z-index: 1; 
 }
 
+.second-nav-bar {
+  display: none;
+}
+
 .dropdown-toggle {
   cursor: pointer;
 }
@@ -781,11 +811,10 @@ font-weight: 400;
     display: block;
     background-color: var(--light-mode-hover-color); 
     color: var(--primary-text-color); 
-    border-top: .75px solid var(--border-color);
     position: fixed;
     width: 100%;
     height: var(--mobile-second-navbar-height);
-    top: calc(var(--mobile-navbar-height) + .73px);
+    top: calc(var(--mobile-navbar-height) + 1px);
     z-index: 1;
   }
 
@@ -919,7 +948,7 @@ li.dropdown {
   .hamburger-menu {
     position: absolute;
     left: 18px;
-    top: 12px;
+    top: 13px;
     z-index: 100;
   } 
   
@@ -1093,7 +1122,7 @@ input:focus, textarea:focus, select:focus {
   padding: 10px;
   padding-top: 18px;
   transform: translateX(30%);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.05s ease 0.0125s, visibility 0.3s ease 0.15s;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -1101,11 +1130,12 @@ input:focus, textarea:focus, select:focus {
 
 .avatar-dropdown.open {
   transform: translateX(-30px);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease 0.15s, visibility 0.3s ease 0.15s;
   opacity: 1;
-  pointer-events: all;
   visibility: visible;
+  pointer-events: all;
 }
+
 
 .avatar-dropdown-item .material-symbols-outlined {
   padding-left: 0 !important;
@@ -1337,6 +1367,10 @@ input:focus, textarea:focus, select:focus {
       background-color: var(--dark-mode-background-color); 
   }
 
+  .avatar-online-status {
+    border-color: var(--dark-mode-body-color);
+  }
+
   /* Search bar styling */
   .search-bar input[type="search"] {
       background-color: #555; /* Dark background for search bar */
@@ -1363,7 +1397,7 @@ input:focus, textarea:focus, select:focus {
 
 #second-nav-icon, .second-nav-links .navbar-button, ul.dropdown-menu a {
 
-  color: var(--dark-mode-secondary-text-color);
+  color: var(--dark-mode-text-color);
 }
 
 .dropdown-menu {

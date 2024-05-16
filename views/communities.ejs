@@ -121,16 +121,18 @@
                         <div class="company-name">${job.company_name}</div>
                       </div>
                     </div>
+                    <div class="job-flairs">
+                      <span class="job-flair" id="pay-flair">$${Math.floor((job.salary + job.salary_max) / 2 / 1000)}k</span>
+<span class="job-flair" id="location-flair" data-location="${job.location}">
+  ${job.experienceLevel === "Mid Level" ? "Mid" : job.experienceLevel}
+</span>
+                  </div>
                   </div>
                   <div class="job-title">${job.title.slice(0, 40)}</div>
-                  <div class="job-flairs">
-                    <span class="job-flair" id="pay-flair">$${Math.floor((job.salary + job.salary_max) / 2 / 1000)}k</span>
-                    <span class="job-flair" id="location-flair" data-location="${job.location}">${job.experienceLevel}</span>
-                  </div>
                 </div>
               </div>
             `).join('');
-          jobslistContainer.innerHTML += '<div class="see-more"><img loading="lazy" src="./src/core.png" class="company-logo" id="see-more-core-logo"><span id="see-more-separator">&#183;</span><a href="/jobs">See More</a></div>';
+          jobslistContainer.innerHTML += '<div class="see-more"><a href="/jobs">See More</a></div>';
 
           // Set the --location-color CSS variable for each job element
           const jobElements = jobslistContainer.querySelectorAll('.job');
@@ -653,24 +655,26 @@
           if (linkPreview) {
             let imageUrl = linkPreview.image || linkPreview.favicon;
             let htmlContent = `
-          <div class="mini-link">
-              <div class="mini-link-image">
-                  ${imageUrl ? `<img loading="lazy" src="${imageUrl}" alt="thumbnail" class="thumbnail-image" />` : ''}
-              </div>
-              <div class="mini-link-body">
-                  <div class="mini-link-body-header">
+        <div class="mini-link">
+            <div class="mini-link-image">
+                ${imageUrl ? `<img loading="lazy" src="${imageUrl}" alt="thumbnail" class="thumbnail-image" />` : ''}
+            </div>
+            <div class="mini-link-body">
+                <div class="mini-link-body-header">
                   <div class="mini-link-favicon">
                     <img src="${linkPreview.favicon}" alt="" class="favicon" />
                   </div>
                   <div class="mini-link-url" id="main-text"><a>${new URL(linkPreview.url || '').hostname || ''}</a></div>
-                  </div>
-                  <div class="mini-link-title">${linkPreview.title || ''}</div>
-              </div>
-          </div>`;
+                </div>
+                <div class="mini-link-title">${linkPreview.title || ''}</div>
+                <div class="mini-link-description">${linkPreview.description || ''}</div>
+            </div>
+        </div>`;
             container.innerHTML = htmlContent;
           }
         });
     }
+
 
 
     function formatDate(date) {
