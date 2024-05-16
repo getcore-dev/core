@@ -199,8 +199,8 @@ div.vote-interactions {
   color: var(--light-mode-text-color);
   border-radius: 50%;
   padding: 0;
-  height: 24px;
-  width: 24px;
+  height: 28px;
+  width: 28px;
 
   font-size: .8rem;
   font-weight: 400;

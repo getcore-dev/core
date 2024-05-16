@@ -9,6 +9,19 @@
   <link rel="stylesheet" href="/css/user_profile.css" />
   <link rel="shortcut icon" href="/img/core.png" />
   <title>CORE/<%= otheruser.username %></title>
+
+  <meta name="description" content="<%= otheruser.firstname %> <%= otheruser.lastname %>'s profile on CORE. Connect with <%= otheruser.firstname %> and explore their activities, posts, and more.">
+  <meta name="keywords" content="<%= otheruser.firstname %> <%= otheruser.lastname %>, CORE profile, connect with <%= otheruser.firstname %>, <%= otheruser.username %>'s activities, user posts, social links">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="<%= otheruser.firstname %> <%= otheruser.lastname %> - CORE Profile">
+  <meta property="og:description" content="Connect with <%= otheruser.firstname %> <%= otheruser.lastname %> on CORE. Explore their activities, posts, and more.">
+  <meta property="og:image" content="<%= otheruser.avatar ? otheruser.avatar : '/img/default-avatar.png' %>">
+  <meta property="og:url" content="https://c-ore.dev/user/<%= otheruser.username %>">
+  <meta property="og:type" content="profile">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= otheruser.firstname %> <%= otheruser.lastname %> - CORE Profile">
+  <meta name="twitter:description" content="Connect with <%= otheruser.firstname %> <%= otheruser.lastname %> on CORE. Explore their activities, posts, and more.">
+  <meta name="twitter:image" content="<%= otheruser.avatar ? otheruser.avatar : '/img/default-avatar.png' %>">
 </head>
 
 <style>
@@ -94,6 +107,11 @@
               <form id="followForm" action="/users/<%= otheruser.id %>/<%= isFollowing ? 'unfollow' : 'follow' %>" method="POST">
                 <button type="submit" id="followButton" style="margin-bottom: auto;"><%= isFollowing ? 'Unfollow' : 'Follow' %></button>
               </form>
+
+
+
+
+
               <% } %>
             </div>
             <% } %>
@@ -446,7 +464,7 @@
       displayNoCommitGraphMessage();
       displayNoRepositoriesMessage();
     }
-    <% if (user) { %>
+    <% if (user && otheruser.username !== user.username) { %>
     document.getElementById('followForm').addEventListener('submit', async (event) => {
       event.preventDefault();
       const form = event.target;
