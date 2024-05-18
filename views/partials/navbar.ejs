@@ -70,6 +70,10 @@
         </div>
         <button id="expandSearch" class="search-button">
           <form id="mobileSearchForm" class="mobile-search-form" action="/search" method="get">
+            <span class="search-icon material-symbols-outlined">
+              search
+            </span>
+
             <input type="text" name="searchTerm" id="mobileSearchInput" placeholder="Search" class="mobile-search-input">
           </form>
         </button>
@@ -155,8 +159,8 @@
               <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar" style="margin-top:6px;">
               <div class="avatar-online-status" style="
               background: <%= user.profile_border_color %>;
-              height: 10px;
-              width: 10px;
+              height: 7px;
+              width: 7px;
               z-index: 10;
               border-radius: 50%;
 
@@ -165,19 +169,13 @@
               right: 0;
               "> </div>
               <div class="avatar-dropdown">
-
-                <% if (user) { %>
-
-                <a href="/notifications">
+                <a href="#" onclick="document.getElementById('logoutForm').submit()">
                   <div class="avatar-dropdown-item">
                     <span class="material-symbols-outlined" id="nb-icon">
-                      mail
+                      logout
                     </span>
-                    <span id="unreadCount" class="count-bubble"></span>
                   </div>
                 </a>
-                <% } %>
-
                 <a href="/user/<%= user.username %>">
                   <div class="avatar-dropdown-item">
                     <span class="material-symbols-outlined" id="nb-icon">
@@ -192,11 +190,12 @@
                     </span>
                   </div>
                 </a>
-                <a href="#" onclick="document.getElementById('logoutForm').submit()">
+                <a href="/notifications">
                   <div class="avatar-dropdown-item">
                     <span class="material-symbols-outlined" id="nb-icon">
-                      logout
+                      notifications
                     </span>
+                    <span id="unreadCount" class="count-bubble"></span>
                   </div>
                 </a>
               </div>
@@ -211,7 +210,7 @@
             </div>
             <% } else if (!user) { %>
             <div class="nav-avatar">
-              <a href="/login" class="inbox-button" style="padding-top: 7px;">
+              <a href="/login" class="inbox-button" style="padding-top: 9px;">
                 <span class="material-symbols-outlined" id="nb-icon" style="padding: 3px 4px;">
                   account_circle
                 </span>
@@ -230,7 +229,7 @@
         <li class="dropdown">
           <% 
 const pathTitles = {
-  '/': 'Community',
+  '/': 'Home',
   '/jobs': 'Openings',
   '/learning': 'Learning',
   '/updates': 'Updates',
@@ -285,7 +284,11 @@ const isActive = (path) => {
             </li>
             <li>
               <a href="/">
-                Community</a>
+                Home</a>
+            </li>
+            <li>
+              <a href="/c">
+                Communities</a>
             </li>
             <li>
               <a href="/jobs">
@@ -686,12 +689,14 @@ const isActive = (path) => {
   const userLinks = document.querySelector('.user-links');
   const userText = document.querySelector('.nav-text-container');
   const searchInput = document.querySelector('.mobile-search-input');
+  const searchIcon = document.querySelector('.search-icon');
 
   userAvatar.addEventListener('click', () => {
     avatarDropdown.classList.toggle('open');
     userLinks.classList.toggle('slide-left');
     userText.classList.toggle('hidden');
     searchInput.classList.toggle('hidden');
+    searchIcon.classList.toggle('hidden');
   });
 
   <% } %>

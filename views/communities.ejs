@@ -632,8 +632,11 @@
           .catch(error => console.error('Error checking membership:', error));
       }
 
-      // Initially check membership and set button state
-      checkMembershipAndUpdateButton();
+      // check if user is logged in first 
+      if ("<%=
+        user %>" !== "") {
+        checkMembershipAndUpdateButton();
+      }
     });
     <% }%>
 

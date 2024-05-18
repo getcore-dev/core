@@ -196,15 +196,21 @@ a {
   width: 58vw;
   max-width: 100%;
   padding: 6px 10px;
+  padding-left: 20px;
   border-radius: 11px;
-  border: 1px solid var(--border-color);
-  background: var(--light-mode-hover-color);
+  border: 1px solid var(--light-mode-main-color);
+  background: var(--light-mode-main-color);
   transition: opacity 0.2s ease, visibility 0.2s ease;
   opacity: 1;
   visibility: visible;
 }
 
 .mobile-search-input.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.search-icon.hidden {
   opacity: 0;
   visibility: hidden;
 }
@@ -382,7 +388,7 @@ a {
 .search-button {
   padding: 0px;
   position: absolute;
-  bottom: -4px;
+  bottom: -6px;
   left: 75px;
 }
 
@@ -432,7 +438,7 @@ a {
 .menu-bar {
   z-index: 2;
   width: 16px;
-  height: 1.7px !important;
+  height: 1.5px !important;
   background-color: var(--light-mode-text-color);
   transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
@@ -627,10 +633,22 @@ font-weight: 400;
 }
 
 /* Mobile Navbar Style */
-.mobile-navbar, .search-icon {
+.mobile-navbar {
   font-size: 10px;
   display: none; /* Hide by default on desktop */
 }
+
+.search-icon {
+  position: absolute;
+  top: 6px;
+  left: 1px;
+  color: var(--light-mode-secondary-text-color);
+  font-size: 20px !important;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  opacity: 1;
+  visibility: visible;
+}
+
 
 #user-avatar {
   width: 34px;
