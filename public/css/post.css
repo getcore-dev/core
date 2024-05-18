@@ -1095,7 +1095,7 @@ p.preview-description {
   font-size: .875rem;
   color: var(--light-mode-text-color);
   font-weight: normal;
-  line-height: 1.5em; /* Adjust based on your design */
+  line-height: 1.3em; /* Adjust based on your design */
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -1438,6 +1438,14 @@ p.preview-description {
 
   .similar-posts .post:hover {
     background: var(--dark-mode-hover-color);
+  }
+
+  #reply-button,   .three-dots {
+    color: var(--dark-mode-text-color);
+  }
+
+  .votes {
+    color: var(--dark-mode-secondary-text-color)
   }
 
   .button-container button {

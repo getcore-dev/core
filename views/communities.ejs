@@ -64,8 +64,8 @@
         <% if (typeof community === 'undefined' || community == null) { %>
 
         <div class="mobile-jobs-container">
-          <div class="job-header" id="secondary-text">
-            <h5>Openings</h5>
+          <div class="job-header">
+            <h5><a href="/jobs" id="secondary-text">Openings</a></h5>
           </div>
           <div class="jobslist">
 
@@ -378,6 +378,24 @@
               fetchPromises.push(fetchLinkPreview(post.link, linkDiv));
             }
 
+            const imageUrlMatch = post.content.match(/!\[.*?\]\((.*?)\)/);
+            if (imageUrlMatch && imageUrlMatch[1]) {
+              linkPreviewDiv.style.background = 'none';
+              linkPreviewDiv.style.display = 'flex';
+              linkPreviewDiv.style.gap = '1.2rem';
+              linkPreviewDiv.style.alignItems = 'center';
+              const imageUrl = imageUrlMatch[1];
+              const thumbnailDiv = document.createElement('div');
+              thumbnailDiv.className = 'post-thumbnail';
+              const thumbnailImg = document.createElement('img');
+              thumbnailImg.src = imageUrl;
+              thumbnailImg.alt = 'Post Thumbnail';
+              thumbnailImg.className = 'thumbnail-image';
+              thumbnailImg.loading = "lazy";
+              thumbnailDiv.appendChild(thumbnailImg);
+              linkPreviewDiv.appendChild(thumbnailDiv);
+            }
+
             if (post.post_type != 'question') {
 
               if (((post.post_type == "discussion" || post.post_type == "project") && post.link)) {
@@ -390,25 +408,30 @@
 
                 if (post.post_type != 'blog') {
                   let contentWithoutMarkdown = post.content
-                    .replace(/(?:\r\n|\r|\n)/g, ' ') // Replace newline characters with a space
+                    .replace(/(?:\r\n|\r|\n)/g, ' ')
                     .replace(/\*\*(.*?)\*\*/g, '$1')
                     .replace(/\*(.*?)\*/g, '$1')
                     .replace(/__(.*?)__/g, '$1')
-                    .replace(/_(.*?)_/g, '$1');
+                    .replace(/_(.*?)_/g, '$1')
+                    .replace(/!\[.*?\]\(.*?\)/g, '')
+                    .replace(/\[.*?\]\(.*?\)/g, '$1');
                   descriptionDiv.append(`${contentWithoutMarkdown}`);
                 } else {
                   if (post.subtitle) {
                     descriptionDiv.append(`${post.subtitle}`);
                   } else {
                     let contentWithoutMarkdown = post.content
-                      .replace(/(?:\r\n|\r|\n)/g, ' ') // Replace newline characters with a space
+                      .replace(/(?:\r\n|\r|\n)/g, ' ')
                       .replace(/\*\*(.*?)\*\*/g, '$1')
                       .replace(/\*(.*?)\*/g, '$1')
                       .replace(/__(.*?)__/g, '$1')
-                      .replace(/_(.*?)_/g, '$1');
+                      .replace(/_(.*?)_/g, '$1')
+                      .replace(/!\[.*?\]\(.*?\)/g, '')
+                      .replace(/\[.*?\]\(.*?\)/g, '$1');
                     descriptionDiv.append(`${contentWithoutMarkdown}`);
                   }
                 }
+
 
                 linkPreviewDiv.appendChild(descriptionDiv);
               }
