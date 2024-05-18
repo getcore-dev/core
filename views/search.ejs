@@ -76,7 +76,7 @@
                     <% const maxTags = 3; %>
                     <% const displayedTags = tagsArray.slice(0, maxTags); %>
                     <% displayedTags.forEach((tag) => { %>
-                    <span class="job-flair" style="background-color: <%= getTintFromName(tag) %>9c; border: 1px solid <%= getTintFromName(tag) %>;">
+                    <span class="job-flair">
                       <p><%= tag %></p>
                     </span>
                     <% }); %>

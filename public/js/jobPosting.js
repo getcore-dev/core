@@ -102,12 +102,7 @@ function getSimilarJobs(jobId) {
               const tagsHTML = displayedTags
                 .map(
                   (tag) =>
-                    `<span class="job-flair" onclick="window.location.href='/jobs/tags/${tag}'"
-                    style="background-color: ${getTintFromName(
-                      tag
-                    )}; border: 1px solid ${getTintFromNameSecondary(
-                      tag
-                    )};"><p>${tag}</p></span>`
+                    `<span class="job-flair" onclick="window.location.href='/jobs/tags/${tag}'"><p>${tag}</p></span>`
                 )
                 .join("");
               const remainingTags = tagsArray.length - maxTags;
@@ -168,11 +163,7 @@ function getSimilarJobsByCompany(jobId, companyName) {
                 .map(
                   (tag) =>
                     `<span class="job-flair" onclick="window.location.href='/jobs/tags/${tag}'"
-                    style="background-color: ${getTintFromName(
-                      tag
-                    )}; border: 1px solid ${getTintFromNameSecondary(
-                      tag
-                    )};"><p>${tag}</p></span>`
+                    ><p>${tag}</p></span>`
                 )
                 .join("");
               const remainingTags = tagsArray.length - maxTags;
@@ -240,22 +231,14 @@ function lazyLoadJobDetails(jobId) {
         .map(
           (tag) =>
             `<span class="job-flair" onclick="window.location.href='/jobs/tags/${tag}'"
-            style="background-color: ${getTintFromName(
-              tag
-            )}; border: 1px solid ${getTintFromNameSecondary(
-              tag
-            )};"><p>${tag}</p></span>`
+            ><p>${tag}</p></span>`
         )
         .join("");
       const skillsHTML = displayedSkills
         .map(
           (skill) =>
             `<span class="job-flair" onclick="window.location.href='/jobs/tags/${skill}'"
-            style="background-color: ${getTintFromName(
-              skill
-            )}; border: 1px solid ${getTintFromNameSecondary(
-              skill
-            )};"><p>${skill}</p></span>`
+            ><p>${skill}</p></span>`
         )
         .join("");
 

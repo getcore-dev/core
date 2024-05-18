@@ -1301,7 +1301,11 @@ p.preview-description {
   .reaction-button, .main-reaction-button {
   background-color: var(--dark-mode-main-color);
   border: 1px solid var(--dark-mode-border-color);
-  color: var(--dark-mode-background-text-color);
+  color: var(--dark-mode-text-color);
+  }
+
+  .post-subtitle {
+    color: var(--dark-mode-secondary-text-color);
   }
 
   .dropbtn {

@@ -17,16 +17,32 @@ document.addEventListener("DOMContentLoaded", () => {
   getRecentJobs();
 });
 
+const jobTitles = [
+  "Software Engineer",
+  "Data Scientist",
+  "Designer",
+  "Cybersecurity",
+  "Project Manager",
+];
+
 function setupDynamicFilters() {
   setupFilter("experienceLevel");
   setupFilter("location");
   setupFilter("title");
   setupSalaryFilter();
 }
+
 function setupFilter(filterType) {
-  const uniqueValues = [
-    ...new Set(jobPostings.map((job) => job[filterType])),
-  ].sort();
+  let uniqueValues;
+
+  if (filterType === "title") {
+    uniqueValues = jobTitles;
+  } else {
+    uniqueValues = [
+      ...new Set(jobPostings.map((job) => job[filterType])),
+    ].sort();
+  }
+
   const filterContainer = document.querySelector(`.${filterType}-filter`);
   const dropdown = document.createElement("select");
   dropdown.innerHTML =
@@ -34,7 +50,9 @@ function setupFilter(filterType) {
     uniqueValues
       .map((value) => `<option value="${value}">${value}</option>`)
       .join("");
+
   filterContainer.appendChild(dropdown);
+
   dropdown.addEventListener("change", (e) => {
     filters[filterType] = e.target.value;
     renderJobPostings();
@@ -44,7 +62,10 @@ function setupFilter(filterType) {
 function setupSalaryFilter() {
   const salaryContainer = document.querySelector(".salary-filter");
   salaryContainer.innerHTML = `
-    <input type="number" placeholder="Min salary" id="min-salary">
+    <div class="input-container">
+      <span class="dollar-sign">$</span>
+      <input type="number" placeholder="Min salary" id="min-salary">
+    </div>
     <button onclick="applySalaryFilter()">Apply</button>
   `;
 }
@@ -195,12 +216,7 @@ function renderJobPostings() {
     const tagsHTML = displayedTags
       .map(
         (tag) =>
-          `<span class="job-flair" onclick="window.location.href='/jobs/tags/${tag}'"
-            style="background-color: ${getTintFromName(
-              tag
-            )}; border: 1px solid ${getTintFromNameSecondary(
-            tag
-          )};"><p>${tag}</p></span>`
+          `<span class="job-flair" onclick="window.location.href='/jobs/tags/${tag}'""><p>${tag}</p></span>`
       )
       .join("");
     const remainingTags = tagsArray.length - maxTags;

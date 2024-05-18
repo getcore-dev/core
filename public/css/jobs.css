@@ -167,13 +167,6 @@ p.job-description {
   display: none;
 }
 
-.create-job {
-  border: 0;
-  padding: 8px 14px;
-    color: white;
-  background-color: #007bff;
-  border-radius: 10px;
-}
 .jobs-sort-selector option {
   font-size: 16px;
 }
@@ -381,6 +374,7 @@ p.job-description {
   width: 90px;
   font-size: 16px;
   padding: 8px 10px;
+  padding-left: 20px;
   border-radius: 11px;
   border: 1px solid var(--border-color);
   background: var(--light-mode-hover-color);
@@ -431,13 +425,13 @@ select {
 .job-flair {
   display: inline-flex;
   gap: 5px;
-  padding: 2px 4px;
+  padding: 3px 7px;
   margin: 3px 7px 0px 0px;
   margin-bottom: 3px;
-  background-color: #7d869cab;
-  border: 1px solid #7d869cc9;
+  background-color: #5abe6e;
+  border: 1px solid #5abe6e;
   color: white;
-  border-radius: 9px;
+  border-radius: 7px;
   font-size: .925rem;
   position: relative;
 }
@@ -461,8 +455,22 @@ select {
   font-size: 1.3rem;
 }
 
-.create-job-button {
-  padding-left: 13px;
+.dollar-sign {
+  position: absolute;
+  color: var(--light-mode-secondary-text-color);
+  top: 50%;
+  left: 10px; /* Adjust the position as needed */
+  transform: translateY(-50%);
+  pointer-events: none; /* This ensures the text input remains clickable */
+}
+
+.salary-filter .input-container {
+  position: relative;
+}
+
+.salary-filter {
+  display: flex;
+    justify-content: center;
 }
 
 .job-posting-flairs {
@@ -581,6 +589,10 @@ div .material-symbols-outlined {
     color: var(--dark-mode-text-color) !important;
     border-color: var(--dark-mode-border-color) !important;
   }
+
+  .job { 
+    border-color: var(--dark-mode-border-color) !important;
+  }
 }
 
 
@@ -589,8 +601,23 @@ div .material-symbols-outlined {
   body {
     display: block;
   }
+
+  .job {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    border-bottom: 1px solid var(--border-color);
+  }
   .jobs-container {
     padding: 0 13px;
     height: calc(100dvh - 58px);
+  }
+  .job-list {
+    gap: 0;
+  }
+  
+
+  .job-preview {
+    padding: 22px 0;
   }
 }

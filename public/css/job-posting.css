@@ -101,12 +101,18 @@ div.similar-job {
   margin-top: 10px;
   min-width: 230px;
     display: flex;
-    background: var(--light-mode-hover-color);
+    background: var(--light-mode-main-color);
     border: 1px solid var(--border-color);
     border-radius: 18px;
     padding: 13px 17px;
     max-height: 170px;
     position: relative;
+    transition: background 0.3s ease;
+}
+
+div.similar-job:hover {
+  background: var(--light-mode-hover-color);
+  
 }
 
 .similar-jobs-company, .similar-jobs {

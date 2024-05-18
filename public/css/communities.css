@@ -22,7 +22,7 @@ body {
 
 
 .job {
-  background: #f6fafe;
+  background: var(--light-mode-main-color);
   width: auto;
   flex: auto;
 }
@@ -1255,7 +1255,7 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
   }
 
   .job {
-    background-color: var(--dark-mode-main-color) !important;
+    background-color: var(--dark-mode-body-color) !important;
   }
 
   .main-reaction-button:hover, .boost-button:hover, .reaction-button:hover {
