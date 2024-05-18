@@ -608,7 +608,7 @@ div .mini-link-desc {
 #posts-container {
   border-right: 1px solid var(--border-color);
   width: 53%;
-  max-width: 800px;
+  max-width: 1000px;
   flex: none;
   flex-direction: column;
   -webkit-scrollbar {

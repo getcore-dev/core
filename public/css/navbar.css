@@ -1560,7 +1560,7 @@ height: auto;
 #com-btn-container {
   margin-right: auto;
   width: 20%;
-  max-width: 300px;
+  max-width: 225px;
   flex: none; /* This will prevent the container from growing */
   display: flex;
   flex-direction: column;

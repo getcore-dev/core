@@ -99,9 +99,13 @@
     max-width: 100%;
     height: auto;
     border: 0;
-    max-height: 333px;
+    max-width: 75dvw;
     border-radius: 18px;
     object-fit: cover;
+  }
+
+  .post-body .link-image img {
+    max-width: 100%;
   }
 
   .post-body .image-container {
@@ -115,7 +119,6 @@
 
   @media (max-width: 768px) {
 .post-body .link-image img {
-  max-height: 130px;
   object-fit: cover;
 }
   }

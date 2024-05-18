@@ -18,8 +18,7 @@ h1 {
 main {
   display: flex;
   flex-direction: row;
-  max-width: 1200px;
-
+  width: 100vw;
 }
 
 .job-filters #secondary-text {
@@ -201,10 +200,16 @@ p.job-description {
 
   .job {
     background-color: var(--light-mode-main-color);
-    margin: 0;
-    border-radius: 0;
+    margin: 0 13px;
+    padding: 0 10px;
+    border-radius: 11px;
     margin-bottom: 0;
-    border-bottom: 1px solid var(--border-color);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+  }
+
+  .job:hover {
+    background-color: var(--light-mode-hover-color);
   }
   
   .job-title-location {
@@ -271,6 +276,8 @@ p.job-description {
   overflow-y: auto;
   height: calc(100vh - var(--navbar-height));
   width: 100%;
+  margin-right: auto;
+  max-width: 1000px;
 }
 
 .jobs-container > h3 {
@@ -353,6 +360,7 @@ p.job-description {
 .job-list {
   display: flex;
   flex-direction: column;
+  gap: 20px;
 }
 
 .job-content {
@@ -392,8 +400,8 @@ div.recent-jobs {
 
 select {
   width: 70%;
-  padding: 10px 3px;
-  margin: 5px 0;
+  padding: 6px 11px;
+    margin: 5px 0;
   font-size: 16px;
   border-radius: 11px;
   border: 1px solid var(--border-color);

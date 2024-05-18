@@ -5,7 +5,7 @@ main {
   display: flex;
   flex-direction: row;
   overflow: hidden;
-  max-width: 1200px;
+  max-width: 100vw;
 }
 
 .main-container {
@@ -194,6 +194,7 @@ div .material-symbols-outlined:hover {
   background-color: var(--background-color);
   overflow-y: scroll;
   max-width: 70%;
+  margin-right: auto;
 }
 
 
@@ -306,26 +307,25 @@ div .user-info, .header {
 .post-userinfo {
   display: flex;
   align-items: center;
-  margin-top: 7px;
-  gap: 8px;
-  margin-bottom: 9px;
-  font-size: .875rem;
+  gap: 15px;
+  margin: 26px 0;
+  font-size: .95rem;
 }
 
 img.blog-avatar {
   border-radius: 100%;
-  height: 24px;
+  height: 50px;
   aspect-ratio: 1/1;
   object-fit: cover; 
   overflow: hidden;
+  cursor: pointer;
   padding: 0 !important;
   margin: 0 !important;
 }
 
-.post-timestamp {
-  font-size: .725rem;
-  margin: 8px 0;
-  vertical-align: 1px;
+.blog-post-info {
+  display: flex;
+    flex-direction: column;
 }
 
 .post-title-container {
@@ -341,7 +341,8 @@ img.blog-avatar {
   border: 1px solid var(--border-color);
   color: var(--light-mode-text-color);
   border-radius: 20px;
-  padding: 5px 8px;
+  height: 28px;
+  width: 28px;
   font-size: .8rem;
   font-weight: 400;
   text-decoration: none;
@@ -361,12 +362,12 @@ img.blog-avatar {
 .replies .reaction-button {
   background: 0;
   border: 0;
-  font-size: .8rem;
+  font-size: 1rem;
 }
 
 .dicussion-link {
-  border: 1px solid var(--light-mode-body-color);
-  background-color: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
+  background-color: #f6fafe;
   border-radius: 14px;
   margin-bottom: 10px;
   margin-top: 7px !important;
@@ -517,6 +518,12 @@ img.blog-avatar {
   text-align: center;
 }
 
+.tags {
+  display: inline-flex;
+    width: 100%;
+    justify-content: flex-start;
+}
+
 .github-repo-description p {
   max-width: 100%;
   margin: 0;
@@ -626,7 +633,7 @@ img.blog-avatar {
   flex-direction: row;
   align-items: flex-start;
   padding: 0 12px;
-  margin-bottom: 20px;
+  margin-bottom: 2px;
 }
 
 .comment-avatar {
@@ -662,7 +669,8 @@ div.repliers-avatar, div.repliees-avatar {
 }
 
 .total-reactions-count, .add-comment-button {
-  font-size: .8rem;
+  font-family: 'Roboto', sans-serif !important;
+  font-size: .975rem;
   color: var(--light-mode-secondary-text-color);
 }
 
@@ -701,21 +709,20 @@ div.repliers-avatar, div.repliees-avatar {
 }
 
 .reaction-icon {
-  font-size: .855rem;
+  font-size: 1.1rem;
 }
 
 .post-user-info-header {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
   gap: 10px;
   width: 100%;
-  justify-content: space-between;
 }
 
 .comment .avatar, .post-user-info-header .avatar {
   border-radius: 100%;
   height: 28px;
+  cursor: pointer;
   aspect-ratio: 1/1;
   object-fit: cover; 
   overflow: hidden;
@@ -777,11 +784,11 @@ padding-top: 10px;
   margin-bottom: 10px;
   border-radius: 14px;
   border: 1px solid var(--border-color);
-  background: var(--light-mode-hover-color);
+  background: var(--light-mode-main-color);
   box-sizing: border-box;
 }
 .similar-posts .post:hover {
-  background: var(--border-color);
+  background: var(--light-mode-hover-color);
 }
 
 .similar-posts .post-content {
@@ -795,7 +802,7 @@ padding-top: 10px;
 #reply-button {
   text-decoration: none;
   color: var(--light-mode-text-color);
-  font-size: .8rem;
+  font-size: 1rem;
   vertical-align: 5px;
   border-radius: 6px;
 }
@@ -997,11 +1004,11 @@ a.comment-user-info:hover {
 }
 
 .post-body p , .comment-body p {
-  line-height: 1.15rem;
+  line-height: 1.55rem;
 }
 
 .post-body p, .comment-body p {
-  font-size: .925rem;
+  font-size: 1rem;
 }
 
 .preview-description {
@@ -1108,15 +1115,23 @@ p.preview-description {
 
 .input-container, .comment-container{
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   justify-content: space-between;
-  border-radius: 6px;
+  border-radius: 16px;
   box-sizing: border-box;
+  background: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
+  margin: 0 13px;
 }
 
 .input-container textarea {
   background-color: var(--light-mode-body-color);
-  border: 1px solid var(--border-color);
+}
+
+.input-container textarea:focus, .comment-container textarea:focus {
+  border: 0;
+  box-shadow: 0;
+  outline: none;
 }
 
 .reaction-button.active {
@@ -1161,8 +1176,9 @@ p.preview-description {
   margin-right: 10px;
 }
 
-.post-subtitle, .post-timestamp {
-  color: #7f8188;
+.post-subtitle {
+  font-size: 1.05rem;
+  color: var(--light-mode-secondary-text-color);
 }
 
 .project-link-image {
@@ -1438,10 +1454,6 @@ p.preview-description {
     color: var(--dark-mode-secondary-text-color);
   }
 
-  #verified, a #verified {
-    color: #3cb371; /* Adjusted color for dark mode */
-  }
-
   div .user-info, .header {
     color: var(--dark-mode-background-text-color); /* Lighter text color for user info and headers */
   }
@@ -1450,21 +1462,9 @@ p.preview-description {
     border-color: var(--dark-mode-border-color);
   }
 
-  .communities_id {
-    background-color: #006400; /* Darker background for community IDs */
-  }
-
-  .post-content, .comment-header, .comments-section h3 {
-    color: #d0d0d0; /* Lighter text color for content */
-  }
-
   .input-container , .comment-container, .comment-container textarea {
     border: 0;
     color: var(--dark-mode-text-color);
-  }
-
-  .preview-title, .preview-description {
-    color: #e0e0e0; /* Light text color for preview titles and descriptions */
   }
 
 }
@@ -1520,7 +1520,7 @@ div.username {
   }
 
   .similar-posts-header {
-    padding-top: 13px;
+    padding-top: 35px;
     font-size: .95rem;
   }
   .sidebar-link-info-title, .sidebar-link-info-url {
@@ -1640,7 +1640,7 @@ div.username {
 
   .comments-section {
     margin: 0;
-    margin-top: -2px;
+    margin-top: 20px;
     margin-bottom: 25px;
   }
 
@@ -1662,8 +1662,12 @@ div.username {
   }
 
   .post-subtitle {
-    font-size: 14px;
-    
+    font-size: .85rem;
+  }
+
+  .post-updatedat {
+    font-size: .8rem;
+    font-weight: bold;
   }
 
   .timestamp {
@@ -1706,7 +1710,7 @@ div.username {
   }
 
   .comments-section h3 {
-    font-size: 18px;
+    font-size: .85rem;
     margin-bottom: 10px;
   }
   
