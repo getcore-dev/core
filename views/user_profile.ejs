@@ -139,11 +139,9 @@
         </div>
 
         <div class="user-links" style="background:<%= otheruser.profile_border_color%>52 !important;">
+          <h5>Links</h5>
           <div class="social-display"> <img src="/src/github.png" style="height:20px;width:20px;">
             <p id="github-url-display"> <% if (otheruser.github_url) { %> <a href="https://github.com/<%= otheruser.github_url %>"><%= otheruser.github_url %></a> <% } else { %> No Github URL yet. <% } %> </p>
-          </div>
-          <div class="social-display"> <img src="/src/leetcodeglyph.png" style="height:20px;width:20px;">
-            <p id="leetcode-url-display"> <% if (otheruser.leetcode_url) { %> <a href="https://leetcode.com/<%= otheruser.leetcode_url %>"><%= otheruser.leetcode_url %></a> <% } else { %> No LeetCode URL yet. <% } %> </p>
           </div>
           <div class="social-display"> <img src="/src/linkedin.png" style="height:20px;width:20px;">
             <p id="linkedin-url-display"> <% if (otheruser.linkedin_url) { %> <a href="https://www.linkedin.com/in/<%= otheruser.linkedin_url %>"><%= otheruser.linkedin_url %></a> <% } else { %> No LinkedIn URL yet. <% } %> </p>
@@ -154,7 +152,10 @@
           <div id="commit-graph-container"></div>
         </div>
         <div class="leetcode-experience" style="background:<%= otheruser.profile_border_color%>52 !important;">
-          <h5>LeetCode Experience</h5>
+          <h5>LeetCode</h5>
+          <div class="social-display"> <img src="/src/leetcodeglyph.png" style="height:20px;width:20px;">
+            <p id="leetcode-url-display"> <% if (otheruser.leetcode_url) { %> <a href="https://leetcode.com/<%= otheruser.leetcode_url %>"><%= otheruser.leetcode_url %></a> <% } else { %> No LeetCode URL yet. <% } %> </p>
+          </div>
           <div id="leetcode-experience-container"></div>
         </div>
         <div class="github-commit-repos" style="background:<%= otheruser.profile_border_color%>52 !important;">
@@ -408,7 +409,8 @@
         experiences.forEach(experience => {
           const jobElement = document.createElement('div');
           jobElement.innerHTML = `
-            <h4>${experience.companyName}</h4>
+            <h4><a href="/jobs/company/${experience.companyName}">
+            ${experience.companyName}</a></h4>
             <h5>${experience.title}</h5>
             <p>${experience.employmentType}</p>
             <p>${experience.location}</p>

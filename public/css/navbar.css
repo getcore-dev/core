@@ -1276,10 +1276,14 @@ input:focus, textarea:focus, select:focus {
     border-color: var(--dark-mode-border-color) !important;
 }
 
+.search-icon {
+  color: var(--dark-mode-secondary-text-color);
+}
+
 .mobile-search-input {
-  background-color: var(--dark-mode-main-color);
+  background-color: var(--dark-mode-body-color);
   color: var(--dark-mode-text-color);
-  border-color: var(--dark-mode-border-color);
+  border-color: var(--dark-mode-body-color);
 }
 
 .second-nav-bar { 
