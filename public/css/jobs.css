@@ -516,21 +516,20 @@ select {
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;
-  padding: 10px 20px; /* Button padding */
-  margin-top: 10px; /* Top margin */
-  cursor: pointer; /* Pointer cursor */
+  padding: 10px 20px;
+  margin-top: 10px;
+  cursor: pointer; 
 }
 div .material-symbols-outlined {
-  font-size: 15px; /* Icon size */
-  vertical-align: -3px; /* Vertical alignment */
+  font-size: 15px; 
+  vertical-align: -2px; 
 }
 
-/* Dark Mode Styles */
+
 @media (prefers-color-scheme: dark) {
-  /* General Background and Text Colors */
   body , .job-content    {
-      background-color: var(--dark-mode-body-color); /* Dark background */
-      color: #fff; /* Light text */
+      background-color: var(--dark-mode-body-color);
+      color: #fff; 
   }
 
   .job {

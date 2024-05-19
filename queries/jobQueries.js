@@ -490,7 +490,7 @@ const jobQueries = {
       const result = await sql.query`
         SELECT * FROM companies WHERE name = ${name}
       `;
-      return result;
+      return result.recordset[0];
     } catch (err) {
       console.error("Database query error:", err);
       throw err;

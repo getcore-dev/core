@@ -52,11 +52,6 @@
                   <div class="company-info">
                     <img class="thumbnail thumbnail-tiny" src="<%= job.company_logo %>" alt="<%= job.company_name %> logo" />
                     <p class="company-name"><%= job.company_name %></p>
-                    <form id="favorite-form-<%= job.id %>" action="/favorites/jobs/<%= job.id %>" method="POST" style="margin-left: auto;">
-                      <button type="submit" style="margin-left:auto; background: 0; border:0;">
-                        <span class="material-symbols-outlined" style="font-size:1.2rem;">star</span>
-                      </button>
-                    </form>
                   </div>
                   <h3 class="job-title">
                     <%= job.title %>

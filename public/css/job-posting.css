@@ -110,6 +110,15 @@ div.similar-job {
     transition: background 0.3s ease;
 }
 
+.job-info-flairs {
+  display: inline-block;
+}
+
+.job-info-flairs p {
+  display: inline-block;
+  margin: 3px 6px 3px 0 !important;
+}
+
 div.similar-job:hover {
   background: var(--light-mode-hover-color);
   

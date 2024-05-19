@@ -12,7 +12,7 @@ form {
     margin: 8px 0;
     box-sizing: border-box;
     border-radius: 10px;
-    background-color: var(--light-mode-body-color) !important;
+    background-color: var(--light-mode-main-color) !important;
     border: 1px solid var(--border-color) !important;
     font-size: 16px;
     transition: box-shadow 0.3s ease;
@@ -21,6 +21,34 @@ form {
 
   .edit-form-container {
     margin: 0 13px;
+  }
+
+  div.button-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  div.edit-form-header {
+    display: flex;
+    width: 100%;
+    margin: 14px 0;
+  }
+
+  div.jobExperience {
+    display: flex;
+    border: 1px solid var(--border-color);
+    background: var(--light-mode-body-color);
+    padding: 11px 17px;
+    border-radius: 15px;
+    flex-direction: column;
+    gap: 3.5px;
+    font-size: .875rem;
+  }
+
+  div#jobExperienceContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -34,7 +62,7 @@ form {
     #educationExperienceContainer textarea {
         -webkit-text-fill-color: #D2D7DB;
         transition: background-color 5000s ease-in-out 0s;
-        background-color: var(--dark-mode-main-color) !important;
+        background-color: var(--dark-mode-body-color) !important;
         color: var(--dark-mode-text-color);
         border-color: var(--dark-mode-border-color) !important;
         font-size: 16px;

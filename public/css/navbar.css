@@ -640,7 +640,7 @@ font-weight: 400;
 
 .search-icon {
   position: absolute;
-  top: 6px;
+  top: 7px;
   left: 1px;
   color: var(--light-mode-secondary-text-color);
   font-size: 20px !important;

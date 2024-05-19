@@ -2,53 +2,37 @@
 <html>
 
 <head>
-  <title><%= post.title %></title>
+  <title>CORE <%= post.title %></title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="description" content="<%= post.content.substring(0, 160) %>" />
   <meta name="keywords" content="<%= post.tags.map(tag => tag.name).join(', ') %>" />
+  <meta name="author" content="<%= post.user.name %>">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article" />
   <meta property="og:title" content="<%= post.title %>" />
   <meta property="og:description" content="<%= post.content.substring(0, 160) %>" />
   <meta property="og:image" content="<%= post.user.avatar || '/img/default-avatar.png' %>" />
-  <meta property="og:url" content="c-ore.dev/post/<%= post.id %>" />
+  <meta property="og:url" content="https://c-ore.dev/post/<%= post.id %>" />
 
   <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:title" content="<%= post.title %>" />
-  <meta property="twitter:description" content="<%= post.content.substring(0, 160) %>" />
-  <meta property="twitter:image" content="<%= post.user.avatar || '/img/default-avatar.png' %>" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="<%= post.title %>" />
+  <meta name="twitter:description" content="<%= post.content.substring(0, 160) %>" />
+  <meta name="twitter:image" content="<%= post.user.avatar || '/img/default-avatar.png' %>" />
 
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/post.css" />
   <link rel="stylesheet" href="/css/post-formats.css" />
   <link rel="stylesheet" href="/css/com-btn-container.css" />
-
-  <meta name="description" content="Join CORE communities to connect with like-minded individuals. Discover, share, and engage in various topics and interests.">
-  <meta name="keywords" content="CORE communities, community engagement, social platform, join communities, discover communities, social network">
-  <meta name="author" content="CORE">
-  <meta property="og:title" content="CORE - Connect and Engage in Communities">
-  <meta property="og:description" content="Join CORE communities to connect with like-minded individuals. Discover, share, and engage in various topics and interests.">
-  <meta property="og:image" content="/img/core.png">
-  <meta property="og:url" content="https://c-ore.dev/">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="CORE - Connect and Engage in Communities">
-  <meta name="twitter:description" content="Join CORE communities to connect with like-minded individuals. Discover, share, and engage in various topics and interests.">
-  <meta name="twitter:image" content="/img/core.png">
-
-
-
   <link rel="shortcut icon" href="/img/core.png" />
   <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
   <link rel="stylesheet" id="hljs-style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/googlecode.min.css" media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/atom-one-dark.min.css" media="(prefers-color-scheme: dark)">
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
-
 </head>
 
 <body>
@@ -247,7 +231,9 @@
                   %>
                     <% if (gitHubData.topics && gitHubData.topics.length > 0) {%>
                     <% gitHubData.topics.forEach(topic => { %>
-                    <a href="/jobs/tags/<%= topic %>" class="tag"><%= topic %></a>
+                    <span class="tag" onclick="window.location.href='/jobs/tags/<%= topic %>'">
+                      <p><%= topic %></p>
+                    </span>
                     <% }); %>
                     <% } %>
                     <% } %>
@@ -294,43 +280,43 @@
                     <img src="/src/github.png" alt="GitHub Logo" class="github-logo" style="display: inline-block; background-color: white; border-radius: 100%; height: 16px; width: 16px; aspect-ratio: 1/1; padding: 0; margin: 0; margin-right: 5px;" />
                     <%= post.link %>
                   </a>
-                  <div>
-                    <div class="project-link-info">
-                      <h5 style="line-height: 1; margin: 2px 0;"><%= gitHubData.name %> <span><span class="material-symbols-outlined">
-                            history
-                          </span><%= formatDate(gitHubData.pushed_at) %></span>
-                      </h5>
-                      <div class="project-link-description">
-                        <%= gitHubData.description %>
-                      </div>
-                      <br>
-                      <div class="project-link-stats">
-                        <span class="tag-flair"><span class="material-symbols-outlined">
-                            code
-                          </span><%= gitHubData.language %></span>
-                        <span class="tag-flair"><span class="material-symbols-outlined">
-                            bug_report
-                          </span><%= gitHubData.open_issues %></span>
-
-                        <span class="tag-flair"><span class="material-symbols-outlined">
-                            star
-                          </span><%= gitHubData.stargazers_count %> stars</span>
-                        <span class="tag-flair"><span class="material-symbols-outlined">
-                            fork_right
-                          </span><%= gitHubData.forks %> forks</span>
-                        <span class="tag-flair"><span class="material-symbols-outlined">
-                            update
-                          </span><%= gitHubData.updated_at.substring(0, 10) %></span>
-                        %></span>
-                      </div>
-                      <span><%= gitHubData.license %></span>
+                  <div class="project-link-info">
+                    <h5 style="line-height: 1; margin: 2px 0;"><%= gitHubData.name %> <span><span class="material-symbols-outlined">
+                          history
+                        </span><%= formatDate(gitHubData.pushed_at) %></span>
+                    </h5>
+                    <div class="project-link-description">
+                      <%= gitHubData.description %>
                     </div>
+                    <br>
+                    <div class="project-link-stats">
+                      <span class="tag-flair"><span class="material-symbols-outlined">
+                          code
+                        </span><%= gitHubData.language %></span>
+                      <span class="tag-flair"><span class="material-symbols-outlined">
+                          bug_report
+                        </span><%= gitHubData.open_issues %></span>
+
+                      <span class="tag-flair"><span class="material-symbols-outlined">
+                          star
+                        </span><%= gitHubData.stargazers_count %> stars</span>
+                      <span class="tag-flair"><span class="material-symbols-outlined">
+                          fork_right
+                        </span><%= gitHubData.forks %> forks</span>
+                      <span class="tag-flair"><span class="material-symbols-outlined">
+                          update
+                        </span><%= gitHubData.updated_at.substring(0, 10) %></span>
+                      %></span>
+                    </div>
+                    <span><%= gitHubData.license %></span>
                   </div>
                 </div>
               </div>
 
-              <% } %>
+
+              <% } else { %>
               <%- post.content %>
+              <% } %>
 
               <% if (post.post_type == 'question' && post.solution) { %>
               <h3>Accepted solution by @<%= post.solution.user.username %></h3>
@@ -411,15 +397,15 @@
                 </div>
                 <% const reactionTypes = [
                   { type: "BOOST", icon: "⚡️" },
-    { type: "LOVE", icon: "❤️" },
-    { type: "LIKE", icon: "👍" },
-    { type: "CURIOUS", icon: "🤔" },
-    { type: "INTERESTING", icon: "💡" },
-    { type: "CELEBRATE", icon: "🎉" }
-  ]; %>
+        { type: "LOVE", icon: "❤️" },
+        { type: "LIKE", icon: "👍" },
+        { type: "CURIOUS", icon: "🤔" },
+        { type: "INTERESTING", icon: "💡" },
+        { type: "CELEBRATE", icon: "🎉" }
+      ]; %>
                 <% const topReactions = reactionTypes.filter(reaction => post[reaction.type.toLowerCase() + 'Count'] > 0)
-    .sort((a, b) => post[b.type.toLowerCase() + 'Count'] - post[a.type.toLowerCase() + 'Count'])
-    .slice(0, 3); %>
+          .sort((a, b) => post[b.type.toLowerCase() + 'Count'] - post[a.type.toLowerCase() + 'Count'])
+          .slice(0, 3); %>
                 <% let totalReactions = 0; %>
                 <% reactionTypes.forEach(reaction => { %>
                 <% totalReactions += post[reaction.type.toLowerCase() + 'Count']; %>
@@ -485,8 +471,7 @@
           <% function renderComments(comments, level = 0) { %>
 
 
-          <% comments.forEach(comment =>
-        { %>
+          <% comments.forEach(comment => { %>
           <% if (level == 0) { %>
           <div class="comment-with-replies">
             <% } %>
@@ -516,23 +501,23 @@
                     <span>&#183;</span>
 
                     <% let commentDate = new Date(comment.created_at);
-            let currentDate = new Date();
-            let timeDifference = currentDate - commentDate;
-            let minutes = Math.floor(timeDifference / 60000);
-            let hours = Math.floor(minutes / 60);
-            let days = Math.floor(hours / 24);
-            let timeSinceComment = '';
+                let currentDate = new Date();
+                let timeDifference = currentDate - commentDate;
+                let minutes = Math.floor(timeDifference / 60000);
+                let hours = Math.floor(minutes / 60);
+                let days = Math.floor(hours / 24);
+                let timeSinceComment = '';
 
-            if (days > 0) {
-              timeSinceComment = days + 'd ago';
-            } else if (hours > 0) {
-              timeSinceComment = hours +  'h ago';
-            } else if (minutes > 0) {
-              timeSinceComment = minutes + 'm ago';
-            } else {
-              timeSinceComment = 'Just now';
-            }
-            %>
+                if (days > 0) {
+                  timeSinceComment = days + 'd ago';
+                } else if (hours > 0) {
+                  timeSinceComment = hours +  'h ago';
+                } else if (minutes > 0) {
+                  timeSinceComment = minutes + 'm ago';
+                } else {
+                  timeSinceComment = 'Just now';
+                }
+                %>
                     <span class="comment-timestamp" id="secondary-text"><%= timeSinceComment %></p>
 
                   </div>
@@ -613,17 +598,17 @@
                 <button class="mainReactionButton reaction-button <% if (comment.userReaction) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>">
                   <% if (comment.userReaction) { %>
                   <% const reactionTypes = [
-                  { type: "BOOST", icon: "⚡️" },
-                  { type: "LOVE", icon: "❤️" },
-                  { type: "LIKE", icon: "👍" },
-                  { type: "CURIOUS", icon: "🤔" },
-                  { type: "INTERESTING", icon: "💡" },
-                  { type: "CELEBRATE", icon: "🎉" }
-                  ]; %>
+                      { type: "BOOST", icon: "⚡️" },
+                      { type: "LOVE", icon: "❤️" },
+                      { type: "LIKE", icon: "👍" },
+                      { type: "CURIOUS", icon: "🤔" },
+                      { type: "INTERESTING", icon: "💡" },
+                      { type: "CELEBRATE", icon: "🎉" }
+                      ]; %>
 
                   <% if (comment.userReaction == "B") {
-                  comment.userReaction = "BOOST";
-                  } %>
+                      comment.userReaction = "BOOST";
+                      } %>
 
                   <% if (comment.userReaction != null && reactionTypes.find(reaction => reaction.type === comment.userReaction)) { %>
 
@@ -645,17 +630,17 @@
                 </div>
 
                 <% const reactionTypes = [
-                      { type: "BOOST", icon: "⚡️"},
-                      { type: "LOVE", icon: "❤️" },
-                      { type: "LIKE", icon: "👍" }, 
-                      { type: "CURIOUS", icon: "🤔" },
-                      { type: "INTERESTING", icon: "💡" },
-                      { type: "CELEBRATE", icon: "🎉" }
-                    ]; %>
+                          { type: "BOOST", icon: "⚡️"},
+                          { type: "LOVE", icon: "❤️" },
+                          { type: "LIKE", icon: "👍" }, 
+                          { type: "CURIOUS", icon: "🤔" },
+                          { type: "INTERESTING", icon: "💡" },
+                          { type: "CELEBRATE", icon: "🎉" }
+                        ]; %>
 
                 <% const topReactions = reactionTypes.filter(reaction => comment[reaction.type.toLowerCase() + 'Count'] > 0)
-                  .sort((a, b) => comment[b.type.toLowerCase() + 'Count'] - comment[a.type.toLowerCase() + 'Count'])
-                  .slice(0, 3); %>
+                      .sort((a, b) => comment[b.type.toLowerCase() + 'Count'] - comment[a.type.toLowerCase() + 'Count'])
+                      .slice(0, 3); %>
 
                 <% let totalReactions = 0; %>
                 <% reactionTypes.forEach(reaction => { %>
@@ -677,16 +662,16 @@
                 <% const reactionCount = comment[reaction.type.toLowerCase() + 'Count']; %>
                 <% }); %>
                 <% 
-                        function countAllReplies(replies) {
-                          if (!replies || replies.length === 0) return 0;
-                          let total = 0;
-                          for (const reply of replies) {
-                            total += 1 + countAllReplies(reply.replies);
-                          }
-                          return total;
-                        }
-                        const totalReplies = countAllReplies(comment.replies);
-                      %>
+                            function countAllReplies(replies) {
+                              if (!replies || replies.length === 0) return 0;
+                              let total = 0;
+                              for (const reply of replies) {
+                                total += 1 + countAllReplies(reply.replies);
+                              }
+                              return total;
+                            }
+                            const totalReplies = countAllReplies(comment.replies);
+                          %>
                 <span class="total-reactions-count">
                   <%= totalReplies%> replies
                 </span>
@@ -709,39 +694,38 @@
           <% var nestedLevel = level + 1; %>
           <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
           <div class="<%= divClass %>" id="nested-comments-<%= comment.id %>" style="
-            <% if (nestedLevel < 4) { %>
-            display: block;
-            <% } else { %>
-            display: none;
-            <% } %>
-            ">
+              <% if (nestedLevel < 4) { %>
+              display: block;
+              <% } else { %>
+              display: none;
+              <% } %>
+              ">
 
             <% renderComments(comment.replies, nestedLevel); %>
           </div>
 
-        </div>
-        <% } %>
+          <% } %>
 
 
-        <% }) %>
-        <% } %>
-        <% if (post.comments.length === 0) { %>
-        <div class="no-comments">
-          No comments yet, start a discussion!
-        </div>
-        <% } else { %>
-        <% renderComments(post.comments); %>
-        <% } %>
-        <% if (similarPosts.length > 0) { %>
-        <div class="similar-posts">
-          <div class="header similar-posts-header">
-            <h3>Similar Posts</h3>
+          <% }) %>
+          <% } %>
+          <% if (post.comments.length === 0) { %>
+          <div class="no-comments">
+            No comments yet, start a discussion!
           </div>
-          <% similarPosts.forEach(similarPost => { %>
-          <div class="post" onclick="window.location.href='/posts/<%= similarPost.id %>'">
-            <div class="post-content">
-              <div class="post-header">
-                <% 
+          <% } else { %>
+          <% renderComments(post.comments); %>
+          <% } %>
+          <% if (similarPosts.length > 0) { %>
+          <div class="similar-posts">
+            <div class="header similar-posts-header">
+              <h3>Similar Posts</h3>
+            </div>
+            <% similarPosts.forEach(similarPost => { %>
+            <div class="post" onclick="window.location.href='/posts/<%= similarPost.id %>'">
+              <div class="post-content">
+                <div class="post-header">
+                  <% 
                     function formatDate(dateString) {
                     const date = new Date(dateString);
                     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -750,56 +734,56 @@
                     return `${month}/${day}/${year}`;
                   }
                   %>
-                <div class="post-header-username">
-                  <div class="avatar">
-                    <img src="<%= similarPost.avatar %>" loading="lazy">
-                  </div>
-                  <div class="username">
-                    <a href="/user/<%= similarPost.username %>" class="username-link"><strong><%= similarPost.username %></strong></a>
-                    <div class="post-date" id="secondary-text">
-                      <a style="color: <%= similarPost.community_color %>;" href="/c/<%= similarPost.communities_id %>" class="community"><%= similarPost.community_name %></a>
+                  <div class="post-header-username">
+                    <div class="avatar">
+                      <img src="<%= similarPost.avatar %>" loading="lazy">
+                    </div>
+                    <div class="username">
+                      <a href="/user/<%= similarPost.username %>" class="username-link"><strong><%= similarPost.username %></strong></a>
+                      <div class="post-date" id="secondary-text">
+                        <a style="color: <%= similarPost.community_color %>;" href="/c/<%= similarPost.communities_id %>" class="community"><%= similarPost.community_name %></a>
 
-                      <%= formatDate(similarPost.created_at) %> • <%= similarPost.views %> views
+                        <%= formatDate(similarPost.created_at) %> • <%= similarPost.views %> views
+                      </div>
                     </div>
                   </div>
+                  <div class="three-dots">
+                    <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>
+                  </div>
                 </div>
-                <div class="three-dots">
-                  <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>
+                <div class="title"><%= similarPost.title %></div>
+                <div class="link-preview">
+                  <% if (similarPost.link) { %>
+                  <div class="link">
+                    <span class="material-symbols-outlined" style="color: var(--active-indicator-color);">
+                      link
+                    </span>
+                    <%= similarPost.link %>
+                  </div>
+                  <% } %>
+                  <% if (similarPost.post_type !== 'question' && (!similarPost.link || (similarPost.post_type !== 'post' && similarPost.post_type !== 'project'))) { %>
+                  <div class="description">
+                    <%- similarPost.content %>
+                  </div>
+                  <% } %>
                 </div>
-              </div>
-              <div class="title"><%= similarPost.title %></div>
-              <div class="link-preview">
-                <% if (similarPost.link) { %>
-                <div class="link">
-                  <span class="material-symbols-outlined" style="color: var(--active-indicator-color);">
-                    link
-                  </span>
-                  <%= similarPost.link %>
-                </div>
-                <% } %>
-                <% if (similarPost.post_type !== 'question' && (!similarPost.link || (similarPost.post_type !== 'post' && similarPost.post_type !== 'project'))) { %>
-                <div class="description">
-                  <%- similarPost.content %>
-                </div>
-                <% } %>
-              </div>
-              <div class="votes">
-                <div class="reaction-interactions <%= similarPost.id %>-reactions" id="reaction-interactions <%= similarPost.id %>-reactions">
-                  <%= similarPost.totalReactionCount %> reactions
-                </div>
-                <div class="comments">
-                  <%= similarPost.commentCount %> comment<%= similarPost.commentCount > 1 ? 's' : '' %>
+                <div class="votes">
+                  <div class="reaction-interactions <%= similarPost.id %>-reactions" id="reaction-interactions <%= similarPost.id %>-reactions">
+                    <%= similarPost.totalReactionCount %> reactions
+                  </div>
+                  <div class="comments">
+                    <%= similarPost.commentCount %> comment<%= similarPost.commentCount > 1 ? 's' : '' %>
+                  </div>
                 </div>
               </div>
             </div>
+            <% }) %>
           </div>
-          <% }) %>
-        </div>
-        <% } %>
-        <div class="post-footer" style="text-align: center;">
+          <% } %>
+          <div class="post-footer" style="text-align: center;">
+          </div>
         </div>
       </div>
-    </div>
 
     </div>
   </main>

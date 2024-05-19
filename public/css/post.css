@@ -375,7 +375,7 @@ img.blog-avatar {
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
-  
+  align-items: center;
 }
 
 .reaction-popup {
@@ -495,9 +495,10 @@ img.blog-avatar {
 
 .link-info {
   display: flex;
-  margin: 10px;
-  margin-bottom: 5px;
-  margin-top: 8px;
+  margin: 18px;
+  gap: 5px;
+  margin-bottom: 10px;
+  margin-top: 12px;
   flex-direction: column;
   justify-content: center;
 }
@@ -513,13 +514,9 @@ img.blog-avatar {
   white-space: normal;
 }
 
-.tags-div {
-  font-size: .85rem;
-  text-align: center;
-}
 
 .tags {
-  display: inline-flex;
+  display: inline-block;
     width: 100%;
     justify-content: flex-start;
 }
@@ -1146,8 +1143,6 @@ p.preview-description {
   border: 1px solid var(--border-color);
   border-radius: 18px;
   padding: 13px 23px;
-  white-space-collapse: collapse;
-  display: inline-block;
 }
 
 .project-link-title {
@@ -1197,17 +1192,16 @@ p.preview-description {
 }
 
 .tag {
-  display: inline-flex;
-  gap: 5px;
-  padding: 3px 5px;
-  margin: 3px 7px 0px 0px;
-  margin-bottom: 3px;
-  background-color: #7d869cab;
-  border: 1px solid #7d869cc9;
-  color: white;
-  border-radius: 9px;
-  font-size: .925rem;
-  position: relative;
+    display: inline-flex;
+    gap: 5px;
+    padding: 3px 7px;
+    margin: 3px 7px 0px 0px;
+    margin-bottom: 3px;
+    background-color: #5abe6e36;
+    color: #5abe6e;
+    border-radius: 7px;
+    font-size: .925rem;
+    position: relative;
 }
 
 #community-header-text {
@@ -1564,8 +1558,6 @@ div.username {
 
   .large-preview-image {
     border-radius: 18px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
     margin: 0 !important;
     width: 100%; 
     height: auto;
@@ -1592,11 +1584,6 @@ div.username {
     width: auto;
     height: 100%;
   }
-
-  .dicussion-link {
-    flex-direction: column;
-  }
-
   #github-link-preview {
     margin: 0;
     }
@@ -1616,6 +1603,11 @@ div.username {
 
   .link-image {
     width: 100%;
+  }
+
+  .link-image img {
+    width: 80% !important;
+    margin: 0 auto !important;
   }
 
   .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button {
@@ -1640,11 +1632,6 @@ div.username {
 
   .main-container > .comments-section {
     padding-bottom: 50px;
-  }
-
-  .large-preview-image {
-    border-bottom-left-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
   }
 
   .post {

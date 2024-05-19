@@ -27,10 +27,8 @@
     </div>
 
     <span class="company-description"><%= company.description %></span>
-    <br>
-    <br>
     <div class="company-flair">
-      <% if (company.founded)  { %>
+      <% if (company.industry)  { %>
 
       <span class="company-flair-item">
         <p>
@@ -52,21 +50,9 @@
         </p>
       </span>
       <% } %>
-      <% if (company.founded)  { %>
-      <span class="company-flair-item">
-        <p>
-          <span class="material-symbols-outlined">
-            handshake
-          </span>
-          <%= company.founded.toDateString() %>
-        </p>
-      </span>
-      <% } %>
     </div>
-    <br>
     <div class="jobs">
       <h3>Open Jobs</h3>
-      <br>
       <div class="job-list">
       </div>
     </div>
@@ -102,9 +88,7 @@
         const tagsHTML = displayedTags
           .map(
             (tag) =>
-            `<span class="job-flair" style="background-color: ${getTintFromName(
-            tag
-          )}9c; border: 1px solid ${getTintFromName(tag)};"><p>${tag}</p></span>`
+            `<span class="job-flair"><p>${tag}</p></span>`
           )
           .join("");
         const remainingTags = tagsArray.length - maxTags;
@@ -116,13 +100,6 @@
                     job.company_logo
                   }" alt="${job.company_name} logo" />
                   <p class="company-name">${job.company_name}</p>
-                  <form id="favorite-form-${job.id}" action="/favorites/jobs/${
-            job.id
-          }" method="POST" style="margin-left: auto;">
-                    <button type="submit" style="margin-left:auto; background: 0; border:0;">                
-                      <span class="material-symbols-outlined" style="font-size:1.2rem;">star</span>
-                    </button>
-                  </form>
                 </div>
                 <h3 class="job-title">${
                   job.title

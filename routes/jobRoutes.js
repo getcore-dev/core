@@ -17,11 +17,11 @@ router.get("/create", checkAuthenticated, async (req, res) => {
   }
 });
 
-router.get("/company/:id", async (req, res) => {
+router.get("/company/:name", async (req, res) => {
   try {
-    const companyId = req.params.id;
-    const company = await jobQueries.getCompanyById(companyId);
-    const jobs = await jobQueries.getJobsByCompany(companyId);
+    const companyName = req.params.name;
+    const company = await jobQueries.getCompanyByName(companyName);
+    const jobs = await jobQueries.getJobsByCompany(company.id);
     res.render("company_profile.ejs", { company, jobs, user: req.user });
   } catch (err) {
     console.error("Error fetching job postings:", err);

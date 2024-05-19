@@ -18,18 +18,19 @@ main {
     display: flex;
     flex-direction: row;
     gap: 4px;
+    margin: 7px 0;
 }
 
 .company-flair-item {
   display: inline-flex;
-  padding: 4px 5px;
-  margin: 3px 2px 0px 0px;
+  gap: 5px;
+  padding: 3px 7px;
+  margin: 3px 7px 0px 0px;
   margin-bottom: 3px;
-  background-color: #7d869cab;
-  border: 1px solid #7d869cc9;
-  color: white;
+  background-color: #5a95be36;
+  color: #5aaabe;
   border-radius: 7px;
-  font-size: .825rem;
+  font-size: .925rem;
   position: relative;
   }
 

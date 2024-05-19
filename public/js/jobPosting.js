@@ -71,11 +71,11 @@ function blendColors(color1, color2, ratio) {
 
 function formatSalary(salary) {
   if (salary >= 1000000) {
-    return "$" + (salary / 1000000).toFixed(1) + "M";
+    return "" + (salary / 1000000).toFixed(1) + "M";
   } else if (salary >= 1000) {
-    return "$" + (salary / 1000).toFixed(0) + "k";
+    return "" + (salary / 1000).toFixed(0) + "k";
   } else {
-    return "$" + salary;
+    return "" + salary;
   }
 }
 
@@ -253,7 +253,7 @@ function lazyLoadJobDetails(jobId) {
       } logo" class="thumbnail thumbnail-small thumbnail-regular" />
             <div class="company-details">
               <h3 class="company-name" onclick="window.location.href='/jobs/company/${
-                job.company_id
+                job.company_name
               }'">${job.company_name}</h3>
               <div class="company-information">
               <p class="company-location">
@@ -277,24 +277,43 @@ factory
 
           <div class="job-details">
             <h2 class="job-title">${job.title}</h2>
-            <div class="job-experience-level">
-            <p>${job.experienceLevel}</p>
-            </div>
-    <div class="job-is-remote">
-              <h4>Location/Remote</h4>
-              <p>${job.location}</p>
-              <p>Remote available?: ${job.isRemote ? "Yes" : "No"}</p>
-            </div>
-            <div class="job-salary">
-            <h4>Salary</h4>
-            <p>The annual expected salary for this role: <strong style="color: green;">${formatSalary(
-              job.salary
-            )} ${
-        job.salary_max ? "to " + formatSalary(job.salary_max) : ""
-      }</strong></p>
-          </div>
+            <div class="job-info-flairs">
+              <p>
+                <span class="material-symbols-outlined">
+                engineering
+                </span> ${job.experienceLevel}
+              </p>
+              <p> 
+                <span class="material-symbols-outlined">
+                location_city
+                </span> ${job.location}
+              </p>
+              <p>
+                <span class="material-symbols-outlined">
+                computer
+                </span> ${job.isRemote ? "Remote available" : "Not remote"}
+              </p>
+              <p>   
+                <span class="material-symbols-outlined">
+                license
+                </span>${
+                  job.h1bVisaSponsorship
+                    ? "Visa available"
+                    : "No visa sponsorship"
+                }
+              </p>
+            <p>
+            <span class="material-symbols-outlined">
+              attach_money
+              </span>${formatSalary(job.salary)} ${
+        job.salary_max ? "- " + formatSalary(job.salary_max) : ""
+      }
+      </p>
+      </div>
+          
             <div class="job-description">
             <h4>Job Description</h4>
+            
 
               <p>${job.description}</p>
             </div>
@@ -391,11 +410,6 @@ ${
 `
     : ""
 }
-
-<div class="job-h1b-visa-sponsorship">
-  <h4>H1B Visa Sponsorship</h4>
-  <p>${job.h1bVisaSponsorship ? "Yes" : "No"}</p>
-</div>
 
 ${
   job.equalOpportunityEmployerInfo

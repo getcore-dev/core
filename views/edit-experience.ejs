@@ -13,9 +13,9 @@
 <body>
   <%- include('partials/navbar', { pagePath: 'edit-experience' }) %>
   <div class="edit-form-container">
-    <h1>Edit Experience</h1>
-
-    <h2>Job Experience</h2>
+    <div class="edit-form-header">
+      <h4>Edit Experience</h4>
+    </div>
     <form id="jobExperienceForm">
       <div id="jobExperienceContainer"></div>
       <button type="button" class="regular-button" id="addJobExperience">Add Job Experience</button>
@@ -46,7 +46,7 @@
         <label for="description">Description:</label>
         <textarea name="description" required></textarea>
 
-        <button type="button" class="removeJobExperience">Remove</button>
+        <button type="button" class="removeJobExperience cancel-button">Remove</button>
       </div>
     </template>
   </div>
@@ -68,15 +68,61 @@
           }
           field.value = value;
         });
+
         const removeButton = newExperience.querySelector('.removeJobExperience');
         removeButton.addEventListener('click', function() {
           newExperience.remove();
         });
+
         jobExperienceContainer.appendChild(newExperience);
       }
 
+      function createExperienceElement(experienceData = {}) {
+        const div = document.createElement('div');
+        div.classList.add('jobExperience');
+
+        const fields = ['title', 'employmentType', 'companyName', 'location', 'startDate', 'endDate', 'description'];
+
+        fields.forEach(field => {
+          const p = document.createElement('p');
+          p.innerHTML = `<strong>${field.charAt(0).toUpperCase() + field.slice(1)}:</strong> ${experienceData[field] || ''}`;
+          p.classList.add(field);
+          div.appendChild(p);
+        });
+
+        const buttonContainer = document.createElement('div');
+        buttonContainer.classList.add('button-container');
+        div.appendChild(buttonContainer);
+
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.type = 'button';
+        editButton.classList.add('editJobExperience');
+        editButton.classList.add('regular-button-normal');
+
+        editButton.addEventListener('click', function() {
+          div.remove();
+          addExperience(experienceData);
+          div.appendChild(removeButton);
+        });
+        buttonContainer.appendChild(editButton);
+
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remove';
+        removeButton.type = 'button';
+        removeButton.classList.add('removeJobExperience');
+        removeButton.classList.add('cancel-button-normal');
+
+        removeButton.addEventListener('click', function() {
+          div.remove();
+        });
+        buttonContainer.appendChild(removeButton);
+
+        jobExperienceContainer.appendChild(div);
+      }
+
       addJobExperienceButton.addEventListener('click', function() {
-        addExperience();
+        addExperience(); // Add new experience in editable form
       });
 
       const userID = '<%= user.id %>';
@@ -84,8 +130,7 @@
         .then(response => response.json())
         .then(data => {
           data.forEach(experience => {
-            console.log('Experience:', experience);
-            addExperience(experience);
+            createExperienceElement(experience);
           });
         })
         .catch(error => {
@@ -94,16 +139,27 @@
 
       jobExperienceForm.addEventListener('submit', function(event) {
         event.preventDefault();
-        const formData = new FormData(jobExperienceForm);
+
         const experiences = [];
 
-        const experienceDivs = jobExperienceContainer.querySelectorAll('.jobExperience');
-        experienceDivs.forEach(div => {
+        jobExperienceContainer.querySelectorAll('.jobExperience').forEach(div => {
           const experience = {};
-          div.querySelectorAll('input, textarea').forEach(field => {
-            experience[field.name] = field.value;
-          });
-          experiences.push(experience);
+          const inputs = div.querySelectorAll('input, textarea');
+
+          if (inputs.length > 0) {
+            inputs.forEach(field => {
+              experience[field.name] = field.value;
+            });
+          } else {
+            div.querySelectorAll('p').forEach(p => {
+              const field = p.className;
+              experience[field] = p.textContent.replace(`${field.charAt(0).toUpperCase() + field.slice(1)}: `, '');
+            });
+          }
+
+          if (Object.values(experience).filter(value => value !== '').length > 0) {
+            experiences.push(experience);
+          }
         });
 
         fetch('/jobs/update-experiences', {
