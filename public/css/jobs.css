@@ -425,12 +425,11 @@ select {
 .job-flair {
   display: inline-flex;
   gap: 5px;
-  padding: 3px 7px;
+  padding: 2px 7px;
   margin: 3px 7px 0px 0px;
   margin-bottom: 3px;
-  background-color: #5abe6e;
-  border: 1px solid #5abe6e;
-  color: white;
+  background-color: #5abe6e36;
+  color: #5abe6e;
   border-radius: 7px;
   font-size: .925rem;
   position: relative;
