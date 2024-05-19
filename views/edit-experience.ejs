@@ -16,15 +16,15 @@
     <h1>Edit Experience</h1>
 
     <h2>Job Experience</h2>
-    <form id="jobExperienceForm" action="/jobs/update-experiences" method="POST">
+    <form id="jobExperienceForm">
       <div id="jobExperienceContainer"></div>
       <button type="button" class="regular-button" id="addJobExperience">Add Job Experience</button>
       <button type="submit" id="submit-button">Save Changes</button>
     </form>
 
     <template id="jobExperienceTemplate">
-      <div class="jobExperience" id="${experienceData.id || ''}">
-        <input type="hidden" name="id" value="${experienceData.id || ''}">
+      <div class="jobExperience">
+        <input type="hidden" name="id">
         <label for="title">Title:</label>
         <input type="text" name="title" required>
 
@@ -46,10 +46,7 @@
         <label for="description">Description:</label>
         <textarea name="description" required></textarea>
 
-        <label for="tags">Tags (comma-separated):</label>
-        <input type="text" name="tags">
-
-        <button type="button" id="cancel-button" class="removeJobExperience">Remove</button>
+        <button type="button" class="removeJobExperience">Remove</button>
       </div>
     </template>
   </div>
@@ -59,12 +56,17 @@
       const jobExperienceContainer = document.getElementById('jobExperienceContainer');
       const addJobExperienceButton = document.getElementById('addJobExperience');
       const jobExperienceTemplate = document.getElementById('jobExperienceTemplate');
+      const jobExperienceForm = document.getElementById('jobExperienceForm');
 
       function addExperience(experienceData = {}) {
         const newExperience = jobExperienceTemplate.content.cloneNode(true);
         const experienceFields = newExperience.querySelectorAll('input, textarea');
         experienceFields.forEach(field => {
-          field.value = experienceData[field.name] || '';
+          let value = experienceData[field.name] || '';
+          if (field.type === 'date' && value) {
+            value = new Date(value).toISOString().split('T')[0];
+          }
+          field.value = value;
         });
         const removeButton = newExperience.querySelector('.removeJobExperience');
         removeButton.addEventListener('click', function() {
@@ -82,12 +84,50 @@
         .then(response => response.json())
         .then(data => {
           data.forEach(experience => {
+            console.log('Experience:', experience);
             addExperience(experience);
           });
         })
         .catch(error => {
           console.error('Error fetching job experience data:', error);
         });
+
+      jobExperienceForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(jobExperienceForm);
+        const experiences = [];
+
+        const experienceDivs = jobExperienceContainer.querySelectorAll('.jobExperience');
+        experienceDivs.forEach(div => {
+          const experience = {};
+          div.querySelectorAll('input, textarea').forEach(field => {
+            experience[field.name] = field.value;
+          });
+          experiences.push(experience);
+        });
+
+        fetch('/jobs/update-experiences', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              experiences
+            })
+          })
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          })
+          .then(data => {
+            console.log('Success:', data);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      });
     });
   </script>
 </body>

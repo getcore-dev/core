@@ -38,14 +38,20 @@ router.post("/update-experiences", checkAuthenticated, async (req, res) => {
       experiences = [experiences];
     }
 
+    console.log("Incoming experiences:", experiences);
+
     // Clear existing job experiences and tags for the user
     await jobQueries.clearUserJobExperienceTags(userId);
     await jobQueries.clearUserJobExperience(userId);
 
     // Process each job experience
     for (const experience of experiences) {
+      if (!experience) {
+        console.warn("Skipping undefined experience");
+        continue;
+      }
+
       const {
-        id = null,
         title,
         employmentType,
         companyName,
@@ -53,37 +59,19 @@ router.post("/update-experiences", checkAuthenticated, async (req, res) => {
         startDate,
         endDate,
         description,
-        tags,
       } = experience;
 
-      if (id) {
-        // Update existing job experience
-        await jobQueries.addJobExperience(
-          id,
-          title,
-          employmentType,
-          companyName,
-          location,
-          startDate,
-          endDate,
-          description,
-          tags,
-          id
-        );
-      } else {
-        // Add new job experience
-        await jobQueries.addJobExperience(
-          userId,
-          title,
-          employmentType,
-          companyName,
-          location,
-          startDate,
-          endDate,
-          description,
-          tags
-        );
-      }
+      // Add new job experience (assuming the function also handles updating if the ID exists)
+      await jobQueries.addJobExperience(
+        userId,
+        title,
+        employmentType,
+        companyName,
+        location,
+        startDate,
+        endDate,
+        description
+      );
     }
 
     res.status(200).send("Job experiences updated successfully");

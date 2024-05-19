@@ -624,63 +624,17 @@ const jobQueries = {
     location,
     startDate,
     endDate,
-    description,
-    tags,
-    experienceId = null
+    description
   ) => {
     try {
-      let result;
+      const result = await sql.query`
+        INSERT INTO job_experiences (userId, title, employmentType, companyName, location, startDate, endDate, description)
+        OUTPUT INSERTED.id
+        VALUES (${userId}, ${title}, ${employmentType}, ${companyName}, ${location}, ${startDate}, ${endDate}, ${description})
+      `;
 
-      if (experienceId) {
-        // Update existing job experience
-        await sql.query`
-          UPDATE job_experiences
-          SET title = ${title},
-              employmentType = ${employmentType},
-              companyName = ${companyName},
-              location = ${location},
-              startDate = ${startDate},
-              endDate = ${endDate},
-              description = ${description}
-          WHERE id = ${experienceId}
-        `;
-        result = { recordset: [{ id: experienceId }] };
-      } else {
-        // Insert new job experience
-        result = await sql.query`
-          INSERT INTO job_experiences (userId, title, employmentType, companyName, location, startDate, endDate, description)
-          OUTPUT INSERTED.id
-          VALUES (${userId}, ${title}, ${employmentType}, ${companyName}, ${location}, ${startDate}, ${endDate}, ${description})
-        `;
-      }
-
-      const experienceId = result.recordset[0].id;
-
-      if (tags) {
-        const tagArray = tags.split(",").map((tag) => tag.trim());
-        for (const tag of tagArray) {
-          console.log("tag", tag);
-          let tagId;
-          const tagRecord = await sql.query`
-            SELECT id FROM JobTags WHERE tagName = ${tag}
-          `;
-          if (tagRecord.recordset.length > 0) {
-            tagId = tagRecord.recordset[0].id;
-          } else {
-            const newTag = await sql.query`
-              INSERT INTO JobTags (tagName)
-              OUTPUT INSERTED.id
-              VALUES (${tag})
-            `;
-            tagId = newTag.recordset[0].id;
-          }
-          // Associate the tag with the job experience
-          await sql.query`
-            INSERT INTO job_experiences_tags (experienceId, tagId)
-            VALUES (${experienceId}, ${tagId})
-          `;
-        }
-      }
+      const newExperienceId = result.recordset[0].id;
+      return newExperienceId;
     } catch (err) {
       console.error("Database query error:", err);
       throw err;

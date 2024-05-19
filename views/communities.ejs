@@ -144,13 +144,11 @@
             `).join('');
           jobslistContainer.innerHTML += '<div class="see-more"><a href="/jobs">See More</a></div>';
 
-          // Set the --location-color CSS variable for each job element
+
           const jobElements = jobslistContainer.querySelectorAll('.job');
           jobElements.forEach(jobElement => {
             const locationFlair = jobElement.querySelector('#location-flair');
             const location = locationFlair.dataset.location;
-            locationFlair.style.setProperty('--location-color', getTintFromName(location));
-            locationFlair.style.setProperty('--location-color-text', getTintFromNameSecondary(location));
           });
         })
         .catch(error => {

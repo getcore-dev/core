@@ -27,7 +27,8 @@
 <style>
   .link-display,
   #edit-button,
-  #followButton {
+  #followButton,
+  #currentJobContainer>div {
     background: <%=otheruser.profile_border_color%>52 !important;
     border: 1px solid <%=otheruser.profile_border_color%>70 !important;
   }
@@ -95,11 +96,6 @@
             <% if (user) { %>
             <div class="edit-controls-and-follow-button">
               <% if (otheruser.username === user.username) { %>
-              <button id="edit-button" onclick="window.location.href='/edit-experience'" style="margin-bottom: auto;">
-                Add Experience
-              </button>
-              <% } %>
-              <% if (otheruser.username === user.username) { %>
               <button id="edit-button" onclick="window.location.href='/edit-profile'" style="margin-bottom: auto;">
                 Edit
               </button>
@@ -132,31 +128,13 @@
           </p>
         </div>
 
-        <div class="current-job" style="background:<%= otheruser.profile_border_color%>52 !important;">
-          <% if (otheruser.currentJob && otheruser.currentCompany) {%>
-          <h5> <%= otheruser.currentCompany %>
-          </h5>
-          <h4>
-            <%= otheruser.currentJob%>
-          </h4>
-          <p>
-            Started: <%= new Date(otheruser.currentJob_begindate).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) %>
-          </p>
-
-
-
-          <% } else { %>
-          <p id="currentjob.company-display"></p>
+        <div class="current-job" style="background:<%= otheruser.profile_border_color %>52 !important;">
+          <h4>Experience</h4>
+          <div id="currentJobContainer"></div>
           <% if (user && otheruser.username == user.username) { %>
-          Add Company
+          <button id="edit-button" onclick="window.location.href='/edit-experience'" style="margin-bottom: auto;">
+            Add Experience
           </button>
-          <% } %> <% } %>
-          <% if (otheruser.currentjob &&
-          otheruser.currentjob.position) { %>
-          <p id="currentjob.position-display">
-            <strong>Position:</strong> <%= otheruser.currentjob.position %>
-          </p>
-          <% } else { %>
           <% } %>
         </div>
 
@@ -174,6 +152,10 @@
         <div class="github-commit-graph">
           <h5>GitHub Activity</h5>
           <div id="commit-graph-container"></div>
+        </div>
+        <div class="leetcode-experience" style="background:<%= otheruser.profile_border_color%>52 !important;">
+          <h5>LeetCode Experience</h5>
+          <div id="leetcode-experience-container"></div>
         </div>
         <div class="github-commit-repos" style="background:<%= otheruser.profile_border_color%>52 !important;">
           <h5>GitHub Repositories</h5>
@@ -390,6 +372,70 @@
       message.textContent = 'No GitHub activity found.';
       container.appendChild(message);
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const leetcodeExperienceContainer = document.getElementById('leetcode-experience-container');
+
+      function displayLeetCodeExperience(data) {
+        const experienceHTML = `
+      <p>Easy Solved: ${data.easySolved}</p>
+      <p>Medium Solved: ${data.mediumSolved}</p>
+      <p>Hard Solved: ${data.hardSolved}</p>
+    `;
+        leetcodeExperienceContainer.innerHTML = experienceHTML;
+      }
+
+      const leetcodeUsername = '<%= otheruser.leetcode_url %>';
+      if (leetcodeUsername) {
+        fetch(`/api/leetcode-experience/${leetcodeUsername}`)
+          .then(response => response.json())
+          .then(data => {
+            displayLeetCodeExperience(data);
+          })
+          .catch(error => {
+            console.error('Error fetching LeetCode data:', error);
+            leetcodeExperienceContainer.innerHTML = '<p>Error fetching LeetCode data.</p>';
+          });
+      } else {
+        leetcodeExperienceContainer.innerHTML = '<p>No LeetCode URL provided.</p>';
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentJobContainer = document.getElementById('currentJobContainer');
+
+      function displayJobExperience(experiences) {
+        experiences.forEach(experience => {
+          const jobElement = document.createElement('div');
+          jobElement.innerHTML = `
+            <h4>${experience.companyName}</h4>
+            <h5>${experience.title}</h5>
+            <p>${experience.employmentType}</p>
+            <p>${experience.location}</p>
+            <div class="date-range">
+              <p>${new Date(experience.startDate).toLocaleDateString()} - ${experience.endDate ? new Date(experience.endDate).toLocaleDateString() : 'Present'}</p>
+            </div>
+            <p>${experience.description}</p>
+          `;
+          currentJobContainer.appendChild(jobElement);
+        });
+      }
+
+      const userID = '<%= otheruser.id %>';
+      fetch(`/api/job-experience/${userID}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.length > 0) {
+            displayJobExperience(data);
+          } else {
+            currentJobContainer.innerHTML = '<p>No job experiences available.</p>';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching job experience data:', error);
+          currentJobContainer.innerHTML = '<p>Error fetching job experience data.</p>';
+        });
+    });
 
     function displayCommitGraph(commitGraph, commitCount) {
       const container = document.getElementById('commit-graph-container');

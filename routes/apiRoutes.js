@@ -60,6 +60,64 @@ router.get("/job-postings", async (req, res) => {
   }
 });
 
+router.get("/leetcode-experience/:username", async (req, res) => {
+  try {
+    const username = req.params.username;
+    const query = `
+      query getUserProfile($username: String!) {
+        allQuestionsCount {
+          difficulty
+          count
+        }
+        matchedUser(username: $username) {
+          username
+          submitStats {
+            acSubmissionNum {
+              difficulty
+              count
+            }
+          }
+        }
+      }
+    `;
+    const variables = { username };
+    const { data } = await axios.post(
+      "https://leetcode.com/graphql",
+      {
+        query,
+        variables,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+        },
+      }
+    );
+
+    const userStats = data.data.matchedUser.submitStats.acSubmissionNum;
+    const easySolved = userStats.find(
+      (stat) => stat.difficulty === "Easy"
+    ).count;
+    const mediumSolved = userStats.find(
+      (stat) => stat.difficulty === "Medium"
+    ).count;
+    const hardSolved = userStats.find(
+      (stat) => stat.difficulty === "Hard"
+    ).count;
+
+    res.json({
+      easySolved,
+      mediumSolved,
+      hardSolved,
+    });
+  } catch (err) {
+    console.error("Error fetching LeetCode data:", err);
+    res.status(500).send("Error fetching LeetCode data");
+  }
+});
+
 router.get(
   "/github-commit-graph/:username",
   cacheMiddleware(2400),

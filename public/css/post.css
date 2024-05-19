@@ -755,6 +755,7 @@ padding-top: 10px;
 .comments-section {
   display: flex;
   flex-direction: column;
+  gap: 24px;
 }
 
 
@@ -1633,7 +1634,7 @@ div.username {
   }
   .main-container {
     width: 100%;
-    height: calc( - var(--mobile-navbar-height)) !important;
+    height: calc(100dvh - var(--mobile-navbar-height)) !important;
   }
 
 

@@ -701,43 +701,47 @@
                 <% } %>
               </div>
             </div>
+            <% if (level == 0 && comment.replies.length == 0) { %>
+          </div>
+          <% } %>
 
-
-            <% if (comment.replies && comment.replies.length > 0) { %>
-            <% var nestedLevel = level + 1; %>
-            <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
-            <div class="<%= divClass %>" id="nested-comments-<%= comment.id %>" style="
-      <% if (nestedLevel < 4) { %>
-      display: block;
-      <% } else { %>
-      display: none;
-      <% } %>
-      ">
-
-              <% renderComments(comment.replies, nestedLevel); %>
-            </div>
-            <% } %>
-
-
-            <% }) %>
-            <% } %>
-            <% if (post.comments.length === 0) { %>
-            <div class="no-comments">
-              No comments yet, start a discussion!
-            </div>
+          <% if (comment.replies && comment.replies.length > 0) { %>
+          <% var nestedLevel = level + 1; %>
+          <% var divClass = 'nested-comment level-' + Math.min(nestedLevel, 6); %>
+          <div class="<%= divClass %>" id="nested-comments-<%= comment.id %>" style="
+            <% if (nestedLevel < 4) { %>
+            display: block;
             <% } else { %>
-            <% renderComments(post.comments); %>
+            display: none;
             <% } %>
-            <% if (similarPosts.length > 0) { %>
-            <div class="similar-posts">
-              <div class="header similar-posts-header">
-                <h3>Similar Posts</h3>
-              </div>
-              <% similarPosts.forEach(similarPost => { %>
-              <div class="post" onclick="window.location.href='/posts/<%= similarPost.id %>'">
-                <div class="post-content">
-                  <div class="post-header">
-                    <% 
+            ">
+
+            <% renderComments(comment.replies, nestedLevel); %>
+          </div>
+
+        </div>
+        <% } %>
+
+
+        <% }) %>
+        <% } %>
+        <% if (post.comments.length === 0) { %>
+        <div class="no-comments">
+          No comments yet, start a discussion!
+        </div>
+        <% } else { %>
+        <% renderComments(post.comments); %>
+        <% } %>
+        <% if (similarPosts.length > 0) { %>
+        <div class="similar-posts">
+          <div class="header similar-posts-header">
+            <h3>Similar Posts</h3>
+          </div>
+          <% similarPosts.forEach(similarPost => { %>
+          <div class="post" onclick="window.location.href='/posts/<%= similarPost.id %>'">
+            <div class="post-content">
+              <div class="post-header">
+                <% 
                     function formatDate(dateString) {
                     const date = new Date(dateString);
                     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -746,58 +750,58 @@
                     return `${month}/${day}/${year}`;
                   }
                   %>
-                    <div class="post-header-username">
-                      <div class="avatar">
-                        <img src="<%= similarPost.avatar %>" loading="lazy">
-                      </div>
-                      <div class="username">
-                        <a href="/user/<%= similarPost.username %>" class="username-link"><strong><%= similarPost.username %></strong></a>
-                        <div class="post-date" id="secondary-text">
-                          <a style="color: <%= similarPost.community_color %>;" href="/c/<%= similarPost.communities_id %>" class="community"><%= similarPost.community_name %></a>
+                <div class="post-header-username">
+                  <div class="avatar">
+                    <img src="<%= similarPost.avatar %>" loading="lazy">
+                  </div>
+                  <div class="username">
+                    <a href="/user/<%= similarPost.username %>" class="username-link"><strong><%= similarPost.username %></strong></a>
+                    <div class="post-date" id="secondary-text">
+                      <a style="color: <%= similarPost.community_color %>;" href="/c/<%= similarPost.communities_id %>" class="community"><%= similarPost.community_name %></a>
 
-                          <%= formatDate(similarPost.created_at) %> • <%= similarPost.views %> views
-                        </div>
-                      </div>
-                    </div>
-                    <div class="three-dots">
-                      <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>
-                    </div>
-                  </div>
-                  <div class="title"><%= similarPost.title %></div>
-                  <div class="link-preview">
-                    <% if (similarPost.link) { %>
-                    <div class="link">
-                      <span class="material-symbols-outlined" style="color: var(--active-indicator-color);">
-                        link
-                      </span>
-                      <%= similarPost.link %>
-                    </div>
-                    <% } %>
-                    <% if (similarPost.post_type !== 'question' && (!similarPost.link || (similarPost.post_type !== 'post' && similarPost.post_type !== 'project'))) { %>
-                    <div class="description">
-                      <%- similarPost.content %>
-                    </div>
-                    <% } %>
-                  </div>
-                  <div class="votes">
-                    <div class="reaction-interactions <%= similarPost.id %>-reactions" id="reaction-interactions <%= similarPost.id %>-reactions">
-                      <%= similarPost.totalReactionCount %> reactions
-                    </div>
-                    <div class="comments">
-                      <%= similarPost.commentCount %> comment<%= similarPost.commentCount > 1 ? 's' : '' %>
+                      <%= formatDate(similarPost.created_at) %> • <%= similarPost.views %> views
                     </div>
                   </div>
                 </div>
+                <div class="three-dots">
+                  <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>
+                </div>
               </div>
-              <% }) %>
-            </div>
-            <% } %>
-            <div class="post-footer" style="text-align: center;">
+              <div class="title"><%= similarPost.title %></div>
+              <div class="link-preview">
+                <% if (similarPost.link) { %>
+                <div class="link">
+                  <span class="material-symbols-outlined" style="color: var(--active-indicator-color);">
+                    link
+                  </span>
+                  <%= similarPost.link %>
+                </div>
+                <% } %>
+                <% if (similarPost.post_type !== 'question' && (!similarPost.link || (similarPost.post_type !== 'post' && similarPost.post_type !== 'project'))) { %>
+                <div class="description">
+                  <%- similarPost.content %>
+                </div>
+                <% } %>
+              </div>
+              <div class="votes">
+                <div class="reaction-interactions <%= similarPost.id %>-reactions" id="reaction-interactions <%= similarPost.id %>-reactions">
+                  <%= similarPost.totalReactionCount %> reactions
+                </div>
+                <div class="comments">
+                  <%= similarPost.commentCount %> comment<%= similarPost.commentCount > 1 ? 's' : '' %>
+                </div>
+              </div>
             </div>
           </div>
+          <% }) %>
         </div>
-
+        <% } %>
+        <div class="post-footer" style="text-align: center;">
+        </div>
       </div>
+    </div>
+
+    </div>
   </main>
 
   <script>

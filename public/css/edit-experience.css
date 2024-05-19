@@ -19,6 +19,10 @@ form {
     color: var(--light-mode-text-color);
   }
 
+  .edit-form-container {
+    margin: 0 13px;
+  }
+
   @media (prefers-color-scheme: dark) {
     body {
         color: var(--dark-mode-text-color) !important;
