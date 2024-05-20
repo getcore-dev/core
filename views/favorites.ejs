@@ -141,8 +141,14 @@
   }
 
   @media screen and (max-width: 600px) {
+    body {
+      height: calc(100dvh - var(--mobile-navbar-height) - var(--mobile-second-navbar-height)) !important;
+      overflow-y: hidden;
+    }
+
     main {
-      height: calc(100dvh - var(--mobile-navbar-height));
+      overflow-y: auto;
+
     }
   }
 
@@ -318,12 +324,21 @@
     function renderFavoritePosts(posts) {
       const favoritesContainer = document.getElementById('favoritesContainer');
 
+      const favoritesHeaderContainer = document.createElement('div');
+      favoritesHeaderContainer.classList.add('favorites-header');
+      const favoriteHeader = document.createElement('h3');
+      favoriteHeader.textContent = 'Posts';
+      favoritesHeaderContainer.appendChild(favoriteHeader);
+      favoritesContainer.appendChild(favoritesHeaderContainer);
+
+
       posts.forEach((post) => {
         const favoriteElement = document.createElement('div');
         favoriteElement.classList.add('favorite');
         favoriteElement.onclick = () => {
           window.location.href = `/posts/${post.post_id}`;
         };
+
 
         favoriteElement.innerHTML = `
       <div class="favorite-header">
@@ -349,7 +364,7 @@
         <p style="color: ${post.community_color}95; background: ${post.community_color}35;">${post.community_name}</p>
         <p>${formatDate(post.created_at[1])}</p>
       </div>
-    `;
+      `;
 
         favoritesContainer.appendChild(favoriteElement);
       });
@@ -357,6 +372,13 @@
 
     function renderFavoriteComments(comments) {
       const favoritesContainer = document.getElementById('favoritesContainer');
+
+      const favoritesHeaderContainer = document.createElement('div');
+      favoritesHeaderContainer.classList.add('favorites-header');
+      const favoriteHeader = document.createElement('h3');
+      favoriteHeader.textContent = 'Comments';
+      favoritesHeaderContainer.appendChild(favoriteHeader);
+      favoritesContainer.appendChild(favoritesHeaderContainer);
 
       comments.forEach((comment) => {
         const favoriteElement = document.createElement('div');
@@ -388,7 +410,7 @@
       <div class="favorites-footer">
         <p>${formatDate(comment.created_at[1])}</p>
       </div>
-    `;
+      `;
 
         favoritesContainer.appendChild(favoriteElement);
       });
@@ -396,6 +418,13 @@
 
     function renderFavoriteJobs(jobs) {
       const favoritesContainer = document.getElementById('favoritesContainer');
+
+      const favoritesHeaderContainer = document.createElement('div');
+      favoritesHeaderContainer.classList.add('favorites-header');
+      const favoriteHeader = document.createElement('h3');
+      favoriteHeader.textContent = 'Jobs';
+      favoritesHeaderContainer.appendChild(favoriteHeader);
+      favoritesContainer.appendChild(favoritesHeaderContainer);
 
       jobs.forEach((job) => {
         const favoriteElement = document.createElement('div');

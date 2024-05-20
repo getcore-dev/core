@@ -45,8 +45,12 @@ function setupFilter(filterType) {
 
   const filterContainer = document.querySelector(`.${filterType}-filter`);
   const dropdown = document.createElement("select");
+  let filterLabel = filterType[0].toUpperCase() + filterType.slice(1);
+  if (filterType === "experienceLevel") {
+    filterLabel = "Experience Level";
+  }
   dropdown.innerHTML =
-    `<option value="">Select ${filterType}</option>` +
+    `<option value="">${filterLabel}</option>` +
     uniqueValues
       .map((value) => `<option value="${value}">${value}</option>`)
       .join("");
@@ -64,7 +68,7 @@ function setupSalaryFilter() {
   salaryContainer.innerHTML = `
     <div class="input-container">
       <span class="dollar-sign">$</span>
-      <input type="number" placeholder="Min salary" id="min-salary">
+      <input type="number" placeholder="0" id="min-salary">
     </div>
     <button onclick="applySalaryFilter()">Apply</button>
   `;

@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/search.css" />
-
   <link rel="stylesheet" href="/css/jobs.css" />
 
   <link rel="shortcut icon" href="/img/core.png" />
@@ -45,7 +44,13 @@
           <% if (jobs.length > 0) { %>
           <h3>Jobs</h3>
           <div class="jobs">
-            <% jobs.forEach((job) => { %>
+            <% if (jobs.length > 4  && (users.length > 0 || posts.length > 0)) { %>
+            <% jobsTrimmed = jobs.slice(0, 4); %>
+            <% } else { %>
+            <% jobsTrimmed = jobs; %>
+            <% } %>
+
+            <% jobsTrimmed.forEach((job) => { %>
             <div class="job" onclick="window.location.href='/jobs/<%= job.id %>'">
               <div class="job-preview">
                 <div class="job-info">
@@ -71,7 +76,7 @@
                     <% const maxTags = 3; %>
                     <% const displayedTags = tagsArray.slice(0, maxTags); %>
                     <% displayedTags.forEach((tag) => { %>
-                    <span class="job-flair">
+                    <span class="job-flair" onclick="window.location.href='/jobs/tags/<%= tag %>'">
                       <p><%= tag %></p>
                     </span>
                     <% }); %>
@@ -84,6 +89,12 @@
               </div>
             </div>
             <% }); %>
+
+            <% if (jobs.length > 4 && (users.length > 0 || posts.length > 0)) { %>
+            <div class="load-more">
+              <button class="load-more-btn" id="regular-button" onclick="window.location.href='/search/jobs/?searchTerm=<%= searchTerm %>'">Load More</button>
+            </div>
+            <% } %>
           </div>
           <% } else { %>
           <% } %>
@@ -93,23 +104,79 @@
           <h3>Posts</h3>
 
           <div class="posts">
-            <% posts.forEach(function(post) { %>
+
+            <% if (posts.length > 4 && (jobs.length > 0 || users.length > 0)) { %>
+            <% postsTrimmed = posts.slice(0, 4); %>
+            <% } %>
+            <% postsTrimmed.forEach(function(post) { %>
             <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
+
               <div class="post-content">
 
                 <div class="post-header">
-                  <p><a href="/c/<%=post.community_name%>">/<%= post.community_name %></a> by <a href="/user/<%= post.author_username %>"><%= post.author_username %></a> </p>
-                  <h4><%= post.title %></h4>
-                  <p><%= new Date(post.created_at).toLocaleDateString() %></p>
+                  <div class="post-header-username">
+                    <div class="avatar">
+                      <img src="<%= post.author_avatar %>" loading="lazy" alt="Avatar">
+                    </div>
+                    <div class="username">
+                      <a class="username-link" href="/user/<%= post.author_username %>"><strong><%= post.author_username %></strong></a>
+                      <span class="communities-text"></span>
+                      <a class="community" href="/c/<%= post.community_name %>"></a>
+                      <div class="post-date" id="secondary-text">
+                        <span style="color:<%= post.community_color %>;"><%= post.community_name %></span>
+                        <span> • <%= new Date(post.created_at).toLocaleDateString() %> • <%= post.views %> views</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="three-dots" onclick="event.stopPropagation(); navigator.share({ url: window.location.origin + '/posts/' + post.id })">
+                    <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>
+                  </div>
                 </div>
-                <div class="search-post-content">
-                  <p class="description"><%= post.content %></p>
+
+                <div class="title" onclick="window.location.href='/posts/<%= post.id %>'"><%= post.title %></div>
+
+                <div class="link-preview" onclick="window.location.href='/posts/<%= post.id %>'">
                   <% if (post.link) { %>
+                  <div class="link">
+                    <div class="placeholder-link-preview">Loading link preview...</div>
+                  </div>
+                  <% } %>
+
+                  <% const imageUrlMatch = post.content.match(/!\[.*?\]\((.*?)\)/); %>
+                  <% if (imageUrlMatch && imageUrlMatch[1]) { %>
+                  <div class="post-thumbnail">
+                    <img src="<%= imageUrlMatch[1] %>" alt="Post Thumbnail" class="thumbnail-image" loading="lazy">
+                  </div>
+                  <% } %>
+                  <% if (!post.link) { %>
+                  <div class="description"><%= post.content.replace(/(?:\r\n|\r|\n)/g, ' ').replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1').replace(/__(.*?)__/g, '$1').replace(/_(.*?)_/g, '$1').replace(/!\[.*?\]\(.*?\)/g, '').replace(/\[.*?\]\(.*?\)/g, '$1') %></div>
                   <% } %>
                 </div>
+
+                <div class="post-posting-flairs">
+                  <% const tagsArray = post.tags && post.tags[1] ? post.tags[1].split(", ") : []; %>
+                  <% const maxTags = 3; %>
+                  <% const displayedTags = tagsArray.slice(0, maxTags); %>
+                  <% displayedTags.forEach((tag) => { %>
+                  <span class="job-flair" onclick="window.location.href='/posts/tags/<%= tag %>'">
+                    <p><%= tag %></p>
+                  </span>
+                  <% }); %>
+                  <% const remainingTags = tagsArray.length - maxTags; %>
+                  <% if (remainingTags > 0) { %>
+                  <span class="see-more">+<%= remainingTags %> more</span>
+                  <% } %>
+                </div>
+
               </div>
             </div>
             <% }); %>
+
+            <% if (posts.length > 4 && (jobs.length > 0 || users.length > 0)) { %>
+            <div class="load-more">
+              <button class="load-more-btn" id="regular-button" onclick="window.location.href='/search/posts/?searchTerm=<%= searchTerm %>'">Load More</button>
+            </div>
+            <% } %>
           </div>
           <% } %>
         </div>

@@ -138,7 +138,7 @@
 
   @media (prefers-color-scheme: dark) {
     .post-body pre{
-      background-color: var(--dark-mode-border-color);
+      background-color: var(--dark-mode-main-color);
       border: 1px solid var(--dark-mode-border-color);
     }
 
@@ -156,7 +156,7 @@
 
     .post-body code {
       color: var(--dark-mode-text-color);
-      background-color: var(--dark-mode-border-color);
-      border-color: var(--dark-mode-border-color);
+      background-color: var(--dark-mode-main-color);
+      border-color: var(--dark-mode-main-color);
     }
   }

@@ -310,7 +310,9 @@ factory
       }
       </p>
       </div>
-          
+      <p id="secondary-text" class="post-date-text">
+      This job was posted on ${formatDate(job.postedDate)}
+      </p>
             <div class="job-description">
             <h4>Job Description</h4>
             
@@ -465,9 +467,6 @@ ${
               </div>
               
             </div>
-            <p id="secondary-text" class="post-date-text">
-            This job was posted on ${formatDate(job.postedDate)}
-            </p>
           </div>
         </div>
       `;

@@ -7,7 +7,13 @@ exports.findPosts = async (searchTerm) => {
       users.username AS [author_username],
       users.avatar AS [author_avatar],
       communities.shortname AS [community_name],
-      communities.community_color AS [community_color]
+      communities.community_color AS [community_color],
+      (
+        SELECT STRING_AGG(tags.name, ', ') 
+        FROM post_tags 
+        INNER JOIN tags ON post_tags.tag_id = tags.id
+        WHERE post_tags.post_id = posts.id
+      ) AS tags
     FROM posts
     JOIN users ON posts.user_id = users.id
     JOIN communities ON posts.communities_id = communities.id
@@ -40,7 +46,19 @@ exports.findJobs = async (searchTerm) => {
       companies.name AS [company_name],
       companies.logo AS [company_logo],
       companies.location AS [company_location],
-      companies.description AS [company_description]
+      companies.description AS [company_description],
+      (
+        SELECT STRING_AGG(JobTags.tagName, ', ') 
+        FROM JobPostingsTags 
+        INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+        WHERE JobPostingsTags.jobId = JobPostings.id
+      ) AS tags,
+      (
+        SELECT STRING_AGG(skills.name, ', ')
+        FROM job_skills
+        INNER JOIN skills ON job_skills.skill_id = skills.id
+        WHERE job_skills.job_id = JobPostings.id
+      ) AS skills
     FROM JobPostings
     JOIN companies ON JobPostings.company_id = companies.id
     WHERE JobPostings.title LIKE @searchTerm OR JobPostings.description LIKE @searchTerm;

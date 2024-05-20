@@ -300,7 +300,7 @@ a.comment-url:visited {
 
 div .user-info, .header {
   font-size: 17px;
-  color: #888;
+  color: var(--light-mode-text-color);
   text-decoration: none;
 }
 
@@ -767,7 +767,7 @@ padding-top: 10px;
 
 .comments-section h3 {
   font-size: 20px;
-  color: #333;
+  color: var(--light-mode-text-color);
   margin-bottom: 0px;
 }
 
@@ -1319,6 +1319,11 @@ p.preview-description {
     background-color: #021008;
     border: 1px solid #1d362a;
   }
+
+  .comments-section h3 {
+    color: var(--dark-mode-text-color);
+  }
+
   .post-content {
     background-color: var(--dark-mode-body-color);
   }
@@ -1334,6 +1339,10 @@ p.preview-description {
 
   .similar-posts .post-content:hover {
     background-color: var(--dark-mode-hover-background-color);
+  }
+
+  .job:hover {
+    background-color: var(--dark-mode-hover-color);
   }
 
   .link-preview {
@@ -1474,7 +1483,7 @@ p.preview-description {
   }
 
   div .user-info, .header {
-    color: var(--dark-mode-background-text-color); /* Lighter text color for user info and headers */
+    color: var(--dark-mode-text-color); /* Lighter text color for user info and headers */
   }
   
   .sidebar {

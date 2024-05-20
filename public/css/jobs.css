@@ -439,6 +439,7 @@ select {
   display: flex;
   flex-direction: column;
   margin: 39px 0;
+  align-items: center;
 }
 
 .dropdown-button {
@@ -458,7 +459,7 @@ select {
   position: absolute;
   color: var(--light-mode-secondary-text-color);
   top: 50%;
-  left: 10px; /* Adjust the position as needed */
+  left: 7px; /* Adjust the position as needed */
   transform: translateY(-50%);
   pointer-events: none; /* This ensures the text input remains clickable */
 }
@@ -580,6 +581,10 @@ div .material-symbols-outlined {
     background-color: var(--dark-mode-main-color);
     color: var(--dark-mode-text-color);
     border-color: var(--dark-mode-border-color);
+  }
+
+  .dollar-sign {
+    color: var(--dark-mode-secondary-text-color);
   }
 
   .load-more-btn {
