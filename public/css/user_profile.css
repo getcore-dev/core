@@ -435,7 +435,7 @@ button#edit-button {
 
 #currentJobContainer>div {
   padding: 4px 8px;
-  min-width: 150px;
+  min-width: 164px;
   border-radius: 11px;
 }
 
@@ -444,6 +444,10 @@ button#edit-button {
   flex-direction: row;
   gap: 7px;
   align-items: center;
+}
+
+.social-display .material-symbols-outlined {
+  font-size: 20px;
 }
 
 

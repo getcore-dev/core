@@ -11,6 +11,10 @@
     font-family: 'Roboto', sans-serif;
     color: var(--light-mode-secondary-text-color);
   }
+
+  .post-body li {
+    margin: 0.35rem 0.5rem;
+  }
   
   .post-body h2 {
     font-size: 1.5rem; /* Adjust size as needed */
@@ -105,7 +109,8 @@
     max-width: 100%;
     height: auto;
     border: 0;
-    max-width: 75dvw;
+    max-width: 60dvw;
+    max-height: 500px;
     border-radius: 18px;
     object-fit: cover;
   }
@@ -115,7 +120,7 @@
   }
 
   .post-body .image-container {
-    padding: 10px;
+    padding: 40px 10px;
     white-space-collapse: collapse;
   }
 
@@ -139,6 +144,14 @@
 
     .alt-text {
       color: var(--dark-mode-secondary-text-color);
+    }
+
+    .post-body li {
+      color: var(--dark-mode-text-color);
+    }
+
+    .project-link, .post-body h3, .solution {
+      color: var(--dark-mode-text-color);
     }
 
     .post-body code {

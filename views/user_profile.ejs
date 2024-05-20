@@ -140,6 +140,16 @@
 
         <div class="user-links" style="background:<%= otheruser.profile_border_color%>52 !important;">
           <h5>Links</h5>
+          <div class="social-display"> <span class="material-symbols-outlined">
+              link
+            </span>
+            <p id="link-url-display"> <% if (otheruser.link) { %> <a href="<%= otheruser.link %>"><%= otheruser.link.startsWith('https://') ? otheruser.link.slice(8) : otheruser.link %></a> <% } else { %> <% } %> </p>
+          </div>
+          <div class="social-display"> <span class="material-symbols-outlined">
+              link
+            </span>
+            <p id="link2-url-display"> <% if (otheruser.link2) { %> <a href="<%= otheruser.link2 %>"><%= otheruser.link2.startsWith('https://') ? otheruser.link2.slice(8) : otheruser.link2 %></a> <% } else { %> <% } %> </p>
+          </div>
           <div class="social-display"> <img src="/src/github.png" style="height:20px;width:20px;">
             <p id="github-url-display"> <% if (otheruser.github_url) { %> <a href="https://github.com/<%= otheruser.github_url %>"><%= otheruser.github_url %></a> <% } else { %> No Github URL yet. <% } %> </p>
           </div>
@@ -379,9 +389,10 @@
 
       function displayLeetCodeExperience(data) {
         const experienceHTML = `
-      <p>Easy Solved: ${data.easySolved}</p>
-      <p>Medium Solved: ${data.mediumSolved}</p>
-      <p>Hard Solved: ${data.hardSolved}</p>
+        <p>Total: ${data.easySolved + data.mediumSolved + data.hardSolved}</p>
+      <p>Easy: ${data.easySolved}</p>
+      <p>Medium: ${data.mediumSolved}</p>
+      <p>Hard: ${data.hardSolved}</p>
     `;
         leetcodeExperienceContainer.innerHTML = experienceHTML;
       }

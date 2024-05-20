@@ -151,7 +151,7 @@ pre code {
     flex-direction: row;
 }
 .user-interactions {
-  margin: 5px 0px;
+  margin: 20px 0px;
   display: flex;
   align-items: center;
   align-content: stretch;
@@ -367,10 +367,9 @@ img.blog-avatar {
 
 .dicussion-link {
   border: 1px solid var(--border-color);
-  background-color: #f6fafe;
+  background-color: var(--light-mode-main-color);
   border-radius: 14px;
-  margin-bottom: 10px;
-  margin-top: 7px !important;
+  margin: 17px 0 !important;
   white-space-collapse: collapse;
   box-sizing: border-box;
   display: flex;
@@ -665,10 +664,15 @@ div.repliers-avatar, div.repliees-avatar {
   margin-right: 7px;
 }
 
-.total-reactions-count, .add-comment-button {
+.total-reactions-count {
   font-family: 'Roboto', sans-serif !important;
   font-size: .975rem;
   color: var(--light-mode-secondary-text-color);
+}
+
+.add-comment-button {
+  color: var(--light-mode-text-color);
+  font-size: .875rem;
 }
 
 .add-comment-button {
@@ -752,7 +756,7 @@ padding-top: 10px;
 .comments-section {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 15px;
 }
 
 
@@ -779,7 +783,7 @@ padding-top: 10px;
 
 .similar-posts .post {
   margin: 0 14px;
-  margin-bottom: 10px;
+  margin-bottom: 35px;
   border-radius: 14px;
   border: 1px solid var(--border-color);
   background: var(--light-mode-main-color);
@@ -800,7 +804,7 @@ padding-top: 10px;
 #reply-button {
   text-decoration: none;
   color: var(--light-mode-text-color);
-  font-size: 1rem;
+  font-size: .9rem;
   vertical-align: 5px;
   border-radius: 6px;
 }
@@ -1139,7 +1143,7 @@ p.preview-description {
 }
 
 .project-link {
-  background-color: var(--light-mode-body-color);
+  background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
   border-radius: 18px;
   padding: 13px 23px;
@@ -1154,7 +1158,7 @@ p.preview-description {
 .project-link-header a {
   font-size: 0.775rem;
   text-decoration: none !important;
-  color: var(--light-mode-secondary-text-color) !important;
+  color: var(--active-indicator-color) !important;
 }
 
 .post-content > .title {
@@ -1209,12 +1213,16 @@ p.preview-description {
 }
 
 .tag-flair {
-  display: inline-block;
-  margin: 1px;
-  border-radius: 5px;
-  font-size: .875rem;
+  display: inline-flex;
+  gap: 5px;
+  padding: 2px 7px;
+  margin: 2px 4px 0px 0px;
+  margin-bottom: 3px;
+  background-color: #be5ab736;
+  color: #be5aa6;
+  border-radius: 7px;
+  font-size: .925rem;
   position: relative;
-  color: var(--light-mode-text-color);
 }
 
 #github-flair {
@@ -1320,7 +1328,7 @@ p.preview-description {
   }
   
     .similar-posts .post {
-      background-color: var(--dark-mode-main-color);
+      background-color: var(--dark-mode-body-color);
     border-color: var(--dark-mode-border-color);
     }
 
@@ -1405,7 +1413,7 @@ p.preview-description {
   }
 
   .project-link {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-body-color);
     border-color: var(--dark-mode-border-color);
   }
 
@@ -1457,8 +1465,12 @@ p.preview-description {
     border-color: var(--dark-mode-border-color);
   }
 
-  .total-reactions-count, #reply-button .reaction-button, .add-comment-button {
+  .total-reactions-count, #reply-button .reaction-button {
     color: var(--dark-mode-secondary-text-color);
+  }
+
+  .add-comment-button {
+    color: var(--dark-mode-text-color);
   }
 
   div .user-info, .header {
@@ -1640,8 +1652,6 @@ div.username {
 
   .comments-section {
     margin: 0;
-    margin-top: 20px;
-    margin-bottom: 25px;
   }
 
   .main-container {

@@ -169,14 +169,10 @@ const userQueries = {
         "leetcode_url",
         "linkedin_url",
         "zipcode",
-        "currentJob_employment_type",
-        "currentJob_skills",
-        "currentJob",
-        "currentCompany",
-        "currentIndustry",
         "password",
         "profile_border_color",
-        "currentJob_begindate",
+        "link",
+        "link2",
       ];
 
       // Check if the field is valid
