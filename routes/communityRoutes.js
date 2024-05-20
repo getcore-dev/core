@@ -20,7 +20,7 @@ router.get("/:communityName", async (req, res) => {
 
     if (community.recordset[0].PrivacySetting === "Private") {
       return res.render("error.ejs", {
-        user: req.user,
+        user: r,
         error: { message: "That community is private." },
       });
     }
@@ -43,6 +43,41 @@ router.get("/:communityName", async (req, res) => {
   }
 });
 
+router.post("/community-update", checkAuthenticated, async (req, res) => {
+  const { id, description, rules, PrivacySetting, JobsEnabled, Tags, mini_icon } = req.body;
+
+  const user = req.user;
+  const userIsModerator = await communityQueries.checkModerator(user.id, id);
+
+  if (!userIsModerator) {
+    return res.status(403).send("Access denied. Moderators only.");
+  }
+
+  if (!id) {
+    return res.status(400).send("Community ID is required.");
+  }
+
+  const updateData = {};
+  if (description !== undefined) updateData.description = description;
+  if (rules !== undefined) updateData.rules = rules;
+  if (PrivacySetting !== undefined) updateData.PrivacySetting = PrivacySetting;
+  if (JobsEnabled !== undefined) updateData.JobsEnabled = JobsEnabled;
+  if (Tags !== undefined) updateData.Tags = Tags;
+  if (mini_icon !== undefined) updateData.mini_icon = mini_icon;
+
+  try {
+    const success = await communityQueries.updateCommunityInfo(id, updateData);
+    if (success) {
+      res.status(200).send("Community information updated successfully.");
+    } else {
+      res.status(500).send("Failed to update community information.");
+    }
+  } catch (error) {
+    console.error("Server error:", error);
+    res.status(500).send("Server error.");
+  }
+});
+
 router.get("/:communityName/isMember", checkAuthenticated, async (req, res) => {
   const userId = req.user.id;
   const communityName = req.params.communityName;
@@ -59,7 +94,12 @@ router.get("/:communityName/isMember", checkAuthenticated, async (req, res) => {
       userId,
       communityId
     );
-    res.json({ isMember });
+
+    const isModerator = await communityQueries.checkModerator(
+      userId,
+      communityId
+    );
+    res.json({ isMember, isModerator });
   } catch (error) {
     console.error("Check membership error:", error);
     res.status(500).send("Error checking membership status");
@@ -105,8 +145,17 @@ router.get("/:communityName/members", async (req, res) => {
   }
 });
 
-router.get("/:communityName/edit", async (req, res) => {
+router.get("/:communityName/admin", checkAuthenticated, async (req, res) => {
   const communityName = req.params.communityName;
+  const user = req.user;
+  const communityId = await communityQueries.getCommunityIdByShortName(
+    communityName
+  );
+  const userIsMod = communityQueries.checkModerator(user.id, communityId);
+
+  if (!userIsMod) {
+    return res.status(403).send("You are not a moderator of this community");
+  }
 
   try {
     const community =

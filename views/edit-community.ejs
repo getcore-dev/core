@@ -16,7 +16,7 @@
   <%- include('partials/navbar', { pagePath: 'jobs' }) %>
 
   <h1>Edit Community</h1>
-  <form action="/update-community" method="POST">
+  <form action="/c/community-update" method="POST">
     <input type="hidden" name="id" value="<%= community.id %>">
     <div>
       <label for="description">Description:</label>

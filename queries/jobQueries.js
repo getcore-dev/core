@@ -95,6 +95,71 @@ const jobQueries = {
     }
   },
 
+  getJobsByTags: async (tags, limit, offset) => {
+    try {
+      const tagIds = await Promise.all(
+        tags.map(async (tag) => {
+          const result = await sql.query`
+            SELECT id FROM JobTags WHERE tagName = ${tag}
+          `;
+          return result.recordset[0].id;
+        })
+      );
+
+      const result = await sql.query(`
+        SELECT JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
+        (
+          SELECT STRING_AGG(JobTags.tagName, ', ')
+          FROM JobPostingsTags
+          INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+          WHERE JobPostingsTags.jobId = JobPostings.id
+        ) AS tags
+        FROM JobPostings
+        LEFT JOIN companies ON JobPostings.company_id = companies.id
+        WHERE JobPostings.id IN (
+          SELECT jobId
+          FROM JobPostingsTags
+          WHERE tagId IN (${tagIds.join(",")})
+        )
+        ORDER BY JobPostings.postedDate DESC
+        OFFSET ${offset} ROWS
+        FETCH NEXT ${limit} ROWS ONLY
+      `);
+      const jobs = result.recordset;
+      return jobs;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getJobsCountByTags: async (tags) => {
+    try {
+      const tagIds = await Promise.all(
+        tags.map(async (tag) => {
+          const result = await sql.query`
+            SELECT id FROM JobTags WHERE tagName = ${tag}
+          `;
+          return result.recordset[0].id;
+        })
+      );
+
+      const result = await sql.query(`
+        SELECT COUNT(*) AS count
+        FROM JobPostings
+        WHERE id IN (
+          SELECT jobId
+          FROM JobPostingsTags
+          WHERE tagId IN (${tagIds.join(",")})
+        )
+      `);
+      return result.recordset[0].count;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   // get jobs with similar tags/skills
   getSimilarJobs: async (jobId) => {
     try {

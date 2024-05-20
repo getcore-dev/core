@@ -74,7 +74,7 @@
               } else {
                 formattedDate = years + 'y ago';
               }
-            %>
+              %>
 
               <% if (post.updated_at) { %>
               <%
@@ -102,7 +102,6 @@
                 formattedDate = years + 'y ago';
               }
               %>
-              Updated: <%= formattedDate %>
               <% } %>
             </span>
             <div class="post-title-container">
@@ -113,7 +112,7 @@
                   <%= post.views %> view<%- post.views > 1 ? 's' : '' %>
                   <span>&#183;</span>
 
-                  <span class="post-timestamp secondary-text" style="text-decoration: none; font-weight: 550;">
+                  <span class="post-timestamp secondary-text" style="text-decoration: none;">
                     <%
 
               // Format the date in the "MONTH DD, YYYY" format
@@ -122,6 +121,12 @@
                     <%= formattedDate %>
                   </span>
                 </div>
+                <% if (post.updated_at) { %>
+                <span class="post-subtitle post-updatedat secondary-text">
+
+                  Edited: <%= formattedDate %>
+                </span>
+                <% } %>
 
 
                 <% if (post.post_type == "blog") { %>
@@ -153,9 +158,11 @@
                   </div>
                   <% if (user && user.username === post.username) { %>
                   <div class="dropdown-item">
-                    <button onclick="window.location.href = '/posts/<%= post.id %>/edit'">
-                      <p>Edit Post</p>
-                    </button>
+                    <a href="/posts/<%= post.id %>/edit">
+                      <button onclick="window.location.href='/posts/<%= post.id %>/edit'">
+                        <p>Edit Post</p>
+                      </button>
+                    </a>
                   </div>
                   <% } %>
                   <% if (user && user.username === post.username) { %>
@@ -182,12 +189,34 @@
                   created a
                   <%= post.post_type.charAt(0).toLowerCase() + post.post_type.slice(1) %>
                   post in
-                  <a id="community-header-text" href="/c/<%= post.community.shortname %>" style="text-decoration: none;">/<%= post.community.shortname %></a>
+                  <a id="community-header-text" href="/c/<%= post.community.shortname %>" style="text-decoration: none;"><%= post.community.name %></a>
                 </span>
 
               </div>
 
+
             </div>
+            <% if (post.tags && post.tags.length > 0) { %>
+            <div class="blog-tags-div">
+              <div class="tags">
+                <% post.tags.forEach(tag => { %>
+                <span class="tag" onclick="window.location.href='/jobs/tags/<%= tag.name %>'">
+                  <p><%= tag.name %></p>
+                </span>
+                <% }); %>
+                <% if (post.post_type == "project") { %>
+                <% let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {}; %>
+                <% if (gitHubData.topics && gitHubData.topics.length > 0) { %>
+                <% gitHubData.topics.forEach(topic => { %>
+                <span class="tag" onclick="window.location.href='/jobs/tags/<%= topic %>'">
+                  <p><%= topic %></p>
+                </span>
+                <% }); %>
+                <% } %>
+                <% } %>
+              </div>
+            </div>
+            <% } %>
             <% } %>
 
           </div>
@@ -207,10 +236,10 @@
               <div class="post-user-info-header">
                 <div class="post-user-information">
                   <img class="avatar" src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" onerror="" />
-                  <a href="/user/<%= post.user.username %>" class="post-user-info">
-                    <div class="post-user-info">
-                      <%= post.user.username %>
-                    </div>
+                  <div class="post-user-info">
+                    <a href="/user/<%= post.user.username %>" class="post-user-info">
+                      <%= post.user.username %></a> in <a href="/c/<%= post.community.shortname %>" class="post-community-info" style="color: <%= post.community.community_color %>;"><%= post.community.name %></a>
+                  </div>
                   </a>
                 </div>
                 <% if (post.tags && post.tags.length > 0) { %>
@@ -347,14 +376,8 @@
                   <% } %>
                 </button>
                 <div id="reactionPopup-post-<%= post.id %>" class="reaction-popup" style="display:none;">
-                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'BOOST')">⚡️</button>
-                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'LOVE')">❤️</button>
-                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'LIKE')">👍</button>
-                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'CURIOUS')">🤔</button>
-                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'INTERESTING')">💡</button>
-                  <button class="reaction-choice" onclick="interactWithPost('<%= post.id %>', '<%= user %>', 'CELEBRATE')">🎉</button>
-                </div>
-                <% const reactionTypes = [
+                  <div class="reaction-popup-content">
+                    <% const reactionTypes = [
             { type: "BOOST", icon: "⚡️" },
             { type: "LOVE", icon: "❤️" },
             { type: "LIKE", icon: "👍" },
@@ -362,6 +385,15 @@
             { type: "INTERESTING", icon: "💡" },
             { type: "CELEBRATE", icon: "🎉" }
           ]; %>
+                    <% reactionTypes.forEach(reaction => { %>
+                    <button class="reaction-button-popup<% if (post.userReaction == reaction.type) { %> active <% }%>" data-type="post" data-id="<%= post.id %>" data-reaction="<%= reaction.type %>" onclick="interactWithPost('<%= post.id %>', '<%= user %>', '<%= reaction.type %>')">
+                      <%= reaction.icon %>
+
+                      <span class="reaction-count"><%= post[reaction.type.toLowerCase() + 'Count'] %></span>
+                    </button>
+                    <% }); %>
+                  </div>
+                </div>
                 <% const topReactions = reactionTypes.filter(reaction => post[reaction.type.toLowerCase() + 'Count'] > 0)
           .sort((a, b) => post[b.type.toLowerCase() + 'Count'] - post[a.type.toLowerCase() + 'Count'])
           .slice(0, 3); %>
@@ -453,11 +485,13 @@
                       </div>
                     </a>
 
-                    <p>to</p>
-                    <a class="comment-user-info" href="/user/<%= comment.parent_author.username %>">
+                    <% if (level != 0) { %>
+                    <p class="secondary-text"> replying to</p>
+                    <a class="secondary-text comment-user-info" href="/user/<%= comment.parent_author.username %>">
                       <%= comment.parent_author.username %>
                     </a>
                     <span>&#183;</span>
+                    <% } %>
 
                     <% let commentDate = new Date(comment.created_at);
                     let currentDate = new Date();
@@ -579,16 +613,8 @@
                   <span class="material-symbols-outlined">add_reaction</span>
                   <% } %>
                 </button>
-                <div id="reactionPopup-comment-<%= comment.id %>" class="reaction-popup" style="display:none; position: absolute; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
-                  <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'BOOST')">⚡️</button>
-                  <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'LOVE')">❤️</button>
-                  <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'LIKE')">👍</button>
-                  <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'CURIOUS')">🤔</button>
-                  <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'INTERESTING')">💡</button>
-                  <button class="reaction-choice" onclick="interactWithComment('<%= post.id %>', '<%= comment.id %>', '<%= user %>', 'CELEBRATE')">🎉</button>
-                </div>
-
-                <% const reactionTypes = [
+                <div id="reactionPopup-comment-<%= comment.id %>" class="reaction-popup" style="display:none; position: absolute;left: 0; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
+                  <% const reactionTypes = [
                               { type: "BOOST", icon: "⚡️"},
                               { type: "LOVE", icon: "❤️" },
                               { type: "LIKE", icon: "👍" }, 
@@ -596,6 +622,17 @@
                               { type: "INTERESTING", icon: "💡" },
                               { type: "CELEBRATE", icon: "🎉" }
                             ]; %>
+                  <div class="reaction-popup-content">
+                    <% reactionTypes.forEach(reaction => { %>
+                    <button class="reaction-button-popup<% if (comment.userReaction == reaction.type) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>" data-reaction="<%= reaction.type %>" onclick="interactWithComment('<%= post.id%>', '<%= comment.id %>', '<%= user %>', '<%= reaction.type %>')">
+                      <%= reaction.icon %>
+                      <span class="reaction-count"><%= comment[reaction.type.toLowerCase() + 'Count'] %></span>
+                    </button>
+                    <% }); %>
+                  </div>
+                </div>
+
+
 
                 <% const topReactions = reactionTypes.filter(reaction => comment[reaction.type.toLowerCase() + 'Count'] > 0)
                           .sort((a, b) => comment[b.type.toLowerCase() + 'Count'] - comment[a.type.toLowerCase() + 'Count'])
@@ -772,6 +809,38 @@
 
 
   <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('form[id^="favorite-form-"]').forEach(form => {
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault(); // Prevent the default form submission
+
+          const formId = form.getAttribute('id');
+          const postId = formId.split('-')[2];
+          const url = `/favorites/post/${postId}`;
+
+          try {
+            const response = await fetch(url, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify({})
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+              showBannerNotification(result.message);
+            } else {
+              showBannerNotification('Failed to favorite the post.');
+            }
+          } catch (error) {
+            console.error('Error favoriting post:', error);
+            showBannerNotification('An error occurred. Please try again.');
+          }
+        });
+      });
+    });
     $(document).ready(function() {
       var easyMDE = new EasyMDE({
         element: document.getElementById('comment-form-textarea'),
@@ -779,7 +848,6 @@
 
       });
 
-      // Show buttons when the EasyMDE editor is focused
       easyMDE.codemirror.on("focus", function() {
         $('.button-container').show();
         $('.editor-toolbar').show();
@@ -807,7 +875,7 @@
         // Check if the EasyMDE editor is empty
         if (!easyMDE.value().trim()) {
           e.preventDefault(); // Prevent form submission
-          alert("Please fill in the content."); // Display an error message
+          showBannerNotification("Please fill in the content."); // Display an error message
           easyMDE.codemirror.focus(); // Focus the EasyMDE editor
         } else {
           // Save the content from EasyMDE to the textarea
@@ -958,7 +1026,7 @@
 
       // Validate input value
       if (inputField.value.trim() === "") {
-        alert("Your message cannot be empty.");
+        showBannerNotification("Your message cannot be empty.");
         return false;
       } else {
         // Submit the form
@@ -1004,7 +1072,7 @@
           },
           body: JSON.stringify({
             user: user,
-            action: action.toLowerCase() // Ensure action is in lowercase
+            action: action
           })
         })
         .then(response => response.json())
@@ -1076,6 +1144,11 @@
       // Add event listeners to all main reaction buttons
       document.querySelectorAll('.mainReactionButton').forEach(button => {
         button.addEventListener('click', (event) => {
+
+          if ('<%= user %>' === "") {
+            window.location.href = '/login';
+            return;
+          }
           // Determine which button was clicked
           const clickedButton = event.target;
           const buttonType = clickedButton.dataset.type; // 'post' or 'comment'

@@ -14,6 +14,106 @@ const communityQueries = {
       throw err;
     }
   },
+
+  updateCommunityInfo: async (communityId, updateData) => {
+    const { description, rules, PrivacySetting, JobsEnabled, Tags, mini_icon } =
+      updateData;
+
+    try {
+      const community = await sql.query`
+          SELECT * FROM communities WHERE id = ${communityId}`;
+
+      if (!community.recordset[0]) {
+        throw new Error("Community not found.");
+      }
+
+      if (description !== undefined) {
+        await sql.query`
+            UPDATE communities
+            SET description = ${description}
+            WHERE id = ${communityId}
+          `;
+      }
+
+      if (rules !== undefined) {
+        await sql.query`
+            UPDATE communities
+            SET rules = ${rules}
+            WHERE id = ${communityId}
+          `;
+      }
+
+      if (PrivacySetting !== undefined) {
+        await sql.query`
+            UPDATE communities
+            SET PrivacySetting = ${PrivacySetting}
+            WHERE id = ${communityId}
+          `;
+      }
+
+      if (JobsEnabled !== undefined) {
+        await sql.query`
+            UPDATE communities
+            SET JobsEnabled = ${JobsEnabled}
+            WHERE id = ${communityId}
+          `;
+      }
+
+      if (Tags !== undefined) {
+        await sql.query`
+            UPDATE communities
+            SET Tags = ${Tags}
+            WHERE id = ${communityId}
+          `;
+      }
+
+      if (mini_icon !== undefined) {
+        await sql.query`
+            UPDATE communities
+            SET mini_icon = ${mini_icon}
+            WHERE id = ${communityId}
+          `;
+      }
+
+      return true;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getCommunityIdByShortName: async (shortname) => {
+    try {
+      const result = await sql.query`
+        SELECT id FROM communities WHERE shortname = ${shortname}`;
+
+      return result.recordset[0].id;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  checkModerator: async (userId, communityId) => {
+    try {
+      console.log(
+        "Checking moderator status for user",
+        userId,
+        "in community",
+        communityId
+      );
+
+      const result = await sql.query`
+        SELECT * FROM community_memberships
+        WHERE user_id = ${userId} AND community_id = ${communityId} AND is_moderator = 1`;
+
+      return result.recordset.length > 0;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getCommunities: async () => {
     try {
       const result = await sql.query`

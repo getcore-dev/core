@@ -16,8 +16,32 @@ const favoritesQueries = {
       await sql.query`
                 INSERT INTO favorites (user_id, post_id, created_at)
                 VALUES (${userId}, ${postId}, GETDATE())`;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
 
-      return "Post successfully added to favorites.";
+  getFavoriteJobByJobIdAndUserId: async (jobId, userId) => {
+    try {
+      const result = await sql.query`
+                SELECT * FROM favorites_jobs
+                WHERE user_id = ${userId} AND job_posting_id = ${jobId}`;
+
+      return result.recordset[0];
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getFavoritePostByPostIdAndUserId: async (postId, userId) => {
+    try {
+      const result = await sql.query`
+                SELECT * FROM favorites
+                WHERE user_id = ${userId} AND post_id = ${postId}`;
+
+      return result.recordset[0];
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -53,14 +77,11 @@ const favoritesQueries = {
                 WHERE user_id = ${userId} AND job_posting_id = ${jobId}`;
 
       if (checkExistence.recordset.length > 0) {
-        throw new Error("User has already favorited this job.");
+        throw new Error("Job is already in user's favorites.");
       }
-
-      // Add job to user's favorites
       await sql.query`
                 INSERT INTO favorites_jobs (user_id, job_posting_id, created_at)
                 VALUES (${userId}, ${jobId}, GETDATE())`;
-
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -81,7 +102,6 @@ const favoritesQueries = {
       await sql.query`
                 DELETE FROM favorites_jobs
                 WHERE user_id = ${userId} AND job_posting_id = ${jobId}`;
-
     } catch (err) {
       console.error("Database query error:", err);
       throw err;

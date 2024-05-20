@@ -20,7 +20,7 @@ const postQueries = require("../queries/postQueries");
 const jobQueries = require("../queries/jobQueries");
 const sql = require("mssql");
 const axios = require("axios");
-const cheerio = require("cheerio");
+const communityQueries = require("../queries/communityQueries");
 
 const renderer = new marked.Renderer();
 renderer.image = function (href, title, text) {

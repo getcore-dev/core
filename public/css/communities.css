@@ -338,7 +338,7 @@ div.vote-interactions {
 }
 
 .post-date {
-  font-size: .7rem;
+  font-size: .85rem;
   color: var(--light-mode-secondary-text-color);
 }
 
@@ -626,12 +626,24 @@ div .mini-link-desc {
   height: auto;
 }
 
+.tag {
+  display: inline-flex;
+    gap: 5px;
+    padding: 3px 7px;
+    margin: 3px 7px 0px 0px;
+    margin-bottom: 3px;
+    background-color: #6790f436;
+    color: #85a5e6;
+    border-radius: 7px;
+    font-size: .925rem;
+    position: relative;
+}
+
 .job-posting-deadline {
   font-size: 13px; 
   position: absolute; 
   right: 58px;
   margin-top: 46px;
-  font-weight: 550;
 }
 
 #see-more-core-logo {
@@ -766,6 +778,11 @@ div .mini-link-desc {
 .community-content {
   padding: 0px;
   padding-bottom: 13px;
+}
+
+.post-date a:hover {
+  text-decoration: underline;
+  pointer-events: auto;
 }
 
 .community-title {
@@ -973,7 +990,9 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
     -webkit-line-clamp: 3;
   }
 
-  .username a, .communities-text, .community a {
+
+
+  .username a, .communities-text {
     font-size: .9rem;
   }
 

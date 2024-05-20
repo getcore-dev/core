@@ -353,7 +353,7 @@ const isActive = (path) => {
     }
 
     .nested-comment>.comment {
-      border-color: <%=navbarTint %> !important;
+      border-color: <%=navbarTint %>4d !important;
     }
 
     <%
@@ -364,6 +364,17 @@ const isActive = (path) => {
 
 
 <script>
+  function showBannerNotification(message) {
+    const banner = document.getElementById("latestCommitBanner");
+    const messageElement = banner.querySelector(".latest-commit-message");
+
+    messageElement.textContent = message;
+    banner.style.display = "block"; // Show the banner
+
+    setTimeout(() => {
+      banner.style.display = "none";
+    }, 3000);
+  }
   document.addEventListener('DOMContentLoaded', function() {
     const mobileSearchForm = document.getElementById('mobileSearchForm');
     const mobileSearchInput = document.getElementById('mobileSearchInput');
@@ -374,7 +385,7 @@ const isActive = (path) => {
 
       if (searchTerm === '') {
         event.preventDefault(); // Prevent form submission if search term is blank
-        alert('Please enter a search term.'); // Display an alert to the user
+        showBannerNotification('Please enter a search term.'); // Display an alert to the user
       }
     });
 
@@ -453,7 +464,7 @@ const isActive = (path) => {
 
     if (searchTerm === '') {
       event.preventDefault(); // Prevent form submission if search term is blank
-      alert('Please enter a search term.'); // Display an alert to the user
+      showBannerNotification('Please enter a search term.'); // Display an alert to the user
     }
   });
 
@@ -625,6 +636,7 @@ const isActive = (path) => {
           console.error('Error fetching latest commit:', error);
         });
     }
+
 
     const dropdownToggle = document.querySelector('.navbar-button.dropdown-toggle');
     const dropdownMenu = document.querySelector('.dropdown-menu');

@@ -44,14 +44,15 @@
                   <h2 style="font-weight: 500"><%= community.name%></h2>
                 </span>
                 <span class="comm-short-title">/<%= community.shortname %></span>
-                <button class="btn" id="communityActionBtn" data-action="join">Join</button>
+                <button class="join-btn" id="communityActionBtn" data-action="join">Join</button>
+                <button class="mod-btn" id="communityActionBtn" style="display: none;pointer-events: none;" onclick="window.location.href='/c/<%= community.shortname %>/admin'">Admin</button>
 
               </div>
               <div class="comm-description">
                 <%= community.description%>
               </div>
               <div class="community-flairs">
-                <span class="community-flair">👤 <%= community.MemberCount ? community.MemberCount : 0 %> members</span>
+                <span class="community-flair ">👤 <%= community.MemberCount ? community.MemberCount : 0 %> members</span>
                 <span class="community-flair">✉️ <%= communityPostCount %> posts</span>
                 <span class="community-flair">🟢 1 active</span>
               </div>
@@ -61,7 +62,6 @@
           </div>
         </div>
         <% } %>
-        <% if (typeof community === 'undefined' || community == null) { %>
 
         <div class="mobile-jobs-container">
           <div class="job-header">
@@ -71,7 +71,6 @@
 
           </div>
         </div>
-        <% } %>
       </div>
       <div class="jobs-container">
         <div class="job-header">
@@ -133,9 +132,60 @@
                     </div>
                     <div class="job-flairs">
                       <span class="job-flair" id="pay-flair">$${Math.floor((job.salary + job.salary_max) / 2 / 1000)}k</span>
-<span class="job-flair" id="location-flair" data-location="${job.location}">
-  ${job.experienceLevel === "Mid Level" ? "Mid" : job.experienceLevel}
-</span>
+        <span class="job-flair" id="location-flair" data-location="${job.location}">
+          ${job.experienceLevel === "Mid Level" ? "Mid" : job.experienceLevel}
+        </span>
+                  </div>
+                  </div>
+                  <div class="job-title">${job.title.slice(0, 40)}</div>
+                </div>
+              </div>
+            `).join('');
+          jobslistContainer.innerHTML += '<div class="see-more"><a href="/jobs">See More</a></div>';
+
+
+          const jobElements = jobslistContainer.querySelectorAll('.job');
+          jobElements.forEach(jobElement => {
+            const locationFlair = jobElement.querySelector('#location-flair');
+            const location = locationFlair.dataset.location;
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching job previews:', error);
+        });
+    }
+
+    function fetchCommunityJobPreviews(communityId) {
+      let currentPage = 1;
+      const itemsPerPage = 10;
+      fetch(`/api/jobs/?page=${currentPage}&limit=${itemsPerPage}`)
+        .then(response => response.json())
+        .then(data => {
+          const jobs = data.jobPostings;
+          const isMobile = window.matchMedia('(max-width: 768px)').matches;
+          let jobslistContainer;
+          if (isMobile) {
+            jobslistContainer = document.querySelector('#posts-container > div.mobile-jobs-container > div.jobslist');
+          } else {
+            jobslistContainer = document.querySelector('body > main > div.container > div.jobs-container > div.jobslist');
+          }
+          jobslistContainer.innerHTML = jobs.map(job => `
+              <div class="job" onclick="window.location.href='/jobs/${job.id}'">
+                <div class="job-content">
+                  <div class="jobs-header">
+                    <div class="company-logo-container">
+                      <img loading="lazy" src="${job.company_logo}" alt="Company Logo" class="company-logo" />
+                    </div>
+                    <div class="job-title-location">
+                      <div class="job-posting-header">
+                        <div class="company-name">${job.company_name}</div>
+                      </div>
+                    </div>
+                    <div class="job-flairs">
+                      <span class="job-flair" id="pay-flair">$${Math.floor((job.salary + job.salary_max) / 2 / 1000)}k</span>
+        <span class="job-flair" id="location-flair" data-location="${job.location}">
+          ${job.experienceLevel === "Mid Level" ? "Mid" : job.experienceLevel}
+        </span>
                   </div>
                   </div>
                   <div class="job-title">${job.title.slice(0, 40)}</div>
@@ -315,8 +365,9 @@
             const postDateDiv = document.createElement('div');
             postDateDiv.className = 'post-date';
             postDateDiv.id = 'secondary-text';
-            const communityName = document.createElement('span');
-            communityName.innerText = post.community_name;
+            const communityName = document.createElement('a');
+            communityName.href = '/c/' + post.community_shortname;
+            communityName.innerText = post.community_shortname;
             communityName.style.color = post.community_color;
             postDateDiv.appendChild(communityName);
 
@@ -450,10 +501,7 @@
             reactionInteractionsDiv.id = `reaction-interactions ${post.id}-reactions`;
 
 
-            const mainReactionButton = document.createElement("button");
-            mainReactionButton.className = "main-reaction-button";
-            mainReactionButton.innerHTML = '<span class="material-symbols-outlined">add_reaction</span>';
-            reactionInteractionsDiv.appendChild(mainReactionButton);
+
 
             const reactionMenu = document.createElement("div");
             reactionMenu.className = `${post.id} reaction-menu`;
@@ -490,11 +538,6 @@
             ];
 
 
-            if (post.userReaction != null && reactionTypes.find(reaction => reaction.type === post.userReaction)) {
-              mainReactionButton.innerText = reactionTypes.find(reaction => reaction.type === post.userReaction).icon;
-              mainReactionButton.classList.add('active');
-            }
-
             const topReactions = reactionTypes.filter(reaction => post[reaction.type.toLowerCase() + 'Count'] > 0)
               .sort((a, b) => post[b.type.toLowerCase() + 'Count'] - post[a.type.toLowerCase() + 'Count'])
               .slice(0, 3);
@@ -520,27 +563,23 @@
             totalReactionsText.className = `total-reactions-count ${post.id}`;
             totalReactionsText.innerText = totalReactions > 0 ? `${totalReactions} reactions` : "0 reactions";
             reactionInteractionsDiv.appendChild(totalReactionsText);
-            reactionTypes.forEach(reaction => {
-              const button = document.createElement("button");
-              button.innerText = reaction.icon + ' ' + post[reaction.type.toLowerCase() + 'Count'];
-              button.onclick = () => interactWithPost(event, post.id, "<%= user %>", reaction.type);
-              reactionMenu.appendChild(button);
-            });
 
-            let showMenuTimeout; // Variable to hold the timeout for showing the menu
-            let hideMenuTimeout; // Variable to hold the timeout for hiding the menu
+            // assume post.post_tags is like this "tag1, tag2, tag3"
+            if (post.post_tags) {
+              const tags = post.post_tags.split(',').map(tag => tag.trim());
+              const tagsDiv = document.createElement('div');
+              tagsDiv.className = 'tags';
+              const maxTags = 5;
+              const displayedTags = tags.slice(0, maxTags);
+              displayedTags.forEach(tag => {
+                const tagDiv = document.createElement('div');
+                tagDiv.className = 'tag';
+                tagDiv.innerText = tag;
+                tagsDiv.appendChild(tagDiv);
+              });
+              postContentDiv.appendChild(tagsDiv);
+            }
 
-            // cancel showing menu if you click the button a second time otherwise show the menu
-            mainReactionButton.addEventListener('click', () => {
-              event.stopPropagation();
-              reactionMenu.classList.toggle('show');
-            });
-
-            document.addEventListener('click', (event) => {
-              if (!mainReactionButton.contains(event.target) && !reactionMenu.contains(event.target)) {
-                reactionMenu.classList.remove('show');
-              }
-            });
 
             votesDiv.appendChild(reactionInteractionsDiv);
             postContentDiv.appendChild(votesDiv);
@@ -586,8 +625,9 @@
 
     <% if (communityId) {%>
     document.addEventListener("DOMContentLoaded", function() {
-      const communityActionBtn = document.getElementById("communityActionBtn");
+      const communityActionBtn = document.getElementsByClassName("join-btn")[0];
       const memberCountElement = document.querySelector('.community-member-count');
+      const modBtn = document.getElementsByClassName("mod-btn")[0];
 
       function updateMemberCount(isJoining) {
         let memberCount = parseInt(memberCountElement.textContent.split(' ')[0]);
@@ -598,10 +638,9 @@
         }
       }
 
-      // Function to toggle community membership
       function toggleCommunityMembership() {
         const action = communityActionBtn.dataset.action; // "join" or "leave"
-        const url = `/c/<%= community.name %>/${action}`;
+        const url = `/c/<%= community.shortname %>/${action}`;
 
         fetch(url, {
             method: "POST",
@@ -621,19 +660,27 @@
             if (action === "join") {
               communityActionBtn.textContent = "Leave";
               communityActionBtn.dataset.action = "leave";
-              updateMemberCount(true); // Optimistically increment member count
+              showBannerNotification("You have successfully joined the community!");
 
             } else {
               communityActionBtn.textContent = "Join";
               communityActionBtn.dataset.action = "join";
-              updateMemberCount(false); // Optimistically decrement member count
+
+              showBannerNotification("You have successfully left the community!");
 
             }
           })
           .catch(error => {
             console.error('Error:', error);
-            alert("Error performing action.");
+            showBannerNotification("Error performing action.");
           });
+      }
+      if ("<%= user %>" !== "") {
+        communityActionBtn.addEventListener("click", toggleCommunityMembership);
+      } else {
+        communityActionBtn.addEventListener("click", () => {
+          window.location.href = "/login";
+        });
       }
 
       // Function to check membership and update button
@@ -648,7 +695,12 @@
               communityActionBtn.textContent = "Join";
               communityActionBtn.dataset.action = "join";
             }
-            communityActionBtn.addEventListener("click", toggleCommunityMembership);
+
+            if (data.isModerator) {
+              modBtn.style.display = "block";
+              modBtn.style.pointerEvents = "auto";
+            }
+
           })
           .catch(error => console.error('Error checking membership:', error));
       }
@@ -762,64 +814,10 @@
       fetchAndDisplayPosts(communityId);
       if (!communityId) {
         fetchJobPreviews();
+      } else {
+        fetchCommunityJobPreviews(communityId);
       }
     });
-
-    function interactWithPost(event, postId, user, action) {
-      event.stopPropagation();
-      const mainReactionButton = document.querySelector(`.${postId}-reactions .main-reaction-button`);
-
-      const reactionTypes = [{
-          type: "BOOST",
-          icon: "⚡️"
-        },
-        {
-          type: "LOVE",
-          icon: "❤️"
-        },
-        {
-          type: "LIKE",
-          icon: "👍"
-        },
-        {
-          type: "CURIOUS",
-          icon: "🤔"
-        },
-        {
-          type: "INTERESTING",
-          icon: "💡"
-        },
-        {
-          type: "CELEBRATE",
-          icon: "🎉"
-        },
-      ];
-
-
-      if (!user) {
-        window.location.href = '/login';
-        return;
-      }
-
-      fetch(`/posts/${postId}/react`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            user: user,
-            action: action.toLowerCase()
-          })
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Success:', data);
-          mainReactionButton.innerText = reactionTypes.find(reaction => reaction.type === action).icon;
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
-    }
   </script>
 </body>
 

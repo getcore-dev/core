@@ -59,6 +59,12 @@ const utilFunctions = {
         FROM userPostActions upa2
         WHERE upa2.post_id = p.id AND upa2.user_id = ${userId}
       ) as userReaction,
+      (
+        SELECT STRING_AGG(tags.name, ', ') 
+        FROM post_tags 
+        INNER JOIN tags ON post_tags.tag_id = tags.id
+        WHERE post_tags.post_id = p.id
+      ) AS post_tags,
       (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count
     FROM posts p
     INNER JOIN users u ON p.user_id = u.id

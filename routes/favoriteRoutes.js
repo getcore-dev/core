@@ -82,11 +82,24 @@ router.post("/post/:postId", checkAuthenticated, async (req, res) => {
   try {
     const userId = req.user.id;
     const postId = req.params.postId;
-    await favoritesQueries.addToFavorites(userId, postId);
-    res.json({
-      success: true,
-      message: "Post successfully added to favorites.",
-    });
+    const post = await favoritesQueries.getFavoritePostByPostIdAndUserId(
+      postId,
+      userId
+    );
+
+    if (post) {
+      await favoritesQueries.removeFromFavorites(userId, postId);
+      res.json({
+        success: true,
+        message: "Post successfully removed from favorites.",
+      });
+    } else {
+      await favoritesQueries.addToFavorites(userId, postId);
+      res.json({
+        success: true,
+        message: "Post successfully added to favorites.",
+      });
+    }
   } catch (err) {
     console.error("Error adding to favorites:", err);
     res
@@ -117,11 +130,24 @@ router.post("/jobs/:jobId", checkAuthenticated, async (req, res) => {
   try {
     const userId = req.user.id;
     const jobId = req.params.jobId;
-    await favoritesQueries.addJobToFavorites(userId, jobId);
-    res.json({
-      success: true,
-      message: "Job successfully added to favorites.",
-    });
+    const job = await favoritesQueries.getFavoriteJobByJobIdAndUserId(
+      jobId,
+      userId
+    );
+
+    if (job) {
+      await favoritesQueries.removeJobFromFavorites(userId, jobId);
+      return res.json({
+        success: true,
+        message: "Job successfully removed from favorites.",
+      });
+    } else {
+      await favoritesQueries.addJobToFavorites(userId, jobId);
+      return res.json({
+        success: true,
+        message: "Job successfully added to favorites.",
+      });
+    }
   } catch (err) {
     console.error("Error adding job to favorites:", err);
     res

@@ -308,7 +308,7 @@ div .user-info, .header {
   display: flex;
   align-items: center;
   gap: 15px;
-  margin: 26px 0;
+  margin: 12px 0;
   font-size: .95rem;
 }
 
@@ -437,14 +437,24 @@ img.blog-avatar {
   white-space-collapse: collapse;
 }
 
+.reaction-popup {
+  display: flex;
+    position: absolute;
+    bottom: 37px;
+    opacity: 1;
+    flex-direction: row;
+    width: max-content;
+}
+
 
 .reaction-popup button {
   pointer-events: auto;
-  font-size: 1.2rem;
+  font-size: 1rem;
   padding: 10px;
   border: 0;
+  margin: 4px;
   background: 0;
-  border-radius: 6px;
+  border-radius: 14px;
   transition: transform .5s ease;
 }
 
@@ -706,18 +716,31 @@ div.repliers-avatar, div.repliees-avatar {
 
 .post-user-info {
   font-size: 15px;
-    font-weight: 500;
+}
+
+.reaction-popup button.active {
+  background-color: #b8e9ff4a;
+  color: #3073c1;
+  border: 1px solid #afd4ff;
 }
 
 .reaction-icon {
-  font-size: 1.1rem;
+  font-size: .95rem;
 }
 
 .post-user-info-header {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 3px;
   width: 100%;
+}
+
+.project-link-stats {
+  margin-top: 8px;
+}
+
+.tags-div {
+  margin: 6px 0;
 }
 
 .comment .avatar, .post-user-info-header .avatar {
@@ -809,17 +832,10 @@ padding-top: 10px;
   border-radius: 6px;
 }
 
-a.comment-user-info {
-  font-weight: 400;
-}
 
 .comment-header {
   font-size: .925rem !important;
   color: var(--light-mode-text-color) !important;
-}
-
-.comment-header a {
-  font-weight: bold;
 }
 
 
@@ -1187,6 +1203,10 @@ p.preview-description {
   padding-right: 10px;
 }
 
+.nested-comment>.comment {
+  margin-bottom: 6px;
+}
+
 .post-user-information {
   display: flex;
   flex-direction: row;
@@ -1201,8 +1221,8 @@ p.preview-description {
     padding: 3px 7px;
     margin: 3px 7px 0px 0px;
     margin-bottom: 3px;
-    background-color: #5abe6e36;
-    color: #5abe6e;
+    background-color: #6790f436;
+    color: #85a5e6;
     border-radius: 7px;
     font-size: .925rem;
     position: relative;
@@ -1548,7 +1568,6 @@ div.username {
   }
 
   .similar-posts-header {
-    padding-top: 35px;
     font-size: .95rem;
   }
   .sidebar-link-info-title, .sidebar-link-info-url {
@@ -1686,7 +1705,6 @@ div.username {
 
   .post-updatedat {
     font-size: .8rem;
-    font-weight: bold;
   }
 
   .timestamp {

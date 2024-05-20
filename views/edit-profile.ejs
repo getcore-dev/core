@@ -184,7 +184,7 @@
           processData: false, // Important: tell jQuery not to process the data
           contentType: false, // Important: tell jQuery not to set contentType
           success: function(response) {
-            alert('Profile updated successfully.');
+            showBannerNotification('Profile updated successfully.');
             // Redirect or update UI as needed
           },
           error: function(xhr, status, error) {

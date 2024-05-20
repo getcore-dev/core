@@ -342,7 +342,7 @@ router.get("/posts/:postId/edit", checkAuthenticated, async (req, res) => {
       false
     );
     post.tags = await utilFunctions.getTags(postId);
-    console.log(post.tags);
+    //console.log(post.tags);
 
     res.render("edit-post.ejs", { user: req.user, post });
   } catch (err) {
@@ -354,19 +354,18 @@ router.get("/posts/:postId/edit", checkAuthenticated, async (req, res) => {
 router.put("/posts/:postId/edit", checkAuthenticated, async (req, res) => {
   try {
     const postId = req.params.postId;
-    // Directly pass the tags from the body without converting them
     const postData = {
-      ...req.body, // Spread other properties
-      tags: req.body.tags, // This can now be an array of IDs or names
+      ...req.body,
+      tags: req.body.tags,
     };
 
-    console.log(postData);
+    //console.log(postData);
 
     const updatedPost = await postQueries.editPost(postId, postData);
     if (updatedPost) {
       res.redirect(`/posts/${postId}`);
     } else {
-      throw new Error("Post update failed"); // Or handle more gracefully
+      throw new Error("Post update failed");
     }
   } catch (error) {
     console.error(error);
@@ -377,7 +376,7 @@ router.put("/posts/:postId/edit", checkAuthenticated, async (req, res) => {
 // Route for deleting a post
 router.delete("/post/:postId", checkAuthenticated, async (req, res) => {
   const postId = req.params.postId;
-  const userId = req.user.id; // Assuming the user ID is stored in req.user
+  const userId = req.user.id;
 
   try {
     const post = await postQueries.getPostById(postId);

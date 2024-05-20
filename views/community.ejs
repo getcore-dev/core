@@ -107,15 +107,15 @@
           <%= community.name%>
           <span> - </span>
           <span style="color:<%= community.community_color %>;">/<%= community.shortname%> </span>
+          <% if (community.isModerator) { %>
+          <span class="material-symbols-outlined" style="font-size: 16px;" onclick="window.location.href='/c/<%= community.shortname %>/admin'">admin_panel_settings</span>
+          <% } %>
           <br>
           <span class="community-flairs">
             <span class="community-flair" style="background-color:<%= community.community_color %>85;"><%= community.MemberCount%> member</span>
           </span>
         </span>
         <span class="material-symbols-outlined" style="margin-left: auto;" onclick="leaveCommunity(event, '<%= community.shortname %>')">close</span>
-        <% if (community.isModerator) { %>
-        <span class="material-symbols-outlined" style="margin-left: 10px;">admin_panel_settings</span>
-        <% } %>
       </div>
       <% } %>
       <% }) %>
@@ -144,7 +144,7 @@
         </span>
 
         <% if (user) { %>
-        <span class="material-symbols-outlined" style="margin-left: auto;" onclick="joinCommunity(event, '<%= community.shortname %>')">add</span>
+        <span class="material-symbols-outlined" style="margin-left: auto;" onclick="">add</span>
 
         <% if (community.isModerator) { %>
         <span class="material-symbols-outlined" style="margin-left: 10px;">star</span>
@@ -170,9 +170,9 @@
       }
     }
 
-    async function joinCommunity(event, community_name) {
+    async function joinCommunity(event, community_shortname) {
       event.stopPropagation();
-      const response = await fetch(`/c/${community_name}/join`, {
+      const response = await fetch(`/c/${community_shortname}/join`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

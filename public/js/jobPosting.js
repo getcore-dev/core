@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const jobId = extractJobIdFromUrl();
   lazyLoadJobDetails(jobId);
+  attachFormSubmitHandler();
 });
 
 function extractJobIdFromUrl() {
@@ -86,8 +87,7 @@ function getSimilarJobs(jobId) {
       const similarJobsContainer = document.querySelector(".similar-jobs");
 
       if (jobs.length === 0) {
-        similarJobsContainer.innerHTML = `
-      `;
+        similarJobsContainer.innerHTML = ``;
         return;
       }
       similarJobsContainer.innerHTML = `
@@ -146,8 +146,7 @@ function getSimilarJobsByCompany(jobId, companyName) {
         ".similar-jobs-company"
       );
       if (jobs.length === 0) {
-        similarJobsContainer.innerHTML = `
-      `;
+        similarJobsContainer.innerHTML = ``;
         return;
       }
       similarJobsContainer.innerHTML = `
@@ -313,6 +312,15 @@ factory
       <p id="secondary-text" class="post-date-text">
       This job was posted on ${formatDate(job.postedDate)}
       </p>
+      <div class="job-skills">
+      <h4>Required Skills</h4>
+      ${skillsHTML}
+      ${
+        remainingSkills > 0
+          ? `<span class="see-more" id="secondary-text">+${remainingSkills} more</span>`
+          : ""
+      }
+    </div>
             <div class="job-description">
             <h4>Job Description</h4>
             
@@ -432,15 +440,6 @@ ${
 <div class="similar-jobs-company"></div>
 
             <div class="job-skills">
-              <h4>Required Skills</h4>
-              ${skillsHTML}
-              ${
-                remainingSkills > 0
-                  ? `<span class="see-more" id="secondary-text">+${remainingSkills} more</span>`
-                  : ""
-              }
-            </div>
-            <div class="job-skills">
               <h4>Tags</h4>
               ${tagsHTML}
               ${
@@ -458,12 +457,11 @@ ${
               }'">Apply Now</button>
               </div>
               <div class="favorite-button-container">
-              <form id="favorite-form-${job.id}" action="/favorites/jobs/${
+    <form id="favorite-form-${job.id}" action="/favorites/jobs/${
         job.id
-      }" method="POST" style="margin-left: auto;" onsubmit="handleFavoriteFormSubmit(event)">
-
-      <button id="regular-button-normal">Favorite</button>
-              </form>
+      }" method="POST">
+    <button id="regular-button-normal">Favorite</button>
+    </form>
               </div>
               
             </div>
@@ -478,6 +476,7 @@ ${
     });
 }
 
+// Function to handle the form submission via AJAX
 function handleFavoriteFormSubmit(event) {
   event.preventDefault(); // Prevent the default form submission
 
@@ -485,26 +484,29 @@ function handleFavoriteFormSubmit(event) {
   const formData = new FormData(form);
 
   fetch(form.action, {
-    method: form.method,
+    method: "POST",
     body: formData,
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok " + response.statusText);
+      }
+      return response.json();
+    })
     .then((data) => {
       const message = data.message; // Assuming the response contains a 'message' property
-
-      const banner = document.getElementById("latestCommitBanner");
-      const messageElement = banner.querySelector(".latest-commit-message");
-      messageElement.textContent = message;
-
-      banner.style.display = "block"; // Show the banner
-
-      // Optionally, you can hide the banner after a certain duration
-      setTimeout(() => {
-        banner.style.display = "none";
-      }, 3000); // Hide the banner after 3 seconds (adjust as needed)
+      console.log("Success:", message);
+      showBannerNotification(message);
     })
     .catch((error) => {
       console.error("Error:", error);
-      // Handle any errors that occurred during the form submission
+      showBannerNotification("Error: " + error.message);
     });
+}
+
+// Attach the event listener to the forms when the DOM content is loaded
+function attachFormSubmitHandler() {
+  document.querySelectorAll('form[id^="favorite-form-"]').forEach((form) => {
+    form.addEventListener("submit", handleFavoriteFormSubmit);
+  });
 }
