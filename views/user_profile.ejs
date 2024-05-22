@@ -432,8 +432,11 @@
             <p>${experience.employmentType}</p>
             <p>${experience.location}</p>
             <p>${experience.description}</p>
-            <p>${ experience.tags ? experience.tags.split(',').map(tag => `<span class="job-tag">${tag}</span>`).join('') : ''}</p>
-          `;
+<p>${ experience.tags ? experience.tags.split(',').map(tag => {
+  const trimmedTag = tag.trim();
+  return `<span class="job-tag" onclick="window.location.href='/tags/${encodeURIComponent(trimmedTag)}'">${trimmedTag}</span>`;
+}).join('') : ''}</p>
+            `;
           currentJobContainer.appendChild(jobElement);
         });
       }

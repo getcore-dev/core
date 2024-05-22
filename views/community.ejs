@@ -104,15 +104,18 @@
       <div class="community-entry" onclick="window.location.href='/c/<%= community.shortname %>'">
         <span class="material-symbols-outlined" style="color:<%= community.community_color %>;"><%= community.mini_icon %></span>
         <span class="community-info">
-          <%= community.name%>
-          <span> - </span>
-          <span style="color:<%= community.community_color %>;">/<%= community.shortname%> </span>
+          <span class="community-info-title"><%= community.name%>
+            <span> - </span>
+            /<%= community.shortname%>
+          </span>
           <% if (community.isModerator) { %>
           <span class="material-symbols-outlined" style="font-size: 16px;" onclick="window.location.href='/c/<%= community.shortname %>/admin'">admin_panel_settings</span>
           <% } %>
           <br>
           <span class="community-flairs">
-            <span class="community-flair" style="background-color:<%= community.community_color %>85;"><%= community.MemberCount%> member</span>
+            <span class="community-flair" style="background-color:<%= community.community_color %>85;"><%= community.CommunityMemberCount%> member</span>
+            <span class="community-flair" style="background-color:<%= community.community_color %>85;"><%= community.PostCount[1]%> posts</span>
+
           </span>
         </span>
         <span class="material-symbols-outlined" style="margin-left: auto;" onclick="leaveCommunity(event, '<%= community.shortname %>')">close</span>
@@ -132,14 +135,16 @@
         <span class="material-symbols-outlined" style="color:<%= community.community_color %>;"><%= community.mini_icon %></span>
 
         <span class="community-info">
-          <%= community.name%>
-          <span> - </span>
-          /<%= community.shortname%>
-          <br>
+          <span class="community-info-title"><%= community.name%>
+            <span> - </span>
+            /<%= community.shortname%>
+          </span>
           <span id="secondary-text"><%= community.description%></span>
           <br>
           <span class="community-flairs">
             <span class="community-flair" style="background-color:<%= community.community_color %>85;"><%= community.MemberCount%> member</span>
+            <span class="community-flair" style="background-color:<%= community.community_color %>85;"><%= community.PostCount[1]%> posts</span>
+
           </span>
         </span>
 
