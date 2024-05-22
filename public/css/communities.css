@@ -919,6 +919,7 @@ button.see-more {
     border: 0;
     border-top: 1px solid var(--border-color);
     border-radius: 10px;
+    
   }
 
   .container {
@@ -937,7 +938,8 @@ button.see-more {
   }
 
   .job {
-    margin: 0;
+    margin: 8px;
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
   }
 
   .jobslist {

@@ -22,7 +22,7 @@
   <%- include('partials/navbar', { pagePath: 'home' }) %>
   <main>
     <div class="post-header" id="secondary-text">
-    <h5>Post Type</h5>
+      <h5>Post Type</h5>
     </div>
 
     <div class="post-selector">
@@ -46,15 +46,24 @@
       <form action="/posts" method="POST">
         <input type="hidden" id="post_type" name="post_type" value="discussion" />
         <div class="form-group" id="community">
+          <label for="community_choice">Community</label>
           <select id="community_choice" name="community_id" placeholder="Communities" </select>
         </div>
         <div class="form-group">
           <input type="hidden" name="userId" value="<%= user.id %>" />
-          <input type="text" id="title" name="title" placeholder="Title" required />
-          <input type="text" id="subtitle" name="subtitle" placeholder="Subtitle" />
+          <div class="form-group" id="title-field">
 
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" required />
+          </div>
+          <div class="form-group" id="subtitle-field">
+
+            <label id="subtitle2" for="subtitle">Subtitle</label>
+            <input type="text" id="subtitle" name="subtitle" />
+          </div>
           <div class="form-group" id="link-field">
-            <input type="text" id="link" name="link" placeholder="Link" />
+            <label id="link-label" for="link">Link</label>
+            <input type="text" id="link" name="link" />
           </div>
           <div class="form-group">
             <textarea id="content" name="content"></textarea>
@@ -68,11 +77,6 @@
                 <% }); %>
               </select>
             </div>
-          </div>
-
-          <div id="confirmation-question" class="form-group" style="display: none;margin: 0px 0px;margin-bottom: 15px;">
-            <input type="checkbox" id="confirm-google" name="confirm_google">
-            <label for="confirm-google">Did you try to Google this question before you are making this post?</label>
           </div>
 
         </div>
@@ -91,29 +95,24 @@
           $('#link-field').show();
           $('#subtitle').hide();
           $('#link-label').text('Link:');
-          $('#confirmation-question').hide();
-          $('#submit-button').prop('disabled', false);
-
+          $('#subtitle2').hide();
           break;
         case 'question':
           $('#link-field').hide();
-          $('#submit-button').prop('disabled', true);
-          $('#confirmation-question').show();
           $('#subtitle').hide();
+          $('#subtitle2').hide();
           break;
         case 'blog':
           $('#subtitle').show();
+          $('#subtitle2').show();
           $('#link-field').hide();
-          $('#confirmation-question').hide();
-          $('#submit-button').prop('disabled', false);
 
           break;
         case 'project':
           $('#link-field').show();
           $('#subtitle').hide();
-          $('#submit-button').prop('disabled', false);
+          $('#subtitle2').hide();
           $('#link-label').text('GitHub URL:');
-          $('#confirmation-question').hide(); // Hide the confirmation question
           break;
       }
       $('#post_type').val(selectedPostType); // Set the hidden input field's value
@@ -126,18 +125,11 @@
       $(this).closest('.post-type a').css('color', 'white');
     });
 
-    $('#confirm-google').change(function() {
-      if ($(this).is(':checked')) {
-        $('#submit-button').prop('disabled', false);
-      } else {
-        $('#submit-button').prop('disabled', true);
-      }
-    });
-
-
 
     $(document).ready(function() {
       $('#subtitle').hide();
+      $('#subtitle2').hide();
+
 
       $('.tags-select2').select2({
         width: '100%', // Full width of its container

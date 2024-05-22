@@ -54,7 +54,7 @@ div.votes {
 
 .jobs {
     display: flex;
-    gap: 19px;
+    gap: 10px;
     flex-direction: row;
     overflow-y: hidden;
     overflow-x: auto;
@@ -69,8 +69,9 @@ div.votes {
 .job {
     border: 1px solid var(--border-color);
     border-radius: 18px !important;
-    max-height: 250px;
     min-width: 270px;
+    margin: 10px !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); 
 }
 
 .job:hover, .post:hover {

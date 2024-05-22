@@ -24,7 +24,7 @@ label {
     width: 100%;
     box-sizing: border-box;
     margin: 40px auto;
-    padding: 12px 17px;
+    padding: 12px 15px;
     background-color: var(--light-mode-main-color);
     border: 0;
     border-radius: 6px;
@@ -37,7 +37,6 @@ div.form-group:first-of-type {
 div.form-group {
     display: flex;
     flex-direction: column;
-    margin-top: 12px;
 }
 
 #submit-button[disabled] {
@@ -66,23 +65,23 @@ div.form-group {
 .post-selector {
     display: flex;
     flex-direction: row;
-    gap: 6px;
+    gap: 10px;
     margin: 0px 13px;
-    margin-bottom: 0px;
+    margin-bottom: 5px;
+    margin-top: 6px;
 }
 
 .post-type {
     border: 1px solid var(--border-color);
     background-color: var(--light-mode-body-color);
-    border-radius: 6px;
+    border-radius: 10px;
     display: inline-flex;
-    padding: 2px 3px;
+    padding: 5px 8px;
 }
 
 .post-type a {
     text-decoration: none;
     color: var(--primary-text-color);
-    padding: 5px 10px;
     border-radius: 6px;
 }
 
@@ -116,6 +115,7 @@ div.form-group {
     width: 100%;
     box-sizing: border-box;
     padding: 8px;
+    padding-top: 20px;
     background-color: var(--light-mode-body-color);
     border: 1px solid var(--border-color);
     font-size: 16px;
@@ -130,6 +130,7 @@ div.form-group {
     }
     
 .main-container select {
+    padding-top: 20px !important;
     padding: 8px;
     border: 1px solid var(--border-color);
     background: var(--light-mode-body-color);
@@ -216,6 +217,20 @@ i.fa {
 .main-container .comment {
     margin-left: 20px;
 }
+
+
+.form-group {
+    position: relative;
+}
+
+.form-group label {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    font-size: .75rem;
+    color: var(--light-mode-secondary-text-color);
+}
+  
 
 .post-type {
     transition: background-color 0.3s ease;
@@ -407,6 +422,10 @@ i.fa {
     .main-container .comment {
         border-bottom-color: var(--dark-mode-border-color); 
     }
+
+    .form-group label {
+        color: var(--dark-mode-secondary-text-color);
+    }   
 
     .main-container .post-title,
     .main-container .comments-section h3,

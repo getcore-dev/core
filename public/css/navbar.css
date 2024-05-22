@@ -196,7 +196,7 @@ a {
   width: 58vw;
   max-width: 100%;
   padding: 6px 10px;
-  padding-left: 20px;
+  padding-left: 25px;
   border-radius: 11px;
   border: 1px solid var(--light-mode-main-color);
   background: var(--light-mode-main-color);
@@ -652,6 +652,7 @@ font-weight: 400;
 .search-icon {
   position: absolute;
   top: 7px;
+  font-weight: 400;
   left: 1px;
   color: var(--light-mode-secondary-text-color);
   font-size: 20px !important;
@@ -662,12 +663,13 @@ font-weight: 400;
 
 
 #user-avatar {
-  width: 34px;
+  width: 32px;
   border-radius: 50%;
-  height: 34px;
+  height: 32px;
   object-fit: cover; 
   overflow: hidden;
   z-index: 10;
+  border: 1.5px solid var(--light-mode-text-color);
 }
 #search-bar {
   padding: 4px 6px;
@@ -1236,6 +1238,10 @@ input:focus, textarea:focus, select:focus {
   
   #nb-icon {
     color: var(--dark-mode-text-color);
+  }
+
+  #user-avatar {
+    border: 1.5px solid var(--dark-mode-text-color);
   }
   
   .search-input {
