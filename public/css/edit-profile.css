@@ -44,9 +44,7 @@
 .container span {
     max-width: 100%;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 .container input {

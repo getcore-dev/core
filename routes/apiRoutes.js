@@ -241,6 +241,67 @@ router.get("/skills", async (req, res) => {
   }
 });
 
+router.get("/community/:communityId/jobs", async (req, res) => {
+  try {
+    const communityId = req.params.communityId;
+    const page = parseInt(req.query.page) || 1; // Get the page number from query parameters, default to 1
+    const limit = parseInt(req.query.limit) || 10; // Get the number of items per page, default to 10
+
+    // Fetch community tags by communityId
+    const community = await communityQueries.getCommunity(communityId);
+
+    if (!community) {
+      return res.status(404).send("Community not found");
+    }
+
+    // Assume community.Tags is a CSV string
+    const communityTags = community.Tags.split(",");
+
+    if (!communityTags.length) {
+      return res.status(404).send("No tags found for the given community");
+    }
+
+    // Fetch jobs matching the community tags
+    const allJobs = await jobQueries.getJobsByTags(communityTags);
+
+    if (!allJobs.length) {
+      // return random jobs
+      const randomJobs = await jobQueries.getRandomJobs(limit);
+      return res.json({
+        jobPostings: randomJobs,
+        currentPage: page,
+        totalPages: 1,
+      });
+    }
+
+    // if theres less than 3 jobs, return jobs and some random jobs
+    if (allJobs.length < 5) {
+      const randomJobs = await jobQueries.getRandomJobs(limit);
+      return res.json({
+        jobPostings: allJobs.concat(randomJobs),
+        currentPage: page,
+        totalPages: 1,
+      });
+    }
+
+    // Shuffle jobs array to randomize the order
+    const shuffledJobs = allJobs.sort(() => 0.5 - Math.random());
+
+    // Implement pagination on the shuffled jobs
+    const offset = (page - 1) * limit;
+    const paginatedJobs = shuffledJobs.slice(offset, offset + limit);
+
+    res.json({
+      jobPostings: paginatedJobs,
+      currentPage: page,
+      totalPages: Math.ceil(allJobs.length / limit),
+    });
+  } catch (err) {
+    console.error("Error fetching job postings:", err);
+    res.status(500).send("Error fetching job postings");
+  }
+});
+
 router.get("/jobs", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1; // Get the page number from query parameters, default to 1
@@ -249,7 +310,7 @@ router.get("/jobs", async (req, res) => {
     const offset = (page - 1) * limit; // Calculate the offset based on page and limit
 
     const [jobPostings, totalCount] = await Promise.all([
-      jobQueries.getJobs(limit, offset),
+      jobQueries.getRandomJobs(limit),
       jobQueries.getJobsCount(),
     ]);
 

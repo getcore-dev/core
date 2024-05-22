@@ -420,15 +420,19 @@
         experiences.forEach(experience => {
           const jobElement = document.createElement('div');
           jobElement.innerHTML = `
-            <h4><a href="/jobs/company/${experience.companyName}">
-            ${experience.companyName}</a></h4>
-            <h5>${experience.title}</h5>
-            <p>${experience.employmentType}</p>
-            <p>${experience.location}</p>
-            <div class="date-range">
+          <div class="job-experience-header">
+            <h5><a href="/jobs/company/${experience.companyName}">
+            ${experience.companyName}</a></h5>
+
+                        <div class="date-range">
               <p>${new Date(experience.startDate).toLocaleDateString()} - ${experience.endDate ? new Date(experience.endDate).toLocaleDateString() : 'Present'}</p>
             </div>
+            </div>
+            <h4>${experience.title}</h4>
+            <p>${experience.employmentType}</p>
+            <p>${experience.location}</p>
             <p>${experience.description}</p>
+            <p>${ experience.tags ? experience.tags.split(',').map(tag => `<span class="job-tag">${tag}</span>`).join('') : ''}</p>
           `;
           currentJobContainer.appendChild(jobElement);
         });

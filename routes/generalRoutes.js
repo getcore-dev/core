@@ -7,6 +7,7 @@ const {
 } = require("../middleware/authMiddleware");
 const viewController = require("../controllers/viewController");
 const userQueries = require("../queries/userQueries");
+const jobQueries = require("../queries/jobQueries");
 const utilFunctions = require("../utils/utilFunctions");
 const githubService = require("../services/githubService");
 const postQueries = require("../queries/postQueries");
@@ -230,6 +231,36 @@ router.get(
     }
   }
 );
+
+router.get("/tags/:tagName", async (req, res) => {
+  try {
+    const tagName = req.params.tagName;
+    console.log(tagName);
+    const JobTagId = await jobQueries.getTagId(tagName);
+    const PostTagId = await postQueries.getTagId(tagName);
+    let jobs = [];
+    let posts = [];
+
+    console.log(JobTagId, PostTagId);
+
+    if (!JobTagId && !PostTagId) {
+      res.status(404).send("Tag not found");
+    }
+
+    if (JobTagId) {
+      jobs = await jobQueries.getJobsByTag(JobTagId);
+    }
+
+    if (PostTagId) {
+      posts = await postQueries.getPostsByTag(PostTagId);
+    }
+
+    res.render("tag.ejs", { tag: tagName, jobs, posts, user: req.user });
+  } catch (err) {
+    console.error("Error fetching job postings:");
+    res.status(500).send("Error fetching job postings");
+  }
+});
 
 router.get("/users/:userId/following", async (req, res) => {
   try {

@@ -20,10 +20,16 @@ document.addEventListener("DOMContentLoaded", () => {
 const jobTitles = [
   "Software Engineer",
   "Data Scientist",
-  "Designer",
+  "UX Designer",
   "Cybersecurity",
   "Project Manager",
+  "Data Engineer",
+  "Solutions Architect",
+  "Machine Learning Engineer",
+  "Program Manager",
 ];
+
+const jobLevels = ["Entry Level", "Mid Level", "Senior", "Lead", "Manager"];
 
 function setupDynamicFilters() {
   setupFilter("experienceLevel");
@@ -37,6 +43,8 @@ function setupFilter(filterType) {
 
   if (filterType === "title") {
     uniqueValues = jobTitles;
+  } else if (filterType === "experienceLevel") {
+    uniqueValues = jobLevels;
   } else {
     uniqueValues = [
       ...new Set(jobPostings.map((job) => job[filterType])),
@@ -220,7 +228,7 @@ function renderJobPostings() {
     const tagsHTML = displayedTags
       .map(
         (tag) =>
-          `<span class="job-flair" onclick="window.location.href='/jobs/tags/${tag}'""><p>${tag}</p></span>`
+          `<span class="job-flair" onclick="window.location.href='/tags/${tag}'""><p>${tag}</p></span>`
       )
       .join("");
     const remainingTags = tagsArray.length - maxTags;
@@ -236,7 +244,13 @@ function renderJobPostings() {
             <h3 class="job-title">${
               job.title
             } <span style="margin-left: auto; float: right;">${
-      job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1)
+      job.experienceLevel === "Mid Level"
+        ? "L3/L4"
+        : job.experienceLevel === "Entry Level"
+        ? "L1/L2"
+        : job.experienceLevel === "Senior"
+        ? "L5/L6"
+        : job.experienceLevel
     }</span></h3>
             <h5 class="job-subtitle secondary-text">
               <span style="margin-left: auto; float:right;">USD $${

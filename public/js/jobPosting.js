@@ -102,7 +102,7 @@ function getSimilarJobs(jobId) {
               const tagsHTML = displayedTags
                 .map(
                   (tag) =>
-                    `<span class="job-flair" onclick="window.location.href='/jobs/tags/${tag}'"><p>${tag}</p></span>`
+                    `<span class="job-flair" onclick="window.location.href='/tags/${tag}'"><p>${tag}</p></span>`
                 )
                 .join("");
               const remainingTags = tagsArray.length - maxTags;
@@ -161,7 +161,7 @@ function getSimilarJobsByCompany(jobId, companyName) {
               const tagsHTML = displayedTags
                 .map(
                   (tag) =>
-                    `<span class="job-flair" onclick="window.location.href='/jobs/tags/${tag}'"
+                    `<span class="job-flair" onclick="window.location.href='/tags/${tag}'"
                     ><p>${tag}</p></span>`
                 )
                 .join("");
@@ -229,14 +229,14 @@ function lazyLoadJobDetails(jobId) {
       const tagsHTML = displayedTags
         .map(
           (tag) =>
-            `<span class="job-flair" onclick="window.location.href='/jobs/tags/${tag}'"
+            `<span class="job-flair" onclick="window.location.href='/tags/${tag}'"
             ><p>${tag}</p></span>`
         )
         .join("");
       const skillsHTML = displayedSkills
         .map(
           (skill) =>
-            `<span class="job-flair" onclick="window.location.href='/jobs/tags/${skill}'"
+            `<span class="job-flair" onclick="window.location.href='/tags/${skill}'"
             ><p>${skill}</p></span>`
         )
         .join("");

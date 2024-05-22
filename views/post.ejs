@@ -184,7 +184,7 @@
             <div class="post-userinfo">
               <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="blog-avatar" onclick="window.location.href = '/user/<%= post.user.username %>'" />
               <div class="blog-post-info">
-                <a href="/user/<%= post.user.username %>" style="text-decoration: none; font-weight:bold;"><%= post.user.username %></a>
+                <a href="/user/<%= post.user.username %>" style="text-decoration: none; font-weight:bold;font-size:1.1rem;"><%= post.user.username %></a>
                 <span class="blog-info">
                   created a
                   <%= post.post_type.charAt(0).toLowerCase() + post.post_type.slice(1) %>
@@ -200,7 +200,7 @@
             <div class="blog-tags-div">
               <div class="tags">
                 <% post.tags.forEach(tag => { %>
-                <span class="tag" onclick="window.location.href='/jobs/tags/<%= tag.name %>'">
+                <span class="tag" onclick="window.location.href='/tags/<%= tag.name %>'">
                   <p><%= tag.name %></p>
                 </span>
                 <% }); %>
@@ -208,7 +208,7 @@
                 <% let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {}; %>
                 <% if (gitHubData.topics && gitHubData.topics.length > 0) { %>
                 <% gitHubData.topics.forEach(topic => { %>
-                <span class="tag" onclick="window.location.href='/jobs/tags/<%= topic %>'">
+                <span class="tag" onclick="window.location.href='/tags/<%= topic %>'">
                   <p><%= topic %></p>
                 </span>
                 <% }); %>
@@ -246,7 +246,7 @@
                 <div class="tags-div">
                   <div class="tags">
                     <% post.tags.forEach(tag => { %>
-                    <span class="tag" onclick="window.location.href='/jobs/tags/<%= tag.name %>'">
+                    <span class="tag" onclick="window.location.href='/tags/<%= tag.name %>'">
                       <p><%= tag.name %></p>
                     </span>
                     <% }); %>
@@ -254,7 +254,7 @@
                     <% let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {}; %>
                     <% if (gitHubData.topics && gitHubData.topics.length > 0) { %>
                     <% gitHubData.topics.forEach(topic => { %>
-                    <span class="tag" onclick="window.location.href='/jobs/tags/<%= topic %>'">
+                    <span class="tag" onclick="window.location.href='/tags/<%= topic %>'">
                       <p><%= topic %></p>
                     </span>
                     <% }); %>

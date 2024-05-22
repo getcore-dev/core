@@ -716,6 +716,7 @@ div.repliers-avatar, div.repliees-avatar {
 
 .post-user-info {
   font-size: 15px;
+  color: var(--light-mode-text-color);
 }
 
 .reaction-popup button.active {
@@ -983,6 +984,7 @@ a.comment-user-info:hover {
 }
 
 .post-content a {
+  font-weight: bold;
   text-decoration: none;
 }
 
@@ -1340,7 +1342,7 @@ p.preview-description {
     border: 1px solid #1d362a;
   }
 
-  .comments-section h3 {
+  .comments-section h3, .post-user-info {
     color: var(--dark-mode-text-color);
   }
 

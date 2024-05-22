@@ -1,0 +1,10 @@
+.jobs-header {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+div.posts {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}

@@ -45,6 +45,7 @@ router.get("/:communityName", async (req, res) => {
 
 router.post("/community-update", checkAuthenticated, async (req, res) => {
   const { id, description, rules, PrivacySetting, JobsEnabled, Tags, mini_icon } = req.body;
+  console.log(req.body);
 
   const user = req.user;
   const userIsModerator = await communityQueries.checkModerator(user.id, id);

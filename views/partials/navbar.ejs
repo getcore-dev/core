@@ -260,7 +260,7 @@ const getTitle = (path) => {
     return `Edit / ${post.title}`;
   } else if (path.startsWith('/posts/') && typeof post !== 'undefined') {
     return `${post.community.shortname} / ${post.username}`;
-  } else if (path.startsWith('/jobs/tags/') && typeof tag !== 'undefined') {
+  } else if (path.startsWith('/tags/') && typeof tag !== 'undefined') {
     return `Openings / ${tag}`;
   } else if (path.startsWith('/edit-experience')) {
     return 'Edit Experience';
@@ -469,6 +469,19 @@ const isActive = (path) => {
   });
 
   function getTrendingPosts() {
+
+    const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
+    let trendingPostsContainer;
+    if (!isMobile) {
+      trendingPostsContainer = document.querySelector('.trending-posts');
+    } else {
+      trendingPostsContainer = document.querySelector('.mobile-trending-posts');
+    }
+
+    // Check if the container already has content
+    if (trendingPostsContainer.children.length > 0) {
+      return; // Exit the function if the container is not empty
+    }
     fetch('/api/trending-posts') // Adjust this to your server's endpoint
       .then(response => response.json())
       .then(posts => {

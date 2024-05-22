@@ -56,6 +56,16 @@
                 <span class="community-flair">✉️ <%= communityPostCount %> posts</span>
                 <span class="community-flair">🟢 1 active</span>
               </div>
+              <div class="community-tags">
+                <% let tags = community.Tags.split(','); %>
+                <% let hiddenTags = tags.length - 5; %>
+                <% tags.forEach((tag, index) => { %>
+                <span class="tag <%= index >= 5 ? 'hidden-tag' : '' %>" onclick="window.location.href='/tags/<%= tag.trim() %>'"><%= tag.trim() %></span>
+                <% }); %>
+                <% if (tags.length > 5) { %>
+                <button class="see-more" onclick="toggleTags()"> + <%= hiddenTags %> more</button>
+                <% } %>
+              </div>
               <div class="community-picture">
               </div>
             </div>
@@ -84,6 +94,29 @@
   </main>
 
   <script defer>
+    document.addEventListener("DOMContentLoaded", function() {
+      const hiddenTags = document.querySelectorAll('.community-tags .hidden-tag');
+      hiddenTags.forEach(tag => {
+        tag.style.display = 'none';
+      });
+    });
+
+    function toggleTags() {
+      const hiddenTags = document.querySelectorAll('.community-tags .hidden-tag');
+      const hiddenTagsCount = hiddenTags.length;
+      hiddenTags.forEach(tag => {
+        if (tag.style.display === 'none') {
+          tag.style.display = 'inline-block';
+        } else {
+          tag.style.display = 'none';
+        }
+      });
+      const button = document.querySelector('.see-more');
+      button.textContent = button.textContent === ' + ' + hiddenTagsCount + ' more' ? ' - ' + hiddenTagsCount + ' less' : ' + ' + hiddenTagsCount + ' more';
+    }
+
+
+
     function getTintFromName(name) {
       let hash = 0;
       for (let i = 0; i < name.length; i++) {
@@ -133,7 +166,8 @@
                     <div class="job-flairs">
                       <span class="job-flair" id="pay-flair">$${Math.floor((job.salary + job.salary_max) / 2 / 1000)}k</span>
         <span class="job-flair" id="location-flair" data-location="${job.location}">
-          ${job.experienceLevel === "Mid Level" ? "Mid" : job.experienceLevel}
+          ${job.experienceLevel === "Mid Level" ? "L3/L4" : job.experienceLevel === "Entry Level" ? 
+          "L1/L2" : job.experienceLevel === "Senior" ? "L5/L6" : job.experienceLevel}
         </span>
                   </div>
                   </div>
@@ -158,7 +192,7 @@
     function fetchCommunityJobPreviews(communityId) {
       let currentPage = 1;
       const itemsPerPage = 10;
-      fetch(`/api/jobs/?page=${currentPage}&limit=${itemsPerPage}`)
+      fetch(`/api/community/${communityId}/jobs?page=${currentPage}&limit=${itemsPerPage}`)
         .then(response => response.json())
         .then(data => {
           const jobs = data.jobPostings;

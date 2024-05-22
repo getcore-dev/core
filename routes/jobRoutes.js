@@ -59,6 +59,7 @@ router.post("/update-experiences", checkAuthenticated, async (req, res) => {
         startDate,
         endDate,
         description,
+        tags,
       } = experience;
 
       // Add new job experience (assuming the function also handles updating if the ID exists)
@@ -70,7 +71,8 @@ router.post("/update-experiences", checkAuthenticated, async (req, res) => {
         location,
         startDate,
         endDate,
-        description
+        description,
+        tags
       );
     }
 

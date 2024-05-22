@@ -423,10 +423,28 @@ button#edit-button {
   flex-direction: row;
 }
 
+.job-experience-header {
+  display: flex;
+    justify-content: space-between;
+}
+
+.job-tag {
+  display: inline-flex;
+    gap: 5px;
+    padding: 3px 7px;
+    margin: 3px 7px 0px 0px;
+    margin-bottom: 3px;
+    background-color: #93939336;
+    color: #505050;
+    border-radius: 7px;
+    font-size: .925rem;
+    position: relative;
+}
+
 #currentJobContainer {
   display: flex;
   flex-wrap: nowrap;
-  flex-direction: row;
+  flex-direction: column;
   gap: 10px;
   overflow-x: auto;
   -ms-overflow-style: none;

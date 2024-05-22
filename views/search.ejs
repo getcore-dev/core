@@ -76,7 +76,7 @@
                     <% const maxTags = 3; %>
                     <% const displayedTags = tagsArray.slice(0, maxTags); %>
                     <% displayedTags.forEach((tag) => { %>
-                    <span class="job-flair" onclick="window.location.href='/jobs/tags/<%= tag %>'">
+                    <span class="job-flair" onclick="window.location.href='/tags/<%= tag %>'">
                       <p><%= tag %></p>
                     </span>
                     <% }); %>

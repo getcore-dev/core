@@ -27,57 +27,47 @@ const communityQueries = {
         throw new Error("Community not found.");
       }
 
-      if (description !== undefined) {
+      console.log(community.recordset[0]);
+
+      console.log("Updating community with ID", communityId);
+
+      // compare with the existing data and update only the changed fields
+      if (
+        description !== undefined &&
+        description !== community.recordset[0].description
+      ) {
         await sql.query`
-            UPDATE communities
-            SET description = ${description}
-            WHERE id = ${communityId}
-          `;
+          UPDATE communities 
+          SET description = ${description}
+          WHERE id = ${communityId}`;
       }
 
-      if (rules !== undefined) {
+      if (rules !== undefined && rules !== community.recordset[0].rules) {
         await sql.query`
-            UPDATE communities
-            SET rules = ${rules}
-            WHERE id = ${communityId}
-          `;
+          UPDATE communities 
+          SET rules = ${rules}
+          WHERE id = ${communityId}`;
       }
 
-      if (PrivacySetting !== undefined) {
+      if (Tags !== undefined && Tags !== community.recordset[0].Tags) {
         await sql.query`
-            UPDATE communities
-            SET PrivacySetting = ${PrivacySetting}
-            WHERE id = ${communityId}
-          `;
+          UPDATE communities 
+          SET Tags = ${Tags}
+          WHERE id = ${communityId}`;
       }
 
-      if (JobsEnabled !== undefined) {
+      if (
+        mini_icon !== undefined &&
+        mini_icon !== community.recordset[0].mini_icon
+      ) {
         await sql.query`
-            UPDATE communities
-            SET JobsEnabled = ${JobsEnabled}
-            WHERE id = ${communityId}
-          `;
+          UPDATE communities 
+          SET mini_icon = ${mini_icon}
+          WHERE id = ${communityId}`;
       }
-
-      if (Tags !== undefined) {
-        await sql.query`
-            UPDATE communities
-            SET Tags = ${Tags}
-            WHERE id = ${communityId}
-          `;
-      }
-
-      if (mini_icon !== undefined) {
-        await sql.query`
-            UPDATE communities
-            SET mini_icon = ${mini_icon}
-            WHERE id = ${communityId}
-          `;
-      }
-
       return true;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error("Database query error");
       throw err;
     }
   },

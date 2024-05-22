@@ -626,6 +626,13 @@ div .mini-link-desc {
   height: auto;
 }
 
+div.community-flairs {
+  display: flex;
+  padding: 8px;
+  font-size: .975rem;
+  justify-content: space-between;
+}
+
 .tag {
   display: inline-flex;
     gap: 5px;
@@ -689,11 +696,7 @@ div .mini-link-desc {
 
  .job-content:hover {
   cursor: pointer;
-}
-
-.community-flairs {
-  font-size: .825rem;
-}
+ }
 
 
 .company-name {
@@ -783,6 +786,16 @@ div .mini-link-desc {
 .post-date a:hover {
   text-decoration: underline;
   pointer-events: auto;
+}
+
+button.see-more {
+  color: var(--active-indicator-color);
+  background: 0;
+  border: 0;
+}
+
+.hidden-tag {
+  display: none;
 }
 
 .community-title {

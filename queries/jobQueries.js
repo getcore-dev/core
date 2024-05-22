@@ -26,6 +26,28 @@ const jobQueries = {
     }
   },
 
+  getRandomJobs: async (limit) => {
+    try {
+      const result = await sql.query(`
+        SELECT TOP ${limit} JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
+        (
+          SELECT STRING_AGG(JobTags.tagName, ', ')
+          FROM JobPostingsTags
+          INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+          WHERE JobPostingsTags.jobId = JobPostings.id
+        ) AS tags
+        FROM JobPostings
+        LEFT JOIN companies ON JobPostings.company_id = companies.id
+        ORDER BY NEWID()
+      `);
+      const jobs = result.recordset;
+      return jobs;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getJobsCount: async () => {
     try {
       const result = await sql.query(`
@@ -82,29 +104,41 @@ const jobQueries = {
       throw err;
     }
   },
-
   getTagId: async (tagName) => {
     try {
-      const result = await sql.query`
-        SELECT id FROM JobTags WHERE tagName = ${tagName}
-      `;
-      return result.recordset[0].id;
+      const pool = await sql.connect();
+
+      const jobTagResult = await pool
+        .request()
+        .input("tagName", sql.NVarChar, tagName)
+        .query("SELECT id FROM JobTags WHERE tagName = @tagName");
+
+      if (jobTagResult.recordset.length > 0) {
+        return jobTagResult.recordset[0].id;
+      }
+
+      const skillTagResult = await pool
+        .request()
+        .input("tagName", sql.NVarChar, tagName)
+        .query("SELECT id FROM skills WHERE name = @tagName");
+
+      if (skillTagResult.recordset.length > 0) {
+        return skillTagResult.recordset[0].id;
+      }
+
+      return null;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error("Error in getTagId:", err);
       throw err;
     }
   },
 
-  getJobsByTags: async (tags, limit, offset) => {
+  getJobsByTags: async (tags) => {
     try {
-      const tagIds = await Promise.all(
-        tags.map(async (tag) => {
-          const result = await sql.query`
-            SELECT id FROM JobTags WHERE tagName = ${tag}
-          `;
-          return result.recordset[0].id;
-        })
-      );
+      // Convert tags array to a format suitable for SQL IN clause
+      const formattedTags = tags
+        .map((tag) => `'${tag.replace(/'/g, "''")}'`)
+        .join(",");
 
       const result = await sql.query(`
         SELECT JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
@@ -117,13 +151,13 @@ const jobQueries = {
         FROM JobPostings
         LEFT JOIN companies ON JobPostings.company_id = companies.id
         WHERE JobPostings.id IN (
-          SELECT jobId
+          SELECT DISTINCT jobId
           FROM JobPostingsTags
-          WHERE tagId IN (${tagIds.join(",")})
+          WHERE tagId IN (
+            SELECT id FROM JobTags WHERE tagName IN (${formattedTags})
+          )
         )
         ORDER BY JobPostings.postedDate DESC
-        OFFSET ${offset} ROWS
-        FETCH NEXT ${limit} ROWS ONLY
       `);
       const jobs = result.recordset;
       return jobs;
@@ -689,13 +723,14 @@ const jobQueries = {
     location,
     startDate,
     endDate,
-    description
+    description,
+    tags
   ) => {
     try {
       const result = await sql.query`
-        INSERT INTO job_experiences (userId, title, employmentType, companyName, location, startDate, endDate, description)
+        INSERT INTO job_experiences (userId, title, employmentType, companyName, location, startDate, endDate, description, tags)
         OUTPUT INSERTED.id
-        VALUES (${userId}, ${title}, ${employmentType}, ${companyName}, ${location}, ${startDate}, ${endDate}, ${description})
+        VALUES (${userId}, ${title}, ${employmentType}, ${companyName}, ${location}, ${startDate}, ${endDate}, ${description}, ${tags})
       `;
 
       const newExperienceId = result.recordset[0].id;

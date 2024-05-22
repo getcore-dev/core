@@ -29,6 +29,38 @@ const postQueries = {
     }
   },
 
+  getPostsByTag: async (tagId) => {
+    try {
+      const result = await sql.query`
+        SELECT p.*, u.username, u.avatar,
+        (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
+        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount
+        FROM posts p
+        JOIN users u ON p.user_id = u.id
+        JOIN post_tags pt ON p.id = pt.post_id
+        WHERE pt.tag_id = ${tagId}`;
+
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getTagId: async (tagName) => {
+    try {
+      const result = await sql.query`
+        SELECT id FROM tags WHERE name = ${tagName}`;
+      if (result.recordset.length === 0) {
+        return null;
+      }
+      return result.recordset[0].id;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   viewPost: async (postId) => {
     try {
       // Check the current value of views for the post

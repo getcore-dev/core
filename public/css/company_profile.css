@@ -173,7 +173,6 @@ p.job-description {
     width: 100%;
     margin-bottom: 0px;
     padding-bottom: 10px;
-    border-bottom: 1px solid var(--light-mode-body-color);
   }
 
   .job-preview {
@@ -207,9 +206,6 @@ p.job-description {
 
   @media (prefers-color-scheme: dark) {
 
-    .tag-search-header {
-      border-bottom: 1px solid var(--dark-mode-border-color);
-    }
     .job {
         background-color: var(--dark-mode-body-color);
         border-color: var(--dark-mode-border-color);

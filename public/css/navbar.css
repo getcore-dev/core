@@ -638,6 +638,17 @@ font-weight: 400;
   display: none; /* Hide by default on desktop */
 }
 
+.tag:hover {
+  background-color: #4a6bbb36;
+    color: #49659c;
+    cursor: pointer;
+}
+
+.job-flair:hover {
+  background-color: #37794436;
+    color: #3e854c;
+}
+
 .search-icon {
   position: absolute;
   top: 7px;
