@@ -1,10 +1,78 @@
-.jobs-header {
+main {
+    overflow-x: hidden;
+}
+
+.jobs-header, .posts-header  {
     width: 100%;
-    margin-bottom: 10px;
+    margin-top: 13px;
+    padding: 7px;
+    margin-bottom: 6px;
 }
 
 div.posts {
     display: flex;
     flex-direction: column;
     gap: 25px;
+    margin-top: 7px;
+}
+
+.tag-search-header {
+    width: 100%;
+    margin-bottom: 0px;
+  }
+
+.tag {
+    display: inline-flex;
+      gap: 5px;
+      padding: 3px 7px;
+      margin: 3px 7px 0px 0px;
+      margin-bottom: 3px;
+      background-color: #6790f436;
+      color: #85a5e6;
+      border-radius: 7px;
+      font-size: .925rem;
+      position: relative;
+  }
+
+.post {
+    border: 1px solid var(--border-color) !important;
+    margin: 0 !important;
+    padding: 11px 14px !important;
+}
+
+.link .material-symbols-outlined {
+    font-size: .9rem;
+    vertical-align: -2px;;
+}
+
+div.votes {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: .9rem;
+}
+
+.jobs {
+    display: flex;
+    gap: 19px;
+    flex-direction: row;
+    overflow-y: hidden;
+    overflow-x: auto;
+    -webkit-scrollbar {
+        display: none;
+      }
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+
+.job {
+    border: 1px solid var(--border-color);
+    border-radius: 18px !important;
+    max-height: 250px;
+    min-width: 270px;
+}
+
+.job:hover, .post:hover {
+    background: var(--light-mode-hover-color);
 }

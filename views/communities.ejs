@@ -58,12 +58,12 @@
               </div>
               <div class="community-tags">
                 <% let tags = community.Tags.split(','); %>
-                <% let hiddenTags = tags.length - 5; %>
+                <% let hiddenTags = tags.length; %>
                 <% tags.forEach((tag, index) => { %>
-                <span class="tag <%= index >= 5 ? 'hidden-tag' : '' %>" onclick="window.location.href='/tags/<%= tag.trim() %>'"><%= tag.trim() %></span>
+                <span class="tag <%= index >= 0 ? 'hidden-tag' : '' %>" onclick="window.location.href='/tags/<%= tag.trim() %>'"><%= tag.trim() %></span>
                 <% }); %>
-                <% if (tags.length > 5) { %>
-                <button class="see-more" onclick="toggleTags()"> + <%= hiddenTags %> more</button>
+                <% if (tags.length > 0) { %>
+                <button class="see-more" onclick="toggleTags()">show tags</button>
                 <% } %>
               </div>
               <div class="community-picture">
@@ -112,7 +112,7 @@
         }
       });
       const button = document.querySelector('.see-more');
-      button.textContent = button.textContent === ' + ' + hiddenTagsCount + ' more' ? ' - ' + hiddenTagsCount + ' less' : ' + ' + hiddenTagsCount + ' more';
+      button.textContent = button.textContent === 'show tags' ? 'hide tags' : 'show tags';
     }
 
 
@@ -598,12 +598,11 @@
             totalReactionsText.innerText = totalReactions > 0 ? `${totalReactions} reactions` : "0 reactions";
             reactionInteractionsDiv.appendChild(totalReactionsText);
 
-            // assume post.post_tags is like this "tag1, tag2, tag3"
             if (post.post_tags) {
               const tags = post.post_tags.split(',').map(tag => tag.trim());
               const tagsDiv = document.createElement('div');
               tagsDiv.className = 'tags';
-              const maxTags = 5;
+              const maxTags = 3;
               const displayedTags = tags.slice(0, maxTags);
               displayedTags.forEach(tag => {
                 const tagDiv = document.createElement('div');
@@ -849,6 +848,7 @@
       if (!communityId) {
         fetchJobPreviews();
       } else {
+        console.log(communityId);
         fetchCommunityJobPreviews(communityId);
       }
     });

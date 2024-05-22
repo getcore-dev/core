@@ -238,17 +238,23 @@ router.get("/tags/:tagName", async (req, res) => {
     console.log(tagName);
     const JobTagId = await jobQueries.getTagId(tagName);
     const PostTagId = await postQueries.getTagId(tagName);
+    const JobSkillsId = await jobQueries.getSkillsId(tagName);
+
     let jobs = [];
     let posts = [];
 
-    console.log(JobTagId, PostTagId);
+    console.log(JobTagId, PostTagId, JobSkillsId);
 
-    if (!JobTagId && !PostTagId) {
+    if (!JobTagId && !PostTagId && !JobSkillsId) {
       res.status(404).send("Tag not found");
     }
 
     if (JobTagId) {
       jobs = await jobQueries.getJobsByTag(JobTagId);
+    }
+    
+    if (JobSkillsId) {
+      jobs = jobs.concat(await jobQueries.getJobsBySkills(JobSkillsId));
     }
 
     if (PostTagId) {

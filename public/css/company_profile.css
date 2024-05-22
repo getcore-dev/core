@@ -169,11 +169,6 @@ p.job-description {
     border-bottom: 1px solid var(--border-color);
   }
 
-  .tag-search-header {
-    width: 100%;
-    margin-bottom: 0px;
-    padding-bottom: 10px;
-  }
 
   .job-preview {
     display: flex;

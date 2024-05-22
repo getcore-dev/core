@@ -78,7 +78,7 @@
 
               <% if (post.updated_at) { %>
               <%
-              let postDate = new Date(post.created_at);
+              let postDate = new Date(post.updated_at);
               let today = new Date();
               let formattedDate;
             
@@ -116,14 +116,38 @@
                     <%
 
               // Format the date in the "MONTH DD, YYYY" format
-              formattedDate = postDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+              formattedPostDate = postDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
             %>
-                    <%= formattedDate %>
+                    <%= formattedPostDate %>
                   </span>
                 </div>
                 <% if (post.updated_at) { %>
                 <span class="post-subtitle post-updatedat secondary-text">
-
+                  <%
+              let postDate = new Date(post.updated_at);
+              let today = new Date();
+              let formattedDate;
+            
+              // Calculate time difference in milliseconds
+              let diff = today - postDate;
+            
+              // Convert time difference to different units
+              let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+              let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+              let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+              let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+            
+              // Decide the format based on the time difference
+              if (minutes < 60) {
+                formattedDate = minutes + 'm ago';
+              } else if (hours < 24) {
+                formattedDate = hours + 'h ago';
+              } else if (days < 365) {
+                formattedDate = days + 'd ago';
+              } else {
+                formattedDate = years + 'y ago';
+              }
+              %>
                   Edited: <%= formattedDate %>
                 </span>
                 <% } %>

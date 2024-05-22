@@ -20,7 +20,7 @@
   <%- include('partials/navbar', { pagePath: 'updates' }) %>
   <main>
     <div class="tag-search-header">
-      <h4>Tag Results for <span class="tag"><%= tag %></span></h4>
+      <h4>Tag results for <span class="tag"><%= tag %></span></h4>
     </div>
     <%
     function getTintFromName(name) {
@@ -76,6 +76,9 @@ function blendColors(color1, color2, ratio) {
   return blendedColor;
 }%>
     <% if (jobs.length > 0) { %>
+    <div class="jobs-header">
+      <h5 class="secondary-text">Jobs</h5>
+    </div>
     <div class="jobs">
       <% jobs.forEach((job) => { %>
       <div class="job" onclick="window.location.href='/jobs/<%= job.id %>'">
@@ -124,6 +127,9 @@ function blendColors(color1, color2, ratio) {
     <% } %>
 
     <% if (posts.length > 0) { %>
+    <div class="posts-header">
+      <h5 class="secondary-text">Posts</h5>
+    </div>
     <div class="posts">
       <% posts.forEach((post) => { %>
       <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
@@ -184,11 +190,10 @@ function blendColors(color1, color2, ratio) {
       <% }); %>
     </div>
     <% } else { %>
-    <p>No posts found.</p>
-    <% } %>
-    <div class="load-more">
-      <button class="load-more-btn" id="regular-button">Load More</button>
+    <div class="jobs-header">
+      <p>No posts found.</p>
     </div>
+    <% } %>
   </main>
 </body>
 

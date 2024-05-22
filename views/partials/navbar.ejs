@@ -389,23 +389,41 @@ const isActive = (path) => {
       }
     });
 
-    mobileSearchInput.addEventListener('input', function() {
-      const searchTerm = this.value.trim();
+    // Debounce function
+    function debounce(func, delay) {
+      let debounceTimer;
+      return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => func.apply(context, args), delay);
+      };
+    }
+
+    // Function to fetch and display search results
+    function fetchSearchResults() {
+      const searchTerm = mobileSearchInput.value.trim();
 
       if (searchTerm.length > 0) {
         fetch(`/search/preview?searchTerm=${encodeURIComponent(searchTerm)}`)
           .then(response => response.json())
           .then(data => {
             mobileSearchResults.innerHTML = '';
-            // Add clickable divs for specific searches in 'jobs', 'posts', and 'users'
-            const categories = ['jobs', 'posts', 'users'];
+            // Add clickable divs for specific searches in 'jobs', 'posts', 'users', and 'tags'
+            const categories = ['jobs', 'posts', 'users', 'tags'];
             categories.forEach(category => {
               const searchOptionElement = document.createElement('div');
               searchOptionElement.textContent = `"${searchTerm}" in ${category}`;
               searchOptionElement.className = 'search-category-option'; // Add some CSS class for styling
-              searchOptionElement.addEventListener('click', function() {
-                window.location.href = `/search/${category}?searchTerm=${encodeURIComponent(searchTerm)}`;
-              });
+              if (category === 'tags') {
+                searchOptionElement.addEventListener('click', function() {
+                  window.location.href = `/tags/${searchTerm}`;
+                });
+              } else {
+                searchOptionElement.addEventListener('click', function() {
+                  window.location.href = `/search/${category}?searchTerm=${encodeURIComponent(searchTerm)}`;
+                });
+              }
               mobileSearchResults.appendChild(searchOptionElement);
             });
 
@@ -449,7 +467,11 @@ const isActive = (path) => {
         mobileSearchResults.innerHTML = '';
         mobileSearchResults.style.display = 'none';
       }
-    });
+    }
+
+    // Attach the debounced function to the input event
+    const debouncedFetchSearchResults = debounce(fetchSearchResults, 300);
+    mobileSearchInput.addEventListener('input', debouncedFetchSearchResults);
 
     document.addEventListener('click', function(event) {
       if (!mobileSearchInput.contains(event.target)) {

@@ -10,6 +10,7 @@ const viewController = {
       res.render("communities.ejs", {
         user: req.user,
         communityId: null,
+        community: null,
       });
     } catch (err) {
       res.render("error.ejs", {

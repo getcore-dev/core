@@ -254,6 +254,10 @@ router.get("/community/:communityId/jobs", async (req, res) => {
       return res.status(404).send("Community not found");
     }
 
+    if (community.JobsEnabled === "False") {
+      return res.status(404).send("Jobs are not enabled for this community");
+    }
+
     // Assume community.Tags is a CSV string
     const communityTags = community.Tags.split(",");
 

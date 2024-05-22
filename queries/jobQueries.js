@@ -97,6 +97,7 @@ const jobQueries = {
         OFFSET ${offset} ROWS
         FETCH NEXT ${limit} ROWS ONLY
       `);
+
       const jobs = result.recordset;
       return jobs;
     } catch (err) {
@@ -115,15 +116,6 @@ const jobQueries = {
 
       if (jobTagResult.recordset.length > 0) {
         return jobTagResult.recordset[0].id;
-      }
-
-      const skillTagResult = await pool
-        .request()
-        .input("tagName", sql.NVarChar, tagName)
-        .query("SELECT id FROM skills WHERE name = @tagName");
-
-      if (skillTagResult.recordset.length > 0) {
-        return skillTagResult.recordset[0].id;
       }
 
       return null;
@@ -735,6 +727,54 @@ const jobQueries = {
 
       const newExperienceId = result.recordset[0].id;
       return newExperienceId;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getSkillsId: async (tagName) => {
+    try {
+      const pool = await sql.connect();
+
+      const jobTagResult = await pool
+        .request()
+        .input("tagName", sql.NVarChar, tagName)
+        .query("SELECT id FROM skills WHERE name = @tagName");
+
+      if (jobTagResult.recordset.length > 0) {
+        return jobTagResult.recordset[0].id;
+      }
+
+      return null;
+    } catch (err) {
+      console.error("Error in getTagId:", err);
+      throw err;
+    }
+  },
+
+  getJobsBySkills: async (tagId) => {
+    try {
+      const result = await sql.query(`
+        SELECT JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
+        (
+          SELECT STRING_AGG(JobTags.tagName, ', ')
+          FROM JobPostingsTags
+          INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+          WHERE JobPostingsTags.jobId = JobPostings.id
+        ) AS tags
+        FROM JobPostings
+        LEFT JOIN companies ON JobPostings.company_id = companies.id
+        WHERE JobPostings.id IN (
+          SELECT job_id
+          FROM job_skills
+          WHERE skill_id = '${tagId}'
+        )
+        ORDER BY JobPostings.postedDate DESC
+      `);
+
+      const jobs = result.recordset;
+      return jobs;
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
