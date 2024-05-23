@@ -374,6 +374,7 @@ p.job-description {
   width: 90px;
   font-size: 16px;
   padding: 8px 10px;
+  padding-top: 18px;
   padding-left: 20px;
   border-radius: 11px;
   border: 1px solid var(--border-color);
@@ -392,9 +393,27 @@ div.recent-jobs {
   margin: 7px 0 12px 0;
 }
 
+.title-filter, .location-filter, .experienceLevel-filter {
+  position: relative;
+}
+
+.title-filter label, .location-filter label, .experienceLevel-filter label, .salary-filter label {
+  position: absolute;
+  left: 12px;
+  top: 10px;
+  font-size: 0.75rem;
+  color: var(--light-mode-secondary-text-color)
+}
+
+.salary-filter label {
+  top: 5px;
+}
+
+
 select {
-  width: 70%;
+  width: 100%;
   padding: 6px 11px;
+  padding-top: 18px;
     margin: 5px 0;
   font-size: 16px;
   border-radius: 11px;
@@ -438,8 +457,8 @@ select {
 .jobs-header {
   display: flex;
   flex-direction: column;
-  margin: 39px 0;
-  align-items: center;
+  margin: 19px 0;
+  gap: 5px;
 }
 
 .dropdown-button {
@@ -458,10 +477,11 @@ select {
 .dollar-sign {
   position: absolute;
   color: var(--light-mode-secondary-text-color);
-  top: 50%;
-  left: 7px; /* Adjust the position as needed */
+  top: 28px;
+  left: 10px;
+  font-size: 0.9rem;
   transform: translateY(-50%);
-  pointer-events: none; /* This ensures the text input remains clickable */
+  pointer-events: none; 
 }
 
 .salary-filter .input-container {
@@ -494,6 +514,12 @@ select {
   flex-direction: row;
   gap: 10px;
   width: 100%;
+}
+
+.input-container input:focus {
+  outline: none;
+  border-color: #a0cfe6 !important;
+  box-shadow: 0 0 3px 1px rgba(160, 207, 230, 0.5);
 }
 
 #pay-flair {
@@ -578,9 +604,9 @@ div .material-symbols-outlined {
   }
 
   .salary-filter input {
-    background-color: var(--dark-mode-main-color);
-    color: var(--dark-mode-text-color);
-    border-color: var(--dark-mode-border-color);
+    background-color: var(--dark-mode-main-color) !important;
+    color: var(--dark-mode-text-color) !important;
+    border-color: var(--dark-mode-border-color) !important;
   }
 
   .dollar-sign {
@@ -595,6 +621,20 @@ div .material-symbols-outlined {
 
   .job { 
     border-color: var(--dark-mode-border-color) !important;
+  }
+
+  .title-filter label, .location-filter label, .experienceLevel-filter label, .salary-filter label {
+    color: var(--dark-mode-secondary-text-color);
+  }
+
+  .input-container input {
+    color: var(--dark-mode-text-color);
+  }
+
+  .input-container input:focus {
+    outline: none;
+    border-color: #15516e !important;
+    box-shadow: 0 0 3px 1px rgba(21, 81, 110, 0.5);
   }
 }
 

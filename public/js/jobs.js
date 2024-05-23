@@ -75,6 +75,7 @@ function setupSalaryFilter() {
   const salaryContainer = document.querySelector(".salary-filter");
   salaryContainer.innerHTML = `
     <div class="input-container">
+    <label for="salary">Salary</label>
       <span class="dollar-sign">$</span>
       <input type="number" placeholder="0" id="min-salary">
     </div>
