@@ -109,7 +109,7 @@
     max-width: 100%;
     height: auto;
     border: 0;
-    max-width: 60dvw;
+    max-width: 30dvw;
     max-height: 500px;
     border-radius: 18px;
     object-fit: cover;
@@ -132,6 +132,11 @@
 .post-body .link-image img {
   object-fit: cover;
 }
+
+.post-body img {
+  max-width: 60dvw;
+}
+
   }
   
 

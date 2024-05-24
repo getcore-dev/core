@@ -63,7 +63,7 @@ main {
 }
 
 .main-container {
-  max-width: 1200px;
+  max-width: 800px;
 }
 
 #profile {
@@ -487,7 +487,9 @@ td {
   grid-template-columns: repeat(3, 1fr); /* Three columns of equal size */
   grid-template-rows: auto; /* Rows take size based on content */
   grid-template-areas:
-  "info1 user-links job"
+  "info1 info1 user-links"
+  "user-bio user-bio leetcode"
+  "job job job"
   "git-graph git-graph git-graph"
   "git-repos git-repos git-repos"
   "user-activity user-activity user-activity"; /* Posts will take up the entire bottom row spanning 3 columns */

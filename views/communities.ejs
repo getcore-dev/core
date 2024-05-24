@@ -169,10 +169,6 @@
                     </div>
                     <div class="job-flairs">
                       <span class="job-flair" id="pay-flair">$${Math.floor((job.salary + job.salary_max) / 2 / 1000)}k</span>
-        <span class="job-flair" id="location-flair" data-location="${job.location}">
-          ${job.experienceLevel === "Mid Level" ? "L3/L4" : job.experienceLevel === "Entry Level" ? 
-          "L1/L2" : job.experienceLevel === "Senior" ? "L5/L6" : job.experienceLevel}
-        </span>
                   </div>
                   </div>
                   <div class="job-title">${job.title.slice(0, 40)}</div>
@@ -183,10 +179,6 @@
 
 
           const jobElements = jobslistContainer.querySelectorAll('.job');
-          jobElements.forEach(jobElement => {
-            const locationFlair = jobElement.querySelector('#location-flair');
-            const location = locationFlair.dataset.location;
-          });
         })
         .catch(error => {
           console.error('Error fetching job previews:', error);
@@ -373,6 +365,37 @@
             avatarImg.loading = "lazy";
             avatarDiv.appendChild(avatarImg);
             postHeaderUsernameDiv.appendChild(avatarDiv);
+
+            // post type circle div thats on avatar
+            const postTypes = {
+              'blog': {
+                'icon': 'news',
+                'color': '#c3745b',
+                'bcolor': '#985641'
+              },
+              'discussion': {
+
+                'icon': 'forum',
+                'color': '#586eca',
+                'bcolor': '#45538c',
+              },
+              'question': {
+                'icon': 'question_mark',
+                'color': '#60a373',
+                'bcolor': '#50865f'
+              },
+              'project': {
+                'icon': 'web',
+                'color': '#ca65a8',
+                'bcolor': '#914f7b'
+              }
+            }
+            const postTypeCircleDiv = document.createElement('div');
+            postTypeCircleDiv.className = 'post-type-circle';
+            postTypeCircleDiv.style.backgroundColor = postTypes[post.post_type].color;
+            postTypeCircleDiv.style.borderColor = postTypes[post.post_type].bcolor;
+            postTypeCircleDiv.innerHTML = '<span class="material-symbols-outlined">' + postTypes[post.post_type].icon + '</span>';
+            avatarDiv.appendChild(postTypeCircleDiv);
 
             // Username, community and current job div
             const usernameDiv = document.createElement('div');

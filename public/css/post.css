@@ -167,7 +167,7 @@ pre code {
 
 div .material-symbols-outlined {
   font-size: 16px; 
-  vertical-align: -3px; 
+  vertical-align: -2px;
 
 }
 
@@ -197,6 +197,9 @@ div .material-symbols-outlined:hover {
   margin-right: auto;
 }
 
+#com-btn-container {
+  margin-right: 0;
+}
 
 
 .sidebar-container {
@@ -311,12 +314,12 @@ div .user-info, .header {
   align-items: center;
   gap: 15px;
   margin: 12px 0;
-  font-size: .95rem;
+  font-size: .85rem;
 }
 
 img.blog-avatar {
   border-radius: 100%;
-  height: 50px;
+  height: 36px;
   aspect-ratio: 1/1;
   object-fit: cover; 
   overflow: hidden;
@@ -342,13 +345,17 @@ img.blog-avatar {
   background-color: var(--light-mode-body-color);
   border: 1px solid var(--border-color);
   color: var(--light-mode-text-color);
-  border-radius: 20px;
-  height: 28px;
-  width: 28px;
+  border-radius: 50%;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  width: 24px;
   font-size: .8rem;
   font-weight: 400;
   text-decoration: none;
   white-space-collapse: collapse;
+  align-items: center;
+  justify-content: center;
 }
 
 .reaction-button > p {
@@ -792,7 +799,7 @@ padding-top: 10px;
 }
 
 .comments-section h3 {
-  font-size: 20px;
+  font-size: 1rem;
   color: var(--light-mode-text-color);
   margin-bottom: 0px;
 }
@@ -1131,7 +1138,7 @@ div .mini-link {
 }
 
 .post-body p, .comment-body p {
-  font-size: 1rem;
+  font-size: .875rem;
 }
 
 .preview-description {
@@ -1215,7 +1222,7 @@ p.preview-description {
 }
 
 .description {
-  font-size: .975rem;
+  font-size: .85rem;
   color: var(--light-mode-text-color);
   font-weight: normal;
   margin: 10px 0;
@@ -1299,7 +1306,7 @@ p.preview-description {
 }
 
 .post-subtitle {
-  font-size: 1.05rem;
+  font-size: .85rem;
   color: var(--light-mode-secondary-text-color);
 }
 
@@ -1330,7 +1337,7 @@ p.preview-description {
     background-color: #6790f436;
     color: #85a5e6;
     border-radius: 7px;
-    font-size: .925rem;
+    font-size: .825rem;
     position: relative;
 }
 
@@ -1648,6 +1655,12 @@ p.preview-description {
 }
 
 
+.blog-username {
+  text-decoration: none;
+    font-weight: bold;
+    font-size: .9rem;
+}
+
 #submit-button {
   flex: 0;
   margin: 0;
@@ -1734,6 +1747,26 @@ div.username {
     display: block; 
   }
 
+  .post-subtitle {
+    font-size: 1.05rem;
+  }
+
+  .post-body p, .comment-body p {
+    font-size: .95rem;
+  }
+
+  .description {
+    font-size: .95rem;
+  }
+
+  .tag {
+    font-size: .925rem;
+  }
+
+  .post-userinfo {
+    font-size: .925rem;
+  }
+
   .sidebar-poster-avatar {
     width: 60px;
       height: 60px;
@@ -1749,6 +1782,13 @@ div.username {
     width: 60px;
     height: 60px;
     object-fit: cover;
+  }
+
+  .blog-username {
+    font-size: 1rem;
+  }
+  img.blog-avatar {
+    height: 40px;
   }
   .preview-image {
     width: auto;

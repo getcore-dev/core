@@ -22,7 +22,7 @@ body {
 
 
 .job {
-  background: var(--light-mode-main-color);
+  background: var(--light-mode-body-color);
   width: auto;
   flex: auto;
 }
@@ -76,10 +76,6 @@ body {
   flex-direction: row;
 }
 
-.job-title-location {
-  width: 30%;
-}
-
 div.vote-interactions {
   display: flex;
   flex-direction: row;
@@ -101,7 +97,7 @@ div.vote-interactions {
 }
 
 .thumbnail-image {
-  height: 109px;
+  height: 80px;
   border-radius: 18px;
   aspect-ratio: 1 / 1;
   border: 1px solid var(--border-color);
@@ -709,6 +705,24 @@ div.community-flairs {
   font-weight: bold !important;
 }
 
+.post-type-circle {
+  height: 16px;
+  bottom: -1px;
+  right: -4px;
+  width: 16px;
+  border-radius: 50%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+}
+
+.post-type-circle .material-symbols-outlined {
+  font-size: .725rem; 
+  color: white;
+}
+
 .job-title {
   display: flex;
   flex-direction: row;
@@ -719,7 +733,7 @@ div.community-flairs {
   margin: 4px 0;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 1; /* Number of lines you want */
+  -webkit-line-clamp: 2; /* Number of lines you want */
   -webkit-box-orient: vertical;
 }
 
@@ -818,7 +832,7 @@ button.see-more {
 .company-name {
   display: -webkit-box;
     overflow: hidden;
-    -webkit-line-clamp: 1;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
 }
 
@@ -945,7 +959,6 @@ button.see-more {
 
   .job {
     margin: 8px;
-        box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
   }
 
   .jobslist {
@@ -1064,11 +1077,12 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
 .avatar {
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .avatar img {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   border-radius: 100%;
   object-fit: cover; 
   overflow: hidden;

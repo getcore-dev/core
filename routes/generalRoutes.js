@@ -29,7 +29,6 @@ router.get("/about", viewController.renderAboutPage);
 
 router.get("/privacy", viewController.renderPrivacyPage);
 
-
 router.get("/edits", checkAuthenticated, async (req, res) => {
   const userId = req.user.id;
   const missingFields = await utilFunctions.checkMissingFields(userId);

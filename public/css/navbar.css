@@ -367,8 +367,15 @@ a:visited {
 
 .nav-links {
   text-decoration: none; /* Remove underline */
-  color: var(--primary-text-color); /* Link color */
+  color: var(--light-mode-text-color); /* Link color */
 }
+
+.nav-links a {
+  color: var(--light-mode-text-color);
+  font-weight: bold;
+}
+
+
 
 .nav-links li a:hover {
   text-decoration: none; /* Underline on hover */
