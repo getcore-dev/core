@@ -70,10 +70,7 @@ function initialize(
             return done(null, existingUser);
           } else {
             const newUser = await createUserFromGitHubProfile(profile);
-            await userQueries.updateUserGitHubAccessToken(
-              newUser.id,
-              accessToken
-            );
+            await updateUserGitHubAccessToken(newUser.id, accessToken);
             return done(null, newUser);
           }
         } catch (error) {
