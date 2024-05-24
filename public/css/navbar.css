@@ -55,6 +55,10 @@ a {
   color: var(--active-indicator-color);
 }
 
+a:visited {
+  color: #6a57c3;
+}
+
 .top-bar {
   display: flex;
   flex-direction: row;

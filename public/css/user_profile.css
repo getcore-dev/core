@@ -520,7 +520,6 @@ td {
     padding-top: 0;
     gap: 10px;
     grid-template-columns: repeat(2, 1fr); /* Two columns of equal size */
-    padding-bottom: 200px !important;
     grid-template-areas:
       "info1 info1"
       "user-bio user-bio"

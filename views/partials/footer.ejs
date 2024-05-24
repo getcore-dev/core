@@ -76,4 +76,30 @@
   .contact-info a:hover {
     text-decoration: underline;
   }
+
+  @media (prefers-color-scheme: dark) {
+    .footer-container {
+      background-color: var(--dark-mode-body-color);
+    }
+
+    .footer-section h5 {
+      color: white;
+    }
+
+    .footer-section ul li a {
+      color: #007bff;
+    }
+
+    .footer-section ul li a:hover {
+      color: white;
+    }
+
+    .contact-info a {
+      color: #007bff;
+    }
+
+    .contact-info a:hover {
+      color: white;
+    }
+  }
 </style>

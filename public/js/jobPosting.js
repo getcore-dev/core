@@ -209,7 +209,7 @@ function lazyLoadJobDetails(jobId) {
       );
       secondNavBarText.innerHTML =
         "Openings / " +
-        job.title +
+        job.company_name +
         ' <span class="material-symbols-outlined">arrow_drop_down</span>';
 
       const tagsArray = job.tags && job.tags[1] ? job.tags[1].split(", ") : [];

@@ -50,9 +50,28 @@ const favoritesQueries = {
 
   addCommentToFavorites: async (userId, postId, commentId) => {
     try {
+      // Check if the post exists
+      const postCheck = await sql.query`
+        SELECT * FROM posts WHERE id = ${postId}`;
+
+      if (postCheck.recordset.length === 0) {
+        throw new Error(`Post with id ${postId} does not exist.`);
+      }
+
+      // Check if the comment exists and is related to the post
+      const commentCheck = await sql.query`
+        SELECT * FROM comments WHERE id = ${commentId} AND post_id = ${postId}`;
+
+      if (commentCheck.recordset.length === 0) {
+        throw new Error(
+          `Comment with id ${commentId} does not exist or is not related to post with id ${postId}.`
+        );
+      }
+
+      // Check if the comment is already favorited by the user
       const checkExistence = await sql.query`
-                SELECT * FROM favorites_comments
-                WHERE user_id = ${userId} AND post_id = ${postId} AND comment_id = ${commentId}`;
+        SELECT * FROM favorites_comments
+        WHERE user_id = ${userId} AND post_id = ${postId} AND comment_id = ${commentId}`;
 
       if (checkExistence.recordset.length > 0) {
         throw new Error("User has already favorited this comment.");
@@ -60,8 +79,8 @@ const favoritesQueries = {
 
       // Add comment to user's favorites
       await sql.query`
-                INSERT INTO favorites_comments (user_id, post_id, comment_id, created_at)
-                VALUES (${userId}, ${postId}, ${commentId}, GETDATE())`;
+        INSERT INTO favorites_comments (user_id, post_id, comment_id, created_at)
+        VALUES (${userId}, ${postId}, ${commentId}, GETDATE())`;
 
       return "Comment successfully added to favorites.";
     } catch (err) {

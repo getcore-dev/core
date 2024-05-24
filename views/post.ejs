@@ -106,58 +106,61 @@
             </span>
             <div class="post-title-container">
               <div>
-                <h2 class="post-title" style="<% if (post.post_type == "blog") { %> font-size: 2.15rem; font-weight: bold;<% } %>"><%= post.title %>
+                <h2 class="post-title" style="<% if (post.post_type == "blog") { %>     font-size: 1.35rem;font-weight: bold;margin-bottom: 10px;<% } %>"><%= post.title %>
                 </h2>
-                <div class="post-subtitle secondary-text">
-                  <%= post.views %> view<%- post.views > 1 ? 's' : '' %>
-                  <span>&#183;</span>
-
-                  <span class="post-timestamp secondary-text" style="text-decoration: none;">
-                    <%
-
-              // Format the date in the "MONTH DD, YYYY" format
-              formattedPostDate = postDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-            %>
-                    <%= formattedPostDate %>
-                  </span>
-                </div>
-                <% if (post.updated_at) { %>
-                <span class="post-subtitle post-updatedat secondary-text">
-                  <%
-              let postDate = new Date(post.updated_at);
-              let today = new Date();
-              let formattedDate;
-            
-              // Calculate time difference in milliseconds
-              let diff = today - postDate;
-            
-              // Convert time difference to different units
-              let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
-              let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
-              let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
-              let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
-            
-              // Decide the format based on the time difference
-              if (minutes < 60) {
-                formattedDate = minutes + 'm ago';
-              } else if (hours < 24) {
-                formattedDate = hours + 'h ago';
-              } else if (days < 365) {
-                formattedDate = days + 'd ago';
-              } else {
-                formattedDate = years + 'y ago';
-              }
-              %>
-                  Edited: <%= formattedDate %>
-                </span>
-                <% } %>
-
-
                 <% if (post.post_type == "blog") { %>
-                <div class="post-subtitle secondary-text">
+                <div class="post-subtitle-text">
                   <p><%= post.subtitle %></p>
                 </div>
                 <% } %>
+                <div class="post-subtitle post-subinfo secondary-text">
+                  <span class="post-views">
+                    <span class="material-symbols-outlined">
+                      visibility
+                    </span>
+                    <%= post.views %> view<%- post.views > 1 ? 's' : '' %>
+                  </span>
+                  <span class="post-timestamp secondary-text" style="text-decoration: none;">
+                    <span class="material-symbols-outlined">
+                      today
+                    </span>
+                    <%formattedPostDate = postDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });%>
+                    <%= formattedPostDate %>
+                  </span>
+                  <% if (post.updated_at) { %>
+                  <span class="post-subtitle post-updatedat secondary-text">
+                    <span class="material-symbols-outlined">
+                      edit
+                    </span>
+                    <%
+                    let postDate = new Date(post.updated_at);
+                    let today = new Date();
+                    let formattedDate;
+                  
+                    // Calculate time difference in milliseconds
+                    let diff = today - postDate;
+                  
+                    // Convert time difference to different units
+                    let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+                    let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+                    let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+                    let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+                  
+                    // Decide the format based on the time difference
+                    if (minutes < 60) {
+                      formattedDate = minutes + 'm ago';
+                    } else if (hours < 24) {
+                      formattedDate = hours + 'h ago';
+                    } else if (days < 365) {
+                      formattedDate = days + 'd ago';
+                    } else {
+                      formattedDate = years + 'y ago';
+                    }
+                    %>
+                    Edited: <%= formattedDate %>
+                  </span>
+                  <% } %>
+                </div>
               </div>
 
 
@@ -176,9 +179,10 @@
                   </div>
                   <% } %>
                   <div class="dropdown-item">
-                    <button onclick="sharePost('{{ post.id }}')">
-                      <p>Share Post</p>
-                    </button>
+                    <a href="#">
+                      <button onclick="sharePost('<%= post.id %>')">Share Post</button>
+                    </a>
+
                   </div>
                   <% if (user && user.username === post.username) { %>
                   <div class="dropdown-item">
@@ -748,44 +752,131 @@
               <div class="post-content">
                 <div class="post-header">
                   <% 
-                    function formatDate(dateString) {
-                    const date = new Date(dateString);
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const year = date.getFullYear();
-                    return `${month}/${day}/${year}`;
-                  }
-                  %>
+            function formatDate(date) {
+              let postDate = new Date(date);
+              let today = new Date();
+              let formattedDate;
+
+              let diff = today - postDate;
+
+              let minutes = Math.floor(diff / 60000); 
+              let hours = Math.floor(diff / 3600000); 
+              let days = Math.floor(diff / 86400000); 
+              let years = Math.floor(diff / 31536000000); 
+
+              if (minutes < 60) {
+                formattedDate = minutes + ' minutes ago';
+              } else if (hours < 24) {
+                formattedDate = hours + ' hours ago';
+              } else if (days < 365) {
+                formattedDate = days + ' days ago';
+              } else {
+                formattedDate = years + ' years ago';
+              }
+              return formattedDate;
+            }
+          %>
                   <div class="post-header-username">
                     <div class="avatar">
                       <img src="<%= similarPost.avatar %>" loading="lazy">
                     </div>
                     <div class="username">
-                      <a href="/user/<%= similarPost.username %>" class="username-link"><strong><%= similarPost.username %></strong></a>
-                      <div class="post-date" id="secondary-text">
-                        <a style="color: <%= similarPost.community_color %>;" href="/c/<%= similarPost.community_shortname %>" class="community"><%= similarPost.community_name %></a>
-
-                        <%= formatDate(similarPost.created_at) %> • <%= similarPost.views %> views
+                      <p>
+                        <a href="/user/<%= similarPost.username %>" class="username-link"><strong><%= similarPost.username %></strong></a>
+                        <span id="secondary-text">
+                          in
+                        </span>
+                        <a style="color: <%= similarPost.community_color %>;" href="/c/<%= similarPost.community_shortname %>" class="community">/<%= similarPost.community_shortname %></a>
+                        <span id="secondary-text">
+                          <%= formatDate(similarPost.created_at) %>
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="dropdown">
+                    <button class="dropbtn" onclick="showDropdown(event)">
+                      <span class="material-symbols-outlined">more_horiz</span>
+                    </button>
+                    <div class="dropdown-content" style="display: none;">
+                      <% if (user) { %>
+                      <div class="dropdown-item">
+                        <span>
+                          <form id="favorite-form-<%= similarPost.id %>" action="/favorites/post/<%= similarPost.id %>" method="POST">
+                            <button type="submit">Favorite Post</button>
+                          </form>
+                        </span>
+                      </div>
+                      <% } %>
+                      <div class="dropdown-item">
+                        <button onclick="sharePost('{{ similarPost.id }}')">
+                          <p>Share Post</p>
+                        </button>
                       </div>
                     </div>
                   </div>
-                  <div class="three-dots">
-                    <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>
-                  </div>
                 </div>
                 <div class="title"><%= similarPost.title %></div>
-                <div class="link-preview">
+                <div class="link-preview" style="<% if (similarPost.link) { %> flex-direction: column; <% } %>">
                   <% if (similarPost.link) { %>
                   <div class="link">
-                    <span class="material-symbols-outlined" style="color: var(--active-indicator-color);">
-                      link
-                    </span>
-                    <%= similarPost.link %>
+                    <a href="<%= similarPost.link %>" class="link" target="_blank" rel="noopener noreferrer">
+                      <div class="similar-link-preview" id="similar-link-preview-<%= similarPost.id %>"></div>
+                      <script>
+                        (function fetchLinkPreview(link, containerId) {
+                          fetch(`/api/link-preview/${encodeURIComponent(link)}`)
+                            .then(response => response.json())
+                            .then(linkPreview => {
+                              if (linkPreview) {
+                                let imageUrl = linkPreview.image || linkPreview.favicon;
+                                let htmlContent = `
+                        <div class="mini-link">
+                          <div class="mini-link-image">
+                            ${imageUrl ? `<img loading="lazy" src="${imageUrl}" alt="thumbnail" class="thumbnail-image" />` : ''}
+                          </div>
+                          <div class="mini-link-body">
+                            <div class="mini-link-body-header">
+                              <div class="mini-link-favicon">
+                                <img src="${linkPreview.favicon}" alt="" class="favicon" />
+                              </div>
+                              <div class="mini-link-url" id="main-text"><a>${new URL(linkPreview.url || '').hostname || ''}</a></div>
+                            </div>
+                            <div class="mini-link-title">${linkPreview.title || ''}</div>
+                            <div class="mini-link-description">${linkPreview.description || ''}</div>
+                          </div>
+                        </div>`;
+                                document.getElementById(containerId).innerHTML = htmlContent;
+                              }
+                            });
+                        })('<%= similarPost.link %>', 'similar-link-preview-<%= similarPost.id %>');
+                      </script>
+                    </a>
+                  </div>
+                  <% } %>
+                  <% 
+            let imageUrl;
+            const imageUrlMatch = similarPost.content.match(/!\[.*?\]\((.*?)\)/);
+            if (imageUrlMatch && imageUrlMatch[1]) {
+              imageUrl = imageUrlMatch[1];
+            }
+          %>
+                  <% if (imageUrl) { %>
+                  <div class="image">
+                    <img class="thumbnail-image" src="<%= imageUrl %>" alt="Preview" />
                   </div>
                   <% } %>
                   <% if (similarPost.post_type !== 'question' && (!similarPost.link || (similarPost.post_type !== 'post' && similarPost.post_type !== 'project'))) { %>
                   <div class="description">
-                    <%- similarPost.content %>
+                    <%
+              let contentWithoutMarkdown = similarPost.content
+                .replace(/(?:\r\n|\r|\n)/g, ' ')
+                .replace(/\*\*(.*?)\*\*/g, '$1')
+                .replace(/\*(.*?)\*/g, '$1')
+                .replace(/__(.*?)__/g, '$1')
+                .replace(/_(.*?)_/g, '$1')
+                .replace(/!\[.*?\]\(.*?\)/g, '')
+                .replace(/\[.*?\]\(.*?\)/g, '$1');
+            %>
+                    <%- contentWithoutMarkdown %>
                   </div>
                   <% } %>
                 </div>
@@ -1164,11 +1255,6 @@
         }
       });
 
-      // Variables to hold the timeouts for showing and hiding the menus
-      let showMenuTimeout;
-      let hideMenuTimeout;
-
-      // Add event listeners to all main reaction buttons
       document.querySelectorAll('.mainReactionButton').forEach(button => {
         button.addEventListener('click', (event) => {
 
@@ -1184,27 +1270,30 @@
           // Find the corresponding reaction menu based on the clicked button
           const reactionMenu = document.getElementById(`reactionPopup-${buttonType}-${buttonId}`);
 
-          // Cancel showing the menu if you click the button a second time; otherwise, show the menu
-          clearTimeout(showMenuTimeout);
           if (reactionMenu.style.display === 'flex') {
-            reactionMenu.style.opacity = '0';
-            setTimeout(() => { // Delay for opacity transition
-              reactionMenu.style.display = 'none';
-            }, 200);
+            reactionMenu.style.display = 'none';
           } else {
-            clearTimeout(showMenuTimeout);
-            showMenuTimeout = setTimeout(() => {
-              let rect = clickedButton.getBoundingClientRect();
-              reactionMenu.style.display = 'flex';
-              reactionMenu.style.opacity = '0';
-              reactionMenu.style.opacity = '1';
-              hideMenuTimeout = setTimeout(() => {
-                reactionMenu.style.opacity = '0';
-                reactionMenu.style.display = 'none';
-              }, 2000);
-            }, 200);
+            closeAllDropdowns();
+            reactionMenu.style.display = 'flex';
           }
         });
+      });
+
+      function closeAllDropdowns() {
+        const allDropdowns = document.querySelectorAll('.reaction-popup');
+        allDropdowns.forEach(function(dropdown) {
+          dropdown.style.display = 'none';
+        });
+      }
+
+      document.addEventListener('click', function(event) {
+        const withinBoundaries = event.composedPath().some(
+          element => element.classList && element.classList.contains('reaction-popup') || element.classList && element.classList.contains('mainReactionButton')
+        );
+
+        if (!withinBoundaries) {
+          closeAllDropdowns();
+        }
       });
     });
   </script>

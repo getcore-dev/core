@@ -377,45 +377,12 @@
             // Username, community and current job div
             const usernameDiv = document.createElement('div');
             usernameDiv.className = 'username';
-            const usernameLink = document.createElement('a');
-            usernameLink.className = 'username-link';
+            const usernameLink = document.createElement('p');
+            usernameLink.className = 'post-quick-info';
             usernameLink.href = '/user/' + post.username;
-            usernameLink.innerHTML = '<strong>' + post.username + '</strong>';
+            usernameLink.innerHTML = '<strong><a href="/user/' + post.username + '">' + post.username + '</a></strong>' + ' in ' + '<strong><a style="color: ' + post.community_color + ';" href="/c/' + post.community_shortname + '"> /' + post.community_shortname + '</a></strong>' + ' ' + '<span id="secondary-text">' + formatDate(post.created_at) + '</span>';
             usernameDiv.appendChild(usernameLink);
 
-
-
-
-            const postTypeDiv = document.createElement("span");
-            postTypeDiv.className = "communities-text";
-
-
-            usernameDiv.appendChild(postTypeDiv);
-            const communityLink = document.createElement('a');
-            communityLink.href = '/c/' + post.communities_id;
-            communityLink.className = 'community';
-            communityLink.innerText = "";
-            usernameDiv.appendChild(communityLink);
-
-
-
-
-            const postDateDiv = document.createElement('div');
-            postDateDiv.className = 'post-date';
-            postDateDiv.id = 'secondary-text';
-            const communityName = document.createElement('a');
-            communityName.href = '/c/' + post.community_shortname;
-            communityName.innerText = post.community_shortname;
-            communityName.style.color = post.community_color;
-            postDateDiv.appendChild(communityName);
-
-            const dateText = document.createElement('span');
-            dateText.innerText = " • " + formatDate(post.created_at) + " • " + post.views + " views";
-            postDateDiv.appendChild(dateText);
-
-
-
-            usernameDiv.appendChild(postDateDiv);
 
 
             postHeaderUsernameDiv.appendChild(usernameDiv);

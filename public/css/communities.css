@@ -259,9 +259,9 @@ div.vote-interactions {
 }
 
 .link-preview {
-  background-color: #f6fafe;
   border-radius: 18px;
   margin: 0px 0px;
+  background: var(--light-mode-body-color);
   border: 1px solid var(--border-color);
   margin: 10px 0;
 }
@@ -309,7 +309,7 @@ div.vote-interactions {
 .title {
   font-size: 1rem;
   font-weight: 500;
-  margin: 12px 0px;
+  margin: 5px 0px;
   margin-bottom: 0px;
 }
 
@@ -703,6 +703,12 @@ div.community-flairs {
   font-size: .825rem;
 }
 
+.post-quick-info a {
+  text-decoration: none;
+  color: var(--light-mode-text-color);
+  font-weight: bold !important;
+}
+
 .job-title {
   display: flex;
   flex-direction: row;
@@ -1007,7 +1013,7 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
 
 
 
-  .username a, .communities-text {
+  .username a, .communities-text, .post-quick-info {
     font-size: .9rem;
   }
 
@@ -1163,6 +1169,10 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
   
   .comments {
   color: var(--dark-mode-secondary-text-color);
+  }
+
+  .post-quick-info a {
+    color: var(--dark-mode-text-color);
   }
 
   .link-preview {

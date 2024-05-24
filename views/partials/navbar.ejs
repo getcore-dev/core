@@ -253,6 +253,7 @@ const pathTitles = {
   '/edit-experience': 'Edit Experience',
   '/about': 'About',
   '/privacy': 'Privacy Policy',
+  '/search': 'Search',
 };
 
 const getTitle = (path) => {
@@ -268,16 +269,19 @@ const getTitle = (path) => {
     } else {
       return `@${otheruser.username} / ${otheruser.firstname} ${otheruser.lastname}`;
     }
-  } else if (path.startsWith('/c/') && typeof community !== 'undefined') {
+  }  else if (path.startsWith('/search') && typeof searchTerm !== 'undefined') {
+    return `Search / ${searchTerm}`;
+  }
+  else if (path.startsWith('/c/') && typeof community !== 'undefined') {
     return `/${community.shortname}`;
   } else if (path.startsWith('/jobs/') && typeof job !== 'undefined') {
     return `Openings / ${job.title}`;
-    } else if (path.startsWith('/posts/') && path.includes('edit') && typeof post !== 'undefined') {
+  } else if (path.startsWith('/posts/') && path.includes('edit') && typeof post !== 'undefined') {
     return `Edit / ${post.title}`;
   } else if (path.startsWith('/posts/') && typeof post !== 'undefined') {
     return `${post.community.shortname} / ${post.username}`;
   } else if (path.startsWith('/tags/') && typeof tag !== 'undefined') {
-    return `Openings / ${tag}`;
+    return `${tag}`;
   } else if (path.startsWith('/edit-experience')) {
     return 'Edit Experience';
   } else {
@@ -290,7 +294,7 @@ const isActive = (path) => {
 };
 %>
 
-          <a href="#" class="navbar-button dropdown-toggle <%= isActive('/') || isActive('/login') || isActive('/register') || isActive('/jobs') || isActive('/posts') || isActive('/learning') || isActive('/create') || isActive('/notifications') ||  isActive('/user') || isActive('/favorites') || isActive('/c') || isActive('/updates') || isActive('/about') || isActive('/privacy') ? 'active' : '' %>">
+          <a href="#" class="navbar-button dropdown-toggle <%= isActive('/') || isActive('/search') || isActive('/tags') || isActive('/login') || isActive('/register') || isActive('/jobs') || isActive('/posts') || isActive('/learning') || isActive('/create') || isActive('/notifications') ||  isActive('/user') || isActive('/favorites') || isActive('/c') || isActive('/updates') || isActive('/about') || isActive('/privacy') ? 'active' : '' %>">
             <%= getTitle(currentPath) %>
             <span class="material-symbols-outlined" id="second-nav-icon">
               arrow_drop_down

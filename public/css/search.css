@@ -113,6 +113,10 @@ div.username {
     border: 0;
 }
 
+.users {
+    margin-top: 10px;
+}
+
 #posts-container h2 {
     font-size: 1.15rem;
 }
@@ -130,6 +134,10 @@ div.username {
 @media (prefers-color-scheme: dark) {
     .user {
         background-color: var(--dark-mode-body-color);
+    }
+
+    .post {
+        border-color: var(--dark-mode-border-color);
     }
 
     .user:hover, .post:hover, .job:hover {

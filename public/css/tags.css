@@ -77,3 +77,16 @@ div.votes {
 .job:hover, .post:hover {
     background: var(--light-mode-hover-color);
 }
+
+@media (prefers-color-scheme: dark) {
+    .job:hover {
+        background: var(--dark-mode-hover-color);
+    }
+    .post, .job {
+        background: var(--dark-mode-main-color);
+        border: 1px solid var(--dark-mode-border-color) !important;
+    }
+    .post:hover {
+        background: var(--dark-mode-hover-color);
+    }
+}

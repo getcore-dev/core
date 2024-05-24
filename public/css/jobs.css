@@ -660,6 +660,9 @@ div .material-symbols-outlined {
     padding: 0 13px;
   }
   
+  .title-filter label, .location-filter label, .experienceLevel-filter label, .salary-filter label {
+    display: none;
+  }
 
   .job-preview {
     padding: 22px 0;

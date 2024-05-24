@@ -259,7 +259,8 @@ input:not(:placeholder-shown) + .floating-label,
 
   .input-container input {
     background-color: var(--dark-mode-main-color) !important; 
-    border-color: var(--dark-mode-border-color) !important; 
+    border-color: var(--dark-mode-border-color) !important;
+    color: var(--dark-mode-text-color) !important; 
   }
 
   #login h1 {
