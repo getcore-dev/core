@@ -45,6 +45,7 @@
     "node-cache": "^5.1.2",
     "passport": "^0.6.0",
     "passport-github2": "^0.1.12",
+    "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",

@@ -1,6 +1,7 @@
 const LocalStrategy = require("passport-local");
 const bcrypt = require("bcrypt");
 const GitHubStrategy = require("passport-github2").Strategy;
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const userQueries = require("../queries/userQueries");
 
 function initialize(
@@ -13,7 +14,9 @@ function initialize(
   updateUserGitHubId,
   updateUserGitHubAccessToken,
   updateUserGitHubUsername,
-  createUserFromGitHubProfile
+  createUserFromGitHubProfile,
+  getUserByGoogleId,
+  createUserFromGoogleProfile
 ) {
   const authenticateUser = async (username, password, done) => {
     try {
@@ -50,16 +53,12 @@ function initialize(
         try {
           const githubUsername = profile.username;
 
-          // Check if the user exists based on the GitHub username
           const existingUser =
             (await getUserByGitHubUsername(githubUsername)) ||
             (await getUserByGitHubId(profile.id));
 
           if (existingUser) {
-            await userQueries.updateUserGitHubAccessToken(
-              existingUser.id,
-              accessToken
-            );
+            await updateUserGitHubAccessToken(existingUser.id, accessToken);
             if (!existingUser.github_id) {
               await updateUserGitHubId(existingUser.id, profile.id);
             }
@@ -70,12 +69,35 @@ function initialize(
 
             return done(null, existingUser);
           } else {
-            // Create a new user in your database
             const newUser = await createUserFromGitHubProfile(profile);
             await userQueries.updateUserGitHubAccessToken(
               newUser.id,
               accessToken
             );
+            return done(null, newUser);
+          }
+        } catch (error) {
+          return done(error);
+        }
+      }
+    )
+  );
+
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: "https://c-ore.dev/auth/google/callback",
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          const existingUser = await getUserByGoogleId(profile.id);
+
+          if (existingUser) {
+            return done(null, existingUser);
+          } else {
+            const newUser = await createUserFromGoogleProfile(profile);
             return done(null, newUser);
           }
         } catch (error) {

@@ -25,6 +25,11 @@ const AZURE_STORAGE_CONNECTION_STRING =
 // Home page
 router.get("/", viewController.renderHomePage);
 
+router.get("/about", viewController.renderAboutPage);
+
+router.get("/privacy", viewController.renderPrivacyPage);
+
+
 router.get("/edits", checkAuthenticated, async (req, res) => {
   const userId = req.user.id;
   const missingFields = await utilFunctions.checkMissingFields(userId);
@@ -252,7 +257,7 @@ router.get("/tags/:tagName", async (req, res) => {
     if (JobTagId) {
       jobs = await jobQueries.getJobsByTag(JobTagId);
     }
-    
+
     if (JobSkillsId) {
       jobs = jobs.concat(await jobQueries.getJobsBySkills(JobSkillsId));
     }

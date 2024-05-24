@@ -52,7 +52,7 @@ h1, h2, h3, h4, h5, p {
 
 a {
   text-decoration: none;
-  color: var(--light-mode-text-color);
+  color: var(--active-indicator-color);
 }
 
 .top-bar {
@@ -871,7 +871,7 @@ li.dropdown {
 
 
   body, main { 
-    height: calc(100dvh - var(--mobile-navbar-height)) !important;
+    height: calc(100dvh - var(--mobile-navbar-height) - var(--mobile-second-navbar-height)) !important;
   }
 
 
@@ -1201,8 +1201,14 @@ input:focus, textarea:focus, select:focus {
   }
 
 @media (prefers-color-scheme: dark) {
-  a {
+
+  body {
+    background-color: var(--dark-mode-main-color);
     color: var(--dark-mode-text-color);
+  }
+
+  a {
+    color: var(--active-indicator-color);
   }
 
   .menu-content {

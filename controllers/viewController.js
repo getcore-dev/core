@@ -20,6 +20,14 @@ const viewController = {
     }
   },
 
+  renderPrivacyPage: async (req, res) => {
+    res.render("privacy.ejs", { user: req.user });
+  },
+
+  renderAboutPage: async (req, res) => {
+    res.render("about.ejs", { user: req.user });
+  },
+
   renderFollowers: async (req, res) => {
     try {
       const username = req.params.username;

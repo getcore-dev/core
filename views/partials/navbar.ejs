@@ -113,6 +113,16 @@
 
             </div>
           </a>
+
+          <a href="/about">
+            <div class="menu-item">
+              <span class="material-symbols-outlined" id="menu-community-icon">
+                info
+              </span>
+              About
+
+            </div>
+          </a>
           <% if (user) { %>
           <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
           <a href="/favorites">
@@ -241,11 +251,17 @@ const pathTitles = {
   '/login': 'Login',
   '/register': 'Register',
   '/edit-experience': 'Edit Experience',
+  '/about': 'About',
+  '/privacy': 'Privacy Policy',
 };
 
 const getTitle = (path) => {
   if (path === '/' && typeof post !== 'undefined') {
     return `Community / ${post.community.shortname}`;
+      } else if (path.startsWith('/about')) {
+    return 'About';
+  } else if (path.startsWith('/privacy')) {
+    return 'Privacy Policy';
   } else if (path.startsWith('/user/') && typeof otheruser !== 'undefined') {
     if (path.includes('followers') || path.includes('following')) {
       return `@${otheruser.username} / ${path.includes('followers') ? 'Followers' : 'Following'}`;
@@ -274,7 +290,7 @@ const isActive = (path) => {
 };
 %>
 
-          <a href="#" class="navbar-button dropdown-toggle <%= isActive('/') || isActive('/login') || isActive('/register') || isActive('/jobs') || isActive('/posts') || isActive('/learning') || isActive('/create') || isActive('/notifications') ||  isActive('/user') || isActive('/favorites') || isActive('/c') || isActive('/updates') ? 'active' : '' %>">
+          <a href="#" class="navbar-button dropdown-toggle <%= isActive('/') || isActive('/login') || isActive('/register') || isActive('/jobs') || isActive('/posts') || isActive('/learning') || isActive('/create') || isActive('/notifications') ||  isActive('/user') || isActive('/favorites') || isActive('/c') || isActive('/updates') || isActive('/about') || isActive('/privacy') ? 'active' : '' %>">
             <%= getTitle(currentPath) %>
             <span class="material-symbols-outlined" id="second-nav-icon">
               arrow_drop_down

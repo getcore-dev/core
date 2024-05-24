@@ -983,6 +983,12 @@ a.comment-user-info:hover {
   flex-direction: column;
 }
 
+.main-container a {
+  text-decoration: none;
+  color: var(--light-mode-text-color);
+  font-weight: bold;
+}
+
 .post-content a {
   font-weight: bold;
   text-decoration: none;

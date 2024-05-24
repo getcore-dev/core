@@ -37,7 +37,7 @@
 
 <body>
 
-  <%- include('partials/navbar', { pagePath: 'jobs' }) %>
+  <%- include('partials/navbar', { pagePath: 'post' }) %>
 
   <main>
 
@@ -254,7 +254,7 @@
     border: 0;
     padding: 0;
     <% } %>
-  ">
+    ">
             <% if (post.post_type != 'blog') { %>
             <div class="post-interactions-header">
               <div class="post-user-info-header">
@@ -763,7 +763,7 @@
                     <div class="username">
                       <a href="/user/<%= similarPost.username %>" class="username-link"><strong><%= similarPost.username %></strong></a>
                       <div class="post-date" id="secondary-text">
-                        <a style="color: <%= similarPost.community_color %>;" href="/c/<%= similarPost.communities_id %>" class="community"><%= similarPost.community_name %></a>
+                        <a style="color: <%= similarPost.community_color %>;" href="/c/<%= similarPost.community_shortname %>" class="community"><%= similarPost.community_name %></a>
 
                         <%= formatDate(similarPost.created_at) %> • <%= similarPost.views %> views
                       </div>
@@ -806,9 +806,12 @@
           </div>
         </div>
       </div>
+      <%- include('partials/footer') %>
 
     </div>
+
   </main>
+
 
   <script>
     hljs.highlightAll();
@@ -1205,6 +1208,8 @@
       });
     });
   </script>
+
+
 </body>
 
 </html>

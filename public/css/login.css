@@ -13,7 +13,9 @@ body {
   text-decoration: none;
   justify-content: center;
   box-sizing: border-box;
-  margin-bottom: 15px !important;
+  margin-bottom: 0 !important;
+  min-width: 190px !important; 
+  min-height: 35px !important; 
 }
 
 .login-buttons-container {
@@ -196,6 +198,31 @@ input:not(:placeholder-shown) + .floating-label,
 
 #login select {
   cursor: pointer;
+}
+
+.abcRioButtonContentWrapper {
+  display: flex;
+    justify-content: center;
+}
+.login-buttons .g-signin2 {
+  width: fit-content;
+  height: fit-content;
+}
+
+.login-buttons {
+  display: flex;
+  margin-bottom: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 20px; /* Space between the buttons */
+}
+
+.abcRioButton {
+  min-width: 190px !important; 
+  min-height: 35px !important; 
+    border-radius: 10px !important;
+    box-shadow: none !important;
+    border: 1px solid var(--border-color) !important;
 }
 
 .join-link {

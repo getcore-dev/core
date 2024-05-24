@@ -112,7 +112,7 @@ const postQueries = {
       SELECT TOP 3
         p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
         u.username, u.avatar, u.currentJob,
-        c.name AS community_name, c.community_color as community_color,
+        c.name AS community_name, c.community_color as community_color, c.shortname as community_shortname,
         p.post_type, p.views,
         (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
         (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount
@@ -128,7 +128,7 @@ const postQueries = {
       ""
     )}%' OR ${tagsCondition})
       GROUP BY p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
-               u.username, u.avatar, u.currentJob, c.name, p.post_type, p.views, c.community_color
+               u.username, u.avatar, u.currentJob, c.name, p.post_type, p.views, c.community_color, c.shortname
       ORDER BY p.created_at DESC;
     `;
     const result = await sql.query(query);

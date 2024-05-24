@@ -5,6 +5,7 @@
   <title>CORE/login</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="google-signin-client_id" content="776889982265-25qnvfvr9cc0vijl82518gmiv9d2fj4p.apps.googleusercontent.com" />
   <link rel="stylesheet" href="css/login.css" />
   <link rel="stylesheet" href="css/navbar.css" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -22,10 +23,14 @@
 
     </div>
     <div id="login">
-      <a href="https://github.com/login/oauth/authorize?client_id=b37718dbac10df16ec0c&redirect_uri=https%3A%2F%2Fc-ore.dev%2Fauth%2Fgithub%2Fcallback" id="regular-button-normal" class="github-login-btn">
-        <img src="/src/github.png" alt="GitHub Logo" style="background: white; border-radius: 100%;">
-        Sign in with GitHub
-      </a>
+      <div class="login-buttons">
+        <a href="https://github.com/login/oauth/authorize?client_id=b37718dbac10df16ec0c&redirect_uri=https%3A%2F%2Fc-ore.dev%2Fauth%2Fgithub%2Fcallback" id="regular-button-normal" class="github-login-btn">
+          <img src="/src/github.png" alt="GitHub Logo" style="background: white; border-radius: 100%;">
+          Sign in with GitHub
+        </a>
+
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+      </div>
 
       <form action="/login" method="POST">
         <div class="input-container">
@@ -47,6 +52,7 @@
       </form>
     </div>
   </main>
+  <%- include('partials/footer') %>
   <script>
     function togglePasswordVisibility() {
       const passwordInput = document.getElementById('password');
@@ -75,7 +81,40 @@
         });
       });
     });
+
+    function onSignIn(googleUser) {
+      // Useful data for your client-side scripts:
+      var profile = googleUser.getBasicProfile();
+      console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
+      console.log('Name: ' + profile.getName());
+      console.log('Image URL: ' + profile.getImageUrl());
+      console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+
+      // The ID token you need to pass to your backend:
+      var id_token = googleUser.getAuthResponse().id_token;
+      console.log("ID Token: " + id_token);
+
+      // Send the ID token to your backend via an HTTPS POST request
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'YOUR_BACKEND_URL_HERE');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onload = function() {
+        console.log('Signed in as: ' + xhr.responseText);
+      };
+      xhr.send(JSON.stringify({
+        token: id_token
+      }));
+    }
+
+    // Sign out function (if you want to provide a sign-out button)
+    function signOut() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      auth2.signOut().then(function() {
+        console.log('User signed out.');
+      });
+    }
   </script>
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
 </body>
 
 </html>

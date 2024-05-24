@@ -1,0 +1,18 @@
+.container {
+    padding: 0 13px;
+}
+
+.container li {
+    margin: 0 18px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+
+    .container p {
+        margin: 15px 0;
+    }
+}
