@@ -198,9 +198,7 @@ const userQueries = {
         }
       }
 
-      // Check if the field is recruiter_id
       if (field === "recruiter_id") {
-        // Query the Recruiters table to check if the recruiter_id exists
         const recruiterQuery = `
         SELECT COUNT(*) AS count
         FROM Recruiters
@@ -209,7 +207,6 @@ const userQueries = {
         recruiterRequest.input("recruiterId", sql.VarChar, value);
         const recruiterResult = await recruiterRequest.query(recruiterQuery);
 
-        // If the count is 0, the recruiter_id is invalid
         if (recruiterResult.recordset[0].count === 0) {
           throw new Error(`Invalid recruiter_id: ${value}`);
         }
