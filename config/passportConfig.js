@@ -27,6 +27,10 @@ function initialize(
         });
       }
 
+      if (user.isBanned) {
+        return done(null, false, { message: "User is banned" });
+      }
+
       if (await bcrypt.compare(password, user.password)) {
         return done(null, user);
       } else {
@@ -58,6 +62,10 @@ function initialize(
             (await getUserByGitHubId(profile.id));
 
           if (existingUser) {
+            if (existingUser.isBanned) {
+              return done(null, false, { message: "User is banned" });
+            }
+
             await updateUserGitHubAccessToken(existingUser.id, accessToken);
             if (!existingUser.github_id) {
               await updateUserGitHubId(existingUser.id, profile.id);
@@ -92,6 +100,10 @@ function initialize(
           const existingUser = await getUserByGoogleId(profile.id);
 
           if (existingUser) {
+            if (existingUser.isBanned) {
+              return done(null, false, { message: "User is banned" });
+            }
+
             return done(null, existingUser);
           } else {
             const newUser = await createUserFromGoogleProfile(profile);

@@ -15,6 +15,7 @@ const passportConfig = require("./config/passportConfig");
 const errorHandler = require("./middleware/errorHandling");
 const authRoutes = require("./routes/authRoutes");
 const jobRoutes = require("./routes/jobRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 const searchRoutes = require("./routes/searchRoutes");
 const postRoutes = require("./routes/postRoutes");
 const commentRoutes = require("./routes/commentRoutes");
@@ -77,6 +78,7 @@ app.use((req, res, next) => {
 app.use(authRoutes);
 app.use(postRoutes);
 app.use(commentRoutes);
+app.use("/admin", adminRoutes);
 app.use("/search", searchRoutes);
 app.use("/jobs", jobRoutes);
 app.use("/api", apiRoutes);

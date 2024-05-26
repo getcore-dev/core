@@ -24,6 +24,9 @@
   <meta name="twitter:image" content="<%= otheruser.avatar ? otheruser.avatar : '/img/default-avatar.png' %>">
 </head>
 
+<% if (!otheruser.profile_border_color) { %>
+<% otheruser.profile_border_color = '#000000'; %>
+<% } %>
 <style>
   .link-display,
   #edit-button,
@@ -91,8 +94,16 @@
             <% } %>
           </div>
           <div class="profile-details">
-            <h2><%= otheruser.firstname %> <%= otheruser.lastname%></h2>
-            <p id="firstname-display"> @<%= otheruser.username %></p>
+            <h2><%= otheruser.firstname %> <%= otheruser.lastname%>
+            </h2>
+
+            <p id="firstname-display" style="color: <%= otheruser.isAdmin ? '#b40000' : 'inherit' %>;">@<%= otheruser.username %> <% if (otheruser.verified) { %>
+              <span class="material-symbols-outlined" style="color: green">
+                verified
+              </span>
+              <% } %>
+            </p>
+
             <% if (user) { %>
             <div class="edit-controls-and-follow-button">
               <% if (otheruser.username === user.username) { %>
@@ -104,6 +115,17 @@
                 <button type="submit" id="followButton" style="margin-bottom: auto;"><%= isFollowing ? 'Unfollow' : 'Follow' %></button>
               </form>
 
+              <% if (user.isAdmin ) { %>
+              <form action="/admin/users/<%= otheruser.id %>/toggle-admin" method="POST">
+                <button id="edit-button" type="submit" style="margin-bottom: auto;"><%= otheruser.isAdmin ? 'Remove Admin' : 'Make Admin' %></button>
+              </form>
+              <form action="/admin/users/<%= otheruser.id %>/toggle-verified" method="POST">
+                <button id="edit-button" type="submit" style="margin-bottom: auto;"><%= otheruser.verified ? 'Unverify' : 'Verify' %></button>
+              </form>
+              <form action="/admin/users/<%= otheruser.id %>/toggle-ban" method="POST">
+                <button id="edit-button" type="submit" style="margin-bottom: auto;"><%= otheruser.isBanned ? 'Unban' : 'Ban' %></button>
+              </form>
+              <% } %>
 
 
 
@@ -112,10 +134,23 @@
             </div>
             <% } %>
             <div class="followers-info">
-
+              <span class="material-symbols-outlined">
+                person
+              </span>
               <a href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; gap: 5px;"><span id="followerCount"> <%= otheruser.followerCount %> Followers </a></span>
               <a href="/user/<%= otheruser.username %>/following" style="display: flex; flex-direction:row; gap: 5px;"><span id="followCount"> <%= otheruser.followingCount %> Following</a></span>
             </div>
+            <div class="points-info">
+              <span class="material-symbols-outlined">
+                star
+              </span>
+              <p><%= otheruser.points %> Points</p>
+            </div>
+            <% if (otheruser.topCommunities && otheruser.topCommunities.length > 0) { %>
+            <div class="communities-info">
+              <p>Active in: <%= otheruser.topCommunities %></p>
+            </div>
+            <% } %>
 
           </div>
 
@@ -298,6 +333,34 @@
 
   </main>
   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const forms = document.querySelectorAll('form');
+      forms.forEach(form => {
+        form.addEventListener('submit', async function(event) {
+          event.preventDefault();
+          const formData = new FormData(this);
+          const action = this.getAttribute('action');
+          const method = this.getAttribute('method').toUpperCase();
+
+          try {
+            const response = await fetch(action, {
+              method: method,
+              body: formData,
+            });
+            const result = await response.json();
+            if (response.ok) {
+              showBannerNotification(result.message);
+              // Optionally, you can update the UI here without a full page reload
+            } else {
+              showBannerNotification(`Error: ${result.message}`);
+            }
+          } catch (error) {
+            showBannerNotification(`Error: ${error.message}`);
+          }
+        });
+      });
+    });
+
     async function fetchRepositories() {
       const username = '<%= otheruser.github_url %>';
       const response = await fetch(`/api/github-repos/${username}`);

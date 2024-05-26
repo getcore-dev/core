@@ -73,7 +73,11 @@ router.post(
         firstname,
         lastname,
         created_at,
-        avatar
+        avatar,
+        isAdmin, 
+        points,
+        bio,
+        verified
       ) VALUES (
         ${userId},
         ${req.body.username},
@@ -83,7 +87,11 @@ router.post(
         ${req.body.firstname},
         ${req.body.lastname},
         ${new Date()},
-        '/img/default-avatar.png'
+        '/img/default-avatar.png',
+        0,
+        0,
+        '',
+        0
       )`;
 
       res.redirect("/login");

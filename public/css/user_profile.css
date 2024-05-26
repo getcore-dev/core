@@ -10,10 +10,6 @@ main {
   font-family: var(--font-family);
 }
 
-#followButton, #followForm, #edit-button {
-  width: 100%;
-}
-
 #followButton, #edit-button {
   margin-top: 4px;
 }
@@ -25,7 +21,6 @@ main {
 .followers-info {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   gap: 4px;
   margin-top: 10px;
 }
@@ -55,6 +50,8 @@ main {
   display: flex;
   gap: 13px;
     margin-left: auto;
+
+    justify-content: space-around;
     align-items: center;
 }
 
@@ -85,8 +82,7 @@ main {
 }
 
 .profile-details .material-symbols-outlined {
-  float: left;
-  padding-right: 3px;
+  vertical-align: -2px;
   font-size: 14px;
 }
 
@@ -99,7 +95,7 @@ main {
 #profile > div, .post, .comment {
   display: inline-block;
   border: 0;
-  padding: 12px 10px;
+  padding: 16px 18px;
   border-radius: 12px;
   background: none;
 }
@@ -119,7 +115,7 @@ main {
   color: var(--primary-text-color);
 }
 
-#profile a {
+#profile a, .points-info, .communities-info {
   font-size: .875rem;
   color: var(--primary-text-color);
 
@@ -220,11 +216,16 @@ main {
   /* ... other styles ... */
 }
 
-.followers-info {
+.followers-info, .points-info, .communities-info {
   display: flex;
   flex-direction: row;
+  gap: 4px;
   align-items: center;
 
+}
+
+.communities-info {
+  align-items: baseline;
 }
 
 #edit-button .material-symbols-outlined {
@@ -538,7 +539,11 @@ td {
 
 
 .profile-details > h2, .profile-details > p#firstname-display {
-  margin-left: 4px;
+  font-weight: bold;
+}
+
+.profile-details > h2 {
+  font-weight: normal;
 }
 
 .commit-graph {

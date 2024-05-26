@@ -628,6 +628,10 @@ div .material-symbols-outlined {
     color: var(--dark-mode-secondary-text-color);
   }
 
+  .jobs-container {
+    background-color: var(--dark-mode-body-color);
+  }
+
   .input-container input {
     color: var(--dark-mode-text-color);
   }

@@ -59,125 +59,161 @@
       // Fetch notifications based on the specified type
       const response = await fetch(`/notifications/${type}/<%= user.id %>`);
       const notifications = await response.json();
-      let notificationBtn = document.getElementById('notification-btn');
-
       const notificationList = document.getElementById('notification-list');
       notificationList.innerHTML = ''; // Clear previous notifications
 
-      // Populate list
       notifications.forEach(notification => {
-        const li = document.createElement('li');
-        li.classList.add('notification-item');
-        if (notification.isRead) {
-          li.classList.add('read');
-        } else {
-          li.classList.add('unread');
-        }
-        const notificationDiv = document.createElement('div');
-        const notificationIsReadIndicator = document.createElement('div');
-        notificationIsReadIndicator.classList.add('notification-is-read-indicator');
-        if (notification.isRead) {
-          notificationIsReadIndicator.classList.add('read');
-        } else {
-          notificationIsReadIndicator.classList.add('unread');
-          notificationIsReadIndicator.style.backgroundColor = notification.senderProfileColor || '#000000';
-          li.style.backgroundColor = notification.senderProfileColor + "15";
-        }
-        notificationDiv.appendChild(notificationIsReadIndicator);
-        const notificationSenderAvatar = document.createElement('img');
-        notificationSenderAvatar.src = notification.senderProfilePicture || '/img/default-avatar.png';
-        notificationSenderAvatar.classList.add('notification-sender-avatar');
-        notificationDiv.appendChild(notificationSenderAvatar);
-        const notificationHeader = document.createElement('span');
-        const notificationText = document.createElement('span');
-        notificationTextDiv = document.createElement('div');
-        notificationTextDiv.classList.add('notification-text-div');
-        notificationHeader.classList.add('notification-header');
-        notificationText.classList.add('notification-text');
-
-        if (notification.type === 'NEW_COMMENT') {
-          notificationHeader.textContent = 'New Comment';
-          notificationText.textContent = `${notification.senderUsername} commented on your post`;
-          notificationDiv.onclick = async function() {
-            await fetch(`/notifications/markAsRead/${notification.id}`, {
-              method: 'PUT'
-            });
-            li.classList.add('read');
-            li.classList.remove('unread');
-            notificationIsReadIndicator.classList.add('read');
-            notificationIsReadIndicator.classList.remove('unread');
-            if (notification.type === 'NEW_COMMENT' || notification.type === ['like', 'love', 'celebrate', 'curious', 'boost']) {
-              window.location.href = "/posts/" + notification.postId;
-            } else if (notification.type === 'follow') {
-              window.location.href = "/user/" + notification.senderUsername;
-            }
-          };
-        } else if (notification.type === ['like', 'love', 'celebrate', 'curious', 'boost']) {
-          notificationHeader.textContent = 'New Reaction';
-          notificationText.textContent = `${notification.senderUsername} liked your post`;
-          notificationDiv.onclick = async function() {
-            await fetch(`/notifications/markAsRead/${notification.id}`, {
-              method: 'PUT'
-            });
-            li.classList.add('read');
-            li.classList.remove('unread');
-            notificationIsReadIndicator.classList.add('read');
-            notificationIsReadIndicator.classList.remove('unread');
-            if (notification.type === 'NEW_COMMENT' || notification.type === ['like', 'love', 'celebrate', 'curious', 'boost']) {
-              window.location.href = "/posts/" + notification.postId;
-            } else if (notification.type === 'follow') {
-              window.location.href = "/user/" + notification.senderUsername;
-            }
-          };
-        } else if (notification.type === 'follow') {
-          notificationHeader.textContent = 'New Follower';
-          notificationText.textContent = `${notification.senderUsername} followed you`;
-          notificationDiv.onclick = async function() {
-            await fetch(`/notifications/markAsRead/${notification.id}`, {
-              method: 'PUT'
-            });
-            li.classList.add('read');
-            li.classList.remove('unread');
-            notificationIsReadIndicator.classList.add('read');
-            notificationIsReadIndicator.classList.remove('unread');
-            if (notification.type === 'NEW_COMMENT' || notification.type === ['like', 'love', 'celebrate', 'curious', 'boost']) {
-              window.location.href = "/posts/" + notification.postId;
-            } else if (notification.type === 'follow') {
-              window.location.href = "/user/" + notification.senderUsername;
-            }
-          };
-        }
-        notificationTextDiv.appendChild(notificationHeader);
-        notificationTextDiv.appendChild(notificationText);
-
-        const flairs = document.createElement('div');
-        flairs.classList.add('flairs');
-
-        const notificationTime = document.createElement('span');
-        notificationTime.classList.add('time-flair');
-        notificationTime.textContent = formatDate(notification.createdAt);
-        flairs.appendChild(notificationTime);
-        notificationTextDiv.appendChild(flairs);
-        notificationDiv.appendChild(notificationTextDiv);
-        const clearBtn = document.createElement('button');
-        clearBtn.classList.add('clear-btn');
-        const clearIcon = document.createElement('span');
-        clearIcon.classList.add('material-symbols-outlined');
-        clearIcon.textContent = 'clear';
-        clearBtn.appendChild(clearIcon);
-        clearBtn.onclick = async function() {
-          event.stopPropagation();
-          await fetch(`/notifications/${notification.id}`, {
-            method: 'DELETE'
-          });
-          li.remove();
-        };
-        notificationDiv.appendChild(clearBtn);
-        li.appendChild(notificationDiv);
-
-        notificationList.appendChild(li); // Append the notification element to the list
+        const li = createNotificationElement(notification);
+        notificationList.appendChild(li);
       });
     }
+
+    function createNotificationElement(notification) {
+      const li = document.createElement('li');
+      li.classList.add('notification-item');
+      li.classList.add(notification.isRead ? 'read' : 'unread');
+
+      const notificationDiv = document.createElement('div');
+      const notificationIsReadIndicator = createReadIndicator(notification);
+      notificationDiv.appendChild(notificationIsReadIndicator);
+
+      const notificationSenderAvatar = document.createElement('img');
+      notificationSenderAvatar.src = notification.senderProfilePicture || '/img/default-avatar.png';
+      notificationSenderAvatar.classList.add('notification-sender-avatar');
+      notificationDiv.appendChild(notificationSenderAvatar);
+
+      const notificationTextDiv = createNotificationText(notification);
+      notificationDiv.appendChild(notificationTextDiv);
+
+      const clearBtn = createClearButton(notification, li);
+      notificationDiv.appendChild(clearBtn);
+
+      li.appendChild(notificationDiv);
+      return li;
+    }
+
+    function createReadIndicator(notification) {
+      const notificationIsReadIndicator = document.createElement('div');
+      notificationIsReadIndicator.classList.add('notification-is-read-indicator');
+      notificationIsReadIndicator.classList.add(notification.isRead ? 'read' : 'unread');
+      if (!notification.isRead) {
+        notificationIsReadIndicator.style.backgroundColor = notification.senderProfileColor || '#000000';
+      }
+      return notificationIsReadIndicator;
+    }
+
+    function createNotificationText(notification) {
+      const notificationTextDiv = document.createElement('div');
+      notificationTextDiv.classList.add('notification-text-div');
+
+      const notificationHeader = document.createElement('span');
+      notificationHeader.classList.add('notification-header');
+
+      const notificationText = document.createElement('span');
+      notificationText.classList.add('notification-text');
+
+      switch (notification.type) {
+        case 'NEW_COMMENT':
+          notificationHeader.textContent = 'New Comment';
+          notificationText.textContent = `${notification.senderUsername} commented on your post`;
+          break;
+        case 'like':
+        case 'love':
+        case 'celebrate':
+        case 'curious':
+        case 'boost':
+          notificationHeader.textContent = 'New Reaction';
+          notificationText.textContent = `${notification.senderUsername} reacted to your post`;
+          break;
+        case 'follow':
+          notificationHeader.textContent = 'New Follower';
+          notificationText.textContent = `${notification.senderUsername} followed you`;
+          break;
+        case 'ADMIN_BAN':
+          notificationHeader.textContent = 'User Banned';
+          notificationText.textContent = `You have been banned by ${notification.senderUsername}`;
+          break;
+        case 'ADMIN_UNBAN':
+          notificationHeader.textContent = 'User Unbanned';
+          notificationText.textContent = `You have been unbanned by ${notification.senderUsername}`;
+          break;
+        case 'ADMIN_VERIFIED':
+          notificationHeader.textContent = 'User Verified';
+          notificationText.textContent = `You have been verified by ${notification.senderUsername}`;
+          break;
+        case 'ADMIN_UNVERIFIED':
+          notificationHeader.textContent = 'User Unverified';
+          notificationText.textContent = `Your verification has been removed by ${notification.senderUsername}`;
+          break;
+        default:
+          notificationHeader.textContent = 'Notification';
+          notificationText.textContent = `You have a new notification from ${notification.senderUsername}`;
+      }
+
+      notificationTextDiv.appendChild(notificationHeader);
+      notificationTextDiv.appendChild(notificationText);
+
+      const flairs = document.createElement('div');
+      flairs.classList.add('flairs');
+
+      const notificationTime = document.createElement('span');
+      notificationTime.classList.add('time-flair');
+      notificationTime.textContent = formatDate(notification.createdAt);
+      flairs.appendChild(notificationTime);
+
+      notificationTextDiv.appendChild(flairs);
+      notificationTextDiv.onclick = () => handleNotificationClick(notification, li, notificationTextDiv);
+
+      return notificationTextDiv;
+    }
+
+    function createClearButton(notification, li) {
+      const clearBtn = document.createElement('button');
+      clearBtn.classList.add('clear-btn');
+      const clearIcon = document.createElement('span');
+      clearIcon.classList.add('material-symbols-outlined');
+      clearIcon.textContent = 'clear';
+      clearBtn.appendChild(clearIcon);
+
+      clearBtn.onclick = async function(event) {
+        event.stopPropagation();
+        await fetch(`/notifications/${notification.id}`, {
+          method: 'DELETE'
+        });
+        li.remove();
+      };
+
+      return clearBtn;
+    }
+
+    async function handleNotificationClick(notification, li, notificationIsReadIndicator) {
+      await fetch(`/notifications/markAsRead/${notification.id}`, {
+        method: 'PUT'
+      });
+
+      li.classList.add('read');
+      li.classList.remove('unread');
+      notificationIsReadIndicator.classList.add('read');
+      notificationIsReadIndicator.classList.remove('unread');
+
+      if (notification.type === 'NEW_COMMENT' || ['like', 'love', 'celebrate', 'curious', 'boost'].includes(notification.type)) {
+        window.location.href = `/posts/${notification.postId}`;
+      } else if (notification.type === 'follow') {
+        window.location.href = `/user/${notification.senderUsername}`;
+      }
+    }
+
+    function formatDate(date) {
+      const options = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      };
+      return new Date(date).toLocaleDateString(undefined, options);
+    }
+
     fetchNotifications();
     <% } %>
   </script>

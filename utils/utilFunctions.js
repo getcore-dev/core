@@ -25,62 +25,64 @@ const utilFunctions = {
   ) => {
     try {
       const result = await sql.query`
-      SELECT 
-      p.id,
-      p.created_at, 
-      p.deleted, 
-      p.title, 
-      p.content, 
-      p.subtitle,
-      p.link, 
-      p.communities_id, 
-      p.react_like, 
-      p.react_love, 
-      p.react_curious, 
-      p.react_interesting, 
-      p.react_celebrate, 
-      p.post_type, 
-      p.views, 
-      u.currentJob, 
-      u.username, 
-      u.avatar,
-      CASE WHEN ur.follower_id IS NOT NULL THEN 1 ELSE 0 END AS is_following,
-      c.name AS community_name, 
-      c.community_color as community_color,
-      c.shortname AS community_shortname,
-      SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
-      SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-      SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
-      SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
-      SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
-      SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
-      (
-        SELECT TOP 1 upa2.action_type 
-        FROM userPostActions upa2
-        WHERE upa2.post_id = p.id AND upa2.user_id = ${userId}
-      ) as userReaction,
-      (
-        SELECT STRING_AGG(tags.name, ', ') 
-        FROM post_tags 
-        INNER JOIN tags ON post_tags.tag_id = tags.id
-        WHERE post_tags.post_id = p.id
-      ) AS post_tags,
-      (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count
-    FROM posts p
-    INNER JOIN users u ON p.user_id = u.id
-    LEFT JOIN userPostActions upa ON p.id = upa.post_id
-    LEFT JOIN communities c ON p.communities_id = c.id
-    LEFT JOIN user_relationships ur ON u.id = ur.followed_id AND ur.follower_id = ${userId}
-    WHERE p.deleted = 0
-    GROUP BY 
-      p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.subtitle, 
-      p.communities_id, u.avatar, u.currentJob, c.name, c.shortname, c.community_color,
-      p.react_like, p.react_love, p.react_curious, p.react_interesting, 
-      p.react_celebrate, p.post_type, p.views, ur.follower_id
-    ORDER BY p.created_at DESC -- Add an ORDER BY clause
-    OFFSET ${offset} ROWS
-    FETCH NEXT ${limit} ROWS ONLY
-    `;
+        SELECT 
+        p.id,
+        p.created_at, 
+        p.deleted, 
+        p.title, 
+        p.content, 
+        p.subtitle,
+        p.link, 
+        p.communities_id, 
+        p.react_like, 
+        p.react_love, 
+        p.react_curious, 
+        p.react_interesting, 
+        p.react_celebrate, 
+        p.post_type, 
+        p.views, 
+        u.currentJob, 
+        u.username, 
+        u.avatar,
+        u.isAdmin,
+        u.verified,
+        CASE WHEN ur.follower_id IS NOT NULL THEN 1 ELSE 0 END AS is_following,
+        c.name AS community_name, 
+        c.community_color as community_color,
+        c.shortname AS community_shortname,
+        SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
+        SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
+        SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+        SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
+        SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
+        SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
+        (
+          SELECT TOP 1 upa2.action_type 
+          FROM userPostActions upa2
+          WHERE upa2.post_id = p.id AND upa2.user_id = ${userId}
+        ) as userReaction,
+        (
+          SELECT STRING_AGG(tags.name, ', ') 
+          FROM post_tags 
+          INNER JOIN tags ON post_tags.tag_id = tags.id
+          WHERE post_tags.post_id = p.id
+        ) AS post_tags,
+        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count
+      FROM posts p
+      INNER JOIN users u ON p.user_id = u.id
+      LEFT JOIN userPostActions upa ON p.id = upa.post_id
+      LEFT JOIN communities c ON p.communities_id = c.id
+      LEFT JOIN user_relationships ur ON u.id = ur.followed_id AND ur.follower_id = ${userId}
+      WHERE p.deleted = 0
+      GROUP BY 
+        p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.subtitle, 
+        p.communities_id, u.avatar, u.currentJob, c.name, c.shortname, c.community_color, u.isAdmin, u.verified,
+        p.react_like, p.react_love, p.react_curious, p.react_interesting, 
+        p.react_celebrate, p.post_type, p.views, ur.follower_id
+      ORDER BY p.created_at DESC -- Add an ORDER BY clause
+      OFFSET ${offset} ROWS
+      FETCH NEXT ${limit} ROWS ONLY
+      `;
 
       const countResult = await sql.query`
         SELECT COUNT(*) AS totalCount
@@ -117,11 +119,11 @@ const utilFunctions = {
             const reactionsPerMinuteB = reactionsB / (minutesB + 1);
             const followingWeightA = a.is_following ? 1.2 : 1;
             const followingWeightB = b.is_following ? 1.2 : 1;
-            const ageWeightA = Math.exp(-minutesA / (24 * 60)); // Exponential decay based on age
-            const ageWeightB = Math.exp(-minutesB / (24 * 60));
+            const recentWeightA = Math.exp(-minutesA / (6 * 60)); // Exponential decay over 6 hours
+            const recentWeightB = Math.exp(-minutesB / (6 * 60));
             return (
-              reactionsPerMinuteB * followingWeightB * ageWeightB -
-              reactionsPerMinuteA * followingWeightA * ageWeightA
+              reactionsPerMinuteB * followingWeightB * recentWeightB -
+              reactionsPerMinuteA * followingWeightA * recentWeightA
             );
           });
           break;
@@ -193,7 +195,11 @@ const utilFunctions = {
       };
     } catch (err) {
       console.error("Database query error:", err);
-      throw err;
+      return {
+        posts: [],
+        currentPage: page,
+        totalPages: 0,
+      };
     }
   },
 
@@ -649,16 +655,97 @@ const utilFunctions = {
   },
 
   getLinkPreview: async (url) => {
-    const getMetaTag = async ($, name) => {
+    const getMetaTag = ($, name) => {
       return (
-        $(`meta[name=${name}]`).attr("content") ||
+        $(`meta[name="${name}"]`).attr("content") ||
         $(`meta[name="twitter:${name}"]`).attr("content") ||
         $(`meta[property="og:${name}"]`).attr("content")
       );
     };
 
+    const getFavicon = ($, baseUrl) => {
+      let favicon =
+        $('link[rel="shortcut icon"]').attr("href") ||
+        $('link[rel="icon"]').attr("href") ||
+        $('link[rel="alternate icon"]').attr("href");
+
+      if (favicon && !favicon.startsWith("http")) {
+        const urlObject = new URL(baseUrl);
+        favicon = urlObject.protocol + "//" + urlObject.host + favicon;
+      }
+
+      return favicon || "";
+    };
+
+    const fetchYouTubeData = async (videoId) => {
+      const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+      const faviconUrl = "/src/youtubelogo.png"; // Replace with your actual favicon URL
+      const API_KEY = process.env.YOUTUBE_API_KEY;
+      const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${API_KEY}&part=snippet`;
+
+      try {
+        const response = await axios.get(apiUrl);
+        if (response.data.items && response.data.items.length > 0) {
+          const videoData = response.data.items[0].snippet;
+          return {
+            title: videoData.title,
+            description: videoData.description,
+            image: thumbnailUrl,
+            favicon: faviconUrl,
+          };
+        }
+      } catch (error) {
+        console.error("Error fetching YouTube API data:", error.message);
+      }
+
+      return {
+        title: "",
+        description: "",
+        image: thumbnailUrl,
+        favicon: faviconUrl,
+      };
+    };
+
+    const fetchRedditData = async (url) => {
+      try {
+        if (url.includes("/r/")) {
+          // Handle subreddit URLs
+          const response = await axios.get(`${url}/about.json`);
+          if (response.data && response.data.data) {
+            const subredditData = response.data.data;
+            return {
+              title: subredditData.title,
+              description: subredditData.public_description,
+              image:
+                subredditData.icon_img || subredditData.community_icon || "",
+              author: subredditData.display_name_prefixed,
+              favicon: "/src/redditlogo.png",
+            };
+          }
+        } else {
+          // Handle individual post URLs
+          const response = await axios.get(`${url}.json`);
+          if (response.data && response.data.length > 0) {
+            const postData = response.data[0].data.children[0].data;
+            return {
+              title: postData.title,
+              description: postData.selftext || postData.title,
+              image: postData.thumbnail.startsWith("http")
+                ? postData.thumbnail
+                : "",
+              author: postData.author,
+              favicon: "/src/redditlogo.png",
+            };
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching Reddit JSON data:", error.message);
+      }
+
+      return null;
+    };
+
     try {
-      // Ensure the URL is a string
       if (typeof url !== "string") {
         throw new Error("URL must be a string");
       }
@@ -677,97 +764,105 @@ const utilFunctions = {
         };
       }
 
+      if (url.includes("youtube.com") || url.includes("youtu.be")) {
+        const videoIdMatch = url.match(
+          /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+        );
+        if (videoIdMatch) {
+          const videoId = videoIdMatch[1];
+          const youtubeData = await fetchYouTubeData(videoId);
+          const preview = {
+            url,
+            ...youtubeData,
+          };
+
+          const insertLinkPreviewDataQuery = `
+          INSERT INTO LinkPreviewData (link, image_url, description, title, favicon)
+          VALUES ('${preview.url}', '${preview.image}', '${preview.description}', '${preview.title}', '${preview.favicon}')
+        `;
+          await sql.query(insertLinkPreviewDataQuery);
+          return preview;
+        }
+      } else if (url.includes("reddit.com")) {
+        const redditData = await fetchRedditData(url);
+        if (redditData) {
+          return {
+            url,
+            ...redditData,
+          };
+        }
+      }
+
       const headers = {
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
       };
 
-      // Try fetching the URL with a simple GET request
-      try {
-        const response = await axios.get(url, { headers, timeout: 5000 });
-        const { data, status } = response;
-        if (status === 200) {
-          const $ = cheerio.load(data);
-          const metaTags = await Promise.all([
-            getMetaTag($, "description"),
-            getMetaTag($, "image"),
-            getMetaTag($, "author"),
-          ]);
-          let favicon =
-            $('link[rel="shortcut icon"]').attr("href") ||
-            $('link[rel="icon"]').attr("href") ||
-            $('link[rel="alternate icon"]').attr("href");
+      const response = await axios.get(url, { headers, timeout: 5000 });
+      const { data, status } = response;
+      if (status === 200) {
+        const $ = cheerio.load(data);
+        const metaTags = {
+          title: getMetaTag($, "title") || $("title").text(),
+          description: getMetaTag($, "description"),
+          image: getMetaTag($, "image"),
+          author: getMetaTag($, "author"),
+        };
 
-          if (favicon && !favicon.startsWith("http")) {
-            const urlObject = new URL(url);
-            favicon = urlObject.protocol + "//" + urlObject.host + favicon;
-          }
+        const preview = {
+          url,
+          title: metaTags.title || $("title").first().text() || url,
+          favicon: getFavicon($, url),
+          description: metaTags.description || "",
+          image: metaTags.image || "",
+          author: metaTags.author || "",
+        };
 
-          const preview = {
-            url,
-            title: $("title").first().text(),
-            favicon,
-            description: metaTags[0],
-            image: metaTags[1],
-            author: metaTags[2],
-          };
+        // Insert into LinkPreviewData table
+        const insertLinkPreviewDataQuery = `
+          INSERT INTO LinkPreviewData (link, image_url, description, title, favicon)
+          VALUES ('${preview.url}', '${preview.image}', '${preview.description}', '${preview.title}', '${preview.favicon}')
+        `;
+        await sql.query(insertLinkPreviewDataQuery);
 
-          // Insert into LinkPreviewData table
-          const insertLinkPreviewDataQuery = `INSERT INTO LinkPreviewData (link, image_url, description, title, favicon) VALUES ('${preview.url}', '${preview.image}', '${preview.description}', '${preview.title}', '${preview.favicon}')`;
-          await sql.query(insertLinkPreviewDataQuery);
-
-          return preview;
-        }
-      } catch (error) {
-        console.error("Error fetching URL with GET request:", error);
-
-        // If the simple GET request fails, try using Axios
-        try {
-          const response = await axios.get(url, { headers, timeout: 5000 });
-          const { data, status } = response;
-          if (status === 200) {
-            const $ = cheerio.load(data);
-            const metaTags = await Promise.all([
-              getMetaTag($, "description"),
-              getMetaTag($, "image"),
-              getMetaTag($, "author"),
-            ]);
-            let favicon =
-              $('link[rel="shortcut icon"]').attr("href") ||
-              $('link[rel="icon"]').attr("href") ||
-              $('link[rel="alternate icon"]').attr("href");
-
-            if (favicon && !favicon.startsWith("http")) {
-              const urlObject = new URL(url);
-              favicon = urlObject.protocol + "//" + urlObject.host + favicon;
-            }
-
-            const preview = {
-              url,
-              title: $("title").first().text(),
-              favicon,
-              description: metaTags[0],
-              image: metaTags[1],
-              author: metaTags[2],
-            };
-
-            // Insert into LinkPreviewData table
-            const insertLinkPreviewDataQuery = `INSERT INTO LinkPreviewData (link, image_url, description, title, favicon) VALUES ('${preview.url}', '${preview.image}', '${preview.description}', '${preview.title}', '${preview.favicon}')`;
-            await sql.query(insertLinkPreviewDataQuery);
-
-            return preview;
-          }
-        } catch (error) {
-          console.error("Error fetching URL with Axios:", error);
-        }
+        return preview;
       }
-
-      // If both GET request and Axios fail, return null
-      return null;
     } catch (error) {
-      console.error("Error fetching URL:", error);
-      return null;
+      console.error("Error fetching URL:", error.message);
     }
+
+    // Return a blank object with the title set to the URL in case of an error
+    return {
+      url,
+      title: url,
+      favicon: "",
+      description: "",
+      image: "",
+      author: "",
+    };
+  },
+
+  fetchRedditData: async (url) => {
+    try {
+      const response = await axios.get(`${url}.json`);
+      if (response.data && response.data.length > 0) {
+        const postData = response.data[0].data.children[0].data;
+        return {
+          title: postData.title,
+          description: postData.selftext || postData.title,
+          image: postData.thumbnail.startsWith("http")
+            ? postData.thumbnail
+            : "",
+          author: postData.author,
+          favicon:
+            "https://www.redditstatic.com/desktop2x/img/favicon/apple-icon-57x57.png",
+        };
+      }
+    } catch (error) {
+      console.error("Error fetching Reddit JSON data:", error.message);
+    }
+
+    return null;
   },
 
   getGitHubCommitGraph: async (username) => {
@@ -980,7 +1075,7 @@ const utilFunctions = {
   getGitHubRepoPreview: async (url) => {
     const isGitHubUrl = /^https?:\/\/github\.com\/.+\/.+/.test(url);
     if (!isGitHubUrl) {
-      throw new Error("URL must be a GitHub repository URL");
+      return { link: url }; // Return early if the URL is not a GitHub repository URL
     }
 
     // Extract the repository's owner and name from the URL
@@ -989,10 +1084,10 @@ const utilFunctions = {
     try {
       // Check if recent data (within the last 30 minutes) already exists in the GitHubRepoData table
       const existingDataQuery = `
-      SELECT *, DATEDIFF(minute, time_fetched, GETDATE()) AS time_diff
-      FROM GitHubRepoData
-      WHERE repo_url = '${url}'
-    `;
+        SELECT *, DATEDIFF(minute, time_fetched, GETDATE()) AS time_diff
+        FROM GitHubRepoData
+        WHERE repo_url = '${url}'
+      `;
       const existingDataResult = await sql.query(existingDataQuery);
 
       let repoData, commitsData;
@@ -1037,27 +1132,27 @@ const utilFunctions = {
       if (existingDataResult.recordset.length > 0 && repoData && commitsData) {
         // Data exists, so update it with the new data from GitHub
         const updateQuery = `
-        UPDATE GitHubRepoData
-        SET repo_name = '${repoData.name.replace(/'/g, "''")}',
-            raw_json = '${rawRepoJson.replace(/'/g, "''")}',
-            raw_commits_json = '${rawCommitsJson.replace(/'/g, "''")}',
-            time_fetched = GETDATE()
-        WHERE repo_url = '${url}'
-      `;
+          UPDATE GitHubRepoData
+          SET repo_name = '${repoData.name.replace(/'/g, "''")}',
+              raw_json = '${rawRepoJson.replace(/'/g, "''")}',
+              raw_commits_json = '${rawCommitsJson.replace(/'/g, "''")}',
+              time_fetched = GETDATE()
+          WHERE repo_url = '${url}'
+        `;
         await sql.query(updateQuery);
       } else if (!existingDataResult.recordset.length) {
         // No existing data, insert new data into GitHubRepoData table
         const insertQuery = `
-        INSERT INTO GitHubRepoData (id, repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
-        VALUES (${repoData.id},
-          '${url}', '${repoData.name.replace(
+          INSERT INTO GitHubRepoData (id, repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
+          VALUES (${repoData.id},
+            '${url}', '${repoData.name.replace(
           /'/g,
           "''"
         )}', '${rawRepoJson.replace(/'/g, "''")}', '${rawCommitsJson.replace(
           /'/g,
           "''"
         )}', GETDATE())
-      `;
+        `;
         await sql.query(insertQuery);
       }
 
@@ -1071,10 +1166,9 @@ const utilFunctions = {
       };
     } catch (error) {
       console.error("Error fetching GitHub repository data:", error);
-      throw error; // Changed to rethrow the error to make error handling more consistent
+      return { link: url }; // Return a minimal object with the link in case of an error
     }
   },
-
   getNestedComments: async (commentList) => {
     const commentMap = {};
 

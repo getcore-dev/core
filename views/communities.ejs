@@ -379,6 +379,12 @@
                 'color': '#586eca',
                 'bcolor': '#45538c',
               },
+              'post': {
+
+                'icon': 'forum',
+                'color': '#586eca',
+                'bcolor': '#45538c',
+              },
               'question': {
                 'icon': 'question_mark',
                 'color': '#60a373',
@@ -393,7 +399,6 @@
             const postTypeCircleDiv = document.createElement('div');
             postTypeCircleDiv.className = 'post-type-circle';
             postTypeCircleDiv.style.backgroundColor = postTypes[post.post_type].color;
-            postTypeCircleDiv.style.borderColor = postTypes[post.post_type].bcolor;
             postTypeCircleDiv.innerHTML = '<span class="material-symbols-outlined">' + postTypes[post.post_type].icon + '</span>';
             avatarDiv.appendChild(postTypeCircleDiv);
 
@@ -403,7 +408,19 @@
             const usernameLink = document.createElement('p');
             usernameLink.className = 'post-quick-info';
             usernameLink.href = '/user/' + post.username;
-            usernameLink.innerHTML = '<strong><a href="/user/' + post.username + '">' + post.username + '</a></strong>' + ' in ' + '<strong><a style="color: ' + post.community_color + ';" href="/c/' + post.community_shortname + '"> /' + post.community_shortname + '</a></strong>' + ' ' + '<span id="secondary-text">' + formatDate(post.created_at) + '</span>';
+            const usernameColor = post.isAdmin ? '#b40000' : 'inherit';
+
+            usernameLink.innerHTML = `
+  <strong>
+    <a id="post-username" style="color: ${usernameColor};" href="/user/${post.username}">${post.username}</a>
+    ${post.verified ? '<span class="material-symbols-outlined" style="color: green">verified</span>' : ''}
+  </strong> 
+  in 
+  <strong>
+    <a style="color: ${post.community_color};" href="/c/${post.community_shortname}">/${post.community_shortname}</a>
+  </strong> 
+  <span id="secondary-text">${formatDate(post.created_at)}</span>
+`;
             usernameDiv.appendChild(usernameLink);
 
 
@@ -453,6 +470,7 @@
               linkDiv.innerHTML = '<div class="placeholder-link-preview">Loading link preview...</div>'; // Placeholder
               linkPreviewDiv.appendChild(linkDiv);
               fetchPromises.push(fetchLinkPreview(post.link, linkDiv));
+
             }
 
             const imageUrlMatch = post.content.match(/!\[.*?\]\((.*?)\)/);
@@ -475,43 +493,40 @@
 
             if (post.post_type != 'question') {
 
-              if (((post.post_type == "discussion" || post.post_type == "project") && post.link)) {
-                // just chill 
-              } else {
-                linkPreviewDiv.style.background = "none";
-                linkPreviewDiv.style.border = "none";
-                const descriptionDiv = document.createElement('div');
-                descriptionDiv.className = 'description';
+              linkPreviewDiv.style.background = "none";
+              linkPreviewDiv.style.border = "none";
+              const descriptionDiv = document.createElement('div');
+              descriptionDiv.className = 'description';
 
-                if (post.post_type != 'blog') {
+              if (post.post_type != 'blog') {
+                let contentWithoutMarkdown = post.content
+                  .replace(/(?:\r\n|\r|\n)/g, ' ')
+                  .replace(/\*\*(.*?)\*\*/g, '$1')
+                  .replace(/\*(.*?)\*/g, '$1')
+                  .replace(/__(.*?)__/g, '$1')
+                  .replace(/_(.*?)_/g, '$1')
+                  .replace(/!\[.*?\]\(.*?\)/g, '')
+                  .replace(/\[.*?\]\(.*?\)/g, '$1');
+                descriptionDiv.append(`${contentWithoutMarkdown}`);
+              } else {
+                if (post.subtitle) {
+                  descriptionDiv.append(`${post.subtitle}`);
+                } else {
                   let contentWithoutMarkdown = post.content
                     .replace(/(?:\r\n|\r|\n)/g, ' ')
                     .replace(/\*\*(.*?)\*\*/g, '$1')
                     .replace(/\*(.*?)\*/g, '$1')
                     .replace(/__(.*?)__/g, '$1')
+                    .replace(/#{2,3} (.*?)\n/g, '')
                     .replace(/_(.*?)_/g, '$1')
                     .replace(/!\[.*?\]\(.*?\)/g, '')
                     .replace(/\[.*?\]\(.*?\)/g, '$1');
                   descriptionDiv.append(`${contentWithoutMarkdown}`);
-                } else {
-                  if (post.subtitle) {
-                    descriptionDiv.append(`${post.subtitle}`);
-                  } else {
-                    let contentWithoutMarkdown = post.content
-                      .replace(/(?:\r\n|\r|\n)/g, ' ')
-                      .replace(/\*\*(.*?)\*\*/g, '$1')
-                      .replace(/\*(.*?)\*/g, '$1')
-                      .replace(/__(.*?)__/g, '$1')
-                      .replace(/_(.*?)_/g, '$1')
-                      .replace(/!\[.*?\]\(.*?\)/g, '')
-                      .replace(/\[.*?\]\(.*?\)/g, '$1');
-                    descriptionDiv.append(`${contentWithoutMarkdown}`);
-                  }
                 }
-
-
-                linkPreviewDiv.appendChild(descriptionDiv);
               }
+
+
+              linkPreviewDiv.appendChild(descriptionDiv);
             }
 
             if (post.post_type == 'question') {

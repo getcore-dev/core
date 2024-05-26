@@ -108,31 +108,81 @@ const postQueries = {
     if (user) {
       userReactionSubquery = `, ( SELECT TOP 1 upa.action_type FROM userPostActions upa WHERE upa.post_id = p.id AND upa.user_id = '${user.id}' ) AS userReaction`;
     }
-    let query = `
-      SELECT TOP 3
+
+    // Step 1: Find posts with matching tags, regardless of community
+    let queryWithMatchingTags = `
+      SELECT
         p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
         u.username, u.avatar, u.currentJob,
         c.name AS community_name, c.community_color as community_color, c.shortname as community_shortname,
         p.post_type, p.views,
         (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
-        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount
+        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount,
+        COUNT(t.name) AS tagMatchCount
         ${userReactionSubquery}
       FROM posts p
       JOIN users u ON p.user_id = u.id
       JOIN communities c ON p.communities_id = c.id
       LEFT JOIN post_tags pt ON p.id = pt.post_id
       LEFT JOIN tags t ON pt.tag_id = t.id
-      WHERE p.id != '${postId}' AND p.deleted = 0
-        AND (p.communities_id = '${communityId}' OR p.title LIKE '%${title.replace(
-      /[^\w\s]/gi,
-      ""
-    )}%' OR ${tagsCondition})
+      WHERE p.id != '${postId}' AND p.deleted = 0 AND ${tagsCondition}
       GROUP BY p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
                u.username, u.avatar, u.currentJob, c.name, p.post_type, p.views, c.community_color, c.shortname
-      ORDER BY p.created_at DESC;
+      ORDER BY tagMatchCount DESC, p.created_at DESC
+      OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY;
     `;
-    const result = await sql.query(query);
-    return result.recordset;
+    const resultWithMatchingTags = await sql.query(queryWithMatchingTags);
+
+    // If less than 5 posts with matching tags are found, fill up with random posts from any community
+    let finalResults = resultWithMatchingTags.recordset;
+    if (finalResults.length < 5) {
+      const additionalPostsNeeded = 5 - finalResults.length;
+      const excludePostIds =
+        finalResults.length > 0
+          ? `AND p.id NOT IN (${finalResults
+              .map((post) => `'${post.id}'`)
+              .join(",")})`
+          : "";
+
+      let queryWithRandomPosts = `
+        SELECT TOP ${additionalPostsNeeded}
+          p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
+          u.username, u.avatar, u.currentJob,
+          c.name AS community_name, c.community_color as community_color, c.shortname as community_shortname,
+          p.post_type, p.views,
+          (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
+          (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount
+          ${userReactionSubquery}
+        FROM posts p
+        JOIN users u ON p.user_id = u.id
+        JOIN communities c ON p.communities_id = c.id
+        WHERE p.id != '${postId}' AND p.deleted = 0
+          ${excludePostIds}
+        ORDER BY NEWID();
+      `;
+      const resultWithRandomPosts = await sql.query(queryWithRandomPosts);
+      finalResults = finalResults.concat(resultWithRandomPosts.recordset);
+    }
+
+    return finalResults;
+  },
+
+  fetchPostsByCommunity: async (communityId) => {
+    try {
+      const result = await sql.query`
+        SELECT p.*, u.username, u.avatar, u.currentJob,
+        (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
+        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount
+        FROM posts p
+        JOIN users u ON p.user_id = u.id
+        WHERE p.communities_id = ${communityId} AND p.deleted = 0
+        ORDER BY p.created_at DESC`;
+
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
   },
 
   acceptAnswer: async (postId, commentId, userId) => {

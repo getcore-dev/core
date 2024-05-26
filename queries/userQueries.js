@@ -19,7 +19,132 @@ const userQueries = {
       FROM users u
       WHERE u.username = ${username}`;
 
-      return result.recordset[0];
+      const user = result.recordset[0];
+      if (user) {
+        const topCommunities = await userQueries.getTopCommunities(user.id);
+        user.topCommunities = topCommunities.map((c) => c.name).join(", ");
+      }
+
+      return user;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  toggleAdmin: async (userId) => {
+    try {
+      const result = await sql.query`
+        UPDATE users
+        SET isAdmin = CASE WHEN isAdmin = 1 THEN 0 ELSE 1 END
+        WHERE id = ${userId};
+        SELECT isAdmin FROM users WHERE id = ${userId};
+      `;
+
+      if (result.recordset.length === 0) {
+        console.warn(`No rows updated. User ID ${userId} might not exist.`);
+        return { message: `User ID ${userId} not found.`, success: false };
+      } else {
+        const isAdmin = result.recordset[0].isAdmin;
+        return {
+          message: `User ID ${userId} is now ${
+            isAdmin ? "an admin" : "not an admin"
+          }.`,
+          success: true,
+          isAdmin: isAdmin,
+        };
+      }
+    } catch (err) {
+      console.error("Database update error:", err.message);
+      console.error("Error stack:", err.stack);
+      console.error(`Failed to toggle admin status for user ID: ${userId}`);
+      throw err;
+    }
+  },
+
+  toggleBan: async (userId) => {
+    try {
+      const result = await sql.query`
+        UPDATE users
+        SET isBanned = CASE WHEN isBanned = 1 THEN 0 ELSE 1 END
+        WHERE id = ${userId};
+        SELECT isBanned FROM users WHERE id = ${userId};
+      `;
+
+      if (result.recordset.length === 0) {
+        console.warn(`No rows updated. User ID ${userId} might not exist.`);
+        return { message: `User ID ${userId} not found.`, success: false };
+      } else {
+        const isBanned = result.recordset[0].isBanned;
+        return {
+          message: `User ID ${userId} is now ${
+            isBanned ? "banned" : "unbanned"
+          }.`,
+          success: true,
+          isBanned: isBanned,
+        };
+      }
+    } catch (err) {
+      console.error("Database update error:", err.message);
+      console.error("Error stack:", err.stack);
+      console.error(`Failed to toggle ban status for user ID: ${userId}`);
+      throw err;
+    }
+  },
+
+  toggleVerified: async (userId) => {
+    try {
+      const result = await sql.query`
+        UPDATE users
+        SET verified = CASE WHEN verified = 1 THEN 0 ELSE 1 END
+        WHERE id = ${userId};
+        SELECT verified FROM users WHERE id = ${userId};
+      `;
+
+      if (result.recordset.length === 0) {
+        console.warn(`No rows updated. User ID ${userId} might not exist.`);
+        return { message: `User ID ${userId} not found.`, success: false };
+      } else {
+        const verified = result.recordset[0].verified;
+        return {
+          message: `User ID ${userId} is now ${
+            verified ? "verified" : "unverified"
+          }.`,
+          success: true,
+          verified: verified,
+        };
+      }
+    } catch (err) {
+      console.error("Database update error:", err.message);
+      console.error("Error stack:", err.stack);
+      console.error(`Failed to toggle verified status for user ID: ${userId}`);
+      throw err;
+    }
+  },
+
+  getTopCommunities: async (userId) => {
+    try {
+      const result = await sql.query`
+      SELECT
+        c.id,
+        c.name,
+        COUNT(*) AS interaction_count
+      FROM
+        communities c
+      LEFT JOIN
+        posts p ON c.id = p.communities_id AND p.user_id = ${userId}
+      LEFT JOIN
+        comments cm ON cm.post_id = p.id AND cm.user_id = ${userId}
+      WHERE
+        p.user_id = ${userId} OR cm.user_id = ${userId}
+      GROUP BY
+        c.id, c.name
+      ORDER BY
+        interaction_count DESC
+      OFFSET 0 ROWS
+      FETCH NEXT 3 ROWS ONLY`;
+
+      return result.recordset;
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -344,9 +469,9 @@ const userQueries = {
   createUserFromGitHubProfile: async (profile) => {
     try {
       const result = await sql.query`
-        INSERT INTO users (github_url, username, avatar, email, github_id, created_at)
+        INSERT INTO users (github_url, username, avatar, email, github_id, created_at, isAdmin, bio, points, verified)
         OUTPUT INSERTED.*
-        VALUES (${profile.username}, ${profile.username}, ${profile.photos[0].value}, ${profile.emails[0].value}, ${profile.id}, GETDATE())`;
+        VALUES (${profile.username}, ${profile.username}, ${profile.photos[0].value}, ${profile.emails[0].value}, ${profile.id}, GETDATE(), 0, '', 0, 0)`;
 
       return result.recordset[0];
     } catch (err) {

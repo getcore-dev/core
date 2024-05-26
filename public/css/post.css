@@ -161,6 +161,7 @@ pre code {
   gap: 1em;
 }
 
+
 .timestamp {
   font-size: 12px;
 }
@@ -260,7 +261,7 @@ a.comment-url:visited {
 .link-preview {
   background-color: none;
   border-radius: 18px;
-  margin: 16px 0px;
+  margin: 0;
   margin-top: 10px;
 }
 
@@ -831,7 +832,7 @@ padding-top: 10px;
 .link-preview {
   display: flex;
     flex-direction: row;
-    margin: 15px 0px;
+    margin: 0px;
     gap: 18px;
     align-items: center;
 }
@@ -977,8 +978,10 @@ div .mini-link-desc {
 div.link {
   border-radius: 18px;
   margin: 0px 0px;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
   background: var(--light-mode-body-color);
-  border: 1px solid var(--border-color);
   margin: 10px 0;
 }
 
@@ -987,6 +990,7 @@ div .mini-link {
   flex-direction: row ;
   max-width: 100%;
   font-size: 14px;
+  overflow: hidden;
   align-items: center;
 }
 
@@ -1057,10 +1061,14 @@ div .mini-link {
 
 .dropdown-content button {
   border: 0;
-  background-color: rgba(0,0,0,0);
+  display: flex;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0);
   color: black;
   font-size: .875rem;
   margin: 0;
+  align-items: center;
+    justify-content: space-between;
 }
 
 .comment-content {
@@ -1071,8 +1079,8 @@ div .mini-link {
   margin-bottom: 3px;
 }
 
-.dropdown .material-symbols-outlined {
-  font-size: 24px;
+.dropdown-content .material-symbols-outlined {
+  font-size: 20px !important;
   font-weight: 300;
 }
 
@@ -1472,7 +1480,6 @@ p.preview-description {
 
   div.link {
     background-color: var(--dark-mode-main-color);
-    border-color: var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
   
@@ -1675,11 +1682,15 @@ p.preview-description {
 }
 
 .post-subinfo {
-  display: flex;
+  display: inline-block;
   flex-direction: row;
   align-items: center;
   gap: 14px;
   width: 100%;
+}
+
+.post-subinfo > span {
+  margin-right: 6px;
 }
 
 /* Style for the send button on hover */
