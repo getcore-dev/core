@@ -45,10 +45,13 @@ passportConfig.initialize(
   userQueries.findByGitHubUsername,
   userQueries.findByGithubId,
   userQueries.updateGitHubId,
-  userQueries.updateGitHubUsername,
   userQueries.updateUserGitHubAccessToken,
-  userQueries.createUserFromGitHubProfile
+  userQueries.updateGitHubUsername,
+  userQueries.createUserFromGitHubProfile,
+  userQueries.findByGoogleId,
+  userQueries.createUserFromGoogleProfile
 );
+
 
 // Express app setup
 app.set("view-engine", "ejs");

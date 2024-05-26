@@ -66,12 +66,16 @@ function initialize(
               return done(null, false, { message: "User is banned" });
             }
 
+            // Update the GitHub access token
             await updateUserGitHubAccessToken(existingUser.id, accessToken);
+
+            // Update GitHub ID if not already set
             if (!existingUser.github_id) {
               await updateUserGitHubId(existingUser.id, profile.id);
             }
 
-            if (!existingUser.github_url) {
+            // Update GitHub username if not already set
+            if (!existingUser.github_username) {
               await updateUserGitHubUsername(existingUser.id, githubUsername);
             }
 

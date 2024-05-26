@@ -32,6 +32,31 @@ const userQueries = {
     }
   },
 
+  findByGoogleId: async (googleId) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM users WHERE google_id = ${googleId}`;
+      return result.recordset[0];
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  createUserFromGoogleProfile: async (profile) => {
+    try {
+      const result = await sql.query`
+        INSERT INTO users (username, email, avatar, google_id, created_at, isAdmin, bio, points, verified)
+        OUTPUT INSERTED.*
+        VALUES (${profile.username}, ${profile.emails[0].value}, ${profile.photos[0].value}, ${profile.id}, GETDATE(), 0, '', 0, 0)`;
+
+      return result.recordset[0];
+    } catch (err) {
+      console.error("Database insert error:", err);
+      throw err;
+    }
+  },
+
   toggleAdmin: async (userId) => {
     try {
       const result = await sql.query`
