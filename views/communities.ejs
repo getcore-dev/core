@@ -691,6 +691,17 @@
                 postsContainer.appendChild(loadMoreDiv);
               }
 
+              // Infinite scroll
+              const loadMoreButton = document.querySelector('.load-more-button');
+              const loadMoreDiv = document.querySelector('.load-more');
+              const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                  const nextPage = page + 1;
+                  fetchAndDisplayPosts(communityId, sortBy, nextPage);
+                }
+              });
+              observer.observe(loadMoreDiv);
+
               if (posts.length === 0 && page === 1) {
                 const noPostsDiv = document.createElement('div');
                 noPostsDiv.className = 'no-posts';

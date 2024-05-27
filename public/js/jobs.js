@@ -1,7 +1,7 @@
 let jobPostings = []; // Declare jobPostings in a higher scope
 let currentPage = 1;
 let isLoading = false;
-const itemsPerPage = 10;
+const itemsPerPage = 20;
 let filters = {
   experienceLevel: [],
   location: [],
@@ -11,11 +11,22 @@ let filters = {
 
 document.addEventListener("DOMContentLoaded", () => {
   fetchJobPostings(currentPage);
+  setupDynamicFilters();
+  getRecentJobs();
   document
     .querySelector(".load-more-btn")
     .addEventListener("click", handleLoadMore);
-  getRecentJobs();
 });
+
+const loadMoreButton = document.querySelector(".load-more-button");
+const loadMoreDiv = document.querySelector(".load-more");
+const observer = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting && !isLoading) {
+    handleLoadMore(currentPage);
+  }
+});
+
+observer.observe(loadMoreDiv);
 
 const jobTitles = [
   "Software Engineer",
@@ -89,7 +100,7 @@ function applySalaryFilter() {
   renderJobPostings();
 }
 
-function handleLoadMore() {
+function handleLoadMore(currentPage) {
   currentPage++;
   fetchJobPostings(currentPage);
 }
@@ -101,10 +112,6 @@ function fetchJobPostings(page) {
     .then((response) => response.json())
     .then((data) => {
       jobPostings = [...jobPostings, ...data.jobPostings];
-      if (currentPage === 1) {
-        // Only set up filters on the initial load
-        setupDynamicFilters();
-      }
       renderJobPostings(); // Make sure to call render without parameters
       updateLoadMoreButton();
       isLoading = false;

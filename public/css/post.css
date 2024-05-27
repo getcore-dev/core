@@ -1867,7 +1867,7 @@ div.username {
     border-radius: 0px;
     margin: 0px 0px;
     padding: 0px;
-    max-width: 100%;
+    max-width: 100% !important;
   }
 
   p.post-body {
