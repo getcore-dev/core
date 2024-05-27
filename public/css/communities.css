@@ -19,6 +19,10 @@ body {
   overflow-y: none;
 }
 
+.post {
+  border: 1px solid var(--border-color);
+}
+
 
 .job {
   background: var(--light-mode-body-color);
@@ -152,13 +156,15 @@ div.vote-interactions {
 }
 
 .job-flair {
-  display: inline-block;
-  padding: 3px 5px;
-  background-color: #DB504A;
-  border: 1px solid #FF8370; 
-  color: white;
-  border-radius: 5px;
-  font-size: .725rem;
+  display: inline-flex;
+  gap: 5px;
+  padding: 2px 7px;
+  margin: 3px 7px 0px 0px;
+  margin-bottom: 3px;
+  background-color: #5abe6e36;
+  color: #5abe6e;
+  border-radius: 7px;
+  font-size: .925rem;
   position: relative;
 }
 
@@ -302,7 +308,7 @@ div.vote-interactions {
 }
 
 .title {
-  font-size: 1rem;
+  font-size: .9rem;
   font-weight: 500;
   margin: 5px 0px;
   margin-bottom: 0px;
@@ -337,7 +343,7 @@ div.vote-interactions {
   color: var(--light-mode-secondary-text-color);
 }
 
-.description {
+.description, .job-description {
   font-size: 14px;
   font-weight: normal;
   line-height: 1.5em;
@@ -345,6 +351,10 @@ div.vote-interactions {
   display: -webkit-box;
   -webkit-line-clamp: 6; 
   -webkit-box-orient: vertical;
+}
+
+.job-description {
+  -webkit-line-clamp: 2; 
 }
 
 .mini-link-description {
@@ -409,11 +419,16 @@ a.username-link:hover, a.community:hover {
   text-decoration: underline;
 }
 
+.post-quick-info {
+  font-size: .875rem;
+}
+
 .description {
   inline-size: min-content;
   white-space: normal;
   width: 100%;
   overflow: hidden;
+
   box-sizing: border-box;
   line-height: 1.5em;
 }
@@ -853,6 +868,10 @@ button.see-more {
 
 
 @media (max-width: 768px) {
+
+  .title {
+    font-size: 1rem;
+  }
   .jobslist .job { 
     min-width: 190px;
   }
@@ -1039,15 +1058,10 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
     -webkit-line-clamp: 3;
   }
 
-
-
   .username a, .communities-text, .post-quick-info {
     font-size: .9rem;
   }
 
-  .job-flair {
-    background-color: #DB504A;
-  }
   body {
     overflow-y: hidden;
   }
@@ -1096,8 +1110,8 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
 }
 
 .avatar img {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 100%;
   object-fit: cover; 
   overflow: hidden;
@@ -1271,7 +1285,7 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
       color: #ccc; /* Lighter text color for post information */
   }
   #posts-container > div.mobile-jobs-container > div.jobslist > div {
-    border-color: var(--dark-mode-border-color);
+    border-color: var(--dark-mode-body-color);
     }
 
   #posts-container {
@@ -1330,8 +1344,8 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
     color: var(--dark-mode-text-color);
   }
 
-  .job {
-    background-color: var(--dark-mode-body-color) !important;
+  .job, div .mini-link {
+    background-color: var(--dark-mode-main-color) !important;
   }
 
   .main-reaction-button:hover, .boost-button:hover, .reaction-button:hover {

@@ -172,6 +172,32 @@
                   </div>
                   </div>
                   <div class="job-title">${job.title.slice(0, 40)}</div>
+
+                  ${!isMobile ? `
+                    <div class="job-description">
+                      <p>${job.description}</p>
+                    </div>
+<div class="desktop-job-flairs">
+    ${job.tags
+        .filter(tag => tag)
+        .flatMap(tag => tag.split(','))
+        .slice(0, 3)
+        .map(tag => `<span class="job-flair">${tag.trim()}</span>`)
+        .join('')}
+</div>
+                  ` : `
+                    <div class="job-description">
+                      <p>${job.description}</p>
+                    </div>
+<div class="mobile-job-flairs">
+    ${job.tags
+        .filter(tag => tag)
+        .flatMap(tag => tag.split(','))
+        .slice(0, 3)
+        .map(tag => `<span class="job-flair">${tag.trim()}</span>`)
+        .join('')}
+</div>
+                  `}
                 </div>
               </div>
             `).join('');
@@ -485,6 +511,19 @@
               const thumbnailImg = document.createElement('img');
               thumbnailImg.src = imageUrl;
               thumbnailImg.alt = 'Post Thumbnail';
+              // make the thumbnail image larger on click
+              thumbnailImg.onclick = (event) => {
+                event.stopPropagation();
+                if (thumbnailImg.style.width === 'auto' && thumbnailImg.style.height === '300px') {
+                  linkPreviewDiv.style.flexDirection = 'row';
+                  thumbnailImg.style.width = '';
+                  thumbnailImg.style.height = '';
+                } else {
+                  linkPreviewDiv.style.flexDirection = 'column';
+                  thumbnailImg.style.height = '300px';
+                  thumbnailImg.style.width = 'auto';
+                }
+              };
               thumbnailImg.className = 'thumbnail-image';
               thumbnailImg.loading = "lazy";
               thumbnailDiv.appendChild(thumbnailImg);

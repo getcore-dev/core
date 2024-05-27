@@ -372,7 +372,7 @@ a:visited {
 
 .nav-links a {
   color: var(--light-mode-text-color);
-  font-weight: bold;
+  font-weight: normal;
 }
 
 
@@ -1600,7 +1600,7 @@ height: auto;
 }
 
 #com-btn-container {
-  margin-right: auto;
+  margin-left: auto;
   width: 20%;
   max-width: 225px;
   flex: none; /* This will prevent the container from growing */

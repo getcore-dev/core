@@ -1,0 +1,5 @@
+.desktop-trending-posts {
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+}

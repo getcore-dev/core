@@ -14,7 +14,7 @@ body {
   justify-content: center;
   box-sizing: border-box;
   margin-bottom: 0 !important;
-  min-width: 190px !important; 
+  min-width: 140px !important; 
   min-height: 35px !important; 
 }
 
@@ -69,9 +69,9 @@ main {
 
 #login {
   max-width: 500px;
-  padding: 12px 20px;
+  padding: 49px 20px;
   border-radius: 10px;
-  background-color: none;
+  background-color: var(--light-mode-body-color);
   width: 100%;
   box-sizing: border-box;
   border: 0;
@@ -107,7 +107,7 @@ main {
 
 .floating-label {
   display: none;
-  font-size: .725rem;
+  font-size: .625rem;
   position: absolute;
   pointer-events: none;
   left: 15px;
@@ -168,19 +168,19 @@ input:not(:placeholder-shown) + .floating-label,
 
 .input-container input {
   width: 100%;
-  padding: 15px 14px;
+  padding: 11px 9px;
   margin: 8px 0;
   box-sizing: border-box;
   border-radius: 10px; 
-  background-color: var(--light-mode-body-color) !important;
+  background-color: var(--light-mode-main-color) !important;
   border: 1px solid var(--border-color) !important;
-  font-size: 16px;
+  font-size: .8rem;
   transition: box-shadow 0.3s ease;
 }
 
 .input-container input.active {
-  padding: 9px 14px;
-  padding-top: 21px;
+  padding: 5px 9px;
+  padding-top: 17px;
 }
 
 
@@ -218,7 +218,7 @@ input:not(:placeholder-shown) + .floating-label,
 }
 
 .abcRioButton {
-  min-width: 190px !important; 
+  min-width: 140px !important; 
   min-height: 35px !important; 
     border-radius: 10px !important;
     box-shadow: none !important;
@@ -237,6 +237,34 @@ input:not(:placeholder-shown) + .floating-label,
 
 .join-link:hover .highlight {
   text-decoration: underline; 
+}
+
+
+@media screen and (max-width: 600px){
+  main {
+    height: calc(100dvh - 58px);
+  }
+
+  .floating-label {
+    font-size: .725rem;
+  }
+
+  .input-container input {
+    padding: 11px 14px; 
+    background: var(--light-mode-body-color) !important;
+    font-size: 16px;
+  }
+
+  .input-container input.active {
+    padding: 3px 14px;
+    padding-top: 19px;
+}
+
+  #register, #login {
+    max-width: 100%;
+    background: none;
+    border-radius: 0;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -270,15 +298,11 @@ input:not(:placeholder-shown) + .floating-label,
   .github-login-btn {
     color: var(--dark-mode-text-color);
   }
-}
 
-@media screen and (max-width: 600px){
-  main {
-    height: calc(100dvh - 58px);
-  }
-
-  #register, #login {
-    max-width: 100%;
-    border-radius: 0;
+  .input-container input {
+    background-color: var(--dark-mode-main-color) !important;
+    border-color: var(--dark-mode-border-color) !important;
+    color: var(--dark-mode-text-color) !important;
+  
   }
 }

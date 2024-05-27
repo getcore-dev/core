@@ -217,6 +217,7 @@ main {
 }
 
 .followers-info, .points-info, .communities-info {
+  color: var(--light-mode-text-color);
   display: flex;
   flex-direction: row;
   gap: 4px;
@@ -470,9 +471,6 @@ button#edit-button {
 }
 
 
-#profile > .user-links {
-  margin: 0;
-}
 
 th {
   font-size: .875rem;
@@ -485,17 +483,18 @@ td {
 /* Grid container layout */
 #profile {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Three columns of equal size */
-  grid-template-rows: auto; /* Rows take size based on content */
+  grid-template-columns: repeat(3, 1fr); 
+  grid-template-rows: auto; 
   grid-template-areas:
-  "info1 info1 user-links"
-  "user-bio user-bio leetcode"
+  "info1 info1 info1"
+  "user-bio user-bio user-bio"
+  "user-links user-links user-links"
   "job job job"
-  "git-graph git-graph git-graph"
+  "git-graph git-graph leetcode"
   "git-repos git-repos git-repos"
-  "user-activity user-activity user-activity"; /* Posts will take up the entire bottom row spanning 3 columns */
+  "user-activity user-activity user-activity"; 
   gap: 30px;
-  min-height: 0;  /* NEW */
+  min-height: 0; 
   min-width: 0;
 }
 
@@ -727,6 +726,10 @@ td {
     background-color: var(--dark-mode-body-color);
   }
 
+  .followers-info, .points-info, .communities-info {
+    color: var(--dark-mode-text-color);
+  }
+
   #profile.grid-container {
 
       background-color: var(--dark-mode-body-color);
@@ -781,7 +784,7 @@ td {
 }
 
 #profile > div.current-job, #profile > div.user-links, #profile > div.profile-info  {
-  background: var(--dark-mode-main-color);
+  background: none;
 }
 
 /* Styling for input fields in dark mode */
@@ -809,8 +812,4 @@ padding: auto;
 
 
 
-}
-
-#profile > div.profile-info {
-  background-image: linear-gradient(180deg, #f9f9f9 0%, #f9f9f9 100%);
 }

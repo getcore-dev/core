@@ -270,7 +270,7 @@ p.job-description {
   height: calc(100vh - var(--navbar-height));
   width: 100%;
   margin-right: auto;
-  max-width: 1000px;
+  max-width: 1200px;
 }
 
 .jobs-container > h3 {
@@ -373,9 +373,10 @@ p.job-description {
 
 .salary-filter input {
   width: 90px;
-  font-size: 16px;
-  padding: 8px 10px;
-  padding-top: 18px;
+  padding: 4px 3px;
+  padding-top: 12px;
+  margin: 5px 0;
+  font-size: .725rem;
   padding-left: 20px;
   border-radius: 11px;
   border: 1px solid var(--border-color);
@@ -394,29 +395,37 @@ div.recent-jobs {
   margin: 7px 0 12px 0;
 }
 
+.filters {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .title-filter, .location-filter, .experienceLevel-filter {
   position: relative;
+  width: 40%;
 }
 
 .title-filter label, .location-filter label, .experienceLevel-filter label, .salary-filter label {
   position: absolute;
-  left: 12px;
-  top: 10px;
-  font-size: 0.75rem;
+  left: 8px;
+  top: 9px;
+  pointer-events: none;
+  font-size: 0.55rem;
   color: var(--light-mode-secondary-text-color)
 }
 
 .salary-filter label {
-  top: 5px;
+  top: 8px;
 }
 
 
 select {
   width: 100%;
-  padding: 6px 11px;
-  padding-top: 18px;
-    margin: 5px 0;
-  font-size: 16px;
+  padding: 4px 3px;
+  padding-top: 12px;
+  margin: 5px 0;
+  font-size: .725rem;
   border-radius: 11px;
   border: 1px solid var(--border-color);
   background: var(--light-mode-hover-color);
@@ -478,11 +487,11 @@ select {
 .dollar-sign {
   position: absolute;
   color: var(--light-mode-secondary-text-color);
-  top: 28px;
+  top: 24px;
   left: 10px;
-  font-size: 0.9rem;
+  font-size: 0.62rem;
   transform: translateY(-50%);
-  pointer-events: none; 
+  pointer-events: none;
 }
 
 .salary-filter .input-container {
@@ -650,6 +659,9 @@ div .material-symbols-outlined {
     display: block;
   }
 
+  .title-filter label, .location-filter label, .experienceLevel-filter label, .salary-filter label {
+    display: none;
+  }
   .job {
     margin: 0;
     border: 0;
@@ -668,7 +680,23 @@ div .material-symbols-outlined {
     display: none;
   }
 
+  .title-filter, .location-filter, .experienceLevel-filter {
+    max-width: 180px;
+    width: 50%;
+  }
+
+  select, .salary-filter input {
+    font-size: 16px;
+  }
+
+  .dollar-sign {
+    font-size: .82rem;
+  }
   .job-preview {
     padding: 22px 0;
+  }
+
+  .salary-filter input {
+    padding: 8px 3px;
   }
 }

@@ -42,12 +42,6 @@
             <li>
               <a href="/jobs" class="navbar-button <%= currentPath === '/jobs' ? 'active' : '' %>">Openings</a>
             </li>
-            <% if (user) { %>
-            <li>
-              <a href="/learning" class="navbar-button <%= currentPath === '/learning' ? 'active' : '' %>">
-                Learning</a>
-            </li>
-            <% } %>
             <li>
               <a href="/updates" class="navbar-button <%= currentPath === '/updates' ? 'active' : '' %>">
                 Updates</a>
@@ -114,6 +108,18 @@
             </div>
           </a>
 
+
+          <% if (user) { %>
+          <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
+          <a href="/favorites">
+            <div class="menu-item">
+              <span class="material-symbols-outlined" id="menu-community-icon">
+                favorite
+              </span>
+              Favorites
+            </div>
+          </a>
+          <% } %>
           <a href="/about">
             <div class="menu-item">
               <span class="material-symbols-outlined" id="menu-community-icon">
@@ -123,17 +129,6 @@
 
             </div>
           </a>
-          <% if (user) { %>
-          <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
-          <a href="/favorites">
-            <div class="menu-item">
-              <span class="material-symbols-outlined" id="menu-community-icon">
-                star
-              </span>
-              Favorites
-            </div>
-          </a>
-          <% } %>
           <h3>Trending Posts</h3>
           <div class="mobile-trending-posts">
           </div>
@@ -196,7 +191,7 @@
                 <a href="/favorites">
                   <div class="avatar-dropdown-item">
                     <span class="material-symbols-outlined" id="nb-icon">
-                      star
+                      favorite
                     </span>
                   </div>
                 </a>
@@ -241,7 +236,6 @@
 const pathTitles = {
   '/': 'Home',
   '/jobs': 'Openings',
-  '/learning': 'Learning',
   '/updates': 'Updates',
   '/c': 'Communities',
   '/favorites': 'Favorites',
@@ -323,11 +317,6 @@ const isActive = (path) => {
                 Updates</a>
             </li>
             <% if (user) { %>
-            <li>
-              <a href="/learning">
-                Learning
-              </a>
-            </li>
             <li>
               <a href="/favorites">
                 Favorites
@@ -515,22 +504,25 @@ const isActive = (path) => {
     const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
     let trendingPostsContainer;
     if (!isMobile) {
-      trendingPostsContainer = document.querySelector('.trending-posts');
+      trendingPostsContainer = document.querySelector('.desktop-trending-posts');
     } else {
       trendingPostsContainer = document.querySelector('.mobile-trending-posts');
     }
 
     // Check if the container already has content
     if (trendingPostsContainer.children.length > 0) {
-      return; // Exit the function if the container is not empty
+      return;
     }
+
+
+
     fetch('/api/trending-posts') // Adjust this to your server's endpoint
       .then(response => response.json())
       .then(posts => {
         const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
         let trendingPostsContainer;
         if (!isMobile) {
-          trendingPostsContainer = document.querySelector('.trending-posts');
+          trendingPostsContainer = document.querySelector('.desktop-trending-posts');
         } else {
           trendingPostsContainer = document.querySelector('.mobile-trending-posts');
         }
@@ -646,14 +638,15 @@ const isActive = (path) => {
   }
 
   // if the user is not on mobile, get all communities
-  if (!window.matchMedia("only screen and (max-width: 768px)").matches) {
-    getAllCommunities();
-    getTrendingPosts();
-  }
 
   document.addEventListener('DOMContentLoaded', function() {
     const banner = document.getElementById('latestCommitBanner');
     const closeButton = document.getElementById('closeCommitBanner');
+
+    if (!window.matchMedia("only screen and (max-width: 768px)").matches) {
+      getAllCommunities();
+      getTrendingPosts();
+    }
 
     function createHashFromString(string) {
       var hash = 0,
