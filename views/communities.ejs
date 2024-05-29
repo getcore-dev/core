@@ -168,7 +168,7 @@
                       </div>
                     </div>
                     <div class="job-flairs">
-                      <span class="job-flair" id="pay-flair">$${Math.floor((job.salary + job.salary_max) / 2 / 1000)}k</span>
+                      <span class="job-flair" id="pay-flair">$${Math.floor((job.salary) /  1000)}k+</span>
                   </div>
                   </div>
                   <div class="job-title">${job.title.slice(0, 40)}</div>
@@ -238,7 +238,7 @@
                       </div>
                     </div>
                     <div class="job-flairs">
-                      <span class="job-flair" id="pay-flair">$${Math.floor((job.salary + job.salary_max) / 2 / 1000)}k</span>
+                      <span class="job-flair" id="pay-flair">$${Math.floor((job.salary) / 1000)}k</span>
         <span class="job-flair" id="location-flair" data-location="${job.location}">
           ${job.experienceLevel === "Mid Level" ? "Mid" : job.experienceLevel}
         </span>

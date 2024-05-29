@@ -304,9 +304,10 @@ factory
             <p>
             <span class="material-symbols-outlined">
               attach_money
-              </span>${formatSalary(job.salary)} ${
-        job.salary_max ? "- " + formatSalary(job.salary_max) : ""
+              </span><strong style="color:#26704a;">${job.salary} ${
+        job.salary_max ? "- " + job.salary_max : ""
       }
+      </strong>
       </p>
       </div>
       <p id="secondary-text" class="post-date-text">

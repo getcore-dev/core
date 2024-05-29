@@ -194,7 +194,7 @@ const favoritesQueries = {
   getFavoriteJobs: async (userId) => {
     try {
       const result = await sql.query`
-        SELECT f.*, j.title, j.id, j.description, j.company_id, j.location, j.link, j.postedDate, j.salary, j.experienceLevel, j.industry, j.size, j.stock_symbol, c.name as company_name, c.logo as company_logo
+        SELECT f.*, j.title, j.id as job_id, j.description, j.company_id, j.location, j.link, j.postedDate, j.salary, j.salary_max, j.experienceLevel, j.industry, j.size, j.stock_symbol, c.name as company_name, c.logo as company_logo
         FROM favorites_jobs f
         INNER JOIN dbo.JobPostings j ON f.job_posting_id = j.id
         INNER JOIN dbo.companies c ON j.company_id = c.id

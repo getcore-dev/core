@@ -498,8 +498,12 @@
         favoriteElement.innerHTML = `
       <div class="favorite-header">
         <div class="favorite-title">
-                  <h5>${job.company_name}</h5>
+
+          <img src="${job.company_logo}" alt="${job.company_name}" style="width: 30px; height: 30px; border-radius: 50%;">
+          <div>
+          <h5>${job.company_name}</h5>
           <h5>${job.title}</h5>
+          </div>
         </div>
         <div class="dropdown">
           <button class="dropbtn" onclick="toggleDropdown(event)">
@@ -515,8 +519,14 @@
           </div>
         </div>
       </div>
+      <div class="favorites-content">
+        <div>
+          <p class="favorites-text">${job.description}</p>
+        </div>
+      </div>
       <div class="favorites-footer">
-        <p>${formatDate(job.created_at)}</p>
+        <p><strong style="color:#26704a;">$${job.salary} ${job.salary_max ? `- $${job.salary_max}` : ''}</strong></p>
+                <p>${formatDate(job.created_at)}</p>
       </div>
     `;
 

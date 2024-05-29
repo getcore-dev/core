@@ -108,6 +108,13 @@
     color: var(--light-mode-text-color);
   }
 
+  .favorite-title {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+  }
+
   .favorites-type-button .material-symbols-outlined {
     font-size: 1rem;
   }
