@@ -119,6 +119,10 @@ router.get("/getRecentJobs", cacheMiddleware(3600), async (req, res) => {
 
 router.get("/delete/:id", checkAuthenticated, async (req, res) => {
   try {
+    const user = req.user;
+    if (!user.isAdmin) {
+      return res.status(401).send("Unauthorized");
+    }
     const jobId = req.params.id;
     // delete the job and tags and skills associated with it
     await jobQueries.deleteJob(jobId);

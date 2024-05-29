@@ -1117,6 +1117,33 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
   overflow: hidden;
 }
 
+.post-dropdown-menu button {
+  background: 0;
+  border: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.post-dropdown-menu {
+    position: absolute;
+    border: 0;
+    right: 0;
+    width: 100px;
+    pointer-events: all;
+      display: flex;
+      flex-direction: column;
+    font-size: 1rem;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 0;
+    background-color: var(--light-mode-main-color);
+    border: 1px solid var(--border-color);
+    z-index: 10;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
 .see-more {
   display: flex;
   align-items: center;
@@ -1323,6 +1350,16 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
   .user-info, .description, .reactions {
       color: #ccc; /* Lighter text color for additional information */
   }
+
+  .post-dropdown-menu {
+    background-color: var(--dark-mode-main-color);
+    border: 0;
+  }
+
+  .post-dropdown-menu button {
+    color: var(--dark-mode-text-color);
+  }
+  
 
   #secondary-text {
     color: var(--dark-mode-secondary-text-color);

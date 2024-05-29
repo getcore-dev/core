@@ -206,7 +206,7 @@
                   <% } %>
 
                   <div class="dropdown-item">
-                    <button id="share-button" data-post-id="<%= post.id %>">
+                    <button onclick="share('<%= post.title %>', 'Check out this post', 'https://c-ore.dev/posts/<%= post.id %>')">
                       <span class="material-symbols-outlined">
                         share
                       </span>
@@ -879,8 +879,8 @@
                         </span>
                       </div>
                       <% } %>
-                      <div class="dropdown-item" onclick="sharePost('{{ similarPost.id }}')">
-                        <button>
+                      <div class="dropdown-item">
+                        <button onclick="share('<%= similarPost.title %>', 'Check out this post', 'https://c-ore.dev/posts/<%= similarPost.id %>')">
                           <p>Share Post</p>
                         </button>
                       </div>
@@ -988,24 +988,6 @@
       });
     });
 
-    async function sharePost(event, postId) {
-      event.stopPropagation(); // Stop the click from propagating to the document
-      const url = `${window.location.origin}/posts/${postId}`;
-
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            url: url,
-          });
-        } catch (err) {
-          console.error('Error sharing:', err);
-        }
-      } else {
-        // Fallback for browsers that don't support the Web Share API
-        console.log('Web Share API not supported');
-        // You can provide an alternative sharing method here, such as copying the URL to clipboard
-      }
-    }
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('form[id^="favorite-form-"]').forEach(form => {
         form.addEventListener('submit', async (event) => {
@@ -1098,6 +1080,13 @@
       }
     }
 
+    // prevent clicking through dropdown content
+    document.querySelectorAll('.dropdown-content').forEach(function(dropdown) {
+      dropdown.addEventListener('click', function(event) {
+        event.stopPropagation();
+      });
+    });
+
     function closeAllDropdowns() {
       const allDropdowns = document.querySelectorAll('.dropdown-content');
       allDropdowns.forEach(function(dropdown) {
@@ -1105,17 +1094,8 @@
       });
     }
 
-    // Attach an event listener to the document to close all dropdowns when clicking anywhere else
     document.addEventListener('click', closeAllDropdowns);
 
-    // This function is to prevent the click inside the dropdown from propagating to the document
-    document.addEventListener('click', function(event) {
-      const withinBoundaries = event.composedPath().includes(event.target.closest('.dropdown-content'));
-
-      if (withinBoundaries) {
-        event.stopPropagation(); // Prevent the click from closing the dropdown immediately
-      }
-    }, true); // True here sets the listener to the capture phase
     function showReplyButtons(commentId) {
       // Show the reply buttons
       var replyButtons = document.getElementById('reply-buttons-' + commentId);

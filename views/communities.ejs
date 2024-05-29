@@ -456,22 +456,36 @@
             const threeDotsDiv = document.createElement('div');
             threeDotsDiv.className = 'three-dots';
             threeDotsDiv.innerHTML = '<span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>';
-            threeDotsDiv.onclick = async (event) => {
-              event.stopPropagation(); // Prevent the click event from propagating to the post header
+            let dropdownVisible = false;
+            let dropdown;
 
-              if (navigator.share) {
-                try {
-                  await navigator.share({
-                    url: window.location.origin + '/posts/' + post.id,
-                  });
-                } catch (error) {
-                  console.error('Error sharing:', error);
-                }
-              } else {
-                console.warn('Web Share API not supported');
-                // Fallback to custom share menu or other sharing method
+            threeDotsDiv.onclick = (event) => {
+              event.stopPropagation();
+
+              if (dropdownVisible) {
+                dropdown.remove();
+                dropdownVisible = false;
+                return;
               }
+
+              dropdown = document.createElement('div');
+              dropdown.className = 'post-dropdown-menu';
+              dropdown.innerHTML = `
+    <button class="dropdown-item" onclick="window.location.href='/posts/${post.id}'">View Post</button>
+    <button class="dropdown-item" onclick="window.location.href='/user/${post.username}'">Visit @${post.username}</button>
+    <button class="dropdown-item" onclick="window.location.href='/c/${post.community_shortname}'">Visit /${post.community_shortname}</button>
+    <button class="dropdown-item" onclick="share('${post.title}','Check out this post','https://c-ore.dev/posts/${post.id}')">Share</button>
+  `;
+              threeDotsDiv.appendChild(dropdown);
+              dropdownVisible = true;
             };
+
+            document.addEventListener('click', (event) => {
+              if (dropdownVisible && !threeDotsDiv.contains(event.target)) {
+                dropdown.remove();
+                dropdownVisible = false;
+              }
+            });
             postHeaderDiv.appendChild(threeDotsDiv);
 
             postContentDiv.appendChild(postHeaderDiv);

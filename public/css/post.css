@@ -1035,6 +1035,7 @@ div .mini-link {
   border: 0;
   right: 0;
   width: 100px;
+  pointer-events: all;
     display: flex;
     flex-direction: column;
   font-size: 1rem;
@@ -1045,7 +1046,6 @@ div .mini-link {
   border: 1px solid var(--border-color);
   z-index: 10;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-
 }
 
 .dropdown-item button {

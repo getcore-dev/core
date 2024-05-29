@@ -454,7 +454,7 @@ ${
               <div class="apply-button-container">
               <button id="submit-button-normal" onclick="window.location.href='${
                 job.link
-              }'">Apply Now</button>
+              }'">Application Link</button>
               </div>
               <div class="favorite-button-container">
     <form id="favorite-form-${job.id}" action="/favorites/jobs/${

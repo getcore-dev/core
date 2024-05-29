@@ -377,6 +377,46 @@ const isActive = (path) => {
 
 
 <script>
+  function share(title, text, url) {
+    var shareData = {
+      title: title,
+      text: text,
+      url: url
+    };
+
+    if (navigator.share) {
+      // If Web Share API is supported (mostly mobile devices)
+      navigator.share(shareData).then(() => {
+        console.log('Content shared successfully');
+      }).catch((error) => {
+        console.error('Error sharing content: ', error);
+      });
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+      // If Clipboard API is supported (mostly desktop browsers)
+      navigator.clipboard.writeText(url).then(() => {
+        alert('Content URL copied to clipboard!');
+      }).catch((error) => {
+        console.error('Error copying content URL: ', error);
+      });
+    } else {
+      // Fallback for older browsers
+      var textArea = document.createElement('textarea');
+      textArea.value = url;
+      textArea.style.position = 'fixed';
+      textArea.style.opacity = '0';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        alert('Content URL copied to clipboard!');
+      } catch (err) {
+        alert('Failed to copy content URL: ', err);
+      }
+      document.body.removeChild(textArea);
+    }
+  }
+
   function showBannerNotification(message) {
     const banner = document.getElementById("latestCommitBanner");
     const messageElement = banner.querySelector(".latest-commit-message");

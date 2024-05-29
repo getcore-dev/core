@@ -13,13 +13,13 @@
   <meta name="description" content="<%= otheruser.firstname %> <%= otheruser.lastname %>'s profile on CORE. Connect with <%= otheruser.firstname %> and explore their activities, posts, and more.">
   <meta name="keywords" content="<%= otheruser.firstname %> <%= otheruser.lastname %>, CORE profile, connect with <%= otheruser.firstname %>, <%= otheruser.username %>'s activities, user posts, social links">
   <meta name="robots" content="index, follow">
-  <meta property="og:title" content="<%= otheruser.firstname %> <%= otheruser.lastname %> - CORE Profile">
+  <meta property="og:title" content="<%= otheruser.username %> - CORE">
   <meta property="og:description" content="Connect with <%= otheruser.firstname %> <%= otheruser.lastname %> on CORE. Explore their activities, posts, and more.">
   <meta property="og:image" content="<%= otheruser.avatar ? otheruser.avatar : '/img/default-avatar.png' %>">
   <meta property="og:url" content="https://c-ore.dev/user/<%= otheruser.username %>">
   <meta property="og:type" content="profile">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="<%= otheruser.firstname %> <%= otheruser.lastname %> - CORE Profile">
+  <meta name="twitter:title" content="<%= otheruser.username %> - CORE">
   <meta name="twitter:description" content="Connect with <%= otheruser.firstname %> <%= otheruser.lastname %> on CORE. Explore their activities, posts, and more.">
   <meta name="twitter:image" content="<%= otheruser.avatar ? otheruser.avatar : '/img/default-avatar.png' %>">
 </head>
@@ -149,52 +149,10 @@
             </form>
             <% } %>
             <% } %>
-            <button id="edit-button" onclick="shareProfile()" style="margin-bottom: auto;">
+            <button id="edit-button" onclick="share('User Profile', 'Check out this user profile:', 'https://c-ore.dev/user/<%= otheruser.username %>')" style="margin-bottom: auto;">
               Share
             </button>
 
-            <script>
-              function shareProfile() {
-                var profileUrl = 'https://c-ore.dev/user/<%= otheruser.username %>';
-                var shareData = {
-                  title: 'User Profile',
-                  text: 'Check out this user profile:',
-                  url: profileUrl
-                };
-
-                if (navigator.share) {
-                  // If Web Share API is supported (mostly mobile devices)
-                  navigator.share(shareData).then(() => {
-                    console.log('Profile URL shared successfully');
-                  }).catch((error) => {
-                    console.error('Error sharing profile URL: ', error);
-                  });
-                } else if (navigator.clipboard && navigator.clipboard.writeText) {
-                  // If Clipboard API is supported (mostly desktop browsers)
-                  navigator.clipboard.writeText(profileUrl).then(() => {
-                    alert('Profile URL copied to clipboard!');
-                  }).catch((error) => {
-                    console.error('Error copying profile URL: ', error);
-                  });
-                } else {
-                  // Fallback for older browsers
-                  var textArea = document.createElement('textarea');
-                  textArea.value = profileUrl;
-                  textArea.style.position = 'fixed';
-                  textArea.style.opacity = '0';
-                  document.body.appendChild(textArea);
-                  textArea.focus();
-                  textArea.select();
-                  try {
-                    document.execCommand('copy');
-                    alert('Profile URL copied to clipboard!');
-                  } catch (err) {
-                    alert('Failed to copy text: ', err);
-                  }
-                  document.body.removeChild(textArea);
-                }
-              }
-            </script>
           </div>
           <% } %>
 
