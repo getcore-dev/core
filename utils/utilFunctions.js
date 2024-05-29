@@ -523,14 +523,25 @@ const utilFunctions = {
   getAllCommunities: async (user) => {
     try {
       let query = sql.query`
-        SELECT c.id, c.name, c.mini_icon, c.shortname, 
-          CASE WHEN cm.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_member
-        FROM communities c
-        LEFT JOIN community_memberships cm ON c.id = cm.community_id AND cm.user_id = ${
-          user ? user.id : null
-        }
-        WHERE c.PrivacySetting = 'Public'
-      `;
+      SELECT 
+        c.id, 
+        c.name, 
+        c.mini_icon, 
+        c.shortname, 
+        CASE WHEN cm.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_member,
+        (SELECT COUNT(*) FROM community_memberships WHERE community_id = c.id) AS MemberCount
+      FROM 
+        communities c
+      LEFT JOIN 
+        community_memberships cm 
+      ON 
+        c.id = cm.community_id 
+        AND cm.user_id = ${user ? user.id : null}
+      WHERE 
+        c.PrivacySetting = 'Public'
+      ORDER BY 
+        MemberCount DESC
+    `;
 
       const result = await query;
       return result.recordset;

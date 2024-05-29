@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/favorites.css" />
   <link rel="stylesheet" href="/css/user_profile.css" />
   <link rel="shortcut icon" href="/img/core.png" />
 </head>
@@ -49,13 +50,6 @@
     width: 100%;
     flex-direction row;
     justify-content: space-between;
-  }
-
-  .favorites-footer p {
-    background: var(--border-color);
-    padding: 4px 8px;
-    color: var(--light-mode-secondary-text-color);
-    border-radius: 6px;
   }
 
   .dropbtn .material-symbols-outlined {
@@ -187,6 +181,15 @@
     margin: 13px 13px;
   }
 
+  .favorites-container {
+    max-width: 800px;
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    flex-direction: column;
+    align-items: center;
+  }
+
   div.favorites-type-selector {
     display: flex;
     flex-direction: row;
@@ -207,13 +210,13 @@
   }
 
   @media (prefers-color-scheme: dark) {
+    main {
+      background-color: var(--dark-mode-body-color);
+    }
+
     .favorite {
       background-color: var(--dark-mode-body-color);
       border-color: var(--dark-mode-border-color);
-    }
-
-    .favorites-footer p {
-      background: var(--dark-mode-lighter-color);
     }
 
     .favorites-type-button {
@@ -232,43 +235,51 @@
       background-color: var(--dark-mode-hover-background-color);
     }
   }
+
+  @media screen and (max-width: 600px) {
+    .favorites-container {
+      align-items: normal
+    }
+  }
 </style>
 
 <body>
   <%- include('partials/navbar', { pagePath: 'favorites' }) %>
   <main>
-    <div id="favorites-header">
-      <div class="favorites-type-selector">
-        <button class="favorites-type-button" onclick="getFavorites('all')">
-          <span class="material-symbols-outlined">
-            favorite
-          </span>
-          <p>All</p>
-        </button>
-        <button class="favorites-type-button" onclick="getFavorites('posts')">
-          <span class="material-symbols-outlined">
-            article
-          </span>
-          <p>Posts</p>
-        </button>
-        <button class="favorites-type-button" onclick="getFavorites('jobs')">
-          <span class="material-symbols-outlined">
-            work
-          </span>
-          <p>Jobs</p>
-        </button>
-        <button class="favorites-type-button" onclick="getFavorites('comments')">
-          <span class="material-symbols-outlined">
-            comment
-          </span>
-          <p>Comments</p>
-        </button>
+    <div class="favorites-container">
+      <div id="favorites-header">
+        <div class="favorites-type-selector">
+          <button class="favorites-type-button" onclick="getFavorites('all')">
+            <span class="material-symbols-outlined">
+              favorite
+            </span>
+            <p>All</p>
+          </button>
+          <button class="favorites-type-button" onclick="getFavorites('posts')">
+            <span class="material-symbols-outlined">
+              article
+            </span>
+            <p>Posts</p>
+          </button>
+          <button class="favorites-type-button" onclick="getFavorites('jobs')">
+            <span class="material-symbols-outlined">
+              work
+            </span>
+            <p>Jobs</p>
+          </button>
+          <button class="favorites-type-button" onclick="getFavorites('comments')">
+            <span class="material-symbols-outlined">
+              comment
+            </span>
+            <p>Comments</p>
+          </button>
+        </div>
       </div>
-    </div>
-    <div class="favorites" id="favoritesContainer">
+      <div class="favorites" id="favoritesContainer">
 
+      </div>
+      <%- include('partials/footer') %>
     </div>
-    <%- include('partials/footer') %>
 
   </main>
 
@@ -333,6 +344,16 @@
       favoritesHeaderContainer.appendChild(favoriteHeader);
       favoritesContainer.appendChild(favoritesHeaderContainer);
 
+      if (posts.length === 0) {
+        const noFavoritesElement = document.createElement('div');
+        noFavoritesElement.classList.add('favorite');
+        noFavoritesElement.innerHTML = `
+        <h5>No favorite posts found.</h5>
+      `;
+        favoritesContainer.appendChild(noFavoritesElement);
+        return;
+      }
+
 
       posts.forEach((post) => {
         const favoriteElement = document.createElement('div');
@@ -361,11 +382,30 @@
           </div>
         </div>
       </div>
-      <div class="favorites-footer">
-        <p style="color: ${post.profile_border_color}ff; background: ${post.profile_border_color}35;">${post.username}</p>
-        <p style="color: ${post.community_color}95; background: ${post.community_color}35;">${post.community_name}</p>
-        <p>${formatDate(post.created_at[1])}</p>
-      </div>
+      <div class="favorites-content">
+        <div>
+          <p class="favorites-text">${post.content
+                  .replace(/(?:\r\n|\r|\n)/g, ' ')
+                  .replace(/\*\*(.*?)\*\*/g, '$1')
+                  .replace(/\*(.*?)\*/g, '$1')
+                  .replace(/__(.*?)__/g, '$1')
+                  .replace(/_(.*?)_/g, '$1')
+                  .replace(/!\[.*?\]\(.*?\)/g, '')
+                  .replace(/\[.*?\]\(.*?\)/g, '$1')}</p>
+        </div>
+          </div>
+                  <div class="favorites-footer">
+        <p>
+          <strong style="color: ${post.profile_border_color}ff;">
+           ${post.username}
+          </strong> 
+          in 
+          <strong style="color: ${post.community_color}95;">
+            /${post.community_name}
+          </strong>
+        </p>
+        <p id="secondary-text">${formatDate(post.created_at[1])}</p>
+        </div>
       `;
 
         favoritesContainer.appendChild(favoriteElement);
@@ -381,6 +421,16 @@
       favoriteHeader.textContent = 'Comments';
       favoritesHeaderContainer.appendChild(favoriteHeader);
       favoritesContainer.appendChild(favoritesHeaderContainer);
+
+      if (comments.length === 0) {
+        const noFavoritesElement = document.createElement('div');
+        noFavoritesElement.classList.add('favorite');
+        noFavoritesElement.innerHTML = `
+        <h5>No favorite comments found.</h5>
+      `;
+        favoritesContainer.appendChild(noFavoritesElement);
+        return;
+      }
 
       comments.forEach((comment) => {
         const favoriteElement = document.createElement('div');
@@ -427,6 +477,16 @@
       favoriteHeader.textContent = 'Jobs';
       favoritesHeaderContainer.appendChild(favoriteHeader);
       favoritesContainer.appendChild(favoritesHeaderContainer);
+
+      if (jobs.length === 0) {
+        const noFavoritesElement = document.createElement('div');
+        noFavoritesElement.classList.add('favorite');
+        noFavoritesElement.innerHTML = `
+        <h5>No favorite jobs found.</h5>
+      `;
+        favoritesContainer.appendChild(noFavoritesElement);
+        return;
+      }
 
       jobs.forEach((job) => {
         const favoriteElement = document.createElement('div');

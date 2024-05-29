@@ -85,74 +85,118 @@
       <div id="profile" class="grid-container">
 
         <div class="profile-info">
-          <div class="profile-picture" data-hue-rotate="0">
-            <% if (otheruser.avatar) { %>
-            <img id="profilePic" src="<%= otheruser.avatar %>" alt="Profile Picture" style="  box-shadow: 0 2px 20px <%= otheruser.profile_border_color%>;
+          <div class="profile-content">
+            <div class="profile-picture" data-hue-rotate="0">
+              <% if (otheruser.avatar) { %>
+              <img id="profilePic" src="<%= otheruser.avatar %>" alt="Profile Picture" style="  box-shadow: 0 2px 20px <%= otheruser.profile_border_color%>;
   border: 4px solid <%= otheruser.profile_border_color%> !important;" />
-            <% } else { %>
-            <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
-            <% } %>
-          </div>
-          <div class="profile-details">
-            <h2><%= otheruser.firstname %> <%= otheruser.lastname%>
-            </h2>
-
-            <p id="firstname-display" style="color: <%= otheruser.isAdmin ? '#b40000' : 'inherit' %>;">@<%= otheruser.username %> <% if (otheruser.verified) { %>
-              <span class="material-symbols-outlined" style="color: green">
-                verified
-              </span>
-              <% } %>
-            </p>
-
-            <% if (user) { %>
-            <div class="edit-controls-and-follow-button">
-              <% if (otheruser.username === user.username) { %>
-              <button id="edit-button" onclick="window.location.href='/edit-profile'" style="margin-bottom: auto;">
-                Edit
-              </button>
               <% } else { %>
-              <form id="followForm" action="/users/<%= otheruser.id %>/<%= isFollowing ? 'unfollow' : 'follow' %>" method="POST">
-                <button type="submit" id="followButton" style="margin-bottom: auto;"><%= isFollowing ? 'Unfollow' : 'Follow' %></button>
-              </form>
-
-              <% if (user.isAdmin ) { %>
-              <form action="/admin/users/<%= otheruser.id %>/toggle-admin" method="POST">
-                <button id="edit-button" type="submit" style="margin-bottom: auto;"><%= otheruser.isAdmin ? 'Remove Admin' : 'Make Admin' %></button>
-              </form>
-              <form action="/admin/users/<%= otheruser.id %>/toggle-verified" method="POST">
-                <button id="edit-button" type="submit" style="margin-bottom: auto;"><%= otheruser.verified ? 'Unverify' : 'Verify' %></button>
-              </form>
-              <form action="/admin/users/<%= otheruser.id %>/toggle-ban" method="POST">
-                <button id="edit-button" type="submit" style="margin-bottom: auto;"><%= otheruser.isBanned ? 'Unban' : 'Ban' %></button>
-              </form>
-              <% } %>
-
-
-
-
+              <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
               <% } %>
             </div>
-            <% } %>
-            <div class="followers-info">
-              <span class="material-symbols-outlined">
-                person
-              </span>
-              <a href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; gap: 5px;"><span id="followerCount"> <%= otheruser.followerCount %> Followers </a></span>
-              <a href="/user/<%= otheruser.username %>/following" style="display: flex; flex-direction:row; gap: 5px;"><span id="followCount"> <%= otheruser.followingCount %> Following</a></span>
-            </div>
-            <div class="points-info">
-              <span class="material-symbols-outlined">
-                star
-              </span>
-              <p><%= otheruser.points %> Points</p>
-            </div>
-            <% if (otheruser.topCommunities && otheruser.topCommunities.length > 0) { %>
-            <div class="communities-info">
-              <p>Active in: <%= otheruser.topCommunities %></p>
-            </div>
-            <% } %>
+            <div class="profile-details">
+              <h2><%= otheruser.firstname %> <%= otheruser.lastname%>
+              </h2>
 
+              <p id="firstname-display" style="color: <%= otheruser.isAdmin ? '#b40000' : 'inherit' %>;">@<%= otheruser.username %> <% if (otheruser.verified) { %>
+                <span class="material-symbols-outlined" style="color: green">
+                  verified
+                </span>
+                <% } %>
+              </p>
+
+              <div class="followers-info">
+                <span class="material-symbols-outlined">
+                  person
+                </span>
+                <a href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; gap: 5px;"><span id="followerCount"> <%= otheruser.followerCount %> Followers </a></span>
+                <a href="/user/<%= otheruser.username %>/following" style="display: flex; flex-direction:row; gap: 5px;"><span id="followCount"> <%= otheruser.followingCount %> Following</a></span>
+              </div>
+              <div class="points-info">
+                <span class="material-symbols-outlined">
+                  star
+                </span>
+                <p><%= otheruser.points %> Points</p>
+              </div>
+              <% if (otheruser.topCommunities && otheruser.topCommunities.length > 0) { %>
+              <div class="communities-info">
+                <p>Active in: <%= otheruser.topCommunities %></p>
+              </div>
+              <% } %>
+
+            </div>
           </div>
+          <% if (user) { %>
+          <div class="edit-controls-and-follow-button">
+            <% if (otheruser.username === user.username) { %>
+            <button id="edit-button" onclick="window.location.href='/edit-profile'" style="margin-bottom: auto;">
+              Edit
+            </button>
+            <% } else { %>
+            <form id="followForm" action="/users/<%= otheruser.id %>/<%= isFollowing ? 'unfollow' : 'follow' %>" method="POST">
+              <button type="submit" id="followButton" style="margin-bottom: auto;"><%= isFollowing ? 'Unfollow' : 'Follow' %></button>
+            </form>
+
+            <% if (user.isAdmin ) { %>
+            <form action="/admin/users/<%= otheruser.id %>/toggle-admin" method="POST">
+              <button id="edit-button" type="submit" style="margin-bottom: auto;"><%= otheruser.isAdmin ? 'Remove Admin' : 'Make Admin' %></button>
+            </form>
+            <form action="/admin/users/<%= otheruser.id %>/toggle-verified" method="POST">
+              <button id="edit-button" type="submit" style="margin-bottom: auto;"><%= otheruser.verified ? 'Unverify' : 'Verify' %></button>
+            </form>
+            <form action="/admin/users/<%= otheruser.id %>/toggle-ban" method="POST">
+              <button id="edit-button" type="submit" style="margin-bottom: auto;"><%= otheruser.isBanned ? 'Unban' : 'Ban' %></button>
+            </form>
+            <% } %>
+            <% } %>
+            <button id="edit-button" onclick="shareProfile()" style="margin-bottom: auto;">
+              Share
+            </button>
+
+            <script>
+              function shareProfile() {
+                var profileUrl = 'https://c-ore.dev/user/<%= otheruser.username %>';
+                var shareData = {
+                  title: 'User Profile',
+                  text: 'Check out this user profile:',
+                  url: profileUrl
+                };
+
+                if (navigator.share) {
+                  // If Web Share API is supported (mostly mobile devices)
+                  navigator.share(shareData).then(() => {
+                    console.log('Profile URL shared successfully');
+                  }).catch((error) => {
+                    console.error('Error sharing profile URL: ', error);
+                  });
+                } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                  // If Clipboard API is supported (mostly desktop browsers)
+                  navigator.clipboard.writeText(profileUrl).then(() => {
+                    alert('Profile URL copied to clipboard!');
+                  }).catch((error) => {
+                    console.error('Error copying profile URL: ', error);
+                  });
+                } else {
+                  // Fallback for older browsers
+                  var textArea = document.createElement('textarea');
+                  textArea.value = profileUrl;
+                  textArea.style.position = 'fixed';
+                  textArea.style.opacity = '0';
+                  document.body.appendChild(textArea);
+                  textArea.focus();
+                  textArea.select();
+                  try {
+                    document.execCommand('copy');
+                    alert('Profile URL copied to clipboard!');
+                  } catch (err) {
+                    alert('Failed to copy text: ', err);
+                  }
+                  document.body.removeChild(textArea);
+                }
+              }
+            </script>
+          </div>
+          <% } %>
 
 
         </div>

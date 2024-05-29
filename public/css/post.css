@@ -237,12 +237,11 @@ a.comment-url:visited {
   padding: 10px 20px;
   border-radius: 6px;
   border: 0;
-  background-color: var(--light-mode-main-color);
-  font-size: 16px; /* Same as other input fields */
+  background-color: transparent;
   color: var(--input-text-color);
   overflow: hidden;
-  font-family: inherit; /* Inherits font-family from body */
-  line-height: normal; /* Adjust line height as needed */
+  font-family: inherit;
+  line-height: normal; 
 }
 
 
@@ -1034,6 +1033,7 @@ div .mini-link {
   display: none;
   position: absolute;
   border: 0;
+  right: 0;
   width: 100px;
     display: flex;
     flex-direction: column;
@@ -1279,6 +1279,12 @@ p.preview-description {
   border: 1px solid #afd4ff;
 }
 
+.discussion-link {
+  display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .project-link {
   background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
@@ -1434,8 +1440,7 @@ p.preview-description {
   }
   
   .input-container textarea, .comment-container textarea {
-  background-color: var(--dark-mode-main-color);
-  border-color: var(--dark-mode-border-color);
+  background-color: transparent;
   color: var(--dark-mode-text-color);
   }
 
@@ -1573,8 +1578,13 @@ p.preview-description {
     color: var(--dark-mode-text-color) !important;
   }
 
-  .project-link {
+  .project-link { 
     background-color: var(--dark-mode-body-color);
+    border-color: var(--dark-mode-border-color);
+  }
+  
+  .reply-form .input-container { 
+    background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-border-color);
   }
 
@@ -1756,6 +1766,10 @@ div.username {
     width: 100%; 
     height: auto;
     display: block; 
+  }
+
+  .dropdown-content { 
+    right: 0;
   }
 
   .post-subtitle {

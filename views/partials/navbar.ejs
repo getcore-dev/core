@@ -163,7 +163,11 @@
             <div class="nav-avatar">
               <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar" style="margin-top:6px;">
               <div class="avatar-online-status" style="
-              background: <%= user.profile_border_color %>;
+              background: <% if (user.profile_border_color) { %>
+              <%= user.profile_border_color %>
+              <% } else { %>
+              #55a317
+              <% } %>;
               height: 7px;
               width: 7px;
               z-index: 10;

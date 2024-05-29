@@ -46,13 +46,18 @@ main {
   color: var(--primary-text-color);
 }
 
+.profile-content {
+  display: flex;
+    gap: 10px;
+    flex-direction: row;
+}
+
 .edit-controls-and-follow-button {
   display: flex;
   gap: 13px;
-    margin-left: auto;
-
-    justify-content: space-around;
-    align-items: center;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .profile-header-title {
@@ -80,6 +85,10 @@ main {
 #profile.grid-container {
   background-color: var(--light-mode-main-color);
 }
+.profile-details {
+  width: 75%;
+}
+
 
 .profile-details .material-symbols-outlined {
   vertical-align: -2px;
@@ -443,6 +452,10 @@ button#edit-button {
     position: relative;
 }
 
+.user-activity {
+  padding: 0 !important;
+}
+
 #currentJobContainer {
   display: flex;
   flex-wrap: nowrap;
@@ -609,11 +622,9 @@ td {
 }
 #profile > div.profile-info {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   box-sizing: border-box;
   gap: 12px;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .profile-info {
