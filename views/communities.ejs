@@ -177,26 +177,26 @@
                     <div class="job-description">
                       <p>${job.description}</p>
                     </div>
-<div class="desktop-job-flairs">
-    ${job.tags
-        .filter(tag => tag)
-        .flatMap(tag => tag.split(','))
-        .slice(0, 3)
-        .map(tag => `<span class="job-flair">${tag.trim()}</span>`)
-        .join('')}
-</div>
+              <div class="desktop-job-flairs">
+                  ${job.tags
+                      .filter(tag => tag)
+                      .flatMap(tag => tag.split(','))
+                      .slice(0, 3)
+                      .map(tag => `<span class="job-flair">${tag.trim()}</span>`)
+                      .join('')}
+              </div>
                   ` : `
                     <div class="job-description">
                       <p>${job.description}</p>
                     </div>
-<div class="mobile-job-flairs">
-    ${job.tags
-        .filter(tag => tag)
-        .flatMap(tag => tag.split(','))
-        .slice(0, 3)
-        .map(tag => `<span class="job-flair">${tag.trim()}</span>`)
-        .join('')}
-</div>
+                <div class="mobile-job-flairs">
+                    ${job.tags
+                        .filter(tag => tag)
+                        .flatMap(tag => tag.split(','))
+                        .slice(0, 3)
+                        .map(tag => `<span class="job-flair">${tag.trim()}</span>`)
+                        .join('')}
+                </div>
                   `}
                 </div>
               </div>
@@ -238,16 +238,39 @@
                       </div>
                     </div>
                     <div class="job-flairs">
-                      <span class="job-flair" id="pay-flair">$${Math.floor((job.salary) / 1000)}k</span>
-        <span class="job-flair" id="location-flair" data-location="${job.location}">
-          ${job.experienceLevel === "Mid Level" ? "Mid" : job.experienceLevel}
-        </span>
+                      <span class="job-flair" id="pay-flair">$${Math.floor((job.salary) /  1000)}k+</span>
                   </div>
                   </div>
                   <div class="job-title">${job.title.slice(0, 40)}</div>
+
+                  ${!isMobile ? `
+                    <div class="job-description">
+                      <p>${job.description}</p>
+                    </div>
+              <div class="desktop-job-flairs">
+                  ${job.tags
+                      .filter(tag => tag)
+                      .flatMap(tag => tag.split(','))
+                      .slice(0, 3)
+                      .map(tag => `<span class="job-flair">${tag.trim()}</span>`)
+                      .join('')}
+              </div>
+                  ` : `
+                    <div class="job-description">
+                      <p>${job.description}</p>
+                    </div>
+                <div class="mobile-job-flairs">
+                    ${job.tags
+                        .filter(tag => tag)
+                        .flatMap(tag => tag.split(','))
+                        .slice(0, 3)
+                        .map(tag => `<span class="job-flair">${tag.trim()}</span>`)
+                        .join('')}
+                </div>
+                  `}
                 </div>
               </div>
-            `).join('');
+            `).join(''); 
           jobslistContainer.innerHTML += '<div class="see-more"><a href="/jobs">See More</a></div>';
 
 
