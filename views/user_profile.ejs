@@ -130,8 +130,8 @@
 
             </div>
           </div>
-          <% if (user) { %>
           <div class="edit-controls-and-follow-button">
+            <% if (user) { %>
             <% if (otheruser.username === user.username) { %>
             <button id="edit-button" onclick="window.location.href='/edit-profile'" style="margin-bottom: auto;">
               Edit
@@ -153,12 +153,14 @@
             </form>
             <% } %>
             <% } %>
+
+            <% } %>
+
             <button id="edit-button" onclick="share('User Profile', 'Check out this user profile:', 'https://c-ore.dev/user/<%= otheruser.username %>')" style="margin-bottom: auto;">
               Share
             </button>
-
           </div>
-          <% } %>
+
 
           <div class="links-container">
             <% if (otheruser.link) { %>
