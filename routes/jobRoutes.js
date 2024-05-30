@@ -107,6 +107,17 @@ router.get("/getTopTags", cacheMiddleware(3600), async (req, res) => {
   }
 });
 
+router.get("/location/:state", async (req, res) => {
+  try {
+    const state = req.params.state;
+    const jobs = await jobQueries.getJobsByState(state);
+    res.render("job-results.ejs", { state, jobs, user: req.user });
+  } catch (err) {
+    console.error("Error fetching job postings:", err);
+    res.status(500).send("Error fetching job postings");
+  }
+});
+
 router.get("/getRecentJobs", cacheMiddleware(3600), async (req, res) => {
   try {
     const jobCount = await jobQueries.getRecentJobCount();

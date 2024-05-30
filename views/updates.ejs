@@ -16,90 +16,27 @@
   <%- include('partials/navbar', { pagePath: 'updates' }) %>
   <main>
     <div id="updates-header">
-      <div id="updates-info-header" style="
-    display: flex;
-    justify-content: space-around;
-">
-
-        <h5>Title</h5>
-        <h5>Author</h5>
-        <h5>Lines Changed</h5>
-      </div>
     </div>
     <div id="commits-container">
-      <div id="commits">
-        <% for (let i = 0; i < commits.length; i++) { 
-            let postDate = new Date(commits[i].commit.author.date);
-            let today = new Date();
-            let formattedDate;
-          
-            // Calculate time difference in milliseconds
-            let diff = today - postDate;
-          
-            // Convert time difference to different units
-            let minutes = Math.floor(diff / 60000);
-            let hours = Math.floor(diff / 3600000);
-            let days = Math.floor(diff / 86400000);
-            let months = Math.floor(days / 30);
-            let years = Math.floor(days / 365);
-          
-            // Decide the format based on the time difference
-            if (minutes < 60) {
-              formattedDate = minutes + ' min' + (minutes === 1 ? '' : 's') + ' ago';
-            } else if (hours < 24) {
-              formattedDate = hours + ' hour' + (hours === 1 ? '' : 's') + ' ago';
-            } else if (days < 30) {
-              formattedDate = days + ' day' + (days === 1 ? '' : 's') + ' ago';
-            } else if (months < 12) {
-              formattedDate = months + ' month' + (months === 1 ? '' : 's') + ' ago';
-            } else {
-              formattedDate = years + ' year' + (years === 1 ? '' : 's') + ' ago';
-            }
-          %>
-        <a href="<%= commits[i].html_url %>" style="text-decoration:none">
-          <div class="commit">
-            <div class="commit-top">
-              <div class="commit-header">
-                <div class="commit-title">
-                  <p><%= commits[i].commit.message %></p>
-                </div>
-                <div class="commit-date">
-                  <%= formattedDate %>
-                </div>
-              </div>
-            </div>
-            <div class="commit-body">
-              <div class="commit-author">
-                <img src="<%= commits[i].author.avatar_url %>" alt="avatar" />
-                <div class="commit-author-name">
-                  <%= commits[i].commit.author.name %>
-                </div>
-              </div>
-            </div>
-            <div class="commit-stats">
-              <div class="commit-stats-container">
-                <div class="commit-stats-item" style="background-color: #12542489;">
-                  <div class="commit-stats-item-value">
-                    + <%= commits[i].linesAdded %>
-                  </div>
-                </div>
-                <div class="commit-stats-item" style="background-color: #7e0d0da7;">
-                  <div class="commit-stats-item-value">
-                    - <%= commits[i].linesDeleted %>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </a>
-        <% } %>
-
+      <% updates.forEach((update) => { %>
+      <div class="update">
+        <div class="update-header">
+          <%= update.title %>
+        </div>
+        <div class="update-body">
+          <p><%= update.content %></p>
+        </div>
+        <div class="update-link">
+          <a href="<%= update.pull_request_url %>"><%= update.pull_request_url %></a>
+        </div>
+        <div class="update-footer">
+          <p><%= update.post_date %></p>
+        </div>
       </div>
+      <% }) %>
     </div>
     <%- include('partials/footer') %>
-
   </main>
-
   <script>
   </script>
 </body>

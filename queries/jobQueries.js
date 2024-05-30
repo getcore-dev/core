@@ -733,6 +733,95 @@ const jobQueries = {
     }
   },
 
+  getJobsByState: async (state) => {
+    try {
+      const stateMappings = {
+        Alabama: "AL",
+        Alaska: "AK",
+        Arizona: "AZ",
+        Arkansas: "AR",
+        California: "CA",
+        Colorado: "CO",
+        Connecticut: "CT",
+        Delaware: "DE",
+        Florida: "FL",
+        Georgia: "GA",
+        Hawaii: "HI",
+        Idaho: "ID",
+        Illinois: "IL",
+        Indiana: "IN",
+        Iowa: "IA",
+        Kansas: "KS",
+        Kentucky: "KY",
+        Louisiana: "LA",
+        Maine: "ME",
+        Maryland: "MD",
+        Massachusetts: "MA",
+        Michigan: "MI",
+        Minnesota: "MN",
+        Mississippi: "MS",
+        Missouri: "MO",
+        Montana: "MT",
+        Nebraska: "NE",
+        Nevada: "NV",
+        "New Hampshire": "NH",
+        "New Jersey": "NJ",
+        "New Mexico": "NM",
+        "New York": "NY",
+        "North Carolina": "NC",
+        "North Dakota": "ND",
+        Ohio: "OH",
+        Oklahoma: "OK",
+        Oregon: "OR",
+        Pennsylvania: "PA",
+        "Rhode Island": "RI",
+        "South Carolina": "SC",
+        "South Dakota": "SD",
+        Tennessee: "TN",
+        Texas: "TX",
+        Utah: "UT",
+        Vermont: "VT",
+        Virginia: "VA",
+        Washington: "WA",
+        "West Virginia": "WV",
+        Wisconsin: "WI",
+        Wyoming: "WY",
+        "United States": "US",
+      };
+
+      const fullStateName =
+        Object.keys(stateMappings).find(
+          (key) => stateMappings[key] === state
+        ) || state;
+      const stateAbbreviation = stateMappings[state] || state;
+
+      const query = `
+        SELECT JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
+        (
+          SELECT STRING_AGG(JobTags.tagName, ', ')
+          FROM JobPostingsTags
+          INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+          WHERE JobPostingsTags.jobId = JobPostings.id
+        ) AS tags
+        FROM JobPostings
+        LEFT JOIN companies ON JobPostings.company_id = companies.id
+        WHERE JobPostings.location LIKE '%${fullStateName}%' 
+           OR JobPostings.location LIKE '% ${stateAbbreviation}%'
+        ORDER BY JobPostings.postedDate DESC
+      `;
+
+      console.log("SQL Query: ", query);
+
+      const result = await sql.query(query);
+
+      const jobs = result.recordset;
+      return jobs;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getSkillsId: async (tagName) => {
     try {
       const pool = await sql.connect();

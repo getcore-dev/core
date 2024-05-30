@@ -270,7 +270,7 @@
                   `}
                 </div>
               </div>
-            `).join(''); 
+            `).join('');
           jobslistContainer.innerHTML += '<div class="see-more"><a href="/jobs">See More</a></div>';
 
 
@@ -348,11 +348,11 @@
                 <button class="header-button" id="filter-button" onclick="toggleFilterMenu()">
                   <span class="material-symbols-outlined">filter_list</span>
                 </button>
-                <% if (user) { %>
-                  <button class="header-button" id="post-button" onclick="window.location.href='/create'">
-                    <span class="material-symbols-outlined">add</span>
-                  </button>
-                <% } %>
+<% if (user) { %>
+  <button class="header-button" id="post-button" onclick="window.location.href='<%= communityId ? `/c/${community.shortname}/create` : '/create' %>'">
+    <span class="material-symbols-outlined">add</span>
+  </button>
+<% } %>
 
               <div class="filter-menu" id="filterMenu">
                 <button class="filter-button">

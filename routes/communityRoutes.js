@@ -3,6 +3,7 @@ const router = express.Router();
 const sql = require("mssql");
 const { checkAuthenticated } = require("../middleware/authMiddleware");
 const communityQueries = require("../queries/communityQueries");
+const postQueries = require("../queries/postQueries");
 
 router.get("/:communityName", async (req, res) => {
   const communityName = req.params.communityName;
@@ -43,8 +44,34 @@ router.get("/:communityName", async (req, res) => {
   }
 });
 
+router.get(
+  "/:communityShortName/create",
+  checkAuthenticated,
+  async (req, res) => {
+    const communityShortName = req.params.communityShortName;
+    const communityId = await communityQueries.getCommunityIdByShortName(
+      communityShortName
+    );
+
+    if (!communityId) {
+      res.status(404).send("Community not found");
+    }
+
+    const tags = await postQueries.getAllTags();
+    res.render("create-post.ejs", { user: req.user, tags, communityId });
+  }
+);
+
 router.post("/community-update", checkAuthenticated, async (req, res) => {
-  const { id, description, rules, PrivacySetting, JobsEnabled, Tags, mini_icon } = req.body;
+  const {
+    id,
+    description,
+    rules,
+    PrivacySetting,
+    JobsEnabled,
+    Tags,
+    mini_icon,
+  } = req.body;
   console.log(req.body);
 
   const user = req.user;

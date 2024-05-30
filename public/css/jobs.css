@@ -80,6 +80,19 @@ div.job-filters {
   padding-right: 15px;
 }
 
+.tag {
+  display: inline-flex;
+    gap: 5px;
+    padding: .2rem .45rem;
+    margin: 3px 7px 0px 0px;
+    margin-bottom: 3px;
+    background-color: #6790f436;
+    color: #85a5e6;
+    border-radius: 7px;
+    font-size: .925rem;
+    position: relative;
+}
+
 .company-info {
   display: flex;
   flex-direction: row;

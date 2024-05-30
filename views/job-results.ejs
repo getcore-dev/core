@@ -6,9 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>CORE/</title>
   <link rel="stylesheet" href="/css/navbar.css" />
-  <link rel="stylesheet" href="/css/tags.css" />
+  <link rel="stylesheet" href="/css/job-results.css" />
   <link rel="stylesheet" href="/css/search.css" />
-
   <link rel="stylesheet" href="/css/company_profile.css" />
 
   <link rel="shortcut icon" href="/img/core.png" />
@@ -20,7 +19,7 @@
   <%- include('partials/navbar', { pagePath: 'updates' }) %>
   <main>
     <div class="tag-search-header">
-      <h4>Tag results for <span class="tag"><%= tag %></span></h4>
+      <h4>Job results in <span class="tag"><%= state %></span></h4>
     </div>
     <%
     function getTintFromName(name) {
@@ -108,76 +107,7 @@ function blendColors(color1, color2, ratio) {
     </div>
     <% } else { %>
     <div class="jobs-header">
-      <p>No jobs found.</p>
-    </div>
-    <% } %>
 
-    <% if (posts.length > 0) { %>
-    <div class="posts-header">
-      <h5 class="secondary-text">Posts</h5>
-    </div>
-    <div class="posts">
-      <% posts.forEach((post) => { %>
-      <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
-        <div class="post-content">
-          <div class="post-header">
-            <% 
-                    function formatDate(dateString) {
-                    const date = new Date(dateString);
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const year = date.getFullYear();
-                    return `${month}/${day}/${year}`;
-                  }
-                  %>
-            <div class="post-header-username">
-              <div class="avatar">
-                <img src="<%= post.avatar %>" loading="lazy">
-              </div>
-              <div class="username">
-                <a href="/user/<%= post.username %>" class="username-link"><strong><%= post.username %></strong></a>
-                <div class="post-date" id="secondary-text">
-                  <a style="color: <%= post.community_color %>;" href="/c/<%= post.communities_id %>" class="community"><%= post.community_name %></a>
-
-                  <%= formatDate(post.created_at) %> • <%= post.views %> views
-                </div>
-              </div>
-            </div>
-            <div class="three-dots">
-              <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>
-            </div>
-          </div>
-          <div class="title"><%= post.title %></div>
-          <div class="link-preview">
-            <% if (post.link) { %>
-            <div class="link">
-              <span class="material-symbols-outlined" style="color: var(--active-indicator-color);">
-                link
-              </span>
-              <%= post.link %>
-            </div>
-            <% } %>
-            <% if (post.post_type !== 'question' && (!post.link || (post.post_type !== 'post' && post.post_type !== 'project'))) { %>
-            <div class="description">
-              <%- post.content %>
-            </div>
-            <% } %>
-          </div>
-          <div class="votes">
-            <div class="reaction-interactions <%= post.id %>-reactions" id="reaction-interactions <%= post.id %>-reactions">
-              <%= post.totalReactionCount %> reactions
-            </div>
-            <div class="comments">
-              <%= post.commentCount %> comment<%= post.commentCount > 1 ? 's' : '' %>
-            </div>
-          </div>
-        </div>
-      </div>
-      <% }); %>
-    </div>
-    <% } else { %>
-    <div class="jobs-header">
-      <p>No posts found.</p>
     </div>
     <% } %>
     <%- include('partials/footer') %>

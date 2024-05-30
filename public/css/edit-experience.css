@@ -55,4 +55,15 @@ form {
     body {
         color: var(--dark-mode-text-color) !important;
     }
+
+    div.jobExperience {
+        border: 1px solid var(--dark-mode-border-color);
+        background: var(--dark-mode-main-color);
+    }
+
+    #jobExperienceContainer input, #jobExperienceContainer textarea, #educationExperienceContainer input, #educationExperienceContainer textarea {
+        background-color: var(--dark-mode-main-color) !important;
+        border: 1px solid var(--dark-mode-border-color) !important;
+        color: var(--dark-mode-text-color);
+    }
     }

@@ -149,10 +149,18 @@ div.similar-job h4 {
   max-width: 80%;
 }
 
+.interact-buttons > div {
+  flex-grow: 1;
+}
+
+.interact-buttons #regular-button-normal, .interact-buttons #submit-button-normal {
+  width: -webkit-fill-available;
+}
+
 .job-details h4 {
   font-size: 1.05rem;
   font-weight: bold;
-  margin: 11px 0 3px 0;
+  margin: .65rem 0;
 }
 
 .job-details p {
@@ -164,6 +172,7 @@ div.similar-job h4 {
 .interact-buttons {
   display: flex;
   flex-direction: row;
+  gap: 1rem;
   justify-content: space-between;
   margin-top: 16px;
   margin-bottom: 19px;
@@ -210,6 +219,11 @@ div.similar-job h4 {
   background-color: #0056b3;
 }
 
+.job-details {
+  display: flex;
+  flex-direction: column;
+  gap: .55rem;
+}
 @media (prefers-color-scheme: dark) {
   .job-listing {
     background-color: var(--dark-mode-body-color);

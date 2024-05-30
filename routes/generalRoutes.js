@@ -19,6 +19,8 @@ const notificationQueries = require("../queries/notificationQueries");
 const cacheMiddleware = require("../middleware/cache");
 const { cache } = require("ejs");
 const sharp = require("sharp"); // Example library for image processing
+const communityQueries = require("../queries/communityQueries");
+const updateQueries = require("../queries/updateQueries");
 const AZURE_STORAGE_CONNECTION_STRING =
   process.env.AZURE_STORAGE_CONNECTION_STRING; // Ensure this is set in your environment variables
 
@@ -29,10 +31,30 @@ router.get("/about", viewController.renderAboutPage);
 
 router.get("/privacy", viewController.renderPrivacyPage);
 
+router.get("/settings", checkAuthenticated, viewController.renderSettingsPage);
+
 router.get("/edits", checkAuthenticated, async (req, res) => {
   const userId = req.user.id;
   const missingFields = await utilFunctions.checkMissingFields(userId);
   res.render("edits.ejs", { user: req.user, missingFields });
+});
+
+router.post("/user/:userId/settings", checkAuthenticated, async (req, res) => {
+  const userId = req.params.userId;
+  const updates = req.body;
+
+  try {
+    for (let field in updates) {
+      if (Object.hasOwnProperty.call(updates, field)) {
+        await userQueries.updateField(userId, field, updates[field]);
+      }
+    }
+
+    res.redirect("/user/" + req.user.username);
+  } catch (err) {
+    console.error("Error updating user fields:", err.message);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 router.post("/edits", checkAuthenticated, async (req, res) => {
@@ -83,25 +105,8 @@ router.get("/learning", checkAuthenticated, (req, res) => {
 
 router.get("/updates", async (req, res) => {
   try {
-    const commits = await githubService.fetchCommits();
-
-    // Resolve the GitHub usernames for each commit
-    const commitsWithUsernames = await Promise.all(
-      commits.map(async (commit) => {
-        const userDetails = await utilFunctions.getUserDetailsFromGithub(
-          commit.author.githubUsername
-        );
-        return {
-          ...commit,
-          coreUser: userDetails, // or the appropriate property
-        };
-      })
-    );
-
-    res.render("updates.ejs", {
-      user: req.user,
-      commits: commitsWithUsernames,
-    });
+    const updates = await updateQueries.getUpdates();
+    res.render("updates.ejs", { user: req.user, updates });
   } catch (error) {
     console.error("Error fetching updates:", error);
     res.render("error.ejs", {
@@ -114,7 +119,7 @@ router.get("/updates", async (req, res) => {
 // Post creation page
 router.get("/create", checkAuthenticated, async (req, res) => {
   const tags = await postQueries.getAllTags();
-  res.render("create-post.ejs", { user: req.user, tags });
+  res.render("create-post.ejs", { user: req.user, tags, communityId: null });
 });
 
 router.get("/edit-profile", checkAuthenticated, async (req, res) => {

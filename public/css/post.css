@@ -1345,7 +1345,7 @@ p.preview-description {
 .tag {
     display: inline-flex;
     gap: 5px;
-    padding: 3px 7px;
+    padding: .2rem .45rem;
     margin: 3px 7px 0px 0px;
     margin-bottom: 3px;
     background-color: #6790f436;

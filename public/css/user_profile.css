@@ -22,7 +22,6 @@ main {
   display: flex;
   flex-direction: row;
   gap: 4px;
-  margin-top: 10px;
 }
 
 .profile-header {
@@ -60,6 +59,10 @@ main {
   justify-content: space-between;
 }
 
+.edit-controls-and-follow-button button {
+  flex-grow: 1;
+}
+
 .profile-header-title {
   padding-left: 15px;
 }
@@ -81,6 +84,13 @@ main {
   width: 100%;
 }
 
+.links-container {
+  flex-wrap: wrap;
+  display: flex;
+  gap: .5rem;
+  box-sizing: border-box;
+  flex-direction: row;
+}
 
 #profile.grid-container {
   background-color: var(--light-mode-main-color);
@@ -105,7 +115,7 @@ main {
   display: inline-block;
   border: 0;
   padding: 16px 18px;
-  border-radius: 12px;
+  border-radius: 18px;
   background: none;
 }
 
@@ -118,8 +128,6 @@ main {
 }
 
 #profile p {
-  margin-bottom: 3px;
-  margin-top: 3px;
   font-size: .875rem;
   color: var(--primary-text-color);
 }
@@ -467,20 +475,23 @@ button#edit-button {
 }
 
 #currentJobContainer>div {
-  padding: 4px 8px;
-  min-width: 164px;
-  border-radius: 11px;
+  padding: .5rem .95rem;
+  border-radius: 18px;
 }
 
 .social-display {
   display: flex;
   flex-direction: row;
   gap: 7px;
+  background: #93c4e733;
+  border-radius: 10px;
+  padding: .2rem .4rem;
   align-items: center;
 }
 
-.social-display .material-symbols-outlined {
-  font-size: 20px;
+.social-display a, .social-display .material-symbols-outlined {
+  color: #0c5488 !important;
+  font-size: 16px;
 }
 
 
@@ -501,9 +512,8 @@ td {
   grid-template-areas:
   "info1 info1 info1"
   "user-bio user-bio user-bio"
-  "user-links user-links user-links"
   "job job job"
-  "git-graph git-graph leetcode"
+  "git-graph git-graph git-graph"
   "git-repos git-repos git-repos"
   "user-activity user-activity user-activity"; 
   gap: 30px;
@@ -528,7 +538,10 @@ td {
     width: 30%;
 }
    .profile-info .profile-details {
-    width: 70%;
+    width: 85%;
+    gap: .05rem;
+    display: flex;
+    flex-direction: column;
   }
   #profile {
     padding: 15px;
@@ -538,7 +551,6 @@ td {
     grid-template-areas:
       "info1 info1"
       "user-bio user-bio"
-      "leetcode user-links"
       "job job"
       "git-graph git-graph"
       "git-repos git-repos"

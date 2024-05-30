@@ -323,6 +323,7 @@ const userQueries = {
         "profile_border_color",
         "link",
         "link2",
+        "settings_PrivateJobNames",
       ];
 
       // Check if the field is valid
@@ -350,9 +351,9 @@ const userQueries = {
 
       if (field === "recruiter_id") {
         const recruiterQuery = `
-        SELECT COUNT(*) AS count
-        FROM Recruiters
-        WHERE recruiter_id = @recruiterId`;
+          SELECT COUNT(*) AS count
+          FROM Recruiters
+          WHERE recruiter_id = @recruiterId`;
         const recruiterRequest = new sql.Request();
         recruiterRequest.input("recruiterId", sql.VarChar, value);
         const recruiterResult = await recruiterRequest.query(recruiterQuery);
@@ -362,15 +363,24 @@ const userQueries = {
         }
       }
 
+      // Handle boolean conversion for specific fields
+      if (field === "settings_PrivateJobNames") {
+        value = value === true || value === "true"; // Ensure value is boolean
+      }
+
       // Construct the query with the safe field name
       const query = `
-      UPDATE users
-      SET ${field} = @value
-      WHERE id = @userId`;
+        UPDATE users
+        SET ${field} = @value
+        WHERE id = @userId`;
 
       // Prepare and execute the query
       const request = new sql.Request();
-      request.input("value", sql.VarChar, value); // assuming the type is VarChar
+      request.input(
+        "value",
+        field === "settings_PrivateJobNames" ? sql.Bit : sql.VarChar,
+        value
+      );
       request.input("userId", sql.VarChar, userId);
       const result = await request.query(query);
 
@@ -390,6 +400,7 @@ const userQueries = {
       throw err;
     }
   },
+
   followUser: async (followerId, followedId) => {
     try {
       // Check if the follow relationship already exists

@@ -14,7 +14,7 @@ body {
   justify-content: center;
   box-sizing: border-box;
   margin-bottom: 0 !important;
-  min-width: 140px !important; 
+  min-width: fit-content !important; 
   min-height: 35px !important; 
 }
 
@@ -80,6 +80,7 @@ main {
 #forgot-pass {
   float: right;
 }
+
 
 #login-button {
   font-size: 16px;
@@ -218,7 +219,7 @@ input:not(:placeholder-shown) + .floating-label,
 }
 
 .abcRioButton {
-  min-width: 140px !important; 
+  min-width: fit-content !important; 
   min-height: 35px !important; 
     border-radius: 10px !important;
     box-shadow: none !important;

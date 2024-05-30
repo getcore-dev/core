@@ -53,24 +53,26 @@ div.votes {
 }
 
 .jobs {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Creates 2 columns each taking up 1 fraction of the available space */
     gap: 10px;
-    flex-direction: row;
+    width: 100%; /* Ensures the container takes up 100% of the available width */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
     overflow-y: hidden;
     overflow-x: auto;
-    -webkit-scrollbar {
-        display: none;
-      }
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    }
+
+    .jobs > div {
+        width: 100%; /* Ensures each child div takes up the full width of its grid cell */
+        box-sizing: border-box; /* Includes padding and border in the element's total width and height */
     }
     
 
 .job {
     border: 1px solid var(--border-color);
     border-radius: 18px !important;
-    min-width: 270px;
-    margin: 10px !important;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); 
 }
 

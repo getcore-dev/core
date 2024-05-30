@@ -101,7 +101,7 @@
           <a href="/updates">
             <div class="menu-item">
               <span class="material-symbols-outlined" id="menu-community-icon">
-                settings
+                update
               </span>
               Updates
 
@@ -117,6 +117,14 @@
                 favorite
               </span>
               Favorites
+            </div>
+          </a>
+          <a href="/settings">
+            <div class="menu-item">
+              <span class="material-symbols-outlined" id="menu-community-icon">
+                settings
+              </span>
+              Settings
             </div>
           </a>
           <% } %>
@@ -219,10 +227,8 @@
             </div>
             <% } else if (!user) { %>
             <div class="nav-avatar">
-              <a href="/login" class="inbox-button" style="padding-top: 9px;">
-                <span class="material-symbols-outlined" id="nb-icon" style="padding: 3px 4px;">
-                  account_circle
-                </span>
+              <a href="/login" class="inbox-button" id="login-btn">
+                Sign in
               </a>
             </div>
             <% } %>
@@ -252,6 +258,7 @@ const pathTitles = {
   '/about': 'About',
   '/privacy': 'Privacy Policy',
   '/search': 'Search',
+  '/settings': "Settings"
 };
 
 const getTitle = (path) => {
@@ -292,7 +299,7 @@ const isActive = (path) => {
 };
 %>
 
-          <a href="#" class="navbar-button dropdown-toggle <%= isActive('/') || isActive('/search') || isActive('/tags') || isActive('/login') || isActive('/register') || isActive('/jobs') || isActive('/posts') || isActive('/learning') || isActive('/create') || isActive('/notifications') ||  isActive('/user') || isActive('/favorites') || isActive('/c') || isActive('/updates') || isActive('/about') || isActive('/privacy') ? 'active' : '' %>">
+          <a href="#" class="navbar-button dropdown-toggle <%= isActive('/') || isActive('/settings') || isActive('/search') || isActive('/tags') || isActive('/login') || isActive('/register') || isActive('/jobs') || isActive('/posts') || isActive('/learning') || isActive('/create') || isActive('/notifications') ||  isActive('/user') || isActive('/favorites') || isActive('/c') || isActive('/updates') || isActive('/about') || isActive('/privacy') ? 'active' : '' %>">
             <%= getTitle(currentPath) %>
             <span class="material-symbols-outlined" id="second-nav-icon">
               arrow_drop_down

@@ -46,7 +46,6 @@
       <form action="/posts" method="POST">
         <input type="hidden" id="post_type" name="post_type" value="discussion" />
         <div class="form-group" id="community">
-          <label for="community_choice">Community</label>
           <select id="community_choice" name="community_id" placeholder="Communities" </select>
         </div>
         <div class="form-group">
@@ -168,7 +167,7 @@
 
     });
 
-    function getAllCommunities() {
+    function getAllCommunities(communityId) {
       fetch('/api/communities') // Adjust this to your server's endpoint
         .then(response => response.json())
         .then(communities => {
@@ -179,10 +178,15 @@
             option.textContent = community.name;
             document.getElementById('community_choice').appendChild(option);
           });
+
+          // Set the selected community if communityId is provided
+          if (communityId) {
+            document.getElementById('community_choice').value = communityId;
+          }
         });
     }
 
-    getAllCommunities();
+    getAllCommunities('<%= communityId %>');
   </script>
 </body>
 

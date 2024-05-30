@@ -1,0 +1,12 @@
+.settings-header, .settings-body {
+    padding: 0 13px;
+}
+
+.settings-header {
+    padding: 6px 13px;
+    padding-top: 15px;
+}
+
+.settings-submit-button {
+    margin-top: 30px;
+}

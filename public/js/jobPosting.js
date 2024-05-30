@@ -437,6 +437,16 @@ ${
   <h4>Relocation</h4>
   <p>${job.relocation ? "Yes" : "No"}</p>
 </div>
+<div class="similar-jobs-location">
+  <h4>More jobs in </h4>
+${job.location
+  .split(",")
+  .map(
+    (loc) =>
+      `<a class="tag" href="/jobs/location/${loc.trim()}">${loc.trim()}</a>`
+  )
+  .join("")}
+</div>
 <div class="similar-jobs"></div>
 <div class="similar-jobs-company"></div>
 

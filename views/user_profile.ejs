@@ -36,6 +36,17 @@
     border: 1px solid <%=otheruser.profile_border_color%>70 !important;
   }
 
+  .job-tag {
+    background: <%=otheruser.profile_border_color%>52 !important;
+    border: 1px solid <%=otheruser.profile_border_color%>70 !important;
+    color: <%=otheruser.profile_border_color%> !important;
+  }
+
+  .job-tag:hover {
+    background: <%=otheruser.profile_border_color%>70 !important;
+    color: white !important;
+  }
+
   #repo-table {
     border-collapse: collapse;
     width: 100%;
@@ -88,8 +99,7 @@
           <div class="profile-content">
             <div class="profile-picture" data-hue-rotate="0">
               <% if (otheruser.avatar) { %>
-              <img id="profilePic" src="<%= otheruser.avatar %>" alt="Profile Picture" style="  box-shadow: 0 2px 20px <%= otheruser.profile_border_color%>;
-  border: 4px solid <%= otheruser.profile_border_color%> !important;" />
+              <img id="profilePic" src="<%= otheruser.avatar %>" alt="Profile Picture" />
               <% } else { %>
               <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
               <% } %>
@@ -112,12 +122,6 @@
                 <a href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; gap: 5px;"><span id="followerCount"> <%= otheruser.followerCount %> Followers </a></span>
                 <a href="/user/<%= otheruser.username %>/following" style="display: flex; flex-direction:row; gap: 5px;"><span id="followCount"> <%= otheruser.followingCount %> Following</a></span>
               </div>
-              <div class="points-info">
-                <span class="material-symbols-outlined">
-                  star
-                </span>
-                <p><%= otheruser.points %> Points</p>
-              </div>
               <% if (otheruser.topCommunities && otheruser.topCommunities.length > 0) { %>
               <div class="communities-info">
                 <p>Active in: <%= otheruser.topCommunities %></p>
@@ -139,7 +143,7 @@
 
             <% if (user.isAdmin ) { %>
             <form action="/admin/users/<%= otheruser.id %>/toggle-admin" method="POST">
-              <button id="edit-button" type="submit" style="margin-bottom: auto;"><%= otheruser.isAdmin ? 'Remove Admin' : 'Make Admin' %></button>
+              <button id="edit-button" type="submit" style="margin-bottom: auto;"><%= otheruser.isAdmin ? 'Demote' : 'Promote' %></button>
             </form>
             <form action="/admin/users/<%= otheruser.id %>/toggle-verified" method="POST">
               <button id="edit-button" type="submit" style="margin-bottom: auto;"><%= otheruser.verified ? 'Unverify' : 'Verify' %></button>
@@ -156,7 +160,37 @@
           </div>
           <% } %>
 
-
+          <div class="links-container">
+            <% if (otheruser.link) { %>
+            <div class="social-display"> <span class="material-symbols-outlined">
+                link
+              </span>
+              <p id="link-url-display"> <a href="<%= otheruser.link %>"><%= otheruser.link.startsWith('https://') ? otheruser.link.slice(8) : otheruser.link %></a> </p>
+            </div>
+            <% } else { %><% } %>
+            <% if (otheruser.link2) { %>
+            <div class="social-display"> <span class="material-symbols-outlined">
+                link
+              </span>
+              <p id="link2-url-display"> <a href="<%= otheruser.link2 %>"><%= otheruser.link2.startsWith('https://') ? otheruser.link2.slice(8) : otheruser.link2 %></a> </p>
+            </div>
+            <% } else { %><% } %>
+            <% if (otheruser.github_url) { %>
+            <div class="social-display"> <img src="/src/github.png" style="height:16px;width:16px;">
+              <p id="github-url-display"> <a href="https://github.com/<%= otheruser.github_url %>"><%= otheruser.github_url %></a> </p>
+            </div>
+            <% } else { %><% } %>
+            <% if (otheruser.linkedin_url) { %>
+            <div class="social-display"> <img src="/src/linkedin.png" style="height:12px;width:12px;">
+              <p id="linkedin-url-display"> <a href="https://www.linkedin.com/in/<%= otheruser.linkedin_url %>"><%= otheruser.linkedin_url %></a> </p>
+            </div>
+            <% } else { %><% } %>
+            <% if (otheruser.leetcode_url) { %>
+            <div class="social-display"> <img src="/src/leetcodeglyph.png" style="height:20px;width:20px;">
+              <p id="leetcode-url-display"> <a href="https://leetcode.com/<%= otheruser.leetcode_url %>"><%= otheruser.leetcode_url %></a> </p>
+            </div>
+            <% } else { %><% } %>
+          </div>
         </div>
 
         <div class="user-bio" style="background: 0 !important; padding-top: 0;">
@@ -165,7 +199,7 @@
           </p>
         </div>
 
-        <div class="current-job" style="background:<%= otheruser.profile_border_color %>52 !important;">
+        <div class="current-job" style="background:none !important; padding: 0;">
           <h4>Experience</h4>
           <div id="currentJobContainer"></div>
           <% if (user && otheruser.username == user.username) { %>
@@ -174,36 +208,9 @@
           </button>
           <% } %>
         </div>
-
-        <div class="user-links" style="background:<%= otheruser.profile_border_color%>52 !important;">
-          <h5>Links</h5>
-          <div class="social-display"> <span class="material-symbols-outlined">
-              link
-            </span>
-            <p id="link-url-display"> <% if (otheruser.link) { %> <a href="<%= otheruser.link %>"><%= otheruser.link.startsWith('https://') ? otheruser.link.slice(8) : otheruser.link %></a> <% } else { %> <% } %> </p>
-          </div>
-          <div class="social-display"> <span class="material-symbols-outlined">
-              link
-            </span>
-            <p id="link2-url-display"> <% if (otheruser.link2) { %> <a href="<%= otheruser.link2 %>"><%= otheruser.link2.startsWith('https://') ? otheruser.link2.slice(8) : otheruser.link2 %></a> <% } else { %> <% } %> </p>
-          </div>
-          <div class="social-display"> <img src="/src/github.png" style="height:20px;width:20px;">
-            <p id="github-url-display"> <% if (otheruser.github_url) { %> <a href="https://github.com/<%= otheruser.github_url %>"><%= otheruser.github_url %></a> <% } else { %> No Github URL yet. <% } %> </p>
-          </div>
-          <div class="social-display"> <img src="/src/linkedin.png" style="height:20px;width:20px;">
-            <p id="linkedin-url-display"> <% if (otheruser.linkedin_url) { %> <a href="https://www.linkedin.com/in/<%= otheruser.linkedin_url %>"><%= otheruser.linkedin_url %></a> <% } else { %> No LinkedIn URL yet. <% } %> </p>
-          </div>
-        </div>
         <div class="github-commit-graph">
           <h5>GitHub Activity</h5>
           <div id="commit-graph-container"></div>
-        </div>
-        <div class="leetcode-experience" style="background:<%= otheruser.profile_border_color%>52 !important;">
-          <h5>LeetCode</h5>
-          <div class="social-display"> <img src="/src/leetcodeglyph.png" style="height:20px;width:20px;">
-            <p id="leetcode-url-display"> <% if (otheruser.leetcode_url) { %> <a href="https://leetcode.com/<%= otheruser.leetcode_url %>"><%= otheruser.leetcode_url %></a> <% } else { %> No LeetCode URL yet. <% } %> </p>
-          </div>
-          <div id="leetcode-experience-container"></div>
         </div>
         <div class="github-commit-repos" style="background:<%= otheruser.profile_border_color%>52 !important;">
           <h5>GitHub Repositories</h5>
@@ -451,34 +458,7 @@
       container.appendChild(message);
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      const leetcodeExperienceContainer = document.getElementById('leetcode-experience-container');
 
-      function displayLeetCodeExperience(data) {
-        const experienceHTML = `
-        <p>Total: ${data.easySolved + data.mediumSolved + data.hardSolved}</p>
-      <p>Easy: ${data.easySolved}</p>
-      <p>Medium: ${data.mediumSolved}</p>
-      <p>Hard: ${data.hardSolved}</p>
-    `;
-        leetcodeExperienceContainer.innerHTML = experienceHTML;
-      }
-
-      const leetcodeUsername = '<%= otheruser.leetcode_url %>';
-      if (leetcodeUsername) {
-        fetch(`/api/leetcode-experience/${leetcodeUsername}`)
-          .then(response => response.json())
-          .then(data => {
-            displayLeetCodeExperience(data);
-          })
-          .catch(error => {
-            console.error('Error fetching LeetCode data:', error);
-            leetcodeExperienceContainer.innerHTML = '<p>Error fetching LeetCode data.</p>';
-          });
-      } else {
-        leetcodeExperienceContainer.innerHTML = '<p>No LeetCode URL provided.</p>';
-      }
-    });
 
     document.addEventListener('DOMContentLoaded', function() {
       const currentJobContainer = document.getElementById('currentJobContainer');
@@ -487,23 +467,26 @@
         experiences.forEach(experience => {
           const jobElement = document.createElement('div');
           jobElement.innerHTML = `
-          <div class="job-experience-header">
-            <h5><a href="/jobs/company/${experience.companyName}">
-            ${experience.companyName}</a></h5>
+      <div class="job-experience-header">
+      <% if (otheruser.settings_PrivateJobNames) { %>
+        <h4>Company Name Hidden</h4>
+      <% } else { %>
+        <h4><a href="/jobs/company/${experience.companyName}">
+        ${experience.companyName}</a></h4>
+      <% } %>
 
-                        <div class="date-range">
-              <p>${new Date(experience.startDate).toLocaleDateString()} - ${experience.endDate ? new Date(experience.endDate).toLocaleDateString() : 'Present'}</p>
-            </div>
-            </div>
-            <h4>${experience.title}</h4>
-            <p>${experience.employmentType}</p>
-            <p>${experience.location}</p>
-            <p>${experience.description}</p>
-<p>${ experience.tags ? experience.tags.split(',').map(tag => {
-  const trimmedTag = tag.trim();
-  return `<span class="job-tag" onclick="window.location.href='/tags/${encodeURIComponent(trimmedTag)}'">${trimmedTag}</span>`;
-}).join('') : ''}</p>
-            `;
+        <div class="date-range">
+          <p>${new Date(experience.startDate).toLocaleDateString()} - ${experience.endDate ? new Date(experience.endDate).toLocaleDateString() : 'Present'}</p>
+        </div>
+      </div>
+      <h4>${experience.title}</h4>
+      <p>${experience.employmentType}</p>
+      <p>${experience.description}</p>
+      <p>${ experience.tags ? experience.tags.split(',').slice(0, 3).map(tag => {
+        const trimmedTag = tag.trim();
+        return `<span class="job-tag" onclick="window.location.href='/tags/${encodeURIComponent(trimmedTag)}'">${trimmedTag}</span>`;
+      }).join('') : ''}</p>
+    `;
           currentJobContainer.appendChild(jobElement);
         });
       }
