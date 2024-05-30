@@ -191,11 +191,11 @@ div .material-symbols-outlined:hover {
 
 
 .main-container {
-  width: 100%;
   background-color: var(--background-color);
   overflow-y: scroll;
-  max-width: 67% !important;
-  margin-right: auto;
+  border-right: 1px solid var(--border-color);
+  width: 53%;
+    max-width: 1000px;
 }
 
 #com-btn-container {
@@ -488,7 +488,7 @@ img.blog-avatar {
   align-items: center;
   gap: 4px;
   margin: 0 13px;
-  margin-top: 11px;
+  margin-top: 25px;
   margin-bottom: 6px;
 }
 
@@ -1644,6 +1644,10 @@ p.preview-description {
     color: var(--dark-mode-text-color);
   }
 
+  .main-container {
+    border-color: var(--dark-mode-border-color);
+  }
+
   div .user-info, .header {
     color: var(--dark-mode-text-color); /* Lighter text color for user info and headers */
   }
@@ -1825,7 +1829,7 @@ div.username {
   
   main {
     display: flex;
-    overflow: hidden;
+    overflow-y: hidden;
     flex-direction: column;
     }
     

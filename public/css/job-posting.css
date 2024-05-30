@@ -2,9 +2,22 @@ main {
   display: flex;
   height: calc(100dvh - var(--navbar-height));
   overflow-x: hidden;
+  overflow-y: hidden;
   max-width: 100vw;
   width: 100%;
-  flex-direction: column;
+  flex-direction: row;
+}
+
+.container {
+  overflow-y: auto;
+}
+.job-details-container {
+  overflow-y: auto;
+}
+
+.container {
+  width: 53%;
+    max-width: 1000px;
 }
 
 .job-listing {
@@ -245,4 +258,9 @@ div.similar-job h4 {
   .company-name {
       color: var(--dark-mode-text-color);
   }
+}
+@media screen and (max-width: 600px) {
+main {
+  height: calc(100dvh - var(--mobile-navbar-height) - var(--mobile-second-navbar-height)) !important;
+}
 }

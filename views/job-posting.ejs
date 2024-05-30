@@ -30,12 +30,17 @@
   <%- include('partials/navbar', { pagePath: "openings/" + job_id }) %>
 
   <main>
-    <div class="job-details-container">
-      <!-- Job details will be dynamically loaded here -->
+    <%- include('partials/com-btn-container', { }) %>
+    <div class="container">
+      <div class="job-details-container">
+        <!-- Job details will be dynamically loaded here -->
 
+      </div>
+      <%- include('partials/footer') %>
     </div>
-    <%- include('partials/footer') %>
+    <%- include('partials/right-side-container', { }) %>
   </main>
+
 
   <script src="/js/jobPosting.js"></script>
 

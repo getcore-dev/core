@@ -204,7 +204,7 @@ p.job-description {
     border-top-right-radius: 8px; 
   }
 
-  .job {
+ div.jobs-container > div.job-list > .job {
     background-color: var(--light-mode-main-color);
     margin: 0 13px;
     padding: 0 10px;
@@ -214,7 +214,7 @@ p.job-description {
     cursor: pointer;
   }
 
-  .job:hover {
+  div.jobs-container > div.job-list > .job:hover {
     background-color: var(--light-mode-hover-color);
   }
   
@@ -281,9 +281,8 @@ p.job-description {
 .jobs-container {
   overflow-y: auto;
   height: calc(100vh - var(--navbar-height));
-  width: 100%;
-  margin-right: auto;
-  max-width: 1200px;
+  width: 53%;
+  max-width: 1000px;
 }
 
 .jobs-container > h3 {

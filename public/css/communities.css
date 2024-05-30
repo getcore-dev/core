@@ -679,26 +679,6 @@ div.community-flairs {
   padding-right: 10px;
 }
 
-.jobs-container {
-  width: 24%;
-  margin-right: auto;
-  max-width: 300px;
-  flex: none;
-  display: flex;
-  flex-direction: column;
-  -webkit-scrollbar {
-    display: none;
-  }
-  ;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.jobs-container {
-  overflow-y: auto; /* or scroll */
-}
-
-
 
 .job-content {
   flex-direction: column;
@@ -783,11 +763,6 @@ div.community-flairs {
   gap: 7px;
 }
 
-.company-logo-container {
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-}
 
 
 .main-reaction-button.active {
@@ -797,10 +772,6 @@ div.community-flairs {
 }
 
 
-.company-logo {
-  height: 20px;
-  border-radius: 50%;
-}
 .job-header {
   margin-top: 26px;
   margin-bottom: 10px;
@@ -947,8 +918,9 @@ button.see-more {
       }
 
     .job-header {
-      margin-top: 14px;
-      margin-bottom: 8px
+      margin-top: 14px !important;
+      margin-bottom: 8px !important;
+      padding: 0 !important;
     }
 
   .post {
@@ -969,13 +941,6 @@ button.see-more {
   .thumbnail {
     display: flex;
     align-items: center;
-  }
-
-  .post, body > main > div.container > div.jobs-container > div.jobslist .job {
-    border: 0;
-    border-top: 1px solid var(--border-color);
-    border-radius: 10px;
-    
   }
 
   .container {
@@ -1019,15 +984,7 @@ button.see-more {
 
 }
 
-body > main > div.container > div.jobs-container > div.jobslist .job {
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-}
 
-body > main > div.container > div.jobs-container > div.jobslist .job .job-content {
-  padding: 10px;
-
-}
 
 
 @media (max-width: 768px) {
@@ -1081,9 +1038,7 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
   }
 
 
-  .jobs-container {
-    display: none;
-  }
+
 
   .mini-link {
     max-width: 100%;
@@ -1408,15 +1363,6 @@ body > main > div.container > div.jobs-container > div.jobslist .job .job-conten
 
   .container {
     background-color: var(--dark-mode-body-color);
-  }
-
-  .post, body > main > div.container > div.jobs-container > div.jobslist .job {
-    border-color: var(--dark-mode-border-color);
-    background-color: var(--dark-mode-body-color);
-  }
-
-  .job:hover {
-    background-color: var(--dark-mode-hover-color);
   }
 
   .post-date {

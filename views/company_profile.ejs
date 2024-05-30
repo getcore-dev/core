@@ -16,48 +16,51 @@
 <body>
   <%- include('partials/navbar', { pagePath: 'company' }) %>
   <main>
-    <div class="company-header">
-      <div class="company-image">
-        <img class="thumbnail thumbnail-small thumbnail-regular" src="<%= company.logo %>" alt="Company Logo" />
+    <%- include('partials/com-btn-container', { }) %>
+
+    <div class="company-info-container">
+      <div class="company-header">
+        <div class="company-image">
+          <img class="thumbnail thumbnail-small thumbnail-regular" src="<%= company.logo %>" alt="Company Logo" />
+        </div>
+        <div class="company-info">
+          <span class="company-name"><%= company.name %></span>
+          <span class="company-location secondary-text"><%= company.location %></span>
+        </div>
       </div>
-      <div class="company-info">
-        <span class="company-name"><%= company.name %></span>
-        <span class="company-location secondary-text"><%= company.location %></span>
+
+      <span class="company-description"><%= company.description %></span>
+      <div class="company-flair">
+        <% if (company.industry)  { %>
+
+        <span class="company-flair-item">
+          <p>
+            <span class="material-symbols-outlined">
+              factory
+            </span>
+            <%= company.industry %>
+          </p>
+        </span>
+        <% } %>
+        <% if (company.size)  { %>
+
+        <span class="company-flair-item">
+          <p>
+            <span class="material-symbols-outlined">
+              person
+            </span>
+            <%= company.size %> employees
+          </p>
+        </span>
+        <% } %>
       </div>
-    </div>
-
-    <span class="company-description"><%= company.description %></span>
-    <div class="company-flair">
-      <% if (company.industry)  { %>
-
-      <span class="company-flair-item">
-        <p>
-          <span class="material-symbols-outlined">
-            factory
-          </span>
-          <%= company.industry %>
-        </p>
-      </span>
-      <% } %>
-      <% if (company.size)  { %>
-
-      <span class="company-flair-item">
-        <p>
-          <span class="material-symbols-outlined">
-            person
-          </span>
-          <%= company.size %> employees
-        </p>
-      </span>
-      <% } %>
-    </div>
-    <div class="jobs">
-      <h3>Open Jobs</h3>
-      <div class="job-list">
+      <div class="jobs">
+        <h3>Open Jobs</h3>
+        <div class="job-list">
+        </div>
       </div>
+
     </div>
-
-
   </main>
 
   <script>

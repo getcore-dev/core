@@ -1,9 +1,15 @@
 main {
     height: calc(100dvh - var(--navbar-height));
     background-color: var(--light-mode-main-color);
-    padding: 0 13px;
-    padding-top: 16px;
+    display: flex;
+    flex-direction: row;
   }
+
+.company-info-container {
+  max-width: 800px;
+    margin-right: auto;
+    padding: 13px;
+}
 
 .company-header {
     display:flex;
