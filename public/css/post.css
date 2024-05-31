@@ -152,6 +152,7 @@ pre code {
 }
 .user-interactions {
   margin: 20px 0px;
+  margin-bottom: .4rem;
   display: flex;
   align-items: center;
   align-content: stretch;
@@ -313,7 +314,7 @@ div .user-info, .header {
   display: flex;
   align-items: center;
   gap: 15px;
-  margin: 12px 0;
+  margin: 0;
   font-size: .85rem;
 }
 
@@ -329,8 +330,7 @@ img.blog-avatar {
 }
 
 .blog-post-info {
-  display: flex;
-    flex-direction: column;
+  display:block;
 }
 
 .post-title-container {
@@ -488,7 +488,7 @@ img.blog-avatar {
   align-items: center;
   gap: 4px;
   margin: 0 13px;
-  margin-top: 25px;
+  margin-top: 0;
   margin-bottom: 6px;
 }
 
@@ -743,6 +743,7 @@ div.repliers-avatar, div.repliees-avatar {
   display: flex;
   flex-direction: column;
   gap: 3px;
+  margin-bottom: .4rem;
   width: 100%;
 }
 
@@ -1285,6 +1286,10 @@ p.preview-description {
     align-items: center;
 }
 
+.post-title {
+  margin-bottom: .4rem;
+}
+
 .project-link {
   background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
@@ -1320,6 +1325,7 @@ p.preview-description {
 }
 
 .post-subtitle {
+  padding: 0 13px;
   font-size: .85rem;
   color: var(--light-mode-secondary-text-color);
 }
@@ -1374,7 +1380,17 @@ p.preview-description {
 
 .post-subtitle-text {
   font-size: .95rem;
-  margin-bottom: 10px;
+  margin-bottom: 0rem;
+  color: #ededed;
+}
+
+div.post-information {
+  padding: .5rem .8rem;
+  padding-bottom: 0;
+}
+
+.blog-tags-div {
+  margin-bottom: .6rem;
 }
 
 #github-flair {
@@ -1508,6 +1524,11 @@ p.preview-description {
   
   .add-comment-button:hover, #reply-button:hover {
     background-color: var(--dark-mode-hover-color);
+  }
+
+
+  .post-body p {
+    color: #b1b1b1;
   }
 
   .nested-comment.level-1 > .comment:first-child {
@@ -1791,6 +1812,11 @@ div.username {
   .tag {
     font-size: .925rem;
   }
+  
+  .tag p {
+    line-height: normal !important;
+    color: #85a5e6;
+  }
 
   .post-userinfo {
     font-size: .925rem;
@@ -1817,7 +1843,7 @@ div.username {
     font-size: 1rem;
   }
   img.blog-avatar {
-    height: 40px;
+    height: 26px !important;
   }
   .preview-image {
     width: auto;
