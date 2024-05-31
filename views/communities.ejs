@@ -196,7 +196,7 @@
               </div>
               <div class=post-header-buttons style="position:relative;">
                 <button class="header-button" id="filter-button" onclick="toggleFilterMenu()">
-                  <span class="material-symbols-outlined">filter_list</span>
+                  <span class="material-symbols-outlined">sort</span>
                 </button>
 <% if (user) { %>
   <button class="header-button" id="post-button" onclick="window.location.href='<%= communityId ? `/c/${community.shortname}/create` : '/create' %>'">

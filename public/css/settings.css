@@ -10,3 +10,9 @@
 .settings-submit-button {
     margin-top: 30px;
 }
+
+.settings-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}

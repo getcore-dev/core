@@ -114,8 +114,8 @@ main {
 #profile > div, .post, .comment {
   display: inline-block;
   border: 0;
-  padding: 16px 18px;
-  border-radius: 18px;
+  padding: .55rem .6rem;
+  border-radius: 10px;
   background: none;
 }
 
@@ -142,7 +142,7 @@ main {
   text-decoration: none;
 }
 
-.current-job p {
+.current-job p, .current-education p {
   font-size: 14px;
 }
 
@@ -155,14 +155,18 @@ main {
   background: var(--light-mode-body-color);
 }
 
-#profile > div.current-job {
+#profile > div.current-job, #profile > div.current-education {
   display: flex; 
   flex-direction: column;
   gap: 4px;
 }
 
-#profile > div.current-job, #profile > div.user-links, #profile > div.profile-info  {
+#profile > div.current-job, #profile > div.user-links, #profile > div.profile-info, #profile > div.current-education {
   background: var(--light-mode-body-color);
+}
+
+.github-commit-graph {
+  padding: 12px 0 !important;
 }
 
 
@@ -258,7 +262,7 @@ main {
   border: 1px solid var(--border-color); /* Border color similar to the navbar */
 }
 
-.profile-picture button, .profile-info button, .current-job button {
+.profile-picture button, .profile-info button, .current-job button, .current-education button {
   background-color: var(--light-mode-body-color); /* Same as navbar button */
   color: var(--light-mode-text-color);
   border: 0;
@@ -469,22 +473,23 @@ button#edit-button {
   flex-wrap: nowrap;
   flex-direction: column;
   gap: 10px;
+  border-radius: 11px;
   overflow-x: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-#currentJobContainer>div {
-  padding: .5rem .95rem;
-  border-radius: 18px;
+#currentJobContainer>div, #currentEducationContainer>div {
+  padding: .55rem .6rem;
+  border-radius: 10px;
 }
 
 .social-display {
   display: flex;
   flex-direction: row;
   gap: 7px;
-  background: #93c4e733;
-  border-radius: 10px;
+  background: #2a5d8133;
+  border-radius: 8px;
   padding: .2rem .4rem;
   align-items: center;
 }
@@ -512,6 +517,7 @@ td {
   grid-template-areas:
   "info1 info1 info1"
   "user-bio user-bio user-bio"
+  "education education education"
   "job job job"
   "git-graph git-graph git-graph"
   "git-repos git-repos git-repos"
@@ -551,6 +557,7 @@ td {
     grid-template-areas:
       "info1 info1"
       "user-bio user-bio"
+      "education education"
       "job job"
       "git-graph git-graph"
       "git-repos git-repos"
@@ -646,21 +653,18 @@ td {
   padding-top: 15px !important;
 }
 
-.current-job {
-  grid-area: info2;
-  /* ... other styles ... */
+.current-education {
+  grid-area: education;
+
 }
 
-/* Current job spans all columns */
 .current-job {
   grid-area: job;
-  /* ... other styles ... */
+
 }
 
-/* Learning progress, achievements, and posts */
 .learning-progress {
   grid-area: learning;
-  /* ... other styles ... */
 }
 
 .user-activity {
@@ -806,7 +810,7 @@ td {
   background-color: #444; 
 }
 
-#profile > div.current-job, #profile > div.user-links, #profile > div.profile-info  {
+#profile > div.current-job, #profile > div.user-links, #profile > div.profile-info, #profile > div.current-education {
   background: none;
 }
 

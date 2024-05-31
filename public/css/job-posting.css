@@ -263,4 +263,8 @@ div.similar-job h4 {
 main {
   height: calc(100dvh - var(--mobile-navbar-height) - var(--mobile-second-navbar-height)) !important;
 }
+
+.container {
+  width: 100%;
+}
 }

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CORE/</title>
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/edit-experience.css" />
+  <link rel="shortcut icon" href="/img/core.png" />
+</head>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'edit-experience' }) %>
+  <div class="edit-form-container">
+    <div class="edit-form-header">
+      <h4>Edit Experience</h4>
+    </div>
+    <form id="educationExperienceForm">
+      <div id="educationExperienceContainer"></div>
+      <button type="button" class="regular-button" id="addEducationExperience">Add Education Experience</button>
+      <button type="submit" id="submit-button">Save Changes</button>
+    </form>
+
+    <template id="educationExperienceTemplate">
+      <div class="educationExperience">
+        <input type="hidden" name="id">
+        <label for="institutionName">Institution Name:</label>
+        <input type="text" name="institutionName" required>
+
+        <label for="degree">Degree:</label>
+        <input type="text" name="degree" required>
+
+        <label for="fieldOfStudy">Field Of Study:</label>
+        <input type="text" name="fieldOfStudy" required>
+
+        <label for="isCurrent">Still Attending:</label>
+        <input type="checkbox" name="isCurrent">
+
+        <label for="startDate">Start Date:</label>
+        <input type="date" name="startDate" required>
+
+        <label for="endDate">End Date:</label>
+        <input type="date" name="endDate">
+
+        <label for="description">Description:</label>
+        <textarea name="description" required></textarea>
+
+        <label for="grade">GPA:</label>
+        <input type="text" name="grade">
+
+        <label for="activities">Activities:</label>
+        <input type="text" name="activities">
+
+        <button type="button" class="removeEducationExperience cancel-button">Remove</button>
+      </div>
+    </template>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const educationExperienceContainer = document.getElementById('educationExperienceContainer');
+      const addEducationExperienceButton = document.getElementById('addEducationExperience');
+      const educationExperienceTemplate = document.getElementById('educationExperienceTemplate');
+      const educationExperienceForm = document.getElementById('educationExperienceForm');
+
+      function addExperience(experienceData = {}) {
+        const newExperience = educationExperienceTemplate.content.cloneNode(true);
+        const experienceFields = newExperience.querySelectorAll('input, textarea');
+        experienceFields.forEach(field => {
+          let value = experienceData[field.name] || '';
+          if (field.type === 'date' && value) {
+            value = new Date(value).toISOString().split('T')[0];
+          }
+          field.value = value;
+        });
+
+        const removeButton = newExperience.querySelector('.removeEducationExperience');
+        removeButton.addEventListener('click', function() {
+          removeButton.closest('.educationExperience').remove();
+        });
+
+        educationExperienceContainer.appendChild(newExperience);
+      }
+
+      function createExperienceElement(experienceData = {}) {
+        const div = document.createElement('div');
+        div.classList.add('educationExperience');
+
+        const fields = [
+          'institutionName',
+          'degree',
+          'fieldOfStudy',
+          'isCurrent',
+          'startDate',
+          'endDate',
+          'description',
+          'grade',
+          'activities'
+        ];
+
+        fields.forEach(field => {
+          const p = document.createElement('p');
+          p.innerHTML = `<strong>${field.charAt(0).toUpperCase() + field.slice(1)}:</strong> ${experienceData[field] || ''}`;
+          p.classList.add(field);
+          div.appendChild(p);
+        });
+
+        const buttonContainer = document.createElement('div');
+        buttonContainer.classList.add('button-container');
+        div.appendChild(buttonContainer);
+
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.type = 'button';
+        editButton.classList.add('editEducationExperience');
+        editButton.classList.add('regular-button-normal');
+
+        editButton.addEventListener('click', function() {
+          div.remove();
+          addExperience(experienceData);
+          div.appendChild(removeButton);
+        });
+        buttonContainer.appendChild(editButton);
+
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remove';
+        removeButton.type = 'button';
+        removeButton.classList.add('removeEducationExperience');
+        removeButton.classList.add('cancel-button-normal');
+
+        removeButton.addEventListener('click', function() {
+          div.remove();
+        });
+        buttonContainer.appendChild(removeButton);
+
+        educationExperienceContainer.appendChild(div);
+      }
+
+      addEducationExperienceButton.addEventListener('click', function() {
+        addExperience(); // Add new experience in editable form
+      });
+
+      const userID = '<%= user.id %>';
+      fetch(`/api/education-experience/${userID}`)
+        .then(response => response.json())
+        .then(data => {
+          data.forEach(experience => {
+            createExperienceElement(experience);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching education experience data:', error);
+        });
+
+      educationExperienceForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const experiences = [];
+
+        educationExperienceContainer.querySelectorAll('.educationExperience').forEach(div => {
+          const experience = {};
+          const inputs = div.querySelectorAll('input, textarea');
+
+          inputs.forEach(field => {
+            if (field.type === 'checkbox') {
+              experience[field.name] = field.checked;
+            } else {
+              experience[field.name] = field.value;
+            }
+          });
+
+          if (Object.values(experience).filter(value => value !== '').length > 0) {
+            experiences.push(experience);
+          }
+        });
+
+        fetch('/jobs/update-education-experiences', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              experiences
+            })
+          })
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          })
+          .then(data => {
+            console.log('Success:', data);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      });
+    });
+  </script>
+</body>
+
+</html>

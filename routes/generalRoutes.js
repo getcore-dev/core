@@ -131,6 +131,14 @@ router.get("/edit-experience", checkAuthenticated, async (req, res) => {
   res.render("edit-experience.ejs", { user: req.user });
 });
 
+router.get(
+  "/edit-education-experience",
+  checkAuthenticated,
+  async (req, res) => {
+    res.render("edit-education-experience.ejs", { user: req.user });
+  }
+);
+
 router.post(
   "/edit-profile",
   checkAuthenticated,

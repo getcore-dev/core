@@ -1,5 +1,6 @@
 main {
     overflow-x: hidden;
+    flex-direction: column !important;
 }
 
 .jobs-header, .posts-header  {
@@ -18,7 +19,9 @@ div.posts {
 
 .tag-search-header {
     width: 100%;
-    margin-bottom: 0px;
+    margin-top: 14px !important;
+    margin-bottom: 8px !important;
+    padding: 0 13px !important;
   }
 
 .tag {
@@ -55,23 +58,12 @@ div.votes {
 .jobs {
     display: flex;
     gap: 10px;
-    flex-direction: row;
-    overflow-y: hidden;
-    overflow-x: auto;
-    -webkit-scrollbar {
-        display: none;
-      }
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
+    flex-direction: column;
+}
     
 
 .job {
-    border: 1px solid var(--border-color);
-    border-radius: 18px !important;
-    min-width: 270px;
-    margin: 10px !important;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); 
+    border-bottom: 1px solid var(--border-color);
 }
 
 .job:hover, .post:hover {

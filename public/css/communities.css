@@ -1158,12 +1158,6 @@ button.see-more {
       background-color: #111; /* Dark background */
       color: #ddd; /* Light text */
   }
-  @media (max-width: 768px) {
-    .post {
-      background-color: var(--dark-mode-main-color);
-      border-color: var(--dark-mode-main-color);
-    }
-  }
     .community-header, .job-header {
       color: var(--dark-mode-secondary-text-color) !important;
       }
@@ -1205,6 +1199,11 @@ button.see-more {
 
   .post-quick-info a {
     color: var(--dark-mode-text-color);
+  }
+
+  .post {
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
   }
 
   .link-preview {
@@ -1368,5 +1367,10 @@ button.see-more {
   .post-date {
       color: var(--dark-mode-secondary-text-color);
   }
-
+  @media (max-width: 768px) {
+    .post {
+      background-color: var(--dark-mode-body-color);
+      border-color: var(--dark-mode-border-color);
+    }
+  }
 } 

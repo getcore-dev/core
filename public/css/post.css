@@ -1501,7 +1501,7 @@ p.preview-description {
     background-color: var(--dark-mode-hover-color);
   }
 
-  .link-preview, .username {
+  .link-preview, .username, .post-content {
     color: var(--dark-mode-text-color);
   }
 

@@ -34,30 +34,31 @@
     <div class="jobs-container">
       <div class="jobs-header">
         <h5 id="secondary-text">Openings</h5>
-        <% if (user && user.recruiter_id) { %>
-        <div class="create-job-button">
-          <button class="create-job regular-button-normal" onclick="window.location.href='/jobs/create';">Create job posting</button>
-        </div>
-        <% } %>
+          <% if (user && user.recruiter_id) { %>
+          <div class="create-job-button">
+            <button class="create-job regular-button-normal" onclick="window.location.href='/jobs/create';">Create job posting</button>
+          </div>
+          <% } %>
         <div class="filter-container">
           <div class="recent-jobs">
           </div>
           <div class="filters">
 
             <div class="title-filter">
-              <label for="title">Title</label>
             </div>
-            <div class="location-filter">
-              <label for="location">Location</label>
-            </div>
-            <div class="experienceLevel-filter">
-              <label for="experienceLevel">Experience Level</label>
-            </div>
-            <div class="isRemote-filter">
-            </div>
-            <div class="salary-filter">
+            <div class="sort-options">
+              <div class="location-filter">
+              </div>
+              <div class="grouped-filters">
+                <div class="experienceLevel-filter">
+                </div>
+                <div class="salary-filter">
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+        <div class="top-tags">
         </div>
       </div>
 

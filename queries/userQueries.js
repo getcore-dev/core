@@ -324,6 +324,7 @@ const userQueries = {
         "link",
         "link2",
         "settings_PrivateJobNames",
+        "settings_PrivateSchoolNames",
       ];
 
       // Check if the field is valid
@@ -364,7 +365,10 @@ const userQueries = {
       }
 
       // Handle boolean conversion for specific fields
-      if (field === "settings_PrivateJobNames") {
+      if (
+        field === "settings_PrivateJobNames" ||
+        field === "settings_PrivateSchoolNames"
+      ) {
         value = value === true || value === "true"; // Ensure value is boolean
       }
 
@@ -378,7 +382,10 @@ const userQueries = {
       const request = new sql.Request();
       request.input(
         "value",
-        field === "settings_PrivateJobNames" ? sql.Bit : sql.VarChar,
+        field === "settings_PrivateJobNames" ||
+          field === "settings_PrivateSchoolNames"
+          ? sql.Bit
+          : sql.VarChar,
         value
       );
       request.input("userId", sql.VarChar, userId);

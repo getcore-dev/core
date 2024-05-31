@@ -26,6 +26,119 @@ const jobQueries = {
     }
   },
 
+  getJobsBySearch: async (
+    title = "",
+    location = "",
+    experienceLevel = "",
+    salary = 0,
+    limit,
+    offset
+  ) => {
+    try {
+      console.log("Location: ", location);
+      console.log("Title: ", title);
+      console.log("Experience Level: ", experienceLevel);
+      console.log("Salary: ", salary);
+
+      let fullStateName = location;
+      let stateAbbreviation = location;
+
+      if (location !== "") {
+        const stateMappings = {
+          Alabama: "AL",
+          Alaska: "AK",
+          Arizona: "AZ",
+          Arkansas: "AR",
+          California: "CA",
+          Colorado: "CO",
+          Connecticut: "CT",
+          Delaware: "DE",
+          Florida: "FL",
+          Georgia: "GA",
+          Hawaii: "HI",
+          Idaho: "ID",
+          Illinois: "IL",
+          Indiana: "IN",
+          Iowa: "IA",
+          Kansas: "KS",
+          Kentucky: "KY",
+          Louisiana: "LA",
+          Maine: "ME",
+          Maryland: "MD",
+          Massachusetts: "MA",
+          Michigan: "MI",
+          Minnesota: "MN",
+          Mississippi: "MS",
+          Missouri: "MO",
+          Montana: "MT",
+          Nebraska: "NE",
+          Nevada: "NV",
+          "New Hampshire": "NH",
+          "New Jersey": "NJ",
+          "New Mexico": "NM",
+          "New York": "NY",
+          "North Carolina": "NC",
+          "North Dakota": "ND",
+          Ohio: "OH",
+          Oklahoma: "OK",
+          Oregon: "OR",
+          Pennsylvania: "PA",
+          "Rhode Island": "RI",
+          "South Carolina": "SC",
+          "South Dakota": "SD",
+          Tennessee: "TN",
+          Texas: "TX",
+          Utah: "UT",
+          Vermont: "VT",
+          Virginia: "VA",
+          Washington: "WA",
+          "West Virginia": "WV",
+          Wisconsin: "WI",
+          Wyoming: "WY",
+          "United States": "US",
+        };
+
+        // Check if the location is an abbreviation or full state name
+        fullStateName =
+          Object.keys(stateMappings).find(
+            (key) => stateMappings[key] === location
+          ) || location;
+        stateAbbreviation = stateMappings[location] || location;
+
+        // Ensure abbreviation for full state name
+        if (fullStateName === location && stateMappings[location]) {
+          fullStateName = location;
+          stateAbbreviation = stateMappings[location];
+        }
+      }
+
+      const result = await sql.query(`
+        SELECT JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
+        (
+          SELECT STRING_AGG(JobTags.tagName, ', ')
+          FROM JobPostingsTags
+          INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+          WHERE JobPostingsTags.jobId = JobPostings.id
+        ) AS tags
+        FROM JobPostings
+        LEFT JOIN companies ON JobPostings.company_id = companies.id
+        WHERE JobPostings.title LIKE '%${title}%' 
+        AND (JobPostings.location LIKE '%${fullStateName}%' OR JobPostings.location LIKE '% ${stateAbbreviation}, %')
+        AND JobPostings.experienceLevel LIKE '%${experienceLevel}%' 
+        AND JobPostings.salary >= ${salary}
+        AND JobPostings.postedDate >= DATEADD(day, -30, GETDATE())
+        ORDER BY JobPostings.postedDate DESC
+        OFFSET ${offset} ROWS
+        FETCH NEXT ${limit} ROWS ONLY
+      `);
+      const jobs = result.recordset;
+      return jobs;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getRandomJobs: async (limit) => {
     try {
       const result = await sql.query(`
@@ -683,10 +796,34 @@ const jobQueries = {
     }
   },
 
+  getUserEducationExperience: async (userId) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM education_experiences WHERE userId = ${userId}
+      `;
+
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   clearUserJobExperience: async (userId) => {
     try {
       await sql.query`
         DELETE FROM job_experiences WHERE userId = ${userId}
+      `;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  clearUserEducationExperience: async (userId) => {
+    try {
+      await sql.query`
+        DELETE FROM education_experiences WHERE userId = ${userId}
       `;
     } catch (err) {
       console.error("Database query error:", err);
@@ -723,6 +860,49 @@ const jobQueries = {
         INSERT INTO job_experiences (userId, title, employmentType, companyName, location, startDate, endDate, description, tags)
         OUTPUT INSERTED.id
         VALUES (${userId}, ${title}, ${employmentType}, ${companyName}, ${location}, ${startDate}, ${endDate}, ${description}, ${tags})
+      `;
+
+      const newExperienceId = result.recordset[0].id;
+      return newExperienceId;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  /* 
+  CREATE TABLE education_experiences (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    userId NVARCHAR(255) NOT NULL,
+    institutionName NVARCHAR(255) NOT NULL,
+    degree NVARCHAR(255) NULL,
+    fieldOfStudy NVARCHAR(255) NULL,
+    startDate DATE NULL,
+    endDate DATE NULL,
+    isCurrent BIT NOT NULL DEFAULT 0,
+    grade NVARCHAR(50) NULL,
+    activities NVARCHAR(255) NULL,
+    description NVARCHAR(MAX) NULL
+);
+*/
+
+  addEducationExperience: async (
+    userId,
+    institutionName,
+    degree,
+    fieldOfStudy,
+    isCurrent,
+    startDate,
+    endDate = null,
+    description,
+    grade = null,
+    activities
+  ) => {
+    try {
+      const result = await sql.query`
+        INSERT INTO education_experiences (userId, institutionName, degree, fieldOfStudy, startDate, endDate, isCurrent, grade, activities, description)
+        OUTPUT INSERTED.id
+        VALUES (${userId}, ${institutionName}, ${degree}, ${fieldOfStudy}, ${startDate}, ${endDate}, ${isCurrent}, ${grade}, ${activities}, ${description})
       `;
 
       const newExperienceId = result.recordset[0].id;

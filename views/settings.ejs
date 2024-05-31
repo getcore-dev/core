@@ -23,6 +23,9 @@
         <label>
           <input type="checkbox" id="settings_PrivateJobNames" name="settings_PrivateJobNames"> Company names are private
         </label>
+        <label>
+          <input type="checkbox" id="settings_PrivateSchoolNames" name="settings_PrivateSchoolNames"> University names are private
+        </label>
         <div class="settings-submit-button">
           <button type="submit" class="submit-button-normal" onclick="saveSettings()">Save</button>
         </div>
@@ -32,20 +35,27 @@
 
     <script>
       document.addEventListener('DOMContentLoaded', (event) => {
-        // Ensure user.settings_PrivateJobNames is correctly output as a boolean
         const isPrivateJobNames = <%= user.settings_PrivateJobNames ? 'true' : 'false' %>;
+        const isPrivateSchoolNames = <%= user.settings_PrivateSchoolNames ? 'true' : 'false' %>;
+
         if (isPrivateJobNames) {
           document.getElementById("settings_PrivateJobNames").checked = true;
+        }
+
+        if (isPrivateSchoolNames) {
+          document.getElementById("settings_PrivateSchoolNames").checked = true;
         }
       });
 
       function saveSettings() {
-        const isChecked = document.getElementById("settings_PrivateJobNames").checked;
+        const PrivateJobNames = document.getElementById("settings_PrivateJobNames").checked;
+        const PrivateSchoolNames = document.getElementById("settings_PrivateSchoolNames").checked;
         // Send the state to the server using AJAX or fetch API
         fetch(`/user/${<%= user.id %>}/settings`, {
             method: 'POST',
             body: JSON.stringify({
-              settings_PrivateJobNames: isChecked
+              settings_PrivateJobNames: PrivateJobNames,
+              settings_PrivateSchoolNames: PrivateSchoolNames
             }),
             headers: {
               'Content-Type': 'application/json'

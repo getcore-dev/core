@@ -83,6 +83,65 @@ router.post("/update-experiences", checkAuthenticated, async (req, res) => {
   }
 });
 
+router.post(
+  "/update-education-experiences",
+  checkAuthenticated,
+  async (req, res) => {
+    try {
+      const userId = req.user.id;
+      let experiences = req.body.experiences;
+
+      if (!Array.isArray(experiences)) {
+        experiences = [experiences];
+      }
+
+      console.log("Incoming experiences:", experiences);
+
+      // Clear existing job experiences and tags for the user
+      await jobQueries.clearUserEducationExperience(userId);
+
+      // Process each job experience
+      for (const experience of experiences) {
+        if (!experience) {
+          console.warn("Skipping undefined experience");
+          continue;
+        }
+
+        const {
+          institutionName,
+          degree,
+          fieldOfStudy,
+          isCurrent,
+          startDate,
+          endDate,
+          description,
+          grade,
+          activities,
+        } = experience;
+
+        // Add new job experience (assuming the function also handles updating if the ID exists)
+        await jobQueries.addEducationExperience(
+          userId,
+          institutionName,
+          degree,
+          fieldOfStudy,
+          isCurrent,
+          startDate,
+          endDate,
+          description,
+          grade,
+          activities
+        );
+      }
+
+      res.status(200).send("Job experiences updated successfully");
+    } catch (err) {
+      console.error("Error updating job experiences:", err);
+      res.status(500).send("Error updating job experiences");
+    }
+  }
+);
+
 router.get("/tags/:tag", async (req, res) => {
   try {
     const tag = req.params.tag;

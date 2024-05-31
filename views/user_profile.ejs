@@ -31,9 +31,14 @@
   .link-display,
   #edit-button,
   #followButton,
-  #currentJobContainer>div {
+  #currentJobContainer>div,
+  #currentEducationContainer>div,
+  .github-commit-repos,
+  .post,
+  .comment {
     background: <%=otheruser.profile_border_color%>52 !important;
     border: 1px solid <%=otheruser.profile_border_color%>70 !important;
+    color: white;
   }
 
   .job-tag {
@@ -199,6 +204,16 @@
           <p>
             <%= otheruser.bio %>
           </p>
+        </div>
+
+        <div class="current-education" style="background:none !important; padding: 0;">
+          <h4>Education</h4>
+          <div id="currentEducationContainer"></div>
+          <% if (user && otheruser.username == user.username) { %>
+          <button id="edit-button" onclick="window.location.href='/edit-education-experience'" style="margin-bottom: auto;">
+            Add Education
+          </button>
+          <% } %>
         </div>
 
         <div class="current-job" style="background:none !important; padding: 0;">
@@ -464,34 +479,57 @@
 
     document.addEventListener('DOMContentLoaded', function() {
       const currentJobContainer = document.getElementById('currentJobContainer');
+      const currentEducationContainer = document.getElementById('currentEducationContainer');
 
       function displayJobExperience(experiences) {
         experiences.forEach(experience => {
           const jobElement = document.createElement('div');
           jobElement.innerHTML = `
-      <div class="job-experience-header">
-      <% if (otheruser.settings_PrivateJobNames) { %>
-        <h4>Company Name Hidden</h4>
-      <% } else { %>
-        <h4><a href="/jobs/company/${experience.companyName}">
-        ${experience.companyName}</a></h4>
-      <% } %>
+            <div class="job-experience-header">
+            <% if (otheruser.settings_PrivateJobNames) { %>
+              <h4>Company Name Hidden</h4>
+            <% } else { %>
+              <h4><a href="/jobs/company/${experience.companyName}">
+              ${experience.companyName}</a></h4>
+            <% } %>
 
-        <div class="date-range">
-          <p>${new Date(experience.startDate).toLocaleDateString()} - ${experience.endDate ? new Date(experience.endDate).toLocaleDateString() : 'Present'}</p>
-        </div>
-      </div>
-      <h4>${experience.title}</h4>
-      <p>${experience.employmentType}</p>
-      <p>${experience.description}</p>
-      <p>${ experience.tags ? experience.tags.split(',').slice(0, 3).map(tag => {
-        const trimmedTag = tag.trim();
-        return `<span class="job-tag" onclick="window.location.href='/tags/${encodeURIComponent(trimmedTag)}'">${trimmedTag}</span>`;
-      }).join('') : ''}</p>
-    `;
+                  <div class="date-range">
+                    <p>${new Date(experience.startDate).toLocaleDateString()} - ${experience.endDate ? new Date(experience.endDate).toLocaleDateString() : 'Present'}</p>
+                  </div>
+                </div>
+                <h4>${experience.title}</h4>
+                <p>${experience.employmentType}</p>
+                <p>${experience.description}</p>
+                <p>${ experience.tags ? experience.tags.split(',').slice(0, 3).map(tag => {
+                  const trimmedTag = tag.trim();
+                  return `<span class="job-tag" onclick="window.location.href='/tags/${encodeURIComponent(trimmedTag)}'">${trimmedTag}</span>`;
+                }).join('') : ''}</p>
+              `;
           currentJobContainer.appendChild(jobElement);
         });
       }
+
+      function displayEducationExperience(experiences) {
+        experiences.forEach(experience => {
+          const educationElement = document.createElement('div');
+          educationElement.innerHTML = `
+            <div class="job-experience-header">
+            <% if (otheruser.settings_PrivateSchoolNames) { %>
+              <h4>Institution Name Hidden</h4>
+            <% } else { %>
+              <h4>${experience.institutionName}</h4>
+            <% } %>
+              <div class="date-range">
+<p>${new Date(experience.startDate).toLocaleDateString()} - ${experience.isCurrent ? 'Present' : new Date(experience.endDate).toLocaleDateString()}</p>              </div>
+            </div>
+            <h4>${experience.degree}</h4>
+            <p>${experience.fieldOfStudy}</p>
+            <p>${experience.description}</p>
+            `;
+          currentEducationContainer.appendChild(educationElement);
+        });
+      }
+
 
       const userID = '<%= otheruser.id %>';
       fetch(`/api/job-experience/${userID}`)
@@ -506,6 +544,16 @@
         .catch(error => {
           console.error('Error fetching job experience data:', error);
           currentJobContainer.innerHTML = '<p>Error fetching job experience data.</p>';
+        });
+
+      fetch(`/api/education-experience/${userID}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.length > 0) {
+            displayEducationExperience(data);
+          } else {
+            currentEducationContainer.innerHTML = '<p>No education experiences available.</p>';
+          }
         });
     });
 

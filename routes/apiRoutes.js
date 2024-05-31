@@ -310,11 +310,22 @@ router.get("/jobs", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1; // Get the page number from query parameters, default to 1
     const limit = parseInt(req.query.limit) || 10; // Get the number of items per page, default to 10
+    const jobTitle = req.query.jobTitle;
+    const jobLocation = req.query.jobLocation;
+    const jobExperienceLevel = req.query.jobExperienceLevel;
+    const jobSalary = req.query.jobSalary;
 
     const offset = (page - 1) * limit; // Calculate the offset based on page and limit
 
     const [jobPostings, totalCount] = await Promise.all([
-      jobQueries.getRandomJobs(limit),
+      jobQueries.getJobsBySearch(
+        jobTitle,
+        jobLocation,
+        jobExperienceLevel,
+        jobSalary,
+        limit,
+        offset
+      ),
       jobQueries.getJobsCount(),
     ]);
 
@@ -333,6 +344,17 @@ router.get("/job-experience/:userId", async (req, res) => {
   try {
     const userId = req.params.userId;
     const jobExperience = await jobQueries.getUserJobExperience(userId);
+    res.json(jobExperience);
+  } catch (err) {
+    console.error("Error fetching job experience:", err);
+    res.status(500).send("Error fetching job experience");
+  }
+});
+
+router.get("/education-experience/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const jobExperience = await jobQueries.getUserEducationExperience(userId);
     res.json(jobExperience);
   } catch (err) {
     console.error("Error fetching job experience:", err);
