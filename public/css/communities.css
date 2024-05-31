@@ -720,7 +720,7 @@ div.community-flairs {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 3px solid;
+  border: .1rem solid white;
 }
 .footer-container {
   display: none;
@@ -1067,8 +1067,8 @@ button.see-more {
 }
 
 .avatar img {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  aspect-ratio: 1/1;
   border-radius: 100%;
   object-fit: cover; 
   overflow: hidden;

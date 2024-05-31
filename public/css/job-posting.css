@@ -177,9 +177,14 @@ div.similar-job h4 {
 }
 
 .job-details p {
+  color: #6d6f76;
   font-size: .925rem;
   line-height: 1.5;
   margin: 0;
+}
+
+.job-flair p {
+  color: #5abe6e;
 }
 
 .interact-buttons {

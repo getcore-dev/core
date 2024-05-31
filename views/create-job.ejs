@@ -150,7 +150,7 @@
         e.preventDefault();
         var jobLink = $('#job-link').val();
         $.ajax({
-          url: '/api/extract-job-details',
+          url: '/api/auto-create-job-posting',
           method: 'POST',
           data: {
             link: jobLink

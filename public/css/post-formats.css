@@ -68,10 +68,16 @@
     margin-bottom: 0;
   }
   
+  
   .post-body a {
     color: #007bff; /* Adjust color as needed */
     text-decoration: underline;
   }
+
+  .tag p {
+    line-height: normal !important;
+    color: #85a5e6;
+}
   
   .post-body ul,
   .post-body ol {

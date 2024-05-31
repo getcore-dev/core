@@ -322,7 +322,7 @@ factory
           : ""
       }
     </div>
-            <div class="job-description">
+            <div class="job-posting-description">
             <h4>Job Description</h4>
             
 

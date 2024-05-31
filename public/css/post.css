@@ -1379,9 +1379,9 @@ p.preview-description {
 }
 
 .post-subtitle-text {
+  color: #555658;
   font-size: .95rem;
   margin-bottom: 0rem;
-  color: #ededed;
 }
 
 div.post-information {
@@ -1538,6 +1538,10 @@ div.post-information {
   .reaction-popup {
     background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-border-color);
+  }
+
+  .post-subtitle-text {
+    color: #ededed;
   }
 
   .reaction-popup button:hover {

@@ -38,17 +38,16 @@
   .comment {
     background: <%=otheruser.profile_border_color%>52 !important;
     border: 1px solid <%=otheruser.profile_border_color%>70 !important;
-    color: white;
+    color: black;
   }
 
   .job-tag {
-    background: <%=otheruser.profile_border_color%>52 !important;
+    background: <%=otheruser.profile_border_color%>0a !important;
     border: 1px solid <%=otheruser.profile_border_color%>70 !important;
     color: <%=otheruser.profile_border_color%> !important;
   }
 
   .job-tag:hover {
-    background: <%=otheruser.profile_border_color%>70 !important;
     color: white !important;
   }
 
@@ -91,6 +90,22 @@
 
   .navbar {
     border-color: <%=otheruser.profile_border_color%> !important;
+  }
+
+  @media (prefers-color-scheme: dark) {
+
+    .link-display,
+    #edit-button,
+    #followButton,
+    #currentJobContainer>div,
+    #currentEducationContainer>div,
+    .github-commit-repos,
+    .post,
+    .comment {
+      background: <%=otheruser.profile_border_color%>30 !important;
+      border: 1px solid <%=otheruser.profile_border_color%>52 !important;
+      color: white;
+    }
   }
 </style>
 
@@ -229,7 +244,7 @@
           <h5>GitHub Activity</h5>
           <div id="commit-graph-container"></div>
         </div>
-        <div class="github-commit-repos" style="background:<%= otheruser.profile_border_color%>52 !important;">
+        <div class="github-commit-repos">
           <h5>GitHub Repositories</h5>
           <table id="repo-table">
             <thead>
@@ -287,7 +302,7 @@
             <% } else { %>
             <div class="post-container">
               <% posts.forEach(function(post) { %>
-              <div class="post" onclick="window.location.href='/posts/<%= post.id %>'" style="background:<%= otheruser.profile_border_color%>52 !important;">
+              <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
                 <h5 class="post-title">
                   <%= post.title %>
                 </h5>
@@ -335,7 +350,7 @@
                     <a href="/user/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/user/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
                   </p>
                 </div>
-                <div class="comment" style="background:<%= otheruser.profile_border_color%>52 !important;">
+                <div class="comment">
                   <h5 class="comment-title">
                     <%= comment.title %>
                   </h5>
