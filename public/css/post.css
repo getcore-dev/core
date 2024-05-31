@@ -313,7 +313,7 @@ div .user-info, .header {
 .post-userinfo {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: .3rem;
   margin: 0;
   font-size: .85rem;
 }
@@ -838,10 +838,9 @@ padding-top: 10px;
 }
 
 .similar-posts .post {
-  margin: 0 14px;
-  margin-bottom: 15px;
-  border-radius: 18px;
-  border: 1px solid var(--border-color);
+  margin: 0;
+  border-radius: 0;
+  border-bottom: 1px solid var(--border-color);
   background: var(--light-mode-main-color);
   box-sizing: border-box;
 }
@@ -860,7 +859,6 @@ padding-top: 10px;
 #reply-button {
   text-decoration: none;
   color: var(--light-mode-text-color);
-  font-size: .9rem;
   vertical-align: 5px;
   border-radius: 6px;
 }
@@ -1282,8 +1280,11 @@ p.preview-description {
 
 .discussion-link {
   display: flex;
-    flex-direction: column;
-    align-items: center;
+  background: var(--light-mode-body-color);
+  border-radius: 18px;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: .4rem;
 }
 
 .post-title {
@@ -1385,8 +1386,8 @@ p.preview-description {
 }
 
 div.post-information {
-  padding: .5rem .8rem;
-  padding-bottom: 0;
+  padding: 1rem .8rem;
+  padding-bottom: .15rem;
 }
 
 .blog-tags-div {
@@ -1761,6 +1762,7 @@ div.username {
   }
 
   .similar-posts-header {
+    padding-top: 1.2rem;
     font-size: .95rem;
   }
   .sidebar-link-info-title, .sidebar-link-info-url {
@@ -1976,8 +1978,7 @@ div.username {
   }
 
   .comments-section h3 {
-    font-size: .85rem;
-    margin-bottom: 10px;
+    font-size: .85rem;  
   }
   
 
