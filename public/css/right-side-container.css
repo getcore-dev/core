@@ -72,7 +72,6 @@
     display: flex;
     background: var(--light-mode-main-color);
     border-radius: 16px;
-    margin: 10px;
     flex-direction: row;
     justify-content: space-between;
     position: relative;

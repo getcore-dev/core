@@ -142,7 +142,6 @@ function setupFilter(filterType) {
       };
       filterContainer.appendChild(sortOptionsButton);
     }
-
   } else {
     const dropdown = document.createElement("select");
     let filterLabel = filterType[0].toUpperCase() + filterType.slice(1);
@@ -194,11 +193,11 @@ function fetchTopTags() {
               `<span class="tag hidden" onclick="window.location.href='/tags/${tag.tagName}'">${tag.tagName} ${tag.count}</span>`
           )
           .join("");
-        topTags.insertAdjacentHTML('beforeend', hiddenTags);
+        topTags.insertAdjacentHTML("beforeend", hiddenTags);
 
         seeMore.addEventListener("click", () => {
           const tagsToToggle = topTags.querySelectorAll(".tag.hidden");
-          tagsToToggle.forEach(tag => tag.classList.toggle("hidden"));
+          tagsToToggle.forEach((tag) => tag.classList.toggle("hidden"));
 
           // Update the text of "see more" to "see less" or vice versa
           if (seeMore.innerText.includes("more")) {
@@ -323,8 +322,10 @@ function renderJobPostings() {
     }</span></h3>
             <h5 class="job-subtitle secondary-text">
               <span style="margin-left: auto; float:right;">USD $${
-                job.salary
-              } ${job.salary_max ? "- $" + job.salary_max : ""}</span>
+                job.salary.toLocaleString()
+              } ${
+      job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
+    }</span>
                 </span>
               ${job.location}
             </h5> 

@@ -30,13 +30,10 @@ main {
 .company-flair-item {
   display: inline-flex;
   gap: 5px;
-  padding: 3px 7px;
   margin: 3px 7px 0px 0px;
   margin-bottom: 3px;
-  background-color: #5a95be36;
-  color: #5aaabe;
   border-radius: 7px;
-  font-size: .925rem;
+  font-size: .825rem;
   position: relative;
   }
 
@@ -92,6 +89,12 @@ main {
     
 }
 
+.company-description {
+  line-height: 1.125rem;
+  margin: 0;
+  font-size: .925rem;
+}
+
 p.job-description {
   inline-size: min-content;
   white-space: normal;
@@ -100,7 +103,7 @@ p.job-description {
   box-sizing: border-box;
   line-height: 1.125rem;
   margin: 0;
-  font-size: .875rem;
+  font-size: .9255rem;
   margin: 2px 0;
   overflow: hidden;
   display: -webkit-box;
@@ -179,7 +182,7 @@ p.job-description {
   .job-preview {
     display: flex;
     align-items: center;
-    padding: 21px 18px;
+    padding: 9px 0;
   }
 
   .job-info {

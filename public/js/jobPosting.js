@@ -255,20 +255,10 @@ function lazyLoadJobDetails(jobId) {
                 job.company_name
               }'">${job.company_name}</h3>
               <div class="company-information">
-              <p class="company-location">
-              <span class="material-symbols-outlined">
-location_city
-</span>${job.company_location.split(",")[0]}</p>
               <p id="secondary-text" class="company-size"> 
               <span class="material-symbols-outlined">
 group
 </span>${job.company_size || "Unknown"} employees
-            </p>
-            <p id="secondary-text" class="company-industry"> 
-            <span class="material-symbols-outlined">
-factory
-</span>
-            ${job.company_industry || "Unknown"}
             </p>
             </div>
             </div>
@@ -292,6 +282,8 @@ factory
                 computer
                 </span> ${job.isRemote ? "Remote available" : "Not remote"}
               </p>
+
+              
               <p>   
                 <span class="material-symbols-outlined">
                 license
@@ -301,18 +293,19 @@ factory
                     : "No visa sponsorship"
                 }
               </p>
-            <p>
-            <span class="material-symbols-outlined">
-              attach_money
-              </span><strong style="color:#26704a;">${job.salary} ${
-        job.salary_max ? "- " + job.salary_max : ""
+              <p>
+              <span class="material-symbols-outlined">attach_money</span>
+              <strong style="color:#26704a;">
+                USD $${job.salary.toLocaleString()} ${
+        job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
       }
-      </strong>
-      </p>
+              </strong>
+            </p>
+            <p id="secondary-text" class="post-date-text">
+            This job was posted on ${formatDate(job.postedDate)}
+            </p>
       </div>
-      <p id="secondary-text" class="post-date-text">
-      This job was posted on ${formatDate(job.postedDate)}
-      </p>
+
       <div class="job-skills">
       <h4>Required Skills</h4>
       ${skillsHTML}
@@ -465,7 +458,7 @@ ${job.location
               <div class="apply-button-container">
               <button id="submit-button-normal" onclick="window.location.href='${
                 job.link
-              }'">Application Link</button>
+              }'">Apply</button>
               </div>
               <div class="favorite-button-container">
     <form id="favorite-form-${job.id}" action="/favorites/jobs/${

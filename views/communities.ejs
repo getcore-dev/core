@@ -4,15 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <link rel="stylesheet" href="/css/navbar.css" />
-  <link rel="stylesheet" href="/css/communities.css" />
-  <link rel="stylesheet" href="/css/com-btn-container.css" />
 
-  <link rel="shortcut icon" href="/img/core.png" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-
-  <title>CORE/<%= communityId ? community.shortname : 'Home' %></title>
-
+  <!-- SEO Meta Tags -->
   <meta name="description" content="Join CORE communities to connect with like-minded individuals. Discover, share, and engage in various topics and interests.">
   <meta name="keywords" content="CORE communities, community engagement, social platform, join communities, discover communities, social network">
   <meta name="author" content="CORE">
@@ -24,6 +17,20 @@
   <meta name="twitter:title" content="CORE - Connect and Engage in Communities">
   <meta name="twitter:description" content="Join CORE communities to connect with like-minded individuals. Discover, share, and engage in various topics and interests.">
   <meta name="twitter:image" content="/img/core.png">
+
+  <!-- Favicons -->
+  <link rel="shortcut icon" href="/img/core.png" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/communities.css" />
+  <link rel="stylesheet" href="/css/com-btn-container.css" />
+
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <!-- Title -->
+  <title>CORE/<%= communityId ? community.shortname : 'Home' %></title>
 </head>
 
 <body>
