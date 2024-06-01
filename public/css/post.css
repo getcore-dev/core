@@ -1278,6 +1278,12 @@ p.preview-description {
   border: 1px solid #afd4ff;
 }
 
+
+.see-more {
+  text-align: center;
+    padding: .5rem;
+}
+
 .discussion-link {
   display: flex;
   background: var(--light-mode-body-color);
@@ -1828,6 +1834,13 @@ div.username {
     font-size: .925rem;
   }
 
+  .job {
+    background: none !important;
+    border-radius: 0 !important;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border-color) !important;
+  }
+
   .sidebar-poster-avatar {
     width: 60px;
       height: 60px;
@@ -1996,6 +2009,8 @@ div.username {
   }
 
   @media (prefers-color-scheme: dark) {
-
+    .job {
+      border-color: var(--dark-mode-border-color);
+    }
   }
 }

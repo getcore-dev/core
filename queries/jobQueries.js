@@ -1,4 +1,4 @@
-.const sql = require("mssql");
+const sql = require("mssql");
 const { get } = require("request");
 
 const jobQueries = {
@@ -19,7 +19,7 @@ const jobQueries = {
         FETCH NEXT ${limit} ROWS ONLY
       `);
       const jobs = result.recordset;
-      return jobs; 
+      return jobs;
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -137,8 +137,9 @@ const jobQueries = {
       console.error("Database query error:", err);
       throw err;
     }
-  },p
-getRandomJobs: async (limit) => {
+  },
+
+  getRandomJobs: async (limit) => {
     try {
       const result = await sql.query(`
         SELECT TOP ${limit} JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,

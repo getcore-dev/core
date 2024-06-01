@@ -12,7 +12,7 @@
        <script>
          function fetchJobPreviews() {
            let currentPage = 1;
-           const itemsPerPage = 10;
+           const itemsPerPage = 5;
            fetch(`/api/randomJobs?page=${currentPage}&limit=${itemsPerPage}`)
              .then(response => response.json())
              .then(data => {
@@ -20,7 +20,7 @@
                const isMobile = window.matchMedia('(max-width: 768px)').matches;
                let jobslistContainer;
                if (isMobile) {
-                 jobslistContainer = document.querySelector('#posts-container > div.mobile-jobs-container > div.jobslist');
+                 jobslistContainer = document.querySelector('div.mobile-jobs-container > div.jobslist');
                } else {
                  jobslistContainer = document.querySelector('.right-side-container > div.jobslist');
                }
@@ -83,7 +83,7 @@
                const isMobile = window.matchMedia('(max-width: 768px)').matches;
                let jobslistContainer;
                if (isMobile) {
-                 jobslistContainer = document.querySelector('#posts-container > div.mobile-jobs-container > div.jobslist');
+                 jobslistContainer = document.querySelector('div.mobile-jobs-container > div.jobslist');
                } else {
                  jobslistContainer = document.querySelector('.right-side-container > div.jobslist');
                }
