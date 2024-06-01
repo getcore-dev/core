@@ -781,7 +781,8 @@ font-weight: 400;
 
 .thumbnail-regular {
   border-radius: 0;
-  max-width: none;
+  max-width: 200px;
+  object-fit: contain;
   width: max-content
 }
 
