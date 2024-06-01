@@ -100,6 +100,7 @@ div.job-filters {
   gap: 10px;
   padding-top: 0px;
   width: 100%;
+  margin-bottom: .3rem;
 }
 
 .job-flair p {
@@ -115,7 +116,7 @@ div.job-filters {
 
 h3.job-title {
   margin: 0;
-  margin-top: 3px;
+  margin-top: 0;
   font-size: 1rem;
 }
 
@@ -193,6 +194,13 @@ p.job-description {
   display: none; 
 }
 
+.job-posting-information {
+  font-size: .825rem;
+}
+
+.job-posting-flairs > span {
+  font-size: .925rem;
+}
 
 
   .job-header {
@@ -230,7 +238,8 @@ p.job-description {
   }
 
   .company-name {
-    font-weight: bold;
+    font-weight: normal;
+    font-size: .875rem;
   }
   
   .company-logo {
@@ -572,11 +581,11 @@ select {
   flex-direction: row;
   align-items: center;
   gap: 7px;
+  margin-bottom: .4rem;
   flex-wrap: wrap;
   box-sizing: border-box;
   max-width: 100%;
   overflow-x: auto;
-  margin-top: 5px;
 }
 
 .job-posting-flairs .job-flair {

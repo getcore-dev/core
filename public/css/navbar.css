@@ -756,7 +756,6 @@ font-weight: 400;
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 5px;
 }
 
 
@@ -1057,7 +1056,8 @@ input:focus, textarea:focus, select:focus {
   transition: all 0.3s ease;
   text-decoration: none;
   cursor: pointer;
-  padding: 8px 18px;
+  padding: .65rem .25rem;
+  flex-grow: 1;
   cursor: pointer;
 }
 

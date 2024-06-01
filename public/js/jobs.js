@@ -293,55 +293,43 @@ function renderJobPostings() {
       : [];
     const maxTags = 3; // Adjust this value based on your desired maximum number of tags
     const displayedTags = tagsArray.slice(0, maxTags);
-    const tagsHTML = displayedTags
-      .map(
-        (tag) =>
-          `<span class="job-flair" onclick="window.location.href='/tags/${tag}'"><p>${tag}</p></span>`
-      )
-      .join("");
-    const remainingTags = tagsArray.length - maxTags;
+    const tagsHTML = displayedTags.map((tag) => `${tag}`).join(", ");
     jobElement.innerHTML = `
         <div class="job-preview">
           <div class="job-info">
             <div class="company-info">
-              <img class="thumbnail thumbnail-tiny" style="width: auto;" src="${
+              <img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${
                 job.company_logo
               }" alt="${job.company_name} logo" />
-              <p class="company-name">${job.company_name}</p>
+              <div class="job-posting-company-info">
+              <p class="company-name secondary-text">${job.company_name}</p>
+              <h3 class="job-title">${job.title} </h3>
+              </div>
             </div>
-            <h3 class="job-title">${
-              job.title
-            } <span style="margin-left: auto; float: right;">${
-      job.experienceLevel === "Mid Level"
-        ? "L3/L4"
-        : job.experienceLevel === "Entry Level"
-        ? "L1/L2"
-        : job.experienceLevel === "Senior"
-        ? "L5/L6"
-        : job.experienceLevel
-    }</span></h3>
             <h5 class="job-subtitle secondary-text">
-              <span style="margin-left: auto; float:right;">USD $${
-                job.salary.toLocaleString()
-              } ${
-      job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
-    }</span>
                 </span>
               ${job.location}
             </h5> 
             <div class="job-main">
-              <div class="job-description">
-                <p class="job-description">${job.description}</p>
-              </div>
-            </div>
             <div class="job-posting-flairs">
-              ${tagsHTML}
-              ${
-                remainingTags > 0
-                  ? `<span class="see-more" id="secondary-text">+${remainingTags} more</span>`
-                  : ""
-              }
+            ${tagsHTML}
+          </div>
             </div>
+            <div class="job-posting-information job-subtitle secondary-text">
+            <span style="">${
+              job.experienceLevel === "Mid Level"
+                ? "L3/L4"
+                : job.experienceLevel === "Entry Level"
+                ? "L1/L2"
+                : job.experienceLevel === "Senior"
+                ? "L5/L6"
+                : job.experienceLevel
+            }</span>
+            <span> • </span>
+            <span class="job-salary" style="margin-left: auto;">USD $${job.salary.toLocaleString()} ${
+      job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
+    }</span>
+    </div>
           </div>
         </div>
       `;

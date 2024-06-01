@@ -4,7 +4,6 @@ main {
   overflow-x: hidden;
   overflow-y: hidden;
   max-width: 100vw;
-  width: 100%;
   flex-direction: row;
 }
 
@@ -22,7 +21,6 @@ main {
 
 .job-listing {
   background-color: var(--light-mode-main-color);
-  padding: 10px 14px;
   padding-top: 25px;
   margin-bottom: 0px;
   max-width: 100vw;
@@ -31,12 +29,31 @@ main {
   box-sizing: border-box;
 }
 
+.job-listing > .company-info {
+  padding: 0 14px;
+}
+
+.posting-company-name {
+    font-weight: normal;
+    font-size: .875rem;
+}
+
 .company-info {
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
+  box-sizing: border-box;
 }
 
+.job-details > * {
+  padding: 0 14px;
+}
+.similar-jobs-company h4, .similar-jobs h4 {
+  padding: 0 14px;
+}
+
+.similar-jobs-company, .similar-jobs {
+  padding:0;
+}
 img.company-logo {
   max-height: 55px !important;
 }
@@ -98,9 +115,8 @@ img.company-logo {
   div.similar-jobs-list {
     display: flex;
     flex-wrap: nowrap; /* Prevent wrapping of job elements */
-    flex-direction: row;
+    flex-direction: column;
     gap: 10px; 
-    overflow-x: auto;
     -webkit-scrollbar {
       display: none;
     }
@@ -115,14 +131,12 @@ img.company-logo {
 
 
 div.similar-job {
-  margin-top: 10px;
-  min-width: 230px;
-  margin: 10px;
+  flex-direction: column;
     display: flex;
-    background: var(--light-mode-body-color);
-    border-radius: 18px;
+    background: var(--light-mode-main-color);
+    border-radius: 0;
+    border-bottom: 1px solid var(--border-color);
     padding: 13px 17px;
-    max-height: 170px;
     position: relative;
     transition: background 0.3s ease;
 }
@@ -143,15 +157,6 @@ div.similar-job:hover {
 
 .similar-jobs-company, .similar-jobs {
   margin-top: 15px;
-}
-
-div.similar-job img.thumbnail {
-  position: absolute !important;
-  width: auto !important;
-  right: 10px;
-  border-radius: 50%;
-  top: 8px;
-  opacity: 0.5;
 }
 
 div.similar-job h4 {
@@ -204,6 +209,18 @@ div.similar-job h4 {
 
 .job-tags p {
   font-size: .825rem;
+}
+
+.job-tags {
+  display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: .4rem;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-x: auto;
 }
 
 

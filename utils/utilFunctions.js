@@ -783,16 +783,36 @@ const utilFunctions = {
         if (videoIdMatch) {
           const videoId = videoIdMatch[1];
           const youtubeData = await fetchYouTubeData(videoId);
+
+          // Clean up description and title
+          youtubeData.description = youtubeData.description
+            .replace(/\n/g, " ")
+            .trim();
+          youtubeData.title = youtubeData.title.replace(/\n/g, " ").trim();
+
+          // Escape single quotes in description and title
+          const escapedDescription = youtubeData.description.replace(
+            /'/g,
+            "''"
+          );
+          const escapedTitle = youtubeData.title.replace(/'/g, "''");
+
           const preview = {
             url,
             ...youtubeData,
+            description: escapedDescription,
+            title: escapedTitle,
           };
 
+          console.log(preview);
+
           const insertLinkPreviewDataQuery = `
-          INSERT INTO LinkPreviewData (link, image_url, description, title, favicon)
-          VALUES ('${preview.url}', '${preview.image}', '${preview.description}', '${preview.title}', '${preview.favicon}')
-        `;
+            INSERT INTO LinkPreviewData (link, image_url, description, title, favicon)
+            VALUES ('${preview.url}', '${preview.image}', '${preview.description}', '${preview.title}', '${preview.favicon}')
+          `;
           await sql.query(insertLinkPreviewDataQuery);
+
+          console.log(preview);
           return preview;
         }
       } else if (url.includes("reddit.com")) {
@@ -840,7 +860,8 @@ const utilFunctions = {
         return preview;
       }
     } catch (error) {
-      console.error("Error fetching URL:", error.message);
+      console.error("Error fetching URL:", url);
+      console.error(error);
     }
 
     // Return a blank object with the title set to the URL in case of an error
@@ -937,7 +958,7 @@ const utilFunctions = {
         }
       }
     } catch (error) {
-      console.error("Error fetching URL:", error);
+      console.error("Error fetching favicon for URL:", url);
       return null;
     }
   },

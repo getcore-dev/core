@@ -1142,6 +1142,7 @@ div .mini-link {
 
 .post-body p , .comment-body p {
   line-height: 1.55rem;
+  letter-spacing: .015rem;
 }
 
 .post-body p, .comment-body p {
@@ -1228,16 +1229,20 @@ p.preview-description {
   overflow: hidden;
 }
 
-.description {
+.description, .mini-link-description p, .mini-link-title p {
   font-size: .85rem;
   color: var(--light-mode-text-color);
   font-weight: normal;
-  margin: 10px 0;
-  line-height: 1.3em; /* Adjust based on your design */
+  line-height: 1.25rem;
   overflow: hidden;
   display: -webkit-box;
+  letter-spacing: .01rem;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+}
+
+.mini-link-description p, .mini-link-title p {
+  line-height: 1.15rem;
 }
 
 
@@ -1319,8 +1324,8 @@ p.preview-description {
 .post-content > .title {
   font-size: 1rem;
   font-weight: 500;
-  margin: 3px 0px;
-  margin-bottom: 0px;
+  margin: 0;
+  margin-bottom: .15rem;
   color: var(--light-mode-text-color);
 }
 

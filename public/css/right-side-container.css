@@ -37,7 +37,6 @@
     font-size: 1rem;
     font-weight: bold;
     margin: 0;
-    margin: 4px 0;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -52,6 +51,7 @@
 }
 
 .job-company-name {
+  font-size: .8rem;
     display: -webkit-box;
     overflow: hidden;
     -webkit-line-clamp: 2;
@@ -103,7 +103,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 7px;
+    gap: 3px;
 }
 
 .job-header {
@@ -119,6 +119,10 @@
   .right-side-container > div.jobslist .job {
     border: 1px solid var(--border-color);
     border-radius: 10px;
+  }
+
+  .job-salary {
+    font-size: .8rem;
   }
   
   .right-side-container > div.jobslist .job .job-content {

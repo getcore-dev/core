@@ -65,6 +65,7 @@
   
   .post-body p {
     margin-top: 0;
+    letter-spacing: .015rem;
     margin-bottom: 0;
     color: #616161;
   }

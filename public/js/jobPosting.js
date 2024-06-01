@@ -99,33 +99,45 @@ function getSimilarJobs(jobId) {
                 job.tags && job.tags[1] ? job.tags[1].split(", ") : [];
               const maxTags = 3;
               const displayedTags = tagsArray.slice(0, maxTags);
-              const tagsHTML = displayedTags
-                .map(
-                  (tag) =>
-                    `<span class="job-flair" onclick="window.location.href='/tags/${tag}'"><p>${tag}</p></span>`
-                )
-                .join("");
-              const remainingTags = tagsArray.length - maxTags;
+              const tagsHTML = displayedTags.map((tag) => `${tag}`).join(", ");
 
               return `
-            <div class="similar-job">
-              <a href="/jobs/${job.id}">
-                <img src="${job.company_logo}" alt="${
+            <div class="similar-job" onclick="window.location.href='/jobs/${
+              job.id
+            }'">
+              <div class="company-info">
+              <img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${
+                job.company_logo
+              }" alt="${job.company_name} logo" />
+              <div class="job-posting-company-info">
+              <p  class="posting-company-name secondary-text">${
                 job.company_name
-              } logo" class="thumbnail thumbnail-tiny thumbnail-regular" />
-                <p id="secondary-text" style="max-width: 85%;">${
-                  job.company_name
-                }</p>
-                <h4>${job.title}</h4>
+              }</p>
+              <h3 class="job-title"><a href="/jobs/${job.id}">${
+                job.title
+              } </a> </h3>
+              </div>
+            </div>
                 <div class="job-tags">
                   ${tagsHTML}
-                  ${
-                    remainingTags > 0
-                      ? `<span class="see-more" id="secondary-text">+${remainingTags} more</span>`
-                      : ""
-                  }
                 </div>
-              </a>
+                <div class="job-posting-information job-subtitle secondary-text">
+                <span style="">${
+                  job.experienceLevel === "Mid Level"
+                    ? "L3/L4"
+                    : job.experienceLevel === "Entry Level"
+                    ? "L1/L2"
+                    : job.experienceLevel === "Senior"
+                    ? "L5/L6"
+                    : job.experienceLevel
+                }</span>
+                <span> • </span>
+                <span class="job-salary" style="margin-left: auto;">USD $${
+                  job.salary ? job.salary.toLocaleString() : ""
+                } ${
+                job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
+              }</span>
+        </div>
             </div>
           `;
             })
@@ -158,33 +170,46 @@ function getSimilarJobsByCompany(jobId, companyName) {
                 job.tags && job.tags[1] ? job.tags[1].split(", ") : [];
               const maxTags = 3;
               const displayedTags = tagsArray.slice(0, maxTags);
-              const tagsHTML = displayedTags
-                .map(
-                  (tag) =>
-                    `<span class="job-flair" onclick="window.location.href='/tags/${tag}'"
-                    ><p>${tag}</p></span>`
-                )
-                .join("");
-              const remainingTags = tagsArray.length - maxTags;
+              const tagsHTML = displayedTags.map((tag) => `${tag}`).join(", ");
 
               return `
-            <div class="similar-job">
-              <a href="/jobs/${job.id}">
-                <img src="${job.company_logo}" alt="${
+            <div class="similar-job" onclick="window.location.href='/jobs/${
+              job.id
+            }'">
+              <div class="company-info">
+              <img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${
+                job.company_logo
+              }" alt="${job.company_name} logo" />
+              <div class="job-posting-company-info">
+              <p class="posting-company-name secondary-text">${
                 job.company_name
-              } logo" class="thumbnail thumbnail-tiny thumbnail-regular" />
-                <p id="secondary-text">${job.company_name}</p>
-                <h4>${job.title}</h4>
+              }</p>
+              <h3 class="job-title"><a href="/jobs/${job.id}">${
+                job.title
+              }</a> </h3>
+              </div>
+            </div>
                 <div class="job-tags">
                   ${tagsHTML}
-                  ${
-                    remainingTags > 0
-                      ? `<span class="see-more" id="secondary-text">+${remainingTags} more</span>`
-                      : ""
-                  }
                 </div>
+                <div class="job-posting-information job-subtitle secondary-text">
+                <span style="">${
+                  job.experienceLevel === "Mid Level"
+                    ? "L3/L4"
+                    : job.experienceLevel === "Entry Level"
+                    ? "L1/L2"
+                    : job.experienceLevel === "Senior"
+                    ? "L5/L6"
+                    : job.experienceLevel
+                }</span>
+                <span> • </span>
+                <span class="job-salary" style="margin-left: auto;">USD $${
+                  job.salary ? job.salary.toLocaleString() : ""
+                } ${
+                job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
+              }</span>
+        </div>
 
-              </a>
             </div>
           `;
             })
@@ -296,7 +321,7 @@ group
               <p>
               <span class="material-symbols-outlined">attach_money</span>
               <strong style="color:#26704a;">
-                USD $${job.salary.toLocaleString()} ${
+                USD $${job.salary ? job.salary.toLocaleString() : ""} ${
         job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
       }
               </strong>
@@ -305,7 +330,20 @@ group
             This job was posted on ${formatDate(job.postedDate)}
             </p>
       </div>
-
+      <div class="interact-buttons">
+      <div class="apply-button-container">
+      <button id="submit-button-normal" onclick="window.location.href='${
+        job.link
+      }'">Apply</button>
+      </div>
+      <div class="favorite-button-container">
+<form id="favorite-form-${job.id}" action="/favorites/jobs/${
+        job.id
+      }" method="POST">
+<button id="regular-button-normal">Favorite</button>
+</form>
+      </div>
+      </div>
       <div class="job-skills">
       <h4>Required Skills</h4>
       ${skillsHTML}
@@ -431,6 +469,9 @@ ${
   <p>${job.relocation ? "Yes" : "No"}</p>
 </div>
 <div class="similar-jobs-location">
+${
+  job.location
+    ? `
   <h4>More jobs in </h4>
 ${job.location
   .split(",")
@@ -439,6 +480,9 @@ ${job.location
       `<a class="tag" href="/jobs/location/${loc.trim()}">${loc.trim()}</a>`
   )
   .join("")}
+  `
+    : ""
+}
 </div>
 <div class="similar-jobs"></div>
 <div class="similar-jobs-company"></div>
@@ -454,21 +498,7 @@ ${job.location
 
             </div>
 
-            <div class="interact-buttons">
-              <div class="apply-button-container">
-              <button id="submit-button-normal" onclick="window.location.href='${
-                job.link
-              }'">Apply</button>
-              </div>
-              <div class="favorite-button-container">
-    <form id="favorite-form-${job.id}" action="/favorites/jobs/${
-        job.id
-      }" method="POST">
-    <button id="regular-button-normal">Favorite</button>
-    </form>
-              </div>
               
-            </div>
           </div>
         </div>
       `;

@@ -29,18 +29,21 @@
                 <div class="job-content">
                   <div class="job-content-header">
                     <div class="company-logo-container">
-                      <img loading="lazy" src="${job.company_logo}" alt="Company Logo" class="job-company-logo" />
+                      <img loading="lazy" src="${job.company_logo}" alt="Company Logo" class="thumbnail thumbnail-tiny thumbnail-regular" />
                     </div>
                     <div class="job-title-location">
                       <div class="job-posting-header">
-                        <div class="job-company-name">${job.company_name}</div>
+                        <div class="job-company-name secondary-text">${job.company_name}</div>
+                                          <div class="job-title">${job.title.slice(0, 40)}</div>
+
                       </div>
                     </div>
-                    <div class="job-flairs">
-                      <span class="job-flair" id="pay-flair">$${Math.floor((job.salary) /  1000)}k+</span>
                   </div>
-                  </div>
-                  <div class="job-title">${job.title.slice(0, 40)}</div>
+                                                    <span class="job-salary" style="margin-left: auto;">USD $${
+                  job.salary ? job.salary.toLocaleString() : ""
+                } ${
+                job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
+              }</span>
 
                   ${!isMobile ? `
                     <div class="job-description">

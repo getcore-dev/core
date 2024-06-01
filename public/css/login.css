@@ -201,13 +201,14 @@ input:not(:placeholder-shown) + .floating-label,
   cursor: pointer;
 }
 
-.abcRioButtonContentWrapper {
-  display: flex;
-    justify-content: center;
+.abcRioButtonLightBlue {
+  background: transparent !important;
+  border: 0 !important;
+  color: white !important;
 }
-.login-buttons .g-signin2 {
-  width: fit-content;
-  height: fit-content;
+
+.abcRioButton {
+  height: min-content !important;
 }
 
 .login-buttons {
@@ -219,11 +220,24 @@ input:not(:placeholder-shown) + .floating-label,
 }
 
 .abcRioButton {
-  min-width: fit-content !important; 
-  min-height: 35px !important; 
-    border-radius: 10px !important;
+  height: 20px !important;
+
     box-shadow: none !important;
-    border: 1px solid var(--border-color) !important;
+}
+
+.abcRioButtonIcon {
+  padding: 0 !important;
+  float: none !important;
+}
+.abcRioButton { 
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.abcRioButtonContentWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .join-link {
