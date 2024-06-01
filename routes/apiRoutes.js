@@ -308,6 +308,32 @@ router.get("/community/:communityId/jobs", async (req, res) => {
   }
 });
 
+router.get("/randomJobs", async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1; 
+    const limit = parseInt(req.query.limit) || 10; 
+
+    const offset = (page - 1) * limit;
+
+    const [jobPostings, totalCount] = await Promise.all([
+      jobQueries.getRandomJobs(
+        limit,
+        offset
+      ),
+      jobQueries.getJobsCount(),
+    ]);
+
+    res.json({
+      jobPostings,
+      currentPage: page,
+      totalPages: Math.ceil(totalCount / limit),
+    });
+  } catch (err) {
+    console.error("Error fetching job postings:", err);
+    res.status(500).send("Error fetching job postings");
+  }
+});
+
 router.get("/jobs", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1; // Get the page number from query parameters, default to 1
