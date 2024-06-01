@@ -317,8 +317,7 @@ router.get("/randomJobs", async (req, res) => {
 
     const [jobPostings, totalCount] = await Promise.all([
       jobQueries.getRandomJobs(
-        limit,
-        offset
+        limit
       ),
       jobQueries.getJobsCount(),
     ]);
