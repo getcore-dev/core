@@ -1,4 +1,4 @@
-const sql = require("mssql");
+.const sql = require("mssql");
 const { get } = require("request");
 
 const jobQueries = {
@@ -19,7 +19,7 @@ const jobQueries = {
         FETCH NEXT ${limit} ROWS ONLY
       `);
       const jobs = result.recordset;
-      return jobs;
+      return jobs; 
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -139,27 +139,36 @@ const jobQueries = {
     }
   },
 
-  getRandomJobs: async (limit) => {
-    try {
-      const result = await sql.query(`
-        SELECT TOP ${limit} JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
-        (
-          SELECT STRING_AGG(JobTags.tagName, ', ')
-          FROM JobPostingsTags
-          INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
-          WHERE JobPostingsTags.jobId = JobPostings.id
-        ) AS tags
+  getRandomJobs: async (limit, offset) => {
+  try {
+    const result = await sql.query(`
+      SELECT *
+      FROM (
+        SELECT 
+          JobPostings.*, 
+          companies.name AS company_name, 
+          companies.logo AS company_logo, 
+          companies.location AS company_location, 
+          companies.description AS company_description,
+          (
+            SELECT STRING_AGG(JobTags.tagName, ', ')
+            FROM JobPostingsTags
+            INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+            WHERE JobPostingsTags.jobId = JobPostings.id
+          ) AS tags,
+          ROW_NUMBER() OVER (ORDER BY NEWID()) AS row_num
         FROM JobPostings
         LEFT JOIN companies ON JobPostings.company_id = companies.id
-        ORDER BY NEWID()
-      `);
-      const jobs = result.recordset;
-      return jobs;
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err;
-    }
-  },
+      ) AS randomized_jobs
+      WHERE row_num > ${offset} AND row_num <= ${offset} + ${limit}
+    `);
+    const jobs = result.recordset;
+    return jobs;
+  } catch (err) {
+    console.error("Database query error:", err);
+    throw err;
+  }
+},
 
   getJobsCount: async () => {
     try {
