@@ -1,0 +1,56 @@
+main {
+    padding: 10px 14px;
+    margin-bottom: 30px;
+}
+
+form > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-company-header {
+    padding: 16px 0;
+    padding-top: 0;
+}
+
+form > div > input {
+    width: 100%;
+    padding: 10px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border-radius: 10px;
+    background-color: var(--light-mode-body-color) !important;
+    border: 1px solid var(--border-color) !important;
+    font-size: 16px;
+    transition: box-shadow 0.3s ease;
+}
+
+form > div > textarea {
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.25rem;
+    padding: 10px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border-radius: 10px;
+    background-color: var(--light-mode-body-color) !important;
+    border: 1px solid var(--border-color) !important;
+    font-size: 16px;
+    transition: box-shadow 0.3s ease;
+    resize: none; 
+    overflow-y: hidden; 
+  }
+
+@media (prefers-color-scheme: dark) {
+    form > div > input {
+        background-color: var(--dark-mode-body-color) !important;
+        border: 1px solid var(--dark-mode-border-color) !important;
+        color: var(--dark-mode-text-color);
+    }
+
+    form > div > textarea {
+        background-color: var(--dark-mode-body-color) !important;
+        border: 1px solid var(--dark-mode-border-color) !important;
+        color: var(--dark-mode-text-color);
+    }
+}

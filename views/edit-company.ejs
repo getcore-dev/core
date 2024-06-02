@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Edit Company</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="shortcut icon" href="/img/core.png" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/edit-company.css" />
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+</head>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'companies' }) %>
+
+  <main>
+    <div class="edit-company-header">
+      <h5>Edit <%= company.name %></h5>
+    </div>
+    <form action="/jobs/company/<%= company.name %>/edit" method="POST">
+      <input type="hidden" name="id" value="<%= company.id %>">
+      <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="<%= company.name %>" required>
+      </div>
+      <div>
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" value="<%= company.location %>">
+      </div>
+      <div>
+        <label for="description">Description:</label>
+        <textarea class="auto-grow-textarea" id="description" name="description"><%= company.description %></textarea>
+      </div>
+      <div>
+        <label for="logo">Logo:</label>
+        <input type="text" id="logo" name="logo" value="<%= company.logo %>">
+      </div>
+      <div>
+        <label for="logo_url">Logo URL:</label>
+        <input type="text" id="logo_url" name="logo_url" value="<%= company.logo_url %>">
+      </div>
+      <div>
+        <label for="industry">Industry:</label>
+        <input type="text" id="industry" name="industry" value="<%= company.industry %>">
+      </div>
+      <div>
+        <label for="founded">Founded:</label>
+        <input type="datetime-local" id="founded" name="founded" value="<%= company.founded ? company.founded.toISOString().substring(0, 16) : '' %>">
+      </div>
+      <div>
+        <label for="size">Size:</label>
+        <input type="text" id="size" name="size" value="<%= company.size %>">
+      </div>
+      <div>
+        <label for="stock_symbol">Stock Symbol:</label>
+        <input type="text" id="stock_symbol" name="stock_symbol" value="<%= company.stock_symbol %>">
+      </div>
+      <div>
+        <label for="job_board_url">Job Board URL:</label>
+        <input type="text" id="job_board_url" name="job_board_url" value="<%= company.job_board_url %>">
+      </div>
+      <button class="submit-button" type="submit">Update Company</button>
+    </form>
+  </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const textarea = document.getElementsByClassName("auto-grow-textarea")[0];
+
+      function adjustTextareaHeight(textarea) {
+        textarea.style.height = "auto"; // Reset height to calculate the new height
+        textarea.style.height = textarea.scrollHeight + "px"; // Set new height based on scrollHeight
+      }
+
+      // Adjust height on page load
+      adjustTextareaHeight(textarea);
+
+      // Adjust height on input events
+      textarea.addEventListener("input", function() {
+        adjustTextareaHeight(this);
+      });
+    });
+  </script>
+</body>
+
+</html>

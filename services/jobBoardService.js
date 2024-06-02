@@ -1,0 +1,205 @@
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const cheerio = require("cheerio");
+const jobQueries = require("../queries/jobQueries");
+const axios = require("axios");
+const linkFunctions = require("../utils/linkFunctions");
+
+async function processJobLink(model, jobLink) {
+  return new Promise(async (resolve) => {
+    console.log("Processing job link:", jobLink.link);
+    const headers = {
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
+      Accept:
+        "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+      "Accept-Language": "en-US,en;q=0.5",
+      "Accept-Encoding": "gzip, deflate, br",
+      Connection: "keep-alive",
+      "Upgrade-Insecure-Requests": "1",
+      "Cache-Control": "max-age=0",
+    };
+
+    try {
+      const linkResponse = await axios.get(jobLink.link, {
+        headers,
+        timeout: 5000,
+      });
+      const { data } = linkResponse;
+
+      const $ = cheerio.load(data);
+      $("script, style").remove();
+      const textContent = $("body").text().replace(/\s\s+/g, " ").trim();
+
+      const prompt = `Please extract the following information from this job posting data: ${textContent}
+      - title (e.g., Software Engineer, Data Analyst, do not include intern or seniority in the title)
+      - company_name NVARCHAR(50) (as simple as possible, not amazon inc, just Amazon. If it's a startup, use the startup name)
+      - company_description NVARCHAR(MAX)(write a short paragraph about the company, where they're located, their mission, etc)
+      - company_industry (e.g., Technology, Healthcare, Finance, etc.)
+      - company_size (e.g., 1-10, 11-50, 51-200, 201-500, 501-1000, 1001-5000, 5001-10000, 10001+)
+      - company_stock_symbol (if public, otherwise leave blank)
+      - company_logo (in the format of /src/<company-name>logo.png do not include space in the company logo)
+      - company_founded (year founded, if available, otherwise leave blank, format in SQL datetime format)
+      - location (City, State(full name), Country(full name), if remote N/A)
+      - salary (integer only, no currency symbol, no matter what format the salary in (hourly, monthly, weekly) convert to yearly salary)
+      - salary_max (integer only, no currency symbol, no matter what format the salary in (hourly, monthly, weekly) convert to yearly salary)
+      - experience_level ("Internship", "Entry Level", "Junior", "Mid Level", "Senior" or "Lead" only)
+      - skills (6-10 skills, prefer single word skills, as a comma-separated list)
+      - tags (at least 10, these should be different from skills and are things commonly searched related to the job. e.g., "remote", "healthcare", "startup" as a comma-separated list)
+      - description (try to take up to 3 paragraphs from the original source)
+      - benefits (as a comma-separated list) 
+      - additional_information (blank if nothing detected in the job posting, otherwise provide any additional information that you think is relevant to the job posting)
+      - PreferredQualifications (if available)
+      - MinimumQualifications (if available)
+      - Responsibilities (responsibilities of the job)
+      - Requirements (requirements of the job)
+      - NiceToHave (nice to have skills or experience)
+      - Schedule (mon-fri, 9-5, etc.)
+      - HoursPerWeek (integer only)
+      - H1BVisaSponsorship BIT
+      - IsRemote BIT
+      - EqualOpportunityEmployerInfo NVARCHAR(MAX)
+      - Relocation BIT
+      Provide the extracted information in JSON format.`;
+
+      const result = await model.generateContent(prompt);
+      let response = await result.response;
+      response = response.text();
+
+      const cleanedResponse =
+        response.replace(/`+/g, "").match(/\{.*\}/s)?.[0] || "";
+
+      let extractedData;
+      try {
+        extractedData = JSON.parse(cleanedResponse);
+      } catch (error) {
+        console.error(
+          `Failed to parse JSON response: ${cleanedResponse}`,
+          error
+        );
+        return resolve();
+      }
+
+      if (extractedData.error) {
+        console.log(
+          `Skipping job posting due to ChatGPT error: ${extractedData.error}`
+        );
+        return resolve();
+      }
+
+      const requiredFields = [
+        "title",
+        "company_name",
+        "location",
+        "salary",
+        "experience_level",
+        "skills",
+        "tags",
+        "description",
+      ];
+      const isComplete = requiredFields.every((field) =>
+        extractedData.hasOwnProperty(field)
+      );
+
+      if (isComplete) {
+        try {
+          let company = await jobQueries.getCompanyIdByName(
+            extractedData.company_name
+          );
+          if (!company) {
+            company = await jobQueries.createCompany(
+              extractedData.company_name,
+              extractedData.company_logo,
+              extractedData.location,
+              extractedData.company_description,
+              extractedData.company_industry,
+              extractedData.company_size,
+              extractedData.company_stock_symbol,
+              extractedData.company_founded
+            );
+          }
+
+          await jobQueries.createJobPosting(
+            extractedData.title,
+            extractedData.salary,
+            extractedData.experience_level,
+            extractedData.location,
+            new Date(),
+            company.id,
+            jobLink.link,
+            null,
+            extractedData.tags.split(",").map((tag) => tag.trim()),
+            extractedData.description,
+            extractedData.salary_max,
+            1,
+            extractedData.skills.split(",").map((skill) => skill.trim()),
+            extractedData.benefits,
+            extractedData.additional_information,
+            extractedData.PreferredQualifications,
+            extractedData.MinimumQualifications,
+            extractedData.Responsibilities,
+            extractedData.Requirements,
+            extractedData.NiceToHave,
+            extractedData.Schedule,
+            extractedData.HoursPerWeek,
+            extractedData.H1BVisaSponsorship,
+            extractedData.IsRemote,
+            extractedData.EqualOpportunityEmployerInfo,
+            extractedData.Relocation
+          );
+
+          console.log(
+            `Job posting created successfully for job link: ${jobLink.link}`
+          );
+        } catch (error) {
+          console.error("Error creating job posting:", error);
+        }
+      } else {
+        console.log(
+          `Job posting not created due to missing fields for job link: ${jobLink.link}`
+        );
+      }
+    } catch (error) {
+      console.error(
+        `Error with ChatGPT API call for job link ${jobLink.link}:`,
+        error
+      );
+    }
+
+    // Introduce a delay of 1 second (1000 milliseconds)
+    setTimeout(resolve, 1000);
+  });
+}
+
+async function checkJobBoardUrls() {
+  try {
+    const companies = await jobQueries.getCompanies();
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    for (const company of companies) {
+      if (company.job_board_url) {
+        let jobLinks = [company.job_board_url];
+
+        if (company.job_board_url.includes("greenhouse.io")) {
+          jobLinks = await linkFunctions.scrapeGreenhouseJobs(
+            company.job_board_url
+          );
+        } else if (company.job_board_url.includes("lever.co")) {
+          jobLinks = await linkFunctions.scrapeLeverJobs(company.job_board_url);
+        }
+
+        for (const jobLink of jobLinks) {
+          await processJobLink(model, { link: jobLink.link });
+        }
+      }
+    }
+
+    console.log("Job board URLs processed successfully");
+  } catch (error) {
+    console.error("Error processing job board URLs:", error);
+  }
+}
+
+module.exports = {
+  checkJobBoardUrls,
+};

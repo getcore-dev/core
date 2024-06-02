@@ -1538,6 +1538,10 @@ div.post-information {
     background-color: var(--dark-mode-hover-color);
   }
 
+  .mini-link-body > * > p {
+    color: var(--dark-mode-text-color);
+  }
+
 
   .post-body p {
     color: #b1b1b1;
@@ -2013,9 +2017,10 @@ div.username {
     font-size: 16px;
   }
 
-  @media (prefers-color-scheme: dark) {
-    .job {
-      border-color: var(--dark-mode-border-color);
-    }
+}
+
+@media (prefers-color-scheme: dark) {
+  .job {
+    border-color: var(--dark-mode-border-color) !important;
   }
 }

@@ -29,6 +29,55 @@ router.get("/company/:name", async (req, res) => {
   }
 });
 
+router.get("/company/:name/edit", checkAuthenticated, async (req, res) => {
+  try {
+    const companyName = req.params.name;
+    const company = await jobQueries.getCompanyByName(companyName);
+    res.render("edit-company.ejs", { company, user: req.user });
+  } catch (err) {
+    console.error("Error fetching company details:", err);
+    res.status(500).send("Error fetching company details");
+  }
+});
+
+router.post("/company/:name/edit", checkAuthenticated, async (req, res) => {
+  try {
+    const companyName = req.params.name;
+    const company = await jobQueries.getCompanyByName(companyName);
+    const {
+      name,
+      location,
+      description,
+      logo,
+      logo_url,
+      industry,
+      founded,
+      size,
+      stock_symbol,
+      job_board_url
+    } = req.body;
+
+    await jobQueries.updateCompany(
+      company.id,
+      name || undefined,
+      location || undefined,
+      description || undefined,
+      logo || undefined,
+      logo_url || undefined,
+      industry || undefined,
+      founded || undefined,
+      size || undefined,
+      stock_symbol || undefined,
+      job_board_url || undefined
+    );
+
+    res.redirect(`/jobs/company/${name}`);
+  } catch (err) {
+    console.error("Error updating company details:", err);
+    res.status(500).send("Error updating company details");
+  }
+});
+
 router.post("/update-experiences", checkAuthenticated, async (req, res) => {
   try {
     const userId = req.user.id;

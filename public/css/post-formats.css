@@ -155,6 +155,10 @@
       border: 1px solid var(--dark-mode-border-color);
     }
 
+    .post-body p {
+      color: #b1b1b1;
+    }
+
     .alt-text {
       color: var(--dark-mode-secondary-text-color);
     }

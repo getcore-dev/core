@@ -3,16 +3,16 @@ const cheerio = require("cheerio");
 
 const filterJobTitles = (jobTitle) => {
   const keywords = [
-    "Software",
-    "Engineer",
+    "Software Engineer",
     "Developer",
     "Programmer",
-    "Coder",
-    "Data",
-    "Machine Learning",
+    "ML",
     "AI",
     "Backend",
     "Frontend",
+    "Coder",
+    "Data",
+    "Machine Learning",
     "Full Stack",
     "DevOps",
     "QA",

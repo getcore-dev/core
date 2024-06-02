@@ -1,5 +1,4 @@
 const sql = require("mssql");
-const { get } = require("request");
 
 const jobQueries = {
   getJobs: async (limit, offset) => {
@@ -24,6 +23,96 @@ const jobQueries = {
       console.error("Database query error:", err);
       throw err;
     }
+  },
+  getAllCompanies: async () => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM companies
+      `;
+      const companies = result.recordset;
+      console.log(companies);
+      return companies;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  updateCompany: async (
+    id,
+    name,
+    location,
+    description,
+    logo,
+    logo_url,
+    industry,
+    founded,
+    size,
+    stock_symbol,
+    job_board_url
+  ) => {
+    // Construct the SET clause dynamically
+    const fields = [];
+    const values = {};
+
+    if (name !== undefined) {
+      fields.push("name = @name");
+      values.name = { value: name, type: sql.NVarChar };
+    }
+    if (location !== undefined) {
+      fields.push("location = @location");
+      values.location = { value: location, type: sql.NVarChar };
+    }
+    if (description !== undefined) {
+      fields.push("description = @description");
+      values.description = { value: description, type: sql.NVarChar };
+    }
+    if (logo !== undefined) {
+      fields.push("logo = @logo");
+      values.logo = { value: logo, type: sql.VarChar };
+    }
+    if (logo_url !== undefined) {
+      fields.push("logo_url = @logo_url");
+      values.logo_url = { value: logo_url, type: sql.VarChar };
+    }
+    if (industry !== undefined) {
+      fields.push("industry = @industry");
+      values.industry = { value: industry, type: sql.VarChar };
+    }
+    if (founded !== undefined) {
+      fields.push("founded = @founded");
+      values.founded = { value: founded, type: sql.DateTime };
+    }
+    if (size !== undefined) {
+      fields.push("size = @size");
+      values.size = { value: size, type: sql.VarChar };
+    }
+    if (stock_symbol !== undefined) {
+      fields.push("stock_symbol = @stock_symbol");
+      values.stock_symbol = { value: stock_symbol, type: sql.VarChar };
+    }
+    if (job_board_url !== undefined) {
+      fields.push("job_board_url = @job_board_url");
+      values.job_board_url = { value: job_board_url, type: sql.VarChar };
+    }
+
+    if (fields.length === 0) {
+      throw new Error("No fields to update");
+    }
+
+    const query = `
+        UPDATE companies
+        SET ${fields.join(", ")}
+        WHERE id = @id
+      `;
+
+    const request = new sql.Request();
+    request.input("id", sql.Int, id);
+    Object.entries(values).forEach(([key, { value, type }]) => {
+      request.input(key, type, value);
+    });
+
+    await request.query(query);
   },
 
   getJobsBySearch: async (
@@ -427,9 +516,11 @@ const jobQueries = {
 
   getCompanies: async () => {
     try {
-      const result = await sql.query`SELECT TOP 20 * FROM companies`;
-      const companies = result.recordset;
-      return companies;
+      const pool = await sql.connect();
+      const result = await pool.request().query(`
+        SELECT * FROM companies
+      `);
+      return result.recordset;
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -460,6 +551,10 @@ const jobQueries = {
           companies.size AS company_size,
           companies.stock_symbol AS company_stock_symbol,
           companies.founded AS company_founded,
+          users.firstname AS recruiter_firstname,
+          users.lastname AS recruiter_lastname,
+          users.avatar AS recruiter_image,
+          
           (
             SELECT STRING_AGG(JobTags.tagName, ', ') 
             FROM JobPostingsTags 
@@ -474,6 +569,7 @@ const jobQueries = {
           ) AS skills
         FROM JobPostings
         LEFT JOIN companies ON JobPostings.company_id = companies.id
+        LEFT JOIN users ON users.recruiter_id = JobPostings.recruiter_id
         WHERE JobPostings.id = ${id}
       `;
       const job = result.recordset[0];

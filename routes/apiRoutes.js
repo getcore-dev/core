@@ -9,6 +9,8 @@ const storage = multer.diskStorage({
     cb(null, "profile-" + Date.now() + ".jpg");
   },
 });
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const cheerio = require("cheerio");
 const githubService = require("../services/githubService");
 const cacheMiddleware = require("../middleware/cache");
@@ -310,15 +312,13 @@ router.get("/community/:communityId/jobs", async (req, res) => {
 
 router.get("/randomJobs", async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1; 
-    const limit = parseInt(req.query.limit) || 10; 
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
 
     const offset = (page - 1) * limit;
 
     const [jobPostings, totalCount] = await Promise.all([
-      jobQueries.getRandomJobs(
-        limit
-      ),
+      jobQueries.getRandomJobs(limit),
       jobQueries.getJobsCount(),
     ]);
 
@@ -512,12 +512,9 @@ router.post("/job-postings", checkAuthenticated, async (req, res) => {
 router.post("/extract-job-details", async (req, res) => {
   try {
     const { link } = req.body;
-    const chatGPTModule = await import("chatgpt");
 
     if (link) {
-      const api = new chatGPTModule.ChatGPTAPI({
-        apiKey: process.env.OPENAI_API_KEY,
-      });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
       const headers = {
         "User-Agent":
@@ -574,7 +571,7 @@ router.post("/extract-job-details", async (req, res) => {
 
       console.log(prompt);
 
-      const response = await api.sendMessage(prompt);
+      const response = await model.generateContent(prompt);
       console.log("Raw response text:", response.text);
 
       // Remove triple backticks and any other non-JSON characters
@@ -651,27 +648,37 @@ router.post("/auto-create-job-posting", async (req, res) => {
     } else if (link.includes("lever.co")) {
       jobLinks = await linkFunctions.scrapeLeverJobs(link);
     }
-
-    const chatGPTModule = await import("chatgpt");
-
-    const api = new chatGPTModule.ChatGPTAPI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     for (const jobLink of jobLinks) {
-      console.log(`Processing job link: ${jobLink.link}`);
-      const headers = {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
-        Accept:
-          "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
-        "Accept-Encoding": "gzip, deflate, br",
-        Connection: "keep-alive",
-        "Upgrade-Insecure-Requests": "1",
-        "Cache-Control": "max-age=0",
-      };
+      await processJobLink(model, jobLink);
+    }
 
+    res.status(201).json({ message: "Job postings processed successfully" });
+  } catch (error) {
+    console.error("Error extracting job details:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while extracting job details" });
+  }
+});
+
+async function processJobLink(model, jobLink) {
+  return new Promise(async (resolve) => {
+    console.log(`Processing job link: ${jobLink.link}`);
+    const headers = {
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
+      Accept:
+        "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+      "Accept-Language": "en-US,en;q=0.5",
+      "Accept-Encoding": "gzip, deflate, br",
+      Connection: "keep-alive",
+      "Upgrade-Insecure-Requests": "1",
+      "Cache-Control": "max-age=0",
+    };
+
+    try {
       const linkResponse = await axios.get(jobLink.link, {
         headers,
         timeout: 5000,
@@ -681,8 +688,6 @@ router.post("/auto-create-job-posting", async (req, res) => {
       const $ = cheerio.load(data);
       $("script, style").remove();
       const textContent = $("body").text().replace(/\s\s+/g, " ").trim();
-
-      console.log(textContent);
 
       const prompt = `Please extract the following information from this job posting data: ${textContent}
       - title (e.g., Software Engineer, Data Analyst, do not include intern or seniority in the title)
@@ -715,118 +720,115 @@ router.post("/auto-create-job-posting", async (req, res) => {
       - Relocation BIT
       Provide the extracted information in JSON format.`;
 
+      const result = await model.generateContent(prompt);
+      let response = await result.response;
+      response = response.text();
+      console.log(response);
+
+      const cleanedResponse =
+        response.replace(/`+/g, "").match(/\{.*\}/s)?.[0] || "";
+
+      let extractedData;
       try {
-        const response = await api.sendMessage(prompt);
-        const cleanedResponse =
-          response.text.replace(/`+/g, "").match(/\{.*\}/s)?.[0] || "";
-        console.log(response.text);
-
-        let extractedData;
-        try {
-          extractedData = JSON.parse(cleanedResponse);
-        } catch (error) {
-          console.error(
-            `Failed to parse JSON response: ${cleanedResponse}`,
-            error
-          );
-          continue;
-        }
-
-        if (extractedData.error) {
-          console.log(
-            `Skipping job posting due to ChatGPT error: ${extractedData.error}`
-          );
-          continue;
-        }
-
-        const requiredFields = [
-          "title",
-          "company_name",
-          "location",
-          "salary",
-          "experience_level",
-          "skills",
-          "tags",
-          "description",
-        ];
-        const isComplete = requiredFields.every((field) =>
-          extractedData.hasOwnProperty(field)
-        );
-
-        if (isComplete) {
-          try {
-            let company = await jobQueries.getCompanyIdByName(
-              extractedData.company_name
-            );
-            if (!company) {
-              company = await jobQueries.createCompany(
-                extractedData.company_name,
-                extractedData.company_logo,
-                extractedData.location,
-                extractedData.company_description,
-                extractedData.company_industry,
-                extractedData.company_size,
-                extractedData.company_stock_symbol,
-                extractedData.company_founded
-              );
-            }
-
-            const jobPostingId = await jobQueries.createJobPosting(
-              extractedData.title,
-              extractedData.salary,
-              extractedData.experience_level,
-              extractedData.location,
-              new Date(),
-              company.id,
-              jobLink.link,
-              null,
-              extractedData.tags.split(",").map((tag) => tag.trim()),
-              extractedData.description,
-              extractedData.salary_max,
-              1,
-              extractedData.skills.split(",").map((skill) => skill.trim()),
-              extractedData.benefits,
-              extractedData.additional_information,
-              extractedData.PreferredQualifications,
-              extractedData.MinimumQualifications,
-              extractedData.Responsibilities,
-              extractedData.Requirements,
-              extractedData.NiceToHave,
-              extractedData.Schedule,
-              extractedData.HoursPerWeek,
-              extractedData.H1BVisaSponsorship,
-              extractedData.IsRemote,
-              extractedData.EqualOpportunityEmployerInfo,
-              extractedData.Relocation
-            );
-
-            console.log(
-              `Job posting created successfully for job link: ${jobLink.link}`
-            );
-          } catch (error) {
-            console.error("Error creating job posting:", error);
-          }
-        } else {
-          console.log(
-            `Job posting not created due to missing fields for job link: ${jobLink.link}`
-          );
-        }
+        extractedData = JSON.parse(cleanedResponse);
       } catch (error) {
         console.error(
-          `Error with ChatGPT API call for job link ${jobLink.link}:`,
+          `Failed to parse JSON response: ${cleanedResponse}`,
           error
         );
+        return resolve();
       }
+
+      if (extractedData.error) {
+        console.log(
+          `Skipping job posting due to ChatGPT error: ${extractedData.error}`
+        );
+        return resolve();
+      }
+
+      const requiredFields = [
+        "title",
+        "company_name",
+        "location",
+        "salary",
+        "experience_level",
+        "skills",
+        "tags",
+        "description",
+      ];
+      const isComplete = requiredFields.every((field) =>
+        extractedData.hasOwnProperty(field)
+      );
+
+      if (isComplete) {
+        try {
+          let company = await jobQueries.getCompanyIdByName(
+            extractedData.company_name
+          );
+          if (!company) {
+            company = await jobQueries.createCompany(
+              extractedData.company_name,
+              extractedData.company_logo,
+              extractedData.location,
+              extractedData.company_description,
+              extractedData.company_industry,
+              extractedData.company_size,
+              extractedData.company_stock_symbol,
+              extractedData.company_founded
+            );
+          }
+
+          await jobQueries.createJobPosting(
+            extractedData.title,
+            extractedData.salary,
+            extractedData.experience_level,
+            extractedData.location,
+            new Date(),
+            company.id,
+            jobLink.link,
+            null,
+            extractedData.tags.split(",").map((tag) => tag.trim()),
+            extractedData.description,
+            extractedData.salary_max,
+            1,
+            extractedData.skills.split(",").map((skill) => skill.trim()),
+            extractedData.benefits,
+            extractedData.additional_information,
+            extractedData.PreferredQualifications,
+            extractedData.MinimumQualifications,
+            extractedData.Responsibilities,
+            extractedData.Requirements,
+            extractedData.NiceToHave,
+            extractedData.Schedule,
+            extractedData.HoursPerWeek,
+            extractedData.H1BVisaSponsorship,
+            extractedData.IsRemote,
+            extractedData.EqualOpportunityEmployerInfo,
+            extractedData.Relocation
+          );
+
+          console.log(
+            `Job posting created successfully for job link: ${jobLink.link}`
+          );
+        } catch (error) {
+          console.error("Error creating job posting:", error);
+        }
+      } else {
+        console.log(
+          `Job posting not created due to missing fields for job link: ${jobLink.link}`
+        );
+      }
+    } catch (error) {
+      console.error(
+        `Error with ChatGPT API call for job link ${jobLink.link}:`,
+        error
+      );
     }
 
-    res.status(201).json({ message: "Job postings processed successfully" });
-  } catch (error) {
-    console.error("Error extracting job details:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while extracting job details" });
-  }
-});
+    // Introduce a delay of 1 second (1000 milliseconds)
+    setTimeout(resolve, 1000);
+  });
+}
 
 router.get("/posts/:postId/comments", async (req, res) => {
   try {

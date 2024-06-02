@@ -288,6 +288,7 @@ group
             </div>
             </div>
           </div>
+          
 
           <div class="job-details">
             <h2 class="job-title">${job.title}</h2>
@@ -330,6 +331,7 @@ group
             This job was posted on ${formatDate(job.postedDate)}
             </p>
       </div>
+      
       <div class="interact-buttons">
       <div class="apply-button-container">
       <button id="submit-button-normal" onclick="window.location.href='${

@@ -116,11 +116,16 @@ div.form-group {
     box-sizing: border-box;
     padding: 8px;
     padding-top: 20px;
-    background-color: var(--light-mode-body-color);
+    background-color: var(--light-mode-main-color);
     border: 1px solid var(--border-color);
     font-size: 16px;
     border-radius: 6px;
     margin: 9px 0px; 
+    transition: border-color 0.3s ease;
+}
+
+.main-container input[type="text"]:hover, .main-container textarea:hover, .main-container select:hover, .main-container input[type="number"]:hover, .main-container input[type="date"]:hover {
+    border: 1px solid var(--light-mode-secondary-text-color);
 }
 
 .EasyMDEContainer {

@@ -69,8 +69,9 @@ main {
     border-bottom: 1px solid var(--border-color);
   }
   .company-flair-item .material-symbols-outlined {
-    font-size: 1.2rem;
-    vertical-align: -3px;
+    font-size: .95rem;
+    vertical-align: -2px;
+    padding-right: .2rem;
   }
 
 .company-name {
@@ -81,6 +82,16 @@ main {
 .company-location {
     font-size: 14px;
   margin: 0;
+}
+
+.link-display {
+  display: flex;
+  flex-direction: row;
+  gap: 7px;
+  background: #1c81c933;
+  border-radius: 8px;
+  padding: .2rem .4rem;
+  align-items: center;
 }
 
 .company-info {

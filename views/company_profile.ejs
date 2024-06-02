@@ -27,10 +27,29 @@
           <span class="company-name"><%= company.name %></span>
           <span class="company-location secondary-text"><%= company.location %></span>
         </div>
+        <% if (user && user.isAdmin) { %>
+        <a href="/jobs/company/<%= company.name %>/edit">
+          <button>
+            Edit
+          </button>
+        </a>
+        <% } %>
       </div>
 
       <span class="company-description"><%= company.description %></span>
       <div class="company-flair">
+        <% if (company.job_board_url) { %>
+        <span class="link-display">
+          <a href="<%= company.job_board_url %>" class="company-flair-item">
+            <p>
+              <span class="material-symbols-outlined">
+                link
+              </span>
+              Job Board
+            </p>
+          </a>
+        </span>
+        <% } %>
         <% if (company.industry)  { %>
 
         <span class="company-flair-item">

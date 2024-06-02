@@ -24,6 +24,8 @@ const apiRoutes = require("./routes/apiRoutes");
 const generalRoutes = require("./routes/generalRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const communityRoutes = require("./routes/communityRoutes");
+const jobBoardService = require("./services/jobBoardService");
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5000,
@@ -51,7 +53,6 @@ passportConfig.initialize(
   userQueries.findByGoogleId,
   userQueries.createUserFromGoogleProfile
 );
-
 
 // Express app setup
 app.set("view-engine", "ejs");
@@ -97,6 +98,10 @@ app.use(errorHandler);
 
 app.listen(environment.port, () => {
   console.log(`Server running on http://localhost:${environment.port}`);
+
+  if (process.env.NODE_ENV === "production") {
+    jobBoardService.checkJobBoardUrls();
+  }
 });
 
 module.exports = app;

@@ -1330,8 +1330,8 @@ button.see-more {
 }
 
 @media (prefers-color-scheme: dark) {
-  .mini-link-body {
-    color: #eee;
+  .mini-link-body > p {
+    color: var(--dark-mode-text-color);
   }
 
   #communityActionBtn {
