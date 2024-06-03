@@ -7,6 +7,13 @@ const linkFunctions = require("../utils/linkFunctions");
 
 async function processJobLink(model, jobLink) {
   return new Promise(async (resolve) => {
+    // check if the link has already been processed
+    const jobPosting = await jobQueries.getJobPostingByLink(jobLink.link);
+    if (jobPosting) {
+      console.log(`Job posting already exists for job link: ${jobLink.link}`);
+      return resolve();
+    }
+
     console.log("Processing job link:", jobLink.link);
     const headers = {
       "User-Agent":
@@ -128,11 +135,15 @@ async function processJobLink(model, jobLink) {
             company.id,
             jobLink.link,
             null,
-            extractedData.tags.split(",").map((tag) => tag.trim()),
+            extractedData.tags
+              ? extractedData.tags.split(",").map((tag) => tag.trim())
+              : [],
             extractedData.description,
             extractedData.salary_max,
             1,
-            extractedData.skills.split(",").map((skill) => skill.trim()),
+            extractedData.skills
+              ? extractedData.skills.split(",").map((skill) => skill.trim())
+              : [],
             extractedData.benefits,
             extractedData.additional_information,
             extractedData.PreferredQualifications,
@@ -152,7 +163,11 @@ async function processJobLink(model, jobLink) {
             `Job posting created successfully for job link: ${jobLink.link}`
           );
         } catch (error) {
-          console.error("Error creating job posting:", error);
+          console.log(
+            `Error creating job posting for job link: ${jobLink.link}`,
+            error
+          );
+          console.log("Extracted data:", extractedData);
         }
       } else {
         console.log(

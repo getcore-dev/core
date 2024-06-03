@@ -92,7 +92,6 @@ div.vote-interactions {
   flex-direction: column;
   justify-content: center;
   gap: 2px;
-  padding: 5px 5px;
 }
 
 .post:hover, .job:hover {

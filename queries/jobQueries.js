@@ -24,6 +24,18 @@ const jobQueries = {
       throw err;
     }
   },
+
+  getJobPostingByLink: async (link) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM JobPostings WHERE link = ${link}
+      `;
+      return result.recordset[0];
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
   getAllCompanies: async () => {
     try {
       const result = await sql.query`
@@ -124,11 +136,6 @@ const jobQueries = {
     offset
   ) => {
     try {
-      console.log("Location: ", location);
-      console.log("Title: ", title);
-      console.log("Experience Level: ", experienceLevel);
-      console.log("Salary: ", salary);
-
       let fullStateName = location;
       let stateAbbreviation = location;
 
@@ -554,7 +561,7 @@ const jobQueries = {
           users.firstname AS recruiter_firstname,
           users.lastname AS recruiter_lastname,
           users.avatar AS recruiter_image,
-          
+
           (
             SELECT STRING_AGG(JobTags.tagName, ', ') 
             FROM JobPostingsTags 
@@ -611,14 +618,16 @@ const jobQueries = {
       throw new Error("Link must be a string");
     }
     if (!Array.isArray(skills)) {
-      skills = skills.split(",").map((skill) => skill.trim());
+      skills = skills ? skills.split(",").map((skill) => skill.trim()) : [];
     }
 
     if (!Array.isArray(tags)) {
-      tags = tags.split(",").map((tag) => tag.trim());
+      tags = tags ? tags.split(",").map((tag) => tag.trim()) : [];
     }
 
-    const benefitsArray = benefits.split(",").map((benefit) => benefit.trim());
+    const benefitsArray = benefits
+      ? benefits.split(",").map((benefit) => benefit.trim())
+      : [];
 
     // Format the benefits array for SQL query
     const formattedBenefits = benefitsArray
