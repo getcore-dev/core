@@ -781,9 +781,10 @@ font-weight: 400;
 
 .thumbnail-regular {
   border-radius: 0;
-  max-width: 60px;
+  aspect-ratio: maintain;
+  width: auto;
   object-fit: contain;
-  width: max-content
+  
 }
 
 .dropdown {
