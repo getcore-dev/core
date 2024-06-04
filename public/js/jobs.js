@@ -303,7 +303,11 @@ function renderJobPostings() {
               }" alt="${job.company_name} logo" />
               <div class="job-posting-company-info">
               <p class="company-name secondary-text">${job.company_name}</p>
-              <h3 class="job-title">${job.title} </h3>
+              <h3 class="job-title">
+              <a href="/jobs/${job.id}">
+              ${job.title} 
+              </a>
+              </h3>
               </div>
             </div>
             <h5 class="job-subtitle secondary-text">

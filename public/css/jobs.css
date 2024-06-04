@@ -417,6 +417,7 @@ div.recent-jobs {
 }
 
 .title-filter {
+  margin-bottom: 15px;
   display: flex;
   flex-direction: row;
   align-items: center;

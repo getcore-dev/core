@@ -99,9 +99,10 @@ app.use(errorHandler);
 app.listen(environment.port, () => {
   console.log(`Server running on http://localhost:${environment.port}`);
 
-  if (process.env.NODE_ENV === "production") {
+  if (environment.isProduction) {
     jobBoardService.checkJobBoardUrls();
   }
 });
 
 module.exports = app;
+ 
