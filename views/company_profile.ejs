@@ -68,15 +68,17 @@
             <span class="material-symbols-outlined">
               person
             </span>
-            <%= company.size %> employees
+            <%= company.size %>
           </p>
         </span>
         <% } %>
       </div>
       <div class="jobs">
-        <h3>Open Jobs</h3>
+        <h3> <%= jobsCount %> Open Jobs</h3>
         <div class="job-list">
         </div>
+        <%- include('partials/footer') %>
+
       </div>
 
     </div>
@@ -117,9 +119,12 @@
         jobElement.innerHTML = `
             <div class="job-preview">
               <div class="job-info">
-                <h3 class="job-title">${
-                  job.title
-                } <span style="margin-left: auto; float: right;">${
+                <h3 class="job-title">
+                <a href="/jobs/${job.id}">
+                ${job.title}
+                </a>
+                
+                 <span style="margin-left: auto; float: right;">${
             job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1)
           }</span></h3>
                 <h5 class="job-subtitle secondary-text">

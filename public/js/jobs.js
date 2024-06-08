@@ -123,7 +123,12 @@ function setupFilter(filterType) {
     const input = document.createElement("input");
     input.className = "filter-input";
     input.type = "text";
-    input.placeholder = filterType[0].toUpperCase() + filterType.slice(1);
+    if (filterType === "title") {
+      input.placeholder = "Search by job title";
+    } else if (filterType === "location") {
+      input.placeholder = "Search by location";
+    }
+
     input.addEventListener("input", (e) => {
       filters[filterType] = e.target.value;
       currentPage = 1;

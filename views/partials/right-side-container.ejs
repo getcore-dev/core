@@ -5,7 +5,7 @@
          <div class="job-header">
            <h5>Openings</h5>
          </div>
-         <div class="jobslist">
+         <div class="jobslist flex-col gap-1">
 
          </div>
        </div>
@@ -29,21 +29,22 @@
                 <div class="job-content">
                   <div class="job-content-header">
                     <div class="company-logo-container">
-                      <img loading="lazy" src="${job.company_logo}" alt="Company Logo" class="thumbnail thumbnail-tiny thumbnail-regular" />
+                      <img loading="lazy" src="${job.company_logo}" alt="Company Logo" class="thumbnail ${isMobile ? `thumbnail-tiny` : `thumbnail-tiny`} thumbnail-regular" />
                     </div>
                     <div class="job-title-location">
                       <div class="job-posting-header">
-                        <div class="job-company-name secondary-text">${job.company_name}</div>
-                                          <div class="job-title">${job.title.slice(0, 40)}</div>
-
-                      </div>
-                    </div>
-                  </div>
+                        <div class="job-company-name secondary-text">
+                        <a class="secondary-text" href="/jobs/company/${job.company_name}">${job.company_name}</a></div>
+                                          <div class="job-title"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
                                                     <span class="job-salary" style="margin-left: auto;">USD $${
                   job.salary ? job.salary.toLocaleString() : ""
                 } ${
                 job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
               }</span>
+                      </div>
+                    </div>
+                  </div>
+
 
                   ${!isMobile ? `
                     <div class="job-description">
@@ -58,9 +59,6 @@
                       .join('')}
               </div>
                   ` : `
-                    <div class="job-description">
-                      <p>${job.description}</p>
-                    </div>
                   `}
                 </div>
               </div>
@@ -106,7 +104,7 @@
                       <span class="job-flair" id="pay-flair">$${Math.floor((job.salary) /  1000)}k+</span>
                   </div>
                   </div>
-                  <div class="job-title">${job.title.slice(0, 40)}</div>
+                  <div class="job-title"><a>${job.title.slice(0, 40)}</a></div>
 
                   ${!isMobile ? `
                     <div class="job-description">
@@ -143,17 +141,29 @@
          }
 
          document.addEventListener("DOMContentLoaded", () => {
+           const isMobile = window.matchMedia('(max-width: 768px)').matches;
+           let jobslistContainer;
+           if (isMobile) {
+             jobslistContainer = document.querySelector('div.mobile-jobs-container > div.jobslist');
+           } else {
+             jobslistContainer = document.querySelector('.right-side-container > div.jobslist');
+           }
            const postsContainer = document.getElementById('posts-container');
            if (!postsContainer) {
-             fetchJobPreviews();
+             if (jobslistContainer)
+               fetchJobPreviews();
              return;
            }
            const communityId = postsContainer.dataset.communityId || post.community.id;
-           if (!communityId) {
-             fetchJobPreviews();
+
+           if (communityId) {
+             if (jobslistContainer) {
+               fetchCommunityJobPreviews(communityId);
+             }
            } else {
-             console.log(communityId);
-             fetchCommunityJobPreviews(communityId);
+             if (jobslistContainer) {
+               fetchJobPreviews();
+             }
            }
          });
        </script>

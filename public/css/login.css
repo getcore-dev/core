@@ -8,14 +8,16 @@ body {
 .github-login-btn {
   display: inline-flex;
   align-items: center;
+  color: white !important;
   border-color:#443eaa !important;
   background-color: #2f2998 !important;
   text-decoration: none;
   justify-content: center;
   box-sizing: border-box;
   margin-bottom: 0 !important;
-  min-width: fit-content !important; 
-  min-height: 35px !important; 
+  width: 150px !important;
+  min-height: 35px !important;
+  max-width: 150px !important;
 }
 
 .login-buttons-container {

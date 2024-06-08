@@ -38,7 +38,8 @@ div.posts {
   }
 
 .post {
-    border: 1px solid var(--border-color) !important;
+    border-radius: 0 !important;
+    border-bottom: 1px solid var(--border-color) !important;
     margin: 0 !important;
     padding: 11px 14px !important;
 }
@@ -56,14 +57,18 @@ div.votes {
 }
 
 .jobs {
-    display: flex;
-    gap: 10px;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: .9rem;
+    padding: 0 13px;
 }
     
 
 .job {
-    border-bottom: 1px solid var(--border-color);
+    border-radius: 6px !important;
+    background: var(--light-mode-body-color) !important;
+    border: 0 !important;
+    padding: .65rem .95rem;
 }
 
 .job:hover, .post:hover {
@@ -76,7 +81,6 @@ div.votes {
     }
     .post, .job {
         background: var(--dark-mode-main-color);
-        border: 1px solid var(--dark-mode-border-color) !important;
     }
     .post:hover {
         background: var(--dark-mode-hover-color);

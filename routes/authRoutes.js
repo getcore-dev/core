@@ -117,7 +117,6 @@ router.post("/login", checkNotAuthenticated, (req, res, next) => {
       req.flash("error", info.message); // Assuming you have flash messages set up
       return res.redirect("/login");
     }
-    console.log("User", user);
     req.logIn(user, (err) => {
       if (err) return next(err);
       // Redirect user to the original URL or default to '/'

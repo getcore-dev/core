@@ -94,7 +94,7 @@ div.vote-interactions {
   gap: 2px;
 }
 
-.post:hover, .job:hover {
+ .job:hover {
   background-color: var(--light-mode-hover-color);
 }
 
@@ -104,7 +104,6 @@ div.vote-interactions {
   aspect-ratio: 1 / 1;
   border: 1px solid var(--border-color);
   object-fit: cover;
-  margin: 8px 0;
   margin-left: 8px;
 }
 
@@ -264,7 +263,6 @@ div.vote-interactions {
   margin: 0px 0px;
   background: var(--light-mode-body-color);
   border: 1px solid var(--border-color);
-  margin: 10px 0;
 }
 
 .reaction-menu {
@@ -310,8 +308,7 @@ div.vote-interactions {
 .title {
   font-size: .9rem;
   font-weight: 500;
-  margin: 5px 0px;
-  margin-bottom: 0px;
+  margin-bottom: .6rem;
 }
 
 
@@ -434,13 +431,20 @@ a.username-link:hover, a.community:hover {
   line-height: 1.5em;
 }
 
+.mobile-jobs-container .job {
+  background: var(--light-mode-body-color);
+}
+
+.link-preview {
+  margin-bottom: .9rem;
+}
 
 div .mini-link {
   display: flex;
   overflow: hidden;
   flex-direction: row;
   max-width: 100%;
-  margin-bottom: 5px;
+  margin-bottom: .6rem;
   border-radius: 18px;
   background: var(--light-mode-body-color);
   font-size: 14px;
@@ -927,10 +931,6 @@ button.see-more {
     background: var(--light-mode-body-color);
   }
 
-  .post:hover {
-    background-color: var(--light-mode-hover-color);
-  }
-
   
   .job-content {
     width: 100%;
@@ -1202,7 +1202,7 @@ button.see-more {
   }
 
   .post {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-body-color);
     border-color: var(--dark-mode-border-color);
   }
 
@@ -1262,7 +1262,7 @@ button.see-more {
     color: #ccc;
   }
 
-  .header-button:hover, .reaction-button:hover, .boost-button:hover, .main-reaction-button:hover, .reaction-menu button:hover, .post:hover, .job:hover, .com-btn:hover {
+  .header-button:hover, .reaction-button:hover, .boost-button:hover, .main-reaction-button:hover, .reaction-menu button:hover, .job:hover, .com-btn:hover {
       background-color: var(--dark-mode-hover-color); 
   }
 
@@ -1343,7 +1343,7 @@ button.see-more {
     color: var(--dark-mode-text-color);
   }
 
-  .job, div .mini-link {
+  div .mini-link {
     background-color: var(--dark-mode-main-color) !important;
   }
 

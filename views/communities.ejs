@@ -373,7 +373,10 @@
             // Title div
             const titleDiv = document.createElement('div');
             titleDiv.className = 'title';
-            titleDiv.innerText = post.title;
+            const titleLink = document.createElement('a');
+            titleLink.href = '/posts/' + post.id;
+            titleLink.innerText = post.title;
+            titleDiv.appendChild(titleLink);
             titleDiv.onclick = () => window.location.href = '/posts/' + post.id;
 
             postContentDiv.appendChild(titleDiv);

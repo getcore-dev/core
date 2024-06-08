@@ -1229,6 +1229,10 @@ p.preview-description {
   overflow: hidden;
 }
 
+.post-content .title a, .job-title a {
+  color: var(--active-indicator-color);
+}
+
 .description, .mini-link-description p, .mini-link-title p {
   font-size: .85rem;
   color: var(--light-mode-text-color);
@@ -1692,6 +1696,8 @@ div.post-information {
   div .user-info, .header {
     color: var(--dark-mode-text-color); /* Lighter text color for user info and headers */
   }
+
+
   
   .sidebar, .thumbnail-image {
     border-color: var(--dark-mode-border-color);

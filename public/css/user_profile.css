@@ -161,7 +161,7 @@ main {
   gap: 4px;
 }
 
-#profile > div.current-job, #profile > div.user-links, #profile > div.profile-info, #profile > div.current-education {
+#profile > div.current-job, #profile > div.user-links, #profile > div.current-education {
   background: var(--light-mode-body-color);
 }
 

@@ -865,7 +865,11 @@
                     </div>
                   </div>
                 </div>
-                <div class="title"><%= similarPost.title %></div>
+                <div class="title">
+                  <a href="/posts/<%= similarPost.id %>">
+                    <%= similarPost.title %>
+                  </a>
+                </div>
                 <div class="link-preview" style="<% if (similarPost.link) { %> flex-direction: column; <% } %>">
                   <% if (similarPost.link) { %>
                   <div class="link">
@@ -943,8 +947,6 @@
             <% }) %>
           </div>
           <% } %>
-          <div class="post-footer" style="text-align: center;">
-          </div>
         </div>
         <% if (post.post_type == 'project') { %>
       </div>

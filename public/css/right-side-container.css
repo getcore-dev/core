@@ -13,6 +13,19 @@
     scrollbar-width: none;
   }
 
+
+  .mobile-jobs-container .job-content-header {
+    margin: auto 0;
+  }
+
+  .mobile-jobs-container .job-content {
+    display: inline-flex;
+  }
+
+  .job:hover  a {
+  text-decoration: underline;
+  }
+
   .job-flair {
     display: inline-flex;
     gap: 5px;
@@ -26,9 +39,6 @@
     position: relative;
 }
 
-.job:hover {
-    background-color: var(--light-mode-hover-color);
-  }
 
 .job-title {
     display: flex;
@@ -83,7 +93,7 @@
 
 
 .job {
-    background: var(--light-mode-body-color);
+    background: var(--light-mode-main-color);
     width: auto;
     flex: auto;
 }
@@ -119,6 +129,7 @@
   .right-side-container > div.jobslist .job {
     border: 1px solid var(--border-color);
     border-radius: 10px;
+    margin: 0 .75rem;
   }
 
   .job-salary {
@@ -150,13 +161,8 @@
     background-color: var(--dark-mode-body-color);
   }
 
-  .job:hover {
-    background-color: var(--dark-mode-hover-color);
-  }
-
-  .right-side-container > div.jobslist .job {
-    border-color: var(--dark-mode-border-color);
-    background-color: var(--dark-mode-body-color);
+  .job {
+    background-color: var(--dark-mode-main-color);
   }
 
 }

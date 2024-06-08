@@ -22,7 +22,13 @@ router.get("/company/:name", async (req, res) => {
     const companyName = req.params.name;
     const company = await jobQueries.getCompanyByName(companyName);
     const jobs = await jobQueries.getJobsByCompany(company.id);
-    res.render("company_profile.ejs", { company, jobs, user: req.user });
+    const jobsCount = jobs ? jobs.length : 0;
+    res.render("company_profile.ejs", {
+      company,
+      jobs,
+      user: req.user,
+      jobsCount,
+    });
   } catch (err) {
     console.error("Error fetching job postings:", err);
     res.status(500).send("Error fetching job postings");
@@ -54,7 +60,7 @@ router.post("/company/:name/edit", checkAuthenticated, async (req, res) => {
       founded,
       size,
       stock_symbol,
-      job_board_url
+      job_board_url,
     } = req.body;
 
     await jobQueries.updateCompany(
@@ -219,7 +225,8 @@ router.get("/location/:state", async (req, res) => {
   try {
     const state = req.params.state;
     const jobs = await jobQueries.getJobsByState(state);
-    res.render("job-results.ejs", { state, jobs, user: req.user });
+    const jobCount = jobs ? jobs.length : 0;
+    res.render("job-results.ejs", { state, jobs, user: req.user, jobCount });
   } catch (err) {
     console.error("Error fetching job postings:", err);
     res.status(500).send("Error fetching job postings");

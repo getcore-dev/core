@@ -120,6 +120,10 @@ h3.job-title {
   font-size: 1rem;
 }
 
+.job:hover .job-info a {
+  text-decoration: underline;
+}
+
 p.job-description {
   inline-size: min-content;
   white-space: normal;
@@ -220,10 +224,6 @@ p.job-description {
     margin-bottom: 0;
     border: 1px solid var(--border-color);
     cursor: pointer;
-  }
-
-  div.jobs-container > div.job-list > .job:hover {
-    background-color: var(--light-mode-hover-color);
   }
   
   .job-title-location {
@@ -417,7 +417,6 @@ div.recent-jobs {
 }
 
 .title-filter {
-  margin-bottom: 15px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -579,6 +578,7 @@ select {
 
 .job-posting-flairs {
   display: flex;
+  font-size: .925rem;
   flex-direction: row;
   align-items: center;
   gap: 7px;
@@ -612,7 +612,7 @@ select {
 }
 
 .job-content {
-  background: var(--light-mode-body-color);
+  background: none;
   border-radius: 6px;
 }
 
@@ -638,7 +638,7 @@ div .material-symbols-outlined {
 
 
 @media (prefers-color-scheme: dark) {
-  body , .job-content    {
+  body {
       background-color: var(--dark-mode-body-color);
       color: #fff; 
   }
@@ -671,14 +671,6 @@ div .material-symbols-outlined {
   .company {
     background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-border-color);
-  }
-  .job-content {
-    background-color: var(--dark-mode-main-color);
-    border-color: var(--dark-mode-border-color);
-  }
-
-  .job:hover {
-    background-color: var(--dark-mode-body-color);
   }
 
   select { 
@@ -717,6 +709,7 @@ div .material-symbols-outlined {
     color: var(--dark-mode-text-color) !important;
     border-color: var(--dark-mode-border-color) !important;
   }
+
 
   .job { 
     border-color: var(--dark-mode-border-color) !important;
@@ -786,7 +779,7 @@ div .material-symbols-outlined {
   }
 
   .jobs-header {
-    margin-bottom: .4rem;
+    margin-bottom: 0;
   }
 
   div.jobs-container > div.job-list > .job {

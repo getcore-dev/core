@@ -6,10 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>CORE/</title>
   <link rel="stylesheet" href="/css/navbar.css" />
-  <link rel="stylesheet" href="/css/job-results.css" />
   <link rel="stylesheet" href="/css/search.css" />
   <link rel="stylesheet" href="/css/company_profile.css" />
-
+  <link rel="stylesheet" href="/css/job-results.css" />
   <link rel="shortcut icon" href="/img/core.png" />
 </head>
 <style>
@@ -19,7 +18,7 @@
   <%- include('partials/navbar', { pagePath: 'updates' }) %>
   <main>
     <div class="tag-search-header">
-      <h4>Job results in <span class="tag"><%= state %></span></h4>
+      <h4> <%= jobCount %> job results in <span class="tag"><%= state %></span></h4>
     </div>
     <%
     function getTintFromName(name) {
@@ -75,9 +74,6 @@ function blendColors(color1, color2, ratio) {
   return blendedColor;
 }%>
     <% if (jobs.length > 0) { %>
-    <div class="jobs-header">
-      <h5 class="secondary-text">Jobs</h5>
-    </div>
     <div class="jobs">
       <% jobs.forEach((job) => { %>
       <div class="job" onclick="window.location.href='/jobs/<%= job.id %>'">
@@ -88,7 +84,9 @@ function blendColors(color1, color2, ratio) {
               <p class="company-name"><%= job.company_name %></p>
             </div>
             <h3 class="job-title">
-              <%= job.title %>
+              <a href="/jobs/<%= job.id %>">
+                <%= job.title %>
+              </a>
               <span style="margin-left: auto; float: right;"><%= job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1) %></span>
             </h3>
             <h5 class="job-subtitle secondary-text">
@@ -110,7 +108,6 @@ function blendColors(color1, color2, ratio) {
 
     </div>
     <% } %>
-    <%- include('partials/footer') %>
 
   </main>
 

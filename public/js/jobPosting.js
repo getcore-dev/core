@@ -254,15 +254,15 @@ function lazyLoadJobDetails(jobId) {
       const tagsHTML = displayedTags
         .map(
           (tag) =>
-            `<span class="job-flair" onclick="window.location.href='/tags/${tag}'"
-            ><p>${tag}</p></span>`
+            `<span class="job-flair"
+            ><a href="/tags/${tag}"><p>${tag}</p></a></span>`
         )
         .join("");
       const skillsHTML = displayedSkills
         .map(
           (skill) =>
-            `<span class="job-flair" onclick="window.location.href='/tags/${skill}'"
-            ><p>${skill}</p></span>`
+            `<span class="job-flair"
+            ><a href="/tags/${skill}"><p>${skill}</p></a></span>`
         )
         .join("");
 
@@ -276,9 +276,11 @@ function lazyLoadJobDetails(jobId) {
         job.company_name
       } logo" class="thumbnail thumbnail-small thumbnail-regular" />
             <div class="company-details">
-              <h3 class="company-name" onclick="window.location.href='/jobs/company/${
-                job.company_name
-              }'">${job.company_name}</h3>
+              <h3 class="company-name">
+              <a href="/jobs/company/${job.company_name}">
+              ${job.company_name}
+              </a>
+              </h3>
               <div class="company-information">
               <p id="secondary-text" class="company-size"> 
               <span class="material-symbols-outlined">
@@ -333,17 +335,23 @@ group
       </div>
       
       <div class="interact-buttons">
-      <div class="apply-button-container">
-      <button id="submit-button-normal" onclick="window.location.href='${
+      <div class="apply-button-container flex">
+      <button id="submit-button-normal" class="margin-h-auto" onclick="window.location.href='${
         job.link
       }'">Apply</button>
       </div>
       <div class="favorite-button-container">
 <form id="favorite-form-${job.id}" action="/favorites/jobs/${
         job.id
-      }" method="POST">
-<button id="regular-button-normal">Favorite</button>
+      }" class="flex" method="POST">
+<button id="regular-button-normal" class="margin-h-auto">Favorite</button>
 </form>
+      </div>
+      <div class="share-button-container flex">
+      <button id="regular-button-normal" class="margin-h-auto" onclick="share('${
+        job.title
+      }', 'Check out this job', 'https://c-ore.dev/jobs/${job.id}')"
+      >Share</button>
       </div>
       </div>
       <div class="job-skills">

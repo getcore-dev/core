@@ -76,9 +76,6 @@ function blendColors(color1, color2, ratio) {
   return blendedColor;
 }%>
     <% if (jobs.length > 0) { %>
-    <div class="jobs-header">
-      <h5 class="secondary-text">Jobs</h5>
-    </div>
     <div class="jobs">
       <% jobs.forEach((job) => { %>
       <div class="job" onclick="window.location.href='/jobs/<%= job.id %>'">
@@ -113,9 +110,6 @@ function blendColors(color1, color2, ratio) {
     <% } %>
 
     <% if (posts.length > 0) { %>
-    <div class="posts-header">
-      <h5 class="secondary-text">Posts</h5>
-    </div>
     <div class="posts">
       <% posts.forEach((post) => { %>
       <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">

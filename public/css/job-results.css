@@ -1,12 +1,16 @@
 main {
-    overflow-x: hidden;
+    flex-direction: column;
+    height: auto;
+    width: 100dvw;
 }
+
 
 .jobs-header, .posts-header  {
     width: 100%;
     margin-top: 13px;
     padding: 7px;
     margin-bottom: 6px;
+    box-sizing: border-box;
 }
 
 div.posts {
@@ -18,6 +22,8 @@ div.posts {
 
 .tag-search-header {
     width: 100%;
+    padding: .4rem .8rem;
+    box-sizing: border-box;
     margin-bottom: 0px;
   }
 
@@ -58,10 +64,9 @@ div.votes {
     gap: 10px;
     width: 100%; /* Ensures the container takes up 100% of the available width */
     box-sizing: border-box; /* Includes padding and border in the element's total width and height */
-    overflow-y: hidden;
-    overflow-x: auto;
     -ms-overflow-style: none;
     scrollbar-width: none;
+    padding: 0 13px;
     }
 
     .jobs > div {
@@ -70,10 +75,13 @@ div.votes {
     }
     
 
+    .job .job-preview {
+        padding: .65rem .95rem;
+    }
+
 .job {
     border: 1px solid var(--border-color);
     border-radius: 18px !important;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); 
 }
 
 .job:hover, .post:hover {

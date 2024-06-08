@@ -9,6 +9,7 @@ main {
 
 .container {
   overflow-y: auto;
+  border-right: 1px solid var(--border-color);
 }
 .job-details-container {
   overflow-y: auto;
@@ -130,8 +131,13 @@ img.company-logo {
   }
 
 
+  .similar-job:hover .company-info a {
+    text-decoration: underline;
+  }
+
 div.similar-job {
   flex-direction: column;
+  cursor: pointer;
     display: flex;
     background: var(--light-mode-main-color);
     border-radius: 0;
@@ -150,10 +156,6 @@ div.similar-job {
   margin: 3px 6px 3px 0 !important;
 }
 
-div.similar-job:hover {
-  background: var(--light-mode-hover-color);
-  
-}
 
 .similar-jobs-company, .similar-jobs {
   margin-top: 15px;
@@ -170,6 +172,10 @@ div.similar-job h4 {
 
 .interact-buttons > div {
   flex-grow: 1;
+}
+
+.interact-buttons form {
+  display: flex;
 }
 
 .interact-buttons #regular-button-normal, .interact-buttons #submit-button-normal {
@@ -199,8 +205,7 @@ div.similar-job h4 {
   flex-direction: row;
   gap: 1rem;
   justify-content: space-between;
-  margin-top: 16px;
-  margin-bottom: 19px;
+  margin: .35rem 0;
 }
 
 .job-details {
@@ -271,16 +276,15 @@ div.similar-job h4 {
 
   }
 
-  div.similar-job:hover {
-    background: var(--dark-mode-hover-color);
-  }
-
   .company-location {
     color: var(--dark-mode-secondary-text-color);
   }
 
   .job-details > div > p, .job-details > div > ul {
     color: #b1b1b1;
+  }
+  .container {
+    border-color: var(--dark-mode-border-color);
   }
 
   .company-name {

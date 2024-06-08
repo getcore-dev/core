@@ -7,7 +7,7 @@ const linkFunctions = require("../utils/linkFunctions");
 
 async function processJobLink(model, jobLink) {
   return new Promise(async (resolve) => {
-    // check if the link has already been processed
+    // Check if the link has already been processed
     const jobPosting = await jobQueries.getJobPostingByLink(jobLink.link);
     if (jobPosting) {
       console.log(`Job posting already exists for job link: ${jobLink.link}`);
@@ -90,6 +90,66 @@ async function processJobLink(model, jobLink) {
       if (extractedData.error) {
         console.log(
           `Skipping job posting due to ChatGPT error: ${extractedData.error}`
+        );
+        return resolve();
+      }
+
+      // Check if the job title is tech-related
+      const techRelatedTitles = [
+        "software engineer",
+        "data engineer",
+        "project manager",
+        "developer",
+        "programmer",
+        "analyst",
+        "consultant",
+        "data scientist",
+        "machine learning engineer",
+        "ai specialist",
+        "web developer",
+        "frontend developer",
+        "backend developer",
+        "full stack developer",
+        "systems engineer",
+        "network engineer",
+        "security engineer",
+        "database administrator",
+        "devops engineer",
+        "cloud engineer",
+        "site reliability engineer",
+        "mobile developer",
+        "application developer",
+        "blockchain developer",
+        "cybersecurity analyst",
+        "IT support specialist",
+        "technical support engineer",
+        "quality assurance engineer",
+        "test engineer",
+        "UX/UI designer",
+        "product manager",
+        "scrum master",
+        "business analyst",
+        "solutions architect",
+        "data analyst",
+        "big data engineer",
+        "BI developer",
+        "ETL developer",
+        "data warehouse engineer",
+        "robotics engineer",
+        "IoT engineer",
+        "embedded systems engineer",
+        "game developer",
+        "VR/AR developer",
+        "data architect",
+        "technical writer",
+        "hardware engineer",
+        "IT consultant",
+        "systems administrator",
+      ];
+      const jobTitle = extractedData.title.toLowerCase();
+      if (!techRelatedTitles.some((title) => jobTitle.includes(title))) {
+        console.log(
+          `Skipping non-tech job posting with title: ${extractedData.title}`
         );
         return resolve();
       }
@@ -181,8 +241,7 @@ async function processJobLink(model, jobLink) {
       );
     }
 
-    // Introduce a delay of 1 second (1000 milliseconds)
-    setTimeout(resolve, 1000);
+    setTimeout(resolve, 200);
   });
 }
 
