@@ -108,6 +108,7 @@
         <% if (posts.length > 4 && (jobs.length > 0 || users.length > 0)) { %>
         <% postsTrimmed = posts.slice(0, 4); %>
         <% } %>
+        <% if (typeof postsTrimmed !== 'undefined' && postsTrimmed.length > 0) { %>
         <% postsTrimmed.forEach(function(post) { %>
         <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
 
@@ -170,6 +171,9 @@
           </div>
         </div>
         <% }); %>
+        <% } else { %>
+        <div>No posts available</div>
+        <% } %>
 
         <% if (posts.length > 4 && (jobs.length > 0 || users.length > 0)) { %>
         <div class="load-more">

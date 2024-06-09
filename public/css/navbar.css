@@ -1302,6 +1302,9 @@ input:focus, textarea:focus, select:focus {
     border: 1.5px solid var(--dark-mode-main-color);
   }
   
+  .secondary-text, .secondary-text:visited {
+    color: #c8c8c8;
+  }
   .search-input {
      background-color: var(--dark-mode-body-color);
      color: var(--dark-mode-text-color);

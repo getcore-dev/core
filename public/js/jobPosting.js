@@ -305,11 +305,6 @@ group
                 location_city
                 </span> ${job.location}
               </p>
-              <p>
-                <span class="material-symbols-outlined">
-                computer
-                </span> ${job.isRemote ? "Remote available" : "Not remote"}
-              </p>
 
               
               <p>   

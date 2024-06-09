@@ -1107,6 +1107,7 @@ button.see-more {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: transparent !important;
 }
 
 .see-more a {
