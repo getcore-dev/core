@@ -37,9 +37,6 @@ router.get(
 );
 
 // Register route
-router.get("/register", checkNotAuthenticated, async (req, res) => {
-  res.render("register.ejs", { user: req.user });
-});
 
 // Password reset request route
 router.post("/reset-password", async (req, res) => {
@@ -145,6 +142,10 @@ router.get("/recruiter", checkNotAuthenticated, async (req, res) => {
   res.render("recruiter-register.ejs", { user: req.user });
 });
 
+router.get("/register", checkNotAuthenticated, async (req, res) => {
+  res.render("register.ejs", { user: req.user });
+});
+
 router.post(
   "/register",
   checkNotAuthenticated,
@@ -207,7 +208,6 @@ router.post(
         ${verificationToken}
       )`;
 
-      // Send verification email
       const verificationUrl = `http://${req.headers.host}/verify-email?token=${verificationToken}`;
       const mailOptions = {
         from: '"CORE Support" <support@c-ore.dev>',
@@ -216,22 +216,32 @@ router.post(
         html: `<p>Thank you for registering. Please click the link below to verify your email:</p><a href="${verificationUrl}">Verify Email</a>`,
       };
 
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          return console.log(error);
-        }
-        console.log("Verification email sent: " + info.response);
+      process.nextTick(() => {
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.log("Error sending verification email:", error);
+          } else {
+            console.log("Verification email sent: " + info.response);
+          }
+        });
       });
 
+      req.flash(
+        "success",
+        "Registration successful! A verification email has been sent. Please check your inbox."
+      );
       res.redirect("/login");
     } catch (error) {
-      next(error);
+      console.error("Registration error:", error);
+      req.flash(
+        "error",
+        "An error occurred during registration. Please try again later."
+      );
       res.redirect("/register");
     }
   }
 );
 
-// Verify email route
 router.get("/verify-email", async (req, res) => {
   const token = req.query.token;
   try {
@@ -249,17 +259,17 @@ router.get("/verify-email", async (req, res) => {
   }
 });
 
-// Login route
-router.get("/login", checkNotAuthenticated, async (req, res) => {
+router.get("/login", checkNotAuthenticated, (req, res) => {
   res.render("login.ejs", {
     user: req.user,
     githubClientId: process.env.GITHUB_CLIENT_ID,
-    errorMessages: req.flash("error"), // Pass error messages to the view
+    errorMessages: req.flash("error"),
+    successMessages: req.flash("success"),
   });
 });
 
 router.post("/login", checkNotAuthenticated, async (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
+  passport.authenticate("local", async (err, user, info) => {
     if (err) {
       console.error("Authentication error:", err);
       return next(err);
@@ -270,21 +280,65 @@ router.post("/login", checkNotAuthenticated, async (req, res, next) => {
       return res.redirect("/login");
     }
     if (!user.verified) {
-      // Assuming 'verified' is the correct field name in your user model
       console.error("User email not verified");
-      req.flash("error", "Please verify your email before logging in.");
-      return res.redirect("/login");
-    }
-    req.logIn(user, (err) => {
-      if (err) {
-        console.error("Login error:", err);
-        return next(err);
+
+      const verificationToken = uuidv4();
+
+      try {
+        await sql.query`
+          UPDATE users 
+          SET verification_token = ${verificationToken} 
+          WHERE id = ${user.id}`;
+
+        const verificationUrl = `http://${req.headers.host}/verify-email?token=${verificationToken}`;
+        const mailOptions = {
+          from: '"CORE Support" <support@c-ore.dev>',
+          to: user.email,
+          subject: "Email Verification",
+          html: `<p>Your account has not been verified. Please click the link below to verify your email:</p><a href="${verificationUrl}">Verify Email</a>`,
+        };
+
+        // Send the email in the background
+        process.nextTick(() => {
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.log("Error sending verification email:", error);
+              req.flash(
+                "error",
+                "Error sending verification email. Please try again later."
+              );
+            } else {
+              console.log("Verification email sent: " + info.response);
+              req.flash(
+                "success",
+                "A new verification email has been sent. Please check your inbox."
+              );
+            }
+          });
+        });
+
+        req.flash(
+          "success",
+          "A new verification email has been sent. Please check your inbox."
+        );
+        return res.redirect("/login");
+      } catch (updateError) {
+        console.error("Error updating verification token:", updateError);
+        req.flash("error", "An error occurred. Please try again later.");
+        return res.redirect("/login");
       }
-      userQueries.updateLastLogin(user.id); // Ensure userQueries.updateLastLogin is defined
-      const redirectUrl = req.session.returnTo || "/";
-      delete req.session.returnTo;
-      return res.redirect(redirectUrl);
-    });
+    } else {
+      req.logIn(user, (err) => {
+        if (err) {
+          console.error("Login error:", err);
+          return next(err);
+        }
+        userQueries.updateLastLogin(user.id);
+        const redirectUrl = req.session.returnTo || "/";
+        delete req.session.returnTo;
+        return res.redirect(redirectUrl);
+      });
+    }
   })(req, res, next);
 });
 

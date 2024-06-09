@@ -31,6 +31,13 @@
           </a>
         </div>
 
+        <% if (successMessages && successMessages.length > 0) { %>
+        <div class="success-messages">
+          <% successMessages.forEach(function(msg) { %>
+          <p class="success-message"><%= msg %></p>
+          <% }); %>
+        </div>
+        <% } %>
         <% if (errorMessages && errorMessages.length > 0) { %>
         <div class="error-messages">
           <% errorMessages.forEach(function(msg) { %>
