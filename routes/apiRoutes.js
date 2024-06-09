@@ -9,8 +9,9 @@ const storage = multer.diskStorage({
     cb(null, "profile-" + Date.now() + ".jpg");
   },
 });
+const environment = require("../config/environment");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(environment.geminiKey);
 const cheerio = require("cheerio");
 const githubService = require("../services/githubService");
 const cacheMiddleware = require("../middleware/cache");

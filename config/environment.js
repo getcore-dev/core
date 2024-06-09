@@ -10,6 +10,7 @@ const environmentConfig = {
   dbServer: process.env.DB_SERVER,
   sessionSecret: process.env.SESSION_SECRET || "default_secret_key",
   isProduction: process.env.NODE_ENV !== "development",
+  geminiKey: process.env.GEMINI_API_KEY,
 };
 
 module.exports = environmentConfig;

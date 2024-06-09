@@ -1,5 +1,6 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const environment = require("../config/environment");
+const genAI = new GoogleGenerativeAI(environment.geminiKey);
 const cheerio = require("cheerio");
 const jobQueries = require("../queries/jobQueries");
 const axios = require("axios");
@@ -144,7 +145,7 @@ async function processJobLink(model, jobLink) {
         "technical writer",
         "hardware engineer",
         "IT consultant",
-        "systems administrator"
+        "systems administrator",
       ];
       const jobTitle = extractedData.title.toLowerCase();
       if (!techRelatedTitles.some((title) => jobTitle.includes(title))) {
@@ -245,7 +246,7 @@ async function processJobLink(model, jobLink) {
   });
 }
 
-async function checkJobBoardUrls() {
+async function checkJobBoardUrls(geminiKey) {
   try {
     const companies = await jobQueries.getCompanies();
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
