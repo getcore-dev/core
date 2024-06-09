@@ -33,12 +33,12 @@
 
     <div class="jobs-container">
       <div class="jobs-header">
-        <h5 id="secondary-text">Openings</h5>
-          <% if (user && user.recruiter_id) { %>
-          <div class="create-job-button">
-            <button class="create-job regular-button-normal" onclick="window.location.href='/jobs/create';">Create job posting</button>
-          </div>
-          <%     } %>
+        <h5 id="secondary-text"><%= recentJobs %> job postings in the last 30 days</h5>
+        <% if (user && user.recruiter_id) { %>
+        <div class="create-job-button">
+          <button class="create-job regular-button-normal" onclick="window.location.href='/jobs/create';">Create job posting</button>
+        </div>
+        <%     } %>
         <div class="filter-container">
           <div class="recent-jobs">
           </div>

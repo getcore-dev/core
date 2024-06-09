@@ -10,6 +10,10 @@
     margin-top: 17px;
 }
 
+.load-more {
+    padding: 0 !important;
+}
+
 .user, .post {
     display: flex;
     flex-direction: row;

@@ -523,8 +523,8 @@ a:visited {
   aspect-ratio: 1 / 1;
 }
 .clear-btn .material-symbols-outlined {
-  font-size: 1.65rem;
-  font-weight: 300;
+  font-size: 1.35rem;
+  font-weight: 400;
   color: var(--light-mode-secondary-text-color);
 }
 
@@ -1154,6 +1154,14 @@ input:focus, textarea:focus, select:focus {
   font-size: .85rem;
     padding: .25rem .75rem;
     color: var(--light-mode-text-color);
+}
+
+
+.page-header {
+  padding: 19px 13px !important;
+  padding-bottom: 5px !important;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .search-bar {

@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="/css/notifications.css" />
 
   <link rel="shortcut icon" href="/img/core.png" />
-  <title>CORE/Notifications</title>
+  <title>CORE - Notifications</title>
 </head>
 
 <body>
@@ -77,10 +77,21 @@
       const notificationIsReadIndicator = createReadIndicator(notification);
       notificationDiv.appendChild(notificationIsReadIndicator);
 
+      const notificationAvatarDiv = document.createElement('div');
+      notificationAvatarDiv.classList.add('notification-avatar-div');
+
       const notificationSenderAvatar = document.createElement('img');
       notificationSenderAvatar.src = notification.senderProfilePicture || '/img/default-avatar.png';
       notificationSenderAvatar.classList.add('notification-sender-avatar');
-      notificationDiv.appendChild(notificationSenderAvatar);
+      notificationAvatarDiv.appendChild(notificationSenderAvatar);
+
+      const notificationTypeIcon = document.createElement('span');
+      notificationTypeIcon.classList.add('material-symbols-outlined');
+      notificationTypeIcon.classList.add('notification-type-icon');
+      notificationTypeIcon.textContent = notification.type === 'NEW_COMMENT' ? 'comment' : notification.type === 'like' ? 'favorite' : 'person';
+      notificationAvatarDiv.appendChild(notificationTypeIcon);
+
+      notificationDiv.appendChild(notificationAvatarDiv);
 
       const notificationTextDiv = createNotificationText(notification);
       notificationDiv.appendChild(notificationTextDiv);
@@ -89,6 +100,7 @@
       notificationDiv.appendChild(clearBtn);
 
       li.appendChild(notificationDiv);
+      li.onclick = () => handleNotificationClick(notification, li, notificationIsReadIndicator);
       return li;
     }
 
@@ -106,15 +118,11 @@
       const notificationTextDiv = document.createElement('div');
       notificationTextDiv.classList.add('notification-text-div');
 
-      const notificationHeader = document.createElement('span');
-      notificationHeader.classList.add('notification-header');
-
       const notificationText = document.createElement('span');
       notificationText.classList.add('notification-text');
 
       switch (notification.type) {
         case 'NEW_COMMENT':
-          notificationHeader.textContent = 'New Comment';
           notificationText.textContent = `${notification.senderUsername} commented on your post`;
           break;
         case 'like':
@@ -122,35 +130,27 @@
         case 'celebrate':
         case 'curious':
         case 'boost':
-          notificationHeader.textContent = 'New Reaction';
           notificationText.textContent = `${notification.senderUsername} reacted to your post`;
           break;
         case 'follow':
-          notificationHeader.textContent = 'New Follower';
           notificationText.textContent = `${notification.senderUsername} followed you`;
           break;
         case 'ADMIN_BAN':
-          notificationHeader.textContent = 'User Banned';
           notificationText.textContent = `You have been banned by ${notification.senderUsername}`;
           break;
         case 'ADMIN_UNBAN':
-          notificationHeader.textContent = 'User Unbanned';
           notificationText.textContent = `You have been unbanned by ${notification.senderUsername}`;
           break;
         case 'ADMIN_VERIFIED':
-          notificationHeader.textContent = 'User Verified';
           notificationText.textContent = `You have been verified by ${notification.senderUsername}`;
           break;
         case 'ADMIN_UNVERIFIED':
-          notificationHeader.textContent = 'User Unverified';
           notificationText.textContent = `Your verification has been removed by ${notification.senderUsername}`;
           break;
         default:
-          notificationHeader.textContent = 'Notification';
           notificationText.textContent = `You have a new notification from ${notification.senderUsername}`;
       }
 
-      notificationTextDiv.appendChild(notificationHeader);
       notificationTextDiv.appendChild(notificationText);
 
       const flairs = document.createElement('div');
@@ -158,11 +158,12 @@
 
       const notificationTime = document.createElement('span');
       notificationTime.classList.add('time-flair');
+      notificationTime.classList.add('secondary-text');
+
       notificationTime.textContent = formatDate(notification.createdAt);
       flairs.appendChild(notificationTime);
 
       notificationTextDiv.appendChild(flairs);
-      notificationTextDiv.onclick = () => handleNotificationClick(notification, li, notificationTextDiv);
 
       return notificationTextDiv;
     }
@@ -201,17 +202,6 @@
       } else if (notification.type === 'follow') {
         window.location.href = `/user/${notification.senderUsername}`;
       }
-    }
-
-    function formatDate(date) {
-      const options = {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      };
-      return new Date(date).toLocaleDateString(undefined, options);
     }
 
     fetchNotifications();

@@ -7,6 +7,11 @@ const {
 } = require("../middleware/authMiddleware");
 const cacheMiddleware = require("../middleware/cache");
 
+router.get("/", async (req, res) => {
+  const recentJobs = await jobQueries.getRecentJobCount();
+  res.render("jobs.ejs", { user: req.user, recentJobs });
+});
+
 router.get("/create", checkAuthenticated, async (req, res) => {
   try {
     const skills = await jobQueries.getSkills();
@@ -262,8 +267,13 @@ router.get("/delete/:id", checkAuthenticated, async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const id = req.params.id;
+    const job = await jobQueries.getJobById(id);
 
-    res.render("job-posting.ejs", { job_id: id, user: req.user });
+    res.render("job-posting.ejs", {
+      job_id: id,
+      user: req.user,
+      jobTitle: job.title,
+    });
   } catch (err) {
     console.error("Error fetching job postings:", err);
     res.status(500).send("Error fetching job postings");

@@ -76,8 +76,9 @@ div.votes {
 .job {
     border-radius: 6px !important;
     background: var(--light-mode-body-color) !important;
-    border: 0 !important;
+    border: 1px solid var(--border-color) !important;
     padding: .65rem .95rem;
+    min-width: 40%;
 }
 
 .job:hover, .post:hover {
@@ -90,6 +91,7 @@ div.votes {
     }
     .post, .job {
         background: var(--dark-mode-main-color) !important;
+        border-color: var(--dark-mode-border-color) !important;
     }
     .post:hover {
         background: var(--dark-mode-hover-color);

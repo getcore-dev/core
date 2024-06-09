@@ -25,6 +25,18 @@ const jobQueries = {
     }
   },
 
+  getJobById: async (id) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM JobPostings WHERE id = ${id}
+      `;
+      return result.recordset[0];
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getJobPostingByLink: async (link) => {
     try {
       const result = await sql.query`

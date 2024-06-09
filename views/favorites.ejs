@@ -247,7 +247,7 @@
   <%- include('partials/navbar', { pagePath: 'favorites' }) %>
   <main>
     <div class="favorites-container">
-      <div id="favorites-header">
+      <div class="page-header">
         <div class="favorites-type-selector">
           <button class="favorites-type-button" onclick="getFavorites('all')">
             <span class="material-symbols-outlined">
@@ -338,7 +338,7 @@
       const favoritesContainer = document.getElementById('favoritesContainer');
 
       const favoritesHeaderContainer = document.createElement('div');
-      favoritesHeaderContainer.classList.add('favorites-header');
+      favoritesHeaderContainer.classList.add('page-header');
       const favoriteHeader = document.createElement('h3');
       favoriteHeader.textContent = 'Posts';
       favoritesHeaderContainer.appendChild(favoriteHeader);
@@ -366,7 +366,9 @@
         favoriteElement.innerHTML = `
       <div class="favorite-header">
         <div class="favorite-title">
-          <h5>${post.title}</h5>
+          <h5>
+          <a href="/posts/${post.post_id}">${post.title}</a>
+          </h5>
         </div>
         <div class="dropdown">
           <button class="dropbtn" onclick="toggleDropdown(event)">
@@ -416,7 +418,7 @@
       const favoritesContainer = document.getElementById('favoritesContainer');
 
       const favoritesHeaderContainer = document.createElement('div');
-      favoritesHeaderContainer.classList.add('favorites-header');
+      favoritesHeaderContainer.classList.add('page-header');
       const favoriteHeader = document.createElement('h3');
       favoriteHeader.textContent = 'Comments';
       favoritesHeaderContainer.appendChild(favoriteHeader);
@@ -443,7 +445,8 @@
       <div class="favorite-header">
         <div class="favorite-title">
         
-        <h5>${comment.comment}</h5>
+        <h5>
+        <a href="/posts/${comment.post_id[1]}#${comment.comment_id}">${comment.comment}</a></h5>
         </div>
         <div class="dropdown">
           <button class="dropbtn" onclick="toggleDropdown(event)">
@@ -472,7 +475,7 @@
       const favoritesContainer = document.getElementById('favoritesContainer');
 
       const favoritesHeaderContainer = document.createElement('div');
-      favoritesHeaderContainer.classList.add('favorites-header');
+      favoritesHeaderContainer.classList.add('page-header');
       const favoriteHeader = document.createElement('h3');
       favoriteHeader.textContent = 'Jobs';
       favoritesHeaderContainer.appendChild(favoriteHeader);
@@ -492,7 +495,7 @@
         const favoriteElement = document.createElement('div');
         favoriteElement.classList.add('favorite');
         favoriteElement.onclick = () => {
-          window.location.href = `/jobs/${job.id[1]}`;
+          window.location.href = `/jobs/${job.job_id}`;
         };
 
         favoriteElement.innerHTML = `
@@ -501,8 +504,10 @@
 
           <img src="${job.company_logo}" alt="${job.company_name}" style="width: 30px; height: 30px; border-radius: 50%;">
           <div>
-          <h5>${job.company_name}</h5>
-          <h5>${job.title}</h5>
+          <h5>
+          <a href="/jobs/company/${job.company_name}">${job.company_name}</a></h5>
+          <h5>
+          <a href="/jobs/${job.job_id}">${job.title}</a></h5></h5>
           </div>
         </div>
         <div class="dropdown">

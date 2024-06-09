@@ -1613,6 +1613,11 @@ div.post-information {
     color: var(--dark-mode-text-color);
   }
 
+  .discussion-link {
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
+  }
+
   .EasyMDEContainer .CodeMirror {
     background-color: var(--dark-mode-main-color) !important;
     border-color: var(--dark-mode-border-color) !important;

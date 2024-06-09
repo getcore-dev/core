@@ -23,6 +23,10 @@ li.notification-item {
     list-style-type: none;
 }
 
+.notification-text {
+    font-weight: 600;
+}
+
 .notification-text-div {
     display: flex;
     margin-left: 10px;
@@ -85,9 +89,25 @@ li.notification-item.unread {
     border-bottom: 1px solid var(--border-color);
 }
 
+div .notification-type-icon {
+    position: absolute;
+    font-size: .7rem;
+    background: #401ad3;
+    border: 1px solid #1d0f54;
+    border-radius: 50%;
+    padding: 3px;
+    bottom: 0;
+    right: 0;
+    color: white;
+}
+
+.notification-avatar-div {
+    position: relative;
+}
+
+
 .time-flair {
     font-size: .75rem;
-    color: var(--light-mode-secondary-text-color);
 }
 
 .clear-btn {

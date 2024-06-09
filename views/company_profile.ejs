@@ -4,11 +4,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>CORE/</title>
+  <title>CORE - <%= company.name %></title>
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/company_profile.css" />
-
   <link rel="shortcut icon" href="/img/core.png" />
+
+  <!-- Meta Tags for SEO and Social Media -->
+  <meta name="description" content="<%= company.description %>">
+  <meta name="keywords" content="<%= company.name %>, company profile, CORE company, connect with <%= company.name %>">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="<%= company.name %> - CORE">
+  <meta property="og:description" content="<%= company.description %>">
+  <meta property="og:image" content="<%= company.logo %>">
+  <meta property="og:url" content="https://c-ore.dev/company/<%= company.name %>">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= company.name %> - CORE">
+  <meta name="twitter:description" content="<%= company.description %>">
+  <meta name="twitter:image" content="<%= company.logo %>">
 </head>
 <style>
 </style>

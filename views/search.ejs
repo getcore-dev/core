@@ -17,9 +17,11 @@
   <%- include('partials/navbar', { pagePath: 'search', user: user }) %>
 
   <div class="container">
+    <div class="jobs-header">
+      <h4>Search results for <span class="tag"><%= searchTerm %></span></h4>
+    </div>
     <div id="posts-container" class="column">
       <% if (users.length > 0) { %>
-      <h5>Users</h5>
       <div class="users">
         <% users.forEach(function(user) { %>
         <div class="user" onclick="window.location.href='/user/<%= user.username %>'">
@@ -42,7 +44,6 @@
       <% } %>
 
       <% if (jobs.length > 0) { %>
-      <h5>Jobs</h5>
       <div class="jobs">
         <% if (jobs.length > 4  && (users.length > 0 || posts.length > 0)) { %>
         <% jobsTrimmed = jobs.slice(0, 4); %>
@@ -92,7 +93,7 @@
 
         <% if (jobs.length > 4 && (users.length > 0 || posts.length > 0)) { %>
         <div class="load-more">
-          <button class="load-more-btn" id="regular-button" onclick="window.location.href='/search/jobs/?searchTerm=<%= searchTerm %>'">Load More</button>
+          <button class="load-more-btn" id="regular-button" onclick="window.location.href='/search/jobs/?searchTerm=<%= searchTerm %>'">Load More Jobs</button>
         </div>
         <% } %>
       </div>
@@ -101,7 +102,6 @@
 
 
       <% if (posts.length > 0) { %>
-      <h3>Posts</h3>
 
       <div class="posts">
 
@@ -177,7 +177,7 @@
 
         <% if (posts.length > 4 && (jobs.length > 0 || users.length > 0)) { %>
         <div class="load-more">
-          <button class="load-more-btn" id="regular-button" onclick="window.location.href='/search/posts/?searchTerm=<%= searchTerm %>'">Load More</button>
+          <button class="load-more-btn" id="regular-button" onclick="window.location.href='/search/posts/?searchTerm=<%= searchTerm %>'">Load More Posts</button>
         </div>
         <% } %>
       </div>

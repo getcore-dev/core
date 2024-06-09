@@ -4,14 +4,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>CORE/</title>
+  <title>CORE - #<%= tag %></title>
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/tags.css" />
   <link rel="stylesheet" href="/css/search.css" />
-
   <link rel="stylesheet" href="/css/company_profile.css" />
 
   <link rel="shortcut icon" href="/img/core.png" />
+
+  <!-- Meta Tags for SEO and Social Media -->
+  <meta name="description" content="Search results for the tag <%= tag %> on CORE. Find related jobs, posts, and more.">
+  <meta name="keywords" content="<%= tag %>, CORE, tag search, job search, post search">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="CORE - Tag Results for <%= tag %>">
+  <meta property="og:description" content="Search results for the tag <%= tag %> on CORE. Find related jobs, posts, and more.">
+  <meta property="og:image" content="/img/core.png"> <!-- Replace with a suitable image if needed -->
+  <meta property="og:url" content="https://c-ore.dev/search/<%= tag %>">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CORE - Tag Results for <%= tag %>">
+  <meta name="twitter:description" content="Search results for the tag <%= tag %> on CORE. Find related jobs, posts, and more.">
+  <meta name="twitter:image" content="/img/core.png"> <!-- Replace with a suitable image if needed -->
 </head>
 <style>
 </style>
@@ -91,11 +108,6 @@ function blendColors(color1, color2, ratio) {
             </h3>
             <span style="">USD $<%= Math.floor((job.salary + job.salary_max) / 2 / 1000) %>k</span>
             <span><%= job.location %></span>
-            <div class="job-main">
-              <div class="job-description">
-                <p class="job-description"><%= job.description %></p>
-              </div>
-            </div>
           </div>
         </div>
       </div>
