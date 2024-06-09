@@ -99,7 +99,7 @@ app.use(errorHandler);
 app.listen(environment.port, () => {
   console.log(`Server running on http://localhost:${environment.port}`);
 
-  if (!environment.isProduction) {
+  if (environment.isProduction) {
     jobBoardService.checkJobBoardUrls();
   }
 });

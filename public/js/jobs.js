@@ -40,7 +40,14 @@ const jobTitles = [
   "Program Manager",
 ];
 
-const jobLevels = ["Entry Level", "Mid Level", "Senior", "Lead", "Manager"];
+const jobLevels = [
+  "Internship",
+  "Entry Level",
+  "Mid Level",
+  "Senior",
+  "Lead",
+  "Manager",
+];
 
 function setupDynamicFilters() {
   setupFilter("experienceLevel");
