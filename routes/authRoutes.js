@@ -279,7 +279,7 @@ router.post("/login", checkNotAuthenticated, async (req, res, next) => {
       req.flash("error", info.message);
       return res.redirect("/login");
     }
-    if (!user.verified) {
+    if (!user.verifiedAccount) {
       console.error("User email not verified");
 
       const verificationToken = uuidv4();
