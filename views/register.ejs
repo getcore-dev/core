@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-  <title>CORE/register</title>
+  <title>CORE - Register</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="css/register.css" />
   <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="stylesheet" href="css/register.css" />
   <link rel="shortcut icon" href="/img/core.png" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
@@ -14,51 +14,95 @@
 <body>
   <%- include('partials/navbar', { pagePath: 'home' }) %>
   <main>
-    <div id="login">
-      <div class="user-res">Already a member? <a href="/login">Login</a></div>
+    <div class="account-stuff">
+      <div id="login">
+        <div class="user-res">Already a member? <a href="/login">Login</a></div>
+      </div>
+      <div id="registration">
+        <form action="/register" method="POST">
+          <div class="input-container">
+            <input type="text" id="firstname" name="firstname" placeholder="First Name" required />
+          </div>
+          <div class="input-container">
+            <input type="text" id="lastname" name="lastname" placeholder="Last Name" required />
+          </div>
+          <div class="input-container">
+            <input type="email" id="email" name="email" placeholder="Email" required />
+          </div>
+
+          <div class="input-container">
+            <input type="text" id="username" name="username" placeholder="Username" required maxlength="25" />
+          </div>
+
+          <div class="input-container">
+            <input type="password" id="password" name="password" placeholder="Password" required />
+            <span id="password-strength"></span>
+          </div>
+
+          <div class="input-container" id="confirmPasswordContainer" style="display: none;">
+            <input type="password" id="password2" name="password2" placeholder="Retype password" required />
+            <span id="password-match"></span>
+          </div>
+
+
+          <div class="input-container">
+            <input type="text" id="zipcode" name="zipcode" required style="display: block" placeholder="Zipcode" />
+          </div>
+          <a href="/register" id="register-text" class="register-text">
+            <button type="submit" id="submit-button">Join</button>
+          </a>
+        </form>
+      </div>
     </div>
-    <div id="registration">
-      <form action="/register" method="POST">
-        <div class="input-container">
-          <input type="text" id="firstname" name="firstname" placeholder="First Name" required />
-        </div>
-        <div class="input-container">
-          <input type="text" id="lastname" name="lastname" placeholder="Last Name" required />
-        </div>
-        <div class="input-container">
-          <input type="email" id="email" name="email" placeholder="Email" required />
-        </div>
+    <%- include('partials/footer') %>
 
-        <div class="input-container">
-          <input type="text" id="username" name="username" placeholder="Username" required maxlength="25" />
-        </div>
-
-        <div class="input-container">
-          <input type="password" id="password" name="password" placeholder="Password" required />
-          <span id="password-strength"></span>
-        </div>
-
-        <div class="input-container" id="confirmPasswordContainer" style="display: none;">
-          <input type="password" id="password2" name="password2" placeholder="Retype password" required />
-          <span id="password-match"></span>
-        </div>
-
-
-        <div class="input-container">
-          <input type="text" id="zipcode" name="zipcode" required style="display: block" placeholder="Zipcode" />
-        </div>
-        <a href="/register" id="register-text" class="register-text">
-          <button type="submit" id="register-button">Join</button>
-        </a>
-      </form>
-    </div>
   </main>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       var password = document.getElementById("password");
       var confirmPassword = document.getElementById("password2");
+      var confirmPasswordContainer = document.getElementById("confirmPasswordContainer");
       var passwordStrengthText = document.getElementById("password-strength");
       var passwordMatchText = document.getElementById("password-match");
+      var username = document.getElementById("username");
+
+      function checkUserName() {
+        const invalidCharacters = /[^a-zA-Z0-9_]/; // Only allow letters, numbers, and underscores
+
+        if (username.value.length < 5 || invalidCharacters.test(username.value) || username.value.length > 15) {
+          username.classList.add("invalid");
+          username.classList.remove("valid");
+          return;
+        }
+
+        fetch("/api/available-username/" + encodeURIComponent(username.value))
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.available) {
+              username.classList.remove("invalid");
+              username.classList.add("valid");
+            } else {
+              username.classList.add("invalid");
+              username.classList.remove("valid");
+            }
+          });
+      }
+
+      function debounce(func, wait, immediate) {
+        var timeout;
+        return function() {
+          var context = this,
+            args = arguments;
+          var later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+          };
+          var callNow = immediate && !timeout;
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+          if (callNow) func.apply(context, args);
+        };
+      }
 
       function checkPasswordStrength() {
         var strength = 0;
@@ -73,15 +117,25 @@
           case 2:
             passwordStrengthText.textContent = "Weak";
             password.style.borderColor = "red";
+            password.classList.add("weak");
+            password.classList.remove("medium");
+            password.classList.remove("strong");
             break;
           case 3:
           case 4:
             passwordStrengthText.textContent = "Medium";
             password.style.borderColor = "yellow";
+            password.classList.add("medium");
+            password.classList.remove("weak");
+            password.classList.remove("strong");
+
             break;
           case 5:
             passwordStrengthText.textContent = "Strong";
             password.style.borderColor = "green";
+            password.classList.remove("medium");
+            password.classList.remove("weak");
+            password.classList.add("strong");
             break;
           default:
             passwordStrengthText.textContent = "";
@@ -93,9 +147,13 @@
         if (password.value === confirmPassword.value) {
           passwordMatchText.textContent = "Passwords match";
           confirmPassword.style.borderColor = "green";
+          confirmPassword.classList.add("match");
+          confirmPassword.classList.remove("no-match");
         } else {
           passwordMatchText.textContent = "Passwords do not match";
           confirmPassword.style.borderColor = "red";
+          confirmPassword.classList.remove("match");
+          confirmPassword.classList.add("no-match");
         }
       }
 
@@ -110,6 +168,8 @@
       });
 
       confirmPassword.addEventListener("input", checkPasswordMatch);
+      username.addEventListener("input", debounce(checkUserName, 500));
+
     });
   </script>
 </body>

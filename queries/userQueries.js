@@ -32,6 +32,18 @@ const userQueries = {
     }
   },
 
+  updateLastLogin: async (userId) => {
+    try {
+      await sql.query`
+        UPDATE users
+        SET lastLogin = GETDATE()
+        WHERE id = ${userId}`;
+    } catch (err) {
+      console.error("Database update error:", err);
+      throw err;
+    }
+  },
+
   findByGoogleId: async (googleId) => {
     try {
       const result = await sql.query`

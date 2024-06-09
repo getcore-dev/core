@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>CORE/login</title>
+  <title>CORE - Login</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="google-signin-client_id" content="776889982265-25qnvfvr9cc0vijl82518gmiv9d2fj4p.apps.googleusercontent.com" />
@@ -16,27 +16,35 @@
   <%- include('partials/navbar', { pagePath: 'home' }) %>
 
   <main>
-    <span class="account-stuff">
+    <div class="account-stuff">
       <div id="register">
         <div class="user-res">
           Not a member? <a href="/register">Register here</a>
         </div>
-
       </div>
+
       <div id="login">
         <div class="login-buttons">
           <a href="https://github.com/login/oauth/authorize?client_id=b37718dbac10df16ec0c&redirect_uri=https%3A%2F%2Fc-ore.dev%2Fauth%2Fgithub%2Fcallback" id="regular-button-normal" class="github-login-btn">
             <img src="/src/github.png" alt="GitHub Logo" style="background: white; border-radius: 100%;">
             Sign in
           </a>
-
         </div>
+
+        <% if (errorMessages && errorMessages.length > 0) { %>
+        <div class="error-messages">
+          <% errorMessages.forEach(function(msg) { %>
+          <p class="error-message"><%= msg %></p>
+          <% }); %>
+        </div>
+        <% } %>
 
         <form action="/login" method="POST">
           <div class="input-container">
             <label for="username" class="floating-label">Username</label>
             <input type="text" name="username" id="username" placeholder="Username" required>
           </div>
+          <p>Forgot your password? <a href="/forgot-password">Reset it here</a></p>
 
           <div class="input-container">
             <label for="password" class="floating-label">Password</label>
@@ -44,14 +52,14 @@
             <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">
               <span class="material-symbols-outlined">visibility</span>
             </button>
-
           </div>
+
           <button type="submit" id="submit-button">
             <p id="login-text">Login</p>
           </button>
         </form>
       </div>
-    </span>
+    </div>
     <%- include('partials/footer') %>
 
   </main>

@@ -505,7 +505,7 @@
           <img src="${job.company_logo}" alt="${job.company_name}" style="width: 30px; height: 30px; border-radius: 50%;">
           <div>
           <h5>
-          <a href="/jobs/company/${job.company_name}">${job.company_name}</a></h5>
+          <a class="secondary-text" href="/jobs/company/${job.company_name}">${job.company_name}</a></h5>
           <h5>
           <a href="/jobs/${job.job_id}">${job.title}</a></h5></h5>
           </div>
@@ -522,11 +522,6 @@
               <button type="submit">Delete</button>
             </form>
           </div>
-        </div>
-      </div>
-      <div class="favorites-content">
-        <div>
-          <p class="favorites-text">${job.description}</p>
         </div>
       </div>
       <div class="favorites-footer">

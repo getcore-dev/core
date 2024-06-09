@@ -775,6 +775,7 @@ font-weight: 400;
 
 .secondary-text, .secondary-text:visited {
   color: var(--light-mode-secondary-text-color);
+  font-weight: 400;
 }
 
 .thumbnail {
@@ -1110,7 +1111,8 @@ input:focus, textarea:focus, select:focus {
 
 #cancel-button, #cancel-button-normal, .cancel-button, .cancel-button-normal {
   border: 1px solid #ae4444;
-  background-color: #cd3a3a;
+  background-color: #cd3a3a1c;
+  color: #ae4444;
 }
 
 #regular-button, #regular-button-normal, .regular-button, .regular-button-normal {
@@ -1515,9 +1517,6 @@ input:focus, textarea:focus, select:focus {
 
   .border-background {
     background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
-  }
-  #submit-button, #submit-button-normal {
-    color: white;
   }
 
   @media (max-width: 768px) {

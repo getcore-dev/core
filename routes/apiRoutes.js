@@ -55,6 +55,20 @@ router.get("/getUsername/:id", async (req, res) => {
   }
 });
 
+router.get("/available-username/:username", async (req, res) => {
+  const username = req.params.username;
+  try {
+    const user = await userQueries.findByUsername(username);
+    if (user) {
+      res.json({ available: false });
+    } else {
+      res.json({ available: true });
+    }
+  } catch (err) {
+    res.status(500).send("Server error");
+  }
+});
+
 router.get("/job-postings", async (req, res) => {
   try {
     const jobPostings = await jobQueries.getJobs();

@@ -1,9 +1,3 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const jobId = extractJobIdFromUrl();
-  lazyLoadJobDetails(jobId);
-  attachFormSubmitHandler();
-});
-
 function extractJobIdFromUrl() {
   const urlParts = window.location.pathname.split("/");
   return urlParts[urlParts.length - 1];
@@ -222,7 +216,7 @@ function getSimilarJobsByCompany(jobId, companyName) {
     });
 }
 
-function lazyLoadJobDetails(jobId) {
+function lazyLoadJobDetails(userIsAdmin, jobId) {
   fetch(`/api/jobs/${jobId}`)
     .then((response) => response.json())
     .then((job) => {
@@ -348,6 +342,16 @@ group
       }', 'Check out this job', 'https://c-ore.dev/jobs/${job.id}')"
       >Share</button>
       </div>
+      ${
+        userIsAdmin === "true"
+          ? `
+        <div class="delete-button-container flex">
+          <button id="cancel-button-normal" class="margin-h-auto" onclick="window.location.href='/jobs/delete/${job.id}'">Delete</button>
+        </div>
+      `
+          : ""
+      }
+
       </div>
       <div class="job-skills">
       <h4>Required Skills</h4>

@@ -6,6 +6,8 @@ const {
   checkNotAuthenticated,
 } = require("../middleware/authMiddleware");
 
+
+
 // Get all unread notifications for a user
 router.get("/unread/:userId", async (req, res) => {
   try {

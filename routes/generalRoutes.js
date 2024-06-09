@@ -93,6 +93,8 @@ router.get("/user/:username/followers", viewController.renderFollowers);
 
 router.get("/user/:username/following", viewController.renderFollowing);
 
+// Forgot password route
+
 // Learning page
 router.get("/learning", checkAuthenticated, (req, res) => {
   res.render("learning.ejs", { user: req.user });

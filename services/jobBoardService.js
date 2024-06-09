@@ -6,6 +6,14 @@ const jobQueries = require("../queries/jobQueries");
 const axios = require("axios");
 const linkFunctions = require("../utils/linkFunctions");
 
+async function start() {
+  try {
+    await checkJobBoardUrls();
+  } catch (error) {
+    console.error("Error starting job board service:", error);
+  }
+}
+
 async function processJobLink(model, jobLink) {
   return new Promise(async (resolve) => {
     // Check if the link has already been processed
@@ -253,7 +261,7 @@ async function processJobLink(model, jobLink) {
   });
 }
 
-async function checkJobBoardUrls(geminiKey) {
+async function checkJobBoardUrls() {
   try {
     const companies = await jobQueries.getCompanies();
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -283,5 +291,5 @@ async function checkJobBoardUrls(geminiKey) {
 }
 
 module.exports = {
-  checkJobBoardUrls,
+  start,
 };

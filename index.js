@@ -6,7 +6,6 @@ const session = require("express-session");
 const methodOverride = require("method-override");
 const sql = require("mssql");
 const rateLimit = require("express-rate-limit");
-
 // Custom modules
 const environment = require("./config/environment");
 const dbConfig = require("./config/dbConfig");
@@ -91,6 +90,11 @@ app.use("/favorites", favoriteRoutes);
 app.use("/c", communityRoutes);
 app.use(generalRoutes);
 
+app.use((req, res, next) => {
+  res.locals.error = req.flash("error");
+  res.locals.success = req.flash("success");
+  next();
+});
 // Error handling
 app.use(errorHandler);
 
@@ -98,10 +102,8 @@ app.use(errorHandler);
 
 app.listen(environment.port, () => {
   console.log(`Server running on http://localhost:${environment.port}`);
-
-  if (environment.isProduction) {
-    jobBoardService.checkJobBoardUrls();
-  }
+  //console.log("Job board service started");
+  //jobBoardService.start();
 });
 
 module.exports = app;

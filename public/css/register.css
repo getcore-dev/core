@@ -2,22 +2,78 @@
 
 body {
   font-family: 'Roboto', sans-serif;
+  padding-top: 0 !important;
 }
 
 /* Original Styles */
 main {
   display: flex;
-  padding-top: 80px;
-    flex-direction: column;
+  background-image: url("../core-login-backgrounds/ISS071E170979 Large.jpg") !important;
+  padding-top: 180px;
+  flex-direction: column;
   align-items: center;
   height: calc(100dvh);
   background-color: #fff;
   font-family: 'Inter', sans-serif;
 }
 
+.mobile-search-input {
+  border: 1px solid transparent !important;
+  background: transparent !important;
+}
+
+.navbar {
+  background-color: #ffffff7d !important;
+}
+
+.second-nav-bar {
+  background-color: #ffffff7d !important;
+}
+
+.account-stuff {
+  width: 55%;
+  max-width: 490px;
+  background: #ffffff4f;
+  border: 1px solid #ffffff91;
+  border-radius: 9px;
+  padding: .5rem 0;
+}
+
+#password, #password2 {
+  border-color: var(--border-color) !important; /* Ensure the initial state has no specific color */
+}
+
+#password.weak, #password2.no-match, #username.invalid, #confirmPassword.no-match {
+  border: 1px solid #ae4444 !important;
+  background-color: #cd3a3a1c !important;
+  color: #ae4444 !important;
+}
+
+.error-messages {
+  width: 100%;
+    border: 1px solid #ae4444;
+    background-color: #cd3a3a1c;
+    color: #ae4444;
+    padding: .55rem 0.85rem !important;
+    margin: .5rem 0;
+    box-sizing: border-box;
+    border-radius: 7px;
+}
+
+#password.medium {
+  border-color: #ffa600 !important;
+  background: #ffa60038 !important;
+  color: #ffa600 !important;
+}
+
+#password.strong, #password2.match, #username.valid, #confirmPassword.match {
+  background: #1675351f !important;
+  border: 1px solid #4b9263 !important;
+  color: #4b9263 !important;
+}
 
 #login {
-  padding: 20px 20px;
+  padding: 13px 14px;
   background-color: none;
   border: 0;
   width: 100%;
@@ -29,8 +85,16 @@ main {
   gap: 4px;
 }
 
+.user-res {
+  text-align: start;  
+}
+
+footer {
+  margin-top: auto;
+}
+
 #registration {
-  padding: 20px 20px;
+  padding: 5px 14px;
   background-color: none;
   border: 0;
   width: 100%;
@@ -52,15 +116,23 @@ main {
   color: #333;
 }
 
+.footer-container {
+  background-color: transparent !important;
+}
+
+.footer-container a {
+  color: black !important;
+}
+
 .input-container input {
   width: 100%;
-  padding: 10px 20px;
-  margin: 8px 0;
+  padding: 11px 9px;
+  margin: 5px 0;
   box-sizing: border-box;
   border-radius: 10px; 
-  background-color: var(--light-mode-body-color) !important;
-  border: 1px solid var(--border-color) !important;
-  font-size: 16px;
+  background-color: #f6f8fa91 !important;
+  border: 1px solid #ffffff8f !important;
+  font-size: .8rem;
   transition: box-shadow 0.3s ease;
 }
 
@@ -76,7 +148,7 @@ main {
 }
 
 .input-container input {
-  border: 1px solid var(--border-color) !important;
+  border: 1px solid #ffffff8f !important;
 }
 
 #password-strength, #password-match {
@@ -119,34 +191,70 @@ main {
   padding: 10px 20px;
 }
 
-/* Dark Mode Styles */
-@media (prefers-color-scheme: dark) {
-  main {
-      background-color: var(--dark-mode-body-color);
-      color: #f4f4f4;
+@media screen and (max-width: 600px){
+  .account-stuff {
+    width: 90%;
   }
 
   .input-container input {
-  border-color: var(--dark-mode-border-color) !important;
+    font-size: 16px;
+  }
+
 }
+
+@media (prefers-color-scheme: dark) {
+  main {
+    background-image: url("/core-login-backgrounds/Web First Images Release.webp") !important;
+    color: var(--dark-mode-text-color); 
+  }
+  .account-stuff {
+    background: #2121214f;
+    border-color: #343434bf;
+  }
+
+  .input-container input {
+    background-color: #0b0c0c8c !important;
+    border-color: #181a1bd1 !important;
+    color: var(--dark-mode-text-color) !important; 
+  }
 
   #registration, #login{
       border-color: none;
       background: none;
     }
 
+    #password, #password2 {
+      border-color: var(--dark-mode-border-color) !important; /* Ensure the initial state has no specific color */
+    }
+    
+    #password.weak, #password2.no-match, #username.invalid {
+      border: 1px solid #ae4444 !important;
+      background-color: #cd3a3a1c !important;
+      color: #ae4444 !important;
+    }
+    
+    #password.medium {
+      border-color: #ffa600 !important;
+      background: #ffa60038 !important;
+      color: #ffa600 !important;
+    }
+    
+    #password.strong, #password2.match, #username.valid {
+      background: #1675351f !important;
+      border: 1px solid #4b9263 !important;
+      color: #4b9263 !important;
+    }
+
+    .footer-container a {
+      color: white !important;
+    }
+
+    .navbar, .second-nav-bar {
+      background: #00000078 !important;
+    }
+
   #registration h1 {
       color: #f4f4f4;
   }
 
-
-
-  .input-container input {
-    background-color: var(--dark-mode-main-color) !important; 
-    border-color: var(--dark-mode-border-color) !important; 
-    color: var(--dark-mode-text-color);
-  }
-
-
-  /* Add any additional dark mode styles for other elements as needed */
 }

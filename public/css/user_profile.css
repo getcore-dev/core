@@ -10,10 +10,6 @@ main {
   font-family: var(--font-family);
 }
 
-#followButton, #edit-button {
-  margin-top: 4px;
-}
-
 .followers-info .link-display {
   margin: 0;
 }

@@ -107,6 +107,12 @@
       color: white;
     }
   }
+
+  .admin-button {
+    border: 1px solid #ae4444 !important;
+    background-color: #cd3a3a1c !important;
+    color: #ae4444 !important;
+  }
 </style>
 
 <body>
@@ -151,6 +157,9 @@
             </div>
           </div>
           <div class="edit-controls-and-follow-button">
+            <button id="edit-button" onclick="share('User Profile', 'Check out this user profile:', 'https://c-ore.dev/user/<%= otheruser.username %>')" style="margin-bottom: auto;">
+              Share
+            </button>
             <% if (user) { %>
             <% if (otheruser.username === user.username) { %>
             <button id="edit-button" onclick="window.location.href='/edit-profile'" style="margin-bottom: auto;">
@@ -163,22 +172,19 @@
 
             <% if (user.isAdmin ) { %>
             <form action="/admin/users/<%= otheruser.id %>/toggle-admin" method="POST">
-              <button id="edit-button" type="submit" style="margin-bottom: auto;"><%= otheruser.isAdmin ? 'Demote' : 'Promote' %></button>
+              <button class="admin-button" type="submit" style="margin-bottom: auto;"><%= otheruser.isAdmin ? 'Demote' : 'Promote' %></button>
             </form>
             <form action="/admin/users/<%= otheruser.id %>/toggle-verified" method="POST">
-              <button id="edit-button" type="submit" style="margin-bottom: auto;"><%= otheruser.verified ? 'Unverify' : 'Verify' %></button>
+              <button class="admin-button" type="submit" style="margin-bottom: auto;"><%= otheruser.verified ? 'Unverify' : 'Verify' %></button>
             </form>
             <form action="/admin/users/<%= otheruser.id %>/toggle-ban" method="POST">
-              <button id="edit-button" type="submit" style="margin-bottom: auto;"><%= otheruser.isBanned ? 'Unban' : 'Ban' %></button>
+              <button class="admin-button" type="submit" style="margin-bottom: auto;"><%= otheruser.isBanned ? 'Unban' : 'Ban' %></button>
             </form>
             <% } %>
             <% } %>
 
             <% } %>
 
-            <button id="edit-button" onclick="share('User Profile', 'Check out this user profile:', 'https://c-ore.dev/user/<%= otheruser.username %>')" style="margin-bottom: auto;">
-              Share
-            </button>
           </div>
 
 

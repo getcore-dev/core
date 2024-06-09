@@ -43,6 +43,13 @@
 
 
   <script src="/js/jobPosting.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const jobId = extractJobIdFromUrl();
+      lazyLoadJobDetails('<%= user && user.isAdmin %>', jobId);
+      attachFormSubmitHandler();
+    });
+  </script>
 
 </body>
 
