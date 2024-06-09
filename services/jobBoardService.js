@@ -39,9 +39,10 @@ async function processJobLink(model, jobLink) {
       $("script, style").remove();
       const textContent = $("body").text().replace(/\s\s+/g, " ").trim();
 
-      const prompt = `Please extract the following information from this job posting data: ${textContent}
+      const prompt = `
+      Please extract the following information from this job posting data: ${textContent}
       - title (e.g., Software Engineer, Data Analyst, do not include intern or seniority in the title)
-      - company_name NVARCHAR(50) (as simple as possible, not amazon inc, just Amazon. If it's a startup, use the startup name)
+      - company_name NVARCHAR(50) (as simple as possible and you can tell the company name from the job posting link: ${jobLink.link})
       - company_description NVARCHAR(MAX)(write a short paragraph about the company, where they're located, their mission, etc)
       - company_industry (e.g., Technology, Healthcare, Finance, etc.)
       - company_size (e.g., 1-10, 11-50, 51-200, 201-500, 501-1000, 1001-5000, 5001-10000, 10001+)
@@ -146,6 +147,12 @@ async function processJobLink(model, jobLink) {
         "hardware engineer",
         "IT consultant",
         "systems administrator",
+        "ai",
+        "data science",
+        "analytics",
+        "platform engineer",
+        "ml engineer",
+        "technical program manager",
       ];
       const jobTitle = extractedData.title.toLowerCase();
       if (!techRelatedTitles.some((title) => jobTitle.includes(title))) {

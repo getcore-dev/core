@@ -1275,6 +1275,7 @@ button.see-more {
   }
   #posts-container > div.mobile-jobs-container > div.jobslist > div {
     border-color: var(--dark-mode-body-color);
+    background: var(--dark-mode-main-color)
     }
 
   #posts-container {

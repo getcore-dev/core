@@ -121,7 +121,7 @@ function setupFilter(filterType) {
 
   if (filterType === "title" || filterType === "location") {
     const input = document.createElement("input");
-    input.className = "filter-input";
+    input.className = "filter-input input-theme";
     input.type = "text";
     if (filterType === "title") {
       input.placeholder = "Search by job title";

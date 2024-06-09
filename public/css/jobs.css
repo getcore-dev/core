@@ -685,11 +685,6 @@ div .material-symbols-outlined {
     border-color: var(--dark-mode-border-color) !important;
   }
 
-  .title-filter input, .location-filter input {
-    background-color: var(--dark-mode-main-color);
-    color: var(--dark-mode-text-color);
-    border-color: var(--dark-mode-border-color);
-  }
 
   div.jobs-container > div.job-list > .job {
     background-color: var(--dark-mode-body-color);

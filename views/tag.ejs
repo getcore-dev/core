@@ -87,12 +87,10 @@ function blendColors(color1, color2, ratio) {
             </div>
             <h3 class="job-title">
               <%= job.title %>
-              <span style="margin-left: auto; float: right;"><%= job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1) %></span>
+              <span style=""><%= job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1) %></span>
             </h3>
-            <h5 class="job-subtitle secondary-text">
-              <span style="margin-left: auto; float:right;">USD $<%= Math.floor((job.salary + job.salary_max) / 2 / 1000) %>k</span>
-              <%= job.location %>
-            </h5>
+            <span style="">USD $<%= Math.floor((job.salary + job.salary_max) / 2 / 1000) %>k</span>
+            <span><%= job.location %></span>
             <div class="job-main">
               <div class="job-description">
                 <p class="job-description"><%= job.description %></p>

@@ -3,14 +3,16 @@
 body {
   font-family: 'Roboto', sans-serif;
   font-size: 1rem;
+  padding-top: 0 !important;
+  padding: 0 !important;
 }
 
 .github-login-btn {
   display: inline-flex;
   align-items: center;
   color: white !important;
-  border-color:#443eaa !important;
-  background-color: #2f2998 !important;
+  border-color: #443eaabd !important;
+  background-color: #2f2998ad !important;
   text-decoration: none;
   justify-content: center;
   box-sizing: border-box;
@@ -34,17 +36,49 @@ body {
 }
 
 .github-login-btn:hover {
-  background-color: #443eaa
-  ;
+  background-color: #443eaa;
+}
+
+.account-stuff {
+  width: 90%;
+  background: #ffffff4f;
+  border: 1px solid #ffffff91;
+  border-radius: 9px;
+  padding: .5rem 0;
+}
+
+footer {
+  margin-top: auto;
+}
+
+.footer-container {
+  background-color: transparent !important;
+}
+
+.footer-container a {
+  color: black !important;
+}
+
+.mobile-search-input {
+  border: 1px solid transparent !important;
+  background: transparent !important;
+}
+
+.navbar {
+  background-color: #ffffffeb !important;
+}
+
+.second-nav-bar {
+  background-color: #ffffffeb !important;
 }
 
 main {
   display: flex;
-  padding-top: 80px;
+  background-image: url("../core-login-backgrounds/ISS071E170979 Large.jpg") !important;
+  padding-top: 180px;
   flex-direction: column;
   align-items: center;
   height: calc(100dvh - 65px);
-  background-color: var(--light-mode-main-color);
   font-family: 'Open Sans', sans-serif;
 }
 
@@ -71,7 +105,7 @@ main {
 
 #login {
   max-width: 500px;
-  padding: 49px 20px;
+  padding: 5px 20px;
   border-radius: 10px;
   background-color: var(--light-mode-body-color);
   width: 100%;
@@ -175,8 +209,8 @@ input:not(:placeholder-shown) + .floating-label,
   margin: 8px 0;
   box-sizing: border-box;
   border-radius: 10px; 
-  background-color: var(--light-mode-main-color) !important;
-  border: 1px solid var(--border-color) !important;
+  background-color: #f6f8fa91 !important;
+  border: 1px solid #ffffff8f !important;
   font-size: .8rem;
   transition: box-shadow 0.3s ease;
 }
@@ -216,7 +250,6 @@ input:not(:placeholder-shown) + .floating-label,
 .login-buttons {
   display: flex;
   margin-bottom: 10px;
-  justify-content: center;
   align-items: center;
   gap: 20px; /* Space between the buttons */
 }
@@ -268,7 +301,7 @@ input:not(:placeholder-shown) + .floating-label,
 
   .input-container input {
     padding: 11px 14px; 
-    background: var(--light-mode-body-color) !important;
+    background: #f6f8fa7a !important;
     font-size: 16px;
   }
 
@@ -286,13 +319,26 @@ input:not(:placeholder-shown) + .floating-label,
 
 @media (prefers-color-scheme: dark) {
   main {
-    background-color: var(--dark-mode-body-color); 
+    background-image: url("/core-login-backgrounds/Web First Images Release.webp") !important;
     color: var(--dark-mode-text-color); 
+  }
+
+  .footer-container a {
+    color: white !important;
   }
 
   #login {
     background: none; 
     border-color: none;
+  }
+
+  .account-stuff {
+    background: #2121214f;
+    border: 1px solid #343434bf;
+  }
+
+  .navbar, .second-nav-bar {
+    background: #00000078 !important;
   }
 
   #register
@@ -303,8 +349,8 @@ input:not(:placeholder-shown) + .floating-label,
 
 
   .input-container input {
-    background-color: var(--dark-mode-main-color) !important; 
-    border-color: var(--dark-mode-border-color) !important;
+    background-color: #0b0c0c8c !important;
+    border-color: #181a1bd1 !important;
     color: var(--dark-mode-text-color) !important; 
   }
 
@@ -317,8 +363,8 @@ input:not(:placeholder-shown) + .floating-label,
   }
 
   .input-container input {
-    background-color: var(--dark-mode-main-color) !important;
-    border-color: var(--dark-mode-border-color) !important;
+    background-color: #0b0c0c8c !important;
+    border-color: #181a1bd1 !important;
     color: var(--dark-mode-text-color) !important;
   
   }

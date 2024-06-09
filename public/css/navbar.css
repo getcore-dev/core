@@ -1053,7 +1053,7 @@ input:focus, textarea:focus, select:focus {
   width: 100%;
   border: none;
   border-radius: 10px;
-  background: #1675350f;
+  background: #1675351f;
   border: 2px solid #4b9263;
   color: #4b9263;
   cursor: pointer;
@@ -1076,7 +1076,7 @@ input:focus, textarea:focus, select:focus {
   flex: 0;
   margin: 0;
   border-radius: 6px;
-  background: #1675350f;
+  background: #1675351f;
   border: 1px solid #4b9263;
   color: #4b9263;
   cursor: pointer;
@@ -1114,7 +1114,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 #regular-button, #regular-button-normal, .regular-button, .regular-button-normal {
-  background: #ffffff;
+  background: transparent;
   color: black;
   border: 1px solid #000000;
 }
@@ -1141,11 +1141,12 @@ input:focus, textarea:focus, select:focus {
   margin-left: 13px;
 }
 
+
 .border-background {
   margin-top: 9px;
-  background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+  background: linear-gradient(90deg, rgba(83,117,226,1) 0%, rgba(216,214,187,1) 50%, rgba(60,73,106,1) 100%);
   padding: 1px;
-  border-radius: 6px;
+  border-radius: 7px;
 }
 
 #login-btn {
@@ -1368,6 +1369,12 @@ input:focus, textarea:focus, select:focus {
     background-color: var(--dark-mode-background-color);
   }
 
+  #regular-button, #regular-button-normal, .regular-button, .regular-button-normal {
+    background: transparent;
+    color: var(--dark-mode-text-color);
+    border: 1px solid var(--dark-mode-text-color);
+  }
+
   .inbox-button:hover {
     background-color: var(--dark-mode-hover-background-color); /* Background color on hover */
     cursor: pointer; /* Pointer cursor on hover */
@@ -1454,6 +1461,12 @@ input:focus, textarea:focus, select:focus {
       background-color: #555; /* Lighter background on hover */
   }
 
+  .input-theme {
+    background-color: #000000 !important;
+    color: var(--dark-mode-text-color);
+    border-color: #101212 !important;
+  }
+
   input:focus, textarea:focus, select:focus {
     outline: none;
     border-color: #15516e !important;
@@ -1488,9 +1501,12 @@ input:focus, textarea:focus, select:focus {
       background-color: #666; /* Darker background on focus/hover */
   }
 
+
+  .border-background {
+    background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+  }
   #submit-button, #submit-button-normal {
-    background: #0C8346;
-    border: 2px solid #0E954F;
+    color: white;
   }
 
   @media (max-width: 768px) {

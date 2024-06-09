@@ -10,6 +10,15 @@ main {
     margin-bottom: 6px;
 }
 
+
+.job-description {
+    width: 90% !important;
+}
+
+.job-preview {
+    display: inline !important;
+}
+
 div.posts {
     display: flex;
     flex-direction: column;
@@ -80,9 +89,10 @@ div.votes {
         background: var(--dark-mode-hover-color);
     }
     .post, .job {
-        background: var(--dark-mode-main-color);
+        background: var(--dark-mode-main-color) !important;
     }
     .post:hover {
         background: var(--dark-mode-hover-color);
     }
+
 }
