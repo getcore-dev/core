@@ -1,6 +1,5 @@
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
+
+require("dotenv").config();
 
 const environmentConfig = {
   port: process.env.PORT || 8080,
