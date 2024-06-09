@@ -144,7 +144,7 @@ async function processJobLink(model, jobLink) {
         "technical writer",
         "hardware engineer",
         "IT consultant",
-        "systems administrator",
+        "systems administrator"
       ];
       const jobTitle = extractedData.title.toLowerCase();
       if (!techRelatedTitles.some((title) => jobTitle.includes(title))) {

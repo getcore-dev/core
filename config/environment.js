@@ -9,7 +9,7 @@ const environmentConfig = {
   dbName: process.env.DB_NAME,
   dbServer: process.env.DB_SERVER,
   sessionSecret: process.env.SESSION_SECRET || "default_secret_key",
-  isProduction: process.env.NODE_ENV === "production",
+  isProduction: process.env.NODE_ENV !== "development",
 };
 
 module.exports = environmentConfig;
