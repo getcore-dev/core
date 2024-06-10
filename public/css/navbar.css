@@ -1188,6 +1188,10 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
+.core-header-img {
+  content: url('/img/core.png');
+}
+
 .menu-content h3 {
   margin: 10px 25px;
 }
@@ -1316,6 +1320,11 @@ input:focus, textarea:focus, select:focus {
   .secondary-text, .secondary-text:visited {
     color: #c8c8c8;
   }
+
+  .core-header-img {
+    content: url('/img/core-dark.png');
+  }
+  
   .search-input {
      background-color: var(--dark-mode-body-color);
      color: var(--dark-mode-text-color);
@@ -1446,33 +1455,28 @@ input:focus, textarea:focus, select:focus {
     color: var(--dark-mode-secondary-text-color);
   }
 
-  /* Navbar button styling */
+
   .navbar-button {
-    color: #fff; /* Light text color for buttons */
+    color: #fff; 
 }
 
-
-/* Logo styling */
-.logo img {
-    filter: invert(100%); /* Invert logo colors */
-}
 
 
 .menu-content {
   background-color: var(--dark-mode-body-color);
   border-right: 1px solid var(--dark-mode-border-color);
-  color: var(--dark-mode-text-color); /* Light text color */
+  color: var(--dark-mode-text-color); 
 }
 
 .menu-content a {
-    color: #fff; /* Light text color for links */
+    color: #fff;
 }
 .navbar-user-info {
   color: #fff;
 }
 
   .menu-content a:hover {
-      background-color: #555; /* Lighter background on hover */
+      background-color: #555; 
   }
 
   .input-theme {
@@ -1504,15 +1508,15 @@ input:focus, textarea:focus, select:focus {
     border-color: var(--dark-mode-body-color);
   }
 
-  /* Search bar styling */
+
   .search-bar input[type="search"] {
-      background-color: #555; /* Dark background for search bar */
-      color: #fff; /* Light text color */
+      background-color: #555; 
+      color: #fff; 
   }
 
   .search-bar input[type="search"]:focus,
   .search-bar input[type="search"]:hover {
-      background-color: #666; /* Darker background on focus/hover */
+      background-color: #666; 
   }
 
 
