@@ -267,12 +267,12 @@ router.get("/delete/:id", checkAuthenticated, async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const job = await jobQueries.getJobById(id);
+    const job = await jobQueries.findById(id);
 
     res.render("job-posting.ejs", {
       job_id: id,
       user: req.user,
-      jobTitle: job.title,
+      job: job,
     });
   } catch (err) {
     console.error("Error fetching job postings:", err);

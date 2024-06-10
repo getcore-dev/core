@@ -104,27 +104,6 @@ main {
   color: var(--active-indicator-color);
 }
 
-.error-messages {
-  width: 100%;
-    border: 1px solid #ae4444;
-    background-color: #cd3a3a1c;
-    color: #ae4444;
-    padding: .55rem 0.85rem;
-    margin: .5rem 0;
-    box-sizing: border-box;
-    border-radius: 7px;
-}
-
-.success-messages {
-  width: 100%;
-  background: #1675351f;
-  border: 1px solid #4b9263;
-  color: #4b9263;
-    padding: .55rem 0.85rem;
-    margin: .5rem 0;
-    box-sizing: border-box;
-    border-radius: 7px;
-}
 
 #login {
   max-width: 500px;

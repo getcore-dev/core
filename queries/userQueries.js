@@ -60,7 +60,9 @@ const userQueries = {
       const result = await sql.query`
         INSERT INTO users (username, email, avatar, google_id, created_at, isAdmin, bio, points, verified)
         OUTPUT INSERTED.*
-        VALUES (${profile.username}, ${profile.emails[0].value}, ${profile.photos[0].value}, ${profile.id}, GETDATE(), 0, '', 0, 0)`;
+        VALUES (${profile.username.toLowerCase()}, ${
+        profile.emails[0].value
+      }, ${profile.photos[0].value}, ${profile.id}, GETDATE(), 0, '', 0, 0)`;
 
       return result.recordset[0];
     } catch (err) {
@@ -526,7 +528,9 @@ const userQueries = {
       const result = await sql.query`
         INSERT INTO users (github_url, username, avatar, email, github_id, created_at, isAdmin, bio, points, verified)
         OUTPUT INSERTED.*
-        VALUES (${profile.username}, ${profile.username}, ${profile.photos[0].value}, ${profile.emails[0].value}, ${profile.id}, GETDATE(), 0, '', 0, 0)`;
+        VALUES (${profile.username.toLowerCase()}, ${profile.username}, ${
+        profile.photos[0].value
+      }, ${profile.emails[0].value}, ${profile.id}, GETDATE(), 0, '', 0, 0)`;
 
       return result.recordset[0];
     } catch (err) {

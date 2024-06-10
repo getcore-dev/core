@@ -302,11 +302,13 @@
                 'bcolor': '#914f7b'
               }
             }
-            const postTypeCircleDiv = document.createElement('div');
-            postTypeCircleDiv.className = 'post-type-circle';
-            postTypeCircleDiv.style.backgroundColor = postTypes[post.post_type].color;
-            postTypeCircleDiv.innerHTML = '<span class="material-symbols-outlined">' + postTypes[post.post_type].icon + '</span>';
-            avatarDiv.appendChild(postTypeCircleDiv);
+            if (postTypes.hasOwnProperty(post.post_type)) {
+              const postTypeCircleDiv = document.createElement('div');
+              postTypeCircleDiv.className = 'post-type-circle';
+              postTypeCircleDiv.style.backgroundColor = postTypes[post.post_type].color || '#000';
+              postTypeCircleDiv.innerHTML = '<span class="material-symbols-outlined">' + postTypes[post.post_type].icon + '</span>';
+              avatarDiv.appendChild(postTypeCircleDiv);
+            }
 
             // Username, community and current job div
             const usernameDiv = document.createElement('div');
@@ -354,7 +356,7 @@
     <button class="dropdown-item" onclick="window.location.href='/posts/${post.id}'">View Post</button>
     <button class="dropdown-item" onclick="window.location.href='/user/${post.username}'">Visit @${post.username}</button>
     <button class="dropdown-item" onclick="window.location.href='/c/${post.community_shortname}'">Visit /${post.community_shortname}</button>
-    <button class="dropdown-item" onclick="share('${post.title}','Check out this post','https://c-ore.dev/posts/${post.id}')">Share</button>
+    <button class="dropdown-item" onclick="share('${post.title}','','https://c-ore.dev/posts/${post.id}')">Share</button>
   `;
               threeDotsDiv.appendChild(dropdown);
               dropdownVisible = true;

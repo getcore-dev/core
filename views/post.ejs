@@ -84,8 +84,8 @@
               <div class="post-user-information">
                 <img class="avatar" src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" onerror="" />
                 <div class="post-user-info">
-                  <a href="/user/<%= post.user.username %>" class="post-user-info">
-                    <%= post.user.username %></a> in <a href="/c/<%= post.community.shortname %>" class="post-community-info" style="color: <%= post.community.community_color %>;"><%= post.community.name %></a>
+                  <a href="/user/<%= post.user.username %>" class="post-user-info" style="color: <%= post.user.isAdmin ? '#b40000' : 'inherit' %> ;">
+                    <%= post.user.username %></a> in <a href=" /c/<%= post.community.shortname %>" class="post-community-info" style="color: <%= post.community.community_color %>;"><%= post.community.name %></a>
                 </div>
                 </a>
               </div>
@@ -197,7 +197,7 @@
                   <% } %>
 
                   <div class="dropdown-item">
-                    <button onclick="share('<%= post.title %>', 'Check out this post', 'https://c-ore.dev/posts/<%= post.id %>')">
+                    <button onclick="share('<%= post.title %>', '', 'https://c-ore.dev/posts/<%= post.id %>')">
                       <span class="material-symbols-outlined">
                         share
                       </span>
@@ -303,12 +303,12 @@
                       return `${month}/${day}/${year}`;
                     }
                   %>
-              <div class="project-link" onclick="window.location.href='<%= post.link %>'">
+              <div class="project-link" onclick="window.location.href='/redirect/<%= post.link %>'">
                 <div class="project-link-image">
                   <img src="<%= gitHubData.owner.avatar_url %>" alt="Preview" class="large-preview-image" />
                 </div>
                 <div class="project-link-header">
-                  <a href="<%= post.link %>" class="project-link-title">
+                  <a href="/redirect/<%= post.link %>" class="project-link-title">
                     <img src="/src/github.png" alt="GitHub Logo" class="github-logo" style="display: inline-block; background-color: white; border-radius: 100%; height: 16px; width: 16px; aspect-ratio: 1/1; padding: 0; margin: 0; margin-right: 5px;" />
                     <%= post.link %>
                   </a>
@@ -350,7 +350,7 @@
               <% } %>
               <% } else if ((post.post_type == 'post' || post.post_type == 'discussion') && post.linkPreview) { %>
 
-              <div class="discussion-link" onclick="window.location.href='<%= post.link %>'">
+              <div class="discussion-link" onclick="window.location.href='/redirect/<%= post.link %>'">
                 <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
                 <% if (imageUrl) { %>
                 <div class="link-image">
@@ -358,7 +358,7 @@
                 </div>
                 <% } %>
 
-                <div class="link-info" onclick="window.location.href='<%= post.link %>'">
+                <div class="link-info" onclick="window.location.href='/redirect/<%= post.link %>'">
                   <div class="link-info-url"><%= post.linkPreview.url %></div>
                   <div class="link-info-title">
                     <h3><%= post.linkPreview.title %></h3>
@@ -541,7 +541,7 @@
                 <div class="comment-content">
                   <div class="comment-header">
                     <a class="comment-user-info" href="/user/<%= comment.user.username %>">
-                      <div class="repliers-info">
+                      <div class="repliers-info" style="color: <%= comment.user.isAdmin ? '#b40000' : 'inherit' %>;">
                         <%= comment.user.username%>
                       </div>
                     </a>
@@ -858,7 +858,7 @@
                       </div>
                       <% } %>
                       <div class="dropdown-item">
-                        <button onclick="share('<%= similarPost.title %>', 'Check out this post', 'https://c-ore.dev/posts/<%= similarPost.id %>')">
+                        <button onclick="share('<%= similarPost.title %>', '', 'https://c-ore.dev/posts/<%= similarPost.id %>')">
                           <p>Share Post</p>
                         </button>
                       </div>

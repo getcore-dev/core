@@ -170,16 +170,29 @@ router.delete("/post/:postId", checkAuthenticated, async (req, res) => {
   }
 });
 
-router.get("/:postId", checkAuthenticated, async (req, res) => {
+router.get("/isFavorite/job/:jobId", async (req, res) => {
   try {
+    if (!req.user) {
+      return res.json({ isFavorite: false });
+    }
     const userId = req.user.id;
-    const postId = req.params.postId;
-    const favorites = await favoritesQueries.getFavorites(userId);
-    const isFavorited = favorites.some((favorite) => favorite.id === postId);
-    res.json({ isFavorited });
+    if (!userId) {
+      return res.json({ isFavorite: false });
+    }
+    const jobId = req.params.jobId;
+    if (!jobId) {
+      return res.json({ isFavorite: false });
+    }
+    const job = await favoritesQueries.getFavoriteJobByJobIdAndUserId(
+      jobId,
+      userId
+    );
+    res.json({ isFavorite: !!job });
   } catch (err) {
-    console.error("Error checking if post is favorited:", err);
-    res.status(500).json({ message: "Error checking if post is favorited" });
+    console.error("Error checking if job is favorite:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Error checking if job is favorite" });
   }
 });
 

@@ -79,10 +79,14 @@ li.notification-item.unread {
     margin-bottom: 8px;
 }
 
+.notification-sender-avatar {
+    height: 50px;
+}
+
 .notification-item {
     border-top: 1px solid var(--border-color);
     background-color: var(--light-mode-main-color);
-    padding: 10px 0;
+    padding: .75rem .95rem;
 }
 
 .notification-item:last-child {

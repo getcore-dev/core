@@ -106,6 +106,37 @@ router.get("/reset-password/:token", async (req, res) => {
   }
 });
 
+router.post("/reset-password/:token", async (req, res) => {
+  const { token } = req.params;
+  const { password, confirmPassword } = req.body;
+
+  if (password !== confirmPassword) {
+    req.flash("error", "Passwords do not match.");
+    return res.redirect(`/reset-password/${token}`);
+  }
+
+  try {
+    const result =
+      await sql.query`SELECT * FROM users WHERE reset_password_token = ${token} AND reset_password_expires > ${new Date()}`;
+    const user = result.recordset[0];
+
+    if (!user) {
+      req.flash("error", "Password reset token is invalid or has expired.");
+      return res.redirect("/forgot-password");
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await sql.query`UPDATE users SET password = ${hashedPassword}, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ${user.id}`;
+
+    req.flash("success", "Password reset successful. You can now log in.");
+    res.redirect("/login");
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    req.flash("error", "An error occurred. Please try again later.");
+    res.redirect(`/reset-password/${token}`);
+  }
+});
+
 router.get("/forgot-password", (req, res) => {
   res.render("forgot-password.ejs", {
     errorMessages: req.flash("error"),
@@ -193,7 +224,7 @@ router.post(
         verification_token
       ) VALUES (
         ${userId},
-        ${req.body.username},
+        ${req.body.username.toLowerCase()},
         ${req.body.email},
         ${hashedPassword},
         '11111',

@@ -523,6 +523,14 @@ td {
   min-width: 0;
 }
 
+#followForm {
+  flex-grow: 1;
+}
+
+#followButton {
+  width: 100%;
+}
+
 
 @media screen and (max-width: 768px) {
 
@@ -532,6 +540,8 @@ td {
   }
 
   .main-container {
+    width: 100%;
+    height: 100%;
     max-height: calc(100dvh - var(--mobile-navbar-height));
     overflow-y: auto;
   }

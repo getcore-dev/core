@@ -525,7 +525,7 @@ a:visited {
 .clear-btn .material-symbols-outlined {
   font-size: 1.35rem;
   font-weight: 400;
-  color: var(--light-mode-secondary-text-color);
+  color: #bababa;
 }
 
 
@@ -694,7 +694,7 @@ font-weight: 400;
 
 .search-icon {
   position: absolute;
-  top: 4px;
+  top: 5px;
   font-weight: 300 !important;
   left: -1px;
   color: var(--light-mode-secondary-text-color);
@@ -706,13 +706,12 @@ font-weight: 400;
 
 
 #user-avatar {
-  width: 32px;
+  width: 36px;
   border-radius: 50%;
-  height: 32px;
+  height: 36px;
   object-fit: cover; 
   overflow: hidden;
   z-index: 10;
-  border: 1.5px solid var(--light-mode-text-color);
 }
 #search-bar {
   padding: 4px 6px;
@@ -1049,7 +1048,7 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 0 3px 1px rgba(160, 207, 230, 0.5);
 }
 
-#submit-button, #cancel-button, #regular-button, .submit-button, .cancel-button, .regular-button {
+#submit-button, #cancel-button, #regular-button, .submit-button, .cancel-button, .regular-button, .special-button, #special-button {
   font-size: 16px;
   width: 100%;
   border: none;
@@ -1070,7 +1069,7 @@ input:focus, textarea:focus, select:focus {
 
 
 
-#submit-button-normal, #cancel-button-normal, #regular-button-normal, .submit-button-normal, .cancel-button-normal, .regular-button-normal {
+#submit-button-normal, #cancel-button-normal, #regular-button-normal, .submit-button-normal, .cancel-button-normal, .regular-button-normal, .special-button-normal, #special-button-normal {
   font-size: .875rem;
   border: none;
   width: auto;
@@ -1093,6 +1092,12 @@ input:focus, textarea:focus, select:focus {
 
 .margin-auto {
   margin: auto;
+}
+
+.special-button, #special-button, .special-button-normal, #special-button-normal {
+  border-color: #ffa600 !important;
+  background: #ffa60038 !important;
+  color: #ffa600 !important;
 }
 
 .margin-v-auto {
@@ -1306,10 +1311,6 @@ input:focus, textarea:focus, select:focus {
   
   #nb-icon {
     color: var(--dark-mode-text-color);
-  }
-
-  #user-avatar {
-    border: 1.5px solid var(--dark-mode-main-color);
   }
   
   .secondary-text, .secondary-text:visited {
@@ -1753,6 +1754,28 @@ height: auto;
   vertical-align: -3px;
 }
 
+.error-messages {
+  width: 100%;
+    border: 1px solid #ae4444;
+    background-color: #cd3a3a1c;
+    color: #ae4444;
+    padding: .55rem 0.85rem;
+    margin: .5rem 0;
+    box-sizing: border-box;
+    border-radius: 7px;
+}
+
+.success-messages {
+  width: 100%;
+  background: #1675351f;
+  border: 1px solid #4b9263;
+  color: #4b9263;
+    padding: .55rem 0.85rem;
+    margin: .5rem 0;
+    box-sizing: border-box;
+    border-radius: 7px;
+}
+
 .create-post-btn a:hover {
   text-decoration: none;
 }
@@ -1800,7 +1823,7 @@ height: auto;
     pointer-events: none;
   }
 
-  #submit-button-normal, #cancel-button-normal, #regular-button-normal, .submit-button-normal, .cancel-button-normal, .regular-button-normal {
+  #submit-button-normal, #cancel-button-normal, #regular-button-normal, .submit-button-normal, .cancel-button-normal, .regular-button-normal, .special-button-normal, #special-button-normal {
     padding: .45rem .25rem;
   }
 

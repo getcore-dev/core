@@ -325,21 +325,21 @@ group
       
       <div class="interact-buttons">
       <div class="apply-button-container flex">
-      <button id="submit-button-normal" class="margin-h-auto" onclick="window.location.href='${
+      <button id="submit-button-normal" class="margin-h-auto" onclick="window.location.href='/redirect/${
         job.link
       }'">Apply</button>
       </div>
       <div class="favorite-button-container">
-<form id="favorite-form-${job.id}" action="/favorites/jobs/${
+<div id="favorite-form-${job.id}" class="flex">
+<button id="special-button-normal" onclick="favorite('job', ${
         job.id
-      }" class="flex" method="POST">
-<button id="regular-button-normal" class="margin-h-auto">Favorite</button>
-</form>
+      });" class="margin-h-auto">Favorite</button>
+</div>
       </div>
       <div class="share-button-container flex">
       <button id="regular-button-normal" class="margin-h-auto" onclick="share('${
         job.title
-      }', 'Check out this job', 'https://c-ore.dev/jobs/${job.id}')"
+      }', '', 'https://c-ore.dev/jobs/${job.id}')"
       >Share</button>
       </div>
       ${
@@ -513,43 +513,78 @@ ${job.location
       `;
       getSimilarJobs(jobId);
       getSimilarJobsByCompany(jobId, job.company_name);
+      checkFavorite(jobId);
     })
     .catch((error) => {
       console.error("Error fetching job details:", error);
     });
 }
 
-// Function to handle the form submission via AJAX
-function handleFavoriteFormSubmit(event) {
-  event.preventDefault(); // Prevent the default form submission
-
-  const form = event.target;
-  const formData = new FormData(form);
-
-  fetch(form.action, {
-    method: "POST",
-    body: formData,
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok " + response.statusText);
-      }
-      return response.json();
-    })
+function checkFavorite(jobId) {
+  fetch(`/favorites/isFavorite/job/${jobId}`)
+    .then((response) => response.json())
     .then((data) => {
-      const message = data.message; // Assuming the response contains a 'message' property
-      console.log("Success:", message);
-      showBannerNotification(message);
+      const favoriteButton = document.querySelector(
+        `#favorite-form-${jobId} button`
+      );
+      if (data.isFavorite) {
+        favoriteButton.id = "cancel-button-normal";
+        favoriteButton.textContent = "Unfavorite";
+      } else {
+        favoriteButton.id = "special-button-normal";
+      }
     })
     .catch((error) => {
-      console.error("Error:", error);
-      showBannerNotification("Error: " + error.message);
+      console.error("Error checking favorite:", error);
     });
 }
 
-// Attach the event listener to the forms when the DOM content is loaded
-function attachFormSubmitHandler() {
-  document.querySelectorAll('form[id^="favorite-form-"]').forEach((form) => {
-    form.addEventListener("submit", handleFavoriteFormSubmit);
-  });
+function favorite(favoriteType, TypeId) {
+  switch (favoriteType) {
+    case "job":
+      const favoriteButton = document.querySelector(
+        `#favorite-form-${TypeId} button`
+      );
+      if (favoriteButton.textContent === "Unfavorite") {
+        favoriteButton.id = "special-button-normal";
+        favoriteButton.textContent = "Favorite";
+      } else {
+        favoriteButton.id = "cancel-button-normal";
+        favoriteButton.textContent = "Unfavorite";
+      }
+      fetch(`/favorites/jobs/${TypeId}`, {
+        method: "POST",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            showBannerNotification(data.message);
+          } else {
+            showBannerNotification(data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error adding to favorites:", error);
+        });
+      break;
+    case "post":
+      fetch(`/favorites/posts/${TypeId}`, {
+        method: "POST",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            showBannerNotification(data.message);
+          } else {
+            showBannerNotification(data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error adding to favorites:", error);
+        });
+
+      break;
+    default:
+      break;
+  }
 }
