@@ -6,6 +6,22 @@ const {
   checkNotAuthenticated,
 } = require("../middleware/authMiddleware");
 const cacheMiddleware = require("../middleware/cache");
+const rateLimit = require("express-rate-limit");
+const viewLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000,
+  max: 3,
+  handler: (req, res, next) => {
+    req.rateLimit = {
+      exceeded: true,
+    };
+    next();
+  },
+  keyGenerator: (req) => `${req.ip}_${req.params.jobId}`,
+  skip: (req) => {
+    const eightHoursAgo = Date.now() - 8 * 60 * 60 * 1000;
+    return req.rateLimit.resetTime && req.rateLimit.resetTime < eightHoursAgo;
+  },
+});
 
 router.get("/", async (req, res) => {
   const recentJobs = await jobQueries.getRecentJobCount();
@@ -264,13 +280,16 @@ router.get("/delete/:id", checkAuthenticated, async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:jobId", viewLimiter, async (req, res) => {
   try {
-    const id = req.params.id;
-    const job = await jobQueries.findById(id);
+    const jobId = req.params.jobId;
+    if (!req.rateLimit || !req.rateLimit.exceeded) {
+      await jobQueries.incrementJobViewCount(jobId);
+    }
+    const job = await jobQueries.findById(jobId);
 
     res.render("job-posting.ejs", {
-      job_id: id,
+      job_id: jobId,
       user: req.user,
       job: job,
     });

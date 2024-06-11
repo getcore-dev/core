@@ -1087,7 +1087,7 @@ input:focus, textarea:focus, select:focus {
   padding: .3rem .15rem;
   flex-grow: 1;
   cursor: pointer;
-  max-width: 90px;
+  text-wrap: nowrap;
 }
 
 .margin-auto {

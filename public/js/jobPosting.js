@@ -310,6 +310,10 @@ group
                     : "No visa sponsorship"
                 }
               </p>
+              <p> 
+              <span class="material-symbols-outlined">
+              visibility
+              </span> ${job.views ? job.views : 0} views
               <p>
               <span class="material-symbols-outlined">attach_money</span>
               <strong style="color:#26704a;">
@@ -321,6 +325,7 @@ group
             <p id="secondary-text" class="post-date-text">
             This job was posted on ${formatDate(job.postedDate)}
             </p>
+
       </div>
       
       <div class="interact-buttons">

@@ -41,7 +41,7 @@
       <%- include('partials/com-btn-container', { }) %>
 
 
-      <div id="posts-container" data-community-id="<%= communityId %>" class="column">
+      <div id="posts-container" data-community-id="<%= communityId || '' %>">
         <% if (communityId != null) { %>
         <div class="community" style="margin: 0 13px; margin-bottom: 0px; margin-top: 10px; border: 0; background-color: rgba(0,0,0,0);">
           <div class="community-content">

@@ -25,6 +25,22 @@ const jobQueries = {
     }
   },
 
+  incrementJobViewCount: async (postId) => {
+    try {
+      if (!postId) {
+        throw new Error("postId is required");
+      }
+
+      await sql.query`
+        UPDATE JobPostings
+        SET views = COALESCE(views, 0) + 1
+        WHERE id = ${postId}`;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getJobById: async (id) => {
     try {
       const result = await sql.query`

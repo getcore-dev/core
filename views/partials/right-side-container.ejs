@@ -151,7 +151,7 @@
                fetchJobPreviews();
              return;
            }
-           const communityId = postsContainer.dataset.communityId || post.community.id;
+           const communityId = postsContainer.dataset.communityId || null;
 
            if (communityId) {
              if (jobslistContainer) {

@@ -11,6 +11,20 @@ body, h1, h2, h3, p {
   }
 
 
+  .job-info h5 {
+    margin-bottom: .3rem;
+  }
+
+
+  .jobs-header h5 {
+    margin-bottom: .4rem;
+  }
+  div.job-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: .5rem;
+  }
+
 h1 {
     text-align: center;
 }
