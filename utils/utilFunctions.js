@@ -41,7 +41,6 @@ const utilFunctions = {
         p.react_celebrate, 
         p.post_type, 
         p.views, 
-        u.currentJob, 
         u.username, 
         u.avatar,
         u.isAdmin,
@@ -76,7 +75,7 @@ const utilFunctions = {
       WHERE p.deleted = 0
       GROUP BY 
         p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.subtitle, 
-        p.communities_id, u.avatar, u.currentJob, c.name, c.shortname, c.community_color, u.isAdmin, u.verified,
+        p.communities_id, u.avatar, c.name, c.shortname, c.community_color, u.isAdmin, u.verified,
         p.react_like, p.react_love, p.react_curious, p.react_interesting, 
         p.react_celebrate, p.post_type, p.views, ur.follower_id
       ORDER BY p.created_at DESC -- Add an ORDER BY clause
@@ -296,8 +295,7 @@ const utilFunctions = {
   ) => {
     try {
       const result = await sql.query`
-        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views,
-        u.currentJob, u.username, u.avatar,
+        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views, u.username, u.avatar,
         c.name AS community_name, c.shortname AS community_shortname, c.community_color AS community_color,
               SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
               SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
@@ -311,7 +309,7 @@ const utilFunctions = {
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
         LEFT JOIN communities c ON p.communities_id = c.id
         WHERE p.communities_id = ${communityID} AND p.deleted = 0
-        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.subtitle, p.link, p.communities_id, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views, c.name, c.shortname, c.community_color
+        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.subtitle, p.link, p.communities_id, u.avatar, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views, c.name, c.shortname, c.community_color
         ORDER BY p.created_at DESC
         OFFSET ${offset} ROWS
         FETCH NEXT ${limit} ROWS ONLY
@@ -448,8 +446,7 @@ const utilFunctions = {
       SELECT TOP 7 *
       FROM (
           SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id,
-                 p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.views,
-                 u.currentJob, u.username, u.avatar, u.currentCompany,
+                 p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.views, u.username, u.avatar,
                  SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
                  SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
                  SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
@@ -463,8 +460,8 @@ const utilFunctions = {
           INNER JOIN users u ON p.user_id = u.id
           LEFT JOIN userPostActions upa ON p.id = upa.post_id
           WHERE p.deleted = 0
-          GROUP BY p.id, p.created_at, p.deleted, u.currentCompany, p.title, p.content, p.subtitle, p.link, p.communities_id,
-                   u.username, u.avatar, u.currentJob, p.react_like, p.react_love, p.react_curious,
+          GROUP BY p.id, p.created_at, p.deleted,  p.title, p.content, p.subtitle, p.link, p.communities_id,
+                   u.username, u.avatar, p.react_like, p.react_love, p.react_curious,
                    p.react_interesting, p.react_celebrate, p.views
       ) AS SubQuery
       ORDER BY ((loveCount * 5 + boostCount * 3 + interestingCount * 3 + curiousCount * 1 + likeCount * 1 + celebrateCount * 3) * 100 + views) / POWER(minutesElapsed / 60 + 1, 1.1) DESC;

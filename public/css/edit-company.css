@@ -13,6 +13,11 @@ form > div {
     padding-top: 0;
 }
 
+.select2-container .select2-selection--multiple {
+    min-height: 40px !important;
+    padding: 4px !important
+}
+
 form > div > input {
     width: 100%;
     padding: 10px 20px;
@@ -41,15 +46,26 @@ form > div > textarea {
     overflow-y: hidden; 
   }
 
+  label { 
+    font-size: .8rem;
+    margin-bottom: .3rem;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
 @media (prefers-color-scheme: dark) {
     form > div > input {
-        background-color: var(--dark-mode-body-color) !important;
+        background-color: var(--dark-mode-main-color) !important;
         border: 1px solid var(--dark-mode-border-color) !important;
         color: var(--dark-mode-text-color);
     }
 
     form > div > textarea {
-        background-color: var(--dark-mode-body-color) !important;
+        background-color: var(--dark-mode-main-color) !important;
         border: 1px solid var(--dark-mode-border-color) !important;
         color: var(--dark-mode-text-color);
     }

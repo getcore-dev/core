@@ -339,6 +339,12 @@ const userQueries = {
         "link2",
         "settings_PrivateJobNames",
         "settings_PrivateSchoolNames",
+        "jobPreferredTitle",
+        "jobPreferredSkills",
+        "jobPreferredLocation",
+        "jobExperienceLevel",
+        "jobPreferredIndustry",
+        "jobPreferredSalary",
       ];
 
       // Check if the field is valid
@@ -386,6 +392,19 @@ const userQueries = {
         value = value === true || value === "true"; // Ensure value is boolean
       }
 
+      // Determine the appropriate SQL data type
+      let sqlType = sql.VarChar;
+      if (
+        field === "settings_PrivateJobNames" ||
+        field === "settings_PrivateSchoolNames"
+      ) {
+        sqlType = sql.Bit;
+      } else if (typeof value === "number") {
+        sqlType = sql.Int;
+      } else if (Array.isArray(value)) {
+        value = value.join(","); // Convert array to a comma-separated string
+      }
+
       // Construct the query with the safe field name
       const query = `
         UPDATE users
@@ -394,14 +413,7 @@ const userQueries = {
 
       // Prepare and execute the query
       const request = new sql.Request();
-      request.input(
-        "value",
-        field === "settings_PrivateJobNames" ||
-          field === "settings_PrivateSchoolNames"
-          ? sql.Bit
-          : sql.VarChar,
-        value
-      );
+      request.input("value", sqlType, value);
       request.input("userId", sql.VarChar, userId);
       const result = await request.query(query);
 

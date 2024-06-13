@@ -357,19 +357,142 @@ router.get("/jobs", async (req, res) => {
     const jobExperienceLevel = req.query.jobExperienceLevel;
     const jobSalary = req.query.jobSalary;
 
+    const jobLevels = [
+      "Internship",
+      "Entry Level",
+      "Mid Level",
+      "Senior",
+      "Lead",
+      "Manager",
+      "Director",
+      "VP",
+    ];
+
+    const user = req.user;
+    let userPreferences = {};
+
+    if (!!user) {
+      userPreferences = await jobQueries.getUserJobPreferences(user.id);
+      // Parse jobPreferredSkills as an array of integers
+      userPreferences.jobPreferredSkills = userPreferences.jobPreferredSkills
+        .split(",")
+        .map(Number);
+    }
+
     const offset = (page - 1) * limit; // Calculate the offset based on page and limit
 
-    const [jobPostings, totalCount] = await Promise.all([
+    // Determine the maximum job level index to show based on the page number
+    const maxJobLevelIndex = Math.min(page, jobLevels.length) - 1;
+
+    // Filter job levels up to the maxJobLevelIndex
+    const allowedJobLevels = jobLevels.slice(0, maxJobLevelIndex + 1);
+
+    let [jobPostings, totalCount] = await Promise.all([
       jobQueries.getJobsBySearch(
         jobTitle,
         jobLocation,
         jobExperienceLevel,
         jobSalary,
         limit,
-        offset
+        offset,
+        allowedJobLevels // Pass allowed job levels to the query
       ),
-      jobQueries.getJobsCount(),
+      jobQueries.getJobsCount(allowedJobLevels), // Adjust the count query to consider allowed job levels
     ]);
+
+    // Determine the similarity of job postings to user preferences
+    jobPostings = jobPostings.map((job) => {
+      let matchCount = 0;
+
+      if (
+        userPreferences.jobPreferredTitle &&
+        job.title === userPreferences.jobPreferredTitle
+      ) {
+        matchCount++;
+      }
+      if (
+        userPreferences.jobPreferredSkills &&
+        Array.isArray(job.skills) &&
+        job.skills.some((skill) =>
+          userPreferences.jobPreferredSkills.includes(skill)
+        )
+      ) {
+        matchCount++;
+      }
+      if (
+        userPreferences.jobPreferredLocation &&
+        job.location.includes(userPreferences.jobPreferredLocation)
+      ) {
+        matchCount++;
+      }
+      if (
+        userPreferences.jobExperienceLevel &&
+        job.experienceLevel === userPreferences.jobExperienceLevel
+      ) {
+        matchCount++;
+      }
+      if (
+        userPreferences.jobPreferredIndustry &&
+        job.industry === userPreferences.jobPreferredIndustry
+      ) {
+        matchCount++;
+      }
+      if (
+        userPreferences.jobPreferredSalary &&
+        job.salary >= userPreferences.jobPreferredSalary
+      ) {
+        matchCount++;
+      }
+
+      job.topPick = matchCount >= 2 ? 1 : 0; // Adjusted to consider 2 matches as a top pick
+      job.matchCount = matchCount; // Add matchCount to job for sorting purposes
+      return job;
+    });
+
+    // Sort job postings by non-negotiable criteria first, then by matchCount
+    jobPostings.sort((a, b) => {
+      if (
+        a.title === userPreferences.jobPreferredTitle &&
+        b.title !== userPreferences.jobPreferredTitle
+      )
+        return -1;
+      if (
+        a.title !== userPreferences.jobPreferredTitle &&
+        b.title === userPreferences.jobPreferredTitle
+      )
+        return 1;
+      if (
+        a.experienceLevel === userPreferences.jobExperienceLevel &&
+        b.experienceLevel !== userPreferences.jobExperienceLevel
+      )
+        return -1;
+      if (
+        a.experienceLevel !== userPreferences.jobExperienceLevel &&
+        b.experienceLevel === userPreferences.jobExperienceLevel
+      )
+        return 1;
+      if (
+        a.salary >= userPreferences.jobPreferredSalary &&
+        b.salary < userPreferences.jobPreferredSalary
+      )
+        return -1;
+      if (
+        a.salary < userPreferences.jobPreferredSalary &&
+        b.salary >= userPreferences.jobPreferredSalary
+      )
+        return 1;
+      if (
+        a.location.includes(userPreferences.jobPreferredLocation) &&
+        !b.location.includes(userPreferences.jobPreferredLocation)
+      )
+        return -1;
+      if (
+        !a.location.includes(userPreferences.jobPreferredLocation) &&
+        b.location.includes(userPreferences.jobPreferredLocation)
+      )
+        return 1;
+      return b.matchCount - a.matchCount;
+    });
 
     res.json({
       jobPostings,
@@ -377,7 +500,7 @@ router.get("/jobs", async (req, res) => {
       totalPages: Math.ceil(totalCount / limit),
     });
   } catch (err) {
-    console.error("Error fetching job postings:", err);
+    console.error("Error fetching job postings:", err.message);
     res.status(500).send("Error fetching job postings");
   }
 });
@@ -401,6 +524,16 @@ router.get("/education-experience/:userId", async (req, res) => {
   } catch (err) {
     console.error("Error fetching job experience:", err);
     res.status(500).send("Error fetching job experience");
+  }
+});
+
+router.get("/job-titles", async (req, res) => {
+  try {
+    const jobTitles = await jobQueries.getJobTitles();
+    res.json(jobTitles);
+  } catch (err) {
+    console.error("Error fetching job titles:", err);
+    res.status(500).send("Error fetching job titles");
   }
 });
 
@@ -584,10 +717,10 @@ router.post("/extract-job-details", async (req, res) => {
       - Relocation BIT
       Provide the extracted information in JSON format.`;
 
-      console.log(prompt);
+      //console.log(prompt);
 
       const response = await model.generateContent(prompt);
-      console.log("Raw response text:", response.text);
+      //console.log("Raw response text:", response.text);
 
       // Remove triple backticks and any other non-JSON characters
       const cleanedResponse = response.text
@@ -680,7 +813,7 @@ router.post("/auto-create-job-posting", async (req, res) => {
 
 async function processJobLink(model, jobLink) {
   return new Promise(async (resolve) => {
-    console.log(`Processing job link: ${jobLink.link}`);
+    //console.log(`Processing job link: ${jobLink.link}`);
     const headers = {
       "User-Agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
@@ -738,7 +871,7 @@ async function processJobLink(model, jobLink) {
       const result = await model.generateContent(prompt);
       let response = await result.response;
       response = response.text();
-      console.log(response);
+      //console.log(response);
 
       const cleanedResponse =
         response.replace(/`+/g, "").match(/\{.*\}/s)?.[0] || "";
@@ -1051,6 +1184,16 @@ router.get("/link-preview/:link", cacheMiddleware(1200), async (req, res) => {
   }
 });
 
+router.get("/profile/jobs", checkAuthenticated, async (req, res) => {
+  try {
+    const userId = req.query.userId || req.user.userId;
+    const preferences = await jobQueries.getUserJobPreferences(userId);
+    res.json(preferences);
+  } catch (err) {
+    console.error("Error fetching user jobs:", err);
+    res.status(500).send("Error fetching user jobs");
+  }
+});
 router.get("/commits", async (req, res) => {
   try {
     const commits = await utilFunctions.fetchCommits();

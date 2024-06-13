@@ -1067,8 +1067,6 @@ input:focus, textarea:focus, select:focus {
   cursor: pointer;
 }
 
-
-
 #submit-button-normal, #cancel-button-normal, #regular-button-normal, .submit-button-normal, .cancel-button-normal, .regular-button-normal, .special-button-normal, #special-button-normal {
   font-size: .875rem;
   border: none;
@@ -1421,8 +1419,31 @@ input:focus, textarea:focus, select:focus {
     border-color: #15516e !important;
     box-shadow: 0 0 3px 1px rgba(21, 81, 110, 0.5);
   }
+
   .nav-text {
     color: #fff;
+  }
+
+  .select2-container--default .select2-selection--multiple, .select2-dropdown {
+    background: var(--dark-mode-main-color) !important;
+    border-color: var(--dark-mode-border-color) !important;
+    color: var(--dark-mode-text-color) !important;
+  }
+  
+  .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: var(--dark-mode-border-color) !important;
+    border-color: var(--dark-mode-secondary-text-color) !important;
+    color: var(--dark-mode-text-color) !important;
+  }
+
+  .select2-container--default .select2-results__option--selected {
+    background-color: var(--dark-mode-hover-background-color) !important;
+    color: var(--dark-mode-text-color) !important;
+  }
+
+  .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: var(--dark-mode-text-color) !important;
+    border-color: var(--dark-mode-border-color) !important;
   }
 
   .search-category-option {

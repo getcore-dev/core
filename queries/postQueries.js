@@ -113,7 +113,7 @@ const postQueries = {
     let queryWithMatchingTags = `
       SELECT
         p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
-        u.username, u.avatar, u.currentJob,
+        u.username, u.avatar,
         c.name AS community_name, c.community_color as community_color, c.shortname as community_shortname,
         p.post_type, p.views,
         (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
@@ -127,7 +127,7 @@ const postQueries = {
       LEFT JOIN tags t ON pt.tag_id = t.id
       WHERE p.id != '${postId}' AND p.deleted = 0 AND ${tagsCondition}
       GROUP BY p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
-               u.username, u.avatar, u.currentJob, c.name, p.post_type, p.views, c.community_color, c.shortname
+               u.username, u.avatar, c.name, p.post_type, p.views, c.community_color, c.shortname
       ORDER BY tagMatchCount DESC, p.created_at DESC
       OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY;
     `;
@@ -147,7 +147,7 @@ const postQueries = {
       let queryWithRandomPosts = `
         SELECT TOP ${additionalPostsNeeded}
           p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
-          u.username, u.avatar, u.currentJob,
+          u.username, u.avatar, 
           c.name AS community_name, c.community_color as community_color, c.shortname as community_shortname,
           p.post_type, p.views,
           (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
@@ -170,7 +170,7 @@ const postQueries = {
   fetchPostsByCommunity: async (communityId) => {
     try {
       const result = await sql.query`
-        SELECT p.*, u.username, u.avatar, u.currentJob,
+        SELECT p.*, u.username, u.avatar, 
         (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
         (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount
         FROM posts p

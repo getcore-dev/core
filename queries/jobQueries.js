@@ -25,6 +25,26 @@ const jobQueries = {
     }
   },
 
+  getJobTitles: async () => {
+    try {
+      const result = await sql.query`
+        SELECT DISTINCT title FROM JobPostings
+      `;
+      const seenTitles = new Set();
+      const jobTitles = result.recordset.reduce((acc, job, index) => {
+        if (!seenTitles.has(job.title)) {
+          seenTitles.add(job.title);
+          acc.push({ id: acc.length + 1, name: job.title });
+        }
+        return acc;
+      }, []);
+      return jobTitles;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   incrementJobViewCount: async (postId) => {
     try {
       if (!postId) {
@@ -153,6 +173,18 @@ const jobQueries = {
     });
 
     await request.query(query);
+  },
+
+  getUserJobPreferences: async (userId) => {
+    try {
+      const result = await sql.query`
+        SELECT jobPreferredTitle, jobPreferredSkills, jobPreferredLocation, jobExperienceLevel, jobPreferredIndustry, jobPreferredSalary FROM users WHERE id = ${userId}
+      `;
+      return result.recordset[0];
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
   },
 
   getJobsBySearch: async (

@@ -93,6 +93,30 @@ router.get("/user/:username/followers", viewController.renderFollowers);
 
 router.get("/user/:username/following", viewController.renderFollowing);
 
+router.get("/profile/jobs", checkAuthenticated, async (req, res) => {
+  const userId = req.user.id;
+  res.render("edit-jobs-profile.ejs", { user: req.user });
+});
+
+router.post("/profile/jobs", checkAuthenticated, async (req, res) => {
+  const userId = req.user.id;
+  const updates = req.body;
+  console.log(updates);
+
+  try {
+    for (let field in updates) {
+      if (Object.hasOwnProperty.call(updates, field)) {
+        await userQueries.updateField(userId, field, updates[field]);
+      }
+    }
+
+    res.redirect("/jobs");
+  } catch (err) {
+    console.error("Error updating user fields:", err.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 router.get("/redirect/*", async (req, res) => {
   const link = req.params[0];
 
