@@ -29,6 +29,26 @@ const postQueries = {
     }
   },
 
+  toggleLockPost: async (postId) => {
+    try {
+      const result = await sql.query`
+        SELECT isLocked FROM posts WHERE id = ${postId}`;
+      if (result.recordset.length === 0) {
+        throw new Error("Post not found");
+      }
+
+      const isLocked = !result.recordset[0].isLocked;
+
+      await sql.query`
+        UPDATE posts SET isLocked = ${isLocked} WHERE id = ${postId}`;
+
+      return { message: "Post locked/unlocked", isLocked };
+    } catch (err) {
+      console.error("Database update error:", err);
+      throw err;
+    }
+  },
+
   getPostsByTag: async (tagId) => {
     try {
       const result = await sql.query`

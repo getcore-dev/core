@@ -486,7 +486,7 @@ const utilFunctions = {
         SELECT 
           p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, 
           p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, 
-          p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.updated_at, 
+          p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.updated_at, p.isLocked,
           p.views, u.username, u.id as user_id, u.avatar,
           ISNULL(u2.username, 'unknown') AS user_username,
           ISNULL(u2.avatar, null) AS user_avatar,
@@ -506,7 +506,7 @@ const utilFunctions = {
         GROUP BY 
           p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.subtitle, p.link, p.communities_id,
           p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious,
-          p.react_interesting, p.react_celebrate, u.avatar, u.id, p.post_type, p.updated_at,
+          p.react_interesting, p.react_celebrate, u.avatar, u.id, p.post_type, p.updated_at, p.isLocked,
           p.views, u2.username, u2.avatar, upa2.action_type
       `;
 

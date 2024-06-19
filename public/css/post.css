@@ -310,10 +310,15 @@ div .user-info, .header {
   text-decoration: none;
 }
 
+.caution-messages {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
 .post-userinfo {
   display: flex;
   align-items: center;
-  gap: .3rem;
+  gap: .6rem;
   margin: 0;
   font-size: .85rem;
 }

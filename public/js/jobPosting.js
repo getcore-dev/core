@@ -263,8 +263,21 @@ function lazyLoadJobDetails(userIsAdmin, jobId) {
       const remainingTags = tagsArray.length - maxTags;
       const remainingSkills = skillsArray.length - maxSkills;
 
+      const isOlderThan30Days = (job) => {
+        const postedDate = new Date(job.postedDate);
+        const currentDate = new Date();
+        const daysDifference =
+          (currentDate - postedDate) / (1000 * 60 * 60 * 24);
+        return daysDifference > 30;
+      };
+
       jobDetailsContainer.innerHTML = `
         <div class="job-listing">
+                ${
+                  isOlderThan30Days(job)
+                    ? `<div class="error-messages"><p>This job was posted more than 30 days ago</p> <p>Apply anyway <a href="/redirect/${job.link}">here</a></div>`
+                    : ""
+                }
           <div class="company-info">
             <img src="${job.company_logo}" style="width: auto;" alt="${
         job.company_name
@@ -329,11 +342,14 @@ group
       </div>
       
       <div class="interact-buttons">
-      <div class="apply-button-container flex">
-      <button id="submit-button-normal" class="margin-h-auto" onclick="window.location.href='/redirect/${
-        job.link
-      }'">Apply</button>
-      </div>
+      ${
+        isOlderThan30Days(job)
+          ? ""
+          : `<div class="apply-button-container flex">
+          <button id="submit-button-normal" class="margin-h-auto" onclick="window.location.href='/redirect/${job.link}'">Apply</button>
+          </div>
+          `
+      }
       <div class="favorite-button-container">
 <div id="favorite-form-${job.id}" class="flex">
 <button id="special-button-normal" onclick="favorite('job', ${

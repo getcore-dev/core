@@ -338,8 +338,8 @@ input:not(:placeholder-shown) + .floating-label,
   }
 
   .account-stuff {
-    background: #2121214f;
-    border: 1px solid #343434bf;
+    background: #1f1f21cc;
+    border: 1px solid #444444bf;
   }
 
   .navbar, .second-nav-bar {

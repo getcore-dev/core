@@ -116,7 +116,7 @@ div.form-group {
     box-sizing: border-box;
     padding: 8px;
     padding-top: 20px;
-    background-color: var(--light-mode-main-color);
+    background-color: var(--light-mode-body-color);
     border: 1px solid var(--border-color);
     font-size: 16px;
     border-radius: 6px;

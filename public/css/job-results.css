@@ -40,6 +40,12 @@ div.posts {
       position: relative;
   }
 
+  .job {
+    background: none !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    } 
+
 .post {
     border: 1px solid var(--border-color) !important;
     margin: 0 !important;
@@ -59,9 +65,8 @@ div.votes {
 }
 
 .jobs {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Creates 2 columns each taking up 1 fraction of the available space */
-    gap: 10px;
+    display: flex;
+    flex-direction: column;
     width: 100%; /* Ensures the container takes up 100% of the available width */
     box-sizing: border-box; /* Includes padding and border in the element's total width and height */
     -ms-overflow-style: none;
@@ -79,10 +84,6 @@ div.votes {
         padding: .65rem .95rem;
     }
 
-.job {
-    border: 1px solid var(--border-color);
-    border-radius: 18px !important;
-}
 
 .job:hover, .post:hover {
     background: var(--light-mode-hover-color);
@@ -94,7 +95,7 @@ div.votes {
     }
     .post, .job {
         background: var(--dark-mode-main-color);
-        border: 1px solid var(--dark-mode-border-color) !important;
+        border-color: var(--dark-mode-border-color) !important;
     }
     .post:hover {
         background: var(--dark-mode-hover-color);

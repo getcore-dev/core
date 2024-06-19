@@ -165,7 +165,7 @@
           </li>
 
         </ul>
-	        <ul class="user-links">
+        <ul class="user-links">
           <li>
             <% if (user && user.avatar) { %>
             <div class="nav-avatar">
@@ -724,7 +724,7 @@ const isActive = (path) => {
           // Check if the user is logged in and the banner is not closed
           <% if (user) { %>
           if (storedHash !== String(commitHash)) {
-            document.querySelector('.latest-commit-message').innerHTML = `Website was just updated. <a href="#" class="update-notes">Update Notes #${commitHash}</a>`;
+            document.querySelector('.latest-commit-message').innerHTML = `Website was just updated.`;
             banner.style.display = 'block';
           } else {
             banner.style.display = 'none';

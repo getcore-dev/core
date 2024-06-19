@@ -65,21 +65,33 @@ div.votes {
     font-size: .9rem;
 }
 
+.job {
+    background: none !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    } 
+
+
 .jobs {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: .9rem;
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Ensures the container takes up 100% of the available width */
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
     padding: 0 13px;
-}
+    }
+
+    .jobs > div {
+        width: 100%; /* Ensures each child div takes up the full width of its grid cell */
+        box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+    }
     
 
-.job {
-    border-radius: 6px !important;
-    background: var(--light-mode-body-color) !important;
-    border: 1px solid var(--border-color) !important;
-    padding: .65rem .95rem;
-    min-width: 40%;
-}
+    .job .job-preview {
+        padding: .65rem .95rem;
+    }
+
 
 .job:hover, .post:hover {
     background: var(--light-mode-hover-color);
@@ -90,7 +102,7 @@ div.votes {
         background: var(--dark-mode-hover-color);
     }
     .post, .job {
-        background: var(--dark-mode-main-color) !important;
+        background: var(--dark-mode-main-color);
         border-color: var(--dark-mode-border-color) !important;
     }
     .post:hover {

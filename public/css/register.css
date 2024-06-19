@@ -208,8 +208,8 @@ footer {
     color: var(--dark-mode-text-color); 
   }
   .account-stuff {
-    background: #2121214f;
-    border-color: #343434bf;
+    background: #1f1f21cc;
+    border: 1px solid #444444bf;
   }
 
   .input-container input {

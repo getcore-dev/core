@@ -47,9 +47,14 @@
     <div class="main-container">
       <% if (post.post_type != 'blog') { %>
       <% } %>
-
       <div class="post">
         <div class="post-information">
+          <% if (post.isLocked) {%>
+          <div class="caution-messages">
+            <p>This post has been locked from new comments</p>
+          </div>
+
+          <% } %>
           <% if (post.post_type == 'blog') { %>
 
           <div class="post-userinfo">
@@ -66,7 +71,7 @@
               </a>
               <span class="post-timestamp secondary-text" style="text-decoration: none;">
                 •
-                <%  let postDate = new Date(post.updated_at); %>
+                <%  let postDate = new Date(post.created_at); %>
 
                 <%formattedPostDate = postDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });%>
                 <%= formattedPostDate %>
@@ -237,6 +242,18 @@
                         </strong>
                       </button>
                     </form>
+                  </div>
+                  <div class="dropdown-item">
+                    <span>
+                      <form id="lock-form-<%= post.id %>" action="/admin/post/<%= post.id %>/toggle-lock" method="POST">
+                        <button type="submit">
+                          <span class="material-symbols-outlined">
+                            lock
+                          </span>
+                          <p>Lock Post</p>
+                        </button>
+                      </form>
+                    </span>
                   </div>
                   <% } %>
                 </div>

@@ -45,6 +45,46 @@ router.delete("/post/:postId", checkAuthenticated, async (req, res) => {
   }
 });
 
+router.post(
+  "/post/:postId/toggle-lock",
+  checkAuthenticated,
+  async (req, res) => {
+    const postId = req.params.postId;
+    const userId = req.user.id;
+
+    try {
+      const post = await postQueries.getPostById(postId);
+      const user = await userQueries.findById(userId);
+
+      if (!post) {
+        return res.status(404).send("Post not found");
+      }
+
+      if (!user) {
+        return res.status(404).send("User not found");
+      }
+
+      if (!user.isAdmin) {
+        return res.status(401).send("Unauthorized");
+      }
+
+      const result = await postQueries.toggleLockPost(postId);
+
+      const originalPostAuthorId = post.userId;
+
+      await notificationQueries.createNotification(
+        userId,
+        originalPostAuthorId,
+        result.isLocked ? "ADMIN_LOCKED" : "ADMIN_UNLOCKED",
+        postId
+      );
+      res.send({ message: result.message });
+    } catch (error) {
+      res.status(500).send("Error toggling lock");
+    }
+  }
+);
+
 router.delete("/comment/:commentId", checkAuthenticated, async (req, res) => {
   const commentId = req.params.commentId;
   const userId = req.user.id;

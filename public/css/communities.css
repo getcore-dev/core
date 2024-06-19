@@ -19,6 +19,10 @@ body {
   overflow-y: none;
 }
 
+main {
+  overflow-y: auto;
+}
+
 .post {
   border: 1px solid var(--border-color);
 }
@@ -355,11 +359,7 @@ div.vote-interactions {
 }
 
 .mini-link-description {
-  overflow: hidden;
-  display: -webkit-box;
-  font-size: .825rem;
-  -webkit-line-clamp: 2; 
-  -webkit-box-orient: vertical;
+  display: none;
 }
 
 .description .material-symbols-outlined {
@@ -601,7 +601,6 @@ div .mini-link-desc {
 .container {
   background-color: var(--light-mode-main-color);
   display: flex;
-  height: calc(100dvh - 65px);
   overflow-y: hidden;
   flex-wrap: nowrap;
   flex-direction: row;
@@ -943,10 +942,6 @@ button.see-more {
     align-items: center;
   }
 
-  .container {
-    height: calc(100dvh - var(--mobile-navbar-height)) !important;
-  }
-
 
   
   .job-flair {
@@ -980,6 +975,9 @@ button.see-more {
 
   .jobslist::-webkit-scrollbar {
     display: none;
+  }
+  .job-flair {
+    margin: 1px 3px 0px 0px !important;
   }
 
 }

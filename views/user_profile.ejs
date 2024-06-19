@@ -119,6 +119,11 @@
   <%- include('partials/navbar', { pagePath: 'communities' }) %>
   <main>
     <div class="main-container">
+      <% if (otheruser.isBanned) {%>
+      <div class="error-messages">
+        <p>This user has been banned.</p>
+      </div>
+      <% } %>
       <div id="profile" class="grid-container">
 
         <div class="profile-info">
