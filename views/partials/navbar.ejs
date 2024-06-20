@@ -193,10 +193,18 @@
                     </span>
                   </div>
                 </a>
+
+                <a href="/feedback">
+                  <div class="avatar-dropdown-item">
+
+                    <span class="material-symbols-outlined" id="nb-icon">feedback</span>
+                  </div>
+
+                </a>
                 <a href="/user/<%= user.username %>">
                   <div class="avatar-dropdown-item">
                     <span class="material-symbols-outlined" id="nb-icon">
-                      manage_accounts
+                      person
                     </span>
                   </div>
                 </a>
@@ -245,67 +253,67 @@
       <ul class="second-nav-links">
         <li class="dropdown">
           <% 
-const pathTitles = {
-  '/': 'Home',
-  '/jobs': 'Openings',
-  '/updates': 'Updates',
-  '/c': 'Communities',
-  '/favorites': 'Favorites',
-  '/create': 'Create',
-  '/notifications': 'Notifications',
-  '/posts': 'Community',
-  '/login': 'Login',
-  '/register': 'Register',
-  '/edit-experience': 'Edit Experience',
-  '/about': 'About',
-  '/privacy': 'Privacy Policy',
-  '/search': 'Search',
-  '/settings': "Settings"
-};
+    const pathTitles = {
+      '/': 'Home',
+      '/jobs': 'Openings',
+      '/updates': 'Updates',
+      '/c': 'Communities',
+      '/favorites': 'Favorites',
+      '/create': 'Create',
+      '/notifications': 'Notifications',
+      '/posts': 'Community',
+      '/login': 'Login',
+      '/register': 'Register',
+      '/edit-experience': 'Edit Experience',
+      '/about': 'About',
+      '/privacy': 'Privacy Policy',
+      '/search': 'Search',
+      '/settings': "Settings"
+    };
 
-const getTitle = (path) => {
-  if (path === '/' && typeof post !== 'undefined') {
-    return `Community / ${post.community.shortname}`;
-      } else if (path.startsWith('/about')) {
-    return 'About';
-  } else if (path.startsWith('/privacy')) {
-    return 'Privacy Policy';
-  } else if (path.startsWith('/user/') && typeof otheruser !== 'undefined') {
-    if (path.includes('followers') || path.includes('following')) {
-      return `@${otheruser.username} / ${path.includes('followers') ? 'Followers' : 'Following'}`;
-    } else {
-      return `@${otheruser.username} / ${otheruser.firstname} ${otheruser.lastname}`;
-    }
-  }  else if (path.startsWith('/search') && typeof searchTerm !== 'undefined') {
-    return `Search / ${searchTerm}`;
-  }
-  else if (path.startsWith('/c/') && typeof community !== 'undefined') {
-    return `/${community.shortname}`;
-  } else if (path.startsWith('/jobs/') && typeof job !== 'undefined') {
-    return `Openings / ${job.title}`;
-  } else if (path.startsWith('/posts/') && path.includes('edit') && typeof post !== 'undefined') {
-    return `Edit / ${post.title}`;
-  } else if (path.startsWith('/posts/') && typeof post !== 'undefined') {
-    return `${post.community.shortname} / ${post.username}`;
-  } else if (path.startsWith('/tags/') && typeof tag !== 'undefined') {
-    return `${tag}`;
-  } else if (path.startsWith('/edit-experience')) {
-    return 'Edit Experience';
-  } else {
-    return pathTitles[path] || 'Navigation';
-  }
-};
+    const getTitle = (path) => {
+      if (path === '/' && typeof post !== 'undefined') {
+        return `Community / ${post.community.shortname}`;
+          } else if (path.startsWith('/about')) {
+        return 'About';
+      } else if (path.startsWith('/privacy')) {
+        return 'Privacy Policy';
+      } else if (path.startsWith('/user/') && typeof otheruser !== 'undefined') {
+        if (path.includes('followers') || path.includes('following')) {
+          return `@${otheruser.username} / ${path.includes('followers') ? 'Followers' : 'Following'}`;
+        } else {
+          return `@${otheruser.username} / ${otheruser.firstname} ${otheruser.lastname}`;
+        }
+      }  else if (path.startsWith('/search') && typeof searchTerm !== 'undefined') {
+        return `Search / ${searchTerm}`;
+      }
+      else if (path.startsWith('/c/') && typeof community !== 'undefined') {
+        return `/${community.shortname}`;
+      } else if (path.startsWith('/jobs/') && typeof job !== 'undefined') {
+        return `Openings / ${job.title}`;
+      } else if (path.startsWith('/posts/') && path.includes('edit') && typeof post !== 'undefined') {
+        return `Edit / ${post.title}`;
+      } else if (path.startsWith('/posts/') && typeof post !== 'undefined') {
+        return `${post.community.shortname} / ${post.username}`;
+      } else if (path.startsWith('/tags/') && typeof tag !== 'undefined') {
+        return `${tag}`;
+      } else if (path.startsWith('/edit-experience')) {
+        return 'Edit Experience';
+      } else {
+        return pathTitles[path] || 'Navigation';
+      }
+    };
 
-const isActive = (path) => {
-  return currentPath === path || currentPath.startsWith(`${path}/`);
-};
-%>
+    const isActive = (path) => {
+      return currentPath === path || currentPath.startsWith(`${path}/`);
+    };
+    %>
 
-          <a href="#" class="navbar-button dropdown-toggle <%= isActive('/') || isActive('/settings') || isActive('/search') || isActive('/tags') || isActive('/login') || isActive('/register') || isActive('/jobs') || isActive('/posts') || isActive('/learning') || isActive('/create') || isActive('/notifications') ||  isActive('/user') || isActive('/favorites') || isActive('/c') || isActive('/updates') || isActive('/about') || isActive('/privacy') ? 'active' : '' %>">
-            <%= getTitle(currentPath) %>
-            <span class="material-symbols-outlined" id="second-nav-icon">
-              arrow_drop_down
+          <a href="/" class="navbar-button <%= isActive('/') ? 'active' : '' %>" style="display: block;">
+            <span class="material-symbols-outlined">
+              home
             </span>
+            Home
           </a>
           <ul class="dropdown-menu">
             <li>
@@ -338,6 +346,30 @@ const isActive = (path) => {
 
             <% } %>
           </ul>
+        </li>
+        <li class="dropdown">
+          <a href="/c" class="navbar-button <%= isActive('/c') ? 'active' : '' %>" style="display: block;">
+            <span class="material-symbols-outlined">
+              group
+            </span>
+            Communities
+          </a>
+        </li>
+        <li class="dropdown">
+          <a href="/jobs" class="navbar-button <%= isActive('/jobs') ? 'active' : '' %>" style="display: block;">
+            <span class="material-symbols-outlined">
+              work
+            </span>
+            Openings
+          </a>
+        </li>
+        <li class="dropdown">
+          <a href="/updates" class="navbar-button <%= isActive('/updates') ? 'active' : '' %>" style="display: block;">
+            <span class="material-symbols-outlined">
+              update
+            </span>
+            Updates
+          </a>
         </li>
       </ul>
     </div>

@@ -85,7 +85,7 @@ const postQueries = {
     try {
       // Check the current value of views for the post
       const checkResult = await sql.query`
-        SELECT views FROM posts WHERE id = ${postId}
+        SELECT COALESCE(views, 0) as views FROM posts WHERE id = ${postId}
       `;
 
       if (checkResult.recordset.length === 0) {

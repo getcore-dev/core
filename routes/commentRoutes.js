@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const { checkAuthenticated } = require("../middleware/authMiddleware");
 const commentQueries = require("../queries/commentQueries");
 const utilFunctions = require("../utils/utilFunctions");
+const postQueries = require("../queries/postQueries");
 
 // Route to add a comment to a post
 router.post("/posts/:postId/comments", checkAuthenticated, async (req, res) => {
@@ -21,6 +22,32 @@ router.post("/posts/:postId/comments", checkAuthenticated, async (req, res) => {
     res.status(500).send("Error adding comment");
   }
 });
+
+router.post(
+  "/comment/:commentId/toggle-pin",
+  checkAuthenticated,
+  async (req, res) => {
+    try {
+      const commentId = req.params.commentId;
+      const userId = req.user.id; // Assuming the user ID is stored in req.user
+
+      const comment = await commentQueries.getCommentById(commentId);
+      const post = await postQueries.getPostById(comment.post_id);
+
+      if (post.user_id !== userId) {
+        return res
+          .status(403)
+          .send("You are not authorized to pin/unpin this comment");
+      }
+
+      await commentQueries.togglePinComment(commentId);
+      res.redirect("back");
+    } catch (err) {
+      console.error("Database error:", err);
+      res.status(500).send("Error processing pin");
+    }
+  }
+);
 
 // Route to reply to a comment
 router.post(

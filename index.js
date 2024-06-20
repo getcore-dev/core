@@ -102,8 +102,8 @@ app.use(errorHandler);
 
 app.listen(environment.port, () => {
   console.log(`Server running on http://localhost:${environment.port}`);
-  console.log("Job board service started");
-  jobBoardService.start();
+  //console.log("Job board service started");
+  //jobBoardService.start();
 });
 
 module.exports = app;

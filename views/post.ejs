@@ -49,12 +49,6 @@
       <% } %>
       <div class="post">
         <div class="post-information">
-          <% if (post.isLocked) {%>
-          <div class="caution-messages">
-            <p>This post has been locked from new comments</p>
-          </div>
-
-          <% } %>
           <% if (post.post_type == 'blog') { %>
 
           <div class="post-userinfo">
@@ -524,6 +518,12 @@
         </div>
 
         <div class="comments-section">
+          <% if (post.isLocked) {%>
+          <div class="caution-messages">
+            <p>This post has been locked from new comments</p>
+          </div>
+
+          <% } %>
           <% let curUser = user %>
           <% if (curUser) { %>
           <div class="comment-form" style="display: none;">
@@ -538,13 +538,15 @@
           <% } %>
 
           <% function renderComments(comments, level = 0) { %>
-
-
-          <% comments.forEach(comment => { %>
+          <%
+          const sortedComments = comments.sort((a, b) => b.isPinned - a.isPinned);
+          %>
+          <% sortedComments.forEach(comment => { %>
           <% if (level == 0) { %>
           <div class="comment-with-replies">
             <% } %>
             <div class="comment">
+
 
               <div class="comment-avatar">
                 <% if (level == 0) { %>
@@ -582,7 +584,12 @@
                     }
                     %>
                     <span class="comment-timestamp" id="secondary-text"><%= timeSinceComment %></span>
-
+                    <% if (comment.isPinned) { %>
+                    <span class="pinned-comment">
+                      <span class="material-symbols-outlined">push_pin</span>
+                      Pinned
+                    </span>
+                    <% } %>
                   </div>
                   <% if (user) { %>
 
@@ -626,6 +633,18 @@
                             <strong style="color: red">
                               Delete
                             </strong>
+                          </button>
+                        </form>
+                      </span>
+                      <% } %>
+                      <% if (user && user.username == post.username) { %>
+                      <span>
+                        <form id="pin-comment-form-<%= comment.id %>" action="/comment/<%= comment.id %>/toggle-pin" method="POST">
+                          <button type="submit">
+                            <span class="material-symbols-outlined">
+                              push_pin
+                            </span>
+                            <p>Pin</p>
                           </button>
                         </form>
                       </span>

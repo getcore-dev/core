@@ -147,6 +147,7 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
       c.user_id,
       c.parent_comment_id,
       c.post_id,
+      c.isPinned,
       SUM(CASE WHEN uca.action_type = 'LOVE' THEN 1 ELSE 0 END) AS loveCount,
       SUM(CASE WHEN uca.action_type = 'B' THEN 1 ELSE 0 END) AS boostCount,
       SUM(CASE WHEN uca.action_type = 'INTERESTING' THEN 1 ELSE 0 END) AS interestingCount,
@@ -172,6 +173,7 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
       c.created_at,
       c.deleted,
       c.comment,
+      c.isPinned,
       c.user_id,
       c.parent_comment_id,
       c.post_id

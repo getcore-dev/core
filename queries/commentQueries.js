@@ -23,6 +23,27 @@ const commentQueries = {
     }
   },
 
+  togglePinComment: async (commentId) => {
+    try {
+      // Fetch the current pinned status of the comment
+      const result =
+        await sql.query`SELECT isPinned FROM comments WHERE id = ${commentId}`;
+      if (result.recordset.length === 0) {
+        throw new Error(`Comment with id ${commentId} does not exist`);
+      }
+
+      // Toggle the pinned status
+      const newPinnedStatus = !result.recordset[0].isPinned;
+      await sql.query`
+        UPDATE comments 
+        SET isPinned = ${newPinnedStatus} 
+        WHERE id = ${commentId}`;
+    } catch (err) {
+      console.error("Database update error:", err);
+      throw err; // Rethrow the error for the caller to handle
+    }
+  },
+
   addComment: async (postId, userId, commentText) => {
     try {
       // Insert the comment into the database

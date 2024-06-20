@@ -369,7 +369,19 @@ a:visited {
   padding-inline-start: 0px;
 }
 
+.navbar-button .material-symbols-outlined {
+  font-size: 16px;
+    vertical-align: -3px;
+    padding-right: .4rem;
+}
+
+li.dropdown a.active {
+    padding-bottom: 6px !important;
+    border-bottom: 1.5px solid var(--active-indicator-color);
+}
+
 .second-nav-links {
+  gap: .4rem;
   justify-content: flex-start;
 }
 
