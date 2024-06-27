@@ -338,7 +338,7 @@ a:visited {
 .navbar {
   background-color: var(--light-mode-main-color); 
   color: var(--primary-text-color); 
-  border-bottom: 1px solid var(--border-color);
+  border: 0;
   display: flex; 
   flex-direction: column;
   align-items: center; 
