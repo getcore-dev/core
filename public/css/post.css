@@ -1366,16 +1366,22 @@ p.preview-description {
 }
 
 .tag {
-    display: inline-flex;
-    gap: 5px;
-    padding: .2rem .45rem;
-    margin: 3px 7px 0px 0px;
-    margin-bottom: 3px;
-    background-color: #6790f436;
-    color: #85a5e6;
-    border-radius: 7px;
-    font-size: .825rem;
-    position: relative;
+  display: inline-block;
+  padding: 4px 12px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a5568;
+  background-color: #edf2f7;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.tag:hover {
+  background-color: #e2e8f0;
+  color: #2d3748;
 }
 
 #community-header-text {

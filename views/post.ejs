@@ -70,6 +70,13 @@
                 <%formattedPostDate = postDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });%>
                 <%= formattedPostDate %>
               </span>
+•
+<span class="post-views">
+            <span class="material-symbols-outlined">
+              visibility
+            </span>
+            <%= post.views %> view<%- post.views > 1 ? 's' : '' %>
+          </span>
             </div>
 
 
@@ -150,7 +157,7 @@
 
             <div class="post-title-container">
               <div>
-                <h2 class="post-title" style="<% if (post.post_type == "blog") { %>     font-size: 1.35rem;font-weight: bold;margin-bottom: .2rem;<% } %>"><%= post.title %>
+                <h2 class="post-title" style="<% if (post.post_type == "blog") { %>     font-size: 1.65rem;font-weight: bold;margin-bottom: .2rem;<% } %>"><%= post.title %>
                 </h2>
                 <% if (post.post_type == "blog") { %>
                 <div class="post-subtitle-text">
@@ -445,12 +452,6 @@
 
 
         <div class="post-subtitle post-subinfo secondary-text">
-          <span class="post-views">
-            <span class="material-symbols-outlined">
-              visibility
-            </span>
-            <%= post.views %> view<%- post.views > 1 ? 's' : '' %>
-          </span>
           <span class="post-type">
             <span class="material-symbols-outlined">
               post
@@ -487,7 +488,7 @@
                       formattedDate = years + 'y ago';
                     }
                     %>
-            Edited: <%= formattedDate %>
+            <%= formattedDate %>
           </span>
           <% } %>
         </div>
@@ -587,7 +588,6 @@
                     <% if (comment.isPinned) { %>
                     <span class="pinned-comment">
                       <span class="material-symbols-outlined">push_pin</span>
-                      Pinned
                     </span>
                     <% } %>
                   </div>
