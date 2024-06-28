@@ -100,9 +100,12 @@ function getSimilarJobs(jobId) {
               job.id
             }'">
               <div class="company-info">
-              <img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${
+              ${
                 job.company_logo
-              }" alt="${job.company_name} logo" />
+                  ? `
+              <img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${job.company_logo}" alt="${job.company_name} logo" />`
+                  : ""
+              }
               <div class="job-posting-company-info">
               <p  class="posting-company-name secondary-text">${
                 job.company_name
@@ -171,9 +174,12 @@ function getSimilarJobsByCompany(jobId, companyName) {
               job.id
             }'">
               <div class="company-info">
-              <img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${
+              ${
                 job.company_logo
-              }" alt="${job.company_name} logo" />
+                  ? `
+              <img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${job.company_logo}" alt="" />`
+                  : ""
+              }
               <div class="job-posting-company-info">
               <p class="posting-company-name secondary-text">${
                 job.company_name
@@ -223,13 +229,6 @@ function lazyLoadJobDetails(userIsAdmin, jobId) {
       const jobDetailsContainer = document.querySelector(
         ".job-details-container"
       );
-      const secondNavBarText = document.querySelector(
-        "a.navbar-button.dropdown-toggle"
-      );
-      secondNavBarText.innerHTML =
-        "Openings / " +
-        job.company_name +
-        ' <span class="material-symbols-outlined">arrow_drop_down</span>';
 
       const tagsArray = job.tags && job.tags[1] ? job.tags[1].split(", ") : [];
       const skillsArray =

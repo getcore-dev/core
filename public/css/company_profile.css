@@ -223,6 +223,10 @@ p.job-description {
 
 
   @media (prefers-color-scheme: dark) {
+    main {
+      background-color: var(--dark-mode-body-color);
+      color: var(--dark-mode-text-color);
+    }
 
     .job {
         background-color: var(--dark-mode-body-color);

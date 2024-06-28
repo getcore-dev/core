@@ -310,9 +310,12 @@ function renderJobPostings() {
         <div class="job-preview">
           <div class="job-info">
             <div class="company-info">
-              <img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${
+              ${
                 job.company_logo
-              }" alt="${job.company_name} logo" />
+                  ? `
+              <img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${job.company_logo}" alt="" />`
+                  : ""
+              }
               <div class="job-posting-company-info">
               <p class="company-name secondary-text">${job.company_name}</p>
               <h3 class="job-title">
