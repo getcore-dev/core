@@ -69,12 +69,6 @@ body {
   font-size: 14px;
 }
 
-a .material-symbols-outlined {
-  text-decoration: none;
-  color: #333;
-  vertical-align: -3px;
-}
-
 img.linkimage {
   width: 200px;
 }
@@ -313,10 +307,14 @@ div .user-info, .header {
 
 .post-userinfo {
   display: flex;
-  align-items: center;
-  gap: .6rem;
+  flex-direction: column;
   margin: 0;
   font-size: .85rem;
+}
+
+.post-user-info {
+  display: flex;
+  flex-direction: column;
 }
 
 img.blog-avatar {
@@ -331,7 +329,8 @@ img.blog-avatar {
 }
 
 .blog-post-info {
-  display:block;
+  display: flex;
+  align-items: center;
 }
 
 .post-title-container {
@@ -791,7 +790,7 @@ padding-top: 10px;
 .comments-section {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 1.6rem;
 }
 
 
@@ -1404,7 +1403,7 @@ p.preview-description {
 .post-subtitle-text {
   color: #555658;
   font-size: .95rem;
-  margin-bottom: 0rem;
+  margin-bottom: 1.2rem;
 }
 
 div.post-information {
@@ -1889,8 +1888,10 @@ div.username {
     font-size: 1rem;
   }
   img.blog-avatar {
-    height: 26px !important;
+    height: 40px !important;
+    margin-right: .8rem !important;
   }
+
   .preview-image {
     width: auto;
     height: 100%;

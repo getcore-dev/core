@@ -29,7 +29,7 @@
             if (locals.community) {
               navbarTint = locals.community.community_color;
             }%>
-          <%- navText %>
+          CORE
         </div>
 
         <div class="nav-btns">
@@ -343,7 +343,7 @@
         <li class="dropdown">
           <a href="/c" class="navbar-button <%= isActive('/c') ? 'active' : '' %>" style="display: block;">
             <span class="material-symbols-outlined">
-              group
+              public
             </span>
             Communities
           </a>
@@ -354,14 +354,6 @@
               work
             </span>
             Openings
-          </a>
-        </li>
-        <li class="dropdown">
-          <a href="/updates" class="navbar-button <%= isActive('/updates') ? 'active' : '' %>" style="display: block;">
-            <span class="material-symbols-outlined">
-              update
-            </span>
-            Updates
           </a>
         </li>
       </ul>

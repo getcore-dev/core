@@ -22,7 +22,7 @@ main {
 
 .job-listing {
   background-color: var(--light-mode-main-color);
-  padding-top: 25px;
+  padding-top: 13px;
   margin-bottom: 0px;
   max-width: 100vw;
   padding-bottom: 0;
@@ -117,7 +117,8 @@ img.company-logo {
     display: flex;
     flex-wrap: nowrap; /* Prevent wrapping of job elements */
     flex-direction: column;
-    gap: 10px; 
+    padding: 0 14px;
+    gap: 1.5rem; 
     -webkit-scrollbar {
       display: none;
     }
@@ -135,16 +136,19 @@ img.company-logo {
     text-decoration: underline;
   }
 
-div.similar-job {
-  flex-direction: column;
-  cursor: pointer;
+  .job-skills {
+    margin-bottom: 1.1rem;
+  }
+
+  div.similar-job {
+    flex-direction: column;
+    cursor: pointer;
     display: flex;
     background: var(--light-mode-main-color);
-    border-radius: 0;
-    border-bottom: 1px solid var(--border-color);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
     padding: 13px 17px;
     position: relative;
-    transition: background 0.3s ease;
 }
 
 .job-info-flairs {
@@ -186,6 +190,7 @@ div.similar-job h4 {
   font-size: 1.05rem;
   font-weight: bold;
   margin: .65rem 0;
+  margin-top: 0;
 }
 
 .job-details > div > p, .job-details > div > ul {
@@ -193,6 +198,7 @@ div.similar-job h4 {
   font-size: .925rem;
   line-height: 1.5;
   margin: 0;
+  margin-bottom: 1.2rem;
 }
 
 .job-flair p {
@@ -206,6 +212,7 @@ div.similar-job h4 {
   gap: 1rem;
   justify-content: space-between;
   margin: .35rem 0;
+  margin-bottom: 1.25rem;
 }
 
 .job-details {

@@ -49,60 +49,47 @@
       <% } %>
       <div class="post">
         <div class="post-information">
-          <% if (post.post_type == 'blog') { %>
 
           <div class="post-userinfo">
-            <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="blog-avatar" onclick="window.location.href = '/user/<%= post.user.username %>'" />
             <div class="blog-post-info">
-              <a href="/user/<%= post.user.username %>" id="blog-username" style="color: <%= post.user.isAdmin ? '#b40000' : 'inherit' %>;">
-                <%= post.user.username %>
-              </a>
-              <span class="post-timestamp secondary-text" style="text-decoration: none;">
-                in
-              </span>
-              <a id="community-header-text" href="/c/<%= post.community.shortname %>" style="text-decoration: none;">
-                /<%= post.community.shortname %>
-              </a>
-              <span class="post-timestamp secondary-text" style="text-decoration: none;">
-                •
-                <%  let postDate = new Date(post.created_at); %>
+              <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="blog-avatar" onclick="window.location.href = '/user/<%= post.user.username %>'" />
+              <div class="post-user-info">
+                <span>
+                  <a href="/user/<%= post.user.username %>" id="blog-username" style="color: <%= post.user.isAdmin ? '#b40000' : 'inherit' %>;">
+                    <%= post.user.username %>
+                  </a>
+                  <span class="post-timestamp secondary-text" style="text-decoration: none;">
+                    in
+                  </span>
+                  <a id="community-header-text" href="/c/<%= post.community.shortname %>" style="text-decoration: none;">
+                    /<%= post.community.shortname %>
+                  </a>
+                </span>
+                <span id="secondary-text">
+                  <span class="post-timestamp secondary-text" style="text-decoration: none;">
+                    <% let postDate = new Date(post.created_at); %>
 
-                <%formattedPostDate = postDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });%>
-                <%= formattedPostDate %>
-              </span>
-•
-<span class="post-views">
-            <span class="material-symbols-outlined">
-              visibility
-            </span>
-            <%= post.views %> view<%- post.views > 1 ? 's' : '' %>
-          </span>
-            </div>
-
-
-
-          </div>
-          <% } %>
-
-          <% if (post.post_type != 'blog') { %>
-          <div class="post-interactions-header">
-            <div class="post-user-info-header">
-              <div class="post-user-information">
-                <img class="avatar" src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" onerror="" />
-                <div class="post-user-info">
-                  <a href="/user/<%= post.user.username %>" class="post-user-info" style="color: <%= post.user.isAdmin ? '#b40000' : 'inherit' %> ;">
-                    <%= post.user.username %></a> in <a href=" /c/<%= post.community.shortname %>" class="post-community-info" style="color: <%= post.community.community_color %>;"><%= post.community.name %></a>
-                </div>
-                </a>
+                    <%formattedPostDate = postDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });%>
+                    <%= formattedPostDate %>
+                  </span>
+                  •
+                  <span class="post-views" id="secondary-text">
+                    <%= post.views %> view<%- post.views > 1 ? 's' : '' %>
+                  </span>
+                </span>
               </div>
             </div>
+            <div class="post-userinfo2">
+            </div>
+
+
+
           </div>
-          <% } %>
         </div>
         <div class="header">
           <div class="title">
             <%
-              let postDate = new Date(post.created_at);
+              postDate = new Date(post.created_at);
               let today = new Date();
               let formattedDate;
             
@@ -157,7 +144,7 @@
 
             <div class="post-title-container">
               <div>
-                <h2 class="post-title" style="<% if (post.post_type == "blog") { %>     font-size: 1.65rem;font-weight: bold;margin-bottom: .2rem;<% } %>"><%= post.title %>
+                <h2 class="post-title" style="<% if (post.post_type == "blog") { %>     font-size: 1.65rem;font-weight: bold;margin-bottom: .8rem;<% } %>"><%= post.title %>
                 </h2>
                 <% if (post.post_type == "blog") { %>
                 <div class="post-subtitle-text">
@@ -279,27 +266,6 @@
             <div class="post-body" style="
                 <% if (post.post_type == 'blog') { %> padding: 0px 13px; <% } %>
                 ">
-              <% if (post.tags && post.tags.length > 0) { %>
-              <div class="blog-tags-div">
-                <div class="tags">
-                  <% post.tags.forEach(tag => { %>
-                  <span class="tag" onclick="window.location.href='/tags/<%= tag.name %>'">
-                    <p><%= tag.name %></p>
-                  </span>
-                  <% }); %>
-                  <% if (post.post_type == "project") { %>
-                  <% let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {}; %>
-                  <% if (gitHubData.topics && gitHubData.topics.length > 0) { %>
-                  <% gitHubData.topics.forEach(topic => { %>
-                  <span class="tag" onclick="window.location.href='/tags/<%= topic %>'">
-                    <p><%= topic %></p>
-                  </span>
-                  <% }); %>
-                  <% } %>
-                  <% } %>
-                </div>
-              </div>
-              <% } %>
               <% if ((post.post_type == 'post' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog' || post.post_type == 'question' || (post.post_type == 'discussion' && !post.linkPreview)) { %>
               <% if (post.post_type == 'project') { %>
               <% 
@@ -490,6 +456,27 @@
                     %>
             <%= formattedDate %>
           </span>
+          <% } %>
+          <% if (post.tags && post.tags.length > 0) { %>
+          <div class="blog-tags-div">
+            <div class="tags">
+              <% post.tags.forEach(tag => { %>
+              <span class="tag" onclick="window.location.href='/tags/<%= tag.name %>'">
+                <p><%= tag.name %></p>
+              </span>
+              <% }); %>
+              <% if (post.post_type == "project") { %>
+              <% let gitHubData = post.gitHubLinkPreview ? JSON.parse(post.gitHubLinkPreview.raw_json) : {}; %>
+              <% if (gitHubData.topics && gitHubData.topics.length > 0) { %>
+              <% gitHubData.topics.forEach(topic => { %>
+              <span class="tag" onclick="window.location.href='/tags/<%= topic %>'">
+                <p><%= topic %></p>
+              </span>
+              <% }); %>
+              <% } %>
+              <% } %>
+            </div>
+          </div>
           <% } %>
         </div>
         <div class="post-info">

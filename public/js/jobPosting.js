@@ -274,7 +274,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId) {
         <div class="job-listing">
                 ${
                   isOlderThan30Days(job)
-                    ? `<div class="error-messages"><p>This job was posted more than 30 days ago</p> <p>Apply anyway <a href="/redirect/${job.link}">here</a></div>`
+                    ? `<div class="caution-messages"><p>This job was posted more than 30 days ago</p> <p>Apply anyway <a href="/redirect/${job.link}">here</a></div>`
                     : ""
                 }
           <div class="company-info">

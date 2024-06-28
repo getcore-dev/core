@@ -119,6 +119,7 @@ div.vote-interactions {
   display: flex;
   flex-direction: row;
   gap: 5px;
+  margin-bottom: .7rem;
   align-items: flex-start;
   border-radius: 6px;
   width: 100%;
@@ -312,7 +313,7 @@ div.vote-interactions {
 .title {
   font-size: .9rem;
   font-weight: 500;
-  margin-bottom: .6rem;
+  margin-bottom: 1.1rem;
 }
 
 
@@ -1065,7 +1066,7 @@ button.see-more {
 }
 
 .avatar img {
-  width: 35px;
+  width: 26px;
   aspect-ratio: 1/1;
   border-radius: 100%;
   object-fit: cover; 
