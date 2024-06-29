@@ -1101,7 +1101,7 @@ router.get("/get-latest-commit", cacheMiddleware(1200), async (req, res) => {
 
 router.get("/posts", async (req, res) => {
   try {
-    const sortBy = req.query.sortBy || "trending";
+    const sortBy = req.query.sortBy || "trending"; // Default to "trending"
     const userId = req.query.userId;
     const page = parseInt(req.query.page) || 1;
     const limit = 10; // Number of posts per page
@@ -1114,6 +1114,7 @@ router.get("/posts", async (req, res) => {
       limit,
       offset
     );
+    console.log(posts);
     res.json(posts);
   } catch (err) {
     console.error(err);

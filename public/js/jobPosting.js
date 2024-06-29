@@ -278,9 +278,13 @@ function lazyLoadJobDetails(userIsAdmin, jobId) {
                     : ""
                 }
           <div class="company-info">
-            <img src="${job.company_logo}" style="width: auto;" alt="${
-        job.company_name
-      } logo" class="thumbnail thumbnail-small thumbnail-regular" />
+          ${
+            job.company_logo
+              ? `
+            <img src="${job.company_logo}" style="width: auto;" alt="${job.company_name} logo" class="thumbnail thumbnail-small thumbnail-regular" />
+          `
+              : ""
+          }
             <div class="company-details">
               <h3 class="company-name">
               <a href="/jobs/company/${job.company_name}">

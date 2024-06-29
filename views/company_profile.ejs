@@ -38,7 +38,9 @@
     <div class="company-info-container">
       <div class="company-header">
         <div class="company-image">
-          <img class="thumbnail thumbnail-small thumbnail-regular" src="<%= company.logo %>" alt="Company Logo" />
+          <% if (company.logo) { %>
+          <img class="thumbnail thumbnail-small thumbnail-regular" src="<%= company.logo %>" alt="" />
+          <% } %>
         </div>
         <div class="company-info">
           <span class="company-name"><%= company.name %></span>

@@ -145,8 +145,9 @@ pre code {
     flex-direction: row;
 }
 .user-interactions {
-  margin: 20px 0px;
-  margin-bottom: .4rem;
+  margin: 0px;
+  margin-bottom: .8rem;
+  margin-top: 1.1rem;
   display: flex;
   align-items: center;
   align-content: stretch;
@@ -314,6 +315,7 @@ div .user-info, .header {
 
 .post-user-info {
   display: flex;
+  gap: .2rem;
   flex-direction: column;
 }
 
@@ -403,14 +405,19 @@ img.blog-avatar {
   z-index: 999;
 }
 
+.solution-avatar img {
+  border-radius: 50% !important;
+}
+
 .solution {
+  margin-bottom: 1.8rem;
   display: flex;
   flex-direction: column;
   white-space-collapse: collapse;
   background-color: #e2efe2;
   border: 1px solid #84ab73;
-  border-radius: 10px;
-  padding: 18px 21px;
+  border-radius: 18px;
+  padding: 10px 13px;
 }
 
 .solution-header {
@@ -489,7 +496,7 @@ img.blog-avatar {
   gap: 4px;
   margin: 0 13px;
   margin-top: 0;
-  margin-bottom: 6px;
+  margin-bottom: .7rem;
 }
 
 .link-image, .sidebar-poster-avatar {
@@ -837,10 +844,16 @@ padding-top: 10px;
     align-items: center;
 }
 
+.similar-posts {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding: 0 13px;
+}
+
 .similar-posts .post {
-  margin: 0;
-  border-radius: 0;
-  border-bottom: 1px solid var(--border-color);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
   background: var(--light-mode-main-color);
   box-sizing: border-box;
 }
@@ -858,7 +871,7 @@ padding-top: 10px;
 
 #reply-button {
   text-decoration: none;
-  color: var(--light-mode-text-color);
+  color: var(--light-mode-secondary-text-color);
   vertical-align: 5px;
   border-radius: 6px;
 }
@@ -1033,14 +1046,15 @@ div .mini-link {
   position: absolute;
   border: 0;
   right: 0;
-  width: 100px;
+  border-radius: 16px;
+  width: 140px;
   pointer-events: all;
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
   font-size: 1rem;
   flex-direction: column;
-  gap: 10px;
-  padding: 10px 0;
+  gap: .8rem;
+  padding: 10px 6px;
   background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
   z-index: 10;
@@ -1249,6 +1263,19 @@ p.preview-description {
   line-height: 1.15rem;
 }
 
+.tag {
+  display: inline-flex;
+    gap: 5px;
+    padding: .2rem .45rem;
+    margin: 3px 7px 0px 0px;
+    margin-bottom: 3px;
+    background-color: #6790f436;
+    color: #85a5e6;
+    border-radius: 7px;
+    font-size: .825rem;
+    position: relative;
+}
+
 
 .post-header {
   display: flex;
@@ -1310,7 +1337,7 @@ p.preview-description {
   background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
   border-radius: 18px;
-  padding: 13px 23px;
+  padding: 10px 12px;
 }
 
 .project-link-title {
@@ -1341,7 +1368,7 @@ p.preview-description {
 }
 
 .post-subtitle {
-  padding: 0 13px;
+  padding: 0;
   font-size: .85rem;
   color: var(--light-mode-secondary-text-color);
 }
@@ -1362,20 +1389,6 @@ p.preview-description {
   align-items: center;
   gap: 10px;
 
-}
-
-.tag {
-  display: inline-block;
-  padding: 4px 12px;
-  margin-right: 8px;
-  margin-bottom: 8px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #4a5568;
-  background-color: #edf2f7;
-  border: 1px solid #e2e8f0;
-  transition: all 0.2s ease;
 }
 
 .tag:hover {
@@ -1412,7 +1425,8 @@ div.post-information {
 }
 
 .blog-tags-div {
-  margin-bottom: .6rem;
+  margin-bottom: .4rem;
+  padding: 0 13px;
 }
 
 #github-flair {
@@ -1469,9 +1483,9 @@ div.post-information {
 
   .dropdown-content {
     background-color: var(--dark-mode-main-color);
-    border: 0;
     color: var(--dark-mode-text-color);
-  }
+    border-color: var(--dark-mode-border-color);
+}
   
   .sort-option:not(:last-child) {
   border-color: var(--dark-mode-border-color);
@@ -1671,7 +1685,7 @@ div.post-information {
   }
 
   #reply-button,   .three-dots {
-    color: var(--dark-mode-text-color);
+    color: var(--dark-mode-secondary-text-color);
   }
 
   .votes {
@@ -1861,10 +1875,7 @@ div.username {
   }
 
   .job {
-    background: none !important;
-    border-radius: 0 !important;
     padding: 12px 14px;
-    border-bottom: 1px solid var(--border-color) !important;
   }
 
   .sidebar-poster-avatar {
@@ -1952,6 +1963,7 @@ div.username {
 
   .comments-section {
     margin: 0;
+    margin-bottom: 1rem;
   }
 
   .main-container {

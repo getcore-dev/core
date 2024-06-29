@@ -26,7 +26,9 @@ const observer = new IntersectionObserver((entries) => {
   }
 });
 
-observer.observe(loadMoreDiv);
+if (loadMoreDiv) {
+  observer.observe(loadMoreDiv);
+}
 
 const jobTitles = [
   "Software Engineer",

@@ -454,120 +454,6 @@
       banner.style.display = "none";
     }, 3000);
   }
-  document.addEventListener('DOMContentLoaded', function() {
-    const mobileSearchForm = document.getElementById('mobileSearchForm');
-    const mobileSearchInput = document.getElementById('mobileSearchInput');
-    const mobileSearchResults = document.getElementById('mobileSearchResults');
-
-    mobileSearchForm.addEventListener('submit', function(event) {
-      const searchTerm = mobileSearchInput.value.trim();
-
-      if (searchTerm === '') {
-        event.preventDefault(); // Prevent form submission if search term is blank
-        showBannerNotification('Please enter a search term.'); // Display an alert to the user
-      }
-    });
-
-    // Debounce function
-    function debounce(func, delay) {
-      let debounceTimer;
-      return function() {
-        const context = this;
-        const args = arguments;
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => func.apply(context, args), delay);
-      };
-    }
-
-    // Function to fetch and display search results
-    function fetchSearchResults() {
-      const searchTerm = mobileSearchInput.value.trim();
-
-      if (searchTerm.length > 0) {
-        fetch(`/search/preview?searchTerm=${encodeURIComponent(searchTerm)}`)
-          .then(response => response.json())
-          .then(data => {
-            mobileSearchResults.innerHTML = '';
-            // Add clickable divs for specific searches in 'jobs', 'posts', 'users', and 'tags'
-            const categories = ['jobs', 'posts', 'users', 'tags'];
-            categories.forEach(category => {
-              const searchOptionElement = document.createElement('div');
-              searchOptionElement.textContent = `"${searchTerm}" in ${category}`;
-              searchOptionElement.className = 'search-category-option'; // Add some CSS class for styling
-              if (category === 'tags') {
-                searchOptionElement.addEventListener('click', function() {
-                  window.location.href = `/tags/${searchTerm}`;
-                });
-              } else {
-                searchOptionElement.addEventListener('click', function() {
-                  window.location.href = `/search/${category}?searchTerm=${encodeURIComponent(searchTerm)}`;
-                });
-              }
-              mobileSearchResults.appendChild(searchOptionElement);
-            });
-
-            // Display the actual search results for posts, users, jobs
-            // Display post results
-            data.posts.forEach(post => {
-              const postElement = document.createElement('div');
-              postElement.textContent = post.title;
-              postElement.addEventListener('click', function() {
-                window.location.href = `/posts/${post.id}`; // Assuming the post URL structure
-              });
-              mobileSearchResults.appendChild(postElement);
-            });
-
-            // Display user results
-            data.users.forEach(user => {
-              const userElement = document.createElement('div');
-              userElement.textContent = user.username;
-              userElement.addEventListener('click', function() {
-                window.location.href = `/user/${user.username}`; // Assuming the user URL structure
-              });
-              mobileSearchResults.appendChild(userElement);
-            });
-
-            // Display job results
-            data.jobs.forEach(job => {
-              const jobElement = document.createElement('div');
-              jobElement.textContent = job.title;
-              jobElement.addEventListener('click', function() {
-                window.location.href = `/jobs/${job.id}`; // Assuming the job URL structure
-              });
-              mobileSearchResults.appendChild(jobElement);
-            });
-
-            mobileSearchResults.style.display = 'block';
-          })
-          .catch(error => {
-            console.error('Error fetching search results:', error);
-          });
-      } else {
-        mobileSearchResults.innerHTML = '';
-        mobileSearchResults.style.display = 'none';
-      }
-    }
-
-    // Attach the debounced function to the input event
-    const debouncedFetchSearchResults = debounce(fetchSearchResults, 300);
-    mobileSearchInput.addEventListener('input', debouncedFetchSearchResults);
-
-    document.addEventListener('click', function(event) {
-      if (!mobileSearchInput.contains(event.target)) {
-        mobileSearchResults.style.display = 'none';
-      }
-    });
-  });
-
-  document.getElementById('searchForm').addEventListener('submit', function(event) {
-    const searchInput = document.getElementById('searchInput');
-    const searchTerm = searchInput.value.trim();
-
-    if (searchTerm === '') {
-      event.preventDefault(); // Prevent form submission if search term is blank
-      showBannerNotification('Please enter a search term.'); // Display an alert to the user
-    }
-  });
 
   function getTrendingPosts() {
 
@@ -759,16 +645,18 @@
     const dropdownToggle = document.querySelector('.navbar-button.dropdown-toggle');
     const dropdownMenu = document.querySelector('.dropdown-menu');
 
-    dropdownToggle.addEventListener('click', (event) => {
-      event.preventDefault(); // Prevent the default link behavior
-      dropdownMenu.classList.toggle('show');
-    });
+    if (dropdownToggle && dropdownMenu) {
+      dropdownToggle.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent the default link behavior
+        dropdownMenu.classList.toggle('show');
+      });
 
-    document.addEventListener('click', (event) => {
-      if (!dropdownToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
-        dropdownMenu.classList.remove('show');
-      }
-    });
+      document.addEventListener('click', (event) => {
+        if (!dropdownToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
+          dropdownMenu.classList.remove('show');
+        }
+      });
+    }
 
     // Function to close the banner and store the state in localStorage
     function closeBanner() {

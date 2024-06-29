@@ -92,6 +92,7 @@ div.vote-interactions {
 
 .thumbnail {
   display: flex;
+  border-radius: 8px;
   align-items: center;
   flex-direction: column;
   justify-content: center;
@@ -666,6 +667,10 @@ div.community-flairs {
     position: relative;
 }
 
+.jobslist { 
+  flex-direction: row !important;
+}
+
 .job-posting-deadline {
   font-size: 13px; 
   position: absolute; 
@@ -990,12 +995,14 @@ button.see-more {
   .post {
     margin: 0;
     background-color: var(--light-mode-main-color);
-    border-radius: 0;
-    padding: 0px;
+    border-radius: 18px;
+    margin: 0 13px;
+    margin-bottom: 1.1rem;
     border: 0;
-    border-top: 1px solid var(--border-color);
+    border: 1px solid var(--border-color);
     max-width: 100%;
-  }
+}
+
   .communities.active {
     border: 1px solid #afd4ff !important;
   }
@@ -1021,7 +1028,12 @@ button.see-more {
   }
 
   body {
-    overflow-y: hidden;
+    overflow-y: auto;
+  }
+
+  main {
+    height: auto !important;
+    overflow-y: hidden !important;
   }
   
   .title {
@@ -1045,8 +1057,7 @@ button.see-more {
 
 
   .thumbnail-image {
-    width: 75px;
-    height: 75px;
+    height: 60px;
     aspect-ratio: 1 / 1;
     object-fit: cover;
     display: block;

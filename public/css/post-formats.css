@@ -107,9 +107,10 @@
   .post-body pre {
     background-color: var(--border-color);
     border: 1px solid var(--border-color);
-    padding: 7px;
+    padding: 10px 12px;
     overflow: auto;
-    border-radius: 10px;
+    margin-bottom: 1.1rem;
+    border-radius: 18px;
   }
   
   .post-body img {

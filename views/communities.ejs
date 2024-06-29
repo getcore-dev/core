@@ -335,6 +335,14 @@
 
             postHeaderUsernameDiv.appendChild(usernameDiv);
             postHeaderDiv.appendChild(postHeaderUsernameDiv);
+
+            if (post.isGlobalPinned) {
+              const pinnedDiv = document.createElement('div');
+              pinnedDiv.className = 'pinned';
+              pinnedDiv.innerHTML = '<span class="material-symbols-outlined" style="color: #ffcc00;font-size:16px;">push_pin</span>';
+              postHeaderUsernameDiv.appendChild(pinnedDiv);
+            }
+
             const threeDotsDiv = document.createElement('div');
             threeDotsDiv.className = 'three-dots';
             threeDotsDiv.innerHTML = '<span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>';
@@ -562,7 +570,9 @@
 
 
             votesDiv.appendChild(reactionInteractionsDiv);
-            postContentDiv.appendChild(votesDiv);
+            if (!post.isGlobalPinned) {
+              postContentDiv.appendChild(votesDiv);
+            }
 
             const commentsDiv = document.createElement('div');
             commentsDiv.className = 'comments';
@@ -599,7 +609,10 @@
                   fetchAndDisplayPosts(communityId, sortBy, nextPage);
                 }
               });
-              observer.observe(loadMoreDiv);
+
+              if (loadMoreDiv) {
+                observer.observe(loadMoreDiv);
+              }
 
               if (posts.length === 0 && page === 1) {
                 const noPostsDiv = document.createElement('div');

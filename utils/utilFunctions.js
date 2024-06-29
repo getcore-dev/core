@@ -26,61 +26,45 @@ const utilFunctions = {
     try {
       const result = await sql.query`
         SELECT 
-        p.id,
-        p.created_at, 
-        p.deleted, 
-        p.title, 
-        p.content, 
-        p.subtitle,
-        p.link, 
-        p.communities_id, 
-        p.react_like, 
-        p.react_love, 
-        p.react_curious, 
-        p.react_interesting, 
-        p.react_celebrate, 
-        p.post_type, 
-        p.views, 
-        u.username, 
-        u.avatar,
-        u.isAdmin,
-        u.verified,
-        CASE WHEN ur.follower_id IS NOT NULL THEN 1 ELSE 0 END AS is_following,
-        c.name AS community_name, 
-        c.community_color as community_color,
-        c.shortname AS community_shortname,
-        SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
-        SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-        SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
-        SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
-        SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
-        SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
-        (
-          SELECT TOP 1 upa2.action_type 
-          FROM userPostActions upa2
-          WHERE upa2.post_id = p.id AND upa2.user_id = ${userId}
-        ) as userReaction,
-        (
-          SELECT STRING_AGG(tags.name, ', ') 
-          FROM post_tags 
-          INNER JOIN tags ON post_tags.tag_id = tags.id
-          WHERE post_tags.post_id = p.id
-        ) AS post_tags,
-        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count
-      FROM posts p
-      INNER JOIN users u ON p.user_id = u.id
-      LEFT JOIN userPostActions upa ON p.id = upa.post_id
-      LEFT JOIN communities c ON p.communities_id = c.id
-      LEFT JOIN user_relationships ur ON u.id = ur.followed_id AND ur.follower_id = ${userId}
-      WHERE p.deleted = 0
-      GROUP BY 
-        p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.subtitle, 
-        p.communities_id, u.avatar, c.name, c.shortname, c.community_color, u.isAdmin, u.verified,
-        p.react_like, p.react_love, p.react_curious, p.react_interesting, 
-        p.react_celebrate, p.post_type, p.views, ur.follower_id
-      ORDER BY p.created_at DESC -- Add an ORDER BY clause
-      OFFSET ${offset} ROWS
-      FETCH NEXT ${limit} ROWS ONLY
+          p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, 
+          p.communities_id, p.react_like, p.react_love, p.react_curious, 
+          p.react_interesting, p.react_celebrate, p.post_type, p.views, 
+          p.isGlobalPinned, u.username, u.avatar, u.isAdmin, u.verified,
+          CASE WHEN ur.follower_id IS NOT NULL THEN 1 ELSE 0 END AS is_following,
+          c.name AS community_name, c.community_color as community_color,
+          c.shortname AS community_shortname,
+          SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
+          SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
+          SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+          SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
+          SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
+          SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
+          (
+            SELECT TOP 1 upa2.action_type 
+            FROM userPostActions upa2
+            WHERE upa2.post_id = p.id AND upa2.user_id = ${userId}
+          ) as userReaction,
+          (
+            SELECT STRING_AGG(tags.name, ', ') 
+            FROM post_tags 
+            INNER JOIN tags ON post_tags.tag_id = tags.id
+            WHERE post_tags.post_id = p.id
+          ) AS post_tags,
+          (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count
+        FROM posts p
+        INNER JOIN users u ON p.user_id = u.id
+        LEFT JOIN userPostActions upa ON p.id = upa.post_id
+        LEFT JOIN communities c ON p.communities_id = c.id
+        LEFT JOIN user_relationships ur ON u.id = ur.followed_id AND ur.follower_id = ${userId}
+        WHERE p.deleted = 0
+        GROUP BY 
+          p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.subtitle, 
+          p.communities_id, u.avatar, c.name, c.shortname, c.community_color, u.isAdmin, u.verified,
+          p.react_like, p.react_love, p.react_curious, p.react_interesting, 
+          p.react_celebrate, p.post_type, p.views, p.isGlobalPinned, ur.follower_id
+        ORDER BY p.created_at DESC
+        OFFSET ${offset} ROWS
+        FETCH NEXT ${limit} ROWS ONLY
       `;
 
       const countResult = await sql.query`
@@ -92,12 +76,18 @@ const utilFunctions = {
       const totalCount = countResult.recordset[0].totalCount;
       const totalPages = Math.ceil(totalCount / limit);
 
-      let sortedResult;
+      let sortedResult = result.recordset;
 
-      switch (sortBy) {
-        case "trending":
-          const now = new Date();
-          sortedResult = result.recordset.sort((a, b) => {
+      const prioritizePinned = ["trending", "explore"].includes(sortBy);
+
+      sortedResult.sort((a, b) => {
+        if (prioritizePinned && a.isGlobalPinned !== b.isGlobalPinned) {
+          return b.isGlobalPinned ? 1 : -1;
+        }
+
+        const now = new Date();
+        switch (sortBy) {
+          case "trending":
             const minutesA = (now - new Date(a.created_at)) / (1000 * 60);
             const minutesB = (now - new Date(b.created_at)) / (1000 * 60);
             const reactionsA =
@@ -118,17 +108,13 @@ const utilFunctions = {
             const reactionsPerMinuteB = reactionsB / (minutesB + 1);
             const followingWeightA = a.is_following ? 1.2 : 1;
             const followingWeightB = b.is_following ? 1.2 : 1;
-            const recentWeightA = Math.exp(-minutesA / (6 * 60)); // Exponential decay over 6 hours
+            const recentWeightA = Math.exp(-minutesA / (6 * 60));
             const recentWeightB = Math.exp(-minutesB / (6 * 60));
             return (
               reactionsPerMinuteB * followingWeightB * recentWeightB -
               reactionsPerMinuteA * followingWeightA * recentWeightA
             );
-          });
-          break;
-
-        case "top":
-          sortedResult = result.recordset.sort((a, b) => {
+          case "top":
             const totalReactionsA =
               a.loveCount +
               a.boostCount +
@@ -144,48 +130,35 @@ const utilFunctions = {
               b.likeCount +
               b.celebrateCount;
             return totalReactionsB - totalReactionsA;
-          });
-          break;
-        case "new":
-          sortedResult = result.recordset.sort((a, b) => {
-            const dateA = new Date(a.created_at);
-            const dateB = new Date(b.created_at);
-            return dateB - dateA;
-          });
-          break;
-
-        case "explore":
-          sortedResult = result.recordset.sort((a, b) => {
-            const totalReactionsA =
+          case "new":
+            return new Date(b.created_at) - new Date(a.created_at);
+          case "explore":
+            const totalReactionsExploreA =
               a.loveCount +
               a.boostCount +
               a.interestingCount +
               a.curiousCount +
               a.likeCount +
               a.celebrateCount;
-            const totalReactionsB =
+            const totalReactionsExploreB =
               b.loveCount +
               b.boostCount +
               b.interestingCount +
               b.curiousCount +
               b.likeCount +
               b.celebrateCount;
-            const viewsWeightA = Math.log(a.views + 1); // Log scale for views
+            const viewsWeightA = Math.log(a.views + 1);
             const viewsWeightB = Math.log(b.views + 1);
-            const diversityWeightA = 1 / (a.is_following ? 2 : 1); // Penalize posts from followed users
+            const diversityWeightA = 1 / (a.is_following ? 2 : 1);
             const diversityWeightB = 1 / (b.is_following ? 2 : 1);
             return (
-              totalReactionsB * viewsWeightB * diversityWeightB -
-              totalReactionsA * viewsWeightA * diversityWeightA
+              totalReactionsExploreB * viewsWeightB * diversityWeightB -
+              totalReactionsExploreA * viewsWeightA * diversityWeightA
             );
-          });
-          break;
-
-        default:
-          sortedResult = result.recordset.sort(
-            (a, b) => new Date(b.created_at) - new Date(a.created_at)
-          );
-      }
+          default:
+            return new Date(b.created_at) - new Date(a.created_at);
+        }
+      });
 
       return {
         posts: sortedResult,
@@ -194,11 +167,7 @@ const utilFunctions = {
       };
     } catch (err) {
       console.error("Database query error:", err);
-      return {
-        posts: [],
-        currentPage: page,
-        totalPages: 0,
-      };
+      throw err;
     }
   },
 
