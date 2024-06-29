@@ -145,7 +145,7 @@ const postQueries = {
       JOIN communities c ON p.communities_id = c.id
       LEFT JOIN post_tags pt ON p.id = pt.post_id
       LEFT JOIN tags t ON pt.tag_id = t.id
-      WHERE p.id != '${postId}' AND p.deleted = 0 AND ${tagsCondition}
+      WHERE p.id != '${postId}' AND p.deleted = 0 AND ${tagsCondition} AND p.communities_id != 9
       GROUP BY p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
                u.username, u.avatar, c.name, p.post_type, p.views, c.community_color, c.shortname
       ORDER BY tagMatchCount DESC, p.created_at DESC
@@ -176,7 +176,7 @@ const postQueries = {
         FROM posts p
         JOIN users u ON p.user_id = u.id
         JOIN communities c ON p.communities_id = c.id
-        WHERE p.id != '${postId}' AND p.deleted = 0
+      WHERE p.id != '${postId}' AND p.deleted = 0 AND p.communities_id != 9
           ${excludePostIds}
         ORDER BY NEWID();
       `;
