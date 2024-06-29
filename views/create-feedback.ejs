@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>CORE - Create Post</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="shortcut icon" href="/img/core.png" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/create-post.css" />
+  <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+</head>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'home' }) %>
+  <main>
+    <div class="post-header" id="secondary-text">
+      <h5>Submit Feedback</h5>
+    </div>
+
+    </div>
+    <div class="main-container">
+
+      <form action="/feedback" method="POST">
+        <input type="hidden" id="post_type" name="post_type" value="discussion" />
+        <div class="form-group">
+          <input type="hidden" name="userId" value="<%= user.id %>" />
+          <div class="form-group" id="title-field">
+
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" required />
+          </div>
+          <div class="form-group" id="link-field">
+            <label id="link-label" for="link">Attachment URL</label>
+            <input type="text" id="link" name="link" />
+          </div>
+          <div class="form-group">
+            <textarea id="content" name="content"></textarea>
+          </div>
+
+        </div>
+        <button id="submit-button" type="submit">Submit Post</button>
+      </form>
+    </div>
+  </main>
+  <script>
+    $(document).ready(function() {
+      var easyMDE = new EasyMDE({
+        element: document.getElementById('content'),
+        placeholder: "Body text"
+      });
+
+      $('form').on('submit', function(e) {
+        var easyMDE = new EasyMDE({
+          element: document.getElementById('content')
+        });
+
+
+        // Check if the EasyMDE editor is empty
+        if (!easyMDE.value().trim()) {
+          e.preventDefault(); // Prevent form submission
+          alert("Please fill in the content."); // Display an error message
+          easyMDE.codemirror.focus(); // Focus the EasyMDE editor
+        } else {
+          easyMDE.toTextArea();
+          easyMDE.codemirror.save();
+        }
+      });
+
+    });
+  </script>
+</body>
+
+</html>

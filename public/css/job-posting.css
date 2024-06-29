@@ -213,7 +213,7 @@ div.similar-job h4 {
   gap: 1rem;
   justify-content: space-between;
   margin: .35rem 0;
-  margin-bottom: 1.25rem;
+  margin-bottom: 2.25rem;
 }
 
 .job-details {
@@ -241,6 +241,7 @@ div.similar-job h4 {
   font-size: 1.2rem;
   font-weight: bold;
   margin: 0 0 7px;
+  margin-bottom: .4rem !important;
 }
 
 .company-name {

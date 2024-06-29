@@ -86,7 +86,7 @@ li.notification-item.unread {
 .notification-item {
     border-top: 1px solid var(--border-color);
     background-color: var(--light-mode-main-color);
-    padding: .75rem .95rem;
+    padding: .75rem .55rem;
 }
 
 .notification-item:last-child {

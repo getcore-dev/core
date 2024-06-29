@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>CORE - <%= link %> Redirect</title>
+  <title>CORE Feedback Success</title>
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/login.css" />
 
@@ -29,32 +29,15 @@
   <%- include('partials/navbar', { pagePath: 'updates' }) %>
   <main>
     <div class="account-stuff">
-      <h3>Redirecting to <%= link %></h3>
+      <h3>Success!</h3>
       <div class="user-res">
-        If you are not redirected, click <a href=<%= link %>>here</a>
-      </div>
-      <div class="link-countdown">
-        <p id="countdown">Redirecting in 3 seconds...</p>
-        <div class="loader"></div>
+        Your feedback has been submitted successfully.
       </div>
     </div>
     <%- include('partials/footer') %>
   </main>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      let countdown = 3;
-      const countdownElement = document.getElementById('countdown');
 
-      const intervalId = setInterval(() => {
-        countdown--;
-        countdownElement.textContent = `Redirecting in ${countdown} seconds...`;
-
-        if (countdown === 0) {
-          clearInterval(intervalId);
-          window.location.href = "https://<%= link %>";
-        }
-      }, 1000);
-    });
   </script>
 </body>
 

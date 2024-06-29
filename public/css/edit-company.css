@@ -9,8 +9,8 @@ form > div {
 }
 
 .edit-company-header {
-    padding: 16px 0;
-    padding-top: 0;
+    padding: 21px 0;
+    padding-top: 24px;
 }
 
 .select2-container .select2-selection--multiple {
@@ -18,22 +18,10 @@ form > div {
     padding: 4px !important
 }
 
-form > div > input {
-    width: 100%;
-    padding: 10px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-    border-radius: 10px;
-    background-color: var(--light-mode-body-color) !important;
-    border: 1px solid var(--border-color) !important;
-    font-size: 16px;
-    transition: box-shadow 0.3s ease;
-}
-
 form > div > textarea {
     width: 100%;
     font-family: 'Roboto', sans-serif;
-    line-height: 1.25rem;
+    line-height: 1.65rem;
     padding: 10px 20px;
     margin: 8px 0;
     box-sizing: border-box;
@@ -55,15 +43,10 @@ form > div > textarea {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    margin-bottom: 1.2rem;
   }
 
 @media (prefers-color-scheme: dark) {
-    form > div > input {
-        background-color: var(--dark-mode-main-color) !important;
-        border: 1px solid var(--dark-mode-border-color) !important;
-        color: var(--dark-mode-text-color);
-    }
-
     form > div > textarea {
         background-color: var(--dark-mode-main-color) !important;
         border: 1px solid var(--dark-mode-border-color) !important;

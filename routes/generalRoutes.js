@@ -148,10 +148,30 @@ router.get("/updates", async (req, res) => {
   }
 });
 
-// Post creation page
 router.get("/create", checkAuthenticated, async (req, res) => {
   const tags = await postQueries.getAllTags();
   res.render("create-post.ejs", { user: req.user, tags, communityId: null });
+});
+
+router.get("/feedback", checkAuthenticated, async (req, res) => {
+  res.render("create-feedback.ejs", { user: req.user });
+});
+
+router.get("/feedback/success", checkAuthenticated, async (req, res) => {
+  res.render("success-feedback.ejs", { user: req.user });
+});
+
+router.post("/feedback", checkAuthenticated, async (req, res) => {
+  const userId = req.user.id;
+  const { title, attachmentUrl, bodyText } = req.body;
+
+  try {
+    await postQueries.createFeedback(userId, title, attachmentUrl, bodyText);
+    res.redirect("/feedback/success");
+  } catch (err) {
+    console.error("Error creating feedback:", err);
+    res.status(500).send("Error creating feedback");
+  }
 });
 
 router.get("/edit-profile", checkAuthenticated, async (req, res) => {

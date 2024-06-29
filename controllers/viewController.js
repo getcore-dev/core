@@ -120,6 +120,10 @@ const viewController = {
     res.render("create-post.ejs", { user: req.user });
   },
 
+  renderFeedbackCreationPage: (req, res) => {
+    res.render("create-feedback.ejs", { user: req.user });
+  },
+
   renderLearningPage: (req, res) => {
     res.render("learning.ejs", { user: req.user });
   },

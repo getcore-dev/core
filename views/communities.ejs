@@ -79,7 +79,7 @@
           </div>
         </div>
         <% } %>
-
+        <% if (!communityId) { %>
         <div class="mobile-jobs-container">
           <div class="job-header">
             <h5><a href="/jobs" id="secondary-text">Openings</a></h5>
@@ -89,8 +89,11 @@
           </div>
         </div>
       </div>
+      <% } %>
       <%- include('partials/right-side-container') %>
+      <% if (!communityId) { %>
       <%- include('partials/footer') %>
+      <% } %>
 
     </div>
 

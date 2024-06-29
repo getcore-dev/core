@@ -231,7 +231,7 @@ p.job-description {
   }
 
  div.jobs-container > div.job-list > .job {
-    background-color: var(--light-mode-main-color);
+    background-color: #fafbfc;
     margin: 0 13px;
     padding: 0 10px;
     border-radius: 11px;
@@ -383,6 +383,7 @@ p.job-description {
 
 .filter-container {
   text-align: center;
+  margin-bottom: 1.2rem;
 }
 
 .job-list {

@@ -29,7 +29,7 @@ main {
 
 
 .job {
-  background: var(--light-mode-body-color);
+  background: #fafbfc;
   width: auto;
   flex: auto;
 }
@@ -140,12 +140,9 @@ div.vote-interactions {
 
 .post-content {
   position: relative;
-  margin: 7px 14px;
-  flex-grow: 1; /* Take up remaining space */
-  padding: 0; /* No padding */
-  padding-top: 8px;
-  margin-bottom: 2px;
-  margin-top: 0;
+  flex-grow: 1;
+  padding: .6rem .9rem;
+
 }
 
 .com-btn {
@@ -808,7 +805,7 @@ div.community-flairs {
 
 .community-content {
   padding: 0px;
-  padding-bottom: 13px;
+  padding-top: .4rem;
 }
 
 .post-date a:hover {
@@ -831,6 +828,7 @@ button.see-more {
   flex-direction: row;
   align-items: center;
   gap: 5px;
+  margin-bottom: .5rem;
 }
 
 #posts-container > h5 {
@@ -845,7 +843,7 @@ button.see-more {
 }
 
 .comm-description {
-  padding: 5px 0;
+  margin-bottom: .8rem;
 }
 
 
@@ -923,6 +921,7 @@ button.see-more {
   }
   .community-header, .job-header {
     margin: 0 7px 0 10px;
+    margin-bottom: .4rem;
     color: var(--light-mode-secondary-text-color);
       }
 
@@ -961,6 +960,7 @@ button.see-more {
 
   .job {
     margin: 8px;
+    margin-left: 0;
   }
 
   .jobslist {
@@ -994,7 +994,7 @@ button.see-more {
 @media (max-width: 768px) {
   .post {
     margin: 0;
-    background-color: var(--light-mode-main-color);
+    background-color: #fafbfc;
     border-radius: 18px;
     margin: 0 13px;
     margin-bottom: 1.1rem;

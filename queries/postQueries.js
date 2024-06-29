@@ -433,6 +433,20 @@ const postQueries = {
     }
   },
 
+  createFeedback: async (userId, title, attachmentUrl, body) => {
+    try {
+      const uniqueId = generateUniqueId();
+
+      // Insert into the posts table
+      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id, post_type, views) VALUES (${uniqueId}, ${userId}, ${title}, ${body}, ${attachmentUrl}, 9, 'discussion', 1)`;
+
+      return uniqueId;
+    } catch (err) {
+      console.error("Database insert error:", err);
+      throw err; // Rethrow the error for the caller to handle
+    }
+  },
+
   getTagsByPostId: async (postId) => {
     try {
       const result = await sql.query`

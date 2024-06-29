@@ -1114,7 +1114,6 @@ router.get("/posts", async (req, res) => {
       limit,
       offset
     );
-    console.log(posts);
     res.json(posts);
   } catch (err) {
     console.error(err);
