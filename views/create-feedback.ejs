@@ -39,10 +39,10 @@
           </div>
           <div class="form-group" id="link-field">
             <label id="link-label" for="link">Attachment URL</label>
-            <input type="text" id="link" name="link" />
+            <input type="text" id="attachmentUrl" name="attachmentUrl" />
           </div>
           <div class="form-group">
-            <textarea id="content" name="content"></textarea>
+            <textarea id="content" name="bodyText"></textarea>
           </div>
 
         </div>
@@ -58,22 +58,16 @@
       });
 
       $('form').on('submit', function(e) {
-        var easyMDE = new EasyMDE({
-          element: document.getElementById('content')
-        });
-
-
         // Check if the EasyMDE editor is empty
         if (!easyMDE.value().trim()) {
           e.preventDefault(); // Prevent form submission
           alert("Please fill in the content."); // Display an error message
           easyMDE.codemirror.focus(); // Focus the EasyMDE editor
         } else {
-          easyMDE.toTextArea();
-          easyMDE.codemirror.save();
+          // Update the textarea with the EasyMDE content
+          $('#content').val(easyMDE.value());
         }
       });
-
     });
   </script>
 </body>

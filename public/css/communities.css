@@ -502,12 +502,6 @@ div .mini-link-title {
   font-weight: 400;
 }
 
-#communityActionBtn {
-  border: 0;
-  background-color: var(--border-color);
-  border-radius: 6px;
-  padding: 4px 10px;
-}
 
 .mobile-jobs-container {
   display: none;
@@ -646,9 +640,13 @@ div .mini-link-desc {
 
 div.community-flairs {
   display: flex;
-  padding: 8px;
+  gap: .8rem;
   font-size: .975rem;
-  justify-content: space-between;
+  margin-bottom: .6rem;
+}
+
+div.community-tags {
+  margin-bottom: .6rem;
 }
 
 .tag {
@@ -817,6 +815,8 @@ button.see-more {
   color: var(--active-indicator-color);
   background: 0;
   border: 0;
+  padding: 0;
+  margin: 0;
 }
 
 .hidden-tag {
@@ -995,7 +995,7 @@ button.see-more {
   .post {
     margin: 0;
     background-color: #fafbfc;
-    border-radius: 18px;
+    border-radius: 12px;
     margin: 0 13px;
     margin-bottom: 1.1rem;
     border: 0;
@@ -1111,6 +1111,11 @@ button.see-more {
     border: 1px solid var(--border-color);
     z-index: 10;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.community-buttons {
+  display: flex;
+  gap: .6rem;
 }
 
 .see-more {
@@ -1347,11 +1352,6 @@ button.see-more {
 
 @media (prefers-color-scheme: dark) {
   .mini-link-body > p {
-    color: var(--dark-mode-text-color);
-  }
-
-  #communityActionBtn {
-    background-color: var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
 

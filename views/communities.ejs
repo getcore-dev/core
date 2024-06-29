@@ -51,9 +51,6 @@
                   <h2 style="font-weight: 500"><%= community.name%></h2>
                 </span>
                 <span class="comm-short-title">/<%= community.shortname %></span>
-                <button class="join-btn" id="communityActionBtn" data-action="join">Join</button>
-                <button class="mod-btn" id="communityActionBtn" style="display: none;pointer-events: none;" onclick="window.location.href='/c/<%= community.shortname %>/admin'">Admin</button>
-
               </div>
               <div class="comm-description">
                 <%= community.description%>
@@ -61,9 +58,9 @@
               <div class="community-flairs">
                 <span class="community-flair ">👤 <%= community.MemberCount ? community.MemberCount : 0 %> members</span>
                 <span class="community-flair">✉️ <%= communityPostCount %> posts</span>
-                <span class="community-flair">🟢 1 active</span>
               </div>
               <div class="community-tags">
+                <% try { %>
                 <% let tags = community.Tags.split(','); %>
                 <% let hiddenTags = tags.length; %>
                 <% tags.forEach((tag, index) => { %>
@@ -72,6 +69,13 @@
                 <% if (tags.length > 0) { %>
                 <button class="see-more" onclick="toggleTags()">show tags</button>
                 <% } %>
+                <% } catch (error) { %>
+
+                <% } %>
+              </div>
+              <div class="community-buttons">
+                <button class="submit-button-normal join-btn" id="communityActionBtn" data-action="join">Join</button>
+                <button class="mod-btn regular-button-normal" id="communityActionBtn" style="display: none;pointer-events: none;" onclick="window.location.href='/c/<%= community.shortname %>/admin'">Moderator Tools</button>
               </div>
               <div class="community-picture">
               </div>
@@ -408,36 +412,39 @@
               fetchPromises.push(fetchLinkPreview(post.link, linkDiv));
 
             }
-
-            const imageUrlMatch = post.content.match(/!\[.*?\]\((.*?)\)/);
-            if (imageUrlMatch && imageUrlMatch[1]) {
-              linkPreviewDiv.style.background = 'none';
-              linkPreviewDiv.style.display = 'flex';
-              linkPreviewDiv.style.gap = '1.2rem';
-              linkPreviewDiv.style.alignItems = 'center';
-              const imageUrl = imageUrlMatch[1];
-              const thumbnailDiv = document.createElement('div');
-              thumbnailDiv.className = 'post-thumbnail';
-              const thumbnailImg = document.createElement('img');
-              thumbnailImg.src = imageUrl;
-              thumbnailImg.alt = 'Post Thumbnail';
-              // make the thumbnail image larger on click
-              thumbnailImg.onclick = (event) => {
-                event.stopPropagation();
-                if (thumbnailImg.style.width === 'auto' && thumbnailImg.style.height === '300px') {
-                  linkPreviewDiv.style.flexDirection = 'row';
-                  thumbnailImg.style.width = '';
-                  thumbnailImg.style.height = '';
-                } else {
-                  linkPreviewDiv.style.flexDirection = 'column';
-                  thumbnailImg.style.height = '300px';
-                  thumbnailImg.style.width = 'auto';
-                }
-              };
-              thumbnailImg.className = 'thumbnail-image';
-              thumbnailImg.loading = "lazy";
-              thumbnailDiv.appendChild(thumbnailImg);
-              linkPreviewDiv.appendChild(thumbnailDiv);
+            try {
+              const imageUrlMatch = post.content.match(/!\[.*?\]\((.*?)\)/);
+              if (imageUrlMatch && imageUrlMatch[1]) {
+                linkPreviewDiv.style.background = 'none';
+                linkPreviewDiv.style.display = 'flex';
+                linkPreviewDiv.style.gap = '1.2rem';
+                linkPreviewDiv.style.alignItems = 'center';
+                const imageUrl = imageUrlMatch[1];
+                const thumbnailDiv = document.createElement('div');
+                thumbnailDiv.className = 'post-thumbnail';
+                const thumbnailImg = document.createElement('img');
+                thumbnailImg.src = imageUrl;
+                thumbnailImg.alt = 'Post Thumbnail';
+                // make the thumbnail image larger on click
+                thumbnailImg.onclick = (event) => {
+                  event.stopPropagation();
+                  if (thumbnailImg.style.width === 'auto' && thumbnailImg.style.height === '300px') {
+                    linkPreviewDiv.style.flexDirection = 'row';
+                    thumbnailImg.style.width = '';
+                    thumbnailImg.style.height = '';
+                  } else {
+                    linkPreviewDiv.style.flexDirection = 'column';
+                    thumbnailImg.style.height = '300px';
+                    thumbnailImg.style.width = 'auto';
+                  }
+                };
+                thumbnailImg.className = 'thumbnail-image';
+                thumbnailImg.loading = "lazy";
+                thumbnailDiv.appendChild(thumbnailImg);
+                linkPreviewDiv.appendChild(thumbnailDiv);
+              }
+            } catch (error) {
+              console.error('Error displaying image for post:', post.id);
             }
 
             if (post.post_type != 'question') {
@@ -538,18 +545,7 @@
             reactionTypes.forEach(reaction => {
               totalReactions += post[reaction.type.toLowerCase() + 'Count'];
             });
-            const topReactionsDiv = document.createElement("div");
-            topReactions.forEach(reaction => {
-              const icon = document.createElement("span");
-              icon.className = `reaction-icon ${reaction.type.toLowerCase()}-icon-${post.id}`;
-              icon.innerText = reaction.icon;
-              topReactionsDiv.className = `top-reactions ${reaction.type.toLowerCase()}-top-reactions-${post.id}`;
-              topReactionsDiv.appendChild(icon);
-            });
 
-            if (totalReactions > 0) {
-              reactionInteractionsDiv.appendChild(topReactionsDiv);
-            }
 
             const totalReactionsText = document.createElement("span");
             totalReactionsText.className = `total-reactions-count ${post.id}`;
@@ -696,9 +692,11 @@
           .then(response => response.json())
           .then(data => {
             if (data.isMember) {
+              communityActionBtn.className = "cancel-button-normal join-btn";
               communityActionBtn.textContent = "Leave";
               communityActionBtn.dataset.action = "leave";
             } else {
+              communityActionBtn.className = "submit-button-normal join-btn";
               communityActionBtn.textContent = "Join";
               communityActionBtn.dataset.action = "join";
             }

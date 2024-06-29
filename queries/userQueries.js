@@ -176,6 +176,7 @@ const userQueries = {
         comments cm ON cm.post_id = p.id AND cm.user_id = ${userId}
       WHERE
         p.user_id = ${userId} OR cm.user_id = ${userId}
+        AND c.id != 9
       GROUP BY
         c.id, c.name
       ORDER BY
@@ -211,7 +212,8 @@ const userQueries = {
         posts p
       WHERE 
         p.user_id = ${userId} AND 
-        p.deleted = 0
+        p.deleted = 0 AND
+        p.communities_id != 9
       ORDER BY 
         p.created_at DESC
       OFFSET 0 ROWS

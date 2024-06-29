@@ -144,7 +144,7 @@ img.company-logo {
     flex-direction: column;
     cursor: pointer;
     display: flex;
-    background: var(--light-mode-main-color);
+    background-color: #fafbfc;
     border-radius: 12px;
     border: 1px solid var(--border-color);
     padding: 13px 17px;

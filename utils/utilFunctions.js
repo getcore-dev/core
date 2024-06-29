@@ -56,7 +56,7 @@ const utilFunctions = {
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
         LEFT JOIN communities c ON p.communities_id = c.id
         LEFT JOIN user_relationships ur ON u.id = ur.followed_id AND ur.follower_id = ${userId}
-        WHERE p.deleted = 0
+        WHERE p.deleted = 0 AND c.PrivacySetting = 'Public' AND c.id != 9
         GROUP BY 
           p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.subtitle, 
           p.communities_id, u.avatar, c.name, c.shortname, c.community_color, u.isAdmin, u.verified,
@@ -428,7 +428,7 @@ const utilFunctions = {
           FROM posts p
           INNER JOIN users u ON p.user_id = u.id
           LEFT JOIN userPostActions upa ON p.id = upa.post_id
-          WHERE p.deleted = 0
+          WHERE p.deleted = 0 AND communities_id != 9
           GROUP BY p.id, p.created_at, p.deleted,  p.title, p.content, p.subtitle, p.link, p.communities_id,
                    u.username, u.avatar, p.react_like, p.react_love, p.react_curious,
                    p.react_interesting, p.react_celebrate, p.views
@@ -506,6 +506,8 @@ const utilFunctions = {
         AND cm.user_id = ${user ? user.id : null}
       WHERE 
         c.PrivacySetting = 'Public'
+      AND 
+        communities_id != 9
       ORDER BY 
         MemberCount DESC
     `;

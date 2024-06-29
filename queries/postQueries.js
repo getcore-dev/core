@@ -17,7 +17,7 @@ const postQueries = {
   getPosts: async () => {
     try {
       const result = await sql.query(
-        "SELECT * FROM posts WHERE deleted = 0 ORDER BY created_at DESC"
+        "SELECT * FROM posts WHERE deleted = 0 AND communities_id != 9 ORDER BY created_at DESC"
       );
       const posts = result.recordset;
 

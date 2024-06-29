@@ -1091,7 +1091,7 @@ input {
   cursor: pointer;
 }
 
-#submit-button-normal, #cancel-button-normal, #regular-button-normal, .submit-button-normal, .cancel-button-normal, .regular-button-normal, .special-button-normal, #special-button-normal {
+#submit-button-normal, #cancel-button-normal, #regular-button-normal, .submit-button-normal, .cancel-button-normal, .regular-button-normal, .special-button-normal, #special-button-normal, .null-button-normal, #null-button-normal, #null-button, .null-button {
   font-size: .875rem;
   border: none;
   width: auto;
@@ -1120,6 +1120,12 @@ input {
   border-color: #ffa600 !important;
   background: #ffa60038 !important;
   color: #ffa600 !important;
+}
+
+.null-button, #null-button, .null-button-normal, #null-button-normal {
+  background: #88888836;
+  color: #161616;
+  border: 1px solid #333333;
 }
 
 .margin-v-auto {
@@ -1895,7 +1901,7 @@ height: auto;
     pointer-events: none;
   }
 
-  #submit-button-normal, #cancel-button-normal, #regular-button-normal, .submit-button-normal, .cancel-button-normal, .regular-button-normal, .special-button-normal, #special-button-normal {
+  #submit-button-normal, #cancel-button-normal, #regular-button-normal, .submit-button-normal, .cancel-button-normal, .regular-button-normal, .special-button-normal, #special-button-normal, .null-button-normal, #null-button-normal, #null-button, .null-button {
     padding: .45rem .85rem;
   }
 
