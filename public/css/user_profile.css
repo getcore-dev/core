@@ -239,7 +239,8 @@ main {
   flex-direction: row;
   gap: 4px;
   align-items: center;
-
+  justify-content: space-between;
+  padding-right: 10px;
 }
 
 .communities-info {

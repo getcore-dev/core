@@ -1420,7 +1420,7 @@ p.preview-description {
 }
 
 div.post-information {
-  padding: 1rem .8rem;
+  padding: 0 .8rem;
   padding-bottom: .45rem;
 }
 
@@ -1969,6 +1969,7 @@ div.username {
   .main-container {
     border-radius: 0px;
     margin: 0px 0px;
+    margin-top: 1.2rem;
     padding: 0px;
     max-width: 100% !important;
   }

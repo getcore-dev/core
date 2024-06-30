@@ -45,6 +45,11 @@
     <%- include('partials/com-btn-container', { }) %>
 
     <div class="main-container">
+      <% if (post.deleted) { %>
+      <div class="error-messages">
+        <p>This post has been deleted</p>
+      </div>
+      <% } %>
       <% if (post.post_type != 'blog') { %>
       <% } %>
       <div class="post">
@@ -219,10 +224,13 @@
 
         </div>
         <div class="interact-buttons">
+          <% if (!post.deleted) { %>
+
           <% if (user && user.username === post.username) { %>
           <button class="regular-button-normal" onclick="window.location.href='/posts/<%= post.id %>/edit'">
             Edit
           </button>
+          <% } %>
           <% } %>
           <button class="regular-button-normal" onclick="share('<%= post.title %>', '', 'https://c-ore.dev/posts/<%= post.id %>')">
             Share
@@ -234,11 +242,13 @@
           </button>
           <% } %>
 
+          <% if (!post.deleted) { %>
 
           <% if (user && user.username === post.username) { %>
           <button class="cancel-button-normal" onclick="deletePost('<%= post.id %>')">
             Delete
           </button>
+          <% } %>
           <% } %>
           <div class="dropdown">
             <button class="null-button-normal" onclick="showDropdown(event)">
@@ -446,11 +456,15 @@
                       %>
             <%= totalReplies %> comment<%= totalReplies !== 1 ? 's' : '' %>
           </div>
+          <% if (!post.deleted) { %>
+
           <% if (user) { %>
           <div class="add-comment-button" onclick="<% if (user) { %>showCommentForm()<% } else { %>window.location.href = '/login';<% } %>">
             Add Comment
           </div>
           <% } %>
+          <% } %>
+
           <div class="sort-selector" style="display: none">
             <button class="sort-option active" onclick="sortComments('best')">Best</button>
             <button class="sort-option" onclick="sortComments('newest')">Newest</button>
@@ -656,10 +670,13 @@
               </div>
 
               <div class="replies">
+                <% if (!post.deleted) { %>
+
                 <% if (user) { %>
                 <a href="#" id="reply-button-<%= comment.id %>" onclick="<% if (user) { %>showReplyForm('<%= comment.id %>', event)<% } else { %>window.location.href = '/login';<% } %>">
                   Add Reply
                 </a>
+                <% } %>
                 <% } %>
               </div>
             </div>

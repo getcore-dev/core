@@ -6,7 +6,7 @@ const session = require("express-session");
 const methodOverride = require("method-override");
 const sql = require("mssql");
 const rateLimit = require("express-rate-limit");
-const MS_PER_HOUR = 3600000; 
+const MS_PER_HOUR = 3600000;
 
 const environment = require("./config/environment");
 const dbConfig = require("./config/dbConfig");
@@ -103,11 +103,12 @@ app.use(errorHandler);
 
 function runJobBoardService() {
   console.log("Job board service started");
-  jobBoardService.start()
+  jobBoardService
+    .start()
     .then(() => {
       console.log("Job board service completed successfully");
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("Error running job board service:", error);
     })
     .finally(() => {
@@ -119,14 +120,16 @@ function scheduleNextRun() {
   const delayHours = 12 + Math.random() * 6;
   const delayMs = delayHours * MS_PER_HOUR;
 
-  console.log(`Next job board service run scheduled in ${delayHours.toFixed(2)} hours`);
+  console.log(
+    `Next job board service run scheduled in ${delayHours.toFixed(2)} hours`
+  );
 
   setTimeout(runJobBoardService, delayMs);
 }
 
 app.listen(environment.port, () => {
   console.log(`Server running on http://localhost:${environment.port}`);
-  
+
   // Initial run of the job board service
   runJobBoardService();
 });

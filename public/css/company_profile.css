@@ -17,7 +17,7 @@ main {
     align-items: center;
     gap: 10px;
     width: 100%;
-    margin-bottom: 16px;
+    margin-bottom: .4rem;
 }
 
 .company-flair {
@@ -25,6 +25,7 @@ main {
     flex-direction: row;
     gap: 4px;
     margin: 7px 0;
+    margin-bottom: 2rem;
 }
 
 .company-flair-item {
@@ -104,6 +105,7 @@ main {
   line-height: 1.125rem;
   margin: 0;
   font-size: .925rem;
+  margin-bottom: .6rem;
 }
 
 p.job-description {

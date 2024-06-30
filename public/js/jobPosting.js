@@ -330,6 +330,12 @@ group
               <span class="material-symbols-outlined">
               visibility
               </span> ${job.views ? job.views : 0} views
+            </p>
+              <p> 
+              <span class="material-symbols-outlined">
+              person
+              </span> ${job.applicants ? job.applicants : 0} applicants
+            </p>
               <p>
               <span class="material-symbols-outlined">attach_money</span>
               <strong style="color:#26704a;">

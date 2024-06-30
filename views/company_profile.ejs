@@ -55,7 +55,9 @@
         <% } %>
       </div>
 
-      <span class="company-description"><%= company.description %></span>
+      <div class="company-description">
+        <p><%= company.description %></p>
+      </div>
       <div class="company-flair">
         <% if (company.job_board_url) { %>
         <span class="link-display">

@@ -147,10 +147,9 @@
               </p>
 
               <div class="followers-info">
-                <span class="material-symbols-outlined">
-                  person
-                </span>
-                <a href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; gap: 5px;"><span id="followerCount"> <%= otheruser.followerCount %> Followers </a></span>
+                <a href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; gap: 5px;"> <span class="material-symbols-outlined">
+                    person
+                  </span><span id="followerCount"> <%= otheruser.followerCount %> Followers </a></span>
                 <a href="/user/<%= otheruser.username %>/following" style="display: flex; flex-direction:row; gap: 5px;"><span id="followCount"> <%= otheruser.followingCount %> Following</a></span>
               </div>
               <% if (otheruser.topCommunities && otheruser.topCommunities.length > 0) { %>
@@ -380,9 +379,10 @@
           </div>
         </div>
       </div>
+      <%- include('partials/footer') %>
+
 
   </main>
-  <%- include('partials/footer') %>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
