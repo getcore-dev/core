@@ -1,4 +1,4 @@
-let jobPostings = []; // Declare jobPostings in a higher scope
+let jobPostings = [];
 let currentPage = 1;
 let isLoading = false;
 const itemsPerPage = 20;
@@ -7,28 +7,10 @@ let filters = {
   location: "",
   title: "",
   salary: 0,
+  tags: [],
 };
-
-document.addEventListener("DOMContentLoaded", () => {
-  fetchJobPostings(currentPage, filters);
-  setupDynamicFilters();
-  fetchTopTags();
-  document
-    .querySelector(".load-more-btn")
-    .addEventListener("click", handleLoadMore);
-});
-
-const loadMoreButton = document.querySelector(".load-more-button");
-const loadMoreDiv = document.querySelector(".load-more");
-const observer = new IntersectionObserver((entries) => {
-  if (entries[0].isIntersecting && !isLoading) {
-    handleLoadMore(currentPage);
-  }
-});
-
-if (loadMoreDiv) {
-  observer.observe(loadMoreDiv);
-}
+let allTags = [];
+let isTagsExpanded = false;
 
 const jobTitles = [
   "Software Engineer",
@@ -50,6 +32,13 @@ const jobLevels = [
   "Lead",
   "Manager",
 ];
+
+document.addEventListener("DOMContentLoaded", () => {
+  setupDynamicFilters();
+  setupEventListeners();
+  fetchTopTags();
+  fetchJobPostings(currentPage, filters);
+});
 
 function setupDynamicFilters() {
   setupFilter("experienceLevel");
@@ -119,24 +108,18 @@ function setupFilter(filterType) {
       "Wisconsin",
       "Wyoming",
     ];
-  } else {
-    uniqueValues = [
-      ...new Set(jobPostings.map((job) => job[filterType])),
-    ].sort();
   }
 
   const filterContainer = document.querySelector(`.${filterType}-filter`);
-  filterContainer.innerHTML = ""; // Clear any existing elements
+  filterContainer.innerHTML = "";
 
   if (filterType === "title" || filterType === "location") {
     const input = document.createElement("input");
     input.className = "filter-input input-theme";
     input.type = "text";
-    if (filterType === "title") {
-      input.placeholder = "Search by job title";
-    } else if (filterType === "location") {
-      input.placeholder = "Search by location";
-    }
+    input.placeholder = `Search by ${
+      filterType === "title" ? "job title" : "location"
+    }`;
 
     input.addEventListener("input", (e) => {
       filters[filterType] = e.target.value;
@@ -145,30 +128,15 @@ function setupFilter(filterType) {
       fetchJobPostings(currentPage, filters);
     });
     filterContainer.appendChild(input);
-
-    if (filterType === "title") {
-      const sortOptionsButton = document.createElement("button");
-      sortOptionsButton.innerHTML =
-        "<span class='material-symbols-outlined'>sort</span>";
-      sortOptionsButton.className = "sort-options-button";
-      sortOptionsButton.onclick = () => {
-        toggleSortOptions();
-      };
-      filterContainer.appendChild(sortOptionsButton);
-    }
   } else {
     const dropdown = document.createElement("select");
-    let filterLabel = filterType[0].toUpperCase() + filterType.slice(1);
-    if (filterType === "experienceLevel") {
-      filterLabel = "Experience Level";
-    }
     dropdown.innerHTML =
-      `<option value="">${filterLabel}</option>` +
+      `<option value="">${
+        filterType === "experienceLevel" ? "Experience Level" : filterType
+      }</option>` +
       uniqueValues
         .map((value) => `<option value="${value}">${value}</option>`)
         .join("");
-
-    filterContainer.appendChild(dropdown);
 
     dropdown.addEventListener("change", (e) => {
       filters[filterType] = e.target.value;
@@ -176,55 +144,8 @@ function setupFilter(filterType) {
       jobPostings = [];
       fetchJobPostings(currentPage, filters);
     });
+    filterContainer.appendChild(dropdown);
   }
-}
-
-function fetchTopTags() {
-  fetch("/jobs/getTopTags/")
-    .then((response) => response.json())
-    .then((tags) => {
-      const topTags = document.querySelector(".top-tags");
-      const maxTags = 4; // Maximum number of tags to display
-      const displayedTags = tags.slice(0, maxTags);
-      const remainingTags = tags.slice(maxTags);
-
-      topTags.innerHTML = displayedTags
-        .map(
-          (tag) =>
-            `<span class="tag" onclick="window.location.href='/tags/${tag.tagName}'">${tag.tagName} ${tag.count}</span>`
-        )
-        .join("");
-
-      if (remainingTags.length > 0) {
-        const seeMore = document.createElement("span");
-        seeMore.className = "see-more";
-        seeMore.innerText = `+${remainingTags.length} more`;
-        topTags.appendChild(seeMore);
-
-        const hiddenTags = remainingTags
-          .map(
-            (tag) =>
-              `<span class="tag hidden" onclick="window.location.href='/tags/${tag.tagName}'">${tag.tagName} ${tag.count}</span>`
-          )
-          .join("");
-        topTags.insertAdjacentHTML("beforeend", hiddenTags);
-
-        seeMore.addEventListener("click", () => {
-          const tagsToToggle = topTags.querySelectorAll(".tag.hidden");
-          tagsToToggle.forEach((tag) => tag.classList.toggle("hidden"));
-
-          // Update the text of "see more" to "see less" or vice versa
-          if (seeMore.innerText.includes("more")) {
-            seeMore.innerText = "See less";
-          } else {
-            seeMore.innerText = `+${remainingTags.length} more`;
-          }
-        });
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching top tags:", error);
-    });
 }
 
 function setupSalaryFilter() {
@@ -240,32 +161,160 @@ function setupSalaryFilter() {
 
 function applySalaryFilter() {
   const minSalary = document.getElementById("min-salary").value;
-  console.log(minSalary);
-  filters.salary = parseInt(minSalary);
+  filters.salary = parseInt(minSalary) || 0;
   currentPage = 1;
   jobPostings = [];
   fetchJobPostings(currentPage, filters);
 }
 
-function handleLoadMore() {
-  currentPage++;
-  fetchJobPostings(currentPage, filters);
+function fetchTopTags() {
+  fetch("/api/getTopTags")
+    .then((response) => response.json())
+    .then((tags) => {
+      allTags = tags; // Store all tags
+      const topTags = document.querySelector(".top-tags");
+      const selectedTagsContainer =
+        document.querySelector(".selected-tags") ||
+        createSelectedTagsContainer();
+      const maxTags = 10;
+      const displayedTags = tags.slice(0, maxTags);
+      const remainingTags = tags.slice(maxTags);
+
+      renderTags(topTags, displayedTags);
+
+      if (remainingTags.length > 0) {
+        const seeMore = createSeeMoreButton(remainingTags);
+        topTags.appendChild(seeMore);
+        renderTags(topTags, remainingTags, true);
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching top tags:", error);
+    });
+}
+
+function createSelectedTagsContainer() {
+  const container = document.createElement("div");
+  container.className = "selected-tags";
+  document.querySelector(".job-filters").prepend(container);
+  return container;
+}
+
+function renderTags(container, tags, hidden = false) {
+  const tagsHTML = tags
+    .map(
+      (tag, index) =>
+        `<span class="tag ${hidden ? "hidden" : ""}" data-tag="${
+          tag.tagName
+        }" data-index="${index}">${tag.tagName} ${tag.count}</span>`
+    )
+    .join("");
+  container.insertAdjacentHTML("beforeend", tagsHTML);
+}
+
+function createSeeMoreButton(remainingTags) {
+  const seeMore = document.createElement("span");
+  seeMore.className = "see-more";
+  seeMore.innerText = `+${remainingTags.length} more`;
+  seeMore.addEventListener("click", () => toggleHiddenTags(seeMore));
+  return seeMore;
+}
+
+function toggleHiddenTags(seeMoreButton) {
+  const topTags = seeMoreButton.closest(".top-tags");
+  const hiddenTags = topTags.querySelectorAll(".tag:nth-child(n+11)");
+
+  isTagsExpanded = !isTagsExpanded;
+
+  if (isTagsExpanded) {
+    hiddenTags.forEach(tag => tag.classList.remove("hidden"));
+    seeMoreButton.innerText = "See less";
+  } else {
+    hiddenTags.forEach(tag => {
+      if (!filters.tags.includes(tag.dataset.tag)) {
+        tag.classList.add("hidden");
+      }
+    });
+    seeMoreButton.innerText = `+${hiddenTags.length} more`;
+  }
+}
+
+function setupEventListeners() {
+  document.querySelector(".top-tags").addEventListener("click", handleTagClick);
+  document
+    .querySelector(".selected-tags")
+    .addEventListener("click", handleTagClick);
+  document
+    .querySelector(".load-more-btn")
+    .addEventListener("click", handleLoadMore);
+}
+
+function moveTagToOriginalPosition(tag) {
+  const topTags = document.querySelector(".top-tags");
+  const index = parseInt(tag.dataset.index);
+  const seeMoreButton = topTags.querySelector(".see-more");
+
+  if (index < 10) {
+    // If it's one of the first 10 tags, insert it at its original position
+    const tagsInTopContainer = topTags.querySelectorAll('.tag');
+    if (tagsInTopContainer[index]) {
+      topTags.insertBefore(tag, tagsInTopContainer[index]);
+    } else {
+      topTags.insertBefore(tag, seeMoreButton);
+    }
+    tag.classList.remove("hidden");
+  } else {
+    // If it's one of the tags after the first 10
+    topTags.insertBefore(tag, seeMoreButton);
+    if (!isTagsExpanded) {
+      tag.classList.add("hidden");
+    }
+  }
+}
+
+function handleTagClick(event) {
+  if (event.target.classList.contains("tag")) {
+    const tag = event.target;
+    const tagName = tag.dataset.tag;
+    const isSelected = filters.tags.includes(tagName);
+
+    if (isSelected) {
+      filters.tags = filters.tags.filter((t) => t !== tagName);
+      tag.classList.remove("selected");
+      moveTagToOriginalPosition(tag);
+    } else {
+      filters.tags.push(tagName);
+      tag.classList.add("selected");
+      document.querySelector(".selected-tags").appendChild(tag);
+    }
+
+    currentPage = 1;
+    jobPostings = [];
+    fetchJobPostings(currentPage, filters);
+  }
 }
 
 function fetchJobPostings(page, filters) {
   isLoading = true;
 
-  const { title, location, experienceLevel, salary } = filters;
-  const salaryFilter = salary;
+  const { title, location, experienceLevel, salary, tags } = filters;
+  const queryParams = new URLSearchParams({
+    page,
+    limit: itemsPerPage,
+    jobTitle: title || "",
+    jobLocation: location || "",
+    jobExperienceLevel: experienceLevel || "",
+    jobSalary: salary || "0",
+    tags: tags.join(","),
+  });
 
-  fetch(
-    `/api/jobs?page=${page}&limit=${itemsPerPage}&jobTitle=${title}&jobLocation=${location}&jobExperienceLevel=${experienceLevel}&jobSalary=${salaryFilter}`
-  )
+  fetch(`/api/jobs?${queryParams}`)
     .then((response) => response.json())
     .then((data) => {
-      jobPostings = [...jobPostings, ...data.jobPostings];
-      renderJobPostings(); // Make sure to call render without parameters
-      updateLoadMoreButton();
+      jobPostings =
+        page === 1 ? data.jobPostings : [...jobPostings, ...data.jobPostings];
+      renderJobPostings();
+      updateLoadMoreButton(data.currentPage, data.totalPages);
       isLoading = false;
     })
     .catch((error) => {
@@ -274,70 +323,71 @@ function fetchJobPostings(page, filters) {
     });
 }
 
-function updateLoadMoreButton() {
-  const loadMoreBtn = document.querySelector(".load-more-btn");
-  if (jobPostings.length === 0 || jobPostings.length % itemsPerPage !== 0) {
-    loadMoreBtn.style.display = "none";
-  } else {
-    loadMoreBtn.style.display = "block";
+function handleLoadMore() {
+  if (!isLoading) {
+    currentPage++;
+    fetchJobPostings(currentPage, filters);
   }
 }
 
-function toggleSortOptions() {
-  const sortOptions = document.querySelector(".sort-options");
-  sortOptions.classList.toggle("show");
+function updateLoadMoreButton(currentPage, totalPages) {
+  const loadMoreBtn = document.querySelector(".load-more-btn");
+  loadMoreBtn.style.display = currentPage >= totalPages ? "none" : "block";
 }
 
 function renderJobPostings() {
   const jobListContainer = document.querySelector(".job-list");
-  jobListContainer.innerHTML = ""; // Clear existing job postings
+  jobListContainer.innerHTML = "";
 
-  jobPostings.forEach(createJobElement); // Show all jobs if no filters set
-
-  function createJobElement(job) {
+  jobPostings.forEach((job) => {
     const jobElement = document.createElement("div");
     jobElement.classList.add("job");
     jobElement.onclick = () => {
       window.location.href = `/jobs/${job.id}`;
     };
-    const tagsArray = job.tags
-      ? job.tags[1]
-        ? job.tags[1].split(", ")
-        : []
-      : [];
-    const maxTags = 3; // Adjust this value based on your desired maximum number of tags
-    const displayedTags = tagsArray.slice(0, maxTags);
-    const tagsHTML = displayedTags.map((tag) => `${tag}`).join(", ");
+
+    const tagsArray = job.tags ? job.tags.split(", ") : [];
+
+    // Sort tags: selected tags first, then others
+    const sortedTags = tagsArray.sort((a, b) => {
+      const aSelected = filters.tags.includes(a);
+      const bSelected = filters.tags.includes(b);
+      if (aSelected && !bSelected) return -1;
+      if (!aSelected && bSelected) return 1;
+      return 0;
+    });
+
+    // Take only the first 6 tags
+    const displayedTags = sortedTags.slice(0, 6);
+
+    const tagsHTML = displayedTags
+      .map((tag) => {
+        const isHighlighted = filters.tags.includes(tag);
+        return `<span class="tag ${
+          isHighlighted ? "highlighted" : ""
+        }">${tag}</span>`;
+      })
+      .join("");
+
     jobElement.innerHTML = `
-        <div class="job-preview">
-          <div class="job-info">
-            <div class="company-info">
-              ${
-                job.company_logo
-                  ? `
-              <img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${job.company_logo}" alt="" />`
-                  : ""
-              }
-              <div class="job-posting-company-info">
+      <div class="job-preview">
+        <div class="job-info">
+          <div class="company-info">
+            ${
+              job.company_logo
+                ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${job.company_logo}" alt="" />`
+                : ""
+            }
+            <div class="job-posting-company-info">
               <p class="company-name secondary-text">${job.company_name}</p>
-              <h3 class="job-title">
-              <a href="/jobs/${job.id}">
-              ${job.title} 
-              </a>
-              </h3>
-              </div>
+              <h3 class="job-title"><a href="/jobs/${job.id}">${
+      job.title
+    }</a></h3>
             </div>
-            <h5 class="job-subtitle secondary-text">
-                </span>
-              ${job.location}
-            </h5> 
-            <div class="job-main">
-            <div class="job-posting-flairs">
-            ${tagsHTML}
           </div>
-            </div>
-            <div class="job-posting-information job-subtitle secondary-text">
-            <span style="">${
+          <h5 class="job-subtitle secondary-text">${job.location}</h5> 
+          <div class="job-posting-information job-subtitle secondary-text">
+            <span>${
               job.experienceLevel === "Mid Level"
                 ? "L3/L4"
                 : job.experienceLevel === "Entry Level"
@@ -350,10 +400,11 @@ function renderJobPostings() {
             <span class="job-salary" style="margin-left: auto;">USD $${job.salary.toLocaleString()} ${
       job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
     }</span>
-    </div>
           </div>
+          <div class="job-posting-flairs">${tagsHTML}</div>
         </div>
-      `;
+      </div>
+    `;
     jobListContainer.appendChild(jobElement);
-  }
+  });
 }

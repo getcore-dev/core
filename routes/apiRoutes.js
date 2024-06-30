@@ -348,14 +348,25 @@ router.get("/randomJobs", async (req, res) => {
   }
 });
 
+router.get("/getTopTags", cacheMiddleware(3600), async (req, res) => {
+  try {
+    const tags = await jobQueries.getCountOfTopJobTags();
+    res.json(tags);
+  } catch (err) {
+    console.error("Error fetching tags:", err);
+    res.status(500).send("Error fetching tags");
+  }
+});
+
 router.get("/jobs", async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1; // Get the page number from query parameters, default to 1
-    const limit = parseInt(req.query.limit) || 10; // Get the number of items per page, default to 10
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
     const jobTitle = req.query.jobTitle;
     const jobLocation = req.query.jobLocation;
     const jobExperienceLevel = req.query.jobExperienceLevel;
     const jobSalary = req.query.jobSalary;
+    const tags = req.query.tags ? req.query.tags.split(",") : []; // New: Parse tags from query
 
     const jobLevels = [
       "Internship",
@@ -370,21 +381,27 @@ router.get("/jobs", async (req, res) => {
 
     const user = req.user;
     let userPreferences = {};
+    if (user) {
+      userPreferences = {
+        jobPreferredTitle: user.jobPreferredTitle,
+        jobPreferredSkills: user.jobPreferredSkills,
+        jobPreferredLocation: user.jobPreferredLocation,
+        jobExperienceLevel: user.jobExperienceLevel,
+        jobPreferredIndustry: user.jobPreferredIndustry,
+        jobPreferredSalary: user.jobPreferredSalary,
+      };
 
-    if (!!user) {
-      userPreferences = await jobQueries.getUserJobPreferences(user.id);
-      // Parse jobPreferredSkills as an array of integers
-      userPreferences.jobPreferredSkills = userPreferences.jobPreferredSkills
-        .split(",")
-        .map(Number);
+      if (userPreferences.jobPreferredSkills) {
+        userPreferences.jobPreferredSkills = userPreferences.jobPreferredSkills
+          .split(",")
+          .map(Number);
+      } else {
+        userPreferences.jobPreferredSkills = [];
+      }
     }
 
-    const offset = (page - 1) * limit; // Calculate the offset based on page and limit
-
-    // Determine the maximum job level index to show based on the page number
+    const offset = (page - 1) * limit;
     const maxJobLevelIndex = Math.min(page, jobLevels.length) - 1;
-
-    // Filter job levels up to the maxJobLevelIndex
     const allowedJobLevels = jobLevels.slice(0, maxJobLevelIndex + 1);
 
     let [jobPostings, totalCount] = await Promise.all([
@@ -395,61 +412,61 @@ router.get("/jobs", async (req, res) => {
         jobSalary,
         limit,
         offset,
-        allowedJobLevels // Pass allowed job levels to the query
+        allowedJobLevels,
+        tags // New: Pass tags to the search function
       ),
-      jobQueries.getJobsCount(allowedJobLevels), // Adjust the count query to consider allowed job levels
+      jobQueries.getJobsCount(allowedJobLevels, tags), // New: Include tags in count query
     ]);
 
-    // Determine the similarity of job postings to user preferences
     jobPostings = jobPostings.map((job) => {
       let matchCount = 0;
 
       if (
         userPreferences.jobPreferredTitle &&
         job.title === userPreferences.jobPreferredTitle
-      ) {
+      )
         matchCount++;
-      }
       if (
         userPreferences.jobPreferredSkills &&
         Array.isArray(job.skills) &&
         job.skills.some((skill) =>
           userPreferences.jobPreferredSkills.includes(skill)
         )
-      ) {
+      )
         matchCount++;
-      }
       if (
         userPreferences.jobPreferredLocation &&
         job.location.includes(userPreferences.jobPreferredLocation)
-      ) {
+      )
         matchCount++;
-      }
       if (
         userPreferences.jobExperienceLevel &&
         job.experienceLevel === userPreferences.jobExperienceLevel
-      ) {
+      )
         matchCount++;
-      }
       if (
         userPreferences.jobPreferredIndustry &&
         job.industry === userPreferences.jobPreferredIndustry
-      ) {
+      )
         matchCount++;
-      }
       if (
         userPreferences.jobPreferredSalary &&
         job.salary >= userPreferences.jobPreferredSalary
-      ) {
+      )
         matchCount++;
-      }
 
-      job.topPick = matchCount >= 2 ? 1 : 0; // Adjusted to consider 2 matches as a top pick
-      job.matchCount = matchCount; // Add matchCount to job for sorting purposes
+      // New: Check for tag matches
+      const jobTags = job.tags
+        ? job.tags.split(",").map((tag) => tag.trim())
+        : [];
+      const tagMatchCount = tags.filter((tag) => jobTags.includes(tag)).length;
+      matchCount += tagMatchCount;
+
+      job.topPick = matchCount >= 2 ? 1 : 0;
+      job.matchCount = matchCount;
       return job;
     });
 
-    // Sort job postings by non-negotiable criteria first, then by matchCount
     jobPostings.sort((a, b) => {
       if (
         a.title === userPreferences.jobPreferredTitle &&

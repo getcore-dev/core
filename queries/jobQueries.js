@@ -187,114 +187,6 @@ const jobQueries = {
     }
   },
 
-  getJobsBySearch: async (
-    title = "",
-    location = "",
-    experienceLevel = "",
-    salary = 0,
-    limit,
-    offset
-  ) => {
-    try {
-      let fullStateName = location;
-      let stateAbbreviation = location;
-
-      if (location !== "") {
-        const stateMappings = {
-          Alabama: "AL",
-          Alaska: "AK",
-          Arizona: "AZ",
-          Arkansas: "AR",
-          California: "CA",
-          Colorado: "CO",
-          Connecticut: "CT",
-          Delaware: "DE",
-          Florida: "FL",
-          Georgia: "GA",
-          Hawaii: "HI",
-          Idaho: "ID",
-          Illinois: "IL",
-          Indiana: "IN",
-          Iowa: "IA",
-          Kansas: "KS",
-          Kentucky: "KY",
-          Louisiana: "LA",
-          Maine: "ME",
-          Maryland: "MD",
-          Massachusetts: "MA",
-          Michigan: "MI",
-          Minnesota: "MN",
-          Mississippi: "MS",
-          Missouri: "MO",
-          Montana: "MT",
-          Nebraska: "NE",
-          Nevada: "NV",
-          "New Hampshire": "NH",
-          "New Jersey": "NJ",
-          "New Mexico": "NM",
-          "New York": "NY",
-          "North Carolina": "NC",
-          "North Dakota": "ND",
-          Ohio: "OH",
-          Oklahoma: "OK",
-          Oregon: "OR",
-          Pennsylvania: "PA",
-          "Rhode Island": "RI",
-          "South Carolina": "SC",
-          "South Dakota": "SD",
-          Tennessee: "TN",
-          Texas: "TX",
-          Utah: "UT",
-          Vermont: "VT",
-          Virginia: "VA",
-          Washington: "WA",
-          "West Virginia": "WV",
-          Wisconsin: "WI",
-          Wyoming: "WY",
-          "United States": "US",
-        };
-
-        // Check if the location is an abbreviation or full state name
-        fullStateName =
-          Object.keys(stateMappings).find(
-            (key) => stateMappings[key] === location
-          ) || location;
-        stateAbbreviation = stateMappings[location] || location;
-
-        // Ensure abbreviation for full state name
-        if (fullStateName === location && stateMappings[location]) {
-          fullStateName = location;
-          stateAbbreviation = stateMappings[location];
-        }
-      }
-
-      const result = await sql.query(`
-        SELECT JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
-        (
-          SELECT STRING_AGG(JobTags.tagName, ', ')
-          FROM JobPostingsTags
-          INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
-          WHERE JobPostingsTags.jobId = JobPostings.id
-        ) AS tags
-        FROM JobPostings
-        LEFT JOIN companies ON JobPostings.company_id = companies.id
-        WHERE JobPostings.title LIKE '%${title}%' 
-        AND (JobPostings.location LIKE '%${fullStateName}%' OR JobPostings.location LIKE '% ${stateAbbreviation}, %')
-        AND JobPostings.experienceLevel LIKE '%${experienceLevel}%' 
-        AND JobPostings.salary >= ${salary}
-        AND JobPostings.postedDate >= DATEADD(day, -30, GETDATE())
-        ORDER BY JobPostings.postedDate DESC
-        OFFSET ${offset} ROWS
-        FETCH NEXT ${limit} ROWS ONLY
-      `);
-      const jobs = result.recordset;
-      return jobs;
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err;
-    }
-  },
-
   getRandomJobs: async (limit) => {
     try {
       const result = await sql.query(`
@@ -317,16 +209,159 @@ const jobQueries = {
     }
   },
 
-  getJobsCount: async () => {
+  getJobsBySearch: async (
+    title,
+    location,
+    experienceLevel,
+    salary,
+    limit,
+    offset,
+    allowedJobLevels,
+    tags
+  ) => {
     try {
-      const result = await sql.query(`
-        SELECT COUNT(*) AS count
-        FROM JobPostings
-      `);
+      let query = `
+        SELECT 
+          j.id, j.title, j.salary, j.salary_max, j.experienceLevel, j.location, j.postedDate,
+          j.link, j.description, j.company_id, j.recruiter_id, j.views,
+          c.name AS company_name, c.logo AS company_logo, c.location AS company_location, 
+          c.description AS company_description,
+          (
+            SELECT STRING_AGG(jt.tagName, ', ')
+            FROM JobPostingsTags jpt
+            INNER JOIN JobTags jt ON jpt.tagId = jt.id
+            WHERE jpt.jobId = j.id
+          ) AS tags,
+          (
+            SELECT STRING_AGG(s.name, ', ')
+            FROM job_skills js
+            INNER JOIN skills s ON js.skill_id = s.id
+            WHERE js.job_id = j.id
+          ) AS skills
+        FROM JobPostings j
+        LEFT JOIN companies c ON j.company_id = c.id
+        WHERE 1=1
+      `;
+
+      const queryParams = {};
+
+      if (title) {
+        query += ` AND j.title LIKE @title`;
+        queryParams.title = `%${title}%`;
+      }
+
+      if (location) {
+        query += ` AND (j.location LIKE @location OR j.location LIKE @stateAbbr)`;
+        queryParams.location = `%${location}%`;
+        queryParams.stateAbbr = `% ${location.substring(0, 2)},%`; // For state abbreviations
+      }
+
+      if (experienceLevel) {
+        query += ` AND j.experienceLevel = @experienceLevel`;
+        queryParams.experienceLevel = experienceLevel;
+      }
+
+      if (salary) {
+        query += ` AND j.salary >= @salary`;
+        queryParams.salary = parseInt(salary);
+      }
+
+      if (allowedJobLevels && allowedJobLevels.length > 0) {
+        query += ` AND j.experienceLevel IN (${allowedJobLevels
+          .map((_, i) => `@level${i}`)
+          .join(", ")})`;
+        allowedJobLevels.forEach((level, i) => {
+          queryParams[`level${i}`] = level;
+        });
+      }
+
+      if (tags && tags.length > 0) {
+        query += `
+          AND EXISTS (
+            SELECT 1 FROM JobPostingsTags jpt
+            INNER JOIN JobTags jt ON jpt.tagId = jt.id
+            WHERE jpt.jobId = j.id AND jt.tagName IN (${tags
+              .map((_, i) => `@tag${i}`)
+              .join(", ")})
+          )
+        `;
+        tags.forEach((tag, i) => {
+          queryParams[`tag${i}`] = tag;
+        });
+      }
+
+      query += `
+        GROUP BY 
+          j.id, j.title, j.salary, j.salary_max, j.experienceLevel, j.location, j.postedDate,
+          j.link, j.description, j.company_id, j.recruiter_id, j.views,
+          c.name, c.logo, c.location, c.description
+        ORDER BY j.postedDate DESC
+        OFFSET @offset ROWS
+        FETCH NEXT @limit ROWS ONLY
+      `;
+
+      queryParams.offset = offset;
+      queryParams.limit = limit;
+
+      const request = new sql.Request();
+      Object.entries(queryParams).forEach(([key, value]) => {
+        request.input(key, value);
+      });
+
+      const result = await request.query(query);
+      console.log(result.recordset);
+      return result.recordset;
+    } catch (error) {
+      console.error("Error in getJobsBySearch:", error);
+      throw error;
+    }
+  },
+
+  // You would also need to update the getJobsCount function similarly
+  getJobsCount: async (allowedJobLevels, tags) => {
+    try {
+      let query = `
+        SELECT COUNT(DISTINCT j.id) as count
+        FROM JobPostings j
+        WHERE 1=1
+      `;
+
+      const queryParams = {};
+
+      if (allowedJobLevels && allowedJobLevels.length > 0) {
+        query += ` AND j.experienceLevel IN (${allowedJobLevels
+          .map((_, i) => `@level${i}`)
+          .join(", ")})`;
+        allowedJobLevels.forEach((level, i) => {
+          queryParams[`level${i}`] = level;
+        });
+      }
+
+      if (tags && tags.length > 0) {
+        query += `
+          AND EXISTS (
+            SELECT 1 FROM JobPostingsTags jpt
+            INNER JOIN JobTags jt ON jpt.tagId = jt.id
+            WHERE jpt.jobId = j.id AND jt.tagName IN (${tags
+              .map((_, i) => `@tag${i}`)
+              .join(", ")})
+          )
+        `;
+        tags.forEach((tag, i) => {
+          queryParams[`tag${i}`] = tag;
+        });
+      }
+
+      const request = new sql.Request();
+      Object.entries(queryParams).forEach(([key, value]) => {
+        request.input(key, value);
+      });
+
+      const result = await request.query(query);
       return result.recordset[0].count;
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err;
+    } catch (error) {
+      console.error("Error in getJobsCount:", error);
+      throw error;
     }
   },
 
@@ -935,7 +970,7 @@ const jobQueries = {
   getCountOfTopJobTags: async () => {
     try {
       const result = await sql.query`
-        SELECT TOP 9 tagName, COUNT(tagId) AS count
+        SELECT TOP 30 tagName, COUNT(tagId) AS count
         FROM JobPostingsTags
         INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
         GROUP BY tagId, tagName
