@@ -204,23 +204,20 @@ router.get("/:communityName/admin", checkAuthenticated, async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const communities = await communityQueries.getCommunities();
     const user = req.user;
+    let communities = await communityQueries.getCommunities();
 
-    if (user) {
-      for (const community of communities) {
-        community.isMember = await communityQueries.checkMembership(
-          user.id,
-          community.id
-        );
-        community.isModerator = await communityQueries.checkModerator(
-          user.id,
-          community.id
-        );
-      }
+    if (user && user.id) {
+      const userMemberships = await communityQueries.getUserMemberships(user.id);
+
+      communities = communities.map(community => ({
+        ...community,
+        isMember: userMemberships.some(m => m.community_id === community.id),
+        isModerator: userMemberships.some(m => m.community_id === community.id && m.is_moderator)
+      }));
     }
 
-    res.render("community.ejs", { user: req.user, communities });
+    res.render("community.ejs", { user, communities });
   } catch (error) {
     console.error("Get communities error:", error.message);
     return res.status(500).send("Error fetching communities");

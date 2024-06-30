@@ -361,12 +361,12 @@ router.get("/getTopTags", cacheMiddleware(3600), async (req, res) => {
 router.get("/jobs", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 20; // Changed to 20 to match client-side
     const jobTitle = req.query.jobTitle;
     const jobLocation = req.query.jobLocation;
     const jobExperienceLevel = req.query.jobExperienceLevel;
     const jobSalary = req.query.jobSalary;
-    const tags = req.query.tags ? req.query.tags.split(",") : []; // New: Parse tags from query
+    const tags = req.query.tags ? req.query.tags.split(",") : [];
 
     const jobLevels = [
       "Internship",
@@ -413,9 +413,9 @@ router.get("/jobs", async (req, res) => {
         limit,
         offset,
         allowedJobLevels,
-        tags // New: Pass tags to the search function
+        tags
       ),
-      jobQueries.getJobsCount(allowedJobLevels, tags), // New: Include tags in count query
+      jobQueries.getJobsCount(jobTitle, jobLocation, jobExperienceLevel, jobSalary, allowedJobLevels, tags),
     ]);
 
     jobPostings = jobPostings.map((job) => {
@@ -455,7 +455,6 @@ router.get("/jobs", async (req, res) => {
       )
         matchCount++;
 
-      // New: Check for tag matches
       const jobTags = job.tags
         ? job.tags.split(",").map((tag) => tag.trim())
         : [];

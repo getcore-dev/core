@@ -43,7 +43,7 @@
 
       <div id="posts-container" data-community-id="<%= communityId || '' %>">
         <% if (communityId != null) { %>
-        <div class="community" style="margin: 0 13px; margin-bottom: 0px; margin-top: 10px; border: 0; background-color: rgba(0,0,0,0);">
+        <div class="community" style="margin: 0 13px; margin-bottom: 2.4rem; margin-top: 10px; border: 0; background-color: rgba(0,0,0,0);">
           <div class="community-content">
             <div class="community-info">
               <div class="community-title">
@@ -56,19 +56,23 @@
                 <%= community.description%>
               </div>
               <div class="community-flairs">
-                <span class="community-flair ">👤 <%= community.MemberCount ? community.MemberCount : 0 %> members</span>
-                <span class="community-flair">✉️ <%= communityPostCount %> posts</span>
+                <span class="community-flair"><span class="material-symbols-outlined">
+                    person
+                  </span><%= community.MemberCount ? community.MemberCount : 0 %> members</span>
+                <span class="community-flair"><span class="material-symbols-outlined">
+                    forum
+                  </span><%= communityPostCount %> posts</span>
               </div>
               <div class="community-tags">
                 <% try { %>
                 <% let tags = community.Tags.split(','); %>
+                <% if (tags.length > 0) { %>
+                <button class="see-more" onclick="toggleTags()">show tags</button>
+                <% } %>
                 <% let hiddenTags = tags.length; %>
                 <% tags.forEach((tag, index) => { %>
                 <span class="tag <%= index >= 0 ? 'hidden-tag' : '' %>" onclick="window.location.href='/tags/<%= tag.trim() %>'"><%= tag.trim() %></span>
                 <% }); %>
-                <% if (tags.length > 0) { %>
-                <button class="see-more" onclick="toggleTags()">show tags</button>
-                <% } %>
                 <% } catch (error) { %>
 
                 <% } %>
@@ -254,7 +258,12 @@
           posts.forEach(post => {
             // Main post div
             const postDiv = document.createElement('div');
-            postDiv.className = 'post';
+            if (post.isGlobalPinned) {
+              postDiv.className = 'post pinned';
+            } else {
+
+              postDiv.className = 'post';
+            }
             postDiv.onclick = () => window.location.href = '/posts/' + post.id;
 
 
@@ -321,7 +330,7 @@
             const usernameDiv = document.createElement('div');
             usernameDiv.className = 'username';
             const usernameLink = document.createElement('p');
-            usernameLink.className = 'post-quick-info';
+            usernameLink.className = 'post-quick-info secondary-text';
             usernameLink.href = '/user/' + post.username;
             const usernameColor = post.isAdmin ? '#b40000' : 'inherit';
 
@@ -821,7 +830,11 @@
         fetchJobPreviews();
       } else {
         console.log(communityId);
-        fetchCommunityJobPreviews(communityId);
+        try {
+          fetchCommunityJobPreviews(communityId);
+        } catch (error) {
+          console.error('Error fetching community job previews:', error);
+        }
       }
     });
   </script>

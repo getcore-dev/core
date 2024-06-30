@@ -2,9 +2,22 @@ function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
+
   // Save the original URL they were requesting:
   req.session.returnTo = req.originalUrl;
-  return res.redirect("/login");
+
+  // Check if this is an API request or a regular browser request
+  if (req.xhr || req.headers.accept.indexOf("json") > -1) {
+    // For API requests, send a JSON response
+    return res.status(401).json({
+      success: false,
+      message: "You must be logged in to perform this action",
+      redirect: "/login",
+    });
+  } else {
+    // For regular browser requests, redirect to login page
+    return res.redirect("/login");
+  }
 }
 
 function checkNotAuthenticated(req, res, next) {

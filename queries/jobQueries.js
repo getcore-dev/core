@@ -253,7 +253,7 @@ const jobQueries = {
       if (location) {
         query += ` AND (j.location LIKE @location OR j.location LIKE @stateAbbr)`;
         queryParams.location = `%${location}%`;
-        queryParams.stateAbbr = `% ${location.substring(0, 2)},%`; // For state abbreviations
+        queryParams.stateAbbr = `% ${location.substring(0, 2)},%`;
       }
 
       if (experienceLevel) {
@@ -291,10 +291,6 @@ const jobQueries = {
       }
 
       query += `
-        GROUP BY 
-          j.id, j.title, j.salary, j.salary_max, j.experienceLevel, j.location, j.postedDate,
-          j.link, j.description, j.company_id, j.recruiter_id, j.views,
-          c.name, c.logo, c.location, c.description
         ORDER BY j.postedDate DESC
         OFFSET @offset ROWS
         FETCH NEXT @limit ROWS ONLY
@@ -309,7 +305,6 @@ const jobQueries = {
       });
 
       const result = await request.query(query);
-      console.log(result.recordset);
       return result.recordset;
     } catch (error) {
       console.error("Error in getJobsBySearch:", error);
@@ -799,7 +794,8 @@ const jobQueries = {
           h1bVisaSponsorship,
           isRemote,
           equalOpportunityEmployerInfo,
-          relocation
+          relocation,
+          applicants
         )
         OUTPUT INSERTED.id
         VALUES (
@@ -826,7 +822,8 @@ const jobQueries = {
           ${h1bVisaSponsorship},
           ${isRemote},
           ${equalOpportunityEmployerInfo},
-          ${relocation}
+          ${relocation},
+          0
         )
       `;
 

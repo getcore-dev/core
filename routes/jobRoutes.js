@@ -27,13 +27,12 @@ router.get("/:jobId", viewLimiter, async (req, res) => {
   try {
     const jobId = req.params.jobId;
     console.log(`Attempting to fetch job with ID: ${jobId}`);
-    
+
     if (!req.rateLimit || !req.rateLimit.exceeded) {
       await jobQueries.incrementJobViewCount(jobId);
     }
-    
+
     const job = await jobQueries.findById(jobId);
-    console.log(`Job fetched:`, job);
 
     if (!job) {
       console.log(`No job found with ID: ${jobId}`);
@@ -46,7 +45,10 @@ router.get("/:jobId", viewLimiter, async (req, res) => {
       job: job,
     });
   } catch (err) {
-    console.error(`Error fetching job posting with ID ${req.params.jobId}:`, err);
+    console.error(
+      `Error fetching job posting with ID ${req.params.jobId}:`,
+      err
+    );
     res.status(500).send("Error fetching job posting");
   }
 });

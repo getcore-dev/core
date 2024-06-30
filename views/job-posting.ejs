@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="/css/com-btn-container.css" />
   <link rel="stylesheet" href="/css/job-posting.css" />
   <link rel="shortcut icon" href="/img/core.png" />
-  
+
 
   <meta name="description" content="Explore job openings at CORE. Find your next career opportunity and join our team to make a difference.">
   <meta name="keywords" content="CORE job openings, career opportunities, job listings, join CORE, employment, job search, <%= job.tags %>">
@@ -45,9 +45,24 @@
 
   <script src="/js/jobPosting.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    function extractJobIdFromUrl() {
+      const urlParts = window.location.pathname.split("/");
+      return urlParts[urlParts.length - 1];
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const year = date.getFullYear();
+      return `${month}/${day}/${year}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
       const jobId = extractJobIdFromUrl();
-      lazyLoadJobDetails('<%= user && user.isAdmin %>', jobId);
+      const userIsAdmin = "<%= user && user.isAdmin %>" === "true";
+      const userIsLoggedIn = "<%= user %>" !== "";
+      lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn);
     });
   </script>
 

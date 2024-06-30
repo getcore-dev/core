@@ -1,18 +1,24 @@
-let jobPostings = [];
-let currentPage = 1;
-let isLoading = false;
-const itemsPerPage = 20;
-let filters = {
-  experienceLevel: "",
-  location: "",
-  title: "",
-  salary: 0,
-  tags: [],
+// State management
+const state = {
+  jobPostings: [],
+  currentPage: 1,
+  isLoading: false,
+  filters: {
+    experienceLevel: "",
+    location: "",
+    title: "",
+    salary: 0,
+    tags: new Set(),
+  },
+  allTags: [],
+  isTagsExpanded: false,
 };
-let allTags = [];
-let isTagsExpanded = false;
 
-const jobTitles = [
+const ITEMS_PER_PAGE = 20;
+const DEBOUNCE_DELAY = 300;
+
+// Constants
+const JOB_TITLES = [
   "Software Engineer",
   "Data Scientist",
   "UX Designer",
@@ -23,8 +29,7 @@ const jobTitles = [
   "Machine Learning Engineer",
   "Program Manager",
 ];
-
-const jobLevels = [
+const JOB_LEVELS = [
   "Internship",
   "Entry Level",
   "Mid Level",
@@ -32,84 +37,104 @@ const jobLevels = [
   "Lead",
   "Manager",
 ];
+const LOCATIONS = [
+  "Remote",
+  "Alabama",
+  "Alaska",
+  "Arizona",
+  "Arkansas",
+  "California",
+  "Colorado",
+  "Connecticut",
+  "Delaware",
+  "Florida",
+  "Georgia",
+  "Hawaii",
+  "Idaho",
+  "Illinois",
+  "Indiana",
+  "Iowa",
+  "Kansas",
+  "Kentucky",
+  "Louisiana",
+  "Maine",
+  "Maryland",
+  "Massachusetts",
+  "Michigan",
+  "Minnesota",
+  "Mississippi",
+  "Missouri",
+  "Montana",
+  "Nebraska",
+  "Nevada",
+  "New Hampshire",
+  "New Jersey",
+  "New Mexico",
+  "New York",
+  "North Carolina",
+  "North Dakota",
+  "Ohio",
+  "Oklahoma",
+  "Oregon",
+  "Pennsylvania",
+  "Rhode Island",
+  "South Carolina",
+  "South Dakota",
+  "Tennessee",
+  "Texas",
+  "Utah",
+  "Vermont",
+  "Virginia",
+  "Washington",
+  "West Virginia",
+  "Wisconsin",
+  "Wyoming",
+];
 
-document.addEventListener("DOMContentLoaded", () => {
+// DOM elements
+const elements = {
+  jobList: document.querySelector(".job-list"),
+  topTags: document.querySelector(".top-tags"),
+  selectedTags:
+    document.querySelector(".selected-tags") || createSelectedTagsContainer(),
+};
+
+// Utility functions
+const debounce = (func, delay) => {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func(...args), delay);
+  };
+};
+
+const createSelectedTagsContainer = () => {
+  const container = document.createElement("div");
+  container.className = "selected-tags";
+  document.querySelector(".job-filters").prepend(container);
+  return container;
+};
+
+// Event listeners
+document.addEventListener("DOMContentLoaded", initialize);
+
+// Main functions
+function initialize() {
   setupDynamicFilters();
   setupEventListeners();
   fetchTopTags();
-  fetchJobPostings(currentPage, filters);
-});
+  setupInfiniteScroll();
+  fetchJobPostings();
+}
 
 function setupDynamicFilters() {
-  setupFilter("experienceLevel");
-  setupFilter("location");
-  setupFilter("title");
+  setupFilter("experienceLevel", JOB_LEVELS);
+  setupFilter("location", LOCATIONS);
+  setupFilter("title", JOB_TITLES);
   setupSalaryFilter();
 }
 
-function setupFilter(filterType) {
-  let uniqueValues;
-
-  if (filterType === "title") {
-    uniqueValues = jobTitles;
-  } else if (filterType === "experienceLevel") {
-    uniqueValues = jobLevels;
-  } else if (filterType === "location") {
-    uniqueValues = [
-      "Remote",
-      "Alabama",
-      "Alaska",
-      "Arizona",
-      "Arkansas",
-      "California",
-      "Colorado",
-      "Connecticut",
-      "Delaware",
-      "Florida",
-      "Georgia",
-      "Hawaii",
-      "Idaho",
-      "Illinois",
-      "Indiana",
-      "Iowa",
-      "Kansas",
-      "Kentucky",
-      "Louisiana",
-      "Maine",
-      "Maryland",
-      "Massachusetts",
-      "Michigan",
-      "Minnesota",
-      "Mississippi",
-      "Missouri",
-      "Montana",
-      "Nebraska",
-      "Nevada",
-      "New Hampshire",
-      "New Jersey",
-      "New Mexico",
-      "New York",
-      "North Carolina",
-      "North Dakota",
-      "Ohio",
-      "Oklahoma",
-      "Oregon",
-      "Pennsylvania",
-      "Rhode Island",
-      "South Carolina",
-      "South Dakota",
-      "Tennessee",
-      "Texas",
-      "Utah",
-      "Vermont",
-      "Virginia",
-      "Washington",
-      "West Virginia",
-      "Wisconsin",
-      "Wyoming",
-    ];
-  }
-
+function setupFilter(filterType, values) {
   const filterContainer = document.querySelector(`.${filterType}-filter`);
   filterContainer.innerHTML = "";
 
@@ -120,13 +145,13 @@ function setupFilter(filterType) {
     input.placeholder = `Search by ${
       filterType === "title" ? "job title" : "location"
     }`;
-
-    input.addEventListener("input", (e) => {
-      filters[filterType] = e.target.value;
-      currentPage = 1;
-      jobPostings = [];
-      fetchJobPostings(currentPage, filters);
-    });
+    input.addEventListener(
+      "input",
+      debounce((e) => {
+        state.filters[filterType] = e.target.value;
+        resetJobListings();
+      }, DEBOUNCE_DELAY)
+    );
     filterContainer.appendChild(input);
   } else {
     const dropdown = document.createElement("select");
@@ -134,15 +159,12 @@ function setupFilter(filterType) {
       `<option value="">${
         filterType === "experienceLevel" ? "Experience Level" : filterType
       }</option>` +
-      uniqueValues
+      values
         .map((value) => `<option value="${value}">${value}</option>`)
         .join("");
-
     dropdown.addEventListener("change", (e) => {
-      filters[filterType] = e.target.value;
-      currentPage = 1;
-      jobPostings = [];
-      fetchJobPostings(currentPage, filters);
+      state.filters[filterType] = e.target.value;
+      resetJobListings();
     });
     filterContainer.appendChild(dropdown);
   }
@@ -155,256 +177,257 @@ function setupSalaryFilter() {
       <label for="salary">Salary</label>
       <input type="number" placeholder="Salary" id="min-salary">
     </div>
-    <button onclick="applySalaryFilter()"><p>Apply</p></button>
+    <button id="apply-salary">Apply</button>
   `;
+  document
+    .getElementById("apply-salary")
+    .addEventListener("click", applySalaryFilter);
 }
 
 function applySalaryFilter() {
-  const minSalary = document.getElementById("min-salary").value;
-  filters.salary = parseInt(minSalary) || 0;
-  currentPage = 1;
-  jobPostings = [];
-  fetchJobPostings(currentPage, filters);
+  state.filters.salary =
+    parseInt(document.getElementById("min-salary").value) || 0;
+  resetJobListings();
 }
 
-function fetchTopTags() {
-  fetch("/api/getTopTags")
-    .then((response) => response.json())
-    .then((tags) => {
-      allTags = tags; // Store all tags
-      const topTags = document.querySelector(".top-tags");
-      const selectedTagsContainer =
-        document.querySelector(".selected-tags") ||
-        createSelectedTagsContainer();
-      const maxTags = 10;
-      const displayedTags = tags.slice(0, maxTags);
-      const remainingTags = tags.slice(maxTags);
-
-      renderTags(topTags, displayedTags);
-
-      if (remainingTags.length > 0) {
-        const seeMore = createSeeMoreButton(remainingTags);
-        topTags.appendChild(seeMore);
-        renderTags(topTags, remainingTags, true);
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching top tags:", error);
-    });
+async function fetchTopTags() {
+  try {
+    const response = await fetch("/api/getTopTags");
+    state.allTags = await response.json();
+    renderTags();
+  } catch (error) {
+    console.error("Error fetching top tags:", error);
+  }
 }
 
-function createSelectedTagsContainer() {
-  const container = document.createElement("div");
-  container.className = "selected-tags";
-  document.querySelector(".job-filters").prepend(container);
-  return container;
-}
+function renderTags() {
+  const { topTags, selectedTags } = elements;
+  const maxTags = 10;
+  const displayedTags = state.allTags.slice(0, maxTags);
+  const remainingTags = state.allTags.slice(maxTags);
 
-function renderTags(container, tags, hidden = false) {
-  const tagsHTML = tags
-    .map(
-      (tag, index) =>
-        `<span class="tag ${hidden ? "hidden" : ""}" data-tag="${
-          tag.tagName
-        }" data-index="${index}">${tag.tagName} ${tag.count}</span>`
-    )
+  topTags.innerHTML = displayedTags
+    .map((tag, index) => createTagHTML(tag, index))
     .join("");
-  container.insertAdjacentHTML("beforeend", tagsHTML);
+
+  if (remainingTags.length > 0) {
+    const seeMore = createSeeMoreButton(remainingTags.length);
+    topTags.appendChild(seeMore);
+    topTags.insertAdjacentHTML(
+      "beforeend",
+      remainingTags
+        .map((tag, index) => createTagHTML(tag, index + maxTags, true))
+        .join("")
+    );
+  }
 }
 
-function createSeeMoreButton(remainingTags) {
+function createTagHTML(tag, index, hidden = false) {
+  return `<span class="tag ${hidden ? "hidden" : ""}" data-tag="${
+    tag.tagName
+  }" data-index="${index}">${tag.tagName} ${tag.count}</span>`;
+}
+
+function createSeeMoreButton(count) {
   const seeMore = document.createElement("span");
   seeMore.className = "see-more";
-  seeMore.innerText = `+${remainingTags.length} more`;
-  seeMore.addEventListener("click", () => toggleHiddenTags(seeMore));
+  seeMore.textContent = `+${count} more`;
+  seeMore.addEventListener("click", toggleHiddenTags);
   return seeMore;
 }
 
-function toggleHiddenTags(seeMoreButton) {
-  const topTags = seeMoreButton.closest(".top-tags");
-  const hiddenTags = topTags.querySelectorAll(".tag:nth-child(n+11)");
-
-  isTagsExpanded = !isTagsExpanded;
-
-  if (isTagsExpanded) {
-    hiddenTags.forEach(tag => tag.classList.remove("hidden"));
-    seeMoreButton.innerText = "See less";
-  } else {
-    hiddenTags.forEach(tag => {
-      if (!filters.tags.includes(tag.dataset.tag)) {
-        tag.classList.add("hidden");
-      }
-    });
-    seeMoreButton.innerText = `+${hiddenTags.length} more`;
-  }
+function toggleHiddenTags() {
+  state.isTagsExpanded = !state.isTagsExpanded;
+  const hiddenTags = elements.topTags.querySelectorAll(".tag:nth-child(n+11)");
+  hiddenTags.forEach((tag) => {
+    if (state.isTagsExpanded || state.filters.tags.has(tag.dataset.tag)) {
+      tag.classList.remove("hidden");
+    } else {
+      tag.classList.add("hidden");
+    }
+  });
+  this.textContent = state.isTagsExpanded
+    ? "See less"
+    : `+${hiddenTags.length} more`;
 }
 
 function setupEventListeners() {
-  document.querySelector(".top-tags").addEventListener("click", handleTagClick);
-  document
-    .querySelector(".selected-tags")
-    .addEventListener("click", handleTagClick);
-  document
-    .querySelector(".load-more-btn")
-    .addEventListener("click", handleLoadMore);
-}
-
-function moveTagToOriginalPosition(tag) {
-  const topTags = document.querySelector(".top-tags");
-  const index = parseInt(tag.dataset.index);
-  const seeMoreButton = topTags.querySelector(".see-more");
-
-  if (index < 10) {
-    // If it's one of the first 10 tags, insert it at its original position
-    const tagsInTopContainer = topTags.querySelectorAll('.tag');
-    if (tagsInTopContainer[index]) {
-      topTags.insertBefore(tag, tagsInTopContainer[index]);
-    } else {
-      topTags.insertBefore(tag, seeMoreButton);
-    }
-    tag.classList.remove("hidden");
-  } else {
-    // If it's one of the tags after the first 10
-    topTags.insertBefore(tag, seeMoreButton);
-    if (!isTagsExpanded) {
-      tag.classList.add("hidden");
-    }
-  }
+  elements.topTags.addEventListener("click", handleTagClick);
+  elements.selectedTags.addEventListener("click", handleTagClick);
 }
 
 function handleTagClick(event) {
   if (event.target.classList.contains("tag")) {
     const tag = event.target;
     const tagName = tag.dataset.tag;
-    const isSelected = filters.tags.includes(tagName);
-
-    if (isSelected) {
-      filters.tags = filters.tags.filter((t) => t !== tagName);
+    if (state.filters.tags.has(tagName)) {
+      state.filters.tags.delete(tagName);
       tag.classList.remove("selected");
       moveTagToOriginalPosition(tag);
     } else {
-      filters.tags.push(tagName);
+      state.filters.tags.add(tagName);
       tag.classList.add("selected");
-      document.querySelector(".selected-tags").appendChild(tag);
+      elements.selectedTags.appendChild(tag);
     }
-
-    currentPage = 1;
-    jobPostings = [];
-    fetchJobPostings(currentPage, filters);
+    resetJobListings();
   }
 }
 
-function fetchJobPostings(page, filters) {
-  isLoading = true;
+function moveTagToOriginalPosition(tag) {
+  const index = parseInt(tag.dataset.index);
+  const seeMoreButton = elements.topTags.querySelector(".see-more");
+  if (index < 10) {
+    const tagsInTopContainer = elements.topTags.querySelectorAll(".tag");
+    if (tagsInTopContainer[index]) {
+      elements.topTags.insertBefore(tag, tagsInTopContainer[index]);
+    } else {
+      elements.topTags.insertBefore(tag, seeMoreButton);
+    }
+    tag.classList.remove("hidden");
+  } else {
+    elements.topTags.insertBefore(tag, seeMoreButton);
+    if (!state.isTagsExpanded) {
+      tag.classList.add("hidden");
+    }
+  }
+}
 
-  const { title, location, experienceLevel, salary, tags } = filters;
+function resetJobListings() {
+  state.currentPage = 1;
+  state.jobPostings = [];
+  elements.jobList.innerHTML = "";
+  fetchJobPostings();
+}
+
+async function fetchJobPostings() {
+  if (state.isLoading) return;
+  state.isLoading = true;
+
+  const { title, location, experienceLevel, salary, tags } = state.filters;
   const queryParams = new URLSearchParams({
-    page,
-    limit: itemsPerPage,
+    page: state.currentPage,
+    limit: ITEMS_PER_PAGE,
     jobTitle: title || "",
     jobLocation: location || "",
     jobExperienceLevel: experienceLevel || "",
     jobSalary: salary || "0",
-    tags: tags.join(","),
+    tags: Array.from(tags).join(","),
   });
 
-  fetch(`/api/jobs?${queryParams}`)
-    .then((response) => response.json())
-    .then((data) => {
-      jobPostings =
-        page === 1 ? data.jobPostings : [...jobPostings, ...data.jobPostings];
-      renderJobPostings();
-      updateLoadMoreButton(data.currentPage, data.totalPages);
-      isLoading = false;
-    })
-    .catch((error) => {
-      console.error("Error fetching job postings:", error);
-      isLoading = false;
-    });
-}
+  try {
+    const response = await fetch(`/api/jobs?${queryParams}`);
+    const data = await response.json();
+    state.jobPostings =
+      state.currentPage === 1
+        ? data.jobPostings
+        : [...state.jobPostings, ...data.jobPostings];
+    renderJobPostings();
+    state.currentPage++;
+    state.isLoading = false;
 
-function handleLoadMore() {
-  if (!isLoading) {
-    currentPage++;
-    fetchJobPostings(currentPage, filters);
+    if (data.currentPage >= data.totalPages || data.jobPostings.length === 0) {
+      removeInfiniteScroll();
+    }
+  } catch (error) {
+    console.error("Error fetching job postings:", error);
+    state.isLoading = false;
   }
 }
 
-function updateLoadMoreButton(currentPage, totalPages) {
-  const loadMoreBtn = document.querySelector(".load-more-btn");
-  loadMoreBtn.style.display = currentPage >= totalPages ? "none" : "block";
+function renderJobPostings() {
+  const fragment = document.createDocumentFragment();
+  state.jobPostings.forEach((job) => {
+    const jobElement = createJobElement(job);
+    fragment.appendChild(jobElement);
+  });
+  elements.jobList.appendChild(fragment);
+
+  if (state.jobPostings.length === 0) {
+    const noJobsMessage = document.createElement("div");
+    noJobsMessage.classList.add("no-jobs-message");
+    noJobsMessage.textContent = "No job postings found matching your criteria.";
+    elements.jobList.appendChild(noJobsMessage);
+  }
 }
 
-function renderJobPostings() {
-  const jobListContainer = document.querySelector(".job-list");
-  jobListContainer.innerHTML = "";
+function createJobElement(job) {
+  const jobElement = document.createElement("div");
+  jobElement.classList.add("job");
+  jobElement.onclick = () => (window.location.href = `/jobs/${job.id}`);
 
-  jobPostings.forEach((job) => {
-    const jobElement = document.createElement("div");
-    jobElement.classList.add("job");
-    jobElement.onclick = () => {
-      window.location.href = `/jobs/${job.id}`;
-    };
+  const tagsArray = job.tags ? job.tags.split(", ") : [];
+  const sortedTags = tagsArray.sort(
+    (a, b) => state.filters.tags.has(b) - state.filters.tags.has(a)
+  );
+  const displayedTags = sortedTags.slice(0, 6);
 
-    const tagsArray = job.tags ? job.tags.split(", ") : [];
+  const tagsHTML = displayedTags
+    .map(
+      (tag) =>
+        `<span class="tag ${
+          state.filters.tags.has(tag) ? "highlighted" : ""
+        }">${tag}</span>`
+    )
+    .join("");
 
-    // Sort tags: selected tags first, then others
-    const sortedTags = tagsArray.sort((a, b) => {
-      const aSelected = filters.tags.includes(a);
-      const bSelected = filters.tags.includes(b);
-      if (aSelected && !bSelected) return -1;
-      if (!aSelected && bSelected) return 1;
-      return 0;
-    });
-
-    // Take only the first 6 tags
-    const displayedTags = sortedTags.slice(0, 6);
-
-    const tagsHTML = displayedTags
-      .map((tag) => {
-        const isHighlighted = filters.tags.includes(tag);
-        return `<span class="tag ${
-          isHighlighted ? "highlighted" : ""
-        }">${tag}</span>`;
-      })
-      .join("");
-
-    jobElement.innerHTML = `
-      <div class="job-preview">
-        <div class="job-info">
-          <div class="company-info">
-            ${
-              job.company_logo
-                ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${job.company_logo}" alt="" />`
-                : ""
-            }
-            <div class="job-posting-company-info">
-              <p class="company-name secondary-text">${job.company_name}</p>
-              <h3 class="job-title"><a href="/jobs/${job.id}">${
-      job.title
-    }</a></h3>
-            </div>
+  jobElement.innerHTML = `
+    <div class="job-preview">
+      <div class="job-info">
+        <div class="company-info">
+          ${
+            job.company_logo
+              ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${job.company_logo}" alt="" />`
+              : ""
+          }
+          <div class="job-posting-company-info">
+            <p class="company-name secondary-text">${job.company_name}</p>
+            <h3 class="job-title"><a href="/jobs/${job.id}">${
+    job.title
+  }</a></h3>
           </div>
-          <h5 class="job-subtitle secondary-text">${job.location}</h5> 
-          <div class="job-posting-information job-subtitle secondary-text">
-            <span>${
-              job.experienceLevel === "Mid Level"
-                ? "L3/L4"
-                : job.experienceLevel === "Entry Level"
-                ? "L1/L2"
-                : job.experienceLevel === "Senior"
-                ? "L5/L6"
-                : job.experienceLevel
-            }</span>
-            <span> • </span>
-            <span class="job-salary" style="margin-left: auto;">USD $${job.salary.toLocaleString()} ${
-      job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
-    }</span>
-          </div>
-          <div class="job-posting-flairs">${tagsHTML}</div>
         </div>
+        <h5 class="job-subtitle secondary-text">${job.location}</h5> 
+        <div class="job-posting-information job-subtitle secondary-text">
+          <span>${
+            job.experienceLevel === "Mid Level"
+              ? "L3/L4"
+              : job.experienceLevel === "Entry Level"
+              ? "L1/L2"
+              : job.experienceLevel === "Senior"
+              ? "L5/L6"
+              : job.experienceLevel
+          }</span>
+          <span> • </span>
+          <span class="job-salary" style="margin-left: auto;">USD $${job.salary.toLocaleString()} ${
+    job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
+  }</span>
+        </div>
+        <div class="job-posting-flairs">${tagsHTML}</div>
       </div>
-    `;
-    jobListContainer.appendChild(jobElement);
-  });
+    </div>
+  `;
+  return jobElement;
+}
+
+function setupInfiniteScroll() {
+  const options = {
+    root: null,
+    rootMargin: "0px",
+    threshold: 0.1,
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !state.isLoading) {
+      fetchJobPostings();
+    }
+  }, options);
+
+  observer.observe(document.querySelector(".load-more-btn"));
+}
+
+function removeInfiniteScroll() {
+  const loadMoreBtn = document.querySelector(".load-more-btn");
+  if (loadMoreBtn) {
+    loadMoreBtn.style.display = "none";
+  }
 }

@@ -416,6 +416,18 @@ a.username-link:hover, a.community:hover {
   text-decoration: underline;
 }
 
+.pinned .post-content {
+  padding-bottom: 0;
+}
+
+.pinned .post-header {
+  margin-bottom: .2rem;
+}
+
+.pinned .title {
+  margin-bottom: .2rem;
+}
+
 .post-quick-info {
   font-size: .875rem;
 }

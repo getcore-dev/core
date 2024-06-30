@@ -464,11 +464,23 @@ button#edit-button {
   padding: 0 !important;
 }
 
-#currentJobContainer {
+#currentEducationContainer, #currentJobContainer {
+  margin-bottom: .8rem;
+}
+
+.current-job h4, .current-education h4 {
+  margin-top: .7rem;
+  margin-bottom: .8rem;
+}
+
+#currentJobContainer h4, #currentEducationContainer h4 {
+  margin: 0;
+}
+#currentJobContainer, #currentJobContainer {
   display: flex;
   flex-wrap: nowrap;
   flex-direction: column;
-  gap: 10px;
+  gap: .5rem;
   border-radius: 11px;
   overflow-x: auto;
   -ms-overflow-style: none;

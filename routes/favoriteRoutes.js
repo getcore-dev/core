@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const favoritesQueries = require("../queries/favoritesQueries");
 const { checkAuthenticated } = require("../middleware/authMiddleware");
+const postQueries = require("../queries/postQueries");
 
 router.get("/", checkAuthenticated, async (req, res) => {
   try {
@@ -173,23 +174,57 @@ router.delete("/post/:postId", checkAuthenticated, async (req, res) => {
 router.get("/isFavorite/job/:jobId", async (req, res) => {
   try {
     if (!req.user) {
-      return res.json({ isFavorite: false });
+      return res.json({ isFavorite: false, buttonText: "Favorite" });
     }
     const userId = req.user.id;
     if (!userId) {
-      return res.json({ isFavorite: false });
+      return res.json({ isFavorite: false, buttonText: "Favorite" });
     }
     const jobId = req.params.jobId;
     if (!jobId) {
-      return res.json({ isFavorite: false });
+      return res.json({ isFavorite: false, buttonText: "Favorite" });
     }
     const job = await favoritesQueries.getFavoriteJobByJobIdAndUserId(
       jobId,
       userId
     );
-    res.json({ isFavorite: !!job });
+    const isFavorite = !!job;
+    res.json({
+      isFavorite: isFavorite,
+      buttonText: isFavorite ? "Unfavorite" : "Favorite",
+    });
   } catch (err) {
     console.error("Error checking if job is favorite:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Error checking if job is favorite" });
+  }
+});
+
+router.get("/isFavorite/post/:postId", async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.json({ isFavorite: false, buttonText: "Favorite" });
+    }
+    const userId = req.user.id;
+    if (!userId) {
+      return res.json({ isFavorite: false, buttonText: "Favorite" });
+    }
+    const postId = req.params.postId;
+    if (!postId) {
+      return res.json({ isFavorite: false, buttonText: "Favorite" });
+    }
+    const post = await postQueries.getFavoritePostByPostIdAndUserId(
+      postId,
+      userId
+    );
+    const isFavorite = !!post;
+    res.json({
+      isFavorite: isFavorite,
+      buttonText: isFavorite ? "Unfavorite" : "Favorite",
+    });
+  } catch (err) {
+    console.error("Error checking if post is favorite:", err);
     res
       .status(500)
       .json({ success: false, message: "Error checking if job is favorite" });

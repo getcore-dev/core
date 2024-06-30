@@ -222,7 +222,7 @@ function getSimilarJobsByCompany(jobId, companyName) {
     });
 }
 
-function lazyLoadJobDetails(userIsAdmin, jobId) {
+function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   fetch(`/api/jobs/${jobId}`)
     .then((response) => response.json())
     .then((job) => {
@@ -353,13 +353,15 @@ group
           </div>
           `
       }
-      <div class="favorite-button-container">
-<div id="favorite-form-${job.id}" class="flex">
-<button id="special-button-normal" onclick="favorite('job', ${
-        job.id
-      });" class="margin-h-auto">Favorite</button>
-</div>
-      </div>
+      ${
+        userIsLoggedIn
+          ? `<div class="favorite-button-container">
+              <div id="favorite-form-${job.id}" class="flex">
+                <button id="submit-button-normal" onclick="favorite('job', ${job.id});" class="margin-h-auto">Favorite</button>
+              </div>
+            </div>`
+          : ""
+      }
       <div class="share-button-container flex">
       <button id="regular-button-normal" class="margin-h-auto" onclick="share('${
         job.title
@@ -537,7 +539,9 @@ ${job.location
       `;
       getSimilarJobs(jobId);
       getSimilarJobsByCompany(jobId, job.company_name);
-      checkFavorite(jobId);
+      if (userIsLoggedIn) {
+        checkFavorite(jobId);
+      }
     })
     .catch((error) => {
       console.error("Error fetching job details:", error);
@@ -553,9 +557,10 @@ function checkFavorite(jobId) {
       );
       if (data.isFavorite) {
         favoriteButton.id = "cancel-button-normal";
-        favoriteButton.textContent = "Unfavorite";
+        favoriteButton.textContent = data.buttonText;
       } else {
-        favoriteButton.id = "special-button-normal";
+        favoriteButton.id = "submit-button-normal";
+        favoriteButton.textContent = data.buttonText;
       }
     })
     .catch((error) => {
@@ -564,51 +569,65 @@ function checkFavorite(jobId) {
 }
 
 function favorite(favoriteType, TypeId) {
-  switch (favoriteType) {
-    case "job":
-      const favoriteButton = document.querySelector(
-        `#favorite-form-${TypeId} button`
-      );
-      if (favoriteButton.textContent === "Unfavorite") {
-        favoriteButton.id = "special-button-normal";
-        favoriteButton.textContent = "Favorite";
-      } else {
-        favoriteButton.id = "cancel-button-normal";
-        favoriteButton.textContent = "Unfavorite";
-      }
-      fetch(`/favorites/jobs/${TypeId}`, {
-        method: "POST",
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            showBannerNotification(data.message);
-          } else {
-            showBannerNotification(data.message);
-          }
-        })
-        .catch((error) => {
-          console.error("Error adding to favorites:", error);
-        });
-      break;
-    case "post":
-      fetch(`/favorites/posts/${TypeId}`, {
-        method: "POST",
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            showBannerNotification(data.message);
-          } else {
-            showBannerNotification(data.message);
-          }
-        })
-        .catch((error) => {
-          console.error("Error adding to favorites:", error);
-        });
+  const endpoints = {
+    job: `/favorites/jobs/${TypeId}`,
+    post: `/favorites/posts/${TypeId}`,
+  };
 
-      break;
-    default:
-      break;
+  const endpoint = endpoints[favoriteType];
+  if (!endpoint) {
+    console.error("Invalid favorite type");
+    return;
+  }
+
+  let favoriteButton;
+  if (favoriteType === "job") {
+    favoriteButton = document.querySelector(`#favorite-form-${TypeId} button`);
+    toggleFavoriteButton(favoriteButton);
+  }
+
+  fetch(endpoint, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.success) {
+        showBannerNotification(data.message);
+      } else if (data.redirect) {
+        window.location.href = data.redirect;
+      } else {
+        showBannerNotification(data.message);
+        if (favoriteType === "job") {
+          // Revert button state if operation wasn't successful
+          toggleFavoriteButton(favoriteButton);
+        }
+      }
+    })
+    .catch((error) => {
+      console.error("Error adding to favorites:", error);
+      showBannerNotification("An error occurred. Please try again.");
+      if (favoriteType === "job") {
+        // Revert button state on error
+        toggleFavoriteButton(favoriteButton);
+      }
+    });
+}
+
+function toggleFavoriteButton(button) {
+  if (button.textContent === "Unfavorite") {
+    button.id = "submit-button-normal";
+    button.textContent = "Favorite";
+  } else {
+    button.id = "cancel-button-normal";
+    button.textContent = "Unfavorite";
   }
 }

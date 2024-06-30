@@ -14,6 +14,19 @@ const communityQueries = {
       throw err;
     }
   },
+  getUserMemberships: async (userId) => {
+    try {
+      const result = await sql.query`
+        SELECT community_id, is_moderator 
+        FROM dbo.community_memberships 
+        WHERE user_id = ${userId}
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
 
   updateCommunityInfo: async (communityId, updateData) => {
     const { description, rules, PrivacySetting, JobsEnabled, Tags, mini_icon } =

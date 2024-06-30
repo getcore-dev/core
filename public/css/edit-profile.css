@@ -43,13 +43,17 @@
 
 .container span {
     max-width: 100%;
+    margin-bottom: 1.2rem;
     display: flex;
     flex-direction: column;
 }
 
+#avatar-upload {
+    margin: 0;
+}
+
 .container input {
     padding: 10px;
-    margin: 5px;
     font-size: 16px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
@@ -107,6 +111,7 @@
 .container label {
     margin-left: 10px;
     width: 35%;
+    margin-bottom: .5rem;
     font-size: 16px;
     font-weight: 500;
 }
@@ -146,18 +151,10 @@
     border-top-right-radius: 0px;
 }
 
-.container button {
-    padding: 10px;
-    margin: 5px;
-    background: #0C8346;
-    border: 1px solid #0E954F;
-    border-radius: 6px;
-    box-sizing: border-box;
-    color: var(--light-mode-main-color);
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
+.container {
+    margin-bottom:  2.4rem;
 }
+
 
 @media (prefers-color-scheme: dark) {
     body {

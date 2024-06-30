@@ -905,15 +905,24 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-          },
+            'Accept': 'application/json'
+          }
         })
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            if (response.status === 401) {
+              // Unauthorized, user needs to log in
+              window.location.href = '/login';
+              throw new Error('Please log in to favorite posts');
+            }
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
         .then(data => {
+          const favoriteButton = document.querySelector(`button[onclick="favorite('${postId}')"]`);
           if (data.success) {
-            const favoriteButton = document.querySelector(`#favorite-form-${postId} button`);
-            favoriteButton.innerHTML = data.isFavorite ?
-              '<span class="material-symbols-outlined">favorite</span> Unfavorite' :
-              '<span class="material-symbols-outlined">favorite</span> Favorite';
+            checkFavorite(postId);
             showBannerNotification(data.message);
           } else {
             showBannerNotification('Error updating favorite status');
@@ -921,9 +930,38 @@
         })
         .catch(error => {
           console.error('Error:', error);
-          showBannerNotification('An error occurred while updating favorite status');
+          showBannerNotification(error.message || 'An error occurred while updating favorite status');
         });
     }
+
+    // Function to check if a post is favorited and update the button accordingly
+    function checkFavorite(postId) {
+      fetch(`/favorites/isFavorite/post/${postId}`)
+        .then(response => response.json())
+        .then(data => {
+          const favoriteButton = document.querySelector(`button[onclick="favorite('${postId}')"]`);
+          if (favoriteButton) {
+            if (data.isFavorite) {
+              favoriteButton.textContent = 'Unfavorite';
+              favoriteButton.classList.remove('submit-button-normal');
+              favoriteButton.classList.add('cancel-button-normal');
+            } else {
+              favoriteButton.textContent = 'Favorite';
+              favoriteButton.classList.remove('cancel-button-normal');
+              favoriteButton.classList.add('submit-button-normal');
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Error checking favorite status:', error);
+        });
+    }
+
+    // Call checkFavorite when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      const postId = '<%= post.id %>'; // Assuming you have access to the post ID in your EJS template
+      checkFavorite(postId);
+    });
 
     // Function to handle deleting a post
     function deletePost(postId) {

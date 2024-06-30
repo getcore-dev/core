@@ -192,7 +192,7 @@
 
           </div>
 
-
+          <% if (otheruser.username != "core") { %>
           <div class="links-container">
             <% if (otheruser.link) { %>
             <div class="social-display"> <span class="material-symbols-outlined">
@@ -231,7 +231,6 @@
             <%= otheruser.bio %>
           </p>
         </div>
-
         <div class="current-education" style="background:none !important; padding: 0;">
           <h4>Education</h4>
           <div id="currentEducationContainer"></div>
@@ -241,7 +240,6 @@
           </button>
           <% } %>
         </div>
-
         <div class="current-job" style="background:none !important; padding: 0;">
           <h4>Experience</h4>
           <div id="currentJobContainer"></div>
@@ -268,6 +266,7 @@
             <tbody></tbody>
           </table>
         </div>
+        <% } %>
 
         <div class="user-activity">
           <div class="user-activity-header">
@@ -381,9 +380,10 @@
           </div>
         </div>
       </div>
-      <%- include('partials/footer') %>
 
   </main>
+  <%- include('partials/footer') %>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const forms = document.querySelectorAll('form');

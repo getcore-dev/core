@@ -1228,11 +1228,17 @@ input {
   border-radius: 7px;
 }
 
+.community-flairs .material-symbols-outlined {
+  font-size: .95rem;
+  vertical-align: -2px;
+  padding-right: .4rem;
+}
+
 #login-btn {
   background: white;
   font-size: .85rem;
-    padding: .25rem .75rem;
-    color: var(--light-mode-text-color);
+  padding: .35rem 1.15rem;
+  color: var(--light-mode-text-color);
 }
 
 
@@ -1410,6 +1416,9 @@ input {
   .search-form {
      background-color: var(--dark-mode-main-color);
   }
+  .null-button, #null-button, .null-button-normal, #null-button-normal {
+    color: white;
+  }
 
   button.clear-btn {
     color: var(--dark-mode-text-color);
@@ -1575,9 +1584,9 @@ input {
   }
 
   .input-theme {
-    background-color: #000000 !important;
+    background-color: var(--dark-mode-main-color) !important;
     color: var(--dark-mode-text-color);
-    border-color: #101212 !important;
+    border-color: var(--dark-mode-border-color) !important;
   }
 
   input:focus, textarea:focus, select:focus {

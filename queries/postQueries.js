@@ -29,6 +29,19 @@ const postQueries = {
     }
   },
 
+  getFavoritePostByPostIdAndUserId: async (postId, userId) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM favorites
+        WHERE user_id = ${userId} AND post_id = ${postId}`;
+
+      return result.recordset[0];
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   toggleLockPost: async (postId) => {
     try {
       const result = await sql.query`

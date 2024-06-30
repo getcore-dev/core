@@ -15,9 +15,9 @@ body, h1, h2, h3, p {
     margin-bottom: .3rem;
   }
 
-
   .jobs-header h5 {
-    margin-bottom: .4rem;
+    margin-top: .7rem;
+    margin-bottom: 1rem;
   }
   div.job-buttons {
     display: flex;
@@ -414,10 +414,6 @@ p.job-description {
   color: var(--dark-mode-text-color);
 }
 
-div.recent-jobs {
-  margin: 7px 0 12px 0;
-}
-
 .title-filter {
   display: flex;
   flex-direction: row;
@@ -578,6 +574,10 @@ select {
     justify-content: center;
 }
 
+.job-posting-information {
+  margin-bottom: .4rem;
+}
+
 .job-posting-flairs {
   display: flex;
   font-size: .925rem;
@@ -586,6 +586,7 @@ select {
   flex-wrap: wrap;
   box-sizing: border-box;
   max-width: 100%;
+  gap: .35rem 0.25rem;
   overflow-x: auto;
 }
 

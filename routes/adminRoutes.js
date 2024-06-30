@@ -50,18 +50,14 @@ router.post(
   checkAuthenticated,
   async (req, res) => {
     const postId = req.params.postId;
-    const userId = req.user.id;
+    const user = req.user;
+    console.log(user);
 
     try {
       const post = await postQueries.getPostById(postId);
-      const user = await userQueries.findById(userId);
 
       if (!post) {
         return res.status(404).send("Post not found");
-      }
-
-      if (!user) {
-        return res.status(404).send("User not found");
       }
 
       if (!user.isAdmin) {
@@ -73,7 +69,7 @@ router.post(
       const originalPostAuthorId = post.userId;
 
       await notificationQueries.createNotification(
-        userId,
+        user.id,
         originalPostAuthorId,
         result.isLocked ? "ADMIN_LOCKED" : "ADMIN_UNLOCKED",
         postId
