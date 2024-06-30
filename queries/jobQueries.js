@@ -210,37 +210,39 @@ const jobQueries = {
   },
 
   getJobsBySearch: async (
-    title,
-    location,
-    experienceLevel,
-    salary,
-    limit,
-    offset,
-    allowedJobLevels,
-    tags
+    title = "",
+    location = "",
+    experienceLevel = "",
+    salary = "",
+    limit = 15,
+    offset = 0,
+    allowedJobLevels = [],
+    tags = []
   ) => {
     try {
       let query = `
-        SELECT 
-          j.id, j.title, j.salary, j.salary_max, j.experienceLevel, j.location, j.postedDate,
-          j.link, j.description, j.company_id, j.recruiter_id, j.views,
-          c.name AS company_name, c.logo AS company_logo, c.location AS company_location, 
-          c.description AS company_description,
-          (
-            SELECT STRING_AGG(jt.tagName, ', ')
-            FROM JobPostingsTags jpt
-            INNER JOIN JobTags jt ON jpt.tagId = jt.id
-            WHERE jpt.jobId = j.id
-          ) AS tags,
-          (
-            SELECT STRING_AGG(s.name, ', ')
-            FROM job_skills js
-            INNER JOIN skills s ON js.skill_id = s.id
-            WHERE js.job_id = j.id
-          ) AS skills
-        FROM JobPostings j
-        LEFT JOIN companies c ON j.company_id = c.id
-        WHERE 1=1
+        WITH RankedJobs AS (
+          SELECT DISTINCT
+            j.id, j.title, j.salary, j.salary_max, j.experienceLevel, j.location, j.postedDate,
+            j.link, j.description, j.company_id, j.recruiter_id, j.views,
+            c.name AS company_name, c.logo AS company_logo, c.location AS company_location, 
+            c.description AS company_description,
+            (
+              SELECT STRING_AGG(jt.tagName, ', ')
+              FROM JobPostingsTags jpt
+              INNER JOIN JobTags jt ON jpt.tagId = jt.id
+              WHERE jpt.jobId = j.id
+            ) AS tags,
+            (
+              SELECT STRING_AGG(s.name, ', ')
+              FROM job_skills js
+              INNER JOIN skills s ON js.skill_id = s.id
+              WHERE js.job_id = j.id
+            ) AS skills,
+            ROW_NUMBER() OVER (PARTITION BY j.id ORDER BY j.postedDate DESC) AS RowNum
+          FROM JobPostings j
+          LEFT JOIN companies c ON j.company_id = c.id
+          WHERE j.postedDate >= DATEADD(month, -3, GETDATE()) -- Only show jobs from the last 3 months
       `;
 
       const queryParams = {};
@@ -290,14 +292,16 @@ const jobQueries = {
         });
       }
 
-      query += `
-        ORDER BY j.postedDate DESC
+      query += `)
+        SELECT * FROM RankedJobs
+        WHERE RowNum = 1
+        ORDER BY postedDate DESC
         OFFSET @offset ROWS
         FETCH NEXT @limit ROWS ONLY
       `;
 
-      queryParams.offset = offset;
-      queryParams.limit = limit;
+      queryParams.offset = parseInt(offset);
+      queryParams.limit = parseInt(limit);
 
       const request = new sql.Request();
       Object.entries(queryParams).forEach(([key, value]) => {

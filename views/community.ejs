@@ -74,7 +74,7 @@
   <%- include('partials/navbar', { pagePath: 'communities' }) %>
   <main>
     <% if (user && user.isAdmin) { %>
-    <h5 class="communities-header">Admin Communities</h5>
+    <h5 class="communities-header secondary-text">Admin Communities</h5>
     <div class="communities-list">
       <% communities.forEach((community) => { %>
       <% if (community.id == 9) { %>
@@ -97,7 +97,7 @@
 
 
     <% if (user) { %>
-    <h5 class="communities-header">My Communities</h5>
+    <h5 class="communities-header secondary-text">My Communities</h5>
     <div class="communities-list">
       <% communities.forEach((community) => { %>
       <% if (community.id == 9 || community.PrivacySetting == 'Private') { %>
@@ -128,7 +128,7 @@
     </div>
     <% } %>
 
-    <h5 class="communities-header">Explore Communities</h5>
+    <h5 class="communities-header secondary-text">Explore Communities</h5>
     <div class="communities-list">
       <% communities.forEach((community) => { %>
       <% if (community.id == 9 || community.PrivacySetting == 'Private') { %>

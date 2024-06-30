@@ -62,7 +62,7 @@
     align-items: flex-start;
     gap: 10px;
     background: none;
-    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
     width: 100%;
     padding: 10px 17px;
     box-sizing: border-box;
@@ -248,6 +248,9 @@
   <main>
     <div class="favorites-container">
       <div class="page-header">
+        <div class="header secondary-text">
+          <h5>Favorites</h5>
+        </div>
         <div class="favorites-type-selector">
           <button class="favorites-type-button" onclick="getFavorites('all')">
             <span class="material-symbols-outlined">
@@ -339,7 +342,8 @@
 
       const favoritesHeaderContainer = document.createElement('div');
       favoritesHeaderContainer.classList.add('page-header');
-      const favoriteHeader = document.createElement('h3');
+      const favoriteHeader = document.createElement('h5');
+      favoriteHeader.classList.add('secondary-text');
       favoriteHeader.textContent = 'Posts';
       favoritesHeaderContainer.appendChild(favoriteHeader);
       favoritesContainer.appendChild(favoritesHeaderContainer);
@@ -419,7 +423,8 @@
 
       const favoritesHeaderContainer = document.createElement('div');
       favoritesHeaderContainer.classList.add('page-header');
-      const favoriteHeader = document.createElement('h3');
+      const favoriteHeader = document.createElement('h5');
+      favoriteHeader.classList.add('secondary-text');
       favoriteHeader.textContent = 'Comments';
       favoritesHeaderContainer.appendChild(favoriteHeader);
       favoritesContainer.appendChild(favoritesHeaderContainer);
@@ -476,7 +481,8 @@
 
       const favoritesHeaderContainer = document.createElement('div');
       favoritesHeaderContainer.classList.add('page-header');
-      const favoriteHeader = document.createElement('h3');
+      const favoriteHeader = document.createElement('h5');
+      favoriteHeader.classList.add('secondary-text');
       favoriteHeader.textContent = 'Jobs';
       favoritesHeaderContainer.appendChild(favoriteHeader);
       favoritesContainer.appendChild(favoritesHeaderContainer);

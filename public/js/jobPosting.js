@@ -274,7 +274,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         <div class="job-listing">
                 ${
                   isOlderThan30Days(job)
-                    ? `<div class="caution-messages"><p>This job was posted more than 30 days ago</p> <p>Apply anyway <a href="/redirect/${job.link}">here</a></div>`
+                    ? `<div class="caution-messages"><p>This job was posted more than 30 days ago</p> <p>Apply anyway <a href="/redirect/${encodeURIComponent(job.link)}">here</a></div>`
                     : ""
                 }
           <div class="company-info">
@@ -355,7 +355,7 @@ group
         isOlderThan30Days(job)
           ? ""
           : `<div class="apply-button-container flex">
-          <button id="submit-button-normal" class="margin-h-auto" onclick="window.location.href='/redirect/${job.link}'">Apply</button>
+          <button id="submit-button-normal" class="margin-h-auto" onclick="window.location.href='/redirect/${encodeURIComponent(job.link)}'">Apply</button>
           </div>
           `
       }

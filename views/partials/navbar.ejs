@@ -700,6 +700,10 @@
     <% } %>
   });
 
+  function redirectToLink(linkUrl) {
+    window.location.href = `/redirect?url=${encodeURIComponent(linkUrl)}`;
+  }
+
 
 
   <% if (user) { %>

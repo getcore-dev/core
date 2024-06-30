@@ -62,13 +62,18 @@
                 <span class="community-flair"><span class="material-symbols-outlined">
                     forum
                   </span><%= communityPostCount %> posts</span>
+                <% if (community.Tags.length > 0) { %>
+                <span class="community-flair">
+                  <span class="material-symbols-outlined">
+                    label
+                  </span>
+                  <button class="no-bg no-border clickable no-padding" onclick="toggleTags()">show tags</button>
+                </span>
+                <% } %>
               </div>
               <div class="community-tags">
                 <% try { %>
                 <% let tags = community.Tags.split(','); %>
-                <% if (tags.length > 0) { %>
-                <button class="see-more" onclick="toggleTags()">show tags</button>
-                <% } %>
                 <% let hiddenTags = tags.length; %>
                 <% tags.forEach((tag, index) => { %>
                 <span class="tag <%= index >= 0 ? 'hidden-tag' : '' %>" onclick="window.location.href='/tags/<%= tag.trim() %>'"><%= tag.trim() %></span>
@@ -624,7 +629,7 @@
 
               if (posts.length === 0 && page === 1) {
                 const noPostsDiv = document.createElement('div');
-                noPostsDiv.className = 'no-posts';
+                noPostsDiv.className = 'no-posts secondary-text';
                 noPostsDiv.innerText = 'No posts to show';
                 postsContainer.appendChild(noPostsDiv);
               }

@@ -65,6 +65,9 @@ li.notification-item.unread {
 
 .notification-header {
     font-size: .925rem;
+    margin: 0 13px;
+    margin-top: 1.2rem;
+    margin-bottom: .7rem;
 }
 
 .notification-text {
@@ -84,7 +87,7 @@ li.notification-item.unread {
 }
 
 .notification-item {
-    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
     background-color: var(--light-mode-main-color);
     padding: .75rem .55rem;
 }

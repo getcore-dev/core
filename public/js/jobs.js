@@ -3,6 +3,7 @@ const state = {
   jobPostings: [],
   currentPage: 1,
   isLoading: false,
+  renderedJobIds: new Set(),
   filters: {
     experienceLevel: "",
     location: "",
@@ -295,6 +296,7 @@ function moveTagToOriginalPosition(tag) {
 function resetJobListings() {
   state.currentPage = 1;
   state.jobPostings = [];
+  state.renderedJobIds.clear();
   elements.jobList.innerHTML = "";
   fetchJobPostings();
 }
@@ -317,15 +319,18 @@ async function fetchJobPostings() {
   try {
     const response = await fetch(`/api/jobs?${queryParams}`);
     const data = await response.json();
-    state.jobPostings =
-      state.currentPage === 1
-        ? data.jobPostings
-        : [...state.jobPostings, ...data.jobPostings];
-    renderJobPostings();
+
+    // Filter out jobs that have already been rendered
+    const newJobs = data.jobPostings.filter(
+      (job) => !state.renderedJobIds.has(job.id)
+    );
+
+    state.jobPostings = [...state.jobPostings, ...newJobs];
+    renderJobPostings(newJobs);
     state.currentPage++;
     state.isLoading = false;
 
-    if (data.currentPage >= data.totalPages || data.jobPostings.length === 0) {
+    if (data.currentPage >= data.totalPages || newJobs.length === 0) {
       removeInfiniteScroll();
     }
   } catch (error) {
@@ -334,11 +339,14 @@ async function fetchJobPostings() {
   }
 }
 
-function renderJobPostings() {
+function renderJobPostings(jobs) {
   const fragment = document.createDocumentFragment();
-  state.jobPostings.forEach((job) => {
-    const jobElement = createJobElement(job);
-    fragment.appendChild(jobElement);
+  jobs.forEach((job) => {
+    if (!state.renderedJobIds.has(job.id)) {
+      const jobElement = createJobElement(job);
+      fragment.appendChild(jobElement);
+      state.renderedJobIds.add(job.id);
+    }
   });
   elements.jobList.appendChild(fragment);
 

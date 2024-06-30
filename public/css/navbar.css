@@ -830,7 +830,6 @@ font-weight: 400;
 
 .secondary-text, .secondary-text:visited {
   color: var(--light-mode-secondary-text-color);
-  font-weight: 400;
 }
 
 .thumbnail {
@@ -1133,6 +1132,23 @@ input {
   padding: 10px 20px;
   margin-top: 10px;
   cursor: pointer;
+}
+
+.no-bg {
+  background: none;
+}
+
+.no-padding {
+  padding: 0;
+}
+
+.no-border {
+  border: none;
+}
+
+.clickable {
+  cursor: pointer;
+  color: var(--active-indicator-color);
 }
 
 #submit-button-normal, #cancel-button-normal, #regular-button-normal, .submit-button-normal, .cancel-button-normal, .regular-button-normal, .special-button-normal, #special-button-normal, .null-button-normal, #null-button-normal, #null-button, .null-button {

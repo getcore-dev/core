@@ -250,14 +250,12 @@
           </button>
           <% } %>
           <% } %>
+          <% if (user && user.isAdmin) { %>
           <div class="dropdown">
             <button class="null-button-normal" onclick="showDropdown(event)">
               <span class="material-symbols-outlined">more_horiz</span>
             </button>
             <div class="dropdown-content" style="display: none;">
-
-              <% if (user && user.isAdmin) { %>
-
               <div class="dropdown-item">
                 <button onclick="adminDeletePost('<%= post.id %>')">
                   <span style="color: red;" class="material-symbols-outlined">
@@ -278,9 +276,9 @@
                   </button>
                 </span>
               </div>
-              <% } %>
             </div>
           </div>
+          <% } %>
         </div>
 
 
@@ -323,7 +321,7 @@
                   <img src="<%= gitHubData.owner.avatar_url %>" alt="Preview" class="large-preview-image" />
                 </div>
                 <div class="project-link-header">
-                  <a href="/redirect/<%= post.link %>" class="project-link-title">
+                  <a href="/redirect/<%= encodeURIComponent(post.link) %>" class="project-link-title">
                     <img src="/src/github.png" alt="GitHub Logo" class="github-logo" style="display: inline-block; background-color: white; border-radius: 100%; height: 16px; width: 16px; aspect-ratio: 1/1; padding: 0; margin: 0; margin-right: 5px;" />
                     <%= post.link %>
                   </a>
@@ -365,7 +363,7 @@
               <% } %>
               <% } else if ((post.post_type == 'post' || post.post_type == 'discussion') && post.linkPreview) { %>
 
-              <div class="discussion-link" onclick="window.location.href='/redirect/<%= post.link %>'">
+              <div class="discussion-link" onclick="window.location.href='/redirect/<%= encodeURIComponent(post.link) %>'">
                 <% let imageUrl = post.linkPreview.image || post.linkPreview.favicon; %>
                 <% if (imageUrl) { %>
                 <div class="link-image">
@@ -373,7 +371,7 @@
                 </div>
                 <% } %>
 
-                <div class="link-info" onclick="window.location.href='/redirect/<%= post.link %>'">
+                <div class="link-info" onclick="window.location.href='/redirect/<%= encodeURIComponent(post.link) %>'">
                   <div class="link-info-url"><%= post.linkPreview.url %></div>
                   <div class="link-info-title">
                     <h3><%= post.linkPreview.title %></h3>
@@ -456,7 +454,7 @@
                       %>
             <%= totalReplies %> comment<%= totalReplies !== 1 ? 's' : '' %>
           </div>
-          <% if (!post.deleted) { %>
+          <% if (!post.deleted && !post.isLocked) { %>
 
           <% if (user) { %>
           <div class="add-comment-button" onclick="<% if (user) { %>showCommentForm()<% } else { %>window.location.href = '/login';<% } %>">
@@ -670,7 +668,7 @@
               </div>
 
               <div class="replies">
-                <% if (!post.deleted) { %>
+                <% if (!post.deleted && !post.isLocked) { %>
 
                 <% if (user) { %>
                 <a href="#" id="reply-button-<%= comment.id %>" onclick="<% if (user) { %>showReplyForm('<%= comment.id %>', event)<% } else { %>window.location.href = '/login';<% } %>">

@@ -420,6 +420,11 @@ a.username-link:hover, a.community:hover {
   padding-bottom: 0;
 }
 
+.no-posts {
+  display: flex;
+  justify-content: center;
+}
+
 .pinned .post-header {
   margin-bottom: .2rem;
 }
