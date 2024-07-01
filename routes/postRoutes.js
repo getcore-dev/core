@@ -64,28 +64,6 @@ router.post("/posts", checkAuthenticated, async (req, res) => {
   }
 });
 
-router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
-  try {
-    const postId = req.params.postId;
-    const userId = req.user.id;
-    const action = req.body.action.toUpperCase();
-    const validActions = ["LOVE", "LIKE", "CURIOUS", "INTERESTING", "CELEBRATE", "BOOST"];
-    
-    if (!validActions.includes(action)) {
-      return res.status(400).json({ error: "Invalid action" });
-    }
-    
-    const newReactions = await postQueries.interactWithPost(postId, userId, action);
-    
-    res.json({
-      message: `Post reaction updated successfully`,
-      newReactions
-    });
-  } catch (err) {
-    console.error("Database error:", err);
-    res.status(500).json({ error: "Error processing reaction" });
-  }
-});
 
 router.post(
   "/posts/:postId/answer/:commentId",
@@ -110,6 +88,30 @@ router.post(
     }
   }
 );
+
+router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const userId = req.user.id;
+    const action = req.body.action.toUpperCase();
+    const validActions = ["LOVE", "LIKE", "CURIOUS", "INTERESTING", "CELEBRATE", "BOOST"];
+    
+    if (!validActions.includes(action)) {
+      return res.status(400).json({ error: "Invalid action" });
+    }
+    
+    const result = await postQueries.interactWithPost(postId, userId, action);
+    
+    res.json({
+      message: `Post reaction updated successfully`,
+      userReaction: result.userReaction,
+      totalReactions: result.totalReactions
+    });
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ error: "Error processing reaction" });
+  }
+});
 
 router.get("/posts/:postId", viewLimiter, async (req, res) => {
   try {
