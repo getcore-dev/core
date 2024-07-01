@@ -1296,56 +1296,96 @@
       }
     }
 
-    function interactWithPost(postId, user, action) {
-      if (!user) {
-        window.location.href = '/login';
-        return;
-      }
+// Function to update the reaction button and count
+function updateReactionUI(type, id, newReactions) {
+  const mainButton = document.querySelector(`.mainReactionButton[data-type="${type}"][data-id="${id}"]`);
+  const popup = document.getElementById(`reactionPopup-${type}-${id}`);
+  const totalCountSpan = mainButton.nextElementSibling;
 
-      fetch(`/posts/${postId}/react`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            user: user,
-            action: action.toLowerCase() // Ensure action is in lowercase
-          })
-        })
-        .then(response => response.json())
-        .then(data => {
-          location.reload();
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
+  // Update main button icon
+  let userReaction = null;
+  for (const [reaction, count] of Object.entries(newReactions)) {
+    if (count > newReactions[reaction.toLowerCase() + 'Count'] || 0) {
+      userReaction = reaction;
+      break;
     }
+  }
 
-    function interactWithComment(postId, commentId, user, action) {
-      if (!user) {
-        window.location.href = '/login';
-        return;
-      }
+  if (userReaction) {
+    const reactionIcon = {
+      "BOOST": "⚡️", "LOVE": "❤️", "LIKE": "👍", 
+      "CURIOUS": "🤔", "INTERESTING": "💡", "CELEBRATE": "🎉"
+    }[userReaction];
+    mainButton.innerHTML = reactionIcon;
+    mainButton.classList.add('active');
+  } else {
+    mainButton.innerHTML = '<span class="material-symbols-outlined">add_reaction</span>';
+    mainButton.classList.remove('active');
+  }
 
-      fetch(`/posts/${postId}/comment/${commentId}/react`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            user: user,
-            action: action
-          })
-        })
-        .then(response => response.json())
-        .then(data => {
-          location.reload();
+  // Update reaction counts in popup
+  const buttons = popup.querySelectorAll('.reaction-button-popup');
+  buttons.forEach(button => {
+    const reaction = button.dataset.reaction;
+    const countSpan = button.querySelector('.reaction-count');
+    countSpan.textContent = newReactions[reaction.toLowerCase() + 'Count'] || 0;
+    button.classList.toggle('active', reaction === userReaction);
+  });
 
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
-    }
+  // Update total reaction count
+  const totalCount = Object.values(newReactions).reduce((sum, count) => sum + count, 0);
+  totalCountSpan.textContent = `${totalCount} reaction${totalCount !== 1 ? 's' : ''}`;
+}
+
+function interactWithPost(postId, user, action) {
+  if (!user) {
+    window.location.href = '/login';
+    return;
+  }
+
+  fetch(`/posts/${postId}/react`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      user: user,
+      action: action.toLowerCase()
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    updateReactionUI('post', postId, data.newReactions);
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+}
+
+function interactWithComment(postId, commentId, user, action) {
+  if (!user) {
+    window.location.href = '/login';
+    return;
+  }
+
+  fetch(`/posts/${postId}/comment/${commentId}/react`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      user: user,
+      action: action
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    updateReactionUI('comment', commentId, data.newReactions);
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+}
 
     function showReplyForm(commentId, event) {
       event.preventDefault();

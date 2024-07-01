@@ -64,38 +64,25 @@ router.post("/posts", checkAuthenticated, async (req, res) => {
   }
 });
 
-// Route for boosting a post
 router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
   try {
     const postId = req.params.postId;
     const userId = req.user.id;
-    const action = req.body.action.toUpperCase(); // Convert action to uppercase for consistency
+    const action = req.body.action.toUpperCase();
 
-    // Valid reactions
-    const validActions = [
-      "LOVE",
-      "LIKE",
-      "CURIOUS",
-      "INTERESTING",
-      "CELEBRATE",
-      "BOOST",
-    ];
+    const validActions = ["LOVE", "LIKE", "CURIOUS", "INTERESTING", "CELEBRATE", "BOOST"];
 
     if (!validActions.includes(action)) {
       res.status(400).send("Invalid action");
       return;
     }
 
-    const newScore = await postQueries.interactWithPost(postId, userId, action);
+    const newReactions = await postQueries.interactWithPost(postId, userId, action);
 
-    if (newScore === 0) {
-      res.json({ message: "Action unchanged", newScore });
-    } else {
-      res.json({
-        message: `Post ${action.toLowerCase()}ed successfully`,
-        newScore,
-      });
-    }
+    res.json({
+      message: `Post reaction updated successfully`,
+      newReactions
+    });
   } catch (err) {
     console.error("Database error:", err);
     res.status(500).send("Error processing reaction");
