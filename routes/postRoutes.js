@@ -64,7 +64,6 @@ router.post("/posts", checkAuthenticated, async (req, res) => {
   }
 });
 
-// Route for boosting a post
 router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
   try {
     const postId = req.params.postId;
