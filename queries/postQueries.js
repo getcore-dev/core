@@ -495,16 +495,12 @@ const postQueries = {
 
   interactWithPost: async (postId, userId, actionType) => {
   try {
-    // Validate actionType
-    if (
-      !["LOVE", "LIKE", "CURIOUS", "INTERESTING", "CELEBRATE", "BOOST"].includes(actionType)
-    ) {
+    const validActions = ["LOVE", "LIKE", "CURIOUS", "INTERESTING", "CELEBRATE", "BOOST"];
+    if (!validActions.includes(actionType)) {
       throw new Error("Invalid action type");
     }
 
-    if (actionType === "BOOST") {
-      actionType = "B";
-    }
+    let dbActionType = actionType === "BOOST" ? "B" : actionType;
 
     // Check if the user has already interacted with the post
     const userAction = await sql.query`
@@ -516,12 +512,12 @@ const postQueries = {
       // If no previous interaction, insert new action
       await sql.query`
         INSERT INTO userPostActions (user_id, post_id, action_type) 
-        VALUES (${userId}, ${postId}, ${actionType})`;
-    } else if (userAction.recordset[0].action_type !== actionType) {
+        VALUES (${userId}, ${postId}, ${dbActionType})`;
+    } else if (userAction.recordset[0].action_type !== dbActionType) {
       // If existing interaction is different, update action
       await sql.query`
         UPDATE userPostActions 
-        SET action_type = ${actionType}
+        SET action_type = ${dbActionType}
         WHERE user_id = ${userId} AND post_id = ${postId}`;
     } else {
       // If user is repeating the same action, remove the action
@@ -538,33 +534,35 @@ const postQueries = {
       GROUP BY action_type`;
 
     // Initialize reaction counts
-    let loveCount = 0,
-      likeCount = 0,
-      curiousCount = 0,
-      interestingCount = 0,
-      celebrateCount = 0,
-      boostCount = 0;
+    const newReactions = {
+      loveCount: 0,
+      likeCount: 0,
+      curiousCount: 0,
+      interestingCount: 0,
+      celebrateCount: 0,
+      boostCount: 0
+    };
 
     // Update reaction counts based on the query result
     reactionCounts.recordset.forEach((row) => {
       switch (row.action_type) {
         case "LOVE":
-          loveCount = row.count;
+          newReactions.loveCount = row.count;
           break;
         case "LIKE":
-          likeCount = row.count;
+          newReactions.likeCount = row.count;
           break;
         case "CURIOUS":
-          curiousCount = row.count;
+          newReactions.curiousCount = row.count;
           break;
         case "INTERESTING":
-          interestingCount = row.count;
+          newReactions.interestingCount = row.count;
           break;
         case "CELEBRATE":
-          celebrateCount = row.count;
+          newReactions.celebrateCount = row.count;
           break;
         case "B":
-          boostCount = row.count;
+          newReactions.boostCount = row.count;
           break;
       }
     });
@@ -572,29 +570,21 @@ const postQueries = {
     // Update the post with new reaction counts
     await sql.query`
       UPDATE posts 
-      SET react_love = ${loveCount}, 
-      react_like = ${likeCount},
-      react_curious = ${curiousCount},
-      react_interesting = ${interestingCount},
-      react_celebrate = ${celebrateCount},
-      boosts = ${boostCount}
+      SET react_love = ${newReactions.loveCount}, 
+          react_like = ${newReactions.likeCount},
+          react_curious = ${newReactions.curiousCount},
+          react_interesting = ${newReactions.interestingCount},
+          react_celebrate = ${newReactions.celebrateCount},
+          boosts = ${newReactions.boostCount}
       WHERE id = ${postId}`;
 
     // Return updated reaction counts
-    return {
-      loveCount,
-      likeCount,
-      curiousCount,
-      interestingCount,
-      celebrateCount,
-      boostCount
-    };
+    return newReactions;
   } catch (err) {
     console.error("Database update error:", err);
     throw err;
   }
 },
-
   removeDuplicateActions: async () => {
     try {
       const result = await sql.query`
