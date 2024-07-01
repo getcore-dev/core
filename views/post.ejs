@@ -1296,49 +1296,6 @@
       }
     }
 
-function updateReactionUI(type, id, newReactions) {
-  const mainButton = document.querySelector(`.mainReactionButton[data-type="${type}"][data-id="${id}"]`);
-  const popup = document.getElementById(`reactionPopup-${type}-${id}`);
-  const totalCountSpan = mainButton.nextElementSibling;
-
-  // Update main button icon
-  let userReaction = null;
-  let totalCount = 0;
-  const reactionIcons = {
-    "BOOST": "⚡️", "LOVE": "❤️", "LIKE": "👍", 
-    "CURIOUS": "🤔", "INTERESTING": "💡", "CELEBRATE": "🎉"
-  };
-
-  for (const [reaction, count] of Object.entries(newReactions)) {
-    if (count > 0) {
-      totalCount += count;
-      if (!userReaction) {
-        userReaction = reaction;
-      }
-    }
-  }
-
-  if (userReaction) {
-    mainButton.innerHTML = reactionIcons[userReaction] || '<span class="material-symbols-outlined">add_reaction</span>';
-    mainButton.classList.add('active');
-  } else {
-    mainButton.innerHTML = '<span class="material-symbols-outlined">add_reaction</span>';
-    mainButton.classList.remove('active');
-  }
-
-  // Update reaction counts in popup
-  const buttons = popup.querySelectorAll('.reaction-button-popup');
-  buttons.forEach(button => {
-    const reaction = button.dataset.reaction;
-    const countSpan = button.querySelector('.reaction-count');
-    countSpan.textContent = newReactions[reaction.toLowerCase() + 'Count'] || 0;
-    button.classList.toggle('active', reaction === userReaction);
-  });
-
-  // Update total reaction count
-  totalCountSpan.textContent = `${totalCount} reaction${totalCount !== 1 ? 's' : ''}`;
-}
-
 function interactWithPost(postId, user, action) {
   if (!user) {
     window.location.href = '/login';
@@ -1351,21 +1308,50 @@ function interactWithPost(postId, user, action) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      user: user,
       action: action
     })
   })
   .then(response => response.json())
   .then(data => {
-    if (data.newReactions) {
-      updateReactionUI('post', postId, data.newReactions);
+    if (data.userReaction !== undefined && data.totalReactions !== undefined) {
+      updateReactionUI(postId, data.userReaction, data.totalReactions);
     } else {
-      console.error('Server response does not contain newReactions data');
+      console.error('Server response does not contain expected data');
     }
   })
   .catch((error) => {
     console.error('Error:', error);
   });
+}
+
+function updateReactionUI(postId, userReaction, totalReactions) {
+  const mainButton = document.querySelector(`.mainReactionButton[data-type="post"][data-id="${postId}"]`);
+  const popup = document.getElementById(`reactionPopup-post-${postId}`);
+  const totalCountSpan = mainButton.nextElementSibling;
+
+  const reactionIcons = {
+    "BOOST": "⚡️", "LOVE": "❤️", "LIKE": "👍", 
+    "CURIOUS": "🤔", "INTERESTING": "💡", "CELEBRATE": "🎉"
+  };
+
+  // Update main button
+  if (userReaction && reactionIcons[userReaction]) {
+    mainButton.innerHTML = reactionIcons[userReaction];
+    mainButton.classList.add('active');
+  } else {
+    mainButton.innerHTML = '<span class="material-symbols-outlined">add_reaction</span>';
+    mainButton.classList.remove('active');
+  }
+
+  // Update reaction buttons in popup
+  const buttons = popup.querySelectorAll('.reaction-button-popup');
+  buttons.forEach(button => {
+    const reaction = button.dataset.reaction;
+    button.classList.toggle('active', reaction === userReaction);
+  });
+
+  // Update total reaction count
+  totalCountSpan.textContent = `${totalReactions} reaction${totalReactions !== 1 ? 's' : ''}`;
 }
 
 function interactWithComment(postId, commentId, user, action) {
