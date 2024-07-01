@@ -494,58 +494,85 @@ const postQueries = {
   },
 
   interactWithPost: async (postId, userId, actionType) => {
-  try {
-    const validActions = ["LOVE", "LIKE", "CURIOUS", "INTERESTING", "CELEBRATE", "BOOST"];
-    if (!validActions.includes(actionType)) {
-      throw new Error("Invalid action type");
-    }
+    try {
+      const validActions = [
+        "LOVE",
+        "LIKE",
+        "CURIOUS",
+        "INTERESTING",
+        "CELEBRATE",
+        "BOOST",
+      ];
+      if (!validActions.includes(actionType)) {
+        throw new Error("Invalid action type");
+      }
 
-    let dbActionType = actionType === "BOOST" ? "B" : actionType;
+      let dbActionType = actionType === "BOOST" ? "B" : actionType;
 
-    // Check if the user has already interacted with the post
-    const userAction = await sql.query`
-      SELECT action_type 
-      FROM userPostActions 
-      WHERE user_id = ${userId} AND post_id = ${postId}`;
-
-    let userReaction = null;
-
-    if (userAction.recordset.length === 0) {
-      // If no previous interaction, insert new action
-      await sql.query`
-        INSERT INTO userPostActions (user_id, post_id, action_type) 
-        VALUES (${userId}, ${postId}, ${dbActionType})`;
-      userReaction = actionType;
-    } else if (userAction.recordset[0].action_type !== dbActionType) {
-      // If existing interaction is different, update action
-      await sql.query`
-        UPDATE userPostActions 
-        SET action_type = ${dbActionType}
+      // Check if the user has already interacted with the post
+      const userAction = await sql.query`
+        SELECT action_type 
+        FROM userPostActions 
         WHERE user_id = ${userId} AND post_id = ${postId}`;
-      userReaction = actionType;
-    } else {
-      // If user is repeating the same action, remove the action
-      await sql.query`
-        DELETE FROM userPostActions 
-        WHERE user_id = ${userId} AND post_id = ${postId}`;
-      userReaction = null;
+
+      let userReaction = null;
+
+      if (userAction.recordset.length === 0) {
+        // If no previous interaction, insert new action
+        await sql.query`
+          INSERT INTO userPostActions (user_id, post_id, action_type) 
+          VALUES (${userId}, ${postId}, ${dbActionType})`;
+        userReaction = actionType;
+      } else if (userAction.recordset[0].action_type !== dbActionType) {
+        // If existing interaction is different, update action
+        await sql.query`
+          UPDATE userPostActions 
+          SET action_type = ${dbActionType}
+          WHERE user_id = ${userId} AND post_id = ${postId}`;
+        userReaction = actionType;
+      } else {
+        // If user is repeating the same action, remove the action
+        await sql.query`
+          DELETE FROM userPostActions 
+          WHERE user_id = ${userId} AND post_id = ${postId}`;
+        userReaction = null;
+      }
+
+      // Get total reaction count for each type
+      const reactionCounts = await sql.query`
+        SELECT action_type, COUNT(*) as count 
+        FROM userPostActions 
+        WHERE post_id = ${postId}
+        GROUP BY action_type`;
+
+      // Convert the result to a map of reaction names to their counts
+      const reactionsMap = reactionCounts.recordset.reduce((acc, row) => {
+        acc[row.action_type] = row.count;
+        return acc;
+      }, {});
+
+      // Ensure all reaction types are present in the map, even if count is 0
+      validActions.forEach((action) => {
+        if (
+          !reactionsMap[action] &&
+          !(action === "BOOST" && reactionsMap["B"])
+        ) {
+          reactionsMap[action] = 0;
+        } else if (action === "BOOST" && reactionsMap["B"]) {
+          reactionsMap[action] = reactionsMap["B"];
+          delete reactionsMap["B"];
+        }
+      });
+
+      return {
+        userReaction,
+        reactionsMap,
+      };
+    } catch (err) {
+      console.error("Database update error:", err);
+      throw err;
     }
-
-    // Get total reaction count
-    const totalReactions = await sql.query`
-      SELECT COUNT(*) as count 
-      FROM userPostActions 
-      WHERE post_id = ${postId}`;
-
-    return {
-      userReaction,
-      totalReactions: totalReactions.recordset[0].count
-    };
-  } catch (err) {
-    console.error("Database update error:", err);
-    throw err;
-  }
-},
+  },
 
   removeDuplicateActions: async () => {
     try {

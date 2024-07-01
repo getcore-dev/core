@@ -649,7 +649,7 @@
                 <% reactionTypes.forEach(reaction => { %>
                 <% totalReactions += comment[reaction.type.toLowerCase() + 'Count']; %>
                 <% }); %>
-                <span class="total-reactions-count <%= post.id %>"><%= totalReactions %> reactions</span>
+                <span class="total-reactions-count-<%= comment.id %>"><%= totalReactions %> reactions</span>
 
                 <% 
             function countAllReplies(replies) {
@@ -1296,92 +1296,135 @@
       }
     }
 
-function interactWithPost(postId, user, action) {
-  if (!user) {
-    window.location.href = '/login';
-    return;
-  }
+    function interactWithPost(postId, user, action) {
+      if (!user) {
+        window.location.href = '/login';
+        return;
+      }
 
-  fetch(`/posts/${postId}/react`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      action: action
-    })
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.userReaction !== undefined && data.totalReactions !== undefined) {
-      updateReactionUI(postId, data.userReaction, data.totalReactions);
-    } else {
-      console.error('Server response does not contain expected data');
+      fetch(`/posts/${postId}/react`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            action: action
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.userReaction !== undefined && data.reactionsMap !== undefined) {
+            updateReactionUI(postId, data.userReaction, data.reactionsMap);
+          } else {
+            console.error('Server response does not contain expected data');
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
     }
-  })
-  .catch((error) => {
-    console.error('Error:', error);
-  });
-}
 
-function updateReactionUI(postId, userReaction, totalReactions) {
-  const mainButton = document.querySelector(`.mainReactionButton[data-type="post"][data-id="${postId}"]`);
-  const popup = document.getElementById(`reactionPopup-post-${postId}`);
-  const totalCountSpan = document.querySelector(`.total-reactions-count-${postId}`);
+    function updateReactionUI(postId, userReaction, reactionsMap) {
+      const mainButton = document.querySelector(`.mainReactionButton[data-type="post"][data-id="${postId}"]`);
+      const popup = document.getElementById(`reactionPopup-post-${postId}`);
+      const totalCountSpan = document.querySelector(`.total-reactions-count-${postId}`);
 
-  const reactionIcons = {
-    "BOOST": "⚡️", "LOVE": "❤️", "LIKE": "👍", 
-    "CURIOUS": "🤔", "INTERESTING": "💡", "CELEBRATE": "🎉"
-  };
+      const reactionIcons = {
+        "LOVE": "❤️",
+        "LIKE": "👍",
+        "CURIOUS": "🤔",
+        "DISLIKE": "👎",
+      };
 
-  // Update main button
-  if (userReaction && reactionIcons[userReaction]) {
-    mainButton.innerHTML = reactionIcons[userReaction];
-    mainButton.classList.add('active');
-  } else {
-    mainButton.innerHTML = '<span class="material-symbols-outlined">add_reaction</span>';
-    mainButton.classList.remove('active');
-  }
+      // Update main button
+      if (userReaction && reactionIcons[userReaction]) {
+        mainButton.innerHTML = reactionIcons[userReaction];
+        mainButton.classList.add('active');
+      } else {
+        mainButton.innerHTML = '<span class="material-symbols-outlined">add_reaction</span>';
+        mainButton.classList.remove('active');
+      }
 
-  // Update reaction buttons in popup
-  const buttons = popup.querySelectorAll('.reaction-button-popup');
-  buttons.forEach(button => {
-    const reaction = button.dataset.reaction;
-    button.classList.toggle('active', reaction === userReaction);
-  });
+      // Update reaction buttons in popup
+      const buttons = popup.querySelectorAll('.reaction-button-popup');
+      buttons.forEach(button => {
+        const reaction = button.dataset.reaction;
+        button.classList.toggle('active', reaction === userReaction);
+        const reactionCountSpan = button.querySelector('.reaction-count');
+        reactionCountSpan.textContent = reactionsMap[reaction] || 0;
+      });
 
-  // Update total reaction count
-  totalCountSpan.textContent = `${totalReactions} reaction${totalReactions !== 1 ? 's' : ''}`;
-}
-
-function interactWithComment(postId, commentId, user, action) {
-  if (!user) {
-    window.location.href = '/login';
-    return;
-  }
-
-  fetch(`/posts/${postId}/comment/${commentId}/react`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      user: user,
-      action: action
-    })
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.newReactions) {
-      updateReactionUI('comment', commentId, data.newReactions);
-    } else {
-      console.error('Server response does not contain newReactions data');
+      // Update total reaction count
+      const totalReactions = Object.values(reactionsMap).reduce((a, b) => a + b, 0);
+      totalCountSpan.textContent = `${totalReactions} reaction${totalReactions !== 1 ? 's' : ''}`;
     }
-  })
-  .catch((error) => {
-    console.error('Error:', error);
-  });
-}
+
+    function interactWithComment(postId, commentId, user, action) {
+      if (!user) {
+        window.location.href = '/login';
+        return;
+      }
+      const userId = user.id;
+
+      fetch(`/react/posts/${postId}/comment/${commentId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId: userId,
+            action: action
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.userReaction !== undefined && data.totalReactions !== undefined && data.reactionsMap !== undefined) {
+            updateCommentReactionUI(commentId, data.totalReactions, data.reactionsMap);
+          } else {
+            console.error('Server response does not contain expected data');
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    }
+
+    function updateCommentReactionUI(commentId, totalCommentReactionCount, reactionsMap) {
+      const mainButton = document.querySelector(`.mainReactionButton[data-type="comment"][data-id="${commentId}"]`);
+      const popup = document.getElementById(`reactionPopup-comment-${commentId}`);
+      const totalCountSpan = document.querySelector(`.total-reactions-count-comment-${commentId}`);
+
+      const reactionIcons = {
+        "BOOST": "⚡️",
+        "LOVE": "❤️",
+        "LIKE": "👍",
+        "CURIOUS": "🤔",
+        "INTERESTING": "💡",
+        "CELEBRATE": "🎉"
+      };
+
+      // Update main button
+      const userReaction = Object.keys(reactionsMap).find(key => reactionsMap[key] > 0);
+      if (userReaction && reactionIcons[userReaction]) {
+        mainButton.innerHTML = reactionIcons[userReaction];
+        mainButton.classList.add('active');
+      } else {
+        mainButton.innerHTML = '<span class="material-symbols-outlined">add_reaction</span>';
+        mainButton.classList.remove('active');
+      }
+
+      // Update reaction buttons in popup
+      const buttons = popup.querySelectorAll('.reaction-button-popup');
+      buttons.forEach(button => {
+        const reaction = button.dataset.reaction;
+        button.classList.toggle('active', reaction === userReaction);
+        const reactionCountSpan = button.querySelector('.reaction-count');
+        reactionCountSpan.textContent = reactionsMap[reaction] || 0;
+      });
+
+      // Update total reaction count
+      totalCountSpan.textContent = `${totalCommentReactionCount} reaction${totalCommentReactionCount !== 1 ? 's' : ''}`;
+    }
 
     function showReplyForm(commentId, event) {
       event.preventDefault();

@@ -88,22 +88,19 @@ const commentQueries = {
 
   interactWithComment: async (postId, commentId, userId, actionType) => {
     try {
-      if (
-        ![
-          "LOVE",
-          "LIKE",
-          "CURIOUS",
-          "INTERESTING",
-          "CELEBRATE",
-          "BOOST",
-        ].includes(actionType)
-      ) {
+      const validActions = [
+        "LOVE",
+        "LIKE",
+        "CURIOUS",
+        "INTERESTING",
+        "CELEBRATE",
+        "BOOST",
+      ];
+      if (!validActions.includes(actionType)) {
         throw new Error("Invalid action type");
       }
 
-      if (actionType === "BOOST") {
-        actionType = "B";
-      }
+      let dbActionType = actionType === "BOOST" ? "B" : actionType;
 
       // Check if the user has already interacted with the comment
       const userAction = await sql.query`
@@ -111,15 +108,19 @@ const commentQueries = {
         FROM userCommentActions 
         WHERE user_id = ${userId} AND comment_id = ${commentId}`;
 
+      let userReaction = null;
+
       if (userAction.recordset.length === 0) {
-        // check if comments and user exists
+        // Check if comments and user exist
         const commentExists = await sql.query`
-          SELECT * FROM comments WHERE id = ${commentId}`;
+          SELECT * FROM comments WHERE id = ${commentId} AND post_id = ${postId}`;
         const userExists = await sql.query`
           SELECT * FROM users WHERE id = ${userId}`;
 
         if (commentExists.recordset.length === 0) {
-          throw new Error(`Comment with id ${commentId} does not exist`);
+          throw new Error(
+            `Comment with id ${commentId} for post id ${postId} does not exist`
+          );
         }
 
         if (userExists.recordset.length === 0) {
@@ -128,19 +129,22 @@ const commentQueries = {
 
         // If no existing interaction, insert new action
         await sql.query`
-          INSERT INTO userCommentActions (user_id, comment_id, action_type, action_timestamp) 
-          VALUES (${userId}, ${commentId}, ${actionType}, ${GETDATE()})`;
-      } else if (userAction.recordset[0].action_type !== actionType) {
+          INSERT INTO userCommentActions (user_id, comment_id, post_id, action_type, action_timestamp) 
+          VALUES (${userId}, ${commentId}, ${postId}, ${dbActionType}, GETDATE())`;
+        userReaction = actionType;
+      } else if (userAction.recordset[0].action_type !== dbActionType) {
         // If existing interaction is different, update action
         await sql.query`
           UPDATE userCommentActions 
-          SET action_type = ${actionType}
+          SET action_type = ${dbActionType}
           WHERE user_id = ${userId} AND comment_id = ${commentId}`;
+        userReaction = actionType;
       } else {
         // If user is repeating the same action, remove the action
         await sql.query`
           DELETE FROM userCommentActions 
           WHERE user_id = ${userId} AND comment_id = ${commentId}`;
+        userReaction = null;
       }
 
       // Recalculate and update the reactions count for the comment
@@ -150,63 +154,36 @@ const commentQueries = {
         WHERE comment_id = ${commentId}
         GROUP BY action_type`;
 
-      // Initialize reaction counts
-      let loveCount = 0,
-        likeCount = 0,
-        curiousCount = 0,
-        interestingCount = 0,
-        celebrateCount = 0,
-        boostCount = 0;
+      // Convert the result to a map of reaction names to their counts
+      const reactionsMap = reactionCounts.recordset.reduce((acc, row) => {
+        acc[row.action_type === "B" ? "BOOST" : row.action_type] = row.count;
+        return acc;
+      }, {});
 
-      // Update reaction counts based on the query result
-      reactionCounts.recordset.forEach((row) => {
-        switch (row.action_type) {
-          case "LOVE":
-            loveCount = row.count;
-            break;
-          case "LIKE":
-            likeCount = row.count;
-            break;
-          case "CURIOUS":
-            curiousCount = row.count;
-            break;
-          case "INTERESTING":
-            interestingCount = row.count;
-            break;
-          case "CELEBRATE":
-            celebrateCount = row.count;
-            break;
-          case "B":
-            boostCount = row.count;
-            break;
+      // Ensure all reaction types are present in the map, even if count is 0
+      validActions.forEach((action) => {
+        if (!reactionsMap[action]) {
+          reactionsMap[action] = 0;
         }
       });
 
-      // Update the comment with new reaction counts
-      await sql.query`
-        UPDATE comments 
-        SET react_love = ${loveCount}, 
-        react_like = ${likeCount},
-        react_curious = ${curiousCount},
-        react_interesting = ${interestingCount},
-        react_celebrate = ${celebrateCount},
-        boosts = ${boostCount}
-        WHERE id = ${commentId}`;
+      // Calculate total reactions
+      const totalReactions = Object.values(reactionsMap).reduce(
+        (a, b) => a + b,
+        0
+      );
 
-      // Return updated comment info (or just the new reaction counts)
       return {
-        love: loveCount,
-        like: likeCount,
-        curious: curiousCount,
-        interesting: interestingCount,
-        celebrate: celebrateCount,
-        boosts: boostCount,
+        userReaction,
+        totalReactions,
+        reactionsMap,
       };
     } catch (err) {
       console.error("Database update error:", err);
       throw err;
     }
   },
+
   getCommentsByPostId: async (postId) => {
     try {
       const result =

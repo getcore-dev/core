@@ -105,7 +105,8 @@ router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
     res.json({
       message: `Post reaction updated successfully`,
       userReaction: result.userReaction,
-      totalReactions: result.totalReactions
+      totalReactions: result.totalReactions,
+      reactionsMap: result.reactionsMap,
     });
   } catch (err) {
     console.error("Database error:", err);

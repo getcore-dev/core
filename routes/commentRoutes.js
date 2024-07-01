@@ -49,29 +49,47 @@ router.post(
   }
 );
 
-// Route to reply to a comment
 router.post(
-  "/comments/:commentId/replies",
+  "/react/posts/:postId/comment/:commentId",
   checkAuthenticated,
   async (req, res) => {
     try {
-      const parentCommentId = req.params.commentId;
-      const userId = req.user.id; // Assuming the user ID is stored in req.user
-      const { comment } = req.body;
+      const postId = req.params.postId;
+      const commentId = req.params.commentId;
+      const userId = req.body.userId;
+      const action = req.body.action.toUpperCase(); // Convert action to uppercase for consistency
 
-      const replyId = `${Date.now().toString(36)}-${crypto
-        .randomBytes(3)
-        .toString("hex")}`;
-      await sql.query`INSERT INTO comments (id, post_id, parent_comment_id, user_id, comment) VALUES (${replyId}, (SELECT post_id FROM comments WHERE id = ${parentCommentId}), ${parentCommentId}, ${userId}, ${comment})`;
+      const validActions = [
+        "LOVE",
+        "LIKE",
+        "CURIOUS",
+        "INTERESTING",
+        "CELEBRATE",
+        "BOOST",
+      ];
 
-      res.redirect("back");
+      if (!validActions.includes(action)) {
+        res.status(400).send("Invalid action");
+        return;
+      }
+
+      const interactionResult = await commentQueries.interactWithComment(
+        postId,
+        commentId,
+        userId,
+        action
+      );
+
+      res.json({
+        message: `Comment ${action.toLowerCase()}ed successfully`,
+        ...interactionResult,
+      });
     } catch (err) {
-      console.error("Database insert error:", err);
-      res.status(500).send("Error adding reply");
+      console.error("Database error:", err);
+      res.status(500).send("Error processing reaction");
     }
   }
 );
-
 router.post(
   "/posts/:postId/comment/:commentId/react",
   checkAuthenticated,
