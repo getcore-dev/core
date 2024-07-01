@@ -69,23 +69,21 @@ router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
     const postId = req.params.postId;
     const userId = req.user.id;
     const action = req.body.action.toUpperCase();
-
     const validActions = ["LOVE", "LIKE", "CURIOUS", "INTERESTING", "CELEBRATE", "BOOST"];
-
+    
     if (!validActions.includes(action)) {
-      res.status(400).send("Invalid action");
-      return;
+      return res.status(400).json({ error: "Invalid action" });
     }
-
+    
     const newReactions = await postQueries.interactWithPost(postId, userId, action);
-
+    
     res.json({
       message: `Post reaction updated successfully`,
       newReactions
     });
   } catch (err) {
     console.error("Database error:", err);
-    res.status(500).send("Error processing reaction");
+    res.status(500).json({ error: "Error processing reaction" });
   }
 });
 

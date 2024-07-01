@@ -1296,7 +1296,6 @@
       }
     }
 
-// Function to update the reaction button and count
 function updateReactionUI(type, id, newReactions) {
   const mainButton = document.querySelector(`.mainReactionButton[data-type="${type}"][data-id="${id}"]`);
   const popup = document.getElementById(`reactionPopup-${type}-${id}`);
@@ -1304,19 +1303,23 @@ function updateReactionUI(type, id, newReactions) {
 
   // Update main button icon
   let userReaction = null;
+  let totalCount = 0;
+  const reactionIcons = {
+    "BOOST": "⚡️", "LOVE": "❤️", "LIKE": "👍", 
+    "CURIOUS": "🤔", "INTERESTING": "💡", "CELEBRATE": "🎉"
+  };
+
   for (const [reaction, count] of Object.entries(newReactions)) {
-    if (count > newReactions[reaction.toLowerCase() + 'Count'] || 0) {
-      userReaction = reaction;
-      break;
+    if (count > 0) {
+      totalCount += count;
+      if (!userReaction) {
+        userReaction = reaction;
+      }
     }
   }
 
   if (userReaction) {
-    const reactionIcon = {
-      "BOOST": "⚡️", "LOVE": "❤️", "LIKE": "👍", 
-      "CURIOUS": "🤔", "INTERESTING": "💡", "CELEBRATE": "🎉"
-    }[userReaction];
-    mainButton.innerHTML = reactionIcon;
+    mainButton.innerHTML = reactionIcons[userReaction] || '<span class="material-symbols-outlined">add_reaction</span>';
     mainButton.classList.add('active');
   } else {
     mainButton.innerHTML = '<span class="material-symbols-outlined">add_reaction</span>';
@@ -1333,7 +1336,6 @@ function updateReactionUI(type, id, newReactions) {
   });
 
   // Update total reaction count
-  const totalCount = Object.values(newReactions).reduce((sum, count) => sum + count, 0);
   totalCountSpan.textContent = `${totalCount} reaction${totalCount !== 1 ? 's' : ''}`;
 }
 
@@ -1350,12 +1352,16 @@ function interactWithPost(postId, user, action) {
     },
     body: JSON.stringify({
       user: user,
-      action: action.toLowerCase()
+      action: action
     })
   })
   .then(response => response.json())
   .then(data => {
-    updateReactionUI('post', postId, data.newReactions);
+    if (data.newReactions) {
+      updateReactionUI('post', postId, data.newReactions);
+    } else {
+      console.error('Server response does not contain newReactions data');
+    }
   })
   .catch((error) => {
     console.error('Error:', error);
@@ -1380,7 +1386,11 @@ function interactWithComment(postId, commentId, user, action) {
   })
   .then(response => response.json())
   .then(data => {
-    updateReactionUI('comment', commentId, data.newReactions);
+    if (data.newReactions) {
+      updateReactionUI('comment', commentId, data.newReactions);
+    } else {
+      console.error('Server response does not contain newReactions data');
+    }
   })
   .catch((error) => {
     console.error('Error:', error);
