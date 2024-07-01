@@ -431,7 +431,7 @@
                 <% totalReactions += post[reaction.type.toLowerCase() + 'Count']; %>
                 <% }); %>
                 <% if (totalReactions > 0) { %>
-                <span class="total-reactions-count <%= post.id %>"><%= totalReactions %> reactions</span>
+                <span class="total-reactions-count-<%= post.id %>"><%= totalReactions %> reactions</span>
                 <% } else { %>
                 <span class="total-reactions-count <%= post.id %>">0 reactions</span>
                 <% } %>
@@ -1327,7 +1327,7 @@ function interactWithPost(postId, user, action) {
 function updateReactionUI(postId, userReaction, totalReactions) {
   const mainButton = document.querySelector(`.mainReactionButton[data-type="post"][data-id="${postId}"]`);
   const popup = document.getElementById(`reactionPopup-post-${postId}`);
-  const totalCountSpan = mainButton.nextElementSibling;
+  const totalCountSpan = document.querySelector(`.total-reactions-count-${postId}`);
 
   const reactionIcons = {
     "BOOST": "⚡️", "LOVE": "❤️", "LIKE": "👍", 
