@@ -508,83 +508,45 @@ const postQueries = {
       FROM userPostActions 
       WHERE user_id = ${userId} AND post_id = ${postId}`;
 
+    let userReaction = null;
+
     if (userAction.recordset.length === 0) {
       // If no previous interaction, insert new action
       await sql.query`
         INSERT INTO userPostActions (user_id, post_id, action_type) 
         VALUES (${userId}, ${postId}, ${dbActionType})`;
+      userReaction = actionType;
     } else if (userAction.recordset[0].action_type !== dbActionType) {
       // If existing interaction is different, update action
       await sql.query`
         UPDATE userPostActions 
         SET action_type = ${dbActionType}
         WHERE user_id = ${userId} AND post_id = ${postId}`;
+      userReaction = actionType;
     } else {
       // If user is repeating the same action, remove the action
       await sql.query`
         DELETE FROM userPostActions 
         WHERE user_id = ${userId} AND post_id = ${postId}`;
+      userReaction = null;
     }
 
-    // Recalculate and update the reactions count for the post
-    const reactionCounts = await sql.query`
-      SELECT action_type, COUNT(*) as count 
+    // Get total reaction count
+    const totalReactions = await sql.query`
+      SELECT COUNT(*) as count 
       FROM userPostActions 
-      WHERE post_id = ${postId}
-      GROUP BY action_type`;
+      WHERE post_id = ${postId}`;
 
-    // Initialize reaction counts
-    const newReactions = {
-      loveCount: 0,
-      likeCount: 0,
-      curiousCount: 0,
-      interestingCount: 0,
-      celebrateCount: 0,
-      boostCount: 0
+    return {
+      userReaction,
+      totalReactions: totalReactions.recordset[0].count
     };
-
-    // Update reaction counts based on the query result
-    reactionCounts.recordset.forEach((row) => {
-      switch (row.action_type) {
-        case "LOVE":
-          newReactions.loveCount = row.count;
-          break;
-        case "LIKE":
-          newReactions.likeCount = row.count;
-          break;
-        case "CURIOUS":
-          newReactions.curiousCount = row.count;
-          break;
-        case "INTERESTING":
-          newReactions.interestingCount = row.count;
-          break;
-        case "CELEBRATE":
-          newReactions.celebrateCount = row.count;
-          break;
-        case "B":
-          newReactions.boostCount = row.count;
-          break;
-      }
-    });
-
-    // Update the post with new reaction counts
-    await sql.query`
-      UPDATE posts 
-      SET react_love = ${newReactions.loveCount}, 
-          react_like = ${newReactions.likeCount},
-          react_curious = ${newReactions.curiousCount},
-          react_interesting = ${newReactions.interestingCount},
-          react_celebrate = ${newReactions.celebrateCount},
-          boosts = ${newReactions.boostCount}
-      WHERE id = ${postId}`;
-
-    // Return updated reaction counts
-    return newReactions;
   } catch (err) {
     console.error("Database update error:", err);
     throw err;
   }
 },
+
   removeDuplicateActions: async () => {
     try {
       const result = await sql.query`
