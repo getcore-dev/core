@@ -375,7 +375,7 @@ group
       >Share</button>
       </div>
       ${
-        userIsAdmin === "true"
+        userIsAdmin
           ? `
         <div class="delete-button-container flex">
           <button id="cancel-button-normal" class="margin-h-auto" onclick="window.location.href='/jobs/delete/${job.id}'">Delete</button>
