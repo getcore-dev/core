@@ -62,14 +62,19 @@
                 <span class="community-flair"><span class="material-symbols-outlined">
                     forum
                   </span><%= communityPostCount %> posts</span>
-                <% if (community.Tags.length > 0) { %>
-                <span class="community-flair">
-                  <span class="material-symbols-outlined">
-                    label
-                  </span>
-                  <button class="no-bg no-border clickable no-padding" onclick="toggleTags()">show tags</button>
-                </span>
-                <% } %>
+                <% try { %>
+  <% if (community.Tags && community.Tags.length > 0) { %>
+    <span class="community-flair">
+      <span class="material-symbols-outlined">
+        label
+      </span>
+      <button class="no-bg no-border clickable no-padding" onclick="toggleTags()">show tags</button>
+    </span>
+  <% } %>
+<% } catch (error) { %>
+  <!-- Handle the error, you can display a message or log it -->
+  <span class="error-message">Tags are not available</span>
+<% } %>
               </div>
               <div class="community-tags">
                 <% try { %>
