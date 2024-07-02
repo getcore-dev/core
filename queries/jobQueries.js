@@ -214,94 +214,106 @@ const jobQueries = {
     location = "",
     experienceLevel = "",
     salary = "",
-    limit = 15,
+    limit = null,
     offset = 0,
     allowedJobLevels = [],
     tags = []
   ) => {
     try {
       let query = `
-        WITH RankedJobs AS (
-          SELECT DISTINCT
-            j.id, j.title, j.salary, j.salary_max, j.experienceLevel, j.location, j.postedDate,
-            j.link, j.description, j.company_id, j.recruiter_id, j.views,
-            c.name AS company_name, c.logo AS company_logo, c.location AS company_location, 
-            c.description AS company_description,
-            (
-              SELECT STRING_AGG(jt.tagName, ', ')
-              FROM JobPostingsTags jpt
-              INNER JOIN JobTags jt ON jpt.tagId = jt.id
-              WHERE jpt.jobId = j.id
-            ) AS tags,
-            (
-              SELECT STRING_AGG(s.name, ', ')
-              FROM job_skills js
-              INNER JOIN skills s ON js.skill_id = s.id
-              WHERE js.job_id = j.id
-            ) AS skills,
-            ROW_NUMBER() OVER (PARTITION BY j.id ORDER BY j.postedDate DESC) AS RowNum
+        WITH FilteredJobs AS (
+          SELECT j.id, j.title, j.salary, j.salary_max, j.experienceLevel, j.location, j.postedDate,
+                 j.link, j.description, j.company_id, j.recruiter_id, j.views
           FROM JobPostings j
-          LEFT JOIN companies c ON j.company_id = c.id
-          WHERE j.postedDate >= DATEADD(month, -3, GETDATE()) -- Only show jobs from the last 3 months
+          WHERE 1=1
       `;
 
       const queryParams = {};
+      const whereConditions = [];
 
       if (title) {
-        query += ` AND j.title LIKE @title`;
+        whereConditions.push(`j.title LIKE @title`);
         queryParams.title = `%${title}%`;
       }
 
       if (location) {
-        query += ` AND (j.location LIKE @location OR j.location LIKE @stateAbbr)`;
+        whereConditions.push(
+          `(j.location LIKE @location OR j.location LIKE @stateAbbr)`
+        );
         queryParams.location = `%${location}%`;
         queryParams.stateAbbr = `% ${location.substring(0, 2)},%`;
       }
 
       if (experienceLevel) {
-        query += ` AND j.experienceLevel = @experienceLevel`;
+        whereConditions.push(`j.experienceLevel = @experienceLevel`);
         queryParams.experienceLevel = experienceLevel;
       }
 
       if (salary) {
-        query += ` AND j.salary >= @salary`;
+        whereConditions.push(`j.salary >= @salary`);
         queryParams.salary = parseInt(salary);
       }
 
       if (allowedJobLevels && allowedJobLevels.length > 0) {
-        query += ` AND j.experienceLevel IN (${allowedJobLevels
-          .map((_, i) => `@level${i}`)
-          .join(", ")})`;
+        whereConditions.push(
+          `j.experienceLevel IN (${allowedJobLevels
+            .map((_, i) => `@level${i}`)
+            .join(", ")})`
+        );
         allowedJobLevels.forEach((level, i) => {
           queryParams[`level${i}`] = level;
         });
       }
 
       if (tags && tags.length > 0) {
-        query += `
-          AND EXISTS (
-            SELECT 1 FROM JobPostingsTags jpt
-            INNER JOIN JobTags jt ON jpt.tagId = jt.id
+        whereConditions.push(`
+          EXISTS (
+            SELECT 1
+            FROM JobPostingsTags jpt
+            JOIN JobTags jt ON jpt.tagId = jt.id
             WHERE jpt.jobId = j.id AND jt.tagName IN (${tags
               .map((_, i) => `@tag${i}`)
               .join(", ")})
+            GROUP BY jpt.jobId
+            HAVING COUNT(DISTINCT jt.tagName) = ${tags.length}
           )
-        `;
+        `);
         tags.forEach((tag, i) => {
           queryParams[`tag${i}`] = tag;
         });
       }
 
-      query += `)
-        SELECT * FROM RankedJobs
-        WHERE RowNum = 1
-        ORDER BY postedDate DESC
-        OFFSET @offset ROWS
-        FETCH NEXT @limit ROWS ONLY
+      if (whereConditions.length > 0) {
+        query += ` AND ${whereConditions.join(" AND ")}`;
+      }
+
+      query += `
+        )
+        SELECT f.*, 
+               c.name AS company_name, c.logo AS company_logo, c.location AS company_location, 
+               c.description AS company_description,
+               (
+                 SELECT STRING_AGG(jt.tagName, ', ')
+                 FROM JobPostingsTags jpt
+                 JOIN JobTags jt ON jpt.tagId = jt.id
+                 WHERE jpt.jobId = f.id
+               ) AS tags,
+               (
+                 SELECT STRING_AGG(s.name, ', ')
+                 FROM job_skills js
+                 JOIN skills s ON js.skill_id = s.id
+                 WHERE js.job_id = f.id
+               ) AS skills
+        FROM FilteredJobs f
+        LEFT JOIN companies c ON f.company_id = c.id
+        ORDER BY f.postedDate DESC
       `;
 
-      queryParams.offset = parseInt(offset);
-      queryParams.limit = parseInt(limit);
+      if (limit !== null) {
+        query += ` OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY`;
+        queryParams.offset = offset;
+        queryParams.limit = limit;
+      }
 
       const request = new sql.Request();
       Object.entries(queryParams).forEach(([key, value]) => {

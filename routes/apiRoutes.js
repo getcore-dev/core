@@ -400,9 +400,7 @@ router.get("/jobs", async (req, res) => {
       }
     }
 
-    const offset = (page - 1) * limit;
-    const maxJobLevelIndex = Math.min(page, jobLevels.length) - 1;
-    const allowedJobLevels = jobLevels.slice(0, maxJobLevelIndex + 1);
+    const allowedJobLevels = jobLevels;
 
     let [jobPostings, totalCount] = await Promise.all([
       jobQueries.getJobsBySearch(
@@ -410,12 +408,12 @@ router.get("/jobs", async (req, res) => {
         jobLocation,
         jobExperienceLevel,
         jobSalary,
-        limit,
-        offset,
+        null,
+        0,
         allowedJobLevels,
         tags
       ),
-      jobQueries.getJobsCount(jobTitle, jobLocation, jobExperienceLevel, jobSalary, allowedJobLevels, tags),
+      jobQueries.getJobsCount(allowedJobLevels, tags),
     ]);
 
     jobPostings = jobPostings.map((job) => {
@@ -510,8 +508,12 @@ router.get("/jobs", async (req, res) => {
       return b.matchCount - a.matchCount;
     });
 
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const paginatedJobPostings = jobPostings.slice(startIndex, endIndex);
+
     res.json({
-      jobPostings,
+      jobPostings: paginatedJobPostings,
       currentPage: page,
       totalPages: Math.ceil(totalCount / limit),
     });

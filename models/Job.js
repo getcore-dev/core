@@ -40,8 +40,8 @@ class Job {
     this.recruiterFirstName = data.recruiter_firstname;
     this.recruiterLastName = data.recruiter_lastname;
     this.recruiterImage = data.recruiter_image;
-    this.tags = data.tags ? data.tags.split(', ') : [];
-    this.skills = data.skills ? data.skills.split(', ') : [];
+    this.tags = data.tags ? data.tags.split(", ") : [];
+    this.skills = data.skills ? data.skills.split(", ") : [];
   }
 
   static async getAll(limit, offset) {
@@ -60,7 +60,7 @@ class Job {
         OFFSET ${offset} ROWS
         FETCH NEXT ${limit} ROWS ONLY
       `);
-      return result.recordset.map(job => new Job(job));
+      return result.recordset.map((job) => new Job(job));
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -220,7 +220,7 @@ class Job {
       limit = 15,
       offset = 0,
       allowedJobLevels = [],
-      tags = []
+      tags = [],
     } = searchParams;
 
     try {
@@ -256,9 +256,14 @@ class Job {
       }
 
       if (location) {
-        query += ` AND (j.location LIKE @p${paramIndex} OR j.location LIKE @p${paramIndex + 1})`;
+        query += ` AND (j.location LIKE @p${paramIndex} OR j.location LIKE @p${
+          paramIndex + 1
+        })`;
         queryParams.push({ name: `p${paramIndex++}`, value: `%${location}%` });
-        queryParams.push({ name: `p${paramIndex++}`, value: `% ${location.substring(0, 2)},%` });
+        queryParams.push({
+          name: `p${paramIndex++}`,
+          value: `% ${location.substring(0, 2)},%`,
+        });
       }
 
       if (experienceLevel) {
@@ -272,8 +277,12 @@ class Job {
       }
 
       if (allowedJobLevels && allowedJobLevels.length > 0) {
-        query += ` AND j.experienceLevel IN (${allowedJobLevels.map(() => `@p${paramIndex++}`).join(", ")})`;
-        allowedJobLevels.forEach(level => queryParams.push({ name: `p${paramIndex - 1}`, value: level }));
+        query += ` AND j.experienceLevel IN (${allowedJobLevels
+          .map(() => `@p${paramIndex++}`)
+          .join(", ")})`;
+        allowedJobLevels.forEach((level) =>
+          queryParams.push({ name: `p${paramIndex - 1}`, value: level })
+        );
       }
 
       if (tags && tags.length > 0) {
@@ -281,10 +290,14 @@ class Job {
           AND EXISTS (
             SELECT 1 FROM JobPostingsTags jpt
             INNER JOIN JobTags jt ON jpt.tagId = jt.id
-            WHERE jpt.jobId = j.id AND jt.tagName IN (${tags.map(() => `@p${paramIndex++}`).join(", ")})
+            WHERE jpt.jobId = j.id AND jt.tagName IN (${tags
+              .map(() => `@p${paramIndex++}`)
+              .join(", ")})
           )
         `;
-        tags.forEach(tag => queryParams.push({ name: `p${paramIndex - 1}`, value: tag }));
+        tags.forEach((tag) =>
+          queryParams.push({ name: `p${paramIndex - 1}`, value: tag })
+        );
       }
 
       query += `)
@@ -299,10 +312,10 @@ class Job {
       queryParams.push({ name: `p${paramIndex}`, value: parseInt(limit) });
 
       const request = new sql.Request();
-      queryParams.forEach(param => request.input(param.name, param.value));
+      queryParams.forEach((param) => request.input(param.name, param.value));
 
       const result = await request.query(query);
-      return result.recordset.map(job => new Job(job));
+      return result.recordset.map((job) => new Job(job));
     } catch (error) {
       console.error("Error in getBySearch:", error);
       throw error;
@@ -350,7 +363,7 @@ class Job {
         ORDER BY similar_tag_count DESC, JobPostings.postedDate DESC
       `);
 
-      return result.recordset.map(job => new Job(job));
+      return result.recordset.map((job) => new Job(job));
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -437,7 +450,7 @@ class Job {
         WHERE JobPostings.company_id = ${companyId}
         ORDER BY JobPostings.postedDate DESC
       `;
-      return result.recordset.map(job => new Job(job));
+      return result.recordset.map((job) => new Job(job));
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -466,7 +479,7 @@ class Job {
         FETCH NEXT ${limit} ROWS ONLY
       `);
 
-      return result.recordset.map(job => new Job(job));
+      return result.recordset.map((job) => new Job(job));
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -528,8 +541,11 @@ class Job {
         Wyoming: "WY",
         "United States": "US",
       };
-      
-      const fullStateName = Object.keys(stateMappings).find(key => stateMappings[key] === state) || state;
+
+      const fullStateName =
+        Object.keys(stateMappings).find(
+          (key) => stateMappings[key] === state
+        ) || state;
       const stateAbbreviation = stateMappings[state] || state;
 
       const query = `
@@ -548,7 +564,7 @@ class Job {
       `;
 
       const result = await sql.query(query);
-      return result.recordset.map(job => new Job(job));
+      return result.recordset.map((job) => new Job(job));
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -569,7 +585,7 @@ class Job {
         LEFT JOIN companies ON JobPostings.company_id = companies.id
         ORDER BY NEWID()
       `);
-      return result.recordset.map(job => new Job(job));
+      return result.recordset.map((job) => new Job(job));
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
