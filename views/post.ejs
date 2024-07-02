@@ -637,7 +637,7 @@
               ]; %>
                   <div class="reaction-popup-content">
                     <% reactionTypes.forEach(reaction => { %>
-                    <button class="reaction-button-popup<% if (comment.userReaction == reaction.type) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>" data-reaction="<%= reaction.type %>" onclick="interactWithComment('<%= post.id%>', '<%= comment.id %>', '<%= user %>', '<%= reaction.type %>')">
+                    <button class="reaction-button-popup<% if (comment.userReaction == reaction.type) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>" data-reaction="<%= reaction.type %>" onclick="interactWithComment('<%= post.id%>', '<%= comment.id %>', <%= user %>', '<%= reaction.type %>')">
                       <%= reaction.icon %>
                       <span class="reaction-count"><%= comment[reaction.type.toLowerCase() + 'Count'] %></span>
                     </button>
@@ -1359,12 +1359,11 @@
       totalCountSpan.textContent = `${totalReactions} reaction${totalReactions !== 1 ? 's' : ''}`;
     }
 
-    function interactWithComment(postId, commentId, user, action) {
-      if (!user) {
+    function interactWithComment(postId, commentId, userId, action) {
+      if (!userId) {
         window.location.href = '/login';
         return;
       }
-      const userId = user.id;
 
       fetch(`/react/posts/${postId}/comment/${commentId}`, {
           method: 'POST',

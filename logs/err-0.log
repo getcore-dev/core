@@ -1,0 +1,159 @@
+2024-07-01T21:05:26: Database query error: ConnectionError: Connection is closed.
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:497:37)
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/tedious/request.js:363:11)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:461:12
+2024-07-01T21:05:26:     at new Promise (<anonymous>)
+2024-07-01T21:05:26:     at Request.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:460:12)
+2024-07-01T21:05:26:     at Request._template (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:94:26)
+2024-07-01T21:05:26:     at Object.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/global-connection.js:148:38)
+2024-07-01T21:05:26:     at Object.getTrendingPosts (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/utils/utilFunctions.js:414:37)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/routes/apiRoutes.js:1142:39
+2024-07-01T21:05:26:     at Layer.handle [as handle_request] (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/layer.js:95:5) {
+2024-07-01T21:05:26:   code: 'ECONNCLOSED'
+2024-07-01T21:05:26: }
+2024-07-01T21:05:26: Database query error: ConnectionError: Connection is closed.
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:497:37)
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/tedious/request.js:363:11)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:461:12
+2024-07-01T21:05:26:     at new Promise (<anonymous>)
+2024-07-01T21:05:26:     at Request.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:460:12)
+2024-07-01T21:05:26:     at Object.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/global-connection.js:143:78)
+2024-07-01T21:05:26:     at Object.getRandomJobs (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/queries/jobQueries.js:192:32)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/routes/apiRoutes.js:336:18
+2024-07-01T21:05:26:     at Layer.handle [as handle_request] (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/layer.js:95:5)
+2024-07-01T21:05:26:     at next (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/route.js:149:13) {
+2024-07-01T21:05:26:   code: 'ECONNCLOSED'
+2024-07-01T21:05:26: }
+2024-07-01T21:05:26: Error fetching job postings: ConnectionError: Connection is closed.
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:497:37)
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/tedious/request.js:363:11)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:461:12
+2024-07-01T21:05:26:     at new Promise (<anonymous>)
+2024-07-01T21:05:26:     at Request.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:460:12)
+2024-07-01T21:05:26:     at Object.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/global-connection.js:143:78)
+2024-07-01T21:05:26:     at Object.getRandomJobs (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/queries/jobQueries.js:192:32)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/routes/apiRoutes.js:336:18
+2024-07-01T21:05:26:     at Layer.handle [as handle_request] (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/layer.js:95:5)
+2024-07-01T21:05:26:     at next (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/route.js:149:13) {
+2024-07-01T21:05:26:   code: 'ECONNCLOSED'
+2024-07-01T21:05:26: }
+2024-07-01T21:05:26: Error in getJobsCount: ConnectionError: Connection is closed.
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:497:37)
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/tedious/request.js:363:11)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:461:12
+2024-07-01T21:05:26:     at new Promise (<anonymous>)
+2024-07-01T21:05:26:     at Request.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:460:12)
+2024-07-01T21:05:26:     at Object.getJobsCount (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/queries/jobQueries.js:359:36)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/routes/apiRoutes.js:337:18
+2024-07-01T21:05:26:     at Layer.handle [as handle_request] (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/layer.js:95:5)
+2024-07-01T21:05:26:     at next (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/route.js:149:13)
+2024-07-01T21:05:26:     at Route.dispatch (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/route.js:119:3) {
+2024-07-01T21:05:26:   code: 'ECONNCLOSED'
+2024-07-01T21:05:26: }
+2024-07-01T21:05:26: Database query error: ConnectionError: Connection is closed.
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:497:37)
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/tedious/request.js:363:11)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:461:12
+2024-07-01T21:05:26:     at new Promise (<anonymous>)
+2024-07-01T21:05:26:     at Request.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:460:12)
+2024-07-01T21:05:26:     at Request._template (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:94:26)
+2024-07-01T21:05:26:     at Object.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/global-connection.js:148:38)
+2024-07-01T21:05:26:     at Object.getPosts (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/utils/utilFunctions.js:27:37)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/routes/apiRoutes.js:1126:39
+2024-07-01T21:05:26:     at Layer.handle [as handle_request] (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/layer.js:95:5) {
+2024-07-01T21:05:26:   code: 'ECONNCLOSED'
+2024-07-01T21:05:26: }
+2024-07-01T21:05:26: ConnectionError: Connection is closed.
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:497:37)
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/tedious/request.js:363:11)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:461:12
+2024-07-01T21:05:26:     at new Promise (<anonymous>)
+2024-07-01T21:05:26:     at Request.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:460:12)
+2024-07-01T21:05:26:     at Request._template (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:94:26)
+2024-07-01T21:05:26:     at Object.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/global-connection.js:148:38)
+2024-07-01T21:05:26:     at Object.getPosts (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/utils/utilFunctions.js:27:37)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/routes/apiRoutes.js:1126:39
+2024-07-01T21:05:26:     at Layer.handle [as handle_request] (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/layer.js:95:5) {
+2024-07-01T21:05:26:   code: 'ECONNCLOSED'
+2024-07-01T21:05:26: }
+2024-07-01T21:05:26: Database query error: ConnectionError: Connection is closed.
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:497:37)
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/tedious/request.js:363:11)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:461:12
+2024-07-01T21:05:26:     at new Promise (<anonymous>)
+2024-07-01T21:05:26:     at Request.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:460:12)
+2024-07-01T21:05:26:     at Object.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/global-connection.js:143:78)
+2024-07-01T21:05:26:     at Object.getRandomJobs (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/queries/jobQueries.js:192:32)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/routes/apiRoutes.js:336:18
+2024-07-01T21:05:26:     at Layer.handle [as handle_request] (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/layer.js:95:5)
+2024-07-01T21:05:26:     at next (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/route.js:149:13) {
+2024-07-01T21:05:26:   code: 'ECONNCLOSED'
+2024-07-01T21:05:26: }
+2024-07-01T21:05:26: Error fetching job postings: ConnectionError: Connection is closed.
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:497:37)
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/tedious/request.js:363:11)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:461:12
+2024-07-01T21:05:26:     at new Promise (<anonymous>)
+2024-07-01T21:05:26:     at Request.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:460:12)
+2024-07-01T21:05:26:     at Object.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/global-connection.js:143:78)
+2024-07-01T21:05:26:     at Object.getRandomJobs (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/queries/jobQueries.js:192:32)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/routes/apiRoutes.js:336:18
+2024-07-01T21:05:26:     at Layer.handle [as handle_request] (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/layer.js:95:5)
+2024-07-01T21:05:26:     at next (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/route.js:149:13) {
+2024-07-01T21:05:26:   code: 'ECONNCLOSED'
+2024-07-01T21:05:26: }
+2024-07-01T21:05:26: Error in getJobsCount: ConnectionError: Connection is closed.
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:497:37)
+2024-07-01T21:05:26:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/tedious/request.js:363:11)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:461:12
+2024-07-01T21:05:26:     at new Promise (<anonymous>)
+2024-07-01T21:05:26:     at Request.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:460:12)
+2024-07-01T21:05:26:     at Object.getJobsCount (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/queries/jobQueries.js:359:36)
+2024-07-01T21:05:26:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/routes/apiRoutes.js:337:18
+2024-07-01T21:05:26:     at Layer.handle [as handle_request] (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/layer.js:95:5)
+2024-07-01T21:05:26:     at next (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/route.js:149:13)
+2024-07-01T21:05:26:     at Route.dispatch (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/route.js:119:3) {
+2024-07-01T21:05:26:   code: 'ECONNCLOSED'
+2024-07-01T21:05:26: }
+2024-07-01T21:06:28: Database query error: ConnectionError: Connection is closed.
+2024-07-01T21:06:28:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:497:37)
+2024-07-01T21:06:28:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/tedious/request.js:363:11)
+2024-07-01T21:06:28:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:461:12
+2024-07-01T21:06:28:     at new Promise (<anonymous>)
+2024-07-01T21:06:28:     at Request.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:460:12)
+2024-07-01T21:06:28:     at Request._template (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:94:26)
+2024-07-01T21:06:28:     at Object.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/global-connection.js:148:38)
+2024-07-01T21:06:28:     at Object.getTrendingPosts (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/utils/utilFunctions.js:414:37)
+2024-07-01T21:06:28:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/routes/apiRoutes.js:1142:39
+2024-07-01T21:06:28:     at Layer.handle [as handle_request] (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/layer.js:95:5) {
+2024-07-01T21:06:28:   code: 'ECONNCLOSED'
+2024-07-01T21:06:28: }
+2024-07-01T21:06:28: Database query error: ConnectionError: Connection is closed.
+2024-07-01T21:06:28:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:497:37)
+2024-07-01T21:06:28:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/tedious/request.js:363:11)
+2024-07-01T21:06:28:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:461:12
+2024-07-01T21:06:28:     at new Promise (<anonymous>)
+2024-07-01T21:06:28:     at Request.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:460:12)
+2024-07-01T21:06:28:     at Request._template (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:94:26)
+2024-07-01T21:06:28:     at Object.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/global-connection.js:148:38)
+2024-07-01T21:06:28:     at Object.getUpdates (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/queries/updateQueries.js:6:37)
+2024-07-01T21:06:28:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/routes/generalRoutes.js:140:41
+2024-07-01T21:06:28:     at Layer.handle [as handle_request] (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/layer.js:95:5) {
+2024-07-01T21:06:28:   code: 'ECONNCLOSED'
+2024-07-01T21:06:28: }
+2024-07-01T21:06:28: Error fetching updates: ConnectionError: Connection is closed.
+2024-07-01T21:06:28:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:497:37)
+2024-07-01T21:06:28:     at Request._query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/tedious/request.js:363:11)
+2024-07-01T21:06:28:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:461:12
+2024-07-01T21:06:28:     at new Promise (<anonymous>)
+2024-07-01T21:06:28:     at Request.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:460:12)
+2024-07-01T21:06:28:     at Request._template (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/base/request.js:94:26)
+2024-07-01T21:06:28:     at Object.query (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/mssql/lib/global-connection.js:148:38)
+2024-07-01T21:06:28:     at Object.getUpdates (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/queries/updateQueries.js:6:37)
+2024-07-01T21:06:28:     at /Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/routes/generalRoutes.js:140:41
+2024-07-01T21:06:28:     at Layer.handle [as handle_request] (/Users/brycecole/Library/Mobile Documents/com~apple~CloudDocs/CORE/node_modules/express/lib/router/layer.js:95:5) {
+2024-07-01T21:06:28:   code: 'ECONNCLOSED'
+2024-07-01T21:06:28: }
+2024-07-01T21:17:34: Warning: connect.session() MemoryStore is not
+2024-07-01T21:17:34: designed for a production environment, as it will leak
+2024-07-01T21:17:34: memory, and will not scale past a single process.

@@ -3,6 +3,7 @@ const path = require("path");
 const passport = require("passport");
 const flash = require("express-flash");
 const session = require("express-session");
+const FileStore = require("session-file-store")(session);
 const methodOverride = require("method-override");
 const sql = require("mssql");
 const rateLimit = require("express-rate-limit");
@@ -99,7 +100,7 @@ app.use((req, res, next) => {
 // Error handling
 app.use(errorHandler);
 
-// Server start
+
 
 function runJobBoardService() {
   console.log("Job board service started");
@@ -126,12 +127,5 @@ function scheduleNextRun() {
 
   setTimeout(runJobBoardService, delayMs);
 }
-
-app.listen(environment.port, () => {
-  console.log(`Server running on http://localhost:${environment.port}`);
-
-  // Initial run of the job board service
-  //runJobBoardService();
-});
 
 module.exports = app;

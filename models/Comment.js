@@ -1,6 +1,6 @@
 const sql = require("mssql");
 const crypto = require("crypto");
-const notificationQueries = require("./notificationQueries");
+const notificationQueries = require("../queries/notificationQueries");
 const utilFunctions = require("../utils/utilFunctions");
 const { findById } = require("../queries/userQueries");
 
@@ -18,7 +18,9 @@ class Comment {
   }
 
   static generateUniqueId() {
-    return `${Date.now().toString(36)}-${crypto.randomBytes(3).toString("hex")}`;
+    return `${Date.now().toString(36)}-${crypto
+      .randomBytes(3)
+      .toString("hex")}`;
   }
 
   static async create(postId, userId, commentText) {
@@ -28,7 +30,8 @@ class Comment {
         INSERT INTO comments (id, post_id, user_id, comment) 
         VALUES (${commentId}, ${postId}, ${userId}, ${commentText})`;
 
-      const result = await sql.query`SELECT user_id FROM posts WHERE id = ${postId}`;
+      const result =
+        await sql.query`SELECT user_id FROM posts WHERE id = ${postId}`;
       if (result.recordset.length > 0) {
         const originalPostAuthorId = result.recordset[0].user_id;
         if (originalPostAuthorId !== userId) {
@@ -52,7 +55,8 @@ class Comment {
 
   static async getById(commentId) {
     try {
-      const result = await sql.query`SELECT * FROM comments WHERE id = ${commentId}`;
+      const result =
+        await sql.query`SELECT * FROM comments WHERE id = ${commentId}`;
       return result.recordset[0] ? new Comment(result.recordset[0]) : null;
     } catch (err) {
       console.error("Database query error:", err);
@@ -62,8 +66,9 @@ class Comment {
 
   static async getByPostId(postId) {
     try {
-      const result = await sql.query`SELECT * FROM comments WHERE post_id = ${postId} AND deleted = 0`;
-      return result.recordset.map(comment => new Comment(comment));
+      const result =
+        await sql.query`SELECT * FROM comments WHERE post_id = ${postId} AND deleted = 0`;
+      return result.recordset.map((comment) => new Comment(comment));
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -87,7 +92,8 @@ class Comment {
 
   async delete() {
     try {
-      const result = await sql.query`SELECT * FROM comments WHERE parent_comment_id = ${this.id}`;
+      const result =
+        await sql.query`SELECT * FROM comments WHERE parent_comment_id = ${this.id}`;
       if (result.recordset.length > 0) {
         await sql.query`
           UPDATE comments 
@@ -121,7 +127,14 @@ class Comment {
 
   static async interact(postId, commentId, userId, actionType) {
     try {
-      const validActions = ["LOVE", "LIKE", "CURIOUS", "INTERESTING", "CELEBRATE", "BOOST"];
+      const validActions = [
+        "LOVE",
+        "LIKE",
+        "CURIOUS",
+        "INTERESTING",
+        "CELEBRATE",
+        "BOOST",
+      ];
       if (!validActions.includes(actionType)) {
         throw new Error("Invalid action type");
       }
@@ -141,7 +154,10 @@ class Comment {
         const userExists = await sql.query`
           SELECT * FROM users WHERE id = ${userId}`;
 
-        if (commentExists.recordset.length === 0 || userExists.recordset.length === 0) {
+        if (
+          commentExists.recordset.length === 0 ||
+          userExists.recordset.length === 0
+        ) {
           throw new Error("Comment or User does not exist");
         }
 
@@ -179,7 +195,10 @@ class Comment {
         }
       });
 
-      const totalReactions = Object.values(reactionsMap).reduce((a, b) => a + b, 0);
+      const totalReactions = Object.values(reactionsMap).reduce(
+        (a, b) => a + b,
+        0
+      );
 
       return { userReaction, totalReactions, reactionsMap };
     } catch (err) {
@@ -197,7 +216,8 @@ class Comment {
         FROM comments 
         WHERE id = ${parentCommentId}`;
 
-      const result = await sql.query`SELECT user_id, post_id FROM comments WHERE id = ${parentCommentId}`;
+      const result =
+        await sql.query`SELECT user_id, post_id FROM comments WHERE id = ${parentCommentId}`;
       if (result.recordset.length > 0) {
         const originalCommentAuthorId = result.recordset[0].user_id;
         const postId = result.recordset[0].post_id;
