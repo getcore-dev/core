@@ -100,21 +100,9 @@ a:visited {
 }
 
 .tag.selected {
-  background-color: #6790f470;
+  background-color: #2e732e70;
   color: #ffffff;
   font-weight: 600;
-}
-
-.tag.selected::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  background-color: #ffffff;
-  border-radius: 50%;
 }
 
 .job-posting-flairs .tag.highlighted {
@@ -1149,6 +1137,21 @@ input {
 .clickable {
   cursor: pointer;
   color: var(--active-indicator-color);
+}
+
+#submit-button-normal:hover,
+#cancel-button-normal:hover,
+#regular-button-normal:hover,
+.submit-button-normal:hover,
+.cancel-button-normal:hover,
+.regular-button-normal:hover,
+.special-button-normal:hover,
+#special-button-normal:hover,
+.null-button-normal:hover,
+#null-button-normal:hover,
+#null-button:hover,
+.null-button:hover, button:hover, .job:hover, .post:hover, .community-entry:hover, .inbox-button:hover {
+    filter: brightness(0.8); /* Adjust the brightness to darken the button */
 }
 
 #submit-button-normal, #cancel-button-normal, #regular-button-normal, .submit-button-normal, .cancel-button-normal, .regular-button-normal, .special-button-normal, #special-button-normal, .null-button-normal, #null-button-normal, #null-button, .null-button {

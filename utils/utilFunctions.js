@@ -35,7 +35,7 @@ const utilFunctions = {
           c.shortname AS community_shortname,
           SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
           SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-          SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+          SUM(CASE WHEN upa.action_type = 'DISLIKE' THEN 1 ELSE 0 END) as dislikeCount,
           SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
           SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
           SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
@@ -93,14 +93,14 @@ const utilFunctions = {
             const reactionsA =
               a.loveCount * 5 +
               a.boostCount * 4 +
-              a.interestingCount * 3 +
+              a.dislikeCount * 3 +
               a.curiousCount * 2 +
               a.likeCount +
               a.celebrateCount * 3;
             const reactionsB =
               b.loveCount * 5 +
               b.boostCount * 4 +
-              b.interestingCount * 3 +
+              b.dislikeCount * 3 +
               b.curiousCount * 2 +
               b.likeCount +
               b.celebrateCount * 3;
@@ -118,14 +118,14 @@ const utilFunctions = {
             const totalReactionsA =
               a.loveCount +
               a.boostCount +
-              a.interestingCount +
+              a.dislikeCount +
               a.curiousCount +
               a.likeCount +
               a.celebrateCount;
             const totalReactionsB =
               b.loveCount +
               b.boostCount +
-              b.interestingCount +
+              b.dislikeCount +
               b.curiousCount +
               b.likeCount +
               b.celebrateCount;
@@ -136,14 +136,14 @@ const utilFunctions = {
             const totalReactionsExploreA =
               a.loveCount +
               a.boostCount +
-              a.interestingCount +
+              a.dislikeCount +
               a.curiousCount +
               a.likeCount +
               a.celebrateCount;
             const totalReactionsExploreB =
               b.loveCount +
               b.boostCount +
-              b.interestingCount +
+              b.dislikeCount +
               b.curiousCount +
               b.likeCount +
               b.celebrateCount;
@@ -268,7 +268,7 @@ const utilFunctions = {
         c.name AS community_name, c.shortname AS community_shortname, c.community_color AS community_color,
               SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
               SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-              SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+              SUM(CASE WHEN upa.action_type = 'DISLIKE' THEN 1 ELSE 0 END) as dislikeCount,
               SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
               SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
               SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
@@ -303,14 +303,14 @@ const utilFunctions = {
             const reactionsA =
               a.loveCount * 5 +
               a.boostCount * 4 +
-              a.interestingCount * 3 +
+              a.dislikeCount * 3 +
               a.curiousCount * 2 +
               a.likeCount +
               a.celebrateCount * 3;
             const reactionsB =
               b.loveCount * 5 +
               b.boostCount * 4 +
-              b.interestingCount * 3 +
+              b.dislikeCount * 3 +
               b.curiousCount * 2 +
               b.likeCount +
               b.celebrateCount * 3;
@@ -332,14 +332,14 @@ const utilFunctions = {
             const totalReactionsA =
               a.loveCount +
               a.boostCount +
-              a.interestingCount +
+              a.dislikeCount +
               a.curiousCount +
               a.likeCount +
               a.celebrateCount;
             const totalReactionsB =
               b.loveCount +
               b.boostCount +
-              b.interestingCount +
+              b.dislikeCount +
               b.curiousCount +
               b.likeCount +
               b.celebrateCount;
@@ -359,14 +359,14 @@ const utilFunctions = {
             const totalReactionsA =
               a.loveCount +
               a.boostCount +
-              a.interestingCount +
+              a.dislikeCount +
               a.curiousCount +
               a.likeCount +
               a.celebrateCount;
             const totalReactionsB =
               b.loveCount +
               b.boostCount +
-              b.interestingCount +
+              b.dislikeCount +
               b.curiousCount +
               b.likeCount +
               b.celebrateCount;
@@ -418,7 +418,7 @@ const utilFunctions = {
                  p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.views, u.username, u.avatar,
                  SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
                  SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-                 SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+                 SUM(CASE WHEN upa.action_type = 'DISLIKE' THEN 1 ELSE 0 END) as dislikeCount,
                  SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
                  SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
                  SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
@@ -433,7 +433,7 @@ const utilFunctions = {
                    u.username, u.avatar, p.react_like, p.react_love, p.react_curious,
                    p.react_interesting, p.react_celebrate, p.views
       ) AS SubQuery
-      ORDER BY ((loveCount * 5 + boostCount * 3 + interestingCount * 3 + curiousCount * 1 + likeCount * 1 + celebrateCount * 3) * 100 + views) / POWER(minutesElapsed / 60 + 1, 1.1) DESC;
+      ORDER BY ((loveCount * 5 + boostCount * 3 + dislikeCount * 3 + curiousCount * 1 + likeCount * 1 + celebrateCount * 3) * 100 + views) / POWER(minutesElapsed / 60 + 1, 1.1) DESC;
       `;
       return result.recordset;
     } catch (err) {
@@ -461,7 +461,7 @@ const utilFunctions = {
           ISNULL(u2.avatar, null) AS user_avatar,
           SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
           SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-          SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+          SUM(CASE WHEN upa.action_type = 'DISLIKE' THEN 1 ELSE 0 END) as dislikeCount,
           SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
           SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
           SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
@@ -611,7 +611,9 @@ const utilFunctions = {
     const urlRegex =
       /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
     return text.replace(urlRegex, (url) => {
-      return `<a href="/redirect/${encodeURIComponent(url)}" target="_blank" class="comment-url">${url}</a>`;
+      return `<a href="/redirect/${encodeURIComponent(
+        url
+      )}" target="_blank" class="comment-url">${url}</a>`;
     });
   },
 

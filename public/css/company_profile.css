@@ -20,12 +20,15 @@ main {
     margin-bottom: .4rem;
 }
 
+.company-info-container .jobs {
+  margin-top: 2rem;
+}
+
 .company-flair {
     display: flex;
     flex-direction: row;
     gap: 4px;
-    margin: 7px 0;
-    margin-bottom: 2rem;
+    margin-bottom: .3rem;
 }
 
 .company-flair-item {
@@ -106,6 +109,36 @@ main {
   margin: 0;
   font-size: .925rem;
   margin-bottom: .6rem;
+}
+
+.company-description {
+  position: relative;
+  overflow: hidden;
+  max-height: 3.5em; /* Approx. 3 lines of text */
+}
+
+.description-text {
+  margin: 0;
+  transition: max-height 0.3s ease;
+}
+
+.show-more-button {
+  position: relative;
+  bottom: 0;
+  left: 0;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-align: center;
+}
+
+
+.company-description.expanded .description-text {
+  max-height: none;
+}
+
+.company-description.expanded .show-more-button {
+  display: none;
 }
 
 p.job-description {

@@ -63,18 +63,18 @@
                     forum
                   </span><%= communityPostCount %> posts</span>
                 <% try { %>
-  <% if (community.Tags && community.Tags.length > 0) { %>
-    <span class="community-flair">
-      <span class="material-symbols-outlined">
-        label
-      </span>
-      <button class="no-bg no-border clickable no-padding" onclick="toggleTags()">show tags</button>
-    </span>
-  <% } %>
-<% } catch (error) { %>
-  <!-- Handle the error, you can display a message or log it -->
-  <span class="error-message">Tags are not available</span>
-<% } %>
+                <% if (community.Tags && community.Tags.length > 0) { %>
+                <span class="community-flair">
+                  <span class="material-symbols-outlined">
+                    label
+                  </span>
+                  <button class="no-bg no-border clickable no-padding" onclick="toggleTags()">show tags</button>
+                </span>
+                <% } %>
+                <% } catch (error) { %>
+                <!-- Handle the error, you can display a message or log it -->
+                <span class="error-message">Tags are not available</span>
+                <% } %>
               </div>
               <div class="community-tags">
                 <% try { %>
@@ -530,10 +530,6 @@
 
             // Reaction buttons
             const reactionTypes = [{
-                type: "BOOST",
-                icon: "⚡️"
-              },
-              {
                 type: "LOVE",
                 icon: "❤️"
               },
@@ -546,13 +542,9 @@
                 icon: "🤔"
               },
               {
-                type: "INTERESTING",
-                icon: "💡"
-              },
-              {
-                type: "CELEBRATE",
-                icon: "🎉"
-              },
+                type: "DISLIKE",
+                icon: "👎"
+              }
             ];
 
 
@@ -837,7 +829,11 @@
       const communityId = postsContainer.dataset.communityId;
       fetchAndDisplayPosts(communityId);
       if (!communityId) {
-        fetchJobPreviews();
+        try {
+          fetchJobPreviews();
+        } catch (error) {
+          console.error('Error fetching job previews:', error);
+        }
       } else {
         console.log(communityId);
         try {

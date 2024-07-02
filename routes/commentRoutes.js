@@ -56,20 +56,20 @@ router.post(
     try {
       const postId = req.params.postId;
       const commentId = req.params.commentId;
-      const userId = req.body.userId;
+      const user = req.user;
       const action = req.body.action.toUpperCase(); // Convert action to uppercase for consistency
 
-      const validActions = [
-        "LOVE",
-        "LIKE",
-        "CURIOUS",
-        "INTERESTING",
-        "CELEBRATE",
-        "BOOST",
-      ];
+      const userId = user ? user.id : null;
+
+      const validActions = ["LOVE", "LIKE", "CURIOUS", "DISLIKE"];
 
       if (!validActions.includes(action)) {
         res.status(400).send("Invalid action");
+        return;
+      }
+
+      if (!userId) {
+        res.status(401).send("You must be logged in to react to a comment");
         return;
       }
 
@@ -101,14 +101,7 @@ router.post(
       const action = req.body.action.toUpperCase(); // Convert action to uppercase for consistency
 
       // Valid reactions
-      const validActions = [
-        "LOVE",
-        "LIKE",
-        "CURIOUS",
-        "INTERESTING",
-        "CELEBRATE",
-        "BOOST",
-      ];
+      const validActions = ["LOVE", "LIKE", "CURIOUS", "DISLIKE"];
 
       if (!validActions.includes(action)) {
         res.status(400).send("Invalid action");

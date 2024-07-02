@@ -70,12 +70,12 @@ const commentQueries = {
           );
         }
 
-        // boost your comment by default
+        // LIKE your comment by default
         await commentQueries.interactWithComment(
           postId,
           commentId,
           userId,
-          "BOOST"
+          "LIKE"
         );
       }
 
@@ -88,14 +88,7 @@ const commentQueries = {
 
   interactWithComment: async (postId, commentId, userId, actionType) => {
     try {
-      const validActions = [
-        "LOVE",
-        "LIKE",
-        "CURIOUS",
-        "INTERESTING",
-        "CELEBRATE",
-        "BOOST",
-      ];
+      const validActions = ["LOVE", "LIKE", "CURIOUS", "DISLIKE"];
       if (!validActions.includes(actionType)) {
         throw new Error("Invalid action type");
       }
@@ -129,8 +122,8 @@ const commentQueries = {
 
         // If no existing interaction, insert new action
         await sql.query`
-          INSERT INTO userCommentActions (user_id, comment_id, post_id, action_type, action_timestamp) 
-          VALUES (${userId}, ${commentId}, ${postId}, ${dbActionType}, GETDATE())`;
+          INSERT INTO userCommentActions (user_id, comment_id, action_type, action_timestamp) 
+          VALUES (${userId}, ${commentId}, ${dbActionType}, GETDATE())`;
         userReaction = actionType;
       } else if (userAction.recordset[0].action_type !== dbActionType) {
         // If existing interaction is different, update action
@@ -258,8 +251,8 @@ const commentQueries = {
         }
       }
 
-      // boost your comment by default
-      await commentQueries.interactWithComment(0, commentId, userId, "BOOST");
+      // like your comment by default
+      await commentQueries.interactWithComment(0, commentId, userId, "LIKE");
 
       return replyId;
     } catch (err) {

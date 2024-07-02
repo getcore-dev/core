@@ -93,14 +93,7 @@ router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
     const postId = req.params.postId;
     const userId = req.user.id;
     const action = req.body.action.toUpperCase();
-    const validActions = [
-      "LOVE",
-      "LIKE",
-      "CURIOUS",
-      "INTERESTING",
-      "CELEBRATE",
-      "BOOST",
-    ];
+    const validActions = ["LOVE", "LIKE", "CURIOUS", "DISLIKE"];
 
     if (!validActions.includes(action)) {
       return res.status(400).json({ error: "Invalid action" });
@@ -144,7 +137,7 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
       c.isPinned,
       SUM(CASE WHEN uca.action_type = 'LOVE' THEN 1 ELSE 0 END) AS loveCount,
       SUM(CASE WHEN uca.action_type = 'B' THEN 1 ELSE 0 END) AS boostCount,
-      SUM(CASE WHEN uca.action_type = 'INTERESTING' THEN 1 ELSE 0 END) AS interestingCount,
+      SUM(CASE WHEN uca.action_type = 'DISLIKE' THEN 1 ELSE 0 END) AS dislikeCount,
       SUM(CASE WHEN uca.action_type = 'CURIOUS' THEN 1 ELSE 0 END) AS curiousCount,
       SUM(CASE WHEN uca.action_type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount,
       SUM(CASE WHEN uca.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) AS celebrateCount`;

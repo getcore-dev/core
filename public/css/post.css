@@ -165,6 +165,7 @@ pre code {
 div .material-symbols-outlined {
   font-size: 16px; 
   vertical-align: -2px;
+  pointer-events: none;
 
 }
 

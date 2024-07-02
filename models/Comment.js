@@ -43,7 +43,7 @@ class Comment {
             postId
           );
         }
-        await Comment.interact(postId, commentId, userId, "BOOST");
+        await Comment.interact(postId, commentId, userId, "LIKE");
       }
 
       return commentId;
@@ -131,9 +131,7 @@ class Comment {
         "LOVE",
         "LIKE",
         "CURIOUS",
-        "INTERESTING",
-        "CELEBRATE",
-        "BOOST",
+        "DISLIKE",
       ];
       if (!validActions.includes(actionType)) {
         throw new Error("Invalid action type");
@@ -231,7 +229,7 @@ class Comment {
             postId
           );
         }
-        await Comment.interact(postId, replyId, userId, "BOOST");
+        await Comment.interact(postId, replyId, userId, "LIKE");
       }
 
       return replyId;

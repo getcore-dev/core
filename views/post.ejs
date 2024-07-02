@@ -387,12 +387,10 @@
                 <button class="mainReactionButton reaction-button<% if (post.userReaction) { %> active <% } %>" data-type="post" data-id="<%= post.id %>">
                   <% if (post.userReaction) { %>
                   <% const reactionTypes = [
-            { type: "BOOST", icon: "⚡️" },
             { type: "LOVE", icon: "❤️" },
             { type: "LIKE", icon: "👍" },
             { type: "CURIOUS", icon: "🤔" },
-            { type: "INTERESTING", icon: "💡" },
-            { type: "CELEBRATE", icon: "🎉" }
+            { type: "DISLIKE", icon: "👎" }
           ]; %>
                   <% if (post.userReaction == "B") { post.userReaction = "BOOST"; } %>
                   <% if (post.userReaction != null && reactionTypes.find(reaction => reaction.type === post.userReaction)) { %>
@@ -407,12 +405,10 @@
                 <div id="reactionPopup-post-<%= post.id %>" class="reaction-popup" style="display:none;">
                   <div class="reaction-popup-content">
                     <% const reactionTypes = [
-            { type: "BOOST", icon: "⚡️" },
             { type: "LOVE", icon: "❤️" },
             { type: "LIKE", icon: "👍" },
             { type: "CURIOUS", icon: "🤔" },
-            { type: "INTERESTING", icon: "💡" },
-            { type: "CELEBRATE", icon: "🎉" }
+            { type: "DISLIKE", icon: "👎" }
           ]; %>
                     <% reactionTypes.forEach(reaction => { %>
                     <button class="reaction-button-popup<% if (post.userReaction == reaction.type) { %> active <% }%>" data-type="post" data-id="<%= post.id %>" data-reaction="<%= reaction.type %>" onclick="interactWithPost('<%= post.id %>', '<%= user %>', '<%= reaction.type %>')">
@@ -605,12 +601,10 @@
                 <button class="mainReactionButton reaction-button <% if (comment.userReaction) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>">
                   <% if (comment.userReaction) { %>
                   <% const reactionTypes = [
-                  { type: "BOOST", icon: "⚡️" },
                   { type: "LOVE", icon: "❤️" },
                   { type: "LIKE", icon: "👍" },
                   { type: "CURIOUS", icon: "🤔" },
-                  { type: "INTERESTING", icon: "💡" },
-                  { type: "CELEBRATE", icon: "🎉" }
+                  { type: "DISLIKE", icon: "👎" }
                 ]; %>
 
                   <% if (comment.userReaction == "B") {
@@ -628,16 +622,14 @@
                 </button>
                 <div id="reactionPopup-comment-<%= comment.id %>" class="reaction-popup" style="display:none; position: absolute;left: 0; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
                   <% const reactionTypes = [
-                { type: "BOOST", icon: "⚡️"},
                 { type: "LOVE", icon: "❤️" },
                 { type: "LIKE", icon: "👍" }, 
                 { type: "CURIOUS", icon: "🤔" },
-                { type: "INTERESTING", icon: "💡" },
-                { type: "CELEBRATE", icon: "🎉" }
+                { type: "DISLIKE", icon: "👎" }
               ]; %>
                   <div class="reaction-popup-content">
                     <% reactionTypes.forEach(reaction => { %>
-                    <button class="reaction-button-popup<% if (comment.userReaction == reaction.type) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>" data-reaction="<%= reaction.type %>" onclick="interactWithComment('<%= post.id%>', '<%= comment.id %>', <%= user %>', '<%= reaction.type %>')">
+                    <button class="reaction-button-popup<% if (comment.userReaction == reaction.type) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>" data-reaction="<%= reaction.type %>" onclick="interactWithComment('<%= post.id%>', '<%= comment.id %>', '<%= user %>', '<%= reaction.type %>')">
                       <%= reaction.icon %>
                       <span class="reaction-count"><%= comment[reaction.type.toLowerCase() + 'Count'] %></span>
                     </button>
@@ -649,7 +641,7 @@
                 <% reactionTypes.forEach(reaction => { %>
                 <% totalReactions += comment[reaction.type.toLowerCase() + 'Count']; %>
                 <% }); %>
-                <span class="total-reactions-count-<%= comment.id %>"><%= totalReactions %> reactions</span>
+                <span class="total-reactions-count-comment-<%= comment.id %>"><%= totalReactions %> reactions</span>
 
                 <% 
             function countAllReplies(replies) {
@@ -1359,8 +1351,8 @@
       totalCountSpan.textContent = `${totalReactions} reaction${totalReactions !== 1 ? 's' : ''}`;
     }
 
-    function interactWithComment(postId, commentId, userId, action) {
-      if (!userId) {
+    function interactWithComment(postId, commentId, user, action) {
+      if (!user) {
         window.location.href = '/login';
         return;
       }
@@ -1371,7 +1363,6 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            userId: userId,
             action: action
           })
         })
@@ -1394,12 +1385,10 @@
       const totalCountSpan = document.querySelector(`.total-reactions-count-comment-${commentId}`);
 
       const reactionIcons = {
-        "BOOST": "⚡️",
         "LOVE": "❤️",
         "LIKE": "👍",
         "CURIOUS": "🤔",
-        "INTERESTING": "💡",
-        "CELEBRATE": "🎉"
+        "DISLIKE": "👎",
       };
 
       // Update main button
@@ -1480,24 +1469,25 @@
 
       document.querySelectorAll('.mainReactionButton').forEach(button => {
         button.addEventListener('click', (event) => {
-
-          if ('<%= user %>' === "") {
-            window.location.href = '/login';
-            return;
-          }
           // Determine which button was clicked
           const clickedButton = event.target;
-          const buttonType = clickedButton.dataset.type; // 'post' or 'comment'
-          const buttonId = clickedButton.dataset.id; // Unique identifier for the post or comment
+          const buttonType = clickedButton.getAttribute('data-type');
+          const buttonId = clickedButton.getAttribute('data-id');
 
           // Find the corresponding reaction menu based on the clicked button
           const reactionMenu = document.getElementById(`reactionPopup-${buttonType}-${buttonId}`);
 
-          if (reactionMenu.style.display === 'flex') {
-            reactionMenu.style.display = 'none';
-          } else {
-            closeAllDropdowns();
-            reactionMenu.style.display = 'flex';
+          if (reactionMenu) {
+            try {
+              if (reactionMenu.style.display === 'flex') {
+                reactionMenu.style.display = 'none';
+              } else {
+                closeAllDropdowns();
+                reactionMenu.style.display = 'flex';
+              }
+            } catch (error) {
+              console.error('Error:', error);
+            }
           }
         });
       });

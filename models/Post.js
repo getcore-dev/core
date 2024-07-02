@@ -463,7 +463,7 @@ class Post {
       }
 
       // Record user's upvote and set boosts and detracts
-      await sql.query`INSERT INTO UserPostActions (post_id, user_id, action_type) VALUES (${uniqueId}, ${userId}, 'B')`;
+      await sql.query`INSERT INTO UserPostActions (post_id, user_id, action_type) VALUES (${uniqueId}, ${userId}, 'LIKE')`;
 
       return uniqueId;
     } catch (err) {
@@ -525,9 +525,7 @@ class Post {
         "LOVE",
         "LIKE",
         "CURIOUS",
-        "INTERESTING",
-        "CELEBRATE",
-        "BOOST",
+        "DISLIKE",
       ];
       if (!validActions.includes(actionType)) {
         throw new Error("Invalid action type");

@@ -437,7 +437,7 @@ const postQueries = {
       }
 
       // Record user's upvote and set boosts and detracts
-      await sql.query`INSERT INTO UserPostActions (post_id, user_id, action_type) VALUES (${uniqueId}, ${userId}, 'B')`;
+      await sql.query`INSERT INTO UserPostActions (post_id, user_id, action_type) VALUES (${uniqueId}, ${userId}, 'LIKE')`;
 
       return uniqueId;
     } catch (err) {
@@ -495,14 +495,7 @@ const postQueries = {
 
   interactWithPost: async (postId, userId, actionType) => {
     try {
-      const validActions = [
-        "LOVE",
-        "LIKE",
-        "CURIOUS",
-        "INTERESTING",
-        "CELEBRATE",
-        "BOOST",
-      ];
+      const validActions = ["LOVE", "LIKE", "CURIOUS", "DISLIKE"];
       if (!validActions.includes(actionType)) {
         throw new Error("Invalid action type");
       }

@@ -202,8 +202,8 @@ async function fetchTopTags() {
 }
 
 function renderTags() {
-  const { topTags, selectedTags } = elements;
-  const maxTags = 10;
+  const { topTags } = elements;
+  const maxTags = 6;
   const displayedTags = state.allTags.slice(0, maxTags);
   const remainingTags = state.allTags.slice(maxTags);
 
@@ -211,9 +211,13 @@ function renderTags() {
     .map((tag, index) => createTagHTML(tag, index))
     .join("");
 
+  const remainingTagsCount = remainingTags.length;
+  seeMoreButton = createSeeMoreButton(remainingTagsCount);
+  seeMoreButton.id = "secondary-text";
+  seeMoreButton.onclick = toggleHiddenTags;
+  document.getElementById("remaining-tags-count").appendChild(seeMoreButton);
+
   if (remainingTags.length > 0) {
-    const seeMore = createSeeMoreButton(remainingTags.length);
-    topTags.appendChild(seeMore);
     topTags.insertAdjacentHTML(
       "beforeend",
       remainingTags
@@ -233,13 +237,12 @@ function createSeeMoreButton(count) {
   const seeMore = document.createElement("span");
   seeMore.className = "see-more";
   seeMore.textContent = `+${count} more`;
-  seeMore.addEventListener("click", toggleHiddenTags);
   return seeMore;
 }
 
 function toggleHiddenTags() {
   state.isTagsExpanded = !state.isTagsExpanded;
-  const hiddenTags = elements.topTags.querySelectorAll(".tag:nth-child(n+11)");
+  const hiddenTags = elements.topTags.querySelectorAll(".tag:nth-child(n+7)");
   hiddenTags.forEach((tag) => {
     if (state.isTagsExpanded || state.filters.tags.has(tag.dataset.tag)) {
       tag.classList.remove("hidden");
@@ -277,7 +280,7 @@ function handleTagClick(event) {
 function moveTagToOriginalPosition(tag) {
   const index = parseInt(tag.dataset.index);
   const seeMoreButton = elements.topTags.querySelector(".see-more");
-  if (index < 10) {
+  if (index < 6) {
     const tagsInTopContainer = elements.topTags.querySelectorAll(".tag");
     if (tagsInTopContainer[index]) {
       elements.topTags.insertBefore(tag, tagsInTopContainer[index]);

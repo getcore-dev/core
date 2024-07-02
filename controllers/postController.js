@@ -68,9 +68,7 @@ class PostController {
         "LOVE",
         "LIKE",
         "CURIOUS",
-        "INTERESTING",
-        "CELEBRATE",
-        "BOOST",
+        "DISLIKE",
       ];
 
       if (!validActions.includes(action)) {

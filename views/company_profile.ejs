@@ -54,10 +54,6 @@
         </a>
         <% } %>
       </div>
-
-      <div class="company-description">
-        <p><%= company.description %></p>
-      </div>
       <div class="company-flair">
         <% if (company.job_board_url) { %>
         <span class="link-display">
@@ -94,6 +90,12 @@
         </span>
         <% } %>
       </div>
+
+      <div class="company-description">
+        <p class="description-text" style="max-height: 100px; overflow: hidden;"><%= company.description %></p>
+      </div>
+      <button class="show-more-button clickable no-bg no-border" style="display: none;">Show More</button>
+      
       <div class="jobs">
         <h3> <%= jobsCount %> Open Jobs</h3>
         <div class="job-list">
@@ -106,6 +108,47 @@
   </main>
 
   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const description = document.querySelector('.description-text');
+      const showMoreButton = document.querySelector('.show-more-button');
+      const descriptionContainer = document.querySelector('.company-description');
+
+      if (description && showMoreButton) {
+        console.log('Elements found:', {
+          description,
+          showMoreButton
+        });
+
+        if (description.scrollHeight > description.clientHeight) {
+          console.log('Description is overflowing. Showing "Show More" button.');
+          showMoreButton.style.display = 'block';
+        }
+
+        showMoreButton.addEventListener('click', () => {
+          if (description.style.maxHeight === 'none') {
+            description.style.maxHeight = '100px';
+            descriptionContainer.style.maxHeight = '3.4rem';
+            showMoreButton.innerText = 'Show More';
+          } else {
+            descriptionContainer.style.maxHeight = 'none';
+            description.style.maxHeight = 'none';
+            showMoreButton.innerText = 'Show Less';
+          }
+        });
+      } else {
+        console.log('Elements not found:', {
+          description,
+          showMoreButton
+        });
+      }
+
+      const jobListContainer = document.querySelector('.job-list');
+      jobListContainer.innerHTML = ''; // Clear existing job postings
+
+      renderJobPostings(<%- JSON.stringify(jobs) %>);
+    });
+
+
     function getTintFromName(name) {
       let hash = 0;
       for (let i = 0; i < name.length; i++) {
@@ -173,8 +216,6 @@
         jobListContainer.appendChild(jobElement);
       });
     }
-
-    renderJobPostings(<%- JSON.stringify(jobs) %>);
   </script>
 
 </body>

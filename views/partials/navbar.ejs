@@ -730,7 +730,6 @@
     var overlay = document.getElementById("overlay");
     var menuButton = document.getElementById("menu-button"); // Ensure this is the same ID as your menu button
     var menuIcon = document.getElementById("menu-icon"); // Assuming you have an element with this ID for additional icons or text
-    getTrendingPosts();
 
     // If clicking outside content and not on the menuIcon, close the sidebar and overlay if they are open
     if (!content.contains(event.target) && event.target !== menuIcon && !menuButton.contains(event.target)) { // Added check for menuButton

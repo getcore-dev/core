@@ -15,10 +15,6 @@ body, h1, h2, h3, p {
     margin-bottom: .3rem;
   }
 
-  .jobs-header h5 {
-    margin-top: .7rem;
-    margin-bottom: 1rem;
-  }
   div.job-buttons {
     display: flex;
     flex-direction: row;
@@ -423,6 +419,12 @@ p.job-description {
 .title-filter .sort-options-button {
   background: none;
     border: none;
+}
+
+.jobs-header .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .title-filter .sort-options-button .material-symbols-outlined {
