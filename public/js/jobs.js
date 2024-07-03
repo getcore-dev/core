@@ -9,10 +9,11 @@ const state = {
     location: "",
     title: "",
     salary: 0,
-    tags: new Set(),
+    skills: new Set(),
   },
   allTags: [],
   isTagsExpanded: false,
+  isSkillsExpanded: false,
 };
 
 const ITEMS_PER_PAGE = 20;
@@ -96,6 +97,7 @@ const LOCATIONS = [
 const elements = {
   jobList: document.querySelector(".job-list"),
   topTags: document.querySelector(".top-tags"),
+  topSkills: document.querySelector(".top-tags"),
   selectedTags:
     document.querySelector(".selected-tags") || createSelectedTagsContainer(),
 };
@@ -123,7 +125,7 @@ document.addEventListener("DOMContentLoaded", initialize);
 function initialize() {
   setupDynamicFilters();
   setupEventListeners();
-  fetchTopTags();
+  fetchTopSkills();
   setupInfiniteScroll();
   fetchJobPostings();
 }
@@ -137,6 +139,8 @@ function setupDynamicFilters() {
 
 function setupFilter(filterType, values) {
   const filterContainer = document.querySelector(`.${filterType}-filter`);
+  const sortOptions = document.querySelector(`.sort-options`);
+
   filterContainer.innerHTML = "";
 
   if (filterType === "title" || filterType === "location") {
@@ -154,6 +158,32 @@ function setupFilter(filterType, values) {
       }, DEBOUNCE_DELAY)
     );
     filterContainer.appendChild(input);
+
+    if (filterType === "title") {
+      const showFiltersButton = document.createElement("button");
+      showFiltersButton.className = "show-filters null-button-normal";
+      showFiltersButton.style.background = "none";
+      showFiltersButton.style.border = "none";
+      showFiltersButton.innerHTML =
+        "<span class='material-symbols-outlined'>sort</span>";
+      showFiltersButton.addEventListener("click", () => {
+        sortOptions.classList.toggle("show");
+      });
+      filterContainer.appendChild(showFiltersButton);
+
+      const clearButton = document.createElement("button");
+      clearButton.className = "clear-button cancel-button-normal";
+      clearButton.innerHTML =
+        "<span class='material-symbols-outlined'>close</span>";
+      clearButton.style.background = "none";
+      clearButton.style.border = "none";
+      clearButton.addEventListener("click", () => {
+        state.filters[filterType] = "";
+        input.value = "";
+        resetJobListings();
+      });
+      filterContainer.appendChild(clearButton);
+    }
   } else {
     const dropdown = document.createElement("select");
     dropdown.innerHTML =
@@ -178,7 +208,9 @@ function setupSalaryFilter() {
       <label for="salary">Salary</label>
       <input type="number" placeholder="Salary" id="min-salary">
     </div>
-    <button id="apply-salary">Apply</button>
+    <button class="submit-button-normal" style="background: none; border: none;" id="apply-salary"><span class="material-symbols-outlined">
+check
+</span></button>
   `;
   document
     .getElementById("apply-salary")
@@ -198,6 +230,16 @@ async function fetchTopTags() {
     renderTags();
   } catch (error) {
     console.error("Error fetching top tags:", error);
+  }
+}
+
+async function fetchTopSkills() {
+  try {
+    const response = await fetch("/api/getTopSkills");
+    state.allSkills = await response.json();
+    renderSkills();
+  } catch (error) {
+    console.error("Error fetching top skills:", error);
   }
 }
 
@@ -227,8 +269,55 @@ function renderTags() {
   }
 }
 
+function toggleHiddenSkills() {
+  state.isSkillsExpanded = !state.isSkillsExpanded;
+  const hiddenSkills = elements.topSkills.querySelectorAll(
+    ".tag-clickable:nth-child(n+7)"
+  );
+  hiddenSkills.forEach((skill) => {
+    if (state.isSkillsExpanded) {
+      skill.classList.remove("hidden");
+    } else {
+      skill.classList.add("hidden");
+    }
+  });
+  this.textContent = state.isSkillsExpanded ? "See less" : "+ more";
+}
+
+function renderSkills() {
+  const { topSkills } = elements;
+  const maxSkills = 6;
+  const displayedSkills = state.allSkills.slice(0, maxSkills);
+  const remainingSkills = state.allSkills.slice(maxSkills);
+
+  topSkills.innerHTML = displayedSkills
+    .map((skill, index) => createSkillHTML(skill, index))
+    .join("");
+
+  const remainingSkillsCount = remainingSkills.length;
+  seeMoreButton = createSeeMoreButton(remainingSkillsCount);
+  seeMoreButton.id = "secondary-text";
+  seeMoreButton.onclick = toggleHiddenSkills;
+  document.getElementById("remaining-tags-count").appendChild(seeMoreButton);
+
+  if (remainingSkills.length > 0) {
+    topSkills.insertAdjacentHTML(
+      "beforeend",
+      remainingSkills
+        .map((skill, index) => createSkillHTML(skill, index + maxSkills, true))
+        .join("")
+    );
+  }
+}
+
+function createSkillHTML(skill, index, hidden = false) {
+  return `<span class="tag-clickable ${hidden ? "hidden" : ""}" data-tag="${
+    skill.name
+  }" data-index="${index}">${skill.name} ${skill.count}</span>`;
+}
+
 function createTagHTML(tag, index, hidden = false) {
-  return `<span class="tag ${hidden ? "hidden" : ""}" data-tag="${
+  return `<span class="tag-clickable ${hidden ? "hidden" : ""}" data-tag="${
     tag.tagName
   }" data-index="${index}">${tag.tagName} ${tag.count}</span>`;
 }
@@ -242,9 +331,11 @@ function createSeeMoreButton(count) {
 
 function toggleHiddenTags() {
   state.isTagsExpanded = !state.isTagsExpanded;
-  const hiddenTags = elements.topTags.querySelectorAll(".tag:nth-child(n+7)");
+  const hiddenTags = elements.topTags.querySelectorAll(
+    ".tag-clickable:nth-child(n+7)"
+  );
   hiddenTags.forEach((tag) => {
-    if (state.isTagsExpanded || state.filters.tags.has(tag.dataset.tag)) {
+    if (state.isTagsExpanded || state.filters.skills.has(tag.dataset.tag)) {
       tag.classList.remove("hidden");
     } else {
       tag.classList.add("hidden");
@@ -256,22 +347,39 @@ function toggleHiddenTags() {
 }
 
 function setupEventListeners() {
-  elements.topTags.addEventListener("click", handleTagClick);
-  elements.selectedTags.addEventListener("click", handleTagClick);
+  elements.topTags.addEventListener("click", handleSkillClick);
+  elements.selectedTags.addEventListener("click", handleSkillClick);
 }
 
 function handleTagClick(event) {
-  if (event.target.classList.contains("tag")) {
+  if (event.target.classList.contains("tag-clickable")) {
     const tag = event.target;
     const tagName = tag.dataset.tag;
-    if (state.filters.tags.has(tagName)) {
-      state.filters.tags.delete(tagName);
+    if (state.skills.tags.has(tagName)) {
+      state.skills.tags.delete(tagName);
       tag.classList.remove("selected");
       moveTagToOriginalPosition(tag);
     } else {
-      state.filters.tags.add(tagName);
+      state.skills.tags.add(tagName);
       tag.classList.add("selected");
       elements.selectedTags.appendChild(tag);
+    }
+    resetJobListings();
+  }
+}
+
+function handleSkillClick(event) {
+  if (event.target.classList.contains("tag-clickable")) {
+    const skill = event.target;
+    const skillName = skill.dataset.tag;
+    if (state.filters.skills.has(skillName)) {
+      state.filters.skills.delete(skillName);
+      skill.classList.remove("selected");
+      moveTagToOriginalPosition(skill);
+    } else {
+      state.filters.skills.add(skillName);
+      skill.classList.add("selected");
+      elements.selectedTags.appendChild(skill);
     }
     resetJobListings();
   }
@@ -281,7 +389,8 @@ function moveTagToOriginalPosition(tag) {
   const index = parseInt(tag.dataset.index);
   const seeMoreButton = elements.topTags.querySelector(".see-more");
   if (index < 6) {
-    const tagsInTopContainer = elements.topTags.querySelectorAll(".tag");
+    const tagsInTopContainer =
+      elements.topTags.querySelectorAll(".tag-clickable");
     if (tagsInTopContainer[index]) {
       elements.topTags.insertBefore(tag, tagsInTopContainer[index]);
     } else {
@@ -308,7 +417,7 @@ async function fetchJobPostings() {
   if (state.isLoading) return;
   state.isLoading = true;
 
-  const { title, location, experienceLevel, salary, tags } = state.filters;
+  const { title, location, experienceLevel, salary, skills } = state.filters;
   const queryParams = new URLSearchParams({
     page: state.currentPage,
     limit: ITEMS_PER_PAGE,
@@ -316,7 +425,7 @@ async function fetchJobPostings() {
     jobLocation: location || "",
     jobExperienceLevel: experienceLevel || "",
     jobSalary: salary || "0",
-    tags: Array.from(tags).join(","),
+    skills: Array.from(skills).join(","),
   });
 
   try {
@@ -366,18 +475,20 @@ function createJobElement(job) {
   jobElement.classList.add("job");
   jobElement.onclick = () => (window.location.href = `/jobs/${job.id}`);
 
-  const tagsArray = job.tags ? job.tags.split(", ") : [];
+  const tagsArray = job.skills
+    ? job.skills[1].split(",").filter((tag) => tag)
+    : [];
   const sortedTags = tagsArray.sort(
-    (a, b) => state.filters.tags.has(b) - state.filters.tags.has(a)
+    (a, b) => state.filters.skills.has(b) - state.filters.skills.has(a)
   );
   const displayedTags = sortedTags.slice(0, 6);
 
   const tagsHTML = displayedTags
     .map(
-      (tag) =>
+      (skill) =>
         `<span class="tag ${
-          state.filters.tags.has(tag) ? "highlighted" : ""
-        }">${tag}</span>`
+          state.filters.skills.has(skill) ? "highlighted" : ""
+        }">${skill}</span>`
     )
     .join("");
 

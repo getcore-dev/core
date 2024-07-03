@@ -1391,12 +1391,6 @@ p.preview-description {
   gap: 10px;
 
 }
-
-.tag:hover {
-  background-color: #e2e8f0;
-  color: #2d3748;
-}
-
 #community-header-text {
   font-weight: bold;
 }

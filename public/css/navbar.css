@@ -95,21 +95,35 @@ a:visited {
   transition: all 0.3s ease;
 }
 
-.tag:hover {
-  background-color: #6790f450;
+.tag-clickable {
+  display: inline-flex;
+  gap: 5px;
+  padding: .2rem .45rem;
+  margin: 3px 7px 0px 0px;
+  margin-bottom: 3px;
+  background-color: #6790f436;
+  color: #85a5e6;
+  border-radius: 7px;
+  font-size: .925rem;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.tag.selected {
-  background-color: #2e732e70;
-  color: #ffffff;
-  font-weight: 600;
+.tag-clickable:hover {
+  filter: brightness(0.9);
+}
+
+.tag-clickable.selected {
+  background-color: #04ca2e52;
+  color: #209939;
+  font-weight: 500;
 }
 
 .job-posting-flairs .tag.highlighted {
-  background-color: #6790f4;
-  color: #ffffff;
-  font-weight: 600;
-  box-shadow: 0 0 0 2px rgba(103, 144, 244, 0.3);
+  background-color: #04ca2e52;
+  color: #209939;
+  font-weight: 500;
 }
 
 .flex-col {
@@ -723,12 +737,6 @@ font-weight: 400;
 .mobile-navbar {
   font-size: 10px;
   display: none; /* Hide by default on desktop */
-}
-
-.tag:hover {
-  background-color: #4a6bbb36;
-    color: #49659c;
-    cursor: pointer;
 }
 
 .job-flair:hover {

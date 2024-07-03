@@ -337,6 +337,8 @@ router.get("/randomJobs", async (req, res) => {
       jobQueries.getJobsCount(),
     ]);
 
+    console.log("Random jobs:", jobPostings);
+
     res.json({
       jobPostings,
       currentPage: page,
@@ -358,159 +360,87 @@ router.get("/getTopTags", cacheMiddleware(3600), async (req, res) => {
   }
 });
 
+router.get("/getTopSkills", cacheMiddleware(3600), async (req, res) => {
+  try {
+    const skills = await jobQueries.getCountOfTopJobSkills();
+    res.json(skills);
+  } catch (err) {
+    console.error("Error fetching skills:", err);
+    res.status(500).send("Error fetching skills");
+  }
+});
+
 router.get("/jobs", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20; // Changed to 20 to match client-side
-    const jobTitle = req.query.jobTitle;
-    const jobLocation = req.query.jobLocation;
-    const jobExperienceLevel = req.query.jobExperienceLevel;
-    const jobSalary = req.query.jobSalary;
-    const tags = req.query.tags ? req.query.tags.split(",") : [];
-
-    const jobLevels = [
-      "Internship",
-      "Entry Level",
-      "Mid Level",
-      "Senior",
-      "Lead",
-      "Manager",
-      "Director",
-      "VP",
-    ];
+    const limit = parseInt(req.query.limit) || 20;
+    const { jobTitle, jobLocation, jobExperienceLevel, jobSalary, tags } =
+      req.query;
+    const parsedTags = tags ? tags.split(",") : [];
 
     const user = req.user;
     let userPreferences = {};
+
     if (user) {
       userPreferences = {
         jobPreferredTitle: user.jobPreferredTitle,
-        jobPreferredSkills: user.jobPreferredSkills,
+        jobPreferredSkills: user.jobPreferredSkills
+          ? user.jobPreferredSkills.split(",").map(String)
+          : [],
         jobPreferredLocation: user.jobPreferredLocation,
         jobExperienceLevel: user.jobExperienceLevel,
         jobPreferredIndustry: user.jobPreferredIndustry,
         jobPreferredSalary: user.jobPreferredSalary,
       };
-
-      if (userPreferences.jobPreferredSkills) {
-        userPreferences.jobPreferredSkills = userPreferences.jobPreferredSkills
-          .split(",")
-          .map(Number);
-      } else {
-        userPreferences.jobPreferredSkills = [];
-      }
     }
 
-    const allowedJobLevels = jobLevels;
+    console.log("User preferences:", userPreferences);
 
-    let [jobPostings, totalCount] = await Promise.all([
-      jobQueries.getJobsBySearch(
+    const isEmptySearch =
+      !jobTitle &&
+      !jobLocation &&
+      !jobExperienceLevel &&
+      !jobSalary &&
+      parsedTags.length === 0;
+
+    let allJobPostings;
+
+    if (isEmptySearch && user && Object.keys(userPreferences).length > 0) {
+      allJobPostings = await jobQueries.getAllJobsFromLast30Days(
+        userPreferences
+      );
+    } else {
+      allJobPostings = await jobQueries.searchAllJobsFromLast30Days(
         jobTitle,
         jobLocation,
         jobExperienceLevel,
         jobSalary,
-        null,
-        0,
-        allowedJobLevels,
-        tags
-      ),
-      jobQueries.getJobsCount(allowedJobLevels, tags),
-    ]);
+        parsedTags
+      );
+    }
 
-    jobPostings = jobPostings.map((job) => {
-      let matchCount = 0;
+    let sortedJobPostings = allJobPostings;
 
-      if (
-        userPreferences.jobPreferredTitle &&
-        job.title === userPreferences.jobPreferredTitle
-      )
-        matchCount++;
-      if (
-        userPreferences.jobPreferredSkills &&
-        Array.isArray(job.skills) &&
-        job.skills.some((skill) =>
-          userPreferences.jobPreferredSkills.includes(skill)
-        )
-      )
-        matchCount++;
-      if (
-        userPreferences.jobPreferredLocation &&
-        job.location.includes(userPreferences.jobPreferredLocation)
-      )
-        matchCount++;
-      if (
-        userPreferences.jobExperienceLevel &&
-        job.experienceLevel === userPreferences.jobExperienceLevel
-      )
-        matchCount++;
-      if (
-        userPreferences.jobPreferredIndustry &&
-        job.industry === userPreferences.jobPreferredIndustry
-      )
-        matchCount++;
-      if (
-        userPreferences.jobPreferredSalary &&
-        job.salary >= userPreferences.jobPreferredSalary
-      )
-        matchCount++;
+    if (user) {
+      sortedJobPostings = allJobPostings.map((job) => ({
+        ...job,
+        matchCount: calculateMatchCount(job, userPreferences, parsedTags),
+        topPick: false,
+      }));
 
-      const jobTags = job.tags
-        ? job.tags.split(",").map((tag) => tag.trim())
-        : [];
-      const tagMatchCount = tags.filter((tag) => jobTags.includes(tag)).length;
-      matchCount += tagMatchCount;
+      sortedJobPostings.sort((a, b) => b.matchCount - a.matchCount);
 
-      job.topPick = matchCount >= 2 ? 1 : 0;
-      job.matchCount = matchCount;
-      return job;
-    });
+      // Set top picks (e.g., top 20% of results)
+      const topPickCount = Math.ceil(sortedJobPostings.length * 0.2);
+      for (let i = 0; i < topPickCount; i++) {
+        sortedJobPostings[i].topPick = true;
+      }
+    }
 
-    jobPostings.sort((a, b) => {
-      if (
-        a.title === userPreferences.jobPreferredTitle &&
-        b.title !== userPreferences.jobPreferredTitle
-      )
-        return -1;
-      if (
-        a.title !== userPreferences.jobPreferredTitle &&
-        b.title === userPreferences.jobPreferredTitle
-      )
-        return 1;
-      if (
-        a.experienceLevel === userPreferences.jobExperienceLevel &&
-        b.experienceLevel !== userPreferences.jobExperienceLevel
-      )
-        return -1;
-      if (
-        a.experienceLevel !== userPreferences.jobExperienceLevel &&
-        b.experienceLevel === userPreferences.jobExperienceLevel
-      )
-        return 1;
-      if (
-        a.salary >= userPreferences.jobPreferredSalary &&
-        b.salary < userPreferences.jobPreferredSalary
-      )
-        return -1;
-      if (
-        a.salary < userPreferences.jobPreferredSalary &&
-        b.salary >= userPreferences.jobPreferredSalary
-      )
-        return 1;
-      if (
-        a.location.includes(userPreferences.jobPreferredLocation) &&
-        !b.location.includes(userPreferences.jobPreferredLocation)
-      )
-        return -1;
-      if (
-        !a.location.includes(userPreferences.jobPreferredLocation) &&
-        b.location.includes(userPreferences.jobPreferredLocation)
-      )
-        return 1;
-      return b.matchCount - a.matchCount;
-    });
-
+    const totalCount = sortedJobPostings.length;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    const paginatedJobPostings = jobPostings.slice(startIndex, endIndex);
+    const paginatedJobPostings = sortedJobPostings.slice(startIndex, endIndex);
 
     res.json({
       jobPostings: paginatedJobPostings,
@@ -518,10 +448,48 @@ router.get("/jobs", async (req, res) => {
       totalPages: Math.ceil(totalCount / limit),
     });
   } catch (err) {
-    console.error("Error fetching job postings:", err.message);
+    console.error("Error fetching job postings:", err);
     res.status(500).send("Error fetching job postings");
   }
 });
+
+function calculateMatchCount(job, userPreferences, tags) {
+  let matchCount = 0;
+
+  if (job.title === userPreferences.jobPreferredTitle) matchCount++;
+
+  const jobSkills = Array.isArray(job.skills)
+    ? job.skills
+    : typeof job.skills[1] === "string"
+    ? job.skills[1].split(",").map((s) => s.trim())
+    : [];
+
+  if (
+    userPreferences.jobPreferredSkills &&
+    userPreferences.jobPreferredSkills.length > 0 &&
+    jobSkills.some((skill) =>
+      userPreferences.jobPreferredSkills.includes(Number(skill))
+    )
+  )
+    matchCount++;
+
+  if (
+    job.location &&
+    job.location.includes(userPreferences.jobPreferredLocation)
+  )
+    matchCount++;
+  if (job.experienceLevel === userPreferences.jobExperienceLevel) matchCount++;
+  if (job.industry === userPreferences.jobPreferredIndustry) matchCount++;
+  if (job.salary >= userPreferences.jobPreferredSalary) matchCount++;
+
+  const jobTags = !!job.tags[1]
+    ? job.tags[1].split(",").map((tag) => tag.trim())
+    : [];
+  matchCount += tags.filter((tag) => jobTags.includes(tag)).length;
+
+  console.log(job.title, job.location, job.tags, job.skills, matchCount);
+  return matchCount;
+}
 
 router.get("/job-experience/:userId", async (req, res) => {
   try {

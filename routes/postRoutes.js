@@ -118,13 +118,6 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
     const postId = req.params.postId;
     let user = req.user;
 
-    // remove any duplicate actions on load
-    await commentQueries.removeDuplicateActions();
-    await postQueries.removeDuplicateActions();
-
-    if (!req.rateLimit || !req.rateLimit.exceeded) {
-      await postQueries.viewPost(postId);
-    }
     let query = `
     SELECT
       c.id,
@@ -311,7 +304,7 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
     });
   } catch (err) {
     console.error("Database query error:", err);
-    res.status(500).send("Error fetching post and comments");
+    res.redirect("/");
   }
 });
 

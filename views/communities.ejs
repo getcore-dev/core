@@ -827,13 +827,8 @@
     document.addEventListener("DOMContentLoaded", () => {
       const postsContainer = document.getElementById('posts-container');
       const communityId = postsContainer.dataset.communityId;
-      fetchAndDisplayPosts(communityId);
       if (!communityId) {
-        try {
-          fetchJobPreviews();
-        } catch (error) {
-          console.error('Error fetching job previews:', error);
-        }
+        fetchJobPreviews();
       } else {
         console.log(communityId);
         try {
@@ -842,6 +837,7 @@
           console.error('Error fetching community job previews:', error);
         }
       }
+      fetchAndDisplayPosts(communityId);
     });
   </script>
 </body>

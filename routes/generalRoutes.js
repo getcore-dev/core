@@ -363,6 +363,10 @@ router.get("/users/:userId/followers", async (req, res) => {
   }
 });
 
+router.get("/:whateverbs", async (req, res) => {
+  res.redirect("/");
+});
+
 // Error handling middleware
 router.use((error, req, res, next) => {
   console.error(error);

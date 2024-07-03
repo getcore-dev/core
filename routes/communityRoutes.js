@@ -13,17 +13,11 @@ router.get("/:communityName", async (req, res) => {
       await sql.query`SELECT * FROM communities WHERE shortname = ${communityName}`;
 
     if (!community.recordset[0]) {
-      return res.render("error.ejs", {
-        user: req.user,
-        error: { message: "That community was not found." },
-      });
+      res.redirect(`/c`);
     }
 
     if (community.recordset[0].PrivacySetting === "Private") {
-      return res.render("error.ejs", {
-        user: r,
-        error: { message: "That community is private." },
-      });
+      res.redirect(`/c`);
     }
 
     const communityId = community.recordset[0].id;
@@ -37,10 +31,7 @@ router.get("/:communityName", async (req, res) => {
       ),
     });
   } catch (err) {
-    return res.render("error.ejs", {
-      user: req.user,
-      error: { message: "Error fetching community" },
-    });
+    res.redirect("/c");
   }
 });
 
@@ -208,12 +199,16 @@ router.get("/", async (req, res) => {
     let communities = await communityQueries.getCommunities();
 
     if (user && user.id) {
-      const userMemberships = await communityQueries.getUserMemberships(user.id);
+      const userMemberships = await communityQueries.getUserMemberships(
+        user.id
+      );
 
-      communities = communities.map(community => ({
+      communities = communities.map((community) => ({
         ...community,
-        isMember: userMemberships.some(m => m.community_id === community.id),
-        isModerator: userMemberships.some(m => m.community_id === community.id && m.is_moderator)
+        isMember: userMemberships.some((m) => m.community_id === community.id),
+        isModerator: userMemberships.some(
+          (m) => m.community_id === community.id && m.is_moderator
+        ),
       }));
     }
 

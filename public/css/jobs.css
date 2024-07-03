@@ -201,7 +201,7 @@ p.job-description {
 }
 
 .job-posting-flairs > span {
-  font-size: .925rem;
+  font-size: .8rem;
 }
 
 
@@ -367,6 +367,7 @@ p.job-description {
 
 .filter-container {
   text-align: center;
+  margin-bottom: .6rem;
 }
 
 .job-list {
@@ -402,14 +403,6 @@ p.job-description {
   background: var(--light-mode-hover-color);
 }
 
-.salary-filter button {
-  border-radius: 11px;
-  background: #41ae65;
-  border: 1px solid #4b9263;
-  padding: 8px;
-  color: var(--dark-mode-text-color);
-}
-
 .title-filter {
   display: flex;
   flex-direction: row;
@@ -431,6 +424,10 @@ p.job-description {
   font-size: 1.2rem;
 }
 
+.title-filter input {
+  margin: 0 !important;
+}
+
 .sort-options {
   width: 100%;
   display: none;
@@ -440,7 +437,7 @@ p.job-description {
   display: block;
 }
 
-.title-filter input, .location-filter input {
+.title-filter input, .location-filter input, .salary-filter input {
   width: 100%;
   padding: .55rem .75rem;
   margin-right: 9px;
@@ -468,13 +465,12 @@ p.job-description {
 
 .grouped-filters {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.salary-filter button {
-  line-height: normal;
-}
 
 
 .title-filter label, .location-filter label, .experienceLevel-filter label, .salary-filter label {
@@ -486,7 +482,11 @@ p.job-description {
   color: var(--light-mode-secondary-text-color)
 }
 
-.tag.hidden {
+div .title-filter .material-symbols-outlined, .salary-filter .material-symbols-outlined {
+  font-size: 22px;
+}
+
+.tag-clickable.hidden {
   display: none;
 }
 
@@ -588,7 +588,7 @@ select {
   flex-wrap: wrap;
   box-sizing: border-box;
   max-width: 100%;
-  gap: .35rem 0.25rem;
+  gap: .05rem 0.15rem;
   overflow-x: auto;
 }
 
@@ -788,7 +788,4 @@ div .material-symbols-outlined {
     border: 1px solid var(--border-color);
   }
 
-  .salary-filter input {
-    padding: 8px 3px;
-  }
 }

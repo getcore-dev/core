@@ -666,10 +666,6 @@ div.community-tags {
   margin-bottom: .6rem;
 }
 
-.jobslist { 
-  flex-direction: row !important;
-}
-
 .job-posting-deadline {
   font-size: 13px; 
   position: absolute; 
@@ -951,7 +947,9 @@ button.see-more {
     align-items: center;
   }
 
-
+  .jobslist { 
+    flex-direction: row !important;
+  }
   
   .job-flair {
     border-radius: 9px;

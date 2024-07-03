@@ -23,36 +23,6 @@ const viewLimiter = rateLimit({
   },
 });
 
-router.get("/:jobId", viewLimiter, async (req, res) => {
-  try {
-    const jobId = req.params.jobId;
-    console.log(`Attempting to fetch job with ID: ${jobId}`);
-
-    if (!req.rateLimit || !req.rateLimit.exceeded) {
-      await jobQueries.incrementJobViewCount(jobId);
-    }
-
-    const job = await jobQueries.findById(jobId);
-
-    if (!job) {
-      console.log(`No job found with ID: ${jobId}`);
-      return res.status(404).send("Job not found");
-    }
-
-    res.render("job-posting.ejs", {
-      job_id: jobId,
-      user: req.user,
-      job: job,
-    });
-  } catch (err) {
-    console.error(
-      `Error fetching job posting with ID ${req.params.jobId}:`,
-      err
-    );
-    res.status(500).send("Error fetching job posting");
-  }
-});
-
 router.get("/", async (req, res) => {
   const recentJobs = await jobQueries.getRecentJobCount();
   res.render("jobs.ejs", { user: req.user, recentJobs });
@@ -82,7 +52,7 @@ router.get("/company/:name", async (req, res) => {
     });
   } catch (err) {
     console.error("Error fetching job postings:", err);
-    res.status(500).send("Error fetching job postings");
+    res.redirect("/jobs");
   }
 });
 
@@ -307,6 +277,35 @@ router.get("/delete/:id", checkAuthenticated, async (req, res) => {
   } catch (err) {
     console.error("Error deleting job:", err);
     res.status(500).send("Error deleting job");
+  }
+});
+
+router.get("/:jobId", viewLimiter, async (req, res) => {
+  try {
+    const jobId = req.params.jobId;
+
+    if (!req.rateLimit || !req.rateLimit.exceeded) {
+      await jobQueries.incrementJobViewCount(jobId);
+    }
+
+    const job = await jobQueries.findById(jobId);
+
+    if (!job) {
+      console.log(`No job found with ID: ${jobId}`);
+      return res.redirect("/jobs");
+    }
+
+    res.render("job-posting.ejs", {
+      job_id: jobId,
+      user: req.user,
+      job: job,
+    });
+  } catch (err) {
+    console.error(
+      `Error fetching job posting with ID ${req.params.jobId}:`,
+      err
+    );
+    res.status(500).send("Error fetching job posting");
   }
 });
 
