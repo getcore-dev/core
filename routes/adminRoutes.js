@@ -51,7 +51,7 @@ router.post(
   async (req, res) => {
     const postId = req.params.postId;
     const user = req.user;
-    console.log(user);
+    //console.log(user);
 
     try {
       const post = await postQueries.getPostById(postId);

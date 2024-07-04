@@ -337,8 +337,6 @@ router.get("/randomJobs", async (req, res) => {
       jobQueries.getJobsCount(),
     ]);
 
-    console.log("Random jobs:", jobPostings);
-
     res.json({
       jobPostings,
       currentPage: page,
@@ -393,8 +391,6 @@ router.get("/jobs", async (req, res) => {
         jobPreferredSalary: user.jobPreferredSalary,
       };
     }
-
-    console.log("User preferences:", userPreferences);
 
     const isEmptySearch =
       !jobTitle &&
@@ -487,7 +483,6 @@ function calculateMatchCount(job, userPreferences, tags) {
     : [];
   matchCount += tags.filter((tag) => jobTags.includes(tag)).length;
 
-  console.log(job.title, job.location, job.tags, job.skills, matchCount);
   return matchCount;
 }
 

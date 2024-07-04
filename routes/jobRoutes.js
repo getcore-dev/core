@@ -38,6 +38,15 @@ router.get("/create", checkAuthenticated, async (req, res) => {
   }
 });
 
+router.get("/company/create", checkAuthenticated, async (req, res) => {
+  try {
+    res.render("create-company.ejs", { user: req.user });
+  } catch (err) {
+    console.error("Error fetching job postings:", err);
+    res.status(500).send("Error fetching job postings");
+  }
+});
+
 router.get("/company/:name", async (req, res) => {
   try {
     const companyName = req.params.name;

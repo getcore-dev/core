@@ -18,10 +18,18 @@
 </head>
 
 <body>
-  <%- include('partials/navbar', { pagePath: 'jobs/create' }) %>
+  <%- include('partials/navbar', { pagePath: 'jobs' }) %>
   <main>
     <div class="page-header">
       <h5 id="post-header-title">Create a job listing</h5>
+      <div class="toggle-container">
+        <span class="toggle-label">URL</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="form-toggle">
+          <span class="slider"></span>
+        </label>
+        <span class="toggle-label">Manual</span>
+      </div>
     </div>
     <div class="main-container">
       <form id="jobPostForm">
@@ -145,6 +153,19 @@
   </main>
   <script>
     $(document).ready(function() {
+      const toggle = $('#form-toggle');
+      const jobPostForm = $('#jobPostForm');
+      const editJobPostForm = $('#editJobPostForm');
+
+      toggle.change(function() {
+        if (this.checked) {
+          jobPostForm.hide();
+          editJobPostForm.show();
+        } else {
+          jobPostForm.show();
+          editJobPostForm.hide();
+        }
+      });
       // Form submission handling for extracting job details
       $('#jobPostForm').on('submit', function(e) {
         e.preventDefault();

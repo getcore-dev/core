@@ -36,9 +36,14 @@
         <h5 id="secondary-text"><%= recentJobs %> job postings in the last 30 days</h5>
         <% if (user) { %>
         <div class="job-buttons">
+          <% if (user.isAdmin) { %>
+          <div class="create-company-button">
+            <button class="create-company special-button-normal" onclick="window.location.href='/jobs/company/create';">+ Company</button>
+          </div>
+          <%     } %>
           <% if (user.recruiter_id) { %>
           <div class="create-job-button">
-            <button class="create-job special-button-normal" onclick="window.location.href='/jobs/create';">Create job posting</button>
+            <button class="create-job special-button-normal" onclick="window.location.href='/jobs/create';">+ Job</button>
           </div>
           <%     } %>
           <div class="job-profile-button">

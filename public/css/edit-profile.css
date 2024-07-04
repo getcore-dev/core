@@ -151,10 +151,6 @@
     border-top-right-radius: 0px;
 }
 
-.container {
-    margin-bottom:  2.4rem;
-}
-
 
 @media (prefers-color-scheme: dark) {
     body {

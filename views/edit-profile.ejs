@@ -119,33 +119,8 @@
       avatarOverlay.style.opacity = '0';
     });
     $(document).ready(function() {
-      $('#addJobExperience').click(function() {
-        $('#job-experiences').append(`
-            <div class="job-experience">
-                <input type="text" name="job_title[]" placeholder="Job Title" required>
-                <input type="text" name="company_name[]" placeholder="Company Name" required>
-                <input type="date" name="job_start_date[]" placeholder="Start Date" required>
-                <input type="date" name="job_end_date[]" placeholder="End Date">
-                <textarea name="job_description[]" placeholder="Job Description"></textarea>
-                <input type="text" name="job_skills[]" placeholder="Skills (comma-separated)">
-            </div>
-        `);
-      });
 
-      // Function to add education experience fields
-      $('#addEducationExperience').click(function() {
-        $('#education-experiences').append(`
-            <div class="education-experience">
-                <input type="text" name="school_name[]" placeholder="School Name" required>
-                <input type="text" name="degree[]" placeholder="Degree" required>
-                <input type="date" name="education_start_date[]" placeholder="Start Date" required>
-                <input type="date" name="education_end_date[]" placeholder="End Date">
-                <textarea name="education_description[]" placeholder="Description"></textarea>
-                <input type="text" name="education_skills[]" placeholder="Skills (comma-separated)">
-            </div>
-        `);
-      });
-      $('#submit').click(function(e) {
+      $('#submit-button').click(function(e) {
         e.preventDefault(); // Prevent the default button action
 
         var formData = new FormData(); // Create a new FormData object
@@ -174,7 +149,7 @@
           contentType: false, // Important: tell jQuery not to set contentType
           success: function(response) {
             showBannerNotification('Profile updated successfully.');
-            // Redirect or update UI as needed
+            window.location.href = '/profile';
           },
           error: function(xhr, status, error) {
             alert('Error updating profile: ' + error);

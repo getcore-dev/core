@@ -1026,9 +1026,9 @@ li.dropdown {
   }
 
   .latest-commit-banner {
-    top: 71px;
-    margin-top: 3px;
-    width: 100%;
+    top: calc(var(--mobile-navbar-height));
+    margin-top: 14px;
+      width: 100%;
   }
 
   .avatar-dropdown-item #nb-icon {
@@ -1120,6 +1120,7 @@ input {
   border: 1px solid #63856f;
   color: #63856f;
   cursor: pointer;
+  margin-bottom: 2rem;
   transition: all 0.3s ease;
   text-decoration: none;
   flex: 0 0 auto;

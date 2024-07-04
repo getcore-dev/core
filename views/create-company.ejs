@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>CORE - Create Company</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="shortcut icon" href="/img/core.png" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/create-post.css" />
+  <link rel="stylesheet" href="/css/create-job.css" />
+  <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+    }
+
+    form {
+      display: grid;
+      gap: 15px;
+      padding: 0 13px;
+    }
+
+    .page-header {
+      padding: 19px 13px !important;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: var(--light-mode-body-color) !important;
+      border: 1px solid var(--border-color) !important;
+      font-size: 16px;
+      font-family: Roboto, sans-serif;
+    }
+
+    button {
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'jobs' }) %>
+
+  <span class="container">
+    <div class="page-header">
+      <h5 id="post-header-title">Create a company</h5>
+    </div>
+    <form id="companyForm">
+      <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div>
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location">
+      </div>
+      <div>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description"></textarea>
+      </div>
+      <div>
+        <label for="logo">Logo:</label>
+        <input type="text" id="logo" name="logo">
+      </div>
+      <div>
+        <label for="logo_url">Logo URL:</label>
+        <input type="url" id="logo_url" name="logo_url">
+      </div>
+      <div>
+        <label for="industry">Industry:</label>
+        <input type="text" id="industry" name="industry">
+      </div>
+      <div>
+        <label for="founded">Founded:</label>
+        <input type="datetime-local" id="founded" name="founded">
+      </div>
+      <div>
+        <label for="size">Size:</label>
+        <input type="text" id="size" name="size">
+      </div>
+      <div>
+        <label for="stock_symbol">Stock Symbol:</label>
+        <input type="text" id="stock_symbol" name="stock_symbol">
+      </div>
+      <div>
+        <label for="job_board_url">Job Board URL:</label>
+        <input type="url" id="job_board_url" name="job_board_url">
+      </div>
+      <button class="submit-button" type="submit">Create Company</button>
+    </form>
+    <span>
+
+      <script>
+        document.getElementById('companyForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          const formData = new FormData(this);
+          const companyData = Object.fromEntries(formData.entries());
+
+          // Here you would typically send the data to your server
+          console.log('Company Data:', companyData);
+
+          // For demonstration purposes, we're just logging the data
+          alert('Company created successfully!');
+          this.reset();
+        });
+      </script>
+</body>
+
+</html>
