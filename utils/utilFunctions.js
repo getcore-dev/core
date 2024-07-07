@@ -607,13 +607,128 @@ const utilFunctions = {
     }
   },
 
+  checkForDuplicates: async (jobDetails) => {
+    try {
+      const {
+        title,
+        company_id,
+        location,
+        description,
+        salary,
+        salary_max,
+        experienceLevel,
+      } = jobDetails;
+
+      const potentialDuplicates = await sql.query`
+        SELECT id, title, location, description, salary, salary_max, experienceLevel
+        FROM JobPostings
+        WHERE company_id = ${company_id}
+          AND DATEDIFF(day, postedDate, GETDATE()) <= 30  -- Check only recent postings (last 30 days)
+      `;
+
+      for (const existingJob of potentialDuplicates.recordset) {
+        let similarityScore = 0;
+
+        // Check title similarity (3 points)
+        if (title.toLowerCase() === existingJob.title.toLowerCase()) {
+          similarityScore += 3;
+        } else if (
+          title.toLowerCase().includes(existingJob.title.toLowerCase()) ||
+          existingJob.title.toLowerCase().includes(title.toLowerCase())
+        ) {
+          similarityScore += 2;
+        }
+
+        // Check location (2 points)
+        if (location.toLowerCase() === existingJob.location.toLowerCase()) {
+          similarityScore += 2;
+        }
+
+        // Check salary range overlap (2 points)
+        const salaryOverlap =
+          (salary <= existingJob.salary_max && salary >= existingJob.salary) ||
+          (salary_max >= existingJob.salary &&
+            salary_max <= existingJob.salary_max);
+        if (salaryOverlap) {
+          similarityScore += 2;
+        }
+
+        // Check experience level (1 point)
+        if (experienceLevel === existingJob.experienceLevel) {
+          similarityScore += 1;
+        }
+
+        // Check description similarity (2 points)
+        const descriptionSimilarity = utilFunctions.stringSimilarity(
+          description,
+          existingJob.description
+        );
+        if (descriptionSimilarity > 0.8) {
+          // 80% similarity threshold
+          similarityScore += 2;
+        }
+
+        // If the similarity score is high enough, consider it a duplicate
+        if (similarityScore >= 7) {
+          // Threshold for considering as duplicate
+          console.log(
+            `Potential duplicate detected. Similarity score: ${similarityScore}`
+          );
+          console.log(`Existing job ID: ${existingJob.id}`);
+          return true;
+        }
+      }
+
+      return false; // No duplicates found
+    } catch (err) {
+      console.error(`Error checking for duplicates: ${err.message}`);
+      throw err;
+    }
+  },
+
+  // Helper function to calculate string similarity (you can use a library like 'string-similarity' for better results)
+  stringSimilarity: async (str1, str2) => {
+    const longer = str1.length > str2.length ? str1 : str2;
+    const shorter = str1.length > str2.length ? str2 : str1;
+    const longerLength = longer.length;
+    if (longerLength === 0) {
+      return 1.0;
+    }
+    return (
+      (longerLength - utilFunctions.editDistance(longer, shorter)) /
+      parseFloat(longerLength)
+    );
+  },
+
+  editDistance: async (s1, s2) => {
+    s1 = s1.toLowerCase();
+    s2 = s2.toLowerCase();
+    const costs = new Array();
+    for (let i = 0; i <= s1.length; i++) {
+      let lastValue = i;
+      for (let j = 0; j <= s2.length; j++) {
+        if (i == 0) costs[j] = j;
+        else {
+          if (j > 0) {
+            let newValue = costs[j - 1];
+            if (s1.charAt(i - 1) != s2.charAt(j - 1))
+              newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+            costs[j - 1] = lastValue;
+            lastValue = newValue;
+          }
+        }
+      }
+      if (i > 0) costs[s2.length] = lastValue;
+    }
+    return costs[s2.length];
+  },
+
   linkify: (text) => {
     const urlRegex =
       /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
     return text.replace(urlRegex, (url) => {
-      return `<a href="/redirect/${encodeURIComponent(
-        url
-      )}" target="_blank" class="comment-url">${url}</a>`;
+      return `<a href="
+        ${url}" target="_blank" class="comment-url">${url}</a>`;
     });
   },
 

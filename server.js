@@ -7,20 +7,18 @@ const jobProcessor = new JobProcessor();
 const MS_PER_HOUR = 3600000;
 
 function runJobBoardService() {
-  if (cluster.isPrimary) {
-    console.log("Job board service started");
-    jobProcessor
-      .start()
-      .then(() => {
-        console.log("Job board service completed successfully");
-      })
-      .catch((error) => {
-        console.error("Error running job board service:", error);
-      })
-      .finally(() => {
-        scheduleNextRun();
-      });
-  }
+  console.log("Job board service started");
+  jobProcessor
+    .start()
+    .then(() => {
+      console.log("Job board service completed successfully");
+    })
+    .catch((error) => {
+      console.error("Error running job board service:", error);
+    })
+    .finally(() => {
+      scheduleNextRun();
+    });
 }
 
 function scheduleNextRun() {
@@ -41,7 +39,5 @@ app.listen(environment.port, () => {
     } running on http://localhost:${environment.port}`
   );
   // Uncomment the following line when you're ready to run the job board service
-  if (cluster.isPrimary) {
-    runJobBoardService();
-  }
+  runJobBoardService();
 });

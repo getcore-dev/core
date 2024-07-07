@@ -515,7 +515,7 @@ class User {
   async addJobExperience(jobData) {
     try {
       const result = await sql.query`
-        INSERT INTO job_experiences (userId, title, employmentType, companyName, location, startDate, endDate, description, tags)
+        INSERT INTO job_experiences (userId, title, employmentType, employmentHours, companyName, location, startDate, endDate, description, tags)
         OUTPUT INSERTED.id
         VALUES (${this.id}, ${jobData.title}, ${jobData.employmentType}, ${jobData.companyName}, ${jobData.location}, ${jobData.startDate}, ${jobData.endDate}, ${jobData.description}, ${jobData.tags})`;
       return result.recordset[0].id;

@@ -36,8 +36,40 @@ class JobProcessor {
           if (!this.processedLinks.has(link)) {
             const jobData = await this.processJobLink(link);
             if (jobData && !jobData.error && !jobData.alreadyProcessed) {
-              await jobQueries.createJobPosting(jobData);
-              console.log(`Processed job data for ${link}`);
+              try {
+                console.log(jobData.benefits);
+                await jobQueries.createJobPosting(
+                  jobData.title,
+                  jobData.salary,
+                  jobData.experience_level,
+                  jobData.location,
+                  new Date(),
+                  company.id,
+                  link,
+                  null,
+                  jobData.tags.split(","),
+                  jobData.description,
+                  jobData.salary_max,
+                  null,
+                  jobData.skills.split(","),
+                  jobData.benefits.split(","),
+                  jobData.additional_information,
+                  jobData.PreferredQualifications,
+                  jobData.MinimumQualifications,
+                  jobData.Responsibilities,
+                  jobData.Requirements,
+                  jobData.NiceToHave,
+                  jobData.Schedule,
+                  jobData.HoursPerWeek,
+                  jobData.H1BVisaSponsorship,
+                  jobData.IsRemote,
+                  jobData.EqualOpportunityEmployerInfo,
+                  jobData.Relocation
+                );
+                console.log(`Processed job data for ${link}`);
+              } catch (error) {
+                console.error(`Error creating job posting for ${link}:`, error);
+              }
             }
           }
         }
@@ -192,7 +224,7 @@ class JobProcessor {
   generatePrompt(link, textContent) {
     return `
       Please extract the following information from this job posting data: ${textContent}
-      - title (e.g., Software Engineer, Data Analyst, do not include intern or seniority in the title)
+      - title (e.g., Software Engineer, Data Analyst, include if there is a specific team or project in the title like :'Software Engineer, Frontend')
       - company_name NVARCHAR(50) (as simple as possible and you can tell the company name from the job posting link: ${link})
       - company_description NVARCHAR(MAX)(write a short paragraph about the company, where they're located, their mission, etc)
       - company_industry (e.g., Technology, Healthcare, Finance, etc.)

@@ -343,7 +343,7 @@
         <li class="dropdown">
           <a href="/c" class="navbar-button <%= isActive('/c') ? 'active' : '' %>" style="display: block;">
             <span class="material-symbols-outlined">
-              public
+              group
             </span>
             Communities
           </a>
@@ -353,7 +353,7 @@
             <span class="material-symbols-outlined">
               work
             </span>
-            Openings
+            Find Jobs
           </a>
         </li>
       </ul>
@@ -684,6 +684,10 @@
   });
 
   document.addEventListener('DOMContentLoaded', async () => {
+    var menuButton = document.getElementById("menu-button");
+    if (menuButton) {
+      getTrendingPosts();
+    }
     <% if (user) { %>
     const userId = '<%- user.id %>';
     const response = await fetch(`/notifications/${userId}/unread-count`);
@@ -728,11 +732,10 @@
   document.addEventListener('click', function(event) {
     var content = document.getElementById("menu-content");
     var overlay = document.getElementById("overlay");
-    var menuButton = document.getElementById("menu-button"); // Ensure this is the same ID as your menu button
-    var menuIcon = document.getElementById("menu-icon"); // Assuming you have an element with this ID for additional icons or text
+    var menuButton = document.getElementById("menu-button");
+    var menuIcon = document.getElementById("menu-icon");
 
-    // If clicking outside content and not on the menuIcon, close the sidebar and overlay if they are open
-    if (!content.contains(event.target) && event.target !== menuIcon && !menuButton.contains(event.target)) { // Added check for menuButton
+    if (!content.contains(event.target) && event.target !== menuIcon && !menuButton.contains(event.target)) {
       if (content.classList.contains("sidebar-open")) {
         content.classList.remove("sidebar-open");
         overlay.style.opacity = '0';

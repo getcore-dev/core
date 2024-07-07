@@ -1,4 +1,5 @@
 const sql = require("mssql");
+const utilFunctions = require("../utils/utilFunctions");
 
 const jobQueries = {
   getJobs: async (limit, offset) => {
@@ -919,20 +920,24 @@ const jobQueries = {
       if (typeof link !== "string") {
         throw new Error("Link must be a string");
       }
-      if (!Array.isArray(skills)) {
-        skills = skills ? skills.split(",").map((skill) => skill.trim()) : [];
-      }
+      skills = Array.isArray(skills)
+        ? skills
+        : typeof skills === "string"
+        ? skills.split(",").map((skill) => skill.trim())
+        : [];
+      tags = Array.isArray(tags)
+        ? tags
+        : typeof tags === "string"
+        ? tags.split(",").map((tag) => tag.trim())
+        : [];
 
-      if (!Array.isArray(tags)) {
-        tags = tags ? tags.split(",").map((tag) => tag.trim()) : [];
-      }
       let benefitsArray = [];
-      try {
-        benefitsArray = benefits
-          ? benefits.split(",").map((benefit) => benefit.trim())
-          : [];
-      } catch (err) {
-        console.error(`Error processing benefits: ${err.message}`);
+      if (Array.isArray(benefits)) {
+        benefitsArray = benefits;
+      } else if (typeof benefits === "string") {
+        benefitsArray = benefits.split(",").map((benefit) => benefit.trim());
+      } else if (benefits) {
+        console.warn("Unexpected benefits format. Using empty array.");
       }
 
       // Format the benefits array for SQL query
@@ -940,57 +945,19 @@ const jobQueries = {
         .map((benefit) => `'${benefit.replace(/'/g, "''")}'`)
         .join(",");
 
-      try {
-        // Check for exact duplicates based on title and company ID
-        const exactDuplicateCheck = await sql.query`
-          SELECT COUNT(*) AS count
-          FROM JobPostings
-          WHERE title = ${title} AND company_id = ${company_id}
-        `;
-        const exactDuplicateCount = exactDuplicateCheck.recordset[0].count;
+      const isDuplicate = await utilFunctions.checkForDuplicates({
+        title,
+        company_id,
+        location,
+        description,
+        salary,
+        salary_max,
+        experienceLevel,
+      });
 
-        // If an exact duplicate exists, return null
-        if (exactDuplicateCount > 0) {
-          console.log("Exact duplicate job posting detected, not inserting.");
-          return null;
-        }
-      } catch (err) {
-        console.error(`Error checking exact duplicates: ${err.message}`);
-        throw err;
-      }
-
-      try {
-        // Check for potential duplicates based on additional criteria
-        const duplicateCheck = await sql.query`
-          SELECT COUNT(*) AS count
-          FROM JobPostings
-          WHERE
-            title = ${title} AND
-            experienceLevel = ${experienceLevel} AND
-            location = ${location} AND
-            company_id = ${company_id} AND
-            description = ${description} AND
-            (
-              (salary IS NULL AND ${salary} IS NULL) OR
-              (salary IS NOT NULL AND ${salary} IS NOT NULL AND salary = ${salary})
-            ) AND
-            (
-              (salary_max IS NULL AND ${salary_max} IS NULL) OR
-              (salary_max IS NOT NULL AND ${salary_max} IS NOT NULL AND salary_max = ${salary_max})
-            )
-        `;
-        const duplicateCount = duplicateCheck.recordset[0].count;
-
-        // If there are at least 5 matching columns, consider it a duplicate
-        if (duplicateCount >= 5) {
-          console.log(
-            "Potential duplicate job posting detected, not inserting."
-          );
-          return null;
-        }
-      } catch (err) {
-        console.error(`Error checking potential duplicates: ${err.message}`);
-        console.log("Continuing to insert job posting");
+      if (isDuplicate) {
+        console.log("Potential duplicate job posting detected, not inserting.");
+        return null;
       }
 
       let jobPostingId;
@@ -1337,7 +1304,7 @@ const jobQueries = {
   ) => {
     try {
       const result = await sql.query`
-        INSERT INTO job_experiences (userId, title, employmentType, companyName, location, startDate, endDate, description, tags)
+        INSERT INTO job_experiences (userId, title, employmentType, employmentHours, companyName, location, startDate, endDate, description, tags)
         OUTPUT INSERTED.id
         VALUES (${userId}, ${title}, ${employmentType}, ${companyName}, ${location}, ${startDate}, ${endDate}, ${description}, ${tags})
       `;
