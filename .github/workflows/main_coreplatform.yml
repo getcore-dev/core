@@ -18,26 +18,6 @@ jobs:
         with:
           node-version: "20.x"
 
-      - name: Check Required Secrets
-        run: |
-          [ -z "${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_65666B72FDCA4DBF84A90C4E2F6F7D4F }}" ] && echo "Missing AZURE_PUBLISH_PROFILE" && exit 1
-          [ -z "${{ secrets.DB_HOST }}" ] && echo "Missing DB_HOST" && exit 1
-          [ -z "${{ secrets.DB_USER }}" ] && echo "Missing DB_USER" && exit 1
-          [ -z "${{ secrets.DB_PASSWORD }}" ] && echo "Missing DB_PASSWORD" && exit 1
-          [ -z "${{ secrets.DB_NAME }}" ] && echo "Missing DB_NAME" && exit 1
-          [ -z "${{ secrets.SESSION_SECRET }}" ] && echo "Missing SESSION_SECRET" && exit 1
-          [ -z "${{ secrets.GITHUB_CLIENT_ID }}" ] && echo "Missing GITHUB_CLIENT_ID" && exit 1
-          [ -z "${{ secrets.GITHUB_CLIENT_SECRET }}" ] && echo "Missing GITHUB_CLIENT_SECRET" && exit 1
-          [ -z "${{ secrets.GOOGLE_CLIENT_ID }}" ] && echo "Missing GOOGLE_CLIENT_ID" && exit 1
-          [ -z "${{ secrets.GOOGLE_CLIENT_SECRET }}" ] && echo "Missing GOOGLE_CLIENT_SECRET" && exit 1
-          [ -z "${{ secrets.GEMINI_API_KEY }}" ] && echo "Missing GEMINI_API_KEY" && exit 1
-          [ -z "${{ secrets.OPENAI_API_KEY }}" ] && echo "Missing OPENAI_API_KEY" && exit 1
-          [ -z "${{ secrets.ICLOUD_EMAIL }}" ] && echo "Missing ICLOUD_EMAIL" && exit 1
-          [ -z "${{ secrets.ICLOUD_EMAIL_PASS }}" ] && echo "Missing ICLOUD_EMAIL_PASS" && exit 1
-          [ -z "${{ secrets.YOUTUBE_API_KEY }}" ] && echo "Missing YOUTUBE_API_KEY" && exit 1
-          [ -z "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" ] && echo "Missing AZURE_STORAGE_CONNECTION_STRING" && exit 1
-          echo "All required secrets are set"
-
       - name: npm install and build
         run: |
           npm ci
