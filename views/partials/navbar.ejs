@@ -162,7 +162,7 @@
           <li>
             <% if (user && user.avatar) { %>
             <div class="nav-avatar">
-              <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar" style="margin-top:6px;">
+              <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar" style="margin-top:10px;">
               <div class="avatar-online-status" style="
               background: <% if (user.profile_border_color) { %>
               #5fb968
@@ -172,7 +172,7 @@
               height: 7px;
               width: 7px;
               z-index: 10;
-              border-radius: 50%;
+              border-radius: 6px;
 
               position: absolute;
               bottom: -3px;

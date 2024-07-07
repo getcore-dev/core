@@ -254,7 +254,7 @@ main {
 .profile-picture img {
   width: 100px; /* Adjust the size as needed */
   height: 100px;
-  border-radius: 50%; /* Circular image */
+  border-radius: 12px; /* Circular image */
   object-fit: cover;
   border: 1px solid var(--border-color); /* Border color similar to the navbar */
 }

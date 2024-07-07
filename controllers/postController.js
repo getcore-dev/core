@@ -64,12 +64,7 @@ class PostController {
       const { postId } = req.params;
       const userId = req.user.id;
       const action = req.body.action.toUpperCase();
-      const validActions = [
-        "LOVE",
-        "LIKE",
-        "CURIOUS",
-        "DISLIKE",
-      ];
+      const validActions = ["LOVE", "LIKE", "CURIOUS", "DISLIKE"];
 
       if (!validActions.includes(action)) {
         return res.status(400).json({ error: "Invalid action" });
@@ -218,15 +213,25 @@ class PostController {
   static async updatePost(req, res) {
     try {
       const { postId } = req.params;
+      if (!req.body.tags) {
+        req.body.tags = [];
+      }
+
       const postData = {
         ...req.body,
         tags: req.body.tags,
       };
 
       const post = await Post.getById(postId);
+      if (!post) {
+        return res.status(404).send("Post not found");
+      }
+
       if (post.userId !== req.user.id) {
         return res.status(403).send("You are not authorized to edit this post");
       }
+
+      console.log(postData);
 
       const updatedPost = await Post.edit(postId, postData);
       if (updatedPost) {

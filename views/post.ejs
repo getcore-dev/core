@@ -346,7 +346,6 @@
               <% } %>
 
               <% if (post.post_type == 'question' && post.solution) { %>
-              <h3>Accepted solution by @<%= post.solution.user.username %></h3>
               <div class="solution">
                 <div class="solution-header">
                   <div class="solution-avatar">
@@ -354,6 +353,7 @@
                   </div>
                   <div class="solution-username">
                     <a href="/user/<%= post.solution.user.username %>"><%= post.solution.user.username %></a>
+                    <span class="secondary-text">answered</span>
                   </div>
                 </div>
                 <div class="solution-body">

@@ -11,6 +11,8 @@ const userQueries = require("../queries/userQueries");
 const marked = require("marked");
 const { util } = require("chai");
 const rateLimit = require("express-rate-limit");
+const PostController = require("../controllers/postController");
+const { post } = require("request");
 
 const viewLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
@@ -330,25 +332,7 @@ router.get("/posts/:postId/edit", checkAuthenticated, async (req, res) => {
 });
 
 router.put("/posts/:postId/edit", checkAuthenticated, async (req, res) => {
-  try {
-    const postId = req.params.postId;
-    const postData = {
-      ...req.body,
-      tags: req.body.tags,
-    };
-
-    //console.log(postData);
-
-    const updatedPost = await postQueries.editPost(postId, postData);
-    if (updatedPost) {
-      res.redirect(`/posts/${postId}`);
-    } else {
-      throw new Error("Post update failed");
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Server error");
-  }
+  PostController.updatePost(req, res);
 });
 
 // Route for deleting a post

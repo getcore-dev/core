@@ -126,8 +126,8 @@ function initialize() {
   setupDynamicFilters();
   setupEventListeners();
   fetchTopSkills();
-  setupInfiniteScroll();
   fetchJobPostings();
+  setupInfiniteScroll();
 }
 
 function setupDynamicFilters() {
@@ -161,28 +161,24 @@ function setupFilter(filterType, values) {
 
     if (filterType === "title") {
       const showFiltersButton = document.createElement("button");
-      showFiltersButton.className = "show-filters null-button-normal";
-      showFiltersButton.style.background = "none";
-      showFiltersButton.style.border = "none";
-      showFiltersButton.innerHTML =
-        "<span class='material-symbols-outlined'>sort</span>";
+      showFiltersButton.className = "show-filters regular-button";
+      showFiltersButton.style.width = "100%";
+      showFiltersButton.innerHTML = "Refine Search";
       showFiltersButton.addEventListener("click", () => {
         sortOptions.classList.toggle("show");
       });
       filterContainer.appendChild(showFiltersButton);
 
+      /*
       const clearButton = document.createElement("button");
       clearButton.className = "clear-button cancel-button-normal";
       clearButton.innerHTML =
         "<span class='material-symbols-outlined'>close</span>";
       clearButton.style.background = "none";
       clearButton.style.border = "none";
-      clearButton.addEventListener("click", () => {
-        state.filters[filterType] = "";
-        input.value = "";
-        resetJobListings();
-      });
+      clearButton.addEventListener("click", clearFilters);
       filterContainer.appendChild(clearButton);
+      */
     }
   } else {
     const dropdown = document.createElement("select");
@@ -349,6 +345,19 @@ function toggleHiddenTags() {
 function setupEventListeners() {
   elements.topTags.addEventListener("click", handleSkillClick);
   elements.selectedTags.addEventListener("click", handleSkillClick);
+}
+
+function clearFilters() {
+  const filterInputs = document.querySelectorAll(".filter-input");
+  filterInputs.forEach((input) => (input.value = ""));
+  state.filters = {
+    experienceLevel: "",
+    location: "",
+    title: "",
+    salary: 0,
+    skills: new Set(),
+  };
+  resetJobListings();
 }
 
 function handleTagClick(event) {

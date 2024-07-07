@@ -889,7 +889,7 @@ const jobQueries = {
   },
   createJobPosting: async (
     title,
-    salary = "",
+    salary = 0,
     experienceLevel,
     location,
     postedDate,
@@ -915,184 +915,218 @@ const jobQueries = {
     equalOpportunityEmployerInfo,
     relocation
   ) => {
-    if (typeof link !== "string") {
-      throw new Error("Link must be a string");
-    }
-    if (!Array.isArray(skills)) {
-      skills = skills ? skills.split(",").map((skill) => skill.trim()) : [];
-    }
-
-    if (!Array.isArray(tags)) {
-      tags = tags ? tags.split(",").map((tag) => tag.trim()) : [];
-    }
-
-    const benefitsArray = benefits
-      ? benefits.split(",").map((benefit) => benefit.trim())
-      : [];
-
-    // Format the benefits array for SQL query
-    const formattedBenefits = benefitsArray
-      .map((benefit) => `'${benefit.replace(/'/g, "''")}'`)
-      .join(",");
-
     try {
-      // Check for exact duplicates based on title and company ID
-      const exactDuplicateCheck = await sql.query`
-        SELECT COUNT(*) AS count
-        FROM JobPostings
-        WHERE title = ${title} AND company_id = ${company_id}
-      `;
-
-      const exactDuplicateCount = exactDuplicateCheck.recordset[0].count;
-
-      // If an exact duplicate exists, return null
-      if (exactDuplicateCount > 0) {
-        console.log("Exact duplicate job posting detected, not inserting.");
-        return null;
+      if (typeof link !== "string") {
+        throw new Error("Link must be a string");
+      }
+      if (!Array.isArray(skills)) {
+        skills = skills ? skills.split(",").map((skill) => skill.trim()) : [];
       }
 
-      // Check for potential duplicates based on additional criteria
-      const duplicateCheck = await sql.query`
-        SELECT COUNT(*) AS count
-        FROM JobPostings
-        WHERE
-          title = ${title} AND
-          experienceLevel = ${experienceLevel} AND
-          location = ${location} AND
-          company_id = ${company_id} AND
-          description = ${description} AND
-          (
-            (salary IS NULL AND ${salary} IS NULL) OR
-            (salary IS NOT NULL AND ${salary} IS NOT NULL AND salary = ${salary})
-          ) AND
-          (
-            (salary_max IS NULL AND ${salary_max} IS NULL) OR
-            (salary_max IS NOT NULL AND ${salary_max} IS NOT NULL AND salary_max = ${salary_max})
+      if (!Array.isArray(tags)) {
+        tags = tags ? tags.split(",").map((tag) => tag.trim()) : [];
+      }
+      let benefitsArray = [];
+      try {
+        benefitsArray = benefits
+          ? benefits.split(",").map((benefit) => benefit.trim())
+          : [];
+      } catch (err) {
+        console.error(`Error processing benefits: ${err.message}`);
+      }
+
+      // Format the benefits array for SQL query
+      const formattedBenefits = benefitsArray
+        .map((benefit) => `'${benefit.replace(/'/g, "''")}'`)
+        .join(",");
+
+      try {
+        // Check for exact duplicates based on title and company ID
+        const exactDuplicateCheck = await sql.query`
+          SELECT COUNT(*) AS count
+          FROM JobPostings
+          WHERE title = ${title} AND company_id = ${company_id}
+        `;
+        const exactDuplicateCount = exactDuplicateCheck.recordset[0].count;
+
+        // If an exact duplicate exists, return null
+        if (exactDuplicateCount > 0) {
+          console.log("Exact duplicate job posting detected, not inserting.");
+          return null;
+        }
+      } catch (err) {
+        console.error(`Error checking exact duplicates: ${err.message}`);
+        throw err;
+      }
+
+      try {
+        // Check for potential duplicates based on additional criteria
+        const duplicateCheck = await sql.query`
+          SELECT COUNT(*) AS count
+          FROM JobPostings
+          WHERE
+            title = ${title} AND
+            experienceLevel = ${experienceLevel} AND
+            location = ${location} AND
+            company_id = ${company_id} AND
+            description = ${description} AND
+            (
+              (salary IS NULL AND ${salary} IS NULL) OR
+              (salary IS NOT NULL AND ${salary} IS NOT NULL AND salary = ${salary})
+            ) AND
+            (
+              (salary_max IS NULL AND ${salary_max} IS NULL) OR
+              (salary_max IS NOT NULL AND ${salary_max} IS NOT NULL AND salary_max = ${salary_max})
+            )
+        `;
+        const duplicateCount = duplicateCheck.recordset[0].count;
+
+        // If there are at least 5 matching columns, consider it a duplicate
+        if (duplicateCount >= 5) {
+          console.log(
+            "Potential duplicate job posting detected, not inserting."
+          );
+          return null;
+        }
+      } catch (err) {
+        console.error(`Error checking potential duplicates: ${err.message}`);
+        console.log("Continuing to insert job posting");
+      }
+
+      let jobPostingId;
+      try {
+        // Insert the job posting into the JobPostings table
+        const result = await sql.query`
+          INSERT INTO JobPostings (
+            title,
+            salary,
+            experienceLevel,
+            location,
+            postedDate,
+            company_id,
+            link,
+            expiration_date,
+            description,
+            salary_max,
+            recruiter_id,
+            additional_information,
+            benefits,
+            preferredQualifications,
+            minimumQualifications,
+            responsibilities,
+            requirements,
+            niceToHave,
+            schedule,
+            hoursPerWeek,
+            h1bVisaSponsorship,
+            isRemote,
+            equalOpportunityEmployerInfo,
+            relocation,
+            applicants
           )
-      `;
-
-      const duplicateCount = duplicateCheck.recordset[0].count;
-
-      // If there are at least 5 matching columns, consider it a duplicate
-      if (duplicateCount >= 5) {
-        console.log("Potential duplicate job posting detected, not inserting.");
-        return null;
+          OUTPUT INSERTED.id
+          VALUES (
+            ${title},
+            ${salary},
+            ${experienceLevel},
+            ${location},
+            ${postedDate},
+            ${company_id},
+            ${link},
+            ${expiration_date},
+            ${description},
+            ${salary_max},
+            ${recruiter_id},
+            ${additional_information},
+            ${formattedBenefits},
+            ${preferredQualifications},
+            ${minimumQualifications},
+            ${responsibilities},
+            ${requirements},
+            ${niceToHave},
+            ${schedule},
+            ${hoursPerWeek},
+            ${h1bVisaSponsorship},
+            ${isRemote},
+            ${equalOpportunityEmployerInfo},
+            ${relocation},
+            0
+          )
+        `;
+        jobPostingId = result.recordset[0].id;
+      } catch (err) {
+        console.error(`Error inserting job posting: ${err.message}`);
+        throw err;
       }
-
-      // Insert the job posting into the JobPostings table
-      const result = await sql.query`
-        INSERT INTO JobPostings (
-          title,
-          salary,
-          experienceLevel,
-          location,
-          postedDate,
-          company_id,
-          link,
-          expiration_date,
-          description,
-          salary_max,
-          recruiter_id,
-          additional_information,
-          benefits,
-          preferredQualifications,
-          minimumQualifications,
-          responsibilities,
-          requirements,
-          niceToHave,
-          schedule,
-          hoursPerWeek,
-          h1bVisaSponsorship,
-          isRemote,
-          equalOpportunityEmployerInfo,
-          relocation,
-          applicants
-        )
-        OUTPUT INSERTED.id
-        VALUES (
-          ${title},
-          ${salary},
-          ${experienceLevel},
-          ${location},
-          ${postedDate},
-          ${company_id},
-          ${link},
-          ${expiration_date},
-          ${description},
-          ${salary_max},
-          ${recruiter_id},
-          ${additional_information},
-          ${formattedBenefits},
-          ${preferredQualifications},
-          ${minimumQualifications},
-          ${responsibilities},
-          ${requirements},
-          ${niceToHave},
-          ${schedule},
-          ${hoursPerWeek},
-          ${h1bVisaSponsorship},
-          ${isRemote},
-          ${equalOpportunityEmployerInfo},
-          ${relocation},
-          0
-        )
-      `;
-
-      const jobPostingId = result.recordset[0].id;
 
       if (skills && skills.length > 0) {
         for (const skill of skills) {
-          let skillId;
-          const skillRecord = await sql.query`
-            SELECT id FROM skills WHERE name = ${skill}
-          `;
-          if (skillRecord.recordset.length > 0) {
-            skillId = skillRecord.recordset[0].id;
-          } else {
-            const newSkill = await sql.query`
-              INSERT INTO skills (name)
-              OUTPUT INSERTED.id
-              VALUES (${skill})
+          try {
+            let skillId;
+            const skillRecord = await sql.query`
+              SELECT id FROM skills WHERE name = ${skill}
             `;
-            skillId = newSkill.recordset[0].id;
-          }
+            if (skillRecord.recordset.length > 0) {
+              skillId = skillRecord.recordset[0].id;
+            } else {
+              const newSkill = await sql.query`
+                INSERT INTO skills (name)
+                OUTPUT INSERTED.id
+                VALUES (${skill})
+              `;
+              skillId = newSkill.recordset[0].id;
+            }
 
-          // Associate the skill with the job posting
-          await sql.query`
-            INSERT INTO job_skills (job_id, skill_id)
-            VALUES (${jobPostingId}, ${skillId})
-          `;
+            // Associate the skill with the job posting
+            await sql.query`
+              INSERT INTO job_skills (job_id, skill_id)
+              VALUES (${jobPostingId}, ${skillId})
+            `;
+          } catch (err) {
+            console.error(`Error processing skill '${skill}': ${err.message}`);
+            throw err;
+          }
         }
       }
 
       if (tags && tags.length > 0) {
         for (const tag of tags) {
-          let tagId;
-          const tagRecord = await sql.query`
-            SELECT id FROM JobTags WHERE tagName = ${tag}
-          `;
-          if (tagRecord.recordset.length > 0) {
-            tagId = tagRecord.recordset[0].id;
-          } else {
-            const newTag = await sql.query`
-              INSERT INTO JobTags (tagName)
-              OUTPUT INSERTED.id
-              VALUES (${tag})
+          try {
+            let tagId;
+            const tagRecord = await sql.query`
+              SELECT id FROM JobTags WHERE tagName = ${tag}
             `;
-            tagId = newTag.recordset[0].id;
-          }
+            if (tagRecord.recordset.length > 0) {
+              tagId = tagRecord.recordset[0].id;
+            } else {
+              const newTag = await sql.query`
+                INSERT INTO JobTags (tagName)
+                OUTPUT INSERTED.id
+                VALUES (${tag})
+              `;
+              tagId = newTag.recordset[0].id;
+            }
 
-          // Associate the tag with the job posting
-          await sql.query`
-            INSERT INTO JobPostingsTags (jobId, tagId)
-            VALUES (${jobPostingId}, ${tagId})
-          `;
+            // Associate the tag with the job posting
+            await sql.query`
+              INSERT INTO JobPostingsTags (jobId, tagId)
+              VALUES (${jobPostingId}, ${tagId})
+            `;
+          } catch (err) {
+            console.error(`Error processing tag '${tag}': ${err.message}`);
+            throw err;
+          }
         }
       }
 
       return jobPostingId;
     } catch (err) {
-      console.error(`Database insert error: ${err} in createJobPosting`);
+      console.log(
+        `Error creating job posting with information: ${title}, ${salary}, ${experienceLevel}, ${location}, ${postedDate}, ${company_id}, ${link}, ${expiration_date}, ${tags}, ${description}, ${salary_max}, ${recruiter_id}, ${skills}, ${benefits}, ${additional_information}, ${preferredQualifications}, ${minimumQualifications}, ${responsibilities}, ${requirements}, ${niceToHave}, ${schedule}, ${hoursPerWeek}, ${h1bVisaSponsorship}, ${isRemote}, ${equalOpportunityEmployerInfo}, ${relocation}`
+      );
+      console.error(
+        `Database insert error: ${err.message} in createJobPosting`
+      );
       throw err; // Rethrow the error for the caller to handle
     }
   },

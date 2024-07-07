@@ -321,7 +321,7 @@ div .user-info, .header {
 }
 
 img.blog-avatar {
-  border-radius: 100%;
+  border-radius: 6px;
   height: 36px;
   aspect-ratio: 1/1;
   object-fit: cover; 
@@ -349,7 +349,7 @@ div.interact-buttons {
   padding: 0 13px;
   gap: .6rem;
   box-sizing: border-box;
-  margin-bottom: 1.3rem;
+  margin-bottom: 2.3rem;
 }
 
 .reaction-button, .main-reaction-button, .boost-button, #delete-post-button, #delete-comment-button {
@@ -414,19 +414,20 @@ div.interact-buttons {
   z-index: 999;
 }
 
-.solution-avatar img {
-  border-radius: 50% !important;
+.solution-username .secondary-text {
+  margin-left: auto;
 }
 
 .solution {
   margin-bottom: 1.8rem;
   display: flex;
+  gap: .9rem;
   flex-direction: column;
   white-space-collapse: collapse;
   background-color: #e2efe2;
   border: 1px solid #84ab73;
-  border-radius: 18px;
-  padding: 10px 13px;
+  border-radius: 10px;
+  padding: .8rem 1.1rem;
 }
 
 .solution-header {
@@ -448,15 +449,22 @@ div.interact-buttons {
   height: min-content
 }
 
+.solution-body {
+  line-height: 1.4rem;
+  letter-spacing: .015rem;
+}
+
 .solution-avatar img {
-  border-radius: 100%;
-  max-height: 35px !important;
+  border-radius: 6px !important;
+  max-height: 28px !important;
   object-fit: cover; 
   overflow: hidden;
   aspect-ratio: 1/1;
   padding: 0 !important;
   margin: 0 !important;
 }
+
+
 
 .solution-username {
   white-space-collapse: collapse;
@@ -579,6 +587,7 @@ div.interact-buttons {
 
 .post-info {
   padding: 8px 13px;
+  margin-bottom: 2rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -669,9 +678,8 @@ div.interact-buttons {
 }
 
 .comment-avatar {
-  padding-left: 7px;
-  padding-right: 13px;
-  margin-top: auto;
+  margin-right: 13px;
+  margin-top: 0px;
   margin-bottom: auto;
 }
 
@@ -736,6 +744,7 @@ div.repliers-avatar, div.repliees-avatar {
   display:flex;
   flex-direction: column;
   width: 100%;
+  margin-top: 3px;
   padding: 0;
   box-sizing: border-box;
 }
@@ -772,16 +781,13 @@ div.repliers-avatar, div.repliees-avatar {
 }
 
 .comment .avatar, .post-user-info-header .avatar {
-  border-radius: 100%;
-  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  height: 40px;
   cursor: pointer;
-  aspect-ratio: 1/1;
-  object-fit: cover; 
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
   overflow: hidden;
-}
-
-.comment .avatar {
-  height: 35px;
 }
 
 .title {
@@ -825,7 +831,7 @@ padding-top: 10px;
   display: flex;
   margin-top: 3px;
   align-items: center;
-  padding: 6px 13px;
+  padding: 16px 13px;
   padding-top: 0;
   padding-right: 9px;
   justify-content: flex-start;
@@ -1097,8 +1103,8 @@ div .mini-link {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 2px;
-  margin-bottom: 3px;
+  margin-top: 10px;
+  margin-bottom: 11px;
 }
 
 .dropdown-content .material-symbols-outlined {
@@ -1164,7 +1170,7 @@ div .mini-link {
 }
 
 .post-body p , .comment-body p {
-  line-height: 1.55rem;
+  line-height: 1.4rem;
   letter-spacing: .015rem;
 }
 
@@ -1247,7 +1253,7 @@ p.preview-description {
 .avatar img {
   width: 30px;
   height: 30px;
-  border-radius: 100%;
+  border-radius: 6px;
   object-fit: cover; 
   overflow: hidden;
 }
@@ -1609,6 +1615,10 @@ div.post-information {
     border-color: var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
+
+  .comment .avatar, .post-user-info-header .avatar {
+    border: 1px solid var(--dark-mode-border-color);
+  } 
 
   .editor-toolbar {
     background-color: var(--dark-mode-main-color) !important;
@@ -1997,7 +2007,7 @@ div.username {
   
   .post, .comment {
     padding-bottom: 0px;
-    margin-bottom: 0;
+    margin-bottom: 8px;
   }
 
   .commment {
