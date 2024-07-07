@@ -637,7 +637,7 @@ const userQueries = {
         WHERE id = ${userId}`;
 
       if (result && result.rowCount === 0) {
-      } else if (result) {
+        throw new Error(`User ID ${userId} not found`);
       }
     } catch (err) {
       console.error('Database update error:', err.message);

@@ -226,7 +226,7 @@ router.get('/posts/:postId', viewLimiter, async (req, res) => {
 
       // Use the new function to get the parent author's username
       if (comment.parent_comment_id || comment.post_id) {
-        comment_parent_username =
+        let comment_parent_username =
           await postQueries.getParentAuthorUsernameByCommentId(comment.id);
 
         comment.parent_author = await userQueries.findByUsername(

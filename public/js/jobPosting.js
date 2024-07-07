@@ -1,7 +1,5 @@
-function extractJobIdFromUrl() {
-  const urlParts = window.location.pathname.split('/');
-  return urlParts[urlParts.length - 1];
-}
+global document;
+
 
 function formatDate(dateString) {
   const date = new Date(dateString);

@@ -1,4 +1,5 @@
 const sql = require('mssql');
+const postQueries = require('./postQueries');
 
 const tagQueries = {
   getTags: async () => {

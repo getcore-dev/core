@@ -438,10 +438,10 @@ class Post {
 
     try {
       // Insert the post into the posts table
-      const uniqueId = generateUniqueId();
+      const uniqueId = Post.generateUniqueId();
 
       // Insert into the posts table
-      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id, post_type, views) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${community_id}, ${post_type}, 1)`;
+      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id, post_type, views) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${communityId}, ${postType}, 1)`;
 
       if (tags && tags.length > 0) {
         for (const tag of tags) {
@@ -474,7 +474,7 @@ class Post {
 
   static async createFeedback(userId, title, attachmentUrl, body) {
     try {
-      const uniqueId = generateUniqueId();
+      const uniqueId = Post.generateUniqueId();
 
       // Insert into the posts table
       await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id, post_type, views) VALUES (${uniqueId}, ${userId}, ${title}, ${body}, ${attachmentUrl}, 9, 'discussion', 1)`;

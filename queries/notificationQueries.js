@@ -186,17 +186,6 @@ const notificationQueries = {
     }
   },
 
-  // Delete a specific notification
-  deleteNotification: async (notificationId) => {
-    try {
-      await sql.query`
-        DELETE FROM notifications 
-        WHERE id = ${notificationId}`;
-    } catch (err) {
-      console.error('Database delete error:', err);
-      throw err;
-    }
-  },
 
   // Mark all notifications as read for a specific user
   markAllAsRead: async (userId) => {

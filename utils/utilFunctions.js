@@ -4,6 +4,7 @@ const cheerio = require('cheerio');
 const NodeCache = require('node-cache');
 const cache = new NodeCache({ stdTTL: 1200 }); // TTL is 20 minutes
 const sharp = require('sharp');
+const config = require('../config/dbConfig');
 
 const utilFunctions = {
   uuid: () => {
@@ -398,7 +399,7 @@ const utilFunctions = {
     }
   },
 
-  getCommunities: async () => {
+  getAllCommunities: async () => {
     try {
       const result = await sql.query`
         SELECT name FROM communities`;

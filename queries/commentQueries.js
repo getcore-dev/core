@@ -234,9 +234,10 @@ const commentQueries = {
 
       // Fetch the user ID of the original comment author
       const result =
-        await sql.query`SELECT user_id FROM comments WHERE id = ${commentId}`;
+        await sql.query`SELECT * FROM comments WHERE id = ${commentId}`;
       if (result.recordset.length > 0) {
         const originalCommentAuthorId = result.recordset[0].user_id;
+        const postId = result.recordset[0].post_id;
 
         // Create a notification for the original comment author
         if (originalCommentAuthorId !== userId) {
