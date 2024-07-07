@@ -28,6 +28,7 @@ class JobProcessor {
 
   async start() {
     await this.init();
+    await jobQueries.deleteJobsOlderThan2Months();
     const companies = await jobQueries.getCompanies();
     for (const company of companies) {
       if (company.job_board_url) {
@@ -37,7 +38,6 @@ class JobProcessor {
             const jobData = await this.processJobLink(link);
             if (jobData && !jobData.error && !jobData.alreadyProcessed) {
               try {
-                console.log(jobData.benefits);
                 await jobQueries.createJobPosting(
                   jobData.title,
                   jobData.salary,

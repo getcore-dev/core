@@ -25,6 +25,19 @@ const jobQueries = {
       throw err;
     }
   },
+
+  deleteJobsOlderThan2Months: async () => {
+    try {
+      await sql.query`
+        DELETE FROM JobPostings
+        WHERE postedDate < DATEADD(month, -2, GETDATE())
+      `;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   getAllJobsFromLast30Days: async (userPreferences) => {
     try {
       let query = `
