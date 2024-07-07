@@ -1,7 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy Node.js app to Azure Web App - coreplatform
+name: Build, Test, and Deploy Node.js app to Azure Web App - coreplatform
 
 on:
   push:
@@ -19,12 +16,62 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
+          node-version: "20.x"
 
       - name: npm install, build, and test
         run: |
-          npm install
+          npm ci
           npm run build --if-present
+          npm test
+
+      - name: Run ESLint
+        run: npx eslint .
+
+      - name: Check code formatting
+        run: npx prettier --check .
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+      - name: Run TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+
+      - name: Check License Compliance
+        run: npx license-checker --summary
+
+      - name: Check Required Secrets
+        run: |
+          [ -z "${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_65666B72FDCA4DBF84A90C4E2F6F7D4F }}" ] && echo "Missing AZURE_PUBLISH_PROFILE" && exit 1
+          [ -z "${{ secrets.DB_HOST }}" ] && echo "Missing DB_HOST" && exit 1
+          [ -z "${{ secrets.DB_USER }}" ] && echo "Missing DB_USER" && exit 1
+          [ -z "${{ secrets.DB_PASSWORD }}" ] && echo "Missing DB_PASSWORD" && exit 1
+          [ -z "${{ secrets.DB_NAME }}" ] && echo "Missing DB_NAME" && exit 1
+          [ -z "${{ secrets.SESSION_SECRET }}" ] && echo "Missing SESSION_SECRET" && exit 1
+          [ -z "${{ secrets.GITHUB_CLIENT_ID }}" ] && echo "Missing GITHUB_CLIENT_ID" && exit 1
+          [ -z "${{ secrets.GITHUB_CLIENT_SECRET }}" ] && echo "Missing GITHUB_CLIENT_SECRET" && exit 1
+          [ -z "${{ secrets.GOOGLE_CLIENT_ID }}" ] && echo "Missing GOOGLE_CLIENT_ID" && exit 1
+          [ -z "${{ secrets.GOOGLE_CLIENT_SECRET }}" ] && echo "Missing GOOGLE_CLIENT_SECRET" && exit 1
+          [ -z "${{ secrets.GEMINI_API_KEY }}" ] && echo "Missing GEMINI_API_KEY" && exit 1
+          [ -z "${{ secrets.OPENAI_API_KEY }}" ] && echo "Missing OPENAI_API_KEY" && exit 1
+          [ -z "${{ secrets.ICLOUD_EMAIL }}" ] && echo "Missing ICLOUD_EMAIL" && exit 1
+          [ -z "${{ secrets.ICLOUD_EMAIL_PASS }}" ] && echo "Missing ICLOUD_EMAIL_PASS" && exit 1
+          [ -z "${{ secrets.YOUTUBE_API_KEY }}" ] && echo "Missing YOUTUBE_API_KEY" && exit 1
+          [ -z "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" ] && echo "Missing AZURE_STORAGE_CONNECTION_STRING" && exit 1
+          echo "All required secrets are set"
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
 
@@ -38,7 +85,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'Production'
+      name: "Production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
@@ -50,11 +97,16 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      - name: 'Deploy to Azure Web App'
+      - name: "Deploy to Azure Web App"
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'coreplatform'
-          slot-name: 'Production'
+          app-name: "coreplatform"
+          slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_65666B72FDCA4DBF84A90C4E2F6F7D4F }}
           package: .
+
+      - name: Run OWASP ZAP Scan
+        uses: zaproxy/action-full-scan@v0.4.0
+        with:
+          target: "https://c-ore.dev/"
