@@ -1,4 +1,4 @@
-const sql = require("mssql");
+const sql = require('mssql');
 
 const updateQueries = {
   getUpdates: async () => {
@@ -9,7 +9,7 @@ const updateQueries = {
 
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },

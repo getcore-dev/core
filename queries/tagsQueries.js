@@ -1,4 +1,4 @@
-const sql = require("mssql");
+const sql = require('mssql');
 
 const tagQueries = {
   getTags: async () => {
@@ -6,7 +6,7 @@ const tagQueries = {
       const result = await sql.query`SELECT * FROM tags`;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -17,7 +17,7 @@ const tagQueries = {
         await sql.query`INSERT INTO tags (name) OUTPUT INSERTED.* VALUES (${tagName})`; // Make sure the column name is correct
       return result.recordset[0];
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err;
     }
   },
@@ -27,7 +27,7 @@ const tagQueries = {
       const result = await sql.query`SELECT * FROM tags WHERE id = ${tagId}`;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -38,7 +38,7 @@ const tagQueries = {
         await sql.query`SELECT * FROM post_tags WHERE post_id = ${postId}`;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -56,7 +56,7 @@ const tagQueries = {
       }
       return posts;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -65,7 +65,7 @@ const tagQueries = {
       const result = await sql.query`SELECT * FROM tags WHERE name = ${tag}`;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },

@@ -1,12 +1,12 @@
 function extractJobIdFromUrl() {
-  const urlParts = window.location.pathname.split("/");
+  const urlParts = window.location.pathname.split('/');
   return urlParts[urlParts.length - 1];
 }
 
 function formatDate(dateString) {
   const date = new Date(dateString);
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
   const year = date.getFullYear();
   return `${month}/${day}/${year}`;
 }
@@ -19,11 +19,11 @@ function getTintFromName(name) {
   hash = hash & 0x00ffffff; // Ensure hash is within the range of 0x00ffffff
 
   // Convert hash to a hexadecimal string and pad with leading zeros
-  const colorHex = ("00000" + hash.toString(16)).slice(-6);
+  const colorHex = ('00000' + hash.toString(16)).slice(-6);
   const tintColor = `#${colorHex}65`;
 
   // Blend with a desaturated base color (e.g., gray)
-  const baseColor = "#808080"; // Light gray
+  const baseColor = '#808080'; // Light gray
   const blendedColor = blendColors(tintColor, baseColor, 0.5);
   return blendedColor;
 }
@@ -36,11 +36,11 @@ function getTintFromNameSecondary(name) {
   hash = hash & 0x00ffffff; // Ensure hash is within the range of 0x00ffffff
 
   // Convert hash to a hexadecimal string and pad with leading zeros
-  const colorHex = ("00000" + hash.toString(16)).slice(-6);
+  const colorHex = ('00000' + hash.toString(16)).slice(-6);
   const tintColor = `#${colorHex}`;
 
   // Blend with a desaturated base color (e.g., gray)
-  const baseColor = "#404040"; // Dark gray
+  const baseColor = '#404040'; // Dark gray
   const blendedColor = blendColors(tintColor, baseColor, 0.5);
   return blendedColor;
 }
@@ -58,19 +58,19 @@ function blendColors(color1, color2, ratio) {
   const g = Math.round(g1 * ratio + g2 * (1 - ratio));
   const b = Math.round(b1 * ratio + b2 * (1 - ratio));
 
-  const blendedColor = `#${r.toString(16).padStart(2, "0")}${g
+  const blendedColor = `#${r.toString(16).padStart(2, '0')}${g
     .toString(16)
-    .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+    .padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   return blendedColor;
 }
 
 function formatSalary(salary) {
   if (salary >= 1000000) {
-    return "" + (salary / 1000000).toFixed(1) + "M";
+    return '' + (salary / 1000000).toFixed(1) + 'M';
   } else if (salary >= 1000) {
-    return "" + (salary / 1000).toFixed(0) + "k";
+    return '' + (salary / 1000).toFixed(0) + 'k';
   } else {
-    return "" + salary;
+    return '' + salary;
   }
 }
 
@@ -78,41 +78,41 @@ function getSimilarJobs(jobId) {
   fetch(`/api/jobs/${jobId}/similar`)
     .then((response) => response.json())
     .then((jobs) => {
-      const similarJobsContainer = document.querySelector(".similar-jobs");
+      const similarJobsContainer = document.querySelector('.similar-jobs');
 
       if (jobs.length === 0) {
-        similarJobsContainer.innerHTML = ``;
+        similarJobsContainer.innerHTML = '';
         return;
       }
       similarJobsContainer.innerHTML = `
         <h4>Related Jobs</h4>
         <div class="similar-jobs-list">
           ${jobs
-            .map((job) => {
-              const tagsArray =
-                job.tags && job.tags[1] ? job.tags[1].split(", ") : [];
-              const maxTags = 3;
-              const displayedTags = tagsArray.slice(0, maxTags);
-              const tagsHTML = displayedTags.map((tag) => `${tag}`).join(", ");
+    .map((job) => {
+      const tagsArray =
+                job.tags && job.tags[1] ? job.tags[1].split(', ') : [];
+      const maxTags = 3;
+      const displayedTags = tagsArray.slice(0, maxTags);
+      const tagsHTML = displayedTags.map((tag) => `${tag}`).join(', ');
 
-              return `
+      return `
             <div class="similar-job" onclick="window.location.href='/jobs/${
-              job.id
-            }'">
+  job.id
+}'">
               <div class="company-info">
               ${
-                job.company_logo
-                  ? `
+  job.company_logo
+    ? `
               <img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${job.company_logo}" alt="${job.company_name} logo" />`
-                  : ""
-              }
+    : ''
+}
               <div class="job-posting-company-info">
               <p  class="posting-company-name secondary-text">${
-                job.company_name
-              }</p>
+  job.company_name
+}</p>
               <h3 class="job-title"><a href="/jobs/${job.id}">${
-                job.title
-              } </a> </h3>
+  job.title
+} </a> </h3>
               </div>
             </div>
                 <div class="job-tags">
@@ -120,30 +120,30 @@ function getSimilarJobs(jobId) {
                 </div>
                 <div class="job-posting-information job-subtitle secondary-text">
                 <span style="">${
-                  job.experienceLevel === "Mid Level"
-                    ? "L3/L4"
-                    : job.experienceLevel === "Entry Level"
-                    ? "L1/L2"
-                    : job.experienceLevel === "Senior"
-                    ? "L5/L6"
-                    : job.experienceLevel
-                }</span>
+  job.experienceLevel === 'Mid Level'
+    ? 'L3/L4'
+    : job.experienceLevel === 'Entry Level'
+      ? 'L1/L2'
+      : job.experienceLevel === 'Senior'
+        ? 'L5/L6'
+        : job.experienceLevel
+}</span>
                 <span> • </span>
                 <span class="job-salary" style="margin-left: auto;">USD $${
-                  job.salary ? job.salary.toLocaleString() : ""
-                } ${
-                job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
-              }</span>
+  job.salary ? job.salary.toLocaleString() : ''
+} ${
+  job.salary_max ? '- $' + job.salary_max.toLocaleString() : ''
+}</span>
         </div>
             </div>
           `;
-            })
-            .join("")}
+    })
+    .join('')}
         </div>
       `;
     })
     .catch((error) => {
-      console.error("Error fetching similar jobs:", error);
+      console.error('Error fetching similar jobs:', error);
     });
 }
 
@@ -152,41 +152,41 @@ function getSimilarJobsByCompany(jobId, companyName) {
     .then((response) => response.json())
     .then((jobs) => {
       const similarJobsContainer = document.querySelector(
-        ".similar-jobs-company"
+        '.similar-jobs-company'
       );
       if (jobs.length === 0) {
-        similarJobsContainer.innerHTML = ``;
+        similarJobsContainer.innerHTML = '';
         return;
       }
       similarJobsContainer.innerHTML = `
         <h4>More jobs at ${companyName}</h4>
         <div class="similar-jobs-list">
           ${jobs
-            .map((job) => {
-              const tagsArray =
-                job.tags && job.tags[1] ? job.tags[1].split(", ") : [];
-              const maxTags = 3;
-              const displayedTags = tagsArray.slice(0, maxTags);
-              const tagsHTML = displayedTags.map((tag) => `${tag}`).join(", ");
+    .map((job) => {
+      const tagsArray =
+                job.tags && job.tags[1] ? job.tags[1].split(', ') : [];
+      const maxTags = 3;
+      const displayedTags = tagsArray.slice(0, maxTags);
+      const tagsHTML = displayedTags.map((tag) => `${tag}`).join(', ');
 
-              return `
+      return `
             <div class="similar-job" onclick="window.location.href='/jobs/${
-              job.id
-            }'">
+  job.id
+}'">
               <div class="company-info">
               ${
-                job.company_logo
-                  ? `
+  job.company_logo
+    ? `
               <img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${job.company_logo}" alt="" />`
-                  : ""
-              }
+    : ''
+}
               <div class="job-posting-company-info">
               <p class="posting-company-name secondary-text">${
-                job.company_name
-              }</p>
+  job.company_name
+}</p>
               <h3 class="job-title"><a href="/jobs/${job.id}">${
-                job.title
-              }</a> </h3>
+  job.title
+}</a> </h3>
               </div>
             </div>
                 <div class="job-tags">
@@ -194,31 +194,31 @@ function getSimilarJobsByCompany(jobId, companyName) {
                 </div>
                 <div class="job-posting-information job-subtitle secondary-text">
                 <span style="">${
-                  job.experienceLevel === "Mid Level"
-                    ? "L3/L4"
-                    : job.experienceLevel === "Entry Level"
-                    ? "L1/L2"
-                    : job.experienceLevel === "Senior"
-                    ? "L5/L6"
-                    : job.experienceLevel
-                }</span>
+  job.experienceLevel === 'Mid Level'
+    ? 'L3/L4'
+    : job.experienceLevel === 'Entry Level'
+      ? 'L1/L2'
+      : job.experienceLevel === 'Senior'
+        ? 'L5/L6'
+        : job.experienceLevel
+}</span>
                 <span> • </span>
                 <span class="job-salary" style="margin-left: auto;">USD $${
-                  job.salary ? job.salary.toLocaleString() : ""
-                } ${
-                job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
-              }</span>
+  job.salary ? job.salary.toLocaleString() : ''
+} ${
+  job.salary_max ? '- $' + job.salary_max.toLocaleString() : ''
+}</span>
         </div>
 
             </div>
           `;
-            })
-            .join("")}
+    })
+    .join('')}
         </div>
       `;
     })
     .catch((error) => {
-      console.error("Error fetching similar jobs:", error);
+      console.error('Error fetching similar jobs:', error);
     });
 }
 
@@ -227,34 +227,34 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     .then((response) => response.json())
     .then((job) => {
       const jobDetailsContainer = document.querySelector(
-        ".job-details-container"
+        '.job-details-container'
       );
 
       let benefitsArray, tagsArray, skillsArray;
       try {
-        tagsArray = job.tags && job.tags[1] ? job.tags[1].split(", ") : [];
+        tagsArray = job.tags && job.tags[1] ? job.tags[1].split(', ') : [];
       } catch (error) {
-        console.error("Error splitting tags:", error);
+        console.error('Error splitting tags:', error);
         tagsArray = [];
       }
       try {
         skillsArray =
-          job.skills && job.skills[1] ? job.skills[1].split(", ") : [];
+          job.skills && job.skills[1] ? job.skills[1].split(', ') : [];
       } catch (error) {
-        console.error("Error splitting skills:", error);
+        console.error('Error splitting skills:', error);
         skillsArray = [];
       }
 
       try {
-        benefitsArray = job.benefits ? job.benefits.split(",") : [];
+        benefitsArray = job.benefits ? job.benefits.split(',') : [];
       } catch (error) {
-        console.error("Error splitting benefits:", error);
+        console.error('Error splitting benefits:', error);
         benefitsArray = [];
       }
 
       const formattedBenefits = benefitsArray
-        .map((benefit) => `<li>${benefit.replace(/'/g, "")}</li>`)
-        .join("");
+        .map((benefit) => `<li>${benefit.replace(/'/g, '')}</li>`)
+        .join('');
 
       const maxTags = 15;
       const maxSkills = 10;
@@ -267,14 +267,14 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
             `<span class="job-flair"
             ><a href="/tags/${tag}"><p>${tag}</p></a></span>`
         )
-        .join("");
+        .join('');
       const skillsHTML = displayedSkills
         .map(
           (skill) =>
             `<span class="job-flair"
             ><a href="/tags/${skill}"><p>${skill}</p></a></span>`
         )
-        .join("");
+        .join('');
 
       const remainingTags = tagsArray.length - maxTags;
       const remainingSkills = skillsArray.length - maxSkills;
@@ -290,18 +290,18 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       jobDetailsContainer.innerHTML = `
         <div class="job-listing">
                 ${
-                  isOlderThan30Days(job)
-                    ? `<div class="caution-messages"><p>This job was posted more than 30 days ago</p> <p>Apply anyway <a href="${job.link}">here</a></div>`
-                    : ""
-                }
+  isOlderThan30Days(job)
+    ? `<div class="caution-messages"><p>This job was posted more than 30 days ago</p> <p>Apply anyway <a href="${job.link}">here</a></div>`
+    : ''
+}
           <div class="company-info">
           ${
-            job.company_logo
-              ? `
+  job.company_logo
+    ? `
             <img src="${job.company_logo}" style="width: auto;" alt="${job.company_name} logo" class="thumbnail thumbnail-small thumbnail-regular" />
           `
-              : ""
-          }
+    : ''
+}
             <div class="company-details">
               <h3 class="company-name">
               <a href="/jobs/company/${job.company_name}">
@@ -312,7 +312,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
               <p id="secondary-text" class="company-size"> 
               <span class="material-symbols-outlined">
 group
-</span>${job.company_size || "Unknown"} employees
+</span>${job.company_size || 'Unknown'} employees
             </p>
             </div>
             </div>
@@ -338,10 +338,10 @@ group
                 <span class="material-symbols-outlined">
                 license
                 </span>${
-                  job.h1bVisaSponsorship
-                    ? "Visa available"
-                    : "No visa sponsorship"
-                }
+  job.h1bVisaSponsorship
+    ? 'Visa available'
+    : 'No visa sponsorship'
+}
               </p>
               <p> 
               <span class="material-symbols-outlined">
@@ -356,9 +356,9 @@ group
               <p>
               <span class="material-symbols-outlined">attach_money</span>
               <strong style="color:#26704a;">
-                USD $${job.salary ? job.salary.toLocaleString() : ""} ${
-        job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
-      }
+                USD $${job.salary ? job.salary.toLocaleString() : ''} ${
+  job.salary_max ? '- $' + job.salary_max.toLocaleString() : ''
+}
               </strong>
             </p>
             <p id="secondary-text" class="post-date-text">
@@ -369,47 +369,47 @@ group
       
       <div class="interact-buttons">
       ${
-        isOlderThan30Days(job)
-          ? ""
-          : `<div class="apply-button-container flex">
+  isOlderThan30Days(job)
+    ? ''
+    : `<div class="apply-button-container flex">
           <button id="submit-button-normal" class="margin-h-auto" onclick="window.location.href='${job.link}'">Apply</button>
           </div>
           `
-      }
+}
       ${
-        userIsLoggedIn
-          ? `<div class="favorite-button-container">
+  userIsLoggedIn
+    ? `<div class="favorite-button-container">
               <div id="favorite-form-${job.id}" class="flex">
                 <button id="submit-button-normal" onclick="favorite('job', ${job.id});" class="margin-h-auto">Favorite</button>
               </div>
             </div>`
-          : ""
-      }
+    : ''
+}
       <div class="share-button-container flex">
       <button id="regular-button-normal" class="margin-h-auto" onclick="share('${
-        job.title
-      }', '', 'https://c-ore.dev/jobs/${job.id}')"
+  job.title
+}', '', 'https://c-ore.dev/jobs/${job.id}')"
       >Share</button>
       </div>
       ${
-        userIsAdmin
-          ? `
+  userIsAdmin
+    ? `
         <div class="delete-button-container flex">
           <button id="cancel-button-normal" class="margin-h-auto" onclick="window.location.href='/jobs/delete/${job.id}'">Delete</button>
         </div>
       `
-          : ""
-      }
+    : ''
+}
 
       </div>
       <div class="job-skills">
       <h4>Required Skills</h4>
       ${skillsHTML}
       ${
-        remainingSkills > 0
-          ? `<span class="see-more" id="secondary-text">+${remainingSkills} more</span>`
-          : ""
-      }
+  remainingSkills > 0
+    ? `<span class="see-more" id="secondary-text">+${remainingSkills} more</span>`
+    : ''
+}
     </div>
             <div class="job-posting-description">
             <h4>Job Description</h4>
@@ -418,41 +418,41 @@ group
               <p>${job.description}</p>
             </div>
             ${
-              job.Requirements
-                ? `
+  job.Requirements
+    ? `
             <div class="job-requirements">
               <h4>Requirements</h4>
               <p>${job.Requirements}</p>
             </div>
             `
-                : ""
-            }
+    : ''
+}
 
             ${
-              job.Responsibilities
-                ? `
+  job.Responsibilities
+    ? `
             <div class="job-responsibilities">
               <h4>Responsibilities</h4>
               <p>${job.Responsibilities}</p>
             </div>
             `
-                : ""
-            }
+    : ''
+}
             <div class="company-description">
               <h4>Company Description</h4>
               <p>${job.company_description}</p>
             </div>
             
             ${
-              job.MinimumQualifications
-                ? `
+  job.MinimumQualifications
+    ? `
 <div class="minimum-qualifications">
   <h4>Minimum Qualifications</h4>
   <p>${job.MinimumQualifications}</p>
 </div>
 `
-                : ""
-            }
+    : ''
+}
 
 ${
   job.PreferredQualifications
@@ -462,7 +462,7 @@ ${
   <p>${job.PreferredQualifications}</p>
 </div>
 `
-    : ""
+    : ''
 }
 
 ${
@@ -475,7 +475,7 @@ ${
   </ul>
 </div>
 `
-    : ""
+    : ''
 }
 
 ${
@@ -486,7 +486,7 @@ ${
   <p>${job.NiceToHave}</p>
 </div>
 `
-    : ""
+    : ''
 }
 
 ${
@@ -497,7 +497,7 @@ ${
   <p>${job.schedule}</p>
 </div>
 `
-    : ""
+    : ''
 }
 
 ${
@@ -508,7 +508,7 @@ ${
   <p>${job.hoursPerWeek}</p>
 </div>
 `
-    : ""
+    : ''
 }
 
 ${
@@ -519,12 +519,12 @@ ${
   <p>${job.equalOpportunityEmployerInfo}</p>
 </div>
 `
-    : ""
+    : ''
 }
 
 <div class="job-relocation">
   <h4>Relocation</h4>
-  <p>${job.relocation ? "Yes" : "No"}</p>
+  <p>${job.relocation ? 'Yes' : 'No'}</p>
 </div>
 <div class="similar-jobs-location">
 ${
@@ -532,14 +532,14 @@ ${
     ? `
   <h4>More jobs in </h4>
 ${job.location
-  .split(",")
-  .map(
-    (loc) =>
-      `<a class="tag" href="/jobs/location/${loc.trim()}">${loc.trim()}</a>`
-  )
-  .join("")}
+    .split(',')
+    .map(
+      (loc) =>
+        `<a class="tag" href="/jobs/location/${loc.trim()}">${loc.trim()}</a>`
+    )
+    .join('')}
   `
-    : ""
+    : ''
 }
 </div>
 <div class="similar-jobs"></div>
@@ -549,10 +549,10 @@ ${job.location
               <h4>Tags</h4>
               ${tagsHTML}
               ${
-                remainingTags > 0
-                  ? `<span class="see-more" id="secondary-text">+${remainingTags} more</span>`
-                  : ""
-              }
+  remainingTags > 0
+    ? `<span class="see-more" id="secondary-text">+${remainingTags} more</span>`
+    : ''
+}
 
             </div>
 
@@ -567,7 +567,7 @@ ${job.location
       }
     })
     .catch((error) => {
-      console.error("Error fetching job details:", error);
+      console.error('Error fetching job details:', error);
     });
 }
 
@@ -579,15 +579,15 @@ function checkFavorite(jobId) {
         `#favorite-form-${jobId} button`
       );
       if (data.isFavorite) {
-        favoriteButton.id = "cancel-button-normal";
+        favoriteButton.id = 'cancel-button-normal';
         favoriteButton.textContent = data.buttonText;
       } else {
-        favoriteButton.id = "submit-button-normal";
+        favoriteButton.id = 'submit-button-normal';
         favoriteButton.textContent = data.buttonText;
       }
     })
     .catch((error) => {
-      console.error("Error checking favorite:", error);
+      console.error('Error checking favorite:', error);
     });
 }
 
@@ -599,21 +599,21 @@ function favorite(favoriteType, TypeId) {
 
   const endpoint = endpoints[favoriteType];
   if (!endpoint) {
-    console.error("Invalid favorite type");
+    console.error('Invalid favorite type');
     return;
   }
 
   let favoriteButton;
-  if (favoriteType === "job") {
+  if (favoriteType === 'job') {
     favoriteButton = document.querySelector(`#favorite-form-${TypeId} button`);
     toggleFavoriteButton(favoriteButton);
   }
 
   fetch(endpoint, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
   })
     .then((response) => {
@@ -629,16 +629,16 @@ function favorite(favoriteType, TypeId) {
         window.location.href = data.redirect;
       } else {
         showBannerNotification(data.message);
-        if (favoriteType === "job") {
+        if (favoriteType === 'job') {
           // Revert button state if operation wasn't successful
           toggleFavoriteButton(favoriteButton);
         }
       }
     })
     .catch((error) => {
-      console.error("Error adding to favorites:", error);
-      showBannerNotification("An error occurred. Please try again.");
-      if (favoriteType === "job") {
+      console.error('Error adding to favorites:', error);
+      showBannerNotification('An error occurred. Please try again.');
+      if (favoriteType === 'job') {
         // Revert button state on error
         toggleFavoriteButton(favoriteButton);
       }
@@ -646,11 +646,11 @@ function favorite(favoriteType, TypeId) {
 }
 
 function toggleFavoriteButton(button) {
-  if (button.textContent === "Unfavorite") {
-    button.id = "submit-button-normal";
-    button.textContent = "Favorite";
+  if (button.textContent === 'Unfavorite') {
+    button.id = 'submit-button-normal';
+    button.textContent = 'Favorite';
   } else {
-    button.id = "cancel-button-normal";
-    button.textContent = "Unfavorite";
+    button.id = 'cancel-button-normal';
+    button.textContent = 'Unfavorite';
   }
 }

@@ -1,5 +1,5 @@
 // communityQueries.js
-const sql = require("mssql");
+const sql = require('mssql');
 // Assuming you have a users table and a communities table already set up
 
 const communityQueries = {
@@ -10,7 +10,7 @@ const communityQueries = {
 
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -23,7 +23,7 @@ const communityQueries = {
       `;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -37,12 +37,12 @@ const communityQueries = {
           SELECT * FROM communities WHERE id = ${communityId}`;
 
       if (!community.recordset[0]) {
-        throw new Error("Community not found.");
+        throw new Error('Community not found.');
       }
 
       console.log(community.recordset[0]);
 
-      console.log("Updating community with ID", communityId);
+      console.log('Updating community with ID', communityId);
 
       // compare with the existing data and update only the changed fields
       if (
@@ -80,7 +80,7 @@ const communityQueries = {
       }
       return true;
     } catch (err) {
-      console.error("Database query error");
+      console.error('Database query error');
       throw err;
     }
   },
@@ -92,7 +92,7 @@ const communityQueries = {
 
       return result.recordset[0].id;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -100,9 +100,9 @@ const communityQueries = {
   checkModerator: async (userId, communityId) => {
     try {
       console.log(
-        "Checking moderator status for user",
+        'Checking moderator status for user',
         userId,
-        "in community",
+        'in community',
         communityId
       );
 
@@ -112,7 +112,7 @@ const communityQueries = {
 
       return result.recordset.length > 0;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -127,23 +127,11 @@ const communityQueries = {
 
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
 
-  checkModerator: async (userId, communityId) => {
-    try {
-      const result = await sql.query`
-        SELECT * FROM community_memberships
-        WHERE user_id = ${userId} AND community_id = ${communityId} AND is_moderator = 1`;
-
-      return result.recordset.length > 0;
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err;
-    }
-  },
 
   joinCommunity: async (userId, communityId) => {
     try {
@@ -153,7 +141,7 @@ const communityQueries = {
         WHERE user_id = ${userId} AND community_id = ${communityId}
       `;
       if (checkExistence.recordset.length > 0) {
-        throw new Error("User is already a member of this community.");
+        throw new Error('User is already a member of this community.');
       }
 
       // Add user to the community
@@ -173,9 +161,9 @@ const communityQueries = {
         WHERE id = ${communityId}
       `;
 
-      return "User successfully joined the community.";
+      return 'User successfully joined the community.';
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -186,9 +174,9 @@ const communityQueries = {
         SELECT COUNT(*) FROM posts 
         WHERE communities_id = ${communityId} AND deleted = 0`;
 
-      return result.recordset[0][""];
+      return result.recordset[0][''];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -209,9 +197,9 @@ const communityQueries = {
         )
         WHERE id = ${communityId}
       `;
-      return "User successfully left the community.";
+      return 'User successfully left the community.';
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -224,7 +212,7 @@ const communityQueries = {
 
       return result.recordset.length > 0;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -240,7 +228,7 @@ const communityQueries = {
 
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },

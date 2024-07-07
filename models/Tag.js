@@ -1,5 +1,5 @@
-const sql = require("mssql");
-const postQueries = require("../queries/postQueries"); // Assuming this exists
+const sql = require('mssql');
+const postQueries = require('../queries/postQueries'); // Assuming this exists
 
 class Tag {
   constructor(data) {
@@ -13,7 +13,7 @@ class Tag {
       const result = await sql.query`SELECT * FROM tags`;
       return result.recordset.map(tag => new Tag(tag));
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -26,7 +26,7 @@ class Tag {
         VALUES (${tagName})`;
       return new Tag(result.recordset[0]);
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err;
     }
   }
@@ -36,7 +36,7 @@ class Tag {
       const result = await sql.query`SELECT * FROM tags WHERE id = ${tagId}`;
       return result.recordset[0] ? new Tag(result.recordset[0]) : null;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -46,7 +46,7 @@ class Tag {
       const result = await sql.query`SELECT * FROM tags WHERE name = ${tagName}`;
       return result.recordset[0] ? new Tag(result.recordset[0]) : null;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -60,7 +60,7 @@ class Tag {
         WHERE pt.post_id = ${postId}`;
       return result.recordset.map(tag => new Tag(tag));
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -74,7 +74,7 @@ class Tag {
         WHERE pt.tag_id = ${this.id}`;
       return result.recordset.map(post => postQueries.createPostObject(post));
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -85,7 +85,7 @@ class Tag {
         INSERT INTO post_tags (tag_id, post_id)
         VALUES (${tagId}, ${postId})`;
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err;
     }
   }
@@ -96,7 +96,7 @@ class Tag {
         DELETE FROM post_tags
         WHERE tag_id = ${tagId} AND post_id = ${postId}`;
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err;
     }
   }

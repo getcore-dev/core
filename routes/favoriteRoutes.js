@@ -1,33 +1,32 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const favoritesQueries = require("../queries/favoritesQueries");
-const { checkAuthenticated } = require("../middleware/authMiddleware");
-const postQueries = require("../queries/postQueries");
+const favoritesQueries = require('../queries/favoritesQueries');
+const { checkAuthenticated } = require('../middleware/authMiddleware');
+const postQueries = require('../queries/postQueries');
 
-router.get("/", checkAuthenticated, async (req, res) => {
+router.get('/', checkAuthenticated, async (req, res) => {
   try {
-    const userId = req.user.id;
-    res.render("favorites.ejs", {
+    res.render('favorites.ejs', {
       user: req.user,
     });
   } catch (err) {
-    console.error("Error getting favorites:", err);
-    res.status(500).send("Error getting favorites");
+    console.error('Error getting favorites:', err);
+    res.status(500).send('Error getting favorites');
   }
 });
 
-router.get("/posts", checkAuthenticated, async (req, res) => {
+router.get('/posts', checkAuthenticated, async (req, res) => {
   try {
     const userId = req.user.id;
     const favorites = await favoritesQueries.getFavoritePosts(userId);
     res.json({ favorites });
   } catch (err) {
-    console.error("Error getting favorite posts:", err);
-    res.status(500).json({ message: "Error getting favorite posts" });
+    console.error('Error getting favorite posts:', err);
+    res.status(500).json({ message: 'Error getting favorite posts' });
   }
 });
 
-router.get("/all", checkAuthenticated, async (req, res) => {
+router.get('/all', checkAuthenticated, async (req, res) => {
   try {
     const userId = req.user.id;
     const posts = await favoritesQueries.getFavoritePosts(userId);
@@ -41,45 +40,45 @@ router.get("/all", checkAuthenticated, async (req, res) => {
     };
     res.json({ favorites });
   } catch (err) {
-    console.error("Error getting favorite posts:", err);
-    res.status(500).json({ message: "Error getting favorite posts" });
+    console.error('Error getting favorite posts:', err);
+    res.status(500).json({ message: 'Error getting favorite posts' });
   }
 });
 
-router.get("/posts", checkAuthenticated, async (req, res) => {
+router.get('/posts', checkAuthenticated, async (req, res) => {
   try {
     const userId = req.user.id;
     const favorites = await favoritesQueries.getFavoritePosts(userId);
     res.json({ favorites });
   } catch (err) {
-    console.error("Error getting favorite posts:", err);
-    res.status(500).json({ message: "Error getting favorite posts" });
+    console.error('Error getting favorite posts:', err);
+    res.status(500).json({ message: 'Error getting favorite posts' });
   }
 });
 
-router.get("/jobs", checkAuthenticated, async (req, res) => {
+router.get('/jobs', checkAuthenticated, async (req, res) => {
   try {
     const userId = req.user.id;
     const favorites = await favoritesQueries.getFavoriteJobs(userId);
     res.json({ favorites });
   } catch (err) {
-    console.error("Error getting favorite jobs:", err);
-    res.status(500).json({ message: "Error getting favorite jobs" });
+    console.error('Error getting favorite jobs:', err);
+    res.status(500).json({ message: 'Error getting favorite jobs' });
   }
 });
 
-router.get("/comments", checkAuthenticated, async (req, res) => {
+router.get('/comments', checkAuthenticated, async (req, res) => {
   try {
     const userId = req.user.id;
     const favorites = await favoritesQueries.getFavoriteComments(userId);
     res.json({ favorites });
   } catch (err) {
-    console.error("Error getting favorite comments:", err);
-    res.status(500).json({ message: "Error getting favorite comments" });
+    console.error('Error getting favorite comments:', err);
+    res.status(500).json({ message: 'Error getting favorite comments' });
   }
 });
 
-router.post("/post/:postId", checkAuthenticated, async (req, res) => {
+router.post('/post/:postId', checkAuthenticated, async (req, res) => {
   try {
     const userId = req.user.id;
     const postId = req.params.postId;
@@ -92,25 +91,25 @@ router.post("/post/:postId", checkAuthenticated, async (req, res) => {
       await favoritesQueries.removeFromFavorites(userId, postId);
       res.json({
         success: true,
-        message: "Post successfully removed from favorites.",
+        message: 'Post successfully removed from favorites.',
       });
     } else {
       await favoritesQueries.addToFavorites(userId, postId);
       res.json({
         success: true,
-        message: "Post successfully added to favorites.",
+        message: 'Post successfully added to favorites.',
       });
     }
   } catch (err) {
-    console.error("Error adding to favorites:", err);
+    console.error('Error adding to favorites:', err);
     res
       .status(500)
-      .json({ success: false, message: "Error adding to favorites" });
+      .json({ success: false, message: 'Error adding to favorites' });
   }
 });
 
 router.post(
-  "/comment/:postId/:commentId",
+  '/comment/:postId/:commentId',
   checkAuthenticated,
   async (req, res) => {
     try {
@@ -121,13 +120,13 @@ router.post(
       await favoritesQueries.addCommentToFavorites(userId, postId, commentId);
       res.redirect(`/posts/${postId}#${req.params.commentId}`);
     } catch (err) {
-      console.error("Error adding to favorites:", err);
-      res.status(500).send("Error adding to favorites");
+      console.error('Error adding to favorites:', err);
+      res.status(500).send('Error adding to favorites');
     }
   }
 );
 
-router.post("/jobs/:jobId", checkAuthenticated, async (req, res) => {
+router.post('/jobs/:jobId', checkAuthenticated, async (req, res) => {
   try {
     const userId = req.user.id;
     const jobId = req.params.jobId;
@@ -140,49 +139,49 @@ router.post("/jobs/:jobId", checkAuthenticated, async (req, res) => {
       await favoritesQueries.removeJobFromFavorites(userId, jobId);
       return res.json({
         success: true,
-        message: "Job successfully removed from favorites.",
+        message: 'Job successfully removed from favorites.',
       });
     } else {
       await favoritesQueries.addJobToFavorites(userId, jobId);
       return res.json({
         success: true,
-        message: "Job successfully added to favorites.",
+        message: 'Job successfully added to favorites.',
       });
     }
   } catch (err) {
-    console.error("Error adding job to favorites:", err);
+    console.error('Error adding job to favorites:', err);
     res
       .status(500)
-      .json({ success: false, message: "Error adding job to favorites" });
+      .json({ success: false, message: 'Error adding job to favorites' });
   }
 });
 
-router.delete("/post/:postId", checkAuthenticated, async (req, res) => {
+router.delete('/post/:postId', checkAuthenticated, async (req, res) => {
   try {
     const userId = req.user.id;
     const postId = req.params.postId;
     await favoritesQueries.removeFromFavorites(userId, postId);
-    res.redirect("/favorites");
+    res.redirect('/favorites');
   } catch (err) {
-    console.error("Error removing from favorites:", err);
+    console.error('Error removing from favorites:', err);
     res
       .status(500)
-      .json({ success: false, message: "Error removing from favorites" });
+      .json({ success: false, message: 'Error removing from favorites' });
   }
 });
 
-router.get("/isFavorite/job/:jobId", async (req, res) => {
+router.get('/isFavorite/job/:jobId', async (req, res) => {
   try {
     if (!req.user) {
-      return res.json({ isFavorite: false, buttonText: "Favorite" });
+      return res.json({ isFavorite: false, buttonText: 'Favorite' });
     }
     const userId = req.user.id;
     if (!userId) {
-      return res.json({ isFavorite: false, buttonText: "Favorite" });
+      return res.json({ isFavorite: false, buttonText: 'Favorite' });
     }
     const jobId = req.params.jobId;
     if (!jobId) {
-      return res.json({ isFavorite: false, buttonText: "Favorite" });
+      return res.json({ isFavorite: false, buttonText: 'Favorite' });
     }
     const job = await favoritesQueries.getFavoriteJobByJobIdAndUserId(
       jobId,
@@ -191,28 +190,28 @@ router.get("/isFavorite/job/:jobId", async (req, res) => {
     const isFavorite = !!job;
     res.json({
       isFavorite: isFavorite,
-      buttonText: isFavorite ? "Unfavorite" : "Favorite",
+      buttonText: isFavorite ? 'Unfavorite' : 'Favorite',
     });
   } catch (err) {
-    console.error("Error checking if job is favorite:", err);
+    console.error('Error checking if job is favorite:', err);
     res
       .status(500)
-      .json({ success: false, message: "Error checking if job is favorite" });
+      .json({ success: false, message: 'Error checking if job is favorite' });
   }
 });
 
-router.get("/isFavorite/post/:postId", async (req, res) => {
+router.get('/isFavorite/post/:postId', async (req, res) => {
   try {
     if (!req.user) {
-      return res.json({ isFavorite: false, buttonText: "Favorite" });
+      return res.json({ isFavorite: false, buttonText: 'Favorite' });
     }
     const userId = req.user.id;
     if (!userId) {
-      return res.json({ isFavorite: false, buttonText: "Favorite" });
+      return res.json({ isFavorite: false, buttonText: 'Favorite' });
     }
     const postId = req.params.postId;
     if (!postId) {
-      return res.json({ isFavorite: false, buttonText: "Favorite" });
+      return res.json({ isFavorite: false, buttonText: 'Favorite' });
     }
     const post = await postQueries.getFavoritePostByPostIdAndUserId(
       postId,
@@ -221,13 +220,13 @@ router.get("/isFavorite/post/:postId", async (req, res) => {
     const isFavorite = !!post;
     res.json({
       isFavorite: isFavorite,
-      buttonText: isFavorite ? "Unfavorite" : "Favorite",
+      buttonText: isFavorite ? 'Unfavorite' : 'Favorite',
     });
   } catch (err) {
-    console.error("Error checking if post is favorite:", err);
+    console.error('Error checking if post is favorite:', err);
     res
       .status(500)
-      .json({ success: false, message: "Error checking if job is favorite" });
+      .json({ success: false, message: 'Error checking if job is favorite' });
   }
 });
 

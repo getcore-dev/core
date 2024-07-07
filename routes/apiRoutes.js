@@ -1,33 +1,33 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const userQueries = require("../queries/userQueries");
-const multer = require("multer");
-const { checkAuthenticated } = require("../middleware/authMiddleware");
+const userQueries = require('../queries/userQueries');
+const multer = require('multer');
+const { checkAuthenticated } = require('../middleware/authMiddleware');
 const storage = multer.diskStorage({
-  destination: "./public/uploads/",
+  destination: './public/uploads/',
   filename: function (req, file, cb) {
-    cb(null, "profile-" + Date.now() + ".jpg");
+    cb(null, 'profile-' + Date.now() + '.jpg');
   },
 });
-const JobProcessor = require("../services/jobBoardService");
+const JobProcessor = require('../services/jobBoardService');
 const jobProcessor = new JobProcessor();
-const environment = require("../config/environment");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const environment = require('../config/environment');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 const genAI = new GoogleGenerativeAI(environment.geminiKey);
-const cheerio = require("cheerio");
-const githubService = require("../services/githubService");
-const cacheMiddleware = require("../middleware/cache");
-const NodeCache = require("node-cache");
+const cheerio = require('cheerio');
+const githubService = require('../services/githubService');
+const cacheMiddleware = require('../middleware/cache');
+const NodeCache = require('node-cache');
 const cache = new NodeCache({ stdTTL: 1200 }); // TTL is 20 minutes
-const utilFunctions = require("../utils/utilFunctions");
+const utilFunctions = require('../utils/utilFunctions');
 const upload = multer({ storage });
-const marked = require("marked");
-const postQueries = require("../queries/postQueries");
-const jobQueries = require("../queries/jobQueries");
-const sql = require("mssql");
-const axios = require("axios");
-const communityQueries = require("../queries/communityQueries");
-const linkFunctions = require("../utils/linkFunctions");
+const marked = require('marked');
+const postQueries = require('../queries/postQueries');
+const jobQueries = require('../queries/jobQueries');
+const sql = require('mssql');
+const axios = require('axios');
+const communityQueries = require('../queries/communityQueries');
+const linkFunctions = require('../utils/linkFunctions');
 
 const renderer = new marked.Renderer();
 renderer.image = function (href, title, text) {
@@ -43,21 +43,21 @@ marked.setOptions({
   renderer: renderer,
 });
 
-router.get("/getUsername/:id", async (req, res) => {
+router.get('/getUsername/:id', async (req, res) => {
   const id = req.params.id;
   try {
     const user = await userQueries.findById(id);
     if (user) {
       res.json(user.username);
     } else {
-      res.status(404).send("User not found");
+      res.status(404).send('User not found');
     }
   } catch (err) {
-    res.status(500).send("Server error");
+    res.status(500).send('Server error');
   }
 });
 
-router.get("/available-username/:username", async (req, res) => {
+router.get('/available-username/:username', async (req, res) => {
   const username = req.params.username;
   try {
     const user = await userQueries.findByUsername(username);
@@ -67,21 +67,21 @@ router.get("/available-username/:username", async (req, res) => {
       res.json({ available: true });
     }
   } catch (err) {
-    res.status(500).send("Server error");
+    res.status(500).send('Server error');
   }
 });
 
-router.get("/job-postings", async (req, res) => {
+router.get('/job-postings', async (req, res) => {
   try {
     const jobPostings = await jobQueries.getJobs();
     res.json(jobPostings);
   } catch (err) {
-    console.error("Error fetching job postings:", err);
-    res.status(500).send("Error fetching job postings");
+    console.error('Error fetching job postings:', err);
+    res.status(500).send('Error fetching job postings');
   }
 });
 
-router.get("/leetcode-experience/:username", async (req, res) => {
+router.get('/leetcode-experience/:username', async (req, res) => {
   try {
     const username = req.params.username;
     const query = `
@@ -103,29 +103,29 @@ router.get("/leetcode-experience/:username", async (req, res) => {
     `;
     const variables = { username };
     const { data } = await axios.post(
-      "https://leetcode.com/graphql",
+      'https://leetcode.com/graphql',
       {
         query,
         variables,
       },
       {
         headers: {
-          "Content-Type": "application/json",
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+          'Content-Type': 'application/json',
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
         },
       }
     );
 
     const userStats = data.data.matchedUser.submitStats.acSubmissionNum;
     const easySolved = userStats.find(
-      (stat) => stat.difficulty === "Easy"
+      (stat) => stat.difficulty === 'Easy'
     ).count;
     const mediumSolved = userStats.find(
-      (stat) => stat.difficulty === "Medium"
+      (stat) => stat.difficulty === 'Medium'
     ).count;
     const hardSolved = userStats.find(
-      (stat) => stat.difficulty === "Hard"
+      (stat) => stat.difficulty === 'Hard'
     ).count;
 
     res.json({
@@ -134,13 +134,13 @@ router.get("/leetcode-experience/:username", async (req, res) => {
       hardSolved,
     });
   } catch (err) {
-    console.error("Error fetching LeetCode data:", err);
-    res.status(500).send("Error fetching LeetCode data");
+    console.error('Error fetching LeetCode data:', err);
+    res.status(500).send('Error fetching LeetCode data');
   }
 });
 
 router.get(
-  "/github-commit-graph/:username",
+  '/github-commit-graph/:username',
   cacheMiddleware(2400),
   async (req, res) => {
     try {
@@ -150,20 +150,20 @@ router.get(
       if (!user || !user.githubAccessToken) {
         return res
           .status(404)
-          .json({ error: "User not found or access token not available" });
+          .json({ error: 'User not found or access token not available' });
       }
 
       const accessToken = user.githubAccessToken;
-      const apiUrl = `https://api.github.com/search/commits`;
+      const apiUrl = 'https://api.github.com/search/commits';
       const headers = {
-        "User-Agent": "CORE",
+        'User-Agent': 'CORE',
         Authorization: `Bearer ${accessToken}`,
       };
 
       const commitGraph = {};
       const oneYearAgo = new Date();
       oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-      const oneYearAgoDate = oneYearAgo.toISOString().split("T")[0];
+      const oneYearAgoDate = oneYearAgo.toISOString().split('T')[0];
       let page = 1;
       const commitsPerPage = 100;
       let commitCount = 0;
@@ -173,8 +173,8 @@ router.get(
           headers,
           params: {
             q: `author:${username} committer-date:>=${oneYearAgoDate}`,
-            sort: "committer-date",
-            order: "desc",
+            sort: 'committer-date',
+            order: 'desc',
             per_page: commitsPerPage,
             page: page,
           },
@@ -187,7 +187,7 @@ router.get(
         const commits = response.data.items;
         commitCount += commits.length;
         commits.forEach((commit) => {
-          const date = commit.commit.committer.date.split("T")[0];
+          const date = commit.commit.committer.date.split('T')[0];
           commitGraph[date] = (commitGraph[date] || 0) + 1;
         });
 
@@ -200,15 +200,15 @@ router.get(
       //console.log(commitGraph);
       res.json({ username, commitGraph, commitCount });
     } catch (error) {
-      console.error("Error fetching GitHub commit graph:", error);
-      console.error("Error details:", error.response?.data);
-      res.status(500).json({ error: "Failed to fetch GitHub commit graph" });
+      console.error('Error fetching GitHub commit graph:', error);
+      console.error('Error details:', error.response?.data);
+      res.status(500).json({ error: 'Failed to fetch GitHub commit graph' });
     }
   }
 );
 
 router.get(
-  "/github-repos/:username",
+  '/github-repos/:username',
   cacheMiddleware(2400),
   async (req, res) => {
     try {
@@ -218,14 +218,14 @@ router.get(
       if (!user || !user.githubAccessToken) {
         return res
           .status(404)
-          .json({ error: "User not found or access token not available" });
+          .json({ error: 'User not found or access token not available' });
       }
 
       const accessToken = user.githubAccessToken;
       const url = `https://api.github.com/users/${username}/repos`;
       const headers = {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
         Authorization: `Bearer ${accessToken}`,
       };
       const response = await axios.get(url, { headers, timeout: 5000 });
@@ -246,23 +246,23 @@ router.get(
 
       res.json({ username, repositories });
     } catch (error) {
-      console.error("Error fetching GitHub repositories:", error);
-      res.status(500).json({ error: "Failed to fetch GitHub repositories" });
+      console.error('Error fetching GitHub repositories:', error);
+      res.status(500).json({ error: 'Failed to fetch GitHub repositories' });
     }
   }
 );
 
-router.get("/skills", async (req, res) => {
+router.get('/skills', async (req, res) => {
   try {
     const skills = await jobQueries.getSkills();
     res.json(skills);
   } catch (err) {
-    console.error("Error fetching skills:", err);
-    res.status(500).send("Error fetching skills");
+    console.error('Error fetching skills:', err);
+    res.status(500).send('Error fetching skills');
   }
 });
 
-router.get("/community/:communityId/jobs", async (req, res) => {
+router.get('/community/:communityId/jobs', async (req, res) => {
   try {
     const communityId = req.params.communityId;
     const page = parseInt(req.query.page) || 1; // Get the page number from query parameters, default to 1
@@ -272,18 +272,18 @@ router.get("/community/:communityId/jobs", async (req, res) => {
     const community = await communityQueries.getCommunity(communityId);
 
     if (!community) {
-      return res.status(404).send("Community not found");
+      return res.status(404).send('Community not found');
     }
 
-    if (community.JobsEnabled === "False") {
-      return res.status(404).send("Jobs are not enabled for this community");
+    if (community.JobsEnabled === 'False') {
+      return res.status(404).send('Jobs are not enabled for this community');
     }
 
     // Assume community.Tags is a CSV string
-    const communityTags = community.Tags.split(",");
+    const communityTags = community.Tags.split(',');
 
     if (!communityTags.length) {
-      return res.status(404).send("No tags found for the given community");
+      return res.status(404).send('No tags found for the given community');
     }
 
     // Fetch jobs matching the community tags
@@ -322,12 +322,12 @@ router.get("/community/:communityId/jobs", async (req, res) => {
       totalPages: Math.ceil(allJobs.length / limit),
     });
   } catch (err) {
-    console.error("Error fetching job postings:", err);
-    res.status(500).send("Error fetching job postings");
+    console.error('Error fetching job postings:', err);
+    res.status(500).send('Error fetching job postings');
   }
 });
 
-router.get("/randomJobs", async (req, res) => {
+router.get('/randomJobs', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -345,38 +345,38 @@ router.get("/randomJobs", async (req, res) => {
       totalPages: Math.ceil(totalCount / limit),
     });
   } catch (err) {
-    console.error("Error fetching job postings:", err);
-    res.status(500).send("Error fetching job postings");
+    console.error('Error fetching job postings:', err);
+    res.status(500).send('Error fetching job postings');
   }
 });
 
-router.get("/getTopTags", cacheMiddleware(3600), async (req, res) => {
+router.get('/getTopTags', cacheMiddleware(3600), async (req, res) => {
   try {
     const tags = await jobQueries.getCountOfTopJobTags();
     res.json(tags);
   } catch (err) {
-    console.error("Error fetching tags:", err);
-    res.status(500).send("Error fetching tags");
+    console.error('Error fetching tags:', err);
+    res.status(500).send('Error fetching tags');
   }
 });
 
-router.get("/getTopSkills", cacheMiddleware(3600), async (req, res) => {
+router.get('/getTopSkills', cacheMiddleware(3600), async (req, res) => {
   try {
     const skills = await jobQueries.getCountOfTopJobSkills();
     res.json(skills);
   } catch (err) {
-    console.error("Error fetching skills:", err);
-    res.status(500).send("Error fetching skills");
+    console.error('Error fetching skills:', err);
+    res.status(500).send('Error fetching skills');
   }
 });
 
-router.get("/jobs", async (req, res) => {
+router.get('/jobs', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const { jobTitle, jobLocation, jobExperienceLevel, jobSalary, tags } =
       req.query;
-    const parsedTags = tags ? tags.split(",") : [];
+    const parsedTags = tags ? tags.split(',') : [];
 
     const user = req.user;
     let userPreferences = {};
@@ -385,7 +385,7 @@ router.get("/jobs", async (req, res) => {
       userPreferences = {
         jobPreferredTitle: user.jobPreferredTitle,
         jobPreferredSkills: user.jobPreferredSkills
-          ? user.jobPreferredSkills.split(",").map(String)
+          ? user.jobPreferredSkills.split(',').map(String)
           : [],
         jobPreferredLocation: user.jobPreferredLocation,
         jobExperienceLevel: user.jobExperienceLevel,
@@ -446,8 +446,8 @@ router.get("/jobs", async (req, res) => {
       totalPages: Math.ceil(totalCount / limit),
     });
   } catch (err) {
-    console.error("Error fetching job postings:", err);
-    res.status(500).send("Error fetching job postings");
+    console.error('Error fetching job postings:', err);
+    res.status(500).send('Error fetching job postings');
   }
 });
 
@@ -458,9 +458,9 @@ function calculateMatchCount(job, userPreferences, tags) {
 
   const jobSkills = Array.isArray(job.skills)
     ? job.skills
-    : typeof job.skills[1] === "string"
-    ? job.skills[1].split(",").map((s) => s.trim())
-    : [];
+    : typeof job.skills[1] === 'string'
+      ? job.skills[1].split(',').map((s) => s.trim())
+      : [];
 
   if (
     userPreferences.jobPreferredSkills &&
@@ -480,70 +480,70 @@ function calculateMatchCount(job, userPreferences, tags) {
   if (job.industry === userPreferences.jobPreferredIndustry) matchCount++;
   if (job.salary >= userPreferences.jobPreferredSalary) matchCount++;
 
-  const jobTags = !!job.tags[1]
-    ? job.tags[1].split(",").map((tag) => tag.trim())
+  const jobTags = job.tags[1]
+    ? job.tags[1].split(',').map((tag) => tag.trim())
     : [];
   matchCount += tags.filter((tag) => jobTags.includes(tag)).length;
 
   return matchCount;
 }
 
-router.get("/job-experience/:userId", async (req, res) => {
+router.get('/job-experience/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
     const jobExperience = await jobQueries.getUserJobExperience(userId);
     res.json(jobExperience);
   } catch (err) {
-    console.error("Error fetching job experience:", err);
-    res.status(500).send("Error fetching job experience");
+    console.error('Error fetching job experience:', err);
+    res.status(500).send('Error fetching job experience');
   }
 });
 
-router.get("/education-experience/:userId", async (req, res) => {
+router.get('/education-experience/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
     const jobExperience = await jobQueries.getUserEducationExperience(userId);
     res.json(jobExperience);
   } catch (err) {
-    console.error("Error fetching job experience:", err);
-    res.status(500).send("Error fetching job experience");
+    console.error('Error fetching job experience:', err);
+    res.status(500).send('Error fetching job experience');
   }
 });
 
-router.get("/job-titles", async (req, res) => {
+router.get('/job-titles', async (req, res) => {
   try {
     const jobTitles = await jobQueries.getJobTitles();
     res.json(jobTitles);
   } catch (err) {
-    console.error("Error fetching job titles:", err);
-    res.status(500).send("Error fetching job titles");
+    console.error('Error fetching job titles:', err);
+    res.status(500).send('Error fetching job titles');
   }
 });
 
-router.get("/jobs/:id", async (req, res) => {
+router.get('/jobs/:id', async (req, res) => {
   try {
     const id = req.params.id;
     const jobPosting = await jobQueries.findById(id);
     res.json(jobPosting);
   } catch (err) {
-    console.error("Error fetching job posting:", err);
-    res.status(500).send("Error fetching job posting");
+    console.error('Error fetching job posting:', err);
+    res.status(500).send('Error fetching job posting');
   }
 });
 
-router.get("/jobs/:id/similar", async (req, res) => {
+router.get('/jobs/:id/similar', async (req, res) => {
   try {
     const id = req.params.id;
     const jobPosting = await jobQueries.findById(id);
     const similarJobs = await jobQueries.getSimilarJobs(jobPosting.id);
     res.json(similarJobs);
   } catch (err) {
-    console.error("Error fetching similar jobs:", err);
-    res.status(500).send("Error fetching similar jobs");
+    console.error('Error fetching similar jobs:', err);
+    res.status(500).send('Error fetching similar jobs');
   }
 });
 
-router.get("/jobs/:id/similar-company", async (req, res) => {
+router.get('/jobs/:id/similar-company', async (req, res) => {
   try {
     const id = req.params.id;
     const jobPosting = await jobQueries.findById(id);
@@ -553,12 +553,12 @@ router.get("/jobs/:id/similar-company", async (req, res) => {
     );
     res.json(similarJobs);
   } catch (err) {
-    console.error("Error fetching similar jobs:", err);
-    res.status(500).send("Error fetching similar jobs");
+    console.error('Error fetching similar jobs:', err);
+    res.status(500).send('Error fetching similar jobs');
   }
 });
 
-router.post("/job-postings", checkAuthenticated, async (req, res) => {
+router.post('/job-postings', checkAuthenticated, async (req, res) => {
   try {
     const {
       title,
@@ -596,7 +596,7 @@ router.post("/job-postings", checkAuthenticated, async (req, res) => {
 
     if (!companyId) {
       //console.log(`Error creating company: ${company}`);
-      return res.status(400).json({ error: "Company does not exist" });
+      return res.status(400).json({ error: 'Company does not exist' });
     }
 
     const jobPostingId = await jobQueries.createJobPosting(
@@ -608,11 +608,11 @@ router.post("/job-postings", checkAuthenticated, async (req, res) => {
       companyId,
       link,
       null,
-      tags.split(",").map((tag) => tag.trim()),
+      tags.split(',').map((tag) => tag.trim()),
       description,
       salary_max,
       user.recruiter_id,
-      skills.split(",").map((skill) => skill.trim()),
+      skills.split(',').map((skill) => skill.trim()),
       benefits,
       additional_information,
       preferredQualifications,
@@ -629,23 +629,23 @@ router.post("/job-postings", checkAuthenticated, async (req, res) => {
     );
 
     res.status(201).json({
-      message: "Job posting created successfully",
+      message: 'Job posting created successfully',
       jobPostingId: jobPostingId.toString(),
     });
   } catch (error) {
-    console.error("Error creating job posting:", error);
+    console.error('Error creating job posting:', error);
     res
       .status(500)
-      .json({ error: "An error occurred while creating the job posting" });
+      .json({ error: 'An error occurred while creating the job posting' });
   }
 });
 
-router.post("/extract-job-details", async (req, res) => {
+router.post('/extract-job-details', async (req, res) => {
   try {
     const { link } = req.body;
 
     if (!link) {
-      return res.status(400).json({ error: "Invalid job link" });
+      return res.status(400).json({ error: 'Invalid job link' });
     }
 
     const extractedData = await jobProcessor.processJobLink(link);
@@ -684,26 +684,26 @@ router.post("/extract-job-details", async (req, res) => {
 
     res.json(extractedData);
   } catch (error) {
-    console.error("Error extracting job details:", error);
+    console.error('Error extracting job details:', error);
     res
       .status(500)
-      .json({ error: "An error occurred while extracting job details" });
+      .json({ error: 'An error occurred while extracting job details' });
   }
 });
 
-router.post("/auto-create-job-posting", async (req, res) => {
+router.post('/auto-create-job-posting', async (req, res) => {
   try {
     const { link } = req.body;
 
     if (!link) {
-      return res.status(400).json({ error: "Invalid job link" });
+      return res.status(400).json({ error: 'Invalid job link' });
     }
 
     let jobLinks = [link];
 
-    if (link.includes("greenhouse.io")) {
+    if (link.includes('greenhouse.io')) {
       jobLinks = await linkFunctions.scrapeGreenhouseJobs(link);
-    } else if (link.includes("lever.co")) {
+    } else if (link.includes('lever.co')) {
       jobLinks = await linkFunctions.scrapeLeverJobs(link);
     }
 
@@ -746,13 +746,13 @@ router.post("/auto-create-job-posting", async (req, res) => {
           jobLink,
           null,
           extractedData.tags
-            ? extractedData.tags.split(",").map((tag) => tag.trim())
+            ? extractedData.tags.split(',').map((tag) => tag.trim())
             : [],
           extractedData.description,
           extractedData.salary_max,
           1,
           extractedData.skills
-            ? extractedData.skills.split(",").map((skill) => skill.trim())
+            ? extractedData.skills.split(',').map((skill) => skill.trim())
             : [],
           extractedData.benefits,
           extractedData.additional_information,
@@ -780,27 +780,27 @@ router.post("/auto-create-job-posting", async (req, res) => {
       }
     }
 
-    res.status(201).json({ message: "Job postings processed successfully" });
+    res.status(201).json({ message: 'Job postings processed successfully' });
   } catch (error) {
-    console.error("Error processing job postings:", error);
+    console.error('Error processing job postings:', error);
     res
       .status(500)
-      .json({ error: "An error occurred while processing job postings" });
+      .json({ error: 'An error occurred while processing job postings' });
   }
 });
 
-router.get("/posts/:postId/comments", async (req, res) => {
+router.get('/posts/:postId/comments', async (req, res) => {
   try {
     const postId = req.params.postId;
     const comments = await utilFunctions.getComments(postId);
     res.json(comments);
   } catch (err) {
-    console.error("Error fetching comments:", err);
-    res.status(500).send("Error fetching comments");
+    console.error('Error fetching comments:', err);
+    res.status(500).send('Error fetching comments');
   }
 });
 
-router.get("/posts/:postId", async (req, res) => {
+router.get('/posts/:postId', async (req, res) => {
   try {
     const postId = req.params.postId;
     const user = req.user ? req.user : null;
@@ -808,49 +808,49 @@ router.get("/posts/:postId", async (req, res) => {
     postData.content = marked(postData.content);
     res.json(postData);
   } catch (err) {
-    console.error("Error fetching post data:", err);
-    res.status(500).send("Error fetching post data");
+    console.error('Error fetching post data:', err);
+    res.status(500).send('Error fetching post data');
   }
 });
 
-router.get("/posts/:postId/getReaction", async (req, res) => {
+router.get('/posts/:postId/getReaction', async (req, res) => {
   try {
     const postId = req.params.postId;
     const userId = req.query.userId; // Assuming userId is sent as a query parameter
     const reaction = await postQueries.getUserInteractions(postId, userId);
     return res.json(reaction);
   } catch (err) {
-    console.error("Error fetching reaction:", err);
-    res.status(500).send("Error fetching reaction");
+    console.error('Error fetching reaction:', err);
+    res.status(500).send('Error fetching reaction');
   }
 });
 
-router.get("/communities", cacheMiddleware(2400), async (req, res) => {
+router.get('/communities', cacheMiddleware(2400), async (req, res) => {
   try {
     const user = req.user; // Assuming the user object is attached to the request by middleware
     const communities = await utilFunctions.getAllCommunities(user);
     return res.json(communities);
   } catch (err) {
-    console.error("Error fetching communities:", err);
-    res.status(500).send("Error fetching communities");
+    console.error('Error fetching communities:', err);
+    res.status(500).send('Error fetching communities');
   }
 });
 
-router.get("/companies", async (req, res) => {
+router.get('/companies', async (req, res) => {
   try {
     const companies = await jobQueries.getCompanies();
     res.json(companies);
   } catch (err) {
-    console.error("Error fetching companies:", err);
-    res.status(500).send("Error fetching companies");
+    console.error('Error fetching companies:', err);
+    res.status(500).send('Error fetching companies');
   }
 });
 
-router.get("/communities/:communityId/posts", async (req, res) => {
+router.get('/communities/:communityId/posts', async (req, res) => {
   try {
     const communityId = req.params.communityId;
     const page = parseInt(req.query.page) || 1;
-    const sortBy = req.query.sortBy || "trending";
+    const sortBy = req.query.sortBy || 'trending';
     const userId = req.query.userId;
     const limit = 10; // Number of posts per page
     const offset = (page - 1) * limit;
@@ -864,55 +864,55 @@ router.get("/communities/:communityId/posts", async (req, res) => {
     );
     res.json(posts);
   } catch (err) {
-    res.status(500).send("Error fetching posts");
+    res.status(500).send('Error fetching posts');
   }
 });
 
-router.get("/comments/:commentId/replies", async (req, res) => {
+router.get('/comments/:commentId/replies', async (req, res) => {
   try {
     const commentId = req.params.commentId;
     const replies = await utilFunctions.getRepliesForComment(commentId);
     res.json(replies);
   } catch (err) {
-    console.error("Error fetching replies:", err);
-    res.status(500).send("Error fetching replies");
+    console.error('Error fetching replies:', err);
+    res.status(500).send('Error fetching replies');
   }
 });
 
-router.get("/tags", async (req, res) => {
+router.get('/tags', async (req, res) => {
   try {
     const tags = await utilFunctions.getAllTags();
     res.json(tags);
   } catch (err) {
-    console.error("Error fetching tags:", err);
-    res.status(500).send("Error fetching tags");
+    console.error('Error fetching tags:', err);
+    res.status(500).send('Error fetching tags');
   }
 });
 
-router.get("/:postId/reactions/:userId", async (req, res) => {
+router.get('/:postId/reactions/:userId', async (req, res) => {
   try {
     const postId = req.params.postId;
     const userId = req.params.userId;
     const reaction = await postQueries.getUserInteractions(postId, userId);
     return res.json(reaction);
   } catch (err) {
-    console.error("Error fetching reaction:", err);
-    res.status(500).send("Error fetching reaction");
+    console.error('Error fetching reaction:', err);
+    res.status(500).send('Error fetching reaction');
   }
 });
 
-router.get("/get-latest-commit", cacheMiddleware(1200), async (req, res) => {
+router.get('/get-latest-commit', cacheMiddleware(1200), async (req, res) => {
   try {
     const latestCommit = await githubService.getLatestCommit();
     res.json(latestCommit);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching latest commit" });
+    res.status(500).json({ message: 'Error fetching latest commit' });
   }
 });
 
-router.get("/posts", async (req, res) => {
+router.get('/posts', async (req, res) => {
   try {
-    const sortBy = req.query.sortBy || "trending"; // Default to "trending"
+    const sortBy = req.query.sortBy || 'trending'; // Default to "trending"
     const userId = req.query.userId;
     const page = parseInt(req.query.page) || 1;
     const limit = 10; // Number of posts per page
@@ -928,11 +928,11 @@ router.get("/posts", async (req, res) => {
     res.json(posts);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-router.get("/trending-posts", cacheMiddleware(2400), async (req, res) => {
+router.get('/trending-posts', cacheMiddleware(2400), async (req, res) => {
   try {
     const posts = await utilFunctions.getTrendingPosts();
     res.json(posts);
@@ -941,7 +941,7 @@ router.get("/trending-posts", cacheMiddleware(2400), async (req, res) => {
   }
 });
 
-router.get("/user-details/:userId", async (req, res) => {
+router.get('/user-details/:userId', async (req, res) => {
   try {
     const userDetails = await utilFunctions.getUserDetails(req.params.userId);
     res.json(userDetails);
@@ -950,20 +950,20 @@ router.get("/user-details/:userId", async (req, res) => {
   }
 });
 
-router.get("/comments/:postId", async (req, res) => {
+router.get('/comments/:postId', async (req, res) => {
   const postId = req.params.postId;
   try {
     const { comments, totalComments } = await utilFunctions.getComments(postId);
     res.json({ comments, totalComments });
   } catch (err) {
-    console.error("Error fetching comments:", err);
+    console.error('Error fetching comments:', err);
     res
       .status(500)
-      .json({ error: "An error occurred while fetching comments" });
+      .json({ error: 'An error occurred while fetching comments' });
   }
 });
 
-router.get("/tags/:postId", async (req, res) => {
+router.get('/tags/:postId', async (req, res) => {
   try {
     const tags = await utilFunctions.getTags(req.params.postId);
     res.json(tags);
@@ -972,7 +972,7 @@ router.get("/tags/:postId", async (req, res) => {
   }
 });
 
-router.get("/communities/:communitiesId", async (req, res) => {
+router.get('/communities/:communitiesId', async (req, res) => {
   try {
     const communities = await utilFunctions.getCommunities(
       req.params.communitiesId
@@ -984,52 +984,52 @@ router.get("/communities/:communitiesId", async (req, res) => {
   }
 });
 
-router.get("/link-preview/:link", cacheMiddleware(1200), async (req, res) => {
+router.get('/link-preview/:link', cacheMiddleware(1200), async (req, res) => {
   try {
     const link = decodeURIComponent(decodeURIComponent(req.params.link));
     const linkPreview = await utilFunctions.getLinkPreview(link);
     res.json(linkPreview);
   } catch (err) {
-    console.error("Error in link preview route:", err);
+    console.error('Error in link preview route:', err);
     res.status(500).send(err.message);
   }
 });
 
-router.get("/profile/jobs", checkAuthenticated, async (req, res) => {
+router.get('/profile/jobs', checkAuthenticated, async (req, res) => {
   try {
     const userId = req.query.userId || req.user.userId;
     const preferences = await jobQueries.getUserJobPreferences(userId);
     res.json(preferences);
   } catch (err) {
-    console.error("Error fetching user jobs:", err);
-    res.status(500).send("Error fetching user jobs");
+    console.error('Error fetching user jobs:', err);
+    res.status(500).send('Error fetching user jobs');
   }
 });
-router.get("/commits", async (req, res) => {
+router.get('/commits', async (req, res) => {
   try {
     const commits = await utilFunctions.fetchCommits();
     res.json(commits);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching commits" });
+    res.status(500).json({ message: 'Error fetching commits' });
   }
 });
 
 router.post(
-  "/upload-profile-picture",
+  '/upload-profile-picture',
   checkAuthenticated,
-  upload.single("file"),
+  upload.single('file'),
   async (req, res) => {
     try {
       if (req.file.size > 1000000) {
-        return res.status(400).send("File size too large");
+        return res.status(400).send('File size too large');
       }
       const userId = req.user.userId;
       const filePath = req.file.path;
       await userQueries.updateProfilePicture(userId, filePath);
-      res.redirect("back");
+      res.redirect('back');
     } catch (err) {
       console.error(err);
-      res.status(500).send("Server error");
+      res.status(500).send('Server error');
     }
   }
 );

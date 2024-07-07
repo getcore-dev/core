@@ -1,20 +1,20 @@
-const app = require("./app");
-const environment = require("./config/environment");
-const cluster = require("cluster");
-const JobProcessor = require("./services/jobBoardService");
+const app = require('./app');
+const environment = require('./config/environment');
+const cluster = require('cluster');
+const JobProcessor = require('./services/jobBoardService');
 const jobProcessor = new JobProcessor();
 
 const MS_PER_HOUR = 3600000;
 
 function runJobBoardService() {
-  console.log("Job board service started");
+  console.log('Job board service started');
   jobProcessor
     .start()
     .then(() => {
-      console.log("Job board service completed successfully");
+      console.log('Job board service completed successfully');
     })
     .catch((error) => {
-      console.error("Error running job board service:", error);
+      console.error('Error running job board service:', error);
     })
     .finally(() => {
       scheduleNextRun();
@@ -35,7 +35,7 @@ function scheduleNextRun() {
 app.listen(environment.port, () => {
   console.log(
     `Worker ${
-      cluster.worker ? cluster.worker.id : "Master"
+      cluster.worker ? cluster.worker.id : 'Master'
     } running on http://localhost:${environment.port}`
   );
   // Uncomment the following line when you're ready to run the job board service

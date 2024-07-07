@@ -1,4 +1,4 @@
-const sql = require("mssql");
+const sql = require('mssql');
 
 const userQueries = {
   findByUsername: async (username) => {
@@ -22,12 +22,12 @@ const userQueries = {
       const user = result.recordset[0];
       if (user) {
         const topCommunities = await userQueries.getTopCommunities(user.id);
-        user.topCommunities = topCommunities.map((c) => c.name).join(", ");
+        user.topCommunities = topCommunities.map((c) => c.name).join(', ');
       }
 
       return user;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -39,7 +39,7 @@ const userQueries = {
         SET lastLogin = GETDATE()
         WHERE id = ${userId}`;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   },
@@ -50,7 +50,7 @@ const userQueries = {
         SELECT * FROM users WHERE google_id = ${googleId}`;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -61,12 +61,12 @@ const userQueries = {
         INSERT INTO users (username, email, avatar, google_id, created_at, isAdmin, bio, points, verified)
         OUTPUT INSERTED.*
         VALUES (${profile.username.toLowerCase()}, ${
-        profile.emails[0].value
-      }, ${profile.photos[0].value}, ${profile.id}, GETDATE(), 0, '', 0, 0)`;
+  profile.emails[0].value
+}, ${profile.photos[0].value}, ${profile.id}, GETDATE(), 0, '', 0, 0)`;
 
       return result.recordset[0];
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err;
     }
   },
@@ -87,15 +87,15 @@ const userQueries = {
         const isAdmin = result.recordset[0].isAdmin;
         return {
           message: `User ID ${userId} is now ${
-            isAdmin ? "an admin" : "not an admin"
+            isAdmin ? 'an admin' : 'not an admin'
           }.`,
           success: true,
           isAdmin: isAdmin,
         };
       }
     } catch (err) {
-      console.error("Database update error:", err.message);
-      console.error("Error stack:", err.stack);
+      console.error('Database update error:', err.message);
+      console.error('Error stack:', err.stack);
       console.error(`Failed to toggle admin status for user ID: ${userId}`);
       throw err;
     }
@@ -117,15 +117,15 @@ const userQueries = {
         const isBanned = result.recordset[0].isBanned;
         return {
           message: `User ID ${userId} is now ${
-            isBanned ? "banned" : "unbanned"
+            isBanned ? 'banned' : 'unbanned'
           }.`,
           success: true,
           isBanned: isBanned,
         };
       }
     } catch (err) {
-      console.error("Database update error:", err.message);
-      console.error("Error stack:", err.stack);
+      console.error('Database update error:', err.message);
+      console.error('Error stack:', err.stack);
       console.error(`Failed to toggle ban status for user ID: ${userId}`);
       throw err;
     }
@@ -147,15 +147,15 @@ const userQueries = {
         const verified = result.recordset[0].verified;
         return {
           message: `User ID ${userId} is now ${
-            verified ? "verified" : "unverified"
+            verified ? 'verified' : 'unverified'
           }.`,
           success: true,
           verified: verified,
         };
       }
     } catch (err) {
-      console.error("Database update error:", err.message);
-      console.error("Error stack:", err.stack);
+      console.error('Database update error:', err.message);
+      console.error('Error stack:', err.stack);
       console.error(`Failed to toggle verified status for user ID: ${userId}`);
       throw err;
     }
@@ -186,7 +186,7 @@ const userQueries = {
 
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -197,7 +197,7 @@ const userQueries = {
       SELECT * FROM posts WHERE user_id = ${userId} AND deleted = 0 ORDER BY created_at DESC`;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -221,7 +221,7 @@ const userQueries = {
     `;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -232,7 +232,7 @@ const userQueries = {
         SELECT * FROM users WHERE id = (SELECT user_id FROM comments WHERE id = ${commentId})`;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -261,7 +261,7 @@ const userQueries = {
 
       return enrichedComments;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -296,7 +296,7 @@ const userQueries = {
 
       return enrichedComments;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -306,7 +306,7 @@ const userQueries = {
       const result = await sql.query`SELECT * FROM users WHERE id = ${id}`;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -317,7 +317,7 @@ const userQueries = {
         await sql.query`SELECT * FROM users WHERE email = ${email}`;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -325,28 +325,28 @@ const userQueries = {
   updateField: async (userId, field, value) => {
     try {
       const validFields = [
-        "firstname",
-        "lastname",
-        "avatar",
-        "bio",
-        "email",
-        "github_url",
-        "recruiter_id",
-        "leetcode_url",
-        "linkedin_url",
-        "zipcode",
-        "password",
-        "profile_border_color",
-        "link",
-        "link2",
-        "settings_PrivateJobNames",
-        "settings_PrivateSchoolNames",
-        "jobPreferredTitle",
-        "jobPreferredSkills",
-        "jobPreferredLocation",
-        "jobExperienceLevel",
-        "jobPreferredIndustry",
-        "jobPreferredSalary",
+        'firstname',
+        'lastname',
+        'avatar',
+        'bio',
+        'email',
+        'github_url',
+        'recruiter_id',
+        'leetcode_url',
+        'linkedin_url',
+        'zipcode',
+        'password',
+        'profile_border_color',
+        'link',
+        'link2',
+        'settings_PrivateJobNames',
+        'settings_PrivateSchoolNames',
+        'jobPreferredTitle',
+        'jobPreferredSkills',
+        'jobPreferredLocation',
+        'jobExperienceLevel',
+        'jobPreferredIndustry',
+        'jobPreferredSalary',
       ];
 
       // Check if the field is valid
@@ -354,31 +354,31 @@ const userQueries = {
         throw new Error(`Invalid field name: ${field}`);
       }
 
-      if (["leetcode_url", "linkedin_url", "github_url"].includes(field)) {
+      if (['leetcode_url', 'linkedin_url', 'github_url'].includes(field)) {
         // Extract the username from the provided value
         switch (field) {
-          case "leetcode_url":
-            value = value.replace(/^https?:\/\/leetcode.com\//i, "");
-            break;
-          case "linkedin_url":
-            value = value.replace(
-              /^https?:\/\/(?:www\.)?linkedin.com\/in\//i,
-              ""
-            );
-            break;
-          case "github_url":
-            value = value.replace(/^https?:\/\/github.com\//i, "");
-            break;
+        case 'leetcode_url':
+          value = value.replace(/^https?:\/\/leetcode.com\//i, '');
+          break;
+        case 'linkedin_url':
+          value = value.replace(
+            /^https?:\/\/(?:www\.)?linkedin.com\/in\//i,
+            ''
+          );
+          break;
+        case 'github_url':
+          value = value.replace(/^https?:\/\/github.com\//i, '');
+          break;
         }
       }
 
-      if (field === "recruiter_id") {
+      if (field === 'recruiter_id') {
         const recruiterQuery = `
           SELECT COUNT(*) AS count
           FROM Recruiters
           WHERE recruiter_id = @recruiterId`;
         const recruiterRequest = new sql.Request();
-        recruiterRequest.input("recruiterId", sql.VarChar, value);
+        recruiterRequest.input('recruiterId', sql.VarChar, value);
         const recruiterResult = await recruiterRequest.query(recruiterQuery);
 
         if (recruiterResult.recordset[0].count === 0) {
@@ -388,23 +388,23 @@ const userQueries = {
 
       // Handle boolean conversion for specific fields
       if (
-        field === "settings_PrivateJobNames" ||
-        field === "settings_PrivateSchoolNames"
+        field === 'settings_PrivateJobNames' ||
+        field === 'settings_PrivateSchoolNames'
       ) {
-        value = value === true || value === "true"; // Ensure value is boolean
+        value = value === true || value === 'true'; // Ensure value is boolean
       }
 
       // Determine the appropriate SQL data type
       let sqlType = sql.VarChar;
       if (
-        field === "settings_PrivateJobNames" ||
-        field === "settings_PrivateSchoolNames"
+        field === 'settings_PrivateJobNames' ||
+        field === 'settings_PrivateSchoolNames'
       ) {
         sqlType = sql.Bit;
-      } else if (typeof value === "number") {
+      } else if (typeof value === 'number') {
         sqlType = sql.Int;
       } else if (Array.isArray(value)) {
-        value = value.join(","); // Convert array to a comma-separated string
+        value = value.join(','); // Convert array to a comma-separated string
       }
 
       // Construct the query with the safe field name
@@ -415,8 +415,8 @@ const userQueries = {
 
       // Prepare and execute the query
       const request = new sql.Request();
-      request.input("value", sqlType, value);
-      request.input("userId", sql.VarChar, userId);
+      request.input('value', sqlType, value);
+      request.input('userId', sql.VarChar, userId);
       const result = await request.query(query);
 
       if (result && result.rowsAffected === 0) {
@@ -426,8 +426,8 @@ const userQueries = {
         const jsonString = JSON.stringify(result);
       }
     } catch (err) {
-      console.error("Database update error:", err.message);
-      console.error("Error stack:", err.stack);
+      console.error('Database update error:', err.message);
+      console.error('Error stack:', err.stack);
       // Additional information for debugging
       console.error(
         `Failed to update field ${field} for user ID: ${userId} with value: ${value}`
@@ -445,7 +445,7 @@ const userQueries = {
         WHERE follower_id = ${followerId} AND followed_id = ${followedId}`;
 
       if (existingRelationship.recordset.length > 0) {
-        throw new Error("User is already following this user");
+        throw new Error('User is already following this user');
       }
 
       // Insert the new follow relationship
@@ -455,7 +455,7 @@ const userQueries = {
 
       return true;
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err;
     }
   },
@@ -467,12 +467,12 @@ const userQueries = {
         WHERE follower_id = ${followerId} AND followed_id = ${followedId}`;
 
       if (result.rowsAffected[0] === 0) {
-        throw new Error("User is not following this user");
+        throw new Error('User is not following this user');
       }
 
       return true;
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err;
     }
   },
@@ -525,8 +525,8 @@ const userQueries = {
         throw new Error(`User ID ${userId} not found`);
       }
     } catch (err) {
-      console.error("Database update error:", err.message);
-      console.error("Error stack:", err.stack);
+      console.error('Database update error:', err.message);
+      console.error('Error stack:', err.stack);
 
       // Additional information for debugging
       console.error(
@@ -543,12 +543,12 @@ const userQueries = {
         INSERT INTO users (github_url, username, avatar, email, github_id, created_at, isAdmin, bio, points, verified)
         OUTPUT INSERTED.*
         VALUES (${profile.username.toLowerCase()}, ${profile.username}, ${
-        profile.photos[0].value
-      }, ${profile.emails[0].value}, ${profile.id}, GETDATE(), 0, '', 0, 0)`;
+  profile.photos[0].value
+}, ${profile.emails[0].value}, ${profile.id}, GETDATE(), 0, '', 0, 0)`;
 
       return result.recordset[0];
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err;
     }
   },
@@ -569,7 +569,7 @@ const userQueries = {
 
       return result.rowsAffected[0];
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err;
     }
   },
@@ -582,7 +582,7 @@ const userQueries = {
 
       return result.recordset[0].count > 0;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -595,7 +595,7 @@ const userQueries = {
 
       return result.recordset[0].count;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -610,7 +610,7 @@ const userQueries = {
 
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -624,7 +624,7 @@ const userQueries = {
 
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -640,8 +640,8 @@ const userQueries = {
       } else if (result) {
       }
     } catch (err) {
-      console.error("Database update error:", err.message);
-      console.error("Error stack:", err.stack);
+      console.error('Database update error:', err.message);
+      console.error('Error stack:', err.stack);
 
       // Additional information for debugging
       console.error(

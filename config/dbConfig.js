@@ -1,4 +1,4 @@
-const environment = require("./environment");
+const environment = require('./environment');
 
 const dbConfig = {
   user: environment.dbUser,

@@ -1,5 +1,5 @@
-const sql = require("mssql");
-const utilFunctions = require("../utils/utilFunctions");
+const sql = require('mssql');
+const utilFunctions = require('../utils/utilFunctions');
 
 const jobQueries = {
   getJobs: async (limit, offset) => {
@@ -21,7 +21,7 @@ const jobQueries = {
       const jobs = result.recordset;
       return jobs;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -55,13 +55,13 @@ const jobQueries = {
       const queryParams = {};
 
       if (userPreferences.jobPreferredTitle) {
-        conditions.push(`j.title LIKE @title`);
+        conditions.push('j.title LIKE @title');
         queryParams.title = `%${userPreferences.jobPreferredTitle}%`;
       }
 
       if (userPreferences.jobPreferredLocation) {
         conditions.push(
-          `(j.location LIKE @location OR j.location LIKE @stateAbbr)`
+          '(j.location LIKE @location OR j.location LIKE @stateAbbr)'
         );
         queryParams.location = `%${userPreferences.jobPreferredLocation}%`;
         queryParams.stateAbbr = `% ${userPreferences.jobPreferredLocation.substring(
@@ -71,7 +71,7 @@ const jobQueries = {
       }
 
       if (userPreferences.jobExperienceLevel) {
-        conditions.push(`j.experienceLevel = @experienceLevel`);
+        conditions.push('j.experienceLevel = @experienceLevel');
         queryParams.experienceLevel = userPreferences.jobExperienceLevel;
       }
 
@@ -79,12 +79,12 @@ const jobQueries = {
         userPreferences.jobPreferredSalary &&
         userPreferences.jobPreferredSalary > 0
       ) {
-        conditions.push(`j.salary >= @salary`);
+        conditions.push('j.salary >= @salary');
         queryParams.salary = userPreferences.jobPreferredSalary;
       }
 
       if (userPreferences.jobPreferredIndustry) {
-        conditions.push(`c.industry = @industry`);
+        conditions.push('c.industry = @industry');
         queryParams.industry = userPreferences.jobPreferredIndustry;
       }
 
@@ -100,8 +100,8 @@ const jobQueries = {
             EXISTS (
               SELECT 1 FROM job_skills js
               WHERE js.job_id = j.id AND js.skill_id IN (${validSkills
-                .map((_, i) => `@skill${i}`)
-                .join(", ")})
+    .map((_, i) => `@skill${i}`)
+    .join(', ')})
             )
           `);
           validSkills.forEach((skill, i) => {
@@ -111,10 +111,10 @@ const jobQueries = {
       }
 
       if (conditions.length > 0) {
-        query += ` AND ${conditions.join(" AND ")}`;
+        query += ` AND ${conditions.join(' AND ')}`;
       }
 
-      query += ` ORDER BY j.postedDate DESC`;
+      query += ' ORDER BY j.postedDate DESC';
 
       const request = new sql.Request();
       Object.entries(queryParams).forEach(([key, value]) => {
@@ -124,16 +124,16 @@ const jobQueries = {
       const result = await request.query(query);
       return result.recordset;
     } catch (error) {
-      console.error("Error in getAllJobsFromLast30Days:", error);
+      console.error('Error in getAllJobsFromLast30Days:', error);
       throw error;
     }
   },
 
   searchAllJobsFromLast30Days: async (
-    title = "",
-    location = "",
-    experienceLevel = "",
-    salary = "",
+    title = '',
+    location = '',
+    experienceLevel = '',
+    salary = '',
     parsedTags = []
   ) => {
     try {
@@ -165,25 +165,25 @@ const jobQueries = {
       const queryParams = {};
 
       if (title) {
-        conditions.push(`j.title LIKE @title`);
+        conditions.push('j.title LIKE @title');
         queryParams.title = `%${title}%`;
       }
 
       if (location) {
         conditions.push(
-          `(j.location LIKE @location OR j.location LIKE @stateAbbr)`
+          '(j.location LIKE @location OR j.location LIKE @stateAbbr)'
         );
         queryParams.location = `%${location}%`;
         queryParams.stateAbbr = `% ${location.substring(0, 2)},%`;
       }
 
       if (experienceLevel) {
-        conditions.push(`j.experienceLevel = @experienceLevel`);
+        conditions.push('j.experienceLevel = @experienceLevel');
         queryParams.experienceLevel = experienceLevel;
       }
 
       if (salary) {
-        conditions.push(`j.salary >= @salary`);
+        conditions.push('j.salary >= @salary');
         queryParams.salary = parseInt(salary);
       }
 
@@ -193,8 +193,8 @@ const jobQueries = {
             SELECT 1 FROM JobPostingsTags jpt
             JOIN JobTags jt ON jpt.tagId = jt.id
             WHERE jpt.jobId = j.id AND jt.tagName IN (${parsedTags
-              .map((_, i) => `@tag${i}`)
-              .join(", ")})
+    .map((_, i) => `@tag${i}`)
+    .join(', ')})
           )
         `);
         parsedTags.forEach((tag, i) => {
@@ -203,10 +203,10 @@ const jobQueries = {
       }
 
       if (conditions.length > 0) {
-        query += ` AND ${conditions.join(" AND ")}`;
+        query += ` AND ${conditions.join(' AND ')}`;
       }
 
-      query += ` ORDER BY j.postedDate DESC`;
+      query += ' ORDER BY j.postedDate DESC';
 
       const request = new sql.Request();
       Object.entries(queryParams).forEach(([key, value]) => {
@@ -216,7 +216,7 @@ const jobQueries = {
       const result = await request.query(query);
       return result.recordset;
     } catch (error) {
-      console.error("Error in searchAllJobsFromLast30Days:", error);
+      console.error('Error in searchAllJobsFromLast30Days:', error);
       throw error;
     }
   },
@@ -236,7 +236,7 @@ const jobQueries = {
       }, []);
       return jobTitles;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -244,7 +244,7 @@ const jobQueries = {
   incrementJobViewCount: async (postId) => {
     try {
       if (!postId) {
-        throw new Error("postId is required");
+        throw new Error('postId is required');
       }
 
       await sql.query`
@@ -252,7 +252,7 @@ const jobQueries = {
         SET views = COALESCE(views, 0) + 1
         WHERE id = ${postId}`;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -264,7 +264,7 @@ const jobQueries = {
       `;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -276,7 +276,7 @@ const jobQueries = {
       `;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -289,7 +289,7 @@ const jobQueries = {
       console.log(companies);
       return companies;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -312,58 +312,58 @@ const jobQueries = {
     const values = {};
 
     if (name !== undefined) {
-      fields.push("name = @name");
+      fields.push('name = @name');
       values.name = { value: name, type: sql.NVarChar };
     }
     if (location !== undefined) {
-      fields.push("location = @location");
+      fields.push('location = @location');
       values.location = { value: location, type: sql.NVarChar };
     }
     if (description !== undefined) {
-      fields.push("description = @description");
+      fields.push('description = @description');
       values.description = { value: description, type: sql.NVarChar };
     }
     if (logo !== undefined) {
-      fields.push("logo = @logo");
+      fields.push('logo = @logo');
       values.logo = { value: logo, type: sql.VarChar };
     }
     if (logo_url !== undefined) {
-      fields.push("logo_url = @logo_url");
+      fields.push('logo_url = @logo_url');
       values.logo_url = { value: logo_url, type: sql.VarChar };
     }
     if (industry !== undefined) {
-      fields.push("industry = @industry");
+      fields.push('industry = @industry');
       values.industry = { value: industry, type: sql.VarChar };
     }
     if (founded !== undefined) {
-      fields.push("founded = @founded");
+      fields.push('founded = @founded');
       values.founded = { value: founded, type: sql.DateTime };
     }
     if (size !== undefined) {
-      fields.push("size = @size");
+      fields.push('size = @size');
       values.size = { value: size, type: sql.VarChar };
     }
     if (stock_symbol !== undefined) {
-      fields.push("stock_symbol = @stock_symbol");
+      fields.push('stock_symbol = @stock_symbol');
       values.stock_symbol = { value: stock_symbol, type: sql.VarChar };
     }
     if (job_board_url !== undefined) {
-      fields.push("job_board_url = @job_board_url");
+      fields.push('job_board_url = @job_board_url');
       values.job_board_url = { value: job_board_url, type: sql.VarChar };
     }
 
     if (fields.length === 0) {
-      throw new Error("No fields to update");
+      throw new Error('No fields to update');
     }
 
     const query = `
         UPDATE companies
-        SET ${fields.join(", ")}
+        SET ${fields.join(', ')}
         WHERE id = @id
       `;
 
     const request = new sql.Request();
-    request.input("id", sql.Int, id);
+    request.input('id', sql.Int, id);
     Object.entries(values).forEach(([key, { value, type }]) => {
       request.input(key, type, value);
     });
@@ -378,7 +378,7 @@ const jobQueries = {
       `;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -400,16 +400,16 @@ const jobQueries = {
       const jobs = result.recordset;
       return jobs;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
 
   getJobsBySearch: async (
-    title = "",
-    location = "",
-    experienceLevel = "",
-    salary = "",
+    title = '',
+    location = '',
+    experienceLevel = '',
+    salary = '',
     limit = null,
     offset = 0,
     allowedJobLevels = [],
@@ -428,25 +428,25 @@ const jobQueries = {
       const whereConditions = [];
 
       if (title) {
-        whereConditions.push(`j.title LIKE @title`);
+        whereConditions.push('j.title LIKE @title');
         queryParams.title = `%${title}%`;
       }
 
       if (location) {
         whereConditions.push(
-          `(j.location LIKE @location OR j.location LIKE @stateAbbr)`
+          '(j.location LIKE @location OR j.location LIKE @stateAbbr)'
         );
         queryParams.location = `%${location}%`;
         queryParams.stateAbbr = `% ${location.substring(0, 2)},%`;
       }
 
       if (experienceLevel) {
-        whereConditions.push(`j.experienceLevel = @experienceLevel`);
+        whereConditions.push('j.experienceLevel = @experienceLevel');
         queryParams.experienceLevel = experienceLevel;
       }
 
       if (salary) {
-        whereConditions.push(`j.salary >= @salary`);
+        whereConditions.push('j.salary >= @salary');
         queryParams.salary = parseInt(salary);
       }
 
@@ -454,7 +454,7 @@ const jobQueries = {
         whereConditions.push(
           `j.experienceLevel IN (${allowedJobLevels
             .map((_, i) => `@level${i}`)
-            .join(", ")})`
+            .join(', ')})`
         );
         allowedJobLevels.forEach((level, i) => {
           queryParams[`level${i}`] = level;
@@ -468,8 +468,8 @@ const jobQueries = {
             FROM JobPostingsTags jpt
             JOIN JobTags jt ON jpt.tagId = jt.id
             WHERE jpt.jobId = j.id AND jt.tagName IN (${tags
-              .map((_, i) => `@tag${i}`)
-              .join(", ")})
+    .map((_, i) => `@tag${i}`)
+    .join(', ')})
             GROUP BY jpt.jobId
             HAVING COUNT(DISTINCT jt.tagName) = ${tags.length}
           )
@@ -480,7 +480,7 @@ const jobQueries = {
       }
 
       if (whereConditions.length > 0) {
-        query += ` AND ${whereConditions.join(" AND ")}`;
+        query += ` AND ${whereConditions.join(' AND ')}`;
       }
 
       query += `
@@ -506,7 +506,7 @@ const jobQueries = {
       `;
 
       if (limit !== null) {
-        query += ` OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY`;
+        query += ' OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY';
         queryParams.offset = offset;
         queryParams.limit = limit;
       }
@@ -519,7 +519,7 @@ const jobQueries = {
       const result = await request.query(query);
       return result.recordset;
     } catch (error) {
-      console.error("Error in getJobsBySearch:", error);
+      console.error('Error in getJobsBySearch:', error);
       throw error;
     }
   },
@@ -538,7 +538,7 @@ const jobQueries = {
       if (allowedJobLevels && allowedJobLevels.length > 0) {
         query += ` AND j.experienceLevel IN (${allowedJobLevels
           .map((_, i) => `@level${i}`)
-          .join(", ")})`;
+          .join(', ')})`;
         allowedJobLevels.forEach((level, i) => {
           queryParams[`level${i}`] = level;
         });
@@ -550,8 +550,8 @@ const jobQueries = {
             SELECT 1 FROM JobPostingsTags jpt
             INNER JOIN JobTags jt ON jpt.tagId = jt.id
             WHERE jpt.jobId = j.id AND jt.tagName IN (${tags
-              .map((_, i) => `@tag${i}`)
-              .join(", ")})
+    .map((_, i) => `@tag${i}`)
+    .join(', ')})
           )
         `;
         tags.forEach((tag, i) => {
@@ -567,7 +567,7 @@ const jobQueries = {
       const result = await request.query(query);
       return result.recordset[0].count;
     } catch (error) {
-      console.error("Error in getJobsCount:", error);
+      console.error('Error in getJobsCount:', error);
       throw error;
     }
   },
@@ -582,7 +582,7 @@ const jobQueries = {
       const jobCount = result.recordset[0].jobCount;
       return jobCount;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -612,7 +612,7 @@ const jobQueries = {
       const jobs = result.recordset;
       return jobs;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -622,8 +622,8 @@ const jobQueries = {
 
       const jobTagResult = await pool
         .request()
-        .input("tagName", sql.NVarChar, tagName)
-        .query("SELECT id FROM JobTags WHERE tagName = @tagName");
+        .input('tagName', sql.NVarChar, tagName)
+        .query('SELECT id FROM JobTags WHERE tagName = @tagName');
 
       if (jobTagResult.recordset.length > 0) {
         return jobTagResult.recordset[0].id;
@@ -631,7 +631,7 @@ const jobQueries = {
 
       return null;
     } catch (err) {
-      console.error("Error in getTagId:", err);
+      console.error('Error in getTagId:', err);
       throw err;
     }
   },
@@ -640,8 +640,8 @@ const jobQueries = {
     try {
       // Convert tags array to a format suitable for SQL IN clause
       const formattedTags = tags
-        .map((tag) => `'${tag.replace(/'/g, "''")}'`)
-        .join(",");
+        .map((tag) => `'${tag.replace(/'/g, '\'\'')}'`)
+        .join(',');
 
       const result = await sql.query(`
         SELECT JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
@@ -665,7 +665,7 @@ const jobQueries = {
       const jobs = result.recordset;
       return jobs;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -687,12 +687,12 @@ const jobQueries = {
         WHERE id IN (
           SELECT jobId
           FROM JobPostingsTags
-          WHERE tagId IN (${tagIds.join(",")})
+          WHERE tagId IN (${tagIds.join(',')})
         )
       `);
       return result.recordset[0].count;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -737,7 +737,7 @@ const jobQueries = {
       const jobs = result.recordset;
       return jobs;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -784,7 +784,7 @@ const jobQueries = {
       const jobs = result.recordset;
       return jobs;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -818,7 +818,7 @@ const jobQueries = {
       const jobs = result.recordset;
       return jobs;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -831,7 +831,7 @@ const jobQueries = {
       `);
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -842,7 +842,7 @@ const jobQueries = {
       const skills = result.recordset;
       return skills;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -884,7 +884,7 @@ const jobQueries = {
       const job = result.recordset[0];
       return job;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -895,7 +895,7 @@ const jobQueries = {
     location,
     postedDate,
     company_id,
-    link = "",
+    link = '',
     expiration_date = null,
     tags = [],
     description,
@@ -903,7 +903,7 @@ const jobQueries = {
     recruiter_id,
     skills = [],
     benefits = [],
-    additional_information = "",
+    additional_information = '',
     preferredQualifications,
     minimumQualifications,
     responsibilities,
@@ -917,33 +917,33 @@ const jobQueries = {
     relocation
   ) => {
     try {
-      if (typeof link !== "string") {
-        throw new Error("Link must be a string");
+      if (typeof link !== 'string') {
+        throw new Error('Link must be a string');
       }
       skills = Array.isArray(skills)
         ? skills
-        : typeof skills === "string"
-        ? skills.split(",").map((skill) => skill.trim())
-        : [];
+        : typeof skills === 'string'
+          ? skills.split(',').map((skill) => skill.trim())
+          : [];
       tags = Array.isArray(tags)
         ? tags
-        : typeof tags === "string"
-        ? tags.split(",").map((tag) => tag.trim())
-        : [];
+        : typeof tags === 'string'
+          ? tags.split(',').map((tag) => tag.trim())
+          : [];
 
       let benefitsArray = [];
       if (Array.isArray(benefits)) {
         benefitsArray = benefits;
-      } else if (typeof benefits === "string") {
-        benefitsArray = benefits.split(",").map((benefit) => benefit.trim());
+      } else if (typeof benefits === 'string') {
+        benefitsArray = benefits.split(',').map((benefit) => benefit.trim());
       } else if (benefits) {
-        console.warn("Unexpected benefits format. Using empty array.");
+        console.warn('Unexpected benefits format. Using empty array.');
       }
 
       // Format the benefits array for SQL query
       const formattedBenefits = benefitsArray
-        .map((benefit) => `'${benefit.replace(/'/g, "''")}'`)
-        .join(",");
+        .map((benefit) => `'${benefit.replace(/'/g, '\'\'')}'`)
+        .join(',');
 
       const isDuplicate = await utilFunctions.checkForDuplicates({
         title,
@@ -956,7 +956,7 @@ const jobQueries = {
       });
 
       if (isDuplicate) {
-        console.log("Potential duplicate job posting detected, not inserting.");
+        console.log('Potential duplicate job posting detected, not inserting.');
         return null;
       }
 
@@ -1105,7 +1105,7 @@ const jobQueries = {
       `;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -1116,7 +1116,7 @@ const jobQueries = {
       `;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -1132,7 +1132,7 @@ const jobQueries = {
 
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -1172,7 +1172,7 @@ const jobQueries = {
       DELETE FROM JobPostings WHERE id = ${jobId}
     `;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -1187,7 +1187,7 @@ const jobQueries = {
       `;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error in getCountOfTopJobTags:", err);
+      console.error('Database query error in getCountOfTopJobTags:', err);
       throw err;
     }
   },
@@ -1207,7 +1207,7 @@ const jobQueries = {
       return result.recordset;
     } catch (err) {
       console.error(
-        "Database query error in getCountOfTopJobTagsByCompany:",
+        'Database query error in getCountOfTopJobTagsByCompany:',
         err
       );
       throw err;
@@ -1225,7 +1225,7 @@ const jobQueries = {
       `;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error in getCountOfTopJobSkills:", err);
+      console.error('Database query error in getCountOfTopJobSkills:', err);
       throw err;
     }
   },
@@ -1238,7 +1238,7 @@ const jobQueries = {
 
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -1251,7 +1251,7 @@ const jobQueries = {
 
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -1262,7 +1262,7 @@ const jobQueries = {
         DELETE FROM job_experiences WHERE userId = ${userId}
       `;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -1273,7 +1273,7 @@ const jobQueries = {
         DELETE FROM education_experiences WHERE userId = ${userId}
       `;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -1286,7 +1286,7 @@ const jobQueries = {
         )
       `;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -1312,7 +1312,7 @@ const jobQueries = {
       const newExperienceId = result.recordset[0].id;
       return newExperienceId;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -1355,7 +1355,7 @@ const jobQueries = {
       const newExperienceId = result.recordset[0].id;
       return newExperienceId;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -1363,57 +1363,57 @@ const jobQueries = {
   getJobsByState: async (state) => {
     try {
       const stateMappings = {
-        Alabama: "AL",
-        Alaska: "AK",
-        Arizona: "AZ",
-        Arkansas: "AR",
-        California: "CA",
-        Colorado: "CO",
-        Connecticut: "CT",
-        Delaware: "DE",
-        Florida: "FL",
-        Georgia: "GA",
-        Hawaii: "HI",
-        Idaho: "ID",
-        Illinois: "IL",
-        Indiana: "IN",
-        Iowa: "IA",
-        Kansas: "KS",
-        Kentucky: "KY",
-        Louisiana: "LA",
-        Maine: "ME",
-        Maryland: "MD",
-        Massachusetts: "MA",
-        Michigan: "MI",
-        Minnesota: "MN",
-        Mississippi: "MS",
-        Missouri: "MO",
-        Montana: "MT",
-        Nebraska: "NE",
-        Nevada: "NV",
-        "New Hampshire": "NH",
-        "New Jersey": "NJ",
-        "New Mexico": "NM",
-        "New York": "NY",
-        "North Carolina": "NC",
-        "North Dakota": "ND",
-        Ohio: "OH",
-        Oklahoma: "OK",
-        Oregon: "OR",
-        Pennsylvania: "PA",
-        "Rhode Island": "RI",
-        "South Carolina": "SC",
-        "South Dakota": "SD",
-        Tennessee: "TN",
-        Texas: "TX",
-        Utah: "UT",
-        Vermont: "VT",
-        Virginia: "VA",
-        Washington: "WA",
-        "West Virginia": "WV",
-        Wisconsin: "WI",
-        Wyoming: "WY",
-        "United States": "US",
+        Alabama: 'AL',
+        Alaska: 'AK',
+        Arizona: 'AZ',
+        Arkansas: 'AR',
+        California: 'CA',
+        Colorado: 'CO',
+        Connecticut: 'CT',
+        Delaware: 'DE',
+        Florida: 'FL',
+        Georgia: 'GA',
+        Hawaii: 'HI',
+        Idaho: 'ID',
+        Illinois: 'IL',
+        Indiana: 'IN',
+        Iowa: 'IA',
+        Kansas: 'KS',
+        Kentucky: 'KY',
+        Louisiana: 'LA',
+        Maine: 'ME',
+        Maryland: 'MD',
+        Massachusetts: 'MA',
+        Michigan: 'MI',
+        Minnesota: 'MN',
+        Mississippi: 'MS',
+        Missouri: 'MO',
+        Montana: 'MT',
+        Nebraska: 'NE',
+        Nevada: 'NV',
+        'New Hampshire': 'NH',
+        'New Jersey': 'NJ',
+        'New Mexico': 'NM',
+        'New York': 'NY',
+        'North Carolina': 'NC',
+        'North Dakota': 'ND',
+        Ohio: 'OH',
+        Oklahoma: 'OK',
+        Oregon: 'OR',
+        Pennsylvania: 'PA',
+        'Rhode Island': 'RI',
+        'South Carolina': 'SC',
+        'South Dakota': 'SD',
+        Tennessee: 'TN',
+        Texas: 'TX',
+        Utah: 'UT',
+        Vermont: 'VT',
+        Virginia: 'VA',
+        Washington: 'WA',
+        'West Virginia': 'WV',
+        Wisconsin: 'WI',
+        Wyoming: 'WY',
+        'United States': 'US',
       };
 
       const fullStateName =
@@ -1437,14 +1437,14 @@ const jobQueries = {
         ORDER BY JobPostings.postedDate DESC
       `;
 
-      console.log("SQL Query: ", query);
+      console.log('SQL Query: ', query);
 
       const result = await sql.query(query);
 
       const jobs = result.recordset;
       return jobs;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -1455,8 +1455,8 @@ const jobQueries = {
 
       const jobTagResult = await pool
         .request()
-        .input("tagName", sql.NVarChar, tagName)
-        .query("SELECT id FROM skills WHERE name = @tagName");
+        .input('tagName', sql.NVarChar, tagName)
+        .query('SELECT id FROM skills WHERE name = @tagName');
 
       if (jobTagResult.recordset.length > 0) {
         return jobTagResult.recordset[0].id;
@@ -1464,7 +1464,7 @@ const jobQueries = {
 
       return null;
     } catch (err) {
-      console.error("Error in getTagId:", err);
+      console.error('Error in getTagId:', err);
       throw err;
     }
   },
@@ -1492,7 +1492,7 @@ const jobQueries = {
       const jobs = result.recordset;
       return jobs;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },

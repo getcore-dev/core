@@ -1,25 +1,25 @@
-const Post = require("../models/Post");
-const User = require("../models/User");
-const Comment = require("../models/Comment");
-const Community = require("../models/Community");
+const Post = require('../models/Post');
+const User = require('../models/User');
+const Comment = require('../models/Comment');
+const Community = require('../models/Community');
 const {
   getLinkPreview,
   linkify,
   getCommunityDetails,
   getGitHubRepoPreview,
   getFavicon,
-} = require("../utils/utilFunctions");
-const marked = require("marked");
+} = require('../utils/utilFunctions');
+const marked = require('marked');
 
 class PostController {
   static async getAllPosts(req, res) {
     try {
       const posts = await Post.getAll();
-      res.render("posts.ejs", { user: req.user, error: null, posts: posts });
+      res.render('posts.ejs', { user: req.user, error: null, posts: posts });
     } catch (err) {
-      console.error("Database query error:", err);
-      const error = { status: 500, message: "Error fetching posts" };
-      res.render("error.ejs", { user: req.user, error });
+      console.error('Database query error:', err);
+      const error = { status: 500, message: 'Error fetching posts' };
+      res.render('error.ejs', { user: req.user, error });
     }
   }
 
@@ -38,9 +38,9 @@ class PostController {
       );
       res.redirect(`/posts/${postId}`);
     } catch (err) {
-      console.error("Database insert error:", err);
-      res.status(500).render("error.ejs", {
-        error: { status: 500, message: "Error creating post" },
+      console.error('Database insert error:', err);
+      res.status(500).render('error.ejs', {
+        error: { status: 500, message: 'Error creating post' },
       });
     }
   }
@@ -54,8 +54,8 @@ class PostController {
         res.redirect(`/posts/${postId}`);
       }
     } catch (err) {
-      console.error("Database error:", err);
-      res.status(500).send("Error accepting answer");
+      console.error('Database error:', err);
+      res.status(500).send('Error accepting answer');
     }
   }
 
@@ -64,22 +64,22 @@ class PostController {
       const { postId } = req.params;
       const userId = req.user.id;
       const action = req.body.action.toUpperCase();
-      const validActions = ["LOVE", "LIKE", "CURIOUS", "DISLIKE"];
+      const validActions = ['LOVE', 'LIKE', 'CURIOUS', 'DISLIKE'];
 
       if (!validActions.includes(action)) {
-        return res.status(400).json({ error: "Invalid action" });
+        return res.status(400).json({ error: 'Invalid action' });
       }
 
       const result = await Post.interact(postId, userId, action);
 
       res.json({
-        message: `Post reaction updated successfully`,
+        message: 'Post reaction updated successfully',
         userReaction: result.userReaction,
         newReactions: result.reactionsMap,
       });
     } catch (err) {
-      console.error("Database error:", err);
-      res.status(500).json({ error: "Error processing reaction" });
+      console.error('Database error:', err);
+      res.status(500).json({ error: 'Error processing reaction' });
     }
   }
 
@@ -122,7 +122,7 @@ class PostController {
 
       const post = await Post.getById(postId);
       if (!post) {
-        return res.status(404).send("Post not found");
+        return res.status(404).send('Post not found');
       }
 
       post.tags = await post.getTags();
@@ -151,7 +151,7 @@ class PostController {
 
       post.community = await Community.getById(post.communityId);
 
-      if (post.link && post.postType === "project") {
+      if (post.link && post.postType === 'project') {
         post.gitHubfavicon = await getFavicon(post.link);
         post.gitHubLinkPreview = await getGitHubRepoPreview(post.link);
         post.gitHubMatchUsername =
@@ -159,7 +159,7 @@ class PostController {
           JSON.parse(post.gitHubLinkPreview.raw_json).owner.login;
       }
 
-      if (post.postType === "question") {
+      if (post.postType === 'question') {
         post.solution = await Post.getAcceptedAnswer(postId);
         if (post.solution) {
           post.solution.user = await User.findById(post.solution.userId);
@@ -180,7 +180,7 @@ class PostController {
         post.title
       );
 
-      res.render("post.ejs", {
+      res.render('post.ejs', {
         post,
         user: req.user,
         communityId: post.communityId,
@@ -189,8 +189,8 @@ class PostController {
         similarPosts,
       });
     } catch (err) {
-      console.error("Database query error:", err);
-      res.status(500).send("Error fetching post and comments");
+      console.error('Database query error:', err);
+      res.status(500).send('Error fetching post and comments');
     }
   }
 
@@ -199,14 +199,14 @@ class PostController {
       const { postId } = req.params;
       const post = await Post.getById(postId);
       if (post.userId !== req.user.id) {
-        return res.status(403).send("You are not authorized to edit this post");
+        return res.status(403).send('You are not authorized to edit this post');
       }
       post.communityName = await Community.getNameById(post.communityId);
       post.tags = await post.getTags();
-      res.render("edit-post.ejs", { user: req.user, post });
+      res.render('edit-post.ejs', { user: req.user, post });
     } catch (err) {
-      console.error("Database query error:", err);
-      res.status(500).send("Error fetching post");
+      console.error('Database query error:', err);
+      res.status(500).send('Error fetching post');
     }
   }
 
@@ -224,11 +224,11 @@ class PostController {
 
       const post = await Post.getById(postId);
       if (!post) {
-        return res.status(404).send("Post not found");
+        return res.status(404).send('Post not found');
       }
 
       if (post.userId !== req.user.id) {
-        return res.status(403).send("You are not authorized to edit this post");
+        return res.status(403).send('You are not authorized to edit this post');
       }
 
       console.log(postData);
@@ -237,11 +237,11 @@ class PostController {
       if (updatedPost) {
         res.redirect(`/posts/${postId}`);
       } else {
-        throw new Error("Post update failed");
+        throw new Error('Post update failed');
       }
     } catch (error) {
       console.error(error);
-      res.status(500).send("Server error");
+      res.status(500).send('Server error');
     }
   }
 
@@ -254,13 +254,13 @@ class PostController {
       if (post.userId !== userId) {
         return res
           .status(403)
-          .send("You are not authorized to delete this post");
+          .send('You are not authorized to delete this post');
       }
 
       await post.delete();
-      res.redirect("/");
+      res.redirect('/');
     } catch (error) {
-      res.status(500).send("Error deleting post");
+      res.status(500).send('Error deleting post');
     }
   }
 
@@ -275,9 +275,9 @@ class PostController {
       );
       res.redirect(`/posts/${postId}`);
     } catch (err) {
-      console.error("Database insert error:", err);
-      res.status(500).render("error.ejs", {
-        error: { status: 500, message: "Error creating feedback" },
+      console.error('Database insert error:', err);
+      res.status(500).render('error.ejs', {
+        error: { status: 500, message: 'Error creating feedback' },
       });
     }
   }
@@ -287,10 +287,10 @@ class PostController {
       const { communityId } = req.params;
       const posts = await Post.fetchPostsByCommunity(communityId);
       const community = await Community.getById(communityId);
-      res.render("community-posts.ejs", { user: req.user, posts, community });
+      res.render('community-posts.ejs', { user: req.user, posts, community });
     } catch (err) {
-      console.error("Database query error:", err);
-      res.status(500).send("Error fetching community posts");
+      console.error('Database query error:', err);
+      res.status(500).send('Error fetching community posts');
     }
   }
 
@@ -299,10 +299,10 @@ class PostController {
       const { tagId } = req.params;
       const posts = await Post.getByTag(tagId);
       const tag = await Post.getTagId(tagId);
-      res.render("tag-posts.ejs", { user: req.user, posts, tag });
+      res.render('tag-posts.ejs', { user: req.user, posts, tag });
     } catch (err) {
-      console.error("Database query error:", err);
-      res.status(500).send("Error fetching posts by tag");
+      console.error('Database query error:', err);
+      res.status(500).send('Error fetching posts by tag');
     }
   }
 
@@ -313,8 +313,8 @@ class PostController {
       const result = await post.toggleLock();
       res.json(result);
     } catch (err) {
-      console.error("Database update error:", err);
-      res.status(500).send("Error toggling post lock");
+      console.error('Database update error:', err);
+      res.status(500).send('Error toggling post lock');
     }
   }
 }

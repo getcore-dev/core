@@ -1,13 +1,13 @@
-const sql = require("mssql");
-const crypto = require("crypto");
-const tagQueries = require("./tagsQueries");
+const sql = require('mssql');
+const crypto = require('crypto');
+const tagQueries = require('./tagsQueries');
 
 const generateUniqueId = () => {
   // Use the last 4 characters of the current timestamp in base 36
   const timestampPart = Date.now().toString(36).slice(-4);
 
   // Generate a random 4-character string in base 36
-  const randomPart = crypto.randomBytes(2).toString("hex").slice(0, 4);
+  const randomPart = crypto.randomBytes(2).toString('hex').slice(0, 4);
 
   // Combine both parts to form an 8-character ID
   return `${timestampPart}${randomPart}`;
@@ -17,14 +17,14 @@ const postQueries = {
   getPosts: async () => {
     try {
       const result = await sql.query(
-        "SELECT * FROM posts WHERE deleted = 0 AND communities_id != 9 ORDER BY created_at DESC"
+        'SELECT * FROM posts WHERE deleted = 0 AND communities_id != 9 ORDER BY created_at DESC'
       );
       const posts = result.recordset;
 
       // Cache the result for future requests
       return posts;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -37,7 +37,7 @@ const postQueries = {
 
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -47,7 +47,7 @@ const postQueries = {
       const result = await sql.query`
         SELECT isLocked FROM posts WHERE id = ${postId}`;
       if (result.recordset.length === 0) {
-        throw new Error("Post not found");
+        throw new Error('Post not found');
       }
 
       const isLocked = !result.recordset[0].isLocked;
@@ -55,9 +55,9 @@ const postQueries = {
       await sql.query`
         UPDATE posts SET isLocked = ${isLocked} WHERE id = ${postId}`;
 
-      return { message: "Post locked/unlocked", isLocked };
+      return { message: 'Post locked/unlocked', isLocked };
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   },
@@ -75,7 +75,7 @@ const postQueries = {
 
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -89,7 +89,7 @@ const postQueries = {
       }
       return result.recordset[0].id;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -102,7 +102,7 @@ const postQueries = {
       `;
 
       if (checkResult.recordset.length === 0) {
-        throw new Error("Post not found.");
+        throw new Error('Post not found.');
       }
 
       const currentViews = checkResult.recordset[0].views;
@@ -127,7 +127,7 @@ const postQueries = {
       const result = await updateQuery;
       return result.rowsAffected[0] > 0;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   },
@@ -135,9 +135,9 @@ const postQueries = {
   fetchSimilarPosts: async (user, postId, communityId, tags, title) => {
     const tagsCondition =
       tags && tags.length > 0
-        ? `t.name IN (${tags.map((tag) => `'${tag}'`).join(",")})`
-        : "1=1";
-    let userReactionSubquery = "";
+        ? `t.name IN (${tags.map((tag) => `'${tag}'`).join(',')})`
+        : '1=1';
+    let userReactionSubquery = '';
     if (user) {
       userReactionSubquery = `, ( SELECT TOP 1 upa.action_type FROM userPostActions upa WHERE upa.post_id = p.id AND upa.user_id = '${user.id}' ) AS userReaction`;
     }
@@ -173,9 +173,9 @@ const postQueries = {
       const excludePostIds =
         finalResults.length > 0
           ? `AND p.id NOT IN (${finalResults
-              .map((post) => `'${post.id}'`)
-              .join(",")})`
-          : "";
+            .map((post) => `'${post.id}'`)
+            .join(',')})`
+          : '';
 
       let queryWithRandomPosts = `
         SELECT TOP ${additionalPostsNeeded}
@@ -213,7 +213,7 @@ const postQueries = {
 
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -224,24 +224,24 @@ const postQueries = {
       const postResult = await sql.query`
         SELECT * FROM posts WHERE id = ${postId} AND deleted = 0`;
       if (postResult.recordset.length === 0) {
-        throw new Error("Post not found");
+        throw new Error('Post not found');
       }
 
       // check if post is a question
-      if (postResult.recordset[0].post_type !== "question") {
-        throw new Error("Post is not a question");
+      if (postResult.recordset[0].post_type !== 'question') {
+        throw new Error('Post is not a question');
       }
 
       // check if post is authored by the user
       if (postResult.recordset[0].user_id !== userId) {
-        throw new Error("User is not the author of the post");
+        throw new Error('User is not the author of the post');
       }
 
       // check if comment exists
       const commentResult = await sql.query`
         SELECT * FROM comments WHERE id = ${commentId}`;
       if (commentResult.recordset.length === 0) {
-        throw new Error("Comment not found");
+        throw new Error('Comment not found');
       }
 
       // check if there is already an answer to the question
@@ -252,7 +252,7 @@ const postQueries = {
         const result = await sql.query`
           UPDATE QuestionSolutions SET CommentID = ${commentId}, SolutionTimestamp = GETDATE() WHERE OriginalPostID = ${postId}`;
         if (result.rowsAffected[0] === 0) {
-          throw new Error("Failed to accept the answer");
+          throw new Error('Failed to accept the answer');
         }
         return true;
       }
@@ -261,12 +261,12 @@ const postQueries = {
         INSERT INTO QuestionSolutions (OriginalPostID, CommentID, SolutionTimestamp) VALUES (${postId}, ${commentId}, GETDATE())`;
 
       if (result.rowsAffected[0] === 0) {
-        throw new Error("Failed to accept the answer");
+        throw new Error('Failed to accept the answer');
       } else {
         return true;
       }
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   },
@@ -282,7 +282,7 @@ const postQueries = {
 
       return comment.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -338,7 +338,7 @@ const postQueries = {
         await sql.query`SELECT * FROM posts WHERE id = ${postId} AND deleted = 0`;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
@@ -357,7 +357,7 @@ const postQueries = {
           comment.id = ${commentId}`;
 
       if (result.recordset.length === 0) {
-        throw new Error("Comment not found");
+        throw new Error('Comment not found');
       }
 
       const authorId = result.recordset[0].author_id;
@@ -369,12 +369,12 @@ const postQueries = {
         WHERE id = ${authorId}`;
 
       if (userResult.recordset.length === 0) {
-        throw new Error("User not found");
+        throw new Error('User not found');
       }
 
       return userResult.recordset[0].username;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -388,7 +388,7 @@ const postQueries = {
 
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
@@ -397,17 +397,17 @@ const postQueries = {
     userId,
     title,
     content,
-    link = "",
+    link = '',
     community_id,
     tags,
     post_type
   ) => {
-    if (typeof link !== "string") {
-      throw new Error("Link must be a string");
+    if (typeof link !== 'string') {
+      throw new Error('Link must be a string');
     }
 
     if (!Array.isArray(tags)) {
-      tags = tags.split(",").map((tag) => tag.trim());
+      tags = tags.split(',').map((tag) => tag.trim());
     }
 
     try {
@@ -441,7 +441,7 @@ const postQueries = {
 
       return uniqueId;
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
@@ -455,7 +455,7 @@ const postQueries = {
 
       return uniqueId;
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
@@ -470,7 +470,7 @@ const postQueries = {
 
       return result.recordset.map((record) => record.name);
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -488,19 +488,19 @@ const postQueries = {
     try {
       await sql.query`UPDATE posts SET deleted = 1 WHERE id = ${postId}`;
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
 
   interactWithPost: async (postId, userId, actionType) => {
     try {
-      const validActions = ["LOVE", "LIKE", "CURIOUS", "DISLIKE"];
+      const validActions = ['LOVE', 'LIKE', 'CURIOUS', 'DISLIKE'];
       if (!validActions.includes(actionType)) {
-        throw new Error("Invalid action type");
+        throw new Error('Invalid action type');
       }
 
-      let dbActionType = actionType === "BOOST" ? "B" : actionType;
+      let dbActionType = actionType === 'BOOST' ? 'B' : actionType;
 
       // Check if the user has already interacted with the post
       const userAction = await sql.query`
@@ -548,12 +548,12 @@ const postQueries = {
       validActions.forEach((action) => {
         if (
           !reactionsMap[action] &&
-          !(action === "BOOST" && reactionsMap["B"])
+          !(action === 'BOOST' && reactionsMap['B'])
         ) {
           reactionsMap[action] = 0;
-        } else if (action === "BOOST" && reactionsMap["B"]) {
-          reactionsMap[action] = reactionsMap["B"];
-          delete reactionsMap["B"];
+        } else if (action === 'BOOST' && reactionsMap['B']) {
+          reactionsMap[action] = reactionsMap['B'];
+          delete reactionsMap['B'];
         }
       });
 
@@ -562,7 +562,7 @@ const postQueries = {
         reactionsMap,
       };
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   },
@@ -576,7 +576,7 @@ const postQueries = {
         )
         DELETE FROM cte WHERE rn > 1`;
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
@@ -588,16 +588,16 @@ const postQueries = {
       WHERE user_id = ${userId} AND post_id = ${postId}`;
 
       if (result.recordset.length === 0) {
-        return "";
+        return '';
       } else {
         let actionType = result.recordset[0].action_type;
-        if (actionType.includes("B")) {
-          actionType = "BOOST";
+        if (actionType.includes('B')) {
+          actionType = 'BOOST';
         }
         return actionType;
       }
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -621,7 +621,7 @@ const postQueries = {
 
       return newScore;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
@@ -634,7 +634,7 @@ const postQueries = {
 
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },

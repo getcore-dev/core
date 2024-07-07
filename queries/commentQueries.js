@@ -1,11 +1,11 @@
-const sql = require("mssql");
-const crypto = require("crypto");
-const notificationQueries = require("./notificationQueries");
-const utilFunctions = require("../utils/utilFunctions");
-const { findById } = require("./userQueries");
+const sql = require('mssql');
+const crypto = require('crypto');
+const notificationQueries = require('./notificationQueries');
+const utilFunctions = require('../utils/utilFunctions');
+const { findById } = require('./userQueries');
 
 function GETDATE() {
-  return new Date().toISOString().slice(0, 19).replace("T", " ");
+  return new Date().toISOString().slice(0, 19).replace('T', ' ');
 }
 
 const commentQueries = {
@@ -18,7 +18,7 @@ const commentQueries = {
         )
         DELETE FROM cte WHERE rn > 1`;
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
@@ -39,7 +39,7 @@ const commentQueries = {
         SET isPinned = ${newPinnedStatus} 
         WHERE id = ${commentId}`;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
@@ -49,7 +49,7 @@ const commentQueries = {
       // Insert the comment into the database
       const commentId = `${Date.now().toString(36)}-${crypto
         .randomBytes(3)
-        .toString("hex")}`;
+        .toString('hex')}`;
       await sql.query`INSERT INTO comments (id, post_id, user_id, comment) VALUES (${commentId}, ${postId}, ${userId}, ${commentText})`;
 
       // Fetch the user ID of the original post's author
@@ -65,7 +65,7 @@ const commentQueries = {
           await notificationQueries.createNotification(
             userId,
             originalPostAuthorId,
-            "NEW_COMMENT",
+            'NEW_COMMENT',
             postId
           );
         }
@@ -75,25 +75,25 @@ const commentQueries = {
           postId,
           commentId,
           userId,
-          "LIKE"
+          'LIKE'
         );
       }
 
       return commentId;
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
 
   interactWithComment: async (postId, commentId, userId, actionType) => {
     try {
-      const validActions = ["LOVE", "LIKE", "CURIOUS", "DISLIKE"];
+      const validActions = ['LOVE', 'LIKE', 'CURIOUS', 'DISLIKE'];
       if (!validActions.includes(actionType)) {
-        throw new Error("Invalid action type");
+        throw new Error('Invalid action type');
       }
 
-      let dbActionType = actionType === "BOOST" ? "B" : actionType;
+      let dbActionType = actionType === 'BOOST' ? 'B' : actionType;
 
       // Check if the user has already interacted with the comment
       const userAction = await sql.query`
@@ -149,7 +149,7 @@ const commentQueries = {
 
       // Convert the result to a map of reaction names to their counts
       const reactionsMap = reactionCounts.recordset.reduce((acc, row) => {
-        acc[row.action_type === "B" ? "BOOST" : row.action_type] = row.count;
+        acc[row.action_type === 'B' ? 'BOOST' : row.action_type] = row.count;
         return acc;
       }, {});
 
@@ -172,7 +172,7 @@ const commentQueries = {
         reactionsMap,
       };
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   },
@@ -183,7 +183,7 @@ const commentQueries = {
         await sql.query`SELECT * FROM comments WHERE post_id = ${postId} AND deleted = 0`;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
@@ -208,7 +208,7 @@ const commentQueries = {
       // Delete all reactions to the comment
       await sql.query`DELETE FROM userCommentActions WHERE comment_id = ${commentId}`;
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
@@ -219,7 +219,7 @@ const commentQueries = {
         await sql.query`SELECT * FROM comments WHERE id = ${commentId}`;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
@@ -229,7 +229,7 @@ const commentQueries = {
       // Insert the reply into the database
       const replyId = `${Date.now().toString(36)}-${crypto
         .randomBytes(3)
-        .toString("hex")}`;
+        .toString('hex')}`;
       await sql.query`INSERT INTO replies (id, comment_id, user_id, reply) VALUES (${replyId}, ${commentId}, ${userId}, ${replyText})`;
 
       // Fetch the user ID of the original comment author
@@ -245,18 +245,18 @@ const commentQueries = {
           await notificationQueries.createNotification(
             userId,
             originalCommentAuthorId,
-            "NEW_COMMENT",
+            'NEW_COMMENT',
             postId
           );
         }
       }
 
       // like your comment by default
-      await commentQueries.interactWithComment(0, commentId, userId, "LIKE");
+      await commentQueries.interactWithComment(0, commentId, userId, 'LIKE');
 
       return replyId;
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
   },

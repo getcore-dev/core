@@ -1,9 +1,9 @@
-const sql = require("mssql");
-const nodemailer = require("nodemailer");
+const sql = require('mssql');
+const nodemailer = require('nodemailer');
 
 // Set up nodemailer transporter
 const transporter = nodemailer.createTransport({
-  host: "smtp.mail.me.com",
+  host: 'smtp.mail.me.com',
   port: 587,
   secure: false,
   auth: {
@@ -23,7 +23,7 @@ const sendEmailNotification = async (receiverUserId, type) => {
     const user = result.recordset[0];
 
     if (!user) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     // Define the email content based on the notification type
@@ -31,21 +31,21 @@ const sendEmailNotification = async (receiverUserId, type) => {
     let text;
 
     switch (type) {
-      case "NEW_MESSAGE":
-        subject = "You have a new message";
-        text =
-          "You have received a new message. Please check your account for more details.";
-        break;
-      case "NEW_COMMENT":
-        subject = "New comment on your post";
-        text =
-          "Someone commented on your post. Please check your account for more details.";
-        break;
+    case 'NEW_MESSAGE':
+      subject = 'You have a new message';
+      text =
+          'You have received a new message. Please check your account for more details.';
+      break;
+    case 'NEW_COMMENT':
+      subject = 'New comment on your post';
+      text =
+          'Someone commented on your post. Please check your account for more details.';
+      break;
       // Add other notification types as needed
-      default:
-        subject = "You have a new notification";
-        text =
-          "You have received a new notification. Please check your account for more details.";
+    default:
+      subject = 'You have a new notification';
+      text =
+          'You have received a new notification. Please check your account for more details.';
     }
 
     // Send the email
@@ -60,10 +60,10 @@ const sendEmailNotification = async (receiverUserId, type) => {
       if (error) {
         return console.log(error);
       }
-      console.log("Email sent: " + info.response);
+      console.log('Email sent: ' + info.response);
     });
   } catch (error) {
-    console.error("Error sending email notification:", error);
+    console.error('Error sending email notification:', error);
   }
 };
 
@@ -80,7 +80,7 @@ const notificationQueries = {
         ORDER BY notifications.createdAt DESC`;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -91,7 +91,7 @@ const notificationQueries = {
         DELETE FROM notifications
         WHERE receiverUserId = ${userId} AND type = ${type} AND postId = ${postId}`;
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err;
     }
   },
@@ -104,7 +104,7 @@ const notificationQueries = {
         WHERE receiverUserId = ${userId} AND isRead = 0`;
       return result.recordset[0].count;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -120,7 +120,7 @@ const notificationQueries = {
         ORDER BY notifications.createdAt DESC`;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -133,7 +133,7 @@ const notificationQueries = {
         SET isRead = 1 
         WHERE id = ${notificationId}`;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   },
@@ -143,7 +143,7 @@ const notificationQueries = {
     senderUserId,
     receiverUserId,
     type,
-    postId = ""
+    postId = ''
   ) => {
     try {
       const createdAt = new Date();
@@ -152,7 +152,7 @@ const notificationQueries = {
       // Send email notification
       await sendEmailNotification(receiverUserId, type);
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err;
     }
   },
@@ -164,7 +164,7 @@ const notificationQueries = {
         DELETE FROM notifications 
         WHERE id = ${notificationId}`;
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err;
     }
   },
@@ -181,7 +181,7 @@ const notificationQueries = {
       ORDER BY notifications.createdAt DESC`;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -193,7 +193,7 @@ const notificationQueries = {
         DELETE FROM notifications 
         WHERE id = ${notificationId}`;
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err;
     }
   },
@@ -206,7 +206,7 @@ const notificationQueries = {
         SET isRead = 1 
         WHERE receiverUserId = ${userId}`;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   },

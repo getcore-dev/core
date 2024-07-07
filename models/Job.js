@@ -1,4 +1,4 @@
-const sql = require("mssql");
+const sql = require('mssql');
 
 class Job {
   constructor(data) {
@@ -40,8 +40,8 @@ class Job {
     this.recruiterFirstName = data.recruiter_firstname;
     this.recruiterLastName = data.recruiter_lastname;
     this.recruiterImage = data.recruiter_image;
-    this.tags = data.tags ? data.tags.split(", ") : [];
-    this.skills = data.skills ? data.skills.split(", ") : [];
+    this.tags = data.tags ? data.tags.split(', ') : [];
+    this.skills = data.skills ? data.skills.split(', ') : [];
   }
 
   static async getAll(limit, offset) {
@@ -62,7 +62,7 @@ class Job {
       `);
       return result.recordset.map((job) => new Job(job));
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -102,7 +102,7 @@ class Job {
       `;
       return result.recordset[0] ? new Job(result.recordset[0]) : null;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -145,7 +145,7 @@ class Job {
 
       return jobId;
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err;
     }
   }
@@ -180,7 +180,7 @@ class Job {
         WHERE id = ${this.id}
       `;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   }
@@ -193,7 +193,7 @@ class Job {
         DELETE FROM JobPostings WHERE id = ${this.id};
       `;
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err;
     }
   }
@@ -206,17 +206,17 @@ class Job {
         WHERE id = ${this.id}`;
       this.views++;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   }
 
   static async getBySearch(searchParams) {
     const {
-      title = "",
-      location = "",
-      experienceLevel = "",
-      salary = "",
+      title = '',
+      location = '',
+      experienceLevel = '',
+      salary = '',
       limit = 15,
       offset = 0,
       allowedJobLevels = [],
@@ -279,7 +279,7 @@ class Job {
       if (allowedJobLevels && allowedJobLevels.length > 0) {
         query += ` AND j.experienceLevel IN (${allowedJobLevels
           .map(() => `@p${paramIndex++}`)
-          .join(", ")})`;
+          .join(', ')})`;
         allowedJobLevels.forEach((level) =>
           queryParams.push({ name: `p${paramIndex - 1}`, value: level })
         );
@@ -291,8 +291,8 @@ class Job {
             SELECT 1 FROM JobPostingsTags jpt
             INNER JOIN JobTags jt ON jpt.tagId = jt.id
             WHERE jpt.jobId = j.id AND jt.tagName IN (${tags
-              .map(() => `@p${paramIndex++}`)
-              .join(", ")})
+    .map(() => `@p${paramIndex++}`)
+    .join(', ')})
           )
         `;
         tags.forEach((tag) =>
@@ -317,7 +317,7 @@ class Job {
       const result = await request.query(query);
       return result.recordset.map((job) => new Job(job));
     } catch (error) {
-      console.error("Error in getBySearch:", error);
+      console.error('Error in getBySearch:', error);
       throw error;
     }
   }
@@ -365,7 +365,7 @@ class Job {
 
       return result.recordset.map((job) => new Job(job));
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -392,7 +392,7 @@ class Job {
         VALUES (${jobId}, ${skillId})
       `;
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err;
     }
   }
@@ -419,7 +419,7 @@ class Job {
         VALUES (${jobId}, ${tagId})
       `;
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err;
     }
   }
@@ -452,7 +452,7 @@ class Job {
       `;
       return result.recordset.map((job) => new Job(job));
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -481,7 +481,7 @@ class Job {
 
       return result.recordset.map((job) => new Job(job));
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -489,57 +489,57 @@ class Job {
   static async getJobsByState(state) {
     try {
       const stateMappings = {
-        Alabama: "AL",
-        Alaska: "AK",
-        Arizona: "AZ",
-        Arkansas: "AR",
-        California: "CA",
-        Colorado: "CO",
-        Connecticut: "CT",
-        Delaware: "DE",
-        Florida: "FL",
-        Georgia: "GA",
-        Hawaii: "HI",
-        Idaho: "ID",
-        Illinois: "IL",
-        Indiana: "IN",
-        Iowa: "IA",
-        Kansas: "KS",
-        Kentucky: "KY",
-        Louisiana: "LA",
-        Maine: "ME",
-        Maryland: "MD",
-        Massachusetts: "MA",
-        Michigan: "MI",
-        Minnesota: "MN",
-        Mississippi: "MS",
-        Missouri: "MO",
-        Montana: "MT",
-        Nebraska: "NE",
-        Nevada: "NV",
-        "New Hampshire": "NH",
-        "New Jersey": "NJ",
-        "New Mexico": "NM",
-        "New York": "NY",
-        "North Carolina": "NC",
-        "North Dakota": "ND",
-        Ohio: "OH",
-        Oklahoma: "OK",
-        Oregon: "OR",
-        Pennsylvania: "PA",
-        "Rhode Island": "RI",
-        "South Carolina": "SC",
-        "South Dakota": "SD",
-        Tennessee: "TN",
-        Texas: "TX",
-        Utah: "UT",
-        Vermont: "VT",
-        Virginia: "VA",
-        Washington: "WA",
-        "West Virginia": "WV",
-        Wisconsin: "WI",
-        Wyoming: "WY",
-        "United States": "US",
+        Alabama: 'AL',
+        Alaska: 'AK',
+        Arizona: 'AZ',
+        Arkansas: 'AR',
+        California: 'CA',
+        Colorado: 'CO',
+        Connecticut: 'CT',
+        Delaware: 'DE',
+        Florida: 'FL',
+        Georgia: 'GA',
+        Hawaii: 'HI',
+        Idaho: 'ID',
+        Illinois: 'IL',
+        Indiana: 'IN',
+        Iowa: 'IA',
+        Kansas: 'KS',
+        Kentucky: 'KY',
+        Louisiana: 'LA',
+        Maine: 'ME',
+        Maryland: 'MD',
+        Massachusetts: 'MA',
+        Michigan: 'MI',
+        Minnesota: 'MN',
+        Mississippi: 'MS',
+        Missouri: 'MO',
+        Montana: 'MT',
+        Nebraska: 'NE',
+        Nevada: 'NV',
+        'New Hampshire': 'NH',
+        'New Jersey': 'NJ',
+        'New Mexico': 'NM',
+        'New York': 'NY',
+        'North Carolina': 'NC',
+        'North Dakota': 'ND',
+        Ohio: 'OH',
+        Oklahoma: 'OK',
+        Oregon: 'OR',
+        Pennsylvania: 'PA',
+        'Rhode Island': 'RI',
+        'South Carolina': 'SC',
+        'South Dakota': 'SD',
+        Tennessee: 'TN',
+        Texas: 'TX',
+        Utah: 'UT',
+        Vermont: 'VT',
+        Virginia: 'VA',
+        Washington: 'WA',
+        'West Virginia': 'WV',
+        Wisconsin: 'WI',
+        Wyoming: 'WY',
+        'United States': 'US',
       };
 
       const fullStateName =
@@ -566,7 +566,7 @@ class Job {
       const result = await sql.query(query);
       return result.recordset.map((job) => new Job(job));
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -587,7 +587,7 @@ class Job {
       `);
       return result.recordset.map((job) => new Job(job));
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -601,7 +601,7 @@ class Job {
       `);
       return result.recordset[0].jobCount;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -617,7 +617,7 @@ class Job {
       `;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }

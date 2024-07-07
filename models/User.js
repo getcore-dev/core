@@ -1,5 +1,5 @@
-const sql = require("mssql");
-const bcrypt = require("bcrypt");
+const sql = require('mssql');
+const bcrypt = require('bcrypt');
 
 class User {
   constructor(data) {
@@ -54,7 +54,7 @@ class User {
       }
       return null;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -64,7 +64,7 @@ class User {
       const result = await sql.query`SELECT * FROM users WHERE id = ${id}`;
       return result.recordset[0] ? new User(result.recordset[0]) : null;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -75,7 +75,7 @@ class User {
         await sql.query`SELECT * FROM users WHERE email = ${email}`;
       return result.recordset[0] ? new User(result.recordset[0]) : null;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -86,7 +86,7 @@ class User {
         await sql.query`SELECT * FROM users WHERE google_id = ${googleId}`;
       return result.recordset[0] ? new User(result.recordset[0]) : null;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -97,7 +97,7 @@ class User {
         await sql.query`SELECT * FROM users WHERE github_id = ${githubId}`;
       return result.recordset[0] ? new User(result.recordset[0]) : null;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -127,7 +127,7 @@ class User {
 
       return new User(result.recordset[0]);
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err;
     }
   }
@@ -169,7 +169,7 @@ class User {
           recruiter_id = ${this.recruiterId}
         WHERE id = ${this.id}`;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   }
@@ -182,7 +182,7 @@ class User {
         WHERE id = ${this.id}`;
       this.lastLogin = new Date();
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   }
@@ -202,13 +202,13 @@ class User {
       this.isAdmin = result.recordset[0].isAdmin;
       return {
         message: `User ID ${this.id} is now ${
-          this.isAdmin ? "an admin" : "not an admin"
+          this.isAdmin ? 'an admin' : 'not an admin'
         }.`,
         success: true,
         isAdmin: this.isAdmin,
       };
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   }
@@ -228,13 +228,13 @@ class User {
       this.isBanned = result.recordset[0].isBanned;
       return {
         message: `User ID ${this.id} is now ${
-          this.isBanned ? "banned" : "unbanned"
+          this.isBanned ? 'banned' : 'unbanned'
         }.`,
         success: true,
         isBanned: this.isBanned,
       };
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   }
@@ -254,13 +254,13 @@ class User {
       this.verified = result.recordset[0].verified;
       return {
         message: `User ID ${this.id} is now ${
-          this.verified ? "verified" : "unverified"
+          this.verified ? 'verified' : 'unverified'
         }.`,
         success: true,
         verified: this.verified,
       };
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   }
@@ -288,7 +288,7 @@ class User {
 
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -310,19 +310,19 @@ class User {
           p.created_at DESC`;
 
       if (limit) {
-        query += ` OFFSET 0 ROWS FETCH NEXT @limit ROWS ONLY`;
+        query += ' OFFSET 0 ROWS FETCH NEXT @limit ROWS ONLY';
       }
 
       const request = new sql.Request();
-      request.input("userId", sql.VarChar, this.id);
+      request.input('userId', sql.VarChar, this.id);
       if (limit) {
-        request.input("limit", sql.Int, limit);
+        request.input('limit', sql.Int, limit);
       }
 
       const result = await request.query(query);
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -337,19 +337,19 @@ class User {
         ORDER BY comments.created_at DESC`;
 
       if (limit) {
-        query += ` OFFSET 0 ROWS FETCH NEXT @limit ROWS ONLY`;
+        query += ' OFFSET 0 ROWS FETCH NEXT @limit ROWS ONLY';
       }
 
       const request = new sql.Request();
-      request.input("userId", sql.VarChar, this.id);
+      request.input('userId', sql.VarChar, this.id);
       if (limit) {
-        request.input("limit", sql.Int, limit);
+        request.input('limit', sql.Int, limit);
       }
 
       const result = await request.query(query);
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -362,7 +362,7 @@ class User {
         WHERE follower_id = ${this.id} AND followed_id = ${userToFollow.id}`;
 
       if (existingRelationship.recordset.length > 0) {
-        throw new Error("User is already following this user");
+        throw new Error('User is already following this user');
       }
 
       await sql.query`
@@ -371,7 +371,7 @@ class User {
 
       return true;
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err;
     }
   }
@@ -383,12 +383,12 @@ class User {
         WHERE follower_id = ${this.id} AND followed_id = ${userToUnfollow.id}`;
 
       if (result.rowsAffected[0] === 0) {
-        throw new Error("User is not following this user");
+        throw new Error('User is not following this user');
       }
 
       return true;
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err;
     }
   }
@@ -402,7 +402,7 @@ class User {
 
       return result.recordset[0].count > 0;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -417,7 +417,7 @@ class User {
 
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -432,7 +432,7 @@ class User {
 
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -450,7 +450,7 @@ class User {
       }
       return false;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   }
@@ -463,7 +463,7 @@ class User {
         WHERE id = ${this.id}`;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -474,7 +474,7 @@ class User {
         SELECT * FROM job_experiences WHERE userId = ${this.id}`;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -485,7 +485,7 @@ class User {
         SELECT * FROM education_experiences WHERE userId = ${this.id}`;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -498,7 +498,7 @@ class User {
           SELECT id FROM job_experiences WHERE userId = ${this.id}
         )`;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -507,7 +507,7 @@ class User {
     try {
       await sql.query`DELETE FROM education_experiences WHERE userId = ${this.id}`;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -520,7 +520,7 @@ class User {
         VALUES (${this.id}, ${jobData.title}, ${jobData.employmentType}, ${jobData.companyName}, ${jobData.location}, ${jobData.startDate}, ${jobData.endDate}, ${jobData.description}, ${jobData.tags})`;
       return result.recordset[0].id;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -533,7 +533,7 @@ class User {
         VALUES (${this.id}, ${eduData.institutionName}, ${eduData.degree}, ${eduData.fieldOfStudy}, ${eduData.startDate}, ${eduData.endDate}, ${eduData.isCurrent}, ${eduData.grade}, ${eduData.activities}, ${eduData.description})`;
       return result.recordset[0].id;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -545,7 +545,7 @@ class User {
         SET github_id = ${githubId}
         WHERE id = ${userId}`;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   }
@@ -557,7 +557,7 @@ class User {
         SET github_url = ${githubUsername}
         WHERE id = ${userId}`;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   }
@@ -573,7 +573,7 @@ class User {
         throw new Error(`User ID ${userId} not found`);
       }
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   }
@@ -595,35 +595,35 @@ class User {
 
       return result.rowsAffected[0];
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err;
     }
   }
 
   async updateField(field, value) {
     const validFields = [
-      "firstname",
-      "lastname",
-      "avatar",
-      "bio",
-      "email",
-      "github_url",
-      "recruiter_id",
-      "leetcode_url",
-      "linkedin_url",
-      "zipcode",
-      "password",
-      "profile_border_color",
-      "link",
-      "link2",
-      "settings_PrivateJobNames",
-      "settings_PrivateSchoolNames",
-      "jobPreferredTitle",
-      "jobPreferredSkills",
-      "jobPreferredLocation",
-      "jobExperienceLevel",
-      "jobPreferredIndustry",
-      "jobPreferredSalary",
+      'firstname',
+      'lastname',
+      'avatar',
+      'bio',
+      'email',
+      'github_url',
+      'recruiter_id',
+      'leetcode_url',
+      'linkedin_url',
+      'zipcode',
+      'password',
+      'profile_border_color',
+      'link',
+      'link2',
+      'settings_PrivateJobNames',
+      'settings_PrivateSchoolNames',
+      'jobPreferredTitle',
+      'jobPreferredSkills',
+      'jobPreferredLocation',
+      'jobExperienceLevel',
+      'jobPreferredIndustry',
+      'jobPreferredSalary',
     ];
 
     if (!validFields.includes(field)) {
@@ -631,14 +631,14 @@ class User {
     }
 
     try {
-      if (["leetcode_url", "linkedin_url", "github_url"].includes(field)) {
+      if (['leetcode_url', 'linkedin_url', 'github_url'].includes(field)) {
         value = value.replace(
           /^https?:\/\/(?:www\.)?(?:leetcode\.com|linkedin\.com\/in|github\.com)\//i,
-          ""
+          ''
         );
       }
 
-      if (field === "recruiter_id") {
+      if (field === 'recruiter_id') {
         const recruiterExists = await sql.query`
           SELECT COUNT(*) AS count
           FROM Recruiters
@@ -649,19 +649,19 @@ class User {
       }
 
       if (
-        field === "settings_PrivateJobNames" ||
-        field === "settings_PrivateSchoolNames"
+        field === 'settings_PrivateJobNames' ||
+        field === 'settings_PrivateSchoolNames'
       ) {
-        value = value === true || value === "true";
+        value = value === true || value === 'true';
       }
 
       let sqlType = sql.VarChar;
       if (
-        field === "settings_PrivateJobNames" ||
-        field === "settings_PrivateSchoolNames"
+        field === 'settings_PrivateJobNames' ||
+        field === 'settings_PrivateSchoolNames'
       ) {
         sqlType = sql.Bit;
-      } else if (typeof value === "number") {
+      } else if (typeof value === 'number') {
         sqlType = sql.Int;
       }
 
@@ -671,8 +671,8 @@ class User {
         WHERE id = @userId`;
 
       const request = new sql.Request();
-      request.input("value", sqlType, value);
-      request.input("userId", sql.VarChar, this.id);
+      request.input('value', sqlType, value);
+      request.input('userId', sql.VarChar, this.id);
       const result = await request.query(query);
 
       if (result.rowsAffected[0] > 0) {
@@ -681,7 +681,7 @@ class User {
       }
       return false;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   }

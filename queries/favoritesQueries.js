@@ -1,5 +1,5 @@
-const sql = require("mssql");
-const { addComment } = require("./commentQueries");
+const sql = require('mssql');
+const { addComment } = require('./commentQueries');
 
 const favoritesQueries = {
   addToFavorites: async (userId, postId) => {
@@ -9,7 +9,7 @@ const favoritesQueries = {
                 WHERE user_id = ${userId} AND post_id = ${postId}`;
 
       if (checkExistence.recordset.length > 0) {
-        throw new Error("User has already favorited this post.");
+        throw new Error('User has already favorited this post.');
       }
 
       // Add post to user's favorites
@@ -17,7 +17,7 @@ const favoritesQueries = {
                 INSERT INTO favorites (user_id, post_id, created_at)
                 VALUES (${userId}, ${postId}, GETDATE())`;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -30,7 +30,7 @@ const favoritesQueries = {
 
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -43,7 +43,7 @@ const favoritesQueries = {
 
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -74,7 +74,7 @@ const favoritesQueries = {
         WHERE user_id = ${userId} AND post_id = ${postId} AND comment_id = ${commentId}`;
 
       if (checkExistence.recordset.length > 0) {
-        throw new Error("User has already favorited this comment.");
+        throw new Error('User has already favorited this comment.');
       }
 
       // Add comment to user's favorites
@@ -82,9 +82,9 @@ const favoritesQueries = {
         INSERT INTO favorites_comments (user_id, post_id, comment_id, created_at)
         VALUES (${userId}, ${postId}, ${commentId}, GETDATE())`;
 
-      return "Comment successfully added to favorites.";
+      return 'Comment successfully added to favorites.';
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -96,13 +96,13 @@ const favoritesQueries = {
                 WHERE user_id = ${userId} AND job_posting_id = ${jobId}`;
 
       if (checkExistence.recordset.length > 0) {
-        throw new Error("Job is already in user's favorites.");
+        throw new Error('Job is already in user\'s favorites.');
       }
       await sql.query`
                 INSERT INTO favorites_jobs (user_id, job_posting_id, created_at)
                 VALUES (${userId}, ${jobId}, GETDATE())`;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -114,7 +114,7 @@ const favoritesQueries = {
                 WHERE user_id = ${userId} AND job_posting_id = ${jobId}`;
 
       if (checkExistence.recordset.length === 0) {
-        throw new Error("Job is not in user's favorites.");
+        throw new Error('Job is not in user\'s favorites.');
       }
 
       // Remove job from user's favorites
@@ -122,7 +122,7 @@ const favoritesQueries = {
                 DELETE FROM favorites_jobs
                 WHERE user_id = ${userId} AND job_posting_id = ${jobId}`;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -135,7 +135,7 @@ const favoritesQueries = {
                 WHERE user_id = ${userId} AND post_id = ${postId} AND comment_id = ${commentId}`;
 
       if (checkExistence.recordset.length === 0) {
-        throw new Error("Comment is not in user's favorites.");
+        throw new Error('Comment is not in user\'s favorites.');
       }
 
       // Remove comment from user's favorites
@@ -143,9 +143,9 @@ const favoritesQueries = {
                 DELETE FROM favorites_comments
                 WHERE user_id = ${userId} AND post_id = ${postId} AND comment_id = ${commentId}`;
 
-      return "Comment successfully removed from favorites.";
+      return 'Comment successfully removed from favorites.';
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -158,7 +158,7 @@ const favoritesQueries = {
                 WHERE user_id = ${userId} AND post_id = ${postId}`;
 
       if (checkExistence.recordset.length === 0) {
-        throw new Error("Post is not in user's favorites.");
+        throw new Error('Post is not in user\'s favorites.');
       }
 
       // Remove post from user's favorites
@@ -166,9 +166,9 @@ const favoritesQueries = {
                 DELETE FROM favorites 
                 WHERE user_id = ${userId} AND post_id = ${postId}`;
 
-      return "Post successfully removed from favorites.";
+      return 'Post successfully removed from favorites.';
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -186,7 +186,7 @@ const favoritesQueries = {
 
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -202,7 +202,7 @@ const favoritesQueries = {
       `;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -219,7 +219,7 @@ const favoritesQueries = {
       `;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -234,7 +234,7 @@ const favoritesQueries = {
       `;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },

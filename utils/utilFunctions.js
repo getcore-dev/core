@@ -1,23 +1,23 @@
-const sql = require("mssql");
-const axios = require("axios");
-const cheerio = require("cheerio");
-const NodeCache = require("node-cache");
+const sql = require('mssql');
+const axios = require('axios');
+const cheerio = require('cheerio');
+const NodeCache = require('node-cache');
 const cache = new NodeCache({ stdTTL: 1200 }); // TTL is 20 minutes
-const sharp = require("sharp");
+const sharp = require('sharp');
 
 const utilFunctions = {
   uuid: () => {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
       /[xy]/g,
       function (c) {
         var r = (Math.random() * 16) | 0,
-          v = c === "x" ? r : (r & 0x3) | 0x8;
+          v = c === 'x' ? r : (r & 0x3) | 0x8;
         return v.toString(16);
       }
     );
   },
   getPosts: async (
-    sortBy = "trending",
+    sortBy = 'trending',
     userId,
     page = 1,
     limit = 10,
@@ -78,7 +78,7 @@ const utilFunctions = {
 
       let sortedResult = result.recordset;
 
-      const prioritizePinned = ["trending", "explore"].includes(sortBy);
+      const prioritizePinned = ['trending', 'explore'].includes(sortBy);
 
       sortedResult.sort((a, b) => {
         if (prioritizePinned && a.isGlobalPinned !== b.isGlobalPinned) {
@@ -87,76 +87,76 @@ const utilFunctions = {
 
         const now = new Date();
         switch (sortBy) {
-          case "trending":
-            const minutesA = (now - new Date(a.created_at)) / (1000 * 60);
-            const minutesB = (now - new Date(b.created_at)) / (1000 * 60);
-            const reactionsA =
+        case 'trending':
+          const minutesA = (now - new Date(a.created_at)) / (1000 * 60);
+          const minutesB = (now - new Date(b.created_at)) / (1000 * 60);
+          const reactionsA =
               a.loveCount * 5 +
               a.boostCount * 4 +
               a.dislikeCount * 3 +
               a.curiousCount * 2 +
               a.likeCount +
               a.celebrateCount * 3;
-            const reactionsB =
+          const reactionsB =
               b.loveCount * 5 +
               b.boostCount * 4 +
               b.dislikeCount * 3 +
               b.curiousCount * 2 +
               b.likeCount +
               b.celebrateCount * 3;
-            const reactionsPerMinuteA = reactionsA / (minutesA + 1);
-            const reactionsPerMinuteB = reactionsB / (minutesB + 1);
-            const followingWeightA = a.is_following ? 1.2 : 1;
-            const followingWeightB = b.is_following ? 1.2 : 1;
-            const recentWeightA = Math.exp(-minutesA / (6 * 60));
-            const recentWeightB = Math.exp(-minutesB / (6 * 60));
-            return (
-              reactionsPerMinuteB * followingWeightB * recentWeightB -
+          const reactionsPerMinuteA = reactionsA / (minutesA + 1);
+          const reactionsPerMinuteB = reactionsB / (minutesB + 1);
+          const followingWeightA = a.is_following ? 1.2 : 1;
+          const followingWeightB = b.is_following ? 1.2 : 1;
+          const recentWeightA = Math.exp(-minutesA / (6 * 60));
+          const recentWeightB = Math.exp(-minutesB / (6 * 60));
+          return (
+            reactionsPerMinuteB * followingWeightB * recentWeightB -
               reactionsPerMinuteA * followingWeightA * recentWeightA
-            );
-          case "top":
-            const totalReactionsA =
+          );
+        case 'top':
+          const totalReactionsA =
               a.loveCount +
               a.boostCount +
               a.dislikeCount +
               a.curiousCount +
               a.likeCount +
               a.celebrateCount;
-            const totalReactionsB =
+          const totalReactionsB =
               b.loveCount +
               b.boostCount +
               b.dislikeCount +
               b.curiousCount +
               b.likeCount +
               b.celebrateCount;
-            return totalReactionsB - totalReactionsA;
-          case "new":
-            return new Date(b.created_at) - new Date(a.created_at);
-          case "explore":
-            const totalReactionsExploreA =
+          return totalReactionsB - totalReactionsA;
+        case 'new':
+          return new Date(b.created_at) - new Date(a.created_at);
+        case 'explore':
+          const totalReactionsExploreA =
               a.loveCount +
               a.boostCount +
               a.dislikeCount +
               a.curiousCount +
               a.likeCount +
               a.celebrateCount;
-            const totalReactionsExploreB =
+          const totalReactionsExploreB =
               b.loveCount +
               b.boostCount +
               b.dislikeCount +
               b.curiousCount +
               b.likeCount +
               b.celebrateCount;
-            const viewsWeightA = Math.log(a.views + 1);
-            const viewsWeightB = Math.log(b.views + 1);
-            const diversityWeightA = 1 / (a.is_following ? 2 : 1);
-            const diversityWeightB = 1 / (b.is_following ? 2 : 1);
-            return (
-              totalReactionsExploreB * viewsWeightB * diversityWeightB -
+          const viewsWeightA = Math.log(a.views + 1);
+          const viewsWeightB = Math.log(b.views + 1);
+          const diversityWeightA = 1 / (a.is_following ? 2 : 1);
+          const diversityWeightB = 1 / (b.is_following ? 2 : 1);
+          return (
+            totalReactionsExploreB * viewsWeightB * diversityWeightB -
               totalReactionsExploreA * viewsWeightA * diversityWeightA
-            );
-          default:
-            return new Date(b.created_at) - new Date(a.created_at);
+          );
+        default:
+          return new Date(b.created_at) - new Date(a.created_at);
         }
       });
 
@@ -166,7 +166,7 @@ const utilFunctions = {
         totalPages: totalPages,
       };
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -178,7 +178,7 @@ const utilFunctions = {
       `;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -196,7 +196,7 @@ const utilFunctions = {
       `;
       return result.recordset[0].shortname;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -212,15 +212,15 @@ const utilFunctions = {
       function rgbToHex(rgb) {
         let hex = Number(rgb).toString(16);
         if (hex.length < 2) {
-          hex = "0" + hex;
+          hex = '0' + hex;
         }
         return hex;
       }
 
       const response = await axios.get(imageUrl, {
-        responseType: "arraybuffer",
+        responseType: 'arraybuffer',
       });
-      const buffer = Buffer.from(response.data, "binary");
+      const buffer = Buffer.from(response.data, 'binary');
       const { data, info } = await sharp(buffer).resize(1, 1).raw().toBuffer({
         resolveWithObject: true,
       });
@@ -237,8 +237,8 @@ const utilFunctions = {
       cache.set(cacheKey, hexColor);
       return hexColor;
     } catch (error) {
-      console.error("Error getting dominant color:", error);
-      return "#000000";
+      console.error('Error getting dominant color:', error);
+      return '#000000';
     }
   },
 
@@ -249,14 +249,14 @@ const utilFunctions = {
       `;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
 
   getPostsForCommunity: async (
     communityID,
-    sortBy = "trending",
+    sortBy = 'trending',
     userId,
     page = 1,
     limit = 10,
@@ -295,96 +295,96 @@ const utilFunctions = {
       let sortedResult;
 
       switch (sortBy) {
-        case "trending":
-          const now = new Date();
-          sortedResult = result.recordset.sort((a, b) => {
-            const minutesA = (now - new Date(a.created_at)) / (1000 * 60);
-            const minutesB = (now - new Date(b.created_at)) / (1000 * 60);
-            const reactionsA =
+      case 'trending':
+        const now = new Date();
+        sortedResult = result.recordset.sort((a, b) => {
+          const minutesA = (now - new Date(a.created_at)) / (1000 * 60);
+          const minutesB = (now - new Date(b.created_at)) / (1000 * 60);
+          const reactionsA =
               a.loveCount * 5 +
               a.boostCount * 4 +
               a.dislikeCount * 3 +
               a.curiousCount * 2 +
               a.likeCount +
               a.celebrateCount * 3;
-            const reactionsB =
+          const reactionsB =
               b.loveCount * 5 +
               b.boostCount * 4 +
               b.dislikeCount * 3 +
               b.curiousCount * 2 +
               b.likeCount +
               b.celebrateCount * 3;
-            const reactionsPerMinuteA = reactionsA / (minutesA + 1);
-            const reactionsPerMinuteB = reactionsB / (minutesB + 1);
-            const followingWeightA = a.is_following ? 1.2 : 1;
-            const followingWeightB = b.is_following ? 1.2 : 1;
-            const ageWeightA = Math.exp(-minutesA / (24 * 60)); // Exponential decay based on age
-            const ageWeightB = Math.exp(-minutesB / (24 * 60));
-            return (
-              reactionsPerMinuteB * followingWeightB * ageWeightB -
+          const reactionsPerMinuteA = reactionsA / (minutesA + 1);
+          const reactionsPerMinuteB = reactionsB / (minutesB + 1);
+          const followingWeightA = a.is_following ? 1.2 : 1;
+          const followingWeightB = b.is_following ? 1.2 : 1;
+          const ageWeightA = Math.exp(-minutesA / (24 * 60)); // Exponential decay based on age
+          const ageWeightB = Math.exp(-minutesB / (24 * 60));
+          return (
+            reactionsPerMinuteB * followingWeightB * ageWeightB -
               reactionsPerMinuteA * followingWeightA * ageWeightA
-            );
-          });
-          break;
-
-        case "top":
-          sortedResult = result.recordset.sort((a, b) => {
-            const totalReactionsA =
-              a.loveCount +
-              a.boostCount +
-              a.dislikeCount +
-              a.curiousCount +
-              a.likeCount +
-              a.celebrateCount;
-            const totalReactionsB =
-              b.loveCount +
-              b.boostCount +
-              b.dislikeCount +
-              b.curiousCount +
-              b.likeCount +
-              b.celebrateCount;
-            return totalReactionsB - totalReactionsA;
-          });
-          break;
-        case "new":
-          sortedResult = result.recordset.sort((a, b) => {
-            const dateA = new Date(a.created_at);
-            const dateB = new Date(b.created_at);
-            return dateB - dateA;
-          });
-          break;
-
-        case "explore":
-          sortedResult = result.recordset.sort((a, b) => {
-            const totalReactionsA =
-              a.loveCount +
-              a.boostCount +
-              a.dislikeCount +
-              a.curiousCount +
-              a.likeCount +
-              a.celebrateCount;
-            const totalReactionsB =
-              b.loveCount +
-              b.boostCount +
-              b.dislikeCount +
-              b.curiousCount +
-              b.likeCount +
-              b.celebrateCount;
-            const viewsWeightA = Math.log(a.views + 1); // Log scale for views
-            const viewsWeightB = Math.log(b.views + 1);
-            const diversityWeightA = 1 / (a.is_following ? 2 : 1); // Penalize posts from followed users
-            const diversityWeightB = 1 / (b.is_following ? 2 : 1);
-            return (
-              totalReactionsB * viewsWeightB * diversityWeightB -
-              totalReactionsA * viewsWeightA * diversityWeightA
-            );
-          });
-          break;
-
-        default:
-          sortedResult = result.recordset.sort(
-            (a, b) => new Date(b.created_at) - new Date(a.created_at)
           );
+        });
+        break;
+
+      case 'top':
+        sortedResult = result.recordset.sort((a, b) => {
+          const totalReactionsA =
+              a.loveCount +
+              a.boostCount +
+              a.dislikeCount +
+              a.curiousCount +
+              a.likeCount +
+              a.celebrateCount;
+          const totalReactionsB =
+              b.loveCount +
+              b.boostCount +
+              b.dislikeCount +
+              b.curiousCount +
+              b.likeCount +
+              b.celebrateCount;
+          return totalReactionsB - totalReactionsA;
+        });
+        break;
+      case 'new':
+        sortedResult = result.recordset.sort((a, b) => {
+          const dateA = new Date(a.created_at);
+          const dateB = new Date(b.created_at);
+          return dateB - dateA;
+        });
+        break;
+
+      case 'explore':
+        sortedResult = result.recordset.sort((a, b) => {
+          const totalReactionsA =
+              a.loveCount +
+              a.boostCount +
+              a.dislikeCount +
+              a.curiousCount +
+              a.likeCount +
+              a.celebrateCount;
+          const totalReactionsB =
+              b.loveCount +
+              b.boostCount +
+              b.dislikeCount +
+              b.curiousCount +
+              b.likeCount +
+              b.celebrateCount;
+          const viewsWeightA = Math.log(a.views + 1); // Log scale for views
+          const viewsWeightB = Math.log(b.views + 1);
+          const diversityWeightA = 1 / (a.is_following ? 2 : 1); // Penalize posts from followed users
+          const diversityWeightB = 1 / (b.is_following ? 2 : 1);
+          return (
+            totalReactionsB * viewsWeightB * diversityWeightB -
+              totalReactionsA * viewsWeightA * diversityWeightA
+          );
+        });
+        break;
+
+      default:
+        sortedResult = result.recordset.sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        );
       }
 
       return {
@@ -393,7 +393,7 @@ const utilFunctions = {
         totalPages: totalPages,
       };
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -404,7 +404,7 @@ const utilFunctions = {
         SELECT name FROM communities`;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -437,7 +437,7 @@ const utilFunctions = {
       `;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -482,7 +482,7 @@ const utilFunctions = {
       const postData = result.recordset[0];
       return postData;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -515,7 +515,7 @@ const utilFunctions = {
       const result = await query;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -527,7 +527,7 @@ const utilFunctions = {
       `;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -540,7 +540,7 @@ const utilFunctions = {
       const commentList = result.recordset;
       return await utilFunctions.getNestedComments(commentList);
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -556,7 +556,7 @@ const utilFunctions = {
 
       return { comments: nestedComments, totalComments };
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -569,7 +569,7 @@ const utilFunctions = {
       `;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   },
@@ -582,12 +582,12 @@ const utilFunctions = {
         return userResult.recordset[0];
       } else {
         // Return a default user object instead of throwing an error
-        return { id: userId, username: "unknown", avatar: null };
+        return { id: userId, username: 'unknown', avatar: null };
       }
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       // Optionally, you can still return a default user object in case of query error
-      return { id: userId, username: "error", avatar: null };
+      return { id: userId, username: 'error', avatar: null };
     }
   },
 
@@ -602,7 +602,7 @@ const utilFunctions = {
         return null;
       }
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       return null;
     }
   },
@@ -742,41 +742,41 @@ const utilFunctions = {
     try {
       if (result.recordset.length > 0) {
         let user = result.recordset[0];
-        if (!user.firstname) missingFields.push("firstname");
-        if (!user.lastname) missingFields.push("lastname");
+        if (!user.firstname) missingFields.push('firstname');
+        if (!user.lastname) missingFields.push('lastname');
       }
       return missingFields;
     } catch (err) {
-      console.error("Error in checking missing fields:", err);
+      console.error('Error in checking missing fields:', err);
     }
   },
 
   getLinkPreview: async (url) => {
     const getMetaTag = ($, name) => {
       return (
-        $(`meta[name="${name}"]`).attr("content") ||
-        $(`meta[name="twitter:${name}"]`).attr("content") ||
-        $(`meta[property="og:${name}"]`).attr("content")
+        $(`meta[name="${name}"]`).attr('content') ||
+        $(`meta[name="twitter:${name}"]`).attr('content') ||
+        $(`meta[property="og:${name}"]`).attr('content')
       );
     };
 
     const getFavicon = ($, baseUrl) => {
       let favicon =
-        $('link[rel="shortcut icon"]').attr("href") ||
-        $('link[rel="icon"]').attr("href") ||
-        $('link[rel="alternate icon"]').attr("href");
+        $('link[rel="shortcut icon"]').attr('href') ||
+        $('link[rel="icon"]').attr('href') ||
+        $('link[rel="alternate icon"]').attr('href');
 
-      if (favicon && !favicon.startsWith("http")) {
+      if (favicon && !favicon.startsWith('http')) {
         const urlObject = new URL(baseUrl);
-        favicon = urlObject.protocol + "//" + urlObject.host + favicon;
+        favicon = urlObject.protocol + '//' + urlObject.host + favicon;
       }
 
-      return favicon || "";
+      return favicon || '';
     };
 
     const fetchYouTubeData = async (videoId) => {
       const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-      const faviconUrl = "/src/youtubelogo.png"; // Replace with your actual favicon URL
+      const faviconUrl = '/src/youtubelogo.png'; // Replace with your actual favicon URL
       const API_KEY = process.env.YOUTUBE_API_KEY;
       const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${API_KEY}&part=snippet`;
 
@@ -792,12 +792,12 @@ const utilFunctions = {
           };
         }
       } catch (error) {
-        console.error("Error fetching YouTube API data:", error.message);
+        console.error('Error fetching YouTube API data:', error.message);
       }
 
       return {
-        title: "",
-        description: "",
+        title: '',
+        description: '',
         image: thumbnailUrl,
         favicon: faviconUrl,
       };
@@ -805,7 +805,7 @@ const utilFunctions = {
 
     const fetchRedditData = async (url) => {
       try {
-        if (url.includes("/r/")) {
+        if (url.includes('/r/')) {
           // Handle subreddit URLs
           const response = await axios.get(`${url}/about.json`);
           if (response.data && response.data.data) {
@@ -814,9 +814,9 @@ const utilFunctions = {
               title: subredditData.title,
               description: subredditData.public_description,
               image:
-                subredditData.icon_img || subredditData.community_icon || "",
+                subredditData.icon_img || subredditData.community_icon || '',
               author: subredditData.display_name_prefixed,
-              favicon: "/src/redditlogo.png",
+              favicon: '/src/redditlogo.png',
             };
           }
         } else {
@@ -827,24 +827,24 @@ const utilFunctions = {
             return {
               title: postData.title,
               description: postData.selftext || postData.title,
-              image: postData.thumbnail.startsWith("http")
+              image: postData.thumbnail.startsWith('http')
                 ? postData.thumbnail
-                : "",
+                : '',
               author: postData.author,
-              favicon: "/src/redditlogo.png",
+              favicon: '/src/redditlogo.png',
             };
           }
         }
       } catch (error) {
-        console.error("Error fetching Reddit JSON data:", error.message);
+        console.error('Error fetching Reddit JSON data:', error.message);
       }
 
       return null;
     };
 
     try {
-      if (typeof url !== "string") {
-        throw new Error("URL must be a string");
+      if (typeof url !== 'string') {
+        throw new Error('URL must be a string');
       }
 
       // Check if the URL exists in the LinkPreviewData table
@@ -861,7 +861,7 @@ const utilFunctions = {
         };
       }
 
-      if (url.includes("youtube.com") || url.includes("youtu.be")) {
+      if (url.includes('youtube.com') || url.includes('youtu.be')) {
         const videoIdMatch = url.match(
           /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
         );
@@ -871,16 +871,16 @@ const utilFunctions = {
 
           // Clean up description and title
           youtubeData.description = youtubeData.description
-            .replace(/\n/g, " ")
+            .replace(/\n/g, ' ')
             .trim();
-          youtubeData.title = youtubeData.title.replace(/\n/g, " ").trim();
+          youtubeData.title = youtubeData.title.replace(/\n/g, ' ').trim();
 
           // Escape single quotes in description and title
           const escapedDescription = youtubeData.description.replace(
             /'/g,
-            "''"
+            '\'\''
           );
-          const escapedTitle = youtubeData.title.replace(/'/g, "''");
+          const escapedTitle = youtubeData.title.replace(/'/g, '\'\'');
 
           const preview = {
             url,
@@ -889,7 +889,7 @@ const utilFunctions = {
             title: escapedTitle,
           };
 
-          console.log(preview);
+          // console.log(preview);
 
           const insertLinkPreviewDataQuery = `
             INSERT INTO LinkPreviewData (link, image_url, description, title, favicon)
@@ -897,10 +897,10 @@ const utilFunctions = {
           `;
           await sql.query(insertLinkPreviewDataQuery);
 
-          console.log(preview);
+          // console.log(preview);
           return preview;
         }
-      } else if (url.includes("reddit.com")) {
+      } else if (url.includes('reddit.com')) {
         const redditData = await fetchRedditData(url);
         if (redditData) {
           return {
@@ -911,8 +911,8 @@ const utilFunctions = {
       }
 
       const headers = {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
       };
 
       const response = await axios.get(url, { headers, timeout: 5000 });
@@ -920,19 +920,19 @@ const utilFunctions = {
       if (status === 200) {
         const $ = cheerio.load(data);
         const metaTags = {
-          title: getMetaTag($, "title") || $("title").text(),
-          description: getMetaTag($, "description"),
-          image: getMetaTag($, "image"),
-          author: getMetaTag($, "author"),
+          title: getMetaTag($, 'title') || $('title').text(),
+          description: getMetaTag($, 'description'),
+          image: getMetaTag($, 'image'),
+          author: getMetaTag($, 'author'),
         };
 
         const preview = {
           url,
-          title: metaTags.title || $("title").first().text() || url,
+          title: metaTags.title || $('title').first().text() || url,
           favicon: getFavicon($, url),
-          description: metaTags.description || "",
-          image: metaTags.image || "",
-          author: metaTags.author || "",
+          description: metaTags.description || '',
+          image: metaTags.image || '',
+          author: metaTags.author || '',
         };
 
         // Insert into LinkPreviewData table
@@ -945,7 +945,7 @@ const utilFunctions = {
         return preview;
       }
     } catch (error) {
-      console.error("Error fetching URL:", url);
+      console.error('Error fetching URL:', url);
       console.error(error);
     }
 
@@ -953,10 +953,10 @@ const utilFunctions = {
     return {
       url,
       title: url,
-      favicon: "",
-      description: "",
-      image: "",
-      author: "",
+      favicon: '',
+      description: '',
+      image: '',
+      author: '',
     };
   },
 
@@ -968,16 +968,16 @@ const utilFunctions = {
         return {
           title: postData.title,
           description: postData.selftext || postData.title,
-          image: postData.thumbnail.startsWith("http")
+          image: postData.thumbnail.startsWith('http')
             ? postData.thumbnail
-            : "",
+            : '',
           author: postData.author,
           favicon:
-            "https://www.redditstatic.com/desktop2x/img/favicon/apple-icon-57x57.png",
+            'https://www.redditstatic.com/desktop2x/img/favicon/apple-icon-57x57.png',
         };
       }
     } catch (error) {
-      console.error("Error fetching Reddit JSON data:", error.message);
+      console.error('Error fetching Reddit JSON data:', error.message);
     }
 
     return null;
@@ -988,8 +988,8 @@ const utilFunctions = {
       const url = `https://github.com/${username}`;
 
       const headers = {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
       };
 
       const response = await axios.get(url, { headers, timeout: 5000 });
@@ -1003,17 +1003,17 @@ const utilFunctions = {
 
       const commitGraph = [];
 
-      $("svg.js-calendar-graph-svg rect").each((index, element) => {
-        const date = $(element).attr("data-date");
-        const count = parseInt($(element).attr("data-count"), 10);
-        const level = $(element).attr("data-level");
+      $('svg.js-calendar-graph-svg rect').each((index, element) => {
+        const date = $(element).attr('data-date');
+        const count = parseInt($(element).attr('data-count'), 10);
+        const level = $(element).attr('data-level');
 
         commitGraph.push({ date, count, level });
       });
 
       return commitGraph;
     } catch (error) {
-      console.error("Error fetching GitHub commit graph:", error);
+      console.error('Error fetching GitHub commit graph:', error);
       return null;
     }
   },
@@ -1028,22 +1028,23 @@ const utilFunctions = {
       }
 
       const $ = cheerio.load(data);
-      const favicon =
-        $('link[rel="shortcut icon"]').attr("href") ||
-        $('link[rel="icon"]').attr("href") ||
-        $('link[rel="alternate icon"]').attr("href");
+      let favicon =
+        $('link[rel="shortcut icon"]').attr('href') ||
+        $('link[rel="icon"]').attr('href') ||
+        $('link[rel="alternate icon"]').attr('href');
 
       console.log(favicon);
 
       if (favicon) {
         // If favicon is a relative path, convert it to an absolute URL
-        if (!favicon.startsWith("http")) {
+        if (!favicon.startsWith('http')) {
           const urlObject = new URL(url);
-          favicon = urlObject.protocol + "//" + urlObject.host + favicon;
+          favicon = urlObject.protocol + '//' + urlObject.host + favicon;
         }
       }
     } catch (error) {
-      console.error("Error fetching favicon for URL:", url);
+      console.warn('Error fetching favicon for URL:', url);
+      console.error(error);
       return null;
     }
   },
@@ -1065,23 +1066,23 @@ const utilFunctions = {
         ON (target.id = source.id)
         WHEN MATCHED THEN
           UPDATE SET 
-            username = '${userData.username.replace(/'/g, "''")}', 
-            user_url = '${userData.user_url.replace(/'/g, "''")}', 
-            avatar_url = '${userData.avatar_url.replace(/'/g, "''")}', 
+            username = '${userData.username.replace(/'/g, '\'\'')}', 
+            user_url = '${userData.user_url.replace(/'/g, '\'\'')}', 
+            avatar_url = '${userData.avatar_url.replace(/'/g, '\'\'')}', 
             time_fetched = GETDATE(), 
-            raw_json = '${JSON.stringify(userData).replace(/'/g, "''")}'
+            raw_json = '${JSON.stringify(userData).replace(/'/g, '\'\'')}'
         WHEN NOT MATCHED THEN
           INSERT (id, username, user_url, avatar_url, time_fetched, raw_json)
           VALUES (${userData.id}, '${userData.username.replace(
-        /'/g,
-        "''"
-      )}', '${userData.user_url.replace(
-        /'/g,
-        "''"
-      )}', '${userData.avatar_url.replace(
-        /'/g,
-        "''"
-      )}', GETDATE(), '${JSON.stringify(userData).replace(/'/g, "''")}');
+  /'/g,
+  '\'\''
+)}', '${userData.user_url.replace(
+  /'/g,
+  '\'\''
+)}', '${userData.avatar_url.replace(
+  /'/g,
+  '\'\''
+)}', GETDATE(), '${JSON.stringify(userData).replace(/'/g, '\'\'')}');
       `;
       await request.query(userUpsertQuery);
 
@@ -1094,22 +1095,22 @@ const utilFunctions = {
           WHEN MATCHED THEN
             UPDATE SET 
               user_id = ${userData.id},
-              repo_name = '${repo.name.replace(/'/g, "''")}',
-              repo_url = '${repo.html_url.replace(/'/g, "''")}',
-              description = '${(repo.description || "").replace(/'/g, "''")}',
+              repo_name = '${repo.name.replace(/'/g, '\'\'')}',
+              repo_url = '${repo.html_url.replace(/'/g, '\'\'')}',
+              description = '${(repo.description || '').replace(/'/g, '\'\'')}',
               stars = ${repo.stargazers_count},
               time_fetched = GETDATE(),
-              raw_json = '${JSON.stringify(repo).replace(/'/g, "''")}'
+              raw_json = '${JSON.stringify(repo).replace(/'/g, '\'\'')}'
           WHEN NOT MATCHED THEN
             INSERT (repo_id, user_id, repo_name, repo_url, description, stars, time_fetched, raw_json)
             VALUES (${repo.id}, ${userData.id}, '${repo.name.replace(
-          /'/g,
-          "''"
-        )}', '${repo.html_url.replace(/'/g, "''")}', '${(
-          repo.description || ""
-        ).replace(/'/g, "''")}', ${
-          repo.stargazers_count
-        }, GETDATE(), '${JSON.stringify(repo).replace(/'/g, "''")}');
+  /'/g,
+  '\'\''
+)}', '${repo.html_url.replace(/'/g, '\'\'')}', '${(
+  repo.description || ''
+).replace(/'/g, '\'\'')}', ${
+  repo.stargazers_count
+}, GETDATE(), '${JSON.stringify(repo).replace(/'/g, '\'\'')}');
         `;
         await request.query(repoUpsertQuery);
       }
@@ -1117,7 +1118,7 @@ const utilFunctions = {
       // Commit transaction
       await transaction.commit();
     } catch (error) {
-      console.error("Error updating GitHub data:", error);
+      console.error('Error updating GitHub data:', error);
       if (pool.connected) {
         await pool.close();
       }
@@ -1132,7 +1133,7 @@ const utilFunctions = {
   getGitHubUserReposPreview: async (url) => {
     const isGitHubUserUrl = /^https?:\/\/github\.com\/[^\/]+\/?$/.test(url);
     if (!isGitHubUserUrl) {
-      throw new Error("URL must be a GitHub user profile URL");
+      throw new Error('URL must be a GitHub user profile URL');
     }
 
     const [, username] = url.match(/github\.com\/([^\/]+)/);
@@ -1143,11 +1144,11 @@ const utilFunctions = {
 
       const [userResponse, reposResponse] = await Promise.all([
         axios.get(userApiUrl, {
-          headers: { "User-Agent": "request" },
+          headers: { 'User-Agent': 'request' },
           timeout: 5000,
         }),
         axios.get(reposApiUrl, {
-          headers: { "User-Agent": "request" },
+          headers: { 'User-Agent': 'request' },
           params: { per_page: 5 },
           timeout: 5000,
         }),
@@ -1185,7 +1186,7 @@ const utilFunctions = {
         time_fetched: new Date().toISOString(),
       };
     } catch (error) {
-      console.error("Error fetching GitHub user and repository data:", error);
+      console.error('Error fetching GitHub user and repository data:', error);
       throw error; // Re-throw the error for handling in the calling code
     }
   },
@@ -1219,11 +1220,11 @@ const utilFunctions = {
         const apiUrl = `https://api.github.com/repos/${owner}/${repo}`;
         const commitsUrl = `${apiUrl}/commits`;
         const repoResponse = await axios.get(apiUrl, {
-          headers: { "User-Agent": "request" },
+          headers: { 'User-Agent': 'request' },
           timeout: 5000,
         });
         const commitsResponse = await axios.get(commitsUrl, {
-          headers: { "User-Agent": "request" },
+          headers: { 'User-Agent': 'request' },
           params: { per_page: 5 },
           timeout: 5000,
         });
@@ -1251,9 +1252,9 @@ const utilFunctions = {
         // Data exists, so update it with the new data from GitHub
         const updateQuery = `
           UPDATE GitHubRepoData
-          SET repo_name = '${repoData.name.replace(/'/g, "''")}',
-              raw_json = '${rawRepoJson.replace(/'/g, "''")}',
-              raw_commits_json = '${rawCommitsJson.replace(/'/g, "''")}',
+          SET repo_name = '${repoData.name.replace(/'/g, '\'\'')}',
+              raw_json = '${rawRepoJson.replace(/'/g, '\'\'')}',
+              raw_commits_json = '${rawCommitsJson.replace(/'/g, '\'\'')}',
               time_fetched = GETDATE()
           WHERE repo_url = '${url}'
         `;
@@ -1264,12 +1265,12 @@ const utilFunctions = {
           INSERT INTO GitHubRepoData (id, repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
           VALUES (${repoData.id},
             '${url}', '${repoData.name.replace(
-          /'/g,
-          "''"
-        )}', '${rawRepoJson.replace(/'/g, "''")}', '${rawCommitsJson.replace(
-          /'/g,
-          "''"
-        )}', GETDATE())
+  /'/g,
+  '\'\''
+)}', '${rawRepoJson.replace(/'/g, '\'\'')}', '${rawCommitsJson.replace(
+  /'/g,
+  '\'\''
+)}', GETDATE())
         `;
         await sql.query(insertQuery);
       }
@@ -1283,7 +1284,7 @@ const utilFunctions = {
         time_fetched: new Date().toISOString(),
       };
     } catch (error) {
-      console.error("Error fetching GitHub repository data:", error);
+      console.error('Error fetching GitHub repository data:', error);
       return { link: url }; // Return a minimal object with the link in case of an error
     }
   },
@@ -1333,7 +1334,7 @@ const utilFunctions = {
       const score = boosts - detracts;
       return score;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
   },
@@ -1375,7 +1376,7 @@ const utilFunctions = {
       `;
       return result.recordset[0];
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
   },

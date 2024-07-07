@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev-start": "nodemon index.js",
-    "start": "pm2 start server.js --no-daemon"
+    "start": "pm2 start server.js --no-daemon",
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "",
@@ -60,7 +61,10 @@
     "ws": "^8.16.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.6.0",
     "chai": "^4.4.1",
+    "eslint": "^9.6.0",
+    "globals": "^15.8.0",
     "mocha": "^10.6.0",
     "nodemon": "^3.0.1",
     "sinon": "^18.0.0",

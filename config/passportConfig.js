@@ -1,8 +1,8 @@
-const LocalStrategy = require("passport-local");
-const bcrypt = require("bcrypt");
-const GitHubStrategy = require("passport-github2").Strategy;
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const userQueries = require("../queries/userQueries");
+const LocalStrategy = require('passport-local');
+const bcrypt = require('bcrypt');
+const GitHubStrategy = require('passport-github2').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const userQueries = require('../queries/userQueries');
 
 function initialize(
   passport,
@@ -23,27 +23,27 @@ function initialize(
       const user = await getUserByUsername(username);
       if (user == null) {
         return done(null, false, {
-          message: "No user with that username exists",
+          message: 'No user with that username exists',
         });
       }
 
       if (user.isBanned) {
-        return done(null, false, { message: "User is banned" });
+        return done(null, false, { message: 'User is banned' });
       }
 
       if (await bcrypt.compare(password, user.password)) {
         return done(null, user);
       } else {
-        return done(null, false, { message: "Password incorrect" });
+        return done(null, false, { message: 'Password incorrect' });
       }
     } catch (e) {
-      console.error("Error in authentication:", e);
+      console.error('Error in authentication:', e);
       return done(e);
     }
   };
 
   passport.use(
-    new LocalStrategy({ usernameField: "username" }, authenticateUser)
+    new LocalStrategy({ usernameField: 'username' }, authenticateUser)
   );
 
   passport.use(
@@ -51,7 +51,7 @@ function initialize(
       {
         clientID: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        callbackURL: "https://c-ore.dev/auth/github/callback",
+        callbackURL: 'https://c-ore.dev/auth/github/callback',
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
@@ -63,7 +63,7 @@ function initialize(
 
           if (existingUser) {
             if (existingUser.isBanned) {
-              return done(null, false, { message: "User is banned" });
+              return done(null, false, { message: 'User is banned' });
             }
 
             // Update the GitHub access token
@@ -97,7 +97,7 @@ function initialize(
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "https://c-ore.dev/auth/google/callback",
+        callbackURL: 'https://c-ore.dev/auth/google/callback',
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
@@ -105,7 +105,7 @@ function initialize(
 
           if (existingUser) {
             if (existingUser.isBanned) {
-              return done(null, false, { message: "User is banned" });
+              return done(null, false, { message: 'User is banned' });
             }
 
             return done(null, existingUser);
@@ -127,7 +127,7 @@ function initialize(
       const user = await getUserById(id);
       done(null, user);
     } catch (e) {
-      console.error("Error in deserialization:", e);
+      console.error('Error in deserialization:', e);
       done(e, null);
     }
   });

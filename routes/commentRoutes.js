@@ -1,14 +1,14 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const sql = require("mssql");
-const crypto = require("crypto");
-const { checkAuthenticated } = require("../middleware/authMiddleware");
-const commentQueries = require("../queries/commentQueries");
-const utilFunctions = require("../utils/utilFunctions");
-const postQueries = require("../queries/postQueries");
+const sql = require('mssql');
+const crypto = require('crypto');
+const { checkAuthenticated } = require('../middleware/authMiddleware');
+const commentQueries = require('../queries/commentQueries');
+const utilFunctions = require('../utils/utilFunctions');
+const postQueries = require('../queries/postQueries');
 
 // Route to add a comment to a post
-router.post("/posts/:postId/comments", checkAuthenticated, async (req, res) => {
+router.post('/posts/:postId/comments', checkAuthenticated, async (req, res) => {
   try {
     const postId = req.params.postId;
     const userId = req.user.id; // Assuming the user ID is stored in req.user
@@ -18,13 +18,13 @@ router.post("/posts/:postId/comments", checkAuthenticated, async (req, res) => {
 
     res.redirect(`/posts/${postId}`);
   } catch (err) {
-    console.error("Database insert error:", err);
-    res.status(500).send("Error adding comment");
+    console.error('Database insert error:', err);
+    res.status(500).send('Error adding comment');
   }
 });
 
 router.post(
-  "/comment/:commentId/toggle-pin",
+  '/comment/:commentId/toggle-pin',
   checkAuthenticated,
   async (req, res) => {
     try {
@@ -37,20 +37,20 @@ router.post(
       if (post.user_id !== userId) {
         return res
           .status(403)
-          .send("You are not authorized to pin/unpin this comment");
+          .send('You are not authorized to pin/unpin this comment');
       }
 
       await commentQueries.togglePinComment(commentId);
-      res.redirect("back");
+      res.redirect('back');
     } catch (err) {
-      console.error("Database error:", err);
-      res.status(500).send("Error processing pin");
+      console.error('Database error:', err);
+      res.status(500).send('Error processing pin');
     }
   }
 );
 
 router.post(
-  "/react/posts/:postId/comment/:commentId",
+  '/react/posts/:postId/comment/:commentId',
   checkAuthenticated,
   async (req, res) => {
     try {
@@ -61,15 +61,15 @@ router.post(
 
       const userId = user ? user.id : null;
 
-      const validActions = ["LOVE", "LIKE", "CURIOUS", "DISLIKE"];
+      const validActions = ['LOVE', 'LIKE', 'CURIOUS', 'DISLIKE'];
 
       if (!validActions.includes(action)) {
-        res.status(400).send("Invalid action");
+        res.status(400).send('Invalid action');
         return;
       }
 
       if (!userId) {
-        res.status(401).send("You must be logged in to react to a comment");
+        res.status(401).send('You must be logged in to react to a comment');
         return;
       }
 
@@ -85,13 +85,13 @@ router.post(
         ...interactionResult,
       });
     } catch (err) {
-      console.error("Database error:", err);
-      res.status(500).send("Error processing reaction");
+      console.error('Database error:', err);
+      res.status(500).send('Error processing reaction');
     }
   }
 );
 router.post(
-  "/posts/:postId/comment/:commentId/react",
+  '/posts/:postId/comment/:commentId/react',
   checkAuthenticated,
   async (req, res) => {
     try {
@@ -101,10 +101,10 @@ router.post(
       const action = req.body.action.toUpperCase(); // Convert action to uppercase for consistency
 
       // Valid reactions
-      const validActions = ["LOVE", "LIKE", "CURIOUS", "DISLIKE"];
+      const validActions = ['LOVE', 'LIKE', 'CURIOUS', 'DISLIKE'];
 
       if (!validActions.includes(action)) {
-        res.status(400).send("Invalid action");
+        res.status(400).send('Invalid action');
         return;
       }
 
@@ -116,7 +116,7 @@ router.post(
       );
 
       if (newScore === 0) {
-        res.json({ message: "Action unchanged", newScore });
+        res.json({ message: 'Action unchanged', newScore });
       } else {
         res.json({
           message: `Comment ${action.toLowerCase()}ed successfully`,
@@ -124,14 +124,14 @@ router.post(
         });
       }
     } catch (err) {
-      console.error("Database error:", err);
-      res.status(500).send("Error processing reaction");
+      console.error('Database error:', err);
+      res.status(500).send('Error processing reaction');
     }
   }
 );
 
 // Route to delete a comment
-router.delete("/comment/:commentId", checkAuthenticated, async (req, res) => {
+router.delete('/comment/:commentId', checkAuthenticated, async (req, res) => {
   const commentId = req.params.commentId;
   const userId = req.user.id; // Assuming the user ID is stored in req.user
 
@@ -140,14 +140,14 @@ router.delete("/comment/:commentId", checkAuthenticated, async (req, res) => {
     if (comment.user_id !== userId) {
       return res
         .status(403)
-        .send("You are not authorized to delete this comment");
+        .send('You are not authorized to delete this comment');
     }
 
     await commentQueries.deleteCommentById(commentId);
-    res.redirect("back");
+    res.redirect('back');
   } catch (error) {
-    console.error("Database delete error:", error);
-    res.status(500).send("Error deleting comment");
+    console.error('Database delete error:', error);
+    res.status(500).send('Error deleting comment');
   }
 });
 

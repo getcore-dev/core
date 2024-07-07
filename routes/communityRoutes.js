@@ -1,11 +1,11 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const sql = require("mssql");
-const { checkAuthenticated } = require("../middleware/authMiddleware");
-const communityQueries = require("../queries/communityQueries");
-const postQueries = require("../queries/postQueries");
+const sql = require('mssql');
+const { checkAuthenticated } = require('../middleware/authMiddleware');
+const communityQueries = require('../queries/communityQueries');
+const postQueries = require('../queries/postQueries');
 
-router.get("/:communityName", async (req, res) => {
+router.get('/:communityName', async (req, res) => {
   const communityName = req.params.communityName;
 
   try {
@@ -13,16 +13,16 @@ router.get("/:communityName", async (req, res) => {
       await sql.query`SELECT * FROM communities WHERE shortname = ${communityName}`;
 
     if (!community.recordset[0]) {
-      res.redirect(`/c`);
+      res.redirect('/c');
     }
 
-    if (community.recordset[0].PrivacySetting === "Private") {
-      res.redirect(`/c`);
+    if (community.recordset[0].PrivacySetting === 'Private') {
+      res.redirect('/c');
     }
 
     const communityId = community.recordset[0].id;
 
-    res.render("communities.ejs", {
+    res.render('communities.ejs', {
       user: req.user,
       community: community.recordset[0],
       communityId: communityId,
@@ -31,12 +31,12 @@ router.get("/:communityName", async (req, res) => {
       ),
     });
   } catch (err) {
-    res.redirect("/c");
+    res.redirect('/c');
   }
 });
 
 router.get(
-  "/:communityShortName/create",
+  '/:communityShortName/create',
   checkAuthenticated,
   async (req, res) => {
     const communityShortName = req.params.communityShortName;
@@ -45,15 +45,15 @@ router.get(
     );
 
     if (!communityId) {
-      res.status(404).send("Community not found");
+      res.status(404).send('Community not found');
     }
 
     const tags = await postQueries.getAllTags();
-    res.render("create-post.ejs", { user: req.user, tags, communityId });
+    res.render('create-post.ejs', { user: req.user, tags, communityId });
   }
 );
 
-router.post("/community-update", checkAuthenticated, async (req, res) => {
+router.post('/community-update', checkAuthenticated, async (req, res) => {
   const {
     id,
     description,
@@ -69,11 +69,11 @@ router.post("/community-update", checkAuthenticated, async (req, res) => {
   const userIsModerator = await communityQueries.checkModerator(user.id, id);
 
   if (!userIsModerator) {
-    return res.status(403).send("Access denied. Moderators only.");
+    return res.status(403).send('Access denied. Moderators only.');
   }
 
   if (!id) {
-    return res.status(400).send("Community ID is required.");
+    return res.status(400).send('Community ID is required.');
   }
 
   const updateData = {};
@@ -87,17 +87,17 @@ router.post("/community-update", checkAuthenticated, async (req, res) => {
   try {
     const success = await communityQueries.updateCommunityInfo(id, updateData);
     if (success) {
-      res.status(200).send("Community information updated successfully.");
+      res.status(200).send('Community information updated successfully.');
     } else {
-      res.status(500).send("Failed to update community information.");
+      res.status(500).send('Failed to update community information.');
     }
   } catch (error) {
-    console.error("Server error:", error);
-    res.status(500).send("Server error.");
+    console.error('Server error:', error);
+    res.status(500).send('Server error.');
   }
 });
 
-router.get("/:communityName/isMember", checkAuthenticated, async (req, res) => {
+router.get('/:communityName/isMember', checkAuthenticated, async (req, res) => {
   const userId = req.user.id;
   const communityName = req.params.communityName;
 
@@ -105,7 +105,7 @@ router.get("/:communityName/isMember", checkAuthenticated, async (req, res) => {
     const community =
       await sql.query`SELECT id FROM communities WHERE shortname = ${communityName}`;
     if (!community.recordset[0]) {
-      return res.status(404).send("Community not found");
+      return res.status(404).send('Community not found');
     }
     const communityId = community.recordset[0].id;
 
@@ -120,12 +120,12 @@ router.get("/:communityName/isMember", checkAuthenticated, async (req, res) => {
     );
     res.json({ isMember, isModerator });
   } catch (error) {
-    console.error("Check membership error:", error);
-    res.status(500).send("Error checking membership status");
+    console.error('Check membership error:', error);
+    res.status(500).send('Error checking membership status');
   }
 });
 
-router.post("/:communityName/join", checkAuthenticated, async (req, res) => {
+router.post('/:communityName/join', checkAuthenticated, async (req, res) => {
   const userId = req.user.id;
   const communityName = req.params.communityName;
 
@@ -133,38 +133,38 @@ router.post("/:communityName/join", checkAuthenticated, async (req, res) => {
     const community =
       await sql.query`SELECT id FROM communities WHERE shortname = ${communityName}`;
     if (!community.recordset[0]) {
-      return res.status(404).send("Community not found");
+      return res.status(404).send('Community not found');
     }
     const communityId = community.recordset[0].id;
 
     const message = await communityQueries.joinCommunity(userId, communityId);
     res.status(200).json({ message });
   } catch (error) {
-    console.error("Join community error:", error.message);
-    return res.status(500).send("Error joining community");
+    console.error('Join community error:', error.message);
+    return res.status(500).send('Error joining community');
   }
 });
 
-router.get("/:communityName/members", async (req, res) => {
+router.get('/:communityName/members', async (req, res) => {
   const communityName = req.params.communityName;
 
   try {
     const community =
       await sql.query`SELECT id FROM communities WHERE shortname = ${communityName}`;
     if (!community.recordset[0]) {
-      return res.status(404).send("Community not found");
+      return res.status(404).send('Community not found');
     }
     const communityId = community.recordset[0].id;
 
     const members = await communityQueries.getCommunityMembers(communityId);
     res.json({ members });
   } catch (error) {
-    console.error("Get community members error:", error.message);
-    return res.status(500).send("Error fetching community members");
+    console.error('Get community members error:', error.message);
+    return res.status(500).send('Error fetching community members');
   }
 });
 
-router.get("/:communityName/admin", checkAuthenticated, async (req, res) => {
+router.get('/:communityName/admin', checkAuthenticated, async (req, res) => {
   const communityName = req.params.communityName;
   const user = req.user;
   const communityId = await communityQueries.getCommunityIdByShortName(
@@ -173,27 +173,27 @@ router.get("/:communityName/admin", checkAuthenticated, async (req, res) => {
   const userIsMod = communityQueries.checkModerator(user.id, communityId);
 
   if (!userIsMod) {
-    return res.status(403).send("You are not a moderator of this community");
+    return res.status(403).send('You are not a moderator of this community');
   }
 
   try {
     const community =
       await sql.query`SELECT * FROM communities WHERE shortname = ${communityName}`;
     if (!community.recordset[0]) {
-      return res.status(404).send("Community not found");
+      return res.status(404).send('Community not found');
     }
 
-    res.render("edit-community.ejs", {
+    res.render('edit-community.ejs', {
       user: req.user,
       community: community.recordset[0],
     });
   } catch (error) {
-    console.error("Get community error:", error.message);
-    return res.status(500).send("Error fetching community");
+    console.error('Get community error:', error.message);
+    return res.status(500).send('Error fetching community');
   }
 });
 
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const user = req.user;
     let communities = await communityQueries.getCommunities();
@@ -212,14 +212,14 @@ router.get("/", async (req, res) => {
       }));
     }
 
-    res.render("community.ejs", { user, communities });
+    res.render('community.ejs', { user, communities });
   } catch (error) {
-    console.error("Get communities error:", error.message);
-    return res.status(500).send("Error fetching communities");
+    console.error('Get communities error:', error.message);
+    return res.status(500).send('Error fetching communities');
   }
 });
 
-router.post("/:communityName/leave", checkAuthenticated, async (req, res) => {
+router.post('/:communityName/leave', checkAuthenticated, async (req, res) => {
   const userId = req.user.id;
   const communityName = req.params.communityName;
 
@@ -227,15 +227,15 @@ router.post("/:communityName/leave", checkAuthenticated, async (req, res) => {
     const community =
       await sql.query`SELECT id FROM communities WHERE shortname = ${communityName}`;
     if (!community.recordset[0]) {
-      return res.status(404).send("Community not found");
+      return res.status(404).send('Community not found');
     }
     const communityId = community.recordset[0].id;
 
     const message = await communityQueries.leaveCommunity(userId, communityId);
     res.status(200).json({ message });
   } catch (error) {
-    console.error("Leave community error:", error.message);
-    return res.status(500).send("Error leaving community");
+    console.error('Leave community error:', error.message);
+    return res.status(500).send('Error leaving community');
   }
 });
 

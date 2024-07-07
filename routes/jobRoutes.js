@@ -1,12 +1,12 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const jobQueries = require("../queries/jobQueries");
+const jobQueries = require('../queries/jobQueries');
 const {
   checkAuthenticated,
   checkNotAuthenticated,
-} = require("../middleware/authMiddleware");
-const cacheMiddleware = require("../middleware/cache");
-const rateLimit = require("express-rate-limit");
+} = require('../middleware/authMiddleware');
+const cacheMiddleware = require('../middleware/cache');
+const rateLimit = require('express-rate-limit');
 const viewLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
   max: 3,
@@ -23,60 +23,60 @@ const viewLimiter = rateLimit({
   },
 });
 
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   const recentJobs = await jobQueries.getRecentJobCount();
-  res.render("jobs.ejs", { user: req.user, recentJobs });
+  res.render('jobs.ejs', { user: req.user, recentJobs });
 });
 
-router.get("/create", checkAuthenticated, async (req, res) => {
+router.get('/create', checkAuthenticated, async (req, res) => {
   try {
     const skills = await jobQueries.getSkills();
-    res.render("create-job.ejs", { skills, user: req.user });
+    res.render('create-job.ejs', { skills, user: req.user });
   } catch (err) {
-    console.error("Error fetching job postings:", err);
-    res.status(500).send("Error fetching job postings");
+    console.error('Error fetching job postings:', err);
+    res.status(500).send('Error fetching job postings');
   }
 });
 
-router.get("/company/create", checkAuthenticated, async (req, res) => {
+router.get('/company/create', checkAuthenticated, async (req, res) => {
   try {
-    res.render("create-company.ejs", { user: req.user });
+    res.render('create-company.ejs', { user: req.user });
   } catch (err) {
-    console.error("Error fetching job postings:", err);
-    res.status(500).send("Error fetching job postings");
+    console.error('Error fetching job postings:', err);
+    res.status(500).send('Error fetching job postings');
   }
 });
 
-router.get("/company/:name", async (req, res) => {
+router.get('/company/:name', async (req, res) => {
   try {
     const companyName = req.params.name;
     const company = await jobQueries.getCompanyByName(companyName);
     const jobs = await jobQueries.getJobsByCompany(company.id);
     const jobsCount = jobs ? jobs.length : 0;
-    res.render("company_profile.ejs", {
+    res.render('company_profile.ejs', {
       company,
       jobs,
       user: req.user,
       jobsCount,
     });
   } catch (err) {
-    console.error("Error fetching job postings:", err);
-    res.redirect("/jobs");
+    console.error('Error fetching job postings:', err);
+    res.redirect('/jobs');
   }
 });
 
-router.get("/company/:name/edit", checkAuthenticated, async (req, res) => {
+router.get('/company/:name/edit', checkAuthenticated, async (req, res) => {
   try {
     const companyName = req.params.name;
     const company = await jobQueries.getCompanyByName(companyName);
-    res.render("edit-company.ejs", { company, user: req.user });
+    res.render('edit-company.ejs', { company, user: req.user });
   } catch (err) {
-    console.error("Error fetching company details:", err);
-    res.status(500).send("Error fetching company details");
+    console.error('Error fetching company details:', err);
+    res.status(500).send('Error fetching company details');
   }
 });
 
-router.post("/company/:name/edit", checkAuthenticated, async (req, res) => {
+router.post('/company/:name/edit', checkAuthenticated, async (req, res) => {
   try {
     const companyName = req.params.name;
     const company = await jobQueries.getCompanyByName(companyName);
@@ -109,12 +109,12 @@ router.post("/company/:name/edit", checkAuthenticated, async (req, res) => {
 
     res.redirect(`/jobs/company/${name}`);
   } catch (err) {
-    console.error("Error updating company details:", err);
-    res.status(500).send("Error updating company details");
+    console.error('Error updating company details:', err);
+    res.status(500).send('Error updating company details');
   }
 });
 
-router.post("/update-experiences", checkAuthenticated, async (req, res) => {
+router.post('/update-experiences', checkAuthenticated, async (req, res) => {
   try {
     const userId = req.user.id;
     let experiences = req.body.experiences;
@@ -123,7 +123,7 @@ router.post("/update-experiences", checkAuthenticated, async (req, res) => {
       experiences = [experiences];
     }
 
-    console.log("Incoming experiences:", experiences);
+    console.log('Incoming experiences:', experiences);
 
     // Clear existing job experiences and tags for the user
     await jobQueries.clearUserJobExperienceTags(userId);
@@ -132,7 +132,7 @@ router.post("/update-experiences", checkAuthenticated, async (req, res) => {
     // Process each job experience
     for (const experience of experiences) {
       if (!experience) {
-        console.warn("Skipping undefined experience");
+        console.warn('Skipping undefined experience');
         continue;
       }
 
@@ -161,15 +161,15 @@ router.post("/update-experiences", checkAuthenticated, async (req, res) => {
       );
     }
 
-    res.status(200).send("Job experiences updated successfully");
+    res.status(200).send('Job experiences updated successfully');
   } catch (err) {
-    console.error("Error updating job experiences:", err);
-    res.status(500).send("Error updating job experiences");
+    console.error('Error updating job experiences:', err);
+    res.status(500).send('Error updating job experiences');
   }
 });
 
 router.post(
-  "/update-education-experiences",
+  '/update-education-experiences',
   checkAuthenticated,
   async (req, res) => {
     try {
@@ -180,7 +180,7 @@ router.post(
         experiences = [experiences];
       }
 
-      console.log("Incoming experiences:", experiences);
+      console.log('Incoming experiences:', experiences);
 
       // Clear existing job experiences and tags for the user
       await jobQueries.clearUserEducationExperience(userId);
@@ -188,7 +188,7 @@ router.post(
       // Process each job experience
       for (const experience of experiences) {
         if (!experience) {
-          console.warn("Skipping undefined experience");
+          console.warn('Skipping undefined experience');
           continue;
         }
 
@@ -219,77 +219,77 @@ router.post(
         );
       }
 
-      res.status(200).send("Job experiences updated successfully");
+      res.status(200).send('Job experiences updated successfully');
     } catch (err) {
-      console.error("Error updating job experiences:", err);
-      res.status(500).send("Error updating job experiences");
+      console.error('Error updating job experiences:', err);
+      res.status(500).send('Error updating job experiences');
     }
   }
 );
 
-router.get("/tags/:tag", async (req, res) => {
+router.get('/tags/:tag', async (req, res) => {
   try {
     const tag = req.params.tag;
     const tagId = await jobQueries.getTagId(tag);
     if (!tagId) {
-      res.status(404).send("Tag not found");
+      res.status(404).send('Tag not found');
     }
     const jobs = await jobQueries.getJobsByTag(tagId);
-    res.render("tag.ejs", { tag, jobs, user: req.user });
+    res.render('tag.ejs', { tag, jobs, user: req.user });
   } catch (err) {
-    console.error("Error fetching job postings:", err);
-    res.status(500).send("Error fetching job postings");
+    console.error('Error fetching job postings:', err);
+    res.status(500).send('Error fetching job postings');
   }
 });
-router.get("/getTopTags", cacheMiddleware(3600), async (req, res) => {
+router.get('/getTopTags', cacheMiddleware(3600), async (req, res) => {
   try {
     const tags = await jobQueries.getCountOfTopJobTags();
     res.json(tags);
   } catch (err) {
-    console.error("Error fetching tags:", err);
-    res.status(500).send("Error fetching tags");
+    console.error('Error fetching tags:', err);
+    res.status(500).send('Error fetching tags');
   }
 });
 
-router.get("/location/:state", async (req, res) => {
+router.get('/location/:state', async (req, res) => {
   try {
     const state = req.params.state;
     const jobs = await jobQueries.getJobsByState(state);
     const jobCount = jobs ? jobs.length : 0;
-    res.render("job-results.ejs", { state, jobs, user: req.user, jobCount });
+    res.render('job-results.ejs', { state, jobs, user: req.user, jobCount });
   } catch (err) {
-    console.error("Error fetching job postings:", err);
-    res.status(500).send("Error fetching job postings");
+    console.error('Error fetching job postings:', err);
+    res.status(500).send('Error fetching job postings');
   }
 });
 
-router.get("/getRecentJobs", cacheMiddleware(3600), async (req, res) => {
+router.get('/getRecentJobs', cacheMiddleware(3600), async (req, res) => {
   try {
     const jobCount = await jobQueries.getRecentJobCount();
     res.json(jobCount);
   } catch (err) {
-    console.error("Error fetching recent jobs:", err);
+    console.error('Error fetching recent jobs:', err);
     res.json(0);
   }
 });
 
-router.get("/delete/:id", checkAuthenticated, async (req, res) => {
+router.get('/delete/:id', checkAuthenticated, async (req, res) => {
   try {
     const user = req.user;
     if (!user.isAdmin) {
-      return res.status(401).send("Unauthorized");
+      return res.status(401).send('Unauthorized');
     }
     const jobId = req.params.id;
     // delete the job and tags and skills associated with it
     await jobQueries.deleteJob(jobId);
-    res.redirect("/jobs");
+    res.redirect('/jobs');
   } catch (err) {
-    console.error("Error deleting job:", err);
-    res.status(500).send("Error deleting job");
+    console.error('Error deleting job:', err);
+    res.status(500).send('Error deleting job');
   }
 });
 
-router.get("/:jobId", viewLimiter, async (req, res) => {
+router.get('/:jobId', viewLimiter, async (req, res) => {
   try {
     const jobId = req.params.jobId;
 
@@ -301,10 +301,10 @@ router.get("/:jobId", viewLimiter, async (req, res) => {
 
     if (!job) {
       console.log(`No job found with ID: ${jobId}`);
-      return res.redirect("/jobs");
+      return res.redirect('/jobs');
     }
 
-    res.render("job-posting.ejs", {
+    res.render('job-posting.ejs', {
       job_id: jobId,
       user: req.user,
       job: job,
@@ -314,7 +314,7 @@ router.get("/:jobId", viewLimiter, async (req, res) => {
       `Error fetching job posting with ID ${req.params.jobId}:`,
       err
     );
-    res.status(500).send("Error fetching job posting");
+    res.status(500).send('Error fetching job posting');
   }
 });
 

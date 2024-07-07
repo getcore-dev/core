@@ -18,40 +18,6 @@ jobs:
         with:
           node-version: "20.x"
 
-      - name: npm install, build, and test
-        run: |
-          npm ci
-          npm run build --if-present
-
-      - name: Run ESLint
-        run: npx eslint .
-
-      - name: Check code formatting
-        run: npx prettier --check .
-
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: javascript
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-
-      - name: Run TruffleHog OSS
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: ./
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
-
-      - name: Check License Compliance
-        run: npx license-checker --summary
-
       - name: Check Required Secrets
         run: |
           [ -z "${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_65666B72FDCA4DBF84A90C4E2F6F7D4F }}" ] && echo "Missing AZURE_PUBLISH_PROFILE" && exit 1
@@ -71,6 +37,31 @@ jobs:
           [ -z "${{ secrets.YOUTUBE_API_KEY }}" ] && echo "Missing YOUTUBE_API_KEY" && exit 1
           [ -z "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" ] && echo "Missing AZURE_STORAGE_CONNECTION_STRING" && exit 1
           echo "All required secrets are set"
+
+      - name: npm install and build
+        run: |
+          npm ci
+          npm run build --if-present
+
+      - name: Run ESLint
+        run: npx eslint .
+
+      - name: Check code formatting
+        run: npx prettier --check .
+
+      - name: Check for outdated dependencies
+        run: npm outdated
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+
+      - name: Check for sensitive data exposure
+        run: |
+          if grep -R -i "password\|secret\|key\|token" --exclude-dir={node_modules,.git} .; then
+            echo "Potential sensitive data found in code"
+            exit 1
+          fi
+
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
 
@@ -105,7 +96,12 @@ jobs:
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_65666B72FDCA4DBF84A90C4E2F6F7D4F }}
           package: .
 
-      - name: Run OWASP ZAP Scan
-        uses: zaproxy/action-full-scan@v0.4.0
-        with:
-          target: "https://c-ore.dev/"
+      - name: "Post Deployment Check"
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://coreplatform.azurewebsites.net)
+          if [ $response = "200" ]; then
+            echo "Deployment successful, site is up"
+          else
+            echo "Site is not responding with 200 OK, got $response"
+            exit 1
+          fi

@@ -1,4 +1,4 @@
-const sql = require("mssql");
+const sql = require('mssql');
 
 exports.findPosts = async (searchTerm) => {
   const query = `
@@ -22,7 +22,7 @@ exports.findPosts = async (searchTerm) => {
   const pool = await sql.connect(); // Connect using your global or existing connection settings
   const results = await pool
     .request()
-    .input("searchTerm", sql.VarChar, `%${searchTerm}%`) // Use parameterized input
+    .input('searchTerm', sql.VarChar, `%${searchTerm}%`) // Use parameterized input
     .query(query);
   return results; // Return the results
 };
@@ -34,7 +34,7 @@ exports.findUsers = async (searchTerm) => {
   const pool = await sql.connect(); // Assume global or persistent connection
   const results = await pool
     .request()
-    .input("searchTerm", sql.VarChar, `%${searchTerm}%`) // Safe parameterized input
+    .input('searchTerm', sql.VarChar, `%${searchTerm}%`) // Safe parameterized input
     .query(query);
   return results; // Return the fetched users
 };
@@ -66,7 +66,7 @@ exports.findJobs = async (searchTerm) => {
   const pool = await sql.connect(); // Assume global or persistent connection
   const results = await pool
     .request()
-    .input("searchTerm", sql.VarChar, `%${searchTerm}%`) // Safe parameterized input
+    .input('searchTerm', sql.VarChar, `%${searchTerm}%`) // Safe parameterized input
     .query(query);
   return results; // Return the fetched jobs
 };

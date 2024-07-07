@@ -1,4 +1,4 @@
-const sql = require("mssql");
+const sql = require('mssql');
 
 class Community {
   constructor(data) {
@@ -21,7 +21,7 @@ class Community {
         SELECT * FROM communities WHERE id = ${communityId}`;
       return result.recordset[0] ? new Community(result.recordset[0]) : null;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -32,7 +32,7 @@ class Community {
         SELECT * FROM communities WHERE shortname = ${shortname}`;
       return result.recordset[0] ? new Community(result.recordset[0]) : null;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -46,7 +46,7 @@ class Community {
         FROM communities c`;
       return result.recordset.map(community => new Community(community));
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -89,7 +89,7 @@ class Community {
 
       return true;
     } catch (err) {
-      console.error("Database query error");
+      console.error('Database query error');
       throw err;
     }
   }
@@ -105,7 +105,7 @@ class Community {
 
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -119,7 +119,7 @@ class Community {
       `;
       return result.recordset;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -132,7 +132,7 @@ class Community {
 
       return result.recordset.length > 0;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -144,7 +144,7 @@ class Community {
         WHERE user_id = ${userId} AND community_id = ${communityId}
       `;
       if (checkExistence.recordset.length > 0) {
-        throw new Error("User is already a member of this community.");
+        throw new Error('User is already a member of this community.');
       }
 
       await sql.query`
@@ -162,9 +162,9 @@ class Community {
         WHERE id = ${communityId}
       `;
 
-      return "User successfully joined the community.";
+      return 'User successfully joined the community.';
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -184,9 +184,9 @@ class Community {
         )
         WHERE id = ${communityId}
       `;
-      return "User successfully left the community.";
+      return 'User successfully left the community.';
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -199,7 +199,7 @@ class Community {
 
       return result.recordset.length > 0;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -212,7 +212,7 @@ class Community {
 
       return result.recordset[0].count;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }

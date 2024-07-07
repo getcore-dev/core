@@ -1,11 +1,11 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const OpenAI = require("openai");
-const axios = require("axios");
-const cheerio = require("cheerio");
-const fs = require("fs").promises;
-const path = require("path");
-const environment = require("../config/environment");
-const jobQueries = require("../queries/jobQueries");
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const OpenAI = require('openai');
+const axios = require('axios');
+const cheerio = require('cheerio');
+const fs = require('fs').promises;
+const path = require('path');
+const environment = require('../config/environment');
+const jobQueries = require('../queries/jobQueries');
 
 class JobProcessor {
   constructor(
@@ -18,7 +18,7 @@ class JobProcessor {
     this.lastRequestTime = 0;
     this.GEMINI_DELAY_MS = 1000;
     this.OPENAI_DELAY_MS = 20000;
-    this.processedLinksFile = path.join(__dirname, "processed_links.txt");
+    this.processedLinksFile = path.join(__dirname, 'processed_links.txt');
     this.processedLinks = new Set();
   }
 
@@ -47,12 +47,12 @@ class JobProcessor {
                   company.id,
                   link,
                   null,
-                  jobData.tags.split(","),
+                  jobData.tags.split(','),
                   jobData.description,
                   jobData.salary_max,
                   null,
-                  jobData.skills.split(","),
-                  jobData.benefits.split(","),
+                  jobData.skills.split(','),
+                  jobData.benefits.split(','),
                   jobData.additional_information,
                   jobData.PreferredQualifications,
                   jobData.MinimumQualifications,
@@ -75,7 +75,7 @@ class JobProcessor {
         }
       }
     }
-    console.log("Job processing completed.");
+    console.log('Job processing completed.');
   }
 
   async processIndividualJob(link) {
@@ -97,7 +97,7 @@ class JobProcessor {
 
       $('a[href*="job"], a[href*="career"], a[href*="position"]').each(
         (index, element) => {
-          const link = $(element).attr("href");
+          const link = $(element).attr('href');
           if (link) links.add(new URL(link, jobBoardUrl).href);
         }
       );
@@ -112,46 +112,46 @@ class JobProcessor {
 
   async loadProcessedLinks() {
     try {
-      const data = await fs.readFile(this.processedLinksFile, "utf8");
-      this.processedLinks = new Set(data.split("\n").filter(Boolean));
+      const data = await fs.readFile(this.processedLinksFile, 'utf8');
+      this.processedLinks = new Set(data.split('\n').filter(Boolean));
     } catch (error) {
-      if (error.code !== "ENOENT") {
-        console.error("Error loading processed links:", error);
+      if (error.code !== 'ENOENT') {
+        console.error('Error loading processed links:', error);
       }
     }
   }
 
   async saveProcessedLink(link) {
     this.processedLinks.add(link);
-    await fs.appendFile(this.processedLinksFile, link + "\n");
+    await fs.appendFile(this.processedLinksFile, link + '\n');
   }
 
   async processJobLink(link) {
     if (this.processedLinks.has(link)) {
-      console.log("Link already processed:", link);
+      console.log('Link already processed:', link);
       return { alreadyProcessed: true };
     }
 
     try {
-      console.log("Processing job link:", link);
+      console.log('Processing job link:', link);
       const headers = {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
         Accept:
-          "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
-        "Accept-Encoding": "gzip, deflate, br",
-        Connection: "keep-alive",
-        "Upgrade-Insecure-Requests": "1",
-        "Cache-Control": "max-age=0",
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'gzip, deflate, br',
+        Connection: 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'Cache-Control': 'max-age=0',
       };
 
       const linkResponse = await axios.get(link, { headers, timeout: 5000 });
       const { data } = linkResponse;
 
       const $ = cheerio.load(data);
-      $("script, style").remove();
-      const textContent = $("body").text().replace(/\s\s+/g, " ").trim();
+      $('script, style').remove();
+      const textContent = $('body').text().replace(/\s\s+/g, ' ').trim();
 
       let extractedData;
       try {
@@ -165,9 +165,9 @@ class JobProcessor {
 
         extractedData = this.validateAndCleanJobData(extractedData);
       } catch (error) {
-        if (error.message.includes("RECITATION") || error.status === 429) {
+        if (error.message.includes('RECITATION') || error.status === 429) {
           console.log(
-            "Switching to ChatGPT API due to Gemini error or rate limiting"
+            'Switching to ChatGPT API due to Gemini error or rate limiting'
           );
           this.useGemini = false;
           await this.rateLimit(false);
@@ -187,13 +187,13 @@ class JobProcessor {
   }
 
   async useGeminiAPI(link, textContent) {
-    const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     const prompt = this.generatePrompt(link, textContent);
     const result = await model.generateContent(prompt);
     let response = await result.response;
     response = response.text();
     const cleanedResponse =
-      response.replace(/`+/g, "").match(/\{.*\}/s)?.[0] || "";
+      response.replace(/`+/g, '').match(/\{.*\}/s)?.[0] || '';
     return JSON.parse(cleanedResponse);
   }
 
@@ -203,20 +203,20 @@ class JobProcessor {
       const completion = await this.openai.chat.completions.create({
         messages: [
           {
-            role: "system",
+            role: 'system',
             content:
-              "You are a helpful assistant that extracts job information from text.",
+              'You are a helpful assistant that extracts job information from text.',
           },
-          { role: "user", content: prompt },
+          { role: 'user', content: prompt },
         ],
-        model: "gpt-3.5-turbo-0125",
+        model: 'gpt-3.5-turbo-0125',
       });
 
       const responseContent = completion.choices[0].message.content;
-      const cleanedResponse = responseContent.match(/\{.*\}/s)?.[0] || "";
+      const cleanedResponse = responseContent.match(/\{.*\}/s)?.[0] || '';
       return JSON.parse(cleanedResponse);
     } catch (error) {
-      console.error("OpenAI API Error:", error.message);
+      console.error('OpenAI API Error:', error.message);
       throw error;
     }
   }
@@ -270,45 +270,45 @@ class JobProcessor {
 
   validateAndCleanJobData(data) {
     return {
-      title: data.title || "",
-      company_name: data.company_name || "",
-      company_description: data.company_description || "",
-      company_industry: data.company_industry || "",
-      company_size: data.company_size || "",
-      company_stock_symbol: data.company_stock_symbol || "",
-      company_logo: data.company_logo || "",
+      title: data.title || '',
+      company_name: data.company_name || '',
+      company_description: data.company_description || '',
+      company_industry: data.company_industry || '',
+      company_size: data.company_size || '',
+      company_stock_symbol: data.company_stock_symbol || '',
+      company_logo: data.company_logo || '',
       company_founded: data.company_founded || null,
-      location: data.location || "",
+      location: data.location || '',
       salary: parseInt(data.salary) || 0,
       salary_max: parseInt(data.salary_max) || 0,
-      experience_level: data.experience_level || "",
+      experience_level: data.experience_level || '',
       skills: Array.isArray(data.skills)
-        ? data.skills.join(",")
-        : typeof data.skills === "string"
-        ? data.skills
-        : "",
+        ? data.skills.join(',')
+        : typeof data.skills === 'string'
+          ? data.skills
+          : '',
       tags: Array.isArray(data.tags)
-        ? data.tags.join(",")
-        : typeof data.tags === "string"
-        ? data.tags
-        : "",
-      description: data.description || "",
+        ? data.tags.join(',')
+        : typeof data.tags === 'string'
+          ? data.tags
+          : '',
+      description: data.description || '',
       benefits: Array.isArray(data.benefits)
-        ? data.benefits.join(",")
-        : typeof data.benefits === "string"
-        ? data.benefits
-        : "",
-      additional_information: data.additional_information || "",
-      PreferredQualifications: data.PreferredQualifications || "",
-      MinimumQualifications: data.MinimumQualifications || "",
-      Responsibilities: data.Responsibilities || "",
-      Requirements: data.Requirements || "",
-      NiceToHave: data.NiceToHave || "",
-      Schedule: data.Schedule || "",
+        ? data.benefits.join(',')
+        : typeof data.benefits === 'string'
+          ? data.benefits
+          : '',
+      additional_information: data.additional_information || '',
+      PreferredQualifications: data.PreferredQualifications || '',
+      MinimumQualifications: data.MinimumQualifications || '',
+      Responsibilities: data.Responsibilities || '',
+      Requirements: data.Requirements || '',
+      NiceToHave: data.NiceToHave || '',
+      Schedule: data.Schedule || '',
       HoursPerWeek: parseInt(data.HoursPerWeek) || 0,
       H1BVisaSponsorship: data.H1BVisaSponsorship === true ? 1 : 0,
       IsRemote: data.IsRemote === true ? 1 : 0,
-      EqualOpportunityEmployerInfo: data.EqualOpportunityEmployerInfo || "",
+      EqualOpportunityEmployerInfo: data.EqualOpportunityEmployerInfo || '',
       Relocation: data.Relocation === true ? 1 : 0,
     };
   }

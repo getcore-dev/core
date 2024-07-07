@@ -1,5 +1,5 @@
-const sql = require("mssql");
-const nodemailer = require("nodemailer");
+const sql = require('mssql');
+const nodemailer = require('nodemailer');
 
 class Notification {
   constructor(data) {
@@ -17,7 +17,7 @@ class Notification {
   }
 
   static transporter = nodemailer.createTransport({
-    host: "smtp.mail.me.com",
+    host: 'smtp.mail.me.com',
     port: 587,
     secure: false,
     auth: {
@@ -35,22 +35,22 @@ class Notification {
       const user = result.recordset[0];
 
       if (!user) {
-        throw new Error("User not found");
+        throw new Error('User not found');
       }
 
       let subject, text;
       switch (type) {
-        case "NEW_MESSAGE":
-          subject = "You have a new message";
-          text = "You have received a new message. Please check your account for more details.";
-          break;
-        case "NEW_COMMENT":
-          subject = "New comment on your post";
-          text = "Someone commented on your post. Please check your account for more details.";
-          break;
-        default:
-          subject = "You have a new notification";
-          text = "You have received a new notification. Please check your account for more details.";
+      case 'NEW_MESSAGE':
+        subject = 'You have a new message';
+        text = 'You have received a new message. Please check your account for more details.';
+        break;
+      case 'NEW_COMMENT':
+        subject = 'New comment on your post';
+        text = 'Someone commented on your post. Please check your account for more details.';
+        break;
+      default:
+        subject = 'You have a new notification';
+        text = 'You have received a new notification. Please check your account for more details.';
       }
 
       const mailOptions = {
@@ -61,9 +61,9 @@ class Notification {
       };
 
       const info = await Notification.transporter.sendMail(mailOptions);
-      console.log("Email sent: " + info.response);
+      console.log('Email sent: ' + info.response);
     } catch (error) {
-      console.error("Error sending email notification:", error);
+      console.error('Error sending email notification:', error);
     }
   }
 
@@ -78,7 +78,7 @@ class Notification {
         ORDER BY notifications.createdAt DESC`;
       return result.recordset.map(notification => new Notification(notification));
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -94,7 +94,7 @@ class Notification {
         ORDER BY notifications.createdAt DESC`;
       return result.recordset.map(notification => new Notification(notification));
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -110,7 +110,7 @@ class Notification {
         ORDER BY notifications.createdAt DESC`;
       return result.recordset.map(notification => new Notification(notification));
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -123,12 +123,12 @@ class Notification {
         WHERE receiverUserId = ${userId} AND isRead = 0`;
       return result.recordset[0].count;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
 
-  static async create(senderUserId, receiverUserId, type, postId = "") {
+  static async create(senderUserId, receiverUserId, type, postId = '') {
     try {
       const createdAt = new Date();
       const result = await sql.query`
@@ -140,7 +140,7 @@ class Notification {
       
       return new Notification(result.recordset[0]);
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err;
     }
   }
@@ -153,7 +153,7 @@ class Notification {
         WHERE id = ${this.id}`;
       this.isRead = true;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   }
@@ -165,7 +165,7 @@ class Notification {
         SET isRead = 1 
         WHERE receiverUserId = ${userId}`;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   }
@@ -176,7 +176,7 @@ class Notification {
         DELETE FROM notifications 
         WHERE id = ${this.id}`;
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err;
     }
   }
@@ -187,7 +187,7 @@ class Notification {
         DELETE FROM notifications
         WHERE receiverUserId = ${userId} AND type = ${type} AND postId = ${postId}`;
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err;
     }
   }

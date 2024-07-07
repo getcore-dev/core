@@ -1,19 +1,15 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const sql = require("mssql");
-const { checkAuthenticated } = require("../middleware/authMiddleware");
-const postQueries = require("../queries/postQueries");
-const utilFunctions = require("../utils/utilFunctions");
+const sql = require('mssql');
+const { checkAuthenticated } = require('../middleware/authMiddleware');
+const postQueries = require('../queries/postQueries');
+const utilFunctions = require('../utils/utilFunctions');
 const getUserDetails = utilFunctions.getUserDetails;
-const commentQueries = require("../queries/commentQueries");
-const { getLinkPreview } = require("../utils/utilFunctions");
-const userQueries = require("../queries/userQueries");
-const marked = require("marked");
-const { util } = require("chai");
-const rateLimit = require("express-rate-limit");
-const PostController = require("../controllers/postController");
-const { post } = require("request");
-
+const { getLinkPreview } = require('../utils/utilFunctions');
+const userQueries = require('../queries/userQueries');
+const marked = require('marked');
+const rateLimit = require('express-rate-limit');
+const PostController = require('../controllers/postController');
 const viewLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
   max: 3,
@@ -30,19 +26,19 @@ const viewLimiter = rateLimit({
   },
 });
 
-router.get("/posts", async (req, res) => {
+router.get('/posts', async (req, res) => {
   try {
     const posts = await postQueries.getPosts();
-    res.render("posts.ejs", { user: req.user, error: null, posts: posts });
+    res.render('posts.ejs', { user: req.user, error: null, posts: posts });
   } catch (err) {
-    console.error("Database query error:", err);
-    const error = { status: 500, message: "Error fetching posts" };
-    res.render("error.ejs", { user: req.user, error });
+    console.error('Database query error:', err);
+    const error = { status: 500, message: 'Error fetching posts' };
+    res.render('error.ejs', { user: req.user, error });
   }
 });
 
 // Route for creating a new post
-router.post("/posts", checkAuthenticated, async (req, res) => {
+router.post('/posts', checkAuthenticated, async (req, res) => {
   try {
     const { userId, title, content, link, community_id, tags, post_type } =
       req.body;
@@ -59,15 +55,15 @@ router.post("/posts", checkAuthenticated, async (req, res) => {
 
     return res.redirect(`/posts/${postId}`);
   } catch (err) {
-    console.error("Database insert error:", err);
-    res.status(500).render("error.ejs", {
-      error: { status: 500, message: "Error creating post" },
+    console.error('Database insert error:', err);
+    res.status(500).render('error.ejs', {
+      error: { status: 500, message: 'Error creating post' },
     });
   }
 });
 
 router.post(
-  "/posts/:postId/answer/:commentId",
+  '/posts/:postId/answer/:commentId',
   checkAuthenticated,
   async (req, res) => {
     try {
@@ -84,38 +80,38 @@ router.post(
         res.redirect(`/posts/${postId}`);
       }
     } catch (err) {
-      console.error("Database error:", err);
-      res.status(500).send("Error accepting answer");
+      console.error('Database error:', err);
+      res.status(500).send('Error accepting answer');
     }
   }
 );
 
-router.post("/posts/:postId/react", checkAuthenticated, async (req, res) => {
+router.post('/posts/:postId/react', checkAuthenticated, async (req, res) => {
   try {
     const postId = req.params.postId;
     const userId = req.user.id;
     const action = req.body.action.toUpperCase();
-    const validActions = ["LOVE", "LIKE", "CURIOUS", "DISLIKE"];
+    const validActions = ['LOVE', 'LIKE', 'CURIOUS', 'DISLIKE'];
 
     if (!validActions.includes(action)) {
-      return res.status(400).json({ error: "Invalid action" });
+      return res.status(400).json({ error: 'Invalid action' });
     }
 
     const result = await postQueries.interactWithPost(postId, userId, action);
 
     res.json({
-      message: `Post reaction updated successfully`,
+      message: 'Post reaction updated successfully',
       userReaction: result.userReaction,
       totalReactions: result.totalReactions,
       reactionsMap: result.reactionsMap,
     });
   } catch (err) {
-    console.error("Database error:", err);
-    res.status(500).json({ error: "Error processing reaction" });
+    console.error('Database error:', err);
+    res.status(500).json({ error: 'Error processing reaction' });
   }
 });
 
-router.get("/posts/:postId", viewLimiter, async (req, res) => {
+router.get('/posts/:postId', viewLimiter, async (req, res) => {
   try {
     const postId = req.params.postId;
     let user = req.user;
@@ -162,10 +158,10 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
     ORDER BY c.created_at DESC;`;
 
     const request = new sql.Request();
-    request.input("postId", sql.VarChar, postId);
+    request.input('postId', sql.VarChar, postId);
 
     if (user && user.id) {
-      request.input("userId", sql.VarChar, user.id);
+      request.input('userId', sql.VarChar, user.id);
     }
 
     const result = await request.query(query);
@@ -205,8 +201,8 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
       // Fetch the user reaction for the current comment
       if (user) {
         const sqlRequest = new sql.Request();
-        sqlRequest.input("commentId", sql.VarChar, comment.id);
-        sqlRequest.input("userId", sql.VarChar, user.id);
+        sqlRequest.input('commentId', sql.VarChar, comment.id);
+        sqlRequest.input('userId', sql.VarChar, user.id);
 
         const reactionQuery = `
       SELECT action_type
@@ -221,7 +217,7 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
               ? reactionResult.recordset[0].action_type
               : null;
         } catch (error) {
-          console.error("Database query error:", error);
+          console.error('Database query error:', error);
           // Handle the error appropriately
         }
       } else {
@@ -236,7 +232,7 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
         comment.parent_author = await userQueries.findByUsername(
           comment_parent_username
         );
-        comment.replyingTo = comment.parent_comment_id ? "comment" : "post";
+        comment.replyingTo = comment.parent_comment_id ? 'comment' : 'post';
       }
 
       if (comment.replies && comment.replies.length > 0) {
@@ -258,7 +254,7 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
       comments: nestedComments,
     };
 
-    if (postData.link && postData.post_type === "project") {
+    if (postData.link && postData.post_type === 'project') {
       postData.gitHubfavicon = await utilFunctions.getFavicon(postData.link);
       postData.gitHubLinkPreview = await utilFunctions.getGitHubRepoPreview(
         postData.link
@@ -268,7 +264,7 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
         JSON.parse(postData.gitHubLinkPreview.raw_json).owner.login;
     }
 
-    if (postData.post_type === "question") {
+    if (postData.post_type === 'question') {
       postData.solution = await postQueries.getAcceptedAnswer(postId);
       if (postData.solution) {
         postData.solution.user = await getUserDetails(
@@ -296,7 +292,7 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
       postData.title
     );
 
-    res.render("post.ejs", {
+    res.render('post.ejs', {
       post: postData,
       user: req.user,
       communityId: postData.communities_id,
@@ -305,17 +301,17 @@ router.get("/posts/:postId", viewLimiter, async (req, res) => {
       similarPosts: similarPosts,
     });
   } catch (err) {
-    console.error("Database query error:", err);
-    res.redirect("/");
+    console.error('Database query error:', err);
+    res.redirect('/');
   }
 });
 
-router.get("/posts/:postId/edit", checkAuthenticated, async (req, res) => {
+router.get('/posts/:postId/edit', checkAuthenticated, async (req, res) => {
   try {
     const postId = req.params.postId;
     const post = await postQueries.getPostById(postId);
     if (post.user_id !== req.user.id) {
-      return res.status(403).send("You are not authorized to edit this post");
+      return res.status(403).send('You are not authorized to edit this post');
     }
     post.community_name = await utilFunctions.getCommunityName(
       post.communities_id,
@@ -324,32 +320,32 @@ router.get("/posts/:postId/edit", checkAuthenticated, async (req, res) => {
     post.tags = await utilFunctions.getTags(postId);
     //console.log(post.tags);
 
-    res.render("edit-post.ejs", { user: req.user, post });
+    res.render('edit-post.ejs', { user: req.user, post });
   } catch (err) {
-    console.error("Database query error:", err);
-    res.status(500).send("Error fetching post");
+    console.error('Database query error:', err);
+    res.status(500).send('Error fetching post');
   }
 });
 
-router.put("/posts/:postId/edit", checkAuthenticated, async (req, res) => {
+router.put('/posts/:postId/edit', checkAuthenticated, async (req, res) => {
   PostController.updatePost(req, res);
 });
 
 // Route for deleting a post
-router.delete("/post/:postId", checkAuthenticated, async (req, res) => {
+router.delete('/post/:postId', checkAuthenticated, async (req, res) => {
   const postId = req.params.postId;
   const userId = req.user.id;
 
   try {
     const post = await postQueries.getPostById(postId);
     if (post.user_id !== userId) {
-      return res.status(403).send("You are not authorized to delete this post");
+      return res.status(403).send('You are not authorized to delete this post');
     }
 
     await postQueries.deletePostById(postId);
-    res.redirect("/");
+    res.redirect('/');
   } catch (error) {
-    res.status(500).send("Error deleting post");
+    res.status(500).send('Error deleting post');
   }
 });
 

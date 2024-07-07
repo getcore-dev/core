@@ -1,5 +1,5 @@
-const axios = require("axios");
-const NodeCache = require("node-cache");
+const axios = require('axios');
+const NodeCache = require('node-cache');
 
 // Create a cache instance with a TTL of 20 minutes (1200 seconds)
 const cache = new NodeCache({ stdTTL: 1200 });
@@ -14,7 +14,7 @@ const fetchCommitDetails = async (commitUrl) => {
       totalLinesDeleted: response.data.stats.deletions,
     };
   } catch (error) {
-    console.error("Error fetching commit details:", error.message);
+    console.error('Error fetching commit details:', error.message);
     return { totalLinesAdded: 0, totalLinesDeleted: 0 };
   }
 };
@@ -22,7 +22,7 @@ const fetchCommitDetails = async (commitUrl) => {
 const getLatestCommit = async () => {
   try {
     const response = await axios.get(
-      "https://api.github.com/repos/brycemcole/CORE/commits"
+      'https://api.github.com/repos/brycemcole/CORE/commits'
     );
     const latestCommit = response.data[0];
     return {
@@ -31,7 +31,7 @@ const getLatestCommit = async () => {
       date: latestCommit.commit.author.date,
     };
   } catch (error) {
-    console.error("Error fetching latest commit:", error.message);
+    console.error('Error fetching latest commit:', error.message);
     return {};
   }
 };
@@ -41,14 +41,14 @@ const fetchCommits = async () => {
     const currentTime = Date.now();
 
     // Check if data is in cache and if last fetch was less than 20 minutes ago
-    const cachedData = cache.get("commits");
+    const cachedData = cache.get('commits');
     if (cachedData && currentTime - lastFetchTime < 1200 * 1000) {
       return cachedData; // Return cached data if available and updated within 20 minutes
     }
 
     // Fetch data from GitHub API
     const response = await axios.get(
-      "https://api.github.com/repos/brycemcole/CORE/commits"
+      'https://api.github.com/repos/brycemcole/CORE/commits'
     );
 
     // Fetch details for each commit
@@ -65,11 +65,11 @@ const fetchCommits = async () => {
 
     // Update last fetch time and save to cache
     lastFetchTime = currentTime;
-    cache.set("commits", detailedCommits);
+    cache.set('commits', detailedCommits);
     return detailedCommits;
   } catch (error) {
-    console.error("Error fetching commits:", error.message);
-    return cache.get("commits") || [];
+    console.error('Error fetching commits:', error.message);
+    return cache.get('commits') || [];
   }
 };
 

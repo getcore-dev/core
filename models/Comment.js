@@ -1,8 +1,8 @@
-const sql = require("mssql");
-const crypto = require("crypto");
-const notificationQueries = require("../queries/notificationQueries");
-const utilFunctions = require("../utils/utilFunctions");
-const { findById } = require("../queries/userQueries");
+const sql = require('mssql');
+const crypto = require('crypto');
+const notificationQueries = require('../queries/notificationQueries');
+const utilFunctions = require('../utils/utilFunctions');
+const { findById } = require('../queries/userQueries');
 
 class Comment {
   constructor(data) {
@@ -20,7 +20,7 @@ class Comment {
   static generateUniqueId() {
     return `${Date.now().toString(36)}-${crypto
       .randomBytes(3)
-      .toString("hex")}`;
+      .toString('hex')}`;
   }
 
   static async create(postId, userId, commentText) {
@@ -39,16 +39,16 @@ class Comment {
           await notificationQueries.createNotification(
             userId,
             originalPostAuthorId,
-            "NEW_COMMENT",
+            'NEW_COMMENT',
             postId
           );
         }
-        await Comment.interact(postId, commentId, userId, "LIKE");
+        await Comment.interact(postId, commentId, userId, 'LIKE');
       }
 
       return commentId;
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err;
     }
   }
@@ -59,7 +59,7 @@ class Comment {
         await sql.query`SELECT * FROM comments WHERE id = ${commentId}`;
       return result.recordset[0] ? new Comment(result.recordset[0]) : null;
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -70,7 +70,7 @@ class Comment {
         await sql.query`SELECT * FROM comments WHERE post_id = ${postId} AND deleted = 0`;
       return result.recordset.map((comment) => new Comment(comment));
     } catch (err) {
-      console.error("Database query error:", err);
+      console.error('Database query error:', err);
       throw err;
     }
   }
@@ -85,7 +85,7 @@ class Comment {
         WHERE id = ${this.id}`;
       return true;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       return false;
     }
   }
@@ -106,7 +106,7 @@ class Comment {
       this.deleted = true;
       return true;
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err;
     }
   }
@@ -120,7 +120,7 @@ class Comment {
         WHERE id = ${this.id}`;
       return this.isPinned;
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   }
@@ -128,16 +128,16 @@ class Comment {
   static async interact(postId, commentId, userId, actionType) {
     try {
       const validActions = [
-        "LOVE",
-        "LIKE",
-        "CURIOUS",
-        "DISLIKE",
+        'LOVE',
+        'LIKE',
+        'CURIOUS',
+        'DISLIKE',
       ];
       if (!validActions.includes(actionType)) {
-        throw new Error("Invalid action type");
+        throw new Error('Invalid action type');
       }
 
-      let dbActionType = actionType === "BOOST" ? "B" : actionType;
+      let dbActionType = actionType === 'BOOST' ? 'B' : actionType;
 
       const userAction = await sql.query`
         SELECT action_type 
@@ -156,7 +156,7 @@ class Comment {
           commentExists.recordset.length === 0 ||
           userExists.recordset.length === 0
         ) {
-          throw new Error("Comment or User does not exist");
+          throw new Error('Comment or User does not exist');
         }
 
         await sql.query`
@@ -183,7 +183,7 @@ class Comment {
         GROUP BY action_type`;
 
       const reactionsMap = reactionCounts.recordset.reduce((acc, row) => {
-        acc[row.action_type === "B" ? "BOOST" : row.action_type] = row.count;
+        acc[row.action_type === 'B' ? 'BOOST' : row.action_type] = row.count;
         return acc;
       }, {});
 
@@ -200,7 +200,7 @@ class Comment {
 
       return { userReaction, totalReactions, reactionsMap };
     } catch (err) {
-      console.error("Database update error:", err);
+      console.error('Database update error:', err);
       throw err;
     }
   }
@@ -225,16 +225,16 @@ class Comment {
           await notificationQueries.createNotification(
             userId,
             originalCommentAuthorId,
-            "NEW_COMMENT",
+            'NEW_COMMENT',
             postId
           );
         }
-        await Comment.interact(postId, replyId, userId, "LIKE");
+        await Comment.interact(postId, replyId, userId, 'LIKE');
       }
 
       return replyId;
     } catch (err) {
-      console.error("Database insert error:", err);
+      console.error('Database insert error:', err);
       throw err;
     }
   }
@@ -248,7 +248,7 @@ class Comment {
         )
         DELETE FROM cte WHERE rn > 1`;
     } catch (err) {
-      console.error("Database delete error:", err);
+      console.error('Database delete error:', err);
       throw err;
     }
   }

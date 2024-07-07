@@ -1,19 +1,19 @@
-const sql = require("mssql");
-const utilFunctions = require("../utils/utilFunctions");
-const userQueries = require("../queries/userQueries");
-const postQueries = require("../queries/postQueries");
+const sql = require('mssql');
+const utilFunctions = require('../utils/utilFunctions');
+const userQueries = require('../queries/userQueries');
+const postQueries = require('../queries/postQueries');
 
 const viewController = {
   renderHomePage: async (req, res) => {
     try {
       // Send basic post data to the client
-      res.render("communities.ejs", {
+      res.render('communities.ejs', {
         user: req.user,
         communityId: null,
         community: null,
       });
     } catch (err) {
-      res.render("error.ejs", {
+      res.render('error.ejs', {
         user: req.user,
         error: { message: err.message },
       });
@@ -21,15 +21,15 @@ const viewController = {
   },
 
   renderPrivacyPage: async (req, res) => {
-    res.render("privacy.ejs", { user: req.user });
+    res.render('privacy.ejs', { user: req.user });
   },
 
   renderAboutPage: async (req, res) => {
-    res.render("about.ejs", { user: req.user });
+    res.render('about.ejs', { user: req.user });
   },
 
   renderSettingsPage: async (req, res) => {
-    res.render("settings.ejs", { user: req.user });
+    res.render('settings.ejs', { user: req.user });
   },
 
   renderFollowers: async (req, res) => {
@@ -37,13 +37,13 @@ const viewController = {
       const username = req.params.username;
       const user = await userQueries.findByUsername(username);
       const followers = await userQueries.getFollowers(user.id);
-      res.render("user_followers.ejs", {
+      res.render('user_followers.ejs', {
         user: req.user,
         otheruser: user,
         followers,
       });
     } catch (err) {
-      res.render("error.ejs", {
+      res.render('error.ejs', {
         user: req.user,
         error: { message: err.message },
       });
@@ -55,13 +55,13 @@ const viewController = {
       const username = req.params.username;
       const user = await userQueries.findByUsername(username);
       const following = await userQueries.getFollowing(user.id);
-      res.render("user_following.ejs", {
+      res.render('user_following.ejs', {
         user: req.user,
         otheruser: user,
         followers: following, // lmfao.
       });
     } catch (err) {
-      res.render("error.ejs", {
+      res.render('error.ejs', {
         user: req.user,
         error: { message: err.message },
       });
@@ -69,14 +69,14 @@ const viewController = {
   },
 
   renderLogin: async (req, res) => {
-    res.render("login.ejs", {
+    res.render('login.ejs', {
       user: req.user,
       githubClientId: process.env.GITHUB_CLIENT_ID,
     });
   },
 
   renderRegister: async (req, res) => {
-    res.render("register.ejs", { user: req.user });
+    res.render('register.ejs', { user: req.user });
   },
 
   renderUserProfile: async (req, res) => {
@@ -96,7 +96,7 @@ const viewController = {
           isFollowing = await userQueries.isFollowing(userId, otheruser.id);
         }
 
-        res.render("user_profile.ejs", {
+        res.render('user_profile.ejs', {
           otheruser: otheruser,
           user: req.user,
           posts: posts,
@@ -105,7 +105,7 @@ const viewController = {
           isFollowing: isFollowing,
         });
       } else {
-        res.render("404.ejs", { user: req.user });
+        res.render('404.ejs', { user: req.user });
       }
     } catch (error) {
       res.status(500).send(error.message);
@@ -113,23 +113,23 @@ const viewController = {
   },
 
   renderErrorPage: (req, res, error) => {
-    res.render("error.ejs", { user: req.user, error });
+    res.render('error.ejs', { user: req.user, error });
   },
 
   renderPostCreationPage: (req, res) => {
-    res.render("create-post.ejs", { user: req.user });
+    res.render('create-post.ejs', { user: req.user });
   },
 
   renderFeedbackCreationPage: (req, res) => {
-    res.render("create-feedback.ejs", { user: req.user });
+    res.render('create-feedback.ejs', { user: req.user });
   },
 
   renderLearningPage: (req, res) => {
-    res.render("learning.ejs", { user: req.user });
+    res.render('learning.ejs', { user: req.user });
   },
 
   renderJobsPage: (req, res) => {
-    res.render("jobs.ejs", { user: req.user });
+    res.render('jobs.ejs', { user: req.user });
   },
 };
 
