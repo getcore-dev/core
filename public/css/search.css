@@ -49,7 +49,7 @@
 .avatar img {
     width: 30px;
     height: 30px;
-    border-radius: 100%;
+    border-radius: 6px;
     object-fit: cover; 
     overflow: hidden;
   }
@@ -93,7 +93,7 @@
 .avatar img {
     width: 30px;
     height: 30px;
-    border-radius: 100%;
+    border-radius: 6px;
     object-fit: cover;
     overflow: hidden;
 }

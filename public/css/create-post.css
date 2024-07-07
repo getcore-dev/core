@@ -114,8 +114,8 @@ div.form-group {
 .main-container input[type="text"], .main-container textarea, .main-container select, .main-container input[type="number"], .main-container input[type="date"] {
     width: 100%;
     box-sizing: border-box;
-    padding: 8px;
-    padding-top: 20px;
+    padding: .9rem;
+    padding-top: 1.6rem;
     background-color: var(--light-mode-body-color);
     border: 1px solid var(--border-color);
     font-size: 16px;

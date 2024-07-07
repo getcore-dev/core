@@ -17,9 +17,6 @@ body {
   justify-content: center;
   box-sizing: border-box;
   margin-bottom: 0 !important;
-  width: 150px !important;
-  min-height: 35px !important;
-  max-width: 150px !important;
 }
 
 .login-buttons-container {
@@ -250,9 +247,9 @@ input:not(:placeholder-shown) + .floating-label,
 
 .login-buttons {
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 2.2rem;
   align-items: center;
-  gap: 20px; /* Space between the buttons */
+  gap: 20px; 
 }
 
 .abcRioButton {

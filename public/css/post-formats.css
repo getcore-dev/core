@@ -107,10 +107,12 @@
   .post-body pre {
     background-color: var(--border-color);
     border: 1px solid var(--border-color);
-    padding: 10px 12px;
+    padding: .8rem 1.1rem;
     overflow: auto;
     margin-bottom: 1.1rem;
-    border-radius: 18px;
+    border-radius: 10px;
+    line-height: 1.4rem;
+    letter-spacing: 0.01rem;
   }
   
   .post-body img {

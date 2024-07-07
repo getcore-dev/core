@@ -162,7 +162,7 @@
           <li>
             <% if (user && user.avatar) { %>
             <div class="nav-avatar">
-              <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar" style="margin-top:6px;">
+              <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar" style="margin-top:10px;">
               <div class="avatar-online-status" style="
               background: <% if (user.profile_border_color) { %>
               #5fb968
@@ -172,7 +172,7 @@
               height: 7px;
               width: 7px;
               z-index: 10;
-              border-radius: 50%;
+              border-radius: 6px;
 
               position: absolute;
               bottom: -3px;
@@ -343,7 +343,7 @@
         <li class="dropdown">
           <a href="/c" class="navbar-button <%= isActive('/c') ? 'active' : '' %>" style="display: block;">
             <span class="material-symbols-outlined">
-              public
+              group
             </span>
             Communities
           </a>
@@ -353,7 +353,7 @@
             <span class="material-symbols-outlined">
               work
             </span>
-            Openings
+            Find Jobs
           </a>
         </li>
       </ul>
@@ -684,6 +684,10 @@
   });
 
   document.addEventListener('DOMContentLoaded', async () => {
+    var menuButton = document.getElementById("menu-button");
+    if (menuButton) {
+      getTrendingPosts();
+    }
     <% if (user) { %>
     const userId = '<%- user.id %>';
     const response = await fetch(`/notifications/${userId}/unread-count`);
@@ -728,11 +732,10 @@
   document.addEventListener('click', function(event) {
     var content = document.getElementById("menu-content");
     var overlay = document.getElementById("overlay");
-    var menuButton = document.getElementById("menu-button"); // Ensure this is the same ID as your menu button
-    var menuIcon = document.getElementById("menu-icon"); // Assuming you have an element with this ID for additional icons or text
+    var menuButton = document.getElementById("menu-button");
+    var menuIcon = document.getElementById("menu-icon");
 
-    // If clicking outside content and not on the menuIcon, close the sidebar and overlay if they are open
-    if (!content.contains(event.target) && event.target !== menuIcon && !menuButton.contains(event.target)) { // Added check for menuButton
+    if (!content.contains(event.target) && event.target !== menuIcon && !menuButton.contains(event.target)) {
       if (content.classList.contains("sidebar-open")) {
         content.classList.remove("sidebar-open");
         overlay.style.opacity = '0';
