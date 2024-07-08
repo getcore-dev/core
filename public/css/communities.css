@@ -142,11 +142,11 @@ div.vote-interactions {
 .post-content {
   position: relative;
   flex-grow: 1;
-  padding: 1.05rem 1.35rem;
+  padding: .95rem .8rem;
 }
 
 .post-timestamp {
-  font-size: .9rem;
+  font-size: .825rem;
 }
 
 .com-btn {
@@ -1067,7 +1067,7 @@ button.see-more {
   .username a,
   .communities-text,
   .post-quick-info {
-    font-size: 1rem;
+    font-size: .9rem;
   }
 
   body {
@@ -1080,7 +1080,7 @@ button.see-more {
   }
 
   .title {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
   }
 
   .post-info {
