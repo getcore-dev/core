@@ -293,6 +293,7 @@
             const avatarDiv = document.createElement('div');
             avatarDiv.className = 'avatar';
             const avatarImg = document.createElement('img');
+            avatarImg.onclick = () => window.location.href = '/user/' + post.username;
             avatarImg.src = post.avatar;
             avatarImg.loading = "lazy";
             avatarDiv.appendChild(avatarImg);

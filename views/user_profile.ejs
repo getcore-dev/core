@@ -36,8 +36,8 @@
   .github-commit-repos,
   .post,
   .comment {
-    background: <%=otheruser.profile_border_color%>52 !important;
-    border: 1px solid <%=otheruser.profile_border_color%>70 !important;
+    background: <%=otheruser.profile_border_color%>0f !important;
+    border: 1px solid <%=otheruser.profile_border_color%>52 !important;
     color: black;
   }
 
@@ -141,22 +141,26 @@
 
               <p id="firstname-display" style="color: <%= otheruser.isAdmin ? '#b40000' : 'inherit' %>;">@<%= otheruser.username %> <% if (otheruser.verified) { %>
                 <span class="material-symbols-outlined" style="color: green">
-                  verified
+                  check
                 </span>
                 <% } %>
               </p>
 
-              <div class="followers-info">
-                <a href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; gap: 5px;"> <span class="material-symbols-outlined">
-                    person
-                  </span><span id="followerCount"> <%= otheruser.followerCount %> Followers </a></span>
-                <a href="/user/<%= otheruser.username %>/following" style="display: flex; flex-direction:row; gap: 5px;"><span id="followCount"> <%= otheruser.followingCount %> Following</a></span>
-              </div>
               <% if (otheruser.topCommunities && otheruser.topCommunities.length > 0) { %>
               <div class="communities-info">
                 <p>Active in: <%= otheruser.topCommunities %></p>
               </div>
               <% } %>
+
+              <div class="followers-info">
+                <a class="tag" href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; align-items: center;gap: 5px;"> <span class="material-symbols-outlined">
+                    person
+                  </span><span id="followerCount"> <%= otheruser.followerCount %> Followers </a></span>
+                <a class="tag" href="/user/<%= otheruser.username %>/following" style="display: flex; align-items: center;flex-direction:row; gap: 5px;">
+                  <span class="material-symbols-outlined">
+                    person
+                  </span><span id="followCount"> <%= otheruser.followingCount %> Following</a></span>
+              </div>
 
             </div>
           </div>
@@ -385,10 +389,10 @@
   </main>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const forms = document.querySelectorAll('form');
       forms.forEach(form => {
-        form.addEventListener('submit', async function(event) {
+        form.addEventListener('submit', async function (event) {
           event.preventDefault();
           const formData = new FormData(this);
           const action = this.getAttribute('action');
@@ -503,7 +507,7 @@
 
 
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const currentJobContainer = document.getElementById('currentJobContainer');
       const currentEducationContainer = document.getElementById('currentEducationContainer');
 
@@ -733,7 +737,7 @@
 
         button.textContent = "Submit"; // Change button text to 'Submit'
         // Pass in the display element into the onclick handler
-        button.onclick = function() {
+        button.onclick = function () {
           submitEdit(field, button, displayElement, inputField);
         };
       }
@@ -768,7 +772,7 @@
 
           // Change the button text back to 'Edit' and restore the original onclick event
           button.textContent = "Edit";
-          button.onclick = function() {
+          button.onclick = function () {
             editField(field, button); // Restore the editField function
           };
         })

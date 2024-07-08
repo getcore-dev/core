@@ -1,12 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
 main {
   display: flex;
   justify-content: center;
   flex-direction: column;
-  align-items: center; /* align to the center */
+  align-items: center;
+  /* align to the center */
   margin: 0;
-  overflow-x: hidden; /* prevent horizontal scrolling */
-  overflow-y: hidden; /* allow vertical scrolling if needed */
+  overflow-x: hidden;
+  /* prevent horizontal scrolling */
+  overflow-y: hidden;
+  /* allow vertical scrolling if needed */
   font-family: var(--font-family);
 }
 
@@ -24,9 +28,9 @@ main {
   width: 100%;
   margin-top: 13px;
   display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .follower-stats {
@@ -43,8 +47,8 @@ main {
 
 .profile-content {
   display: flex;
-    gap: 10px;
-    flex-direction: row;
+  gap: 2rem;
+  flex-direction: row;
 }
 
 .edit-controls-and-follow-button {
@@ -69,14 +73,18 @@ main {
 
 #profile {
   display: grid;
-  grid-template-columns: repeat(3, minmax(300px, 1fr)); /* Adjust the number of columns */
+  grid-template-columns: repeat(3, minmax(300px, 1fr));
+  /* Adjust the number of columns */
   gap: 20px;
   padding: 30px;
   box-sizing: border-box;
   text-align: left;
-  overflow-x: hidden; /* Updated to prevent horizontal scrolling */
-  overflow-y: auto; /* Allow vertical scrolling if needed */
-  white-space: normal; /* Allow wrapping of grid items */
+  overflow-x: hidden;
+  /* Updated to prevent horizontal scrolling */
+  overflow-y: auto;
+  /* Allow vertical scrolling if needed */
+  white-space: normal;
+  /* Allow wrapping of grid items */
   width: 100%;
 }
 
@@ -91,6 +99,7 @@ main {
 #profile.grid-container {
   background-color: var(--light-mode-main-color);
 }
+
 .profile-details {
   width: 75%;
 }
@@ -107,7 +116,9 @@ main {
 }
 
 /* Style for each section */
-#profile > div, .post, .comment {
+#profile>div,
+.post,
+.comment {
   display: inline-block;
   border: 0;
   padding: .55rem .6rem;
@@ -128,17 +139,21 @@ main {
   color: var(--primary-text-color);
 }
 
-#profile a, .points-info, .communities-info {
+#profile a,
+.points-info,
+.communities-info {
   font-size: .875rem;
   color: var(--primary-text-color);
 
 }
+
 .editable-field a {
   color: var(--active-indicator-color);
   text-decoration: none;
 }
 
-.current-job p, .current-education p {
+.current-job p,
+.current-education p {
   font-size: 14px;
 }
 
@@ -151,13 +166,16 @@ main {
   background: var(--light-mode-body-color);
 }
 
-#profile > div.current-job, #profile > div.current-education {
-  display: flex; 
+#profile>div.current-job,
+#profile>div.current-education {
+  display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-#profile > div.current-job, #profile > div.user-links, #profile > div.current-education {
+#profile>div.current-job,
+#profile>div.user-links,
+#profile>div.current-education {
   background: var(--light-mode-body-color);
 }
 
@@ -214,7 +232,8 @@ main {
 }
 
 .sort-option.active {
-  background-color: var(--light-mode-body-color); /* Active tab color */
+  background-color: var(--light-mode-body-color);
+  /* Active tab color */
 }
 
 .sort-option:focus {
@@ -229,11 +248,14 @@ main {
 .post {
   display: flex;
   flex-direction: column;
-  width: 100%; /* Full width of posts container */
+  width: 100%;
+  /* Full width of posts container */
   /* ... other styles ... */
 }
 
-.followers-info, .points-info, .communities-info {
+.followers-info,
+.points-info,
+.communities-info {
   color: var(--light-mode-text-color);
   display: flex;
   flex-direction: row;
@@ -245,6 +267,7 @@ main {
 
 .communities-info {
   align-items: baseline;
+  margin-bottom: 0.7rem;
 }
 
 #edit-button .material-symbols-outlined {
@@ -252,15 +275,22 @@ main {
 }
 
 .profile-picture img {
-  width: 100px; /* Adjust the size as needed */
+  width: 100px;
+  /* Adjust the size as needed */
   height: 100px;
-  border-radius: 12px; /* Circular image */
+  border-radius: 12px;
+  /* Circular image */
   object-fit: cover;
-  border: 1px solid var(--border-color); /* Border color similar to the navbar */
+  border: 1px solid var(--border-color);
+  /* Border color similar to the navbar */
 }
 
-.profile-picture button, .profile-info button, .current-job button, .current-education button {
-  background-color: var(--light-mode-body-color); /* Same as navbar button */
+.profile-picture button,
+.profile-info button,
+.current-job button,
+.current-education button {
+  background-color: var(--light-mode-body-color);
+  /* Same as navbar button */
   color: var(--light-mode-text-color);
   border: 0;
   padding: 7px 10px;
@@ -277,20 +307,25 @@ main {
 }
 
 #imageEditControls {
-  display: none; /* Initially hidden */
+  display: none;
+  /* Initially hidden */
 }
 
-#imageEditControls input[type="text"], .profile-info input[type="text"], .current-job input[type="text"] {
+#imageEditControls input[type="text"],
+.profile-info input[type="text"],
+.current-job input[type="text"] {
   padding: 5px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  width: 200px; /* Adjust the width as needed */
+  width: 200px;
+  /* Adjust the width as needed */
   margin-bottom: 10px;
 }
 
 #imageEditControls button {
-  background-color: #f9f9f9; /* Same as navbar button */
+  background-color: #f9f9f9;
+  /* Same as navbar button */
   color: #000;
   border: 1px solid #ccc;
   padding: 5px 10px;
@@ -321,7 +356,8 @@ main {
   max-height: 19em;
 }
 
-.post-container, .comments-container {
+.post-container,
+.comments-container {
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -338,12 +374,13 @@ main {
   border-radius: 50%;
 }
 
-.post-info, .comment-info {
+.post-info,
+.comment-info {
   margin-top: 8px;
   font-size: .8rem;
   display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .comment-author a {
@@ -357,7 +394,8 @@ main {
   padding-bottom: 10px;
 }
 
-.comment-content, .post-content {
+.comment-content,
+.post-content {
   font-size: .875rem;
 }
 
@@ -370,8 +408,8 @@ main {
   display: inline-block;
   padding: 2px 3px;
   margin: 2px;
-  background-color: #6d93b1; 
-  border: 1px solid #6488a4; 
+  background-color: #6d93b1;
+  border: 1px solid #6488a4;
   color: white;
   border-radius: 6px;
   font-size: 14px;
@@ -383,16 +421,17 @@ button#edit-button {
 }
 
 #date-flair {
-  background-color: #39A77F; 
+  background-color: #39A77F;
   border: 1px solid #32936F;
 }
 
 #emp-type-flair {
-   background-color: #DB5461;
-   border-color: #D43545;
+  background-color: #DB5461;
+  border-color: #D43545;
 }
 
-.post, .comment {
+.post,
+.comment {
   background-color: var(--light-mode-body-color);
   border: 0;
   width: 100%;
@@ -400,11 +439,13 @@ button#edit-button {
   max-width: 100%;
 }
 
-.post-title, .comment-title {
+.post-title,
+.comment-title {
   margin-bottom: 9px;
 }
 
-.post:hover, .comment:hover {
+.post:hover,
+.comment:hover {
   background-color: var(--light-mode-body-color);
   cursor: pointer;
 }
@@ -412,7 +453,7 @@ button#edit-button {
 .link-display {
   display: inline-flex;
   padding: 5px 9px;
-  background-color: var(--border-color); 
+  background-color: var(--border-color);
   border: 0;
   color: var(--light-mode-text-color);
   border-radius: 6px;
@@ -445,39 +486,44 @@ button#edit-button {
 
 .job-experience-header {
   display: flex;
-    justify-content: space-between;
+  justify-content: space-between;
 }
 
 .job-tag {
   display: inline-flex;
-    gap: 5px;
-    padding: 3px 7px;
-    margin: 3px 7px 0px 0px;
-    margin-bottom: 3px;
-    background-color: #93939336;
-    color: #505050;
-    border-radius: 7px;
-    font-size: .925rem;
-    position: relative;
+  gap: 5px;
+  padding: 3px 7px;
+  margin: 3px 7px 0px 0px;
+  margin-bottom: 3px;
+  background-color: #93939336;
+  color: #505050;
+  border-radius: 7px;
+  font-size: .925rem;
+  position: relative;
 }
 
 .user-activity {
   padding: 0 !important;
 }
 
-#currentEducationContainer, #currentJobContainer {
+#currentEducationContainer,
+#currentJobContainer {
   margin-bottom: .8rem;
 }
 
-.current-job h4, .current-education h4 {
+.current-job h4,
+.current-education h4 {
   margin-top: .7rem;
   margin-bottom: .8rem;
 }
 
-#currentJobContainer h4, #currentEducationContainer h4 {
+#currentJobContainer h4,
+#currentEducationContainer h4 {
   margin: 0;
 }
-#currentJobContainer, #currentJobContainer {
+
+#currentJobContainer,
+#currentJobContainer {
   display: flex;
   flex-wrap: nowrap;
   flex-direction: column;
@@ -488,7 +534,8 @@ button#edit-button {
   scrollbar-width: none;
 }
 
-#currentJobContainer>div, #currentEducationContainer>div {
+#currentJobContainer>div,
+#currentEducationContainer>div {
   padding: .55rem .6rem;
   border-radius: 10px;
 }
@@ -503,7 +550,8 @@ button#edit-button {
   align-items: center;
 }
 
-.social-display a, .social-display .material-symbols-outlined {
+.social-display a,
+.social-display .material-symbols-outlined {
   color: #0c5488 !important;
   font-size: 16px;
 }
@@ -521,18 +569,18 @@ td {
 /* Grid container layout */
 #profile {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); 
-  grid-template-rows: auto; 
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto;
   grid-template-areas:
-  "info1 info1 info1"
-  "user-bio user-bio user-bio"
-  "education education education"
-  "job job job"
-  "git-graph git-graph git-graph"
-  "git-repos git-repos git-repos"
-  "user-activity user-activity user-activity"; 
+    "info1 info1 info1"
+    "user-bio user-bio user-bio"
+    "education education education"
+    "job job job"
+    "git-graph git-graph git-graph"
+    "git-repos git-repos git-repos"
+    "user-activity user-activity user-activity";
   gap: 30px;
-  min-height: 0; 
+  min-height: 0;
   min-width: 0;
 }
 
@@ -547,7 +595,8 @@ td {
 
 @media screen and (max-width: 768px) {
 
-  .profile-info, .user-activity {
+  .profile-info,
+  .user-activity {
     background: none !important;
     padding: 0 !important;
   }
@@ -561,18 +610,21 @@ td {
 
   .profile-info .profile-picture {
     width: 30%;
-}
-   .profile-info .profile-details {
+  }
+
+  .profile-info .profile-details {
     width: 85%;
     gap: .05rem;
     display: flex;
     flex-direction: column;
   }
+
   #profile {
     padding: 15px;
     padding-top: 0;
     gap: 10px;
-    grid-template-columns: repeat(2, 1fr); /* Two columns of equal size */
+    grid-template-columns: repeat(2, 1fr);
+    /* Two columns of equal size */
     grid-template-areas:
       "info1 info1"
       "user-bio user-bio"
@@ -583,16 +635,21 @@ td {
       "user-activity user-activity";
   }
 
-  
-  
+
+
 }
 
 
-.profile-details > h2, .profile-details > p#firstname-display {
+#firstname-display {
+  margin-bottom: .4rem;
+}
+
+.profile-details>h2,
+.profile-details>p#firstname-display {
   font-weight: bold;
 }
 
-.profile-details > h2 {
+.profile-details>h2 {
   font-weight: normal;
 }
 
@@ -606,8 +663,8 @@ td {
   -webkit-scrollbar {
     display: none;
   }
-  
-  -ms-overflow-style: none; 
+
+  -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
@@ -642,6 +699,7 @@ td {
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
+
 .github-commit-repos h5 {
   padding: 5px 8px;
   font-size: .925rem;
@@ -650,6 +708,7 @@ td {
 .github-commit-graph {
   grid-area: git-graph;
 }
+
 .profile-picture {
   grid-area: picture;
   /* ... other styles ... */
@@ -658,7 +717,8 @@ td {
 .comments {
   grid-area: comments;
 }
-#profile > div.profile-info {
+
+#profile>div.profile-info {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -692,12 +752,14 @@ td {
 
 @media (prefers-color-scheme: dark) {
   body {
-      background-color: var(--dark-mode-body-color); /* Dark background for the body */
-      color: var(--dark-mode-text-color); /* Light text color for better readability */
+    background-color: var(--dark-mode-body-color);
+    /* Dark background for the body */
+    color: var(--dark-mode-text-color);
+    /* Light text color for better readability */
   }
 
   .select2-dropdown {
-      background-color: var(--dark-mode-body-color);
+    background-color: var(--dark-mode-body-color);
   }
 
   .link-display {
@@ -705,13 +767,15 @@ td {
     color: var(--dark-mode-text-color);
   }
 
-  .post, .comment {
+  .post,
+  .comment {
     background-color: var(--dark-mode-main-color);
   }
 
   .sort-option:not(:last-child) {
     border-color: var(--dark-mode-border-color);
   }
+
   .follower-stats a {
     color: var(--dark-mode-text-color);
   }
@@ -768,17 +832,19 @@ td {
     border-color: var(--dark-mode-border-color);
   }
 
-  #profile > div {
+  #profile>div {
     background-color: var(--dark-mode-body-color);
   }
 
-  .followers-info, .points-info, .communities-info {
+  .followers-info,
+  .points-info,
+  .communities-info {
     color: var(--dark-mode-text-color);
   }
 
   #profile.grid-container {
 
-      background-color: var(--dark-mode-body-color);
+    background-color: var(--dark-mode-body-color);
   }
 
   #profile a {
@@ -790,71 +856,82 @@ td {
     color: var(--dark-mode-text-color) !important;
   }
 
-  .post:hover, .comment:hover {
+  .post:hover,
+  .comment:hover {
     background-color: var(--dark-mode-hover-background-color);
   }
 
-  .profile-info, .current-job, .learning-progress, .achievements {
-      background-color: rgb(30,30,30);
+  .profile-info,
+  .current-job,
+  .learning-progress,
+  .achievements {
+    background-color: rgb(30, 30, 30);
   }
 
-  .profile-info p, .current-job p, .learning-progress p, .achievements p {
-      color: #d0d0d0; 
+  .profile-info p,
+  .current-job p,
+  .learning-progress p,
+  .achievements p {
+    color: #d0d0d0;
   }
 
 
-.profile-picture button, 
-.profile-info button, 
-.current-job button,
-#imageEditControls button {
-  background-color: var(--dark-mode-main-color); 
-  color: var(--dark-mode-text-color);
-}
-.edit-input {
-  /* Visually match the button and the field */
-  font-size: 14px;
-  padding: 5px 10px;
-  /* Vertical alignment */
-  margin-top: 5px;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
+  .profile-picture button,
+  .profile-info button,
+  .current-job button,
+  #imageEditControls button {
+    background-color: var(--dark-mode-main-color);
+    color: var(--dark-mode-text-color);
+  }
 
-/* Hover effect for buttons in dark mode */
-.profile-picture button:hover, 
-#imageEditControls button:hover, 
-.profile-info button:hover, 
-.current-job button:hover {
-  background-color: #444; 
-}
+  .edit-input {
+    /* Visually match the button and the field */
+    font-size: 14px;
+    padding: 5px 10px;
+    /* Vertical alignment */
+    margin-top: 5px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
 
-#profile > div.current-job, #profile > div.user-links, #profile > div.profile-info, #profile > div.current-education {
-  background: none;
-}
+  /* Hover effect for buttons in dark mode */
+  .profile-picture button:hover,
+  #imageEditControls button:hover,
+  .profile-info button:hover,
+  .current-job button:hover {
+    background-color: #444;
+  }
 
-/* Styling for input fields in dark mode */
-#imageEditControls input[type="text"], 
-.profile-info input[type="text"], 
-.current-job input[type="text"] {
-  background-color: #222;
-  color: #f9f9f9;
-  padding: 5px;
-  font-size: 14px;
-  border: 1px solid #555; 
-  border-radius: 5px;
-  width: 180px; 
-  margin-bottom: 10px;
-}
+  #profile>div.current-job,
+  #profile>div.user-links,
+  #profile>div.profile-info,
+  #profile>div.current-education {
+    background: none;
+  }
 
-.email-display {
-  width: 180px;
-}
+  /* Styling for input fields in dark mode */
+  #imageEditControls input[type="text"],
+  .profile-info input[type="text"],
+  .current-job input[type="text"] {
+    background-color: #222;
+    color: #f9f9f9;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    width: 180px;
+    margin-bottom: 10px;
+  }
 
-.profilePic {
-  position: relative;
-padding: auto;
-}
+  .email-display {
+    width: 180px;
+  }
+
+  .profilePic {
+    position: relative;
+    padding: auto;
+  }
 
 
 
