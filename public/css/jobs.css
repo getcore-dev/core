@@ -790,8 +790,8 @@ div .material-symbols-outlined {
   }
 
   .job-list {
-    gap: 1.1rem;
-    padding: 0 13px;
+    gap: 0;
+    padding: 0 0;
   }
 
   .title-filter label,
@@ -827,8 +827,8 @@ div .material-symbols-outlined {
     margin: 0 0px;
     border: 0;
     padding: 14px 13px;
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
+    border-radius: 0;
+    border-top: 1px solid var(--border-color);
   }
 
 }
