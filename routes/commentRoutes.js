@@ -24,6 +24,28 @@ router.post('/posts/:postId/comments', checkAuthenticated, async (req, res) => {
 });
 
 router.post(
+  "/comments/:commentId/replies",
+  checkAuthenticated,
+  async (req, res) => {
+    try {
+      const parentCommentId = req.params.commentId;
+      const userId = req.user.id; // Assuming the user ID is stored in req.user
+      const { comment } = req.body;
+
+      const replyId = `${Date.now().toString(36)}-${crypto
+        .randomBytes(3)
+        .toString("hex")}`;
+      await sql.query`INSERT INTO comments (id, post_id, parent_comment_id, user_id, comment) VALUES (${replyId}, (SELECT post_id FROM comments WHERE id = ${parentCommentId}), ${parentCommentId}, ${userId}, ${comment})`;
+
+      res.redirect("back");
+    } catch (err) {
+      console.error("Database insert error:", err);
+      res.status(500).send("Error adding reply");
+    }
+  }
+);
+
+router.post(
   '/comment/:commentId/toggle-pin',
   checkAuthenticated,
   async (req, res) => {

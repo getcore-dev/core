@@ -11,13 +11,14 @@ main {
   overflow-y: auto;
   border-right: 1px solid var(--border-color);
 }
+
 .job-details-container {
   overflow-y: auto;
 }
 
 .container {
   width: 53%;
-    max-width: 1000px;
+  max-width: 1000px;
 }
 
 .job-listing {
@@ -30,14 +31,14 @@ main {
   box-sizing: border-box;
 }
 
-.job-listing > .company-info {
+.job-listing>.company-info {
   padding: 0 14px;
   margin-bottom: .8rem;
 }
 
 .posting-company-name {
-    font-weight: normal;
-    font-size: .875rem;
+  font-weight: normal;
+  font-size: .875rem;
 }
 
 .company-info {
@@ -46,16 +47,20 @@ main {
   box-sizing: border-box;
 }
 
-.job-details > * {
-  padding: 0 14px;
-}
-.similar-jobs-company h4, .similar-jobs h4 {
+.job-details>* {
   padding: 0 14px;
 }
 
-.similar-jobs-company, .similar-jobs {
-  padding:0;
+.similar-jobs-company h4,
+.similar-jobs h4 {
+  padding: 0 14px;
 }
+
+.similar-jobs-company,
+.similar-jobs {
+  padding: 0;
+}
+
 img.company-logo {
   max-height: 55px !important;
 }
@@ -66,7 +71,9 @@ img.company-logo {
   margin: 0;
 }
 
-.company-location, .company-size, .company-industry {
+.company-location,
+.company-size,
+.company-industry {
   font-size: 0.825rem;
   color: var(--light-mode-secondary-text-color);
 }
@@ -83,8 +90,10 @@ img.company-logo {
 }
 
 .experience-level,
-.job-location, .expiry-date, 
-.posted-date, .salary-range {
+.job-location,
+.expiry-date,
+.posted-date,
+.salary-range {
   display: inline-block;
   padding: 3px 5px;
   margin-bottom: 2px;
@@ -113,42 +122,44 @@ img.company-logo {
   margin: .9rem 0;
 }
 
-  div.similar-jobs-list {
-    display: flex;
-    flex-wrap: nowrap; /* Prevent wrapping of job elements */
-    flex-direction: column;
-    padding: 0 14px;
-    gap: 1.5rem; 
-    -webkit-scrollbar {
-      display: none;
-    }
-    
-    -ms-overflow-style: none; 
-    scrollbar-width: none;
-  }
+div.similar-jobs-list {
+  display: flex;
+  flex-wrap: nowrap;
+  /* Prevent wrapping of job elements */
+  flex-direction: column;
+  padding: 0 14px;
+  gap: 1.5rem;
 
-  div.similar-jobs-list::-webkit-scrollbar {
+  -webkit-scrollbar {
     display: none;
   }
 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
-  .similar-job:hover .company-info a {
-    text-decoration: underline;
-  }
+div.similar-jobs-list::-webkit-scrollbar {
+  display: none;
+}
 
-  .job-skills {
-    margin-bottom: 1.1rem;
-  }
 
-  div.similar-job {
-    flex-direction: column;
-    cursor: pointer;
-    display: flex;
-    background-color: #fafbfc;
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    padding: 13px 17px;
-    position: relative;
+.similar-job:hover .company-info a {
+  text-decoration: underline;
+}
+
+.job-skills {
+  margin-bottom: 1.1rem;
+}
+
+div.similar-job {
+  flex-direction: column;
+  cursor: pointer;
+  display: flex;
+  background-color: var(--light-mode-main-color);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  padding: 13px 17px;
+  position: relative;
 }
 
 .job-info-flairs {
@@ -161,7 +172,8 @@ img.company-logo {
 }
 
 
-.similar-jobs-company, .similar-jobs {
+.similar-jobs-company,
+.similar-jobs {
   margin-top: 15px;
   margin-bottom: 1.1rem;
 }
@@ -170,12 +182,13 @@ div.similar-job h4 {
   margin: 0 !important;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Number of lines you want */
+  -webkit-line-clamp: 2;
+  /* Number of lines you want */
   -webkit-box-orient: vertical;
   max-width: 80%;
 }
 
-.interact-buttons > div {
+.interact-buttons>div {
   flex-grow: 1;
 }
 
@@ -183,7 +196,8 @@ div.similar-job h4 {
   display: flex;
 }
 
-.interact-buttons #regular-button-normal, .interact-buttons #submit-button-normal {
+.interact-buttons #regular-button-normal,
+.interact-buttons #submit-button-normal {
   width: -webkit-fill-available;
 }
 
@@ -194,7 +208,8 @@ div.similar-job h4 {
   margin-top: 0;
 }
 
-.job-details > div > p, .job-details > div > ul {
+.job-details>div>p,
+.job-details>div>ul {
   color: #616161;
   font-size: .925rem;
   line-height: 1.5;
@@ -226,14 +241,14 @@ div.similar-job h4 {
 
 .job-tags {
   display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 7px;
-    margin-bottom: .4rem;
-    flex-wrap: wrap;
-    box-sizing: border-box;
-    max-width: 100%;
-    overflow-x: auto;
+  flex-direction: row;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: .4rem;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 
@@ -274,38 +289,41 @@ div.similar-job h4 {
   display: flex;
   flex-direction: column;
 }
+
 @media (prefers-color-scheme: dark) {
   .job-listing {
     background-color: var(--dark-mode-body-color);
   }
 
-  div.similar-job { 
+  div.similar-job {
     background: var(--dark-mode-body-color);
     border-color: var(--dark-mode-border-color)
-
   }
 
   .company-location {
     color: var(--dark-mode-secondary-text-color);
   }
 
-  .job-details > div > p, .job-details > div > ul {
+  .job-details>div>p,
+  .job-details>div>ul {
     color: #b1b1b1;
   }
+
   .container {
     border-color: var(--dark-mode-border-color);
   }
 
   .company-name {
-      color: var(--dark-mode-text-color);
+    color: var(--dark-mode-text-color);
   }
 }
-@media screen and (max-width: 600px) {
-main {
-  height: calc(100dvh - var(--mobile-navbar-height) - var(--mobile-second-navbar-height)) !important;
-}
 
-.container {
-  width: 100%;
-}
+@media screen and (max-width: 600px) {
+  main {
+    height: calc(100dvh - var(--mobile-navbar-height) - var(--mobile-second-navbar-height)) !important;
+  }
+
+  .container {
+    width: 100%;
+  }
 }
