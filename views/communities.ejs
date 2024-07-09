@@ -89,7 +89,7 @@
               </div>
               <div class="community-buttons">
                 <button class="submit-button-normal join-btn" id="communityActionBtn" data-action="join">Join</button>
-                <button class="mod-btn regular-button-normal" id="communityActionBtn" style="display: none;pointer-events: none;" onclick="window.location.href='/c/<%= community.shortname %>/admin'">Moderator Tools</button>
+                <button class="mod-btn regular-button-normal" id="communityActionBtn" style="display: none;pointer-events: none;" onclick="window.location.href='/networks/<%= community.shortname %>/admin'">Moderator Tools</button>
               </div>
               <div class="community-picture">
               </div>
@@ -291,7 +291,7 @@
                   <span class="material-symbols-outlined">sort</span>
                 </button>
 <% if (user) { %>
-  <button class="header-button" id="post-button" onclick="window.location.href='<%= communityId ? `/c/${community.shortname}/create` : '/create' %>'">
+  <button class="header-button" id="post-button" onclick="window.location.href='<%= communityId ? `/networks/${community.shortname}/create` : '/create' %>'">
     <span class="material-symbols-outlined">add</span>
   </button>
 <% } %>
@@ -411,7 +411,7 @@
             usernameLink.innerHTML = `
   <p>
   ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="font-size: .95rem;">push_pin</span>' : ''}
-    <a id="post-username" class="bold secondary-text" href="/user/${post.username}">${post.username}</a> in <a class="secondary-text" href="/c/${post.community_shortname}">/${post.community_shortname}</a>
+    <a id="post-username" class="bold secondary-text" href="/user/${post.username}">${post.username}</a> in <a class="secondary-text" href="/networks/${post.community_shortname}">/${post.community_shortname}</a>
     ${post.verified ? '' : ''}
   </p> 
   <p>
@@ -447,7 +447,7 @@
               dropdown.innerHTML = `
     <button class="dropdown-item" onclick="window.location.href='/posts/${post.id}'">View Post</button>
     <button class="dropdown-item" onclick="window.location.href='/user/${post.username}'">Visit @${post.username}</button>
-    <button class="dropdown-item" onclick="window.location.href='/c/${post.community_shortname}'">Visit /${post.community_shortname}</button>
+    <button class="dropdown-item" onclick="window.location.href='/networks/${post.community_shortname}'">Visit /${post.community_shortname}</button>
     <button class="dropdown-item" onclick="share('${post.title}','','https://c-ore.dev/posts/${post.id}')">Share</button>
   `;
               threeDotsDiv.appendChild(dropdown);
@@ -659,7 +659,7 @@
             shareButton.innerHTML = '✉️';
             shareButton.onclick = (event) => {
               event.stopPropagation();
-              share(post.title, post.content, `https://c-ore.dev/posts/${post.id}`);
+              share(post.title, "", `https://c-ore.dev/posts/${post.id}`);
             };
             buttonsDiv.appendChild(shareButton);
 
@@ -735,7 +735,7 @@
 
       function toggleCommunityMembership() {
         const action = communityActionBtn.dataset.action; // "join" or "leave"
-        const url = `/c/<%= community.shortname %>/${action}`;
+        const url = `/networks/<%= community.shortname %>/${action}`;
 
         fetch(url, {
             method: "POST",
@@ -780,7 +780,7 @@
 
       // Function to check membership and update button
       function checkMembershipAndUpdateButton() {
-        fetch(`/c/<%= community.shortname %>/isMember`)
+        fetch(`/networks/<%= community.shortname %>/isMember`)
           .then(response => response.json())
           .then(data => {
             if (data.isMember) {
@@ -908,12 +908,8 @@
     document.addEventListener("DOMContentLoaded", () => {
       const postsContainer = document.getElementById('posts-container');
       const communityId = postsContainer.dataset.communityId;
-      try {
-        fetchJobPreviews();
-      } catch (error) {
-        console.error('Error fetching job previews:', error);
-      }
       fetchAndDisplayPosts(communityId);
+
     });
   </script>
 </body>

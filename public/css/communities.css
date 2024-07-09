@@ -1326,6 +1326,11 @@ button.see-more {
     border-color: var(--dark-mode-border-color);
   }
 
+  .comment-button-left,
+  .reaction-button-left {
+    border-color: #333333;
+  }
+
   .communities a {
     color: var(--dark-mode-text-color);
   }

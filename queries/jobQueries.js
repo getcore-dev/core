@@ -585,6 +585,19 @@ const jobQueries = {
     }
   },
 
+  simpleGetJobsCount: async () => {
+    try {
+      const result = await sql.query`
+        SELECT COUNT(*) as count
+        FROM JobPostings
+      `;
+      return result.recordset[0].count;
+    } catch (error) {
+      console.error('Error in getJobsCount:', error);
+      throw error;
+    }
+  },
+
   getRecentJobCount: async () => {
     try {
       const result = await sql.query(`
@@ -1246,8 +1259,11 @@ const jobQueries = {
   getUserJobExperience: async (userId) => {
     try {
       const result = await sql.query`
-        SELECT * FROM job_experiences WHERE userId = ${userId}
-      `;
+      SELECT je.*, c.logo
+      FROM job_experiences je
+      JOIN companies c ON je.companyName = c.name
+      WHERE je.userId = ${userId}
+    `;
 
       return result.recordset;
     } catch (err) {

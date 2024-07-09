@@ -489,6 +489,17 @@ button#edit-button {
   justify-content: space-between;
 }
 
+#currentJobContainer>div {
+  display: flex;
+  flex-direction: row;
+  gap: 1.2rem;
+  align-items: center;
+}
+
+.job-experience-body {
+  width: 100%;
+}
+
 .job-tag {
   display: inline-flex;
   gap: 5px;
@@ -628,9 +639,9 @@ td {
     grid-template-areas:
       "info1 info1"
       "user-bio user-bio"
+      "git-graph git-graph"
       "education education"
       "job job"
-      "git-graph git-graph"
       "git-repos git-repos"
       "user-activity user-activity";
   }

@@ -11,9 +11,7 @@
        </div>
        <script>
          function fetchJobPreviews() {
-           let currentPage = 1;
-           const itemsPerPage = 5;
-           fetch(`/api/randomJobs?page=${currentPage}&limit=${itemsPerPage}`)
+           fetch(`/api/randomJobs`)
              .then(response => response.json())
              .then(data => {
                const jobs = data.jobPostings;

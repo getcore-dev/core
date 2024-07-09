@@ -224,7 +224,7 @@ class JobProcessor {
   generatePrompt(link, textContent) {
     return `
       Please extract the following information from this job posting data: ${textContent}
-      - title (e.g., Software Engineer, Data Analyst, include if there is a specific team or project in the title like :'Software Engineer, Frontend')
+      - title (e.g., Software Engineer, Data Analyst, include if there is a specific team or project in the title like :'Software Engineer, Frontend'. if the title is not something related to computer science or software engineering, please DO NOT include it)
       - company_name NVARCHAR(50) (as simple as possible and you can tell the company name from the job posting link: ${link})
       - company_description NVARCHAR(MAX)(write a short paragraph about the company, where they're located, their mission, etc)
       - company_industry (e.g., Technology, Healthcare, Finance, etc.)

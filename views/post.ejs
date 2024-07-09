@@ -66,7 +66,7 @@
                   <span class="post-timestamp secondary-text" style="text-decoration: none;">
                     in
                   </span>
-                  <a id="community-header-text" href="/c/<%= post.community.shortname %>" style="text-decoration: none;">
+                  <a id="community-header-text" href="/networks/<%= post.community.shortname %>" style="text-decoration: none;">
                     /<%= post.community.shortname %>
                   </a>
                 </span>
@@ -776,7 +776,7 @@
                       <span id="secondary-text">
                         in
                       </span>
-                      <a style="color: <%= similarPost.community_color %>;" href="/c/<%= similarPost.community_shortname %>" class="community">/<%= similarPost.community_shortname %></a>
+                      <a style="color: <%= similarPost.community_color %>;" href="/networks/<%= similarPost.community_shortname %>" class="community">/<%= similarPost.community_shortname %></a>
                       <span id="secondary-text">
                         <%= formatDate(similarPost.created_at) %>
                       </span>
@@ -1104,20 +1104,20 @@
         });
       });
     });
-    $(document).ready(function() {
+    $(document).ready(function () {
       var easyMDE = new EasyMDE({
         element: document.getElementById('comment-form-textarea'),
         placeholder: 'Reply to <%= post.user.username %>'
 
       });
 
-      easyMDE.codemirror.on("focus", function() {
+      easyMDE.codemirror.on("focus", function () {
         $('.button-container').show();
         $('.editor-toolbar').show();
       });
 
 
-      $('#cancel-button-normal').on('click', function() {
+      $('#cancel-button-normal').on('click', function () {
         easyMDE.value(''); // Clear the content of the EasyMDE editor
         $('.button-container').hide();
         $(this).closest('.input-container').find('textarea').hide(); // Hide the textarea within the input-container
@@ -1126,7 +1126,7 @@
       });
 
       // Attach the submit event handler to the form
-      $('comment-form-textarea').on('submit', function(e) {
+      $('comment-form-textarea').on('submit', function (e) {
         // Check if the EasyMDE editor is empty
         if (!easyMDE.value().trim()) {
           e.preventDefault(); // Prevent form submission
@@ -1165,15 +1165,15 @@
     }
 
     // prevent clicking through dropdown content
-    document.querySelectorAll('.dropdown-content').forEach(function(dropdown) {
-      dropdown.addEventListener('click', function(event) {
+    document.querySelectorAll('.dropdown-content').forEach(function (dropdown) {
+      dropdown.addEventListener('click', function (event) {
         event.stopPropagation();
       });
     });
 
     function closeAllDropdowns() {
       const allDropdowns = document.querySelectorAll('.dropdown-content');
-      allDropdowns.forEach(function(dropdown) {
+      allDropdowns.forEach(function (dropdown) {
         dropdown.style.display = 'none';
       });
     }
@@ -1208,10 +1208,10 @@
       replyButtons.style.display = 'none';
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       var editPostButton = document.getElementById('editPostButton');
       if (editPostButton) {
-        editPostButton.addEventListener('click', function() {
+        editPostButton.addEventListener('click', function () {
           console.log('Edit button clicked');
           var postId = this.dataset.postId;
           window.location.href = '/posts/' + postId + '/edit';
@@ -1240,11 +1240,11 @@
         // you can add the following lines:
         if (isDisplayed) {
           var allNested = nestedComments.querySelectorAll('.nested-comment');
-          allNested.forEach(function(nested) {
+          allNested.forEach(function (nested) {
             nested.style.display = 'none'; // Hide all deeper nested comments
             // Reset all chevrons in deeper nested comments
             var innerChevrons = nested.previousElementSibling.querySelectorAll('.chevron');
-            innerChevrons.forEach(function(chevron) {
+            innerChevrons.forEach(function (chevron) {
               chevron.textContent = 'chevron_right';
             });
           });
@@ -1432,7 +1432,7 @@
       event.target.style.height = 'inherit';
       event.target.style.height = `${event.target.scrollHeight}px`;
     }
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       const posts = document.querySelectorAll('.post-container');
 
       posts.forEach(post => {
@@ -1443,7 +1443,7 @@
           // Content is longer than the max height
           viewMore.style.display = 'block';
 
-          viewMore.addEventListener('click', function() {
+          viewMore.addEventListener('click', function () {
             if (content.style.maxHeight) {
               // If max-height is set, remove it
               content.style.maxHeight = null;
@@ -1458,10 +1458,10 @@
       });
     });
 
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       var postContents = document.querySelectorAll('.post-content');
 
-      postContents.forEach(function(postContent) {
+      postContents.forEach(function (postContent) {
         if (postContent.scrollHeight > postContent.clientHeight) {
           postContent.classList.add('overflow');
         }
@@ -1494,12 +1494,12 @@
 
       function closeAllDropdowns() {
         const allDropdowns = document.querySelectorAll('.reaction-popup');
-        allDropdowns.forEach(function(dropdown) {
+        allDropdowns.forEach(function (dropdown) {
           dropdown.style.display = 'none';
         });
       }
 
-      document.addEventListener('click', function(event) {
+      document.addEventListener('click', function (event) {
         const withinBoundaries = event.composedPath().some(
           element => element.classList && element.classList.contains('reaction-popup') || element.classList && element.classList.contains('mainReactionButton')
         );

@@ -121,7 +121,7 @@
                 </div>
                 <div class="username">
                   <a class="username-link" href="/user/<%= post.author_username %>"><strong><%= post.author_username %></strong></a>
-                  <a class="community" href="/c/<%= post.community_name %>"></a>
+                  <a class="community" href="/networks/<%= post.community_name %>"></a>
                   <div class="post-date" id="secondary-text">
                     <span style="color:<%= post.community_color %>;"><%= post.community_name %></span>
                     <span> • <%= new Date(post.created_at).toLocaleDateString() %> • <%= post.views %> views</span>

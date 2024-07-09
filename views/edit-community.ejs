@@ -16,7 +16,7 @@
   <%- include('partials/navbar', { pagePath: 'jobs' }) %>
 
   <h1>Edit Community</h1>
-  <form action="/c/community-update" method="POST">
+  <form action="/networks/community-update" method="POST">
     <input type="hidden" name="id" value="<%= community.id %>">
     <div>
       <label for="description">Description:</label>
@@ -68,16 +68,16 @@
     <button type="submit">Update Community</button>
   </form>
   <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
       $('#banList').select2({
         tags: true,
         tokenSeparators: [',', ' '],
         ajax: {
           url: '/autocomplete/users',
           dataType: 'json',
-          processResults: function(data) {
+          processResults: function (data) {
             return {
-              results: data.map(function(item) {
+              results: data.map(function (item) {
                 return {
                   id: item.username,
                   text: item.username
@@ -92,9 +92,9 @@
         ajax: {
           url: '/autocomplete/users',
           dataType: 'json',
-          processResults: function(data) {
+          processResults: function (data) {
             return {
-              results: data.map(function(item) {
+              results: data.map(function (item) {
                 return {
                   id: item.id,
                   text: item.username

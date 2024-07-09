@@ -82,7 +82,7 @@
               Openings
             </div>
           </a>
-          <a href="/c">
+          <a href="/networks/">
             <div class="menu-item">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 group
@@ -280,7 +280,7 @@
       }  else if (path.startsWith('/search') && typeof searchTerm !== 'undefined') {
         return `Search / ${searchTerm}`;
       }
-      else if (path.startsWith('/c/') && typeof community !== 'undefined') {
+      else if (path.startsWith('/networks/') && typeof community !== 'undefined') {
         return `/${community.shortname}`;
       } else if (path.startsWith('/jobs/') && typeof job !== 'undefined') {
         return `Openings / ${job.title}`;
@@ -317,7 +317,7 @@
                 Home</a>
             </li>
             <li>
-              <a href="/c">
+              <a href="/networks/">
                 Communities</a>
             </li>
             <li>
@@ -341,7 +341,7 @@
           </ul>
         </li>
         <li class="dropdown">
-          <a href="/c" class="navbar-button <%= isActive('/c') ? 'active' : '' %>" style="display: block;">
+          <a href="/networks/" class="navbar-button <%= isActive('/c') ? 'active' : '' %>" style="display: block;">
             <span class="material-symbols-outlined">
               group
             </span>
@@ -353,7 +353,7 @@
             <span class="material-symbols-outlined">
               work
             </span>
-            Openings 
+            Openings
           </a>
         </li>
       </ul>
@@ -533,7 +533,7 @@
               const communityElement = document.createElement('div');
               communityElement.className = 'communities active';
               communityElement.onclick = () => {
-                window.location.href = `/c/${community.shortname}`;
+                window.location.href = `/networks/${community.shortname}`;
               };
 
 
@@ -559,7 +559,7 @@
               const communityElement = document.createElement('div');
               communityElement.className = 'communities';
               communityElement.onclick = () => {
-                window.location.href = `/c/${community.shortname}`;
+                window.location.href = `/networks/${community.shortname}`;
               };
 
               const tint = community.community_color;
@@ -595,7 +595,7 @@
 
   // if the user is not on mobile, get all communities
 
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const banner = document.getElementById('latestCommitBanner');
     const closeButton = document.getElementById('closeCommitBanner');
 
@@ -729,7 +729,7 @@
 
   <% } %>
 
-  document.addEventListener('click', function(event) {
+  document.addEventListener('click', function (event) {
     var content = document.getElementById("menu-content");
     var overlay = document.getElementById("overlay");
     var menuButton = document.getElementById("menu-button");

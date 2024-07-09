@@ -141,7 +141,7 @@ function blendColors(color1, color2, ratio) {
               <div class="username">
                 <a href="/user/<%= post.username %>" class="username-link"><strong><%= post.username %></strong></a>
                 <div class="post-date" id="secondary-text">
-                  <a style="color: <%= post.community_color %>;" href="/c/<%= post.communities_id %>" class="community"><%= post.community_name %></a>
+                  <a style="color: <%= post.community_color %>;" href="/networks/<%= post.communities_id %>" class="community"><%= post.community_name %></a>
 
                   <%= formatDate(post.created_at) %> • <%= post.views %> views
                 </div>

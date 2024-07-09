@@ -89,7 +89,7 @@ app.use('/jobs', jobRoutes);
 app.use('/api', apiRoutes);
 app.use('/notifications', notificationRoutes);
 app.use('/favorites', favoriteRoutes);
-app.use('/c', communityRoutes);
+app.use('/networks', communityRoutes);
 app.use(generalRoutes);
 
 app.use((req, res, next) => {

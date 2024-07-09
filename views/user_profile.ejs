@@ -31,8 +31,6 @@
   .link-display,
   #edit-button,
   #followButton,
-  #currentJobContainer>div,
-  #currentEducationContainer>div,
   .github-commit-repos,
   .post,
   .comment {
@@ -505,7 +503,14 @@
       container.appendChild(message);
     }
 
-
+    function formatDate2(dateString) {
+      const options = {
+        year: 'numeric',
+        month: 'short'
+      };
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', options);
+    }
 
     document.addEventListener('DOMContentLoaded', function () {
       const currentJobContainer = document.getElementById('currentJobContainer');
@@ -513,8 +518,15 @@
 
       function displayJobExperience(experiences) {
         experiences.forEach(experience => {
+          const formattedStartDate = formatDate2(experience.startDate);
+          const formattedEndDate = experience.endDate ? formatDate2(experience.endDate) : 'Present';
+
           const jobElement = document.createElement('div');
           jobElement.innerHTML = `
+          <div class="job-experience-image">
+            <img class="thumbnail-regular thumbnail-small" src=${experience.logo} alt="Job Experience" />
+          </div>
+          <div class="job-experience-body">
             <div class="job-experience-header">
             <% if (otheruser.settings_PrivateJobNames) { %>
               <h4>Company Name Hidden</h4>
@@ -524,7 +536,7 @@
             <% } %>
 
                   <div class="date-range">
-                    <p>${new Date(experience.startDate).toLocaleDateString()} - ${experience.endDate ? new Date(experience.endDate).toLocaleDateString() : 'Present'}</p>
+      <p>${formattedStartDate} - ${formattedEndDate}</p>
                   </div>
                 </div>
                 <h4>${experience.title}</h4>
@@ -534,6 +546,7 @@
                   const trimmedTag = tag.trim();
                   return `<span class="job-tag" onclick="window.location.href='/tags/${encodeURIComponent(trimmedTag)}'">${trimmedTag}</span>`;
                 }).join('') : ''}</p>
+            </div>
               `;
           currentJobContainer.appendChild(jobElement);
         });
