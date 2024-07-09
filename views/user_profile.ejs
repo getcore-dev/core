@@ -235,7 +235,9 @@
             <h4>Education</h4>
             <% if (user && otheruser.username == user.username) { %>
             <button class="no-bg no-border" onclick="window.location.href='/edit-education-experience'">
-              Edit Education
+              <span class="material-symbols-outlined">
+                edit_square
+              </span> Edit
             </button>
             <% } %>
           </div>
@@ -245,7 +247,9 @@
           <div class="current-job-header">
             <h4>Experience</h4> <% if (user && otheruser.username == user.username) { %>
             <button class="no-bg no-border" onclick="window.location.href='/edit-experience'">
-              Edit Experience
+              <span class="material-symbols-outlined">
+                edit_square
+              </span> Edit
             </button>
             <% } %>
           </div>

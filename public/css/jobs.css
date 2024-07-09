@@ -22,8 +22,8 @@ body {
 div.job-buttons {
   display: flex;
   flex-direction: row;
-  gap: 1rem;
-  margin-bottom: 1.3rem;
+  gap: .5rem;
+  margin-bottom: .6rem;
 }
 
 h1 {
@@ -385,11 +385,7 @@ div.jobs-container>div.job-list>.job {
 
 .filter-container {
   text-align: center;
-  margin-bottom: 2.6rem;
-}
-
-.top-tags {
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.6rem;
 }
 
 .job-list {
@@ -469,7 +465,7 @@ div.jobs-container>div.job-list>.job {
   width: 100%;
   padding: 0.7rem 1.15rem;
   margin: 0;
-  margin-bottom: .9rem;
+  margin-bottom: 0;
   box-sizing: border-box;
   background: var(--light-mode-body-color);
   border: 1px solid var(--border-color);
@@ -672,6 +668,7 @@ select {
 div .material-symbols-outlined {
   font-size: 15px;
   vertical-align: -2px;
+  padding-right: 8px;
 }
 
 
@@ -826,7 +823,7 @@ div .material-symbols-outlined {
   }
 
   .jobs-header {
-    margin-bottom: 1.2rem;
+    margin-bottom: 1rem;
   }
 
   div.jobs-container>div.job-list>.job {

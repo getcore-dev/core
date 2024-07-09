@@ -304,11 +304,10 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
               </a>
               </h3>
               <div class="company-information">
-              <p id="secondary-text" class="company-size"> 
-              <span class="material-symbols-outlined">
-group
-</span>${job.company_size || 'Unknown'} employees
-            </p>
+<p id="secondary-text" class="company-size">
+  <span class="material-symbols-outlined">group</span>
+  ${job.company_size ? job.company_size.toString().toLowerCase().includes('employees') ? job.company_size : `${job.company_size} employees` : 'Unknown employees'}
+</p>
             </div>
             </div>
           </div>

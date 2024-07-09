@@ -160,14 +160,14 @@ function setupFilter(filterType, values) {
     filterContainer.appendChild(input);
 
     if (filterType === 'title') {
+      const jobButtonsDiv = document.querySelector('.job-buttons');
       const showFiltersButton = document.createElement('button');
-      showFiltersButton.className = 'show-filters regular-button';
-      showFiltersButton.style.width = '100%';
+      showFiltersButton.className = 'show-filters null-button-normal';
       showFiltersButton.innerHTML = 'Refine Search';
       showFiltersButton.addEventListener('click', () => {
         sortOptions.classList.toggle('show');
       });
-      filterContainer.appendChild(showFiltersButton);
+      jobButtonsDiv.appendChild(showFiltersButton);
 
       /*
       const clearButton = document.createElement("button");

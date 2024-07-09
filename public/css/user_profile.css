@@ -126,6 +126,12 @@ main {
   background: none;
 }
 
+.current-job-header .material-symbols-outlined,
+.current-education-header .material-symbols-outlined {
+  vertical-align: -2px;
+  font-size: 14px;
+}
+
 .user-bio {
   padding: 0 !important;
 }

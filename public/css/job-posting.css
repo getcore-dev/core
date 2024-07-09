@@ -33,6 +33,7 @@ main {
 
 .job-listing>.company-info {
   padding: 0 14px;
+  margin-top: 1rem;
   margin-bottom: .8rem;
 }
 
@@ -188,10 +189,6 @@ div.similar-job h4 {
   max-width: 80%;
 }
 
-.interact-buttons>div {
-  flex-grow: 1;
-}
-
 .interact-buttons form {
   display: flex;
 }
@@ -223,11 +220,9 @@ div.similar-job h4 {
 
 .interact-buttons {
   display: flex;
-  flex-direction: row;
   gap: 1rem;
-  justify-content: space-between;
   margin: .35rem 0;
-  margin-bottom: 2.25rem;
+  margin-bottom: 1.55rem;
 }
 
 .job-details {

@@ -25,7 +25,7 @@
     <template id="educationExperienceTemplate">
       <div class="educationExperience">
         <input type="hidden" name="id">
-        <label for="institutionName">Institution Name:</label>
+        <label for="institutionName">Institution Name</label>
         <input type="text" name="institutionName" required>
 
         <label for="degree">Degree:</label>
@@ -61,7 +61,7 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const educationExperienceContainer = document.getElementById('educationExperienceContainer');
       const addEducationExperienceButton = document.getElementById('addEducationExperience');
       const educationExperienceTemplate = document.getElementById('educationExperienceTemplate');
@@ -79,7 +79,7 @@
         });
 
         const removeButton = newExperience.querySelector('.removeEducationExperience');
-        removeButton.addEventListener('click', function() {
+        removeButton.addEventListener('click', function () {
           removeButton.closest('.educationExperience').remove();
         });
 
@@ -102,9 +102,21 @@
           'activities'
         ];
 
+        const fieldNames = {
+          institutionName: 'Institution Name',
+          degree: 'Degree',
+          fieldOfStudy: 'Field of Study',
+          isCurrent: 'Currently Enrolled',
+          startDate: 'Start Date',
+          endDate: 'End Date',
+          description: 'Description',
+          grade: 'Grade',
+          activities: 'Activities'
+        };
+
         fields.forEach(field => {
           const p = document.createElement('p');
-          p.innerHTML = `<strong>${field.charAt(0).toUpperCase() + field.slice(1)}:</strong> ${experienceData[field] || ''}`;
+          p.innerHTML = `<strong>${fieldNames[field]}:</strong> ${experienceData[field] || ''}`;
           p.classList.add(field);
           div.appendChild(p);
         });
@@ -119,7 +131,7 @@
         editButton.classList.add('editEducationExperience');
         editButton.classList.add('regular-button-normal');
 
-        editButton.addEventListener('click', function() {
+        editButton.addEventListener('click', function () {
           div.remove();
           addExperience(experienceData);
           div.appendChild(removeButton);
@@ -132,7 +144,7 @@
         removeButton.classList.add('removeEducationExperience');
         removeButton.classList.add('cancel-button-normal');
 
-        removeButton.addEventListener('click', function() {
+        removeButton.addEventListener('click', function () {
           div.remove();
         });
         buttonContainer.appendChild(removeButton);
@@ -140,7 +152,7 @@
         educationExperienceContainer.appendChild(div);
       }
 
-      addEducationExperienceButton.addEventListener('click', function() {
+      addEducationExperienceButton.addEventListener('click', function () {
         addExperience(); // Add new experience in editable form
       });
 
@@ -156,7 +168,7 @@
           console.error('Error fetching education experience data:', error);
         });
 
-      educationExperienceForm.addEventListener('submit', function(event) {
+      educationExperienceForm.addEventListener('submit', function (event) {
         event.preventDefault();
 
         const experiences = [];

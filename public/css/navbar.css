@@ -44,6 +44,7 @@ body {
   margin: 0;
   padding-top: var(--navbar-height);
   font-family: var(--font-family);
+  color: var(--light-mode-text-color);
 }
 
 h1,
@@ -1280,6 +1281,7 @@ input {
   border: none;
   width: auto;
   flex: 0;
+  flex-grow: 0;
   font-weight: 550;
   margin: 0;
   border-radius: 9px;
@@ -1292,7 +1294,6 @@ input {
   text-decoration: none;
   cursor: pointer;
   padding: .3rem .15rem;
-  flex-grow: 1;
   cursor: pointer;
   text-wrap: nowrap;
 }
