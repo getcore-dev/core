@@ -126,7 +126,9 @@ main {
   background: none;
 }
 
-
+.user-bio {
+  padding: 0 !important;
+}
 
 #profile h1 {
   text-align: center;
@@ -286,9 +288,7 @@ main {
 }
 
 .profile-picture button,
-.profile-info button,
-.current-job button,
-.current-education button {
+.profile-info button {
   background-color: var(--light-mode-body-color);
   /* Same as navbar button */
   color: var(--light-mode-text-color);
@@ -523,14 +523,28 @@ button#edit-button {
 }
 
 .current-job h4,
-.current-education h4 {
+.current-education h4,
+.github-commit-graph h4 {
   margin-top: .7rem;
   margin-bottom: .8rem;
+}
+
+.github-commit-graph h4 {
+  margin-bottom: 0;
+}
+
+.github-commit-graph p {
+  margin-bottom: 1.2rem;
 }
 
 #currentJobContainer h4,
 #currentEducationContainer h4 {
   margin: 0;
+}
+
+.current-job-header {
+  display: flex;
+  justify-content: space-between;
 }
 
 #currentJobContainer,
@@ -703,6 +717,11 @@ td {
   width: 10px;
   margin: 1px;
   border-radius: 2px;
+}
+
+.current-job button,
+.current-education button {
+  color: var(--active-indicator-color);
 }
 
 .github-commit-repos {
@@ -889,7 +908,6 @@ td {
 
   .profile-picture button,
   .profile-info button,
-  .current-job button,
   #imageEditControls button {
     background-color: var(--dark-mode-main-color);
     color: var(--dark-mode-text-color);

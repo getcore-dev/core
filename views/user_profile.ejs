@@ -95,8 +95,6 @@
     .link-display,
     #edit-button,
     #followButton,
-    #currentJobContainer>div,
-    #currentEducationContainer>div,
     .github-commit-repos,
     .post,
     .comment {
@@ -151,10 +149,10 @@
               <% } %>
 
               <div class="followers-info">
-                <a class="tag" href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; align-items: center;gap: 5px;"> <span class="material-symbols-outlined">
+                <a href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; align-items: center;gap: 5px;"> <span class="material-symbols-outlined">
                     person
                   </span><span id="followerCount"> <%= otheruser.followerCount %> Followers </a></span>
-                <a class="tag" href="/user/<%= otheruser.username %>/following" style="display: flex; align-items: center;flex-direction:row; gap: 5px;">
+                <a href="/user/<%= otheruser.username %>/following" style="display: flex; align-items: center;flex-direction:row; gap: 5px;">
                   <span class="material-symbols-outlined">
                     person
                   </span><span id="followCount"> <%= otheruser.followingCount %> Following</a></span>
@@ -233,25 +231,28 @@
           </p>
         </div>
         <div class="current-education" style="background:none !important; padding: 0;">
-          <h4>Education</h4>
+          <div class="current-job-header">
+            <h4>Education</h4>
+            <% if (user && otheruser.username == user.username) { %>
+            <button class="no-bg no-border" onclick="window.location.href='/edit-education-experience'">
+              Edit Education
+            </button>
+            <% } %>
+          </div>
           <div id="currentEducationContainer"></div>
-          <% if (user && otheruser.username == user.username) { %>
-          <button id="edit-button" onclick="window.location.href='/edit-education-experience'" style="margin-bottom: auto;">
-            Add Education
-          </button>
-          <% } %>
         </div>
         <div class="current-job" style="background:none !important; padding: 0;">
-          <h4>Experience</h4>
+          <div class="current-job-header">
+            <h4>Experience</h4> <% if (user && otheruser.username == user.username) { %>
+            <button class="no-bg no-border" onclick="window.location.href='/edit-experience'">
+              Edit Experience
+            </button>
+            <% } %>
+          </div>
           <div id="currentJobContainer"></div>
-          <% if (user && otheruser.username == user.username) { %>
-          <button id="edit-button" onclick="window.location.href='/edit-experience'" style="margin-bottom: auto;">
-            Add Experience
-          </button>
-          <% } %>
         </div>
         <div class="github-commit-graph">
-          <h5>GitHub Activity</h5>
+          <h4>GitHub Activity</h4>
           <div id="commit-graph-container"></div>
         </div>
         <div class="github-commit-repos">

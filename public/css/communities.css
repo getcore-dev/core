@@ -1446,6 +1446,15 @@ button.see-more {
     /* Light text */
   }
 
+  .reaction-popup {
+    background-color: var(--dark-mode-main-color);
+    border: 1px solid var(--dark-mode-border-color);
+  }
+
+  .reaction-popup button {
+    color: var(--dark-mode-text-color);
+  }
+
   /* Other elements adjustments */
   .title {
     color: #fff;
