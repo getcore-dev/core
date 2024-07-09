@@ -1260,7 +1260,7 @@ input {
   width: auto;
   flex: 0;
   margin: 0;
-  border-radius: 9px;
+  border-radius: 6px;
   background: #1675353d;
   border: 1px solid #4b9263;
   color: #4b9263;
@@ -1292,9 +1292,9 @@ input {
 #null-button,
 .null-button-normal,
 #null-button-normal {
-  background: #88888836;
-  color: #161616;
-  border: 1px solid #333333;
+  background: #e6eaf3;
+  color: #7f7f7f;
+  border: 1px solid #c2c4cb;
 }
 
 .margin-v-auto {
@@ -1327,6 +1327,10 @@ input {
   background: #007bff36;
   color: #1463b7;
   border: 1px solid #1463b7;
+}
+
+.bold {
+  font-weight: 500 !important;
 }
 
 .select2-container--open .select2-dropdown--above {
@@ -1742,6 +1746,15 @@ input {
     background-color: var(--dark-mode-main-color) !important;
     color: var(--dark-mode-text-color);
     border-color: var(--dark-mode-border-color) !important;
+  }
+
+  .null-button,
+  #null-button,
+  .null-button-normal,
+  #null-button-normal {
+    background: #ffffff0f;
+    color: #161616;
+    border: 1px solid #333333;
   }
 
   input:focus,
@@ -2160,7 +2173,7 @@ input {
   #null-button-normal,
   #null-button,
   .null-button {
-    padding: 0.4rem 1.15rem;
+    padding: 0.5rem 1.15rem;
   }
 
   .user-links.slide-left {

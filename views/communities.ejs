@@ -119,6 +119,70 @@
 
 
   <script defer>
+    function interactWithPost(postId, user, action) {
+      if (!user) {
+        window.location.href = '/login';
+        return;
+      }
+
+      fetch(`/posts/${postId}/react`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            action: action
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.userReaction !== undefined && data.reactionsMap !== undefined) {
+            updateReactionUI(postId, data.userReaction, data.reactionsMap);
+          } else {
+            console.error('Server response does not contain expected data');
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    }
+
+    function updateReactionUI(postId, userReaction, reactionsMap) {
+      const mainButton = document.querySelector(`.mainReactionButton[data-id="${postId}"]`);
+      const popup = document.getElementById(`reactionPopup-post-${postId}`);
+      const totalCountSpan = mainButton.querySelector('.reaction-button-right');
+
+      const reactionIcons = {
+        "LOVE": "❤️",
+        "LIKE": "👍",
+        "CURIOUS": "🤔",
+        "DISLIKE": "👎",
+      };
+
+      // Update main button
+      if (userReaction && reactionIcons[userReaction]) {
+        mainButton.innerHTML = `<span class="reaction-button-left">${reactionIcons[userReaction]}</span><span class="reaction-button-right">${reactionsMap[userReaction] || 0}</span>`;
+        mainButton.classList.add('active');
+      } else {
+        mainButton.innerHTML = `<span class="reaction-button-left">😃</span><span class="reaction-button-right">${reactionsMap[userReaction] || 0}</span>`;
+        mainButton.classList.remove('active');
+
+      }
+
+      // Update reaction buttons in popup
+      const buttons = popup.querySelectorAll('.reaction-button-popup');
+      buttons.forEach(button => {
+        const reaction = button.dataset.reaction;
+        button.classList.toggle('active', reaction === userReaction);
+        const reactionCountSpan = button.querySelector('.reaction-count');
+        reactionCountSpan.textContent = reactionsMap[reaction] || 0;
+      });
+
+      // Update total reaction count
+      const totalReactions = Object.values(reactionsMap).reduce((a, b) => a + b, 0);
+      totalCountSpan.textContent = `${totalReactions} reaction${totalReactions !== 1 ? 's' : ''}`;
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
       const hiddenTags = document.querySelectorAll('.community-tags .hidden-tag');
       hiddenTags.forEach(tag => {
@@ -345,10 +409,11 @@
             usernameLink.href = '/user/' + post.username;
 
             usernameLink.innerHTML = `
-  <strong>
-    <a id="post-username"  href="/user/${post.username}">${post.username}</a> in <a class="secondary-text" href="/c/${post.community_shortname}">/${post.community_shortname}</a>
+  <p>
+  ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="font-size: .95rem;">push_pin</span>' : ''}
+    <a id="post-username" class="bold secondary-text" href="/user/${post.username}">${post.username}</a> in <a class="secondary-text" href="/c/${post.community_shortname}">/${post.community_shortname}</a>
     ${post.verified ? '' : ''}
-  </strong> 
+  </p> 
   <p>
       <span class="post-timestamp" id="secondary-text">${formatDate(post.created_at)}</span>
 
@@ -361,12 +426,6 @@
             postHeaderUsernameDiv.appendChild(usernameDiv);
             postHeaderDiv.appendChild(postHeaderUsernameDiv);
 
-            if (post.isGlobalPinned) {
-              const pinnedDiv = document.createElement('div');
-              pinnedDiv.className = 'pinned';
-              pinnedDiv.innerHTML = '<span class="material-symbols-outlined secondary-text" style="font-size:18px;">push_pin</span>';
-              postHeaderUsernameDiv.appendChild(pinnedDiv);
-            }
 
             const threeDotsDiv = document.createElement('div');
             threeDotsDiv.className = 'three-dots';
@@ -465,66 +524,42 @@
               console.error('Error displaying image for post:', post.id);
             }
 
-            if (post.post_type != 'question') {
 
-              linkPreviewDiv.style.background = "none";
-              linkPreviewDiv.style.border = "none";
-              const descriptionDiv = document.createElement('div');
-              descriptionDiv.className = 'description';
 
-              if (post.post_type != 'blog') {
+            linkPreviewDiv.style.background = "none";
+            linkPreviewDiv.style.border = "none";
+            const descriptionDiv = document.createElement('div');
+            descriptionDiv.className = 'description';
+
+            if (post.post_type != 'blog') {
+              let contentWithoutMarkdown = post.content
+                .replace(/(?:\r\n|\r|\n)/g, ' ')
+                .replace(/\*\*(.*?)\*\*/g, '$1')
+                .replace(/\*(.*?)\*/g, '$1')
+                .replace(/__(.*?)__/g, '$1')
+                .replace(/_(.*?)_/g, '$1')
+                .replace(/!\[.*?\]\(.*?\)/g, '')
+                .replace(/\[.*?\]\(.*?\)/g, '$1');
+              descriptionDiv.append(`${contentWithoutMarkdown}`);
+            } else {
+              if (post.subtitle) {
+                descriptionDiv.append(`${post.subtitle}`);
+              } else {
                 let contentWithoutMarkdown = post.content
                   .replace(/(?:\r\n|\r|\n)/g, ' ')
                   .replace(/\*\*(.*?)\*\*/g, '$1')
                   .replace(/\*(.*?)\*/g, '$1')
                   .replace(/__(.*?)__/g, '$1')
+                  .replace(/#{2,3} (.*?)\n/g, '')
                   .replace(/_(.*?)_/g, '$1')
                   .replace(/!\[.*?\]\(.*?\)/g, '')
                   .replace(/\[.*?\]\(.*?\)/g, '$1');
                 descriptionDiv.append(`${contentWithoutMarkdown}`);
-              } else {
-                if (post.subtitle) {
-                  descriptionDiv.append(`${post.subtitle}`);
-                } else {
-                  let contentWithoutMarkdown = post.content
-                    .replace(/(?:\r\n|\r|\n)/g, ' ')
-                    .replace(/\*\*(.*?)\*\*/g, '$1')
-                    .replace(/\*(.*?)\*/g, '$1')
-                    .replace(/__(.*?)__/g, '$1')
-                    .replace(/#{2,3} (.*?)\n/g, '')
-                    .replace(/_(.*?)_/g, '$1')
-                    .replace(/!\[.*?\]\(.*?\)/g, '')
-                    .replace(/\[.*?\]\(.*?\)/g, '$1');
-                  descriptionDiv.append(`${contentWithoutMarkdown}`);
-                }
               }
-
-
-              linkPreviewDiv.appendChild(descriptionDiv);
             }
 
-            if (post.post_type == 'question') {
-              linkPreviewDiv.style.background = "none";
-              linkPreviewDiv.style.border = "none";
-            }
 
-            // Votes div
-            const votesDiv = document.createElement("div");
-            votesDiv.className = "votes";
-
-            // Reaction interactions div
-            const reactionInteractionsDiv = document.createElement("div");
-            reactionInteractionsDiv.className = `reaction-interactions ${post.id}-reactions`;
-            reactionInteractionsDiv.id = `reaction-interactions ${post.id}-reactions`;
-
-
-
-
-            const reactionMenu = document.createElement("div");
-            reactionMenu.className = `${post.id} reaction-menu`;
-
-            reactionInteractionsDiv.appendChild(reactionMenu);
-
+            linkPreviewDiv.appendChild(descriptionDiv);
 
 
             // Reaction buttons
@@ -546,47 +581,94 @@
               }
             ];
 
-
-            const topReactions = reactionTypes.filter(reaction => post[reaction.type.toLowerCase() + 'Count'] > 0)
-              .sort((a, b) => post[b.type.toLowerCase() + 'Count'] - post[a.type.toLowerCase() + 'Count'])
-              .slice(0, 3);
-
             let totalReactions = 0;
             reactionTypes.forEach(reaction => {
               totalReactions += post[reaction.type.toLowerCase() + 'Count'];
             });
 
+            // reaction menu
 
-            const totalReactionsText = document.createElement("span");
-            totalReactionsText.className = `total-reactions-count ${post.id}`;
-            totalReactionsText.innerText = totalReactions > 0 ? `${totalReactions} reactions` : "0 reactions";
-            reactionInteractionsDiv.appendChild(totalReactionsText);
+            // buttons div
+            const buttonsDiv = document.createElement('div');
+            buttonsDiv.className = 'buttons';
 
-            if (post.post_tags) {
-              const tags = post.post_tags.split(',').map(tag => tag.trim());
-              const tagsDiv = document.createElement('div');
-              tagsDiv.className = 'tags';
-              const maxTags = 3;
-              const displayedTags = tags.slice(0, maxTags);
-              displayedTags.forEach(tag => {
-                const tagDiv = document.createElement('div');
-                tagDiv.className = 'tag';
-                tagDiv.innerText = tag;
-                tagsDiv.appendChild(tagDiv);
-              });
-              postContentDiv.appendChild(tagsDiv);
-            }
+            const reactionPopup = document.createElement('div');
+            reactionPopup.id = `reactionPopup-post-${post.id}`;
+            reactionPopup.className = 'reaction-popup';
+            reactionPopup.style.display = 'none';
+
+            const reactionPopupContent = document.createElement('div');
+            reactionPopupContent.className = 'reaction-popup-content';
+
+            reactionTypes.forEach(reaction => {
+              const reactionButton = document.createElement('button');
+              reactionButton.className = `reaction-button-popup${post.userReaction === reaction.type ? ' active' : ''}`;
+              reactionButton.setAttribute('data-type', 'post');
+              reactionButton.setAttribute('data-id', post.id);
+              reactionButton.setAttribute('data-reaction', reaction.type);
+              reactionButton.onclick = (event) => {
+                event.stopPropagation();
+                interactWithPost(post.id, '<%= user %>', reaction.type);
+              };
+
+              reactionButton.innerHTML = `
+    ${reaction.icon}
+    <span class="reaction-count">${post[reaction.type.toLowerCase() + 'Count']}</span>
+  `;
+
+              reactionPopupContent.appendChild(reactionButton);
+            });
+
+            reactionPopup.appendChild(reactionPopupContent);
+            buttonsDiv.appendChild(reactionPopup);
+
+            // reaction button
+            const reactionButton = document.createElement('button');
+            reactionButton.id = 'reaction-button';
+            reactionButton.setAttribute('data-type', 'post');
+            reactionButton.setAttribute('data-id', post.id);
+            reactionButton.className = `mainReactionButton null-button-normal reaction-button${post.userReaction ? ' active' : ''}`;
+
+            reactionButton.innerHTML = `<span class="reaction-button-left">😃</span><span class="reaction-button-right">${totalReactions > 0 ? `${totalReactions}` : "0"}</span>`;
+
+            reactionButton.onclick = (event) => {
+              event.stopPropagation();
+              const popup = document.getElementById(`reactionPopup-post-${post.id}`);
+              popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+            };
+
+            buttonsDiv.appendChild(reactionButton);
 
 
-            votesDiv.appendChild(reactionInteractionsDiv);
-            if (!post.isGlobalPinned) {
-              postContentDiv.appendChild(votesDiv);
-            }
+            // comment button
+            const commentButton = document.createElement('button');
+            commentButton.className = 'null-button-normal';
+            commentButton.id = 'comment-button';
+            commentButton.innerHTML = `<span class="comment-button-left">💬</span><span class="comment-button-right">${post.comment_count}</span>`;
+            commentButton.onclick = (event) => {
+              event.stopPropagation();
+              window.location.href = '/posts/' + post.id;
+            };
+            buttonsDiv.appendChild(commentButton);
 
-            const commentsDiv = document.createElement('div');
-            commentsDiv.className = 'comments';
-            commentsDiv.innerHTML = post.comment_count + ' comments';
-            votesDiv.appendChild(commentsDiv);
+
+            // share button 
+            const shareButton = document.createElement('button');
+            shareButton.className = 'null-button-normal';
+            shareButton.id = 'share-button';
+            shareButton.innerHTML = '✉️';
+            shareButton.onclick = (event) => {
+              event.stopPropagation();
+              share(post.title, post.content, `https://c-ore.dev/posts/${post.id}`);
+            };
+            buttonsDiv.appendChild(shareButton);
+
+
+
+
+            postContentDiv.appendChild(buttonsDiv);
+
+
 
 
             postDiv.appendChild(postContentDiv);
@@ -826,15 +908,10 @@
     document.addEventListener("DOMContentLoaded", () => {
       const postsContainer = document.getElementById('posts-container');
       const communityId = postsContainer.dataset.communityId;
-      if (!communityId) {
+      try {
         fetchJobPreviews();
-      } else {
-        console.log(communityId);
-        try {
-          fetchCommunityJobPreviews(communityId);
-        } catch (error) {
-          console.error('Error fetching community job previews:', error);
-        }
+      } catch (error) {
+        console.error('Error fetching job previews:', error);
       }
       fetchAndDisplayPosts(communityId);
     });

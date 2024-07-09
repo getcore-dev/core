@@ -405,11 +405,11 @@
                 <div id="reactionPopup-post-<%= post.id %>" class="reaction-popup" style="display:none;">
                   <div class="reaction-popup-content">
                     <% const reactionTypes = [
-            { type: "LOVE", icon: "❤️" },
-            { type: "LIKE", icon: "👍" },
-            { type: "CURIOUS", icon: "🤔" },
-            { type: "DISLIKE", icon: "👎" }
-          ]; %>
+                      { type: "LOVE", icon: "❤️" },
+                      { type: "LIKE", icon: "👍" },
+                      { type: "CURIOUS", icon: "🤔" },
+                      { type: "DISLIKE", icon: "👎" }
+                    ]; %>
                     <% reactionTypes.forEach(reaction => { %>
                     <button class="reaction-button-popup<% if (post.userReaction == reaction.type) { %> active <% }%>" data-type="post" data-id="<%= post.id %>" data-reaction="<%= reaction.type %>" onclick="interactWithPost('<%= post.id %>', '<%= user %>', '<%= reaction.type %>')">
                       <%= reaction.icon %>
