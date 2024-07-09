@@ -358,7 +358,14 @@ div.interact-buttons {
   padding: 0 13px;
   gap: .6rem;
   box-sizing: border-box;
-  margin-bottom: 2.3rem;
+  margin-bottom: 1.3rem;
+}
+
+.admin-tag {
+  font-size: .725rem !important;
+  font-weight: 500;
+  color: #b40000;
+  background: #b4000030;
 }
 
 .reaction-button,
@@ -800,10 +807,6 @@ div.repliees-avatar {
   width: 100%;
 }
 
-.project-link-stats {
-  margin-top: 8px;
-}
-
 .tags-div {
   margin: 6px 0;
 }
@@ -895,10 +898,15 @@ div.repliees-avatar {
   padding: 0 13px;
 }
 
+.similar-posts .post a {
+  text-decoration: none;
+  color: var(--light-mode-text-color);
+}
+
 .similar-posts .post {
   border: 1px solid var(--border-color);
   border-radius: 16px;
-  background: #fafbfc;
+  background: var(--light-mode-main-color);
   box-sizing: border-box;
 }
 
@@ -1159,7 +1167,7 @@ div .mini-link {
 
 .main-container a {
   text-decoration: none;
-  color: var(--light-mode-text-color);
+  color: var(--light-mode-bold-text-color);
   font-weight: bold;
 }
 
@@ -1292,11 +1300,6 @@ p.preview-description {
   border-radius: 6px;
   object-fit: cover;
   overflow: hidden;
-}
-
-.post-content .title a,
-.job-title a {
-  color: var(--active-indicator-color);
 }
 
 .description,
@@ -1446,7 +1449,8 @@ p.preview-description {
 .project-link-image {
   height: 80px;
   float: left;
-  padding-right: 10px;
+  padding: 8px;
+  padding-right: 20px;
 }
 
 .nested-comment>.comment {
@@ -1972,10 +1976,6 @@ div.username {
 
   .description {
     font-size: .95rem;
-  }
-
-  .tag {
-    font-size: .925rem;
   }
 
   .tag p {

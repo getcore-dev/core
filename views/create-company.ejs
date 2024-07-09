@@ -32,7 +32,17 @@
     }
 
     label {
-      font-weight: bold;
+      color: var(--light-mode-secondary-text-color);
+      margin-bottom: .6rem;
+      letter-spacing: 0.00625rem;
+      font-weight: 600;
+      font-size: .9rem;
+    }
+
+    #companyForm>div {
+      display: inline-grid;
+      align-items: start;
+      justify-items: start;
     }
 
     input,
@@ -71,43 +81,43 @@
     </div>
     <form id="companyForm">
       <div>
-        <label for="name">Name:</label>
+        <label for="name">Name</label>
         <input type="text" id="name" name="name" required>
       </div>
       <div>
-        <label for="location">Location:</label>
+        <label for="location">Location</label>
         <input type="text" id="location" name="location">
       </div>
       <div>
-        <label for="description">Description:</label>
+        <label for="description">Description</label>
         <textarea id="description" name="description"></textarea>
       </div>
       <div>
-        <label for="logo">Logo:</label>
+        <label for="logo">Logo</label>
         <input type="text" id="logo" name="logo">
       </div>
       <div>
-        <label for="logo_url">Logo URL:</label>
+        <label for="logo_url">Logo URL</label>
         <input type="url" id="logo_url" name="logo_url">
       </div>
       <div>
-        <label for="industry">Industry:</label>
+        <label for="industry">Industry</label>
         <input type="text" id="industry" name="industry">
       </div>
       <div>
-        <label for="founded">Founded:</label>
+        <label for="founded">Founded</label>
         <input type="datetime-local" id="founded" name="founded">
       </div>
       <div>
-        <label for="size">Size:</label>
+        <label for="size">Size</label>
         <input type="text" id="size" name="size">
       </div>
       <div>
-        <label for="stock_symbol">Stock Symbol:</label>
+        <label for="stock_symbol">Stock Symbol</label>
         <input type="text" id="stock_symbol" name="stock_symbol">
       </div>
       <div>
-        <label for="job_board_url">Job Board URL:</label>
+        <label for="job_board_url">Job Board URL</label>
         <input type="url" id="job_board_url" name="job_board_url">
       </div>
       <button class="submit-button" type="submit">Create Company</button>
@@ -115,7 +125,7 @@
     <span>
 
       <script>
-        document.getElementById('companyForm').addEventListener('submit', function(e) {
+        document.getElementById('companyForm').addEventListener('submit', function (e) {
           e.preventDefault();
           const formData = new FormData(this);
           const companyData = Object.fromEntries(formData.entries());

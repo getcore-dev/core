@@ -60,7 +60,7 @@
               <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="blog-avatar" onclick="window.location.href = '/user/<%= post.user.username %>'" />
               <div class="post-user-info">
                 <span>
-                  <a href="/user/<%= post.user.username %>" id="blog-username" style="color: <%= post.user.isAdmin ? '#b40000' : 'inherit' %>;">
+                  <a href="/user/<%= post.user.username %>" id="blog-username">
                     <%= post.user.username %>
                   </a>
                   <span class="post-timestamp secondary-text" style="text-decoration: none;">
@@ -497,8 +497,8 @@
                 <div class="comment-content">
                   <div class="comment-header">
                     <a class="comment-user-info" href="/user/<%= comment.user.username %>">
-                      <div class="repliers-info" style="color: <%= comment.user.isAdmin ? '#b40000' : 'inherit' %>;">
-                        <%= comment.user.username %>
+                      <div class="repliers-info">
+                        <span><%= comment.user.username %></span>
                       </div>
                     </a>
                     <% 
@@ -525,6 +525,9 @@
                     <span class="pinned-comment">
                       <span class="material-symbols-outlined" id="secondary-text">push_pin</span>
                     </span>
+                    <% } %>
+                    <% if (comment.user.isAdmin) { %>
+                    <span class="tag admin-tag">Admin</span>
                     <% } %>
                   </div>
                   <% if (user) { %>

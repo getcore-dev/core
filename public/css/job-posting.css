@@ -85,7 +85,7 @@ img.company-logo {
 
 .job-title {
   font-size: 24px;
-  font-weight: bold;
+  font-weight: 550;
   margin: 0 0 8px;
 }
 
@@ -203,14 +203,13 @@ div.similar-job h4 {
 
 .job-details h4 {
   font-size: 1.05rem;
-  font-weight: bold;
   margin: .65rem 0;
   margin-top: 0;
 }
 
 .job-details>div>p,
 .job-details>div>ul {
-  color: #616161;
+  color: var(--light-mode-text-color);
   font-size: .925rem;
   line-height: 1.5;
   margin: 0;
@@ -254,7 +253,7 @@ div.similar-job h4 {
 
 .job-title {
   font-size: 1.2rem;
-  font-weight: bold;
+  font-weight: 550;
   margin: 0 0 7px;
   margin-bottom: .4rem !important;
 }

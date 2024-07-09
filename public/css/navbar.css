@@ -8,8 +8,9 @@
   --border-color: #DCE6F2;
   --light-mode-button-color: #DCE6F2;
   --light-mode-button-hover-color: #BECBDA;
-  --light-mode-text-color: #243342;
-  --light-mode-secondary-text-color: #586C7F;
+  --light-mode-text-color: #717171;
+  --light-mode-bold-text-color: #444444;
+  --light-mode-secondary-text-color: #5c5c5c;
   --hover-background-color: #ddd;
   --active-indicator-color: #5083ca;
   --dark-mode-main-color: #0b0c0c;
@@ -55,13 +56,19 @@ p {
   padding: 0;
 }
 
-a {
-  text-decoration: none;
-  color: var(--active-indicator-color);
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-weight: 500;
+  color: var(--light-mode-bold-text-color);
 }
 
+a,
 a:visited {
-  color: #6a57c3;
+  text-decoration: none;
+  color: var(--light-mode-secondary-text-color);
 }
 
 .top-bar {
@@ -95,7 +102,7 @@ a:visited {
   margin-bottom: 3px;
   background-color: #6790f436;
   color: #85a5e6;
-  border-radius: 7px;
+  border-radius: 5px;
   font-size: .825rem;
   position: relative;
   cursor: pointer;
@@ -314,9 +321,22 @@ a:visited {
   visibility: hidden;
 }
 
+.select2-container--default .select2-selection--multiple {
+  width: 100%;
+  padding: 10px 20px;
+  font-family: 'Roboto', sans-serif;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border-radius: 10px;
+  background-color: var(--light-mode-body-color) !important;
+  border: 1px solid var(--border-color) !important;
+  font-size: 16px;
+  transition: box-shadow 0.3s ease;
+}
+
 
 .avatar-online-status {
-  border: 2px solid var(--light-mode-main-color);
+  border: 1px solid var(--border-color);
 }
 
 @media (min-width: 400px) {
@@ -475,7 +495,7 @@ li.dropdown a.active {
   padding: 0;
   font-size: .965rem;
   font-weight: 500;
-  color: var(--light-mode-text-color);
+  color: black;
 }
 
 .nav-links::-webkit-scrollbar {
@@ -820,6 +840,7 @@ a>.menu-item {
 
 #user-avatar {
   width: 32px;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   height: 32px;
   object-fit: cover;
@@ -1259,6 +1280,7 @@ input {
   border: none;
   width: auto;
   flex: 0;
+  font-weight: 550;
   margin: 0;
   border-radius: 9px;
   background: #1675353d;
@@ -1693,6 +1715,9 @@ input {
     color: white;
   }
 
+  #user-avatar {
+    border-color: var(--dark-mode-border-color);
+  }
 
   .nav-text:hover {
     color: var(--active-indicator-color);

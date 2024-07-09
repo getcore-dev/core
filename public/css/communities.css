@@ -102,7 +102,7 @@ div.vote-interactions {
 
 .thumbnail-image {
   height: 80px;
-  border-radius: 6px;
+  border-radius: 12px;
   aspect-ratio: 1 / 1;
   border: 1px solid var(--border-color);
   object-fit: cover;
@@ -288,7 +288,7 @@ div.vote-interactions {
 .title {
   font-size: .9rem;
   font-weight: 500;
-  margin-bottom: 1.1rem;
+  margin-bottom: .42rem;
 }
 
 .title>a {
@@ -322,7 +322,7 @@ div.vote-interactions {
 .description,
 .reactions {
   font-size: 16px;
-  color: #333;
+  color: var(--light-mode-text-color);
 }
 
 .post-date {
@@ -433,7 +433,7 @@ a.community:hover {
 }
 
 .mobile-jobs-container .job {
-  background: var(--light-mode-body-color);
+  background: #FAFBFF;
 }
 
 .link-preview {
@@ -447,7 +447,7 @@ div .mini-link {
   max-width: 100%;
   padding: 6px 4px;
   margin-bottom: .6rem;
-  border-radius: 6px;
+  border-radius: 9px;
   background: var(--light-mode-body-color);
   font-size: 14px;
   align-items: center;
@@ -784,6 +784,11 @@ div.community-tags {
   justify-content: center;
 }
 
+.job-title a,
+.job-title a:visited {
+  color: var(--light-mode-bold-text-color);
+}
+
 .comment-button-right,
 .reaction-button-right {
   padding: 0 .6rem;
@@ -824,7 +829,7 @@ div.community-tags {
   flex-direction: row;
   align-items: center;
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 550;
   margin: 0;
   margin: 4px 0;
   overflow: hidden;
@@ -1124,6 +1129,10 @@ button.see-more {
 
   .description {
     -webkit-line-clamp: 3;
+  }
+
+  .job-salary {
+    display: none;
   }
 
   .username a,
