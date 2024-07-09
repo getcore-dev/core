@@ -292,7 +292,7 @@ div.vote-interactions {
 }
 
 .title>a {
-  color: var(--light-mode-text-color);
+  color: var(--light-mode-bold-text-color);
 }
 
 
