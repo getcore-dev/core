@@ -761,8 +761,12 @@ div.community-tags {
 
 #share-button {
   height: 30px;
-  width: 30px;
-  padding: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+#share-button {
+  font-weight: 550;
 }
 
 .buttons {
@@ -775,7 +779,7 @@ div.community-tags {
   display: inline-flex;
   height: 100%;
   width: 32px;
-  border-right: 1px solid #F0F1F7;
+  border-right: 1px solid #E5E6EE;
   align-items: center;
   justify-content: center;
 }
@@ -783,7 +787,7 @@ div.community-tags {
 .comment-button-right,
 .reaction-button-right {
   padding: 0 .6rem;
-  font-weight: 500;
+  font-weight: 550;
 }
 
 
@@ -802,6 +806,12 @@ div.community-tags {
 
 .footer-container {
   display: none;
+}
+
+#share-button .material-symbols-outlined {
+  font-size: 16px;
+  vertical-align: -2px;
+  font-weight: 550;
 }
 
 .post-type-circle .material-symbols-outlined {

@@ -656,7 +656,7 @@
             const shareButton = document.createElement('button');
             shareButton.className = 'null-button-normal';
             shareButton.id = 'share-button';
-            shareButton.innerHTML = '✉️';
+            shareButton.innerHTML = '<span class="material-symbols-outlined">ios_share</span> Share';
             shareButton.onclick = (event) => {
               event.stopPropagation();
               share(post.title, "", `https://c-ore.dev/posts/${post.id}`);
