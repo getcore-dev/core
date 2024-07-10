@@ -304,7 +304,7 @@ a.comment-url:visited {
 
 .post-title {
   font-size: 25px;
-  color: var(--light-mode-text-color);
+  color: var(--light-mode-bold-text-color);
   margin-top: 0px;
 }
 
@@ -1168,11 +1168,11 @@ div .mini-link {
 .main-container a {
   text-decoration: none;
   color: var(--light-mode-bold-text-color);
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .post-content a {
-  font-weight: bold;
+  font-weight: 500;
   text-decoration: none;
 }
 
@@ -1466,7 +1466,7 @@ p.preview-description {
 }
 
 #community-header-text {
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .tag-flair {
@@ -2070,6 +2070,7 @@ div.username {
 
   .main-container {
     width: 100%;
+    border: 0;
     height: calc(100dvh - var(--mobile-navbar-height)) !important;
   }
 
@@ -2088,10 +2089,10 @@ div.username {
   }
 
   .main-container {
-    border-radius: 0px;
-    margin: 0px 0px;
-    margin-top: 1.2rem;
-    padding: 0px;
+    border-radius: 0;
+    margin: 0;
+    padding: 0;
+    padding-top: 1.2rem;
     max-width: 100% !important;
   }
 
@@ -2102,7 +2103,7 @@ div.username {
   .post-title {
     font-weight: 500;
     margin-top: 0;
-    font-size: 1.15rem;
+    font-size: 1.35rem;
   }
 
   .post-subtitle {

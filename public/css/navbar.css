@@ -469,12 +469,14 @@ a:visited {
 }
 
 .navbar-button .material-symbols-outlined {
+  color: var(--light-mode-text-color);
   font-size: 18px;
   vertical-align: -4px;
   padding-right: .4rem;
 }
 
 li.dropdown a.active {
+  font-weight: 500;
   padding-bottom: 6px !important;
   border-bottom: 1px solid #1e6626;
 }
@@ -495,8 +497,8 @@ li.dropdown a.active {
   margin-top: 9px;
   padding: 0;
   font-size: .965rem;
-  font-weight: 500;
-  color: black;
+  font-weight: normal;
+  color: var(--light-mode-bold-text-color);
 }
 
 .nav-links::-webkit-scrollbar {
@@ -605,6 +607,7 @@ li.dropdown a.active {
 
 .menu-bar {
   z-index: 2;
+  border-radius: 6px;
   width: 16px;
   height: 1.5px !important;
   background-color: var(--light-mode-text-color);

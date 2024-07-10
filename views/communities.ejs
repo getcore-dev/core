@@ -287,8 +287,9 @@
                 <h5>${sortBy.charAt(0).toUpperCase() + sortBy.slice(1)} Posts</h5> 
               </div>
               <div class=post-header-buttons style="position:relative;">
-                <button class="header-button" id="filter-button" onclick="toggleFilterMenu()">
+                <button class="null-button-normal" id="filter-button" onclick="toggleFilterMenu()">
                   <span class="material-symbols-outlined">sort</span>
+                  Sort
                 </button>
 <% if (user) { %>
   <button class="header-button" id="post-button" onclick="window.location.href='<%= communityId ? `/networks/${community.shortname}/create` : '/create' %>'">
@@ -410,7 +411,7 @@
 
             usernameLink.innerHTML = `
   <p>
-  ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="font-size: .95rem;">push_pin</span>' : ''}
+  ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="font-size: .85rem;">push_pin</span>' : ''}
     <a id="post-username" class="bold secondary-text" href="/user/${post.username}">${post.username}</a> in <a class="secondary-text" href="/networks/${post.community_shortname}">/${post.community_shortname}</a>
     ${post.verified ? '' : ''}
   </p> 

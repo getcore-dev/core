@@ -223,65 +223,6 @@
           </div>
 
         </div>
-        <div class="interact-buttons">
-          <% if (!post.deleted) { %>
-
-          <% if (user && user.username === post.username) { %>
-          <button class="regular-button-normal" onclick="window.location.href='/posts/<%= post.id %>/edit'">
-            Edit
-          </button>
-          <% } %>
-          <% } %>
-          <button class="regular-button-normal" onclick="share('<%= post.title %>', '', 'https://c-ore.dev/posts/<%= post.id %>')">
-            Share
-          </button>
-
-          <% if (user) { %>
-          <button class="submit-button-normal" onclick="favorite('<%= post.id %>')">
-            Favorite
-          </button>
-          <% } %>
-
-          <% if (!post.deleted) { %>
-
-          <% if (user && user.username === post.username) { %>
-          <button class="cancel-button-normal" onclick="deletePost('<%= post.id %>')">
-            Delete
-          </button>
-          <% } %>
-          <% } %>
-          <% if (user && user.isAdmin) { %>
-          <div class="dropdown">
-            <button class="null-button-normal" onclick="showDropdown(event)">
-              <span class="material-symbols-outlined">more_horiz</span>
-            </button>
-            <div class="dropdown-content" style="display: none;">
-              <div class="dropdown-item">
-                <button onclick="adminDeletePost('<%= post.id %>')">
-                  <span style="color: red;" class="material-symbols-outlined">
-                    gavel
-                  </span>
-                  <strong style="color: red;">
-                    <p>Admin Delete (Logged)</p>
-                  </strong>
-                </button>
-              </div>
-              <div class="dropdown-item">
-                <span>
-                  <button onclick="toggleLockPost('<%= post.id %>')">
-                    <span class="material-symbols-outlined">
-                      lock
-                    </span>
-                    <p>Lock Post</p>
-                  </button>
-                </span>
-              </div>
-            </div>
-          </div>
-          <% } %>
-        </div>
-
-
         <div class="post-container">
 
           <div class="post-content" style="
@@ -434,6 +375,63 @@
               </div>
             </div>
           </div>
+        </div>
+        <div class="interact-buttons">
+          <% if (!post.deleted) { %>
+
+          <% if (user && user.username === post.username) { %>
+          <button class="regular-button-normal" onclick="window.location.href='/posts/<%= post.id %>/edit'">
+            Edit
+          </button>
+          <% } %>
+          <% } %>
+          <button class="regular-button-normal" onclick="share('<%= post.title %>', '', 'https://c-ore.dev/posts/<%= post.id %>')">
+            Share
+          </button>
+
+          <% if (user) { %>
+          <button class="submit-button-normal" onclick="favorite('<%= post.id %>')">
+            Favorite
+          </button>
+          <% } %>
+
+          <% if (!post.deleted) { %>
+
+          <% if (user && user.username === post.username) { %>
+          <button class="cancel-button-normal" onclick="deletePost('<%= post.id %>')">
+            Delete
+          </button>
+          <% } %>
+          <% } %>
+          <% if (user && user.isAdmin) { %>
+          <div class="dropdown">
+            <button class="null-button-normal" onclick="showDropdown(event)">
+              <span class="material-symbols-outlined">more_horiz</span>
+            </button>
+            <div class="dropdown-content" style="display: none;">
+              <div class="dropdown-item">
+                <button onclick="adminDeletePost('<%= post.id %>')">
+                  <span style="color: red;" class="material-symbols-outlined">
+                    gavel
+                  </span>
+                  <strong style="color: red;">
+                    <p>Admin Delete (Logged)</p>
+                  </strong>
+                </button>
+              </div>
+              <div class="dropdown-item">
+                <span>
+                  <button onclick="toggleLockPost('<%= post.id %>')">
+                    <span class="material-symbols-outlined">
+                      lock
+                    </span>
+                    <p>Lock Post</p>
+                  </button>
+                </span>
+              </div>
+            </div>
+          </div>
+          <% } %>
         </div>
         <div class="post-info">
           <div class="post-counts" id="secondary-text">
