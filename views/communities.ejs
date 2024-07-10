@@ -287,17 +287,11 @@
                 <h5>${sortBy.charAt(0).toUpperCase() + sortBy.slice(1)} Posts</h5> 
               </div>
               <div class=post-header-buttons style="position:relative;">
+              <span class="filter-button-container">
                 <button class="null-button-normal" id="filter-button" onclick="toggleFilterMenu()">
                   <span class="material-symbols-outlined">sort</span>
-                  Sort
                 </button>
-<% if (user) { %>
-  <button class="header-button" id="post-button" onclick="window.location.href='<%= communityId ? `/networks/${community.shortname}/create` : '/create' %>'">
-    <span class="material-symbols-outlined">add</span>
-  </button>
-<% } %>
-
-              <div class="filter-menu" id="filterMenu">
+                              <div class="filter-menu" id="filterMenu">
                 <button class="filter-button">
                   <span style="text-align: center; width: 100%;"><strong>Sort By</strong></span>
                 </button>
@@ -314,6 +308,12 @@
                   <span style="margin-left: 10px;">Explore</span>
                 </button>
               </div>
+              </span>
+<% if (user) { %>
+  <button class="submit-button-normal" id="post-button" onclick="window.location.href='<%= communityId ? `/networks/${community.shortname}/create` : '/create' %>'">
+    <span class="material-symbols-outlined">add</span> Post
+  </button>
+<% } %>
             </div>
      `;
 

@@ -1288,9 +1288,9 @@ input {
   font-weight: 550;
   margin: 0;
   border-radius: 9px;
-  background: #1675353d;
-  border: 1px solid #4b9263;
-  color: #4b9263;
+  background: #0dd64e3d;
+  border: 1px solid #57ab73;
+  color: #57ab73;
   cursor: pointer;
   word-wrap: break-word;
   transition: all 0.3s ease;

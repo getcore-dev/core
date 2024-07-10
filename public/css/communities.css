@@ -496,11 +496,13 @@ div .mini-link-title {
 
 
 #filter-button,
-#post-button {
+#post-button,
+.filter-button-container {
   position: relative;
 }
 
-#filter-button {
+#filter-button,
+#post-button {
   font-size: .7rem;
 }
 

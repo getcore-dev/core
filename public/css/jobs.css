@@ -22,6 +22,7 @@ body {
 div.job-buttons {
   display: flex;
   flex-direction: row;
+  overflow-x: auto;
   gap: .5rem;
   margin-bottom: .6rem;
 }

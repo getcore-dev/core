@@ -296,6 +296,8 @@
                     <a href="/user/<%= post.solution.user.username %>"><%= post.solution.user.username %></a>
                     <span class="secondary-text">answered</span>
                   </div>
+                  <div class="accepted-badge" style="margin-left: auto">Accepted Solution</div>
+
                 </div>
                 <div class="solution-body">
                   <%- post.solution.comment %>
@@ -520,12 +522,12 @@
                 %>
                     <span class="comment-timestamp" id="secondary-text"><%= timeSinceComment %></span>
                     <% if (comment.isPinned) { %>
-                    <span class="pinned-comment">
+                    <span class="tag comment-tag pinned-comment">
                       <span class="material-symbols-outlined" id="secondary-text">push_pin</span>
                     </span>
                     <% } %>
                     <% if (comment.user.isAdmin) { %>
-                    <span class="tag admin-tag">Admin</span>
+                    <span class="tag admin-tag comment-tag">Admin</span>
                     <% } %>
                   </div>
                   <% if (user) { %>

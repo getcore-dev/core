@@ -361,10 +361,20 @@ div.interact-buttons {
   margin-bottom: 1.3rem;
 }
 
-.admin-tag {
+.comment-tag {
   font-size: .725rem !important;
-  font-weight: 500;
+  font-weight: 550;
+  padding: 2px 6px;
+}
+
+.pinned-comment {
+  border: 1px solid #18181847;
+  background-color: #b0b0b036;
+}
+
+.admin-tag {
   color: #b40000;
+  border: 1px solid #b40000;
   background: #b4000030;
 }
 
@@ -377,10 +387,10 @@ div.interact-buttons {
   border: 1px solid var(--border-color);
   color: var(--light-mode-text-color);
   border-radius: 6px;
-  height: 32px;
+  height: 30px;
   padding: 0;
   display: flex;
-  width: 32px;
+  width: 30px;
   font-size: .8rem;
   font-weight: 400;
   text-decoration: none;
@@ -445,6 +455,7 @@ div.interact-buttons {
 .solution {
   margin-bottom: 1.8rem;
   display: flex;
+  position: relative;
   gap: .9rem;
   flex-direction: column;
   white-space-collapse: collapse;
@@ -615,7 +626,7 @@ div.interact-buttons {
 
 .post-info {
   padding: 8px 13px;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -1144,8 +1155,8 @@ div .mini-link {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 10px;
-  margin-bottom: 11px;
+  margin-top: 0;
+  margin-bottom: 6px;
 }
 
 .dropdown-content .material-symbols-outlined {
