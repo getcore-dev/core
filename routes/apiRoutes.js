@@ -327,22 +327,13 @@ router.get('/community/:communityId/jobs', async (req, res) => {
   }
 });
 
-router.get('/randomJobs', async (req, res) => {
+router.get('/randomJobs', cacheMiddleware(600), async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
 
-    const offset = (page - 1) * limit;
-
-    const [jobPostings, totalCount] = await Promise.all([
-      jobQueries.getRandomJobs(limit),
-      jobQueries.simpleGetJobsCount(),
-    ]);
+    const jobPostings = await jobQueries.getRecent10Jobs();
 
     res.json({
       jobPostings,
-      currentPage: page,
-      totalPages: Math.ceil(totalCount / limit),
     });
   } catch (err) {
     console.error('Error fetching job postings:', err);
@@ -370,7 +361,7 @@ router.get('/getTopSkills', cacheMiddleware(3600), async (req, res) => {
   }
 });
 
-router.get('/jobs', async (req, res) => {
+router.get('/jobs', cacheMiddleware(1200), async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;

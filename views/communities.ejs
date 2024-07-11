@@ -89,7 +89,11 @@
               </div>
               <div class="community-buttons">
                 <button class="submit-button-normal join-btn" id="communityActionBtn" data-action="join">Join</button>
-                <button class="mod-btn regular-button-normal" id="communityActionBtn" style="display: none;pointer-events: none;" onclick="window.location.href='/networks/<%= community.shortname %>/admin'">Moderator Tools</button>
+                <button class="mod-btn regular-button-normal" id="communityActionBtn" style="display: none;pointer-events: none;" onclick="window.location.href='/networks/<%= community.shortname %>/admin'">
+                  <span class="material-symbols-outlined">
+                    admin_panel_settings
+                  </span>
+                  Admin Tools</button>
               </div>
               <div class="community-picture">
               </div>
@@ -754,12 +758,12 @@
           .then(data => {
             // Toggle button state
             if (action === "join") {
-              communityActionBtn.textContent = "Leave";
+              communityActionBtn.innerHTML = '<span class="material-symbols-outlined">close</span>Leave';
               communityActionBtn.dataset.action = "leave";
               showBannerNotification("You have successfully joined the community!");
 
             } else {
-              communityActionBtn.textContent = "Join";
+              communityActionBtn.innerHTML = '<span class="material-symbols-outlined">add</span>Join';
               communityActionBtn.dataset.action = "join";
 
               showBannerNotification("You have successfully left the community!");
@@ -786,11 +790,11 @@
           .then(data => {
             if (data.isMember) {
               communityActionBtn.className = "cancel-button-normal join-btn";
-              communityActionBtn.textContent = "Leave";
+              communityActionBtn.innerHTML = '<span class="material-symbols-outlined">close</span>Leave';
               communityActionBtn.dataset.action = "leave";
             } else {
               communityActionBtn.className = "submit-button-normal join-btn";
-              communityActionBtn.textContent = "Join";
+              communityActionBtn.innerHTML = '<span class="material-symbols-outlined">add</span>Join';
               communityActionBtn.dataset.action = "join";
             }
 

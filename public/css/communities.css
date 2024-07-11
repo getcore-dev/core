@@ -503,6 +503,7 @@ div .mini-link-title {
 
 #filter-button,
 #post-button {
+  height: 30px;
   font-size: .7rem;
 }
 

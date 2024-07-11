@@ -127,7 +127,7 @@ function getSimilarJobs(jobId) {
                 <span class="job-salary" style="margin-left: auto;">USD $${
   job.salary ? job.salary.toLocaleString() : ''
 } ${
-  job.salary_max ? '- $' + job.salary_max.toLocaleString() : ''
+  job.salary_max != 0 ? '- $' + job.salary_max.toLocaleString() : ''
 }</span>
         </div>
             </div>
@@ -199,9 +199,9 @@ function getSimilarJobsByCompany(jobId, companyName) {
 }</span>
                 <span> • </span>
                 <span class="job-salary" style="margin-left: auto;">USD $${
-  job.salary ? job.salary.toLocaleString() : ''
+  job.salary != 0 ? job.salary.toLocaleString() : ''
 } ${
-  job.salary_max ? '- $' + job.salary_max.toLocaleString() : ''
+  job.salary_max != 0 ? '- $' + job.salary_max.toLocaleString() : ''
 }</span>
         </div>
 
@@ -350,8 +350,8 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
               <p>
               <span class="material-symbols-outlined">attach_money</span>
               <strong style="color:#26704a;">
-                USD $${job.salary ? job.salary.toLocaleString() : ''} ${
-  job.salary_max ? '- $' + job.salary_max.toLocaleString() : ''
+                USD $${job.salary != 0 ? job.salary.toLocaleString() : ''} ${
+  job.salary_max != 0 ? '- $' + job.salary_max.toLocaleString() : ''
 }
               </strong>
             </p>
@@ -366,7 +366,9 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   isOlderThan30Days(job)
     ? ''
     : `<div class="apply-button-container flex">
-          <button id="submit-button-normal" class="margin-h-auto" onclick="window.location.href='${job.link}'">Apply</button>
+          <button id="submit-button-normal" class="margin-h-auto" onclick="window.location.href='${job.link}'"> <span class="material-symbols-outlined">
+open_in_new
+</span>Apply</button>
           </div>
           `
 }
@@ -374,7 +376,9 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   userIsLoggedIn
     ? `<div class="favorite-button-container">
               <div id="favorite-form-${job.id}" class="flex">
-                <button id="submit-button-normal" onclick="favorite('job', ${job.id});" class="margin-h-auto">Favorite</button>
+                <button id="submit-button-normal" onclick="favorite('job', ${job.id});" class="margin-h-auto"><span class="material-symbols-outlined">
+star
+</span>Favorite</button>
               </div>
             </div>`
     : ''
@@ -383,13 +387,17 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       <button id="regular-button-normal" class="margin-h-auto" onclick="share('${
   job.title
 }', '', 'https://c-ore.dev/jobs/${job.id}')"
-      >Share</button>
+      ><span class="material-symbols-outlined">
+ios_share
+</span>Share</button>
       </div>
       ${
   userIsAdmin
     ? `
         <div class="delete-button-container flex">
-          <button id="cancel-button-normal" class="margin-h-auto" onclick="window.location.href='/jobs/delete/${job.id}'">Delete</button>
+          <button id="cancel-button-normal" class="margin-h-auto" onclick="window.location.href='/jobs/delete/${job.id}'"><span class="material-symbols-outlined">
+delete
+</span>Delete</button>
         </div>
       `
     : ''
@@ -574,10 +582,10 @@ function checkFavorite(jobId) {
       );
       if (data.isFavorite) {
         favoriteButton.id = 'cancel-button-normal';
-        favoriteButton.textContent = data.buttonText;
+        favoriteButton.innerHTML = data.buttonText;
       } else {
         favoriteButton.id = 'submit-button-normal';
-        favoriteButton.textContent = data.buttonText;
+        favoriteButton.innerHTML = data.buttonText;
       }
     })
     .catch((error) => {
@@ -640,11 +648,11 @@ function favorite(favoriteType, TypeId) {
 }
 
 function toggleFavoriteButton(button) {
-  if (button.textContent === 'Unfavorite') {
+  if (button.innerHTML === '<span class="material-symbols-outlined">close</span>Unfavorite') {
     button.id = 'submit-button-normal';
-    button.textContent = 'Favorite';
+    button.innerHTML = '<span class="material-symbols-outlined">star</span>Favorite';
   } else {
     button.id = 'cancel-button-normal';
-    button.textContent = 'Unfavorite';
+    button.innerHTML = '<span class="material-symbols-outlined">close</span>Unfavorite';
   }
 }

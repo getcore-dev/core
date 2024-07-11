@@ -418,6 +418,38 @@ const jobQueries = {
     }
   },
 
+  getRecent10Jobs: async () => {
+    try {
+      const result = await sql.query(`
+        WITH RecentJobs AS (
+          SELECT TOP 100 
+            JobPostings.*,
+            companies.name AS company_name, 
+            companies.logo AS company_logo, 
+            companies.location AS company_location, 
+            companies.description AS company_description,
+            (
+              SELECT STRING_AGG(JobTags.tagName, ', ')
+              FROM JobPostingsTags
+              INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+              WHERE JobPostingsTags.jobId = JobPostings.id
+            ) AS job_tags
+          FROM JobPostings
+          LEFT JOIN companies ON JobPostings.company_id = companies.id
+          ORDER BY JobPostings.postedDate DESC
+        )
+        SELECT TOP 10 *
+        FROM RecentJobs
+        ORDER BY NEWID()
+      `);
+  
+      const jobs = result.recordset;
+      return jobs;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
   getJobsBySearch: async (
     title = '',
     location = '',

@@ -484,7 +484,7 @@ function createJobElement(job) {
   jobElement.classList.add('job');
   jobElement.onclick = () => (window.location.href = `/jobs/${job.id}`);
 
-  const tagsArray = job.skills
+  const tagsArray = job.skills[1]
     ? job.skills[1].split(',').filter((tag) => tag)
     : [];
   const sortedTags = tagsArray.sort(
@@ -528,9 +528,9 @@ function createJobElement(job) {
         ? 'L5/L6'
         : job.experienceLevel
 }</span>
-          <span> • </span>
-          <span class="job-salary" style="margin-left: auto;">USD $${job.salary.toLocaleString()} ${
-  job.salary_max ? '- $' + job.salary_max.toLocaleString() : ''
+
+          <span class="job-salary" style="margin-left: auto;">${job.salary != 0 ? ` • USD $${job.salary.toLocaleString()}` : ''}${
+  job.salary_max != 0 ? '- $' + job.salary_max.toLocaleString() : ''
 }</span>
         </div>
         <div class="job-posting-flairs">${tagsHTML}</div>

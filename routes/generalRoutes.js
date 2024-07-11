@@ -87,7 +87,7 @@ router.get('/404', (req, res) => {
   res.render('error.ejs', { user: req.user, error });
 });
 
-router.get('/user/:username', viewController.renderUserProfile);
+router.get('/user/:username', cacheMiddleware(1200), viewController.renderUserProfile);
 
 router.get('/user/:username/followers', viewController.renderFollowers);
 

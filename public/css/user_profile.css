@@ -278,10 +278,6 @@ main {
   margin-bottom: 0.7rem;
 }
 
-#edit-button .material-symbols-outlined {
-  font-size: 22px;
-}
-
 .profile-picture img {
   width: 100px;
   /* Adjust the size as needed */

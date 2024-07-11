@@ -3,6 +3,7 @@ const cache = new NodeCache({ stdTTL: 1200 });
 
 const cacheMiddleware = (duration) => {
   return (req, res, next) => {
+    // Generate a unique cache key based on query parameters
     let key = '__express__' + req.originalUrl || req.url;
     let cachedBody = cache.get(key);
 

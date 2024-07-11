@@ -495,6 +495,7 @@ li.dropdown a.active {
 
 .second-nav-links .navbar-button {
   margin-top: 9px;
+  letter-spacing: .015rem;
   padding: 0;
   font-size: .965rem;
   font-weight: normal;
@@ -1287,7 +1288,7 @@ input {
   flex-grow: 0;
   font-weight: 550;
   margin: 0;
-  border-radius: 9px;
+  border-radius: 5px;
   background: #0dd64e3d;
   border: 1px solid #57ab73;
   color: #57ab73;
@@ -1299,6 +1300,12 @@ input {
   padding: .3rem .15rem;
   cursor: pointer;
   text-wrap: nowrap;
+}
+
+button .material-symbols-outlined {
+  font-size: 15px;
+  vertical-align: -3px;
+  padding-right: 8px;
 }
 
 .margin-auto {
@@ -2203,6 +2210,7 @@ input {
   #null-button,
   .null-button {
     padding: 0.35rem .85rem;
+    height: 30px;
   }
 
   .user-links.slide-left {
