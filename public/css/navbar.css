@@ -62,7 +62,7 @@ h2,
 h3,
 h4,
 h5 {
-  font-weight: 500;
+  font-weight: 600;
   color: var(--light-mode-bold-text-color);
 }
 
@@ -86,6 +86,18 @@ a:visited {
   display: flex;
   /* Display links inline */
 
+}
+
+#horizontal-scroll {
+  display: flex;
+  flex-direction: row;
+  overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+#horizontal-scroll::-webkit-scrollbar {
+  display: none;
 }
 
 .menu-item {

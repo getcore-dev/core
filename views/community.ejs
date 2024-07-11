@@ -23,6 +23,10 @@
     font-size: 12px;
     margin-right: 5px;
   }
+  
+  .community-body { 
+  margin-bottom: .7rem;
+  }
 
   .communities-header {
     margin: 13px 10px;
@@ -32,8 +36,9 @@
 
   .community-entry {
     border-top: 1px solid var(--border-color);
-    padding: 17px 16px;
+    padding: 17px 1.4rem;
     display: flex;
+    gap: 1.4rem;
     align-items: center;
     cursor: pointer;
   }
@@ -71,7 +76,7 @@
   <%- include('partials/navbar', { pagePath: 'communities' }) %>
   <main>
     <% if (user && user.isAdmin) { %>
-    <h5 class="communities-header secondary-text">Admin Communities</h5>
+    <h5 class="communities-header secondary-text">Admin Networks</h5>
     <div class="communities-list">
       <% communities.forEach((community) => { %>
       <% if (community.id == 9) { %>
@@ -79,7 +84,7 @@
         <span class="material-symbols-outlined" style="color:<%= community.community_color %>;"><%= community.mini_icon %></span>
 
         <span class="community-info">
-          <span class="community-info-title">Community Feedback</span>
+          <span class="community-info-title">FeedbackChannel</span>
           <br>
           <span class="community-flairs">
             <span class="community-flair" style="background-color:<%= community.community_color %>85;"><%= community.PostCount[1]%> posts</span>
@@ -94,7 +99,7 @@
 
 
     <% if (user) { %>
-    <h5 class="communities-header secondary-text">My Communities</h5>
+    <h5 class="communities-header secondary-text">Joined Networks</h5>
     <div class="communities-list">
       <% communities.forEach((community) => { %>
       <% if (community.id == 9 || community.PrivacySetting == 'Private') { %>
@@ -141,7 +146,7 @@
             <span> - </span>
             /<%= community.shortname%>
           </span>
-          <span id="secondary-text"><%= community.description%></span>
+          <span class="community-body" id="secondary-text"><%= community.description%></span>
           <br>
           <span class="community-flairs">
             <span class="community-flair" style="background-color:<%= community.community_color %>85;"><%= community.MemberCount%> member</span>

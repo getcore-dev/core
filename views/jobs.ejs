@@ -35,7 +35,7 @@
       <div class="jobs-header">
         <h5 id="secondary-text" style="margin-bottom: 0.2rem;"><%= recentJobs %> job postings in the last 30 days</h5>
 
-        <div class="job-buttons">
+        <div id="horizontal-scroll" class="job-buttons">
           <% if (user) { %>
           <% if (user.isAdmin) { %>
           <div class="create-company-button">

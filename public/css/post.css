@@ -1495,6 +1495,10 @@ p.preview-description {
   position: relative;
 }
 
+.reaction-button .material-symbols-outlined {
+padding: 0;
+}
+
 .post-subtitle-text {
   color: #555658;
   font-size: .95rem;
