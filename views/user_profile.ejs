@@ -528,9 +528,15 @@
 
           const jobElement = document.createElement('div');
           jobElement.innerHTML = `
-          <div class="job-experience-image">
-            <img class="thumbnail-regular thumbnail-small" src=${experience.logo} alt="Job Experience" />
-          </div>
+<% if (otheruser.settings_PrivateJobNames) { %>
+  <div class="job-experience-image">
+    <img class="thumbnail-regular thumbnail-small" src="path/to/placeholder.png" alt="Job Experience" />
+  </div>
+<% } else { %>
+  <div class="job-experience-image">
+    <img class="thumbnail-regular thumbnail-small" src="<%= experience.logo %>" alt="Job Experience" />
+  </div>
+<% } %>
           <div class="job-experience-body">
             <div class="job-experience-header">
             <% if (otheruser.settings_PrivateJobNames) { %>

@@ -19,54 +19,95 @@ const utilFunctions = {
   },
   getPosts: async (
     sortBy = 'trending',
-    userId,
+    user,
     page = 1,
     limit = 10,
     offset
   ) => {
     try {
       const result = await sql.query`
+      WITH CTE AS (
         SELECT 
           p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, 
           p.communities_id, p.react_like, p.react_love, p.react_curious, 
           p.react_interesting, p.react_celebrate, p.post_type, p.views, 
-          p.isGlobalPinned, u.username, u.avatar, u.isAdmin, u.verified,
+          p.isGlobalPinned, u.username, u.avatar, u.isAdmin, u.verified, u.firstname, u.lastname,
           CASE WHEN ur.follower_id IS NOT NULL THEN 1 ELSE 0 END AS is_following,
           c.name AS community_name, c.community_color as community_color,
           c.shortname AS community_shortname,
           SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
           SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-          SUM(CASE WHEN upa.action_type = 'DISLIKE' THEN 1 ELSE 0 END) as dislikeCount,
+          SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
           SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
           SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
           SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
-          (
-            SELECT TOP 1 upa2.action_type 
-            FROM userPostActions upa2
-            WHERE upa2.post_id = p.id AND upa2.user_id = ${userId}
-          ) as userReaction,
-          (
-            SELECT STRING_AGG(tags.name, ', ') 
-            FROM post_tags 
-            INNER JOIN tags ON post_tags.tag_id = tags.id
-            WHERE post_tags.post_id = p.id
-          ) AS post_tags,
-          (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count
+          je.title AS job_title,
+          je.companyName AS job_company,
+          ee.institutionName AS education_institution,
+          ROW_NUMBER() OVER (ORDER BY p.created_at DESC) AS RowNum
         FROM posts p
         INNER JOIN users u ON p.user_id = u.id
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
         LEFT JOIN communities c ON p.communities_id = c.id
-        LEFT JOIN user_relationships ur ON u.id = ur.followed_id AND ur.follower_id = ${userId}
+        LEFT JOIN user_relationships ur ON u.id = ur.followed_id AND ur.follower_id = ${user.id}
+OUTER APPLY (
+  SELECT TOP 1 
+    title,
+    CASE 
+      WHEN u.settings_PrivateJobNames = 1 THEN 'Company'
+      ELSE companyName 
+    END AS companyName
+  FROM job_experiences
+  WHERE userId = u.id
+  ORDER BY startDate DESC
+) je
+OUTER APPLY (
+  SELECT TOP 1 
+    CASE 
+      WHEN u.settings_PrivateSchoolNames = 1 THEN 'Institution'
+      ELSE institutionName 
+    END AS institutionName,
+    degree,
+    fieldOfStudy,
+    startDate,
+    endDate,
+    isCurrent,
+    grade,
+    activities,
+    description
+  FROM education_experiences
+  WHERE userId = u.id
+  ORDER BY startDate DESC
+) ee
         WHERE p.deleted = 0 AND c.PrivacySetting = 'Public' AND c.id != 9
         GROUP BY 
           p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.subtitle, 
-          p.communities_id, u.avatar, c.name, c.shortname, c.community_color, u.isAdmin, u.verified,
+          p.communities_id, u.avatar, c.name, c.shortname, c.community_color, u.isAdmin, u.verified, u.firstname, u.lastname,
           p.react_like, p.react_love, p.react_curious, p.react_interesting, 
-          p.react_celebrate, p.post_type, p.views, p.isGlobalPinned, ur.follower_id
-        ORDER BY p.created_at DESC
-        OFFSET ${offset} ROWS
-        FETCH NEXT ${limit} ROWS ONLY
-      `;
+          p.react_celebrate, p.post_type, p.views, p.isGlobalPinned, ur.follower_id,
+          je.title, je.companyName, ee.institutionName
+      )
+      SELECT *, 
+        (SELECT TOP 1 upa2.action_type 
+         FROM userPostActions upa2
+         WHERE upa2.post_id = CTE.id AND upa2.user_id = ${user.id}) as userReaction,
+        (SELECT STRING_AGG(tags.name, ', ') 
+         FROM post_tags 
+         INNER JOIN tags ON post_tags.tag_id = tags.id
+         WHERE post_tags.post_id = CTE.id) AS post_tags,
+        (SELECT COUNT(*) FROM comments c WHERE c.post_id = CTE.id) AS comment_count
+      FROM CTE
+      WHERE RowNum > ${offset} AND RowNum <= ${offset + limit}
+      ORDER BY created_at DESC
+    `;
+
+    if (user.settings_PrivateJobNames === 1) {
+      result.recordset.forEach((post) => {
+        post.job_title = post.job_title || 'Job Title';
+        post.job_company = post.job_company || 'Company';
+      });
+    }
+
 
       const countResult = await sql.query`
         SELECT COUNT(*) AS totalCount

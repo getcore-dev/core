@@ -10,7 +10,6 @@ body {
   display: flex;
   background: var(--light-mode-main-color);
   border-radius: 16px;
-  margin: 10px;
   flex-direction: row;
   justify-content: space-between;
   position: relative;
@@ -142,7 +141,7 @@ div.vote-interactions {
 }
 
 .post-timestamp {
-  font-size: .825rem;
+  font-size: .975rem;
 }
 
 .com-btn {
@@ -288,7 +287,7 @@ div.vote-interactions {
 .title {
   font-size: .9rem;
   font-weight: 500;
-  margin-bottom: .42rem;
+  margin-bottom: .72rem;
 }
 
 .title>a {
@@ -446,7 +445,7 @@ div .mini-link {
   flex-direction: row;
   max-width: 100%;
   padding: 6px 4px;
-  margin-bottom: .6rem;
+  margin-bottom: .9rem;
   border-radius: 9px;
   background: var(--light-mode-body-color);
   font-size: 14px;
@@ -960,7 +959,7 @@ button.see-more {
   }
 
   .jobslist .job {
-    min-width: 225px;
+    min-width: 180px;
   }
 
   #posts-container>h5 {
@@ -1037,7 +1036,7 @@ button.see-more {
 
   .job-header {
     margin: 19px 13px !important;
-    margin-bottom: 5px !important;
+    margin-bottom: .6rem !important;
     padding: 0 !important;
   }
 
@@ -1048,7 +1047,7 @@ button.see-more {
 
   .job-content {
     width: 100%;
-    padding: .65rem .95rem;
+    padding: .25rem .65rem;
     box-sizing: border-box;
   }
 
@@ -1072,8 +1071,7 @@ button.see-more {
   }
 
   .job {
-    margin: 8px;
-    margin-left: 0;
+    margin: 0;
   }
 
   .jobslist {
@@ -1145,7 +1143,7 @@ button.see-more {
   .username a,
   .communities-text,
   .post-quick-info {
-    font-size: .9rem;
+    font-size: .975rem;
   }
 
   body {
@@ -1158,7 +1156,7 @@ button.see-more {
   }
 
   .title {
-    font-size: 1.05rem;
+    font-size: 1.15rem;
   }
 
   .post-info {
@@ -1166,7 +1164,7 @@ button.see-more {
   }
 
   .description {
-    font-size: .95rem;
+    font-size: 1rem;
   }
 
 
@@ -1199,7 +1197,7 @@ button.see-more {
 
 .avatar img {
   border: 1px solid var(--border-color);
-  width: 35px;
+  width: 45px;
   aspect-ratio: 1/1;
   border-radius: 6px;
   object-fit: cover;

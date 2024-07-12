@@ -905,13 +905,14 @@ router.get('/posts', async (req, res) => {
   try {
     const sortBy = req.query.sortBy || 'trending'; // Default to "trending"
     const userId = req.query.userId;
+    const user = userQueries.findById(userId);
     const page = parseInt(req.query.page) || 1;
     const limit = 10; // Number of posts per page
     const offset = (page - 1) * limit;
 
     const posts = await utilFunctions.getPosts(
       sortBy,
-      userId,
+      user,
       page,
       limit,
       offset
