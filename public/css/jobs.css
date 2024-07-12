@@ -21,19 +21,9 @@ body {
 
 div.job-buttons {
   padding: 4px;
-  display: flex;
-  flex-direction: row;
-  overflow-x: auto;
   gap: .5rem;
   margin-bottom: .6rem;
-  overflow-x: scroll;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-div.job-buttons::-webkit-scrollbar {
-  display: none;
-}
+  }
 
 h1 {
   text-align: center;

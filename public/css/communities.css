@@ -513,6 +513,9 @@ div .mini-link-title {
   font-weight: 400;
 }
 
+#filter-button .material-symbols-outlined {
+padding: 0;
+}
 
 .mobile-jobs-container {
   display: none;

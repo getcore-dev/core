@@ -10,9 +10,6 @@ body {
 .github-login-btn {
   display: inline-flex;
   align-items: center;
-  color: white !important;
-  border-color: #443eaabd !important;
-  background-color: #2f2998ad !important;
   text-decoration: none;
   justify-content: center;
   box-sizing: border-box;
@@ -177,7 +174,8 @@ input[type="password"]:not(:placeholder-shown) + .floating-label {
 }
 
 .toggle-password .material-symbols-outlined {
-  font-size: 20px;
+  font-size: 1.15rem;
+  font-weight: 400;
 }
 
 input:focus + .floating-label,

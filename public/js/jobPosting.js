@@ -361,7 +361,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 
       </div>
       
-      <div class="interact-buttons">
+      <div id="horizontal-scroll" class="interact-buttons">
       ${
   isOlderThan30Days(job)
     ? ''

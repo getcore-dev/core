@@ -55,41 +55,17 @@
               <div class="comm-description">
                 <%= community.description%>
               </div>
-              <div class="community-flairs">
-                <span class="community-flair"><span class="material-symbols-outlined">
-                    person
-                  </span><%= community.MemberCount ? community.MemberCount : 0 %> members</span>
-                <span class="community-flair"><span class="material-symbols-outlined">
-                    forum
-                  </span><%= communityPostCount %> posts</span>
-                <% try { %>
-                <% if (community.Tags && community.Tags.length > 0) { %>
-                <span class="community-flair">
-                  <span class="material-symbols-outlined">
-                    label
-                  </span>
-                  <button class="no-bg no-border clickable no-padding" onclick="toggleTags()">show tags</button>
-                </span>
-                <% } %>
-                <% } catch (error) { %>
-                <!-- Handle the error, you can display a message or log it -->
-                <span class="error-message">Tags are not available</span>
-                <% } %>
-              </div>
-              <div class="community-tags">
-                <% try { %>
-                <% let tags = community.Tags.split(','); %>
-                <% let hiddenTags = tags.length; %>
-                <% tags.forEach((tag, index) => { %>
-                <span class="tag <%= index >= 0 ? 'hidden-tag' : '' %>" onclick="window.location.href='/tags/<%= tag.trim() %>'"><%= tag.trim() %></span>
-                <% }); %>
-                <% } catch (error) { %>
-
-                <% } %>
-              </div>
               <div class="community-buttons">
-                <button class="submit-button-normal join-btn" id="communityActionBtn" data-action="join">Join</button>
-                <button class="mod-btn regular-button-normal" id="communityActionBtn" style="display: none;pointer-events: none;" onclick="window.location.href='/networks/<%= community.shortname %>/admin'">
+                <button class="submit-button-normal join-btn" id="communityActionBtn" data-action="join"><span class="material-symbols-outlined">
+person_add
+</span>Join</button>
+                <button class="mod-btn null-button-normal" id="communityActionBtn" onclick="share(//TODO);">
+                  <span class="material-symbols-outlined">
+                    ios_share
+                  </span>
+                  Share</button>
+                  
+                                  <button class="mod-btn regular-button-normal" id="communityActionBtn" style="display: none;pointer-events: none;" onclick="window.location.href='/networks/<%= community.shortname %>/admin'">
                   <span class="material-symbols-outlined">
                     admin_panel_settings
                   </span>

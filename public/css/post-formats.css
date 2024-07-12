@@ -1,3 +1,7 @@
+.post-body :is(h1, h2, h3, h4, h5, h6) {
+  padding: 0 14px;
+  }
+
 .post-body h1 {
   font-size: 2rem;
   /* Adjust size as needed */
@@ -71,6 +75,7 @@
   margin-top: 0;
   letter-spacing: .015rem;
   margin-bottom: .4rem;
+  padding: 0 14px; 
 }
 
 
@@ -124,11 +129,12 @@
 
 .post-body pre {
   background-color: #fafafa;
-  border: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
   padding: .8rem 1.1rem;
   overflow: auto;
   margin-bottom: 1.1rem;
-  border-radius: 10px;
+  border-radius: 0;
   line-height: 1.4rem;
   letter-spacing: 0.01rem;
 }
