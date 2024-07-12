@@ -38,6 +38,5 @@ app.listen(environment.port, () => {
       cluster.worker ? cluster.worker.id : 'Master'
     } running on http://localhost:${environment.port}`
   );
-  // Uncomment the following line when you're ready to run the job board service
-  runJobBoardService();
+  setTimeout(runJobBoardService, 1500);
 });

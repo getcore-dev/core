@@ -91,7 +91,6 @@ pre {
   border-radius: 10px;
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
-  border: 1px solid var(--border-color);
   background: var(--light-mode-main-color);
   font: 13px Monaco, Consolas, "Andale  Mono", "DejaVu Sans Mono", monospace;
   padding: 8px;
@@ -454,7 +453,6 @@ div.interact-buttons {
 }
 
 .solution {
-  margin: 0 14px;
   margin-bottom: 1.8rem;
   display: flex;
   position: relative;
@@ -462,8 +460,6 @@ div.interact-buttons {
   flex-direction: column;
   white-space-collapse: collapse;
   background-color: #e2efe2;
-  border: 1px solid #84ab73;
-  border-radius: 10px;
   padding: .8rem 1.1rem;
 }
 
@@ -798,7 +794,7 @@ div.repliees-avatar {
 }
 
 .post-user-info {
-  font-size: 15px;
+  font-size: .9rem;
   color: var(--light-mode-text-color);
 }
 
@@ -1226,6 +1222,7 @@ div .mini-link {
 
 .post-body p,
 .comment-body p {
+  font-weight: 400;
   line-height: 1.4rem;
   letter-spacing: .015rem;
 }
@@ -1420,9 +1417,7 @@ p.preview-description {
 }
 
 .project-link {
-  background-color: var(--light-mode-main-color);
-  border: 1px solid var(--border-color);
-  border-radius: 18px;
+  background-color: #eff5fc;
   padding: 16px 21px;
 }
 
@@ -1461,9 +1456,14 @@ p.preview-description {
 
 .project-link-image {
   height: 80px;
-  float: left;
   padding: 8px;
   padding-right: 20px;
+}
+
+.project-link-body {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .nested-comment>.comment {
@@ -1484,19 +1484,19 @@ p.preview-description {
 
 .tag-flair {
   display: inline-flex;
-  gap: 5px;
-  padding: 2px 7px;
+  gap: .6rem;
+  padding: 3px 7px;
   margin: 2px 4px 0px 0px;
   margin-bottom: 3px;
-  background-color: #be5ab736;
-  color: #be5aa6;
+  background-color: #b9d9ff;
+  color: #2e63a1;
   border-radius: 7px;
   font-size: .925rem;
   position: relative;
 }
 
 .reaction-button .material-symbols-outlined {
-padding: 0;
+  padding: 0;
 }
 
 .post-subtitle-text {
@@ -1573,6 +1573,11 @@ div.post-information {
     /* Light text color for better readability */
   }
 
+  .post-body p,
+  .comment-body p {
+    color: #b1b1b1;
+  }
+
   .dropdown-content {
     background-color: var(--dark-mode-main-color);
     color: var(--dark-mode-text-color);
@@ -1617,7 +1622,6 @@ div.post-information {
 
   .solution {
     background-color: #021008;
-    border: 1px solid #1d362a;
   }
 
   .comments-section h3,
@@ -2125,14 +2129,6 @@ div.username {
 
   .post-subtitle {
     font-size: .85rem;
-  }
-
-  .post-updatedat {
-    font-size: .8rem;
-  }
-
-  .timestamp {
-    font-size: 14px;
   }
 
   .link-image {

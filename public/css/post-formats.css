@@ -1,6 +1,6 @@
 .post-body :is(h1, h2, h3, h4, h5, h6) {
   padding: 0 14px;
-  }
+}
 
 .post-body h1 {
   font-size: 2rem;
@@ -75,7 +75,7 @@
   margin-top: 0;
   letter-spacing: .015rem;
   margin-bottom: .4rem;
-  padding: 0 14px; 
+  padding: 0 14px;
 }
 
 
@@ -117,7 +117,7 @@
 }
 
 .accepted-badge {
-  background-color: #84ab73;
+  background-color: #9bd682;
   color: white;
   padding: 5px 10px;
   border-radius: 3px;
@@ -129,8 +129,6 @@
 
 .post-body pre {
   background-color: #fafafa;
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
   padding: .8rem 1.1rem;
   overflow: auto;
   margin-bottom: 1.1rem;
@@ -180,7 +178,6 @@
 @media (prefers-color-scheme: dark) {
   .post-body pre {
     background-color: var(--dark-mode-main-color);
-    border: 1px solid var(--dark-mode-border-color);
   }
 
   .post-body p {

@@ -14,6 +14,8 @@
 <body>
   <%- include('partials/navbar', { pagePath: 'home' }) %>
   <main>
+    <img src="/img/core.png" onclick="window.location.href = '/'" alt="CORE Logo" class="core-logo" />
+
     <div class="account-stuff">
       <div id="login">
         <div class="user-res">Already a member? <a href="/login">Login</a></div>
@@ -58,7 +60,7 @@
 
   </main>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       var password = document.getElementById("password");
       var confirmPassword = document.getElementById("password2");
       var confirmPasswordContainer = document.getElementById("confirmPasswordContainer");
@@ -90,10 +92,10 @@
 
       function debounce(func, wait, immediate) {
         var timeout;
-        return function() {
+        return function () {
           var context = this,
             args = arguments;
-          var later = function() {
+          var later = function () {
             timeout = null;
             if (!immediate) func.apply(context, args);
           };
@@ -113,33 +115,33 @@
         if (password.value.match(/(?=.*[A-Z])/)) strength += 1;
 
         switch (strength) {
-          case 1:
-          case 2:
-            passwordStrengthText.textContent = "Weak";
-            password.style.borderColor = "red";
-            password.classList.add("weak");
-            password.classList.remove("medium");
-            password.classList.remove("strong");
-            break;
-          case 3:
-          case 4:
-            passwordStrengthText.textContent = "Medium";
-            password.style.borderColor = "yellow";
-            password.classList.add("medium");
-            password.classList.remove("weak");
-            password.classList.remove("strong");
+        case 1:
+        case 2:
+          passwordStrengthText.textContent = "Weak";
+          password.style.borderColor = "red";
+          password.classList.add("weak");
+          password.classList.remove("medium");
+          password.classList.remove("strong");
+          break;
+        case 3:
+        case 4:
+          passwordStrengthText.textContent = "Medium";
+          password.style.borderColor = "yellow";
+          password.classList.add("medium");
+          password.classList.remove("weak");
+          password.classList.remove("strong");
 
-            break;
-          case 5:
-            passwordStrengthText.textContent = "Strong";
-            password.style.borderColor = "green";
-            password.classList.remove("medium");
-            password.classList.remove("weak");
-            password.classList.add("strong");
-            break;
-          default:
-            passwordStrengthText.textContent = "";
-            password.style.borderColor = "";
+          break;
+        case 5:
+          passwordStrengthText.textContent = "Strong";
+          password.style.borderColor = "green";
+          password.classList.remove("medium");
+          password.classList.remove("weak");
+          password.classList.add("strong");
+          break;
+        default:
+          passwordStrengthText.textContent = "";
+          password.style.borderColor = "";
         }
       }
 
@@ -157,7 +159,7 @@
         }
       }
 
-      password.addEventListener("input", function() {
+      password.addEventListener("input", function () {
         checkPasswordStrength();
         if (password.value.length > 0) {
           confirmPasswordContainer.style.display = "block"; // Show Confirm Password field

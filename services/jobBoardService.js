@@ -28,7 +28,9 @@ class JobProcessor {
 
   async start() {
     await this.init();
-    await jobQueries.deleteJobsOlderThan2Months();
+    // await jobQueries.deleteJobsOlderThan2Months();
+
+    // causes errors, need to fix
     const companies = await jobQueries.getCompanies();
     for (const company of companies) {
       if (company.job_board_url) {

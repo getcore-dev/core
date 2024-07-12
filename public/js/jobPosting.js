@@ -384,7 +384,7 @@ star
     : ''
 }
       <div class="share-button-container flex">
-      <button id="regular-button-normal" class="margin-h-auto" onclick="share('${
+      <button id="null-button-normal" class="margin-h-auto" onclick="share('${
   job.title
 }', '', 'https://c-ore.dev/jobs/${job.id}')"
       ><span class="material-symbols-outlined">

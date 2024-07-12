@@ -70,7 +70,7 @@ footer {
 main {
   display: flex;
   background-image: url("../core-login-backgrounds/ISS071E170979 Large.jpg") !important;
-  padding-top: 180px;
+  padding-top: 240px;
   flex-direction: column;
   align-items: center;
   height: calc(100dvh - 65px);
@@ -93,7 +93,8 @@ main {
 
 }
 
-#register a, #forgot-pass a {
+#register a,
+#forgot-pass a {
   text-decoration: none;
   color: var(--active-indicator-color);
 }
@@ -126,9 +127,9 @@ main {
   text-decoration: none;
   flex: 0 0 auto;
   margin-right: 10px;
-  cursor: pointer; 
-  padding: 10px 20px; 
-  margin-top: 10px; 
+  cursor: pointer;
+  padding: 10px 20px;
+  margin-top: 10px;
   cursor: pointer;
 }
 
@@ -154,10 +155,10 @@ main {
 
 
 
-input[type="text"]:focus + .floating-label,
-input[type="password"]:focus + .floating-label,
-input[type="text"]:not(:placeholder-shown) + .floating-label,
-input[type="password"]:not(:placeholder-shown) + .floating-label {
+input[type="text"]:focus+.floating-label,
+input[type="password"]:focus+.floating-label,
+input[type="text"]:not(:placeholder-shown)+.floating-label,
+input[type="password"]:not(:placeholder-shown)+.floating-label {
   top: -20px;
   color: #333;
 }
@@ -178,12 +179,13 @@ input[type="password"]:not(:placeholder-shown) + .floating-label {
   font-weight: 400;
 }
 
-input:focus + .floating-label,
-input:not(:placeholder-shown) + .floating-label,
-.toggle-password:focus ~ .floating-label {
+input:focus+.floating-label,
+input:not(:placeholder-shown)+.floating-label,
+.toggle-password:focus~.floating-label {
   opacity: 1;
   visibility: visible;
-  transform: translateY(-150%); /* Move label up when active */
+  transform: translateY(-150%);
+  /* Move label up when active */
   font-size: 12px;
   color: #333;
 }
@@ -196,7 +198,7 @@ input:not(:placeholder-shown) + .floating-label,
 
 .button-container {
   display: flex;
-  justify-content:center;
+  justify-content: center;
 }
 
 .input-container input {
@@ -204,7 +206,7 @@ input:not(:placeholder-shown) + .floating-label,
   padding: 11px 9px;
   margin: 8px 0;
   box-sizing: border-box;
-  border-radius: 10px; 
+  border-radius: 10px;
   background-color: #f6f8fa91 !important;
   border: 1px solid #ffffff8f !important;
   font-size: .8rem;
@@ -225,7 +227,7 @@ input:not(:placeholder-shown) + .floating-label,
 #login h1 {
   text-align: center;
   margin-bottom: 24px;
-  color: #333;  
+  color: #333;
 }
 
 
@@ -243,24 +245,35 @@ input:not(:placeholder-shown) + .floating-label,
   height: min-content !important;
 }
 
+nav {
+  display: none !important;
+}
+
+.core-logo {
+  height: 120px;
+  top: 50px;
+  position: absolute;
+}
+
 .login-buttons {
   display: flex;
-  margin-bottom: 2.2rem;
+  margin-bottom: 1.2rem;
   align-items: center;
-  gap: 20px; 
+  gap: 20px;
 }
 
 .abcRioButton {
   height: 20px !important;
 
-    box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 .abcRioButtonIcon {
   padding: 0 !important;
   float: none !important;
 }
-.abcRioButton { 
+
+.abcRioButton {
   margin-left: auto !important;
   margin-right: auto !important;
 }
@@ -272,21 +285,21 @@ input:not(:placeholder-shown) + .floating-label,
 }
 
 .join-link {
-  text-decoration: none; 
-  color: inherit; 
+  text-decoration: none;
+  color: inherit;
 }
 
 .join-link .highlight {
-  font-weight: bold; 
+  font-weight: bold;
   color: var(--active-indicator-color);
 }
 
 .join-link:hover .highlight {
-  text-decoration: underline; 
+  text-decoration: underline;
 }
 
 
-@media screen and (max-width: 600px){
+@media screen and (max-width: 600px) {
   main {
     height: calc(100dvh - 58px);
   }
@@ -296,7 +309,7 @@ input:not(:placeholder-shown) + .floating-label,
   }
 
   .input-container input {
-    padding: 11px 14px; 
+    padding: 11px 14px;
     background: #f6f8fa7a !important;
     font-size: 16px;
   }
@@ -308,9 +321,10 @@ input:not(:placeholder-shown) + .floating-label,
   .input-container input.active {
     padding: 3px 14px;
     padding-top: 19px;
-}
+  }
 
-  #register, #login {
+  #register,
+  #login {
     max-width: 100%;
     background: none;
     border-radius: 0;
@@ -320,7 +334,7 @@ input:not(:placeholder-shown) + .floating-label,
 @media (prefers-color-scheme: dark) {
   main {
     background-image: url("/core-login-backgrounds/Web First Images Release.webp") !important;
-    color: var(--dark-mode-text-color); 
+    color: var(--dark-mode-text-color);
   }
 
   .footer-container a {
@@ -328,7 +342,7 @@ input:not(:placeholder-shown) + .floating-label,
   }
 
   #login {
-    background: none; 
+    background: none;
     border-color: none;
   }
 
@@ -337,21 +351,21 @@ input:not(:placeholder-shown) + .floating-label,
     border: 1px solid #444444bf;
   }
 
-  .navbar, .second-nav-bar {
+  .navbar,
+  .second-nav-bar {
     background: #00000078 !important;
   }
 
-  #register
-  {
-    background: none; 
+  #register {
+    background: none;
     border-color: none;
-    }
+  }
 
 
   .input-container input {
     background-color: #0b0c0c8c !important;
     border-color: #181a1bd1 !important;
-    color: var(--dark-mode-text-color) !important; 
+    color: var(--dark-mode-text-color) !important;
   }
 
   #login h1 {
@@ -366,6 +380,6 @@ input:not(:placeholder-shown) + .floating-label,
     background-color: #0b0c0c8c !important;
     border-color: #181a1bd1 !important;
     color: var(--dark-mode-text-color) !important;
-  
+
   }
 }

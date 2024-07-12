@@ -125,6 +125,8 @@ function scheduleNextRun() {
     `Next job board service run scheduled in ${delayHours.toFixed(2)} hours`
   );
 
+  
+
   setTimeout(runJobBoardService, delayMs);
 }
 

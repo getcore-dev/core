@@ -69,7 +69,7 @@ h5 {
 a,
 a:visited {
   text-decoration: none;
-  color: var(--light-mode-secondary-text-color);
+  color: var(--light-mode-bold-text-color);
 }
 
 .top-bar {
@@ -1314,6 +1314,17 @@ input {
   text-wrap: nowrap;
 }
 
+.small-icon {
+  font-size: .95rem !important;
+  vertical-align: -2px;
+}
+
+.link {
+  color: var(--active-indicator-color) !important;
+  font-weight: 500;
+  text-decoration: none;
+}
+
 button .material-symbols-outlined {
   font-size: 15px;
   vertical-align: -3px;
@@ -1345,6 +1356,22 @@ button .material-symbols-outlined {
 .margin-v-auto {
   margin-top: auto !important;
   margin-bottom: auto !important;
+}
+
+.margin-03-bottom {
+  margin-bottom: 0.3rem;
+}
+
+.margin-06-bottom {
+  margin-bottom: 0.6rem;
+}
+
+.margin-1-bottom {
+  margin-bottom: 1rem;
+}
+
+.margin-2-bottom {
+  margin-bottom: 2rem;
 }
 
 .flex {
@@ -1612,6 +1639,10 @@ button .material-symbols-outlined {
     color: var(--dark-mode-text-color);
   }
 
+  .navbar-button .material-symbols-outlined {
+    color: var(--dark-mode-text-color);
+  }
+
   #secondary-text {
     color: var(--dark-mode-secondary-text-color);
   }
@@ -1802,7 +1833,7 @@ button .material-symbols-outlined {
   #null-button-normal {
     background: #ffffff0f;
     color: #b0b0b0;
-    border: 1px solid #333333;
+    border: 1px solid #1a1a1a;
   }
 
   input:focus,
@@ -1835,6 +1866,19 @@ button .material-symbols-outlined {
   .search-bar input[type="search"] {
     background-color: #555;
     color: #fff;
+  }
+
+  a,
+  a:visited {
+    color: var(--dark-mode-text-color);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    color: var(--dark-mode-text-color);
   }
 
   .search-bar input[type="search"]:focus,

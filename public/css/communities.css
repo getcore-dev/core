@@ -514,7 +514,7 @@ div .mini-link-title {
 }
 
 #filter-button .material-symbols-outlined {
-padding: 0;
+  padding: 0;
 }
 
 .mobile-jobs-container {
@@ -1356,7 +1356,7 @@ button.see-more {
 
   .comment-button-left,
   .reaction-button-left {
-    border-color: #333333;
+    border-color: #1a1a1a;
   }
 
   .communities a {
@@ -1428,6 +1428,11 @@ button.see-more {
   .post-info {
     color: #ccc;
     /* Lighter text color for post information */
+  }
+
+  .job-title a,
+  .job-title a:visited {
+    color: var(--dark-mode-text-color);
   }
 
   #posts-container>div.mobile-jobs-container>div.jobslist>div {

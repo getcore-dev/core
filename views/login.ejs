@@ -16,6 +16,8 @@
   <%- include('partials/navbar', { pagePath: 'home' }) %>
 
   <main>
+    <img src="/img/core.png" onclick="window.location.href = '/'" alt="CORE Logo" class="core-logo" />
+
     <div class="account-stuff">
       <div id="register">
         <div class="user-res">
@@ -79,7 +81,7 @@
       passwordInput.setAttribute('type', type);
       toggleButton.innerHTML = type === 'password' ? '<span class="material-symbols-outlined">visibility</span>' : '<span class="material-symbols-outlined">visibility_off</span>';
     }
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       const inputs = document.querySelectorAll('.input-container input');
       const labels = document.querySelectorAll('.input-container label');
 
@@ -116,7 +118,7 @@
       var xhr = new XMLHttpRequest();
       xhr.open('POST', 'YOUR_BACKEND_URL_HERE');
       xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.onload = function() {
+      xhr.onload = function () {
         console.log('Signed in as: ' + xhr.responseText);
       };
       xhr.send(JSON.stringify({
@@ -127,7 +129,7 @@
     // Sign out function (if you want to provide a sign-out button)
     function signOut() {
       var auth2 = gapi.auth2.getAuthInstance();
-      auth2.signOut().then(function() {
+      auth2.signOut().then(function () {
         console.log('User signed out.');
       });
     }

@@ -9,13 +9,24 @@ body {
 main {
   display: flex;
   background-image: url("../core-login-backgrounds/ISS071E170979 Large.jpg") !important;
-  padding-top: 180px;
+  padding-top: 240px;
   flex-direction: column;
   align-items: center;
   height: calc(100dvh);
   background-color: #fff;
   font-family: 'Inter', sans-serif;
 }
+
+nav {
+  display: none !important;
+}
+
+.core-logo {
+  height: 120px;
+  top: 50px;
+  position: absolute;
+}
+
 
 .mobile-search-input {
   border: 1px solid transparent !important;
@@ -39,11 +50,16 @@ main {
   padding: .5rem 0;
 }
 
-#password, #password2 {
-  border-color: var(--border-color) !important; /* Ensure the initial state has no specific color */
+#password,
+#password2 {
+  border-color: var(--border-color) !important;
+  /* Ensure the initial state has no specific color */
 }
 
-#password.weak, #password2.no-match, #username.invalid, #confirmPassword.no-match {
+#password.weak,
+#password2.no-match,
+#username.invalid,
+#confirmPassword.no-match {
   border: 1px solid #ae4444 !important;
   background-color: #cd3a3a1c !important;
   color: #ae4444 !important;
@@ -51,13 +67,13 @@ main {
 
 .error-messages {
   width: 100%;
-    border: 1px solid #ae4444;
-    background-color: #cd3a3a1c;
-    color: #ae4444;
-    padding: .55rem 0.85rem !important;
-    margin: .5rem 0;
-    box-sizing: border-box;
-    border-radius: 7px;
+  border: 1px solid #ae4444;
+  background-color: #cd3a3a1c;
+  color: #ae4444;
+  padding: .55rem 0.85rem !important;
+  margin: .5rem 0;
+  box-sizing: border-box;
+  border-radius: 7px;
 }
 
 #password.medium {
@@ -66,7 +82,10 @@ main {
   color: #ffa600 !important;
 }
 
-#password.strong, #password2.match, #username.valid, #confirmPassword.match {
+#password.strong,
+#password2.match,
+#username.valid,
+#confirmPassword.match {
   background: #1675351f !important;
   border: 1px solid #4b9263 !important;
   color: #4b9263 !important;
@@ -80,13 +99,13 @@ main {
   max-width: 500px;
   box-sizing: border-box;
   text-align: center;
-  display:flex;
+  display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
 .user-res {
-  text-align: start;  
+  text-align: start;
 }
 
 footer {
@@ -103,7 +122,7 @@ footer {
 }
 
 #registration form {
-  display:flex;
+  display: flex;
   flex-direction: column;
   gap: 12px;
 }
@@ -129,7 +148,7 @@ footer {
   padding: 11px 9px;
   margin: 5px 0;
   box-sizing: border-box;
-  border-radius: 10px; 
+  border-radius: 10px;
   background-color: #f6f8fa91 !important;
   border: 1px solid #ffffff8f !important;
   font-size: .8rem;
@@ -151,7 +170,8 @@ footer {
   border: 1px solid #ffffff8f !important;
 }
 
-#password-strength, #password-match {
+#password-strength,
+#password-match {
   display: block;
   margin-top: 5px;
   font-size: 0.8em;
@@ -181,17 +201,17 @@ footer {
   border-radius: 6px;
   background: #0C8346;
   border: 1px solid #0E954F;
-    color: white;
+  color: white;
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;
   flex: 0 0 auto;
   margin-right: 10px;
-  margin-top: 10px; 
+  margin-top: 10px;
   padding: 10px 20px;
 }
 
-@media screen and (max-width: 600px){
+@media screen and (max-width: 600px) {
   .account-stuff {
     width: 90%;
   }
@@ -205,8 +225,9 @@ footer {
 @media (prefers-color-scheme: dark) {
   main {
     background-image: url("/core-login-backgrounds/Web First Images Release.webp") !important;
-    color: var(--dark-mode-text-color); 
+    color: var(--dark-mode-text-color);
   }
+
   .account-stuff {
     background: #1f1f21cc;
     border: 1px solid #444444bf;
@@ -215,46 +236,54 @@ footer {
   .input-container input {
     background-color: #0b0c0c8c !important;
     border-color: #181a1bd1 !important;
-    color: var(--dark-mode-text-color) !important; 
+    color: var(--dark-mode-text-color) !important;
   }
 
-  #registration, #login{
-      border-color: none;
-      background: none;
-    }
+  #registration,
+  #login {
+    border-color: none;
+    background: none;
+  }
 
-    #password, #password2 {
-      border-color: var(--dark-mode-border-color) !important; /* Ensure the initial state has no specific color */
-    }
-    
-    #password.weak, #password2.no-match, #username.invalid {
-      border: 1px solid #ae4444 !important;
-      background-color: #cd3a3a1c !important;
-      color: #ae4444 !important;
-    }
-    
-    #password.medium {
-      border-color: #ffa600 !important;
-      background: #ffa60038 !important;
-      color: #ffa600 !important;
-    }
-    
-    #password.strong, #password2.match, #username.valid {
-      background: #1675351f !important;
-      border: 1px solid #4b9263 !important;
-      color: #4b9263 !important;
-    }
+  #password,
+  #password2 {
+    border-color: var(--dark-mode-border-color) !important;
+    /* Ensure the initial state has no specific color */
+  }
 
-    .footer-container a {
-      color: white !important;
-    }
+  #password.weak,
+  #password2.no-match,
+  #username.invalid {
+    border: 1px solid #ae4444 !important;
+    background-color: #cd3a3a1c !important;
+    color: #ae4444 !important;
+  }
 
-    .navbar, .second-nav-bar {
-      background: #00000078 !important;
-    }
+  #password.medium {
+    border-color: #ffa600 !important;
+    background: #ffa60038 !important;
+    color: #ffa600 !important;
+  }
+
+  #password.strong,
+  #password2.match,
+  #username.valid {
+    background: #1675351f !important;
+    border: 1px solid #4b9263 !important;
+    color: #4b9263 !important;
+  }
+
+  .footer-container a {
+    color: white !important;
+  }
+
+  .navbar,
+  .second-nav-bar {
+    background: #00000078 !important;
+  }
 
   #registration h1 {
-      color: #f4f4f4;
+    color: #f4f4f4;
   }
 
 }

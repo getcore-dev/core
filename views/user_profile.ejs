@@ -31,9 +31,7 @@
   .link-display,
   #edit-button,
   #followButton,
-  .github-commit-repos,
-  .post,
-  .comment {
+  .github-commit-repos {
     background: <%=otheruser.profile_border_color%>0f !important;
     border: 1px solid <%=otheruser.profile_border_color%>52 !important;
     color: black;
@@ -141,21 +139,17 @@
                 </span>
                 <% } %>
               </p>
-
-              <% if (otheruser.topCommunities && otheruser.topCommunities.length > 0) { %>
-              <div class="communities-info">
-                <p>Active in: <%= otheruser.topCommunities %></p>
+              <div class="user-bio" style="background: 0 !important; padding-top: 0;">
+                <p>
+                  <%= otheruser.bio %>
+                </p>
               </div>
-              <% } %>
-
               <div class="followers-info">
-                <a href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; align-items: center;gap: 5px;"> <span class="material-symbols-outlined">
+                <a class="link" href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; align-items: center;gap: 5px;"> <span class="material-symbols-outlined small-icon">
                     person
                   </span><span id="followerCount"> <%= otheruser.followerCount %> Followers </a></span>
-                <a href="/user/<%= otheruser.username %>/following" style="display: flex; align-items: center;flex-direction:row; gap: 5px;">
-                  <span class="material-symbols-outlined">
-                    person
-                  </span><span id="followCount"> <%= otheruser.followingCount %> Following</a></span>
+                <a class="link" href="/user/<%= otheruser.username %>/following" style="display: flex; align-items: center;flex-direction:row; gap: 5px;">
+                  <span id="followCount"> <%= otheruser.followingCount %> Following</a></span>
               </div>
 
             </div>
@@ -192,8 +186,14 @@
           </div>
 
           <% if (otheruser.username != "core") { %>
+          <% if (otheruser.topCommunities && otheruser.topCommunities.length > 0) { %>
+          <div class="communities-info">
+            <p>Active in: <%= otheruser.topCommunities %></p>
+          </div>
+          <% } %>
           <div class="links-container">
             <% if (otheruser.link) { %>
+            <h4>Links</h4>
             <div class="social-display"> <span class="material-symbols-outlined">
                 link
               </span>
@@ -208,27 +208,21 @@
             </div>
             <% } else { %><% } %>
             <% if (otheruser.github_url) { %>
-            <div class="social-display"> <img src="/src/github.png" style="height:16px;width:16px;">
+            <div class="social-display"> <img src="/src/github.png" style="background: white;width: 24px;border-radius: 50%;">
               <p id="github-url-display"> <a href="https://github.com/<%= otheruser.github_url %>"><%= otheruser.github_url %></a> </p>
             </div>
             <% } else { %><% } %>
             <% if (otheruser.linkedin_url) { %>
-            <div class="social-display"> <img src="/src/linkedin.png" style="height:12px;width:12px;">
+            <div class="social-display"> <img src="/src/linkedin.png" style="height:16px;width:16px;">
               <p id="linkedin-url-display"> <a href="https://www.linkedin.com/in/<%= otheruser.linkedin_url %>"><%= otheruser.linkedin_url %></a> </p>
             </div>
             <% } else { %><% } %>
             <% if (otheruser.leetcode_url) { %>
-            <div class="social-display"> <img src="/src/leetcodeglyph.png" style="height:20px;width:20px;">
+            <div class="social-display"> <img src="/src/leetcodeglyph.png" style="background: white;width: 24px;border-radius: 50%;">
               <p id="leetcode-url-display"> <a href="https://leetcode.com/<%= otheruser.leetcode_url %>"><%= otheruser.leetcode_url %></a> </p>
             </div>
             <% } else { %><% } %>
           </div>
-        </div>
-
-        <div class="user-bio" style="background: 0 !important; padding-top: 0;">
-          <p>
-            <%= otheruser.bio %>
-          </p>
         </div>
         <div class="current-education" style="background:none !important; padding: 0;">
           <div class="current-job-header">
@@ -522,6 +516,10 @@
       const currentEducationContainer = document.getElementById('currentEducationContainer');
 
       function displayJobExperience(experiences) {
+        if (experiences.length === 0) {
+          currentJobContainer.innerHTML = '<p>No job experiences available.</p>';
+          return;
+        }
         experiences.forEach(experience => {
           const formattedStartDate = formatDate2(experience.startDate);
           const formattedEndDate = experience.endDate ? formatDate2(experience.endDate) : 'Present';
@@ -533,9 +531,15 @@
     <img class="thumbnail-regular thumbnail-small" src="path/to/placeholder.png" alt="Job Experience" />
   </div>
 <% } else { %>
-  <div class="job-experience-image">
-    <img class="thumbnail-regular thumbnail-small" src="<%= experience.logo %>" alt="Job Experience" />
-  </div>
+  <% if (typeof experience !== 'undefined' && experience.logo) { %>
+    <div class="job-experience-image">
+      <img class="thumbnail-regular thumbnail-small" src="<%= experience.logo %>" alt="Job Experience" />
+    </div>
+  <% } else { %>
+    <div class="job-experience-image">
+      <img class="thumbnail-regular thumbnail-small" src="path/to/placeholder.png" alt="Job Experience" />
+    </div>
+  <% } %>
 <% } %>
           <div class="job-experience-body">
             <div class="job-experience-header">

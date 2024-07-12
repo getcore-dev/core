@@ -111,9 +111,7 @@
                   <% if (post.updated_at) { %>
                   •
                   <span class="post-updatedat secondary-text">
-                    <span class="material-symbols-outlined">
-                      edit
-                    </span>
+                    Edited:
                     <%
                    postDate = new Date(post.updated_at);
                     let today = new Date();
@@ -258,29 +256,32 @@
                     }
                   %>
               <div class="project-link" onclick="window.location.href='<%= post.link %>'">
-                <div class="project-link-image">
-                  <img src="<%= gitHubData.owner.avatar_url %>" alt="Preview" class="large-preview-image" />
-                </div>
-                <div class="project-link-header">
-                  <a href="<%= post.link %>" class="project-link-title">
-                    <img src="/src/github.png" alt="GitHub Logo" class="github-logo" style="display: inline-block; background-color: white; border-radius: 100%; height: 16px; width: 16px; aspect-ratio: 1/1; padding: 0; margin: 0; margin-right: 5px;" />
-                    <%= post.link %>
-                  </a>
-                  <div class="project-link-info">
-                    <h5 style="line-height: 1; margin: 2px 0;"><%= gitHubData.name %></h5>
-                    <div class="project-link-description">
-                      <%= gitHubData.description %>
-                    </div>
-                    <br>
-                    <div class="project-link-stats">
-                      <span class="tag-flair"><span class="material-symbols-outlined">code</span><%= gitHubData.language %></span>
-                      <span class="tag-flair"><span class="material-symbols-outlined">bug_report</span><%= gitHubData.open_issues %></span>
-                      <span class="tag-flair"><span class="material-symbols-outlined">star</span><%= gitHubData.stargazers_count %> stars</span>
-                      <span class="tag-flair"><span class="material-symbols-outlined">fork_right</span><%= gitHubData.forks %> forks</span>
-                      <span class="tag-flair"><span class="material-symbols-outlined">update</span><%= gitHubData.updated_at.substring(0, 10) %></span>
-                    </div>
-                    <span><%= gitHubData.license %></span>
+                <div class="project-link-body margin-06-bottom">
+
+                  <div class="project-link-image">
+                    <img src="<%= gitHubData.owner.avatar_url %>" alt="Preview" class="large-preview-image" />
                   </div>
+                  <div class="project-link-header">
+                    <a href="<%= post.link %>" class="project-link-title margin-03-bottom">
+                      <img src="/src/github.png" alt="GitHub Logo" class="github-logo" style="display: inline-block; background-color: white; border-radius: 100%; height: 16px; width: 16px; aspect-ratio: 1/1; padding: 0; margin: 0; margin-right: 5px;" />
+                      <%= post.link %>
+                    </a>
+                    <div class="project-link-info margin-03-bottom">
+                      <h5 style="line-height: 1; margin: 2px 0; padding: 0;"><%= gitHubData.name %></h5>
+                      <div class="project-link-description">
+                        <%= gitHubData.description %>
+                      </div>
+                      <span><%= gitHubData.license %></span>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="project-link-stats">
+                  <span class="tag-flair"><span class="material-symbols-outlined">code</span><%= gitHubData.language %></span>
+                  <span class="tag-flair"><span class="material-symbols-outlined">bug_report</span><%= gitHubData.open_issues %></span>
+                  <span class="tag-flair"><span class="material-symbols-outlined">star</span><%= gitHubData.stargazers_count %> stars</span>
+                  <span class="tag-flair"><span class="material-symbols-outlined">fork_right</span><%= gitHubData.forks %> forks</span>
+                  <span class="tag-flair"><span class="material-symbols-outlined">update</span><%= gitHubData.updated_at.substring(0, 10) %></span>
                 </div>
               </div>
 
@@ -387,7 +388,7 @@
           </button>
           <% } %>
           <% } %>
-          <button class="regular-button-normal" onclick="share('<%= post.title %>', '', 'https://c-ore.dev/posts/<%= post.id %>')">
+          <button class="null-button-normal" onclick="share('<%= post.title %>', '', 'https://c-ore.dev/posts/<%= post.id %>')">
             <span class="material-symbols-outlined">ios_share</span>
             Share
           </button>

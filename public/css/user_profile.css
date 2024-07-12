@@ -21,7 +21,7 @@ main {
 .followers-info {
   display: flex;
   flex-direction: row;
-  gap: 4px;
+  gap: .9rem;
 }
 
 .profile-header {
@@ -89,11 +89,10 @@ main {
 }
 
 .links-container {
-  flex-wrap: wrap;
   display: flex;
-  gap: .5rem;
+  gap: .4rem;
   box-sizing: border-box;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 #profile.grid-container {
@@ -261,7 +260,6 @@ main {
   /* ... other styles ... */
 }
 
-.followers-info,
 .points-info,
 .communities-info {
   color: var(--light-mode-text-color);
@@ -299,7 +297,6 @@ main {
   font-size: 14px;
   cursor: pointer;
   border-radius: 6px;
-  margin-bottom: 5px;
   transition: background-color 0.15s;
 }
 
@@ -571,7 +568,6 @@ button#edit-button {
   display: flex;
   flex-direction: row;
   gap: 7px;
-  background: #1c81c933;
   border-radius: 8px;
   padding: .2rem .4rem;
   align-items: center;
@@ -579,8 +575,9 @@ button#edit-button {
 
 .social-display a,
 .social-display .material-symbols-outlined {
-  color: #0c5488 !important;
-  font-size: 16px;
+  color: var(--active-indicator-color) !important;
+  font-size: 1.2rem;
+  font-weight: 500;
 }
 
 

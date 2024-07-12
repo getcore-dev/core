@@ -23,7 +23,7 @@ div.job-buttons {
   padding: 4px;
   gap: .5rem;
   margin-bottom: .6rem;
-  }
+}
 
 h1 {
   text-align: center;
@@ -753,6 +753,12 @@ div .material-symbols-outlined {
 
   .jobs-container {
     background-color: var(--dark-mode-body-color);
+  }
+
+  .job-title a,
+  .job-title a:visited {
+    color: var(--dark-mode-text-color);
+    text-decoration: none;
   }
 
   .input-container input {

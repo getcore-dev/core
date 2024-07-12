@@ -57,15 +57,15 @@
               </div>
               <div class="community-buttons">
                 <button class="submit-button-normal join-btn" id="communityActionBtn" data-action="join"><span class="material-symbols-outlined">
-person_add
-</span>Join</button>
-                <button class="mod-btn null-button-normal" id="communityActionBtn" onclick="share(//TODO);">
+                    person_add
+                  </span>Join</button>
+                <button class="mod-btn null-button-normal" id="communityActionBtn" onclick="share('<%= community.name %>','','https://c-ore.dev/networks/<%= community.shortname %>')">
                   <span class="material-symbols-outlined">
                     ios_share
                   </span>
                   Share</button>
-                  
-                                  <button class="mod-btn regular-button-normal" id="communityActionBtn" style="display: none;pointer-events: none;" onclick="window.location.href='/networks/<%= community.shortname %>/admin'">
+
+                <button class="mod-btn regular-button-normal" id="communityActionBtn" style="display: none;pointer-events: none;" onclick="window.location.href='/networks/<%= community.shortname %>/admin'">
                   <span class="material-symbols-outlined">
                     admin_panel_settings
                   </span>
@@ -80,7 +80,7 @@ person_add
         <% if (!communityId) { %>
         <div class="mobile-jobs-container">
           <div class="job-header">
-            <h5><a href="/jobs" id="secondary-text">Openings</a></h5>
+            <h5><a href="/jobs">Openings</a></h5>
           </div>
           <div class="jobslist">
 
@@ -517,32 +517,23 @@ person_add
             const descriptionDiv = document.createElement('div');
             descriptionDiv.className = 'description';
 
-            if (post.post_type != 'blog') {
-              let contentWithoutMarkdown = post.content
-                .replace(/(?:\r\n|\r|\n)/g, ' ')
-                .replace(/\*\*(.*?)\*\*/g, '$1')
-                .replace(/\*(.*?)\*/g, '$1')
-                .replace(/__(.*?)__/g, '$1')
-                .replace(/_(.*?)_/g, '$1')
-                .replace(/!\[.*?\]\(.*?\)/g, '')
-                .replace(/\[.*?\]\(.*?\)/g, '$1');
-              descriptionDiv.append(`${contentWithoutMarkdown}`);
-            } else {
-              if (post.subtitle) {
-                descriptionDiv.append(`${post.subtitle}`);
-              } else {
-                let contentWithoutMarkdown = post.content
-                  .replace(/(?:\r\n|\r|\n)/g, ' ')
-                  .replace(/\*\*(.*?)\*\*/g, '$1')
-                  .replace(/\*(.*?)\*/g, '$1')
-                  .replace(/__(.*?)__/g, '$1')
-                  .replace(/#{2,3} (.*?)\n/g, '')
-                  .replace(/_(.*?)_/g, '$1')
-                  .replace(/!\[.*?\]\(.*?\)/g, '')
-                  .replace(/\[.*?\]\(.*?\)/g, '$1');
-                descriptionDiv.append(`${contentWithoutMarkdown}`);
-              }
-            }
+
+            let contentWithoutMarkdown = post.content
+              .replace(/^#{1,6}\s+/gm, '')
+              .replace(/(?:\r\n|\r|\n)/g, ' ')
+              .replace(/```[\s\S]*?```/g, '')
+              .replace(/`([^`]+)`/g, '$1')
+              .replace(/\*\*(.*?)\*\*/g, '$1')
+              .replace(/\*(.*?)\*/g, '$1')
+              .replace(/_(.*?)_/g, '$1')
+              .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
+              .replace(/!\[([^\]]+)\]\([^\)]+\)/g, '')
+              .replace(/<[^>]*>/g, '')
+              // Trim leading/trailing whitespace
+              .trim();
+
+            descriptionDiv.append(contentWithoutMarkdown);
+
 
 
             linkPreviewDiv.appendChild(descriptionDiv);
