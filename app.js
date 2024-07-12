@@ -37,7 +37,10 @@ const app = express();
 // Database connection
 sql
   .connect(dbConfig)
-  .catch((err) => console.error('Error connecting to the database:', err));
+  .then(() => {
+    console.log('Connected to the database');
+  })
+  .catch((err) => console.error('Error connecting to the database'));
 
 // Passport configuration
 passportConfig.initialize(
@@ -125,7 +128,7 @@ function scheduleNextRun() {
     `Next job board service run scheduled in ${delayHours.toFixed(2)} hours`
   );
 
-  
+
 
   setTimeout(runJobBoardService, delayMs);
 }

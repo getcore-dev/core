@@ -1703,6 +1703,10 @@ div.post-information {
     color: var(--dark-mode-text-color) !important;
   }
 
+  .similar-posts .post a {
+    color: var(--dark-mode-text-color);
+  }
+
   .reaction-button:hover,
   .main-reaction-button:hover,
   .boost-button:hover,

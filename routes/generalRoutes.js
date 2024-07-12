@@ -245,12 +245,14 @@ router.post(
       const followerId = req.user.id;
       const followedId = req.params.followedId;
       await userQueries.followUser(followerId, followedId);
+      /*
       await notificationQueries.createNotification(
         followerId,
         followedId,
         'follow',
         null
       );
+      */
       await userQueries.removeDuplicateFollows();
       const updatedFollowerCount = await userQueries.getFollowerCount(
         followedId

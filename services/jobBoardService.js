@@ -14,7 +14,7 @@ class JobProcessor {
   ) {
     this.genAI = new GoogleGenerativeAI(geminiKey);
     this.openai = new OpenAI({ apiKey: openaiKey });
-    this.useGemini = true;
+    this.useGemini = false;
     this.lastRequestTime = 0;
     this.GEMINI_DELAY_MS = 1000;
     this.OPENAI_DELAY_MS = 20000;
@@ -26,57 +26,94 @@ class JobProcessor {
     await this.loadProcessedLinks();
   }
 
+  isTechJob(title) {
+    const techKeywords = [
+      'software', 'developer', 'engineer', 'programmer', 'data', 'analyst',
+      'scientist', 'IT', 'information technology', 'web', 'frontend', 'backend',
+      'full stack', 'devops', 'cloud', 'network', 'security', 'database',
+      'machine learning', 'AI', 'artificial intelligence', 'QA', 'quality assurance',
+      'UX', 'UI', 'product manager', 'scrum master', 'agile', 'tech', 'systems',
+      'infrastructure', 'mobile', 'iOS', 'Android', 'cybersecurity', 'blockchain',
+      'IoT', 'robotics', 'automation', 'SRE', 'reliability', 'architect'
+    ];
+    
+    const lowercaseTitle = title.toLowerCase();
+    return techKeywords.some(keyword => lowercaseTitle.includes(keyword));
+  }
+
+  async delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async processJobLinkWithDelay(link, delayMs) {
+    await this.delay(delayMs);
+    return this.processJobLink(link);
+  }
+  
+
   async start() {
     await this.init();
-    // await jobQueries.deleteJobsOlderThan2Months();
-
-    // causes errors, need to fix
+  
     const companies = await jobQueries.getCompanies();
-    for (const company of companies) {
-      if (company.job_board_url) {
-        const jobLinks = await this.collectJobLinks(company.job_board_url);
-        for (const link of jobLinks) {
-          if (!this.processedLinks.has(link)) {
-            const jobData = await this.processJobLink(link);
-            if (jobData && !jobData.error && !jobData.alreadyProcessed) {
-              try {
-                await jobQueries.createJobPosting(
-                  jobData.title,
-                  jobData.salary,
-                  jobData.experience_level,
-                  jobData.location,
-                  new Date(),
-                  company.id,
-                  link,
-                  null,
-                  jobData.tags.split(','),
-                  jobData.description,
-                  jobData.salary_max,
-                  null,
-                  jobData.skills.split(','),
-                  jobData.benefits.split(','),
-                  jobData.additional_information,
-                  jobData.PreferredQualifications,
-                  jobData.MinimumQualifications,
-                  jobData.Responsibilities,
-                  jobData.Requirements,
-                  jobData.NiceToHave,
-                  jobData.Schedule,
-                  jobData.HoursPerWeek,
-                  jobData.H1BVisaSponsorship,
-                  jobData.IsRemote,
-                  jobData.EqualOpportunityEmployerInfo,
-                  jobData.Relocation
-                );
-                console.log(`Processed job data for ${link}`);
-              } catch (error) {
-                console.error(`Error creating job posting for ${link}:`, error);
+  
+    const collectLinksPromises = companies
+      .filter(company => company.job_board_url)
+      .map(company => this.collectJobLinks(company));
+  
+    const allCompanyLinks = await Promise.all(collectLinksPromises);
+  
+    const jobLinkPromises = [];
+    let delayMs = 0;
+    const delayIncrement = 100; // Adjust this value based on the API rate limit
+  
+    for (const { companyId, links } of allCompanyLinks.flat()) {
+      for (const link of links) {
+        jobLinkPromises.push(
+          this.processJobLinkWithDelay.call(this, link, delayMs)
+            .then(async jobData => {
+              if (jobData && !jobData.error && !jobData.alreadyProcessed) {
+                try {
+                  await jobQueries.createJobPosting(
+                    jobData.title,
+                    jobData.salary,
+                    jobData.experience_level,
+                    jobData.location,
+                    new Date(),
+                    companyId,
+                    link,
+                    null,
+                    jobData.tags.split(','),
+                    jobData.description,
+                    jobData.salary_max,
+                    null,
+                    jobData.skills.split(','),
+                    jobData.benefits.split(','),
+                    jobData.additional_information,
+                    jobData.PreferredQualifications,
+                    jobData.MinimumQualifications,
+                    jobData.Responsibilities,
+                    jobData.Requirements,
+                    jobData.NiceToHave,
+                    jobData.Schedule,
+                    jobData.HoursPerWeek,
+                    jobData.H1BVisaSponsorship,
+                    jobData.IsRemote,
+                    jobData.EqualOpportunityEmployerInfo,
+                    jobData.Relocation
+                  );
+                  console.log(`Processed job data for ${link}`);
+                } catch (error) {
+                  console.error(`Error creating job posting for ${link}:`, error);
+                }
               }
-            }
-          }
-        }
+            })
+        );
+        delayMs += delayIncrement; // Increment delay for the next request
       }
     }
+  
+    await Promise.all(jobLinkPromises);
+  
     console.log('Job processing completed.');
   }
 
@@ -91,7 +128,8 @@ class JobProcessor {
     return null;
   }
 
-  async collectJobLinks(jobBoardUrl) {
+  async collectJobLinks(company) {
+    const jobBoardUrl = company.job_board_url;
     try {
       const response = await axios.get(jobBoardUrl);
       const $ = cheerio.load(response.data);
@@ -100,12 +138,14 @@ class JobProcessor {
       $('a[href*="job"], a[href*="career"], a[href*="position"]').each(
         (index, element) => {
           const link = $(element).attr('href');
-          if (link) links.add(new URL(link, jobBoardUrl).href);
+          const title = $(element).text().toLowerCase();
+          if (this.isTechJob(title)) links.add(new URL(link, jobBoardUrl).href);
         }
       );
 
-      console.log(`Collected ${links.size} job links from ${jobBoardUrl}.`);
-      return Array.from(links);
+      // console.log({companyId: company.id, links: Array.from(links)});
+      // console.log(`Collected ${links.size} job links from ${jobBoardUrl}.`);
+      return {companyId: company.id, links: Array.from(links)}; 
     } catch (error) {
       console.error(`Error collecting job links from ${jobBoardUrl}:`, error);
       return [];
@@ -133,28 +173,26 @@ class JobProcessor {
       console.log('Link already processed:', link);
       return { alreadyProcessed: true };
     }
-
+  
     try {
       console.log('Processing job link:', link);
       const headers = {
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
-        Accept:
-          'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
         'Accept-Encoding': 'gzip, deflate, br',
-        Connection: 'keep-alive',
+        'Connection': 'keep-alive',
         'Upgrade-Insecure-Requests': '1',
         'Cache-Control': 'max-age=0',
       };
-
+  
       const linkResponse = await axios.get(link, { headers, timeout: 5000 });
       const { data } = linkResponse;
-
+  
       const $ = cheerio.load(data);
       $('script, style').remove();
       const textContent = $('body').text().replace(/\s\s+/g, ' ').trim();
-
+  
       let extractedData;
       try {
         if (this.useGemini) {
@@ -164,28 +202,44 @@ class JobProcessor {
           await this.rateLimit(false);
           extractedData = await this.useChatGPTAPI(link, textContent);
         }
-
+  
         extractedData = this.validateAndCleanJobData(extractedData);
+  
+        // Check if the job is tech-related
+        if (!this.isTechJob(extractedData.title)) {
+          console.log(`Skipping non-tech job: ${extractedData.title}`);
+          return { skipped: true };
+        }
+  
       } catch (error) {
         if (error.message.includes('RECITATION') || error.status === 429) {
-          console.log(
-            'Switching to ChatGPT API due to Gemini error or rate limiting'
-          );
+          console.log('Switching to ChatGPT API due to Gemini error or rate limiting');
           this.useGemini = false;
           await this.rateLimit(false);
           extractedData = await this.useChatGPTAPI(link, textContent);
           extractedData = this.validateAndCleanJobData(extractedData);
+  
+          // Check if the job is tech-related (after fallback to ChatGPT)
+          if (!this.isTechJob(extractedData.title)) {
+            console.log(`Skipping non-tech job: ${extractedData.title}`);
+            return { skipped: true };
+          }
         } else {
           throw error;
         }
       }
-
+  
       await this.saveProcessedLink(link);
       return extractedData;
     } catch (error) {
       console.error(`Error processing job link ${link}:`, error);
       return { error: error.message };
     }
+  }
+
+  async processJobLinksConcurrently(links) {
+    const results = await Promise.all(links.map(link => this.processJobLink(link)));
+    return results;
   }
 
   async useGeminiAPI(link, textContent) {
