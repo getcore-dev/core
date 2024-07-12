@@ -28,14 +28,14 @@ class JobProcessor {
 
   isTechJob(title) {
     const techKeywords = [
-      'software', 'developer', 'engineer', 'programmer', 'data', 'analyst',
+      'software', 'developer', 'programmer', 'data', 'analyst',
       'scientist', 'IT', 'information technology', 'web', 'frontend', 'backend',
       'full stack', 'devops', 'cloud', 'network', 'security', 'database',
       'machine learning', 'AI', 'artificial intelligence', 'QA', 'quality assurance',
       'UX', 'UI', 'product manager', 'scrum master', 'agile', 'tech', 'systems',
       'infrastructure', 'mobile', 'iOS', 'Android', 'cybersecurity', 'blockchain',
       'IoT', 'robotics', 'automation', 'SRE', 'reliability', 'architect'
-    ];
+    ]; 
     
     const lowercaseTitle = title.toLowerCase();
     return techKeywords.some(keyword => lowercaseTitle.includes(keyword));
@@ -279,6 +279,7 @@ class JobProcessor {
 
   generatePrompt(link, textContent) {
     return `
+    IF THE JOB POSTING DATA IS NOT A JOB RELATED TO A COMPUTER SCIENCE, MATHEMATICS, OR ENGINEERING FIELD, PLEASE SKIP THIS JOB POSTING.
       Please extract the following information from this job posting data: ${textContent}
       - title (e.g., Software Engineer, Data Analyst, include if there is a specific team or project in the title like :'Software Engineer, Frontend'. if the title is not something related to computer science or software engineering, please DO NOT include it)
       - company_name NVARCHAR(50) (as simple as possible and you can tell the company name from the job posting link: ${link})

@@ -37,7 +37,7 @@ const utilFunctions = {
           c.shortname AS community_shortname,
           SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
           SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-          SUM(CASE WHEN upa.action_type = 'INTERESTING' THEN 1 ELSE 0 END) as interestingCount,
+          SUM(CASE WHEN upa.action_type = 'DISLIKE' THEN 1 ELSE 0 END) as dislikeCount,
           SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
           SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
           SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
@@ -589,18 +589,55 @@ OUTER APPLY (
   getComments: async (postId) => {
     try {
       const result = await sql.query`
-        SELECT * FROM comments WHERE post_id = ${postId} AND deleted = 0
+        SELECT c.*, u.username, u.avatar, u.isAdmin
+        FROM comments c
+        JOIN users u ON c.user_id = u.id
+        WHERE c.post_id = ${postId} AND c.deleted = 0
       `;
       const commentList = result.recordset;
-      const totalComments = commentList.length; // Count the total number of comments
+      const totalComments = commentList.length;
 
-      const nestedComments = await utilFunctions.getNestedComments(commentList);
+      const nestedComments = utilFunctions.getNestedComments(commentList);
 
       return { comments: nestedComments, totalComments };
     } catch (err) {
       console.error('Database query error:', err);
       throw err;
     }
+  },
+
+  getNestedComments: (commentList) => {
+    const commentMap = {};
+
+    // First pass: create comment objects and populate the map
+    commentList.forEach((comment) => {
+      commentMap[comment.id] = {
+        ...comment,
+        user: {
+          id: comment.user_id,
+          username: comment.username,
+          avatar: comment.avatar,
+          isAdmin: comment.isAdmin
+        },
+        replies: []
+      };
+      // Remove redundant properties
+      delete commentMap[comment.id].username;
+      delete commentMap[comment.id].avatar;
+      delete commentMap[comment.id].isAdmin;
+    });
+
+    // Second pass: build the nested structure
+    const nestedComments = [];
+    commentList.forEach((comment) => {
+      if (comment.parent_comment_id && commentMap[comment.parent_comment_id]) {
+        commentMap[comment.parent_comment_id].replies.push(commentMap[comment.id]);
+      } else {
+        nestedComments.push(commentMap[comment.id]);
+      }
+    });
+
+    return nestedComments;
   },
   getTags: async (postId) => {
     try {
@@ -1329,41 +1366,6 @@ OUTER APPLY (
       console.error('Error fetching GitHub repository data:', error);
       return { link: url }; // Return a minimal object with the link in case of an error
     }
-  },
-  getNestedComments: async (commentList) => {
-    const commentMap = {};
-
-    commentList.forEach((comment) => {
-      if (!comment.deleted) {
-        commentMap[comment.id] = { ...comment, replies: [] };
-      }
-    });
-
-    const nestedComments = [];
-    for (let comment of commentList) {
-      if (!comment.deleted) {
-        if (
-          comment.parent_comment_id &&
-          commentMap[comment.parent_comment_id]
-        ) {
-          commentMap[comment.parent_comment_id].replies.push(
-            commentMap[comment.id]
-          );
-        } else {
-          nestedComments.push(commentMap[comment.id]);
-        }
-      }
-    }
-
-    // Fetch user details for each non-deleted comment
-    for (let comment of nestedComments) {
-      comment.user = await utilFunctions.getUserDetails(comment.user_id);
-      for (let reply of comment.replies) {
-        reply.user = await utilFunctions.getUserDetails(reply.user_id);
-      }
-    }
-
-    return nestedComments;
   },
 
   getPostScore: async (postId) => {

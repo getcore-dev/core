@@ -28,6 +28,7 @@ const sql = require('mssql');
 const axios = require('axios');
 const communityQueries = require('../queries/communityQueries');
 const linkFunctions = require('../utils/linkFunctions');
+const commentQueries = require('../queries/commentQueries');
 
 const renderer = new marked.Renderer();
 renderer.image = function (href, title, text) {
@@ -898,6 +899,18 @@ router.get('/get-latest-commit', cacheMiddleware(1200), async (req, res) => {
     res.json(latestCommit);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching latest commit' });
+  }
+});
+
+
+router.get('/preview-comments/:postId', async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const comments = await utilFunctions.getComments(postId);
+    res.json(comments);
+  } catch (err) {
+    console.error('Error fetching comments:', err);
+    res.status(500).send('Error fetching comments');
   }
 });
 

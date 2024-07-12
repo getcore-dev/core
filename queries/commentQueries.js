@@ -260,7 +260,7 @@ const commentQueries = {
       console.error('Database insert error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
-  },
+  }
 };
 
 module.exports = commentQueries;

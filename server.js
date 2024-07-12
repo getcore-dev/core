@@ -3,7 +3,7 @@ const environment = require('./config/environment');
 const cluster = require('cluster');
 const JobProcessor = require('./services/jobBoardService');
 const jobProcessor = new JobProcessor();
-
+const jobServiceEnabled = true;
 const MS_PER_HOUR = 3600000;
 
 function runJobBoardService() {
@@ -38,5 +38,7 @@ app.listen(environment.port, () => {
       cluster.worker ? cluster.worker.id : 'Master'
     } running on http://localhost:${environment.port}`
   );
-  setTimeout(runJobBoardService, 1500);
+  if (jobServiceEnabled === true) {
+    setTimeout(runJobBoardService, 1500);
+  }
 });

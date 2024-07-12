@@ -603,7 +603,7 @@
 
             <div class="user-actions">
               <div class="comment-user-interactions <%= comment.id %>" data-type="comment" data-id="<%= comment.id %>">
-                <button class="mainReactionButton reaction-button <% if (comment.userReaction) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>">
+                <button class="commentMainReactionButton reaction-button <% if (comment.userReaction) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>">
                   <% if (comment.userReaction) { %>
                   <% const reactionTypes = [
                   { type: "LOVE", icon: "❤️" },
