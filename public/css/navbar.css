@@ -999,9 +999,6 @@ a>.menu-item {
     display: none;
   }
 
-  .username a {
-    font-size: 16px;
-  }
 
   .menu-content {
     height: calc(100dvh - 58px);

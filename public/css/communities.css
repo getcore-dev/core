@@ -117,7 +117,7 @@ div.vote-interactions {
   flex-direction: row;
   gap: 5px;
   margin-bottom: .7rem;
-  align-items: flex-start;
+  align-items: center;
   border-radius: 6px;
   width: 100%;
   justify-content: space-between;
@@ -140,9 +140,6 @@ div.vote-interactions {
   padding: .95rem 1.2rem;
 }
 
-.post-timestamp {
-  font-size: .975rem;
-}
 
 .com-btn {
   background: rgba(0, 0, 0, 0);
@@ -418,7 +415,12 @@ a.community:hover {
 }
 
 .post-quick-info {
-  font-size: .875rem;
+  font-size: .85rem;
+}
+
+#post-username {
+  font-size: .95rem;
+  color: var(--light-mode-bold-text-color);
 }
 
 .description {
@@ -1143,12 +1145,6 @@ button.see-more {
     display: none;
   }
 
-  .username a,
-  .communities-text,
-  .post-quick-info {
-    font-size: .975rem;
-  }
-
   body {
     overflow-y: auto;
   }
@@ -1159,7 +1155,7 @@ button.see-more {
   }
 
   .title {
-    font-size: 1.15rem;
+    font-size: 1.08rem;
   }
 
   .post-info {
@@ -1167,7 +1163,7 @@ button.see-more {
   }
 
   .description {
-    font-size: 1rem;
+    font-size: .95rem;
   }
 
 
@@ -1418,6 +1414,10 @@ button.see-more {
   .job:hover,
   .com-btn:hover {
     background-color: var(--dark-mode-hover-color);
+  }
+
+  #post-username {
+    color: var(--dark-mode-text-color);
   }
 
   .reaction-menu button {
