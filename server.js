@@ -3,7 +3,7 @@ const environment = require('./config/environment');
 const cluster = require('cluster');
 const JobProcessor = require('./services/jobBoardService');
 const jobProcessor = new JobProcessor();
-const jobServiceEnabled = false;
+const jobServiceEnabled = true;
 const MS_PER_HOUR = 3600000;
 
 function runJobBoardService() {
@@ -32,12 +32,14 @@ function scheduleNextRun() {
   setTimeout(runJobBoardService, delayMs);
 }
 
-app.listen(environment.port, '0.0.0.0', () => {
+app.listen(environment.port, () => {
   console.log(
     `Worker ${
       cluster.worker ? cluster.worker.id : 'Master'
     } running on http://localhost:${environment.port}`
   );
+
+  
   if (jobServiceEnabled === true) {
     setTimeout(runJobBoardService, 1500);
   }
