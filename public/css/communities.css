@@ -103,9 +103,7 @@ div.vote-interactions {
   height: 80px;
   border-radius: 12px;
   aspect-ratio: 1 / 1;
-  border: 1px solid var(--border-color);
   object-fit: cover;
-  margin-left: 8px;
 }
 
 .current-job {
@@ -149,7 +147,6 @@ div.vote-interactions {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 10px;
   border-radius: 9px;
   margin-bottom: 6px
 }
@@ -284,7 +281,7 @@ div.vote-interactions {
 .title {
   font-size: .9rem;
   font-weight: 500;
-  margin-bottom: .72rem;
+  margin-bottom: .12rem;
 }
 
 .title>a {
@@ -387,6 +384,7 @@ div.votes {
 
 
 .username {
+  margin-left: 1.4rem;
   max-width: 100%;
 }
 
@@ -415,11 +413,11 @@ a.community:hover {
 }
 
 .post-quick-info {
-  font-size: .85rem;
+  font-size: .95rem;
 }
 
 #post-username {
-  font-size: .95rem;
+  font-size: 1.2rem;
   color: var(--light-mode-bold-text-color);
 }
 
@@ -434,7 +432,8 @@ a.community:hover {
 }
 
 .mobile-jobs-container .job {
-  background: #FAFBFF;
+  border: 0;
+  background: 0;
 }
 
 .link-preview {
@@ -709,7 +708,16 @@ div.community-tags {
 
 .post-quick-info a {
   text-decoration: none;
-  color: var(--light-mode-text-color);
+  font-weight: 500;
+  color: var(--active-indicator-color);
+}
+
+.post-quick-info a:visited {
+  color: var(--active-indicator-color);
+}
+
+.post-quick-info a:hover {
+  text-decoration: underline;
 }
 
 .post-quick-info .material-symbols-outlined {
@@ -722,7 +730,7 @@ div.community-tags {
   position: absolute;
   display: flex;
   bottom: 52px;
-  left: 10px;
+  left: 19px;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
@@ -730,7 +738,7 @@ div.community-tags {
   transition: opacity 0.3s ease;
   background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
-  border-radius: 10px;
+  border-radius: 6px;
   pointer-events: none;
   z-index: 999;
 }
@@ -824,8 +832,7 @@ div.community-tags {
 }
 
 #share-button .material-symbols-outlined {
-  font-size: 16px;
-  vertical-align: -2px;
+  font-size: 14px;
   font-weight: 550;
   padding-right: .4rem;
 }
@@ -839,7 +846,7 @@ div.community-tags {
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-size: 1rem;
+  font-size: .9rem !important;
   font-weight: 550;
   margin: 0;
   margin: 4px 0;
@@ -964,7 +971,7 @@ button.see-more {
   }
 
   .jobslist .job {
-    min-width: 180px;
+    min-width: 250px;
   }
 
   #posts-container>h5 {
@@ -1155,7 +1162,7 @@ button.see-more {
   }
 
   .title {
-    font-size: 1.08rem;
+    font-size: 1.1rem;
   }
 
   .post-info {
@@ -1331,10 +1338,6 @@ button.see-more {
     color: var(--dark-mode-secondary-text-color);
   }
 
-  .post-quick-info a {
-    color: var(--dark-mode-text-color);
-  }
-
   .post {
     background-color: var(--dark-mode-body-color);
     border-color: var(--dark-mode-border-color);
@@ -1391,10 +1394,6 @@ button.see-more {
     color: var(--dark-mode-secondary-text-color);
   }
 
-  .thumbnail-image {
-    border-color: var(--dark-mode-border-color);
-  }
-
   a.username-link,
   a.community {
     color: var(--dark-mode-text-color);
@@ -1433,11 +1432,6 @@ button.see-more {
   .job-title a,
   .job-title a:visited {
     color: var(--dark-mode-text-color);
-  }
-
-  #posts-container>div.mobile-jobs-container>div.jobslist>div {
-    border-color: var(--dark-mode-body-color);
-    background: var(--dark-mode-main-color)
   }
 
   #posts-container {

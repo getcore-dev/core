@@ -393,29 +393,48 @@
             usernameLink.href = '/user/' + post.username;
 
             usernameLink.innerHTML = `
-  <span>
-  <p>
-    <a id="post-username" class="bold secondary-text" href="/user/${post.username}">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username}</a>
-    ${post.verified ? '' : ''}
-  </p> 
-  </span>
-  <span>
-  <p>
-  ${post.job_title && post.job_company ? `${post.job_title} at ${post.job_company}` : post.education_institution ? `Student at ${post.education_institution}` : ''}</p>
-  </span>
-  <p>
-  
-  <a class="secondary-text" href="/networks/${post.community_shortname}">/${post.community_shortname}</a>
-  <span class="post-timestamp" id="secondary-text">${formatDate(post.created_at)}</span>
-  
-    ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="font-size: .85rem;">push_pin</span>' : ''}
-</p>
-`;
+              <span>
+              <p>
+              
+                <a id="post-username" class="bold secondary-text" href="/user/${post.username}">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username}</a>
+                                ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="font-size: .85rem;">push_pin</span>' : ''}
+
+                ${post.verified ? '<span class="material-symbols-outlined" style="font-size: .85rem;color:#169da8;">verified</span>' : ''}
+                ${post.isModerator ? '<span class="material-symbols-outlined" style="font-size: .85rem;color:#169da8;">admin_panel_settings</span>' : ''}
+              </p> 
+              
+              </span>
+              <span>
+              <p>
+              ${post.job_title && post.job_company ? `${post.job_title} at ${post.job_company}` : post.education_institution ? `Student at ${post.education_institution}` : ''}</p>
+              
+              </span>
+              <p>
+              
+              <a class="secondary-text" href="/networks/${post.community_shortname}">/${post.community_shortname}</a>
+              <span class="post-timestamp" id="secondary-text">${formatDate(post.created_at)}</span>
+                          </p>
+            `;
             usernameDiv.appendChild(usernameLink);
 
 
 
             postHeaderUsernameDiv.appendChild(usernameDiv);
+
+            // follow button div
+            const followButtonDiv = document.createElement('div');
+            followButtonDiv.className = 'follow-button';
+            const followButton = document.createElement('button');
+            followButton.className = 'follow-button no-bg no-border link';
+            followButton.textContent = 'Follow';
+            followButton.onclick = (event) => {
+              event.stopPropagation();
+              followUser(post.username, followButton);
+            };
+            followButtonDiv.appendChild(followButton);
+            postHeaderUsernameDiv.appendChild(followButtonDiv);
+
+
             postHeaderDiv.appendChild(postHeaderUsernameDiv);
 
 

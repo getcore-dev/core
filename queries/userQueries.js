@@ -445,7 +445,11 @@ const userQueries = {
         WHERE follower_id = ${followerId} AND followed_id = ${followedId}`;
 
       if (existingRelationship.recordset.length > 0) {
-        throw new Error('User is already following this user');
+        // unfollow user
+        await sql.query`
+          DELETE FROM user_relationships
+          WHERE follower_id = ${followerId} AND followed_id = ${followedId}`;
+        return false;
       }
 
       // Insert the new follow relationship
@@ -461,13 +465,21 @@ const userQueries = {
   },
   unfollowUser: async (followerId, followedId) => {
     try {
-      // Delete the follow relationship
-      const result = await sql.query`
-        DELETE FROM user_relationships
+      const existingRelationship = await sql.query`
+        SELECT *
+        FROM user_relationships
         WHERE follower_id = ${followerId} AND followed_id = ${followedId}`;
 
-      if (result.rowsAffected[0] === 0) {
+      if (existingRelationship.recordset.length === 0) {
         throw new Error('User is not following this user');
+      }
+
+      if (existingRelationship.recordset.length > 0) {
+        // unfollow user
+        await sql.query`
+          DELETE FROM user_relationships
+          WHERE follower_id = ${followerId} AND followed_id = ${followedId}`;
+        return false;
       }
 
       return true;

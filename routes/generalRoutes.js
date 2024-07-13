@@ -87,7 +87,7 @@ router.get('/404', (req, res) => {
   res.render('error.ejs', { user: req.user, error });
 });
 
-router.get('/user/:username', cacheMiddleware(1200), viewController.renderUserProfile);
+router.get('/user/:username', viewController.renderUserProfile);
 
 router.get('/user/:username/followers', viewController.renderFollowers);
 
@@ -260,7 +260,7 @@ router.post(
       res.json({ buttonText: 'Unfollow', followerCount: updatedFollowerCount });
     } catch (err) {
       console.error('Error following user:', err);
-      res.status(500).json({ error: 'Error following user' });
+      res.json({ buttonText: 'Error', followerCount: 0 });
     }
   }
 );

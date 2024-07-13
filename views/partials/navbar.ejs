@@ -85,7 +85,7 @@
           <a href="/networks/">
             <div class="menu-item">
               <span class="material-symbols-outlined" id="menu-community-icon">
-                hub
+                workspaces
               </span>
               Networks
 
@@ -302,54 +302,23 @@
     };
     %>
 
-          <a href="/" class="navbar-button <%= isActive('/') ? 'active' : '' %>" style="display: block;">
+          <a href="/" class="navbar-button <%= isActive('/') ? 'active' : '' %>" style="display: flex;">
             <span class="material-symbols-outlined">
               home
             </span>
             Home
           </a>
-          <ul class="dropdown-menu">
-            <li>
-              <a><strong> Navigation </strong></a>
-            </li>
-            <li>
-              <a href="/">
-                Home</a>
-            </li>
-            <li>
-              <a href="/networks/">
-                Communities</a>
-            </li>
-            <li>
-              <a href="/jobs">
-                Openings
-              </a>
-
-            </li>
-            <li>
-              <a href="/updates">
-                Updates</a>
-            </li>
-            <% if (user) { %>
-            <li>
-              <a href="/favorites">
-                Favorites
-              </a>
-            </li>
-
-            <% } %>
-          </ul>
         </li>
         <li class="dropdown">
-          <a href="/networks/" class="navbar-button <%= isActive('/networks') ? 'active' : '' %>" style="display: block;">
+          <a href="/networks/" class="navbar-button <%= isActive('/networks') ? 'active' : '' %>" style="display: flex;">
             <span class="material-symbols-outlined">
-              hub
+              workspaces
             </span>
             Networks
           </a>
         </li>
         <li class="dropdown">
-          <a href="/jobs" class="navbar-button <%= isActive('/jobs') ? 'active' : '' %>" style="display: block;">
+          <a href="/jobs" class="navbar-button <%= isActive('/jobs') ? 'active' : '' %>" style="display: flex;">
             <span class="material-symbols-outlined">
               work
             </span>

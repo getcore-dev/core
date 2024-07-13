@@ -347,7 +347,7 @@ nav {
   }
 
   .account-stuff {
-    background: #1f1f21cc;
+    background: #1f1f21eb;
     border: 1px solid #444444bf;
   }
 
@@ -370,6 +370,10 @@ nav {
 
   #login h1 {
     color: var(--dark-mode-text-color);
+  }
+
+  .core-logo {
+    content: url(/img/core-dark.png);
   }
 
   .github-login-btn {

@@ -482,8 +482,8 @@ a:visited {
 
 .navbar-button .material-symbols-outlined {
   color: var(--light-mode-text-color);
-  font-size: 18px;
-  vertical-align: -4px;
+  font-size: .9rem;
+  vertical-align: 0px;
   padding-right: .4rem;
 }
 
@@ -506,10 +506,10 @@ li.dropdown a.active {
 }
 
 .second-nav-links .navbar-button {
-  margin-top: 9px;
+  margin-top: 7px;
   letter-spacing: .015rem;
   padding: 0;
-  font-size: .965rem;
+  font-size: 1.05rem;
   font-weight: normal;
   color: var(--light-mode-bold-text-color);
 }
@@ -585,13 +585,14 @@ li.dropdown a.active {
 /* Navbar Button Style */
 .navbar-button {
   display: flex;
+  gap: .6rem;
+  align-items: center;
   justify-content: center;
-  gap: 4px;
   line-height: 1.5;
   color: var(--primary-text-color);
   padding: 3px 5px;
   margin: 0 12px;
-  font-size: .9rem;
+  font-size: .85rem;
   text-decoration: none;
   transition: background-color 0.15s, transform 0.15s;
   z-index: 3;
@@ -856,10 +857,10 @@ a>.menu-item {
 
 
 #user-avatar {
-  width: 32px;
+  width: 36px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  height: 32px;
+  height: 36px;
   object-fit: cover;
   overflow: hidden;
   z-index: 10;
@@ -1294,6 +1295,7 @@ input {
   border: none;
   width: auto;
   flex: 0;
+  display: flex;
   flex-grow: 0;
   font-weight: 550;
   margin: 0;
@@ -1309,6 +1311,8 @@ input {
   padding: .3rem .15rem;
   cursor: pointer;
   text-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
 }
 
 .small-icon {
@@ -1324,7 +1328,6 @@ input {
 
 button .material-symbols-outlined {
   font-size: 15px;
-  vertical-align: -3px;
   padding-right: 8px;
 }
 
@@ -1900,7 +1903,11 @@ button .material-symbols-outlined {
     .second-nav-links .navbar-button,
     ul.dropdown-menu a {
 
-      color: var(--dark-mode-text-color);
+      color: #cfcfcf;
+    }
+
+    li.dropdown a.active {
+      color: #fff;
     }
 
     .dropdown-menu {
@@ -2263,7 +2270,7 @@ button .material-symbols-outlined {
   #null-button,
   .null-button {
     padding: 0.35rem .85rem;
-    height: 30px;
+    height: 32px;
   }
 
   .user-links.slide-left {
