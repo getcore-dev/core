@@ -1,7 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 main {
@@ -43,7 +41,7 @@ div.form-group {
     background-color: #c4c4c4;
     cursor: not-allowed;
     border-color: #929292;
-  }
+}
 
 #confirmation-question {
     display: flex;
@@ -52,7 +50,8 @@ div.form-group {
     flex-direction: row;
 }
 
-.CodeMirror-wrap pre.CodeMirror-line, .CodeMirror-wrap pre.CodeMirror-line-like {
+.CodeMirror-wrap pre.CodeMirror-line,
+.CodeMirror-wrap pre.CodeMirror-line-like {
     font-size: 1.2rem !important;
     font-weight: inherit;
 }
@@ -102,8 +101,8 @@ div.form-group {
 .editor-toolbar {
     border: 1px solid var(--border-color);
     background-color: var(--light-mode-body-color);
-        display: flex;
-        flex-direction: row;
+    display: flex;
+    flex-direction: row;
 }
 
 .editor-statusbar {
@@ -111,7 +110,11 @@ div.form-group {
 }
 
 
-.main-container input[type="text"], .main-container textarea, .main-container select, .main-container input[type="number"], .main-container input[type="date"] {
+.main-container input[type="text"],
+.main-container textarea,
+.main-container select,
+.main-container input[type="number"],
+.main-container input[type="date"] {
     width: 100%;
     box-sizing: border-box;
     padding: .9rem;
@@ -120,11 +123,15 @@ div.form-group {
     border: 1px solid var(--border-color);
     font-size: 16px;
     border-radius: 6px;
-    margin: 9px 0px; 
+    margin: 9px 0px;
     transition: border-color 0.3s ease;
 }
 
-.main-container input[type="text"]:hover, .main-container textarea:hover, .main-container select:hover, .main-container input[type="number"]:hover, .main-container input[type="date"]:hover {
+.main-container input[type="text"]:hover,
+.main-container textarea:hover,
+.main-container select:hover,
+.main-container input[type="number"]:hover,
+.main-container input[type="date"]:hover {
     border: 1px solid var(--light-mode-secondary-text-color);
 }
 
@@ -132,8 +139,8 @@ div.form-group {
     margin-top: 5px;
     border-radius: 10px;
     margin-bottom: 10px;
-    }
-    
+}
+
 .main-container select {
     padding: 8px;
     border: 1px solid var(--border-color);
@@ -141,18 +148,25 @@ div.form-group {
     border-radius: 6px;
 }
 
-select#community_choice, input#title, input#link, #EasyMDEContainer, tags-select, div.CodeMirror-code, textarea.select2-search__field {
+select#community_choice,
+input#title,
+input#link,
+#EasyMDEContainer,
+tags-select,
+div.CodeMirror-code,
+textarea.select2-search__field {
     font-size: 16px !important;
-    }
-    
-    textarea.select2-search__field {
-        height: 16px;
-        font-weight: 300;
-        }
+}
+
+textarea.select2-search__field {
+    height: 16px;
+    font-weight: 300;
+}
+
 i.fa {
     font-size: 16px !important;
-    }
-    
+}
+
 
 
 .add-post-button {
@@ -234,24 +248,24 @@ i.fa {
     font-size: .75rem;
     color: var(--light-mode-secondary-text-color);
 }
-  
+
 
 .post-type {
-    transition: border 500ms ease-out; 
-    -webkit-transition: border 500ms ease-out; 
+    transition: border 500ms ease-out;
+    -webkit-transition: border 500ms ease-out;
     -moz-transition: border 500ms ease-out;
     -o-transition: border 500ms ease-out;
-  }
+}
 
-  .select2-container--default .select2-selection--multiple .select2-selection__choice {
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
     background-color: var(--light-mode-main-color) !important;
     border-color: var(--border-color) !important;
     color: var(--primary-text-color);
     margin-top: 0px !important;
     padding-top: 3px !important;
-  }
+}
 
-  .EasyMDEContainer .CodeMirror {
+.EasyMDEContainer .CodeMirror {
     background: var(--light-mode-body-color);
     box-sizing: border-box;
     height: auto;
@@ -264,7 +278,8 @@ i.fa {
     word-wrap: break-word;
 }
 
-.CodeMirror-wrap pre.CodeMirror-line, .CodeMirror-wrap pre.CodeMirror-line-like {
+.CodeMirror-wrap pre.CodeMirror-line,
+.CodeMirror-wrap pre.CodeMirror-line-like {
     font-size: 16px !important;
 }
 
@@ -275,7 +290,7 @@ i.fa {
         border-radius: 0;
         margin-bottom: 50px;
     }
-    
+
     main {
         margin-top: 1.2rem;
         align-items: flex-start;
@@ -309,7 +324,8 @@ i.fa {
     position: relative;
 }
 
-.select2-container--default .select2-search--inline .select2-search__field, .select2-container--default .select2-selection--multiple {
+.select2-container--default .select2-search--inline .select2-search__field,
+.select2-container--default .select2-selection--multiple {
     background-color: var(--light-mode-body-color) !important;
     font-weight: inherit;
     font-size: 16px;
@@ -374,8 +390,8 @@ i.fa {
         border-color: var(--dark-mode-border-color);
         color: var(--dark-mode-text-color);
     }
-    
-    
+
+
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
         background-color: 0 !important;
         border-color: 0 !important;
@@ -387,13 +403,18 @@ i.fa {
     }
 
     .main-container input[type="text"],
-    .main-container textarea, .main-container input[type="number"], .main-container input[type="date"] {
+    .main-container textarea,
+    .main-container input[type="number"],
+    .main-container input[type="date"] {
         background: var(--dark-mode-main-color);
         border: 1px solid var(--dark-mode-border-color);
         color: var(--dark-mode-text-color);
     }
 
-    div.form-group .CodeMirror, div.form-group .select2-container--default .select2-selection--multiple, div.form-group .editor-toolbar, div.form-group .select2-dropdown select2-dropdown--above {
+    div.form-group .CodeMirror,
+    div.form-group .select2-container--default .select2-selection--multiple,
+    div.form-group .editor-toolbar,
+    div.form-group .select2-dropdown select2-dropdown--above {
         background: var(--dark-mode-main-color) !important;
         border: 1px solid var(--dark-mode-border-color) !important;
         color: var(--dark-mode-text-color);
@@ -422,33 +443,33 @@ i.fa {
 
 
     .main-container button:hover {
-        background-color: #004400; 
+        background-color: #004400;
     }
 
     .main-container .post,
     .main-container .comment {
-        border-bottom-color: var(--dark-mode-border-color); 
+        border-bottom-color: var(--dark-mode-border-color);
     }
 
     .form-group label {
         color: var(--dark-mode-secondary-text-color);
-    }   
+    }
 
     .main-container .post-title,
     .main-container .comments-section h3,
-    a .material-symbols-outlined, 
-    .user-info:hover, 
-    .boosts:hover, 
-    .detracts:hover, 
-    #reply-button, 
+    a .material-symbols-outlined,
+    .user-info:hover,
+    .boosts:hover,
+    .detracts:hover,
+    #reply-button,
     .user-actions a {
-        color: #e0e0e0; 
+        color: #e0e0e0;
     }
 
-    div .user-info, 
-    .header, 
+    div .user-info,
+    .header,
     .communities_id {
-        color: #bbb; 
+        color: #bbb;
     }
 
 }

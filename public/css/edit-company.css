@@ -3,7 +3,7 @@ main {
     margin-bottom: 30px;
 }
 
-form > div {
+form>div {
     display: flex;
     flex-direction: column;
 }
@@ -18,9 +18,9 @@ form > div {
     padding: 4px !important
 }
 
-form > div > textarea {
+form>div>textarea {
     width: 100%;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Inter', sans-serif;
     line-height: 1.65rem;
     padding: 10px 20px;
     margin: 8px 0;
@@ -30,24 +30,24 @@ form > div > textarea {
     border: 1px solid var(--border-color) !important;
     font-size: 16px;
     transition: box-shadow 0.3s ease;
-    resize: none; 
-    overflow-y: hidden; 
-  }
+    resize: none;
+    overflow-y: hidden;
+}
 
-  label { 
+label {
     font-size: .8rem;
     margin-bottom: .3rem;
-  }
+}
 
-  form {
+form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     margin-bottom: 1.2rem;
-  }
+}
 
 @media (prefers-color-scheme: dark) {
-    form > div > textarea {
+    form>div>textarea {
         background-color: var(--dark-mode-main-color) !important;
         border: 1px solid var(--dark-mode-border-color) !important;
         color: var(--dark-mode-text-color);

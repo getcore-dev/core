@@ -1,8 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-
-
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 span.material-symbols-outlined {
@@ -31,41 +28,44 @@ div.commit-title {
   justify-content: flex-start;
 
 }
-  #commit:hover {
-    cursor: pointer;
-  }
 
-  #commits {
-    display: flex;
-    flex-direction: column;
-    /* gap: 16px; */
-    width: 100%;
-  }  
-  
-  .commit {
-    background: var(--light-mode-main-color);
-    border-radius: 0;
-    padding: 8px 11px;
-    justify-content: space-around;
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
+#commit:hover {
+  cursor: pointer;
+}
+
+#commits {
+  display: flex;
+  flex-direction: column;
+  /* gap: 16px; */
+  width: 100%;
+}
+
+.commit {
+  background: var(--light-mode-main-color);
+  border-radius: 0;
+  padding: 8px 11px;
+  justify-content: space-around;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
 }
 
 
-  .commit-top {
+.commit-top {
   display: flex;
   justify-content: space-between;
   flex-direction: row;
   min-width: 33%;
   box-sizing: border-box;
 }
-  .commit-title {
-    max-width: 100%;
-    inline-size: 100%;
-    overflow-wrap: break-word;
-  }
-  .commit-header {
+
+.commit-title {
+  max-width: 100%;
+  inline-size: 100%;
+  overflow-wrap: break-word;
+}
+
+.commit-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -73,140 +73,151 @@ div.commit-title {
   padding: 4px;
   /* min-width: 33%; */
   /* width: 33%; */
+}
+
+.commit-title {
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.commit-date {
+  font-size: 14px;
+  color: #586069;
+}
+
+.commit-body {
+  min-width: 33%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.commit-author {
+  display: flex;
+  align-items: center;
+}
+
+.commit-author img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 8px;
+  border: 1px solid #eaecef;
+}
+
+.commit-author-name,
+.commit-author-name a {
+  font-size: 14px;
+  margin-right: 3px;
+  font-weight: 600px;
+  color: black;
+}
+
+
+
+div#commit-comments {
+  background-color: blue;
+}
+
+.commit-stats {
+  min-width: 33%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.commit-stats-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.commit-stats-item {
+  display: flex;
+  align-items: center;
+  margin-right: 16px;
+}
+
+.commit-stats-item img {
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+}
+
+.commit-stats-item-value {
+  font-size: 14px;
+  color: #eee;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--dark-mode-body-color);
+    color: #fff;
   }
 
-  .commit-title {
-    font-size: 14px;
-    font-weight: 650;
+  @keyframes loadingAnimation {
+    0% {
+      background-color: #333;
+    }
+
+    50% {
+      background-color: #121212;
+    }
+
+    100% {
+      background-color: #333;
+    }
+  }
+
+  .commit {
+    background-color: var(--dark-mode-body-color);
+    border-color: var(--dark-mode-border-color);
+  }
+
+  div.commit-title {
+    color: #c9d1d9;
   }
 
   .commit-date {
-    font-size: 14px;
-    color: #586069;
+    color: #8b949e;
   }
 
-  .commit-body {
-    min-width: 33%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-  }
-
-  .commit-author {
-    display: flex;
-    align-items: center;
-  }
-
-  .commit-author img {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    margin-right: 8px;
-    border: 1px solid #eaecef;
-  }
-
-  .commit-author-name, .commit-author-name a {
-    font-size: 14px;
-    margin-right: 3px;
-    font-weight: 600px;
-    color: black;
-  }
-
-  
-
-  div#commit-comments {
-    background-color: blue;
-  }
-
-  .commit-stats {
-    min-width: 33%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .commit-stats-container {
-    display:flex;
-    flex-direction: row;
-  }
-
-  .commit-stats-item {
-    display: flex;
-    align-items: center;
-    margin-right: 16px;
-  }
-
-  .commit-stats-item img {
-    width: 16px;
-    height: 16px;
-    margin-right: 4px;
+  .commit-author-name {
+    color: #8b949e;
   }
 
   .commit-stats-item-value {
-    font-size: 14px;
-    color: #eee;
+    color: #586069;
   }
+}
 
-  @media (prefers-color-scheme: dark) {
-    body {
-      background-color: var(--dark-mode-body-color);
-      color: #fff;
-    }
+@media (max-width: 768px) {
 
-  @keyframes loadingAnimation {
-    0% { background-color: #333; }
-    50% { background-color: #121212; }
-    100% { background-color: #333; }
-  }
-
-    .commit {
-      background-color: var(--dark-mode-body-color);
-      border-color: var(--dark-mode-border-color);
-    }
-
-    div.commit-title {
-      color: #c9d1d9;
-    }
-    .commit-date {
-      color: #8b949e;
-    }
-    .commit-author-name {
-      color: #8b949e;
-    }
-    .commit-stats-item-value {
-      color: #586069;
-    }
-  }
-
-  @media (max-width: 768px) {
-
-    .commit-body {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-  }
-
-
-  .commit-stats-item {
+  .commit-body {
     display: flex;
-    align-items: start;
-    color: white;
-    padding: 2px 6px;
-    border-radius: 6px;
-    margin: 5px 2px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
-  
-  .material-symbols-outlined {
-    font-variant: normal;
-    text-transform: none;
-    display: inline-block;
-    line-height: 1;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    font-feature-settings: 'liga';
-  }
-  
+
+}
+
+
+.commit-stats-item {
+  display: flex;
+  align-items: start;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin: 5px 2px;
+}
+
+.material-symbols-outlined {
+  font-variant: normal;
+  text-transform: none;
+  display: inline-block;
+  line-height: 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'liga';
+}

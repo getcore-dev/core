@@ -1,16 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+body {
+    font-family: 'Inter', sans-serif;
+}
 
-  body {
-    font-family: 'Roboto', sans-serif;
-  }
-
-  .edit-profile-header {
+.edit-profile-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-top: 15px;
     padding-left: 12px;
-  }
+}
 
 .container {
     display: flex;
@@ -63,24 +61,24 @@
 .custom-file-upload {
     display: inline-block;
     padding: 6px 12px;
-    max-width: none;   
+    max-width: none;
     cursor: pointer;
     background-color: none;
     border: none;
     border-radius: 4px;
-  }
-  
-  .custom-file-upload .material-symbols-outlined {
+}
+
+.custom-file-upload .material-symbols-outlined {
     vertical-align: middle;
     font-size: 30px;
     color: #0C8346;
-  }
-  
-  .avatar-image {
+}
+
+.avatar-image {
     position: relative;
-  }
-  
-  .avatar-overlay {
+}
+
+.avatar-overlay {
     position: absolute;
     top: 0;
     object-fit: cover;
@@ -96,17 +94,17 @@
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
-  }
-  
-  .avatar-preview-container:hover .avatar-overlay {
+}
+
+.avatar-preview-container:hover .avatar-overlay {
     opacity: 1;
-  }
-  
-  .overlay-text {
+}
+
+.overlay-text {
     color: #fff;
     font-size: 18px;
     font-weight: bold;
-  }
+}
 
 .container label {
     margin-left: 10px;
@@ -142,7 +140,7 @@
     box-sizing: border-box;
 }
 
-.container  img {
+.container img {
     width: 100px;
     height: 100px;
     border-radius: 6px;

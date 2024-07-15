@@ -1,5 +1,5 @@
 .post-body :is(h1, h2, h3, h4, h5, h6) {
-  padding: 0 14px;
+  padding: 0 5dvw;
 }
 
 .post-body h1 {
@@ -12,7 +12,7 @@
 
 .alt-text {
   font-size: .85rem;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Inter', sans-serif;
   color: var(--light-mode-secondary-text-color);
 }
 
@@ -41,41 +41,39 @@
 }
 
 .post-body h3 {
-  font-size: 1.15rem;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  font-weight: 500;
+  font-size: 1.35rem;
+  margin-top: 0.8rem;
+  margin-bottom: .9rem;
+  font-weight: 700;
 }
 
 .post-body h4 {
-  font-size: 1rem;
-  /* Adjust size as needed */
-  margin-top: 1.33rem;
-  margin-bottom: 1.33rem;
-  font-weight: 500;
+  font-size: 1.35rem;
+  margin-top: 0.8rem;
+  margin-bottom: .9rem;
+  font-weight: 700;
 }
 
 .post-body h5 {
-  font-size: 0.83rem;
-  /* Adjust size as needed */
-  margin-top: 1.67rem;
-  margin-bottom: 1.67rem;
-  font-weight: 500;
+  font-size: 1.25rem;
+  margin-top: 0.8rem;
+  margin-bottom: .9rem;
+  font-weight: 700;
 }
 
 .post-body h6 {
   font-size: 0.67rem;
-  /* Adjust size as needed */
-  margin-top: 2.33rem;
-  margin-bottom: 2.33rem;
+  margin-top: 0.8rem;
+  margin-bottom: .9rem;
   font-weight: bold;
 }
 
 .post-body p {
+  font-weight: 400;
   margin-top: 0;
-  letter-spacing: .015rem;
+  letter-spacing: normal;
   margin-bottom: .4rem;
-  padding: 0 14px;
+  padding: 0 5dvw;
 }
 
 
@@ -99,7 +97,7 @@
 
 .post-body blockquote {
   padding: 10px 20px;
-  margin: 0 0 20px;
+  margin: 0 0 5dvw;
   border-left: 5px solid #eeeeee;
   /* Adjust color as needed */
   background-color: #f5f5f5;
