@@ -543,7 +543,7 @@ div.interact-buttons {
   gap: 4px;
   margin: 0 5dvw;
   margin-top: 0;
-  margin-bottom: .7rem;
+  margin-bottom: 1.2rem;
 }
 
 .link-image,
@@ -1503,8 +1503,8 @@ p.preview-description {
 }
 
 div.post-information {
-  padding: 0 .8rem;
-  padding-bottom: 1.25rem;
+  padding: 0 5dvw;
+  padding-bottom: .6rem;
 }
 
 .blog-tags-div {

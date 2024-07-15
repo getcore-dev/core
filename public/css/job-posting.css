@@ -49,12 +49,12 @@ main {
 }
 
 .job-details>* {
-  padding: 0 14px;
+  padding: 0 5dvw;
 }
 
 .similar-jobs-company h4,
 .similar-jobs h4 {
-  padding: 0 14px;
+  padding: 0 5dvw;
 }
 
 .similar-jobs-company,
@@ -128,7 +128,7 @@ div.similar-jobs-list {
   flex-wrap: nowrap;
   /* Prevent wrapping of job elements */
   flex-direction: column;
-  padding: 0 14px;
+  padding: 0 5dvw;
   gap: 1.5rem;
 
   -webkit-scrollbar {
@@ -146,10 +146,6 @@ div.similar-jobs-list::-webkit-scrollbar {
 
 .similar-job:hover .company-info a {
   text-decoration: underline;
-}
-
-.job-skills {
-  margin-bottom: 1.1rem;
 }
 
 div.similar-job {
@@ -199,30 +195,27 @@ div.similar-job h4 {
 }
 
 .job-details h4 {
-  font-size: 1.05rem;
-  margin: .65rem 0;
-  margin-top: 0;
+  font-size: 1.25rem;
+  margin: 1.05rem 0;
 }
 
 .job-details>div>p,
 .job-details>div>ul {
   color: var(--light-mode-text-color);
-  font-size: .925rem;
-  line-height: 1.5;
+  font-size: 1.05rem;
+  line-height: 1.8;
   margin: 0;
-  margin-bottom: 1.2rem;
+  margin-bottom: 0;
 }
 
 .job-flair p {
-  font-size: .825rem;
+  font-size: 1rem;
   color: #5abe6e;
 }
 
 .interact-buttons {
   display: flex;
   gap: 1rem;
-  margin: .35rem 0;
-  margin-bottom: 1.55rem;
 }
 
 .job-details {
