@@ -541,7 +541,7 @@ div.interact-buttons {
   display: flex;
   align-items: center;
   gap: 4px;
-  margin: 0 5dvw;
+  margin: 0 3.5dvw;
   margin-top: 0;
   margin-bottom: 1.2rem;
 }
@@ -1219,9 +1219,8 @@ div .mini-link {
 
 .post-body p,
 .comment-body p {
-  font-weight: 400;
-  line-height: 1.7rem;
-  letter-spacing: .015rem;
+  line-height: 1.5em;
+  letter-spacing: .01rem;
 }
 
 .post-body p,
@@ -1503,7 +1502,7 @@ p.preview-description {
 }
 
 div.post-information {
-  padding: 0 5dvw;
+  padding: 0 3.5dvw;
   padding-bottom: .6rem;
 }
 

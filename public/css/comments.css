@@ -126,7 +126,6 @@ div.interact-buttons {
     display: flex;
     width: 30px;
     font-size: .8rem;
-    font-weight: 400;
     text-decoration: none;
     white-space-collapse: collapse;
     align-items: center;
