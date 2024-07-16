@@ -112,7 +112,7 @@ div.vote-interactions {
   display: flex;
   flex-direction: row;
   gap: 5px;
-  margin-bottom: .7rem;
+  margin-bottom: .3rem;
   align-items: center;
   border-radius: 6px;
   width: 100%;
@@ -325,7 +325,7 @@ div.vote-interactions {
 .job-description {
   font-size: 14px;
   font-weight: normal;
-  line-height: 1.5em;
+  line-height: 1.6rem;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 6;
@@ -411,11 +411,11 @@ a.community:hover {
 }
 
 .post-quick-info {
-  font-size: .95rem;
+  font-size: .9rem;
 }
 
 #post-username {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: var(--light-mode-bold-text-color);
 }
 
@@ -424,9 +424,8 @@ a.community:hover {
   white-space: normal;
   width: 100%;
   overflow: hidden;
-
   box-sizing: border-box;
-  line-height: 1.5em;
+  line-height: 1.6rem;
 }
 
 .mobile-jobs-container .job {
@@ -794,7 +793,7 @@ div.community-tags {
   display: inline-flex;
   height: 100%;
   width: 32px;
-  border-right: 1px solid #E5E6EE;
+  border: 0;
   align-items: center;
   justify-content: center;
 }
@@ -1159,7 +1158,10 @@ button.see-more {
   }
 
   .title {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
+    margin-top: 0rem;
+    margin-bottom: .6rem;
+    font-weight: 600;
   }
 
   .post-info {
@@ -1167,7 +1169,7 @@ button.see-more {
   }
 
   .description {
-    font-size: .95rem;
+    font-size: 1.1rem;
   }
 
 
@@ -1200,7 +1202,7 @@ button.see-more {
 
 .avatar img {
   border: 1px solid var(--border-color);
-  width: 45px;
+  width: 38px;
   aspect-ratio: 1/1;
   border-radius: 6px;
   object-fit: cover;

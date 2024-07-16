@@ -507,10 +507,9 @@ li.dropdown a.active {
 
 .second-nav-links .navbar-button {
   margin-top: 7px;
-  letter-spacing: .015rem;
   padding: 0;
   font-size: 1.05rem;
-  font-weight: normal;
+  font-weight: 500;
   color: var(--light-mode-bold-text-color);
 }
 
@@ -1299,7 +1298,7 @@ input {
   flex-grow: 0;
   font-weight: 550;
   margin: 0;
-  border-radius: 5px;
+  border-radius: 10px;
   background: #0dd64e3d;
   border: 1px solid #57ab73;
   color: #57ab73;

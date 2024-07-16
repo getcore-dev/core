@@ -543,7 +543,7 @@ div.interact-buttons {
   gap: 4px;
   margin: 0 3.5dvw;
   margin-top: 0;
-  margin-bottom: 1.2rem;
+  margin-bottom: 0;
 }
 
 .link-image,
@@ -791,7 +791,7 @@ div.repliees-avatar {
 }
 
 .post-user-info {
-  font-size: .9rem;
+  font-size: .975rem;
   color: var(--light-mode-text-color);
 }
 
@@ -1219,7 +1219,7 @@ div .mini-link {
 
 .post-body p,
 .comment-body p {
-  line-height: 1.5em;
+  line-height: 1.6em;
   letter-spacing: .01rem;
 }
 
@@ -1502,8 +1502,7 @@ p.preview-description {
 }
 
 div.post-information {
-  padding: 0 3.5dvw;
-  padding-bottom: .6rem;
+  padding: .6rem 3.5dvw;
 }
 
 .blog-tags-div {

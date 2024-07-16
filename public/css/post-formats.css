@@ -2,6 +2,11 @@
   padding: 0 3.5dvw;
 }
 
+.post-body :is(h1, h2, h3):first-of-type {
+  font-size: 1.3rem;
+  color: var(--light-mode-secondary-text-color);
+}
+
 .post-body h1 {
   font-size: 2rem;
   /* Adjust size as needed */
@@ -41,17 +46,17 @@
 }
 
 .post-body h3 {
-  font-size: 1.35rem;
+  font-size: 1.10rem;
   margin-top: 0.8rem;
   margin-bottom: .9rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .post-body h4 {
-  font-size: 1.35rem;
+  font-size: 1.10rem;
   margin-top: 0.8rem;
   margin-bottom: .9rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .post-body h5 {
@@ -178,11 +183,16 @@
   }
 
   .post-body p {
-    color: #b1b1b1;
+    color: var(--dark-mode-text-color);
   }
 
   .alt-text {
     color: var(--dark-mode-secondary-text-color);
+  }
+
+  .post-body :is(h1, h2, h3):first-of-type {
+    color: var(--dark-mode-secondary-text-color);
+    font-weight: 500;
   }
 
   .post-body li {
