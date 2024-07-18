@@ -310,7 +310,19 @@
           </a>
         </li>
         <li class="dropdown">
-          <a href="/networks/" class="navbar-button <%= isActive('/networks') ? 'active' : '' %>" style="display: flex;">
+          <% if (isActive('/posts')) { %>
+          <span class="community-preview" style="color: <%= post.community.community_color%>">
+            <%= post.community ? post.community.shortname : '' %>
+          </span>
+          <% } %>
+
+          <% if (isActive('/networks') && typeof community !== 'undefined') { %>
+          <span class="community-preview" style="color: <%= community.community_color%>">
+            <%= community.shortname %>
+          </span>
+          <% } %>
+
+          <a href="/networks/" class="navbar-button <%= isActive('/networks') | isActive('/posts') ? 'active' : '' %>" style="border-color:<%= isActive('/posts') ? post.community.community_color : isActive('/networks') && typeof community !== 'undefined' ? community.community_color : '' %>; display: flex;">
             <span class="material-symbols-outlined">
               workspaces
             </span>
@@ -318,6 +330,12 @@
           </a>
         </li>
         <li class="dropdown">
+          <% if (isActive('/jobs') && (typeof job !== 'undefined' || typeof company !== 'undefined')) { %>
+          <span class="community-preview secondary-text">
+            <%= typeof job !== 'undefined' ? job.company_name : company.name %>
+          </span>
+
+          <% } %>
           <a href="/jobs" class="navbar-button <%= isActive('/jobs') ? 'active' : '' %>" style="display: flex;">
             <span class="material-symbols-outlined">
               work

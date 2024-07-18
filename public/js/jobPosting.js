@@ -315,7 +315,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 
           <div class="job-details">
             <h2 class="job-title">${job.title}</h2>
-            <div class="job-info-flairs">
+            <div class="job-info-flairs margin-03-bottom">
               <p>
                 <span class="material-symbols-outlined">
                 engineering
@@ -355,9 +355,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 }
               </strong>
             </p>
-            <p id="secondary-text" class="post-date-text">
-            This job was posted on ${formatDate(job.postedDate)}
-            </p>
+
 
       </div>
       
@@ -404,6 +402,9 @@ delete
 }
 
       </div>
+                  <p id="secondary-text" class="post-date-text">
+            This job was posted on ${formatDate(job.postedDate)}
+            </p>
       <div class="job-skills">
       <h4>Required Skills</h4>
       ${skillsHTML}

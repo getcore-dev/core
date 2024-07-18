@@ -24,7 +24,6 @@ main {
   border-radius: 12px !important;
   margin: 0 12px;
   margin-bottom: 10px;
-  display: none;
 
 }
 
@@ -164,9 +163,10 @@ pre code {
   font-size: 12px;
 }
 
-div .material-symbols-outlined {
-  font-size: 16px;
-  vertical-align: -3px;
+.post-info-div .material-symbols-outlined {
+  font-size: .8rem;
+  margin-right: .1rem;
+  vertical-align: -2px;
   pointer-events: none;
 
 }
@@ -238,7 +238,8 @@ a.comment-url:visited {
   padding: 10px 20px;
   border-radius: 6px;
   border: 0;
-  background-color: transparent;
+  background-color: var(--light-mode-main-color);
+  border: 1px solid var(--border-color);
   color: var(--input-text-color);
   overflow: hidden;
   font-family: inherit;
@@ -365,8 +366,12 @@ div.interact-buttons {
 }
 
 .pinned-comment {
-  border: 1px solid #18181847;
-  background-color: #b0b0b036;
+  border: 0;
+  background: 0;
+}
+
+.pinned-comment .material-symbols-outlined {
+  font-size: .9rem;
 }
 
 .admin-tag {
@@ -375,21 +380,32 @@ div.interact-buttons {
   background: #b4000030;
 }
 
+.author-tag {
+  color: var(--active-indicator-color);
+  border: 0;
+  background: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.author-tag .material-symbols-outlined {
+  font-size: .9rem;
+}
+
 .reaction-button,
 .main-reaction-button,
 .boost-button,
 #delete-post-button,
 #delete-comment-button {
-  background-color: var(--light-mode-body-color);
-  border: 1px solid var(--border-color);
+  background: 0 !important;
+  border: 0 !important;
   color: var(--light-mode-text-color);
-  border-radius: 6px;
   height: 30px;
   padding: 0;
+  font-weight: 600;
   display: flex;
   width: 30px;
   font-size: .8rem;
-  font-weight: 400;
   text-decoration: none;
   white-space-collapse: collapse;
   align-items: center;
@@ -414,6 +430,15 @@ div.interact-buttons {
   background: 0;
   border: 0;
   font-size: 1rem;
+}
+
+.reaction-button {
+  font-size: .875rem;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: 0.6rem 1.6rem !important;
+  height: 32px;
 }
 
 .dicussion-link {
@@ -457,7 +482,7 @@ div.interact-buttons {
   flex-direction: column;
   white-space-collapse: collapse;
   background-color: #e2efe2;
-  padding: .8rem 1.1rem;
+  padding: 1.2rem 1.1rem;
 }
 
 .solution-header {
@@ -480,8 +505,7 @@ div.interact-buttons {
 }
 
 .solution-body {
-  line-height: 1.4rem;
-  letter-spacing: .015rem;
+  line-height: 1.6rem;
 }
 
 .solution-avatar img {
@@ -716,9 +740,13 @@ div.interact-buttons {
 }
 
 .comment-avatar {
-  margin-right: 13px;
+  margin-right: .3rem;
   margin-top: 0px;
   margin-bottom: auto;
+}
+
+.tag-flair .material-symbols-outlined {
+  font-size: 1rem;
 }
 
 .comment .comment {
@@ -727,7 +755,7 @@ div.interact-buttons {
 
 .comment-header {
   padding: 0;
-  font-size: 14px;
+  font-size: .925rem;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -781,6 +809,16 @@ div.repliees-avatar {
   box-sizing: border-box;
 }
 
+.post-info-div {
+  display: flex;
+  flex-direction: row;
+  gap: .3rem;
+}
+
+.post-info-div .material-symbols-outlined {
+  margin-right: .1rem;
+}
+
 .comment-main {
   display: flex;
   flex-direction: column;
@@ -821,7 +859,7 @@ div.repliees-avatar {
 .post-user-info-header .avatar {
   border-radius: 6px;
   border: 1px solid var(--border-color);
-  height: 40px;
+  height: 32px;
   cursor: pointer;
   aspect-ratio: 1 / 1;
   object-fit: cover;
@@ -872,7 +910,7 @@ div.repliees-avatar {
   padding: 16px 13px;
   padding-top: 0;
   padding-right: 9px;
-  justify-content: flex-start;
+  justify-content: flex-end;
 }
 
 .thumbnail-image {
@@ -902,6 +940,7 @@ div.repliees-avatar {
   flex-direction: column;
   gap: 1.1rem;
   padding: 0 13px;
+  margin-top: 3rem;
 }
 
 .similar-posts .post a {
@@ -936,12 +975,6 @@ div.repliees-avatar {
 }
 
 
-.comment-header {
-  font-size: 14px !important;
-  color: var(--light-mode-text-color) !important;
-}
-
-
 a.comment-user-info:hover {
   text-decoration: underline;
 }
@@ -962,10 +995,6 @@ a.comment-user-info:hover {
   text-decoration: none;
   color: #333;
   font-size: 14px;
-}
-
-.comment-timestamp {
-  font-size: .8rem;
 }
 
 
@@ -1172,8 +1201,8 @@ div .mini-link {
 }
 
 .main-container a {
-  text-decoration: none;
-  color: var(--light-mode-bold-text-color);
+  color: var(--active-indicator-color);
+  text-decoration: underline;
   font-weight: 500;
 }
 
@@ -1349,17 +1378,11 @@ p.preview-description {
   background: var(--light-mode-body-color);
   border: 1px solid var(--border-color);
   margin: 0 13px;
+  margin-bottom: 1.6rem;
 }
 
 .input-container textarea {
   background-color: var(--light-mode-body-color);
-}
-
-.input-container textarea:focus,
-.comment-container textarea:focus {
-  border: 0;
-  box-shadow: 0;
-  outline: none;
 }
 
 .reaction-button.active {
@@ -1384,7 +1407,7 @@ p.preview-description {
 }
 
 .nested-comments {
-  padding-left: 13px;
+  margin-left: 13px;
   border-left: 1px solid #A10100;
 }
 
@@ -1425,8 +1448,6 @@ p.preview-description {
 
 .project-link-header a {
   font-size: 0.775rem;
-  text-decoration: none !important;
-  color: var(--active-indicator-color) !important;
 }
 
 .post-content>.title {
@@ -1474,21 +1495,19 @@ p.preview-description {
 
 }
 
-#community-header-text {
-  font-weight: 500;
-}
-
 .tag-flair {
   display: inline-flex;
   gap: .6rem;
   padding: 3px 7px;
   margin: 2px 4px 0px 0px;
   margin-bottom: 3px;
-  background-color: #b9d9ff;
+  background-color: #1e77e247;
+  border: 1px solid #1e77e247;
   color: #2e63a1;
   border-radius: 7px;
   font-size: .925rem;
   position: relative;
+  align-items: center;
 }
 
 .reaction-button .material-symbols-outlined {
@@ -1533,11 +1552,7 @@ div.post-information {
   flex-direction: row;
   box-sizing: border-box;
   gap: 14px;
-  justify-content: space-between;
-}
-
-.reply-form .input-container {
-  padding: 6px 12px;
+  justify-content: flex-end;
 }
 
 .reply-form {
@@ -1568,11 +1583,6 @@ div.post-information {
     /* Light text color for better readability */
   }
 
-  .post-body p,
-  .comment-body p {
-    color: #b1b1b1;
-  }
-
   .dropdown-content {
     background-color: var(--dark-mode-main-color);
     color: var(--dark-mode-text-color);
@@ -1585,7 +1595,8 @@ div.post-information {
 
   .input-container textarea,
   .comment-container textarea {
-    background-color: transparent;
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
 
@@ -1603,16 +1614,15 @@ div.post-information {
   .main-reaction-button {
     background-color: var(--dark-mode-main-color);
     border: 1px solid var(--dark-mode-border-color);
-    color: var(--dark-mode-text-color);
+    color: var(--dark-mode-secondary-text-color);
   }
 
   .post-subtitle {
     color: var(--dark-mode-secondary-text-color);
   }
 
-  .dropbtn,
-  .main-container a {
-    color: var(--dark-mode-text-color)
+  .dropbtn {
+    color: var(--dark-mode-secondary-text-color)
   }
 
   .solution {
@@ -1767,21 +1777,15 @@ div.post-information {
   }
 
   .project-link {
-    background-color: var(--dark-mode-body-color);
-    border-color: var(--dark-mode-border-color);
+    background-color: var(--dark-mode-main-color);
   }
 
   .reply-form .input-container {
-    background-color: var(--dark-mode-main-color);
-    border-color: var(--dark-mode-border-color);
+    background-color: var(--dark-mode-body-color);
   }
 
   .editor-toolbar i.separator {
     border-color: var(--dark-mode-border-color) !important;
-  }
-
-  .project-link-header a {
-    color: var(--dark-mode-secondary-text-color) !important;
   }
 
   .reaction-button.active {
@@ -1891,12 +1895,8 @@ div.post-information {
   margin: 0;
 }
 
-.post-title-container>div {
-  width: 90%;
-}
-
-.post-title-container>div.dropdown {
-  width: 5%;
+.post-user-info-span {
+  font-size: 1.05rem;
 }
 
 .post-subinfo {
@@ -1991,7 +1991,7 @@ div.username {
 
   .post-body p,
   .comment-body p {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
   }
 
   .description {
@@ -2034,7 +2034,7 @@ div.username {
   }
 
   img.blog-avatar {
-    height: 40px !important;
+    height: 50px !important;
     margin-right: .8rem !important;
   }
 
@@ -2116,8 +2116,8 @@ div.username {
     max-width: 100% !important;
   }
 
-  p.post-body {
-    font-size: .875rem;
+  .post-body {
+    font-size: 1.05rem;
   }
 
   .post-title {
@@ -2158,9 +2158,6 @@ div.username {
     font-size: .825rem;
   }
 
-  .comment-timestamp {
-    font-size: 14px;
-  }
 
   .comment-form {
     margin-bottom: 10px;

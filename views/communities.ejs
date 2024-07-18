@@ -420,7 +420,7 @@
 
 
             postHeaderUsernameDiv.appendChild(usernameDiv);
-
+            /* 
             // follow button div
             const followButtonDiv = document.createElement('div');
             followButtonDiv.className = 'follow-button';
@@ -433,6 +433,7 @@
             };
             followButtonDiv.appendChild(followButton);
             postHeaderUsernameDiv.appendChild(followButtonDiv);
+            */
 
 
             postHeaderDiv.appendChild(postHeaderUsernameDiv);
@@ -929,7 +930,7 @@
       const activeReaction = reactionTypes.find(reaction => reaction.type === userReaction);
 
       return `
-    <button class="commentMainReactionButton reaction-button ${userReaction ? 'active' : ''}" data-type="comment" data-id="${comment.id}">
+    <button class="commentMainReactionButton null-button-normal reaction-button ${userReaction ? 'active' : ''}" data-type="comment" data-id="${comment.id}">
       ${activeReaction ? activeReaction.icon : '<span class="material-symbols-outlined">add_reaction</span>'}
     </button>
     <div id="reactionPopup-comment-${comment.id}" class="reaction-popup" style="display:none; position: absolute;left: 0; bottom: 37px;">
@@ -1053,7 +1054,7 @@
       const activeReaction = reactionTypes.find(reaction => reaction.type === userReaction);
 
       return `
-    <button class="mainReactionButton reaction-button ${userReaction ? 'active' : ''}" data-type="comment" data-id="${comment.id}">
+    <button class="mainReactionButton null-button-normal reaction-button ${userReaction ? 'active' : ''}" data-type="comment" data-id="${comment.id}">
       ${activeReaction ? activeReaction.icon : '<span class="material-symbols-outlined">add_reaction</span>'}
     </button>
     <div id="reactionPopup-comment-${comment.id}" class="reaction-popup" style="display:none; position: absolute;left: 0; bottom: 37px;">

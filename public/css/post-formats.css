@@ -2,6 +2,11 @@
   padding: 0 3.5dvw;
 }
 
+.project-link :is(h1, h2, h3, h4, h5, h6) {
+  font-size: 1rem;
+  padding: 0;
+}
+
 .post-body :is(h1, h2, h3):first-of-type {
   font-size: 1.3rem;
   color: var(--light-mode-secondary-text-color);
@@ -45,35 +50,35 @@
   margin-top: 0.17rem;
 }
 
-.post-body h3 {
+.post-body>h3 {
   font-size: 1.10rem;
   margin-top: 0.8rem;
   margin-bottom: .9rem;
   font-weight: 600;
 }
 
-.post-body h4 {
+.post-body>h4 {
   font-size: 1.10rem;
   margin-top: 0.8rem;
   margin-bottom: .9rem;
   font-weight: 600;
 }
 
-.post-body h5 {
+.post-body>h5 {
   font-size: 1.25rem;
   margin-top: 0.8rem;
   margin-bottom: .9rem;
   font-weight: 700;
 }
 
-.post-body h6 {
+.post-body>h6 {
   font-size: 0.67rem;
   margin-top: 0.8rem;
   margin-bottom: .9rem;
   font-weight: bold;
 }
 
-.post-body p {
+.post-body>p {
   margin-top: 0;
   letter-spacing: normal;
   margin-bottom: .4rem;
@@ -82,9 +87,16 @@
 
 
 .post-body a {
-  color: #007bff;
-  /* Adjust color as needed */
+  color: var(--active-indicator-color);
   text-decoration: underline;
+}
+
+.comment-header a {
+  color: var(--active-indicator-color);
+}
+
+.post-body a:visited {
+  color: var(--active-indicator-color);
 }
 
 .tag p {
@@ -119,7 +131,7 @@
 }
 
 .accepted-badge {
-  background-color: #9bd682;
+  background-color: #ffffff52;
   color: white;
   padding: 5px 10px;
   border-radius: 3px;
@@ -192,7 +204,7 @@
 
   .post-body :is(h1, h2, h3):first-of-type {
     color: var(--dark-mode-secondary-text-color);
-    font-weight: 500;
+    font-weight: 600;
   }
 
   .post-body li {

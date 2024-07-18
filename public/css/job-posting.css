@@ -203,9 +203,13 @@ div.similar-job h4 {
 .job-details>div>ul {
   color: var(--light-mode-text-color);
   font-size: 1.05rem;
-  line-height: 1.8;
+  line-height: 1.6;
   margin: 0;
   margin-bottom: 0;
+}
+
+.job-info-flairs p {
+  font-size: 1rem;
 }
 
 .job-flair p {

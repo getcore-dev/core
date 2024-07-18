@@ -8,9 +8,9 @@
   --border-color: #DCE6F2;
   --light-mode-button-color: #DCE6F2;
   --light-mode-button-hover-color: #BECBDA;
-  --light-mode-text-color: #323232;
+  --light-mode-text-color: #000;
   --light-mode-bold-text-color: #000000;
-  --light-mode-secondary-text-color: #5c5c5c;
+  --light-mode-secondary-text-color: #2c2c2c;
   --hover-background-color: #ddd;
   --active-indicator-color: #5083ca;
   --dark-mode-main-color: #0b0c0c;
@@ -19,7 +19,7 @@
   --dark-mode-button-hover-color: #363F44;
   --dark-mode-lighter-color: #1F2427;
   --dark-mode-text-color: #fff;
-  --dark-mode-secondary-text-color: #999;
+  --dark-mode-secondary-text-color: #bcbcbc;
   --dark-mode-border-color: #181a1b;
   --dark-mode-hover-background-color: #151515;
 
@@ -105,6 +105,14 @@ a:visited {
   flex-direction: row;
   align-items: center;
   font-size: 1.2rem;
+}
+
+.community-preview {
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  font-size: .6rem;
+  transform: translateX(-50%);
 }
 
 .tag {
@@ -584,7 +592,7 @@ li.dropdown a.active {
 /* Navbar Button Style */
 .navbar-button {
   display: flex;
-  gap: .6rem;
+  gap: .15rem;
   align-items: center;
   justify-content: center;
   line-height: 1.5;
@@ -940,8 +948,8 @@ a>.menu-item {
 
 
 .thumbnail-tiny {
-  width: 30px;
-  height: 30px;
+  width: 38px;
+  height: 38px;
 }
 
 .thumbnail-small {
@@ -961,7 +969,7 @@ a>.menu-item {
 
 .thumbnail-regular {
   border-radius: 0;
-  aspect-ratio: maintain;
+  aspect-ratio: 1/1;
   width: auto;
   border-radius: 8px;
   object-fit: contain;
@@ -1830,9 +1838,9 @@ button .material-symbols-outlined {
   #null-button,
   .null-button-normal,
   #null-button-normal {
-    background: #ffffff0f;
+    background: var(--dark-mode-main-color);
     color: #b0b0b0;
-    border: 1px solid #1a1a1a;
+    border: 1px solid var(--dark-mode-border-color);
   }
 
   input:focus,

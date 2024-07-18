@@ -362,7 +362,7 @@ router.get('/getTopSkills', cacheMiddleware(3600), async (req, res) => {
   }
 });
 
-router.get('/jobs', cacheMiddleware(1200), async (req, res) => {
+router.get('/jobs', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
