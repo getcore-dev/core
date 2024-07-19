@@ -88,12 +88,14 @@
   text-decoration: underline;
 }
 
-.comment-header a {
-  color: var(--active-indicator-color);
+.comment-header a,
+#blog-username {
+  color: var(--light-mode-text-color);
+  font-weight: 500;
 }
 
 .post-body a:visited {
-  color: var(--active-indicator-color);
+  color: var(--light-mode-text-color);
 }
 
 .tag p {

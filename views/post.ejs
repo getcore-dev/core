@@ -602,8 +602,9 @@ function formatDate(date) {
             }
             const totalReplies = countAllReplies(comment.replies);
             %>
+                  <span class="reaction-emote">💬</span>
                   <span class="total-reactions-count">
-                    💬 <%= totalReplies %>
+                    <%= totalReplies %>
                   </span>
                 </button>
                 <button class="commentMainReactionButton null-button-normal reaction-button <% if (comment.userReaction) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>">
