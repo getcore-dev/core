@@ -244,20 +244,12 @@ router.post(
     try {
       const followerId = req.user.id;
       const followedId = req.params.followedId;
-      await userQueries.followUser(followerId, followedId);
-      /*
-      await notificationQueries.createNotification(
-        followerId,
-        followedId,
-        'follow',
-        null
-      );
-      */
+      const following = await userQueries.followUser(followerId, followedId);
       await userQueries.removeDuplicateFollows();
       const updatedFollowerCount = await userQueries.getFollowerCount(
         followedId
       );
-      res.json({ buttonText: 'Unfollow', followerCount: updatedFollowerCount });
+      res.json({ sucess: true, following: following, buttonText: 'Unfollow', followerCount: updatedFollowerCount });
     } catch (err) {
       console.error('Error following user:', err);
       res.json({ buttonText: 'Error', followerCount: 0 });

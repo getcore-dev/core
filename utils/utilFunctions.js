@@ -31,7 +31,7 @@ const utilFunctions = {
           p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, 
           p.communities_id, p.react_like, p.react_love, p.react_curious, 
           p.react_interesting, p.react_celebrate, p.post_type, p.views, 
-          p.isGlobalPinned, u.username, u.avatar, u.isAdmin, u.verified, u.firstname, u.lastname,
+          p.isGlobalPinned, u.username, u.avatar, u.isAdmin, u.verified, u.firstname, u.lastname, u.id as user_id,
           CASE WHEN ur.follower_id IS NOT NULL THEN 1 ELSE 0 END AS is_following,
           c.name AS community_name, c.community_color as community_color,
           c.shortname AS community_shortname,
@@ -83,7 +83,7 @@ OUTER APPLY (
         GROUP BY 
           p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.subtitle, 
           p.communities_id, u.avatar, c.name, c.shortname, c.community_color, u.isAdmin, u.verified, u.firstname, u.lastname,
-          p.react_like, p.react_love, p.react_curious, p.react_interesting, 
+          p.react_like, p.react_love, p.react_curious, p.react_interesting, u.id,
           p.react_celebrate, p.post_type, p.views, p.isGlobalPinned, ur.follower_id,
           je.title, je.companyName, ee.institutionName
       )
@@ -599,7 +599,7 @@ OUTER APPLY (
           p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.subtitle, p.link, p.communities_id,
           p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious,
           p.react_interesting, p.react_celebrate, u.avatar, u.id, p.post_type, p.updated_at, p.isLocked,
-          p.views, u2.username, u2.avatar, upa2.action_type
+          p.views, u2.username, u2.avatar, upa2.action_type, 
       `;
 
       const postData = result.recordset[0];

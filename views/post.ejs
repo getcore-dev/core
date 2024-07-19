@@ -161,9 +161,12 @@ function formatDate(date) {
                 </span>
               </div>
 
-              <button class="regular-button-normal margin-l-auto">
-                Follow
+
+              <% if (user && user.username !== post.user.username) { %>
+              <button class="regular-button-normal margin-l-auto" data-username="<%= post.user.username %>" onclick="followUser('<%= post.user.id %>')">
+                <span class="material-symbols-outlined">person_add</span> Follow
               </button>
+              <% } %>
             </div>
             <div class="post-userinfo2">
             </div>
@@ -933,6 +936,7 @@ function formatDate(date) {
     document.addEventListener('DOMContentLoaded', () => {
       const postId = '<%= post.id %>'; // Assuming you have access to the post ID in your EJS template
       checkFavorite(postId);
+      checkFollowing('<%= post.user.id %>');
     });
 
     // Function to handle deleting a post

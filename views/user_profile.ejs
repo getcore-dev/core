@@ -164,7 +164,6 @@
               Edit
             </button>
             <% } else { %>
-            <%= isFollowing%>
             <form id="followForm" action="/users/<%= otheruser.id %>/<%= isFollowing ? 'unfollow' : 'follow' %>" method="POST">
               <button type="submit" id="followButton" style="margin-bottom: auto;"><%= isFollowing ? 'Unfollow' : 'Follow' %></button>
             </form>

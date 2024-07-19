@@ -420,7 +420,6 @@
 
 
             postHeaderUsernameDiv.appendChild(usernameDiv);
-            /* 
             // follow button div
             const followButtonDiv = document.createElement('div');
             followButtonDiv.className = 'follow-button';
@@ -429,11 +428,12 @@
             followButton.textContent = 'Follow';
             followButton.onclick = (event) => {
               event.stopPropagation();
-              followUser(post.username, followButton);
+              console.log(post)
+              followUser(post.user_id);
             };
             followButtonDiv.appendChild(followButton);
             postHeaderUsernameDiv.appendChild(followButtonDiv);
-            */
+
 
 
             postHeaderDiv.appendChild(postHeaderUsernameDiv);

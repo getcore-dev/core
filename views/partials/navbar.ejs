@@ -390,6 +390,55 @@
 
 
 <script>
+  function checkFollowing(userId) {
+    fetch(`/users/${userId}/is-following`)
+      .then(response => response.json())
+      .then(data => {
+        const followButton = document.querySelector(`button[onclick="followUser('${userId}')"]`);
+        if (followButton) {
+          if (data.isFollowing) {
+            followButton.innerHTML = '<span class="material-symbols-outlined">close</span>Unfollow';
+            followButton.classList.remove('submit-button-normal');
+            followButton.classList.add('cancel-button-normal');
+          } else {
+            followButton.innerHTML = '<span class="material-symbols-outlined">person_add</span>Follow';
+            followButton.classList.remove('cancel-button-normal');
+            followButton.classList.add('submit-button-normal');
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Error checking follow status:', error);
+      });
+  }
+
+  function followUser(username) {
+    fetch(`/users/${username}/follow`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data) {
+          const followButton = document.querySelector(`button[onclick="followUser('${username}')"]`);
+          if (data.following === true) {
+            showBannerNotification('User followed successfully');
+            followButton.innerHTML = '<span class="material-symbols-outlined">close</span>Unfollow';
+          } else {
+            showBannerNotification('User unfollowed successfully');
+            followButton.innerHTML = '<span class="material-symbols-outlined">person_add</span>Follow';
+
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showBannerNotification('An error occurred while following user');
+      });
+  }
+
   function share(title, text, url) {
     var shareData = {
       title: title,
