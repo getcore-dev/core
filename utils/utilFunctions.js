@@ -483,6 +483,87 @@ OUTER APPLY (
       throw err;
     }
   },
+  
+  getComments: async (postId) => {
+    const query = `
+      WITH CommentCTE AS (
+        SELECT 
+          c.id, c.created_at, c.deleted, c.comment, c.user_id, c.parent_comment_id, c.post_id, c.isPinned,
+          u.username, u.avatar,
+          SUM(CASE WHEN uca.action_type = 'LOVE' THEN 1 ELSE 0 END) AS loveCount,
+          SUM(CASE WHEN uca.action_type = 'B' THEN 1 ELSE 0 END) AS boostCount,
+          SUM(CASE WHEN uca.action_type = 'CURIOUS' THEN 1 ELSE 0 END) AS curiousCount,
+          SUM(CASE WHEN uca.action_type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount,
+          SUM(CASE WHEN uca.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) AS celebrateCount
+        FROM comments c
+        LEFT JOIN UserCommentActions uca ON c.id = uca.comment_id
+        LEFT JOIN users u ON c.user_id = u.id
+        WHERE c.post_id = @postId AND c.deleted = 0
+        GROUP BY c.id, c.created_at, c.deleted, c.comment, c.user_id, c.parent_comment_id, c.post_id, c.isPinned,
+                 u.username, u.avatar
+      )
+      SELECT 
+        c1.*,
+        c2.id AS reply_id,
+        c2.comment AS reply_comment,
+        c2.user_id AS reply_user_id,
+        c2.created_at AS reply_created_at,
+        c2.username AS reply_username,
+        c2.avatar AS reply_avatar
+      FROM CommentCTE c1
+      LEFT JOIN CommentCTE c2 ON c1.id = c2.parent_comment_id
+      ORDER BY c1.created_at DESC, c2.created_at ASC;
+    `;
+  
+    const result = await sql.query(query, { postId });
+  
+    const commentMap = new Map();
+    const rootComments = [];
+  
+    result.recordset.forEach(row => {
+      if (!commentMap.has(row.id)) {
+        const comment = {
+          id: row.id,
+          created_at: row.created_at,
+          comment: row.comment,
+          user: { id: row.user_id, username: row.username, avatar: row.avatar },
+          isPinned: row.isPinned,
+          reactions: {
+            loveCount: row.loveCount,
+            boostCount: row.boostCount,
+            curiousCount: row.curiousCount,
+            likeCount: row.likeCount,
+            celebrateCount: row.celebrateCount
+          },
+          replies: []
+        };
+        commentMap.set(row.id, comment);
+  
+        if (row.parent_comment_id) {
+          const parentComment = commentMap.get(row.parent_comment_id);
+          if (parentComment) {
+            parentComment.replies.push(comment);
+          }
+        } else {
+          rootComments.push(comment);
+        }
+      }
+  
+      if (row.reply_id && !commentMap.has(row.reply_id)) {
+        const reply = {
+          id: row.reply_id,
+          created_at: row.reply_created_at,
+          comment: row.reply_comment,
+          user: { id: row.reply_user_id, username: row.reply_username, avatar: row.reply_avatar },
+          replies: []
+        };
+        commentMap.set(row.reply_id, reply);
+        commentMap.get(row.id).replies.push(reply);
+      }
+    });
+  
+    return rootComments;
+  },
 
   getPostData: async (postId, user) => {
     try {

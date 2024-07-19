@@ -52,21 +52,18 @@
 
 .post-body>h3 {
   font-size: 1.10rem;
-  margin-top: 0.8rem;
-  margin-bottom: .9rem;
+  margin-bottom: .6rem;
   font-weight: 600;
 }
 
 .post-body>h4 {
   font-size: 1.10rem;
-  margin-top: 0.8rem;
   margin-bottom: .9rem;
   font-weight: 600;
 }
 
 .post-body>h5 {
   font-size: 1.25rem;
-  margin-top: 0.8rem;
   margin-bottom: .9rem;
   font-weight: 700;
 }
@@ -81,7 +78,7 @@
 .post-body>p {
   margin-top: 0;
   letter-spacing: normal;
-  margin-bottom: .4rem;
+  margin-bottom: .9rem;
   padding: 0 3.5dvw;
 }
 

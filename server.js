@@ -3,7 +3,7 @@ const environment = require('./config/environment');
 const cluster = require('cluster');
 const JobProcessor = require('./services/jobBoardService');
 const jobProcessor = new JobProcessor();
-const jobServiceEnabled = true;
+const jobServiceEnabled = false;
 const MS_PER_HOUR = 3600000;
 
 function runJobBoardService() {

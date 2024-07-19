@@ -52,7 +52,7 @@
     "passport-local": "^1.0.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
-    "redis": "^4.6.12",
+    "redis": "^4.6.15",
     "request": "^2.88.2",
     "sequelize": "^6.35.1",
     "session-file-store": "^1.5.0",

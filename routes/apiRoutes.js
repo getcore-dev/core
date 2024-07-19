@@ -797,7 +797,7 @@ router.get('/posts/:postId', async (req, res) => {
     const postId = req.params.postId;
     const user = req.user ? req.user : null;
     const postData = await utilFunctions.getPostData(postId, user);
-    postData.content = marked(postData.content);
+    postData.content = marked.marked(postData.content);
     res.json(postData);
   } catch (err) {
     console.error('Error fetching post data:', err);

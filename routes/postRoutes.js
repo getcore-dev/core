@@ -26,6 +26,7 @@ const viewLimiter = rateLimit({
   },
 });
 
+
 router.get('/posts', async (req, res) => {
   try {
     const posts = await postQueries.getPosts();
@@ -114,176 +115,51 @@ router.post('/posts/:postId/react', checkAuthenticated, async (req, res) => {
 router.get('/posts/:postId', viewLimiter, async (req, res) => {
   try {
     const postId = req.params.postId;
-    let user = req.user;
+    const user = req.user;
 
-    let query = `
-    SELECT
-      c.id,
-      c.created_at,
-      c.deleted,
-      c.comment,
-      c.user_id,
-      c.parent_comment_id,
-      c.post_id,
-      c.isPinned,
-      SUM(CASE WHEN uca.action_type = 'LOVE' THEN 1 ELSE 0 END) AS loveCount,
-      SUM(CASE WHEN uca.action_type = 'B' THEN 1 ELSE 0 END) AS boostCount,
-      SUM(CASE WHEN uca.action_type = 'DISLIKE' THEN 1 ELSE 0 END) AS dislikeCount,
-      SUM(CASE WHEN uca.action_type = 'CURIOUS' THEN 1 ELSE 0 END) AS curiousCount,
-      SUM(CASE WHEN uca.action_type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount,
-      SUM(CASE WHEN uca.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) AS celebrateCount`;
+    // First, fetch the post data
+    const postResult = await utilFunctions.getPostData(postId, user);
 
-    if (user && user.id) {
-      query += `,
-      (
-        SELECT TOP 1 uca2.action_type
-        FROM UserCommentActions uca2
-        WHERE uca2.comment_id = c.id AND uca2.user_id = @userId
-      ) AS userReaction`;
-    }
+    // Then, fetch all other data concurrently
+    const [comments, tags, community, postUser] = await Promise.all([
+      fetchComments(postId, user),
+      utilFunctions.getTags(postId),
+      utilFunctions.getCommunityDetails(postResult.communities_id),
+      getUserDetails(postResult.user_id)
+    ]);
 
-    query += `
-    FROM comments c
-    LEFT JOIN UserCommentActions uca ON c.id = uca.comment_id
-    WHERE c.post_id = @postId AND c.deleted = 0
-    GROUP BY
-      c.id,
-      c.created_at,
-      c.deleted,
-      c.comment,
-      c.isPinned,
-      c.user_id,
-      c.parent_comment_id,
-      c.post_id
-    ORDER BY c.created_at DESC;`;
-
-    const request = new sql.Request();
-    request.input('postId', sql.VarChar, postId);
-
-    if (user && user.id) {
-      request.input('userId', sql.VarChar, user.id);
-    }
-
-    const result = await request.query(query);
-
-    // Function to nest comments
-    function nestComments(commentList) {
-      const commentMap = {};
-
-      // Create a map of comments
-      commentList.forEach((comment) => {
-        commentMap[comment.id] = { ...comment, replies: [] };
-      });
-
-      const nestedComments = [];
-      for (let comment of commentList) {
-        if (
-          comment.parent_comment_id &&
-          commentMap[comment.parent_comment_id]
-        ) {
-          commentMap[comment.parent_comment_id].replies.push(
-            commentMap[comment.id]
-          );
-        } else {
-          nestedComments.push(commentMap[comment.id]);
-        }
-      }
-
-      return nestedComments;
-    }
-
-    // Nest comments
-    const nestedComments = nestComments(result.recordset);
-
-    const fetchUserAndParentDetails = async (comment) => {
-      comment.user = await getUserDetails(comment.user_id);
-
-      // Fetch the user reaction for the current comment
-      if (user) {
-        const sqlRequest = new sql.Request();
-        sqlRequest.input('commentId', sql.VarChar, comment.id);
-        sqlRequest.input('userId', sql.VarChar, user.id);
-
-        const reactionQuery = `
-      SELECT action_type
-      FROM UserCommentActions
-      WHERE comment_id = @commentId AND user_id = @userId;
-    `;
-
-        try {
-          const reactionResult = await sqlRequest.query(reactionQuery);
-          comment.userReaction =
-            reactionResult.recordset && reactionResult.recordset[0]
-              ? reactionResult.recordset[0].action_type
-              : null;
-        } catch (error) {
-          console.error('Database query error:', error);
-          // Handle the error appropriately
-        }
-      } else {
-        comment.userReaction = null;
-      }
-
-      // Use the new function to get the parent author's username
-      if (comment.parent_comment_id || comment.post_id) {
-        let comment_parent_username =
-          await postQueries.getParentAuthorUsernameByCommentId(comment.id);
-
-        comment.parent_author = await userQueries.findByUsername(
-          comment_parent_username
-        );
-        comment.replyingTo = comment.parent_comment_id ? 'comment' : 'post';
-      }
-
-      if (comment.replies && comment.replies.length > 0) {
-        await Promise.all(comment.replies.map(fetchUserAndParentDetails));
-      }
-    };
-
-    // Fetch user and parent author details for all comments in parallel
-    await Promise.all(nestedComments.map(fetchUserAndParentDetails));
-
-    // Fetch post details
-    const postResult = await utilFunctions.getPostData(postId, req.user);
-
-    // Construct postData
     const postData = {
       ...postResult,
-      tags: await utilFunctions.getTags(postId),
-      user: await getUserDetails(postResult.user_id),
-      comments: nestedComments,
+      tags,
+      user: postUser,
+      comments,
+      community
     };
 
+    // Handle special post types
     if (postData.link && postData.post_type === 'project') {
-      postData.gitHubfavicon = await utilFunctions.getFavicon(postData.link);
-      postData.gitHubLinkPreview = await utilFunctions.getGitHubRepoPreview(
-        postData.link
-      );
-      postData.gitHubMatchUsername =
-        postData.user.github_url ==
-        JSON.parse(postData.gitHubLinkPreview.raw_json).owner.login;
+      [postData.gitHubfavicon, postData.gitHubLinkPreview] = await Promise.all([
+        utilFunctions.getFavicon(postData.link),
+        utilFunctions.getGitHubRepoPreview(postData.link)
+      ]);
+      postData.gitHubMatchUsername = postData.user.github_url === JSON.parse(postData.gitHubLinkPreview.raw_json).owner.login;
     }
 
     if (postData.post_type === 'question') {
       postData.solution = await postQueries.getAcceptedAnswer(postId);
       if (postData.solution) {
-        postData.solution.user = await getUserDetails(
-          postData.solution.user_id
-        );
+        postData.solution.user = await getUserDetails(postData.solution.user_id);
       }
     }
 
-    // Add link preview to postData if link exists
     if (postData.link) {
       postData.linkPreview = await getLinkPreview(postData.link);
     }
-    postData.community = await utilFunctions.getCommunityDetails(
-      postData.communities_id
-    );
 
-    // render markup content in html
+    // Render content
     postData.content = marked.parse(postData.content);
 
+    // Fetch similar posts
     const similarPosts = await postQueries.fetchSimilarPosts(
       user,
       postId,
@@ -305,6 +181,72 @@ router.get('/posts/:postId', viewLimiter, async (req, res) => {
     res.redirect('/');
   }
 });
+
+async function fetchComments(postId, user) {
+  const query = `
+    SELECT
+      c.id, c.created_at, c.deleted, c.comment, c.user_id, c.parent_comment_id, c.post_id, c.isPinned,
+      SUM(CASE WHEN uca.action_type = 'LOVE' THEN 1 ELSE 0 END) AS loveCount,
+      SUM(CASE WHEN uca.action_type = 'B' THEN 1 ELSE 0 END) AS boostCount,
+      SUM(CASE WHEN uca.action_type = 'DISLIKE' THEN 1 ELSE 0 END) AS dislikeCount,
+      SUM(CASE WHEN uca.action_type = 'CURIOUS' THEN 1 ELSE 0 END) AS curiousCount,
+      SUM(CASE WHEN uca.action_type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount,
+      SUM(CASE WHEN uca.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) AS celebrateCount,
+      ${user ? `(SELECT TOP 1 uca2.action_type FROM UserCommentActions uca2 WHERE uca2.comment_id = c.id AND uca2.user_id = @userId) AS userReaction` : 'NULL AS userReaction'}
+    FROM comments c
+    LEFT JOIN UserCommentActions uca ON c.id = uca.comment_id
+    WHERE c.post_id = @postId AND c.deleted = 0
+    GROUP BY c.id, c.created_at, c.deleted, c.comment, c.isPinned, c.user_id, c.parent_comment_id, c.post_id
+    ORDER BY c.created_at DESC;
+  `;
+
+  const request = new sql.Request();
+  request.input('postId', sql.VarChar, postId);
+  if (user) request.input('userId', sql.VarChar, user.id);
+
+  const result = await request.query(query);
+  const comments = nestComments(result.recordset);
+
+  await Promise.all(comments.map(comment => fetchCommentDetails(comment, user)));
+
+  return comments;
+}
+
+function nestComments(commentList) {
+  const commentMap = new Map();
+  const nestedComments = [];
+
+  commentList.forEach(comment => {
+    commentMap.set(comment.id, { ...comment, replies: [] });
+  });
+
+  commentList.forEach(comment => {
+    if (comment.parent_comment_id && commentMap.has(comment.parent_comment_id)) {
+      commentMap.get(comment.parent_comment_id).replies.push(commentMap.get(comment.id));
+    } else {
+      nestedComments.push(commentMap.get(comment.id));
+    }
+  });
+
+  return nestedComments;
+}
+
+async function fetchCommentDetails(comment, user) {
+  const [commentUser, parentUsername] = await Promise.all([
+    getUserDetails(comment.user_id),
+    comment.parent_comment_id ? postQueries.getParentAuthorUsernameByCommentId(comment.id) : null
+  ]);
+
+  comment.user = commentUser;
+  if (parentUsername) {
+    comment.parent_author = await userQueries.findByUsername(parentUsername);
+    comment.replyingTo = comment.parent_comment_id ? 'comment' : 'post';
+  }
+
+  if (comment.replies.length > 0) {
+    await Promise.all(comment.replies.map(reply => fetchCommentDetails(reply, user)));
+  }
+}
 
 router.get('/posts/:postId/edit', checkAuthenticated, async (req, res) => {
   try {

@@ -115,6 +115,7 @@ a:visited {
   transform: translateX(-50%);
 }
 
+
 .tag {
   display: inline-flex;
   gap: 5px;
@@ -1383,6 +1384,14 @@ button .material-symbols-outlined {
 
 .flex {
   display: flex;
+}
+
+.margin-l-auto {
+  margin-left: auto !important;
+}
+
+.margin-r-auto {
+  margin-right: auto !important;
 }
 
 .margin-h-auto {
