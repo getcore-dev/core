@@ -267,7 +267,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         .map(
           (skill) =>
             `<span class="skill"
-            ><a class="link underlined" href="/tags/${skill}"><p>${skill}</p></a></span>`
+            ><a class="link underlined" href="/skills/${skill}"><p>${skill}</p></a></span>`
         )
         .join('');
 

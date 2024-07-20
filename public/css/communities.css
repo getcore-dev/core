@@ -22,7 +22,7 @@ main {
 }
 
 .post {
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--border-color);
 }
 
 
@@ -411,11 +411,11 @@ a.community:hover {
 }
 
 .post-quick-info {
-  font-size: .9rem;
+  font-size: .8rem;
 }
 
 #post-username {
-  font-size: 1rem;
+  font-size: .9rem;
   color: var(--light-mode-bold-text-color);
 }
 
@@ -1111,6 +1111,26 @@ button.see-more {
 }
 
 
+.posting-header {
+  position: -webkit-sticky;
+  position: sticky;
+  border-top: 1.5px solid var(--border-color);
+  border-bottom: 1.5px solid var(--border-color);
+  background: var(--light-mode-body-color);
+  padding: 0.3rem 13px;
+  margin: 0;
+}
+
+.posting-header {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  /* Make sure this matches your page background */
+  width: 100%;
+  box-sizing: border-box;
+}
+
 
 
 @media (max-width: 768px) {
@@ -1120,7 +1140,7 @@ button.see-more {
     border-radius: 0;
     margin: 0;
     border: 0;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1.5px solid var(--border-color);
     max-width: 100%;
   }
 

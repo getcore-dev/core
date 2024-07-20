@@ -804,28 +804,43 @@ const jobQueries = {
     }
   },
 
-  getJobsByTag: async (tagId, limit = 10, offset = 0) => {
+  getJobsByTag: async (tagId, page, pageSize) => {
     try {
-      const result = await sql.query(`
-        SELECT JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
-        (
-          SELECT STRING_AGG(JobTags.tagName, ', ')
-          FROM JobPostingsTags
-          INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
-          WHERE JobPostingsTags.jobId = JobPostings.id
-        ) AS tags
+      const offset = (page - 1) * pageSize;
+  
+      const query = `
+        SELECT JobPostings.*, 
+               companies.name AS company_name, 
+               companies.logo AS company_logo, 
+               companies.location AS company_location, 
+               companies.description AS company_description,
+               (
+                 SELECT STRING_AGG(JobTags.tagName, ', ')
+                 FROM JobPostingsTags
+                 INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+                 WHERE JobPostingsTags.jobId = JobPostings.id
+               ) AS tags
         FROM JobPostings
         LEFT JOIN companies ON JobPostings.company_id = companies.id
         WHERE JobPostings.id IN (
           SELECT jobId
           FROM JobPostingsTags
-          WHERE tagId = ${tagId}
+          WHERE tagId = @tagId
         )
         ORDER BY JobPostings.postedDate DESC
-        OFFSET ${offset} ROWS
-        FETCH NEXT ${limit} ROWS ONLY
-      `);
-
+        OFFSET @offset ROWS
+        FETCH NEXT @pageSize ROWS ONLY
+      `;
+  
+      const result = await sql.query({
+        text: query,
+        parameters: [
+          { name: 'tagId', type: sql.Int, value: tagId },
+          { name: 'offset', type: sql.Int, value: offset },
+          { name: 'pageSize', type: sql.Int, value: pageSize }
+        ]
+      });
+  
       const jobs = result.recordset;
       return jobs;
     } catch (err) {
@@ -1693,8 +1708,9 @@ getCompanyByName: async (name) => {
     }
   },
 
-  getJobsBySkills: async (tagId) => {
+  getJobsBySkills: async (tagId, page = 1, pageSize = 10) => {
     try {
+      const offset = (page - 1) * pageSize;
       const result = await sql.query(`
         SELECT JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
         (
@@ -1711,8 +1727,10 @@ getCompanyByName: async (name) => {
           WHERE skill_id = '${tagId}'
         )
         ORDER BY JobPostings.postedDate DESC
+        OFFSET ${offset} ROWS
+        FETCH NEXT ${pageSize} ROWS ONLY
       `);
-
+  
       const jobs = result.recordset;
       return jobs;
     } catch (err) {

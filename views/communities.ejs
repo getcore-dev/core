@@ -263,7 +263,7 @@
         }
 
         const communityHeader = document.createElement('div');
-        communityHeader.className = 'community-header';
+        communityHeader.className = 'community-header posting-header';
         communityHeader.innerHTML = `
               <div class="post-header-title">
                 <h5>${sortBy.charAt(0).toUpperCase() + sortBy.slice(1)} Posts</h5> 
@@ -1238,7 +1238,28 @@ description
       fetchAndDisplayPosts(communityId);
 
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const header = document.querySelector('.community-header.posting-header');
+      console.log(header);
+      const headerOffset = header.offsetTop;
+      let isSticky = false;
+
+      function handleScroll() {
+        if (window.pageYOffset > headerOffset && !isSticky) {
+          header.style.position = 'fixed';
+          header.style.top = 'calc(var(--mobile-navbar-height) + var(--mobile-second-navbar-height))';
+          isSticky = true;
+        } else if (window.pageYOffset <= headerOffset && isSticky) {
+          header.style.position = 'static';
+          isSticky = false;
+        }
+      }
+
+      window.addEventListener('scroll', handleScroll);
+    });
   </script>
+
 </body>
 
 

@@ -75,6 +75,7 @@
 <body>
   <%- include('partials/navbar', { pagePath: 'communities' }) %>
   <main>
+
     <% if (user && user.isAdmin) { %>
     <h5 class="communities-header secondary-text">Admin Networks</h5>
     <div class="communities-list">

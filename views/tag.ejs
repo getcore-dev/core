@@ -112,6 +112,9 @@ function blendColors(color1, color2, ratio) {
         </div>
       </div>
       <% }); %>
+      <div id="load-more-container">
+        <button id="load-more-btn" class="load-more-btn">Load More</button>
+      </div>
     </div>
     <% } else { %>
     <div class="jobs-header">
@@ -181,12 +184,71 @@ function blendColors(color1, color2, ratio) {
     </div>
     <% } else { %>
     <div class="jobs-header">
-      <p>No posts found.</p>
     </div>
     <% } %>
     <%- include('partials/footer') %>
 
   </main>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let page = 1;
+      const pageSize = 10;
+      const tag = '<%= tag %>';
+      const loadMoreButton = document.getElementById('load-more-btn');
+      const loadMoreContainer = document.getElementById('load-more-container');
+
+      function loadMoreJobs() {
+        fetch(`/api/skills/jobs/${tag}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.jobs.length > 0) {
+              page += 1;
+              // Insert new jobs into the page
+              const jobsContainer = document.querySelector('.jobs');
+              data.jobs.forEach(job => {
+                const jobElement = document.createElement('div');
+                jobElement.classList.add('job');
+                jobElement.onclick = () => window.location.href = `/jobs/${job.id}`;
+                jobElement.innerHTML = `
+                  <div class="job-preview">
+                    <div class="job-info">
+                      <div class="company-info">
+                        <img class="thumbnail thumbnail-tiny" src="${job.company_logo}" alt="${job.company_name} logo" />
+                        <p class="company-name">${job.company_name}</p>
+                      </div>
+                      <h3 class="job-title">
+                        ${job.title}
+                        <span>${job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1)}</span>
+                      </h3>
+                      <span>USD $${Math.floor((job.salary + job.salary_max) / 2 / 1000)}k</span>
+                      <span>${job.location}</span>
+                    </div>
+                  </div>
+                `;
+                jobsContainer.appendChild(jobElement);
+              });
+            } else {
+              loadMoreButton.style.display = 'none';
+            }
+          })
+          .catch(err => console.error('Error loading jobs:', err));
+      }
+
+      // Load more on button click
+      loadMoreButton.addEventListener('click', loadMoreJobs);
+
+      // IntersectionObserver to load more when scrolling to bottom
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          loadMoreJobs();
+        }
+      }, {
+        rootMargin: '100px'
+      });
+
+      observer.observe(loadMoreContainer);
+    });
+  </script>
 
 </body>
 

@@ -788,6 +788,23 @@ router.post('/auto-create-job-posting', async (req, res) => {
   }
 });
 
+router.get('/skills/jobs/:skill', async (req, res) => {
+  try {
+    const skill = req.params.skill;
+    const skillId = await jobQueries.getSkillsId(skill);
+    const page = req.query.page || 1;
+    const pageSize = req.query.pageSize || 10;
+    if (!skillId) {
+      res.status(404).send('Tag not found');
+    }
+    const jobs = await jobQueries.getJobsBySkills(skillId, page, pageSize);
+    res.json({jobs});
+  } catch (err) {
+    console.error('Error fetching job postings:', err);
+    res.status(500).send('Error fetching job postings');
+  }
+});
+
 router.get('/posts/:postId/comments', async (req, res) => {
   try {
     const postId = req.params.postId;

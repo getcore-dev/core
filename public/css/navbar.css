@@ -1247,7 +1247,7 @@ input {
   border: none;
   border-radius: 12px;
   background: #12803629;
-  border: 1px solid #27944e;
+  border: 1.5px solid #27944e;
   color: #27944e;
   cursor: pointer;
   margin-bottom: 2rem;
@@ -1314,7 +1314,7 @@ input {
   margin: 0;
   border-radius: 10px;
   background: #0dd64e3d;
-  border: 1px solid #57ab73;
+  border: 1.5px solid #57ab73;
   color: #57ab73;
   cursor: pointer;
   word-wrap: break-word;
@@ -1367,7 +1367,7 @@ button .material-symbols-outlined:not(:only-child) {
 #null-button-normal {
   background: #FAFBFF;
   color: #7f7f7f;
-  border: 1px solid #E5E6EE;
+  border: 1.5px solid #E5E6EE;
 }
 
 .margin-v-auto {
@@ -1412,7 +1412,7 @@ button .material-symbols-outlined:not(:only-child) {
 #cancel-button-normal,
 .cancel-button,
 .cancel-button-normal {
-  border: 1px solid #ae4444;
+  border: 1.5px solid #ae4444;
   background-color: #cd3a3a1c;
   color: #ae4444;
 }
@@ -1423,7 +1423,7 @@ button .material-symbols-outlined:not(:only-child) {
 .regular-button-normal {
   background: #007bff36;
   color: #1463b7;
-  border: 1px solid #1463b7;
+  border: 1.5px solid #1463b7;
 }
 
 .bold {
@@ -1858,7 +1858,7 @@ button .material-symbols-outlined:not(:only-child) {
   #null-button-normal {
     background: var(--dark-mode-main-color);
     color: #b0b0b0;
-    border: 1px solid var(--dark-mode-border-color);
+    border: 1.5px solid var(--dark-mode-border-color);
   }
 
   input:focus,
@@ -2166,7 +2166,7 @@ button .material-symbols-outlined:not(:only-child) {
 
 .caution-messages {
   max-width: 100%;
-  border: 1px solid #ffa600;
+  border: 1.5px solid #ffa600;
   color: #ffa600 !important;
   background: #ffa60038 !important;
   padding: .55rem 0.85rem;
@@ -2183,7 +2183,7 @@ button .material-symbols-outlined:not(:only-child) {
 
 .error-messages {
   max-width: 100%;
-  border: 1px solid #ae4444;
+  border: 1.5px solid #ae4444;
   background-color: #cd3a3a1c;
   color: #ae4444;
   padding: .55rem 0.85rem;
@@ -2201,7 +2201,7 @@ button .material-symbols-outlined:not(:only-child) {
 .success-messages {
   width: 100%;
   background: #1675351f;
-  border: 1px solid #4b9263;
+  border: 1.5px solid #4b9263;
   color: #4b9263;
   padding: .55rem 0.85rem;
   margin: .5rem 0;

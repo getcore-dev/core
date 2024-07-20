@@ -295,6 +295,40 @@ router.get(
   }
 );
 
+router.get('/skills/:skill', async (req, res) => {
+  try {
+    const skill = req.params.skill;
+    const skillId = await jobQueries.getSkillsId(skill);
+    const page = req.query.page || 1;
+    const pageSize = req.query.pageSize || 10;
+    if (!skillId) {
+      res.status(404).send('Tag not found');
+    }
+    const jobs = await jobQueries.getJobsBySkills(skillId, page, pageSize);
+    res.render('tag.ejs', { tag: skill, jobs, posts: [], user: req.user });
+  } catch (err) {
+    console.error('Error fetching job postings:', err);
+    res.status(500).send('Error fetching job postings');
+  }
+});
+
+router.get('/skills/jobs/:skill', async (req, res) => {
+  try {
+    const skill = req.params.skill;
+    const skillId = await jobQueries.getSkillsId(skill);
+    const page = req.query.page || 1;
+    const pageSize = req.query.pageSize || 10;
+    if (!skillId) {
+      res.status(404).send('Tag not found');
+    }
+    const jobs = await jobQueries.getJobsBySkills(skillId, page, pageSize);
+    res.render('tag.ejs', { tag: skill, jobs, posts: [], user: req.user });
+  } catch (err) {
+    console.error('Error fetching job postings:', err);
+    res.status(500).send('Error fetching job postings');
+  }
+});
+
 router.get('/tags/:tagName', async (req, res) => {
   try {
     const tagName = req.params.tagName;
@@ -302,6 +336,8 @@ router.get('/tags/:tagName', async (req, res) => {
     const JobTagId = await jobQueries.getTagId(tagName);
     const PostTagId = await postQueries.getTagId(tagName);
     const JobSkillsId = await jobQueries.getSkillsId(tagName);
+    const page = req.query.page || 1;
+    const pageSize = req.query.pageSize || 10;
 
     let jobs = [];
     let posts = [];
@@ -313,7 +349,7 @@ router.get('/tags/:tagName', async (req, res) => {
     }
 
     if (JobTagId) {
-      jobs = await jobQueries.getJobsByTag(JobTagId);
+      jobs = await jobQueries.getJobsByTag(JobTagId, page, pageSize);
     }
 
     if (JobSkillsId) {

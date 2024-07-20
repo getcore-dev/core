@@ -230,16 +230,20 @@ router.get('/tags/:tag', async (req, res) => {
   try {
     const tag = req.params.tag;
     const tagId = await jobQueries.getTagId(tag);
+    const page = req.query.page || 1;
+    const pageSize = req.query.pageSize || 10;
     if (!tagId) {
       res.status(404).send('Tag not found');
     }
-    const jobs = await jobQueries.getJobsByTag(tagId);
+    const jobs = await jobQueries.getJobsByTag(tagId, page, pageSize);
     res.render('tag.ejs', { tag, jobs, user: req.user });
   } catch (err) {
     console.error('Error fetching job postings:', err);
     res.status(500).send('Error fetching job postings');
   }
 });
+
+
 router.get('/getTopTags', cacheMiddleware(3600), async (req, res) => {
   try {
     const tags = await jobQueries.getCountOfTopJobTags();
