@@ -41,6 +41,6 @@ app.listen(environment.port, '0.0.0.0', () => {
 
   
   if (jobServiceEnabled === true) {
-    setTimeout(runJobBoardService, 1500);
+    setTimeout(runJobBoardService, 3500);
   }
 });

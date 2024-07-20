@@ -121,8 +121,7 @@ router.get('/posts/:postId', viewLimiter, async (req, res) => {
     const postResult = await utilFunctions.getPostData(postId, user);
 
     // Then, fetch all other data concurrently
-    const [comments, tags, community, postUser] = await Promise.all([
-      fetchComments(postId, user),
+    const [tags, community, postUser] = await Promise.all([
       utilFunctions.getTags(postId),
       utilFunctions.getCommunityDetails(postResult.communities_id),
       getUserDetails(postResult.user_id)
@@ -132,7 +131,7 @@ router.get('/posts/:postId', viewLimiter, async (req, res) => {
       ...postResult,
       tags,
       user: postUser,
-      comments,
+      comments: [],
       community
     };
 

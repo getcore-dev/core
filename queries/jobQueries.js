@@ -1,5 +1,6 @@
 const sql = require('mssql');
 const utilFunctions = require('../utils/utilFunctions');
+const config = require('../config/dbConfig');
 
 const jobQueries = {
   getJobs: async (limit, offset) => {
@@ -17,6 +18,53 @@ const jobQueries = {
         ORDER BY JobPostings.postedDate DESC
         OFFSET ${offset} ROWS
         FETCH NEXT ${limit} ROWS ONLY
+      `);
+      const jobs = result.recordset;
+      return jobs;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+  async getJobsBatch(offset, batchSize) {
+    try {
+      await sql.connect(config);
+      const result = await sql.query`
+        SELECT id, title, description
+        FROM JobPostings
+        ORDER BY id
+        OFFSET ${offset} ROWS
+        FETCH NEXT ${batchSize} ROWS ONLY
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('SQL error in getJobsBatch:', err);
+      throw err;
+    } finally {
+      await sql.close();
+    }
+  },
+
+  async flagJobForReview(jobId) {
+    try {
+      await sql.connect(config);
+      await sql.query`
+        UPDATE JobPostings
+        SET needs_review = 1
+        WHERE id = ${jobId}
+      `;
+    } catch (err) {
+      console.error(`SQL error in flagJobForReview for job ${jobId}:`, err);
+      throw err;
+    } finally {
+      await sql.close();
+    }
+  },
+
+  getAllJobs: async () => {
+    try {
+      const result = await sql.query(`
+        select * from JobPostings
       `);
       const jobs = result.recordset;
       return jobs;
@@ -202,7 +250,16 @@ const jobQueries = {
     pageSize
   ) => {
     try {
-      const offset = (page - 1) * pageSize; 
+      console.log('searchAllJobsFromLast30Days');
+      console.log('title:', title);
+      console.log('location:', location);
+      console.log('experienceLevel:', experienceLevel);
+      console.log('salary:', salary);
+      console.log('parsedTags:', parsedTags);
+      console.log('page:', page);
+      console.log('pageSize:', pageSize);
+      const offset = (page - 1) * pageSize;
+  
       let query = `
         SELECT 
           j.*,
@@ -236,35 +293,40 @@ const jobQueries = {
       }
   
       if (location) {
-        conditions.push(
-          '(j.location LIKE @location OR j.location LIKE @stateAbbr)'
-        );
-        queryParams.location = `%${location}%`;
-        queryParams.stateAbbr = `% ${location.substring(0, 2)},%`;
+        const locations = location.split(',').map(loc => loc.trim());
+        const locationConditions = locations.map((_, i) => `(j.location LIKE @location${i} OR j.location LIKE @stateAbbr${i})`).join(' OR ');
+        conditions.push(`(${locationConditions})`);
+        locations.forEach((loc, i) => {
+          queryParams[`location${i}`] = `%${loc}%`;
+          queryParams[`stateAbbr${i}`] = `% ${loc.substring(0, 2)},%`;
+        });
       }
   
       if (experienceLevel) {
-        conditions.push('j.experienceLevel = @experienceLevel');
-        queryParams.experienceLevel = experienceLevel;
+        const experienceLevels = experienceLevel.split(',').map(level => level.trim());
+        const experienceLevelConditions = experienceLevels.map((_, i) => `j.experienceLevel = @experienceLevel${i}`).join(' OR ');
+        conditions.push(`(${experienceLevelConditions})`);
+        experienceLevels.forEach((level, i) => {
+          queryParams[`experienceLevel${i}`] = level;
+        });
       }
   
       if (salary) {
         conditions.push('j.salary >= @salary');
-        queryParams.salary = parseInt(salary);
+        queryParams.salary = parseInt(salary, 10);
       }
   
       if (parsedTags.length > 0) {
+        const tagConditions = parsedTags.map((_, i) => `@skill${i}`).join(', ');
         conditions.push(`
           EXISTS (
             SELECT 1 FROM job_skills js
             JOIN skills s ON js.skill_id = s.id
-            WHERE js.jobId = j.id AND s.tagName IN (${parsedTags
-              .map((_, i) => `@tag${i}`)
-              .join(', ')})
+            WHERE js.job_id = j.id AND s.id IN (${tagConditions})
           )
         `);
         parsedTags.forEach((tag, i) => {
-          queryParams[`tag${i}`] = tag;
+          queryParams[`skill${i}`] = tag;
         });
       }
   
@@ -278,18 +340,58 @@ const jobQueries = {
         FETCH NEXT ${pageSize} ROWS ONLY
       `;
   
+      console.log('Constructed Query:', query);
+      console.log('Query Params:', queryParams);
+  
       const request = new sql.Request();
       Object.entries(queryParams).forEach(([key, value]) => {
         request.input(key, value);
       });
   
       const result = await request.query(query);
+      console.log('Query Result:', result.recordset);
+  
+      // Ensure that some jobs are always returned if they exist in the last 30 days
+      if (result.recordset.length === 0) {
+        query = `
+          SELECT 
+            j.*,
+            c.name AS company_name, 
+            c.logo AS company_logo, 
+            c.location AS company_location, 
+            c.description AS company_description,
+            (
+              SELECT STRING_AGG(jt.tagName, ',') WITHIN GROUP (ORDER BY jt.tagName)
+              FROM JobPostingsTags jpt
+              JOIN JobTags jt ON jpt.tagId = jt.id
+              WHERE jpt.jobId = j.id AND jt.tagName IS NOT NULL
+            ) AS tags,
+            (
+              SELECT STRING_AGG(s.name, ',') WITHIN GROUP (ORDER BY s.name)
+              FROM job_skills js
+              JOIN skills s ON js.skill_id = s.id
+              WHERE js.job_id = j.id AND s.name IS NOT NULL
+            ) AS skills
+          FROM JobPostings j
+          LEFT JOIN companies c ON j.company_id = c.id
+          WHERE j.postedDate >= DATEADD(day, -30, GETDATE())
+          ORDER BY j.postedDate DESC
+          OFFSET ${offset} ROWS
+          FETCH NEXT ${pageSize} ROWS ONLY
+        `;
+  
+        const fallbackResult = await request.query(query);
+        console.log('Fallback Query Result:', fallbackResult.recordset);
+        return fallbackResult.recordset;
+      }
+  
       return result.recordset;
     } catch (error) {
       console.error('Error in searchAllJobsFromLast30Days:', error);
       throw error;
     }
   },
+  
   
   getJobTitles: async () => {
     try {

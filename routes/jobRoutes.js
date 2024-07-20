@@ -24,8 +24,8 @@ const viewLimiter = rateLimit({
 });
 
 router.get('/', async (req, res) => {
-  const recentJobs = await jobQueries.getRecentJobCount();
-  res.render('jobs.ejs', { user: req.user, recentJobs });
+  // const recentJobs = await jobQueries.getRecentJobCount();
+  res.render('jobs.ejs', { user: req.user, recentJobs: [] });
 });
 
 router.get('/create', checkAuthenticated, async (req, res) => {

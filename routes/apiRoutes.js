@@ -429,7 +429,6 @@ router.get('/jobs', async (req, res) => {
     } else if (isEmptySearch) {
       console.log('Fetching random jobs');
       allJobPostings = await jobQueries.getRecentJobs(postingPage, pageSize);
-      console.log('allJobPostings', allJobPostings);
     } else {
       console.log('Fetching jobs based on search criteria');
       allJobPostings = await jobQueries.searchAllJobsFromLast30Days(
@@ -441,29 +440,8 @@ router.get('/jobs', async (req, res) => {
         postingPage, pageSize
       );
     }
-
-    let sortedJobPostings = allJobPostings;
-
-    if (user) {
-      console.log('Sorting jobs based on user preferences');
-      sortedJobPostings = allJobPostings.map((job) => ({
-        ...job,
-        matchCount: calculateMatchCount(job, userPreferences, parsedTags),
-        topPick: false,
-      }));
-
-      sortedJobPostings.sort((a, b) => b.matchCount - a.matchCount);
-
-      // Set top picks (e.g., top 20% of results)
-      const topPickCount = Math.ceil(sortedJobPostings.length * 0.2);
-      for (let i = 0; i < topPickCount; i++) {
-        sortedJobPostings[i].topPick = true;
-      }
-    }
-    console.log('Sorted job postings');
-
     res.json({
-      jobPostings: sortedJobPostings,
+      jobPostings: allJobPostings,
       currentPage: page,
     });
   } catch (err) {

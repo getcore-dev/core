@@ -870,10 +870,10 @@ a>.menu-item {
 
 
 #user-avatar {
-  width: 36px;
+  width: 32px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  height: 36px;
+  height: 32px;
   object-fit: cover;
   overflow: hidden;
   z-index: 10;
@@ -1239,7 +1239,9 @@ input {
 .cancel-button,
 .regular-button,
 .special-button,
-#special-button {
+#special-button,
+.null-button,
+#null-button {
   font-size: 16px;
   width: 100%;
   border: none;
@@ -1301,9 +1303,7 @@ input {
 .special-button-normal,
 #special-button-normal,
 .null-button-normal,
-#null-button-normal,
-#null-button,
-.null-button {
+#null-button-normal {
   font-size: .875rem;
   border: none;
   width: auto;
@@ -2264,9 +2264,7 @@ button .material-symbols-outlined {
   .special-button-normal,
   #special-button-normal,
   .null-button-normal,
-  #null-button-normal,
-  #null-button,
-  .null-button {
+  #null-button-normal {
     padding: .45rem .85rem;
   }
 
@@ -2287,9 +2285,7 @@ button .material-symbols-outlined {
   .special-button-normal,
   #special-button-normal,
   .null-button-normal,
-  #null-button-normal,
-  #null-button,
-  .null-button {
+  #null-button-normal {
     padding: 0.35rem .85rem;
     height: 32px;
   }

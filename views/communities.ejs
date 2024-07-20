@@ -294,7 +294,9 @@
               </span>
 <% if (user) { %>
   <button class="submit-button-normal" id="post-button" onclick="window.location.href='<%= communityId ? `/networks/${community.shortname}/create` : '/create' %>'">
-    <span class="material-symbols-outlined">add</span> Post
+    <span class="material-symbols-outlined" style="padding:0;">add</span> <span style="padding:0;" class="material-symbols-outlined">
+description
+</span>
   </button>
 <% } %>
             </div>

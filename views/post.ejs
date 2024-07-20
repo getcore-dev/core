@@ -163,8 +163,12 @@ function formatDate(date) {
 
 
               <% if (user && user.username !== post.user.username) { %>
-              <button class="regular-button-normal margin-l-auto" data-username="<%= post.user.username %>" onclick="followUser('<%= post.user.id %>')">
+              <button style="border:0;background:0;" class="regular-button-normal margin-l-auto" data-username="<%= post.user.username %>" onclick="followUser('<%= post.user.id %>')">
                 <span class="material-symbols-outlined">person_add</span> Follow
+              </button>
+              <% } else { %>
+              <button style="border:0;background:0;" class="regular-button-normal margin-l-auto" onclick="window.location.href = '/user/<%= post.user.username %>'">
+                <span class="material-symbols-outlined">person</span> Profile
               </button>
               <% } %>
             </div>

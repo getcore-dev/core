@@ -161,13 +161,17 @@ function setupFilter(filterType, values) {
 
     if (filterType === 'title') {
       const jobButtonsDiv = document.querySelector('.job-buttons');
+      const titleFiltersDiv = document.querySelector('.title-filter');
       const showFiltersButton = document.createElement('button');
-      showFiltersButton.className = 'show-filters null-button-normal';
+      const tagsDiv = document.querySelector('.tags');
+      showFiltersButton.className = 'show-filters submit-button';
       showFiltersButton.innerHTML = 'Refine Search';
+      showFiltersButton.style.margin = '.9rem 0 0 0';
       showFiltersButton.addEventListener('click', () => {
         sortOptions.classList.toggle('show');
+        tagsDiv.classList.toggle('show');
       });
-      jobButtonsDiv.appendChild(showFiltersButton);
+      titleFiltersDiv.appendChild(showFiltersButton);
 
       /*
       const clearButton = document.createElement("button");
@@ -442,6 +446,7 @@ async function fetchJobPostings() {
   try {
     const response = await fetch(`/api/jobs?${queryParams}`);
     const data = await response.json();
+    console.log(data);
 
     // Filter out jobs that have already been rendered
     const newJobs = data.jobPostings.filter(

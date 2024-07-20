@@ -12,6 +12,19 @@ body {
   justify-content: center;
 }
 
+.tags {
+  display: none;
+}
+
+.tags.show {
+  display: block;
+}
+
+
+.job-buttons .material-symbols-outlined {
+
+  padding: 0;
+}
 
 .job-info h5 {
   margin-bottom: .3rem;

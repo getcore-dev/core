@@ -33,26 +33,28 @@
 
     <div class="jobs-container">
       <div class="jobs-header">
-        <h5 id="secondary-text" style="margin-bottom: 0.2rem;"><%= recentJobs %> job postings in the last 30 days</h5>
-
         <div id="horizontal-scroll" class="job-buttons">
           <% if (user) { %>
           <% if (user.isAdmin) { %>
           <div class="create-company-button">
-            <button class="create-company special-button-normal" onclick="window.location.href='/jobs/company/create';">+ Company</button>
+            <button class="create-company special-button-normal" onclick="window.location.href='/jobs/company/create';"><span class="material-symbols-outlined">
+                factory
+              </span>+</button>
           </div>
           <%     } %>
 
           <% if (user.recruiter_id) { %>
           <div class="create-job-button">
-            <button class="create-job special-button-normal" onclick="window.location.href='/jobs/create';">+ Job</button>
+            <button class="create-job special-button-normal" onclick="window.location.href='/jobs/create';"><span class="material-symbols-outlined">
+                work
+              </span>+</button>
           </div>
           <%     } %>
 
           <div class="job-profile-button">
             <button class="regular-button-normal" onclick="window.location.href='/profile/jobs';"> <span class="material-symbols-outlined">
                 person
-              </span>Job profile</button>
+              </span></button>
           </div>
           <% } %>
         </div>
@@ -75,18 +77,21 @@
             </div>
           </div>
         </div>
-        <div class="header">
-          <h5>Tags</h5>
-          <span id="remaining-tags-count"></span>
+        <span class="tags">
+          <div class="header">
 
-        </div>
-        <div class="header">
-          <h5 class="selected-tags-text" style="display:none;">Selected Tags</h5>
-        </div>
-        <div class="selected-tags">
-        </div>
-        <div class="top-tags">
-        </div>
+            <h5>Tags</h5>
+            <span id="remaining-tags-count"></span>
+
+          </div>
+          <div class="header">
+            <h5 class="selected-tags-text" style="display:none;">Selected Tags</h5>
+          </div>
+          <div class="selected-tags">
+          </div>
+          <div class="top-tags">
+          </div>
+        </span>
       </div>
       <div class="jobs-header">
         <h5>Job Postings</h5>

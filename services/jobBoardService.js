@@ -54,8 +54,12 @@ class JobProcessor {
   async start() {
     await this.init();
 
-    console.log('running job cleanup');
-    await this.cleanupCompanyData();
+    console.log('running job posting cleanup');
+    //await this.filterNonTechJobs();
+
+
+    console.log('running job company cleanup');
+    //await this.cleanupCompanyData();
 
     console.log('running job processor');
   
@@ -318,6 +322,8 @@ class JobProcessor {
     `;
   }
 
+  
+
   async rateLimit(isGemini) {
     const now = Date.now();
     const delayMs = isGemini ? this.GEMINI_DELAY_MS : this.OPENAI_DELAY_MS;
@@ -329,6 +335,107 @@ class JobProcessor {
 
     this.lastRequestTime = Date.now();
   }
+
+  async filterNonTechJobs() {
+    try {
+      console.log('Starting non-tech job filtering...');
+      const batchSize = 100; // Adjust this based on your database's performance
+      let offset = 0;
+      let totalProcessed = 0;
+      let totalFlagged = 0;
+
+      while (true) {
+        const jobs = await jobQueries.getJobsBatch(offset, batchSize);
+        if (jobs.length === 0) break; // No more jobs to process
+
+        console.log(`Processing batch of ${jobs.length} jobs starting at offset ${offset}`);
+
+        for (const job of jobs) {
+          if (!job.title || !job.description) {
+            console.warn(`Job with ID ${job.id} is missing title or description. Skipping.`);
+            continue;
+          }
+
+          if (!this.isGenuineTechJob(job.title, job.description)) {
+            console.log(`Flagging non-tech job: ${job.title} (ID: ${job.id})`);
+            await jobQueries.flagJobForReview(job.id);
+            totalFlagged++;
+          }
+        }
+
+        totalProcessed += jobs.length;
+        offset += batchSize;
+
+        console.log(`Processed ${totalProcessed} jobs so far. Flagged ${totalFlagged} as potential non-tech jobs.`);
+        
+        // Optional: Add a small delay between batches to reduce database load
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+
+      console.log(`Finished filtering. Processed ${totalProcessed} jobs in total. Flagged ${totalFlagged} as potential non-tech jobs.`);
+    } catch (error) {
+      console.error('Error during non-tech job filtering:', error);
+      if (error.originalError && error.originalError.info) {
+        console.error('SQL Error details:', error.originalError.info);
+      }
+    }
+  }
+
+  isGenuineTechJob(title, description) {
+    const techKeywords = [
+      'software', 'developer', 'programmer', 'data', 'analyst', 'scientist',
+      'it', 'information technology', 'web', 'frontend', 'backend', 'full stack',
+      'devops', 'cloud', 'network', 'security', 'database', 'machine learning',
+      'ai', 'artificial intelligence', 'qa', 'quality assurance', 'ux', 'ui',
+      'product manager', 'scrum master', 'agile', 'tech', 'systems', 
+      'infrastructure', 'mobile', 'ios', 'android', 'cybersecurity', 'blockchain',
+      'iot', 'robotics', 'automation', 'sre', 'reliability', 'architect',
+      'engineering', 'java', 'python', 'javascript', 'c++', 'ruby', 'php',
+      'scala', 'go', 'rust', 'typescript', 'sql', 'nosql', 'aws', 'azure',
+      'gcp', 'docker', 'kubernetes', 'ci/cd', 'git', 'api', 'microservices',
+      'big data', 'hadoop', 'spark', 'tableau', 'power bi', 'etl', 'ml',
+      'deep learning', 'nlp', 'computer vision', 'react', 'angular', 'vue',
+      'node.js', 'express', 'django', 'flask', 'spring', 'hibernate',
+      'restful', 'graphql', 'jenkins', 'travis', 'ansible', 'terraform',
+      'blockchain', 'cryptography', 'algorithm', 'data structure',
+      'software architecture', 'design patterns', 'agile methodologies',
+      'scrum', 'kanban', 'jira', 'confluence', 'bitbucket', 'gitlab',
+      'version control', 'unit testing', 'integration testing', 'selenium',
+      'cypress', 'jest', 'mocha', 'chai', 'tdd', 'bdd', 'ci/cd',
+      'continuous integration', 'continuous deployment', 'devsecops',
+      'information security', 'penetration testing', 'ethical hacking',
+      'firewall', 'vpn', 'encryption', 'oauth', 'saml', 'ldap',
+      'active directory', 'ssl/tls', 'proxy', 'load balancer',
+      'cdn', 'dns', 'tcp/ip', 'http/https', 'rest', 'soap',
+      'middleware', 'orm', 'crud', 'api gateway', 'serverless',
+      'lambda', 'faas', 'saas', 'paas', 'iaas', 'virtualization',
+      'hypervisor', 'container', 'orchestration', 'service mesh',
+      'istio', 'envoy', 'consul', 'programmatic', 'technical'
+    ];
+
+    const lowercaseTitle = title.toLowerCase();
+    const lowercaseDescription = description.toLowerCase();
+
+    // Check for tech keywords in title
+    const hasTechKeywordInTitle = techKeywords.some(keyword => 
+      lowercaseTitle.includes(keyword)
+    );
+
+    // Count tech keywords in description
+    const techKeywordCount = techKeywords.filter(keyword => 
+      lowercaseDescription.includes(keyword)
+    ).length;
+
+    // Always consider it a tech job if the title contains a tech keyword
+    if (hasTechKeywordInTitle) {
+      return true;
+    }
+
+    // For titles without explicit tech keywords, rely on the description
+    // Require at least 3 tech keywords in the description
+    return techKeywordCount >= 3;
+  }
+
   async cleanupCompanyData() {
     try {
       // Step 1: Fetch all companies
