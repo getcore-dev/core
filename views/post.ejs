@@ -164,11 +164,13 @@ function formatDate(date) {
 
               <% if (user && user.username !== post.user.username) { %>
               <button style="border:0;background:0;" class="regular-button-normal margin-l-auto" data-username="<%= post.user.username %>" onclick="followUser('<%= post.user.id %>')">
-                <span class="material-symbols-outlined">person_add</span> Follow
+                <span class="material-symbols-outlined">person_add</span>
+                <p>Follow</p>
               </button>
               <% } else { %>
               <button style="border:0;background:0;" class="regular-button-normal margin-l-auto" onclick="window.location.href = '/user/<%= post.user.username %>'">
-                <span class="material-symbols-outlined">person</span> Profile
+                <span class="material-symbols-outlined">person</span>
+                <p>Profile</p>
               </button>
               <% } %>
             </div>
@@ -365,7 +367,7 @@ function formatDate(date) {
                 <% } %>
 
 
-                <button class="submit-button-normal" onclick="favorite('<%= post.id %>')">
+                <button class="submit-button-normal" id="favorite-button" onclick="favorite('<%= post.id %>')">
                   Favorite
                 </button>
                 <% if (!post.deleted && !post.isLocked) { %>
@@ -376,9 +378,8 @@ function formatDate(date) {
                 </button>
                 <% } %>
                 <% } %>
-                <button class="null-button-normal" onclick="share('<%= post.title %>', '', 'https://c-ore.dev/posts/<%= post.id %>')">
+                <button class="null-button-normal" id="share-button" onclick="share('<%= post.title %>', '', 'https://c-ore.dev/posts/<%= post.id %>')">
                   <span class="material-symbols-outlined">ios_share</span>
-                  Share
                 </button>
 
 
@@ -472,9 +473,9 @@ function formatDate(date) {
                       <div class="repliers-info">
                         <span><%= comment.user.username %></span>
                         <% if (comment.user.username == post.user.username) { %>
-                        <span class="tag author-tag comment-tag"><span class="material-symbols-outlined">
-                            person
-                          </span></span>
+                        <span class="tag author-tag comment-tag">OP</span>
+                        <% } else if (comment.user.isAdmin) { %>
+                        <span class="tag admin-tag comment-tag">ADMIN</span>
                         <% } %>
                       </div>
                     </a>
@@ -503,9 +504,6 @@ function formatDate(date) {
                     <span class="tag comment-tag pinned-comment">
                       <span class="material-symbols-outlined" id="secondary-text">push_pin</span>
                     </span>
-                    <% } %>
-                    <% if (comment.user.isAdmin) { %>
-                    <span class="tag admin-tag comment-tag">Admin</span>
                     <% } %>
 
 
@@ -921,11 +919,11 @@ function formatDate(date) {
           const favoriteButton = document.querySelector(`button[onclick="favorite('${postId}')"]`);
           if (favoriteButton) {
             if (data.isFavorite) {
-              favoriteButton.innerHTML = '<span class="material-symbols-outlined">close</span>Unfavorite';
+              favoriteButton.innerHTML = '<span class="material-symbols-outlined">heart_minus</span>';
               favoriteButton.classList.remove('submit-button-normal');
               favoriteButton.classList.add('cancel-button-normal');
             } else {
-              favoriteButton.innerHTML = '<span class="material-symbols-outlined">star</span>Favorite';
+              favoriteButton.innerHTML = '<span class="material-symbols-outlined">favorite</span>';
               favoriteButton.classList.remove('cancel-button-normal');
               favoriteButton.classList.add('submit-button-normal');
             }

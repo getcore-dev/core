@@ -63,8 +63,7 @@
                 <button class="mod-btn null-button-normal" id="communityActionBtn" onclick="share('<%= community.name %>','','https://c-ore.dev/networks/<%= community.shortname %>')">
                   <span class="material-symbols-outlined">
                     ios_share
-                  </span>
-                  Share</button>
+                  </span></button>
 
                 <button class="mod-btn regular-button-normal" id="communityActionBtn" style="display: none;pointer-events: none;" onclick="window.location.href='/networks/<%= community.shortname %>/admin'">
                   <span class="material-symbols-outlined">
@@ -660,12 +659,24 @@ description
             };
             buttonsDiv.appendChild(commentButton);
 
+            // favorite button
+            const favoriteButton = document.createElement('button');
+            favoriteButton.className = 'null-button-normal';
+            favoriteButton.id = 'favorite-button';
+            favoriteButton.innerHTML = '<span class="material-symbols-outlined">favorite</span>';
+            favoriteButton.onclick = (event) => {
+              event.stopPropagation();
+              alert('chill it dont work it was 3am when i added this')
+            };
+            buttonsDiv.appendChild(favoriteButton);
+
+
 
             // share button 
             const shareButton = document.createElement('button');
             shareButton.className = 'null-button-normal';
             shareButton.id = 'share-button';
-            shareButton.innerHTML = '<span class="material-symbols-outlined">ios_share</span> Share';
+            shareButton.innerHTML = '<span class="material-symbols-outlined">ios_share</span>';
             shareButton.onclick = (event) => {
               event.stopPropagation();
               share(post.title, "", `https://c-ore.dev/posts/${post.id}`);

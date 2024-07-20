@@ -388,8 +388,10 @@ div.interact-buttons {
 
 .admin-tag {
   color: #b40000;
-  border: 1px solid #b40000;
-  background: #b4000030;
+  border: 0;
+  background: 0;
+  padding: 0;
+  margin: 0;
 }
 
 .author-tag {
@@ -420,6 +422,11 @@ div.interact-buttons {
   white-space-collapse: collapse;
   align-items: center;
   justify-content: center;
+}
+
+#favorite-button .material-symbols-outlined,
+#share-button .material-symbols-outlined {
+  padding: 0;
 }
 
 .reaction-button>p {
@@ -1427,27 +1434,27 @@ p.preview-description {
 
 .nested-comments {
   margin-left: 13px;
-  border-left: 1px solid #A10100;
+  border-left: 1px solid #1f1f1f;
 }
 
 .level-2 {
-  border-color: #DA1F05;
+  border-color: #2f2f2f;
 }
 
 .level-3 {
-  border-color: #F33C04;
+  border-color: #3f3f3f;
 }
 
 .level-4 {
-  border-color: #FE650D;
+  border-color: #4f4f4f;
 }
 
 .level-5 {
-  border-color: #FFC11F;
+  border-color: #5f5f5f;
 }
 
 .level-6 {
-  border-color: #FFF75D;
+  border-color: #6f6f6f;
 }
 
 .post-title {

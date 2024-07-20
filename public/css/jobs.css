@@ -678,6 +678,9 @@ select {
 div .material-symbols-outlined {
   font-size: 15px;
   vertical-align: -3px;
+}
+
+div .material-symbols-outlined:not(:only-child) {
   padding-right: 8px;
 }
 

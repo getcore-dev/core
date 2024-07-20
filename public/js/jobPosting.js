@@ -375,7 +375,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     : `<div class="apply-button-container flex">
           <button id="submit-button-normal" class="margin-h-auto" onclick="window.location.href='${job.link}'"> <span class="material-symbols-outlined">
 open_in_new
-</span>Apply</button>
+</span><p>Apply</p></button>
           </div>
           `
 }
@@ -384,8 +384,8 @@ open_in_new
     ? `<div class="favorite-button-container">
               <div id="favorite-form-${job.id}" class="flex">
                 <button id="submit-button-normal" onclick="favorite('job', ${job.id});" class="margin-h-auto"><span class="material-symbols-outlined">
-star
-</span>Favorite</button>
+favorite
+</span></button>
               </div>
             </div>`
     : ''
@@ -396,15 +396,15 @@ star
 }', '', 'https://c-ore.dev/jobs/${job.id}')"
       ><span class="material-symbols-outlined">
 ios_share
-</span>Share</button>
+</span></button>
       </div>
       ${
   userIsAdmin
     ? `
         <div class="delete-button-container flex">
-          <button id="cancel-button-normal" class="margin-h-auto" onclick="window.location.href='/jobs/delete/${job.id}'"><span class="material-symbols-outlined">
+          <button id="cancel-button-normal" class="margin-h-auto" onclick="window.location.href='/jobs/delete/${job.id}'"><span class="material-symbols-outlined" style="padding:0;">
 delete
-</span>Delete</button>
+</span></button>
         </div>
       `
     : ''
@@ -649,11 +649,11 @@ function favorite(favoriteType, TypeId) {
 }
 
 function toggleFavoriteButton(button) {
-  if (button.innerHTML === '<span class="material-symbols-outlined">close</span>Unfavorite') {
+  if (button.innerHTML === '<span class="material-symbols-outlined">heart_minus</span>') {
     button.id = 'submit-button-normal';
-    button.innerHTML = '<span class="material-symbols-outlined">star</span>Favorite';
+    button.innerHTML = '<span class="material-symbols-outlined">favorite</span>';
   } else {
     button.id = 'cancel-button-normal';
-    button.innerHTML = '<span class="material-symbols-outlined">close</span>Unfavorite';
+    button.innerHTML = '<span class="material-symbols-outlined">heart_minus</span>';
   }
 }

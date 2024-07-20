@@ -1339,8 +1339,12 @@ input {
   text-decoration: none;
 }
 
+
 button .material-symbols-outlined {
   font-size: 15px;
+}
+
+button .material-symbols-outlined:not(:only-child) {
   padding-right: 8px;
 }
 

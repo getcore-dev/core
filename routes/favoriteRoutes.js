@@ -173,15 +173,15 @@ router.delete('/post/:postId', checkAuthenticated, async (req, res) => {
 router.get('/isFavorite/job/:jobId', async (req, res) => {
   try {
     if (!req.user) {
-      return res.json({ isFavorite: false, buttonText: 'Favorite' });
+      return res.json({ isFavorite: false, buttonText: '' });
     }
     const userId = req.user.id;
     if (!userId) {
-      return res.json({ isFavorite: false, buttonText: 'Favorite' });
+      return res.json({ isFavorite: false, buttonText: '' });
     }
     const jobId = req.params.jobId;
     if (!jobId) {
-      return res.json({ isFavorite: false, buttonText: 'Favorite' });
+      return res.json({ isFavorite: false, buttonText: '' });
     }
     const job = await favoritesQueries.getFavoriteJobByJobIdAndUserId(
       jobId,
@@ -190,7 +190,7 @@ router.get('/isFavorite/job/:jobId', async (req, res) => {
     const isFavorite = !!job;
     res.json({
       isFavorite: isFavorite,
-      buttonText: isFavorite ? '<span class="material-symbols-outlined">close</span>Unfavorite' : '<span class="material-symbols-outlined">star</span>Favorite',
+      buttonText: isFavorite ? '<span class="material-symbols-outlined">heart_minus</span>' : '<span class="material-symbols-outlined">favorite</span>',
     });
   } catch (err) {
     console.error('Error checking if job is favorite:', err);
@@ -220,7 +220,7 @@ router.get('/isFavorite/post/:postId', async (req, res) => {
     const isFavorite = !!post;
     res.json({
       isFavorite: isFavorite,
-      buttonText: isFavorite ? '<span class="material-symbols-outlined">star</span>Unfavorite' : '<span class="material-symbols-outlined">star</span>Favorite',
+      buttonText: isFavorite ? '<span class="material-symbols-outlined">heart_minus</span>' : '<span class="material-symbols-outlined">favorite</span>',
     });
   } catch (err) {
     console.error('Error checking if post is favorite:', err);
