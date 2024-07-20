@@ -210,6 +210,12 @@
     color: var(--dark-mode-text-color);
   }
 
+  .comment-header a,
+  #blog-username,
+  .main-container a {
+    color: var(--dark-mode-text-color);
+  }
+
   .project-link,
   .post-body h3,
   .solution {
