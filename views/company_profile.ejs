@@ -48,7 +48,7 @@
           <span class="company-location secondary-text"><%= company.location %></span>
         </div>
         <% if (user && user.isAdmin) { %>
-        <a href="/jobs/company/<%= company.name %>/edit">
+        <a href="/jobs/company/<%= encodeURIComponent(company.name) %>/edit">
           <button class="regular-button-normal">
             Edit
           </button>

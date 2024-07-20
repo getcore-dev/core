@@ -26,16 +26,48 @@ const jobQueries = {
     }
   },
 
+  getRecentJobs: async (page = 1, pageSize = 20) => {
+    try {
+      const offset = (page - 1) * pageSize; 
+      const result = await sql.query(`
+        SELECT           j.*,
+          c.name AS company_name, 
+          c.logo AS company_logo, 
+          c.location AS company_location, 
+          c.description AS company_description,
+          (
+            SELECT STRING_AGG(jt.tagName, ', ')
+            FROM JobPostingsTags jpt
+            JOIN JobTags jt ON jpt.tagId = jt.id
+            WHERE jpt.jobId = j.id
+          ) AS tags,
+          (
+            SELECT STRING_AGG(s.name, ', ')
+            FROM job_skills js
+            JOIN skills s ON js.skill_id = s.id
+            WHERE js.job_id = j.id
+          ) AS skills
+            FROM JobPostings j
+        LEFT JOIN companies c ON j.company_id = c.id
+        ORDER BY j.postedDate DESC
+        OFFSET ${offset} ROWS
+        FETCH NEXT ${pageSize} ROWS ONLY
+      `);
+      const jobs = result.recordset;
+      return jobs;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   getJobCountByCompany: async (companyName) => {
     try {
       const result = await sql.query`
         SELECT COUNT(*) as count
-        FROM JobPostings
-        WHERE company_id = (
-          SELECT id
-          FROM companies
-          WHERE name = ${companyName}
-        )
+        FROM JobPostings jp
+        INNER JOIN companies c ON jp.company_id = c.id
+        WHERE c.name = ${companyName}
       `;
       return result.recordset[0].count;
     } catch (err) {
@@ -56,7 +88,7 @@ const jobQueries = {
     }
   },
 
-  getAllJobsFromLast30Days: async (userPreferences) => {
+  getAllJobsFromLast30Days: async (userPreferences, page, pageSize) => {
     try {
       let query = `
         SELECT 
@@ -165,9 +197,12 @@ const jobQueries = {
     location = '',
     experienceLevel = '',
     salary = '',
-    parsedTags = []
+    parsedTags = [],
+    page,
+    pageSize
   ) => {
     try {
+      const offset = (page - 1) * pageSize; 
       let query = `
         SELECT 
           j.*,
@@ -175,31 +210,31 @@ const jobQueries = {
           c.logo AS company_logo, 
           c.location AS company_location, 
           c.description AS company_description,
-(
-  SELECT STRING_AGG(jt.tagName, ',') WITHIN GROUP (ORDER BY jt.tagName)
-  FROM JobPostingsTags jpt
-  JOIN JobTags jt ON jpt.tagId = jt.id
-  WHERE jpt.jobId = j.id AND jt.tagName IS NOT NULL
-) AS tags,
-(
-  SELECT STRING_AGG(s.name, ',') WITHIN GROUP (ORDER BY s.name)
-  FROM job_skills js
-  JOIN skills s ON js.skill_id = s.id
-  WHERE js.job_id = j.id AND s.name IS NOT NULL
-) AS skills
+          (
+            SELECT STRING_AGG(jt.tagName, ',') WITHIN GROUP (ORDER BY jt.tagName)
+            FROM JobPostingsTags jpt
+            JOIN JobTags jt ON jpt.tagId = jt.id
+            WHERE jpt.jobId = j.id AND jt.tagName IS NOT NULL
+          ) AS tags,
+          (
+            SELECT STRING_AGG(s.name, ',') WITHIN GROUP (ORDER BY s.name)
+            FROM job_skills js
+            JOIN skills s ON js.skill_id = s.id
+            WHERE js.job_id = j.id AND s.name IS NOT NULL
+          ) AS skills
         FROM JobPostings j
         LEFT JOIN companies c ON j.company_id = c.id
         WHERE j.postedDate >= DATEADD(day, -30, GETDATE())
       `;
-
+  
       const conditions = [];
       const queryParams = {};
-
+  
       if (title) {
         conditions.push('j.title LIKE @title');
         queryParams.title = `%${title}%`;
       }
-
+  
       if (location) {
         conditions.push(
           '(j.location LIKE @location OR j.location LIKE @stateAbbr)'
@@ -207,43 +242,47 @@ const jobQueries = {
         queryParams.location = `%${location}%`;
         queryParams.stateAbbr = `% ${location.substring(0, 2)},%`;
       }
-
+  
       if (experienceLevel) {
         conditions.push('j.experienceLevel = @experienceLevel');
         queryParams.experienceLevel = experienceLevel;
       }
-
+  
       if (salary) {
         conditions.push('j.salary >= @salary');
         queryParams.salary = parseInt(salary);
       }
-
+  
       if (parsedTags.length > 0) {
         conditions.push(`
           EXISTS (
-            SELECT 1 FROM JobPostingsTags jpt
-            JOIN JobTags jt ON jpt.tagId = jt.id
-            WHERE jpt.jobId = j.id AND jt.tagName IN (${parsedTags
-    .map((_, i) => `@tag${i}`)
-    .join(', ')})
+            SELECT 1 FROM job_skills js
+            JOIN skills s ON js.skill_id = s.id
+            WHERE js.jobId = j.id AND s.tagName IN (${parsedTags
+              .map((_, i) => `@tag${i}`)
+              .join(', ')})
           )
         `);
         parsedTags.forEach((tag, i) => {
           queryParams[`tag${i}`] = tag;
         });
       }
-
+  
       if (conditions.length > 0) {
         query += ` AND ${conditions.join(' AND ')}`;
       }
-
-      query += ' ORDER BY j.postedDate DESC';
-
+  
+      query += ` 
+        ORDER BY j.postedDate DESC
+        OFFSET ${offset} ROWS
+        FETCH NEXT ${pageSize} ROWS ONLY
+      `;
+  
       const request = new sql.Request();
       Object.entries(queryParams).forEach(([key, value]) => {
         request.input(key, value);
       });
-
+  
       const result = await request.query(query);
       return result.recordset;
     } catch (error) {
@@ -251,7 +290,7 @@ const jobQueries = {
       throw error;
     }
   },
-
+  
   getJobTitles: async () => {
     try {
       const result = await sql.query`
@@ -1177,17 +1216,18 @@ const jobQueries = {
     }
   },
 
-  getCompanyByName: async (name) => {
-    try {
-      const result = await sql.query`
-        SELECT * FROM companies WHERE name = ${name}
-      `;
-      return result.recordset[0];
-    } catch (err) {
-      console.error('Database query error:', err);
-      throw err;
-    }
-  },
+getCompanyByName: async (name) => {
+  try {
+    const result = await sql.query`
+      SELECT TOP 1 * FROM companies WHERE name = ${name}
+    `;
+    return result.recordset[0];
+  } catch (err) {
+    console.error('Database query error:', err);
+    throw err;
+  }
+},
+
   getCompanyById: async (id) => {
     try {
       const result = await sql.query`

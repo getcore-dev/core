@@ -547,7 +547,7 @@
             <% if (otheruser.settings_PrivateJobNames) { %>
               <h4>Company Name Hidden</h4>
             <% } else { %>
-              <h4><a href="/jobs/company/${experience.companyName}">
+              <h4><a href="/jobs/company/${encodeURIComponent(experience.companyName)}">
               ${experience.companyName}</a></h4>
             <% } %>
 

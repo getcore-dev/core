@@ -34,7 +34,7 @@
                     <div class="job-title-location">
                       <div class="job-posting-header">
                         <div class="job-company-name secondary-text">
-                        <a class="secondary-text" href="/jobs/company/${job.company_name}">${job.company_name}</a></div>
+                        <a class="secondary-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a></div>
                                           <div class="job-title"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
                                                     
                     ${job.salary ? `

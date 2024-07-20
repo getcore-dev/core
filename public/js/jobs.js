@@ -377,16 +377,17 @@ function handleTagClick(event) {
   }
 }
 
+
 function handleSkillClick(event) {
   if (event.target.classList.contains('tag-clickable')) {
     const skill = event.target;
     const skillName = skill.dataset.tag;
-    if (state.filters.skills.has(skillName)) {
-      state.filters.skills.delete(skillName);
+    if (state.filters.skills[skillName]) {
+      delete state.filters.skills[skillName];
       skill.classList.remove('selected');
       moveTagToOriginalPosition(skill);
     } else {
-      state.filters.skills.add(skillName);
+      state.filters.skills[skillName] = true;
       skill.classList.add('selected');
       elements.selectedTags.appendChild(skill);
     }
@@ -422,6 +423,7 @@ function resetJobListings() {
   fetchJobPostings();
 }
 
+
 async function fetchJobPostings() {
   if (state.isLoading) return;
   state.isLoading = true;
@@ -429,12 +431,12 @@ async function fetchJobPostings() {
   const { title, location, experienceLevel, salary, skills } = state.filters;
   const queryParams = new URLSearchParams({
     page: state.currentPage,
-    limit: ITEMS_PER_PAGE,
+    pageSize: ITEMS_PER_PAGE,
     jobTitle: title || '',
     jobLocation: location || '',
     jobExperienceLevel: experienceLevel || '',
     jobSalary: salary || '0',
-    skills: Array.from(skills).join(','),
+    skills: Object.keys(skills).join(','),
   });
 
   try {
@@ -443,17 +445,26 @@ async function fetchJobPostings() {
 
     // Filter out jobs that have already been rendered
     const newJobs = data.jobPostings.filter(
-      (job) => !state.renderedJobIds.has(job.id)
+      (job) => !state.renderedJobIds[job.id]
     );
 
-    state.jobPostings = [...state.jobPostings, ...newJobs];
-    renderJobPostings(newJobs);
-    state.currentPage++;
+    if (newJobs.length > 0) {
+      // Sort jobs based on the number of matching skills
+      newJobs.sort((a, b) => {
+        const aSkills = a.skills[1] ? a.skills[1].split(',').map(s => s.trim()) : [];
+        const bSkills = b.skills[1] ? b.skills[1].split(',').map(s => s.trim()) : [];
+        const aMatchCount = aSkills.filter(skill => state.filters.skills[skill]).length;
+        const bMatchCount = bSkills.filter(skill => state.filters.skills[skill]).length;
+        return bMatchCount - aMatchCount;
+      });
+
+      state.jobPostings = [...state.jobPostings, ...newJobs];
+      renderJobPostings(newJobs);
+      state.currentPage++;
+    }
+
     state.isLoading = false;
 
-    if (data.currentPage >= data.totalPages || newJobs.length === 0) {
-      removeInfiniteScroll();
-    }
   } catch (error) {
     console.error('Error fetching job postings:', error);
     state.isLoading = false;
@@ -471,11 +482,27 @@ function renderJobPostings(jobs) {
   });
   elements.jobList.appendChild(fragment);
 
-  if (state.jobPostings.length === 0) {
+  if (state.jobPostings.length === 0 && elements.jobList.children.length === 0) {
     const noJobsMessage = document.createElement('div');
     noJobsMessage.classList.add('no-jobs-message');
     noJobsMessage.textContent = 'No job postings found matching your criteria.';
     elements.jobList.appendChild(noJobsMessage);
+  } else {
+    const existingNoJobsMessage = elements.jobList.querySelector('.no-jobs-message');
+    if (existingNoJobsMessage) {
+      existingNoJobsMessage.remove();
+    }
+  }
+
+  // Update job count
+  updateJobCount();
+}
+
+function updateJobCount() {
+  const jobCountElement = document.querySelector('h3');
+  if (jobCountElement) {
+    const totalJobs = elements.jobList.children.length;
+    jobCountElement.textContent = `${totalJobs} Open Jobs`;
   }
 }
 
@@ -485,18 +512,21 @@ function createJobElement(job) {
   jobElement.onclick = () => (window.location.href = `/jobs/${job.id}`);
 
   const tagsArray = job.skills[1]
-    ? job.skills[1].split(',').filter((tag) => tag)
-    : [];
-  const sortedTags = tagsArray.sort(
-    (a, b) => state.filters.skills.has(b) - state.filters.skills.has(a)
-  );
+  ? job.skills[1].split(',').map(skill => skill.trim())
+  : [];
+
+  const sortedTags = tagsArray.sort((a, b) => {
+    if (state.filters.skills[a] && !state.filters.skills[b]) return -1;
+    if (!state.filters.skills[a] && state.filters.skills[b]) return 1;
+    return a.localeCompare(b);
+  });
   const displayedTags = sortedTags.slice(0, 6);
 
   const tagsHTML = displayedTags
     .map(
       (skill) =>
         `<span class="tag ${
-          state.filters.skills.has(skill) ? 'highlighted' : ''
+          state.filters.skills[skill] ? 'highlighted' : ''
         }">${skill}</span>`
     )
     .join('');

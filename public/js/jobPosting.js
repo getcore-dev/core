@@ -299,7 +299,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 }
             <div class="company-details">
               <h3 class="company-name">
-              <a href="/jobs/company/${job.company_name}">
+              <a href="/jobs/company/${encodeURIComponent(job.company_name)}">
               ${job.company_name}
               </a>
               </h3>

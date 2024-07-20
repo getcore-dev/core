@@ -53,6 +53,11 @@ class JobProcessor {
 
   async start() {
     await this.init();
+
+    console.log('running job cleanup');
+    await this.cleanupCompanyData();
+
+    console.log('running job processor');
   
     const companies = await jobQueries.getCompanies();
   
@@ -323,6 +328,68 @@ class JobProcessor {
     }
 
     this.lastRequestTime = Date.now();
+  }
+  async cleanupCompanyData() {
+    try {
+      // Step 1: Fetch all companies
+      const companies = await jobQueries.getAllCompanies();
+
+      // Step 2: Group similar company names
+      const companyGroups = this.groupSimilarCompanies(companies);
+
+      // Step 3: Consolidate companies and update job listings
+      for (const [mainCompany, similarCompanies] of Object.entries(companyGroups)) {
+        if (similarCompanies.length > 0) {
+          const mainCompanyId = mainCompany.id;
+
+          // Update job listings for similar companies
+          for (const company of similarCompanies) {
+            await jobQueries.updateJobListingsCompanyId(company.id, mainCompanyId);
+          }
+
+          // Delete similar companies
+          for (const company of similarCompanies) {
+            await jobQueries.deleteCompany(company.id);
+          }
+
+          console.log(`Consolidated ${similarCompanies.length} companies into ${mainCompany.name}`);
+        }
+      }
+
+      console.log('Company data cleanup completed.');
+    } catch (error) {
+      console.error('Error during company data cleanup:', error);
+    }
+  }
+
+  groupSimilarCompanies(companies) {
+    const groups = {};
+    const processed = new Set();
+
+    for (const company of companies) {
+      if (processed.has(company.id)) continue;
+
+      const simplifiedName = this.simplifyCompanyName(company.name);
+      if (!groups[simplifiedName]) {
+        groups[simplifiedName] = {
+          main: company,
+          similar: []
+        };
+      } else {
+        groups[simplifiedName].similar.push(company);
+      }
+
+      processed.add(company.id);
+    }
+
+    return groups;
+  }
+
+  simplifyCompanyName(name) {
+    return name.toLowerCase()
+      .replace(/\binc\.?\b|\bllc\.?\b|\bcorp\.?\b|\btechnologies\b|\btech\b/g, '')
+      .replace(/[^a-z0-9]+/g, '')
+      .trim();
   }
 
   validateAndCleanJobData(data) {

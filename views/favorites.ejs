@@ -511,7 +511,7 @@
           <img src="${job.company_logo}" alt="${job.company_name}" style="width: 30px; height: 30px; border-radius: 50%;">
           <div>
           <h5>
-          <a class="secondary-text" href="/jobs/company/${job.company_name}">${job.company_name}</a></h5>
+          <a class="secondary-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a></h5>
           <h5>
           <a href="/jobs/${job.job_id}">${job.title}</a></h5></h5>
           </div>
@@ -554,9 +554,9 @@
       return `${month}/${day}/${year}`;
     }
 
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
       const dropdowns = document.querySelectorAll('.dropdown-content');
-      dropdowns.forEach(function(dropdown) {
+      dropdowns.forEach(function (dropdown) {
         if (!dropdown.contains(event.target)) {
           dropdown.classList.remove('show');
         }

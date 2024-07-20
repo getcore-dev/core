@@ -49,7 +49,7 @@ router.get('/company/create', checkAuthenticated, async (req, res) => {
 
 router.get('/company/:name', async (req, res) => {
   try {
-    const companyName = req.params.name;
+    const companyName = decodeURIComponent(req.params.name);
     const company = await jobQueries.getCompanyByName(companyName);
     const jobs = [];
     const jobsCount = await jobQueries.getJobCountByCompany(companyName);
@@ -61,7 +61,6 @@ router.get('/company/:name', async (req, res) => {
     });
   } catch (err) {
     console.error('Error fetching job postings:', err);
-    res.redirect('/jobs');
   }
 });
 

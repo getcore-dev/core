@@ -9,6 +9,7 @@ const storage = multer.diskStorage({
     cb(null, 'profile-' + Date.now() + '.jpg');
   },
 });
+const User = require('../models/User.js');
 const JobProcessor = require('../services/jobBoardService');
 const jobProcessor = new JobProcessor();
 const environment = require('../config/environment');
@@ -146,7 +147,7 @@ router.get(
   async (req, res) => {
     try {
       const username = req.params.username;
-      const user = await userQueries.findByGitHubUsername(username);
+      const user = User.findOne({ username });
 
       if (!user || !user.githubAccessToken) {
         return res
@@ -380,7 +381,6 @@ router.get('/getTopSkills', cacheMiddleware(3600), async (req, res) => {
 router.get('/jobs', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
     const { jobTitle, jobLocation, jobExperienceLevel, jobSalary, tags } =
       req.query;
     const parsedTags = tags ? tags.split(',') : [];
@@ -402,31 +402,50 @@ router.get('/jobs', async (req, res) => {
     }
 
     const isEmptySearch =
-      !jobTitle &&
-      !jobLocation &&
-      !jobExperienceLevel &&
-      !jobSalary &&
+      jobTitle == '' &&
+      jobLocation == '' &&
+      jobExperienceLevel == '' &&
+      jobSalary == 0 &&
       parsedTags.length === 0;
+      console.log('isEmptySearch', isEmptySearch);
 
     let allJobPostings;
+    let postingPage = parseInt(req.query.page) || 1;
+    let pageSize = parseInt(req.query.pageSize) || 20;
+    console.log('page', postingPage);
+    console.log('pageSize', pageSize);
 
     if (isEmptySearch && user && Object.keys(userPreferences).length > 0) {
-      allJobPostings = await jobQueries.getAllJobsFromLast30Days(
-        userPreferences
+      console.log('Fetching jobs based on user preferences');
+      allJobPostings = await jobQueries.searchAllJobsFromLast30Days(
+        userPreferences.jobPreferredTitle,
+        userPreferences.jobPreferredLocation,
+        userPreferences.jobExperienceLevel,
+        userPreferences.jobPreferredSalary,
+        userPreferences.jobPreferredSkills,
+        postingPage, 
+        pageSize
       );
+    } else if (isEmptySearch) {
+      console.log('Fetching random jobs');
+      allJobPostings = await jobQueries.getRecentJobs(postingPage, pageSize);
+      console.log('allJobPostings', allJobPostings);
     } else {
+      console.log('Fetching jobs based on search criteria');
       allJobPostings = await jobQueries.searchAllJobsFromLast30Days(
         jobTitle,
         jobLocation,
         jobExperienceLevel,
         jobSalary,
-        parsedTags
+        parsedTags,
+        postingPage, pageSize
       );
     }
 
     let sortedJobPostings = allJobPostings;
 
     if (user) {
+      console.log('Sorting jobs based on user preferences');
       sortedJobPostings = allJobPostings.map((job) => ({
         ...job,
         matchCount: calculateMatchCount(job, userPreferences, parsedTags),
@@ -441,16 +460,11 @@ router.get('/jobs', async (req, res) => {
         sortedJobPostings[i].topPick = true;
       }
     }
-
-    const totalCount = sortedJobPostings.length;
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-    const paginatedJobPostings = sortedJobPostings.slice(startIndex, endIndex);
+    console.log('Sorted job postings');
 
     res.json({
-      jobPostings: paginatedJobPostings,
+      jobPostings: sortedJobPostings,
       currentPage: page,
-      totalPages: Math.ceil(totalCount / limit),
     });
   } catch (err) {
     console.error('Error fetching job postings:', err);

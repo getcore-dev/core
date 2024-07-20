@@ -20,7 +20,7 @@
     <div class="edit-company-header">
       <h5>Edit <%= company.name %> company profile</h5>
     </div>
-    <form action="/jobs/company/<%= company.name %>/edit" method="POST">
+    <form action="/jobs/company/<%= encodeURIComponent(company.name) %>/edit" method="POST">
       <input type="hidden" name="id" value="<%= company.id %>">
       <div>
         <label for="name">Name:</label>
@@ -66,7 +66,7 @@
     </form>
   </main>
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       const textarea = document.getElementsByClassName("auto-grow-textarea")[0];
 
       function adjustTextareaHeight(textarea) {
@@ -78,7 +78,7 @@
       adjustTextareaHeight(textarea);
 
       // Adjust height on input events
-      textarea.addEventListener("input", function() {
+      textarea.addEventListener("input", function () {
         adjustTextareaHeight(this);
       });
     });
