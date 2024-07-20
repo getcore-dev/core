@@ -328,6 +328,21 @@ router.get('/community/:communityId/jobs', async (req, res) => {
   }
 });
 
+router.get('/jobs/company/:companyName', async (req, res) => {
+  try {
+    const companyName = req.params.companyName;
+    const company = await jobQueries.getCompanyIdByName(companyName);
+    const companyId = company ? company.id : null;
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
+    const jobs = await jobQueries.getJobsByCompany(companyId, page, pageSize);
+    res.json(jobs);
+  } catch (err) {
+    console.error('Error fetching jobs:', err);
+    res.status(500).send('Error fetching jobs');
+  }
+});
+
 router.get('/randomJobs', cacheMiddleware(600), async (req, res) => {
   try {
 

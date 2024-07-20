@@ -26,6 +26,24 @@ const jobQueries = {
     }
   },
 
+  getJobCountByCompany: async (companyName) => {
+    try {
+      const result = await sql.query`
+        SELECT COUNT(*) as count
+        FROM JobPostings
+        WHERE company_id = (
+          SELECT id
+          FROM companies
+          WHERE name = ${companyName}
+        )
+      `;
+      return result.recordset[0].count;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   deleteJobsOlderThan2Months: async () => {
     try {
       await sql.query`
@@ -847,8 +865,9 @@ const jobQueries = {
     }
   },
 
-  getJobsByCompany: async (companyId) => {
+  getJobsByCompany: async (companyId, page, pageSize) => {
     try {
+      const offset = (page - 1) * pageSize;
       const result = await sql.query`
         SELECT
           JobPostings.*,
@@ -872,6 +891,8 @@ const jobQueries = {
         LEFT JOIN companies ON JobPostings.company_id = companies.id
         WHERE JobPostings.company_id = ${companyId}
         ORDER BY JobPostings.postedDate DESC
+                OFFSET ${offset} ROWS
+        FETCH NEXT ${pageSize} ROWS ONLY
       `;
       const jobs = result.recordset;
       return jobs;

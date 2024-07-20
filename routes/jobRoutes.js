@@ -51,8 +51,8 @@ router.get('/company/:name', async (req, res) => {
   try {
     const companyName = req.params.name;
     const company = await jobQueries.getCompanyByName(companyName);
-    const jobs = await jobQueries.getJobsByCompany(company.id);
-    const jobsCount = jobs ? jobs.length : 0;
+    const jobs = [];
+    const jobsCount = await jobQueries.getJobCountByCompany(companyName);
     res.render('company_profile.ejs', {
       company,
       jobs,

@@ -2,6 +2,7 @@
 <html>
 
 <head>
+  <meta name="company-name" content="<%= company.name %>">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>CORE - <%= company.name %></title>
@@ -56,16 +57,9 @@
       </div>
       <div class="company-flair">
         <% if (company.job_board_url) { %>
-        <span class="link-display">
-          <a href="<%= company.job_board_url %>" class="company-flair-item">
-            <p>
-              <span class="material-symbols-outlined">
-                link
-              </span>
-              Job Board
-            </p>
-          </a>
-        </span>
+        <a class="link" href="<%= company.job_board_url %>" class="company-flair-item">
+          Job Board
+        </a>
         <% } %>
         <% if (company.industry)  { %>
 
@@ -95,7 +89,7 @@
         <p class="description-text" style="max-height: 100px; overflow: hidden;"><%= company.description %></p>
       </div>
       <button class="show-more-button clickable no-bg no-border" style="display: none;">Show More</button>
-      
+
       <div class="jobs">
         <h3> <%= jobsCount %> Open Jobs</h3>
         <div class="job-list">
@@ -107,116 +101,7 @@
     </div>
   </main>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const description = document.querySelector('.description-text');
-      const showMoreButton = document.querySelector('.show-more-button');
-      const descriptionContainer = document.querySelector('.company-description');
-
-      if (description && showMoreButton) {
-        console.log('Elements found:', {
-          description,
-          showMoreButton
-        });
-
-        if (description.scrollHeight > description.clientHeight) {
-          console.log('Description is overflowing. Showing "Show More" button.');
-          showMoreButton.style.display = 'block';
-        }
-
-        showMoreButton.addEventListener('click', () => {
-          if (description.style.maxHeight === 'none') {
-            description.style.maxHeight = '100px';
-            descriptionContainer.style.maxHeight = '3.4rem';
-            showMoreButton.innerText = 'Show More';
-          } else {
-            descriptionContainer.style.maxHeight = 'none';
-            description.style.maxHeight = 'none';
-            showMoreButton.innerText = 'Show Less';
-          }
-        });
-      } else {
-        console.log('Elements not found:', {
-          description,
-          showMoreButton
-        });
-      }
-
-      const jobListContainer = document.querySelector('.job-list');
-      jobListContainer.innerHTML = ''; // Clear existing job postings
-
-      renderJobPostings(<%- JSON.stringify(jobs) %>);
-    });
-
-
-    function getTintFromName(name) {
-      let hash = 0;
-      for (let i = 0; i < name.length; i++) {
-        hash = name.charCodeAt(i) + ((hash << 18) - hash);
-      }
-      const color = (hash & 0x00ffffff).toString(16).toUpperCase();
-      const tintColor = `#${color}`;
-      return tintColor;
-    }
-
-    function renderJobPostings(jobPostings) {
-      const jobListContainer = document.querySelector(".job-list");
-      jobListContainer.innerHTML = ""; // Clear existing job postings
-
-      jobPostings.forEach((job) => {
-        const jobElement = document.createElement("div");
-        jobElement.classList.add("job");
-        jobElement.onclick = () => {
-          window.location.href = `/jobs/${job.id}`;
-        };
-        const tagsArray = job.tags && job.tags[1] ? job.tags[1].split(", ") : [];
-
-        const maxTags = 3; // Adjust this value based on your desired maximum number of tags
-        const displayedTags = tagsArray.slice(0, maxTags);
-        const tagsHTML = displayedTags
-          .map(
-            (tag) =>
-            `<span class="job-flair"><p>${tag}</p></span>`
-          )
-          .join("");
-        const remainingTags = tagsArray.length - maxTags;
-        jobElement.innerHTML = `
-            <div class="job-preview">
-              <div class="job-info">
-                <h3 class="job-title">
-                <a href="/jobs/${job.id}">
-                ${job.title}
-                </a>
-                
-                 <span style="margin-left: auto; float: right;">${
-            job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1)
-          }</span></h3>
-                <h5 class="job-subtitle secondary-text">
-                  <span style="margin-left: auto; float:right;">USD $${Math.floor(
-                    (job.salary + job.salary_max) / 2 / 1000
-                  )}k</span>
-                  ${job.location}
-                </h5> 
-                <div class="job-main">
-                  <div class="job-description">
-                    <p class="job-description">${job.description}</p>
-                  </div>
-                </div>
-                <div class="job-posting-flairs">
-                  ${tagsHTML}
-                  ${
-                    remainingTags > 0
-                      ? `<span class="see-more">+${remainingTags} more</span>`
-                      : ""
-                  }
-                </div>
-              </div>
-            </div>
-          `;
-        jobListContainer.appendChild(jobElement);
-      });
-    }
-  </script>
+  <script src="/js/companyProfile.js"></script>
 
 </body>
 
