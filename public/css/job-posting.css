@@ -199,6 +199,10 @@ div.similar-job h4 {
   margin: 1.05rem 0;
 }
 
+.skill {
+  display: inline-block;
+}
+
 .job-details>div>p,
 .job-details>div>ul {
   color: var(--light-mode-text-color);

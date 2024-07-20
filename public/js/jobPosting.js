@@ -252,7 +252,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         .join('');
 
       const maxTags = 15;
-      const maxSkills = 10;
+      const maxSkills = 7;
       const displayedTags = tagsArray.slice(0, maxTags);
       const displayedSkills = skillsArray.slice(0, maxSkills);
 
@@ -266,8 +266,8 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       const skillsHTML = displayedSkills
         .map(
           (skill) =>
-            `<span class="job-flair"
-            ><a href="/tags/${skill}"><p>${skill}</p></a></span>`
+            `<span class="skill"
+            ><a class="link underlined" href="/tags/${skill}"><p>${skill}</p></a></span>`
         )
         .join('');
 
@@ -342,6 +342,15 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
               visibility
               </span> ${job.views ? job.views : 0} views
             </p>
+                  <div class="job-skills">
+      <p id="secondary-text">Skills:</p>
+      ${skillsHTML}
+      ${
+  remainingSkills > 0
+    ? `<span class="see-more" id="secondary-text">+${remainingSkills} more</span>`
+    : ''
+}
+    </div>
               <p> 
               <span class="material-symbols-outlined">
               person
@@ -405,15 +414,6 @@ delete
                   <p id="secondary-text" class="post-date-text">
             This job was posted on ${formatDate(job.postedDate)}
             </p>
-      <div class="job-skills">
-      <h4>Required Skills</h4>
-      ${skillsHTML}
-      ${
-  remainingSkills > 0
-    ? `<span class="see-more" id="secondary-text">+${remainingSkills} more</span>`
-    : ''
-}
-    </div>
             <div class="job-posting-description">
             <h4>Job Description</h4>
             

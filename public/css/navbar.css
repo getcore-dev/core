@@ -846,6 +846,11 @@ a>.menu-item {
   /* Hide by default on desktop */
 }
 
+.underlined,
+#underlined {
+  text-decoration: underline;
+}
+
 .job-flair:hover {
   background-color: #37794436;
   color: #3e854c;
