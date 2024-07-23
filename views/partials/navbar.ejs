@@ -736,9 +736,13 @@
   const userAvatar = document.getElementById('user-avatar');
   const avatarDropdown = document.querySelector('.avatar-dropdown');
   const userLinks = document.querySelector('.user-links');
+  const navigationButtons = document.querySelectorAll('.navigation-button');
   const userText = document.querySelector('.nav-text-container');
 
   userAvatar.addEventListener('click', () => {
+    navigationButtons.forEach(button => {
+      button.classList.toggle('hidden');
+    });
     avatarDropdown.classList.toggle('open');
     userLinks.classList.toggle('slide-left');
     userText.classList.toggle('hidden');

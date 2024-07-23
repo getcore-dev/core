@@ -34,8 +34,8 @@ body {
 .account-stuff {
   width: 55%;
   max-width: 490px;
-  background: #ffffff4f;
-  border: 1px solid #ffffff91;
+  background: #ffffffa3;
+  border: 1px solid #ffffffae;
   border-radius: 9px;
   padding: .5rem 0;
 }
@@ -164,8 +164,6 @@ input[type="password"]:not(:placeholder-shown)+.floating-label {
 .toggle-password {
   position: absolute;
   right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
   border: none;
   background: none;
   cursor: pointer;
@@ -205,7 +203,7 @@ input:not(:placeholder-shown)+.floating-label,
   box-sizing: border-box;
   border-radius: 10px;
   background-color: #f6f8fa91 !important;
-  border: 1px solid #ffffff8f !important;
+  border: 1px solid #868686 !important;
   font-size: .8rem;
   transition: box-shadow 0.3s ease;
 }

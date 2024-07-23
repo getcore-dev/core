@@ -95,6 +95,10 @@ a:visited {
   justify-content: center;
 }
 
+.navigation-button.hidden {
+  display: none;
+}
+
 #horizontal-scroll {
   display: flex;
   flex-direction: row;
@@ -807,9 +811,9 @@ button.clear-btn {
   padding-top: 65px;
   background-color: var(--light-mode-main-color);
   z-index: 2;
-  width: 100%;
+  width: 70%;
   overflow-y: auto;
-  transform: translateY(-100vh);
+  transform: translatex(-100vw);
   will-change: transform;
 }
 
@@ -1305,9 +1309,7 @@ button:hover {
   font-size: .875rem;
   border: none;
   width: auto;
-  flex: 0;
   display: flex;
-  flex-grow: 0;
   font-weight: 550;
   margin: 0;
   border-radius: 10px;
@@ -1365,7 +1367,7 @@ button .material-symbols-outlined:not(:only-child) {
 #null-button-normal {
   background: #FAFBFF;
   color: #7f7f7f;
-  border: 1.5px solid #E5E6EE;
+  border: 1.5px solid #868686;
 }
 
 .margin-v-auto {
@@ -1452,7 +1454,6 @@ button .material-symbols-outlined:not(:only-child) {
 
 
 .border-background {
-  margin-top: 9px;
   background: linear-gradient(90deg, rgba(83, 117, 226, 1) 0%, rgba(216, 214, 187, 1) 50%, rgba(60, 73, 106, 1) 100%);
   padding: 1px;
   border-radius: 7px;
@@ -1529,11 +1530,6 @@ button .material-symbols-outlined:not(:only-child) {
   display: flex;
   align-items: center;
   transition: transform 0.1s ease-out;
-}
-
-
-.user-links.slide-left {
-  opacity: 0;
 }
 
 .user-links {
@@ -2290,10 +2286,6 @@ button .material-symbols-outlined:not(:only-child) {
   #null-button-normal {
     padding: 0.35rem .85rem;
     height: 32px;
-  }
-
-  .user-links.slide-left {
-    transform: translateX(-60px);
   }
 
   #com-btn-container {

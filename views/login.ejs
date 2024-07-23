@@ -26,12 +26,6 @@
       </div>
 
       <div id="login">
-        <div class="login-buttons">
-          <a href="https://github.com/login/oauth/authorize?client_id=b37718dbac10df16ec0c&redirect_uri=https%3A%2F%2Fc-ore.dev%2Fauth%2Fgithub%2Fcallback" id="null-button" class="github-login-btn">
-            <img src="/src/github.png" alt="GitHub Logo" style="background: white; border-radius: 100%;">
-            GitHub Login
-          </a>
-        </div>
 
         <% if (successMessages && successMessages.length > 0) { %>
         <div class="success-messages">
@@ -50,91 +44,109 @@
 
         <form action="/login" method="POST">
           <div class="input-container">
-            <label for="username" class="floating-label">Username</label>
+            <label for="username">Username</label>
             <input type="text" name="username" id="username" placeholder="Username" required>
           </div>
 
           <div class="input-container">
-            <label for="password" class="floating-label">Password</label>
-            <input type="password" name="password" id="password" placeholder="Password" required>
+            <label for="password">Password</label>
             <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">
-              <span class="material-symbols-outlined secondary-text">visibility</span>
+              <span class="material-symbols-outlined link">visibility</span>
             </button>
+            <input type="password" name="password" id="password" placeholder="Password" required>
+
           </div>
           <p style="margin-bottom:.5rem;">Forgot your password? <a href="/forgot-password">Reset it here</a></p>
 
-
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAAfrXFW9WQNvV2Xg" data-callback="javascriptCallback"></div>
           <button type="submit" id="submit-button">
             <p id="login-text">Login</p>
           </button>
+          <div class="login-buttons">
+            <a href="https://github.com/login/oauth/authorize?client_id=b37718dbac10df16ec0c&redirect_uri=https%3A%2F%2Fc-ore.dev%2Fauth%2Fgithub%2Fcallback" id="null-button" class="github-login-btn">
+              <img src="/src/github.png" alt="GitHub Logo" style="background: white; border-radius: 100%;">
+              GitHub Login
+            </a>
+          </div>
         </form>
       </div>
     </div>
     <%- include('partials/footer') %>
 
   </main>
-  <script>
-    function togglePasswordVisibility() {
-      const passwordInput = document.getElementById('password');
-      const toggleButton = document.querySelector('.toggle-password');
-      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-      passwordInput.setAttribute('type', type);
-      toggleButton.innerHTML = type === 'password' ? '<span class="material-symbols-outlined">visibility</span>' : '<span class="material-symbols-outlined">visibility_off</span>';
-    }
-    document.addEventListener("DOMContentLoaded", function () {
-      const inputs = document.querySelectorAll('.input-container input');
-      const labels = document.querySelectorAll('.input-container label');
+</body>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback" async defer></script>
 
-      inputs.forEach((input, index) => {
-        input.addEventListener('focus', () => {
-          labels[index].classList.add('active');
-          inputs[index].placeholder = '';
-          inputs[index].classList.add('active');
-        });
+<script>
+  function onloadTurnstileCallback() {
+    turnstile.render('.cf-turnstile', {
+      sitekey: '0x4AAAAAAAfrXFW9WQNvV2Xg',
+      callback: function (token) {
+        console.log(`Challenge Success ${token}`);
+      },
+    });
+  }
 
-        input.addEventListener('blur', () => {
-          if (input.value === '') {
-            labels[index].classList.remove('active');
-            inputs[index].placeholder = labels[index].textContent;
-            inputs[index].classList.remove('active');
-          }
-        });
+  function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('password');
+    const toggleButton = document.querySelector('.toggle-password');
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    toggleButton.innerHTML = type === 'password' ? '<span class="material-symbols-outlined">visibility</span>' : '<span class="material-symbols-outlined">visibility_off</span>';
+  }
+  document.addEventListener("DOMContentLoaded", function () {
+    const inputs = document.querySelectorAll('.input-container input');
+    const labels = document.querySelectorAll('.input-container label');
+
+    inputs.forEach((input, index) => {
+      input.addEventListener('focus', () => {
+        labels[index].classList.add('active');
+        inputs[index].placeholder = '';
+        inputs[index].classList.add('active');
+      });
+
+      input.addEventListener('blur', () => {
+        if (input.value === '') {
+          labels[index].classList.remove('active');
+          inputs[index].placeholder = labels[index].textContent;
+          inputs[index].classList.remove('active');
+        }
       });
     });
+  });
 
-    function onSignIn(googleUser) {
-      // Useful data for your client-side scripts:
-      var profile = googleUser.getBasicProfile();
-      console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
-      console.log('Name: ' + profile.getName());
-      console.log('Image URL: ' + profile.getImageUrl());
-      console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+  function onSignIn(googleUser) {
+    // Useful data for your client-side scripts:
+    var profile = googleUser.getBasicProfile();
+    console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
 
-      // The ID token you need to pass to your backend:
-      var id_token = googleUser.getAuthResponse().id_token;
-      console.log("ID Token: " + id_token);
+    // The ID token you need to pass to your backend:
+    var id_token = googleUser.getAuthResponse().id_token;
+    console.log("ID Token: " + id_token);
 
-      // Send the ID token to your backend via an HTTPS POST request
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', 'YOUR_BACKEND_URL_HERE');
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.onload = function () {
-        console.log('Signed in as: ' + xhr.responseText);
-      };
-      xhr.send(JSON.stringify({
-        token: id_token
-      }));
-    }
+    // Send the ID token to your backend via an HTTPS POST request
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'YOUR_BACKEND_URL_HERE');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function () {
+      console.log('Signed in as: ' + xhr.responseText);
+    };
+    xhr.send(JSON.stringify({
+      token: id_token
+    }));
+  }
 
-    // Sign out function (if you want to provide a sign-out button)
-    function signOut() {
-      var auth2 = gapi.auth2.getAuthInstance();
-      auth2.signOut().then(function () {
-        console.log('User signed out.');
-      });
-    }
-  </script>
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
-</body>
+  // Sign out function (if you want to provide a sign-out button)
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+</script>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
 
 </html>
