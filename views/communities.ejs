@@ -88,12 +88,15 @@
         </div>
       </div>
       <% } %>
-      <%- include('partials/right-side-container') %>
       <% if (!communityId) { %>
+      <%- include('partials/right-side-container') %>
       <%- include('partials/footer') %>
       <% } %>
 
     </div>
+    <% if (communityId) { %>
+    <%- include('partials/right-side-container') %>
+    <% } %>
 
   </main>
 
@@ -1237,26 +1240,6 @@ description
       const communityId = postsContainer.dataset.communityId;
       fetchAndDisplayPosts(communityId);
 
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-      const header = document.querySelector('.community-header.posting-header');
-      console.log(header);
-      const headerOffset = header.offsetTop;
-      let isSticky = false;
-
-      function handleScroll() {
-        if (window.pageYOffset > headerOffset && !isSticky) {
-          header.style.position = 'fixed';
-          header.style.top = 'calc(var(--mobile-navbar-height) + var(--mobile-second-navbar-height))';
-          isSticky = true;
-        } else if (window.pageYOffset <= headerOffset && isSticky) {
-          header.style.position = 'static';
-          isSticky = false;
-        }
-      }
-
-      window.addEventListener('scroll', handleScroll);
     });
   </script>
 

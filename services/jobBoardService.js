@@ -55,11 +55,11 @@ class JobProcessor {
     await this.init();
 
     console.log('running job posting cleanup');
-    //await this.filterNonTechJobs();
+    await this.filterNonTechJobs();
 
 
     console.log('running job company cleanup');
-    //await this.cleanupCompanyData();
+    await this.cleanupCompanyData();
 
     console.log('running job processor');
   

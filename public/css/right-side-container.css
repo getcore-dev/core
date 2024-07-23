@@ -95,12 +95,6 @@
 }
 
 
-.job {
-  background: #fafbfc;
-  width: auto;
-  flex: auto;
-}
-
 .company-logo-container {
   border-radius: 50%;
   display: flex;

@@ -20,6 +20,10 @@ body {
   display: block;
 }
 
+.job:hover {
+  cursor: pointer;
+  filter: brightness(.95);
+}
 
 .job-buttons .material-symbols-outlined {
 
@@ -141,9 +145,6 @@ h3.job-title {
   text-decoration: none;
 }
 
-.job:hover .job-info a {
-  text-decoration: underline;
-}
 
 p.job-description {
   inline-size: min-content;

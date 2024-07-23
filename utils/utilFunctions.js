@@ -630,7 +630,7 @@ OUTER APPLY (
       WHERE 
         c.PrivacySetting = 'Public'
       AND 
-        communities_id != 9
+        c.id != 9
       ORDER BY 
         MemberCount DESC
     `;
