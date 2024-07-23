@@ -36,15 +36,26 @@
           <ul class="nav-links">
             <li>
               <a href="/" class="navbar-button <%= currentPath === '/' ? 'active' : '' %>">
-                Community
+                <span class="material-symbols-outlined">
+                  home
+                </span>
+                Home
               </a>
             </li>
             <li>
-              <a href="/jobs" class="navbar-button <%= currentPath === '/jobs' ? 'active' : '' %>">Openings</a>
+              <a href="/networks" class="navbar-button <%= currentPath === '/networks' ? 'active' : '' %>">
+                <span class="material-symbols-outlined">
+                  hub
+                </span>
+                Networks
+              </a>
             </li>
             <li>
-              <a href="/updates" class="navbar-button <%= currentPath === '/updates' ? 'active' : '' %>">
-                Updates</a>
+              <a href="/jobs" class="navbar-button <%= currentPath === '/jobs' ? 'active' : '' %>">
+                <span class="material-symbols-outlined">
+                  work
+                </span>
+                Openings</a>
             </li>
 
           </ul>
@@ -141,43 +152,16 @@
 
       <div class="user-btns">
         <ul class="user-links">
-          <li>
-            <div class="search-container">
-              <form id="searchForm" class="search-form" action="/search" method="get" style="display: none;">
-                <input type="text" name="searchTerm" placeholder="Search" class="search-input">
-                <div class="search-results-container" style="display: none;"></div>
-
-                <button type="submit" class="search-btn">
-                  <span class="material-symbols-outlined" id="nb-icon">search</span>
-                </button>
-              </form>
-              <div class="overlay" style="display:none;"></div> <!-- Overlay element -->
-
-
-            </div>
+          <li class="navigation-button">
+            <span id="secondary-text" class="material-symbols-outlined">
+              search
+            </span>
           </li>
-
-        </ul>
-        <ul class="user-links">
           <li>
             <% if (user && user.avatar) { %>
             <div class="nav-avatar">
-              <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar" style="margin-top:10px;">
-              <div class="avatar-online-status" style="
-              background: <% if (user.profile_border_color) { %>
-              #5fb968
-              <% } else { %>
-              #5fb968
-              <% } %>;
-              height: 7px;
-              width: 7px;
-              z-index: 10;
-              border-radius: 6px;
-
-              position: absolute;
-              bottom: 0;
-              right: 0;
-              "> </div>
+              <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar">
+              <div class="avatar-online-status" style="background: <% if (user.profile_border_color) { %>#5fb968<% } else { %>#5fb968<% } %>;height: 7px;width: 7px;z-index: 10;border-radius: 6px;position: absolute;bottom: 0;right: 0;"> </div>
               <div class="avatar-dropdown">
                 <a href="#" onclick="document.getElementById('logoutForm').submit()">
                   <div class="avatar-dropdown-item">
@@ -237,7 +221,7 @@
             <% } %>
             </a>
           </li>
-          <ul>
+        </ul>
       </div>
     </div>
   </div>
@@ -555,10 +539,11 @@
     fetch('/api/communities') // Adjust this to your server's endpoint
       .then(response => response.json())
       .then(communities => {
+        console.log(communities);
         // Use window.matchMedia to check for mobile devices
         const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
         // Select the container based on whether or not it is a mobile device
-        const containerClassName = isMobile ? '.community-selector' : '.communities-container';
+        const containerClassName = '.communities-container';
         const communitiesContainer = document.querySelector(containerClassName);
 
         if (communitiesContainer) {
@@ -752,15 +737,11 @@
   const avatarDropdown = document.querySelector('.avatar-dropdown');
   const userLinks = document.querySelector('.user-links');
   const userText = document.querySelector('.nav-text-container');
-  const searchInput = document.querySelector('.mobile-search-input');
-  const searchIcon = document.querySelector('.search-icon');
 
   userAvatar.addEventListener('click', () => {
     avatarDropdown.classList.toggle('open');
     userLinks.classList.toggle('slide-left');
     userText.classList.toggle('hidden');
-    searchInput.classList.toggle('hidden');
-    searchIcon.classList.toggle('hidden');
   });
 
   <% } %>

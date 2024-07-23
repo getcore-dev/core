@@ -32,7 +32,7 @@ function scheduleNextRun() {
   setTimeout(runJobBoardService, delayMs);
 }
 
-app.listen(environment.port, '0.0.0.0', () => {
+app.listen(environment.port, () => {
   console.log(
     `Worker ${
       cluster.worker ? cluster.worker.id : 'Master'

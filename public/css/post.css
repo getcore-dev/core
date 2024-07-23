@@ -588,7 +588,7 @@ div.interact-buttons {
   align-items: center;
   gap: 4px;
   margin: 0 3.5dvw;
-  margin-top: 0;
+  margin-top: 1.5rem;
   margin-bottom: 0;
 }
 
@@ -2034,7 +2034,12 @@ div.username {
     color: #85a5e6;
   }
 
+  .jobslist {
+    margin-top: 3rem;
+  }
+
   .job {
+    background: var(--light-mode-body-color);
     padding: 12px 14px;
   }
 
@@ -2118,6 +2123,10 @@ div.username {
     width: 100%;
     border: 0;
     height: calc(100dvh - var(--mobile-navbar-height)) !important;
+  }
+
+  .header {
+    margin-top: 0;
   }
 
 

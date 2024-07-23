@@ -10,7 +10,7 @@
   --light-mode-button-hover-color: #BECBDA;
   --light-mode-text-color: #000;
   --light-mode-bold-text-color: #000000;
-  --light-mode-secondary-text-color: #2c2c2c;
+  --light-mode-secondary-text-color: #7f7f7f;
   --hover-background-color: #ddd;
   --active-indicator-color: #5083ca;
   --dark-mode-main-color: #0b0c0c;
@@ -79,13 +79,20 @@ a:visited {
 
 .user-links {
   list-style: none;
-  /* Remove list bullets */
   margin: 0;
   top: -27px;
   padding-left: 0;
   display: flex;
-  /* Display links inline */
+}
 
+.navigation-button {
+  height: 31px;
+  display: none;
+  width: 31px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 6px;
+  align-items: center;
+  justify-content: center;
 }
 
 #horizontal-scroll {
@@ -449,7 +456,7 @@ a:visited {
 .navbar {
   background-color: var(--light-mode-main-color);
   color: var(--primary-text-color);
-  border: 0;
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1139,7 +1146,6 @@ a>.menu-item {
 
   #user-avatar {
     padding-top: 0px;
-    margin-left: 9px;
     margin-top: 0px;
   }
 
@@ -1176,7 +1182,9 @@ a>.menu-item {
     right: -10px;
   }
 
-
+  .navigation-button {
+    display: flex;
+  }
 
   .user-links .user-avatar img {
     border-radius: 50%;
@@ -1185,7 +1193,8 @@ a>.menu-item {
   }
 
   .user-links {
-    top: 0;
+    top: 10px;
+    right: 9px;
   }
 
 
@@ -1261,6 +1270,10 @@ input {
   cursor: pointer;
 }
 
+button:hover {
+  filter: brightness(0.85);
+}
+
 .no-bg {
   background: none;
 }
@@ -1278,21 +1291,6 @@ input {
   color: var(--active-indicator-color);
 }
 
-#submit-button-normal:hover,
-#cancel-button-normal:hover,
-#regular-button-normal:hover,
-.submit-button-normal:hover,
-.cancel-button-normal:hover,
-.regular-button-normal:hover,
-.special-button-normal:hover,
-#special-button-normal:hover,
-.null-button-normal:hover,
-#null-button-normal:hover,
-#null-button:hover,
-.null-button:hover {
-  filter: brightness(0.8);
-  /* Adjust the brightness to darken the button */
-}
 
 #submit-button-normal,
 #cancel-button-normal,

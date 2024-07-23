@@ -15,19 +15,30 @@ body {
   flex: 0 1 auto;
   transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
   overflow-y: none;
+  border: 1px solid var(--border-color);
+  margin: 1.2rem;
+}
+
+.post:hover {
+  cursor: pointer;
+  filter: brightness(.95);
+}
+
+.job:hover {
+  cursor: pointer;
+  filter: brightness(.95);
 }
 
 main {
   overflow-y: auto;
 }
 
-.post {
-  border: 1.5px solid var(--border-color);
-}
+
+
 
 
 .job {
-  background: #fafbfc;
+  background: var(--light-mode-body-color);
   width: auto;
   flex: auto;
 }
@@ -55,6 +66,18 @@ main {
   padding-top: 0px;
   display: flex;
   flex-direction: column;
+  border-right: 1px solid var(--border-color);
+  width: 53%;
+  overflow-y: auto;
+  max-width: 1000px;
+  flex: none;
+
+  -webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .votes {
@@ -93,9 +116,6 @@ div.vote-interactions {
   gap: 2px;
 }
 
-.job:hover {
-  background-color: var(--light-mode-hover-color);
-}
 
 .thumbnail-image {
   height: 80px;
@@ -608,7 +628,7 @@ div .mini-link-desc {
   overflow-y: hidden;
   flex-wrap: nowrap;
   flex-direction: row;
-  /* max-width: 1200px; */
+  max-height: calc(100vh - var(--navbar-height));
   justify-content: space-between;
   z-index: 1;
 }
@@ -630,21 +650,6 @@ div .mini-link-desc {
   /* Firefox */
 }
 
-
-#posts-container {
-  border-right: 1px solid var(--border-color);
-  width: 53%;
-  max-width: 1000px;
-  flex: none;
-  flex-direction: column;
-
-  -webkit-scrollbar {
-    display: none;
-  }
-
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
 
 #job-link-logo {
   position: absolute;
@@ -1111,26 +1116,6 @@ button.see-more {
 }
 
 
-.posting-header {
-  position: -webkit-sticky;
-  position: sticky;
-  border-top: 1.5px solid var(--border-color);
-  border-bottom: 1.5px solid var(--border-color);
-  background: var(--light-mode-body-color);
-  padding: 0.3rem 13px;
-  margin: 0;
-}
-
-.posting-header {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  /* Make sure this matches your page background */
-  width: 100%;
-  box-sizing: border-box;
-}
-
 
 
 @media (max-width: 768px) {
@@ -1433,7 +1418,6 @@ button.see-more {
   .header-button:hover,
   .boost-button:hover,
   .reaction-menu button:hover,
-  .job:hover,
   .com-btn:hover {
     background-color: var(--dark-mode-hover-color);
   }

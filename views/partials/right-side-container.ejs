@@ -53,14 +53,6 @@
                     <div class="job-description">
                       <p>${job.description}</p>
                     </div>
-              <div class="desktop-job-flairs">
-                  ${job.tags
-                      .filter(tag => tag)
-                      .flatMap(tag => tag.split(','))
-                      .slice(0, 3)
-                      .map(tag => `<span class="job-flair">${tag.trim()}</span>`)
-                      .join('')}
-              </div>
                   ` : `
                   `}
                 </div>
@@ -117,14 +109,6 @@
                     <div class="job-description">
                       <p>${job.description}</p>
                     </div>
-              <div class="desktop-job-flairs">
-                  ${job.tags
-                      .filter(tag => tag)
-                      .flatMap(tag => tag.split(','))
-                      .slice(0, 3)
-                      .map(tag => `<span class="job-flair">${tag.trim()}</span>`)
-                      .join('')}
-              </div>
                   ` : `
                   `}
                 </div>
