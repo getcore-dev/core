@@ -396,7 +396,6 @@ div.jobs-container>div.job-list>.job {
 
 .filter-container {
   text-align: center;
-  margin-bottom: 1.6rem;
 }
 
 .job-list {
@@ -438,9 +437,10 @@ div.jobs-container>div.job-list>.job {
 
 .title-filter {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
 }
+
 
 .title-filter .sort-options-button {
   background: none;
@@ -449,21 +449,27 @@ div.jobs-container>div.job-list>.job {
 
 .jobs-header .header {
   display: flex;
+  margin-bottom: 0.5rem;
   align-items: center;
   justify-content: space-between;
 }
+
 
 .title-filter .sort-options-button .material-symbols-outlined {
   font-size: 1.2rem;
 }
 
 .sort-options {
+  margin-top: 0.9rem;
+  margin-bottom: .5rem;
   width: 100%;
   display: none;
 }
 
 .sort-options.show {
-  display: block;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.6rem 1.2rem;
 }
 
 .show-filters.regular-button {
@@ -474,19 +480,17 @@ div.jobs-container>div.job-list>.job {
 .location-filter input,
 .salary-filter input {
   width: 100%;
+  height: 32px;
   padding: 0.7rem 1.15rem;
   margin: 0;
   margin-bottom: 0;
   box-sizing: border-box;
   background: var(--light-mode-body-color);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
   font-size: 16px;
 }
 
-.location-filter input {
-  margin: 5px 0;
-}
 
 .filters {
   display: flex;
@@ -538,7 +542,8 @@ div .title-filter .material-symbols-outlined,
 
 select {
   padding: 4px 3px;
-  margin: 5px 0;
+  margin: 0;
+  height: 32px;
   font-size: .725rem;
   border-radius: 11px;
   border: 1px solid var(--border-color);

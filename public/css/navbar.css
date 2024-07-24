@@ -118,12 +118,24 @@ a:visited {
   font-size: 1.2rem;
 }
 
+.material-symbols-outlined.hidden {
+  opacity: 0;
+}
+
+.navigation-button .material-symbols-outlined {
+  font-size: 1.1rem;
+}
+
 .community-preview {
   position: absolute;
-  left: 50%;
-  top: -3px;
+  left: 18px;
+  top: 10px;
   font-size: .6rem;
   transform: translateX(-50%);
+}
+
+.community-preview .material-symbols-outlined {
+  font-size: 18px;
 }
 
 
@@ -1238,9 +1250,9 @@ input {
   font-family: 'Inter', sans-serif;
   margin: 8px 0;
   box-sizing: border-box;
-  border-radius: 10px;
+  border-radius: 6px;
   background-color: var(--light-mode-body-color) !important;
-  border: 1px solid var(--border-color) !important;
+  border: 1.5px solid var(--border-color) !important;
   font-size: 16px;
   transition: box-shadow 0.3s ease;
 }
@@ -1263,7 +1275,7 @@ input {
   border: 1.5px solid #27944e;
   color: #27944e;
   cursor: pointer;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   transition: all 0.3s ease;
   text-decoration: none;
   flex: 0 0 auto;
@@ -1698,7 +1710,7 @@ button .material-symbols-outlined:not(:only-child) {
 
   input {
     background-color: var(--dark-mode-main-color) !important;
-    border: 1px solid var(--dark-mode-border-color) !important;
+    border: 1.5px solid var(--dark-mode-border-color) !important;
     color: var(--dark-mode-text-color);
   }
 
@@ -1826,6 +1838,10 @@ button .material-symbols-outlined:not(:only-child) {
     background-color: var(--dark-mode-body-color);
     border-right: 1px solid var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
+  }
+
+  .navigation-button {
+    border-color: var(--dark-mode-border-color);
   }
 
   .menu-content a {

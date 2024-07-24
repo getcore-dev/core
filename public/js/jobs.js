@@ -164,9 +164,10 @@ function setupFilter(filterType, values) {
       const titleFiltersDiv = document.querySelector('.title-filter');
       const showFiltersButton = document.createElement('button');
       const tagsDiv = document.querySelector('.tags');
-      showFiltersButton.className = 'show-filters submit-button';
-      showFiltersButton.innerHTML = 'Refine Search';
-      showFiltersButton.style.margin = '.9rem 0 0 0';
+      showFiltersButton.className = 'show-filters regular-button-normal';
+      showFiltersButton.innerHTML = 'Filter';
+      showFiltersButton.style.margin = '0 0 0 .7rem';
+      showFiltersButton.style.height = '32px';
       showFiltersButton.addEventListener('click', () => {
         sortOptions.classList.toggle('show');
         tagsDiv.classList.toggle('show');
@@ -187,8 +188,8 @@ function setupFilter(filterType, values) {
   } else {
     const dropdown = document.createElement('select');
     dropdown.innerHTML =
-      `<option value="">${
-        filterType === 'experienceLevel' ? 'Experience Level' : filterType
+      `<option value="level" class="secondary-text">${
+        filterType === 'experienceLevel' ? 'Level' : filterType
       }</option>` +
       values
         .map((value) => `<option value="${value}">${value}</option>`)
@@ -208,13 +209,10 @@ function setupSalaryFilter() {
       <label for="salary">Salary</label>
       <input type="number" placeholder="Salary" id="min-salary">
     </div>
-    <button class="submit-button-normal" style="background: none; border: none;" id="apply-salary"><span class="material-symbols-outlined">
-check
-</span></button>
   `;
   document
-    .getElementById('apply-salary')
-    .addEventListener('click', applySalaryFilter);
+    .getElementById('min-salary')
+    .addEventListener('input', applySalaryFilter);
 }
 
 function applySalaryFilter() {
@@ -383,6 +381,7 @@ function handleTagClick(event) {
 
 
 function handleSkillClick(event) {
+  const selectedTagsHeader = document.querySelector('.selected-tags-header');
   if (event.target.classList.contains('tag-clickable')) {
     const skill = event.target;
     const skillName = skill.dataset.tag;
@@ -396,6 +395,11 @@ function handleSkillClick(event) {
       elements.selectedTags.appendChild(skill);
     }
     resetJobListings();
+  }
+  if (Object.keys(state.filters.skills).length > 0) {
+    selectedTagsHeader.style.display = 'block';
+  } else {
+    selectedTagsHeader.style.display = 'none';
   }
 }
 

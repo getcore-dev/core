@@ -48,6 +48,7 @@
           <div class="community-content">
             <div class="community-info">
               <div class="community-title">
+                <span class="material-symbols-outlined" style="font-size: 1.5rem; color: <%= community.community_color%>;"><%= community.mini_icon%></span>
                 <span class="comm-title">
                   <h2 style="font-weight: 500"><%= community.name%></h2>
                 </span>
@@ -401,7 +402,7 @@ description
               <p>
               
                 <a id="post-username" class="bold secondary-text" href="/user/${post.username}">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username}</a>
-                                ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="font-size: .85rem;">push_pin</span>' : ''}
+                                ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="font-size: .85rem;color:#ffdf34;">push_pin</span>' : ''}
 
                 ${post.verified ? '<span class="material-symbols-outlined" style="font-size: .85rem;color:#169da8;">verified</span>' : ''}
                 ${post.isModerator ? '<span class="material-symbols-outlined" style="font-size: .85rem;color:#169da8;">admin_panel_settings</span>' : ''}

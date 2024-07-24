@@ -227,4 +227,8 @@
     background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-main-color);
   }
+
+  .post-body a:visited {
+    color: var(--dark-mode-text-color);
+  }
 }

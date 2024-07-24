@@ -37,7 +37,7 @@ body {
   background: #ffffffa3;
   border: 1px solid #ffffffae;
   border-radius: 9px;
-  padding: .5rem 0;
+  padding: 0;
 }
 
 footer {
@@ -208,11 +208,6 @@ input:not(:placeholder-shown)+.floating-label,
   transition: box-shadow 0.3s ease;
 }
 
-.input-container input.active {
-  padding: 5px 9px;
-  padding-top: 17px;
-}
-
 
 
 .input-container {
@@ -313,11 +308,6 @@ nav {
     width: 90%;
   }
 
-  .input-container input.active {
-    padding: 3px 14px;
-    padding-top: 19px;
-  }
-
   #register,
   #login {
     max-width: 100%;
@@ -358,8 +348,8 @@ nav {
 
 
   .input-container input {
-    background-color: #0b0c0c8c !important;
-    border-color: #181a1bd1 !important;
+    background-color: #000000ad !important;
+    border-color: #414141d1 !important;
     color: var(--dark-mode-text-color) !important;
   }
 

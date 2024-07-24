@@ -502,7 +502,7 @@ function formatDate(date) {
                     <span class="comment-timestamp" id="secondary-text"><%= timeSinceComment %></span>
                     <% if (comment.isPinned) { %>
                     <span class="tag comment-tag pinned-comment">
-                      <span class="material-symbols-outlined" id="secondary-text">push_pin</span>
+                      <span class="material-symbols-outlined" id="secondary-text" style="color:#ffdf34;">push_pin</span>
                     </span>
                     <% } %>
 
@@ -550,7 +550,7 @@ function formatDate(date) {
                       <span>
                         <form id="pin-comment-form-<%= comment.id %>" action="/comment/<%= comment.id %>/toggle-pin" method="POST">
                           <button type="submit">
-                            <span class="material-symbols-outlined">push_pin</span>
+                            <span class="material-symbols-outlined" style="color:#ffdf34;">push_pin</span>
                             <p>Pin</p>
                           </button>
                         </form>
