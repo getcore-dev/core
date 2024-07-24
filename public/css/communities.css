@@ -1326,7 +1326,7 @@ button.see-more {
 
  .posting-header {
   color: var(--dark-mode-text-color);
-  background: var(--dark-mode-main-color);
+  background: var(--dark-mode-body-color);
   border-color: var(--dark-mode-border-color);
   }
   /* General background and text colors */
