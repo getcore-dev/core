@@ -734,6 +734,14 @@ div.community-tags {
   font-size: 14px;
 }
 
+.mod-btn .material-symbols-outlined,
+.join-btn .material-symbols-outlined {
+  padding-right: .4rem;
+}
+
+.share-glyph {
+  padding: 0;
+}
 
 .reaction-popup {
   position: absolute;
@@ -770,6 +778,9 @@ div.community-tags {
   border: 0;
   margin: 4px;
   background: 0;
+  display: flex;
+  gap: .6rem;
+  align-items: center;
   border-radius: 14px;
   transition: transform .5s ease;
 }
@@ -845,7 +856,6 @@ div.community-tags {
 #share-button .material-symbols-outlined {
   font-size: 14px;
   font-weight: 550;
-  padding-right: .4rem;
 }
 
 .post-type-circle .material-symbols-outlined {

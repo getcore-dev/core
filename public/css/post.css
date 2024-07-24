@@ -431,6 +431,12 @@ div.interact-buttons {
   padding: 0;
 }
 
+.reaction-popup-content {
+  display: flex;
+  gap: .8rem;
+  flex-direction: row;
+}
+
 #share-button {
   margin-left: auto;
 }
@@ -565,6 +571,9 @@ div.interact-buttons {
   border: 0;
   margin: 4px;
   background: 0;
+  display: flex;
+  gap: .6rem;
+  align-items: center;
   border-radius: 14px;
   transition: transform .5s ease;
 }

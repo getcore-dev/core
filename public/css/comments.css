@@ -7,6 +7,10 @@
 
 .comments {
     width: 100%;
+    padding: 0 1.2rem;
+    padding-bottom: .6rem;
+    box-sizing: border-box;
+    border-bottom: 1.5px solid var(--border-color);
 }
 
 
@@ -58,8 +62,8 @@
 }
 
 .pinned-comment {
-    border: 1px solid #18181847;
-    background-color: #b0b0b036;
+    background: 0;
+    border: 0;
 }
 
 div.interact-buttons {
@@ -98,7 +102,7 @@ div.interact-buttons {
 }
 
 .comment-with-replies {
-    margin-top: .9rem;
+    margin-top: 0;
     padding-top: .9rem;
 }
 
@@ -232,6 +236,10 @@ div.interact-buttons {
 @media (prefers-color-scheme: dark) {
     .comments-section h3 {
         color: var(--dark-mode-text-color);
+    }
+
+    .comments {
+        border-color: var(--dark-mode-border-color);
     }
 
     .comment-container textarea {

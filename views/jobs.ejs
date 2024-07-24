@@ -33,31 +33,7 @@
 
     <div class="jobs-container">
       <div class="jobs-header">
-        <% if (user) { %>
-        <div id="horizontal-scroll" class="job-buttons">
-          <% if (user.isAdmin) { %>
-          <div class="create-company-button">
-            <button class="create-company special-button-normal" onclick="window.location.href='/jobs/company/create';"><span class="material-symbols-outlined">
-                factory
-              </span>+</button>
-          </div>
-          <%     } %>
 
-          <% if (user.recruiter_id) { %>
-          <div class="create-job-button">
-            <button class="create-job special-button-normal" onclick="window.location.href='/jobs/create';"><span class="material-symbols-outlined">
-                work
-              </span>+</button>
-          </div>
-          <%     } %>
-
-          <div class="job-profile-button">
-            <button class="regular-button-normal" onclick="window.location.href='/profile/jobs';"> <span class="material-symbols-outlined">
-                person
-              </span></button>
-          </div>
-        </div>
-        <% } %>
         <div class="filter-container">
           <div class="recent-jobs">
           </div>
@@ -91,9 +67,35 @@
           <div class="top-tags">
           </div>
         </span>
+
       </div>
-      <div class="jobs-header">
-        <h5>Job Postings</h5>
+      <div class="jobs-header" style="display: flex;flex-direction: row;align-items: center;" 
+      <h5>Job Postings</h5>
+        <% if (user) { %>
+        <div id="horizontal-scroll" class="job-buttons">
+          <% if (user.isAdmin) { %>
+          <div class="create-company-button">
+            <button class="create-company special-button-normal" onclick="window.location.href='/jobs/company/create';"><span class="material-symbols-outlined">
+                factory
+              </span>+</button>
+          </div>
+          <%     } %>
+
+          <% if (user.recruiter_id) { %>
+          <div class="create-job-button">
+            <button class="create-job special-button-normal" onclick="window.location.href='/jobs/create';"><span class="material-symbols-outlined">
+                work
+              </span>+</button>
+          </div>
+          <%     } %>
+
+          <div class="job-profile-button">
+            <button class="regular-button-normal" onclick="window.location.href='/profile/jobs';"> <span class="material-symbols-outlined">
+                person
+              </span></button>
+          </div>
+        </div>
+        <% } %>
       </div>
       <div class="job-list">
 

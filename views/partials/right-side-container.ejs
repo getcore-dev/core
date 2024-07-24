@@ -37,15 +37,18 @@
                         <a class="secondary-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a></div>
                                           <div class="job-title"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
                                                     
-                    ${job.salary ? `
-                  <span class="job-salary" style="margin-left: auto;">USD $${
-                  job.salary ? job.salary.toLocaleString() : ""
-                } ${
-                job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
-              }</span>
-              ` : ``}
+                                ${job.salary ? `
+                              <span class="job-salary" style="margin-left: auto;">USD $${
+                              job.salary ? job.salary.toLocaleString() : ""
+                            } ${
+                            job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
+                          }</span>
+                          ` : ``}
                       </div>
                     </div>
+                    <div class="favorite-button">
+                      <span class="material-symbols-outlined" style="font-size:1rem;">favorite</span>
+                      </div>
                   </div>
 
 

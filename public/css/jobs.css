@@ -26,8 +26,16 @@ body {
 }
 
 .job-buttons .material-symbols-outlined {
-
   padding: 0;
+}
+
+.job-buttons {
+  margin-left: auto;
+}
+
+.job-buttons button {
+  background: none !important;
+  border: none;
 }
 
 .job-info h5 {
@@ -37,7 +45,6 @@ body {
 div.job-buttons {
   padding: 4px;
   gap: .5rem;
-  margin-bottom: .6rem;
 }
 
 h1 {
