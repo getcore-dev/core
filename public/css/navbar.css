@@ -1974,7 +1974,7 @@ button .material-symbols-outlined:not(:only-child) {
 .communities-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: .6rem;
 }
 
 .trending-post-content:hover {
@@ -1989,6 +1989,7 @@ button .material-symbols-outlined:not(:only-child) {
   background-color: var(--light-mode-main-color);
   flex-direction: column;
   overflow-x: hidden;
+  padding-left: 2.4rem;
   scrollbar-width: none;
   overflow-y: auto;
   height: calc(100dvh - 95px);
@@ -2107,7 +2108,7 @@ button .material-symbols-outlined:not(:only-child) {
 }
 
 #com-btn-container {
-  margin-left: auto;
+  margin-right: auto;
   width: 20%;
   max-width: 225px;
   flex: none;

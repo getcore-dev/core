@@ -617,6 +617,7 @@ OUTER APPLY (
         c.id, 
         c.name, 
         c.mini_icon, 
+        c.community_color,
         c.shortname, 
         CASE WHEN cm.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_member,
         (SELECT COUNT(*) FROM community_memberships WHERE community_id = c.id) AS MemberCount
