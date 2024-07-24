@@ -146,8 +146,10 @@ router.get(
   cacheMiddleware(2400),
   async (req, res) => {
     try {
+      const { Octokit } = await import('@octokit/rest');
+
       const username = req.params.username;
-      const user = User.findOne({ username });
+      const user = await userQueries.findByGitHubUsername(username);
 
       if (!user || !user.githubAccessToken) {
         return res
@@ -156,11 +158,10 @@ router.get(
       }
 
       const accessToken = user.githubAccessToken;
-      const apiUrl = 'https://api.github.com/search/commits';
-      const headers = {
-        'User-Agent': 'CORE',
-        Authorization: `Bearer ${accessToken}`,
-      };
+      const octokit = new Octokit({
+        auth: accessToken,
+        userAgent: 'CORE',
+      });
 
       const commitGraph = {};
       const oneYearAgo = new Date();
@@ -171,22 +172,15 @@ router.get(
       let commitCount = 0;
 
       while (true) {
-        const response = await axios.get(apiUrl, {
-          headers,
-          params: {
-            q: `author:${username} committer-date:>=${oneYearAgoDate}`,
-            sort: 'committer-date',
-            order: 'desc',
-            per_page: commitsPerPage,
-            page: page,
-          },
+        const { data } = await octokit.search.commits({
+          q: `author:${username} committer-date:>=${oneYearAgoDate}`,
+          sort: 'committer-date',
+          order: 'desc',
+          per_page: commitsPerPage,
+          page: page,
         });
 
-        if (response.status !== 200) {
-          throw new Error(`GitHub API returned status code ${response.status}`);
-        }
-
-        const commits = response.data.items;
+        const commits = data.items;
         commitCount += commits.length;
         commits.forEach((commit) => {
           const date = commit.commit.committer.date.split('T')[0];
@@ -199,11 +193,9 @@ router.get(
         page++;
       }
 
-      //console.log(commitGraph);
       res.json({ username, commitGraph, commitCount });
     } catch (error) {
       console.error('Error fetching GitHub commit graph:', error);
-      console.error('Error details:', error.response?.data);
       res.status(500).json({ error: 'Failed to fetch GitHub commit graph' });
     }
   }

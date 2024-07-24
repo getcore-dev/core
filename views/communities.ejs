@@ -48,6 +48,7 @@
           <div class="community-content">
             <div class="community-info">
               <div class="community-title">
+                <span class="material-symbols-outlined" style="font-size: 1.5rem; color: <%= community.community_color%>;"><%= community.mini_icon%></span>
                 <span class="comm-title">
                   <h2 style="font-weight: 500"><%= community.name%></h2>
                 </span>
@@ -60,16 +61,17 @@
                 <button class="submit-button-normal join-btn" id="communityActionBtn" data-action="join"><span class="material-symbols-outlined">
                     person_add
                   </span>Join</button>
-                <button class="mod-btn null-button-normal" id="communityActionBtn" onclick="share('<%= community.name %>','','https://c-ore.dev/networks/<%= community.shortname %>')">
-                  <span class="material-symbols-outlined">
-                    ios_share
-                  </span></button>
+
 
                 <button class="mod-btn regular-button-normal" id="communityActionBtn" style="display: none;pointer-events: none;" onclick="window.location.href='/networks/<%= community.shortname %>/admin'">
                   <span class="material-symbols-outlined">
                     admin_panel_settings
                   </span>
                   Admin Tools</button>
+                <button class="mod-btn null-button-normal" style="margin-left:auto" id="communityActionBtn" onclick="share('<%= community.name %>','','https://c-ore.dev/networks/<%= community.shortname %>')">
+                  <span class="material-symbols-outlined share-glyph">
+                    ios_share
+                  </span></button>
               </div>
               <div class="community-picture">
               </div>
@@ -80,7 +82,6 @@
         <% if (!communityId) { %>
         <div class="mobile-jobs-container">
           <div class="job-header">
-            <h5><a href="/jobs">Openings</a></h5>
           </div>
           <div class="jobslist">
 
@@ -149,7 +150,7 @@
         mainButton.innerHTML = `<span class="reaction-button-left">${reactionIcons[userReaction]}</span><span class="reaction-button-right">${reactionsMap[userReaction] || 0}</span>`;
         mainButton.classList.add('active');
       } else {
-        mainButton.innerHTML = `<span class="reaction-button-left">😃</span><span class="reaction-button-right">${reactionsMap[userReaction] || 0}</span>`;
+        mainButton.innerHTML = `<span class="reaction-button-left"><span class="material-symbols-outlined">add_reaction</span></span><span class="reaction-button-right">${reactionsMap[userReaction] || 0}</span>`;
         mainButton.classList.remove('active');
 
       }
@@ -319,6 +320,8 @@ description
           const totalPages = data.totalPages;
           posts.forEach(post => {
             // Main post div
+            const postCommentsDiv = document.createElement('div');
+            postCommentsDiv.className = 'post-comments';
             const postDiv = document.createElement('div');
             if (post.isGlobalPinned) {
               postDiv.className = 'post pinned';
@@ -328,6 +331,7 @@ description
             }
             postDiv.onclick = () => window.location.href = '/posts/' + post.id;
 
+            postCommentsDiv.appendChild(postDiv);
 
             // Post content div
             const postContentDiv = document.createElement('div');
@@ -401,7 +405,7 @@ description
               <p>
               
                 <a id="post-username" class="bold secondary-text" href="/user/${post.username}">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username}</a>
-                                ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="font-size: .85rem;">push_pin</span>' : ''}
+                                ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="color:#ffdf34;">push_pin</span>' : ''}
 
                 ${post.verified ? '<span class="material-symbols-outlined" style="font-size: .85rem;color:#169da8;">verified</span>' : ''}
                 ${post.isModerator ? '<span class="material-symbols-outlined" style="font-size: .85rem;color:#169da8;">admin_panel_settings</span>' : ''}
@@ -636,12 +640,12 @@ description
             reactionButton.setAttribute('data-id', post.id);
             reactionButton.className = `mainReactionButton null-button-normal reaction-button${post.userReaction ? ' active' : ''}`;
 
-            reactionButton.innerHTML = `<span class="reaction-button-left">😃</span><span class="reaction-button-right">${totalReactions > 0 ? `${totalReactions}` : "0"}</span>`;
+            reactionButton.innerHTML = `<span class="reaction-button-left"><span class="material-symbols-outlined">add_reaction</span></span><span class="reaction-button-right">${totalReactions > 0 ? `${totalReactions}` : "0"}</span>`;
 
             reactionButton.onclick = (event) => {
               event.stopPropagation();
               const popup = document.getElementById(`reactionPopup-post-${post.id}`);
-              popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+              popup.style.display = popup.style.display === 'none' ? 'flex' : 'none';
             };
 
             buttonsDiv.appendChild(reactionButton);
@@ -650,7 +654,7 @@ description
             const commentButton = document.createElement('button');
             commentButton.className = 'null-button-normal';
             commentButton.id = 'comment-button';
-            commentButton.innerHTML = `<span class="comment-button-left">💬</span><span class="comment-button-right">${post.comment_count}</span>`;
+            commentButton.innerHTML = `<span class="comment-button-left"><span class="material-symbols-outlined">chat_bubble</span></span><span class="comment-button-right">${post.comment_count}</span>`;
             commentButton.onclick = (event) => {
               event.stopPropagation();
               const commentsDiv = document.getElementById(`comments-${post.id}`);
@@ -695,13 +699,13 @@ description
             commentsDiv.className = 'comments';
             commentsDiv.id = `comments-${post.id}`;
             commentsDiv.style.display = 'none';
-            postContentDiv.appendChild(commentsDiv);
+            postCommentsDiv.appendChild(commentsDiv);
 
 
 
 
             postDiv.appendChild(postContentDiv);
-            postsContainer.appendChild(postDiv);
+            postsContainer.appendChild(postCommentsDiv);
           });
           Promise.all(fetchPromises)
             .then(() => {

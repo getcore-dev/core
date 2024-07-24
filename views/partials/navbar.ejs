@@ -296,20 +296,30 @@
         <li class="dropdown">
           <% if (isActive('/posts')) { %>
           <span class="community-preview" style="color: <%= post.community.community_color%>">
-            <%= post.community ? post.community.shortname : '' %>
+            <span class="material-symbols-outlined" style="color:<%= community.community_color %>;">
+              <%= post.community ? post.community.mini_icon : '' %>
+            </span>
           </span>
           <% } %>
 
           <% if (isActive('/networks') && typeof community !== 'undefined') { %>
           <span class="community-preview" style="color: <%= community.community_color%>">
-            <%= community.shortname %>
+            <span class="material-symbols-outlined" style="color:<%= community.community_color %>;">
+              <%= community.mini_icon %>
+            </span>
           </span>
           <% } %>
 
           <a href="/networks/" class="navbar-button <%= isActive('/networks') | isActive('/posts') ? 'active' : '' %>" style="border-color:<%= isActive('/posts') ? post.community.community_color : isActive('/networks') && typeof community !== 'undefined' ? community.community_color : '' %>; display: flex;">
+            <% if ((isActive('/networks') && typeof community !== 'undefined') || isActive('/posts')) { %>
+            <span class="material-symbols-outlined hidden">
+              workspaces
+            </span>
+            <% } else { %>
             <span class="material-symbols-outlined">
               workspaces
             </span>
+            <% } %>
             Networks
           </a>
         </li>
@@ -561,7 +571,7 @@
               const tint = community.community_color;
 
               communityElement.innerHTML = `
-                <span class="material-symbols-outlined" style="${isMobile ? `color: ${tint};` : ''}">
+                <span class="material-symbols-outlined" style="color:${community.community_color};">
                   ${community.mini_icon}
                 </span>
                 <div class="community-name">
@@ -586,7 +596,7 @@
               const tint = community.community_color;
 
               communityElement.innerHTML = `
-                <span class="material-symbols-outlined" style="${isMobile ? `color: ${tint};` : ''}">
+                <span class="material-symbols-outlined" style="color: ${community.community_color};">
                   ${community.mini_icon}
                 </span>
                 <div class="community-name">

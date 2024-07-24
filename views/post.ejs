@@ -81,7 +81,7 @@
               }
               %>
             <span class="post-title-navigator">
-              <a id="community-header-text" href="/networks/<%= post.community.shortname %>"><%= post.community.name %></a>
+              <a id="community-header-text" href="/networks/<%= post.community.shortname %>"><%= post.community.shortname.toLowerCase() %></a>
               <span>
                 /
               </span>
@@ -328,10 +328,10 @@ function formatDate(date) {
                   <% if (post.userReaction != null && reactionTypes.find(reaction => reaction.type === post.userReaction)) { %>
                   <%= reactionTypes.find(reaction => reaction.type === post.userReaction).icon %>
                   <% } else { %>
-                  <span class="reaction-emote">😃</span>
+                  <span class="reaction-emote"><span class="material-symbols-outlined">add_reaction</span></span>
                   <% } %>
                   <% } else { %>
-                  <span class="reaction-emote">😃</span>
+                  <span class="reaction-emote"><span class="material-symbols-outlined">add_reaction</span></span>
                   <% } %>
 
                   <% let totalReactions = 0; %>
@@ -348,7 +348,7 @@ function formatDate(date) {
 
 
                 <button class="null-button-normal reaction-button" onclick="<% if (user) { %>showCommentForm()<% } else { %>window.location.href = '/login';<% } %>">
-                  <span class="reaction-emote">💬</span>
+                  <span class="reaction-emote"><span class="material-symbols-outlined">chat_bubble</span></span>
                   <span>
                     <% 
                         function countAllReplies(replies) {
@@ -502,7 +502,7 @@ function formatDate(date) {
                     <span class="comment-timestamp" id="secondary-text"><%= timeSinceComment %></span>
                     <% if (comment.isPinned) { %>
                     <span class="tag comment-tag pinned-comment">
-                      <span class="material-symbols-outlined" id="secondary-text">push_pin</span>
+                      <span class="material-symbols-outlined" id="secondary-text" style="color:#ffdf34;">push_pin</span>
                     </span>
                     <% } %>
 
@@ -550,7 +550,7 @@ function formatDate(date) {
                       <span>
                         <form id="pin-comment-form-<%= comment.id %>" action="/comment/<%= comment.id %>/toggle-pin" method="POST">
                           <button type="submit">
-                            <span class="material-symbols-outlined">push_pin</span>
+                            <span class="material-symbols-outlined" style="color:#ffdf34;">push_pin</span>
                             <p>Pin</p>
                           </button>
                         </form>
@@ -607,7 +607,7 @@ function formatDate(date) {
             }
             const totalReplies = countAllReplies(comment.replies);
             %>
-                  <span class="reaction-emote">💬</span>
+                  <span class="reaction-emote"><span class="material-symbols-outlined">chat_bubble</span></span>
                   <span class="total-reactions-count">
                     <%= totalReplies %>
                   </span>
@@ -622,10 +622,10 @@ function formatDate(date) {
                   <% if (comment.userReaction != null && reactionTypes.find(reaction => reaction.type === comment.userReaction)) { %>
                   <%= reactionTypes.find(reaction => reaction.type === comment.userReaction).icon %>
                   <% } else { %>
-                  <span class="reaction-emote">😃</span>
+                  <span class="reaction-emote"><span class="material-symbols-outlined">add_reaction</span></span>
                   <% } %>
                   <% } else { %>
-                  <span class="reaction-emote">😃</span>
+                  <span class="reaction-emote"><span class="material-symbols-outlined">add_reaction</span></span>
                   <% } %>
 
                   <% let totalReactions = 0; %>

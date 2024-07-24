@@ -156,10 +156,7 @@ pre code {
   flex-direction: row;
   justify-content: flex-start;
   gap: 1em;
-  border-top: 1.5px solid var(--border-color);
-  border-bottom: 1.5px solid var(--border-color);
   padding-top: .5rem;
-  background: var(--light-mode-body-color);
   padding-bottom: .5rem;
 }
 
@@ -434,6 +431,16 @@ div.interact-buttons {
   padding: 0;
 }
 
+.reaction-popup-content {
+  display: flex;
+  gap: .8rem;
+  flex-direction: row;
+}
+
+#share-button {
+  margin-left: auto;
+}
+
 .reaction-button>p {
   margin-bottom: 0 !important;
   font-size: .8rem;
@@ -564,6 +571,9 @@ div.interact-buttons {
   border: 0;
   margin: 4px;
   background: 0;
+  display: flex;
+  gap: .6rem;
+  align-items: center;
   border-radius: 14px;
   transition: transform .5s ease;
 }

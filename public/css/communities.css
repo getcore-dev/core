@@ -58,15 +58,22 @@ main {
   font-size: 18px;
 }
 
+#share-button,
+#favorite-button,
+#communityActionBtn {
+  padding: 0.35rem .85rem;
+}
+
+
 .post-info {
   color: #666;
 }
 
 #posts-container {
   padding-top: 0px;
+  margin-right: auto;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--border-color);
   width: 53%;
   overflow-y: auto;
   max-width: 1000px;
@@ -520,8 +527,9 @@ div .mini-link-title {
 
 #filter-button,
 #post-button {
-  height: 30px;
+  height: 32px;
   font-size: .7rem;
+  padding: 0.35rem .85rem;
 }
 
 #filter-button .material-symbols-outlined,
@@ -726,6 +734,14 @@ div.community-tags {
   font-size: 14px;
 }
 
+.mod-btn .material-symbols-outlined,
+.join-btn .material-symbols-outlined {
+  padding-right: .4rem;
+}
+
+.share-glyph {
+  padding: 0;
+}
 
 .reaction-popup {
   position: absolute;
@@ -762,6 +778,9 @@ div.community-tags {
   border: 0;
   margin: 4px;
   background: 0;
+  display: flex;
+  gap: .6rem;
+  align-items: center;
   border-radius: 14px;
   transition: transform .5s ease;
 }
@@ -780,6 +799,7 @@ div.community-tags {
 
 #share-button {
   height: 32px;
+  margin-left: auto;
   padding-top: 0;
   padding-bottom: 0;
 }
@@ -791,6 +811,7 @@ div.community-tags {
 .buttons {
   display: inline-flex;
   gap: 1.5rem;
+  width: 100%;
 }
 
 .comment-button-left,
@@ -835,7 +856,6 @@ div.community-tags {
 #share-button .material-symbols-outlined {
   font-size: 14px;
   font-weight: 550;
-  padding-right: .4rem;
 }
 
 .post-type-circle .material-symbols-outlined {

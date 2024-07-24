@@ -587,6 +587,7 @@ const userQueries = {
   },
   isFollowing: async (followerId, followedId) => {
     try {
+      await userQueries.removeDuplicateFollows();
       const result = await sql.query`
         SELECT COUNT(*) AS count
         FROM user_relationships
@@ -600,6 +601,7 @@ const userQueries = {
   },
   getFollowerCount: async (userId) => {
     try {
+      await userQueries.removeDuplicateFollows();
       const result = await sql.query`
         SELECT COUNT(*) AS count 
         FROM user_relationships
@@ -614,6 +616,7 @@ const userQueries = {
 
   getFollowing: async (userId) => {
     try {
+      await userQueries.removeDuplicateFollows();
       const result = await sql.query`
         SELECT u.id, u.username, u.avatar, u.firstname, u.lastname
         FROM users u
@@ -628,6 +631,7 @@ const userQueries = {
   },
   getFollowers: async (userId) => {
     try {
+      await userQueries.removeDuplicateFollows();
       const result = await sql.query`
         SELECT u.id, u.username, u.avatar, u.firstname, u.lastname
         FROM users u
