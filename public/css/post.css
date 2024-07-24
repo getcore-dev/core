@@ -810,7 +810,7 @@ div.repliees-avatar {
 
 .total-reactions-count {
   font-family: 'Inter', sans-serif !important;
-  font-size: .975rem;
+  font-size: .875rem;
   color: var(--light-mode-secondary-text-color);
 }
 

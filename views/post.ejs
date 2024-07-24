@@ -328,10 +328,10 @@ function formatDate(date) {
                   <% if (post.userReaction != null && reactionTypes.find(reaction => reaction.type === post.userReaction)) { %>
                   <%= reactionTypes.find(reaction => reaction.type === post.userReaction).icon %>
                   <% } else { %>
-                  <span class="reaction-emote"><span class="material-symbols-outlined">add_reaction</span></span>
+                  <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
                   <% } %>
                   <% } else { %>
-                  <span class="reaction-emote"><span class="material-symbols-outlined">add_reaction</span></span>
+                  <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
                   <% } %>
 
                   <% let totalReactions = 0; %>
@@ -339,17 +339,17 @@ function formatDate(date) {
                   <% totalReactions += post[reaction.type.toLowerCase() + 'Count']; %>
                   <% }); %>
                   <% if (totalReactions > 0) { %>
-                  <span class="total-reactions-count-<%= post.id %>"><%= totalReactions %> </span>
+                  <span id="secondary-text" class="total-reactions-count-<%= post.id %>"><%= totalReactions %> </span>
                   <% } else { %>
-                  <span class="total-reactions-count <%= post.id %>">0 </span>
+                  <span id="secondary-text" class="total-reactions-count <%= post.id %>">0 </span>
                   <% } %>
                 </button>
                 <% if (!post.deleted && !post.isLocked) { %>
 
 
                 <button class="null-button-normal reaction-button" onclick="<% if (user) { %>showCommentForm()<% } else { %>window.location.href = '/login';<% } %>">
-                  <span class="reaction-emote"><span class="material-symbols-outlined">chat_bubble</span></span>
-                  <span>
+                  <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">chat_bubble</span></span>
+                  <span id="secondary-text">
                     <% 
                         function countAllReplies(replies) {
                           if (!replies || replies.length === 0) return 0;
@@ -607,8 +607,8 @@ function formatDate(date) {
             }
             const totalReplies = countAllReplies(comment.replies);
             %>
-                  <span class="reaction-emote"><span class="material-symbols-outlined">chat_bubble</span></span>
-                  <span class="total-reactions-count">
+                  <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">chat_bubble</span></span>
+                  <span id="secondary-text" class="total-reactions-count">
                     <%= totalReplies %>
                   </span>
                 </button>
@@ -622,17 +622,17 @@ function formatDate(date) {
                   <% if (comment.userReaction != null && reactionTypes.find(reaction => reaction.type === comment.userReaction)) { %>
                   <%= reactionTypes.find(reaction => reaction.type === comment.userReaction).icon %>
                   <% } else { %>
-                  <span class="reaction-emote"><span class="material-symbols-outlined">add_reaction</span></span>
+                  <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
                   <% } %>
                   <% } else { %>
-                  <span class="reaction-emote"><span class="material-symbols-outlined">add_reaction</span></span>
+                  <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
                   <% } %>
 
                   <% let totalReactions = 0; %>
                   <% reactionTypes.forEach(reaction => { %>
                   <% totalReactions += comment[reaction.type.toLowerCase() + 'Count']; %>
                   <% }); %>
-                  <span class="total-reactions-count-comment-<%= comment.id %>"><%= totalReactions %></span>
+                  <span id="secondary-text" class="total-reactions-count-comment-<%= comment.id %>"><%= totalReactions %></span>
 
                 </button>
                 <div id="reactionPopup-comment-<%= comment.id %>" class="reaction-popup" style="display:none; position: absolute;left: 0; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
