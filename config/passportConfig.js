@@ -51,7 +51,7 @@ function initialize(
       {
         clientID: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        callbackURL: 'https://c-ore.dev/auth/github/callback',
+        callbackURL: 'https://getcore.dev/auth/github/callback',
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
@@ -97,7 +97,7 @@ function initialize(
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: 'https://c-ore.dev/auth/google/callback',
+        callbackURL: 'https://getcore.dev/auth/google/callback',
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
