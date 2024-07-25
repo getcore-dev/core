@@ -338,12 +338,14 @@ function formatDate(date) {
                     <% if (post.userReaction) { %>
                     <% if (post.userReaction == "B") { post.userReaction = "BOOST"; } %>
                     <% if (post.userReaction != null && reactionTypes.find(reaction => reaction.type === post.userReaction)) { %>
-                    <%= reactionTypes.find(reaction => reaction.type === post.userReaction).icon %>
+                    <span class="reaction-emote <%= post.id %>" id="secondary-text">
+                      <%= reactionTypes.find(reaction => reaction.type === post.userReaction).icon %>
+                    </span>
                     <% } else { %>
-                    <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
+                    <span class="reaction-emote <%= post.id %>" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
                     <% } %>
                     <% } else { %>
-                    <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
+                    <span class="reaction-emote <%= post.id %>" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
                     <% } %>
 
                     <% let totalReactions = 0; %>
@@ -380,7 +382,7 @@ function formatDate(date) {
 
 
                   <button class="submit-button-normal" id="favorite-button" onclick="favorite('<%= post.id %>')">
-                    Favorite
+                    <span class="material-symbols-outlined">favorite</span> Save
                   </button>
                   <% if (!post.deleted && !post.isLocked) { %>
 
@@ -391,7 +393,7 @@ function formatDate(date) {
                   <% } %>
                   <% } %>
                   <button class="null-button-normal" id="share-button" onclick="share('<%= post.title %>', '', 'https://c-ore.dev/posts/<%= post.id %>')">
-                    <span class="material-symbols-outlined">ios_share</span>
+                    <span class="material-symbols-outlined">ios_share</span> Share
                   </button>
 
 
@@ -465,7 +467,7 @@ function formatDate(date) {
             <div class="comment level-<%= level %>">
 
               <div class="comment-main">
-                <div class="comment-content">
+                <div class="comment-content" onclick="toggleNestedComments('<%= comment.id %>')">
                   <div class="comment-header">
                     <div class="comment-avatar">
                       <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onclick="window.location.href = '/user/<%= comment.user.username %>'" />
@@ -590,29 +592,12 @@ function formatDate(date) {
                   <% if (!post.deleted && !post.isLocked) { %>
 
                   <% if (user) { %>
-                  <a href="#" id="reply-button-<%= comment.id %>" onclick="<% if (user) { %>showReplyForm('<%= comment.id %>', event)<% } else { %>window.location.href = '/login';<% } %>">
-                    Add Reply
+                  <a href="#" class="secondary-text" id="reply-button-<%= comment.id %>" onclick="<% if (user) { %>showReplyForm('<%= comment.id %>', event)<% } else { %>window.location.href = '/login';<% } %>">
+                    Reply
                   </a>
                   <% } %>
                   <% } %>
                 </div>
-                <button class="null-button-normal reaction-button" onclick="toggleNestedComments('<%= comment.id %>')">
-                  <% 
-            function countAllReplies(replies) {
-              if (!replies || replies.length === 0) return 0;
-              let total = 0;
-              for (const reply of replies) {
-                total += 1 + countAllReplies(reply.replies);
-              }
-              return total;
-            }
-            const totalReplies = countAllReplies(comment.replies);
-            %>
-                  <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">chat_bubble</span></span>
-                  <span id="secondary-text" class="total-reactions-count">
-                    <%= totalReplies %>
-                  </span>
-                </button>
                 <button class="commentMainReactionButton null-button-normal reaction-button <% if (comment.userReaction) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>">
                   <% if (comment.userReaction) { %>
 
@@ -621,12 +606,14 @@ function formatDate(date) {
                 } %>
 
                   <% if (comment.userReaction != null && reactionTypes.find(reaction => reaction.type === comment.userReaction)) { %>
-                  <%= reactionTypes.find(reaction => reaction.type === comment.userReaction).icon %>
+                  <span class="reaction-emote <%= comment.id %>" id="secondary-text">
+                    <%= reactionTypes.find(reaction => reaction.type === comment.userReaction).icon %>
+                  </span>
                   <% } else { %>
-                  <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
+                  <span class="reaction-emote <%= comment.id %>" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
                   <% } %>
                   <% } else { %>
-                  <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
+                  <span class="reaction-emote <%= comment.id %>" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
                   <% } %>
 
                   <% let totalReactions = 0; %>
@@ -666,7 +653,7 @@ function formatDate(date) {
 
             <% if (comment.replies && comment.replies.length > 0) { %>
             <% const nestedLevel = level + 1; %>
-            <% const maxDisplayLevel = 3; %>
+            <% const maxDisplayLevel = 5; %>
             <div class="nested-comments level-<%= Math.min(nestedLevel, 6) %>" id="nested-comments-<%= comment.id %>" style="display: <%= nestedLevel <= maxDisplayLevel ? 'block' : 'none' %>;">
               <% renderComments(comment.replies, nestedLevel); %>
             </div>
@@ -921,11 +908,11 @@ function formatDate(date) {
           const favoriteButton = document.querySelector(`button[onclick="favorite('${postId}')"]`);
           if (favoriteButton) {
             if (data.isFavorite) {
-              favoriteButton.innerHTML = '<span class="material-symbols-outlined">heart_minus</span>';
+              favoriteButton.innerHTML = '<span class="material-symbols-outlined">heart_minus</span> Unsave';
               favoriteButton.classList.remove('submit-button-normal');
               favoriteButton.classList.add('cancel-button-normal');
             } else {
-              favoriteButton.innerHTML = '<span class="material-symbols-outlined">favorite</span>';
+              favoriteButton.innerHTML = '<span class="material-symbols-outlined">favorite</span> Save';
               favoriteButton.classList.remove('cancel-button-normal');
               favoriteButton.classList.add('submit-button-normal');
             }
@@ -1334,8 +1321,12 @@ function formatDate(date) {
 
     function updateReactionUI(postId, userReaction, reactionsMap) {
       const mainButton = document.querySelector(`.mainReactionButton[data-type="post"][data-id="${postId}"]`);
+      const buttonIcon = document.querySelector(`.reaction-emote.${postId}`);
       const popup = document.getElementById(`reactionPopup-post-${postId}`);
       const totalCountSpan = document.querySelector(`.total-reactions-count-${postId}`);
+      console.log(buttonIcon);
+      console.log(userReaction);
+      console.log(reactionsMap);
 
       const reactionIcons = {
         "LOVE": "❤️",
@@ -1346,10 +1337,10 @@ function formatDate(date) {
 
       // Update main button
       if (userReaction && reactionIcons[userReaction]) {
-        mainButton.innerHTML = reactionIcons[userReaction];
+        buttonIcon.textContent = reactionIcons[userReaction];
         mainButton.classList.add('active');
       } else {
-        mainButton.innerHTML = '<span class="material-symbols-outlined">add_reaction</span>';
+        buttonIcon.innerHTML = '<span class="material-symbols-outlined">add_reaction</span>';
         mainButton.classList.remove('active');
       }
 
@@ -1364,7 +1355,8 @@ function formatDate(date) {
 
       // Update total reaction count
       const totalReactions = Object.values(reactionsMap).reduce((a, b) => a + b, 0);
-      totalCountSpan.textContent = `${totalReactions} reaction${totalReactions !== 1 ? 's' : ''}`;
+      console.log(totalReactions);
+      totalCountSpan.textContent = `${totalReactions}`;
     }
 
     function interactWithComment(postId, commentId, user, action) {
@@ -1396,9 +1388,13 @@ function formatDate(date) {
     }
 
     function updateCommentReactionUI(commentId, totalCommentReactionCount, reactionsMap) {
-      const mainButton = document.querySelector(`.mainReactionButton[data-type="comment"][data-id="${commentId}"]`);
+      const mainButton = document.querySelector(`.commentMainReactionButton[data-type="comment"][data-id="${commentId}"]`);
       const popup = document.getElementById(`reactionPopup-comment-${commentId}`);
+      const reactionEmote = document.querySelector(`.reaction-emote.${commentId}`);
       const totalCountSpan = document.querySelector(`.total-reactions-count-comment-${commentId}`);
+      console.log(mainButton);
+      console.log(popup)
+      console.log(totalCountSpan);
 
       const reactionIcons = {
         "LOVE": "❤️",
@@ -1410,10 +1406,10 @@ function formatDate(date) {
       // Update main button
       const userReaction = Object.keys(reactionsMap).find(key => reactionsMap[key] > 0);
       if (userReaction && reactionIcons[userReaction]) {
-        mainButton.innerHTML = reactionIcons[userReaction];
+        reactionEmote.textContent = reactionIcons[userReaction];
         mainButton.classList.add('active');
       } else {
-        mainButton.innerHTML = '<span class="material-symbols-outlined">add_reaction</span>';
+        reactionEmote.innerHTML = '<span class="material-symbols-outlined">add_reaction</span>';
         mainButton.classList.remove('active');
       }
 
@@ -1427,7 +1423,7 @@ function formatDate(date) {
       });
 
       // Update total reaction count
-      totalCountSpan.textContent = `${totalCommentReactionCount} reaction${totalCommentReactionCount !== 1 ? 's' : ''}`;
+      totalCountSpan.textContent = `${totalCommentReactionCount}`;
     }
 
     function showReplyForm(commentId, event) {
