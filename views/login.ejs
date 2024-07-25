@@ -5,7 +5,6 @@
   <title>CORE - Login</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="google-signin-client_id" content="776889982265-25qnvfvr9cc0vijl82518gmiv9d2fj4p.apps.googleusercontent.com" />
   <link rel="stylesheet" href="css/navbar.css" />
   <link rel="stylesheet" href="css/login.css" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -79,15 +78,6 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback" async defer></script>
 
 <script>
-  function onloadTurnstileCallback() {
-    turnstile.render('.cf-turnstile', {
-      sitekey: '0x4AAAAAAAfrXFW9WQNvV2Xg',
-      callback: function (token) {
-        console.log(`Challenge Success ${token}`);
-      },
-    });
-  }
-
   function togglePasswordVisibility() {
     const passwordInput = document.getElementById('password');
     const toggleButton = document.querySelector('.toggle-password');

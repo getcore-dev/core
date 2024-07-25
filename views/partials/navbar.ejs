@@ -152,7 +152,7 @@
 
       <div class="user-btns">
         <ul class="user-links">
-          <li class="navigation-button">
+          <li class="navigation-button" id="search-toggle-button">
             <span id="secondary-text" class="material-symbols-outlined">
               search
             </span>
@@ -352,7 +352,26 @@
     </div>
   </div>
 </nav>
+<div class="search-bar" id="search-bar-div">
+  <div class="search-bar-container">
+    <form action="/search" method="GET">
+      <input type="text" name="searchTerm" id="search-bar" placeholder="Search" />
+      <button class="submit-button-normal" id="search-button" type="submit">
+        Search
+      </button>
+    </form>
+  </div>
+</div>
+<div class="overlay" id="search-overlay"></div>
 <style>
+  .search-bar {
+    display: none;
+  }
+
+  .overlay {
+    display: none;
+  }
+
   <% if (navbarTint) {
     %>.navbar {
       border-color: <%=navbarTint %>;
@@ -627,8 +646,24 @@
   // if the user is not on mobile, get all communities
 
   document.addEventListener('DOMContentLoaded', function () {
+    const searchButton = document.getElementById('search-toggle-button');
     const banner = document.getElementById('latestCommitBanner');
     const closeButton = document.getElementById('closeCommitBanner');
+    const searchBar = document.getElementById('search-bar-div');
+    const searchOverlay = document.getElementById('search-overlay');
+    const navBar = document.querySelector('.navbar');
+
+    searchButton.addEventListener('click', () => {
+      navBar.style.display = 'none';
+      searchBar.style.display = 'block';
+      searchOverlay.style.display = 'block';
+    });
+
+    searchOverlay.addEventListener('click', () => {
+      navBar.style.display = 'block';
+      searchBar.style.display = 'none';
+      searchOverlay.style.display = 'none';
+    });
 
     if (!window.matchMedia("only screen and (max-width: 768px)").matches) {
       getAllCommunities();

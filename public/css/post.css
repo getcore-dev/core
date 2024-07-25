@@ -1224,7 +1224,7 @@ div .mini-link {
   flex-direction: row;
   justify-content: space-between;
   margin-top: 0;
-  margin-bottom: 6px;
+  margin-bottom: .6rem;
 }
 
 .dropdown-content .material-symbols-outlined {
@@ -1250,11 +1250,6 @@ div .mini-link {
 .sidebar-description {
   display: flex;
   flex-direction: column;
-}
-
-.main-container a {
-  color: var(--light-mode-text-color);
-  font-weight: 500;
 }
 
 .post-content a {
@@ -1444,9 +1439,15 @@ p.preview-description {
   color: #3073c1 !important;
 }
 
+.reply-button {
+  padding: .35rem;
+  color: var(--light-mode-secondary-text-color);
+}
+
 #favorite-button {
   background: 0;
   border: 0;
+  padding: .35rem;
 }
 
 
@@ -1675,7 +1676,8 @@ div.post-information {
     color: var(--dark-mode-secondary-text-color);
   }
 
-  .post-subtitle {
+  .post-subtitle,
+  .reply-button {
     color: var(--dark-mode-secondary-text-color);
   }
 

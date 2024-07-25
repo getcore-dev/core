@@ -261,7 +261,7 @@ a:visited {
 }
 
 .overlay {
-  position: fixed;
+  position: absolute;
   /* Cover the whole screen */
   top: 0;
   left: 0;
@@ -269,7 +269,7 @@ a:visited {
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   /* Semi-transparent black */
-  z-index: -11;
+  z-index: 5;
   /* Ensure it's above other content but below the search form */
 }
 
@@ -578,7 +578,6 @@ li.dropdown a.active {
 
 .inbox-button,
 .logout-button,
-#search-button,
 .search-button {
   display: flex;
   justify-content: center;
@@ -904,15 +903,12 @@ a>.menu-item {
 }
 
 #search-bar {
-  padding: 4px 6px;
-  margin-left: 5px;
-  font-size: var(--default-font-size);
+  padding: .65rem .75rem;
+  padding-right: 6.2rem;
+  font-size: 16px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  height: 27px;
-  width: 170px;
-  /* Adjust the width as needed */
-  margin-right: 3px;
+  width: 100%;
 }
 
 .user-links {
@@ -1133,10 +1129,6 @@ a>.menu-item {
 
   .user-btns #nb-icon {
     font-weight: 300;
-  }
-
-  #search-bar {
-    display: none;
   }
 
   .nav-text-and-user-btns {
@@ -1498,11 +1490,24 @@ button .material-symbols-outlined:not(:only-child) {
   box-sizing: border-box;
 }
 
-.search-bar {
-  display: flex;
-  justify-content: center;
-  margin: 10px;
+#search-button {
+  position: absolute;
+  top: 19px;
+  right: 21px;
 }
+
+.search-bar-container form {
+  padding: 0.35rem .75rem;
+}
+
+.search-bar {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 8;
+  background: var(--light-mode-main-color);
+}
+
 
 .search-bar input[type="search"] {
   width: 200px;
