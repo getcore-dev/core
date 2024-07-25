@@ -430,7 +430,7 @@ div.interact-buttons {
 
 #favorite-button .material-symbols-outlined,
 #share-button .material-symbols-outlined {
-  padding: 0;
+  padding-right: .4rem;
 }
 
 .reaction-popup-content {
@@ -442,6 +442,8 @@ div.interact-buttons {
 
 #share-button {
   margin-left: auto;
+  background: 0;
+  border: 0;
 }
 
 .reaction-button>p {
@@ -465,6 +467,8 @@ div.interact-buttons {
 }
 
 .reaction-button {
+  border: 0;
+  background: 0;
   font-size: .875rem;
   display: flex;
   align-items: center;
@@ -1426,8 +1430,8 @@ p.preview-description {
   justify-content: space-between;
   border-radius: 16px;
   box-sizing: border-box;
-  background: var(--light-mode-body-color);
-  border: 1px solid var(--border-color);
+  background: 0;
+  border: 0;
   margin: 0 13px;
   margin-bottom: 1.6rem;
 }
@@ -1436,10 +1440,13 @@ p.preview-description {
   background-color: var(--light-mode-body-color);
 }
 
-.reaction-button.active {
-  background-color: #b8e9ff4a;
-  color: #3073c1;
-  border: 1px solid #afd4ff;
+.reaction-button.active>span {
+  color: #3073c1 !important;
+}
+
+#favorite-button {
+  background: 0;
+  border: 0;
 }
 
 
@@ -1769,11 +1776,6 @@ div.post-information {
     /* Dark border color for code blocks */
   }
 
-  .input-container,
-  .comment-container {
-    border-color: var(--dark-mode-border-color);
-  }
-
   .dicussion-link {
     background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-border-color);
@@ -1905,7 +1907,6 @@ div.post-information {
   .input-container,
   .comment-container,
   .comment-container textarea {
-    border: 0;
     color: var(--dark-mode-text-color);
   }
 

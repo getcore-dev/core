@@ -1412,6 +1412,11 @@ button .material-symbols-outlined:not(:only-child) {
   margin-left: auto !important;
 }
 
+#vr {
+  border-left: 1px solid var(--border-color);
+  height: 13px;
+}
+
 .margin-r-auto {
   margin-right: auto !important;
 }
@@ -1717,6 +1722,10 @@ button .material-symbols-outlined:not(:only-child) {
 
   .search-icon {
     color: var(--dark-mode-secondary-text-color);
+  }
+
+  #vr {
+    border-left: 1px solid var(--dark-mode-border-color);
   }
 
   .mobile-search-input {
