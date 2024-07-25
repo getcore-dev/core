@@ -358,6 +358,8 @@ function formatDate(date) {
                     <span id="secondary-text" class="total-reactions-count <%= post.id %>">0 </span>
                     <% } %>
                   </button>
+                  <div id="vr"></div>
+
                   <% if (!post.deleted && !post.isLocked) { %>
 
 
@@ -603,7 +605,7 @@ function formatDate(date) {
 
                   <% if (comment.userReaction == "B") {
                   comment.userReaction = "BOOST";
-                } %>
+                  } %>
 
                   <% if (comment.userReaction != null && reactionTypes.find(reaction => reaction.type === comment.userReaction)) { %>
                   <span class="reaction-emote <%= comment.id %>" id="secondary-text">
