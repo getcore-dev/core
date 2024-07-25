@@ -7,11 +7,6 @@
   padding: 0;
 }
 
-.post-body :is(h1, h2, h3):first-of-type {
-  font-size: 1.3rem;
-  color: var(--light-mode-secondary-text-color);
-}
-
 .post-body h1 {
   font-size: 2rem;
   /* Adjust size as needed */
@@ -214,18 +209,13 @@
     color: var(--dark-mode-secondary-text-color);
   }
 
-  .post-body :is(h1, h2, h3):first-of-type {
-    color: var(--dark-mode-secondary-text-color);
-    font-weight: 600;
-  }
 
   .post-body li {
     color: var(--dark-mode-text-color);
   }
 
   .comment-header a,
-  #blog-username,
-  .main-container a {
+  #blog-username {
     color: var(--dark-mode-text-color);
   }
 

@@ -379,6 +379,7 @@ function formatDate(date) {
                       %><%= String(totalReplies).trim() %>
                     </span>
                   </button>
+                  <div id="vr"></div>
 
                   <% } %>
 
@@ -469,12 +470,12 @@ function formatDate(date) {
             <div class="comment level-<%= level %>">
 
               <div class="comment-main">
-                <div class="comment-content" onclick="toggleNestedComments('<%= comment.id %>')">
-                  <div class="comment-header">
+                <div class="comment-content">
+                  <div class="comment-header" onclick="toggleNestedComments('<%= comment.id %>')">
                     <div class="comment-avatar">
-                      <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onclick="window.location.href = '/user/<%= comment.user.username %>'" />
+                      <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onclick="window.location.href = '/user/<%= comment.user.username %>'; event.stopPropagation();" />
                     </div>
-                    <a class="comment-user-info" href="/user/<%= comment.user.username %>">
+                    <a class="comment-user-info" href="/user/<%= comment.user.username %>" onclick="event.stopPropagation()">
                       <div class="repliers-info">
                         <span><%= comment.user.username %></span>
                         <% if (comment.user.username == post.user.username) { %>
@@ -594,12 +595,14 @@ function formatDate(date) {
                   <% if (!post.deleted && !post.isLocked) { %>
 
                   <% if (user) { %>
-                  <a href="#" class="secondary-text" id="reply-button-<%= comment.id %>" onclick="<% if (user) { %>showReplyForm('<%= comment.id %>', event)<% } else { %>window.location.href = '/login';<% } %>">
+                  <a href="#" class="secondary-text reply-button" id="reply-button-<%= comment.id %>" onclick="<% if (user) { %>showReplyForm('<%= comment.id %>', event)<% } else { %>window.location.href = '/login';<% } %>">
                     Reply
                   </a>
+
                   <% } %>
                   <% } %>
                 </div>
+                <div id="vr"></div>
                 <button class="commentMainReactionButton null-button-normal reaction-button <% if (comment.userReaction) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>">
                   <% if (comment.userReaction) { %>
 
