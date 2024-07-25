@@ -28,13 +28,10 @@ class JobProcessor {
 
   isTechJob(title) {
     const techKeywords = [
-      'software', 'developer', 'programmer', 'data', 'analyst',
-      'scientist', 'IT', 'information technology', 'web', 'frontend', 'backend',
-      'full stack', 'devops', 'cloud', 'network', 'security', 'database',
-      'machine learning', 'AI', 'artificial intelligence', 'QA', 'quality assurance',
-      'UX', 'UI', 'product manager', 'scrum master', 'agile', 'tech', 'systems',
-      'infrastructure', 'mobile', 'iOS', 'Android', 'cybersecurity', 'blockchain',
-      'IoT', 'robotics', 'automation', 'SRE', 'reliability', 'architect'
+      'software', 'programmer', 'data scientist', 'data analyst', 'information technology', 'web', 'frontend', 'backend',
+      'full stack', 'devops', 'cloud', 'network', 'database',
+      'machine learning', 'artificial intelligence', 'quality assurance', 'product manager', 'scrum master', 'agile', 'systems',
+      'infrastructure', 'mobile', 'iOS', 'Android', 'cybersecurity', 'robotics', 'automation', 'SRE', 'reliability', 'project manager', 
     ]; 
     
     const lowercaseTitle = title.toLowerCase();
