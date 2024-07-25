@@ -89,7 +89,8 @@ a:visited {
   height: 31px;
   display: none;
   width: 31px;
-  border: 1.5px solid var(--border-color);
+  border: 1.5px solid #f2f2f2;
+  background: #f2f2f2;
   border-radius: 6px;
   align-items: center;
   justify-content: center;
@@ -1377,9 +1378,9 @@ button .material-symbols-outlined:not(:only-child) {
 #null-button,
 .null-button-normal,
 #null-button-normal {
-  background: #FAFBFF;
+  background: #f2f2f2;
   color: #7f7f7f;
-  border: 1.5px solid #868686;
+  border: 1.5px solid #f2f2f2;
 }
 
 .margin-v-auto {
@@ -1841,7 +1842,8 @@ button .material-symbols-outlined:not(:only-child) {
   }
 
   .navigation-button {
-    border-color: var(--dark-mode-border-color);
+    border-color: #121212;
+    background: #121212;
   }
 
   .menu-content a {
@@ -1866,10 +1868,12 @@ button .material-symbols-outlined:not(:only-child) {
   #null-button,
   .null-button-normal,
   #null-button-normal {
-    background: var(--dark-mode-main-color);
+    background: #121212;
     color: #b0b0b0;
-    border: 1.5px solid var(--dark-mode-border-color);
+    border: 1.5px solid #121212;
   }
+
+
 
   input:focus,
   textarea:focus,

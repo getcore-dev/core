@@ -1357,11 +1357,13 @@ OUTER APPLY (
     if (!isGitHubUrl) {
       return { link: url }; // Return early if the URL is not a GitHub repository URL
     }
-
+  
     // Extract the repository's owner and name from the URL
     const [, owner, repo] = url.match(/github\.com\/([^\/]+)\/([^\/]+)/);
-
+  
     try {
+      const { Octokit } = await import('@octokit/rest');
+
       // Check if recent data (within the last 30 minutes) already exists in the GitHubRepoData table
       const existingDataQuery = `
         SELECT *, DATEDIFF(minute, time_fetched, GETDATE()) AS time_diff
@@ -1369,46 +1371,34 @@ OUTER APPLY (
         WHERE repo_url = '${url}'
       `;
       const existingDataResult = await sql.query(existingDataQuery);
-
+  
       let repoData, commitsData;
-
+  
+      // Initialize Octokit with authentication if needed
+      const octokit = new Octokit({ userAgent: 'CORE' });
+  
       // Check if data needs to be fetched or updated
       if (
         existingDataResult.recordset.length === 0 ||
         existingDataResult.recordset[0].time_diff > 30
       ) {
         // No existing data or data is older than 30 minutes, fetch new data from GitHub API
-        const apiUrl = `https://api.github.com/repos/${owner}/${repo}`;
-        const commitsUrl = `${apiUrl}/commits`;
-        const repoResponse = await axios.get(apiUrl, {
-          headers: { 'User-Agent': 'request' },
-          timeout: 5000,
-        });
-        const commitsResponse = await axios.get(commitsUrl, {
-          headers: { 'User-Agent': 'request' },
-          params: { per_page: 5 },
-          timeout: 5000,
-        });
-
-        if (repoResponse.status !== 200 || commitsResponse.status !== 200) {
-          throw new Error(
-            `Request to GitHub API failed with status: ${repoResponse.status} or ${commitsResponse.status}`
-          );
-        }
-
+        const [repoResponse, commitsResponse] = await Promise.all([
+          octokit.repos.get({ owner, repo }),
+          octokit.repos.listCommits({ owner, repo, per_page: 5 }),
+        ]);
+  
         repoData = repoResponse.data;
         commitsData = commitsResponse.data;
       } else {
         // Use existing data if it's recent enough
         repoData = JSON.parse(existingDataResult.recordset[0].raw_json);
-        commitsData = JSON.parse(
-          existingDataResult.recordset[0].raw_commits_json
-        );
+        commitsData = JSON.parse(existingDataResult.recordset[0].raw_commits_json);
       }
-
+  
       const rawRepoJson = JSON.stringify(repoData);
       const rawCommitsJson = JSON.stringify(commitsData);
-
+  
       if (existingDataResult.recordset.length > 0 && repoData && commitsData) {
         // Data exists, so update it with the new data from GitHub
         const updateQuery = `
@@ -1425,17 +1415,14 @@ OUTER APPLY (
         const insertQuery = `
           INSERT INTO GitHubRepoData (id, repo_url, repo_name, raw_json, raw_commits_json, time_fetched)
           VALUES (${repoData.id},
-            '${url}', '${repoData.name.replace(
-  /'/g,
-  '\'\''
-)}', '${rawRepoJson.replace(/'/g, '\'\'')}', '${rawCommitsJson.replace(
-  /'/g,
-  '\'\''
-)}', GETDATE())
+            '${url}', '${repoData.name.replace(/'/g, '\'\'')}',
+            '${rawRepoJson.replace(/'/g, '\'\'')}',
+            '${rawCommitsJson.replace(/'/g, '\'\'')}',
+            GETDATE())
         `;
         await sql.query(insertQuery);
       }
-
+  
       return {
         id: repoData.id,
         repo_url: repoData.html_url,

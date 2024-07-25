@@ -102,7 +102,7 @@
   </main>
 
   <script>
-    window.user = <%- JSON.stringify(user) %>;
+    window.user = '<%- JSON.stringify(user) %>' || null;
   </script>
   <script defer>
     function interactWithPost(postId, user, action) {
@@ -935,8 +935,8 @@ description
     <div class="user-actions">
       <div class="comment-user-interactions ${comment.id}" data-type="comment" data-id="${comment.id}">
         ${user ? renderReactionButton(comment, user, reactionTypes) : ''}
-        <span class="total-reactions-count-comment-${comment.id}">${totalReactions} reaction${totalReactions !== 1 ? 's' : ''}</span>
-        <span class="total-reactions-count">${totalReplies} repl${totalReplies !== 1 ? 'ies' : 'y'}</span>
+        <span id="secondary-text" class="total-reactions-count-comment-${comment.id}">${totalReactions} reaction${totalReactions !== 1 ? 's' : ''}</span>
+        <span id="secondary-text" class="total-reactions-count">${totalReplies} repl${totalReplies !== 1 ? 'ies' : 'y'}</span>
       </div>
       <div class="replies">
         ${user ? `<a href="#" id="reply-button-${comment.id}" onclick="showReplyForm('${comment.id}', event)">Add Reply</a>` : ''}
@@ -1057,8 +1057,8 @@ description
     <div class="user-actions">
       <div class="comment-user-interactions ${comment.id}" data-type="comment" data-id="${comment.id}">
         ${renderReactionButton(comment, user, reactionTypes)}
-        <span class="total-reactions-count-comment-${comment.id}">${totalReactions} reactions</span>
-        <span class="total-reactions-count">${totalReplies} replies</span>
+        <span id="secondary-text" class="total-reactions-count-comment-${comment.id}">${totalReactions} reactions</span>
+        <span id="secondary-text" class="total-reactions-count">${totalReplies} replies</span>
       </div>
       <div class="replies">
         ${user ? `<a href="#" id="reply-button-${comment.id}" onclick="showReplyForm('${comment.id}', event)">Add Reply</a>` : ''}
@@ -1218,6 +1218,11 @@ description
         formattedDate = years + ' years ago';
       }
       return formattedDate;
+    }
+
+    function toggleReactionPopup(type, id) {
+      const popup = document.getElementById(`reactionPopup-${type}-${id}`);
+      popup.style.display = popup.style.display === 'none' ? 'flex' : 'none';
     }
 
     function shortenContent(content) {
