@@ -146,6 +146,8 @@ pre code {
 
 .user-interactions {
   margin: 0px;
+  transition: transform .5s ease;
+  position: relative;
   margin-bottom: .8rem;
   margin-top: 1.1rem;
   padding: 0 14px;
@@ -433,6 +435,7 @@ div.interact-buttons {
 
 .reaction-popup-content {
   display: flex;
+  align-items: center;
   gap: .8rem;
   flex-direction: row;
 }
@@ -485,18 +488,23 @@ div.interact-buttons {
 .reaction-popup {
   position: absolute;
   display: flex;
-  bottom: 52px;
+  top: 0;
+  opacity: 0;
   left: 10px;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-end;
   transition: opacity 0.3s ease;
-  background-color: var(--light-mode-main-color);
-  border: 1px solid var(--border-color);
+  border: 0;
   border-radius: 10px;
   pointer-events: none;
   z-index: 999;
+}
+
+
+.reaction-popup.show {
+  opacity: 1;
+  display: block;
+  pointer-events: auto;
 }
 
 .solution-username .secondary-text {
@@ -556,7 +564,8 @@ div.interact-buttons {
 .reaction-popup {
   display: flex;
   position: absolute;
-  bottom: 53px;
+  top: 0;
+  bottom: 0;
   opacity: 1;
   flex-direction: row;
   width: max-content;
@@ -569,7 +578,7 @@ div.interact-buttons {
   color: var(--light-mode-text-color);
   padding: 10px;
   border: 0;
-  margin: 4px;
+  height: 32px;
   background: 0;
   display: flex;
   gap: .6rem;
@@ -941,6 +950,7 @@ div.repliees-avatar {
   padding: 2px 13px;
   padding-top: 0;
   justify-content: flex-end;
+  transition: transform .5s ease;
 }
 
 .thumbnail-image {
@@ -1653,8 +1663,8 @@ div.post-information {
 
   .reaction-button,
   .main-reaction-button {
-    background-color: var(--dark-mode-main-color);
-    border: 1px solid var(--dark-mode-border-color);
+    background-color: #121212;
+    border: 1.5px solid #121212;
     color: var(--dark-mode-secondary-text-color);
   }
 
@@ -1728,17 +1738,8 @@ div.post-information {
     background-color: var(--dark-mode-body-color);
   }
 
-  .reaction-popup {
-    background-color: var(--dark-mode-main-color);
-    border-color: var(--dark-mode-border-color);
-  }
-
   .post-subtitle-text {
     color: #ededed;
-  }
-
-  .reaction-popup button:hover {
-    background: var(--dark-mode-button-hover-color);
   }
 
   .dropdown-content button {
@@ -1871,7 +1872,8 @@ div.post-information {
   .reaction-button,
   #delete-post-button,
   #delete-comment-button {
-    border-color: var(--dark-mode-border-color);
+    border-color: #121212;
+    background: #121212;
   }
 
   .total-reactions-count,

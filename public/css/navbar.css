@@ -1842,7 +1842,8 @@ button .material-symbols-outlined:not(:only-child) {
   }
 
   .navigation-button {
-    border-color: var(--dark-mode-border-color);
+    border-color: #121212;
+    background: #121212;
   }
 
   .menu-content a {
@@ -1867,10 +1868,12 @@ button .material-symbols-outlined:not(:only-child) {
   #null-button,
   .null-button-normal,
   #null-button-normal {
-    background: var(--dark-mode-main-color);
+    background: #121212;
     color: #b0b0b0;
-    border: 1.5px solid var(--dark-mode-border-color);
+    border: 1.5px solid #121212;
   }
+
+
 
   input:focus,
   textarea:focus,

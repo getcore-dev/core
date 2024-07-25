@@ -102,7 +102,7 @@
   </main>
 
   <script>
-    window.user = <%- JSON.stringify(user) %>;
+    window.user = '<%- JSON.stringify(user) %>' || null;
   </script>
   <script defer>
     function interactWithPost(postId, user, action) {
@@ -1218,6 +1218,11 @@ description
         formattedDate = years + ' years ago';
       }
       return formattedDate;
+    }
+
+    function toggleReactionPopup(type, id) {
+      const popup = document.getElementById(`reactionPopup-${type}-${id}`);
+      popup.style.display = popup.style.display === 'none' ? 'flex' : 'none';
     }
 
     function shortenContent(content) {

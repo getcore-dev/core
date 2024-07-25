@@ -129,6 +129,10 @@
 
 }
 
+.reaction-button>* {
+  pointer-events: none;
+}
+
 .reaction-emote {
   display: inline-flex;
   height: 100%;

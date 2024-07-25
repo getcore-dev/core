@@ -315,42 +315,54 @@ function formatDate(date) {
                 This post was last edited <%= formattedDate %>
               </p>
               <% } %>
-              <div class="user-interactions" id="horizontal-scroll">
-                <% const reactionTypes = [
-            { type: "LOVE", icon: "❤️" },
-            { type: "LIKE", icon: "👍" },
-            { type: "CURIOUS", icon: "🤔" },
-            { type: "DISLIKE", icon: "👎" }
-          ]; %>
-                <button class="mainReactionButton null-button-normal reaction-button<% if (post.userReaction) { %> active <% } %>" data-type="post" data-id="<%= post.id %>">
-                  <% if (post.userReaction) { %>
-                  <% if (post.userReaction == "B") { post.userReaction = "BOOST"; } %>
-                  <% if (post.userReaction != null && reactionTypes.find(reaction => reaction.type === post.userReaction)) { %>
-                  <%= reactionTypes.find(reaction => reaction.type === post.userReaction).icon %>
-                  <% } else { %>
-                  <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
-                  <% } %>
-                  <% } else { %>
-                  <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
-                  <% } %>
+              <div class="reaction-container">
+                <div class="user-interactions post-user-interactions">
+                  <% const reactionTypes = [
+                    { type: "LOVE", icon: "❤️" },
+                    { type: "LIKE", icon: "👍" },
+                    { type: "CURIOUS", icon: "🤔" },
+                    { type: "DISLIKE", icon: "👎" }
+                  ]; %>
+                  <div id="reactionPopup-post-<%= post.id %>" class="reaction-popup post-reaction-popup">
+                    <div class="reaction-popup-content">
+                      <% reactionTypes.forEach(reaction => { %>
+                      <button class="reaction-button-popup<% if (post.userReaction == reaction.type) { %> active <% }%>" data-type="post" data-id="<%= post.id %>" data-reaction="<%= reaction.type %>" onclick="interactWithPost('<%= post.id %>', '<%= user %>', '<%= reaction.type %>')">
+                        <%= reaction.icon %>
 
-                  <% let totalReactions = 0; %>
-                  <% reactionTypes.forEach(reaction => { %>
-                  <% totalReactions += post[reaction.type.toLowerCase() + 'Count']; %>
-                  <% }); %>
-                  <% if (totalReactions > 0) { %>
-                  <span id="secondary-text" class="total-reactions-count-<%= post.id %>"><%= totalReactions %> </span>
-                  <% } else { %>
-                  <span id="secondary-text" class="total-reactions-count <%= post.id %>">0 </span>
-                  <% } %>
-                </button>
-                <% if (!post.deleted && !post.isLocked) { %>
+                        <span class="reaction-count"><%= post[reaction.type.toLowerCase() + 'Count'] %></span>
+                      </button>
+                      <% }); %>
+                    </div>
+                  </div>
+                  <button class="mainReactionButton null-button-normal reaction-button<% if (post.userReaction) { %> active <% } %>" data-type="post" data-id="<%= post.id %>">
+                    <% if (post.userReaction) { %>
+                    <% if (post.userReaction == "B") { post.userReaction = "BOOST"; } %>
+                    <% if (post.userReaction != null && reactionTypes.find(reaction => reaction.type === post.userReaction)) { %>
+                    <%= reactionTypes.find(reaction => reaction.type === post.userReaction).icon %>
+                    <% } else { %>
+                    <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
+                    <% } %>
+                    <% } else { %>
+                    <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
+                    <% } %>
+
+                    <% let totalReactions = 0; %>
+                    <% reactionTypes.forEach(reaction => { %>
+                    <% totalReactions += post[reaction.type.toLowerCase() + 'Count']; %>
+                    <% }); %>
+                    <% if (totalReactions > 0) { %>
+                    <span id="secondary-text" class="total-reactions-count-<%= post.id %>"><%= totalReactions %> </span>
+                    <% } else { %>
+                    <span id="secondary-text" class="total-reactions-count <%= post.id %>">0 </span>
+                    <% } %>
+                  </button>
+                  <% if (!post.deleted && !post.isLocked) { %>
 
 
-                <button class="null-button-normal reaction-button" onclick="<% if (user) { %>showCommentForm()<% } else { %>window.location.href = '/login';<% } %>">
-                  <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">chat_bubble</span></span>
-                  <span id="secondary-text">
-                    <% 
+                  <button class="null-button-normal reaction-button" onclick="<% if (user) { %>showCommentForm()<% } else { %>window.location.href = '/login';<% } %>">
+                    <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">chat_bubble</span></span>
+                    <span id="secondary-text">
+                      <% 
                         function countAllReplies(replies) {
                           if (!replies || replies.length === 0) return 0;
                           let total = 0;
@@ -361,78 +373,67 @@ function formatDate(date) {
                         }
                         const totalReplies = countAllReplies(post.comments);
                       %><%= String(totalReplies).trim() %>
-                  </span>
-                </button>
-
-                <% } %>
-
-
-                <button class="submit-button-normal" id="favorite-button" onclick="favorite('<%= post.id %>')">
-                  Favorite
-                </button>
-                <% if (!post.deleted && !post.isLocked) { %>
-
-                <% if (user && user.username === post.username) { %>
-                <button class="regular-button-normal" onclick="window.location.href='/posts/<%= post.id %>/edit'">
-                  Edit
-                </button>
-                <% } %>
-                <% } %>
-                <button class="null-button-normal" id="share-button" onclick="share('<%= post.title %>', '', 'https://c-ore.dev/posts/<%= post.id %>')">
-                  <span class="material-symbols-outlined">ios_share</span>
-                </button>
-
-
-
-                <% if (!post.deleted) { %>
-
-                <% if (user && user.username === post.username) { %>
-                <button class="cancel-button-normal" onclick="deletePost('<%= post.id %>')">
-                  Delete
-                </button>
-                <% } %>
-                <% } %>
-                <% if (user && user.isAdmin) { %>
-                <div class="dropdown">
-                  <button class="null-button-normal" onclick="showDropdown(event)">
-                    <span class="material-symbols-outlined">more_horiz</span>
+                    </span>
                   </button>
-                  <div class="dropdown-content" style="display: none;">
-                    <div class="dropdown-item">
-                      <button onclick="adminDeletePost('<%= post.id %>')">
-                        <span style="color: red;" class="material-symbols-outlined">
-                          gavel
-                        </span>
-                        <strong style="color: red;">
-                          <p>Admin Delete (Logged)</p>
-                        </strong>
-                      </button>
-                    </div>
-                    <div class="dropdown-item">
-                      <span>
-                        <button onclick="toggleLockPost('<%= post.id %>')">
-                          <span class="material-symbols-outlined">
-                            lock
-                          </span>
-                          <p>Lock Post</p>
-                        </button>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <% } %>
-                <div id="reactionPopup-post-<%= post.id %>" class="reaction-popup" style="display:none;">
-                  <div class="reaction-popup-content">
-                    <% reactionTypes.forEach(reaction => { %>
-                    <button class="reaction-button-popup<% if (post.userReaction == reaction.type) { %> active <% }%>" data-type="post" data-id="<%= post.id %>" data-reaction="<%= reaction.type %>" onclick="interactWithPost('<%= post.id %>', '<%= user %>', '<%= reaction.type %>')">
-                      <%= reaction.icon %>
 
-                      <span class="reaction-count"><%= post[reaction.type.toLowerCase() + 'Count'] %></span>
+                  <% } %>
+
+
+                  <button class="submit-button-normal" id="favorite-button" onclick="favorite('<%= post.id %>')">
+                    Favorite
+                  </button>
+                  <% if (!post.deleted && !post.isLocked) { %>
+
+                  <% if (user && user.username === post.username) { %>
+                  <button class="regular-button-normal" onclick="window.location.href='/posts/<%= post.id %>/edit'">
+                    Edit
+                  </button>
+                  <% } %>
+                  <% } %>
+                  <button class="null-button-normal" id="share-button" onclick="share('<%= post.title %>', '', 'https://c-ore.dev/posts/<%= post.id %>')">
+                    <span class="material-symbols-outlined">ios_share</span>
+                  </button>
+
+
+
+                  <% if (!post.deleted) { %>
+
+                  <% if (user && user.username === post.username) { %>
+                  <button class="cancel-button-normal" onclick="deletePost('<%= post.id %>')">
+                    Delete
+                  </button>
+                  <% } %>
+                  <% } %>
+                  <% if (user && user.isAdmin) { %>
+                  <div class="dropdown">
+                    <button class="null-button-normal" onclick="showDropdown(event)">
+                      <span class="material-symbols-outlined">more_horiz</span>
                     </button>
-                    <% }); %>
+                    <div class="dropdown-content" style="display: none;">
+                      <div class="dropdown-item">
+                        <button onclick="adminDeletePost('<%= post.id %>')">
+                          <span style="color: red;" class="material-symbols-outlined">
+                            gavel
+                          </span>
+                          <strong style="color: red;">
+                            <p>Admin Delete (Logged)</p>
+                          </strong>
+                        </button>
+                      </div>
+                      <div class="dropdown-item">
+                        <span>
+                          <button onclick="toggleLockPost('<%= post.id %>')">
+                            <span class="material-symbols-outlined">
+                              lock
+                            </span>
+                            <p>Lock Post</p>
+                          </button>
+                        </span>
+                      </div>
+                    </div>
                   </div>
+                  <% } %>
                 </div>
-
               </div>
             </div>
           </div>
@@ -577,7 +578,7 @@ function formatDate(date) {
               </div>
             </div>
 
-            <div class="user-actions">
+            <div class="user-actions <%= comment.id %>">
               <% const reactionTypes = [
                   { type: "LOVE", icon: "❤️" },
                   { type: "LIKE", icon: "👍" },
@@ -635,7 +636,7 @@ function formatDate(date) {
                   <span id="secondary-text" class="total-reactions-count-comment-<%= comment.id %>"><%= totalReactions %></span>
 
                 </button>
-                <div id="reactionPopup-comment-<%= comment.id %>" class="reaction-popup" style="display:none; position: absolute;left: 0; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
+                <div id="reactionPopup-comment-<%= comment.id %>" class="reaction-popup comment-reaction-popup" style="display:block; opacity:0; position: sticky;left: 0; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
 
                   <div class="reaction-popup-content">
                     <% reactionTypes.forEach(reaction => { %>
@@ -1045,6 +1046,52 @@ function formatDate(date) {
     });
 
     document.addEventListener('DOMContentLoaded', () => {
+      const commentReactionButtons = document.querySelectorAll('button.commentMainReactionButton');
+      const userActionsDivs = document.querySelectorAll('.user-actions');
+      const commentReactionPopups = document.querySelectorAll('.comment-reaction-popup');
+      const postReactionPopup = document.querySelector('.reaction-popup.post-reaction-popup');
+      console.log(postReactionPopup);
+      postReactionPopup.style.transform = `translateX(-${postReactionPopup.offsetWidth + 8}px)`;
+
+      // translate the userActionsDivs X to the right by the length of their corresponding comment reaction popup
+      userActionsDivs.forEach((div, index) => {
+        const popup = commentReactionPopups[index];
+        div.style.transform = `translateX(${popup.offsetWidth + 8}px)`;
+      });
+
+      function closeAllPopups() {
+        userActionsDivs.forEach((div, index) => {
+          const popup = commentReactionPopups[index];
+          div.style.transform = `translateX(${popup.offsetWidth + 8}px)`;
+          popup.style.opacity = '0';
+        });
+      }
+
+      commentReactionButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+          event.stopPropagation(); // Stop the click from propagating to the document
+          const commentId = button.getAttribute('data-id');
+          const userActionsDiv = document.querySelector(`.user-actions.${commentId}`);
+          const popup = document.getElementById(`reactionPopup-comment-${commentId}`);
+          if (userActionsDiv.style.transform === 'translateX(0px)') {
+            userActionsDiv.style.transform = `translateX(${popup.offsetWidth + 8}px)`;
+            popup.style.opacity = '0';
+          } else {
+            closeAllPopups(); // Close all other popups first
+            userActionsDiv.style.transform = 'translateX(0px)';
+            popup.style.opacity = '1';
+          }
+        });
+      });
+
+      // Add a click event listener to the document
+      document.addEventListener('click', (event) => {
+        // Check if the clicked element is not a comment reaction button
+        if (!event.target.closest('button.commentMainReactionButton')) {
+          closeAllPopups();
+        }
+      });
+
       document.querySelectorAll('form[id^="favorite-form-"]').forEach(form => {
         form.addEventListener('submit', async (event) => {
           event.preventDefault(); // Prevent the default form submission
@@ -1052,6 +1099,8 @@ function formatDate(date) {
           const formId = form.getAttribute('id');
           const postId = formId.split('-')[2];
           const url = `/favorites/post/${postId}`;
+
+
 
           try {
             const response = await fetch(url, {
@@ -1076,6 +1125,8 @@ function formatDate(date) {
         });
       });
     });
+
+
     $(document).ready(function () {
       var easyMDE = new EasyMDE({
         element: document.getElementById('comment-form-textarea'),
@@ -1143,7 +1194,6 @@ function formatDate(date) {
         dropdown.style.display = 'none';
       });
     }
-
 
     document.addEventListener('click', closeAllDropdowns);
 
@@ -1436,34 +1486,52 @@ function formatDate(date) {
 
       document.querySelectorAll('.mainReactionButton').forEach(button => {
         button.addEventListener('click', (event) => {
+          event.stopPropagation(); // Prevent the click from immediately triggering the document click handler
+
           // Determine which button was clicked
           const clickedButton = event.target;
           const buttonType = clickedButton.getAttribute('data-type');
           const buttonId = clickedButton.getAttribute('data-id');
+          const popup = document.getElementById(`reactionPopup-${buttonType}-${buttonId}`);
+          const userInteractionsDiv = document.querySelector('.post-user-interactions');
 
-          // Find the corresponding reaction menu based on the clicked button
-          const reactionMenu = document.getElementById(`reactionPopup-${buttonType}-${buttonId}`);
+          if (!popup) {
+            console.error('Reaction menu not found');
+            return;
+          }
 
-          if (reactionMenu) {
-            try {
-              if (reactionMenu.style.display === 'flex') {
-                reactionMenu.style.display = 'none';
-              } else {
-                closeAllDropdowns();
-                reactionMenu.style.display = 'flex';
-              }
-            } catch (error) {
-              console.error('Error:', error);
-            }
+          // Toggle the popup
+          if (popup.style.opacity === '1') {
+            // If the popup is visible, hide it
+            popup.style.opacity = '0';
+            userInteractionsDiv.style.transform = 'translateX(0)';
+
+          } else {
+            // If the popup is hidden, show it
+            popup.style.opacity = '1';
+            userInteractionsDiv.style.transform = `translateX(${popup.offsetWidth + 8}px)`;
+
           }
         });
       });
 
+      // Add a click event listener to the document
+      document.addEventListener('click', () => {
+        const popups = document.querySelectorAll('[id^="reactionPopup-"]');
+        const userInteractionsDiv = document.querySelector('.post-user-interactions');
+
+        popups.forEach(popup => {
+          popup.style.opacity = '0';
+        });
+
+        if (userInteractionsDiv) {
+          const firstPopup = popups[0]; // Assuming all popups have the same width
+          userInteractionsDiv.style.transform = firstPopup ? 'translateX(0)' : `translateX(${firstPopup.offsetWidth + 8}px)`;
+        }
+      });
+
       function closeAllDropdowns() {
         const allDropdowns = document.querySelectorAll('.reaction-popup');
-        allDropdowns.forEach(function (dropdown) {
-          dropdown.style.display = 'none';
-        });
       }
 
       document.addEventListener('click', function (event) {
