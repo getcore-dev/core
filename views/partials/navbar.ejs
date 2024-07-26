@@ -326,7 +326,7 @@
         <li class="dropdown">
           <% if (isActive('/jobs') && (typeof job !== 'undefined' || typeof company !== 'undefined')) { %>
           <span class="community-preview secondary-text">
-            <%= typeof job !== 'undefined' ? job.company_name : company.name %>
+            <img src="<%= typeof job !== 'undefined' ? job.company_logo : company.logo %>" style="height: 16px;">
           </span>
 
           <% } %>
@@ -352,7 +352,7 @@
     </div>
   </div>
 </nav>
-<div class="search-bar" id="search-bar-div">
+<div class="search-bar adaptive-main adaptive-border-bottom" id="search-bar-div">
   <div class="search-bar-container">
     <form action="/search" method="GET">
       <input type="text" name="searchTerm" id="search-bar" placeholder="Search" />

@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/search.css" />
   <link rel="stylesheet" href="/css/jobs.css" />
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
   <link rel="shortcut icon" href="/img/core.png" />
   <title>Search Results - <%= searchTerm %></title>
@@ -15,177 +16,194 @@
 
 <body>
   <%- include('partials/navbar', { pagePath: 'search', user: user }) %>
-
   <div class="container">
     <div class="jobs-header">
-      <h4>Search results for <span class="tag"><%= searchTerm %></span></h4>
+      <h3 class="secondary-text">Search results for <span class="tag"><%= searchTerm %></span></h3>
+    </div>
+    <div id="loading-indicator" style="display: none;">
+      <div class="spinner-container">
+        <div class="spinner"></div>
+      </div>
     </div>
     <div id="posts-container" class="column">
-      <% if (users.length > 0) { %>
-      <div class="users">
-        <% users.forEach(function(user) { %>
-        <div class="user" onclick="window.location.href='/user/<%= user.username %>'">
-          <div class="user-image">
-            <% if (user.avatar) { %>
-            <img id="user-avatar" src="<%= user.avatar %>" alt="Profile Picture" style="  box-shadow: 0 1px 10px <%= user.profile_border_color%>;
-              border: 1px solid <%= user.profile_border_color%> !important;" />
-            <% } else { %>
-            <img id="user-avatar" src="/img/default-avatar.png" alt="Avatar" class="avatar" />
-            <% } %>
-          </div>
-          <div class="search-user-info">
-            <p><%= user.firstname %> <%= user.lastname %></p>
-            <p><%= user.username%></p>
+      <h3 class="users-header default-hidden secondary-text margin-06-bottom">Users</h3>
+      <div id="users-results"></div>
+      <h3 class="jobs-display-header default-hidden secondary-text margin-06-bottom">Jobs</h3>
+      <div id="jobs-results"></div>
+      <h3 class="posts-header default-hidden secondary-text margin-06-bottom">Posts</h3>
+      <div id="posts-results"></div>
+    </div>
+  </div>
+  <script>
+    function createJobElement(job) {
+      if (!job) {
+        return null;
+      }
+      const jobElement = document.createElement('div');
+      jobElement.classList.add('job');
+      jobElement.onclick = () => (window.location.href = `/jobs/${job.id}`);
+
+      const tagsArray = job.skills[1] ?
+        job.skills[1].split(',').map(skill => skill.trim()) : [];
+
+      const displayedTags = tagsArray.slice(0, 6);
+
+      const tagsHTML = displayedTags
+        .map(
+          (skill) =>
+          `<span class="tag">${skill}</span>`
+        )
+        .join('');
+
+      jobElement.innerHTML = `
+      <div class="job-preview">
+        <div class="job-info">
+          <div class="company-info">
+            ${
+            job.company_logo
+              ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${job.company_logo}" alt="" />`
+              : ''
+        }
+          <div class="job-posting-company-info">
+            <p class="company-name secondary-text">${job.company_name}</p>
+            <h3 class="job-title"><a href="/jobs/${job.id}">${
+        job.title
+      }</a></h3>
           </div>
         </div>
-        <% }); %>
+        <h5 class="job-subtitle secondary-text">${job.location}</h5> 
+        <div class="job-posting-information job-subtitle secondary-text">
+          <span>${
+  job.experienceLevel === 'Mid Level'
+    ? 'L3/L4'
+    : job.experienceLevel === 'Entry Level'
+      ? 'L1/L2'
+      : job.experienceLevel === 'Senior'
+        ? 'L5/L6'
+        : job.experienceLevel
+}</span>
+
+          <span class="job-salary" style="margin-left: auto;">${job.salary != 0 ? ` • USD $${job.salary.toLocaleString()}` : ''}${
+  job.salary_max != 0 ? '- $' + job.salary_max.toLocaleString() : ''
+}</span>
+        </div>
+        <div class="job-posting-flairs">${tagsHTML}</div>
       </div>
-      <% } else { %>
-      <% } %>
+    </div>
+  `;
+      return jobElement;
+    }
 
-      <% if (jobs.length > 0) { %>
-      <div class="jobs">
-        <% if (jobs.length > 4  && (users.length > 0 || posts.length > 0)) { %>
-        <% jobsTrimmed = jobs.slice(0, 4); %>
-        <% } else { %>
-        <% jobsTrimmed = jobs; %>
-        <% } %>
+    async function fetchSearchResults() {
+      const loadingIndicator = document.getElementById('loading-indicator');
+      loadingIndicator.style.display = 'block';
+      try {
+        const response = await axios.get('/search/results', {
+          params: {
+            searchTerm: '<%= searchTerm %>'
+          }
+        });
+        const {
+          users,
+          jobs,
+          posts
+        } = response.data;
+        console.log('Users:', users);
+        console.log('Jobs:', jobs);
+        console.log('Posts:', posts);
 
-        <% jobsTrimmed.forEach((job) => { %>
-        <div class="job" onclick="window.location.href='/jobs/<%= job.id %>'">
-          <div class="job-preview">
-            <div class="job-info">
-              <div class="company-info">
-                <img class="thumbnail thumbnail-tiny" src="<%= job.company_logo %>" alt="<%= job.company_name %> logo" />
-                <p class="company-name"><%= job.company_name %></p>
-              </div>
-              <h3 class="job-title">
-                <%= job.title %>
-                <span style="margin-left: auto; float: right;"><%= job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1) %></span>
-              </h3>
-              <h5 class="job-subtitle secondary-text">
-                <span style="margin-left: auto; float:right;">USD $<%= Math.floor((job.salary + job.salary_max) / 2 / 1000) %>k</span>
-                <%= job.location %>
-              </h5>
-              <div class="job-main">
-                <div class="job-description">
-                  <p class="job-description"><%= job.description %></p>
+        renderUsers(users.recordset);
+        renderJobs(jobs.recordset);
+        renderPosts(posts.recordset);
+      } catch (error) {
+        console.error('Error fetching search results:', error);
+      } finally {
+        loadingIndicator.style.display = 'none';
+      }
+    }
+
+    function renderUsers(users) {
+      const usersContainer = document.getElementById('users-results');
+      const usersHeader = document.querySelector('.users-header');
+      if (users.length > 0) {
+        usersHeader.classList.add('show');
+        usersContainer.innerHTML = `
+          <div class="users">
+            ${users.map(user => `
+              <div class="user" onclick="window.location.href='/user/${user.username}'">
+                <div class="user-image">
+                  <img id="user-avatar" src="${user.avatar || '/img/default-avatar.png'}" alt="Profile Picture" style="box-shadow: 0 1px 10px ${user.profile_border_color}; border: 1px solid ${user.profile_border_color} !important;" />
+                </div>
+                <div class="search-user-info">
+                  <p class="adaptive-text main-text">${user.firstname} ${user.lastname}</p>
+                  <p class="secondary-text sub-text">@${user.username}</p>
                 </div>
               </div>
-              <div class="job-posting-flairs">
-                <% const tagsArray = job.tags && job.tags[1] ? job.tags[1].split(", ") : []; %>
-                <% const maxTags = 3; %>
-                <% const displayedTags = tagsArray.slice(0, maxTags); %>
-                <% displayedTags.forEach((tag) => { %>
-                <span class="job-flair" onclick="window.location.href='/tags/<%= tag %>'">
-                  <p><%= tag %></p>
-                </span>
-                <% }); %>
-                <% const remainingTags = tagsArray.length - maxTags; %>
-                <% if (remainingTags > 0) { %>
-                <span class="see-more">+<%= remainingTags %> more</span>
-                <% } %>
-              </div>
-            </div>
+              <hr>
+            `).join('')}
           </div>
-        </div>
-        <% }); %>
+        `;
+      } else {
+        usersContainer.innerHTML = '<div>No users available</div>';
+      }
+    }
 
-        <% if (jobs.length > 4 && (users.length > 0 || posts.length > 0)) { %>
-        <div class="load-more">
-          <button class="load-more-btn" id="regular-button" onclick="window.location.href='/search/jobs/?searchTerm=<%= searchTerm %>'">Load More Jobs</button>
-        </div>
-        <% } %>
-      </div>
-      <% } else { %>
-      <% } %>
+    function renderJobs(jobs) {
+      const jobsContainer = document.getElementById('jobs-results');
+      const jobsHeader = document.querySelector('.jobs-display-header');
+      if (jobs.length > 0) {
+        jobsHeader.classList.add('show');
+        jobsContainer.innerHTML = jobs.map(job => createJobElement(job).outerHTML).join('<hr>');
+      } else {
+        jobsContainer.innerHTML = '<div>No jobs available</div>';
+      }
+    }
 
-
-      <% if (posts.length > 0) { %>
-
+    function renderPosts(posts) {
+      const postsContainer = document.getElementById('posts-results');
+      const postHeader = document.querySelector('.posts-header');
+      if (posts.length > 0) {
+        postHeader.classList.add('show');
+        const displayPosts = posts.length > 4 ? posts.slice(0, 4) : posts;
+        postsContainer.innerHTML = `
       <div class="posts">
-
-        <% if (posts.length > 4 && (jobs.length > 0 || users.length > 0)) { %>
-        <% postsTrimmed = posts.slice(0, 4); %>
-        <% } %>
-        <% if (typeof postsTrimmed !== 'undefined' && postsTrimmed.length > 0) { %>
-        <% postsTrimmed.forEach(function(post) { %>
-        <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
-
-          <div class="post-content">
-
-            <div class="post-header">
-              <div class="post-header-username">
-                <div class="avatar">
-                  <img src="<%= post.author_avatar %>" loading="lazy" alt="Avatar">
-                </div>
-                <div class="username">
-                  <a class="username-link" href="/user/<%= post.author_username %>"><strong><%= post.author_username %></strong></a>
-                  <a class="community" href="/networks/<%= post.community_name %>"></a>
-                  <div class="post-date" id="secondary-text">
-                    <span style="color:<%= post.community_color %>;"><%= post.community_name %></span>
-                    <span> • <%= new Date(post.created_at).toLocaleDateString() %> • <%= post.views %> views</span>
+        ${displayPosts.map(post => `
+          <div class="post" onclick="window.location.href='/posts/${post.id}'">
+            <div class="post-content">
+              <div class="post-header">
+                <div class="post-header-username">
+                  <div class="avatar">
+                    <img src="${post.author_avatar}" loading="lazy" alt="Avatar">
+                  </div>
+                  <div class="username">
+                    <a class="username-link" href="/user/${post.author_username}"><strong>${post.author_username}</strong></a>
+                    <div class="post-date" id="secondary-text">
+                      <span style="color:${post.community_color};">${post.community_name}</span>
+                      <span> • ${new Date(post.created_at).toLocaleDateString()} • ${post.views} views</span>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="three-dots" onclick="event.stopPropagation(); navigator.share({ url: window.location.origin + '/posts/' + post.id })">
-                <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>
-              </div>
+              <div class="title">${post.title}</div>
+              <div class="description">${post.content.substring(0, 150)}...</div>
             </div>
-
-            <div class="title" onclick="window.location.href='/posts/<%= post.id %>'"><%= post.title %></div>
-
-            <div class="link-preview" onclick="window.location.href='/posts/<%= post.id %>'">
-              <% if (post.link) { %>
-              <div class="link">
-                <div class="placeholder-link-preview">Loading link preview...</div>
-              </div>
-              <% } %>
-
-              <% const imageUrlMatch = post.content.match(/!\[.*?\]\((.*?)\)/); %>
-              <% if (imageUrlMatch && imageUrlMatch[1]) { %>
-              <div class="post-thumbnail">
-                <img src="<%= imageUrlMatch[1] %>" alt="Post Thumbnail" class="thumbnail-image" loading="lazy">
-              </div>
-              <% } %>
-              <% if (!post.link) { %>
-              <div class="description"><%= post.content.replace(/(?:\r\n|\r|\n)/g, ' ').replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1').replace(/__(.*?)__/g, '$1').replace(/_(.*?)_/g, '$1').replace(/!\[.*?\]\(.*?\)/g, '').replace(/\[.*?\]\(.*?\)/g, '$1') %></div>
-              <% } %>
-            </div>
-
-            <div class="post-posting-flairs">
-              <% const tagsArray = post.tags && post.tags[1] ? post.tags[1].split(", ") : []; %>
-              <% const maxTags = 3; %>
-              <% const displayedTags = tagsArray.slice(0, maxTags); %>
-              <% displayedTags.forEach((tag) => { %>
-              <span class="job-flair" onclick="window.location.href='/posts/tags/<%= tag %>'">
-                <p><%= tag %></p>
-              </span>
-              <% }); %>
-              <% const remainingTags = tagsArray.length - maxTags; %>
-              <% if (remainingTags > 0) { %>
-              <span class="see-more">+<%= remainingTags %> more</span>
-              <% } %>
-            </div>
-
           </div>
-        </div>
-        <% }); %>
-        <% } else { %>
-        <div>No posts available</div>
-        <% } %>
-
-        <% if (posts.length > 4 && (jobs.length > 0 || users.length > 0)) { %>
-        <div class="load-more">
-          <button class="load-more-btn" id="regular-button" onclick="window.location.href='/search/posts/?searchTerm=<%= searchTerm %>'">Load More Posts</button>
-        </div>
-        <% } %>
+        `).join('')}
+        ${posts.length > 4 ? `
+          <div class="load-more">
+            <button class="load-more-btn" id="regular-button" onclick="window.location.href='/search/posts/?searchTerm=<%= searchTerm %>'">Load More Posts</button>
+          </div>
+        ` : ''}
       </div>
-      <%- include('partials/footer') %>
+    `;
+      } else {
+        postsContainer.innerHTML = '<div>No posts available</div>';
+      }
+    }
 
-      <% } %>
-    </div>
-  </div>
+    // Call the function to fetch and render results when the page loads
+    document.addEventListener('DOMContentLoaded', fetchSearchResults);
+  </script>
 </body>
 
 </html>

@@ -1013,7 +1013,7 @@ div.repliees-avatar {
 
 #reply-button {
   text-decoration: none;
-  color: var(--light-mode-secondary-text-color);
+  color: var(--light-mode-secondary-text-color) !important;
   vertical-align: 5px;
   border-radius: 6px;
 }
@@ -1032,7 +1032,7 @@ a.comment-user-info:hover {
 }
 
 .dropbtn .material-symbols-outlined {
-  font-size: 20px;
+  font-size: 22px;
 }
 
 .user-actions a {
@@ -1669,16 +1669,10 @@ div.post-information {
     /* Active tab color */
   }
 
-  .reaction-button,
-  .main-reaction-button {
-    background-color: #121212;
-    border: 1.5px solid #121212;
-    color: var(--dark-mode-secondary-text-color);
-  }
 
   .post-subtitle,
   .reply-button {
-    color: var(--dark-mode-secondary-text-color);
+    color: var(--dark-mode-secondary-text-color) !important;
   }
 
   .dropbtn {
@@ -1834,13 +1828,6 @@ div.post-information {
     border-color: var(--dark-mode-border-color) !important;
   }
 
-  .reaction-button.active {
-    background-color: #1c2830;
-    color: #3073c1;
-    border: 1px solid #224368;
-  }
-
-
   .comment-header {
     color: var(--dark-mode-text-color) !important;
   }
@@ -1873,7 +1860,6 @@ div.post-information {
     border-color: var(--dark-mode-border-color);
   }
 
-  .reaction-button,
   #delete-post-button,
   #delete-comment-button {
     border-color: #121212;
