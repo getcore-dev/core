@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userQueries = require('../queries/userQueries');
+const updateQueries = require('../queries/updateQueries');
 const multer = require('multer');
 const { checkAuthenticated } = require('../middleware/authMiddleware');
 const storage = multer.diskStorage({
@@ -138,6 +139,17 @@ router.get('/leetcode-experience/:username', async (req, res) => {
   } catch (err) {
     console.error('Error fetching LeetCode data:', err);
     res.status(500).send('Error fetching LeetCode data');
+  }
+});
+
+router.get('/updates', async (req, res) => {
+  try {
+    const updates = await updateQueries.getUpdates();
+    console.log(updates);
+    res.json({'updates': updates});
+  } catch (err) {
+    console.error('Error fetching updates:', err);
+    res.status(500).send('Error fetching updates');
   }
 });
 

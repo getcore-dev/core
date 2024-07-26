@@ -57,13 +57,13 @@
           </div>
 
           <div id="cf-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAAAfrXFW9WQNvV2Xg" data-callback="onTurnstileSuccess"></div>
-          <button type="submit" id="submit-button" disabled>
+          <button type="submit" id="submit-button">
             <p id="login-text">Login</p>
           </button>
           <p style="margin-bottom:.5rem;">Forgot your password? Reset it <a class="link" href="/forgot-password"> here</a></p>
 
           <div class="login-buttons">
-            <a href="#" id="github-login-btn" class="github-login-btn" disabled>
+            <a href="#" id="github-login-btn" class="github-login-btn regular-button">
               <img src="/src/github.png" alt="GitHub Logo" style="background: white; border-radius: 100%;">
               GitHub Login
             </a>
@@ -115,12 +115,6 @@
     document.getElementById('turnstile-token').value = token;
   }
 
-  window.onloadTurnstileCallback = function () {
-    turnstile.render('#cf-turnstile', {
-      sitekey: '0x4AAAAAAAfrXFW9WQNvV2Xg',
-      callback: onTurnstileSuccess
-    });
-  };
 
   function onSignIn(googleUser) {
     // Useful data for your client-side scripts:

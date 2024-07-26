@@ -16,28 +16,77 @@
   <%- include('partials/navbar', { pagePath: 'updates' }) %>
   <main>
     <div id="updates-header">
+      <h4 id="updates-header-text">Loading...</h4>
+      <% if (typeof user !== 'undefined') { %>
+      <% if (user.isAdmin) { %>
+      <a href="/updates/new" class="link">Create a new update</a>
+      <% } %>
+      <% } %>
     </div>
     <div id="commits-container">
-      <% updates.forEach((update) => { %>
-      <div class="update">
-        <div class="update-header">
-          <%= update.title %>
-        </div>
-        <div class="update-body">
-          <p><%= update.content %></p>
-        </div>
-        <div class="update-link">
-          <a href="<%= update.pull_request_url %>"><%= update.pull_request_url %></a>
-        </div>
-        <div class="update-footer">
-          <p><%= update.post_date %></p>
-        </div>
-      </div>
-      <% }) %>
     </div>
     <%- include('partials/footer') %>
   </main>
   <script>
+    function fetchUpdates() {
+      fetch('/api/updates')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json(); // Parse the JSON from the response
+        })
+        .then(data => {
+          console.log('Received data:', data);
+          const updatesHeader = document.getElementById('updates-header-text');
+          const commitsContainer = document.getElementById('commits-container');
+
+          if (updatesHeader && commitsContainer) {
+            // Update your DOM elements here
+            updatesHeader.textContent = 'Latest Updates';
+            commitsContainer.innerHTML = ''; // Clear existing content
+
+            // Assuming 'data' is an array of updates
+            data.updates.forEach(update => {
+              const updateElement = document.createElement('div');
+              updateElement.classList.add('update');
+
+              const updateIcon = document.createElement('div');
+              updateIcon.classList.add('update-icon');
+              updateIcon.innerHTML = '<span class="material-symbols-outlined">update</span>';
+
+              const updateContent = document.createElement('div');
+              updateContent.classList.add('update-content');
+
+              const updateHeader = document.createElement('div');
+              updateHeader.classList.add('update-header');
+              updateHeader.classList.add('secondary-text');
+              updateHeader.classList.add('sub-text')
+              updateHeader.textContent = new Date(update.post_date).toDateString();
+
+              const updateBody = document.createElement('div');
+              updateBody.classList.add('update-body');
+              updateBody.innerHTML = `<h4>${update.title}</h4>`;
+              updateBody.innerHTML += `<p>${update.content}</p>`;
+              updateBody.innerHTML += `<a class="link" href="${update.pull_request_url}">
+  ${update.pull_request_url.split('/').slice(-2).join('/')}
+</a>`;
+
+              updateContent.appendChild(updateHeader);
+              updateContent.appendChild(updateBody);
+              updateElement.appendChild(updateIcon);
+              updateElement.appendChild(updateContent);
+              commitsContainer.appendChild(updateElement);
+            });
+          } else {
+            console.error('Required DOM elements not found');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching updates:', error);
+        });
+    }
+    fetchUpdates();
   </script>
 </body>
 
