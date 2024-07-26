@@ -14,7 +14,8 @@
     padding: 0 !important;
 }
 
-.user, .post {
+.user,
+.post {
     display: flex;
     flex-direction: row;
     gap: 1em;
@@ -28,11 +29,67 @@
 .user {
     margin: 0;
     border-radius: 0;
-    margin-bottom: 14px;
+}
+
+hr {
+    width: 100%;
+    border-color: #000;
+    height: .5px;
+}
+
+div.users {
+    display: flex;
+    gap: .6rem;
+    flex-direction: column;
+}
+
+
+.spinner {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    animation: spin 2s linear infinite;
+    margin: 0 auto;
+}
+
+#users-results, #posts-results, #jobs-results {
+    margin-bottom: .9rem;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Optional: Center the spinner container */
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
 }
 
 .user:hover {
     background-color: var(--light-mode-hover-color);
+}
+
+.job {
+    border: 0 !important;
+}
+
+.job-results,
+.user-results,
+.post-results {
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
 }
 
 
@@ -50,19 +107,19 @@
     width: 30px;
     height: 30px;
     border-radius: 6px;
-    object-fit: cover; 
+    object-fit: cover;
     overflow: hidden;
-  }
+}
 
 .link-preview {
-    cursor: pointer; 
+    cursor: pointer;
     max-height: auto;
     max-width: 92%;
     display: flex;
     flex-direction: column;
     padding: 3px;
     margin: 4px 4px;
-  }
+}
 
 .post-content {
     display: flex;
@@ -71,9 +128,9 @@
     width: 100%;
     position: relative;
     box-sizing: border-box;
-  }
+}
 
-  .post-header {
+.post-header {
     display: flex;
     flex-direction: row;
     gap: 5px;
@@ -82,6 +139,7 @@
     width: 100%;
     justify-content: space-between;
 }
+
 .post-header-username {
     display: flex;
     flex-direction: row;
@@ -117,13 +175,11 @@ div.username {
     border: 0;
 }
 
-.users {
-    margin-top: 10px;
-}
 
 #posts-container h2 {
     font-size: 1.15rem;
 }
+
 .user-info {
     display: flex;
     flex-direction: column;
@@ -144,7 +200,9 @@ div.username {
         border-color: var(--dark-mode-border-color);
     }
 
-    .user:hover, .post:hover, .job:hover {
+    .user:hover,
+    .post:hover,
+    .job:hover {
         background-color: var(--dark-mode-hover-color);
     }
-}    
+}

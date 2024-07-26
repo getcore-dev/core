@@ -794,8 +794,12 @@ div.community-tags {
 
 
 #comment-button,
-#reaction-button {
+#reaction-button,
+#favorite-button,
+#share-button {
   height: 32px;
+  border: 0;
+  background: 0;
   padding: 0;
 }
 

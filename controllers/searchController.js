@@ -3,22 +3,33 @@ const searchService = require('../services/searchService');
 exports.searchAll = async (req, res) => {
   try {
     const { searchTerm } = req.query;
+    res.render('search.ejs', {
+      searchTerm: searchTerm,
+      user: req.user,
+    });
+  } catch (error) {
+    console.error('Search error:', error);
+    res.status(500).send('Server error occurred while searching');
+  }
+};
+
+exports.getSearchResults = async (req, res) => {
+  try {
+    const { searchTerm } = req.query;
     const [postResults, userResults, jobResults] = await Promise.all([
       searchService.findPosts(searchTerm),
       searchService.findUsers(searchTerm),
       searchService.findJobs(searchTerm),
     ]);
 
-    res.render('search.ejs', {
-      searchTerm: searchTerm,
-      posts: postResults.recordset,
-      users: userResults.recordset,
-      jobs: jobResults.recordset,
-      user: req.user,
+    res.json({
+      posts: postResults,
+      users: userResults,
+      jobs: jobResults,
     });
   } catch (error) {
     console.error('Search error:', error);
-    res.status(500).send('Server error occurred while searching');
+    res.status(500).json({ error: 'Server error occurred while searching' });
   }
 };
 

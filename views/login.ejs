@@ -56,14 +56,14 @@
 
           </div>
 
-          <div class="cf-turnstile" data-sitekey="0x4AAAAAAAfrXFW9WQNvV2Xg" data-callback="javascriptCallback"></div>
-          <button type="submit" id="submit-button">
+          <div id="cf-turnstile" class="cf-turnstile" data-sitekey="0x4AAAAAAAfrXFW9WQNvV2Xg" data-callback="onTurnstileSuccess"></div>
+          <button type="submit" id="submit-button" disabled>
             <p id="login-text">Login</p>
           </button>
           <p style="margin-bottom:.5rem;">Forgot your password? Reset it <a class="link" href="/forgot-password"> here</a></p>
 
           <div class="login-buttons">
-            <a href="https://github.com/login/oauth/authorize?client_id=b37718dbac10df16ec0c&redirect_uri=https%3A%2F%2Fgetcore.dev%2Fauth%2Fgithub%2Fcallback" id="null-button" class="github-login-btn">
+            <a href="#" id="github-login-btn" class="github-login-btn" disabled>
               <img src="/src/github.png" alt="GitHub Logo" style="background: white; border-radius: 100%;">
               GitHub Login
             </a>
@@ -105,6 +105,22 @@
       });
     });
   });
+
+  function onTurnstileSuccess(token) {
+    // Enable the login buttons
+    document.getElementById('submit-button').disabled = false;
+    document.getElementById('github-login-btn').removeAttribute('disabled');
+
+    // You may want to store the token to send it with your form submission
+    document.getElementById('turnstile-token').value = token;
+  }
+
+  window.onloadTurnstileCallback = function () {
+    turnstile.render('#cf-turnstile', {
+      sitekey: '0x4AAAAAAAfrXFW9WQNvV2Xg',
+      callback: onTurnstileSuccess
+    });
+  };
 
   function onSignIn(googleUser) {
     // Useful data for your client-side scripts:

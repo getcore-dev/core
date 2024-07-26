@@ -387,28 +387,9 @@ function formatDate(date) {
                   <button class="submit-button-normal" id="favorite-button" onclick="favorite('<%= post.id %>')">
                     <span class="material-symbols-outlined">favorite</span> Save
                   </button>
-                  <% if (!post.deleted && !post.isLocked) { %>
-
-                  <% if (user && user.username === post.username) { %>
-                  <button class="regular-button-normal" onclick="window.location.href='/posts/<%= post.id %>/edit'">
-                    Edit
-                  </button>
-                  <% } %>
-                  <% } %>
                   <button class="null-button-normal" id="share-button" onclick="share('<%= post.title %>', '', 'https://c-ore.dev/posts/<%= post.id %>')">
                     <span class="material-symbols-outlined">ios_share</span> Share
                   </button>
-
-
-
-                  <% if (!post.deleted) { %>
-
-                  <% if (user && user.username === post.username) { %>
-                  <button class="cancel-button-normal" onclick="deletePost('<%= post.id %>')">
-                    Delete
-                  </button>
-                  <% } %>
-                  <% } %>
                   <% if (user && user.isAdmin) { %>
                   <div class="dropdown">
                     <button class="null-button-normal" onclick="showDropdown(event)">
@@ -425,6 +406,27 @@ function formatDate(date) {
                           </strong>
                         </button>
                       </div>
+                      <% if (!post.deleted && !post.isLocked) { %>
+                      <% if (user && user.username === post.username) { %>
+                      <div class="dropdown-item">
+                        <button onclick="window.location.href='/posts/<%= post.id %>/edit'">
+                          Edit
+                        </button>
+                      </div>
+                      <% } %>
+                      <% } %>
+
+                      <% if (!post.deleted) { %>
+                      <% if (user && user.username === post.username) { %>
+                      <div class="dropdown-item">
+
+                        <button onclick="deletePost('<%= post.id %>')">
+                          Delete
+                        </button>
+                      </div>
+                      <% } %>
+                      <% } %>
+
                       <div class="dropdown-item">
                         <span>
                           <button onclick="toggleLockPost('<%= post.id %>')">
@@ -591,18 +593,19 @@ function formatDate(date) {
                   { type: "DISLIKE", icon: "👎" }
                 ]; %>
               <div class="comment-user-interactions <%= comment.id %>" data-type="comment" data-id="<%= comment.id %>">
-                <div class="replies">
-                  <% if (!post.deleted && !post.isLocked) { %>
+                <% if (!post.deleted && !post.isLocked) { %>
 
-                  <% if (user) { %>
+                <div class="replies">
+
                   <a href="#" class="secondary-text reply-button" id="reply-button-<%= comment.id %>" onclick="<% if (user) { %>showReplyForm('<%= comment.id %>', event)<% } else { %>window.location.href = '/login';<% } %>">
                     Reply
                   </a>
 
-                  <% } %>
-                  <% } %>
                 </div>
                 <div id="vr"></div>
+
+                <% } %>
+
                 <button class="commentMainReactionButton null-button-normal reaction-button <% if (comment.userReaction) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>">
                   <% if (comment.userReaction) { %>
 
@@ -678,7 +681,7 @@ function formatDate(date) {
         </div>
         <% if (post.tags && post.tags.length > 0) { %>
         <div class="header">
-          <h5>Tags</h5>
+          <h3 class="secondary-text margin-06-bottom">Tags</h3>
         </div>
         <div class="blog-tags-div">
           <div class="tags">

@@ -5,6 +5,8 @@ const searchController = require('../controllers/searchController');
 // Route for search
 router.get('/', searchController.searchAll);
 
+router.get('/results', searchController.getSearchResults);
+
 router.get('/jobs', searchController.searchJobs);
 
 router.get('/users', searchController.searchUsers);

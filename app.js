@@ -7,6 +7,7 @@ const FileStore = require('session-file-store')(session);
 const methodOverride = require('method-override');
 const sql = require('mssql');
 const rateLimit = require('express-rate-limit');
+const ejsAsync = require('ejs-async');
 const MS_PER_HOUR = 3600000;
 
 const environment = require('./config/environment');
@@ -58,7 +59,8 @@ passportConfig.initialize(
   userQueries.createUserFromGoogleProfile
 );
 
-// Express app setup
+
+app.engine('ejs', ejsAsync.renderFile);
 app.set('view-engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
