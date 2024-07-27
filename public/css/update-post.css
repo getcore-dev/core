@@ -1,0 +1,15 @@
+div.update-post {
+    padding: .75rem;
+}
+
+li.commit-item {
+    list-style: none;
+    border-left: 3px solid var(--active-indicator-color);
+    padding-left: .6rem;
+}
+
+div.pr-info {
+    background: var(--dark-mode-main-color);
+    border-radius: 6px;
+    padding: .75rem 1.15rem;
+}

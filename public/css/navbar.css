@@ -167,6 +167,17 @@ a:visited {
   transition: all 0.3s ease;
 }
 
+.green-tag {
+  background-color: #67f48336;
+  color: #51c63d;
+}
+
+.red-tag {
+  background-color: #f4676736;
+  color: #c63d3d;
+}
+
+
 .tag-clickable {
   display: inline-flex;
   gap: 5px;

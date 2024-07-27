@@ -50,6 +50,7 @@
             data.updates.forEach(update => {
               const updateElement = document.createElement('div');
               updateElement.classList.add('update');
+              updateElement.onclick = () => (window.location.href = `/updates/${update.id}`);
 
               const updateIcon = document.createElement('div');
               updateIcon.classList.add('update-icon');

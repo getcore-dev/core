@@ -153,6 +153,38 @@ router.get('/updates', async (req, res) => {
   }
 });
 
+router.get('/updates/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const update = await updateQueries.getUpdateById(id);
+    res.json(update);
+  } catch (err) {
+    console.error('Error fetching update:', err);
+    res.status(500).send('Error fetching update');
+  }
+});
+
+router.get('/updates/:updateId/pr-info', async (req, res) => {
+  try {
+    const updateId = req.params.updateId;
+    
+    // Fetch the update data (assuming you have a function for this)
+    const update = await updateQueries.getUpdateById(updateId);
+    
+    if (!update || !update.pull_request_url) {
+      return res.status(404).json({ error: 'Update not found or no pull request URL' });
+    }
+
+    // Fetch the pull request info
+    const prInfo = await utilFunctions.getPullRequestInfo(update.pull_request_url);
+
+    res.json(prInfo);
+  } catch (error) {
+    console.error('Error fetching pull request info:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 router.get(
   '/github-commit-graph/:username',
   cacheMiddleware(2400),

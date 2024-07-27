@@ -147,6 +147,31 @@ router.get('/updates', async (req, res) => {
   }
 });
 
+router.get('/updates/:id', async (req, res) => {
+  try {
+    const updateId = req.params.id;
+    res.render('update-post.ejs', { user: req.user, updateId });
+  } catch (error) {
+    console.error('Error fetching updates:', error);
+    res.render('error.ejs', {
+      user: req.user,
+      error: { message: error.message },
+    });
+  }
+});
+
+router.get('/updates/new', checkAuthenticated, async (req, res) => {
+  try {
+    res.render('create-update.ejs', { user: req.user });
+  } catch (error) {
+    console.error('Error fetching updates:', error);
+    res.render('error.ejs', {
+      user: req.user,
+      error: { message: error.message },
+    });
+  }
+});
+
 router.get('/create', checkAuthenticated, async (req, res) => {
   const tags = await postQueries.getAllTags();
   res.render('create-post.ejs', { user: req.user, tags, communityId: null });
