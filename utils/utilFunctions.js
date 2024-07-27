@@ -33,7 +33,7 @@ const utilFunctions = {
           p.react_interesting, p.react_celebrate, p.post_type, p.views, 
           p.isGlobalPinned, u.username, u.avatar, u.isAdmin, u.verified, u.firstname, u.lastname, u.id as user_id,
           CASE WHEN ur.follower_id IS NOT NULL THEN 1 ELSE 0 END AS is_following,
-          c.name AS community_name, c.community_color as community_color,
+          c.name AS community_name, c.community_color as community_color, c.mini_icon as community_icon,
           c.shortname AS community_shortname,
           SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
           SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
@@ -82,7 +82,7 @@ OUTER APPLY (
         WHERE p.deleted = 0 AND c.PrivacySetting = 'Public' AND c.id != 9
         GROUP BY 
           p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.subtitle, 
-          p.communities_id, u.avatar, c.name, c.shortname, c.community_color, u.isAdmin, u.verified, u.firstname, u.lastname,
+          p.communities_id, u.avatar, c.name, c.shortname, c.community_color, c.mini_icon, u.isAdmin, u.verified, u.firstname, u.lastname,
           p.react_like, p.react_love, p.react_curious, p.react_interesting, u.id,
           p.react_celebrate, p.post_type, p.views, p.isGlobalPinned, ur.follower_id,
           je.title, je.companyName, ee.institutionName
@@ -1452,23 +1452,6 @@ OUTER APPLY (
     const [, owner, repo, prNumber] = match;
   
     try {
-      // Check if recent data (within the last 30 minutes) already exists in the GitHubPRData table
-      const existingDataResult = await sql.query`
-        SELECT *, DATEDIFF(minute, time_fetched, GETDATE()) AS time_diff
-        FROM GitHubPRData
-        WHERE pr_url = ${url}
-      `;
-  
-      if (existingDataResult.recordset.length > 0 && existingDataResult.recordset[0].time_diff <= 30) {
-        // Use existing data if it's recent enough
-        const dbData = existingDataResult.recordset[0];
-        return {
-          ...dbData,
-          commits: dbData.commits ? JSON.parse(dbData.commits) : [],
-        };
-      }
-  
-      // If no recent data in DB, fetch from GitHub API
       const { Octokit } = await import('@octokit/rest');
       const octokit = new Octokit({ userAgent: 'CORE' });
   
@@ -1495,7 +1478,7 @@ OUTER APPLY (
         date: commit.commit.author.date
       }));
   
-      const newPRData = {
+      return {
         id: prData.id,
         pr_url: prData.html_url,
         pr_title: prData.title,
@@ -1508,57 +1491,9 @@ OUTER APPLY (
         additions: prData.additions,
         deletions: prData.deletions,
         changed_files: prData.changed_files,
-        commits: JSON.stringify(commits),
+        commits: commits,
         total_commits: prData.commits,
         time_fetched: new Date().toISOString(),
-      };
-  
-      // Update or insert the new data into the database
-      await sql.query`
-        MERGE GitHubPRData AS target
-        USING (VALUES (
-          ${newPRData.id}, ${newPRData.pr_url}, ${newPRData.pr_title}, ${newPRData.state}, 
-          ${newPRData.author}, ${newPRData.created_at}, ${newPRData.updated_at}, 
-          ${newPRData.merged_at}, ${newPRData.merged_by}, ${newPRData.additions}, 
-          ${newPRData.deletions}, ${newPRData.changed_files}, ${newPRData.commits}, 
-          ${newPRData.total_commits}, ${newPRData.time_fetched}
-        )) AS source (
-          id, pr_url, pr_title, state, author, created_at, updated_at, merged_at, merged_by, 
-          additions, deletions, changed_files, commits, total_commits, time_fetched
-        )
-        ON target.id = source.id
-        WHEN MATCHED THEN
-          UPDATE SET
-            pr_url = source.pr_url,
-            pr_title = source.pr_title,
-            state = source.state,
-            author = source.author,
-            created_at = source.created_at,
-            updated_at = source.updated_at,
-            merged_at = source.merged_at,
-            merged_by = source.merged_by,
-            additions = source.additions,
-            deletions = source.deletions,
-            changed_files = source.changed_files,
-            commits = source.commits,
-            total_commits = source.total_commits,
-            time_fetched = source.time_fetched
-        WHEN NOT MATCHED THEN
-          INSERT (
-            id, pr_url, pr_title, state, author, created_at, updated_at, merged_at, merged_by, 
-            additions, deletions, changed_files, commits, total_commits, time_fetched
-          )
-          VALUES (
-            source.id, source.pr_url, source.pr_title, source.state, source.author, 
-            source.created_at, source.updated_at, source.merged_at, source.merged_by, 
-            source.additions, source.deletions, source.changed_files, source.commits, 
-            source.total_commits, source.time_fetched
-          );
-      `;
-  
-      return {
-        ...newPRData,
-        commits: commits // Return parsed commits instead of stringified
       };
     } catch (error) {
       console.error('Error fetching GitHub pull request data:', error);

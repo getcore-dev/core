@@ -17,22 +17,33 @@
   <%- include('partials/navbar', { pagePath: 'updates' }) %>
   <main>
     <div class="update-post">
-      <h4 class="update-post-header margin-06-bottom">Loading...</h4>
       <div class="update-post-content">
+        <h4 class="update-post-header margin-06-bottom">Loading...</h4>
+
         <div class="update-post-info">
           <div class="update-post-details">
             <div class="update-post-title-container">
               <h3 class="update-post-title">Loading...</h3>
             </div>
             <div>
-              <p class="update-post-date margin-1-bottom sub-text secondary-text">Loading...</p>
+              <p class="update-post-date sub-text secondary-text">Loading...</p>
             </div>
           </div>
         </div>
-        <div class="update-post-body">Loading...</div>
+      </div>
+      <div class="update-post-body">Loading...
       </div>
     </div>
-    <div class="update-comments">
+    <div class="update-comments-container">
+      <h4 class="update-comments-header margin-06-bottom">Comments</h4>
+      <% if (user) { %>
+      <form class="comment-form margin-1-bottom" action="/updates/<%= updateId %>/comment" method="POST">
+        <textarea name="content" class="comment-input adaptive-input" placeholder="Add a comment..." required></textarea>
+        <button type="submit" class="comment-submit submit-button-normal">Post</button>
+      </form>
+      <% } %>
+      <div class="update-comments">
+      </div>
     </div>
     <%- include('partials/footer') %>
   </main>
@@ -42,13 +53,11 @@
       let prInfoContent = `
     <div class="pr-info">
       <p><strong> ${prData.pr_title}</strong></p>
-      <p><strong>State:</strong> ${prData.state}</p>
-      <p class="sub-text secondary-text"><strong>Authored by:</strong> ${prData.author} <strong>Merged by:</strong> ${prData.merged_by || 'N/A'}</p>
-      <p><strong><span class="material-symbols-outlined">calendar_month</span></strong> ${new Date(prData.created_at).toDateString()}</p>
-      <p><strong><span class="material-symbols-outlined">done_outline</span></strong> ${prData.merged_at ? new Date(prData.merged_at).toDateString() : 'Not merged'}</p>
-      <p><span class="tag green-tag">+${prData.additions}</span>  <span class="tag red-tag">-${prData.deletions}</span> in ${prData.changed_files} files</p>
-      <p><a class="link" href="${prData.pr_url}" target="_blank">View on GitHub</a></p>
-      <h5>Commits (${prData.total_commits}):</h5>
+      <p class="sub-text secondary-text"><strong><span class="material-symbols-outlined">key</span></strong> ${prData.state}</p>
+      <p class="sub-text secondary-text"><strong><span class="material-symbols-outlined">rate_review</span></strong> ${prData.author} <strong><span class="material-symbols-outlined">rebase_edit</span></strong> ${prData.merged_by || 'N/A'}</p>
+      <p class="sub-text secondary-text"><strong><span class="material-symbols-outlined">calendar_month</span></strong> ${new Date(prData.created_at).toDateString()}<strong><span class="material-symbols-outlined">done_outline</span></strong> ${prData.merged_at ? new Date(prData.merged_at).toDateString() : 'Not merged'}</p>
+      <p class="margin-06-bottom"><span class="tag green-tag">+${prData.additions}</span>  <span class="tag red-tag">-${prData.deletions}</span> in ${prData.changed_files} files <a class="tag" style="margin-left: auto;" href="${prData.pr_url}" target="_blank">View on GitHub</a></p>
+      <h5 class="margin-1-bottom"><span class="material-symbols-outlined">commit</span>Commits (${prData.total_commits}):</h5>
       <ul class="commit-list">
   `;
 
@@ -87,6 +96,7 @@
           const updatePostDate = document.querySelector('.update-post-date');
           const updatePostBody = document.querySelector('.update-post-body');
           const updateComments = document.querySelector('.update-comments');
+          const updateCommentsHeader = document.querySelector('.update-comments-header');
 
           if (updatePostHeader && updatePostTitle && updatePostDate && updatePostBody && updateComments) {
             // Update your DOM elements here
@@ -95,7 +105,7 @@
             updatePostDate.textContent = new Date(updateData.post_date).toDateString();
 
             // Create HTML content for the update body, including PR info
-            let bodyContent = updateData.content;
+            let bodyContent = '<p class="update-data">' + updateData.content + '</p>';
             if (prData && prData.pr_url) {
               bodyContent += displayPullRequestInfo(prData);
             }
@@ -103,20 +113,21 @@
 
             // Render comments (assuming this part stays the same)
             updateComments.innerHTML = '';
+            updateCommentsHeader.textContent = `Comments (${updateData.comments.length})`;
             updateData.comments.forEach(comment => {
               const commentElement = document.createElement('div');
               commentElement.classList.add('comment');
               commentElement.innerHTML = `
             <div class="comment-info">
               <div class="comment-icon">
-                <span class="material-symbols-outlined">comment</span>
+                <img class="thumbnail thumbnail-tiny thumbnail-regular" src="${comment.user_avatar}" alt="User Icon">
               </div>
               <div class="comment-details">
-                <div class="comment-author">${comment.author}</div>
-                <div class="comment-date">${new Date(comment.createdAt).toDateString()}</div>
+                <div class="comment-author main-text">${comment.user_name}</div>
+                <div class="comment-date sub-text secondary-text">${new Date(comment.created_at).toDateString()}</div>
               </div>
             </div>
-            <div class="comment-body">${comment.content}</div>
+            <div class="comment-body main-text">${comment.content}</div>
           `;
               updateComments.appendChild(commentElement);
             });

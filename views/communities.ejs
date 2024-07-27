@@ -708,6 +708,41 @@ description
 
             postDiv.appendChild(postContentDiv);
             postsContainer.appendChild(postCommentsDiv);
+
+            // if user not logged in show a join the website section
+            if (Math.random() < 0.04 &&
+              '<%= user %>' == '') {
+              const joinWebsiteDiv = document.createElement('div');
+              joinWebsiteDiv.className = 'join-website adaptive-border-bottom';
+              joinWebsiteDiv.innerHTML = ` 
+              <div class="join-website-header">
+              <div class="icon"><span class="material-symbols-outlined">person_add</span></div>
+              <div class="title"><a>Join CORE</a></div>
+              </div>
+              <div class="join-website-body">
+              <p class="description">Join CORE to stay updated on the latest posts and discussions.</p>
+              <button class="regular-button-normal" onclick="window.location.href='/login'">Join</button>
+              </div>
+              `;
+              postCommentsDiv.appendChild(joinWebsiteDiv);
+            }
+
+            // percent chance to show a join community section below post 
+            if (Math.random() < 0.06 && '<%= communityId %>' == '') {
+              const joinCommunityDiv = document.createElement('div');
+              joinCommunityDiv.className = 'join-community adaptive-border-bottom';
+              joinCommunityDiv.innerHTML = ` 
+              <div class="join-community-header">
+              <div class="icon"><span style="color:${post.community_color};" class="material-symbols-outlined">${post.community_icon}</span></div>
+              <div class="title"><a>/${post.community_shortname}</a></div>
+              </div>
+              <div class="join-community-body">
+              <p class="description">Join the community to stay updated on the latest posts and discussions.</p>
+              <button class="submit-button-normal" onclick="window.location.href='/networks/${post.community_shortname}'">Visit</button>
+              </div>
+              `;
+              postCommentsDiv.appendChild(joinCommunityDiv);
+            }
           });
           Promise.all(fetchPromises)
             .then(() => {

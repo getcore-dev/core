@@ -650,17 +650,22 @@
     const banner = document.getElementById('latestCommitBanner');
     const closeButton = document.getElementById('closeCommitBanner');
     const searchBar = document.getElementById('search-bar-div');
+    const searchBarForm = document.getElementById('search-bar');
     const searchOverlay = document.getElementById('search-overlay');
     const navBar = document.querySelector('.navbar');
 
     searchButton.addEventListener('click', () => {
       navBar.style.display = 'none';
       searchBar.style.display = 'block';
+      searchBarForm.focus();
+      document.body.style.overflow = 'hidden';
+      window.scrollTo(0, 0);
       searchOverlay.style.display = 'block';
     });
 
     searchOverlay.addEventListener('click', () => {
       navBar.style.display = 'block';
+      document.body.style.overflow = '';
       searchBar.style.display = 'none';
       searchOverlay.style.display = 'none';
     });

@@ -390,14 +390,7 @@ favorite
             </div>`
     : ''
 }
-      <div class="share-button-container flex">
-      <button id="null-button-normal" class="margin-h-auto" onclick="share('${
-  job.title
-}', '', 'https://c-ore.dev/jobs/${job.id}')"
-      ><span class="material-symbols-outlined">
-ios_share
-</span></button>
-      </div>
+
       ${
   userIsAdmin
     ? `
@@ -406,9 +399,18 @@ ios_share
 delete
 </span></button>
         </div>
+        
       `
     : ''
 }
+      <div class="share-button-container flex" style="margin-left: auto">
+      <button id="null-button-normal" class="margin-h-auto" onclick="share('${
+  job.title
+}', '', 'https://c-ore.dev/jobs/${job.id}')"
+      ><span class="material-symbols-outlined">
+ios_share
+</span></button>
+      </div>
 
       </div>
                   <p id="secondary-text" class="post-date-text">
