@@ -1,4 +1,5 @@
-div.update-post {
+div.update-post-content,
+p.update-data {
     padding: .75rem;
 }
 
@@ -8,8 +9,35 @@ li.commit-item {
     padding-left: .6rem;
 }
 
+div.comment-info {
+    gap: .6rem;
+    display: flex;
+}
+
 div.pr-info {
-    background: var(--dark-mode-main-color);
-    border-radius: 6px;
+    background: var(--light-mode-body-color);
     padding: .75rem 1.15rem;
+}
+
+div.pr-info span.material-symbols-outlined {
+    font-size: .9rem;
+    vertical-align: -2px;
+    padding-right: .4rem;
+}
+
+div.update-comments-container {
+    padding: .75rem;
+}
+
+textarea.comment-input {
+    width: 100%;
+    padding: .75rem;
+    height: 10rem;
+    box-sizing: border-box;
+}
+
+ul.commit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
 }

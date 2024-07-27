@@ -792,6 +792,23 @@ div.community-tags {
   background: var(--light-mode-hover-color);
 }
 
+div.join-community,
+div.join-website {
+  padding: .95rem 1.2rem;
+}
+
+div.join-community-header,
+div.join-website-header {
+  display: flex;
+  gap: .6rem;
+  align-items: center;
+}
+
+div.join-community-body,
+div.join-website-body {
+  display: flex;
+  gap: .6rem;
+}
 
 #comment-button,
 #reaction-button,

@@ -165,9 +165,12 @@ input[type="password"]:not(:placeholder-shown)+.floating-label {
   position: absolute;
   right: 10px;
   border: none;
+  display: flex;
   background: none;
   cursor: pointer;
   color: #333;
+  align-items: center;
+  top: 4px;
 }
 
 .toggle-password .material-symbols-outlined {
@@ -274,6 +277,12 @@ nav {
   justify-content: center;
 }
 
+#cf-turnstile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .join-link {
   text-decoration: none;
   color: inherit;
@@ -346,13 +355,6 @@ nav {
     border-color: none;
   }
 
-
-  .input-container input {
-    background-color: #000000ad !important;
-    border-color: #414141d1 !important;
-    color: var(--dark-mode-text-color) !important;
-  }
-
   #login h1 {
     color: var(--dark-mode-text-color);
   }
@@ -367,7 +369,7 @@ nav {
 
   .input-container input {
     background-color: #0b0c0c8c !important;
-    border-color: #181a1bd1 !important;
+    border-color: #646464d1 !important;
     color: var(--dark-mode-text-color) !important;
 
   }

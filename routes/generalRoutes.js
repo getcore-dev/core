@@ -147,6 +147,18 @@ router.get('/updates', async (req, res) => {
   }
 });
 
+router.get('/updates/new', checkAuthenticated, async (req, res) => {
+  try {
+    res.render('create-update.ejs', { user: req.user });
+  } catch (error) {
+    console.error('Error fetching updates:', error);
+    res.render('error.ejs', {
+      user: req.user,
+      error: { message: error.message },
+    });
+  }
+});
+
 router.get('/updates/:id', async (req, res) => {
   try {
     const updateId = req.params.id;
@@ -160,17 +172,28 @@ router.get('/updates/:id', async (req, res) => {
   }
 });
 
-router.get('/updates/new', checkAuthenticated, async (req, res) => {
+router.post('/updates/:id/comment', checkAuthenticated, async (req, res) => {
+  const userId = req.user.id;
+  const updateId = req.params.id;
+  console.log(req.body.content);
+
+  const comment = {
+    user_id: userId,
+    update_id: updateId,
+    body_text: req.body.content,
+    parent_comment_id: req.body.parent_comment_id ? req.body.parent_comment_id : null,
+  };
+  console.log(comment);
+
   try {
-    res.render('create-update.ejs', { user: req.user });
-  } catch (error) {
-    console.error('Error fetching updates:', error);
-    res.render('error.ejs', {
-      user: req.user,
-      error: { message: error.message },
-    });
+    await updateQueries.createUpdateComment(comment);
+    res.redirect('/updates/' + updateId);
+  } catch (err) {
+    console.error('Error creating comment:', err);
+    res.status(500).send('Error creating comment');
   }
 });
+
 
 router.get('/create', checkAuthenticated, async (req, res) => {
   const tags = await postQueries.getAllTags();

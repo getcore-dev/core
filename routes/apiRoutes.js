@@ -142,7 +142,7 @@ router.get('/leetcode-experience/:username', async (req, res) => {
   }
 });
 
-router.get('/updates', async (req, res) => {
+router.get('/updates', cacheMiddleware(1600), async (req, res) => {
   try {
     const updates = await updateQueries.getUpdates();
     console.log(updates);
@@ -157,6 +157,8 @@ router.get('/updates/:id', async (req, res) => {
   try {
     const id = req.params.id;
     const update = await updateQueries.getUpdateById(id);
+    const comments = await updateQueries.getUpdateComments(id);
+    update.comments = comments;
     res.json(update);
   } catch (err) {
     console.error('Error fetching update:', err);
@@ -164,7 +166,7 @@ router.get('/updates/:id', async (req, res) => {
   }
 });
 
-router.get('/updates/:updateId/pr-info', async (req, res) => {
+router.get('/updates/:updateId/pr-info', cacheMiddleware(1600), async (req, res) => {
   try {
     const updateId = req.params.updateId;
     

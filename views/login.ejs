@@ -49,8 +49,8 @@
 
           <div class="input-container">
             <label for="password">Password</label>
-            <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">
-              <span class="material-symbols-outlined link">visibility</span>
+            <button type="button" class="toggle-password link" onclick="togglePasswordVisibility()">
+              <span class="material-symbols-outlined link">visibility</span> Show
             </button>
             <input type="password" name="password" id="password" placeholder="Password" required>
 
@@ -83,7 +83,7 @@
     const toggleButton = document.querySelector('.toggle-password');
     const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
     passwordInput.setAttribute('type', type);
-    toggleButton.innerHTML = type === 'password' ? '<span class="material-symbols-outlined">visibility</span>' : '<span class="material-symbols-outlined">visibility_off</span>';
+    toggleButton.innerHTML = type === 'password' ? '<span class="material-symbols-outlined">visibility</span> Show' : '<span class="material-symbols-outlined">visibility_off</span> Hide';
   }
   document.addEventListener("DOMContentLoaded", function () {
     const inputs = document.querySelectorAll('.input-container input');
