@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userQueries = require('../queries/userQueries');
+const updateQueries = require('../queries/updateQueries');
 const multer = require('multer');
 const { checkAuthenticated } = require('../middleware/authMiddleware');
 const storage = multer.diskStorage({
@@ -138,6 +139,49 @@ router.get('/leetcode-experience/:username', async (req, res) => {
   } catch (err) {
     console.error('Error fetching LeetCode data:', err);
     res.status(500).send('Error fetching LeetCode data');
+  }
+});
+
+router.get('/updates', async (req, res) => {
+  try {
+    const updates = await updateQueries.getUpdates();
+    console.log(updates);
+    res.json({'updates': updates});
+  } catch (err) {
+    console.error('Error fetching updates:', err);
+    res.status(500).send('Error fetching updates');
+  }
+});
+
+router.get('/updates/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const update = await updateQueries.getUpdateById(id);
+    res.json(update);
+  } catch (err) {
+    console.error('Error fetching update:', err);
+    res.status(500).send('Error fetching update');
+  }
+});
+
+router.get('/updates/:updateId/pr-info', async (req, res) => {
+  try {
+    const updateId = req.params.updateId;
+    
+    // Fetch the update data (assuming you have a function for this)
+    const update = await updateQueries.getUpdateById(updateId);
+    
+    if (!update || !update.pull_request_url) {
+      return res.status(404).json({ error: 'Update not found or no pull request URL' });
+    }
+
+    // Fetch the pull request info
+    const prInfo = await utilFunctions.getPullRequestInfo(update.pull_request_url);
+
+    res.json(prInfo);
+  } catch (error) {
+    console.error('Error fetching pull request info:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

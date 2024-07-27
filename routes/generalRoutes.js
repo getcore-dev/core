@@ -137,8 +137,32 @@ router.get('/learning', checkAuthenticated, (req, res) => {
 
 router.get('/updates', async (req, res) => {
   try {
-    const updates = await updateQueries.getUpdates();
-    res.render('updates.ejs', { user: req.user, updates });
+    res.render('updates.ejs', { user: req.user, updates: [] });
+  } catch (error) {
+    console.error('Error fetching updates:', error);
+    res.render('error.ejs', {
+      user: req.user,
+      error: { message: error.message },
+    });
+  }
+});
+
+router.get('/updates/:id', async (req, res) => {
+  try {
+    const updateId = req.params.id;
+    res.render('update-post.ejs', { user: req.user, updateId });
+  } catch (error) {
+    console.error('Error fetching updates:', error);
+    res.render('error.ejs', {
+      user: req.user,
+      error: { message: error.message },
+    });
+  }
+});
+
+router.get('/updates/new', checkAuthenticated, async (req, res) => {
+  try {
+    res.render('create-update.ejs', { user: req.user });
   } catch (error) {
     console.error('Error fetching updates:', error);
     res.render('error.ejs', {

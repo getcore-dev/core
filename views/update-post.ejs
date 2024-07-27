@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CORE/</title>
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/update-post.css" />
+
+  <link rel="shortcut icon" href="/img/core.png" />
+</head>
+<style>
+</style>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'updates' }) %>
+  <main>
+    <div class="update-post">
+      <h4 class="update-post-header margin-06-bottom">Loading...</h4>
+      <div class="update-post-content">
+        <div class="update-post-info">
+          <div class="update-post-details">
+            <div class="update-post-title-container">
+              <h3 class="update-post-title">Loading...</h3>
+            </div>
+            <div>
+              <p class="update-post-date margin-1-bottom sub-text secondary-text">Loading...</p>
+            </div>
+          </div>
+        </div>
+        <div class="update-post-body">Loading...</div>
+      </div>
+    </div>
+    <div class="update-comments">
+    </div>
+    <%- include('partials/footer') %>
+  </main>
+  <script>
+    function displayPullRequestInfo(prData) {
+      console.log(prData);
+      let prInfoContent = `
+    <div class="pr-info">
+      <p><strong> ${prData.pr_title}</strong></p>
+      <p><strong>State:</strong> ${prData.state}</p>
+      <p class="sub-text secondary-text"><strong>Authored by:</strong> ${prData.author} <strong>Merged by:</strong> ${prData.merged_by || 'N/A'}</p>
+      <p><strong><span class="material-symbols-outlined">calendar_month</span></strong> ${new Date(prData.created_at).toDateString()}</p>
+      <p><strong><span class="material-symbols-outlined">done_outline</span></strong> ${prData.merged_at ? new Date(prData.merged_at).toDateString() : 'Not merged'}</p>
+      <p><span class="tag green-tag">+${prData.additions}</span>  <span class="tag red-tag">-${prData.deletions}</span> in ${prData.changed_files} files</p>
+      <p><a class="link" href="${prData.pr_url}" target="_blank">View on GitHub</a></p>
+      <h5>Commits (${prData.total_commits}):</h5>
+      <ul class="commit-list">
+  `;
+
+      prData.commits.forEach(commit => {
+        prInfoContent += `
+      <li class="commit-item">
+        <strong>${commit.sha.substring(0, 7)}</strong>: ${commit.message} 
+        <br><span class="commit-details">by ${commit.author} on ${new Date(commit.date).toDateString()}</span>
+      </li>
+    `;
+      });
+
+      prInfoContent += `
+      </ul>
+    </div>
+  `;
+
+      return prInfoContent;
+    }
+
+
+    function fetchUpdates() {
+      Promise.all([
+          fetch(`/api/updates/<%= updateId%>`),
+          fetch(`/api/updates/<%= updateId%>/pr-info`)
+        ])
+        .then(([updateResponse, prResponse]) =>
+          Promise.all([updateResponse.json(), prResponse.json()])
+        )
+        .then(([updateData, prData]) => {
+          //console.log('Received update data:', updateData);
+          //console.log('Received PR data:', prData);
+
+          const updatePostHeader = document.querySelector('.update-post-header');
+          const updatePostTitle = document.querySelector('.update-post-title');
+          const updatePostDate = document.querySelector('.update-post-date');
+          const updatePostBody = document.querySelector('.update-post-body');
+          const updateComments = document.querySelector('.update-comments');
+
+          if (updatePostHeader && updatePostTitle && updatePostDate && updatePostBody && updateComments) {
+            // Update your DOM elements here
+            updatePostHeader.textContent = 'Update / ' + updateData.user_name;
+            updatePostTitle.textContent = updateData.title;
+            updatePostDate.textContent = new Date(updateData.post_date).toDateString();
+
+            // Create HTML content for the update body, including PR info
+            let bodyContent = updateData.content;
+            if (prData && prData.pr_url) {
+              bodyContent += displayPullRequestInfo(prData);
+            }
+            updatePostBody.innerHTML = bodyContent;
+
+            // Render comments (assuming this part stays the same)
+            updateComments.innerHTML = '';
+            updateData.comments.forEach(comment => {
+              const commentElement = document.createElement('div');
+              commentElement.classList.add('comment');
+              commentElement.innerHTML = `
+            <div class="comment-info">
+              <div class="comment-icon">
+                <span class="material-symbols-outlined">comment</span>
+              </div>
+              <div class="comment-details">
+                <div class="comment-author">${comment.author}</div>
+                <div class="comment-date">${new Date(comment.createdAt).toDateString()}</div>
+              </div>
+            </div>
+            <div class="comment-body">${comment.content}</div>
+          `;
+              updateComments.appendChild(commentElement);
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchUpdates);
+  </script>
+</body>
+
+</html>

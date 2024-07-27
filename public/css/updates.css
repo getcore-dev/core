@@ -21,7 +21,15 @@ div.commit-title {
   text-decoration: none;
 }
 
+.update {
+  display: flex;
+  gap: .8rem;
+  padding-left: .8rem;
+  align-items: flex-start;
+}
+
 #commits-container {
+  margin: .75rem;
   margin-top: 10px;
   margin-bottom: 25px;
   display: flex;

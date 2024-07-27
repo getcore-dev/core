@@ -1437,6 +1437,135 @@ OUTER APPLY (
     }
   },
 
+  getPullRequestInfo: async (url) => {
+    const isGitHubPRUrl = /^https?:\/\/github\.com\/.+\/.+\/pull\/\d+$/.test(url);
+    if (!isGitHubPRUrl) {
+      return { link: url };
+    }
+  
+    const match = url.match(/github\.com\/([^\/]+)\/([^\/]+)\/pull\/(\d+)/);
+    if (!match) {
+      console.error('Failed to parse GitHub URL:', url);
+      return { link: url };
+    }
+  
+    const [, owner, repo, prNumber] = match;
+  
+    try {
+      // Check if recent data (within the last 30 minutes) already exists in the GitHubPRData table
+      const existingDataResult = await sql.query`
+        SELECT *, DATEDIFF(minute, time_fetched, GETDATE()) AS time_diff
+        FROM GitHubPRData
+        WHERE pr_url = ${url}
+      `;
+  
+      if (existingDataResult.recordset.length > 0 && existingDataResult.recordset[0].time_diff <= 30) {
+        // Use existing data if it's recent enough
+        const dbData = existingDataResult.recordset[0];
+        return {
+          ...dbData,
+          commits: dbData.commits ? JSON.parse(dbData.commits) : [],
+        };
+      }
+  
+      // If no recent data in DB, fetch from GitHub API
+      const { Octokit } = await import('@octokit/rest');
+      const octokit = new Octokit({ userAgent: 'CORE' });
+  
+      const [prResponse, commitsResponse] = await Promise.all([
+        octokit.pulls.get({
+          owner,
+          repo,
+          pull_number: parseInt(prNumber, 10)
+        }),
+        octokit.pulls.listCommits({
+          owner,
+          repo,
+          pull_number: parseInt(prNumber, 10)
+        })
+      ]);
+  
+      const prData = prResponse.data;
+      const commitsData = commitsResponse.data;
+  
+      const commits = commitsData.map(commit => ({
+        sha: commit.sha,
+        message: commit.commit.message,
+        author: commit.commit.author.name,
+        date: commit.commit.author.date
+      }));
+  
+      const newPRData = {
+        id: prData.id,
+        pr_url: prData.html_url,
+        pr_title: prData.title,
+        state: prData.state,
+        author: prData.user.login,
+        created_at: prData.created_at,
+        updated_at: prData.updated_at,
+        merged_at: prData.merged_at,
+        merged_by: prData.merged_by ? prData.merged_by.login : null,
+        additions: prData.additions,
+        deletions: prData.deletions,
+        changed_files: prData.changed_files,
+        commits: JSON.stringify(commits),
+        total_commits: prData.commits,
+        time_fetched: new Date().toISOString(),
+      };
+  
+      // Update or insert the new data into the database
+      await sql.query`
+        MERGE GitHubPRData AS target
+        USING (VALUES (
+          ${newPRData.id}, ${newPRData.pr_url}, ${newPRData.pr_title}, ${newPRData.state}, 
+          ${newPRData.author}, ${newPRData.created_at}, ${newPRData.updated_at}, 
+          ${newPRData.merged_at}, ${newPRData.merged_by}, ${newPRData.additions}, 
+          ${newPRData.deletions}, ${newPRData.changed_files}, ${newPRData.commits}, 
+          ${newPRData.total_commits}, ${newPRData.time_fetched}
+        )) AS source (
+          id, pr_url, pr_title, state, author, created_at, updated_at, merged_at, merged_by, 
+          additions, deletions, changed_files, commits, total_commits, time_fetched
+        )
+        ON target.id = source.id
+        WHEN MATCHED THEN
+          UPDATE SET
+            pr_url = source.pr_url,
+            pr_title = source.pr_title,
+            state = source.state,
+            author = source.author,
+            created_at = source.created_at,
+            updated_at = source.updated_at,
+            merged_at = source.merged_at,
+            merged_by = source.merged_by,
+            additions = source.additions,
+            deletions = source.deletions,
+            changed_files = source.changed_files,
+            commits = source.commits,
+            total_commits = source.total_commits,
+            time_fetched = source.time_fetched
+        WHEN NOT MATCHED THEN
+          INSERT (
+            id, pr_url, pr_title, state, author, created_at, updated_at, merged_at, merged_by, 
+            additions, deletions, changed_files, commits, total_commits, time_fetched
+          )
+          VALUES (
+            source.id, source.pr_url, source.pr_title, source.state, source.author, 
+            source.created_at, source.updated_at, source.merged_at, source.merged_by, 
+            source.additions, source.deletions, source.changed_files, source.commits, 
+            source.total_commits, source.time_fetched
+          );
+      `;
+  
+      return {
+        ...newPRData,
+        commits: commits // Return parsed commits instead of stringified
+      };
+    } catch (error) {
+      console.error('Error fetching GitHub pull request data:', error);
+      return { link: url };
+    }
+  },
+
   getPostScore: async (postId) => {
     try {
       const result = await sql.query`
