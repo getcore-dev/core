@@ -34,7 +34,8 @@ div.commit-title {
   margin-bottom: 25px;
   display: flex;
   justify-content: flex-start;
-
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 #commit:hover {
