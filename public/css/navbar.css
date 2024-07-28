@@ -5,7 +5,7 @@
   --light-mode-body-color: #F6F8FA;
   --light-mode-main-color: #fff;
   --light-mode-hover-color: #eef3f7;
-  --border-color: #DCE6F2;
+  --border-color: #00000019;
   --light-mode-button-color: #DCE6F2;
   --light-mode-button-hover-color: #BECBDA;
   --light-mode-text-color: #000;
@@ -97,9 +97,10 @@ a:visited {
   display: flex;
 }
 
-.navigation-button {
+.navigation-button,
+.avatar-dropdown a {
   height: 31px;
-  display: none;
+  display: flex;
   width: 31px;
   border: 1.5px solid #c9c9c9;
   background: #f2f2f2;
@@ -260,13 +261,10 @@ a:visited {
 }
 
 #nb-icon {
-  font-size: 19px;
-  font-weight: 400;
   display: flex;
   justify-content: center;
   align-items: center;
   margin-right: 1px;
-  color: var(--light-mode-text-color);
 }
 
 .search-container {
@@ -720,8 +718,8 @@ li.dropdown a.active {
 
 .avatar-dropdown-item #nb-icon {
   padding: 0;
-  margin: 4px 10px !important;
-  font-size: 19px;
+  margin: 0;
+  font-size: 1.1rem;
 }
 
 
@@ -1007,8 +1005,8 @@ a>.menu-item {
 .nav-avatar {
   position: relative;
   display: flex;
+  z-index: 20;
   align-items: center;
-  padding-left: 2px;
 }
 
 .secondary-text,
@@ -1149,7 +1147,7 @@ a>.menu-item {
     height: var(--mobile-second-navbar-height);
     top: calc(var(--mobile-navbar-height));
     z-index: 1;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid #00000032;
   }
 
   .second-nav-links {
@@ -1197,10 +1195,6 @@ a>.menu-item {
     right: 7px;
     top: 0;
     z-index: 500;
-  }
-
-  .user-btns #nb-icon {
-    font-weight: 300;
   }
 
   .nav-text-and-user-btns {
@@ -1692,25 +1686,22 @@ button .material-symbols-outlined:not(:only-child) {
 .user-links {
   position: relative;
   display: flex;
+  gap: .4rem;
   align-items: center;
   transition: transform 0.1s linear;
 }
 
-.nav-avatar {
-  position: relative;
-  z-index: 20;
-}
-
 .avatar-dropdown {
   position: absolute;
-  right: 85px;
+  right: 146px;
   z-index: 10;
   background: none;
   display: flex;
   flex-direction: row;
+  gap: .6rem;
   align-items: center;
   padding: 10px;
-  padding-top: 12px;
+  padding-top: 10px;
   transform: translateX(30%);
   transition: transform 0.3s ease, opacity 0.05s ease 0.0125s, visibility 0.3s ease 0.15s;
 }
@@ -1725,12 +1716,9 @@ button .material-symbols-outlined:not(:only-child) {
 }
 
 .avatar-dropdown a {
-  width: 100%;
-  padding: 5px 0;
   text-decoration: none;
   font-size: 23px;
   color: var(--primary-text-color);
-  display: block;
   transition: 0.3s;
 }
 
@@ -1802,10 +1790,6 @@ button .material-symbols-outlined:not(:only-child) {
   .secondary-text,
   .secondary-text:visted {
     color: var(--dark-mode-secondary-text-color);
-  }
-
-  #nb-icon {
-    color: var(--dark-mode-text-color);
   }
 
   .secondary-text,
@@ -2023,7 +2007,8 @@ button .material-symbols-outlined:not(:only-child) {
     color: var(--dark-mode-text-color);
   }
 
-  .navigation-button {
+  .navigation-button,
+  .avatar-dropdown a {
     border-color: #1f1f1f;
     background: #121212;
   }
@@ -2297,12 +2282,13 @@ button .material-symbols-outlined:not(:only-child) {
 }
 
 #com-btn-container {
-  margin-right: auto;
+
   width: 20%;
   max-width: 225px;
   flex: none;
   /* This will prevent the container from growing */
   display: flex;
+  margin-right: auto;
   flex-direction: column;
 
   /* align-items: center; */
@@ -2315,8 +2301,9 @@ button .material-symbols-outlined:not(:only-child) {
   -ms-autohiding-scrollbar: none;
 }
 
-#com-btn-container {
-  border-right: 1px solid var(--border-color);
+
+.job-details-container {
+  border-left: 1px solid var(--border-color);
 }
 
 #com-btn-container a {
@@ -2453,10 +2440,16 @@ button .material-symbols-outlined:not(:only-child) {
   }
 
   .avatar-dropdown {
+    gap: 0;
     opacity: 0;
     visibility: hidden;
     right: 0;
     pointer-events: none;
+  }
+
+  .avatar-dropdown a {
+    background: 0;
+    border: 0;
   }
 
   #submit-button-normal,
@@ -2476,6 +2469,7 @@ button .material-symbols-outlined:not(:only-child) {
     transform: translateX(-30px);
     transition: transform 0.3s ease, opacity 0.3s ease 0.15s, visibility 0.3s ease 0.15s;
     opacity: 1;
+    gap: .6rem;
     visibility: visible;
     pointer-events: all;
   }
@@ -2496,6 +2490,11 @@ button .material-symbols-outlined:not(:only-child) {
 
   #com-btn-container {
     display: none;
+  }
+
+  .avatar-dropdown a {
+    width: 100%;
+    padding: 5px 0;
   }
 
 
