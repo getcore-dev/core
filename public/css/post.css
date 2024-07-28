@@ -1300,7 +1300,7 @@ div .mini-link {
 
 .post-body p,
 .comment-body p {
-  font-size: .875rem;
+  font-size: .825rem;
 }
 
 .preview-description {
@@ -1564,7 +1564,7 @@ p.preview-description {
   border: 1px solid #1e77e247;
   color: #2e63a1;
   border-radius: 7px;
-  font-size: .925rem;
+  font-size: .725rem;
   position: relative;
   align-items: center;
 }
@@ -2023,7 +2023,7 @@ div.username {
 
   .post-body p,
   .comment-body p {
-    font-size: .95rem;
+    font-size: 1.05rem;
   }
 
   .description {
@@ -2064,6 +2064,10 @@ div.username {
 
   .blog-username {
     font-size: 1rem;
+  }
+
+  .tag-flair {
+    font-size: .95rem;
   }
 
   img.blog-avatar {
