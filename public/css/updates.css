@@ -1,5 +1,6 @@
 body {
   font-family: 'Inter', sans-serif;
+  font-size: var(--mobile-default-font-size);
 }
 
 span.material-symbols-outlined {
@@ -7,9 +8,10 @@ span.material-symbols-outlined {
 }
 
 #updates-header {
-  padding-top: 13px;
-  padding-left: 13px;
-  padding-right: 13px;
+  padding: .75rem 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 #updates-title {

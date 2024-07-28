@@ -243,6 +243,35 @@ router.get('/tags/:tag', async (req, res) => {
   }
 });
 
+router.post('/company/:name/comments', checkAuthenticated, async (req, res) => {
+  try {
+    const companyName = req.params.name;
+    const company = await jobQueries.getCompanyByName(companyName);
+    const comment = {
+      company_id: company.id,
+      user_id: req.user.id,
+      content: req.body.content,
+      parent_comment_id: req.body.parent_comment_id,
+    };
+    await jobQueries.addCompanyComment(comment);
+    res.redirect(`/jobs/company/${companyName}`);
+  }
+  catch (err) {
+    console.error('Error posting company comment:', err);
+    res.status(500).send('Error posting company comment');
+  }
+});
+
+  router.delete('/company/:name/comments/:commentId', checkAuthenticated, async (req, res) => {
+    try {
+      const commentId = req.params.commentId;
+      await jobQueries.deleteCompanyComment(commentId);
+      res.status(200).send('Comment deleted');
+    } catch (err) {
+      console.error('Error deleting company comment:', err);
+      res.status(500).send('Error deleting company comment');
+    }
+  });
 
 router.get('/getTopTags', cacheMiddleware(3600), async (req, res) => {
   try {

@@ -30,8 +30,8 @@
   --navbar-button-font-size: 16px;
   --nav-text-font-size: 20px;
   --navbar-height: 65px;
-  --mobile-default-font-size: .95rem;
-  --mobile-default-sub-font-size: .85rem;
+  --mobile-default-font-size: 1.05rem;
+  --mobile-default-sub-font-size: .95rem;
   --mobile-navbar-height: 50px;
   --mobile-second-navbar-height: 38px;
   --logo-max-height: 65px;
@@ -1385,8 +1385,8 @@ button:hover {
 #null-button-normal {
   font-size: .875rem;
   border: none;
-  width: auto;
   display: flex;
+  width: auto;
   font-weight: 550;
   margin: 0;
   border-radius: 10px;
@@ -1403,6 +1403,10 @@ button:hover {
   text-wrap: nowrap;
   align-items: center;
   justify-content: center;
+}
+
+.grow-button {
+  width: -webkit-fill-available !important;
 }
 
 .small-icon {
@@ -1564,6 +1568,7 @@ button .material-symbols-outlined:not(:only-child) {
 
 #search-button {
   position: absolute;
+  width: auto;
   top: 19px;
   right: 21px;
 }

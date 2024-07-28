@@ -58,11 +58,38 @@
       return `${month}/${day}/${year}`;
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const jobId = extractJobIdFromUrl();
       const userIsAdmin = "<%= user && user.isAdmin %>" === "true";
       const userIsLoggedIn = "<%= user %>" !== "";
       lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn);
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+
+      const companyProfileButtons = document.querySelectorAll('.company-navbar-button');
+      console.log(companyProfileButtons);
+      const companyProfileSections = document.querySelectorAll('.company-profile-section');
+      console.log(companyProfileSections);
+
+      companyProfileButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const targetId = button.getAttribute('data-id');
+
+          companyProfileSections.forEach(section => {
+            if (section.className.includes(targetId)) {
+              section.style.display = 'block';
+            } else {
+              section.style.display = 'none';
+            }
+          });
+
+          // Update active button state (optional)
+          companyProfileButtons.forEach(btn => {
+            btn.classList.remove('active');
+          });
+          button.classList.add('active');
+        });
+      });
     });
   </script>
 

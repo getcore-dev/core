@@ -339,7 +339,6 @@ div.vote-interactions {
 .post-info,
 .description,
 .reactions {
-  font-size: 16px;
   color: var(--light-mode-text-color);
 }
 
@@ -350,7 +349,6 @@ div.vote-interactions {
 
 .description,
 .job-description {
-  font-size: 14px;
   font-weight: normal;
   line-height: 1.6rem;
   overflow: hidden;
@@ -1218,10 +1216,6 @@ button.see-more {
 
   .post-info {
     font-size: 14px;
-  }
-
-  .description {
-    font-size: .95rem;
   }
 
 

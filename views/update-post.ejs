@@ -39,7 +39,7 @@
       <% if (user) { %>
       <form class="comment-form margin-1-bottom" action="/updates/<%= updateId %>/comment" method="POST">
         <textarea name="content" class="comment-input adaptive-input" placeholder="Add a comment..." required></textarea>
-        <button type="submit" class="comment-submit submit-button-normal">Post</button>
+        <button type="submit" class="comment-submit submit-button">Post</button>
       </form>
       <% } %>
       <div class="update-comments">

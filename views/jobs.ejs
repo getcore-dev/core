@@ -69,13 +69,12 @@
         </span>
 
       </div>
-      <div class="jobs-header" style="display: flex;flex-direction: row;align-items: center;" 
-      <h5>Job Postings</h5>
+      <div class="jobs-header" style="display: flex;flex-direction: row;align-items: center;" <h5>Job Postings</h5>
         <% if (user) { %>
         <div id="horizontal-scroll" class="job-buttons">
           <% if (user.isAdmin) { %>
           <div class="create-company-button">
-            <button class="create-company special-button-normal" onclick="window.location.href='/jobs/company/create';"><span class="material-symbols-outlined">
+            <button class="create-company null-button-normal" onclick="window.location.href='/jobs/company/create';"><span class="material-symbols-outlined">
                 factory
               </span>+</button>
           </div>
@@ -83,7 +82,7 @@
 
           <% if (user.recruiter_id) { %>
           <div class="create-job-button">
-            <button class="create-job special-button-normal" onclick="window.location.href='/jobs/create';"><span class="material-symbols-outlined">
+            <button class="create-job null-button-normal" onclick="window.location.href='/jobs/create';"><span class="material-symbols-outlined">
                 work
               </span>+</button>
           </div>
