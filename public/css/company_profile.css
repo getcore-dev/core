@@ -20,7 +20,7 @@ div.comment-author {
 .jobs-count {
   height: 20px;
   width: 20px;
-  font-size: .9rem;
+  font-size: .7rem;
   margin-left: .5rem;
   background: #cacaca;
   border: 1px solid #707070;
@@ -33,7 +33,7 @@ div.comment-author {
 .company-menu {
   padding: .75rem 1.15rem;
   padding-bottom: 0;
-  background: var(--light-mode-main-color);
+  background: var(--light-mode-body-color);
 }
 
 div.comments-container {
@@ -44,7 +44,7 @@ div.comments-container {
 
 div.company-comments {
   display: none;
-  padding: .75rem 1.15rem;
+  padding: 1.95rem 1.15rem;
 }
 
 div.jobs {
@@ -60,6 +60,7 @@ div.company-menu .second-nav-links {
 
 div.company-menu .second-nav-links .navbar-button {
   margin: 0;
+  font-size: .95rem;
 }
 
 .company-header {

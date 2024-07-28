@@ -1335,7 +1335,7 @@ input {
   font-size: 16px;
   width: 100%;
   border: none;
-  border-radius: 12px;
+  border-radius: 6px;
   background: #12803629;
   border: 1.5px solid #27944e;
   color: #27944e;
@@ -1389,7 +1389,7 @@ button:hover {
   width: auto;
   font-weight: 550;
   margin: 0;
-  border-radius: 10px;
+  border-radius: 6px;
   background: #0dd64e3d;
   border: 1.5px solid #57ab73;
   color: #57ab73;
@@ -1420,6 +1420,33 @@ button:hover {
   text-decoration: none;
 }
 
+
+.spinner {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  animation: spin 2s linear infinite;
+  margin: 0 auto;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
 button .material-symbols-outlined {
   font-size: 15px;

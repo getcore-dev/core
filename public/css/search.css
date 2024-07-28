@@ -44,37 +44,10 @@ div.users {
 }
 
 
-.spinner {
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #3498db;
-    border-radius: 50%;
-    width: 12px;
-    height: 12px;
-    animation: spin 2s linear infinite;
-    margin: 0 auto;
-}
-
 #users-results, #posts-results, #jobs-results {
     margin-bottom: .9rem;
 }
 
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-/* Optional: Center the spinner container */
-.spinner-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 50px;
-}
 
 .user:hover {
     background-color: var(--light-mode-hover-color);
