@@ -2,6 +2,21 @@ const sql = require('mssql');
 const utilFunctions = require('../utils/utilFunctions');
 const config = require('../config/dbConfig');
 
+/*
+CREATE TABLE company_comments (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    company_id INT NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT GETDATE(),
+    deleted BIT NOT NULL DEFAULT 0,
+    parent_comment_id INT,
+    is_pinned BIT NOT NULL DEFAULT 0,
+    content NVARCHAR(MAX) NOT NULL,
+    FOREIGN KEY (company_id) REFERENCES dbo.companies(id),
+    FOREIGN KEY (parent_comment_id) REFERENCES dbo.company_comments(id)
+);
+*/
+
 const jobQueries = {
   getJobs: async (limit, offset) => {
     try {
@@ -21,6 +36,49 @@ const jobQueries = {
       `);
       const jobs = result.recordset;
       return jobs;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  getCompanyComments: async (companyId) => {
+    // get company comments and join in user data
+    try {
+      const result = await sql.query`
+        SELECT cc.*, u.username as user_name, u.id as user_id, u.avatar as user_avatar
+        FROM company_comments cc
+        JOIN users u ON cc.user_id = u.id
+        WHERE cc.company_id = ${companyId} AND cc.deleted = 0
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  addCompanyComment: async (comment) => {
+    try {
+      const result = await sql.query`
+        INSERT INTO company_comments (company_id, user_id, content, parent_comment_id)
+        VALUES (${comment.company_id}, ${comment.user_id}, ${comment.content}, ${comment.parent_comment_id})
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  deleteCompanyComment: async (commentId) => {
+    try {
+      const result = await sql.query`
+        UPDATE company_comments
+        SET deleted = 1
+        WHERE id = ${commentId}
+      `;
+      return result.recordset;
     } catch (err) {
       console.error('Database query error:', err);
       throw err;

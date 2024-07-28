@@ -74,6 +74,8 @@ function getSimilarJobs(jobId) {
     .then((response) => response.json())
     .then((jobs) => {
       const similarJobsContainer = document.querySelector('.similar-jobs');
+      const similarJobsCount = document.querySelector('.related-jobs-count');
+      similarJobsCount.innerHTML = `${jobs.length}`;
 
       if (jobs.length === 0) {
         similarJobsContainer.innerHTML = '';
@@ -105,7 +107,7 @@ function getSimilarJobs(jobId) {
               <p  class="posting-company-name secondary-text">${
   job.company_name
 }</p>
-              <h3 class="job-title"><a href="/jobs/${job.id}">${
+              <h3 class="job-title main-text"><a href="/jobs/${job.id}">${
   job.title
 } </a> </h3>
               </div>
@@ -147,8 +149,10 @@ function getSimilarJobsByCompany(jobId, companyName) {
     .then((response) => response.json())
     .then((jobs) => {
       const similarJobsContainer = document.querySelector(
-        '.similar-jobs-company'
+        '.similar-company-jobs'
       );
+      const similarCompanyJobsCount = document.querySelector('.related-jobs-company-count');
+      similarCompanyJobsCount.innerHTML = `${jobs.length}`;
       if (jobs.length === 0) {
         similarJobsContainer.innerHTML = '';
         return;
@@ -267,7 +271,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         .map(
           (skill) =>
             `<span class="skill"
-            ><a class="link underlined" href="/skills/${skill}"><p>${skill}</p></a></span>`
+            ><a class="link underlined" href="/skills/${skill.trim()}"><p class="link">${skill.trim()}</p></a></span>`
         )
         .join('');
 
@@ -284,12 +288,14 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 
       jobDetailsContainer.innerHTML = `
         <div class="job-listing">
+        <div class="job-listing-menu adaptive-border-bottom">
                 ${
   isOlderThan30Days(job)
-    ? `<div class="caution-messages"><p>This job was posted more than 30 days ago</p> <p>Apply anyway <a href="${job.link}">here</a></div>`
+    ? `<div class="caution-messages">This job was posted more than 30 days ago. Apply anyway <a class="link" href="${job.link}">here</a></div>`
     : ''
 }
-          <div class="company-info">
+
+          <div class="company-info margin-1-bottom">
           ${
   job.company_logo
     ? `
@@ -298,29 +304,31 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     : ''
 }
             <div class="company-details">
+                          <div class="company-information">
+            <a class="secondary-text sub-text"href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</h2>
+
+            </div>
               <h3 class="company-name">
-              <a href="/jobs/company/${encodeURIComponent(job.company_name)}">
-              ${job.company_name}
+              <a>
+              ${job.title}
               </a>
               </h3>
-              <div class="company-information">
-<p id="secondary-text" class="company-size">
-  <span class="material-symbols-outlined">group</span>
-  ${job.company_size ? job.company_size.toString().toLowerCase().includes('employees') ? job.company_size : `${job.company_size} employees` : 'Unknown employees'}
-</p>
-            </div>
+
             </div>
           </div>
           
+          
 
-          <div class="job-details">
-            <h2 class="job-title">${job.title}</h2>
-            <div class="job-info-flairs margin-03-bottom">
+            <div class="job-info-flairs margin-1-bottom">
               <p>
                 <span class="material-symbols-outlined">
                 engineering
                 </span> ${job.experienceLevel}
               </p>
+              <p class="company-size">
+  <span class="material-symbols-outlined">group</span>
+  ${job.company_size ? job.company_size.toString().toLowerCase().includes('employees') ? job.company_size : `${job.company_size} employees` : 'Unknown employees'}
+</p>
               <p> 
                 <span class="material-symbols-outlined">
                 location_city
@@ -347,24 +355,28 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
             </p>
               <p>
               <span class="material-symbols-outlined">attach_money</span>
-              <strong style="color:#26704a;">
                 USD $${job.salary != 0 ? job.salary.toLocaleString() : ''} ${
   job.salary_max != 0 ? '- $' + job.salary_max.toLocaleString() : ''
 }
-              </strong>
             </p>
+            <p>
+<span class="material-symbols-outlined">
+                today
+                </span>
+${formatDate(job.postedDate)}
+</p>
 
 
       </div>
       
-      <div id="horizontal-scroll" class="interact-buttons">
+      <div class="interact-buttons margin-1-bottom">
       ${
   isOlderThan30Days(job)
     ? ''
     : `<div class="apply-button-container flex">
-          <button id="regular-button-normal" class="margin-h-auto" onclick="window.location.href='${job.link}'"> <span class="material-symbols-outlined">
+          <button id="regular-button-normal" class="margin-h-auto grow-button" onclick="window.location.href='${job.link}'"> <span class="material-symbols-outlined">
 open_in_new
-</span><p>Apply</p></button>
+</span>Apply</button>
           </div>
           `
 }
@@ -372,7 +384,7 @@ open_in_new
   userIsLoggedIn
     ? `<div class="favorite-button-container">
               <div id="favorite-form-${job.id}" class="flex">
-                <button id="submit-button-normal" onclick="favorite('job', ${job.id});" class="margin-h-auto"><span class="material-symbols-outlined">
+                <button id="null-button-normal" onclick="favorite('job', ${job.id});" class="margin-h-auto"><span class="material-symbols-outlined">
 favorite
 </span></button>
               </div>
@@ -384,16 +396,16 @@ favorite
   userIsAdmin
     ? `
         <div class="delete-button-container flex">
-          <button id="cancel-button-normal" class="margin-h-auto" onclick="window.location.href='/jobs/delete/${job.id}'"><span class="material-symbols-outlined" style="padding:0;">
+          <button id="null-button-normal" class="margin-h-auto" onclick="window.location.href='/jobs/delete/${job.id}'"><span class="material-symbols-outlined" style="padding:0;">
 delete
-</span></button>
+</span> Delete</button>
         </div>
         
       `
     : ''
 }
       <div class="share-button-container flex" style="margin-left: auto">
-      <button id="null-button-normal" class="margin-h-auto" onclick="share('${
+      <button id="null-button-normal" class="margin-h-auto grow-button" onclick="share('${
   job.title
 }', '', 'https://c-ore.dev/jobs/${job.id}')"
       ><span class="material-symbols-outlined">
@@ -402,9 +414,40 @@ ios_share
       </div>
 
       </div>
-                  <p id="secondary-text" class="post-date-text">
-            This job was posted on ${formatDate(job.postedDate)}
-            </p>
+
+              <ul class="second-nav-links">
+          <li class="dropdown active">
+            <a class="navbar-button company-navbar-button active no-bg no-border" data-id="job-details" id="company-updates-selector">
+              <span class="material-symbols-outlined">
+                info
+              </span>Info
+              <div class="jobs-count">
+              </div>
+            </a>
+
+
+          </li>
+          <li class="dropdown">
+            <a class="navbar-button company-navbar-button no-bg no-border" data-id="similar-jobs" id="company-updates-selector"><span class="material-symbols-outlined">
+                chat_bubble
+              </span>Related Jobs
+              <div class="related-jobs-count">
+              </div>
+            </a>
+          </li>
+          <li class="dropdown">
+            <a class="navbar-button company-navbar-button no-bg no-border" data-id="similar-company-jobs" id="company-updates-selector">
+              <span class="material-symbols-outlined">
+                factory
+              </span>Company
+              <div class="related-jobs-company-count">
+              </div>
+              </a>
+          </li>
+        </ul>
+
+            </div>
+                      <div class="job-details company-profile-section">
             <div class="job-posting-description">
             <h4>Job Description</h4>
             
@@ -536,10 +579,11 @@ ${job.location
     : ''
 }
 </div>
-<div class="similar-jobs"></div>
-<div class="similar-jobs-company"></div>
+</div>
+<div class="similar-jobs company-profile-section" style="display:none;"></div>
+<div class="similar-company-jobs company-profile-section" style="display:none;"></div>
 
-            <div class="job-skills">
+            <div class="job-skills-display">
               <h4>Tags</h4>
               ${tagsHTML}
               ${
@@ -554,17 +598,45 @@ ${job.location
           </div>
         </div>
       `;
+      bindSelectorButtons();
       getSimilarJobs(jobId);
       getSimilarJobsByCompany(jobId, job.company_name);
       if (userIsLoggedIn) {
         checkFavorite(jobId);
       }
+      
     })
     .catch((error) => {
       console.error('Error fetching job details:', error);
     });
 }
 
+function bindSelectorButtons() {
+  const companyProfileButtons = document.querySelectorAll('.company-navbar-button');
+      console.log(companyProfileButtons);
+      const companyProfileSections = document.querySelectorAll('.company-profile-section');
+      console.log(companyProfileSections);
+
+      companyProfileButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const targetId = button.getAttribute('data-id');
+
+          companyProfileSections.forEach(section => {
+            if (section.className.includes(targetId)) {
+              section.style.display = 'block';
+            } else {
+              section.style.display = 'none';
+            }
+          });
+
+          // Update active button state (optional)
+          companyProfileButtons.forEach(btn => {
+            btn.classList.remove('active');
+          });
+          button.classList.add('active');
+        });
+      });
+    }
 function checkFavorite(jobId) {
   fetch(`/favorites/isFavorite/job/${jobId}`)
     .then((response) => response.json())

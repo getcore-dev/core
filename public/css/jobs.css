@@ -33,10 +33,6 @@ body {
   margin-left: auto;
 }
 
-.job-buttons button {
-  background: none !important;
-  border: none;
-}
 
 .job-info h5 {
   margin-bottom: .3rem;
@@ -126,7 +122,6 @@ div.job-filters {
   gap: 10px;
   padding-top: 0px;
   width: 100%;
-  margin-bottom: .3rem;
 }
 
 .job-flair p {
@@ -143,7 +138,7 @@ div.job-filters {
 h3.job-title {
   margin: 0;
   margin-top: 0;
-  font-size: 1rem;
+  font-size: 1.15rem;
 }
 
 .job-title a,
@@ -159,7 +154,7 @@ p.job-description {
   width: 100%;
   overflow: hidden;
   box-sizing: border-box;
-  line-height: 1.125rem;
+  line-height: 1.6rem;
   margin: 0;
   font-size: .875rem;
   margin: 2px 0;
@@ -439,7 +434,7 @@ div.jobs-container>div.job-list>.job {
 }
 
 .show-filters {
-  width: 100%;
+  width: auto !important;
 }
 
 .title-filter {

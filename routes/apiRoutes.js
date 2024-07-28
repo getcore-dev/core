@@ -427,6 +427,21 @@ router.get('/getTopSkills', cacheMiddleware(3600), async (req, res) => {
   }
 });
 
+router.get('/company/:name/comments', async (req, res) => {
+  try {
+    const companyName = req.params.name;
+    const company = await jobQueries.getCompanyByName(companyName);
+    const comments = await jobQueries.getCompanyComments(company.id);
+    // get user most recent job experience
+    res.json(comments);
+  } catch (err) {
+    console.error('Error fetching company comments:', err);
+    res.status(500).send('Error fetching company comments');
+  }
+});
+
+
+
 router.get('/jobs', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;

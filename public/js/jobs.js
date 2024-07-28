@@ -164,7 +164,7 @@ function setupFilter(filterType, values) {
       const titleFiltersDiv = document.querySelector('.title-filter');
       const showFiltersButton = document.createElement('button');
       const tagsDiv = document.querySelector('.tags');
-      showFiltersButton.className = 'show-filters regular-button-normal';
+      showFiltersButton.className = 'show-filters null-button-normal';
       showFiltersButton.innerHTML = 'Filter';
       showFiltersButton.style.margin = '0 0 0 .7rem';
       showFiltersButton.style.height = '32px';

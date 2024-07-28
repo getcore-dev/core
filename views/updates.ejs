@@ -19,7 +19,12 @@
       <h4 id="updates-header-text">Loading...</h4>
       <% if (typeof user !== 'undefined') { %>
       <% if (user.isAdmin) { %>
-      <a href="/updates/new" class="link">Create a new update</a>
+      <a href="/updates/new">
+        <button class="null-button-normal"><span class="material-symbols-outlined">
+            add
+          </span> Update
+        </button>
+      </a>
       <% } %>
       <% } %>
     </div>
@@ -67,6 +72,8 @@
 
               const updateBody = document.createElement('div');
               updateBody.classList.add('update-body');
+              updateBody.classList.add('main-text');
+
               updateBody.innerHTML = `<h4>${update.title}</h4>`;
               updateBody.innerHTML += `<p>${update.content}</p>`;
               updateBody.innerHTML += `<p class="sub-text secondary-text"><span style="margin-right: 0.6rem;"><a class="link" href="${update.pull_request_url}">${update.pull_request_url.split('/').slice(-2).join('/')}<span class="material-symbols-outlined">open_in_new</span></a></span><span>${update.comment_count} comment${update.comment_count !== 1 ? 's' : ''}</span></p>`;

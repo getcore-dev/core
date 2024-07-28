@@ -1,34 +1,84 @@
 main {
-    height: calc(100dvh - var(--navbar-height));
-    background-color: var(--light-mode-main-color);
-    display: flex;
-    flex-direction: row;
-  }
+  height: calc(100dvh - var(--navbar-height));
+  background-color: var(--light-mode-main-color);
+  display: flex;
+  flex-direction: row;
+}
 
 .company-info-container {
   max-width: 800px;
-    margin-right: auto;
-    padding: 13px;
+  margin-right: auto;
+}
+
+div.comment-author {
+  display: flex;
+  gap: .8rem;
+  align-items: center;
+}
+
+.comments-count,
+.jobs-count {
+  height: 20px;
+  width: 20px;
+  font-size: .9rem;
+  margin-left: .5rem;
+  background: #cacaca;
+  border: 1px solid #707070;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.company-menu {
+  padding: .75rem 1.15rem;
+  padding-bottom: 0;
+  background: var(--light-mode-main-color);
+}
+
+div.comments-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+div.company-comments {
+  display: none;
+  padding: .75rem 1.15rem;
+}
+
+div.jobs {
+  padding: .75rem 1.15rem;
+}
+
+div.company-menu .second-nav-links {
+  padding: 0;
+  display: flex;
+  align-content: center;
+  justify-content: space-between;
+}
+
+div.company-menu .second-nav-links .navbar-button {
+  margin: 0;
 }
 
 .company-header {
-    display:flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    margin-bottom: .4rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
 }
 
 .company-info-container .jobs {
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 .company-flair {
-    display: flex;
-    flex-direction: row;
-    gap: 4px;
-    margin-bottom: .3rem;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  flex-wrap: wrap;
 }
 
 .company-flair-item {
@@ -37,55 +87,84 @@ main {
   margin: 3px 7px 0px 0px;
   margin-bottom: 3px;
   border-radius: 7px;
-  font-size: .825rem;
+  font-size: .925rem;
   position: relative;
-  }
-
-  
-  .company-flair-item p {
-    display: -webkit-box;
-    -webkit-line-clamp: 1; 
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space-collapse: collapse;
-    white-space: nowrap;
-    margin: 0;
-  }
-
-  .job-flair p {
-    display: -webkit-box;
-    -webkit-line-clamp: 1; 
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space-collapse: collapse;
-    white-space: nowrap;
-    margin: 0;
-  }
+}
 
 
-  .job-entry {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 5px 0;
-    border-bottom: 1px solid var(--border-color);
-  }
-  .company-flair-item .material-symbols-outlined {
-    font-size: .95rem;
-    vertical-align: -2px;
-    padding-right: .2rem;
-  }
+.company-flair-item p {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space-collapse: collapse;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.job-flair p {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space-collapse: collapse;
+  white-space: nowrap;
+  margin: 0;
+}
+
+
+.job-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.company-flair-item .material-symbols-outlined,
+#job-filter-button .material-symbols-outlined,
+.company-menu .material-symbols-outlined {
+  font-size: .95rem;
+  vertical-align: -2px;
+  padding-right: .6rem;
+}
+
+.company-menu .navbar-button {
+  display: flex;
+}
+
+.company-menu li.dropdown a.active {
+  padding-bottom: 14px !important;
+  border-color: var(--active-indicator-color) !important;
+}
+
+.company-menu .navbar-button .material-symbols-outlined {
+  vertical-align: -2px;
+  padding-right: .8rem;
+}
 
 .company-name {
-    font-weight: bold;
-    margin: 0;
+  font-weight: bold;
+  margin: 0;
 }
 
 .company-location {
-    font-size: 14px;
+  font-size: 14px;
   margin: 0;
+}
+
+div.company-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+
+div.company-buttons button {
+  width: 100% !important;
 }
 
 .link-display {
@@ -99,22 +178,18 @@ main {
 }
 
 .company-info {
-    display: flex;
-    flex-direction: column;
-    
+  display: flex;
+  flex-direction: column;
+
 }
 
 .company-description {
-  line-height: 1.125rem;
-  margin: 0;
+  line-height: 1.6rem;
   font-size: .925rem;
-  margin-bottom: .6rem;
 }
 
 .company-description {
   position: relative;
-  overflow: hidden;
-  max-height: 3.5em; /* Approx. 3 lines of text */
 }
 
 .description-text {
@@ -147,7 +222,7 @@ p.job-description {
   width: 100%;
   overflow: hidden;
   box-sizing: border-box;
-  line-height: 1.125rem;
+  line-height: 1.6rem;
   margin: 0;
   font-size: .9255rem;
   margin: 2px 0;
@@ -155,37 +230,37 @@ p.job-description {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-  }
+}
 
-  .job-posting-flairs {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 7px;
-    flex-wrap: wrap;
-    box-sizing: border-box;
-    max-width: 100%;
-    overflow-x: auto;
-    margin-top: 5px;
-  }
+.job-posting-flairs {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: auto;
+  margin-top: 5px;
+}
 
 
-  .job-buttons {
-    align-content: center;
-  }
+.job-buttons {
+  align-content: center;
+}
 
-  .job-main {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    width: 100%;
-  }
+.job-main {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+}
 
-  h3.job-title {
-    margin: 0;
-    margin-top: 3px;
-    font-size: 1rem;
-  }
+h3.job-title {
+  margin: 0;
+  margin-top: 3px;
+  font-size: 1rem;
+}
 
 .job-info .company-info {
   display: flex;
@@ -194,14 +269,14 @@ p.job-description {
   gap: 10px;
   padding-top: 0px;
   width: 100%;
-  }
+}
 
 
 .see-more {
   font-size: .825rem;
 }
 
-  
+
 
 .job-flair {
   display: inline-flex;
@@ -216,55 +291,78 @@ p.job-description {
   position: relative;
 }
 
+.job {
+  background-color: var(--light-mode-main-color);
+  margin: 0;
+  border-radius: 0;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+button.delete-comment {
+  border: 0;
+  background: 0;
+  padding: 0;
+}
+
+div.jobs-company-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.job-preview {
+  display: flex;
+  align-items: center;
+  padding: .8rem 0;
+}
+
+.job-info {
+  flex-grow: 1;
+  display: flex;
+  gap: 6px;
+  max-width: 100%;
+  box-sizing: border-box;
+  flex-direction: column;
+}
+
+
+
+
+@media screen and (max-width: 600px) {
+  main {
+    height: calc(100dvh - var(--mobile-navbar-height));
+  }
+
+  .job-flairs {
+    padding-bottom: 5px;
+  }
+
+
+}
+
+
+
+@media (prefers-color-scheme: dark) {
+  main {
+    background-color: var(--dark-mode-body-color);
+    color: var(--dark-mode-text-color);
+  }
+
+
+  .company-menu {
+    background: var(--dark-mode-main-color);
+  }
+
+  .comments-count,
+  .jobs-count {
+    background: #232323;
+    border-color: #414141;
+  }
+
+
   .job {
-    background-color: var(--light-mode-main-color);
-    margin: 0;
-    border-radius: 0;
-    margin-bottom: 0;
-    border-bottom: 1px solid var(--border-color);
+    background-color: var(--dark-mode-body-color);
+    border-color: var(--dark-mode-border-color);
   }
-
-
-  .job-preview {
-    display: flex;
-    align-items: center;
-    padding: 9px 0;
-  }
-
-  .job-info {
-    flex-grow: 1;
-    display: flex;
-    gap: 6px;
-    max-width: 100%;
-    box-sizing: border-box;
-    flex-direction: column;
-  }
-
-
-
-
-  @media screen and (max-width: 600px) {
-    main {
-      height: calc(100dvh - var(--mobile-navbar-height));
-    }
-
-    .job-flairs {
-        padding-bottom: 5px;
-      }
-
-      
-  }
-
-
-
-  @media (prefers-color-scheme: dark) {
-    main {
-      background-color: var(--dark-mode-body-color);
-      color: var(--dark-mode-text-color);
-    }
-
-    .job {
-        background-color: var(--dark-mode-body-color);
-        border-color: var(--dark-mode-border-color);
-      }
-  }
+}

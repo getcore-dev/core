@@ -35,67 +35,155 @@
   <%- include('partials/navbar', { pagePath: 'company' }) %>
   <main>
     <%- include('partials/com-btn-container', { }) %>
+    <% locals.user = user %>
 
-    <div class="company-info-container">
-      <div class="company-header">
-        <div class="company-image">
-          <% if (company.logo) { %>
-          <img class="thumbnail thumbnail-small thumbnail-regular" src="<%= company.logo %>" alt="" />
+    <div class="company-info-container" data-company="<%= company.name %>">
+      <div class="company-menu adaptive-border-bottom">
+        <div class="company-header margin-06-bottom">
+          <div class="company-image">
+            <% if (company.logo) { %>
+            <img class="thumbnail thumbnail-tiny thumbnail-regular" src="<%= company.logo %>" alt="" />
+            <% } %>
+          </div>
+          <div class="company-info">
+            <span class="company-name"><%= company.name %></span>
+          </div>
+          <% if (user && user.isAdmin) { %>
+          <a href="/jobs/company/<%= encodeURIComponent(company.name) %>/edit">
+            <button class="null-button-normal">
+              <span class="material-symbols-outlined">
+                edit
+              </span>Edit
+            </button>
+          </a>
           <% } %>
         </div>
-        <div class="company-info">
-          <span class="company-name"><%= company.name %></span>
-          <span class="company-location secondary-text"><%= company.location %></span>
+        <div class="company-description margin-06-bottom">
+          <p class="description-text"><%= company.description %></p>
+
         </div>
-        <% if (user && user.isAdmin) { %>
-        <a href="/jobs/company/<%= encodeURIComponent(company.name) %>/edit">
-          <button class="regular-button-normal">
-            Edit
+        <div class="company-flair margin-1-bottom">
+          <% if (company.job_board_url) { %>
+          <span class="company-flair-item">
+
+            <span class="material-symbols-outlined">
+              link
+            </span>
+            <a class="link" href="<%= company.job_board_url.replace('https://', '') %>" class="company-flair-item">
+              <%= company.job_board_url.replace('https://', '') %>
+            </a>
+            </a>
+          </span>
+          <% } %>
+          <span class="company-flair-item">
+
+            <span class="material-symbols-outlined">
+              location_on
+            </span>
+            <span class="company-location"><%= company.location %></span>
+          </span>
+          <% if (company.industry)  { %>
+
+          <span class="company-flair-item">
+            <p>
+              <span class="material-symbols-outlined">
+                factory
+              </span>
+              <%= company.industry %>
+            </p>
+          </span>
+          <% } %>
+          <% if (company.size)  { %>
+
+          <span class="company-flair-item">
+            <p>
+              <span class="material-symbols-outlined">
+                person
+              </span>
+              <%= company.size %>
+            </p>
+          </span>
+          <% } %>
+        </div>
+        <div class="company-buttons margin-1-bottom">
+          <button class="null-button-normal" id="follow-company-button"><span class="material-symbols-outlined">
+              person_add
+            </span>Follow</button>
+          <button class="null-button-normal" id="share-company-button">
+            <span class="material-symbols-outlined">ios_share</span> Share
           </button>
-        </a>
-        <% } %>
-      </div>
-      <div class="company-flair">
-        <% if (company.job_board_url) { %>
-        <a class="link" href="<%= company.job_board_url %>" class="company-flair-item">
-          Job Board
-        </a>
-        <% } %>
-        <% if (company.industry)  { %>
-
-        <span class="company-flair-item">
-          <p>
-            <span class="material-symbols-outlined">
-              factory
-            </span>
-            <%= company.industry %>
-          </p>
-        </span>
-        <% } %>
-        <% if (company.size)  { %>
-
-        <span class="company-flair-item">
-          <p>
-            <span class="material-symbols-outlined">
-              person
-            </span>
-            <%= company.size %>
-          </p>
-        </span>
-        <% } %>
-      </div>
-
-      <div class="company-description">
-        <p class="description-text" style="max-height: 100px; overflow: hidden;"><%= company.description %></p>
-      </div>
-      <button class="show-more-button clickable no-bg no-border" style="display: none;">Show More</button>
-
-      <div class="jobs">
-        <h3> <%= jobsCount %> Open Jobs</h3>
-        <div class="job-list">
         </div>
-        <%- include('partials/footer') %>
+        <button class="show-more-button clickable no-bg no-border" style="display: none;">Show More</button>
+        <ul class="second-nav-links">
+          <li class="dropdown active">
+            <a class="navbar-button company-navbar-button active no-bg no-border" data-id="jobs" id="company-updates-selector">
+              <span class="material-symbols-outlined">
+                work
+              </span>Jobs
+              <div class="jobs-count">
+                <%= jobsCount %>
+              </div>
+            </a>
 
+
+          </li>
+          <li class="dropdown">
+            <a class="navbar-button company-navbar-button no-bg no-border" data-id="company-comments" id="company-updates-selector"><span class="material-symbols-outlined">
+                chat_bubble
+              </span>Comments
+              <div class="comments-count">
+              </div>
+            </a>
+          </li>
+          <li class="dropdown">
+            <a class="navbar-button company-navbar-button no-bg no-border" id="company-updates-selector">
+              <span class="material-symbols-outlined">
+                info
+              </span>Info</a>
+          </li>
+        </ul>
+      </div>
+      <div class="company-containers">
+        <div class="company-comments company-profile-section">
+          <h3 class="company-comments-header-title margin-1-bottom"> Comments</h3>
+          <% if (user) { %>
+          <form class="comment-form margin-1-bottom" action="/jobs/company/<%= encodeURIComponent(company.name) %>/comments" method="POST">
+            <textarea class="comment-input adaptive-input" name="content" placeholder="Write a comment..."></textarea>
+            <button type="submit" class="comment-submit submit-button">Post</button>
+          </form>
+          <% } %>
+          <div class="comments-container">
+          </div>
+        </div>
+        <div class="jobs company-profile-section">
+          <div class="jobs-company-header">
+            <h3> <%= jobsCount %> Open Jobs</h3>
+            <button class="null-button-normal" id="job-filter-button"> <span class="material-symbols-outlined">
+                sort
+              </span>Filter</button>
+          </div>
+          <div class="filter-container">
+            <div class="recent-jobs">
+            </div>
+            <div class="filters">
+
+              <div class="title-filter">
+              </div>
+              <div class="sort-options">
+                <div class="location-filter">
+                </div>
+                <div class="salary-filter">
+                </div>
+                <div class="experienceLevel-filter">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="job-list">
+          </div>
+          <%- include('partials/footer') %>
+
+        </div>
       </div>
 
     </div>
