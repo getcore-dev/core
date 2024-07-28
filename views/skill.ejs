@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>CORE - #<%= tag %></title>
+  <title>CORE - #<%= skill %></title>
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/tags.css" />
   <link rel="stylesheet" href="/css/search.css" />
@@ -13,21 +13,21 @@
   <link rel="shortcut icon" href="/img/core.png" />
 
   <!-- Meta Tags for SEO and Social Media -->
-  <meta name="description" content="Search results for the tag <%= tag %> on CORE. Find related jobs, posts, and more.">
-  <meta name="keywords" content="<%= tag %>, CORE, tag search, job search, post search">
+  <meta name="description" content="Search results for the tag <%= skill %> on CORE. Find related jobs, posts, and more.">
+  <meta name="keywords" content="<%= skill %>, CORE, tag search, job search, post search">
   <meta name="robots" content="index, follow">
 
   <!-- Open Graph Meta Tags -->
-  <meta property="og:title" content="CORE - Tag Results for <%= tag %>">
-  <meta property="og:description" content="Search results for the tag <%= tag %> on CORE. Find related jobs, posts, and more.">
+  <meta property="og:title" content="CORE - skill Results for <%= skill %>">
+  <meta property="og:description" content="Search results for the skill <%= skill %> on CORE. Find related jobs, posts, and more.">
   <meta property="og:image" content="/img/core.png"> <!-- Replace with a suitable image if needed -->
-  <meta property="og:url" content="https://c-ore.dev/search/<%= tag %>">
+  <meta property="og:url" content="https://c-ore.dev/search/<%= skill %>">
   <meta property="og:type" content="website">
 
   <!-- Twitter Meta Tags -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="CORE - Tag Results for <%= tag %>">
-  <meta name="twitter:description" content="Search results for the tag <%= tag %> on CORE. Find related jobs, posts, and more.">
+  <meta name="twitter:title" content="CORE - skill Results for <%= skill %>">
+  <meta name="twitter:description" content="Search results for the skill <%= skill %> on CORE. Find related jobs, posts, and more.">
   <meta name="twitter:image" content="/img/core.png"> <!-- Replace with a suitable image if needed -->
 </head>
 <style>
@@ -37,7 +37,7 @@
   <%- include('partials/navbar', { pagePath: 'updates' }) %>
   <main>
     <div class="tag-search-header">
-      <h4>Tag results for <span class="tag"><%= tag.glyph %></span></h4> <%= tag.glyph %>
+      <h4>Results for <span class="tag active"><%= skill %></span></h4>
     </div>
     <%
     function getTintFromName(name) {
@@ -108,12 +108,20 @@ function blendColors(color1, color2, ratio) {
             </h3>
             <span style="">USD $<%= Math.floor((job.salary + job.salary_max) / 2 / 1000) %>k</span>
             <span><%= job.location %></span>
+            <div class="job-skills">
+              <% (job.skills.split(',') || []).forEach(jobSkill => { %>
+
+              <span class="tag <% if (jobSkill.trim() === skill) { %>active<% } %>" onclick="window.location.href='/skills/<%= jobSkill.trim() %>'">
+                <p><%= jobSkill.trim() %></p>
+              </span>
+              <% }); %>
+            </div>
           </div>
         </div>
       </div>
       <% }); %>
       <div id="load-more-container">
-        <button id="load-more-btn" class="load-more-btn">Load More</button>
+        <button id="load-more-btn" class="load-more-btn null-button">Load More</button>
       </div>
     </div>
     <% } else { %>
@@ -193,12 +201,12 @@ function blendColors(color1, color2, ratio) {
     document.addEventListener('DOMContentLoaded', () => {
       let page = 1;
       const pageSize = 10;
-      const tag = '<%= tag %>';
+      const skill = '<%= skill %>';
       const loadMoreButton = document.getElementById('load-more-btn');
       const loadMoreContainer = document.getElementById('load-more-container');
 
       function loadMoreJobs() {
-        fetch(`/api/skills/jobs/${tag}`)
+        fetch(`/api/skills/jobs/${skill}`)
           .then(response => response.json())
           .then(data => {
             if (data.jobs.length > 0) {

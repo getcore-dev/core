@@ -352,7 +352,7 @@ router.get('/skills/:skill', async (req, res) => {
       res.status(404).send('Tag not found');
     }
     const jobs = await jobQueries.getJobsBySkills(skillId, page, pageSize);
-    res.render('tag.ejs', { tag: skill, jobs, posts: [], user: req.user });
+    res.render('skill.ejs', { skill, jobs, posts: [], user: req.user });
   } catch (err) {
     console.error('Error fetching job postings:', err);
     res.status(500).send('Error fetching job postings');
@@ -366,10 +366,10 @@ router.get('/skills/jobs/:skill', async (req, res) => {
     const page = req.query.page || 1;
     const pageSize = req.query.pageSize || 10;
     if (!skillId) {
-      res.status(404).send('Tag not found');
+      res.status(404).send('Skill not found');
     }
     const jobs = await jobQueries.getJobsBySkills(skillId, page, pageSize);
-    res.render('tag.ejs', { tag: skill, jobs, posts: [], user: req.user });
+    res.render('skill.ejs', { skill, jobs, posts: [], user: req.user });
   } catch (err) {
     console.error('Error fetching job postings:', err);
     res.status(500).send('Error fetching job postings');

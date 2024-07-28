@@ -234,7 +234,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       }
       try {
         skillsArray =
-          job.skills && job.skills[1] ? job.skills[1].split(', ') : [];
+          job.skills && job.skills ? job.skills.split(', ') : [];
       } catch (error) {
         console.error('Error splitting skills:', error);
         skillsArray = [];
@@ -326,22 +326,6 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
                 location_city
                 </span> ${job.location}
               </p>
-
-              
-              <p>   
-                <span class="material-symbols-outlined">
-                license
-                </span>${
-  job.h1bVisaSponsorship
-    ? 'Visa available'
-    : 'No visa sponsorship'
-}
-              </p>
-              <p> 
-              <span class="material-symbols-outlined">
-              visibility
-              </span> ${job.views ? job.views : 0} views
-            </p>
                   <div class="job-skills">
       <p id="secondary-text">Skills:</p>
       ${skillsHTML}
@@ -355,6 +339,11 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
               <span class="material-symbols-outlined">
               person
               </span> ${job.applicants ? job.applicants : 0} applicants
+            </p>
+                          <p> 
+              <span class="material-symbols-outlined">
+              visibility
+              </span> ${job.views ? job.views : 0} views
             </p>
               <p>
               <span class="material-symbols-outlined">attach_money</span>
@@ -373,7 +362,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   isOlderThan30Days(job)
     ? ''
     : `<div class="apply-button-container flex">
-          <button id="submit-button-normal" class="margin-h-auto" onclick="window.location.href='${job.link}'"> <span class="material-symbols-outlined">
+          <button id="regular-button-normal" class="margin-h-auto" onclick="window.location.href='${job.link}'"> <span class="material-symbols-outlined">
 open_in_new
 </span><p>Apply</p></button>
           </div>

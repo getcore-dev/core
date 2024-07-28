@@ -26,6 +26,19 @@ const jobQueries = {
       throw err;
     }
   },
+
+  getSkill: async (skillName) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM skills WHERE name = ${skillName}
+      `;
+      return result.recordset[0];
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+  
   async getJobsBatch(offset, batchSize) {
     try {
       await sql.connect(config);
@@ -1713,12 +1726,12 @@ getCompanyByName: async (name) => {
       const offset = (page - 1) * pageSize;
       const result = await sql.query(`
         SELECT JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
-        (
-          SELECT STRING_AGG(JobTags.tagName, ', ')
-          FROM JobPostingsTags
-          INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
-          WHERE JobPostingsTags.jobId = JobPostings.id
-        ) AS tags
+(
+  SELECT STRING_AGG(skills.name, ', ') WITHIN GROUP (ORDER BY skills.name)
+  FROM job_skills
+  INNER JOIN skills ON job_skills.skill_id = skills.id
+  WHERE job_skills.job_id = JobPostings.id
+) AS skills
         FROM JobPostings
         LEFT JOIN companies ON JobPostings.company_id = companies.id
         WHERE JobPostings.id IN (

@@ -1085,8 +1085,8 @@ button.see-more {
 
   .community-header,
   .job-header {
-    margin: 0 7px 0 10px;
-    margin-bottom: .4rem;
+    margin: 0;
+    padding: .95rem 1.2rem;
     color: var(--light-mode-secondary-text-color);
   }
 

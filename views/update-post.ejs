@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>CORE/</title>
+  <title>CORE updates</title>
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/update-post.css" />
 
@@ -18,7 +18,7 @@
   <main>
     <div class="update-post">
       <div class="update-post-content">
-        <h4 class="update-post-header margin-06-bottom">Loading...</h4>
+        <h4 class="update-post-header margin-06-bottom"><a href="/updates">Updates</a> / <span style="color:#b10000;" class="update-post-header-text">Loading...</span></h4>
 
         <div class="update-post-info">
           <div class="update-post-details">
@@ -55,7 +55,7 @@
       <p><strong> ${prData.pr_title}</strong></p>
       <p class="sub-text secondary-text"><strong><span class="material-symbols-outlined">key</span></strong> ${prData.state}</p>
       <p class="sub-text secondary-text"><strong><span class="material-symbols-outlined">rate_review</span></strong> ${prData.author} <strong><span class="material-symbols-outlined">rebase_edit</span></strong> ${prData.merged_by || 'N/A'}</p>
-      <p class="sub-text secondary-text"><strong><span class="material-symbols-outlined">calendar_month</span></strong> ${new Date(prData.created_at).toDateString()}<strong><span class="material-symbols-outlined">done_outline</span></strong> ${prData.merged_at ? new Date(prData.merged_at).toDateString() : 'Not merged'}</p>
+      <p class="sub-text secondary-text"><strong><span class="material-symbols-outlined">calendar_month</span></strong> ${formatDate(prData.created_at)}<strong><span class="material-symbols-outlined">done_outline</span></strong> ${prData.merged_at ? formatDate(prData.merged_at) : 'Not merged'}</p>
       <p class="margin-06-bottom"><span class="tag green-tag">+${prData.additions}</span>  <span class="tag red-tag">-${prData.deletions}</span> in ${prData.changed_files} files <a class="tag" style="margin-left: auto;" href="${prData.pr_url}" target="_blank">View on GitHub</a></p>
       <h5 class="margin-1-bottom"><span class="material-symbols-outlined">commit</span>Commits (${prData.total_commits}):</h5>
       <ul class="commit-list">
@@ -64,8 +64,8 @@
       prData.commits.forEach(commit => {
         prInfoContent += `
       <li class="commit-item">
-        <strong>${commit.sha.substring(0, 7)}</strong>: ${commit.message} 
-        <br><span class="commit-details">by ${commit.author} on ${new Date(commit.date).toDateString()}</span>
+        <strong>${commit.sha.substring(0, 7)}</strong><span class="sub-text secondary-text">: ${commit.message} </span>
+        <br><span class="commit-details sub-text">by <a href="https://github.com/${commit.author}" target="_blank">${commit.author}</a> ${formatDate(commit.date)}</span>
       </li>
     `;
       });
@@ -78,6 +78,35 @@
       return prInfoContent;
     }
 
+    function formatDate(date) {
+      let postDate = new Date(date);
+      let today = new Date();
+      let diff = today - postDate;
+
+      // Convert time difference to different units
+      let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+      let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+      let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+
+      // Decide the format based on the time difference
+      if (diff < 86400000) { // Less than 24 hours
+        if (hours < 1) {
+          formattedDate = minutes + 'm';
+        } else {
+          formattedDate = hours + 'h';
+        }
+      } else {
+        // Format date with month spelled out, e.g., "July 19, 2024"
+        let options = {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        };
+        formattedDate = postDate.toLocaleDateString('en-US', options);
+      }
+
+      return formattedDate;
+    }
 
     function fetchUpdates() {
       Promise.all([
@@ -91,7 +120,7 @@
           //console.log('Received update data:', updateData);
           //console.log('Received PR data:', prData);
 
-          const updatePostHeader = document.querySelector('.update-post-header');
+          const updatePostHeader = document.querySelector('.update-post-header-text');
           const updatePostTitle = document.querySelector('.update-post-title');
           const updatePostDate = document.querySelector('.update-post-date');
           const updatePostBody = document.querySelector('.update-post-body');
@@ -100,9 +129,9 @@
 
           if (updatePostHeader && updatePostTitle && updatePostDate && updatePostBody && updateComments) {
             // Update your DOM elements here
-            updatePostHeader.textContent = 'Update / ' + updateData.user_name;
+            updatePostHeader.textContent = updateData.user_name;
             updatePostTitle.textContent = updateData.title;
-            updatePostDate.textContent = new Date(updateData.post_date).toDateString();
+            updatePostDate.textContent = formatDate(updateData.post_date);
 
             // Create HTML content for the update body, including PR info
             let bodyContent = '<p class="update-data">' + updateData.content + '</p>';
@@ -124,7 +153,7 @@
               </div>
               <div class="comment-details">
                 <div class="comment-author main-text">${comment.user_name}</div>
-                <div class="comment-date sub-text secondary-text">${new Date(comment.created_at).toDateString()}</div>
+                <div class="comment-date sub-text secondary-text">${formatDate(comment.created_at)}</div>
               </div>
             </div>
             <div class="comment-body main-text">${comment.content}</div>

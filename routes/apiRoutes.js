@@ -142,6 +142,17 @@ router.get('/leetcode-experience/:username', async (req, res) => {
   }
 });
 
+router.get('/get-skill/:skillName', async (req, res) => {
+  try {
+    const skillName = req.params.skillName;
+    const skill = await jobQueries.getSkill(skillName);
+    res.json(skill);
+  } catch (err) {
+    console.error('Error fetching skill:', err);
+    res.status(500).send('Error fetching skill');
+  }
+});
+
 router.get('/updates', cacheMiddleware(1600), async (req, res) => {
   try {
     const updates = await updateQueries.getUpdates();
@@ -495,8 +506,8 @@ function calculateMatchCount(job, userPreferences, tags) {
 
   const jobSkills = Array.isArray(job.skills)
     ? job.skills
-    : typeof job.skills[1] === 'string'
-      ? job.skills[1].split(',').map((s) => s.trim())
+    : typeof job.skills === 'string'
+      ? job.skills.split(',').map((s) => s.trim())
       : [];
 
   if (
