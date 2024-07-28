@@ -134,7 +134,7 @@
 .right-side-container>div.jobslist .job {
   border: 1px solid var(--border-color);
   border-radius: 10px;
-  margin: 0 .75rem;
+  margin: 0;
 }
 
 .job-salary {

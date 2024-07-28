@@ -133,6 +133,7 @@ img.company-logo {
 }
 
 div.similar-jobs-list {
+  display: flex;
   flex-wrap: nowrap;
   /* Prevent wrapping of job elements */
   flex-direction: column;
@@ -187,9 +188,13 @@ div.job-info-flairs p {
 
 .job-skills p {
   display: inline-block;
-  margin: 3px 6px 3px 0 !important;
+  margin: 0;
 }
 
+
+.interact-buttons .material-symbols-outlined {
+  padding-right: .6rem;
+}
 
 
 
@@ -214,7 +219,9 @@ div.similar-job h4 {
 }
 
 
-.job-details h4 {
+.job-details h4,
+.similar-jobs h4,
+.similar-company-jobs h4 {
   font-size: 1.25rem;
   margin: 1.05rem 0;
 }
@@ -227,7 +234,7 @@ div.similar-job h4 {
 .related-jobs-company-count {
   height: 20px;
   width: 20px;
-  font-size: .9rem;
+  font-size: .7rem;
   margin-left: .5rem;
   background: #cacaca;
   border: 1px solid #707070;
@@ -238,7 +245,7 @@ div.similar-job h4 {
 }
 
 .job-listing-menu {
-  background: var(--light-mode-main-color);
+  background: var(--light-mode-body-color);
   padding: 0.75rem 1.15rem;
 
 }
@@ -299,7 +306,7 @@ div.interact-buttons div {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  row-gap: .75rem;
+  row-gap: .05rem;
 }
 
 .job-listing-menu {
@@ -319,6 +326,7 @@ div.interact-buttons div {
 
 .job-listing-menu .navbar-button {
   display: flex;
+  font-size: .95rem;
   margin: 0;
 }
 
@@ -366,7 +374,7 @@ div.interact-buttons div {
   }
 
   div.similar-job {
-    background: var(--dark-mode-body-color);
+    background: var(--dark-mode-main-color);
     border-color: var(--dark-mode-border-color)
   }
 

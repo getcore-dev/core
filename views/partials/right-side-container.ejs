@@ -33,12 +33,12 @@
                     </div>
                     <div class="job-title-location">
                       <div class="job-posting-header">
-                        <div class="job-company-name secondary-text">
+                        <div class="job-company-name sub-text secondary-text">
                         <a class="secondary-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a></div>
-                                          <div class="job-title"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
+                                          <div class="job-title main-text"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
                                                     
                                 ${job.salary ? `
-                              <span class="job-salary" style="margin-left: auto;">USD $${
+                              <span class="job-salary sub-text secondary-text" style="margin-left: auto;">USD $${
                               job.salary ? job.salary.toLocaleString() : ""
                             } ${
                             job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
@@ -61,7 +61,7 @@
                 </div>
               </div>
             `).join('');
-               jobslistContainer.innerHTML += '<div class="see-more"><a href="/jobs">See More</a></div>';
+               jobslistContainer.innerHTML += '<div class="see-more regular-button-normal"><a href="/jobs">See More</a></div>';
 
 
                const jobElements = jobslistContainer.querySelectorAll('.job');
@@ -117,7 +117,7 @@
                 </div>
               </div>
             `).join('');
-                 jobslistContainer.innerHTML += '<div class="see-more"><a href="/jobs">See More</a></div>';
+                 jobslistContainer.innerHTML += '<div class="see-more regular-button-normal"><a href="/jobs">See More</a></div>';
 
 
                  const jobElements = jobslistContainer.querySelectorAll('.job');

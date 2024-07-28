@@ -245,6 +245,10 @@ function renderComments(comments) {
     `;
     commentsContainer.appendChild(commentElement);
   });
+
+  if (comments.length === 0) {
+    commentsContainer.textContent = 'No Comments Yet';
+  }
 }
 
 if (typeof window !== 'undefined') {

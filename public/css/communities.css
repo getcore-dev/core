@@ -71,7 +71,6 @@ main {
 
 #posts-container {
   padding-top: 0px;
-  margin-right: auto;
   display: flex;
   flex-direction: column;
   width: 53%;
@@ -888,7 +887,6 @@ div.join-website-body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-size: .9rem !important;
   font-weight: 550;
   margin: 0;
   margin: 4px 0;

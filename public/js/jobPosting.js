@@ -374,7 +374,7 @@ ${formatDate(job.postedDate)}
   isOlderThan30Days(job)
     ? ''
     : `<div class="apply-button-container flex">
-          <button id="regular-button-normal" class="margin-h-auto grow-button" onclick="window.location.href='${job.link}'"> <span class="material-symbols-outlined">
+          <button id="submit-button-normal" class="margin-h-auto grow-button" onclick="window.location.href='${job.link}'"> <span class="material-symbols-outlined">
 open_in_new
 </span>Apply</button>
           </div>
@@ -386,7 +386,9 @@ open_in_new
               <div id="favorite-form-${job.id}" class="flex">
                 <button id="null-button-normal" onclick="favorite('job', ${job.id});" class="margin-h-auto"><span class="material-symbols-outlined">
 favorite
-</span></button>
+</span>
+Favorite
+</button>
               </div>
             </div>`
     : ''
@@ -396,7 +398,7 @@ favorite
   userIsAdmin
     ? `
         <div class="delete-button-container flex">
-          <button id="null-button-normal" class="margin-h-auto" onclick="window.location.href='/jobs/delete/${job.id}'"><span class="material-symbols-outlined" style="padding:0;">
+          <button id="null-button-normal" class="margin-h-auto" onclick="window.location.href='/jobs/delete/${job.id}'"><span class="material-symbols-outlined">
 delete
 </span> Delete</button>
         </div>
@@ -410,7 +412,7 @@ delete
 }', '', 'https://c-ore.dev/jobs/${job.id}')"
       ><span class="material-symbols-outlined">
 ios_share
-</span></button>
+</span> Share</button>
       </div>
 
       </div>
@@ -646,10 +648,10 @@ function checkFavorite(jobId) {
       );
       if (data.isFavorite) {
         favoriteButton.id = 'cancel-button-normal';
-        favoriteButton.innerHTML = data.buttonText;
+        favoriteButton.innerHTML = data.buttonText + 'Unfavorite';
       } else {
         favoriteButton.id = 'submit-button-normal';
-        favoriteButton.innerHTML = data.buttonText;
+        favoriteButton.innerHTML = data.buttonText + 'Favorite';
       }
     })
     .catch((error) => {
@@ -712,11 +714,11 @@ function favorite(favoriteType, TypeId) {
 }
 
 function toggleFavoriteButton(button) {
-  if (button.innerHTML === '<span class="material-symbols-outlined">heart_minus</span>') {
+  if (button.innerHTML === '<span class="material-symbols-outlined">heart_minus</span> Unfavorite') {
     button.id = 'submit-button-normal';
-    button.innerHTML = '<span class="material-symbols-outlined">favorite</span>';
+    button.innerHTML = '<span class="material-symbols-outlined">favorite</span> Favorite';
   } else {
     button.id = 'cancel-button-normal';
-    button.innerHTML = '<span class="material-symbols-outlined">heart_minus</span>';
+    button.innerHTML = '<span class="material-symbols-outlined">heart_minus</span> Unfavorite';
   }
 }
