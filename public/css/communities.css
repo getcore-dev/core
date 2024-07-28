@@ -159,7 +159,7 @@ div.vote-interactions {
 .post-content {
   position: relative;
   flex-grow: 1;
-  padding: .95rem 1.2rem;
+  padding: .65rem .85rem;
 }
 
 
@@ -384,7 +384,6 @@ div.vote-interactions {
   /* Lighter text color */
 }
 
-.comments,
 .total-reactions-count {
   padding-right: 5px;
   color: var(--light-mode-secondary-text-color);
@@ -460,7 +459,7 @@ a.community:hover {
 }
 
 .link-preview {
-  margin-bottom: .9rem;
+  margin-bottom: .4rem;
 }
 
 div .mini-link {
@@ -469,6 +468,7 @@ div .mini-link {
   flex-direction: row;
   max-width: 100%;
   padding: 6px 4px;
+  margin-top: .9rem;
   margin-bottom: .9rem;
   border-radius: 9px;
   background: var(--light-mode-body-color);
@@ -595,8 +595,10 @@ div .mini-link-title {
 }
 
 .community-header {
+  border-top: 1px solid var(--border-color);
   display: flex;
   flex-direction: row;
+  border-bottom: 1px solid var(--border-color);
   align-items: center;
   justify-content: space-between;
 }
@@ -819,7 +821,6 @@ div.join-website-body {
 
 #share-button {
   height: 32px;
-  margin-left: auto;
   padding-top: 0;
   padding-bottom: 0;
 }
@@ -832,6 +833,7 @@ div.join-website-body {
   display: inline-flex;
   gap: 1.5rem;
   width: 100%;
+  align-items: center;
 }
 
 .comment-button-left,
@@ -1082,7 +1084,7 @@ button.see-more {
   .community-header,
   .job-header {
     margin: 0;
-    padding: .95rem 1.2rem;
+    padding: .25rem .95rem;
     color: var(--light-mode-secondary-text-color);
   }
 
@@ -1208,7 +1210,7 @@ button.see-more {
   .title {
     font-size: 1.1rem;
     margin-top: 0rem;
-    margin-bottom: .3rem;
+    margin-bottom: .6rem;
     font-weight: 600;
   }
 
@@ -1292,6 +1294,7 @@ button.see-more {
   align-items: center;
   justify-content: center;
   background: transparent !important;
+  margin-bottom: 1.3rem;
 }
 
 .see-more a {

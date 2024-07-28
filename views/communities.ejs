@@ -651,6 +651,9 @@ description
             };
 
             buttonsDiv.appendChild(reactionButton);
+            const spacer = document.createElement('div');
+            spacer.id = 'vr';
+            buttonsDiv.appendChild(spacer);
 
             // comment button
             const commentButton = document.createElement('button');
@@ -667,6 +670,9 @@ description
               }
             };
             buttonsDiv.appendChild(commentButton);
+            const spacer2 = document.createElement('div');
+            spacer2.id = 'vr';
+            buttonsDiv.appendChild(spacer2);
 
             // favorite button
             const favoriteButton = document.createElement('button');
@@ -679,7 +685,9 @@ description
             };
             buttonsDiv.appendChild(favoriteButton);
 
-
+            const spacer3 = document.createElement('div');
+            spacer3.id = 'vr';
+            buttonsDiv.appendChild(spacer3);
 
             // share button 
             const shareButton = document.createElement('button');
@@ -693,7 +701,19 @@ description
             buttonsDiv.appendChild(shareButton);
 
 
+            // tags div 
+            if (post.post_tags) {
+              const tagsDiv = document.createElement('div');
+              tagsDiv.className = 'tags margin-03-bottom';
+              post.post_tags.split(',').forEach(tag => {
+                const tagDiv = document.createElement('div');
+                tagDiv.className = 'tag';
+                tagDiv.innerHTML = tag;
+                tagsDiv.appendChild(tagDiv);
+              });
 
+              postContentDiv.appendChild(tagsDiv);
+            }
 
             postContentDiv.appendChild(buttonsDiv);
 

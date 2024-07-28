@@ -460,8 +460,8 @@ async function fetchJobPostings() {
     if (newJobs.length > 0) {
       // Sort jobs based on the number of matching skills
       newJobs.sort((a, b) => {
-        const aSkills = a.skills[1] ? a.skills[1].split(',').map(s => s.trim()) : [];
-        const bSkills = b.skills[1] ? b.skills[1].split(',').map(s => s.trim()) : [];
+        const aSkills = a.skills ? a.skills[1].split(',').map(s => s.trim()) : [];
+        const bSkills = b.skills ? b.skills[1].split(',').map(s => s.trim()) : [];
         const aMatchCount = aSkills.filter(skill => state.filters.skills[skill]).length;
         const bMatchCount = bSkills.filter(skill => state.filters.skills[skill]).length;
         return bMatchCount - aMatchCount;

@@ -105,7 +105,8 @@ img.company-logo {
   position: relative;
 }
 
-.job-benefits ul {
+.job-benefits ul,
+ul.locations {
   padding: 0 14px;
   list-style: none;
   margin: 0;
@@ -113,7 +114,8 @@ img.company-logo {
   font-size: .875rem;
 }
 
-.job-benefits ul li {
+.job-benefits ul li,
+.locations li {
   border-left: 3px solid var(--active-indicator-color);
   padding-left: .8rem;
   margin-bottom: .6rem;
@@ -161,7 +163,7 @@ div.similar-job {
   flex-direction: column;
   cursor: pointer;
   display: flex;
-  background-color: var(--light-mode-main-color);
+  background-color: var(--light-mode-body-color);
   border-radius: 12px;
   border: 1px solid var(--border-color);
   padding: 13px 17px;
@@ -252,6 +254,7 @@ div.similar-job h4 {
 
 .job-details p,
 .job-details ul,
+ul.locations,
 .job-listing-menu p {
   color: var(--light-mode-text-color);
   font-size: 1.05rem;

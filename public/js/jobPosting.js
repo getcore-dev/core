@@ -374,9 +374,9 @@ ${formatDate(job.postedDate)}
   isOlderThan30Days(job)
     ? ''
     : `<div class="apply-button-container flex">
-          <button id="submit-button-normal" class="margin-h-auto grow-button" onclick="window.location.href='${job.link}'"> <span class="material-symbols-outlined">
-open_in_new
-</span>Apply</button>
+<button id="submit-button-normal" class="margin-h-auto grow-button" onclick="window.open('${job.link}', '_blank')">
+  <span class="material-symbols-outlined">open_in_new</span>Apply
+</button>
           </div>
           `
 }
@@ -570,16 +570,18 @@ ${
   job.location
     ? `
   <h4>More jobs in </h4>
+  <ul class="locations">
 ${job.location
     .split(',')
     .map(
       (loc) =>
-        `<a class="tag" href="/jobs/location/${loc.trim()}">${loc.trim()}</a>`
+        `<li><a class="link" href="/jobs/location/${loc.trim()}">${loc.trim()}</a></li>`
     )
     .join('')}
   `
     : ''
 }
+</ul>
 </div>
 </div>
 <div class="similar-jobs company-profile-section" style="display:none;"></div>

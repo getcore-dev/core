@@ -7,7 +7,7 @@
 
 .comments {
     width: 100%;
-    padding: 0 1.2rem;
+    padding: 0;
     padding-bottom: .6rem;
     box-sizing: border-box;
     border-bottom: 1.5px solid var(--border-color);
@@ -168,8 +168,8 @@ div.interact-buttons {
 
 /* Nested comments */
 .nested-comments {
-    padding-left: 13px;
-    border-left: 1px solid #A10100;
+    margin-left: 13px;
+    border-left: 1px solid #1f1f1f;
 }
 
 .nested-comment>.comment {
