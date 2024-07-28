@@ -520,8 +520,8 @@ function createJobElement(job) {
   jobElement.classList.add('job');
   jobElement.onclick = () => (window.location.href = `/jobs/${job.id}`);
 
-  const tagsArray = job.skills[1]
-  ? job.skills[1].split(',').map(skill => skill.trim())
+  const tagsArray = job.skills
+  ? job.skills.split(',').map(skill => skill.trim())
   : [];
 
   const sortedTags = tagsArray.sort((a, b) => {

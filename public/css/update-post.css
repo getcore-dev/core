@@ -41,3 +41,19 @@ ul.commit-list {
     flex-direction: column;
     gap: 1.6rem;
 }
+
+div.update-comments {
+    display: flex;
+    gap: 1.8rem;
+    flex-direction: column;
+}
+
+@media (prefers-color-scheme: dark) {
+    div.update-post-content {
+        background: var(--dark-mode-body-color);
+    }
+
+    div.pr-info {
+        background: var(--dark-mode-main-color);
+    }
+}

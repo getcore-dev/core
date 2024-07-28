@@ -154,8 +154,8 @@ a:visited {
   margin: 8px 0;
   box-sizing: border-box;
   border-radius: 6px;
-  background-color: var(--light-mode-body-color) !important;
-  border: 1px solid var(--border-color) !important;
+  background-color: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
   font-size: 16px;
   transition: box-shadow 0.3s ease;
 
@@ -164,8 +164,6 @@ a:visited {
 .community-preview .material-symbols-outlined {
   font-size: 18px;
 }
-
-
 
 
 .tag {
@@ -181,6 +179,12 @@ a:visited {
   position: relative;
   cursor: pointer;
   transition: all 0.3s ease;
+}
+
+.tag.active {
+  background-color: #04ca2e52;
+  color: #209939;
+  font-weight: 500;
 }
 
 .green-tag {

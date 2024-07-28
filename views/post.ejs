@@ -114,7 +114,7 @@
             <div class="blog-post-info">
               <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="blog-avatar" onclick="window.location.href = '/user/<%= post.user.username %>'" />
               <div class="post-user-info">
-                <span class="post-user-info-span">
+                <span class="post-user-info-span main-text">
                   <a href="/user/<%= post.user.username %>" id="blog-username">
                     <% if (post.user.firstname && post.user.lastname) { %>
                     <%= post.user.firstname %> <%= post.user.lastname %>
@@ -124,7 +124,7 @@
 
                   </a>
                 </span>
-                <span class="post-info-div" id="secondary-text">
+                <span class="post-info-div sub-text" id="secondary-text">
                   <span class="post-timestamp secondary-text" style="text-decoration: none;">
                     <% postDate = new Date(post.created_at); %>
                     <%

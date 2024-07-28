@@ -159,14 +159,30 @@ div.similar-job {
   position: relative;
 }
 
-.job-info-flairs {
+.job-info-flairs p {
   display: inline-block;
 }
 
-.job-info-flairs p {
+div.apply-button-container {
+  width: 100%;
+}
+
+div.job-info-flairs span.material-symbols-outlined {
+  font-size: 1.1rem;
+  vertical-align: -2px;
+  padding-right: .4rem;
+}
+
+div.job-info-flairs p {
+  margin-right: .6rem !important;
+}
+
+.job-skills p {
   display: inline-block;
   margin: 3px 6px 3px 0 !important;
 }
+
+
 
 
 .similar-jobs-company,
