@@ -161,12 +161,6 @@ function renderJobPostings(jobPostings) {
     jobListContainer.appendChild(jobElement);
   });
 
-  // Update job count
-  const jobCountElement = document.querySelector('h3');
-  if (jobCountElement) {
-    const totalJobs = jobListContainer.children.length;
-    jobCountElement.textContent = `${totalJobs} Open Jobs`;
-  }
 }
 
 /*
@@ -227,6 +221,7 @@ function renderComments(comments) {
   commentsContainer.innerHTML = '';
   commentCount.style.display = 'flex';
   commentCount.textContent = `${comments.length}`;
+  commentsHeader.textContent = `${comments.length} Comment${comments.length !== 1 ? 's' : ''}`;
 
   comments.forEach((comment) => {
     const commentElement = document.createElement('div');

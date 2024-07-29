@@ -508,11 +508,13 @@ function renderJobPostings(jobs) {
 }
 
 function updateJobCount() {
+  /*
   const jobCountElement = document.querySelector('h3');
   if (jobCountElement) {
     const totalJobs = elements.jobList.children.length;
     jobCountElement.textContent = `${totalJobs} Open Jobs`;
   }
+    */
 }
 
 function createJobElement(job) {
