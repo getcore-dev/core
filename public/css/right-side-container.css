@@ -96,10 +96,16 @@
   overflow-y: none;
 }
 
+.job .material-symbols-outlined {
+  font-size: .95rem;
+  padding-right: .5rem;
+  vertical-align: -2px;
+}
+
 
 .company-logo-container {
-  border-radius: 50%;
   display: flex;
+  gap: .6rem;
   align-items: center;
 }
 
@@ -110,9 +116,8 @@
 
 .job-content-header {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1.4rem;
+  flex-direction: column;
+  gap: .4rem;
 }
 
 .job-header {
@@ -125,7 +130,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
-  padding: 0 13px;
+  padding: 3px 13px;
 }
 
 .right-side-container {
@@ -143,9 +148,6 @@
   margin-left: auto;
 }
 
-.job-salary {
-  font-size: .8rem;
-}
 
 .right-side-container>div.jobslist .job .job-content {
   padding: 10px;
@@ -158,7 +160,6 @@
   }
 
   .right-side-container>div.jobslist .job {
-    border: 0;
     border-top: 1px solid var(--border-color);
     border-radius: 10px;
 

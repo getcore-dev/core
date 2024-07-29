@@ -669,10 +669,10 @@
             const shareButton = document.createElement('button');
             shareButton.className = 'null-button-normal';
             shareButton.id = 'share-button';
-            shareButton.innerHTML = '<span class="material-symbols-outlined">ios_share</span>';
+            shareButton.innerHTML = `<span class="material-symbols-outlined">ios_share</span> ${post.share_count ? post.share_count : 0}`;
             shareButton.onclick = (event) => {
               event.stopPropagation();
-              share(post.title, "", `https://getcore.dev/posts/${post.id}`);
+              share(post.title, "", `https://getcore.dev/posts/${post.id}`, 'post', post.id);
             };
             buttonsDiv.appendChild(shareButton);
 
@@ -919,7 +919,7 @@
                   </div>
                 </a>
                 <span class="comment-timestamp" id="secondary-text">${formatTimestamp(comment.created_at)}</span>
-                ${comment.isPinned ? '<span class="tag comment-tag pinned-comment"><span class="material-symbols-outlined" id="secondary-text">push_pin</span></span>' : ''}
+                ${comment.isPinned ? '<span class="tag comment-tag pinned-comment"><span class="material-symbols-outlined" id="secondary-text" style="color:#ffdf34;">push_pin</span></span>' : ''}
                 ${comment.user.isAdmin ? '<span class="tag admin-tag comment-tag">Admin</span>' : ''}
               </div>
               ${user ? renderCommentActions(comment, user) : ''}
@@ -1088,7 +1088,7 @@
 
       return `
     <div class="user-actions">
-      <div class="comment-user-interactions ${comment.id}" data-type="comment" data-id="${comment.id}">
+      <div class="sub-text secondary-text comment-user-interactions ${comment.id}" data-type="comment" data-id="${comment.id}">
         ${renderReactionButton(comment, user, reactionTypes)}
         <span id="secondary-text" class="total-reactions-count-comment-${comment.id}">${totalReactions} reactions</span>
         <span id="secondary-text" class="total-reactions-count">${totalReplies} replies</span>

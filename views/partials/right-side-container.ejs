@@ -30,25 +30,33 @@
                     ${job.company_logo ? `
                       <img loading="lazy" src="${job.company_logo}" alt="" class="thumbnail ${isMobile ? `thumbnail-tiny` : `thumbnail-tiny`} thumbnail-regular" />
                       ` : ``}
-                    </div>
-                    <div class="job-title-location">
-                      <div class="job-posting-header">
+                                            <div class="job-posting-header">
                         <div class="job-company-name sub-text secondary-text">
-                        <a class="secondary-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a></div>
+                        
+                        <a class="secondary-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
+                        
+                        </div>
+                        
                                           <div class="job-title main-text"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
                                                     
-                                ${job.salary ? `
-                              <span class="job-salary sub-text secondary-text" style="margin-left: auto;">USD $${
+                               
+                      </div>
+                    
+                    </div>
+                    <div class="job-title-location">
+                     ${job.salary ? `
+                              <span class="job-salary sub-text"><span class="material-symbols-outlined">attach_money</span>${
                               job.salary ? job.salary.toLocaleString() : ""
                             } ${
                             job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
                           }</span>
                           ` : ``}
-                      </div>
+
+                      <div class="location sub-text"><span class="material-symbols-outlined">location_on</span>${job.location.trim()}</div>
+                      <div class="applicants sub-text"><span class="material-symbols-outlined">work</span>${job.applicants ? job.applicants : '0'} applicants</div>
+
                     </div>
-                    <div class="favorite-button">
-                      <span class="material-symbols-outlined" style="font-size:1rem;">favorite</span>
-                      </div>
+
                   </div>
 
 

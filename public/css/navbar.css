@@ -10,7 +10,7 @@
   --light-mode-button-hover-color: #BECBDA;
   --light-mode-text-color: #000;
   --light-mode-bold-text-color: #000000;
-  --light-mode-secondary-text-color: #2b2b2b;
+  --light-mode-secondary-text-color: #5c5c5c;
   --hover-background-color: #ddd;
   --active-indicator-color: #5083ca;
   --dark-mode-main-color: #0b0c0c;
@@ -47,6 +47,20 @@ body {
   padding-top: var(--navbar-height);
   font-family: var(--font-family);
   color: var(--light-mode-text-color);
+}
+
+.number-display {
+  height: 20px;
+  min-width: 20px;
+  font-size: .7rem;
+  margin-left: .5rem;
+  background: #ffffff45;
+  border: 1px solid #707070;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
 }
 
 .main-text {

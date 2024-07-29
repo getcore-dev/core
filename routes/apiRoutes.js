@@ -393,6 +393,38 @@ router.get('/jobs/company/:companyName', async (req, res) => {
   }
 });
 
+router.post('/post/:postId/share', async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const sharedPostId = await utilFunctions.sharePost(postId);
+    res.json({ sharedPostId });
+  } catch (err) {
+    console.error('Error sharing post:', err);
+    res.status(500).send('Error sharing post');
+  }
+});
+
+router.post('/job/:jobId/apply', async (req, res) => {
+  try {
+    const jobId = req.params.jobId;
+    const appliedJobId = await utilFunctions.applyJob(jobId);
+    res.json({ appliedJobId });
+  } catch (err) {
+    console.error('Error sharing job:', err);
+    res.status(500).send('Error sharing post');
+  }
+});
+
+router.post('/job/:jobId/share', async (req, res) => {
+  try {
+    const jobId = req.params.jobId;
+    const sharedJobId = await utilFunctions.shareJob(jobId);
+    res.json({ sharedJobId });
+  } catch (err) {
+    console.error('Error sharing job:', err);
+    res.status(500).send('Error sharing post');
+  }
+});
 router.get('/randomJobs', cacheMiddleware(600), async (req, res) => {
   try {
 

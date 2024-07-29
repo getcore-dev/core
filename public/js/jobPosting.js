@@ -126,8 +126,8 @@ function getSimilarJobs(jobId) {
         : job.experienceLevel
 }</span>
                 <span> • </span>
-                <span class="job-salary" style="margin-left: auto;">USD $${
-  job.salary ? job.salary.toLocaleString() : ''
+                <span class="job-salary" style="margin-left: auto;">${
+  job.salary ? 'USD $' + job.salary.toLocaleString() : ''
 } ${
   job.salary_max != 0 ? '- $' + job.salary_max.toLocaleString() : ''
 }</span>
@@ -202,8 +202,8 @@ function getSimilarJobsByCompany(jobId, companyName) {
         : job.experienceLevel
 }</span>
                 <span> • </span>
-                <span class="job-salary" style="margin-left: auto;">USD $${
-  job.salary != 0 ? job.salary.toLocaleString() : ''
+                <span class="job-salary" style="margin-left: auto;">${
+  job.salary != 0 ? 'USD $' + job.salary.toLocaleString() : ''
 } ${
   job.salary_max != 0 ? '- $' + job.salary_max.toLocaleString() : ''
 }</span>
@@ -343,19 +343,14 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     : ''
 }
     </div>
-              <p> 
-              <span class="material-symbols-outlined">
-              person
-              </span> ${job.applicants ? job.applicants : 0} applicants
-            </p>
                           <p> 
               <span class="material-symbols-outlined">
               visibility
               </span> ${job.views ? job.views : 0} views
             </p>
               <p>
-              <span class="material-symbols-outlined">attach_money</span>
-                USD $${job.salary != 0 ? job.salary.toLocaleString() : ''} ${
+              
+                ${job.salary != 0 ? ' <span class="material-symbols-outlined">attach_money</span>USD $' + job.salary.toLocaleString() : ''} ${
   job.salary_max != 0 ? '- $' + job.salary_max.toLocaleString() : ''
 }
             </p>
@@ -375,7 +370,9 @@ ${formatDate(job.postedDate)}
     ? ''
     : `<div class="apply-button-container flex">
 <button id="submit-button-normal" class="margin-h-auto grow-button" onclick="window.open('${job.link}', '_blank')">
-  <span class="material-symbols-outlined">open_in_new</span>Apply
+  <span class="material-symbols-outlined">open_in_new</span>Apply <span class="number-display">
+  ${job.applicants ? job.applicants : 0}
+  </span>
 </button>
           </div>
           `
@@ -407,12 +404,9 @@ delete
     : ''
 }
       <div class="share-button-container flex" style="margin-left: auto">
-      <button id="null-button-normal" class="margin-h-auto grow-button" onclick="share('${
-  job.title
-}', '', 'https://getcore.dev/jobs/${job.id}')"
-      ><span class="material-symbols-outlined">
+      <button id="null-button-normal" class="margin-h-auto grow-button" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');"><span class="material-symbols-outlined">
 ios_share
-</span> Share</button>
+</span> Share <span class="number-display">${job.share_count ? job.share_count : 0}</span></button>
       </div>
 
       </div>

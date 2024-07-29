@@ -428,7 +428,6 @@ div.interact-buttons {
   justify-content: center;
 }
 
-#favorite-button .material-symbols-outlined,
 #share-button .material-symbols-outlined {
   padding-right: .4rem;
 }
@@ -473,7 +472,7 @@ div.interact-buttons {
   align-items: center;
   border-radius: 10px;
   gap: .6rem;
-  padding: 0.6rem 1.6rem !important;
+  padding: 0.6rem 1.9rem !important;
   height: 32px;
 }
 

@@ -109,7 +109,7 @@
           <button class="null-button-normal" id="follow-company-button"><span class="material-symbols-outlined">
               person_add
             </span>Follow</button>
-          <button class="null-button-normal" id="share-company-button">
+          <button class="null-button-normal" id="share-company-button" onclick="share('<%= company.name %>', '', 'https://getcore.dev/jobs/company/<%= encodeURIComponent(company.name) %>')">
             <span class="material-symbols-outlined">ios_share</span> Share
           </button>
         </div>

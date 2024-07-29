@@ -456,43 +456,47 @@
       });
   }
 
-  function share(title, text, url) {
-    var shareData = {
-      title: title,
-      text: text,
-      url: url
+  async function share(title, text, url, type = null, id = null) {
+    const shareData = {
+      title,
+      text,
+      url
     };
 
-    if (navigator.share) {
-      // If Web Share API is supported (mostly mobile devices)
-      navigator.share(shareData).then(() => {
-        console.log('Content shared successfully');
-      }).catch((error) => {
-        console.error('Error sharing content: ', error);
-      });
-    } else if (navigator.clipboard && navigator.clipboard.writeText) {
-      // If Clipboard API is supported (mostly desktop browsers)
-      navigator.clipboard.writeText(url).then(() => {
-        alert('Content URL copied to clipboard!');
-      }).catch((error) => {
-        console.error('Error copying content URL: ', error);
-      });
-    } else {
-      // Fallback for older browsers
-      var textArea = document.createElement('textarea');
-      textArea.value = url;
-      textArea.style.position = 'fixed';
-      textArea.style.opacity = '0';
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-      try {
-        document.execCommand('copy');
-        alert('Content URL copied to clipboard!');
-      } catch (err) {
-        alert('Failed to copy content URL: ', err);
+    try {
+      if (type && id) {
+        const response = await fetch(`/api/${type}/${id}/share`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        });
+        if (!response.ok) throw new Error('Failed to increment share count');
+        const data = await response.json();
+        console.log(`${type.charAt(0).toUpperCase() + type.slice(1)} share count updated:`, data.newShareCount);
       }
-      document.body.removeChild(textArea);
+
+      if (navigator.share) {
+        await navigator.share(shareData);
+        console.log('Content shared successfully');
+      } else if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(url);
+        alert('Content URL copied to clipboard!');
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        textArea.style.cssText = 'position:fixed;opacity:0;';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        if (!successful) throw new Error('Failed to copy');
+        alert('Content URL copied to clipboard!');
+      }
+    } catch (error) {
+      console.error('Error sharing content:', error);
+      alert('Failed to share content. Please try again.');
     }
   }
 
