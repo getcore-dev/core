@@ -50,7 +50,7 @@ const sendEmailNotification = async (receiverUserId, type) => {
 
     // Send the email
     const mailOptions = {
-      from: '"CORE Support" <support@c-ore.dev>',
+      from: '"CORE Support" <support@getcore.dev>',
       to: user.email,
       subject: subject,
       text: text,

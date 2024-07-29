@@ -527,13 +527,16 @@ div .mini-link-title {
 #filter-button,
 #post-button {
   height: 32px;
+  background: 0;
+  border: 0;
   font-size: .7rem;
-  padding: 0.35rem .85rem;
+  padding: 0;
+  font-size: .925rem;
 }
 
 #filter-button .material-symbols-outlined,
 #post-button .material-symbols-outlined {
-  font-size: 14px;
+  font-size: 1.3rem;
   vertical-align: -3px;
 }
 
@@ -559,7 +562,7 @@ div .mini-link-title {
 #filterMenu {
   display: none;
   position: absolute;
-  right: 0;
+  left: 0;
   padding: 2px 0;
   background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);

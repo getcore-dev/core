@@ -107,7 +107,7 @@ function getSimilarJobs(jobId) {
               <p  class="posting-company-name secondary-text">${
   job.company_name
 }</p>
-              <h3 class="job-title main-text"><a href="/jobs/${job.id}">${
+              <h3 class="company-name main-text"><a href="/jobs/${job.id}">${
   job.title
 } </a> </h3>
               </div>
@@ -183,7 +183,7 @@ function getSimilarJobsByCompany(jobId, companyName) {
               <p class="posting-company-name secondary-text">${
   job.company_name
 }</p>
-              <h3 class="job-title"><a href="/jobs/${job.id}">${
+              <h3 class="company-name"><a href="/jobs/${job.id}">${
   job.title
 }</a> </h3>
               </div>
@@ -409,7 +409,7 @@ delete
       <div class="share-button-container flex" style="margin-left: auto">
       <button id="null-button-normal" class="margin-h-auto grow-button" onclick="share('${
   job.title
-}', '', 'https://c-ore.dev/jobs/${job.id}')"
+}', '', 'https://getcore.dev/jobs/${job.id}')"
       ><span class="material-symbols-outlined">
 ios_share
 </span> Share</button>

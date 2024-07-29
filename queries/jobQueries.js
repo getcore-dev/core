@@ -629,16 +629,23 @@ const jobQueries = {
   getRandomJobs: async (limit) => {
     try {
       const result = await sql.query(`
-        SELECT TOP ${limit} JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
-        (
-          SELECT STRING_AGG(JobTags.tagName, ', ')
-          FROM JobPostingsTags
-          INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
-          WHERE JobPostingsTags.jobId = JobPostings.id
-        ) AS tags
-        FROM JobPostings
-        LEFT JOIN companies ON JobPostings.company_id = companies.id
-        ORDER BY NEWID()
+SELECT TOP ${limit} 
+  jp.*,
+  c.name AS company_name, 
+  c.logo AS company_logo, 
+  c.location AS company_location, 
+  c.description AS company_description,
+  jt.job_tags
+FROM JobPostings jp
+LEFT JOIN companies c ON jp.company_id = c.id
+LEFT JOIN (
+  SELECT jobId, STRING_AGG(jt.tagName, ', ') AS job_tags
+  FROM JobPostingsTags jpt
+  INNER JOIN JobTags jt ON jpt.tagId = jt.id
+  GROUP BY jobId
+) jt ON jp.id = jt.jobId
+WHERE jp.id >= (ABS(CHECKSUM(NEWID())) % (SELECT COUNT(*) FROM JobPostings))
+ORDER BY jp.postedDate DESC
       `);
       const jobs = result.recordset;
       return jobs;

@@ -14,7 +14,7 @@
   <meta property="og:title" content="<%= post.title %>" />
   <meta property="og:description" content="<%= post.content.substring(0, 160) %>" />
   <meta property="og:image" content="<%= post.user.avatar || '/img/default-avatar.png' %>" />
-  <meta property="og:url" content="https://c-ore.dev/post/<%= post.id %>" />
+  <meta property="og:url" content="https://getcore.dev/post/<%= post.id %>" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
@@ -387,7 +387,7 @@ function formatDate(date) {
                   <button class="submit-button-normal" id="favorite-button" onclick="favorite('<%= post.id %>')">
                     <span class="material-symbols-outlined">favorite</span> Save
                   </button>
-                  <button class="null-button-normal" id="share-button" onclick="share('<%= post.title %>', '', 'https://c-ore.dev/posts/<%= post.id %>')">
+                  <button class="null-button-normal" id="share-button" onclick="share('<%= post.title %>', '', 'https://getcore.dev/posts/<%= post.id %>')">
                     <span class="material-symbols-outlined">ios_share</span> Share
                   </button>
                   <% if (user && user.isAdmin) { %>
@@ -768,7 +768,7 @@ function formatDate(date) {
                     </div>
                     <% } %>
                     <div class="dropdown-item">
-                      <button onclick="share('<%= similarPost.title %>', '', 'https://c-ore.dev/posts/<%= similarPost.id %>')">
+                      <button onclick="share('<%= similarPost.title %>', '', 'https://getcore.dev/posts/<%= similarPost.id %>')">
                         <p>Share Post</p>
                       </button>
                     </div>
