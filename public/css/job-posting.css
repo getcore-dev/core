@@ -179,9 +179,9 @@ div.apply-button-container {
 }
 
 div.job-info-flairs span.material-symbols-outlined {
-  font-size: 1.1rem;
+  font-size: .95rem;
   vertical-align: -2px;
-  padding-right: .4rem;
+  padding-right: .6rem;
 }
 
 div.job-info-flairs p {
@@ -413,6 +413,14 @@ div.interact-buttons div {
 @media screen and (max-width: 600px) {
   main {
     height: calc(100dvh - var(--mobile-navbar-height) - var(--mobile-second-navbar-height)) !important;
+  }
+
+  .company-name {
+    font-size: 1.1rem;
+  }
+
+  .job-info-flairs p {
+    font-size: .925rem;
   }
 
   .container {
