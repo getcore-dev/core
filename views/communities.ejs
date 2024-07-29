@@ -9,7 +9,7 @@
   <meta name="description" content="Join CORE communities to connect with like-minded individuals. Discover, share, and engage in various topics and interests.">
   <meta name="keywords" content="CORE communities, community engagement, social platform, join communities, discover communities, social network">
   <meta name="author" content="CORE">
-  <meta property="og:url" content="https://c-ore.dev/">
+  <meta property="og:url" content="https://getcore.dev/">
   <meta property="og:title" content="CORE - Connect and Engage in Communities">
   <meta property="og:description" content="Join CORE communities to connect with like-minded individuals. Discover, share, and engage in various topics and interests.">
   <meta property="og:image" content="/img/core.png">
@@ -68,7 +68,7 @@
                     admin_panel_settings
                   </span>
                   Admin Tools</button>
-                <button class="mod-btn null-button-normal" style="margin-left:auto" id="communityActionBtn" onclick="share('<%= community.name %>','','https://c-ore.dev/networks/<%= community.shortname %>')">
+                <button class="mod-btn null-button-normal" style="margin-left:auto" id="communityActionBtn" onclick="share('<%= community.name %>','','https://getcore.dev/networks/<%= community.shortname %>')">
                   <span class="material-symbols-outlined share-glyph">
                     ios_share
                   </span></button>
@@ -269,13 +269,11 @@
         const communityHeader = document.createElement('div');
         communityHeader.className = 'community-header posting-header';
         communityHeader.innerHTML = `
-              <div class="post-header-title">
-                <h5>${sortBy.charAt(0).toUpperCase() + sortBy.slice(1)} Posts</h5> 
-              </div>
+
               <div class=post-header-buttons style="position:relative;">
               <span class="filter-button-container">
                 <button class="null-button-normal" id="filter-button" onclick="toggleFilterMenu()">
-                  <span class="material-symbols-outlined">sort</span>
+                  Sort
                 </button>
                               <div class="filter-menu" id="filterMenu">
                 <button class="filter-button">
@@ -297,9 +295,7 @@
               </span>
 <% if (user) { %>
   <button class="submit-button-normal" id="post-button" onclick="window.location.href='<%= communityId ? `/networks/${community.shortname}/create` : '/create' %>'">
-    <span class="material-symbols-outlined" style="padding:0;">add</span> <span style="padding:0;" class="material-symbols-outlined">
-description
-</span>
+    Add Post
   </button>
 <% } %>
             </div>
@@ -470,7 +466,7 @@ description
     <button class="dropdown-item" onclick="window.location.href='/posts/${post.id}'">View Post</button>
     <button class="dropdown-item" onclick="window.location.href='/user/${post.username}'">Visit @${post.username}</button>
     <button class="dropdown-item" onclick="window.location.href='/networks/${post.community_shortname}'">Visit /${post.community_shortname}</button>
-    <button class="dropdown-item" onclick="share('${post.title}','','https://c-ore.dev/posts/${post.id}')">Share</button>
+    <button class="dropdown-item" onclick="share('${post.title}','','https://getcore.dev/posts/${post.id}')">Share</button>
   `;
               threeDotsDiv.appendChild(dropdown);
               dropdownVisible = true;
@@ -673,10 +669,10 @@ description
             const shareButton = document.createElement('button');
             shareButton.className = 'null-button-normal';
             shareButton.id = 'share-button';
-            shareButton.innerHTML = '<span class="material-symbols-outlined">ios_share</span>';
+            shareButton.innerHTML = `<span class="material-symbols-outlined">ios_share</span> ${post.share_count ? post.share_count : 0}`;
             shareButton.onclick = (event) => {
               event.stopPropagation();
-              share(post.title, "", `https://c-ore.dev/posts/${post.id}`);
+              share(post.title, "", `https://getcore.dev/posts/${post.id}`, 'post', post.id);
             };
             buttonsDiv.appendChild(shareButton);
 
@@ -923,7 +919,7 @@ description
                   </div>
                 </a>
                 <span class="comment-timestamp" id="secondary-text">${formatTimestamp(comment.created_at)}</span>
-                ${comment.isPinned ? '<span class="tag comment-tag pinned-comment"><span class="material-symbols-outlined" id="secondary-text">push_pin</span></span>' : ''}
+                ${comment.isPinned ? '<span class="tag comment-tag pinned-comment"><span class="material-symbols-outlined" id="secondary-text" style="color:#ffdf34;">push_pin</span></span>' : ''}
                 ${comment.user.isAdmin ? '<span class="tag admin-tag comment-tag">Admin</span>' : ''}
               </div>
               ${user ? renderCommentActions(comment, user) : ''}
@@ -1092,7 +1088,7 @@ description
 
       return `
     <div class="user-actions">
-      <div class="comment-user-interactions ${comment.id}" data-type="comment" data-id="${comment.id}">
+      <div class="sub-text secondary-text comment-user-interactions ${comment.id}" data-type="comment" data-id="${comment.id}">
         ${renderReactionButton(comment, user, reactionTypes)}
         <span id="secondary-text" class="total-reactions-count-comment-${comment.id}">${totalReactions} reactions</span>
         <span id="secondary-text" class="total-reactions-count">${totalReplies} replies</span>

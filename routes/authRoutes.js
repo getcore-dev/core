@@ -59,7 +59,7 @@ router.post('/reset-password', async (req, res) => {
     // Send reset email
     const resetUrl = `http://${req.headers.host}/reset-password/${resetToken}`;
     const mailOptions = {
-      from: '"CORE Support" <support@c-ore.dev>',
+      from: '"CORE Support" <support@getcore.dev>',
       to: user.email,
       subject: 'Password Reset',
       html: `<p>You requested a password reset. Click the link below to reset your password:</p><a href="${resetUrl}">Reset Password</a>`,
@@ -241,7 +241,7 @@ router.post(
 
       const verificationUrl = `http://${req.headers.host}/verify-email?token=${verificationToken}`;
       const mailOptions = {
-        from: '"CORE Support" <support@c-ore.dev>',
+        from: '"CORE Support" <support@getcore.dev>',
         to: req.body.email,
         subject: 'Email Verification',
         html: `<p>Thank you for registering. Please click the link below to verify your email:</p><a href="${verificationUrl}">Verify Email</a>`,
@@ -323,7 +323,7 @@ router.post('/login', checkNotAuthenticated, async (req, res, next) => {
 
         const verificationUrl = `http://${req.headers.host}/verify-email?token=${verificationToken}`;
         const mailOptions = {
-          from: '"CORE Support" <support@c-ore.dev>',
+          from: '"CORE Support" <support@getcore.dev>',
           to: user.email,
           subject: 'Email Verification',
           html: `<p>Your account has not been verified. Please click the link below to verify your email:</p><a href="${verificationUrl}">Verify Email</a>`,

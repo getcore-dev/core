@@ -322,7 +322,7 @@ function createTagHTML(tag, index, hidden = false) {
 
 function createSeeMoreButton(count) {
   const seeMore = document.createElement('span');
-  seeMore.className = 'see-more regular-button';
+  seeMore.className = 'see-more';
   seeMore.textContent = `+${count} more`;
   return seeMore;
 }

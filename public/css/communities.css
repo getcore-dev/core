@@ -138,7 +138,6 @@ div.vote-interactions {
   display: flex;
   flex-direction: row;
   gap: 5px;
-  margin-bottom: .3rem;
   align-items: center;
   border-radius: 6px;
   width: 100%;
@@ -172,7 +171,7 @@ div.vote-interactions {
   flex-direction: row;
   align-items: center;
   border-radius: 9px;
-  margin-bottom: 6px
+  gap: .3rem;
 }
 
 .job-flair {
@@ -453,10 +452,6 @@ a.community:hover {
   line-height: 1.6rem;
 }
 
-.mobile-jobs-container .job {
-  border: 0;
-  background: 0;
-}
 
 .link-preview {
   margin-bottom: .4rem;
@@ -527,13 +522,16 @@ div .mini-link-title {
 #filter-button,
 #post-button {
   height: 32px;
+  background: 0;
+  border: 0;
   font-size: .7rem;
-  padding: 0.35rem .85rem;
+  padding: 0;
+  font-size: .925rem;
 }
 
 #filter-button .material-symbols-outlined,
 #post-button .material-symbols-outlined {
-  font-size: 14px;
+  font-size: 1.3rem;
   vertical-align: -3px;
 }
 
@@ -559,7 +557,7 @@ div .mini-link-title {
 #filterMenu {
   display: none;
   position: absolute;
-  right: 0;
+  left: 0;
   padding: 2px 0;
   background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
@@ -829,6 +827,9 @@ div.join-website-body {
 #share-button {
   font-weight: 550;
   height: 32px;
+  gap: .6rem;
+  padding: 0 .7rem;
+  align-items: center;
   padding-top: 0;
   padding-bottom: 0;
   margin-left: auto;
@@ -858,7 +859,7 @@ div.join-website-body {
 
 .comment-button-right,
 .reaction-button-right {
-  padding: 0 .6rem;
+  padding-right: .6rem;
   font-weight: 550;
 }
 
@@ -874,6 +875,7 @@ div.join-website-body {
   align-items: center;
   justify-content: center;
   border: .1rem solid white;
+  display: none;
 }
 
 .footer-container {
@@ -1012,6 +1014,10 @@ button.see-more {
   margin-bottom: .8rem;
 }
 
+.join-community-header .material-symbols-outlined {
+  font-size: 1.3rem;
+}
+
 
 @media (max-width: 768px) {
 
@@ -1021,6 +1027,8 @@ button.see-more {
 
   .jobslist .job {
     min-width: 250px;
+    border: 0;
+    background: #f2f2f2;
   }
 
   #posts-container>h5 {
@@ -1108,7 +1116,7 @@ button.see-more {
 
   .job-content {
     width: 100%;
-    padding: .25rem .65rem;
+    padding: 0.45rem 1.05rem;
     box-sizing: border-box;
   }
 
@@ -1197,9 +1205,6 @@ button.see-more {
     -webkit-line-clamp: 3;
   }
 
-  .job-salary {
-    display: none;
-  }
 
   .follow-button {
     margin-bottom: auto;
@@ -1217,7 +1222,7 @@ button.see-more {
   .title {
     font-size: 1.1rem;
     margin-top: 0rem;
-    margin-bottom: .6rem;
+    margin-bottom: .2rem;
     font-weight: 600;
   }
 
@@ -1253,9 +1258,10 @@ button.see-more {
   position: relative;
 }
 
+
 .avatar img {
   border: 1px solid var(--border-color);
-  width: 38px;
+  width: 28px;
   aspect-ratio: 1/1;
   border-radius: 6px;
   object-fit: cover;

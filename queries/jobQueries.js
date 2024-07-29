@@ -629,16 +629,23 @@ const jobQueries = {
   getRandomJobs: async (limit) => {
     try {
       const result = await sql.query(`
-        SELECT TOP ${limit} JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
-        (
-          SELECT STRING_AGG(JobTags.tagName, ', ')
-          FROM JobPostingsTags
-          INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
-          WHERE JobPostingsTags.jobId = JobPostings.id
-        ) AS tags
-        FROM JobPostings
-        LEFT JOIN companies ON JobPostings.company_id = companies.id
-        ORDER BY NEWID()
+SELECT TOP ${limit} 
+  jp.*,
+  c.name AS company_name, 
+  c.logo AS company_logo, 
+  c.location AS company_location, 
+  c.description AS company_description,
+  s.job_skills
+FROM JobPostings jp
+LEFT JOIN companies c ON jp.company_id = c.id
+LEFT JOIN (
+  SELECT job_id, STRING_AGG(s.name, ', ') AS job_skills
+  FROM job_skills js
+  INNER JOIN skills s ON js.skill_id = s.id
+  GROUP BY job_id
+) s ON jp.id = s.job_id
+WHERE jp.id >= (ABS(CHECKSUM(NEWID())) % (SELECT COUNT(*) FROM JobPostings))
+ORDER BY jp.postedDate DESC
       `);
       const jobs = result.recordset;
       return jobs;
@@ -659,11 +666,11 @@ const jobQueries = {
             companies.location AS company_location, 
             companies.description AS company_description,
             (
-              SELECT STRING_AGG(JobTags.tagName, ', ')
-              FROM JobPostingsTags
-              INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
-              WHERE JobPostingsTags.jobId = JobPostings.id
-            ) AS job_tags
+              SELECT STRING_AGG(skills.name, ', ')
+              FROM job_skills
+              INNER JOIN skills ON job_skills.skill_id = skills.id
+              WHERE job_skills.job_id = JobPostings.id
+            ) AS job_skills
           FROM JobPostings
           LEFT JOIN companies ON JobPostings.company_id = companies.id
           ORDER BY JobPostings.postedDate DESC

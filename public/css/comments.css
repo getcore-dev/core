@@ -47,12 +47,17 @@
     margin-bottom: auto;
 }
 
+.repliers-info {
+    font-weight: 500;
+}
+
 .comment .comment {
     margin-left: 10px;
 }
 
 .comment-header {
     padding: 0;
+    font-size: .8rem;
     display: flex;
     align-items: center;
     gap: 4px;
@@ -163,6 +168,7 @@ div.interact-buttons {
     display: flex;
     flex-direction: row;
     gap: 8px;
+    font-size: .75rem;
     align-items: center;
 }
 

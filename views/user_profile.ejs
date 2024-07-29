@@ -16,7 +16,7 @@
   <meta property="og:title" content="<%= otheruser.username %> - CORE">
   <meta property="og:description" content="Connect with <%= otheruser.firstname %> <%= otheruser.lastname %> on CORE. Explore their activities, posts, and more.">
   <meta property="og:image" content="<%= otheruser.avatar ? otheruser.avatar : '/img/default-avatar.png' %>">
-  <meta property="og:url" content="https://c-ore.dev/user/<%= otheruser.username %>">
+  <meta property="og:url" content="https://getcore.dev/user/<%= otheruser.username %>">
   <meta property="og:type" content="profile">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="<%= otheruser.username %> - CORE">
@@ -155,7 +155,7 @@
             </div>
           </div>
           <div class="edit-controls-and-follow-button">
-            <button id="edit-button" onclick="share('User Profile', '', 'https://c-ore.dev/user/<%= otheruser.username %>')" style="margin-bottom: auto;">
+            <button id="edit-button" onclick="share('User Profile', '', 'https://getcore.dev/user/<%= otheruser.username %>')" style="margin-bottom: auto;">
               Share
             </button>
             <% if (user) { %>

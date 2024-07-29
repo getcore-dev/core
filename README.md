@@ -2,11 +2,11 @@
 
 <div align="center">
 <picture>
-  <source srcset="https://c-ore.dev/img/core-dark.png" media="(prefers-color-scheme: dark)">
-  <img src="https://c-ore.dev/img/core.png" alt="CORE Logo" width="200">
+  <source srcset="https://getcore.dev/img/core-dark.png" media="(prefers-color-scheme: dark)">
+  <img src="https://getcore.dev/img/core.png" alt="CORE Logo" width="200">
 </picture>
 
-  [![Website](https://img.shields.io/badge/Visit-Website-blue)](https://c-ore.dev)
+  [![Website](https://img.shields.io/badge/Visit-Website-blue)](https://getcore.dev)
   [![GitHub stars](https://img.shields.io/github/stars/brycemcole/CORE?style=social)](https://github.com/brycemcole/CORE/stargazers)
   [![Twitter Follow](https://img.shields.io/twitter/follow/C_OREPlatform?style=social)](https://twitter.com/C_OREPlatform)
 </div>
@@ -35,7 +35,7 @@ CORE is a cutting-edge platform that combines a unique social network with power
 
 ## 🏁 Getting Started
 
-Visit [c-ore.dev](https://c-ore.dev) to join our community and start exploring opportunities!
+Visit [getcore.dev](https://getcore.dev) to join our community and start exploring opportunities!
 
 ### For Engineers
 
@@ -63,8 +63,8 @@ We welcome contributions from the community! If you'd like to contribute, please
 
 ## 📬 Contact Us
 
-- Website: [c-ore.dev](https://c-ore.dev)
-- Email: support@c-ore.dev
+- Website: [getcore.dev](https://getcore.dev)
+- Email: support@getcore.dev
 - Twitter: [@C_OREPlatform](https://twitter.com/C_OREPlatform)
   
 ---

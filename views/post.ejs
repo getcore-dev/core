@@ -14,7 +14,7 @@
   <meta property="og:title" content="<%= post.title %>" />
   <meta property="og:description" content="<%= post.content.substring(0, 160) %>" />
   <meta property="og:image" content="<%= post.user.avatar || '/img/default-avatar.png' %>" />
-  <meta property="og:url" content="https://c-ore.dev/post/<%= post.id %>" />
+  <meta property="og:url" content="https://getcore.dev/post/<%= post.id %>" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
@@ -358,7 +358,6 @@ function formatDate(date) {
                     <span id="secondary-text" class="total-reactions-count <%= post.id %>">0 </span>
                     <% } %>
                   </button>
-                  <div id="vr"></div>
 
                   <% if (!post.deleted && !post.isLocked) { %>
 
@@ -379,16 +378,16 @@ function formatDate(date) {
                       %><%= String(totalReplies).trim() %>
                     </span>
                   </button>
-                  <div id="vr"></div>
+
 
                   <% } %>
 
 
-                  <button class="submit-button-normal" id="favorite-button" onclick="favorite('<%= post.id %>')">
-                    <span class="material-symbols-outlined">favorite</span> Save
+                  <button class="null-button-normal" id="favorite-button" onclick="favorite('<%= post.id %>')">
+                    <span class="material-symbols-outlined">favorite</span>
                   </button>
-                  <button class="null-button-normal" id="share-button" onclick="share('<%= post.title %>', '', 'https://c-ore.dev/posts/<%= post.id %>')">
-                    <span class="material-symbols-outlined">ios_share</span> Share
+                  <button class="null-button-normal" id="share-button" onclick="share('<%= post.title %>', '', 'https://getcore.dev/posts/<%= post.id %>', 'post', '<%= post.id%>')">
+                    <span class="material-symbols-outlined">ios_share</span> <%= post.share_count ? post.share_count : 0 %>
                   </button>
                   <% if (user && user.isAdmin) { %>
                   <div class="dropdown">
@@ -602,7 +601,6 @@ function formatDate(date) {
                   </a>
 
                 </div>
-                <div id="vr"></div>
 
                 <% } %>
 
@@ -768,7 +766,7 @@ function formatDate(date) {
                     </div>
                     <% } %>
                     <div class="dropdown-item">
-                      <button onclick="share('<%= similarPost.title %>', '', 'https://c-ore.dev/posts/<%= similarPost.id %>')">
+                      <button onclick="share('<%= similarPost.title %>', '', 'https://getcore.dev/posts/<%= similarPost.id %>')">
                         <p>Share Post</p>
                       </button>
                     </div>
@@ -916,13 +914,9 @@ function formatDate(date) {
           const favoriteButton = document.querySelector(`button[onclick="favorite('${postId}')"]`);
           if (favoriteButton) {
             if (data.isFavorite) {
-              favoriteButton.innerHTML = '<span class="material-symbols-outlined">heart_minus</span> Unsave';
-              favoriteButton.classList.remove('submit-button-normal');
-              favoriteButton.classList.add('cancel-button-normal');
+              favoriteButton.innerHTML = '<span class="material-symbols-outlined">heart_minus</span>';
             } else {
-              favoriteButton.innerHTML = '<span class="material-symbols-outlined">favorite</span> Save';
-              favoriteButton.classList.remove('cancel-button-normal');
-              favoriteButton.classList.add('submit-button-normal');
+              favoriteButton.innerHTML = '<span class="material-symbols-outlined">favorite</span>';
             }
           }
         })

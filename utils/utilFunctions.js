@@ -17,6 +17,50 @@ const utilFunctions = {
       }
     );
   },
+
+  sharePost: async (postId) => {
+    try {
+      const result = await sql.query`
+        UPDATE posts
+        SET share_count = COALESCE(share_count, 0) + 1
+        WHERE id = ${postId}
+      `;
+      return result.rowsAffected;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  applyJob: async (jobId) => {
+    try {
+      const result = await sql.query`
+        UPDATE JobPostings
+        SET applicants = COALESCE(applicants, 0) + 1
+        WHERE id = ${jobId}
+      `;
+      return result.rowsAffected;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+    
+
+  shareJob: async (jobId) => {
+    try {
+      const result = await sql.query`
+        UPDATE JobPostings
+        SET share_count = COALESCE(share_count, 0) + 1
+        WHERE id = ${jobId}
+      `;
+      return result.rowsAffected;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   getPosts: async (
     sortBy = 'trending',
     user,
@@ -29,7 +73,7 @@ const utilFunctions = {
       WITH CTE AS (
         SELECT 
           p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, 
-          p.communities_id, p.react_like, p.react_love, p.react_curious, 
+          p.communities_id, p.react_like, p.react_love, p.react_curious, p.share_count,
           p.react_interesting, p.react_celebrate, p.post_type, p.views, 
           p.isGlobalPinned, u.username, u.avatar, u.isAdmin, u.verified, u.firstname, u.lastname, u.id as user_id,
           CASE WHEN ur.follower_id IS NOT NULL THEN 1 ELSE 0 END AS is_following,
@@ -83,7 +127,7 @@ OUTER APPLY (
         GROUP BY 
           p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.subtitle, 
           p.communities_id, u.avatar, c.name, c.shortname, c.community_color, c.mini_icon, u.isAdmin, u.verified, u.firstname, u.lastname,
-          p.react_like, p.react_love, p.react_curious, p.react_interesting, u.id,
+          p.react_like, p.react_love, p.react_curious, p.react_interesting, u.id, p.share_count,
           p.react_celebrate, p.post_type, p.views, p.isGlobalPinned, ur.follower_id,
           je.title, je.companyName, ee.institutionName
       )
@@ -306,7 +350,7 @@ OUTER APPLY (
   ) => {
     try {
       const result = await sql.query`
-        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views, u.username, u.avatar,
+        SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views, u.username, u.avatar, p.share_count,
         c.name AS community_name, c.shortname AS community_shortname, c.community_color AS community_color,
               SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
               SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
@@ -320,7 +364,7 @@ OUTER APPLY (
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
         LEFT JOIN communities c ON p.communities_id = c.id
         WHERE p.communities_id = ${communityID} AND p.deleted = 0
-        GROUP BY p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.subtitle, p.link, p.communities_id, u.avatar, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views, c.name, c.shortname, c.community_color
+        GROUP BY p.id, p.created_at, p.share_count, p.deleted, u.username, p.title, p.content, p.subtitle, p.link, p.communities_id, u.avatar, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views, c.name, c.shortname, c.community_color
         ORDER BY p.created_at DESC
         OFFSET ${offset} ROWS
         FETCH NEXT ${limit} ROWS ONLY
@@ -576,7 +620,7 @@ OUTER APPLY (
 
       const result = await sql.query`
         SELECT 
-          p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, 
+          p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, p.share_count,
           p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, 
           p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.updated_at, p.isLocked,
           p.views, u.username, u.id as user_id, u.avatar,
@@ -598,7 +642,7 @@ OUTER APPLY (
         GROUP BY 
           p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.subtitle, p.link, p.communities_id,
           p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious,
-          p.react_interesting, p.react_celebrate, u.avatar, u.id, p.post_type, p.updated_at, p.isLocked,
+          p.react_interesting, p.react_celebrate, u.avatar, u.id, p.post_type, p.updated_at, p.isLocked, p.share_count,
           p.views, u2.username, u2.avatar, upa2.action_type
       `;
 
