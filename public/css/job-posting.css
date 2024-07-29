@@ -195,6 +195,8 @@ div.job-info-flairs p {
 
 
 .interact-buttons .material-symbols-outlined {
+  font-size: .95rem;
+  vertical-align: -2px;
   padding-right: .6rem;
 }
 

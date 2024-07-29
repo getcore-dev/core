@@ -299,7 +299,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
           ${
   job.company_logo
     ? `
-            <img src="${job.company_logo}" style="width: auto;" alt="${job.company_name} logo" class="thumbnail thumbnail-small thumbnail-regular" />
+            <img src="${job.company_logo}" style="width: auto;" alt="${job.company_name} logo" class="thumbnail thumbnail-tiny thumbnail-regular" />
           `
     : ''
 }
@@ -369,7 +369,7 @@ ${formatDate(job.postedDate)}
 
       </div>
       
-      <div class="interact-buttons margin-1-bottom">
+      <div id="horizontal-scroll" class="interact-buttons margin-1-bottom">
       ${
   isOlderThan30Days(job)
     ? ''

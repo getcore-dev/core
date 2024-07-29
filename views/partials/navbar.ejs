@@ -3,6 +3,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
 <nav class="navbar">
+  <%
+    const isActive = (path) => {
+      return currentPath === path || currentPath.startsWith(`${path}/`);
+    };
+    %>
   <div class="nav-bar">
     <div class="logo">
       <div class="logo-img">
@@ -76,7 +81,7 @@
         <button id="expandSearch" class="search-button">
         </button>
         <div class="menu-content" id="menu-content">
-          <a href="/">
+          <a href="/" class="<%= isActive('/') ? 'active' : '' %>">
             <div class="menu-item">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 home
@@ -85,7 +90,7 @@
             </div>
           </a>
 
-          <a href="/jobs">
+          <a href="/jobs" class="<%= isActive('/jobs') ? 'active' : '' %>">
             <div class="menu-item">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 work
@@ -93,7 +98,7 @@
               Openings
             </div>
           </a>
-          <a href="/networks/">
+          <a href="/networks" class="<%= isActive('/networks') ? 'active' : '' %>">
             <div class="menu-item">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 workspaces
@@ -102,7 +107,7 @@
 
             </div>
           </a>
-          <a href="/updates">
+          <a href="/updates" class="<%= isActive('/updates') ? 'active' : '' %>">
             <div class="menu-item">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 update
@@ -115,7 +120,7 @@
 
           <% if (user) { %>
           <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
-          <a href="/favorites">
+          <a href="/favorites" class="<%= isActive('/favorites') ? 'active' : '' %>">
             <div class="menu-item">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 favorite
@@ -123,7 +128,7 @@
               Favorites
             </div>
           </a>
-          <a href="/settings">
+          <a href="/settings" class="<%= isActive('/settings') ? 'active' : '' %>">
             <div class="menu-item">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 settings
@@ -132,7 +137,7 @@
             </div>
           </a>
           <% } %>
-          <a href="/about">
+          <a href="/about" class="<%= isActive('/about') ? 'active' : '' %>">
             <div class="menu-item">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 info
@@ -141,7 +146,9 @@
 
             </div>
           </a>
-          <h3>Trending Posts</h3>
+          <div class="mobile-menu-header">
+            <h4 class="secondary-text">Trending Posts</h4>
+          </div>
           <div class="mobile-trending-posts">
           </div>
         </div>
@@ -281,9 +288,6 @@
       }
     };
 
-    const isActive = (path) => {
-      return currentPath === path || currentPath.startsWith(`${path}/`);
-    };
     %>
 
           <a href="/" class="navbar-button <%= isActive('/') ? 'active' : '' %>" style="display: flex;">
