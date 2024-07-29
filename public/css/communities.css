@@ -159,7 +159,7 @@ div.vote-interactions {
 .post-content {
   position: relative;
   flex-grow: 1;
-  padding: .65rem .85rem;
+  padding: 1.25rem .85rem;
 }
 
 
@@ -594,6 +594,12 @@ div .mini-link-title {
   background-color: var(--border-color);
 }
 
+div.community {
+  border: 0;
+  padding: .65rem .85rem;
+  background-color: var(--light-mode-body-color);
+}
+
 .community-header {
   border-top: 1px solid var(--border-color);
   display: flex;
@@ -814,19 +820,18 @@ div.join-website-body {
 #favorite-button,
 #share-button {
   height: 32px;
-  border: 0;
-  background: 0;
   padding: 0;
-}
-
-#share-button {
-  height: 32px;
-  padding-top: 0;
-  padding-bottom: 0;
+  min-width: 32px;
+  border-radius: 10px;
+  border: 0;
 }
 
 #share-button {
   font-weight: 550;
+  height: 32px;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-left: auto;
 }
 
 .buttons {
@@ -927,7 +932,9 @@ div.join-website-body {
 
 .post-quick-info {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: .2rem;
 }
 
 
@@ -1084,7 +1091,7 @@ button.see-more {
   .community-header,
   .job-header {
     margin: 0;
-    padding: .25rem .95rem;
+    padding: .65rem .95rem;
     color: var(--light-mode-secondary-text-color);
   }
 

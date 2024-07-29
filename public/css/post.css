@@ -442,7 +442,7 @@ div.interact-buttons {
 
 #share-button {
   margin-left: auto;
-  background: 0;
+  border-radius: 10px;
   border: 0;
 }
 
@@ -468,10 +468,10 @@ div.interact-buttons {
 
 .reaction-button {
   border: 0;
-  background: 0;
   font-size: .875rem;
   display: flex;
   align-items: center;
+  border-radius: 10px;
   gap: .6rem;
   padding: 0.6rem 1.6rem !important;
   height: 32px;
@@ -780,7 +780,7 @@ div.interact-buttons {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  padding: 0 12px;
+  padding: 0 3.5dvw;
   margin-bottom: 2px;
 }
 
@@ -1445,9 +1445,9 @@ p.preview-description {
 }
 
 #favorite-button {
-  background: 0;
+  border-radius: 10px;
   border: 0;
-  padding: .35rem;
+  padding: .35rem .65rem;
 }
 
 

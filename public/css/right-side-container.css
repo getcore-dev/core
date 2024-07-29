@@ -18,10 +18,12 @@
 
 .mobile-jobs-container .job-content-header {
   margin: auto 0;
+  width: 100%;
 }
 
 .mobile-jobs-container .job-content {
   display: inline-flex;
+  width: 100%;
 }
 
 .job:hover a {
@@ -135,6 +137,10 @@
   border: 1px solid var(--border-color);
   border-radius: 10px;
   margin: 0;
+}
+
+.favorite-button {
+  margin-left: auto;
 }
 
 .job-salary {
