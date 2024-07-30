@@ -10,6 +10,127 @@
          </div>
        </div>
        <script>
+         const stateMappings = {
+           Alabama: 'AL',
+           Alaska: 'AK',
+           Arizona: 'AZ',
+           Arkansas: 'AR',
+           California: 'CA',
+           Colorado: 'CO',
+           Connecticut: 'CT',
+           Delaware: 'DE',
+           Florida: 'FL',
+           Georgia: 'GA',
+           Hawaii: 'HI',
+           Idaho: 'ID',
+           Illinois: 'IL',
+           Indiana: 'IN',
+           Iowa: 'IA',
+           Kansas: 'KS',
+           Kentucky: 'KY',
+           Louisiana: 'LA',
+           Maine: 'ME',
+           Maryland: 'MD',
+           Massachusetts: 'MA',
+           Michigan: 'MI',
+           Minnesota: 'MN',
+           Mississippi: 'MS',
+           Missouri: 'MO',
+           Montana: 'MT',
+           Nebraska: 'NE',
+           Nevada: 'NV',
+           'New Hampshire': 'NH',
+           'New Jersey': 'NJ',
+           'New Mexico': 'NM',
+           'New York': 'NY',
+           'North Carolina': 'NC',
+           'North Dakota': 'ND',
+           Ohio: 'OH',
+           Oklahoma: 'OK',
+           Oregon: 'OR',
+           Pennsylvania: 'PA',
+           'Rhode Island': 'RI',
+           'South Carolina': 'SC',
+           'South Dakota': 'SD',
+           Tennessee: 'TN',
+           Texas: 'TX',
+           Utah: 'UT',
+           Vermont: 'VT',
+           Virginia: 'VA',
+           Washington: 'WA',
+           'West Virginia': 'WV',
+           Wisconsin: 'WI',
+           Wyoming: 'WY',
+           'United States': 'US',
+         };
+
+         function formatRelativeDate(dateString) {
+           const now = new Date();
+           const postedDate = new Date(dateString);
+           const diffTime = Math.abs(now - postedDate);
+           const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+           const diffMonths = Math.floor(diffDays / 30);
+           const diffYears = Math.floor(diffDays / 365);
+
+           if (diffYears > 0) {
+             return `${diffYears}y`;
+           } else if (diffMonths > 0) {
+             return `${diffMonths}m`;
+           } else if (diffDays > 0) {
+             return `${diffDays}d`;
+           } else {
+             return 'Today';
+           }
+         }
+
+         function formatLocation(location) {
+           if (!location) return "";
+
+           const parts = location.split(',').map(part => part.trim());
+
+           // Helper function to check if a string is a US state
+           const isUSState = (str) => Object.keys(stateMappings).includes(str) || Object.values(stateMappings).includes(str);
+
+           // Helper function to get state abbreviation
+           const getStateAbbr = (state) => {
+             const fullName = Object.keys(stateMappings).find(key => key.toLowerCase() === state.toLowerCase());
+             return fullName ? stateMappings[fullName] : state;
+           };
+
+           if (parts.length === 1) {
+             return parts[0];
+           } else if (parts.length === 2) {
+             if (isUSState(parts[1])) {
+               return getStateAbbr(parts[1]);
+             } else {
+               return parts[1]; // Assume it's a non-US country
+             }
+           } else if (parts.length >= 3) {
+             if (parts[2].trim().toLowerCase() === 'united states') {
+               return getStateAbbr(parts[1]);
+             } else {
+               return parts[2]; // Return the country for non-US locations
+             }
+           }
+
+           return location.trim();
+         }
+
+         function formatSalary(salary) {
+           if (!salary) return "";
+           return salary >= 1000 ? (salary / 1000).toFixed(0) + "k" : salary.toString();
+         }
+
+         function getFormattedSalary(salary, salaryMax) {
+           if (salary && salaryMax) {
+             const average = Math.round((salary + salaryMax) / 2);
+             return `${formatSalary(average)}`;
+           } else if (salary) {
+             return formatSalary(salary);
+           }
+           return "";
+         }
+
          function fetchJobPreviews() {
            fetch(`/api/randomJobs`)
              .then(response => response.json())
@@ -43,18 +164,23 @@
                       </div>
                     
                     </div>
-                    <div class="job-title-location">
-                     ${job.salary ? `
-                              <span class="job-salary sub-text"><span class="material-symbols-outlined">attach_money</span>${
-                              job.salary ? job.salary.toLocaleString() : ""
-                            } ${
-                            job.salary_max ? "- $" + job.salary_max.toLocaleString() : ""
-                          }</span>
-                          ` : ``}
+                    <div class="job-title-location secondary-text">
+${job.salary || job.salary_max ? `
+  <span class="job-salary sub-text">
+    <span class="material-symbols-outlined">attach_money</span>
+    ${getFormattedSalary(job.salary, job.salary_max)}
+  </span>
+` : ``}
 
-                      <div class="location sub-text"><span class="material-symbols-outlined">location_on</span>${job.location.trim()}</div>
-                      <div class="applicants sub-text"><span class="material-symbols-outlined">work</span>${job.applicants ? job.applicants : '0'} applicants</div>
-
+<div class="location sub-text">
+  <span class="material-symbols-outlined">location_on</span>
+  ${formatLocation(job.location)}
+</div>
+                      <div class="applicants sub-text"><span class="material-symbols-outlined">person</span>${job.applicants ? job.applicants : '0'}</div>
+<div class="job-post-date sub-text">
+  <span class="material-symbols-outlined">calendar_month</span>
+  ${formatRelativeDate(job.postedDate)}
+</div>
                     </div>
 
                   </div>

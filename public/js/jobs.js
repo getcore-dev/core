@@ -243,7 +243,7 @@ async function fetchTopSkills() {
 
 function renderTags() {
   const { topTags } = elements;
-  const maxTags = 6;
+  const maxTags = 3;
   const displayedTags = state.allTags.slice(0, maxTags);
   const remainingTags = state.allTags.slice(maxTags);
 
@@ -284,7 +284,7 @@ function toggleHiddenSkills() {
 
 function renderSkills() {
   const { topSkills } = elements;
-  const maxSkills = 6;
+  const maxSkills = 3;
   const displayedSkills = state.allSkills.slice(0, maxSkills);
   const remainingSkills = state.allSkills.slice(maxSkills);
 
@@ -517,6 +517,73 @@ function updateJobCount() {
     */
 }
 
+function formatRelativeDate(dateString) {
+  const now = new Date();
+  const postedDate = new Date(dateString);
+  const diffTime = Math.abs(now - postedDate);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const diffMonths = Math.floor(diffDays / 30);
+  const diffYears = Math.floor(diffDays / 365);
+
+  if (diffYears > 0) {
+    return `${diffYears}y`;
+  } else if (diffMonths > 0) {
+    return `${diffMonths}m`;
+  } else if (diffDays > 0) {
+    return `${diffDays}d`;
+  } else {
+    return 'Today';
+  }
+}
+
+function formatLocation(location) {
+  if (!location) return "";
+
+  const parts = location.split(',').map(part => part.trim());
+
+  // Helper function to check if a string is a US state
+  const isUSState = (str) => Object.keys(stateMappings).includes(str) || Object.values(stateMappings).includes(str);
+
+  // Helper function to get state abbreviation
+  const getStateAbbr = (state) => {
+    const fullName = Object.keys(stateMappings).find(key => key.toLowerCase() === state.toLowerCase());
+    return fullName ? stateMappings[fullName] : state;
+  };
+
+  if (parts.length === 1) {
+    return parts[0];
+  } else if (parts.length === 2) {
+    if (isUSState(parts[1])) {
+      return getStateAbbr(parts[1]);
+    } else {
+      return parts[1]; // Assume it's a non-US country
+    }
+  } else if (parts.length >= 3) {
+    if (parts[2].trim().toLowerCase() === 'united states') {
+      return getStateAbbr(parts[1]);
+    } else {
+      return parts[2]; // Return the country for non-US locations
+    }
+  }
+
+  return location.trim();
+}
+
+function formatSalary(salary) {
+  if (!salary) return "";
+  return salary >= 1000 ? (salary / 1000).toFixed(0) + "k" : salary.toString();
+}
+
+function getFormattedSalary(salary, salaryMax) {
+  if (salary && salaryMax) {
+    const average = Math.round((salary + salaryMax) / 2);
+    return `${formatSalary(average)}`;
+  } else if (salary) {
+    return formatSalary(salary);
+  }
+  return "";
+}
+
 function createJobElement(job) {
   const jobElement = document.createElement('div');
   jobElement.classList.add('job');
@@ -531,7 +598,7 @@ function createJobElement(job) {
     if (!state.filters.skills[a] && state.filters.skills[b]) return 1;
     return a.localeCompare(b);
   });
-  const displayedTags = sortedTags.slice(0, 6);
+  const displayedTags = sortedTags.slice(0, 3);
 
   const tagsHTML = displayedTags
     .map(
@@ -545,10 +612,10 @@ function createJobElement(job) {
   jobElement.innerHTML = `
     <div class="job-preview">
       <div class="job-info">
-        <div class="company-info">
+        <div class="company-info margin-03-bottom">
           ${
   job.company_logo
-    ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${job.company_logo}" alt="" />`
+    ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 32px; width: auto;" src="${job.company_logo}" alt="" />`
     : ''
 }
           <div class="job-posting-company-info">
@@ -558,9 +625,14 @@ function createJobElement(job) {
 }</a></h3>
           </div>
         </div>
-        <h5 class="job-subtitle secondary-text">${job.location}</h5> 
         <div class="job-posting-information job-subtitle secondary-text">
-          <span>${
+        <div class="job-description margin-03-bottom">
+        ${job.description}
+        </div>
+        </div>
+        <div class="job-posting-flairs margin-03-bottom">${tagsHTML}</div>
+                            <div class="job-title-location secondary-text">
+                                      <div class="experience-level sub-text">${
   job.experienceLevel === 'Mid Level'
     ? 'L3/L4'
     : job.experienceLevel === 'Entry Level'
@@ -568,13 +640,26 @@ function createJobElement(job) {
       : job.experienceLevel === 'Senior'
         ? 'L5/L6'
         : job.experienceLevel
-}</span>
+}</div>
+${job.salary || job.salary_max ? `
+  <span style="font-size:.7rem;">•</span><div class="job-salary sub-text">
+    <span class="material-symbols-outlined">attach_money</span>
+    ${getFormattedSalary(job.salary, job.salary_max)}
+  </div>
+` : ``}
 
-          <span class="job-salary" style="margin-left: auto;">${job.salary != 0 ? ` • USD $${job.salary.toLocaleString()}` : ''}${
-  job.salary_max != 0 ? '- $' + job.salary_max.toLocaleString() : ''
-}</span>
-        </div>
-        <div class="job-posting-flairs">${tagsHTML}</div>
+<span style="font-size:.7rem;">•</span><div class="location sub-text">
+  <span class="material-symbols-outlined">location_on</span>
+  ${formatLocation(job.location).trim()}
+</div>
+<span style="font-size:.7rem;">•</span><div class="applicants sub-text">
+<span class="material-symbols-outlined">person</span>
+${job.applicants ? job.applicants : '0'}
+</div>
+<span style="font-size:.7rem;">•</span><div class="job-post-date sub-text">
+  ${formatRelativeDate(job.postedDate)}
+</div>
+                    </div>
       </div>
     </div>
   `;
