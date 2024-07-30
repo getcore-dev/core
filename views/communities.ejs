@@ -104,8 +104,7 @@
         <% } %>
         <% if (!communityId) { %>
         <div class="mobile-jobs-container">
-          <div class="job-header">
-          </div>
+
           <div class="jobslist">
 
           </div>
@@ -173,7 +172,7 @@
         mainButton.innerHTML = `<span class="reaction-button-left">${reactionIcons[userReaction]}</span><span class="reaction-button-right">${reactionsMap[userReaction] || 0}</span>`;
         mainButton.classList.add('active');
       } else {
-        mainButton.innerHTML = `<span class="reaction-button-left"><span class="material-symbols-outlined">add_reaction</span></span><span class="reaction-button-right">${reactionsMap[userReaction] || 0}</span>`;
+        mainButton.innerHTML = `<span class="reaction-button-left"><span class="material-symbols-outlined">thumb_up</span></span><span class="reaction-button-right">${reactionsMap[userReaction] || 0}</span>`;
         mainButton.classList.remove('active');
 
       }
@@ -297,6 +296,9 @@
               <span class="filter-button-container">
                 <button class="null-button-normal" id="filter-button" onclick="toggleFilterMenu()">
                   Sort
+                  <span class="material-symbols-outlined">
+keyboard_arrow_down
+</span>
                 </button>
                               <div class="filter-menu" id="filterMenu">
                 <button class="filter-button">
@@ -318,7 +320,9 @@
               </span>
 <% if (user) { %>
   <button class="submit-button-normal" id="post-button" onclick="window.location.href='<%= communityId ? `/networks/${community.shortname}/create` : '/create' %>'">
-    Add Post
+    Post <span class="material-symbols-outlined">
+add
+</span>
   </button>
 <% } %>
             </div>
@@ -518,7 +522,11 @@
             postContentDiv.appendChild(titleDiv);
 
             const linkPreviewDiv = document.createElement('div');
-            linkPreviewDiv.className = 'link-preview margin-06-bottom';
+            if (post.post_tags) {
+              linkPreviewDiv.className = 'link-preview margin-06-bottom';
+            } else {
+              linkPreviewDiv.className = 'link-preview margin-1-bottom';
+            }
             linkPreviewDiv.onclick = () => window.location.href = '/posts/' + post.id;
 
             postContentDiv.appendChild(linkPreviewDiv);
@@ -662,7 +670,7 @@
             reactionButton.setAttribute('data-id', post.id);
             reactionButton.className = `mainReactionButton null-button-normal reaction-button${post.userReaction ? ' active' : ''}`;
 
-            reactionButton.innerHTML = `<span class="reaction-button-left"><span class="material-symbols-outlined">add_reaction</span></span><span class="reaction-button-right">${totalReactions > 0 ? `${totalReactions}` : "0"}</span>`;
+            reactionButton.innerHTML = `<span class="reaction-button-left"><span class="material-symbols-outlined">thumb_up</span></span><span class="reaction-button-right">${totalReactions > 0 ? `${totalReactions}` : "0"}</span>`;
 
             reactionButton.onclick = (event) => {
               event.stopPropagation();
@@ -704,7 +712,7 @@
             // tags div 
             if (post.post_tags) {
               const tagsDiv = document.createElement('div');
-              tagsDiv.className = 'tags margin-06-bottom';
+              tagsDiv.className = 'tags margin-1-bottom';
               post.post_tags.split(',').forEach(tag => {
                 const tagDiv = document.createElement('div');
                 tagDiv.className = 'tag';
@@ -1008,7 +1016,7 @@
 
       return `
     <button class="commentMainReactionButton null-button-normal reaction-button ${userReaction ? 'active' : ''}" data-type="comment" data-id="${comment.id}">
-      ${activeReaction ? activeReaction.icon : '<span class="material-symbols-outlined">add_reaction</span>'}
+      ${activeReaction ? activeReaction.icon : '<span class="material-symbols-outlined">thumb_up</span>'}
     </button>
     <div id="reactionPopup-comment-${comment.id}" class="reaction-popup" style="display:none; position: absolute;left: 0; bottom: 37px;">
       <div class="reaction-popup-content">
@@ -1132,7 +1140,7 @@
 
       return `
     <button class="mainReactionButton null-button-normal reaction-button ${userReaction ? 'active' : ''}" data-type="comment" data-id="${comment.id}">
-      ${activeReaction ? activeReaction.icon : '<span class="material-symbols-outlined">add_reaction</span>'}
+      ${activeReaction ? activeReaction.icon : '<span class="material-symbols-outlined">thumb_up</span>'}
     </button>
     <div id="reactionPopup-comment-${comment.id}" class="reaction-popup" style="display:none; position: absolute;left: 0; bottom: 37px;">
       <div class="reaction-popup-content">

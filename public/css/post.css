@@ -428,6 +428,10 @@ div.interact-buttons {
   justify-content: center;
 }
 
+#community-header-text {
+  font-weight: 600;
+}
+
 #share-button .material-symbols-outlined {
   padding-right: .4rem;
 }

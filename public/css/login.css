@@ -211,6 +211,12 @@ input:not(:placeholder-shown)+.floating-label,
   transition: box-shadow 0.3s ease;
 }
 
+input:focus {
+  outline: none;
+  border-color: #a0cfe6 !important;
+  box-shadow: 0 0 3px 1px rgba(160, 207, 230, 0.5);
+}
+
 
 
 .input-container {
@@ -314,7 +320,7 @@ nav {
   }
 
   .account-stuff {
-    width: 90%;
+    width: 78%;
   }
 
   #register,

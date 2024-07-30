@@ -630,7 +630,7 @@ function createJobElement(job) {
         ${job.description}
         </div>
         </div>
-        <div class="job-posting-flairs margin-03-bottom">${tagsHTML}</div>
+        <div class="job-posting-flairs margin-06-bottom">${tagsHTML}</div>
                             <div class="job-title-location secondary-text">
                                       <div class="experience-level sub-text">${
   job.experienceLevel === 'Mid Level'
@@ -644,7 +644,7 @@ function createJobElement(job) {
 ${job.salary || job.salary_max ? `
   <span style="font-size:.7rem;">•</span><div class="job-salary sub-text">
     <span class="material-symbols-outlined">attach_money</span>
-    ${getFormattedSalary(job.salary, job.salary_max)}
+    ${getFormattedSalary(job.salary, job.salary_max)}/yr
   </div>
 ` : ``}
 

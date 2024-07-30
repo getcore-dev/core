@@ -124,7 +124,7 @@
          function getFormattedSalary(salary, salaryMax) {
            if (salary && salaryMax) {
              const average = Math.round((salary + salaryMax) / 2);
-             return `${formatSalary(average)}`;
+             return `${formatSalary(average)}/yr`;
            } else if (salary) {
              return formatSalary(salary);
            }
@@ -167,20 +167,25 @@
                     <div class="job-title-location secondary-text">
 ${job.salary || job.salary_max ? `
   <span class="job-salary sub-text">
-    <span class="material-symbols-outlined">attach_money</span>
     ${getFormattedSalary(job.salary, job.salary_max)}
   </span>
+  <span style="font-size:.7rem;">•</span>
 ` : ``}
 
 <div class="location sub-text">
   <span class="material-symbols-outlined">location_on</span>
   ${formatLocation(job.location)}
 </div>
-                      <div class="applicants sub-text"><span class="material-symbols-outlined">person</span>${job.applicants ? job.applicants : '0'}</div>
+  <span style="font-size:.7rem;">•</span>
+
+<div class="applicants sub-text"><span class="material-symbols-outlined">person</span>${job.applicants ? job.applicants : '0'}</div>
+  <span style="font-size:.7rem;">•</span>
+
 <div class="job-post-date sub-text">
   <span class="material-symbols-outlined">calendar_month</span>
   ${formatRelativeDate(job.postedDate)}
 </div>
+
                     </div>
 
                   </div>
