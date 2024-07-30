@@ -42,17 +42,12 @@ nav {
 .account-stuff {
   width: 55%;
   max-width: 490px;
-  background: #ffffff4f;
-  border: 1px solid #ffffff91;
+  background: #ffffffa3;
+  border: 1px solid #ffffffae;
   border-radius: 9px;
-  padding: .5rem 0;
+  padding: 0;
 }
 
-#password,
-#password2 {
-  border-color: var(--border-color) !important;
-  /* Ensure the initial state has no specific color */
-}
 
 #password.weak,
 #password2.no-match,
@@ -144,13 +139,19 @@ footer {
 .input-container input {
   width: 100%;
   padding: 11px 9px;
-  margin: 5px 0;
+  margin: 8px 0;
   box-sizing: border-box;
   border-radius: 10px;
   background-color: #f6f8fa91 !important;
-  border: 1px solid #ffffff8f !important;
+  border: 1px solid #868686 !important;
   font-size: .8rem;
   transition: box-shadow 0.3s ease;
+}
+
+input:focus {
+  outline: none !important;
+  border-color: #a0cfe6 !important;
+  box-shadow: 0 0 3px 1px rgba(160, 207, 230, 0.5) !important;
 }
 
 
@@ -165,7 +166,9 @@ footer {
 }
 
 .input-container input {
-  border: 1px solid #ffffff8f !important;
+  padding: 11px 14px;
+  background: #f6f8fa7a !important;
+  font-size: 16px;
 }
 
 #password-strength,
@@ -211,7 +214,7 @@ footer {
 
 @media screen and (max-width: 600px) {
   .account-stuff {
-    width: 90%;
+    width: 78%;
   }
 
   .input-container input {
@@ -227,13 +230,13 @@ footer {
   }
 
   .account-stuff {
-    background: #1f1f21cc;
+    background: #1f1f21eb;
     border: 1px solid #444444bf;
   }
 
   .input-container input {
     background-color: #0b0c0c8c !important;
-    border-color: #181a1bd1 !important;
+    border-color: #646464d1 !important;
     color: var(--dark-mode-text-color) !important;
   }
 
@@ -243,11 +246,6 @@ footer {
     background: none;
   }
 
-  #password,
-  #password2 {
-    border-color: var(--dark-mode-border-color) !important;
-    /* Ensure the initial state has no specific color */
-  }
 
   #password.weak,
   #password2.no-match,

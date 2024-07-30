@@ -41,6 +41,7 @@
   --search-bar-height: 27px;
 }
 
+
 /* Global Style */
 body {
   margin: 0;
@@ -1489,7 +1490,7 @@ button .material-symbols-outlined:not(:only-child) {
 #null-button-normal {
   background: #f2f2f2;
   color: #2b2b2b;
-  border: 1.5px solid #c9c9c9;
+  border: 0;
 }
 
 .margin-v-auto {
@@ -1706,7 +1707,7 @@ button .material-symbols-outlined:not(:only-child) {
 .user-links {
   position: relative;
   display: flex;
-  gap: .4rem;
+  gap: .7rem;
   align-items: center;
   transition: transform 0.1s linear;
 }
@@ -2499,7 +2500,7 @@ button .material-symbols-outlined:not(:only-child) {
     transform: translateX(-30px);
     transition: transform 0.3s ease, opacity 0.3s ease 0.15s, visibility 0.3s ease 0.15s;
     opacity: 1;
-    gap: .6rem;
+    gap: 1.2rem;
     visibility: visible;
     pointer-events: all;
   }

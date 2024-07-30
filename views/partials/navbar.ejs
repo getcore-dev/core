@@ -407,6 +407,8 @@
 
 
 <script>
+
+
   function checkFollowing(userId) {
     fetch(`/users/${userId}/is-following`)
       .then(response => response.json())

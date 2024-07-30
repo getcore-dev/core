@@ -342,10 +342,10 @@ function formatDate(date) {
                       <%= reactionTypes.find(reaction => reaction.type === post.userReaction).icon %>
                     </span>
                     <% } else { %>
-                    <span class="reaction-emote <%= post.id %>" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
+                    <span class="reaction-emote <%= post.id %>" id="secondary-text"><span class="material-symbols-outlined">thumb_up</span></span>
                     <% } %>
                     <% } else { %>
-                    <span class="reaction-emote <%= post.id %>" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
+                    <span class="reaction-emote <%= post.id %>" id="secondary-text"><span class="material-symbols-outlined">thumb_up</span></span>
                     <% } %>
 
                     <% let totalReactions = 0; %>
@@ -616,10 +616,10 @@ function formatDate(date) {
                     <%= reactionTypes.find(reaction => reaction.type === comment.userReaction).icon %>
                   </span>
                   <% } else { %>
-                  <span class="reaction-emote <%= comment.id %>" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
+                  <span class="reaction-emote <%= comment.id %>" id="secondary-text"><span class="material-symbols-outlined">thumb_up</span></span>
                   <% } %>
                   <% } else { %>
-                  <span class="reaction-emote <%= comment.id %>" id="secondary-text"><span class="material-symbols-outlined">add_reaction</span></span>
+                  <span class="reaction-emote <%= comment.id %>" id="secondary-text"><span class="material-symbols-outlined">thumb_up</span></span>
                   <% } %>
 
                   <% let totalReactions = 0; %>
@@ -1342,7 +1342,7 @@ function formatDate(date) {
         buttonIcon.textContent = reactionIcons[userReaction];
         mainButton.classList.add('active');
       } else {
-        buttonIcon.innerHTML = '<span class="material-symbols-outlined">add_reaction</span>';
+        buttonIcon.innerHTML = '<span class="material-symbols-outlined">thumb_up</span>';
         mainButton.classList.remove('active');
       }
 
@@ -1411,7 +1411,7 @@ function formatDate(date) {
         reactionEmote.textContent = reactionIcons[userReaction];
         mainButton.classList.add('active');
       } else {
-        reactionEmote.innerHTML = '<span class="material-symbols-outlined">add_reaction</span>';
+        reactionEmote.innerHTML = '<span class="material-symbols-outlined">thumb_up</span>';
         mainButton.classList.remove('active');
       }
 

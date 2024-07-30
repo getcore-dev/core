@@ -96,9 +96,15 @@
   overflow-y: none;
 }
 
+.job-title-location {
+  display: flex;
+  gap: .3rem;
+  align-items: center;
+}
+
 .job .material-symbols-outlined {
   font-size: 1.05rem;
-  vertical-align: -2px;
+  vertical-align: -3px;
 }
 
 

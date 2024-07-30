@@ -181,7 +181,7 @@ div.vote-interactions {
 .post-content {
   position: relative;
   flex-grow: 1;
-  padding: 1.25rem .85rem;
+  padding: 1.25rem 1.3rem;
 }
 
 
@@ -539,6 +539,7 @@ div .mini-link-title {
 #post-button {
   height: 32px;
   background: 0;
+  font-weight: 600;
   border: 0;
   font-size: .7rem;
   padding: 0;
@@ -725,6 +726,7 @@ div.community-tags {
 .jobslist {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 10px;
 }
 
@@ -1030,15 +1032,32 @@ button.see-more {
   font-size: 1.3rem;
 }
 
+.see-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important;
+  margin-bottom: 1.3rem;
+}
+
+.see-more a {
+  font-size: 15px;
+  color: var(--active-indicator-color);
+  text-decoration: none;
+}
 
 @media (max-width: 768px) {
+  .see-more {
+    margin: 0
+  }
 
   .title {
     font-size: 1rem;
   }
 
   .jobslist .job {
-    min-width: 250px;
+    min-width: 280px;
+    height: 100px;
     border: 0;
     background: #f2f2f2;
   }
@@ -1058,7 +1077,7 @@ button.see-more {
 
   .mobile-jobs-container {
     display: block;
-    margin-bottom: 1.2rem;
+    margin: .4rem 0;
   }
 
   .community-selector {
@@ -1128,7 +1147,7 @@ button.see-more {
 
   .job-content {
     width: 100%;
-    padding: 0.45rem 1.05rem;
+    padding: 0.45rem .75rem;
     box-sizing: border-box;
   }
 
@@ -1318,19 +1337,6 @@ button.see-more {
   box-sizing: border-box;
 }
 
-.see-more {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent !important;
-  margin-bottom: 1.3rem;
-}
-
-.see-more a {
-  font-size: 15px;
-  color: var(--active-indicator-color);
-  text-decoration: none;
-}
 
 .mini-link-body-header {
   display: flex;

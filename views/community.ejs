@@ -16,6 +16,12 @@
     overflow-y: auto;
   }
 
+
+  .hidden-tags {
+    display: none;
+    margin-top: 5px;
+  }
+
   .community-flair {
     padding: 2px 5px;
     border-radius: 5px;
@@ -24,8 +30,15 @@
     margin-right: 5px;
   }
 
-  .community-body {
-    margin-bottom: .7rem;
+  .community-flairs {
+    display: flex;
+    gap: .4rem;
+    align-items: center;
+  }
+
+  .community-flairs div {
+    display: flex;
+    align-items: center;
   }
 
   .communities-header {
@@ -39,14 +52,19 @@
     padding: .6rem 1.4rem;
     padding-left: 2.4rem;
     display: flex;
-    gap: 1.4rem;
-    align-items: center;
     cursor: pointer;
+    flex-direction: column;
   }
 
 
   .community-entry:last-child {
     border-bottom: 1px solid var(--border-color);
+  }
+
+  .community-info {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
   }
 
   .community-entry .material-symbols-outlined {
@@ -141,21 +159,37 @@
 
       <% if (!community.isMember) { %>
       <div class="community-entry" onclick="window.location.href='/networks/<%= community.shortname %>'">
-        <span class="material-symbols-outlined" style="color:<%= community.community_color %>;"><%= community.mini_icon %></span>
 
-        <span class="community-info">
-          <span class="community-info-title"><%= community.name%>
-            <span> - </span>
-            /<%= community.shortname%>
-          </span>
-          <span class="community-body" id="secondary-text"><%= community.description%></span>
-          <br>
-          <span class="community-flairs">
-            <span class="community-flair" style="background-color:<%= community.community_color %>85;"><%= community.MemberCount%> member</span>
-            <span class="community-flair" style="background-color:<%= community.community_color %>85;"><%= community.PostCount[1]%> posts</span>
+        <div class="community-info margin-06-bottom">
+          <span class="material-symbols-outlined" style="padding:0;margin:0;font-size: 1.1rem;color:<%= community.community_color %>;"><%= community.mini_icon %></span>
 
+          <span class="community-info-title" style="color:<%= community.community_color %>;">
+            <span class="main-text bold">
+              <%= community.name%>
+              /<%= community.shortname%>
+            </span>
           </span>
-        </span>
+        </div>
+        <div class="community-body margin-03-bottom">
+          <span class="community-body sub-text" id="secondary-text"><%= community.description%></span>
+        </div>
+        <div class="community-tags margin-03-bottom secondary-text sub-text">
+          <%= community.Tags%>
+
+        </div>
+
+        <div class="community-flairs secondary-text sub-text">
+          <div>
+            <span class="material-symbols-outlined" style="padding:0;margin:0;vertical-align:-2px;font-size: 1.1rem;">person</span>
+            <%= community.MemberCount%>
+          </div>
+          <span style="font-size:.7rem;">•</span>
+          <div>
+            <span class="material-symbols-outlined" style="padding:0;margin:0;vertical-align:-2px;font-size: 1.1rem;">description</span>
+            <%= community.PostCount[1]%>
+          </div>
+
+        </div>
 
         <% if (user) { %>
         <% if (community.isModerator) { %>
@@ -170,6 +204,42 @@
 
   </main>
   <script>
+    function renderTags(tagsString, initialTagCount = 3) {
+      const tags = tagsString.split(',').map(tag => tag.trim());
+      const visibleTags = tags.slice(0, initialTagCount);
+      const hiddenTags = tags.slice(initialTagCount);
+
+      let html = '<div class="tags-container">';
+
+      // Render visible tags
+      visibleTags.forEach(tag => {
+        html += `<span class="tag">${tag}</span>`;
+      });
+
+      // Render hidden tags and toggle button if there are any
+      if (hiddenTags.length > 0) {
+        html += `<span class="tag-toggle" onclick="toggleHiddenTags(event, this)">+${hiddenTags.length} more</span>`;
+        html += '<div class="hidden-tags" style="display: none;">';
+        hiddenTags.forEach(tag => {
+          html += `<span class="tag">${tag}</span>`;
+        });
+        html += '</div>';
+      }
+
+      html += '</div>';
+
+      return html;
+    }
+
+    // Function to toggle hidden tags
+    function toggleHiddenTags(event, element) {
+      event.stopPropagation();
+      const hiddenTags = element.nextElementSibling;
+      const isHidden = hiddenTags.style.display === 'none';
+      hiddenTags.style.display = isHidden ? 'inline' : 'none';
+      element.textContent = isHidden ? 'Show less' : `+${hiddenTags.children.length} more`;
+    }
+
     async function leaveCommunity(event, community_name) {
       event.stopPropagation();
       const response = await fetch(`/networks/${community_name}/leave`, {
@@ -183,6 +253,14 @@
         window.location.reload();
       }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const communityTags = document.querySelectorAll('.community-tags');
+      communityTags.forEach((tagContainer) => {
+        const tagsString = tagContainer.textContent;
+        tagContainer.innerHTML = renderTags(tagsString);
+      });
+    });
 
     async function joinCommunity(event, community_shortname) {
       event.stopPropagation();
