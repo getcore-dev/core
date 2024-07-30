@@ -49,16 +49,16 @@
             <div class="community-info">
               <div class="community-title">
                 <span class="material-symbols-outlined" style="font-size: 1.5rem; color: <%= community.community_color%>;"><%= community.mini_icon%></span>
-                <span class="comm-title">
-                  <h2 style="font-weight: 500"><%= community.name%></h2>
+                <span class="comm-title main-text">
+                  <h3 class="main-text" style="font-weight: 500"><%= community.name%></h2>
                 </span>
-                <span class="comm-short-title">/<%= community.shortname %></span>
+                <span class="comm-short-title sub-text">/<%= community.shortname %></span>
               </div>
-              <div class="comm-description">
+              <div class="comm-description sub-text secondary-text">
                 <%= community.description%>
               </div>
-              <div class="community-buttons">
-                <button class="submit-button-normal join-btn" id="communityActionBtn" data-action="join"><span class="material-symbols-outlined">
+              <div class="community-buttons margin-1-bottom">
+                <button class="submit-button-normal join-btn grow-button" id="communityActionBtn" data-action="join"><span class="material-symbols-outlined">
                     person_add
                   </span>Join</button>
 
@@ -77,6 +77,29 @@
               </div>
             </div>
           </div>
+          <ul class="second-nav-links">
+            <li class="dropdown active">
+              <a class="navbar-button company-navbar-button active no-bg no-border" data-id="jobs" id="company-updates-selector">
+                <span class="material-symbols-outlined">
+                  description
+                </span>Posts
+                <div class="jobs-count">
+
+                </div>
+              </a>
+
+
+            </li>
+            <li class="dropdown">
+              <a class="navbar-button company-navbar-button no-bg no-border" data-id="company-comments" id="company-updates-selector"><span class="material-symbols-outlined">
+                  info
+                </span>Wiki
+                <div class="comments-count">
+                </div>
+              </a>
+            </li>
+
+          </ul>
         </div>
         <% } %>
         <% if (!communityId) { %>
@@ -335,7 +358,7 @@
 
             // Post header div
             const postHeaderDiv = document.createElement('div');
-            postHeaderDiv.className = 'post-header';
+            postHeaderDiv.className = 'post-header margin-06-bottom';
 
 
             const postHeaderUsernameDiv = document.createElement('div');
@@ -401,10 +424,9 @@
               <p>
               
                 <a id="post-username" class="bold secondary-text" href="/user/${post.username}">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username}</a>
-                                ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="color:#ffdf34;">push_pin</span>' : ''}
 
-                ${post.verified ? '<span class="material-symbols-outlined" style="font-size: .85rem;color:#169da8;">verified</span>' : ''}
-                ${post.isModerator ? '<span class="material-symbols-outlined" style="font-size: .85rem;color:#169da8;">admin_panel_settings</span>' : ''}
+                ${post.verified ? '<span class="material-symbols-outlined" style="padding:0;font-size: .85rem;color:#169da8;">verified</span>' : ''}
+                ${post.isModerator ? '<span class="material-symbols-outlined" style="font-size:.85rem;color:#169da8;">admin_panel_settings</span>' : ''}
               </p> 
               
               </span>
@@ -417,6 +439,8 @@
               
               <a class="secondary-text" href="/networks/${post.community_shortname}">/${post.community_shortname}</a>
               <span class="post-timestamp" id="secondary-text">${formatDate(post.created_at)}</span>
+                                              ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="padding:0;color:#ffdf34;">push_pin</span>' : ''}
+
                           </p>
             `;
             usernameDiv.appendChild(usernameLink);
@@ -484,7 +508,7 @@
 
             // Title div
             const titleDiv = document.createElement('div');
-            titleDiv.className = 'title';
+            titleDiv.className = 'title margin-06-bottom';
             const titleLink = document.createElement('a');
             titleLink.href = '/posts/' + post.id;
             titleLink.innerText = post.title;
@@ -494,7 +518,7 @@
             postContentDiv.appendChild(titleDiv);
 
             const linkPreviewDiv = document.createElement('div');
-            linkPreviewDiv.className = 'link-preview';
+            linkPreviewDiv.className = 'link-preview margin-06-bottom';
             linkPreviewDiv.onclick = () => window.location.href = '/posts/' + post.id;
 
             postContentDiv.appendChild(linkPreviewDiv);
@@ -850,11 +874,11 @@
           .then(response => response.json())
           .then(data => {
             if (data.isMember) {
-              communityActionBtn.className = "cancel-button-normal join-btn";
+              communityActionBtn.className = "cancel-button-normal join-btn grow-button";
               communityActionBtn.innerHTML = '<span class="material-symbols-outlined">close</span>Leave';
               communityActionBtn.dataset.action = "leave";
             } else {
-              communityActionBtn.className = "submit-button-normal join-btn";
+              communityActionBtn.className = "submit-button-normal join-btn grow-button";
               communityActionBtn.innerHTML = '<span class="material-symbols-outlined">add</span>Join';
               communityActionBtn.dataset.action = "join";
             }

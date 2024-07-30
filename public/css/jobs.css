@@ -254,9 +254,15 @@ div.jobs-container>div.job-list>.job {
   cursor: pointer;
 }
 
+div.job-title-location .sub-text {
+  display: inline-block;
+}
+
 .job-title-location {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
   flex-grow: 1;
-  width: 35%;
 }
 
 .company-logo-container {

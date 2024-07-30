@@ -19,6 +19,29 @@ body {
   margin: 1.2rem;
 }
 
+.comm-flairs .material-symbols-outlined {
+  font-size: .95rem;
+  vertical-align: -2px;
+  padding-right: .6rem;
+}
+
+.community .second-nav-links {
+  padding: 0;
+
+}
+
+.community .second-nav-links .navbar-button {
+  display: flex;
+  font-size: .95rem;
+  margin: 0;
+}
+
+.community .navbar-button .material-symbols-outlined {
+  font-size: .9rem;
+  vertical-align: 0px;
+}
+
+
 .post:hover {
   cursor: pointer;
   filter: brightness(.95);
@@ -256,7 +279,6 @@ div.vote-interactions {
 
 .link-preview {
   border-radius: 18px;
-  margin: 0px 0px;
   background: var(--light-mode-body-color);
   border: 1px solid var(--border-color);
 }
@@ -304,7 +326,6 @@ div.vote-interactions {
 .title {
   font-size: .9rem;
   font-weight: 500;
-  margin-bottom: .12rem;
 }
 
 .title>a {
@@ -452,11 +473,6 @@ a.community:hover {
   line-height: 1.6rem;
 }
 
-
-.link-preview {
-  margin-bottom: .4rem;
-}
-
 div .mini-link {
   display: flex;
   overflow: hidden;
@@ -595,6 +611,7 @@ div .mini-link-title {
 div.community {
   border: 0;
   padding: .65rem .85rem;
+  padding-bottom: 0;
   background-color: var(--light-mode-body-color);
 }
 
@@ -818,7 +835,7 @@ div.join-website-body {
 #favorite-button,
 #share-button {
   height: 32px;
-  padding: 0;
+  padding: 0 0.3rem;
   min-width: 32px;
   border-radius: 10px;
   border: 0;
@@ -828,7 +845,7 @@ div.join-website-body {
   font-weight: 550;
   height: 32px;
   gap: .6rem;
-  padding: 0 .7rem;
+  padding: 0 .85rem;
   align-items: center;
   padding-top: 0;
   padding-bottom: 0;
@@ -880,11 +897,6 @@ div.join-website-body {
 
 .footer-container {
   display: none;
-}
-
-#share-button .material-symbols-outlined {
-  font-size: 14px;
-  font-weight: 550;
 }
 
 .post-type-circle .material-symbols-outlined {
@@ -1099,7 +1111,7 @@ button.see-more {
   .community-header,
   .job-header {
     margin: 0;
-    padding: .65rem .95rem;
+    padding: .35rem .95rem;
     color: var(--light-mode-secondary-text-color);
   }
 
@@ -1193,6 +1205,10 @@ button.see-more {
     .communities.active {
       border: 1px solid #224368 !important;
     }
+
+    .jobslist .job {
+      background: #121212;
+    }
   }
 
   .container {
@@ -1222,7 +1238,6 @@ button.see-more {
   .title {
     font-size: 1.1rem;
     margin-top: 0rem;
-    margin-bottom: .2rem;
     font-weight: 600;
   }
 
@@ -1300,6 +1315,7 @@ button.see-more {
 .community-buttons {
   display: flex;
   gap: .6rem;
+  box-sizing: border-box;
 }
 
 .see-more {
@@ -1405,6 +1421,11 @@ button.see-more {
 
   .post {
     background-color: var(--dark-mode-body-color);
+    border-color: var(--dark-mode-border-color);
+  }
+
+  div.community {
+    background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-border-color);
   }
 

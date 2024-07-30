@@ -8,7 +8,7 @@
 
   [![Website](https://img.shields.io/badge/Visit-Website-blue)](https://getcore.dev)
   [![GitHub stars](https://img.shields.io/github/stars/brycemcole/CORE?style=social)](https://github.com/brycemcole/CORE/stargazers)
-  [![Twitter Follow](https://img.shields.io/twitter/follow/C_OREPlatform?style=social)](https://twitter.com/C_OREPlatform)
+  [![Twitter Follow](https://img.shields.io/twitter/follow/getcore_dev?style=social)](https://twitter.com/getcore_dev)
 </div>
 
 ## 🚀 About CORE
@@ -65,7 +65,7 @@ We welcome contributions from the community! If you'd like to contribute, please
 
 - Website: [getcore.dev](https://getcore.dev)
 - Email: support@getcore.dev
-- Twitter: [@C_OREPlatform](https://twitter.com/C_OREPlatform)
+- Twitter: [@getcore_dev](https://twitter.com/getcore_dev)
   
 ---
 

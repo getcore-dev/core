@@ -97,8 +97,7 @@
 }
 
 .job .material-symbols-outlined {
-  font-size: .95rem;
-  padding-right: .5rem;
+  font-size: 1.05rem;
   vertical-align: -2px;
 }
 
@@ -124,6 +123,10 @@
   margin-top: 26px;
   margin-bottom: 10px;
   padding: 0 13px;
+}
+
+div.job-title-location .sub-text {
+  display: inline-block;
 }
 
 .jobslist {

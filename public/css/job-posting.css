@@ -265,7 +265,7 @@ div.similar-job h4 {
 ul.locations,
 .job-listing-menu p {
   color: var(--light-mode-text-color);
-  font-size: 1.05rem;
+  font-size: var(--mobile-default-font-size);
   line-height: 1.6;
   margin: 0;
   margin-bottom: 0;

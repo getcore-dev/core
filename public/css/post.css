@@ -2022,7 +2022,7 @@ div.username {
 
   .post-body p,
   .comment-body p {
-    font-size: 1.05rem;
+    font-size: var(--mobile-default-font-size);
   }
 
   .description {
