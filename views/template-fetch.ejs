@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CORE</title>
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="shortcut icon" href="/img/core.png" />
+</head>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'page' }) %>
+  <main>
+    <div id="data-container"></div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      fetchData();
+    });
+
+    async function fetchData() {
+      try {
+        const response = await fetch('/api/');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        renderData(data);
+      } catch (error) {
+        console.error('Error fetching companies and jobs:', error);
+        document.getElementById('data-container').innerHTML = '<p>Error loading companies and job counts. Please try again later.</p>';
+      }
+    }
+
+    function renderData(datas) {
+      const container = document.getElementById('data-container');
+      let html = '<ul>';
+      datas.forEach(data => {
+        html += `
+        // data here
+        `;
+      });
+      html += '</ul>';
+      container.innerHTML = html;
+    }
+  </script>
+</body>
+
+</html>

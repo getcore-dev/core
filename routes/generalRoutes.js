@@ -33,6 +33,8 @@ router.get('/privacy', viewController.renderPrivacyPage);
 
 router.get('/settings', checkAuthenticated, viewController.renderSettingsPage);
 
+router.get('/companies', viewController.renderJobCompaniesPage);
+
 router.get('/edits', checkAuthenticated, async (req, res) => {
   const userId = req.user.id;
   const missingFields = await utilFunctions.checkMissingFields(userId);
