@@ -32,6 +32,10 @@ const viewController = {
     res.render('settings.ejs', { user: req.user });
   },
 
+  renderJobCompaniesPage: async (req, res) => {
+    res.render('job-companies.ejs', { user: req.user });
+  },
+
   renderFollowers: async (req, res) => {
     try {
       const username = req.params.username;

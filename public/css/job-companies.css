@@ -1,0 +1,23 @@
+div.company-info-header {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+}
+
+div#companies-container .material-symbols-outlined {
+    font-size: 1.05rem;
+    vertical-align: -3px;
+}
+
+div.company-info-tags {
+    display: flex;
+    gap: .3rem;
+    align-items: center;
+}
+
+div#companies-container {
+    display: flex;
+    gap: 1.4rem;
+    flex-direction: column;
+    padding: 1.4rem 1.3rem;
+}

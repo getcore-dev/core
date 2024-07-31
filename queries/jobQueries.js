@@ -512,31 +512,6 @@ const jobQueries = {
     }
   },
 
-  getJobPostingByLink: async (link) => {
-    try {
-      const result = await sql.query`
-        SELECT * FROM JobPostings WHERE link = ${link}
-      `;
-      return result.recordset[0];
-    } catch (err) {
-      console.error('Database query error:', err);
-      throw err;
-    }
-  },
-  getAllCompanies: async () => {
-    try {
-      const result = await sql.query`
-        SELECT * FROM companies
-      `;
-      const companies = result.recordset;
-      console.log(companies);
-      return companies;
-    } catch (err) {
-      console.error('Database query error:', err);
-      throw err;
-    }
-  },
-
   updateCompany: async (
     id,
     name,
@@ -1671,6 +1646,24 @@ getCompanyByName: async (name) => {
 
       const newExperienceId = result.recordset[0].id;
       return newExperienceId;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  getAllCompaniesAndJobCount: async () => {
+    try {
+      const result = await sql.query`
+      SELECT companies.id, companies.name, companies.logo, companies.location, companies.description, companies.industry, companies.size, companies.stock_symbol, companies.founded, COUNT(JobPostings.id) AS jobCount
+      FROM companies
+      LEFT JOIN JobPostings ON companies.id = JobPostings.company_id AND JobPostings.deleted = 0
+      GROUP BY companies.id, companies.name, companies.logo, companies.location, companies.description, companies.industry, companies.size, companies.stock_symbol, companies.founded
+      ORDER BY companies.name
+    `;
+
+      return result.recordset;
+
     } catch (err) {
       console.error('Database query error:', err);
       throw err;

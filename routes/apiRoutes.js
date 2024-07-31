@@ -303,6 +303,16 @@ router.get(
   }
 );
 
+router.get('/companiesJobs', async (req, res) => {
+  try {
+    const companies = await jobQueries.getAllCompaniesAndJobCount();
+    res.json(companies);
+  } catch (err) {
+    console.error('Error fetching companies:', err);
+    res.status(500).send('Error fetching companies');
+  }
+});
+
 router.get('/skills', async (req, res) => {
   try {
     const skills = await jobQueries.getSkills();

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CORE - Companies and Job Counts</title>
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/job-companies.css" />
+
+  <link rel="shortcut icon" href="/img/core.png" />
+</head>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'updates' }) %>
+  <main>
+    <div id="companies-container"></div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      fetchCompaniesAndJobs();
+    });
+
+    function formatLocation(location) {
+      if (!location) return "";
+
+      const parts = location.split(',').map(part => part.trim());
+
+      // Helper function to check if a string is a US state
+      const isUSState = (str) => Object.keys(stateMappings).includes(str) || Object.values(stateMappings).includes(str);
+
+      // Helper function to get state abbreviation
+      const getStateAbbr = (state) => {
+        const fullName = Object.keys(stateMappings).find(key => key.toLowerCase() === state.toLowerCase());
+        return fullName ? stateMappings[fullName] : state;
+      };
+
+      if (parts.length === 1) {
+        return parts[0];
+      } else if (parts.length === 2) {
+        if (isUSState(parts[1])) {
+          return getStateAbbr(parts[1]);
+        } else {
+          return parts[1]; // Assume it's a non-US country
+        }
+      } else if (parts.length >= 3) {
+        if (parts[2].trim().toLowerCase() === 'united states') {
+          return getStateAbbr(parts[1]);
+        } else {
+          return parts[2]; // Return the country for non-US locations
+        }
+      }
+
+      return location.trim();
+    }
+
+    async function fetchCompaniesAndJobs() {
+      try {
+        const response = await fetch('/api/companiesJobs');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const companies = await response.json();
+        renderCompanies(companies);
+      } catch (error) {
+        console.error('Error fetching companies and jobs:', error);
+        document.getElementById('companies-container').innerHTML = '<p>Error loading companies and job counts. Please try again later.</p>';
+      }
+    }
+
+    function renderCompanies(companies) {
+      const container = document.getElementById('companies-container');
+      let html = '';
+      companies.forEach(company => {
+        html += `
+          <div onclick="window.location.href='/jobs/company/${company.name}'">
+          <div class="company-info-header">
+            <img class="thumbnail thumbnail-regular thumbnail-tiny" src="${company.logo}" alt="${company.name} logo" />
+            <h3 class="main-text">${company.name}</h3>
+        </div>
+        <div class="company-info-tags secondary-text sub-text">
+            <span>${company.jobCount} open jobs</span>
+            <span style="font-size:.7rem;">•</span>
+            <span><span class="material-symbols-outlined">factory</span> ${company.industry}</span>
+            <span style="font-size:.7rem;">•</span>
+            <span><span class="material-symbols-outlined">pin_drop</span> ${company.location }</span>
+          </div>
+        </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+  </script>
+</body>
+
+</html>
