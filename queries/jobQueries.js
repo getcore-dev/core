@@ -997,40 +997,62 @@ ORDER BY jp.postedDate DESC
   getSimilarJobs: async (jobId) => {
     try {
       const result = await sql.query(`
-        SELECT TOP 5
-          JobPostings.*, 
-          companies.name AS company_name, 
-          companies.logo AS company_logo, 
-          companies.location AS company_location, 
-          companies.description AS company_description,
-          (
-            SELECT STRING_AGG(JobTags.tagName, ', ') 
-            FROM JobPostingsTags 
-            INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
-            WHERE JobPostingsTags.jobId = JobPostings.id
-          ) AS tags,
-          (
-            SELECT STRING_AGG(skills.name, ', ')
-            FROM job_skills
-            INNER JOIN skills ON job_skills.skill_id = skills.id
-            WHERE job_skills.job_id = JobPostings.id
-          ) AS skills,
-          (
-            SELECT COUNT(*)
-            FROM JobPostingsTags AS jpt1
-            WHERE jpt1.jobId = JobPostings.id AND jpt1.tagId IN (
-              SELECT tagId
-              FROM JobPostingsTags AS jpt2
-              WHERE jpt2.jobId = ${jobId}
-            )
-          ) AS similar_tag_count
-        FROM JobPostings
-        LEFT JOIN companies ON JobPostings.company_id = companies.id
-        WHERE JobPostings.id != ${jobId}
-        ORDER BY similar_tag_count DESC, JobPostings.postedDate DESC
+        WITH OriginalJob AS (
+          SELECT id, title FROM JobPostings WHERE id = ${jobId}
+        ),
+        JobWords AS (
+          SELECT DISTINCT value AS word
+          FROM OriginalJob
+          CROSS APPLY STRING_SPLIT(LOWER(title), ' ')
+          WHERE LEN(value) > 2
+        ),
+        ScoredJobs AS (
+          SELECT 
+            jp.id,
+            jp.title,
+            jp.description,
+            jp.salary,
+            jp.postedDate,
+            jp.company_id,
+            c.name AS company_name, 
+            c.logo AS company_logo, 
+            c.location AS company_location, 
+            c.description AS company_description,
+            (
+              SELECT STRING_AGG(jt.tagName, ', ') 
+              FROM JobPostingsTags jpt
+              INNER JOIN JobTags jt ON jpt.tagId = jt.id
+              WHERE jpt.jobId = jp.id
+            ) AS tags,
+            (
+              SELECT STRING_AGG(s.name, ', ')
+              FROM job_skills js
+              INNER JOIN skills s ON js.skill_id = s.id
+              WHERE js.job_id = jp.id
+            ) AS skills,
+            (
+              SELECT COUNT(*)
+              FROM JobWords
+              WHERE CHARINDEX(word, LOWER(jp.title)) > 0
+            ) AS word_match_count,
+            CASE 
+              WHEN jp.title = oj.title THEN 100
+              WHEN CHARINDEX(oj.title, jp.title) > 0 OR CHARINDEX(jp.title, oj.title) > 0 THEN 75
+              ELSE 0
+            END AS exact_match_score
+          FROM JobPostings jp
+          LEFT JOIN companies c ON jp.company_id = c.id
+          CROSS JOIN OriginalJob oj
+          WHERE jp.id != oj.id
+        )
+        SELECT TOP 15 *
+        FROM ScoredJobs
+        WHERE word_match_count > 0 OR exact_match_score > 0
+        ORDER BY (word_match_count + exact_match_score) DESC, postedDate DESC
       `);
-
+  
       const jobs = result.recordset;
+      console.log(jobs);
       return jobs;
     } catch (err) {
       console.error('Database query error:', err);
@@ -1042,7 +1064,7 @@ ORDER BY jp.postedDate DESC
   getSimilarJobsByCompany: async (companyId, jobId) => {
     try {
       const result = await sql.query(`
-      SELECT TOP 5
+      SELECT TOP 15
       JobPostings.*,
       companies.name AS company_name,
       companies.logo AS company_logo,
