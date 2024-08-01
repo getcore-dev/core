@@ -18,6 +18,17 @@ CREATE TABLE company_comments (
 */
 
 const jobQueries = {
+  getAllCompanies: async () => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM companies
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
   getJobs: async (limit, offset) => {
     try {
       const result = await sql.query(`
