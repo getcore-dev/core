@@ -1124,6 +1124,47 @@ ORDER BY jp.postedDate DESC
     }
   },
 
+  // function to get the 10 recent job companies 
+  // get the most recent 40 job postings
+  // and then look at their companies and get the 10 most recent companies
+  getRecentCompanies: async () => {
+    try {
+      const result = await sql.query(`
+        WITH RecentCompanies AS (
+          SELECT TOP 100
+            company_id
+          FROM JobPostings
+          ORDER BY postedDate DESC
+        )
+        SELECT TOP 10
+          companies.id,
+          companies.name,
+          companies.logo,
+          companies.location,
+          companies.description,
+          companies.industry,
+          companies.size,
+          companies.stock_symbol,
+          companies.founded,
+          ISNULL(job_counts.job_count, 0) AS job_count
+        FROM companies
+        LEFT JOIN (
+          SELECT
+            company_id,
+            COUNT(*) AS job_count
+          FROM JobPostings
+          GROUP BY company_id
+        ) AS job_counts ON companies.id = job_counts.company_id
+        WHERE companies.id IN (SELECT company_id FROM RecentCompanies)
+      `);
+      const companies = result.recordset;
+      return companies;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   getSkills: async () => {
     try {
       const result = await sql.query`SELECT * FROM skills`;

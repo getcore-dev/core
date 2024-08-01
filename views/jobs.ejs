@@ -32,6 +32,10 @@
     <%- include('partials/com-btn-container', { }) %>
 
     <div class="jobs-container">
+      <div class="recent-companies-container">
+        <div class="company-list" id="horizontal-scroll">
+        </div>
+      </div>
       <div class="jobs-header">
 
         <div class="filter-container">
@@ -69,6 +73,7 @@
         </span>
 
       </div>
+
       <% if (user) { %>
 
       <div class="jobs-header" style="display: flex;flex-direction: row;align-items: center;">

@@ -958,6 +958,16 @@ router.get('/communities', cacheMiddleware(2400), async (req, res) => {
   }
 });
 
+router.get('/recentCompanies', cacheMiddleware(2400), async (req, res) => {
+  try {
+    const companies = await jobQueries.getRecentCompanies();
+    return res.json(companies);
+  } catch (err) {
+    console.error('Error fetching companies:', err);
+    res.status(500).send('Error fetching companies');
+  }
+});
+
 router.get('/companies', async (req, res) => {
   try {
     const companies = await jobQueries.getCompanies();

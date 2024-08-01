@@ -876,6 +876,26 @@ button.clear-btn {
   z-index: 2;
 }
 
+.counter {
+  height: 20px;
+  min-width: 20px;
+  font-size: .7rem;
+  margin-left: .5rem;
+  background: #ffffff45;
+  border: 1px solid #707070;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+}
+
+.red-counter {
+  background: #ff5e5e !important;
+  color: white !important;
+  border: 1px solid #aa0202 !important;
+}
+
 .menu-content {
   position: fixed;
   top: 0;
@@ -1037,6 +1057,11 @@ a>.menu-item {
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.thumbnail-micro {
+  width: 28px;
+  height: 28px;
 }
 
 
@@ -1875,6 +1900,11 @@ button .material-symbols-outlined:not(:only-child) {
     /* Darker background color for inputs */
     color: var(--navbar-background-color);
     border-color: var(--dark-mode-border-color);
+  }
+
+  .counter {
+    background: #232323;
+    border-color: #414141;
   }
 
   .menu-bar {
