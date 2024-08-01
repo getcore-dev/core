@@ -4,161 +4,29 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 const path = require('path');
-const environment = require('../config/environment');
 const jobQueries = require('../queries/jobQueries');
 
 class JobProcessor {
-  constructor(
-    geminiKey = environment.geminiKey,
-    openaiKey = environment.openAIKey
-  ) {
+  constructor() {
+    const geminiKey = process.env.GEMINI_API_KEY;
+    const openaiKey = process.env.OPENAI_API_KEY;
     this.genAI = new GoogleGenerativeAI(geminiKey);
     this.openai = new OpenAI({ apiKey: openaiKey });
     this.useGemini = false;
     this.lastRequestTime = 0;
     this.GEMINI_DELAY_MS = 1000;
     this.OPENAI_DELAY_MS = 20000;
+    this.MAX_RETRIES = 5;
+    this.BACKOFF_FACTOR = 1.5;
     this.processedLinksFile = path.join(__dirname, 'processed_links.txt');
     this.processedLinks = new Set();
+    this.DELAY_BETWEEN_REQUESTS = 3000; // 3 seconds delay between requests
+    this.DELAY_BETWEEN_SEARCHES = 10000; // 10 seconds delay between searches
+    this.MAX_PAGES_PER_SEARCH = 3; // Limit to 3 pages per search term
   }
 
   async init() {
     await this.loadProcessedLinks();
-  }
-
-  isTechJob(title) {
-    const techKeywords = [
-      'software', 'developer', 'programmer', 'data', 'analyst',
-      'scientist', 'IT', 'information technology', 'web', 'frontend', 'backend',
-      'full stack', 'devops', 'cloud', 'network', 'security', 'database',
-      'machine learning', 'AI', 'artificial intelligence', 'QA', 'quality assurance',
-      'UX', 'UI', 'product manager', 'scrum master', 'agile', 'tech', 'systems',
-      'infrastructure', 'mobile', 'iOS', 'Android', 'cybersecurity', 'blockchain',
-      'IoT', 'robotics', 'automation', 'SRE', 'reliability', 'architect'
-    ]; 
-    
-    const lowercaseTitle = title.toLowerCase();
-    return techKeywords.some(keyword => lowercaseTitle.includes(keyword));
-  }
-
-  async delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  async processJobLinkWithDelay(link, delayMs) {
-    await this.delay(delayMs);
-    return this.processJobLink(link);
-  }
-  
-
-  async start() {
-    await this.init();
-
-    console.log('running job posting cleanup');
-    await this.filterNonTechJobs();
-
-
-    console.log('running job company cleanup');
-    await this.cleanupCompanyData();
-
-    console.log('running job processor');
-  
-    const companies = await jobQueries.getCompanies();
-  
-    const collectLinksPromises = companies
-      .filter(company => company.job_board_url)
-      .map(company => this.collectJobLinks(company));
-  
-    const allCompanyLinks = await Promise.all(collectLinksPromises);
-  
-    const jobLinkPromises = [];
-    let delayMs = 0;
-    const delayIncrement = 100; // Adjust this value based on the API rate limit
-  
-    for (const { companyId, links } of allCompanyLinks.flat()) {
-      for (const link of links) {
-        jobLinkPromises.push(
-          this.processJobLinkWithDelay.call(this, link, delayMs)
-            .then(async jobData => {
-              if (jobData && !jobData.error && !jobData.alreadyProcessed) {
-                try {
-                  await jobQueries.createJobPosting(
-                    jobData.title,
-                    jobData.salary,
-                    jobData.experience_level,
-                    jobData.location,
-                    new Date(),
-                    companyId,
-                    link,
-                    null,
-                    jobData.tags.split(','),
-                    jobData.description,
-                    jobData.salary_max,
-                    null,
-                    jobData.skills.split(','),
-                    jobData.benefits.split(','),
-                    jobData.additional_information,
-                    jobData.PreferredQualifications,
-                    jobData.MinimumQualifications,
-                    jobData.Responsibilities,
-                    jobData.Requirements,
-                    jobData.NiceToHave,
-                    jobData.Schedule,
-                    jobData.HoursPerWeek,
-                    jobData.H1BVisaSponsorship,
-                    jobData.IsRemote,
-                    jobData.EqualOpportunityEmployerInfo,
-                    jobData.Relocation
-                  );
-                  console.log(`Processed job data for ${link}`);
-                } catch (error) {
-                  console.error(`Error creating job posting for ${link}:`, error);
-                }
-              }
-            })
-        );
-        delayMs += delayIncrement; // Increment delay for the next request
-      }
-    }
-  
-    await Promise.all(jobLinkPromises);
-  
-    console.log('Job processing completed.');
-  }
-
-  async processIndividualJob(link) {
-    await this.init();
-    if (!this.processedLinks.has(link)) {
-      const jobData = await this.processJobLink(link);
-      if (jobData && !jobData.error && !jobData.alreadyProcessed) {
-        return jobData;
-      }
-    }
-    return null;
-  }
-
-  async collectJobLinks(company) {
-    const jobBoardUrl = company.job_board_url;
-    try {
-      const response = await axios.get(jobBoardUrl);
-      const $ = cheerio.load(response.data);
-      const links = new Set();
-
-      $('a[href*="job"], a[href*="career"], a[href*="position"]').each(
-        (index, element) => {
-          const link = $(element).attr('href');
-          const title = $(element).text().toLowerCase();
-          if (this.isTechJob(title)) links.add(new URL(link, jobBoardUrl).href);
-        }
-      );
-
-      // console.log({companyId: company.id, links: Array.from(links)});
-      // console.log(`Collected ${links.size} job links from ${jobBoardUrl}.`);
-      return {companyId: company.id, links: Array.from(links)}; 
-    } catch (error) {
-      console.error(`Error collecting job links from ${jobBoardUrl}:`, error);
-      return [];
-    }
   }
 
   async loadProcessedLinks() {
@@ -177,6 +45,224 @@ class JobProcessor {
     await fs.appendFile(this.processedLinksFile, link + '\n');
   }
 
+  async delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async rateLimit(isGemini) {
+    const now = Date.now();
+    const delayMs = isGemini ? this.GEMINI_DELAY_MS : this.OPENAI_DELAY_MS;
+    const elapsed = now - this.lastRequestTime;
+
+    if (elapsed < delayMs) {
+      await this.delay(delayMs - elapsed);
+    }
+
+    this.lastRequestTime = Date.now();
+  }
+
+  parseRateLimitError(error) {
+    const message = error.message || error.error?.message || '';
+    const match = message.match(/Please try again in (\d+)(\.\d+)?m?s/);
+    if (match) {
+      const delay = parseFloat(match[1] + (match[2] || ''));
+      return Math.ceil(delay * (match[0].includes('m') ? 1000 : 1));
+    }
+    return null;
+  }
+
+  async makeRequest(url) {
+    return axios.get(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36'
+      }
+    });
+  }
+
+  async collectJobLinks(company) {
+    const jobBoardUrl = company.job_board_url;
+    const allLinks = new Set();
+    let maxPages = 15;
+
+    try {
+      if (jobBoardUrl.includes('linkedin.com')) {
+        await this.searchLinkedInJobs(allLinks);
+      } else {
+        const firstPageResponse = await this.makeRequest(jobBoardUrl);
+        const $firstPage = cheerio.load(firstPageResponse.data);
+        
+        if (jobBoardUrl.includes('linkedin.com')) {
+          const paginationText = $firstPage('.jobs-search-pagination__page-state').text().trim();
+          const match = paginationText.match(/Page \d+ of (\d+)/);
+          if (match) {
+            maxPages = Math.min(parseInt(match[1], 10), 15);
+          }
+        }
+
+        for (let page = 1; page <= maxPages; page++) {
+          const pageUrl = this.getPageUrl(jobBoardUrl, page);
+          console.log(`Scraping page ${page} of ${maxPages}: ${pageUrl}`);
+
+          const response = await this.makeRequest(pageUrl);
+          const $ = cheerio.load(response.data);
+          const pageLinks = await this.extractJobLinks($, pageUrl);
+          
+          pageLinks.forEach(link => allLinks.add(link));
+
+          if (!this.hasNextPage($, pageUrl)) {
+            console.log(`No more pages found after page ${page}`);
+            break;
+          }
+
+          await this.delay(this.DELAY_BETWEEN_REQUESTS);
+        }
+      }
+
+      console.log(`Collected ${allLinks.size} job links from ${jobBoardUrl}`);
+      return { companyId: company.id, links: Array.from(allLinks) };
+    } catch (error) {
+      console.error(`Error collecting job links from ${jobBoardUrl}:`, error);
+      return { companyId: company.id, links: [] };
+    }
+  }
+
+  getPageUrl(baseUrl, page) {
+    const url = new URL(baseUrl);
+    
+    if (baseUrl.includes('linkedin.com')) {
+      url.searchParams.set('start', (page - 1) * 25);
+    } else if (baseUrl.includes('ashbyhq.com')) {
+      url.searchParams.set('page', page);
+    } else if (baseUrl.includes('myworkday.com')) {
+      url.searchParams.set('page', page);
+    } else {
+      url.searchParams.set('page', page);
+    }
+
+    return url.toString();
+  }
+
+  async extractJobLinks($, baseUrl) {
+    const links = new Set();
+
+    if (baseUrl.includes('linkedin.com')) {
+      $('.job-card-container').each(async (index, element) => {
+        const linkElement = $(element).find('.job-card-container__link');
+        const link = linkElement.attr('href');
+        const title = linkElement.text().trim();
+
+        if (this.isTechJob(title)) {
+          const jobUrl = new URL(link, baseUrl).href;
+          const applyType = await this.checkLinkedInApplyType(jobUrl);
+          links.add({ url: jobUrl, applyType });
+        }
+      });
+    } else {
+      $('a[href*="job"], a[href*="career"], a[href*="position"]').each((index, element) => {
+        const link = $(element).attr('href');
+        const title = $(element).text().toLowerCase();
+        if (this.isTechJob(title)) {
+          links.add(new URL(link, baseUrl).href);
+        }
+      });
+    }
+
+    return links;
+  }
+
+  async checkLinkedInApplyType(jobUrl) {
+    try {
+      const response = await this.makeRequest(jobUrl);
+      const $ = cheerio.load(response.data);
+      const applyButton = $('.jobs-apply-button');
+      
+      if (applyButton.text().trim().toLowerCase() === 'easy apply') {
+        return 'Easy Apply';
+      } else {
+        const externalLink = applyButton.attr('href');
+        return externalLink ? { type: 'External', url: externalLink } : 'Apply';
+      }
+    } catch (error) {
+      console.error(`Error checking apply type for ${jobUrl}:`, error);
+      return 'Unknown';
+    }
+  }
+
+  hasNextPage($, currentUrl) {
+    if (currentUrl.includes('linkedin.com')) {
+      return $('.jobs-search-pagination__button--next').length > 0;
+    } else {
+      return $('a[href]:contains("Next"), a[href]:contains("»"), a[rel="next"]').length > 0;
+    }
+  }
+
+  async searchLinkedInJobs(allLinks, searchTerm) {
+    const encodedTerm = encodeURIComponent(searchTerm);
+    const searchUrl = `https://www.linkedin.com/jobs/search/?keywords=${encodedTerm}&f_TPR=r86400`;
+
+    console.log(`Searching LinkedIn for: ${searchTerm}`);
+
+    try {
+      for (let page = 0; page < this.MAX_PAGES_PER_SEARCH; page++) {
+        const pageUrl = `${searchUrl}&start=${page * 25}`;
+        const response = await this.makeRequest(pageUrl);
+        const $ = cheerio.load(response.data);
+
+        const pageLinks = await this.extractJobLinks($, pageUrl);
+        pageLinks.forEach(link => allLinks.add(link));
+
+        if (!this.hasNextPage($, pageUrl)) {
+          break;
+        }
+
+        await this.delay(this.DELAY_BETWEEN_REQUESTS);
+      }
+    } catch (error) {
+      console.error(`Error searching LinkedIn for ${searchTerm}:`, error);
+    }
+
+    await this.delay(this.DELAY_BETWEEN_SEARCHES);
+  }
+
+  isTechJob(title) {
+    const techKeywords = [
+      'software', 'developer', 'programmer', 'data', 'analyst', 'scientist',
+      'information technology', 'web', 'frontend', 'backend', 'full stack',
+      'devops', 'cloud', 'network', 'security', 'database', 'machine learning',
+      'ai', 'artificial intelligence', 'qa engineer', 'ui designer', 'ux/ui', 'quality assurance',
+      'product manager', 'scrum master', 'agile', 'tech', 'systems', 
+      'infrastructure', 'mobile developer', 'ios developer', 'android', 'cybersecurity', 'blockchain', 'robotics', 'automation', 'sre', 'reliability', 'architect',
+      'engineering', 'java', 'python', 'javascript', 'c++', 'ruby', 'php', 'project manager', 'program manager', 
+      'scala', 'typescript', 'sql', 'nosql', 'azure', 'machine learning', 'data science', 'data engineer', 'data analyst', 'data visualization',
+      'cloud engineer', 'cloud architect', 'cloud security', 'network engineer', 'network security', 'database administrator', 'database developer',
+      'devops engineer', 'site reliability engineer', 'security engineer', 'security analyst', 'security architect', 'frontend developer', 'backend developer',
+      'full stack developer', 'mobile developer', 'ios developer', 'android developer', 'cybersecurity analyst', 'cybersecurity engineer', 'frontend engineer',
+      'backend engineer', 'full stack engineer', 'mobile engineer', 'ios engineer', 'android engineer', 'qa engineer', 'quality assurance engineer',
+      'ux designer', 'ui designer', 'product manager', 'scrum master', 'agile coach', 'tech lead', 'systems engineer', 'infrastructure engineer',
+      'mobile architect', 'ios architect', 'android architect', 'cybersecurity architect', 'front-end', 'gameplay engineer', 'game engineer', 'analytics engineer', 'graphics engineer', 'game designer', 'research engineer', 
+    ];
+    
+    const lowercaseTitle = title.toLowerCase();
+    return techKeywords.some(keyword => lowercaseTitle.includes(keyword));
+  }
+
+  async processJobLinkWithRetry(link, retryCount = 0) {
+    try {
+      await this.rateLimit(!this.useGemini);
+      return await this.processJobLink(link);
+    } catch (error) {
+      const rateLimitDelay = this.parseRateLimitError(error);
+      if (rateLimitDelay && retryCount < this.MAX_RETRIES) {
+        const backoffTime = rateLimitDelay * Math.pow(this.BACKOFF_FACTOR, retryCount);
+        console.log(`Rate limit reached. Retrying in ${backoffTime / 1000} seconds...`);
+        await this.delay(backoffTime);
+        return this.processJobLinkWithRetry(link, retryCount + 1);
+      } else {
+        throw error;
+      }
+    }
+  }
+
   async processJobLink(link) {
     if (this.processedLinks.has(link)) {
       console.log('Link already processed:', link);
@@ -185,18 +271,8 @@ class JobProcessor {
   
     try {
       console.log('Processing job link:', link);
-      const headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Cache-Control': 'max-age=0',
-      };
-  
-      const linkResponse = await axios.get(link, { headers, timeout: 5000 });
-      const { data } = linkResponse;
+      const response = await this.makeRequest(link);
+      const { data } = response;
   
       const $ = cheerio.load(data);
       $('script, style').remove();
@@ -205,50 +281,53 @@ class JobProcessor {
       let extractedData;
       try {
         if (this.useGemini) {
-          await this.rateLimit(true);
           extractedData = await this.useGeminiAPI(link, textContent);
         } else {
-          await this.rateLimit(false);
           extractedData = await this.useChatGPTAPI(link, textContent);
         }
   
         extractedData = this.validateAndCleanJobData(extractedData);
   
-        // Check if the job is tech-related
         if (!this.isTechJob(extractedData.title)) {
           console.log(`Skipping non-tech job: ${extractedData.title}`);
           return { skipped: true };
         }
   
       } catch (error) {
-        if (error.message.includes('RECITATION') || error.status === 429) {
-          console.log('Switching to ChatGPT API due to Gemini error or rate limiting');
-          this.useGemini = false;
-          await this.rateLimit(false);
-          extractedData = await this.useChatGPTAPI(link, textContent);
-          extractedData = this.validateAndCleanJobData(extractedData);
-  
-          // Check if the job is tech-related (after fallback to ChatGPT)
-          if (!this.isTechJob(extractedData.title)) {
-            console.log(`Skipping non-tech job: ${extractedData.title}`);
-            return { skipped: true };
-          }
-        } else {
-          throw error;
-        }
+        throw error;
       }
   
       await this.saveProcessedLink(link);
       return extractedData;
     } catch (error) {
       console.error(`Error processing job link ${link}:`, error);
-      return { error: error.message };
+      throw error;
     }
   }
 
-  async processJobLinksConcurrently(links) {
-    const results = await Promise.all(links.map(link => this.processJobLink(link)));
-    return results;
+  getDefaultTechJobTitles() {
+    return [
+      'Software Engineer',
+      'Data Scientist',
+      'Product Manager',
+      'DevOps Engineer',
+      'Frontend Developer',
+      'Backend Developer',
+      'Full Stack Developer',
+      'Machine Learning Engineer',
+      'Cloud Architect',
+      'Cybersecurity Analyst',
+      'UX Designer',
+      'Mobile Developer',
+      'AI Engineer',
+      'Blockchain Developer',
+      'QA Engineer',
+      'Data Engineer',
+      'Systems Architect',
+      'Network Engineer',
+      'Database Administrator',
+      'IT Project Manager'
+    ];
   }
 
   async useGeminiAPI(link, textContent) {
@@ -257,8 +336,7 @@ class JobProcessor {
     const result = await model.generateContent(prompt);
     let response = await result.response;
     response = response.text();
-    const cleanedResponse =
-      response.replace(/`+/g, '').match(/\{.*\}/s)?.[0] || '';
+    const cleanedResponse = response.replace(/`+/g, '').match(/\{.*\}/s)?.[0] || '';
     return JSON.parse(cleanedResponse);
   }
 
@@ -269,8 +347,7 @@ class JobProcessor {
         messages: [
           {
             role: 'system',
-            content:
-              'You are a helpful assistant that extracts job information from text.',
+            content: 'You are a helpful assistant that extracts job information from text.',
           },
           { role: 'user', content: prompt },
         ],
@@ -322,183 +399,6 @@ class JobProcessor {
     `;
   }
 
-  
-
-  async rateLimit(isGemini) {
-    const now = Date.now();
-    const delayMs = isGemini ? this.GEMINI_DELAY_MS : this.OPENAI_DELAY_MS;
-    const elapsed = now - this.lastRequestTime;
-
-    if (elapsed < delayMs) {
-      await new Promise((resolve) => setTimeout(resolve, delayMs - elapsed));
-    }
-
-    this.lastRequestTime = Date.now();
-  }
-
-  async filterNonTechJobs() {
-    try {
-      console.log('Starting non-tech job filtering...');
-      const batchSize = 100; // Adjust this based on your database's performance
-      let offset = 0;
-      let totalProcessed = 0;
-      let totalFlagged = 0;
-
-      while (true) {
-        const jobs = await jobQueries.getJobsBatch(offset, batchSize);
-        if (jobs.length === 0) break; // No more jobs to process
-
-        console.log(`Processing batch of ${jobs.length} jobs starting at offset ${offset}`);
-
-        for (const job of jobs) {
-          if (!job.title || !job.description) {
-            console.warn(`Job with ID ${job.id} is missing title or description. Skipping.`);
-            continue;
-          }
-
-          if (!this.isGenuineTechJob(job.title, job.description)) {
-            console.log(`Flagging non-tech job: ${job.title} (ID: ${job.id})`);
-            await jobQueries.flagJobForReview(job.id);
-            totalFlagged++;
-          }
-        }
-
-        totalProcessed += jobs.length;
-        offset += batchSize;
-
-        console.log(`Processed ${totalProcessed} jobs so far. Flagged ${totalFlagged} as potential non-tech jobs.`);
-        
-        // Optional: Add a small delay between batches to reduce database load
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      }
-
-      console.log(`Finished filtering. Processed ${totalProcessed} jobs in total. Flagged ${totalFlagged} as potential non-tech jobs.`);
-    } catch (error) {
-      console.error('Error during non-tech job filtering:', error);
-      if (error.originalError && error.originalError.info) {
-        console.error('SQL Error details:', error.originalError.info);
-      }
-    }
-  }
-
-  isGenuineTechJob(title, description) {
-    const techKeywords = [
-      'software', 'developer', 'programmer', 'data', 'analyst', 'scientist',
-      'it', 'information technology', 'web', 'frontend', 'backend', 'full stack',
-      'devops', 'cloud', 'network', 'security', 'database', 'machine learning',
-      'ai', 'artificial intelligence', 'qa', 'quality assurance', 'ux', 'ui',
-      'product manager', 'scrum master', 'agile', 'tech', 'systems', 
-      'infrastructure', 'mobile', 'ios', 'android', 'cybersecurity', 'blockchain',
-      'iot', 'robotics', 'automation', 'sre', 'reliability', 'architect',
-      'engineering', 'java', 'python', 'javascript', 'c++', 'ruby', 'php',
-      'scala', 'go', 'rust', 'typescript', 'sql', 'nosql', 'aws', 'azure',
-      'gcp', 'docker', 'kubernetes', 'ci/cd', 'git', 'api', 'microservices',
-      'big data', 'hadoop', 'spark', 'tableau', 'power bi', 'etl', 'ml',
-      'deep learning', 'nlp', 'computer vision', 'react', 'angular', 'vue',
-      'node.js', 'express', 'django', 'flask', 'spring', 'hibernate',
-      'restful', 'graphql', 'jenkins', 'travis', 'ansible', 'terraform',
-      'blockchain', 'cryptography', 'algorithm', 'data structure',
-      'software architecture', 'design patterns', 'agile methodologies',
-      'scrum', 'kanban', 'jira', 'confluence', 'bitbucket', 'gitlab',
-      'version control', 'unit testing', 'integration testing', 'selenium',
-      'cypress', 'jest', 'mocha', 'chai', 'tdd', 'bdd', 'ci/cd',
-      'continuous integration', 'continuous deployment', 'devsecops',
-      'information security', 'penetration testing', 'ethical hacking',
-      'firewall', 'vpn', 'encryption', 'oauth', 'saml', 'ldap',
-      'active directory', 'ssl/tls', 'proxy', 'load balancer',
-      'cdn', 'dns', 'tcp/ip', 'http/https', 'rest', 'soap',
-      'middleware', 'orm', 'crud', 'api gateway', 'serverless',
-      'lambda', 'faas', 'saas', 'paas', 'iaas', 'virtualization',
-      'hypervisor', 'container', 'orchestration', 'service mesh',
-      'istio', 'envoy', 'consul', 'programmatic', 'technical'
-    ];
-
-    const lowercaseTitle = title.toLowerCase();
-    const lowercaseDescription = description.toLowerCase();
-
-    // Check for tech keywords in title
-    const hasTechKeywordInTitle = techKeywords.some(keyword => 
-      lowercaseTitle.includes(keyword)
-    );
-
-    // Count tech keywords in description
-    const techKeywordCount = techKeywords.filter(keyword => 
-      lowercaseDescription.includes(keyword)
-    ).length;
-
-    // Always consider it a tech job if the title contains a tech keyword
-    if (hasTechKeywordInTitle) {
-      return true;
-    }
-
-    // For titles without explicit tech keywords, rely on the description
-    // Require at least 3 tech keywords in the description
-    return techKeywordCount >= 3;
-  }
-
-  async cleanupCompanyData() {
-    try {
-      // Step 1: Fetch all companies
-      const companies = await jobQueries.getAllCompanies();
-
-      // Step 2: Group similar company names
-      const companyGroups = this.groupSimilarCompanies(companies);
-
-      // Step 3: Consolidate companies and update job listings
-      for (const [mainCompany, similarCompanies] of Object.entries(companyGroups)) {
-        if (similarCompanies.length > 0) {
-          const mainCompanyId = mainCompany.id;
-
-          // Update job listings for similar companies
-          for (const company of similarCompanies) {
-            await jobQueries.updateJobListingsCompanyId(company.id, mainCompanyId);
-          }
-
-          // Delete similar companies
-          for (const company of similarCompanies) {
-            await jobQueries.deleteCompany(company.id);
-          }
-
-          console.log(`Consolidated ${similarCompanies.length} companies into ${mainCompany.name}`);
-        }
-      }
-
-      console.log('Company data cleanup completed.');
-    } catch (error) {
-      console.error('Error during company data cleanup:', error);
-    }
-  }
-
-  groupSimilarCompanies(companies) {
-    const groups = {};
-    const processed = new Set();
-
-    for (const company of companies) {
-      if (processed.has(company.id)) continue;
-
-      const simplifiedName = this.simplifyCompanyName(company.name);
-      if (!groups[simplifiedName]) {
-        groups[simplifiedName] = {
-          main: company,
-          similar: []
-        };
-      } else {
-        groups[simplifiedName].similar.push(company);
-      }
-
-      processed.add(company.id);
-    }
-
-    return groups;
-  }
-
-  simplifyCompanyName(name) {
-    return name.toLowerCase()
-      .replace(/\binc\.?\b|\bllc\.?\b|\bcorp\.?\b|\btechnologies\b|\btech\b/g, '')
-      .replace(/[^a-z0-9]+/g, '')
-      .trim();
-  }
-
   validateAndCleanJobData(data) {
     return {
       title: data.title || '',
@@ -542,6 +442,94 @@ class JobProcessor {
       EqualOpportunityEmployerInfo: data.EqualOpportunityEmployerInfo || '',
       Relocation: data.Relocation === true ? 1 : 0,
     };
+  }
+
+  async createJobPosting(jobData, companyId, link) {
+    await jobQueries.createJobPosting(
+      jobData.title,
+      jobData.salary,
+      jobData.experience_level,
+      jobData.location,
+      new Date(),
+      companyId,
+      link,
+      null,
+      jobData.tags.split(','),
+      jobData.description,
+      jobData.salary_max,
+      null,
+      jobData.skills.split(','),
+      jobData.benefits.split(','),
+      jobData.additional_information,
+      jobData.PreferredQualifications,
+      jobData.MinimumQualifications,
+      jobData.Responsibilities,
+      jobData.Requirements,
+      jobData.NiceToHave,
+      jobData.Schedule,
+      jobData.HoursPerWeek,
+      jobData.H1BVisaSponsorship,
+      jobData.IsRemote,
+      jobData.EqualOpportunityEmployerInfo,
+      jobData.Relocation
+    );
+  }
+
+  async start() {
+    await this.init();
+    console.log('Running job processor');
+  
+    const companies = await jobQueries.getCompanies();
+    const processedJobTitles = new Set();
+  
+    // Phase 1: Process regular job boards
+    for (const company of companies.filter(c => c.job_board_url && !c.job_board_url.includes('linkedin.com'))) {
+      const result = await this.collectJobLinks(company);
+      const links = result.links;
+      for (const link of links) {
+        try {
+          const jobData = await this.processJobLinkWithRetry(link);
+          if (jobData && !jobData.error && !jobData.alreadyProcessed && !jobData.skipped) {
+            await this.createJobPosting(jobData, company.id, link);
+            processedJobTitles.add(jobData.title);
+            console.log(`Processed job data for ${link}`);
+          }
+        } catch (error) {
+          console.error(`Error processing job link ${link}:`, error);
+        }
+        
+        await this.delay(this.DELAY_BETWEEN_REQUESTS);
+      }
+    }
+  
+    console.log('Regular job board processing completed.');
+
+    // Phase 2: Search LinkedIn for additional jobs
+    console.log('Starting LinkedIn job search');
+    const linkedInSearchTerms = Array.from(processedJobTitles)
+      .concat(this.getDefaultTechJobTitles())
+      .filter((title, index, self) => self.indexOf(title) === index); // Remove duplicates
+
+    const allLinkedInJobs = new Set();
+    for (const searchTerm of linkedInSearchTerms) {
+      await this.searchLinkedInJobs(allLinkedInJobs, searchTerm);
+    }
+
+    // Process LinkedIn jobs
+    for (const jobData of allLinkedInJobs) {
+      try {
+        if (!jobData.alreadyProcessed && !jobData.skipped) {
+          await this.createJobPosting(jobData, null, jobData.url);
+          console.log(`Processed LinkedIn job data for ${jobData.url}`);
+        }
+      } catch (error) {
+        console.error(`Error processing LinkedIn job ${jobData.url}:`, error);
+      }
+      
+      await this.delay(this.DELAY_BETWEEN_REQUESTS);
+    }
+  
+    console.log('Job processing completed, including LinkedIn searches.');
   }
 }
 
