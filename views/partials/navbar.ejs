@@ -381,6 +381,10 @@
       border-color: <%=navbarTint %>;
     }
 
+    #community-header-text {
+      color: <%=navbarTint %> !important;
+    }
+
     #community-header-text:hover {
       color: <%=navbarTint %> !important;
     }
@@ -407,8 +411,6 @@
 
 
 <script>
-
-
   function checkFollowing(userId) {
     fetch(`/users/${userId}/is-following`)
       .then(response => response.json())

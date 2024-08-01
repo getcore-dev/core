@@ -139,7 +139,6 @@ div.job-title-location .sub-text {
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
-  padding: 3px 13px;
 }
 
 .right-side-container {

@@ -113,11 +113,10 @@ a:visited {
 
 .navigation-button,
 .avatar-dropdown a {
-  height: 31px;
+  height: 34px;
   display: flex;
-  width: 31px;
-  border: 1.5px solid #c9c9c9;
-  background: #f2f2f2;
+  width: 34px;
+  background: var(--light-mode-body-color);
   border-radius: 6px;
   align-items: center;
   justify-content: center;
@@ -1513,7 +1512,7 @@ button .material-symbols-outlined:not(:only-child) {
 #null-button,
 .null-button-normal,
 #null-button-normal {
-  background: #f2f2f2;
+  background: var(--light-mode-body-color);
   color: #2b2b2b;
   border: 0;
 }
@@ -2546,7 +2545,7 @@ button .material-symbols-outlined:not(:only-child) {
   .null-button-normal,
   #null-button-normal {
     padding: 0.35rem .85rem;
-    height: 32px;
+    height: 34px;
   }
 
   #com-btn-container {

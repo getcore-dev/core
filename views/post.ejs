@@ -192,7 +192,6 @@ function formatDate(date) {
             ">
 
             <div class="post-body" style="
-                <% if (post.post_type == 'blog') { %> padding: 0px 13px; <% } %>
                 ">
               <% if ((post.post_type == 'post' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog' || post.post_type == 'question' || (post.post_type == 'discussion' && !post.linkPreview)) { %>
               <% if (post.post_type == 'project') { %>

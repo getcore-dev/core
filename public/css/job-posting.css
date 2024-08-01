@@ -48,12 +48,12 @@ main {
 }
 
 .job-details>* {
-  padding: 0 3.5dvw;
+  padding: 0 1.3rem;
 }
 
 .similar-company-jobs h4,
 .similar-jobs h4 {
-  padding: 0 3.5dvw;
+  padding: 0 1.3rem;
 }
 
 .similar-company-jobs,
@@ -139,7 +139,7 @@ div.similar-jobs-list {
   flex-wrap: nowrap;
   /* Prevent wrapping of job elements */
   flex-direction: column;
-  padding: 0 3.5dvw;
+  padding: 0 1.3rem;
   gap: 1.5rem;
 
   -webkit-scrollbar {
