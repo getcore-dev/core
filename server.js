@@ -2,7 +2,6 @@ const app = require('./app');
 const environment = require('./config/environment');
 const JobProcessor = require('./services/jobBoardService');
 const jobProcessor = new JobProcessor();
-const jobServiceEnabled = true;
 const MS_PER_HOUR = 3600000;
 
 async function runJobBoardService() {

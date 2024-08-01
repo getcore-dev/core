@@ -241,8 +241,8 @@ div.similar-job h4 {
 
 .related-jobs-count,
 .related-jobs-company-count {
-  height: 20px;
-  min-width: 20px;
+  height: 15px;
+  min-width: 10px;
   font-size: .7rem;
   margin-left: .5rem;
   background: #ffffff45;

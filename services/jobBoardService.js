@@ -43,7 +43,7 @@ class JobProcessor {
 
   isTechJob(title) {
     const techKeywords = [
-      'software', 'developer', 'programmer', 'data', 'analyst', 'scientist',
+      'software', 'developer', 'programmer', 'data', 'analyst', 'scientist', 'systems', 'systems administrator', 'systems engineer', 'systems architect', 'cloud engineer', 'cloud admin',
       'information technology', 'web', 'frontend', 'backend', 'full stack',
       'devops', 'cloud', 'network', 'security', 'database', 'machine learning',
       'ai', 'artificial intelligence', 'qa engineer', 'ui designer', 'ux/ui', 'quality assurance',
