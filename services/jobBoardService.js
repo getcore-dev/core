@@ -39,18 +39,28 @@ class JobProcessor {
         console.error('Error loading processed links:', error);
       }
     }
+  }
 
   isTechJob(title) {
     const techKeywords = [
-      'software', 'programmer', 'data scientist', 'data analyst', 'information technology', 'web', 'frontend', 'backend',
-      'full stack', 'devops', 'cloud', 'network', 'database',
-      'machine learning', 'artificial intelligence', 'quality assurance', 'product manager', 'scrum master', 'agile', 'systems',
-      'infrastructure', 'mobile', 'iOS', 'Android', 'cybersecurity', 'robotics', 'automation', 'SRE', 'reliability', 'project manager', 
-    ]; 
+      'software', 'developer', 'programmer', 'data', 'analyst', 'scientist',
+      'information technology', 'web', 'frontend', 'backend', 'full stack',
+      'devops', 'cloud', 'network', 'security', 'database', 'machine learning',
+      'ai', 'artificial intelligence', 'qa engineer', 'ui designer', 'ux/ui', 'quality assurance',
+      'product manager', 'scrum master', 'agile', 'tech', 'systems', 
+      'infrastructure', 'mobile developer', 'ios developer', 'android', 'cybersecurity', 'blockchain', 'robotics', 'automation', 'sre', 'reliability', 'architect',
+      'engineering', 'java', 'python', 'javascript', 'c++', 'ruby', 'php', 'project manager', 'program manager', 
+      'scala', 'typescript', 'sql', 'nosql', 'azure', 'machine learning', 'data science', 'data engineer', 'data analyst', 'data visualization',
+      'cloud engineer', 'cloud architect', 'cloud security', 'network engineer', 'network security', 'database administrator', 'database developer',
+      'devops engineer', 'site reliability engineer', 'security engineer', 'security analyst', 'security architect', 'frontend developer', 'backend developer',
+      'full stack developer', 'mobile developer', 'ios developer', 'android developer', 'cybersecurity analyst', 'cybersecurity engineer', 'frontend engineer',
+      'backend engineer', 'full stack engineer', 'mobile engineer', 'ios engineer', 'android engineer', 'qa engineer', 'quality assurance engineer',
+      'ux designer', 'ui designer', 'product manager', 'scrum master', 'agile coach', 'tech lead', 'systems engineer', 'infrastructure engineer',
+      'mobile architect', 'ios architect', 'android architect', 'cybersecurity architect', 'front-end', 'gameplay engineer', 'game engineer', 'analytics engineer', 'graphics engineer', 'game designer', 'research engineer', 
+    ];
     
     const lowercaseTitle = title.toLowerCase();
     return techKeywords.some(keyword => lowercaseTitle.includes(keyword));
-
   }
 
   async saveProcessedLink(link) {
@@ -68,10 +78,6 @@ class JobProcessor {
     const delayMs = isGemini ? this.GEMINI_DELAY_MS : this.OPENAI_DELAY_MS;
     const elapsed = now - this.lastRequestTime;
 
-    console.log('running job posting cleanup');
-    // await this.filterNonTechJobs();
-
-
     if (elapsed < delayMs) {
       await this.delay(delayMs - elapsed);
     }
@@ -79,8 +85,14 @@ class JobProcessor {
     this.lastRequestTime = Date.now();
   }
 
-    console.log('running job company cleanup');
-    // await this.cleanupCompanyData();
+  async filterNonTechJobs() {
+    const jobs = await jobQueries.getAllJobs();
+    jobs.forEach(job => {
+      if (!this.isTechJob(job.title)) {
+        jobQueries.deleteJob(job.id);
+      }
+    });
+  }
 
 
   parseRateLimitError(error) {
@@ -244,28 +256,6 @@ class JobProcessor {
     }
 
     await this.delay(this.DELAY_BETWEEN_SEARCHES);
-  }
-
-  isTechJob(title) {
-    const techKeywords = [
-      'software', 'developer', 'programmer', 'data', 'analyst', 'scientist',
-      'information technology', 'web', 'frontend', 'backend', 'full stack',
-      'devops', 'cloud', 'network', 'security', 'database', 'machine learning',
-      'ai', 'artificial intelligence', 'qa engineer', 'ui designer', 'ux/ui', 'quality assurance',
-      'product manager', 'scrum master', 'agile', 'tech', 'systems', 
-      'infrastructure', 'mobile developer', 'ios developer', 'android', 'cybersecurity', 'blockchain', 'robotics', 'automation', 'sre', 'reliability', 'architect',
-      'engineering', 'java', 'python', 'javascript', 'c++', 'ruby', 'php', 'project manager', 'program manager', 
-      'scala', 'typescript', 'sql', 'nosql', 'azure', 'machine learning', 'data science', 'data engineer', 'data analyst', 'data visualization',
-      'cloud engineer', 'cloud architect', 'cloud security', 'network engineer', 'network security', 'database administrator', 'database developer',
-      'devops engineer', 'site reliability engineer', 'security engineer', 'security analyst', 'security architect', 'frontend developer', 'backend developer',
-      'full stack developer', 'mobile developer', 'ios developer', 'android developer', 'cybersecurity analyst', 'cybersecurity engineer', 'frontend engineer',
-      'backend engineer', 'full stack engineer', 'mobile engineer', 'ios engineer', 'android engineer', 'qa engineer', 'quality assurance engineer',
-      'ux designer', 'ui designer', 'product manager', 'scrum master', 'agile coach', 'tech lead', 'systems engineer', 'infrastructure engineer',
-      'mobile architect', 'ios architect', 'android architect', 'cybersecurity architect', 'front-end', 'gameplay engineer', 'game engineer', 'analytics engineer', 'graphics engineer', 'game designer', 'research engineer', 
-    ];
-    
-    const lowercaseTitle = title.toLowerCase();
-    return techKeywords.some(keyword => lowercaseTitle.includes(keyword));
   }
 
   async processJobLinkWithRetry(link, retryCount = 0) {
