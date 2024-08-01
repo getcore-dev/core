@@ -29,6 +29,7 @@ class JobProcessor {
     await this.loadProcessedLinks();
   }
 
+
   async loadProcessedLinks() {
     try {
       const data = await fs.readFile(this.processedLinksFile, 'utf8');
@@ -38,6 +39,18 @@ class JobProcessor {
         console.error('Error loading processed links:', error);
       }
     }
+
+  isTechJob(title) {
+    const techKeywords = [
+      'software', 'programmer', 'data scientist', 'data analyst', 'information technology', 'web', 'frontend', 'backend',
+      'full stack', 'devops', 'cloud', 'network', 'database',
+      'machine learning', 'artificial intelligence', 'quality assurance', 'product manager', 'scrum master', 'agile', 'systems',
+      'infrastructure', 'mobile', 'iOS', 'Android', 'cybersecurity', 'robotics', 'automation', 'SRE', 'reliability', 'project manager', 
+    ]; 
+    
+    const lowercaseTitle = title.toLowerCase();
+    return techKeywords.some(keyword => lowercaseTitle.includes(keyword));
+
   }
 
   async saveProcessedLink(link) {
@@ -49,10 +62,15 @@ class JobProcessor {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+
   async rateLimit(isGemini) {
     const now = Date.now();
     const delayMs = isGemini ? this.GEMINI_DELAY_MS : this.OPENAI_DELAY_MS;
     const elapsed = now - this.lastRequestTime;
+
+    console.log('running job posting cleanup');
+    // await this.filterNonTechJobs();
+
 
     if (elapsed < delayMs) {
       await this.delay(delayMs - elapsed);
@@ -60,6 +78,10 @@ class JobProcessor {
 
     this.lastRequestTime = Date.now();
   }
+
+    console.log('running job company cleanup');
+    // await this.cleanupCompanyData();
+
 
   parseRateLimitError(error) {
     const message = error.message || error.error?.message || '';
