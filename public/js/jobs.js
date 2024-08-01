@@ -127,6 +127,7 @@ function initialize() {
   setupEventListeners();
   fetchTopSkills();
   fetchJobPostings();
+  fetchRecentCompanies();
   setupInfiniteScroll();
 }
 
@@ -167,7 +168,7 @@ function setupFilter(filterType, values) {
       showFiltersButton.className = 'show-filters null-button-normal';
       showFiltersButton.innerHTML = 'Filter';
       showFiltersButton.style.margin = '0 0 0 .7rem';
-      showFiltersButton.style.height = '32px';
+      showFiltersButton.style.height = '34px';
       showFiltersButton.addEventListener('click', () => {
         sortOptions.classList.toggle('show');
         tagsDiv.classList.toggle('show');
@@ -430,6 +431,48 @@ function resetJobListings() {
   elements.jobList.innerHTML = '';
   fetchJobPostings();
 }
+
+/*
+router.get('/recentCompanies', cacheMiddleware(2400), async (req, res) => {
+  try {
+    const companies = await jobQueries.getRecentCompanies();
+    return res.json(companies);
+  } catch (err) {
+    console.error('Error fetching companies:', err);
+    res.status(500).send('Error fetching companies');
+  }
+});
+*/
+
+async function fetchRecentCompanies() {
+  try {
+    const response = await fetch('/api/recentCompanies');
+    const companies = await response.json();
+    renderCompanies(companies);
+  } catch (error) {
+    console.error('Error fetching recent companies:', error);
+  }
+}
+
+function renderCompanies(companies) {
+  const companyList = document.querySelector('.company-list');
+  companyList.innerHTML = companies
+    .map((company) => createCompanyElement(company).outerHTML)
+    .join('');
+}
+
+function createCompanyElement(company) {
+  const companyElement = document.createElement('div');
+  companyElement.className = 'company';
+  companyElement.onclick = () => (window.location.href = `jobs/companies/${company.id}`);
+  companyElement.innerHTML = `
+    <img class="thumbnail-micro thumbnail thumbnail-regular" src="${company.logo}" alt="${company.name}" />
+    <p class="main-text secondary-text">${company.name}</p> <span class="counter red-counter">${company.job_count}</span>
+  `;
+  return companyElement;
+}
+
+
 
 
 async function fetchJobPostings() {

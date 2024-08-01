@@ -48,12 +48,12 @@ main {
 }
 
 .job-details>* {
-  padding: 0 3.5dvw;
+  padding: 0 1.3rem;
 }
 
 .similar-company-jobs h4,
 .similar-jobs h4 {
-  padding: 0 3.5dvw;
+  padding: 0 1.3rem;
 }
 
 .similar-company-jobs,
@@ -131,7 +131,7 @@ ul.locations {
 }
 
 .job-skills-display {
-  padding: .75rem;
+  padding: .75rem 1.3rem;
 }
 
 div.similar-jobs-list {
@@ -139,7 +139,7 @@ div.similar-jobs-list {
   flex-wrap: nowrap;
   /* Prevent wrapping of job elements */
   flex-direction: column;
-  padding: 0 3.5dvw;
+  padding: 0 1.3rem;
   gap: 1.5rem;
 
   -webkit-scrollbar {
@@ -271,6 +271,10 @@ ul.locations,
   margin-bottom: 0;
 }
 
+.job-listing-menu p {
+  color: var(--light-mode-secondary-text-color);
+}
+
 .job-info-flairs p {
   font-size: 1rem;
 }
@@ -393,14 +397,15 @@ div.interact-buttons div {
     background: var(--dark-mode-main-color);
   }
 
-  .company-location {
-    color: var(--dark-mode-secondary-text-color);
-  }
-
   .job-details p,
   .job-details ul,
   .job-listing-menu p {
     color: var(--dark-mode-text-color);
+  }
+
+  .company-location,
+  .job-listing-menu p {
+    color: var(--dark-mode-secondary-text-color);
   }
 
   .container {

@@ -32,6 +32,10 @@
     <%- include('partials/com-btn-container', { }) %>
 
     <div class="jobs-container">
+      <div class="recent-companies-container">
+        <div class="company-list" id="horizontal-scroll">
+        </div>
+      </div>
       <div class="jobs-header">
 
         <div class="filter-container">
@@ -69,6 +73,7 @@
         </span>
 
       </div>
+
       <% if (user) { %>
 
       <div class="jobs-header" style="display: flex;flex-direction: row;align-items: center;">
@@ -77,7 +82,7 @@
           <div class="create-company-button">
             <button class="create-company null-button-normal" onclick="window.location.href='/jobs/company/create';"><span class="material-symbols-outlined">
                 factory
-              </span>+</button>
+              </span></button>
           </div>
           <%     } %>
 
@@ -85,7 +90,7 @@
           <div class="create-job-button">
             <button class="create-job null-button-normal" onclick="window.location.href='/jobs/create';"><span class="material-symbols-outlined">
                 work
-              </span>+</button>
+              </span></button>
           </div>
           <%     } %>
 

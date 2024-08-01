@@ -49,8 +49,7 @@
 
   .community-entry {
     border-top: 1px solid var(--border-color);
-    padding: .6rem 1.4rem;
-    padding-left: 2.4rem;
+    padding: .6rem 1.3rem;
     display: flex;
     cursor: pointer;
     flex-direction: column;
@@ -75,7 +74,7 @@
   @media (prefers-color-scheme: dark) {
     .community-entry {
       background-color: var(--dark-mode-body-color);
-      border-color: var(--dark-mode-main-color);
+      border-color: var(--dark-mode-border-color);
     }
 
     .community-flair {
@@ -101,16 +100,30 @@
       <% communities.forEach((community) => { %>
       <% if (community.id == 9) { %>
       <div class="community-entry" onclick="window.location.href='/networks/<%= community.shortname %>'">
-        <span class="material-symbols-outlined" style="color:<%= community.community_color %>;"><%= community.mini_icon %></span>
 
-        <span class="community-info">
-          <span class="community-info-title">FeedbackChannel</span>
-          <br>
-          <span class="community-flairs">
-            <span class="community-flair" style="background-color:<%= community.community_color %>85;"><%= community.PostCount[1]%> posts</span>
+        <div class="community-info margin-06-bottom">
+          <span class="material-symbols-outlined" style="padding:0;margin:0;font-size: 1.1rem;color:<%= community.community_color %>;"><%= community.mini_icon %></span>
 
+          <span class="community-info-title" style="color:<%= community.community_color %>;">
+            <span class="main-text bold">
+              <%= community.name%>
+              /<%= community.shortname%>
+            </span>
           </span>
-        </span>
+        </div>
+        <div class="community-flairs secondary-text sub-text">
+          <div>
+            <span class="material-symbols-outlined" style="padding:0;margin:0;vertical-align:-2px;font-size: 1.1rem;">person</span>
+            <%= community.MemberCount%>
+          </div>
+          <span style="font-size:.7rem;">•</span>
+          <div>
+            <span class="material-symbols-outlined" style="padding:0;margin:0;vertical-align:-2px;font-size: 1.1rem;">description</span>
+            <%= community.PostCount[1]%>
+          </div>
+
+        </div>
+
       </div>
       <% } %>
       <% }) %>
@@ -127,23 +140,35 @@
       <% } %>
       <% if (community.isMember) { %>
       <div class="community-entry" onclick="window.location.href='/networks/<%= community.shortname %>'">
-        <span class="material-symbols-outlined" style="color:<%= community.community_color %>;"><%= community.mini_icon %></span>
-        <span class="community-info">
-          <span class="community-info-title"><%= community.name%>
-            <span> - </span>
-            /<%= community.shortname%>
-          </span>
-          <% if (community.isModerator) { %>
-          <span class="material-symbols-outlined" style="font-size: 16px;" onclick="window.location.href='/networks/<%= community.shortname %>/admin'">admin_panel_settings</span>
-          <% } %>
-          <br>
-          <span class="community-flairs">
-            <span class="community-flair" style="background-color:<%= community.community_color %>85;"><%= community.CommunityMemberCount%> member</span>
-            <span class="community-flair" style="background-color:<%= community.community_color %>85;"><%= community.PostCount[1]%> posts</span>
 
+        <div class="community-info margin-06-bottom">
+          <span class="material-symbols-outlined" style="padding:0;margin:0;font-size: 1.1rem;color:<%= community.community_color %>;"><%= community.mini_icon %></span>
+
+          <span class="community-info-title" style="color:<%= community.community_color %>;">
+            <span class="main-text bold">
+              <%= community.name%>
+              /<%= community.shortname%>
+            </span>
           </span>
-        </span>
-        <span class="material-symbols-outlined" style="margin-left: auto;" onclick="leaveCommunity(event, '<%= community.shortname %>')">close</span>
+        </div>
+        <div class="community-tags margin-03-bottom secondary-text sub-text">
+          <%= community.Tags%>
+
+        </div>
+
+        <div class="community-flairs secondary-text sub-text">
+          <div>
+            <span class="material-symbols-outlined" style="padding:0;margin:0;vertical-align:-2px;font-size: 1.1rem;">person</span>
+            <%= community.MemberCount%>
+          </div>
+          <span style="font-size:.7rem;">•</span>
+          <div>
+            <span class="material-symbols-outlined" style="padding:0;margin:0;vertical-align:-2px;font-size: 1.1rem;">description</span>
+            <%= community.PostCount[1]%>
+          </div>
+
+        </div>
+
       </div>
       <% } %>
       <% }) %>

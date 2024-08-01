@@ -165,12 +165,12 @@ function formatDate(date) {
               <% if (user && user.username !== post.user.username) { %>
               <button style="border:0;background:0;" class="regular-button-normal margin-l-auto" data-username="<%= post.user.username %>" onclick="followUser('<%= post.user.id %>')">
                 <span class="material-symbols-outlined">person_add</span>
-                <p>Follow</p>
+                <p class="bold">Follow</p>
               </button>
               <% } else { %>
               <button style="border:0;background:0;" class="regular-button-normal margin-l-auto" onclick="window.location.href = '/user/<%= post.user.username %>'">
                 <span class="material-symbols-outlined">person</span>
-                <p>Profile</p>
+                <p class="bold">Profile</p>
               </button>
               <% } %>
             </div>
@@ -192,7 +192,6 @@ function formatDate(date) {
             ">
 
             <div class="post-body" style="
-                <% if (post.post_type == 'blog') { %> padding: 0px 13px; <% } %>
                 ">
               <% if ((post.post_type == 'post' && !post.linkPreview) || post.post_type == 'project' || post.post_type == 'blog' || post.post_type == 'question' || (post.post_type == 'discussion' && !post.linkPreview)) { %>
               <% if (post.post_type == 'project') { %>
@@ -215,7 +214,7 @@ function formatDate(date) {
                       return `${month}/${day}/${year}`;
                     }
                   %>
-              <div class="project-link" onclick="window.location.href='<%= post.link %>'">
+              <div class="project-link">
                 <div class="project-link-body margin-06-bottom">
 
                   <div class="project-link-image">

@@ -381,6 +381,10 @@
       border-color: <%=navbarTint %>;
     }
 
+    #community-header-text {
+      color: <%=navbarTint %> !important;
+    }
+
     #community-header-text:hover {
       color: <%=navbarTint %> !important;
     }
@@ -407,8 +411,6 @@
 
 
 <script>
-
-
   function checkFollowing(userId) {
     fetch(`/users/${userId}/is-following`)
       .then(response => response.json())
@@ -416,11 +418,11 @@
         const followButton = document.querySelector(`button[onclick="followUser('${userId}')"]`);
         if (followButton) {
           if (data.isFollowing) {
-            followButton.innerHTML = '<span class="material-symbols-outlined">close</span><p>Unfollow</p>';
+            followButton.innerHTML = '<span class="material-symbols-outlined">close</span><p class="bold">Unfollow</p>';
             followButton.classList.remove('submit-button-normal');
             followButton.classList.add('cancel-button-normal');
           } else {
-            followButton.innerHTML = '<span class="material-symbols-outlined">person_add</span><p>Follow</p>';
+            followButton.innerHTML = '<span class="material-symbols-outlined">person_add</span><p class="bold">Follow</p>';
             followButton.classList.remove('cancel-button-normal');
             followButton.classList.add('submit-button-normal');
           }
