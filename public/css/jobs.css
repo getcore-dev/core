@@ -40,7 +40,7 @@ body {
 
 div.job-buttons {
   padding: 4px;
-  gap: .5rem;
+  gap: 1.2rem;
 }
 
 h1 {
@@ -487,7 +487,7 @@ div.job-title-location .sub-text {
 .location-filter input,
 .salary-filter input {
   width: 100%;
-  height: 32px;
+  height: 34px;
   padding: 0.7rem 1.15rem;
   margin: 0;
   margin-bottom: 0;

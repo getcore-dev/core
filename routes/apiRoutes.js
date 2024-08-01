@@ -556,42 +556,6 @@ router.get('/jobs', async (req, res) => {
   }
 });
 
-function calculateMatchCount(job, userPreferences, tags) {
-  let matchCount = 0;
-
-  if (job.title === userPreferences.jobPreferredTitle) matchCount++;
-
-  const jobSkills = Array.isArray(job.skills)
-    ? job.skills
-    : typeof job.skills === 'string'
-      ? job.skills.split(',').map((s) => s.trim())
-      : [];
-
-  if (
-    userPreferences.jobPreferredSkills &&
-    userPreferences.jobPreferredSkills.length > 0 &&
-    jobSkills.some((skill) =>
-      userPreferences.jobPreferredSkills.includes(Number(skill))
-    )
-  )
-    matchCount++;
-
-  if (
-    job.location &&
-    job.location.includes(userPreferences.jobPreferredLocation)
-  )
-    matchCount++;
-  if (job.experienceLevel === userPreferences.jobExperienceLevel) matchCount++;
-  if (job.industry === userPreferences.jobPreferredIndustry) matchCount++;
-  if (job.salary >= userPreferences.jobPreferredSalary) matchCount++;
-
-  const jobTags = job.tags[1]
-    ? job.tags[1].split(',').map((tag) => tag.trim())
-    : [];
-  matchCount += tags.filter((tag) => jobTags.includes(tag)).length;
-
-  return matchCount;
-}
 
 router.get('/job-experience/:userId', async (req, res) => {
   try {

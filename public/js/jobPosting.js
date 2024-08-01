@@ -319,7 +319,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
           
           
 
-            <div class="job-info-flairs margin-1-bottom">
+            <div class="job-info-flairs secondary-text margin-1-bottom">
               <p>
                 <span class="material-symbols-outlined">
                 engineering
@@ -404,7 +404,7 @@ delete
     : ''
 }
       <div class="share-button-container flex" style="margin-left: auto">
-      <button id="null-button-normal" class="margin-h-auto grow-button" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');"><span class="material-symbols-outlined">
+      <button id="null-button-normal" class="margin-h-auto grow-button null-button-bordered" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');"><span class="material-symbols-outlined">
 ios_share
 </span> Share <span class="number-display">${job.share_count ? job.share_count : 0}</span></button>
       </div>
@@ -582,7 +582,7 @@ ${job.location
 <div class="similar-company-jobs company-profile-section" style="display:none;"></div>
 
             <div class="job-skills-display">
-              <h4>Tags</h4>
+              <h3 class="margin-1-bottom">Tags</h4>
               ${tagsHTML}
               ${
   remainingTags > 0

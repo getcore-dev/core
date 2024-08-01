@@ -74,7 +74,7 @@
   @media (prefers-color-scheme: dark) {
     .community-entry {
       background-color: var(--dark-mode-body-color);
-      border-color: var(--dark-mode-main-color);
+      border-color: var(--dark-mode-border-color);
     }
 
     .community-flair {
@@ -150,9 +150,6 @@
               /<%= community.shortname%>
             </span>
           </span>
-        </div>
-        <div class="community-body margin-03-bottom">
-          <span class="community-body sub-text" id="secondary-text"><%= community.description%></span>
         </div>
         <div class="community-tags margin-03-bottom secondary-text sub-text">
           <%= community.Tags%>

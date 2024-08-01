@@ -1517,6 +1517,10 @@ button .material-symbols-outlined:not(:only-child) {
   border: 0;
 }
 
+.null-button-bordered {
+  border: 1.5px solid var(--border-color) !important;
+}
+
 .margin-v-auto {
   margin-top: auto !important;
   margin-bottom: auto !important;
@@ -2485,6 +2489,10 @@ button .material-symbols-outlined:not(:only-child) {
   #com-btn-container a {
     text-decoration: none;
     color: #ddd;
+  }
+
+  .null-button-bordered {
+    border-color: var(--dark-mode-border-color) !important;
   }
 
   #com-btn-container {

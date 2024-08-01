@@ -168,7 +168,7 @@ function setupFilter(filterType, values) {
       showFiltersButton.className = 'show-filters null-button-normal';
       showFiltersButton.innerHTML = 'Filter';
       showFiltersButton.style.margin = '0 0 0 .7rem';
-      showFiltersButton.style.height = '32px';
+      showFiltersButton.style.height = '34px';
       showFiltersButton.addEventListener('click', () => {
         sortOptions.classList.toggle('show');
         tagsDiv.classList.toggle('show');
