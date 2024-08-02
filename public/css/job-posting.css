@@ -10,16 +10,14 @@ main {
 .container {
   overflow-y: auto;
   border-right: 1px solid var(--border-color);
+  width: 53%;
+  max-width: 1000px;
 }
 
 .job-details-container {
   overflow-y: auto;
 }
 
-.container {
-  width: 53%;
-  max-width: 1000px;
-}
 
 .job-listing {
   background-color: var(--light-mode-main-color);
@@ -435,5 +433,6 @@ div.interact-buttons div {
 
   .container {
     width: 100%;
+    border: 0;
   }
 }

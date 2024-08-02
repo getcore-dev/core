@@ -16,7 +16,7 @@
   <main>
     <div class="companies-search-container">
       <input type="text" id="search" placeholder="Search companies" />
-      <button id="companies-search-button" class="material-icons-outlined">search</button>
+      <button id="companies-search-button" class="null-button null-button-bordered">Search</button>
     </div>
     <div id="companies-container"></div>
   </main>
@@ -79,12 +79,12 @@
       companies.forEach(company => {
         html += `
           <div onclick="window.location.href='/jobs/company/${company.name}'">
-          <div class="company-info-header">
+          <div class="company-info-header margin-06-bottom">
             <img class="thumbnail thumbnail-regular thumbnail-tiny" src="${company.logo}" alt="${company.name} logo" />
             <h3 class="main-text">${company.name}</h3>
         </div>
         <div class="company-info-tags secondary-text sub-text">
-            <span>${company.jobCount} jobs</span>
+            <span class="company-info-jobs">${company.jobCount} jobs</span>
             <span style="font-size:.7rem;">•</span>
             <span><span class="material-symbols-outlined">factory</span> ${company.industry}</span>
             

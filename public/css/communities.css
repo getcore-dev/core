@@ -610,17 +610,17 @@ div .mini-link-title {
 }
 
 div.community {
-  border: 0;
   padding: .65rem .85rem;
   padding-bottom: 0;
+  border: 1px solid var(--border-color);
+  margin: 1.4rem;
+  border-radius: 10px;
   background-color: var(--light-mode-body-color);
 }
 
 .community-header {
-  border-top: 1px solid var(--border-color);
   display: flex;
   flex-direction: row;
-  border-bottom: 1px solid var(--border-color);
   align-items: center;
   justify-content: space-between;
 }
@@ -1047,6 +1047,16 @@ button.see-more {
 }
 
 @media (max-width: 768px) {
+
+  div.community {
+    border: 0;
+    margin: 0;
+    border: 0;
+    padding: .65rem .85rem;
+    padding-bottom: 0;
+    background-color: var(--light-mode-body-color);
+  }
+
   .see-more {
     margin: 0
   }
@@ -1132,6 +1142,11 @@ button.see-more {
     margin: 0;
     padding: .35rem .95rem;
     color: var(--light-mode-secondary-text-color);
+  }
+
+  .community-header {
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
   }
 
   .job-header {
@@ -1397,6 +1412,7 @@ button.see-more {
 
   .community-header,
   .job-header {
+    border-color: var(--dark-mode-border-color);
     color: var(--dark-mode-secondary-text-color) !important;
   }
 
