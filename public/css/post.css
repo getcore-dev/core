@@ -206,6 +206,15 @@ div .material-symbols-outlined:hover {
   margin-right: 0;
 }
 
+.main-container {
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.main-container::-webkit-scrollbar {
+  display: none;
+}
 
 .sidebar-container {
   width: 100%;
@@ -585,7 +594,7 @@ div.interact-buttons {
   font-size: 1rem;
   color: var(--light-mode-text-color);
   padding: 10px;
-  border: 0;
+  border: 1px solid var(--border-color);
   height: 32px;
   background: 0;
   display: flex;
@@ -597,7 +606,7 @@ div.interact-buttons {
 
 .reaction-popup button:hover {
   transform: scale(1.2);
-  background: var(--light-mode-hover-color);
+  filter: brightness(1.2);
 }
 
 
@@ -1643,8 +1652,12 @@ div.post-information {
 
   .post-body p,
   .reaction-popup button {
+    border-color: var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
-    /* Light text color for better readability */
+  }
+
+  .reaction-popup button:hover {
+    background-color: var(--dark-mode-hover-color);
   }
 
   .dropdown-content {

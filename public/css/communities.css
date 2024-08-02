@@ -811,7 +811,7 @@ div.community-tags {
 
 .reaction-popup button:hover {
   transform: scale(1.2);
-  background: var(--light-mode-hover-color);
+  filter: brightness(1.1);
 }
 
 div.join-community,
@@ -1435,6 +1435,11 @@ button.see-more {
 
   .post-type-circle {
     border-color: var(--dark-mode-body-color);
+  }
+
+  .reaction-popup button:hover {
+    background-color: var(--dark-mode-main-color);
+    filter: brightness(1.2);
   }
 
   .comments {
