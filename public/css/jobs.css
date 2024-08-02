@@ -525,9 +525,9 @@ div.job-counts {
 div.job-counts::before {
   content: '';
   display: inline-block;
-  width: 10px;
-  height: 10px;
-  background-color: green;
+  width: 8px;
+  height: 8px;
+  background-color: #0daf0d;
   border-radius: 50%;
   margin-right: 3px;
 }

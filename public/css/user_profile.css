@@ -191,7 +191,7 @@ main {
 }
 
 .github-commit-graph {
-  padding: 12px 0 !important;
+  padding: 0 !important;
 }
 
 
@@ -231,6 +231,7 @@ main {
   justify-content: space-between;
   align-items: center;
   padding: 0px 10px;
+  margin-top: .9rem;
   padding-top: 0px;
 }
 
@@ -281,14 +282,11 @@ main {
 }
 
 .profile-picture img {
-  width: 100px;
-  /* Adjust the size as needed */
-  height: 100px;
-  border-radius: 12px;
-  /* Circular image */
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
   object-fit: cover;
   border: 1px solid var(--border-color);
-  /* Border color similar to the navbar */
 }
 
 .profile-picture button,
@@ -647,9 +645,9 @@ td {
   }
 
   #profile {
-    padding: 15px;
+    padding: 0 1.3rem;
     padding-top: 0;
-    gap: 10px;
+    gap: 0;
     grid-template-columns: repeat(2, 1fr);
     /* Two columns of equal size */
     grid-template-areas:
