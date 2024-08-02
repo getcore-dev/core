@@ -153,7 +153,7 @@
       const jobsHeader = document.querySelector('.jobs-display-header');
       if (jobs.length > 0) {
         jobsHeader.classList.add('show');
-        jobsContainer.innerHTML = jobs.map(job => createJobElement(job).outerHTML).join('<hr>');
+        jobsContainer.innerHTML = jobs.map(job => createJobElement(job).outerHTML).join('');
       } else {
         jobsContainer.innerHTML = '<div>No jobs available</div>';
       }
