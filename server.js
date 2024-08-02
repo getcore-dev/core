@@ -27,7 +27,9 @@ app.listen(environment.port, () => {
   console.log(`Server running on http://localhost:${environment.port}`);
   
   // Schedule the first run of the job board service
+  /*
   setTimeout(() => {
     runJobBoardService();
   }, 5000); // Wait 5 seconds after server start before first run
+  */
 });

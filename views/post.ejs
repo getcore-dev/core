@@ -123,6 +123,11 @@
                     <% } %>
 
                   </a>
+                  <% if (post.user.verified) { %>
+                  <span>
+                    <span class="material-symbols-outlined" style="padding: 0;font-size: .85rem;color: #169da8;">verified_user</span>
+                  </span>
+                  <% } %>
                 </span>
                 <span class="post-info-div sub-text" id="secondary-text">
                   <span class="post-timestamp secondary-text" style="text-decoration: none;">

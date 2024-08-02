@@ -10,16 +10,14 @@ main {
 .container {
   overflow-y: auto;
   border-right: 1px solid var(--border-color);
+  width: 53%;
+  max-width: 1000px;
 }
 
 .job-details-container {
   overflow-y: auto;
 }
 
-.container {
-  width: 53%;
-  max-width: 1000px;
-}
 
 .job-listing {
   background-color: var(--light-mode-main-color);
@@ -139,8 +137,6 @@ div.similar-jobs-list {
   flex-wrap: nowrap;
   /* Prevent wrapping of job elements */
   flex-direction: column;
-  padding: 0 1.3rem;
-  gap: 1.5rem;
 
   -webkit-scrollbar {
     display: none;
@@ -163,10 +159,10 @@ div.similar-job {
   flex-direction: column;
   cursor: pointer;
   display: flex;
-  background-color: var(--light-mode-body-color);
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-  padding: 13px 17px;
+  background-color: var(--light-mode-main-color);
+  border-radius: 0;
+  border-bottom: 1px solid var(--border-color);
+  padding: 1.2rem 1.33rem;
   position: relative;
 }
 
@@ -310,7 +306,6 @@ div.interact-buttons div {
   flex-direction: row;
   align-items: center;
   gap: 7px;
-  margin-bottom: .4rem;
   flex-wrap: wrap;
   box-sizing: border-box;
   max-width: 100%;
@@ -438,5 +433,6 @@ div.interact-buttons div {
 
   .container {
     width: 100%;
+    border: 0;
   }
 }

@@ -87,7 +87,7 @@ function getSimilarJobs(jobId) {
           ${jobs
     .map((job) => {
       const tagsArray =
-                job.tags && job.tags[1] ? job.tags[1].split(', ') : [];
+                job.skills && job.skills ? job.skills.split(', ') : [];
       const maxTags = 3;
       const displayedTags = tagsArray.slice(0, maxTags);
       const tagsHTML = displayedTags.map((tag) => `${tag}`).join(', ');
@@ -96,7 +96,7 @@ function getSimilarJobs(jobId) {
             <div class="similar-job" onclick="window.location.href='/jobs/${
   job.id
 }'">
-              <div class="company-info">
+              <div class="company-info margin-06-bottom">
               ${
   job.company_logo
     ? `
@@ -112,7 +112,7 @@ function getSimilarJobs(jobId) {
 } </a> </h3>
               </div>
             </div>
-                <div class="job-tags">
+                <div class="job-tags margin-06-bottom">
                   ${tagsHTML}
                 </div>
                 <div class="job-posting-information job-subtitle secondary-text">
@@ -129,7 +129,7 @@ function getSimilarJobs(jobId) {
                 <span class="job-salary" style="margin-left: auto;">${
   job.salary ? 'USD $' + job.salary.toLocaleString() : ''
 } ${
-  job.salary_max != 0 ? '- $' + job.salary_max.toLocaleString() : ''
+  (job.salary_max != 0 && job.salary) ? '- $' + job.salary_max.toLocaleString() : ''
 }</span>
         </div>
             </div>
@@ -163,7 +163,7 @@ function getSimilarJobsByCompany(jobId, companyName) {
           ${jobs
     .map((job) => {
       const tagsArray =
-                job.tags && job.tags[1] ? job.tags[1].split(', ') : [];
+                job.skills && job.skills ? job.skills.split(', ') : [];
       const maxTags = 3;
       const displayedTags = tagsArray.slice(0, maxTags);
       const tagsHTML = displayedTags.map((tag) => `${tag}`).join(', ');
@@ -172,7 +172,7 @@ function getSimilarJobsByCompany(jobId, companyName) {
             <div class="similar-job" onclick="window.location.href='/jobs/${
   job.id
 }'">
-              <div class="company-info">
+              <div class="company-info margin-06-bottom">
               ${
   job.company_logo
     ? `
@@ -188,7 +188,7 @@ function getSimilarJobsByCompany(jobId, companyName) {
 }</a> </h3>
               </div>
             </div>
-                <div class="job-tags">
+                <div class="job-tags margin-06-bottom">
                   ${tagsHTML}
                 </div>
                 <div class="job-posting-information job-subtitle secondary-text">
@@ -231,7 +231,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 
       let benefitsArray, tagsArray, skillsArray;
       try {
-        tagsArray = job.tags && job.tags[1] ? job.tags[1].split(', ') : [];
+        tagsArray = job.skills && job.skills ? job.skills.split(', ') : [];
       } catch (error) {
         console.error('Error splitting tags:', error);
         tagsArray = [];
@@ -578,8 +578,19 @@ ${job.location
 </ul>
 </div>
 </div>
-<div class="similar-jobs company-profile-section" style="display:none;"></div>
-<div class="similar-company-jobs company-profile-section" style="display:none;"></div>
+<div class="similar-jobs company-profile-section">
+        <div id="loading-indicator">
+          <div class="spinner-container">
+            <div class="spinner"></div>
+          </div>
+        </div>
+</div>
+<div class="similar-company-jobs company-profile-section">
+        <div id="loading-indicator">
+          <div class="spinner-container">
+            <div class="spinner"></div>
+          </div>
+        </div></div>
 
             <div class="job-skills-display">
               <h3 class="margin-1-bottom">Tags</h4>

@@ -59,8 +59,8 @@
           <% } %>
         </div>
         <div class="company-description margin-06-bottom">
-          <p class="description-text"><%= company.description %></p>
-
+          <p class="description-text" id="companyDescription"><%= company.description %></p>
+          <button id="toggleButton" style="display: none;">Show more</button>
         </div>
         <div class="company-flair margin-1-bottom">
           <% if (company.job_board_url) { %>
@@ -106,14 +106,13 @@
           <% } %>
         </div>
         <div class="company-buttons margin-1-bottom">
-          <button class="null-button-normal" id="follow-company-button"><span class="material-symbols-outlined">
+          <button class="null-button-normal null-button-bordered" id="follow-company-button"><span class="material-symbols-outlined">
               person_add
             </span>Follow</button>
-          <button class="null-button-normal" id="share-company-button" onclick="share('<%= company.name %>', '', 'https://getcore.dev/jobs/company/<%= encodeURIComponent(company.name) %>')">
+          <button class="null-button-normal null-button-bordered" id="share-company-button" onclick="share('<%= company.name %>', '', 'https://getcore.dev/jobs/company/<%= encodeURIComponent(company.name) %>')">
             <span class="material-symbols-outlined">ios_share</span> Share
           </button>
         </div>
-        <button class="show-more-button clickable no-bg no-border" style="display: none;">Show More</button>
         <ul class="second-nav-links">
           <li class="dropdown active">
             <a class="navbar-button company-navbar-button active no-bg no-border" data-id="jobs" id="company-updates-selector">
@@ -160,7 +159,7 @@
         <div class="jobs company-profile-section">
           <div class="jobs-company-header">
             <h3 class="jobs-company-header-text"> <%= jobsCount %> Open Jobs</h3>
-            <button class="null-button-normal" id="job-filter-button"> <span class="material-symbols-outlined">
+            <button class="null-button-normal null-button-bordered" id="job-filter-button"> <span class="material-symbols-outlined">
                 sort
               </span>Filter</button>
           </div>
@@ -168,6 +167,11 @@
             <input type="text" class="filter-input" placeholder="Search for a job" />
           </div>
           <div class="job-list">
+            <div id="loading-indicator">
+              <div class="spinner-container">
+                <div class="spinner"></div>
+              </div>
+            </div>
           </div>
           <%- include('partials/footer') %>
 

@@ -47,7 +47,7 @@ class JobProcessor {
       'information technology', 'web', 'frontend', 'backend', 'full stack',
       'devops', 'cloud', 'network', 'security', 'database', 'machine learning',
       'ai', 'artificial intelligence', 'qa engineer', 'ui designer', 'ux/ui', 'quality assurance',
-      'product manager', 'scrum master', 'agile', 'tech', 'systems', 
+      'product manager', 'scrum master', 'agile', 'systems', 
       'infrastructure', 'mobile developer', 'ios developer', 'android', 'cybersecurity', 'blockchain', 'robotics', 'automation', 'sre', 'reliability', 'architect',
       'engineering', 'java', 'python', 'javascript', 'c++', 'ruby', 'php', 'project manager', 'program manager', 
       'scala', 'typescript', 'sql', 'nosql', 'azure', 'machine learning', 'data science', 'data engineer', 'data analyst', 'data visualization',

@@ -17,7 +17,46 @@ div.company-info-tags {
 
 div#companies-container {
     display: flex;
-    gap: 1.4rem;
+    flex-direction: column;
+    padding: 0;
+}
+
+.company-info-jobs::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    /* Adjust the size as needed */
+    height: 10px;
+    /* Adjust the size as needed */
+    background-color: green;
+    border-radius: 50%;
+    margin-right: .3rem;
+    /* Adjust the spacing as needed */
+}
+
+div#companies-container>div {
+    padding: 1.4rem 1.3rem;
+    background: var(--light-mode-main-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+div#companies-container>div:last-child {
+    border-bottom: none;
+}
+
+div#companies-container>div:hover {
+    filter: brightness(.8);
+}
+
+div.companies-search-container {
+    display: flex;
     flex-direction: column;
     padding: 1.4rem 1.3rem;
+    padding-bottom: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    div#companies-container>div {
+        background: var(--dark-mode-main-color);
+    }
 }

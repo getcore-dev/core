@@ -50,8 +50,6 @@ if (typeof window !== 'undefined') {
       });
     }
 
-    const jobListContainer = document.querySelector('.job-list');
-    jobListContainer.innerHTML = ''; // Clear existing job postings
 
     const companyNameMeta = document.querySelector('meta[name="company-name"]');
     if (companyNameMeta) {
@@ -107,6 +105,7 @@ function getTintFromName(name) {
 
 function renderJobPostings(jobPostings) {
   const jobListContainer = document.querySelector(".job-list");
+  jobListContainer.innerHTML = ''; // Clear existing job postings
 
   jobPostings.forEach((job) => {
     const jobElement = document.createElement("div");
@@ -213,6 +212,25 @@ function formatDate(date) {
 
   return formattedDate;
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  const description = document.getElementById('companyDescription');
+  const toggleButton = document.getElementById('toggleButton');
+
+  function checkOverflow() {
+    const isOverflowing = description.scrollHeight > description.clientHeight;
+    toggleButton.style.display = isOverflowing ? 'block' : 'none';
+  }
+
+  toggleButton.addEventListener('click', function() {
+    description.classList.toggle('expanded');
+    toggleButton.textContent = description.classList.contains('expanded') ? 'Show less' : 'Show more';
+  });
+
+  // Check overflow on load and resize
+  window.addEventListener('resize', checkOverflow);
+  checkOverflow();
+});
 
 function renderComments(comments) {
   const commentsContainer = document.querySelector('.comments-container');

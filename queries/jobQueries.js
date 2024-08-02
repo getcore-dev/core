@@ -29,6 +29,19 @@ const jobQueries = {
       throw err;
     }
   },
+
+  getCompaniesCount: async () => {
+    try {
+      const result = await sql.query`
+        SELECT COUNT(*) as count FROM companies
+      `;
+      return result.recordset[0].count;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   getJobs: async (limit, offset) => {
     try {
       const result = await sql.query(`
@@ -158,38 +171,58 @@ const jobQueries = {
 
   getRecentJobs: async (page = 1, pageSize = 20) => {
     try {
-      const offset = (page - 1) * pageSize; 
-      const result = await sql.query(`
-        SELECT           j.*,
-          c.name AS company_name, 
-          c.logo AS company_logo, 
-          c.location AS company_location, 
-          c.description AS company_description,
-          (
-            SELECT STRING_AGG(jt.tagName, ', ')
-            FROM JobPostingsTags jpt
-            JOIN JobTags jt ON jpt.tagId = jt.id
-            WHERE jpt.jobId = j.id
-          ) AS tags,
-          (
-            SELECT STRING_AGG(s.name, ', ')
-            FROM job_skills js
-            JOIN skills s ON js.skill_id = s.id
-            WHERE js.job_id = j.id
-          ) AS skills
-            FROM JobPostings j
-        LEFT JOIN companies c ON j.company_id = c.id
-        ORDER BY j.postedDate DESC
+      const offset = (page - 1) * pageSize;
+      const result = await sql.query`
+        WITH RecentJobs AS (
+          SELECT TOP (${page * pageSize + pageSize}) 
+            j.id,
+            j.title,
+            j.salary,
+            j.salary_max,
+            j.experienceLevel,
+            j.location,
+            j.postedDate,
+            j.link,
+            j.description,
+            j.company_id,
+            j.recruiter_id,
+            j.views,
+            c.name AS company_name,
+            c.logo AS company_logo,
+            c.location AS company_location,
+            c.description AS company_description
+          FROM JobPostings j
+          LEFT JOIN companies c ON j.company_id = c.id
+          ORDER BY j.postedDate DESC
+        )
+        SELECT 
+          r.*,
+          t.tags,
+          s.skills
+        FROM RecentJobs r
+        CROSS APPLY (
+          SELECT STRING_AGG(jt.tagName, ', ') WITHIN GROUP (ORDER BY jt.tagName) AS tags
+          FROM JobPostingsTags jpt
+          JOIN JobTags jt ON jpt.tagId = jt.id
+          WHERE jpt.jobId = r.id
+        ) t
+        CROSS APPLY (
+          SELECT STRING_AGG(s.name, ', ') WITHIN GROUP (ORDER BY s.name) AS skills
+          FROM job_skills js
+          JOIN skills s ON js.skill_id = s.id
+          WHERE js.job_id = r.id
+        ) s
+        ORDER BY r.postedDate DESC
         OFFSET ${offset} ROWS
         FETCH NEXT ${pageSize} ROWS ONLY
-      `);
-      const jobs = result.recordset;
-      return jobs;
+      `;
+      return result.recordset;
     } catch (err) {
       console.error('Database query error:', err);
       throw err;
     }
   },
+  
 
   getJobCountByCompany: async (companyName) => {
     try {
@@ -332,17 +365,11 @@ const jobQueries = {
     pageSize
   ) => {
     try {
-      console.log('searchAllJobsFromLast30Days');
-      console.log('title:', title);
-      console.log('location:', location);
-      console.log('experienceLevel:', experienceLevel);
-      console.log('salary:', salary);
-      console.log('parsedTags:', parsedTags);
-      console.log('page:', page);
-      console.log('pageSize:', pageSize);
+      console.log('searchAllJobsFromLast30Days', title, location, experienceLevel, salary, parsedTags, page, pageSize);
       const offset = (page - 1) * pageSize;
   
       let query = `
+      WITH JobScores AS (
         SELECT 
           j.*,
           c.name AS company_name, 
@@ -354,47 +381,38 @@ const jobQueries = {
             FROM JobPostingsTags jpt
             JOIN JobTags jt ON jpt.tagId = jt.id
             WHERE jpt.jobId = j.id AND jt.tagName IS NOT NULL
-          ) AS tags,
+          ) AS job_tags,
           (
             SELECT STRING_AGG(s.name, ',') WITHIN GROUP (ORDER BY s.name)
             FROM job_skills js
             JOIN skills s ON js.skill_id = s.id
             WHERE js.job_id = j.id AND s.name IS NOT NULL
-          ) AS skills
+          ) AS job_skills,
+          (
+            CASE WHEN @title = '' THEN 1 ELSE 0 END +
+            CASE WHEN @location = '' THEN 1 ELSE 0 END +
+            CASE WHEN @experienceLevel = '' THEN 1 ELSE 0 END +
+            CASE WHEN @title != '' AND j.title LIKE '%' + @title + '%' THEN 1 ELSE 0 END +
+            CASE WHEN @location != '' AND j.location LIKE '%' + @location + '%' THEN 1 ELSE 0 END +
+            CASE WHEN @experienceLevel != '' AND j.experienceLevel LIKE '%' + @experienceLevel + '%' THEN 1 ELSE 0 END
+          ) AS preference_score
         FROM JobPostings j
         LEFT JOIN companies c ON j.company_id = c.id
         WHERE j.postedDate >= DATEADD(day, -30, GETDATE())
-      `;
+      )
+      SELECT * FROM JobScores
+      WHERE preference_score > 0
+    `;
   
       const conditions = [];
-      const queryParams = {};
-  
-      if (title) {
-        conditions.push('j.title LIKE @title');
-        queryParams.title = `%${title}%`;
-      }
-  
-      if (location) {
-        const locations = location.split(',').map(loc => loc.trim());
-        const locationConditions = locations.map((_, i) => `(j.location LIKE @location${i} OR j.location LIKE @stateAbbr${i})`).join(' OR ');
-        conditions.push(`(${locationConditions})`);
-        locations.forEach((loc, i) => {
-          queryParams[`location${i}`] = `%${loc}%`;
-          queryParams[`stateAbbr${i}`] = `% ${loc.substring(0, 2)},%`;
-        });
-      }
-  
-      if (experienceLevel) {
-        const experienceLevels = experienceLevel.split(',').map(level => level.trim());
-        const experienceLevelConditions = experienceLevels.map((_, i) => `j.experienceLevel = @experienceLevel${i}`).join(' OR ');
-        conditions.push(`(${experienceLevelConditions})`);
-        experienceLevels.forEach((level, i) => {
-          queryParams[`experienceLevel${i}`] = level;
-        });
-      }
+      const queryParams = {
+        title: title,
+        location: location,
+        experienceLevel: experienceLevel
+      };
   
       if (salary) {
-        conditions.push('j.salary >= @salary');
+        conditions.push('salary >= @salary');
         queryParams.salary = parseInt(salary, 10);
       }
   
@@ -404,7 +422,7 @@ const jobQueries = {
           EXISTS (
             SELECT 1 FROM job_skills js
             JOIN skills s ON js.skill_id = s.id
-            WHERE js.job_id = j.id AND s.id IN (${tagConditions})
+            WHERE js.job_id = JobScores.id AND s.id IN (${tagConditions})
           )
         `);
         parsedTags.forEach((tag, i) => {
@@ -417,13 +435,10 @@ const jobQueries = {
       }
   
       query += ` 
-        ORDER BY j.postedDate DESC
+        ORDER BY preference_score DESC, postedDate DESC
         OFFSET ${offset} ROWS
         FETCH NEXT ${pageSize} ROWS ONLY
       `;
-  
-      console.log('Constructed Query:', query);
-      console.log('Query Params:', queryParams);
   
       const request = new sql.Request();
       Object.entries(queryParams).forEach(([key, value]) => {
@@ -431,12 +446,11 @@ const jobQueries = {
       });
   
       const result = await request.query(query);
-      console.log('Query Result:', result.recordset);
   
-      // Ensure that some jobs are always returned if they exist in the last 30 days
+      // Fallback query if no results are found
       if (result.recordset.length === 0) {
-        query = `
-          SELECT 
+        let fallbackQuery = `
+          SELECT TOP ${pageSize}
             j.*,
             c.name AS company_name, 
             c.logo AS company_logo, 
@@ -458,12 +472,9 @@ const jobQueries = {
           LEFT JOIN companies c ON j.company_id = c.id
           WHERE j.postedDate >= DATEADD(day, -30, GETDATE())
           ORDER BY j.postedDate DESC
-          OFFSET ${offset} ROWS
-          FETCH NEXT ${pageSize} ROWS ONLY
         `;
   
-        const fallbackResult = await request.query(query);
-        console.log('Fallback Query Result:', fallbackResult.recordset);
+        const fallbackResult = await request.query(fallbackQuery);
         return fallbackResult.recordset;
       }
   
@@ -1012,6 +1023,8 @@ ORDER BY jp.postedDate DESC
             jp.title,
             jp.description,
             jp.salary,
+            jp.experienceLevel,
+            jp.salary_max,
             jp.postedDate,
             jp.company_id,
             c.name AS company_name, 
