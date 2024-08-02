@@ -1431,7 +1431,7 @@ button:hover {
   transition: all 0.3s ease;
   text-decoration: none;
   cursor: pointer;
-  padding: .3rem .15rem;
+  padding: .3rem .65rem;
   cursor: pointer;
   text-wrap: nowrap;
   align-items: center;
