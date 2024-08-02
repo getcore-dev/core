@@ -518,8 +518,6 @@ router.get('/jobs', async (req, res) => {
     let allJobPostings;
     let postingPage = parseInt(req.query.page) || 1;
     let pageSize = parseInt(req.query.pageSize) || 20;
-    console.log('page', postingPage);
-    console.log('pageSize', pageSize);
 
     if (isEmptySearch && user && Object.keys(userPreferences).length > 0) {
       console.log('Fetching jobs based on user preferences');
@@ -1101,6 +1099,26 @@ router.get('/link-preview/:link', cacheMiddleware(1200), async (req, res) => {
   } catch (err) {
     console.error('Error in link preview route:', err);
     res.status(500).send(err.message);
+  }
+});
+
+router.get('/recentJobsCount', cacheMiddleware(2400), async (req, res) => {
+  try {
+    const count = await jobQueries.getRecentJobCount();
+    res.json(count);
+  } catch (err) {
+    console.error('Error fetching companies count:', err);
+    res.status(500).send('Error fetching companies count');
+  }
+});
+
+router.get('/totalCompaniesCount', cacheMiddleware(2400), async (req, res) => {
+  try {
+    const count = await jobQueries.getCompaniesCount();
+    res.json(count);
+  } catch (err) {
+    console.error('Error fetching companies count:', err);
+    res.status(500).send('Error fetching companies count');
   }
 });
 

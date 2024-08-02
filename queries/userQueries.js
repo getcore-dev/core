@@ -349,29 +349,32 @@ const userQueries = {
         'jobPreferredSalary',
       ];
 
+      console.log('field', field);
+      console.log('value', value);
+  
       // Check if the field is valid
       if (!validFields.includes(field)) {
         throw new Error(`Invalid field name: ${field}`);
       }
-
+  
       if (['leetcode_url', 'linkedin_url', 'github_url'].includes(field)) {
         // Extract the username from the provided value
         switch (field) {
-        case 'leetcode_url':
-          value = value.replace(/^https?:\/\/leetcode.com\//i, '');
-          break;
-        case 'linkedin_url':
-          value = value.replace(
-            /^https?:\/\/(?:www\.)?linkedin.com\/in\//i,
-            ''
-          );
-          break;
-        case 'github_url':
-          value = value.replace(/^https?:\/\/github.com\//i, '');
-          break;
+          case 'leetcode_url':
+            value = value.replace(/^https?:\/\/leetcode.com\//i, '');
+            break;
+          case 'linkedin_url':
+            value = value.replace(
+              /^https?:\/\/(?:www\.)?linkedin.com\/in\//i,
+              ''
+            );
+            break;
+          case 'github_url':
+            value = value.replace(/^https?:\/\/github.com\//i, '');
+            break;
         }
       }
-
+  
       if (field === 'recruiter_id') {
         const recruiterQuery = `
           SELECT COUNT(*) AS count
@@ -380,12 +383,12 @@ const userQueries = {
         const recruiterRequest = new sql.Request();
         recruiterRequest.input('recruiterId', sql.VarChar, value);
         const recruiterResult = await recruiterRequest.query(recruiterQuery);
-
+  
         if (recruiterResult.recordset[0].count === 0) {
           throw new Error(`Invalid recruiter_id: ${value}`);
         }
       }
-
+  
       // Handle boolean conversion for specific fields
       if (
         field === 'settings_PrivateJobNames' ||
@@ -393,7 +396,7 @@ const userQueries = {
       ) {
         value = value === true || value === 'true'; // Ensure value is boolean
       }
-
+  
       // Determine the appropriate SQL data type
       let sqlType = sql.VarChar;
       if (
@@ -404,21 +407,26 @@ const userQueries = {
       } else if (typeof value === 'number') {
         sqlType = sql.Int;
       } else if (Array.isArray(value)) {
-        value = value.join(','); // Convert array to a comma-separated string
+        // Handle empty arrays or arrays with only empty strings
+        if (value.length === 0 || (value.length === 1 && value[0] === '')) {
+          value = null;
+        } else {
+          value = value.filter(item => item !== '').join(',');
+        }
       }
-
+  
       // Construct the query with the safe field name
       const query = `
         UPDATE users
         SET ${field} = @value
         WHERE id = @userId`;
-
+  
       // Prepare and execute the query
       const request = new sql.Request();
       request.input('value', sqlType, value);
       request.input('userId', sql.VarChar, userId);
       const result = await request.query(query);
-
+  
       if (result && result.rowsAffected === 0) {
         console.warn(`No rows updated. User ID ${userId} might not exist.`);
       } else if (result) {

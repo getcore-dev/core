@@ -98,6 +98,8 @@ const elements = {
   jobList: document.querySelector('.job-list'),
   topTags: document.querySelector('.top-tags'),
   topSkills: document.querySelector('.top-tags'),
+  loadMoreButton: document.getElementById('load-more-btn'),
+  loadingIndicator: document.getElementById('loading-indicator'),
   selectedTags:
     document.querySelector('.selected-tags') || createSelectedTagsContainer(),
 };
@@ -125,6 +127,8 @@ document.addEventListener('DOMContentLoaded', initialize);
 function initialize() {
   setupDynamicFilters();
   setupEventListeners();
+  fetchRecentJobsCount();
+  fetchTotalCompaniesCount();
   fetchTopSkills();
   fetchJobPostings();
   fetchRecentCompanies();
@@ -163,17 +167,37 @@ function setupFilter(filterType, values) {
     if (filterType === 'title') {
       const jobButtonsDiv = document.querySelector('.job-buttons');
       const titleFiltersDiv = document.querySelector('.title-filter');
-      const showFiltersButton = document.createElement('button');
       const tagsDiv = document.querySelector('.tags');
-      showFiltersButton.className = 'show-filters null-button-normal';
+      const buttonsDiv = document.createElement('div');
+      buttonsDiv.className = 'buttons';
+
+      const jobCountsSection = document.createElement('div');
+      jobCountsSection.className = 'job-counts secondary-text';
+      jobCountsSection.innerHTML = `
+        <span class="jobs-header-count">0</span> Jobs
+        <span class="companies-header-count">0</span> Companies
+      `;
+      buttonsDiv.appendChild(jobCountsSection);
+
+
+      const jobsProfileButton = document.createElement('button');
+      jobsProfileButton.className = 'submit-button-normal';
+      jobsProfileButton.innerHTML = 'Profile';
+      jobsProfileButton.addEventListener('click', () => {
+        window.location.href = '/profile/jobs';
+      });
+      buttonsDiv.appendChild(jobsProfileButton);
+
+      const showFiltersButton = document.createElement('button');
+      showFiltersButton.className = 'show-filters null-button-normal null-button-bordered';
       showFiltersButton.innerHTML = 'Filter';
-      showFiltersButton.style.margin = '0 0 0 .7rem';
       showFiltersButton.style.height = '34px';
       showFiltersButton.addEventListener('click', () => {
         sortOptions.classList.toggle('show');
         tagsDiv.classList.toggle('show');
       });
-      titleFiltersDiv.appendChild(showFiltersButton);
+      filterContainer.appendChild(buttonsDiv);
+      buttonsDiv.appendChild(showFiltersButton);
 
       /*
       const clearButton = document.createElement("button");
@@ -200,6 +224,16 @@ function setupFilter(filterType, values) {
       resetJobListings();
     });
     filterContainer.appendChild(dropdown);
+  }
+}
+
+function toggleLoadingState(isLoading) {
+  if (isLoading) {
+    elements.loadMoreButton.classList.add('hidden');
+    elements.loadingIndicator.classList.remove('hidden');
+  } else {
+    elements.loadMoreButton.classList.remove('hidden');
+    elements.loadingIndicator.classList.add('hidden');
   }
 }
 
@@ -454,30 +488,75 @@ async function fetchRecentCompanies() {
   }
 }
 
+async function fetchTotalCompaniesCount() {
+  try {
+    const response = await fetch('/api/totalCompaniesCount');
+    const companiesCount = await response.json();
+    renderCompaniesCount(companiesCount);
+  } catch (error) {
+    console.error('Error fetching recent companies count:', error);
+  }
+}
+
+function renderCompaniesCount(companiesCount) {
+  const companiesCountElement = document.querySelector('.companies-header-count');
+  companiesCountElement.textContent = companiesCount.toLocaleString();
+}
+
+async function fetchRecentJobsCount() {
+  try {
+    const response = await fetch('/api/recentJobsCount');
+    const jobsCount = await response.json();
+    renderJobsCount(jobsCount);
+  } catch (error) {
+    console.error('Error fetching recent jobs count:', error);
+  }
+}
+
+function renderJobsCount(jobsCount) {
+  const jobsCountElement = document.querySelector('.jobs-header-count');
+  jobsCountElement.textContent = jobsCount.toLocaleString();
+}
+
 function renderCompanies(companies) {
   const companyList = document.querySelector('.company-list');
-  companyList.innerHTML = companies
-    .map((company) => createCompanyElement(company).outerHTML)
-    .join('');
+  companies.forEach((company) => {
+    const companyElement = createCompanyElement(company);
+    companyList.appendChild(companyElement);
+  });
+
+  // Create the button element
+  const button = document.createElement('button');
+  button.textContent = 'View All Companies';
+  button.onclick = () => {
+    window.location.href = '/companies';
+  };
+  button.className = 'null-button-normal';
+
+  // Append the button to the company list
+  companyList.appendChild(button);
 }
 
 function createCompanyElement(company) {
   const companyElement = document.createElement('div');
   companyElement.className = 'company';
-  companyElement.onclick = () => (window.location.href = `jobs/companies/${company.id}`);
+  companyElement.onclick = (event) => {
+    event.stopPropagation();
+    window.location.href = `/jobs/company/${company.name}`;
+  };
   companyElement.innerHTML = `
     <img class="thumbnail-micro thumbnail thumbnail-regular" src="${company.logo}" alt="${company.name}" />
-    <p class="main-text secondary-text">${company.name}</p> <span class="counter red-counter">${company.job_count}</span>
+    <p class="main-text secondary-text sub-text">${company.name}</p> <span class="counter red-counter">${company.job_count}</span>
   `;
   return companyElement;
 }
 
 
 
-
 async function fetchJobPostings() {
   if (state.isLoading) return;
   state.isLoading = true;
+  toggleLoadingState(true);
 
   const { title, location, experienceLevel, salary, skills } = state.filters;
   const queryParams = new URLSearchParams({
@@ -516,10 +595,12 @@ async function fetchJobPostings() {
     }
 
     state.isLoading = false;
+    toggleLoadingState(false);
 
   } catch (error) {
     console.error('Error fetching job postings:', error);
     state.isLoading = false;
+    toggleLoadingState(false);
   }
 }
 
@@ -546,25 +627,14 @@ function renderJobPostings(jobs) {
     }
   }
 
-  // Update job count
-  updateJobCount();
-}
-
-function updateJobCount() {
-  /*
-  const jobCountElement = document.querySelector('h3');
-  if (jobCountElement) {
-    const totalJobs = elements.jobList.children.length;
-    jobCountElement.textContent = `${totalJobs} Open Jobs`;
-  }
-    */
 }
 
 function formatRelativeDate(dateString) {
   const now = new Date();
   const postedDate = new Date(dateString);
   const diffTime = Math.abs(now - postedDate);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
   const diffMonths = Math.floor(diffDays / 30);
   const diffYears = Math.floor(diffDays / 365);
 
@@ -574,8 +644,10 @@ function formatRelativeDate(dateString) {
     return `${diffMonths}m`;
   } else if (diffDays > 0) {
     return `${diffDays}d`;
+  } else if (diffHours > 0) {
+    return `${diffHours}h`;
   } else {
-    return 'Today';
+    return 'Just now';
   }
 }
 

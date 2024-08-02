@@ -19,7 +19,7 @@
   <main>
     <div class="edit-company-header">
     </div>
-    <form action="/profile/jobs" method="POST">
+    <form class="edit-company-form" action="/profile/jobs" method="POST">
       <div>
         <label class="secondary-text" for="jobPreferredTitle">Job Title:</label>
         <select class="title-select2" id="jobPreferredTitle" name="jobPreferredTitle[]" multiple="multiple">
@@ -51,171 +51,222 @@
     </form>
   </main>
   <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
       $('#subtitle').hide();
       $('#subtitle2').hide();
 
+      const commonConfig = {
+        width: '100%',
+        tags: true,
+        placeholder: "Type or select options",
+        allowClear: true,
+        createTag: function (params) {
+          return {
+            id: params.term,
+            text: params.term,
+            newTag: true
+          }
+        }
+      };
+
+      // Select2 initialization
+      $('.skills-select2, .experience-select2, .title-select2, .location-select2').select2(commonConfig);
+
 
       $('.skills-select2').select2({
-        width: '100%', // Full width of its container
-        tags: true, // Allows user to create new tags
-        placeholder: "Select preferred job skills",
+        ...commonConfig,
         tokenSeparators: [',', ' '] // Optional: Defines separators for tokenization
       });
 
       $('.experience-select2').select2({
-        width: '100%', // Full width of its container
-        tags: true, // Allows user to create new tags
-        placeholder: "Select experience levels",
+        ...commonConfig,
+
         tokenSeparators: [',', ' '] // Optional: Defines separators for tokenization
       });
 
       $('.title-select2').select2({
-        width: '100%', // Full width of its container
-        tags: true, // Allows user to create new tags
-        placeholder: "Select preferred job titles",
+        ...commonConfig,
+
         tokenSeparators: [',', ' '] // Optional: Defines separators for tokenization
       });
 
       $('.location-select2').select2({
-        width: '100%', // Full width of its container
-        tags: true, // Allows user to create new tags
-        placeholder: "Select preferred job locations",
+        ...commonConfig,
         tokenSeparators: [',', ' '] // Optional: Defines separators for tokenization
       });
     });
 
 
-document.addEventListener("DOMContentLoaded", function() {
-  const experienceSelect = document.querySelector('.experience-select2');
-  const titleSelect = document.querySelector('.title-select2');
-  const locationSelect = document.querySelector('.location-select2');
-  const skillsSelect = document.querySelector('.skills-select2');
-  let skills = [];
-  let userPreferences = null;
+    document.addEventListener("DOMContentLoaded", function () {
+      const experienceSelect = document.querySelector('.experience-select2');
+      const titleSelect = document.querySelector('.title-select2');
+      const locationSelect = document.querySelector('.location-select2');
+      const skillsSelect = document.querySelector('.skills-select2');
+      let skills = [];
+      let userPreferences = null;
 
-  // Populate experience, title, and location selects immediately
-  populateBasicSelects();
+      // Populate experience, title, and location selects immediately
+      populateBasicSelects();
 
-  // Fetch user preferences
-  fetchUserPreferences().then(() => {
-    // Once we have user preferences, populate and initialize skills select
-    populateSkillsSelect().then(() => {
-      // After skills are loaded, set all preferences
-      setUserPreferences();
-    });
-  });
-
-  function populateBasicSelects() {
-    const stateMappings = {
-      Alabama: "AL", Alaska: "AK", Arizona: "AZ", Arkansas: "AR", California: "CA",
-      Colorado: "CO", Connecticut: "CT", Delaware: "DE", Florida: "FL", Georgia: "GA",
-      Hawaii: "HI", Idaho: "ID", Illinois: "IL", Indiana: "IN", Iowa: "IA",
-      Kansas: "KS", Kentucky: "KY", Louisiana: "LA", Maine: "ME", Maryland: "MD",
-      Massachusetts: "MA", Michigan: "MI", Minnesota: "MN", Mississippi: "MS", Missouri: "MO",
-      Montana: "MT", Nebraska: "NE", Nevada: "NV", "New Hampshire": "NH", "New Jersey": "NJ",
-      "New Mexico": "NM", "New York": "NY", "North Carolina": "NC", "North Dakota": "ND",
-      Ohio: "OH", Oklahoma: "OK", Oregon: "OR", Pennsylvania: "PA", "Rhode Island": "RI",
-      "South Carolina": "SC", "South Dakota": "SD", Tennessee: "TN", Texas: "TX",
-      Utah: "UT", Vermont: "VT", Virginia: "VA", Washington: "WA", "West Virginia": "WV",
-      Wisconsin: "WI", Wyoming: "WY", "United States": "US",
-    };
-
-    Object.entries(stateMappings).forEach(([state, abbr]) => {
-      const option = new Option(state, abbr);
-      locationSelect.add(option);
-    });
-
-    const jobLevels = [
-      "Internship", "Entry Level", "Mid Level", "Senior", "Lead",
-      "Manager", "Director", "VP",
-    ];
-
-    jobLevels.forEach(level => {
-      const option = new Option(level, level);
-      experienceSelect.add(option);
-    });
-
-    const techRelatedTitles = [
-      "software engineer", "data engineer", "project manager", "developer",
-      "programmer", "analyst", "consultant", "data scientist",
-      "machine learning engineer", "ai specialist", "web developer",
-      "frontend developer", "backend developer", "full stack developer",
-      "systems engineer", "network engineer", "security engineer",
-      "database administrator", "devops engineer", "cloud engineer",
-      "site reliability engineer", "mobile developer", "application developer",
-      "blockchain developer", "cybersecurity analyst", "IT support specialist",
-      "technical support engineer", "quality assurance engineer", "test engineer",
-      "UX/UI designer", "product manager", "scrum master", "business analyst",
-      "solutions architect", "data analyst", "big data engineer", "BI developer",
-      "ETL developer", "data warehouse engineer", "robotics engineer",
-      "IoT engineer", "embedded systems engineer", "game developer",
-      "VR/AR developer", "data architect", "technical writer", "hardware engineer",
-      "IT consultant", "systems administrator", "ai", "data science",
-      "analytics", "platform engineer", "ml engineer", "technical program manager",
-    ];
-
-    techRelatedTitles.forEach(title => {
-      const option = new Option(title, title);
-      titleSelect.add(option);
-    });
-
-    // Initialize Select2 for these elements
-    $(experienceSelect).select2();
-    $(titleSelect).select2();
-    $(locationSelect).select2();
-  }
-
-  function fetchUserPreferences() {
-    return fetch('/api/profile/jobs?userId=<%= user.id %>')
-      .then(response => response.json())
-      .then(data => {
-        userPreferences = data;
-        // Set non-skills preferences immediately
-        setBasicPreferences();
-      });
-  }
-
-  function populateSkillsSelect() {
-    return fetch('/api/skills')
-      .then(response => response.json())
-      .then(data => {
-        skills = data;
-        data.forEach(skill => {
-          const option = new Option(skill.name, skill.id);
-          skillsSelect.add(option);
+      // Fetch user preferences
+      fetchUserPreferences().then(() => {
+        // Once we have user preferences, populate and initialize skills select
+        populateSkillsSelect().then(() => {
+          // After skills are loaded, set all preferences
+          setUserPreferences();
         });
-        // Initialize Select2 for skills
-        $(skillsSelect).select2();
       });
-  }
 
-  function setBasicPreferences() {
-    if (userPreferences) {
-      let {
-        jobPreferredTitle,
-        jobExperienceLevel,
-        jobPreferredLocation,
-        jobPreferredSalary,
-        jobPreferredIndustry
-      } = userPreferences;
+      function populateBasicSelects() {
+        const stateMappings = {
+          Alabama: "AL",
+          Alaska: "AK",
+          Arizona: "AZ",
+          Arkansas: "AR",
+          California: "CA",
+          Colorado: "CO",
+          Connecticut: "CT",
+          Delaware: "DE",
+          Florida: "FL",
+          Georgia: "GA",
+          Hawaii: "HI",
+          Idaho: "ID",
+          Illinois: "IL",
+          Indiana: "IN",
+          Iowa: "IA",
+          Kansas: "KS",
+          Kentucky: "KY",
+          Louisiana: "LA",
+          Maine: "ME",
+          Maryland: "MD",
+          Massachusetts: "MA",
+          Michigan: "MI",
+          Minnesota: "MN",
+          Mississippi: "MS",
+          Missouri: "MO",
+          Montana: "MT",
+          Nebraska: "NE",
+          Nevada: "NV",
+          "New Hampshire": "NH",
+          "New Jersey": "NJ",
+          "New Mexico": "NM",
+          "New York": "NY",
+          "North Carolina": "NC",
+          "North Dakota": "ND",
+          Ohio: "OH",
+          Oklahoma: "OK",
+          Oregon: "OR",
+          Pennsylvania: "PA",
+          "Rhode Island": "RI",
+          "South Carolina": "SC",
+          "South Dakota": "SD",
+          Tennessee: "TN",
+          Texas: "TX",
+          Utah: "UT",
+          Vermont: "VT",
+          Virginia: "VA",
+          Washington: "WA",
+          "West Virginia": "WV",
+          Wisconsin: "WI",
+          Wyoming: "WY",
+          "United States": "US",
+        };
 
-      $(titleSelect).val(jobPreferredTitle.split(',')).trigger('change');
-      $(experienceSelect).val(jobExperienceLevel.split(',')).trigger('change');
-      $(locationSelect).val(jobPreferredLocation.split(',')).trigger('change');
+        Object.entries(stateMappings).forEach(([state, abbr]) => {
+          const option = new Option(state, abbr);
+          locationSelect.add(option);
+        });
 
-      document.getElementById('jobPreferredSalary').value = jobPreferredSalary;
-      document.getElementById('jobPreferredIndustry').value = jobPreferredIndustry;
-    }
-  }
+        const jobLevels = [
+          "Internship", "Entry Level", "Mid Level", "Senior", "Lead",
+          "Manager", "Director", "VP",
+        ];
 
-  function setUserPreferences() {
-    if (userPreferences && userPreferences.jobPreferredSkills) {
-      const skillIds = userPreferences.jobPreferredSkills.split(',');
-      $(skillsSelect).val(skillIds).trigger('change');
-    }
-  }
-});
+        jobLevels.forEach(level => {
+          const option = new Option(level, level);
+          experienceSelect.add(option);
+        });
+
+        const techRelatedTitles = [
+          "software engineer", "data engineer", "project manager", "developer",
+          "programmer", "analyst", "consultant", "data scientist",
+          "machine learning engineer", "ai specialist", "web developer",
+          "frontend developer", "backend developer", "full stack developer",
+          "systems engineer", "network engineer", "security engineer",
+          "database administrator", "devops engineer", "cloud engineer",
+          "site reliability engineer", "mobile developer", "application developer",
+          "blockchain developer", "cybersecurity analyst", "IT support specialist",
+          "technical support engineer", "quality assurance engineer", "test engineer",
+          "UX/UI designer", "product manager", "scrum master", "business analyst",
+          "solutions architect", "data analyst", "big data engineer", "BI developer",
+          "ETL developer", "data warehouse engineer", "robotics engineer",
+          "IoT engineer", "embedded systems engineer", "game developer",
+          "VR/AR developer", "data architect", "technical writer", "hardware engineer",
+          "IT consultant", "systems administrator", "ai", "data science",
+          "analytics", "platform engineer", "ml engineer", "technical program manager",
+        ];
+
+        techRelatedTitles.forEach(title => {
+          const option = new Option(title, title);
+          titleSelect.add(option);
+        });
+
+        // Initialize Select2 for these elements
+        $(experienceSelect).select2();
+        $(titleSelect).select2();
+        $(locationSelect).select2();
+      }
+
+      function fetchUserPreferences() {
+        return fetch('/api/profile/jobs?userId=<%= user.id %>')
+          .then(response => response.json())
+          .then(data => {
+            userPreferences = data;
+            // Set non-skills preferences immediately
+            setBasicPreferences();
+          });
+      }
+
+      function populateSkillsSelect() {
+        return fetch('/api/skills')
+          .then(response => response.json())
+          .then(data => {
+            skills = data;
+            data.forEach(skill => {
+              const option = new Option(skill.name, skill.id);
+              skillsSelect.add(option);
+            });
+            // Initialize Select2 for skills
+            $(skillsSelect).select2();
+          });
+      }
+
+      function setBasicPreferences() {
+        if (userPreferences) {
+          let {
+            jobPreferredTitle,
+            jobExperienceLevel,
+            jobPreferredLocation,
+            jobPreferredSalary,
+            jobPreferredIndustry
+          } = userPreferences;
+
+          $('#jobPreferredTitle').val(jobPreferredTitle ? jobPreferredTitle.split(',') : []).trigger('change');
+          $('#jobExperienceLevel').val(jobExperienceLevel ? jobExperienceLevel.split(',') : []).trigger('change');
+          $('#jobPreferredLocation').val(jobPreferredLocation ? jobPreferredLocation.split(',') : []).trigger('change');
+
+          $('#jobPreferredSalary').val(jobPreferredSalary || '');
+          $('#jobPreferredIndustry').val(jobPreferredIndustry || '');
+        }
+      }
+
+      function setUserPreferences() {
+        if (userPreferences && userPreferences.jobPreferredSkills) {
+          const skillIds = userPreferences.jobPreferredSkills.split(',');
+          $('#jobPreferredSkills').val(skillIds.length === 1 && skillIds[0] === "" ? [] : skillIds).trigger('change');
+        }
+      }
+    });
   </script>
 </body>
 

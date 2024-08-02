@@ -176,9 +176,9 @@ p.job-description {
   gap: 5px;
   background-color: var(--light-mode-body-color);
   border-radius: 10px;
-  padding: .4rem;
+  padding: 0 0.4rem;
+  height: 34px;
   align-items: center;
-  max-height: 46px;
   white-space: nowrap;
 }
 
@@ -230,7 +230,7 @@ select:hover,
 }
 
 .job-posting-flairs>span {
-  font-size: .8rem;
+  font-size: .9rem;
 }
 
 
@@ -444,8 +444,9 @@ div.job-title-location .sub-text {
 
 .title-filter {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  gap: 1rem;
 }
 
 
@@ -483,6 +484,18 @@ div.job-title-location .sub-text {
   margin: 0;
 }
 
+div.job-counts {
+  margin-right: auto;
+}
+
+div.buttons {
+  display: flex;
+  width: 100%;
+  gap: .6rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .title-filter input,
 .location-filter input,
 .salary-filter input {
@@ -494,7 +507,7 @@ div.job-title-location .sub-text {
   box-sizing: border-box;
   background: var(--light-mode-body-color);
   border: 1.5px solid var(--border-color);
-  border-radius: 10px;
+  border-radius: 6px;
   font-size: 16px;
 }
 

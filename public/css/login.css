@@ -286,6 +286,7 @@ nav {
 #cf-turnstile {
   display: flex;
   align-items: center;
+  margin-bottom: .6rem;
   justify-content: center;
 }
 

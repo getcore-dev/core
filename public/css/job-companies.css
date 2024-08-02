@@ -17,7 +17,26 @@ div.company-info-tags {
 
 div#companies-container {
     display: flex;
-    gap: 1.4rem;
     flex-direction: column;
+    padding: 1.4rem 0;
+}
+
+div#companies-container>div {
     padding: 1.4rem 1.3rem;
+    background: var(--light-mode-main-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+div#companies-container>div:last-child {
+    border-bottom: none;
+}
+
+div#companies-container>div:hover {
+    filter: brightness(.8);
+}
+
+@media (prefers-color-scheme: dark) {
+    div#companies-container>div {
+        background: var(--dark-mode-main-color);
+    }
 }
