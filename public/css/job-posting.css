@@ -254,8 +254,9 @@ div.similar-job h4 {
 .job-details h4,
 .similar-jobs h4,
 .similar-company-jobs h4 {
-  font-size: 1.25rem;
-  margin: 1.05rem 0;
+  font-size: var(--default-sub-font-size);
+  margin: .8rem 0;
+  margin-top: 1.35rem;
 }
 
 .skill {
@@ -492,9 +493,23 @@ div.interact-buttons div {
     border-radius: 0;
   }
 
+  .container {
+    width: 100% !important;
+    border: 0 !important;
+    border: 0;
+  }
+
   @media (prefers-color-scheme: dark) {
     .job-listing-menu {
       border-color: var(--dark-mode-border-color)
+    }
+
+    .job-details h4,
+    .similar-jobs h4,
+    .similar-company-jobs h4 {
+      font-size: var(--mobile-default-sub-font-size);
+      margin: .8rem 0;
+      margin-top: 1.35rem;
     }
 
     div.similar-job {
@@ -502,8 +517,6 @@ div.interact-buttons div {
       background: var(--dark-mode-body-color);
     }
 
-    .container {
-      width: 100%;
-      border: 0;
-    }
+
   }
+}

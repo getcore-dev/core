@@ -712,7 +712,7 @@ function formatDate(date) {
         </div>
         <% if (post.tags && post.tags.length > 0) { %>
         <div class="header">
-          <h3 class="secondary-text margin-06-bottom">Tags</h3>
+          <h3 class="secondary-text sub-text margin-06-bottom">Tags</h3>
         </div>
         <div class="blog-tags-div">
           <div class="tags">
@@ -737,7 +737,7 @@ function formatDate(date) {
         <% if (similarPosts.length > 0) { %>
 
         <div class="similar-posts">
-          <h3 id="secondary-text">Explore</h3>
+          <h3 class="sub-text" id="secondary-text">Explore</h3>
           <% similarPosts.forEach(similarPost => { %>
           <div class="post" onclick="window.location.href='/posts/<%= similarPost.id %>'">
             <div class="post-content">

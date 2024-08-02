@@ -145,9 +145,7 @@
                 </p>
               </div>
               <div class="followers-info">
-                <a class="link" href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; align-items: center;gap: 5px;"> <span class="material-symbols-outlined small-icon">
-                    person
-                  </span><span id="followerCount"> <%= otheruser.followerCount %> Followers </a></span>
+                <a class="link" href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; align-items: center;gap: 5px;"> <span id="followerCount"> <%= otheruser.followerCount %> Followers </a></span>
                 <a class="link" href="/user/<%= otheruser.username %>/following" style="display: flex; align-items: center;flex-direction:row; gap: 5px;">
                   <span id="followCount"> <%= otheruser.followingCount %> Following</a></span>
               </div>
@@ -529,18 +527,12 @@
           const jobElement = document.createElement('div');
           jobElement.innerHTML = `
 <% if (otheruser.settings_PrivateJobNames) { %>
-  <div class="job-experience-image">
-    <img class="thumbnail-regular thumbnail-small" src="path/to/placeholder.png" alt="Job Experience" />
-  </div>
 <% } else { %>
   <% if (typeof experience !== 'undefined' && experience.logo) { %>
     <div class="job-experience-image">
       <img class="thumbnail-regular thumbnail-small" src="<%= experience.logo %>" alt="Job Experience" />
     </div>
   <% } else { %>
-    <div class="job-experience-image">
-      <img class="thumbnail-regular thumbnail-small" src="path/to/placeholder.png" alt="Job Experience" />
-    </div>
   <% } %>
 <% } %>
           <div class="job-experience-body">

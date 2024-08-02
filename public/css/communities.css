@@ -184,7 +184,7 @@ div.vote-interactions {
 .post-content {
   position: relative;
   flex-grow: 1;
-  padding: 1.25rem 1.3rem;
+  padding: .85rem 1.3rem;
 }
 
 
@@ -1205,8 +1205,8 @@ button.see-more {
   .jobslist {
     display: flex;
     flex-wrap: nowrap;
-    /* Prevent wrapping of job elements */
     flex-direction: row;
+    padding: .4rem 0;
     padding-left: 10px;
     padding-right: 10px;
     gap: 10px;
