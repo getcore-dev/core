@@ -579,7 +579,7 @@ add
             linkPreviewDiv.style.background = "none";
             linkPreviewDiv.style.border = "none";
             const descriptionDiv = document.createElement('div');
-            descriptionDiv.className = 'description main-text';
+            descriptionDiv.className = 'description sub-text';
 
 
             let contentWithoutMarkdown = post.content
@@ -758,7 +758,7 @@ add
             // percent chance to show a join community section below post 
             if (Math.random() < 0.06 && '<%= communityId %>' == '') {
               const joinCommunityDiv = document.createElement('div');
-              joinCommunityDiv.className = 'join-community adaptive-border-bottom';
+              joinCommunityDiv.className = 'join-community';
               joinCommunityDiv.innerHTML = ` 
               <div class="join-community-header">
               <div class="icon"><span style="color:${post.community_color};" class="material-symbols-outlined">${post.community_icon}</span></div>

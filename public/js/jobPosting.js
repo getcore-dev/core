@@ -112,10 +112,13 @@ function getSimilarJobs(jobId) {
 } </a> </h3>
               </div>
             </div>
-                <div class="job-tags margin-06-bottom">
+                <div class="job-tags sub-text secondary-text margin-06-bottom">
                   ${tagsHTML}
                 </div>
                 <div class="job-posting-information job-subtitle secondary-text">
+                                                <span class="job-date ${formatDateColor(job.postedDate)}">${formatRelativeDate(job.postedDate)}</span>
+                <span> • </span>
+
                 <span style="">${
   job.experienceLevel === 'Mid Level'
     ? 'L3/L4'
@@ -131,6 +134,7 @@ function getSimilarJobs(jobId) {
 } ${
   (job.salary_max != 0 && job.salary) ? '- $' + job.salary_max.toLocaleString() : ''
 }</span>
+
         </div>
             </div>
           `;
@@ -142,6 +146,28 @@ function getSimilarJobs(jobId) {
     .catch((error) => {
       console.error('Error fetching similar jobs:', error);
     });
+}
+
+function formatRelativeDate(dateString) {
+  const now = new Date();
+  const postedDate = new Date(dateString);
+  const diffTime = Math.abs(now - postedDate);
+  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  const diffMonths = Math.floor(diffDays / 30);
+  const diffYears = Math.floor(diffDays / 365);
+
+  if (diffYears > 0) {
+    return `${diffYears}y`;
+  } else if (diffMonths > 0) {
+    return `${diffMonths}m`;
+  } else if (diffDays > 0) {
+    return `${diffDays}d`;
+  } else if (diffHours > 0) {
+    return `${diffHours}h`;
+  } else {
+    return 'Just now';
+  }
 }
 
 function getSimilarJobsByCompany(jobId, companyName) {
@@ -188,10 +214,13 @@ function getSimilarJobsByCompany(jobId, companyName) {
 }</a> </h3>
               </div>
             </div>
-                <div class="job-tags margin-06-bottom">
+                <div class="job-tags sub-text secondary-text margin-06-bottom">
                   ${tagsHTML}
                 </div>
                 <div class="job-posting-information job-subtitle secondary-text">
+                                <span class="job-date ${formatDateColor(job.postedDate)}">${formatRelativeDate(job.postedDate)}</span>
+                <span> • </span>
+
                 <span style="">${
   job.experienceLevel === 'Mid Level'
     ? 'L3/L4'
@@ -207,6 +236,7 @@ function getSimilarJobsByCompany(jobId, companyName) {
 } ${
   job.salary_max != 0 ? '- $' + job.salary_max.toLocaleString() : ''
 }</span>
+
         </div>
 
             </div>
@@ -220,6 +250,22 @@ function getSimilarJobsByCompany(jobId, companyName) {
       console.error('Error fetching similar jobs:', error);
     });
 }
+
+function formatDateColor(dateString) {
+  const now = new Date();
+  const postedDate = new Date(dateString); 
+  // if within 2 weeks, green, if within 2 months, yellow, if older, red
+  const diffTime = Math.abs(now - postedDate);
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  if (diffDays <= 14) {
+    return 'green';
+  } else if (diffDays <= 60) {
+    return 'yellow';
+  } else {
+    return 'red';
+  }
+}
+
 
 function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   fetch(`/api/jobs/${jobId}`)

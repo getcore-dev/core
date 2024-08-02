@@ -699,6 +699,21 @@ function getFormattedSalary(salary, salaryMax) {
   return "";
 }
 
+function formatDateColor(dateString) {
+  const now = new Date();
+  const postedDate = new Date(dateString); 
+  // if within 2 weeks, green, if within 2 months, yellow, if older, red
+  const diffTime = Math.abs(now - postedDate);
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  if (diffDays <= 14) {
+    return 'green';
+  } else if (diffDays <= 60) {
+    return 'yellow';
+  } else {
+    return 'red';
+  }
+}
+
 function createJobElement(job) {
   const jobElement = document.createElement('div');
   jobElement.classList.add('job');
@@ -746,7 +761,11 @@ function createJobElement(job) {
         </div>
         </div>
         <div class="job-posting-flairs margin-06-bottom">${tagsHTML}</div>
-                            <div class="job-title-location secondary-text">
+                            <div class="job-title-location secondary-text sub-text">
+                            <div class="job-post-date ${formatDateColor(job.postedDate)} sub-text">
+  ${formatRelativeDate(job.postedDate)} 
+  </div>
+  <span style="font-size:.7rem;">•</span>
                                       <div class="experience-level sub-text">${
   job.experienceLevel === 'Mid Level'
     ? 'L3/L4'
@@ -770,9 +789,6 @@ ${job.salary || job.salary_max ? `
 <span style="font-size:.7rem;">•</span><div class="applicants sub-text">
 <span class="material-symbols-outlined">person</span>
 ${job.applicants ? job.applicants : '0'}
-</div>
-<span style="font-size:.7rem;">•</span><div class="job-post-date sub-text">
-  ${formatRelativeDate(job.postedDate)}
 </div>
                     </div>
       </div>

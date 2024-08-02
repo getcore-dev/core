@@ -48,7 +48,6 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-size: 1rem;
   font-weight: 450;
   margin: 0;
   overflow: hidden;
@@ -72,10 +71,14 @@
   -webkit-box-orient: vertical;
 }
 
+.communities .material-symbols-outlined {
+  padding-right: 15px !important;
+  padding-left: 13px !important;
+}
+
 .job-description {
-  font-size: 14px;
   font-weight: normal;
-  line-height: 1.5em;
+  line-height: 1.6rem;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -152,6 +155,10 @@ div.job-title-location .sub-text {
   margin: 0;
 }
 
+.right-side-container>div.jobslist .job:hover {
+  background: var(--light-mode-hover-color);
+}
+
 .favorite-button {
   margin-left: auto;
 }
@@ -179,6 +186,10 @@ div.job-title-location .sub-text {
   .right-side-container>div.jobslist .job {
     border-color: var(--dark-mode-border-color);
     background-color: var(--dark-mode-body-color);
+  }
+
+  .right-side-container>div.jobslist .job:hover {
+    background: var(--dark-mode-hover-color);
   }
 
   .job {
