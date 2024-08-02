@@ -83,21 +83,21 @@ router.post(
 
 router.delete('/comment/:commentId', checkAuthenticated, async (req, res) => {
   const commentId = req.params.commentId;
+  if (!req.user) {
+    return res.status(404).send('User not found');
+  }
   const userId = req.user.id;
 
   try {
     const comment = await postQueries.getCommentById(commentId);
-    const user = await userQueries.findById(userId);
+    console.log('found comment');
 
     if (!comment) {
       return res.status(404).send('Comment not found');
     }
 
-    if (!user) {
-      return res.status(404).send('User not found');
-    }
 
-    if (!user.isAdmin) {
+    if (!req.user.isAdmin) {
       return res.status(401).send('Unauthorized');
     }
 

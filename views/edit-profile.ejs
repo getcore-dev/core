@@ -75,7 +75,7 @@
       <input type="text" id="zipcode" name="zipcode" value="<%= edit_user.zipcode %>" required>
     </span>
 
-    <button id="submit-button">Submit</button>
+    <button class="margin-1-bottom" id="submit-button">Submit</button>
 
   </div>
 
@@ -84,15 +84,15 @@
     const avatarPreview = document.getElementById('avatar-preview');
 
     fileInput.style.display = 'none';
-    avatarPreview.addEventListener('click', function() {
+    avatarPreview.addEventListener('click', function () {
       fileInput.click();
     });
 
-    fileInput.addEventListener('change', function() {
+    fileInput.addEventListener('change', function () {
       if (fileInput.files && fileInput.files[0]) {
         const reader = new FileReader();
 
-        reader.onload = function(e) {
+        reader.onload = function (e) {
           avatarPreview.src = e.target.result;
         };
 
@@ -105,7 +105,7 @@
     const avatarPreviewContainer = document.querySelector('.avatar-image');
 
     // Add event listeners for mouse enter and leave events
-    avatarPreviewContainer.addEventListener('mouseenter', function() {
+    avatarPreviewContainer.addEventListener('mouseenter', function () {
       const avatarOverlay = this.querySelector('.avatar-overlay');
       avatarOverlay.style.opacity = '1';
 
@@ -114,13 +114,13 @@
       }, 3000);
     });
 
-    avatarPreviewContainer.addEventListener('mouseleave', function() {
+    avatarPreviewContainer.addEventListener('mouseleave', function () {
       const avatarOverlay = this.querySelector('.avatar-overlay');
       avatarOverlay.style.opacity = '0';
     });
-    $(document).ready(function() {
+    $(document).ready(function () {
 
-      $('#submit-button').click(function(e) {
+      $('#submit-button').click(function (e) {
         e.preventDefault(); // Prevent the default button action
 
         var formData = new FormData(); // Create a new FormData object
@@ -133,7 +133,7 @@
 
 
         // Append other form values to formData
-        $('input, select').each(function() {
+        $('input, select').each(function () {
           // For each input and select element, add it to the FormData.
           if (this.name && this.value) {
             formData.append(this.name, this.value);
@@ -147,11 +147,11 @@
           data: formData,
           processData: false, // Important: tell jQuery not to process the data
           contentType: false, // Important: tell jQuery not to set contentType
-          success: function(response) {
+          success: function (response) {
             showBannerNotification('Profile updated successfully.');
             window.location.href = '/profile';
           },
-          error: function(xhr, status, error) {
+          error: function (xhr, status, error) {
             alert('Error updating profile: ' + error);
           }
         });

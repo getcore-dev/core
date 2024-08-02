@@ -12,7 +12,7 @@
 
 <style>
   main {
-    display: block;
+    display: flex;
     overflow-y: auto;
   }
 
@@ -41,6 +41,14 @@
     align-items: center;
   }
 
+  .communities-list {
+    max-width: 800px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    width: 70%;
+    background: var(--light-mode-body-color);
+  }
+
   .communities-header {
     margin: 13px 10px;
     margin-top: 1.6rem;
@@ -48,16 +56,15 @@
   }
 
   .community-entry {
-    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
     padding: .6rem 1.3rem;
     display: flex;
     cursor: pointer;
     flex-direction: column;
   }
 
-
   .community-entry:last-child {
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 0;
   }
 
   .community-info {
@@ -73,8 +80,12 @@
 
   @media (prefers-color-scheme: dark) {
     .community-entry {
-      background-color: var(--dark-mode-body-color);
       border-color: var(--dark-mode-border-color);
+    }
+
+    .communities-list {
+      border-color: var(--dark-mode-border-color);
+      background-color: var(--dark-mode-main-color);
     }
 
     .community-flair {
@@ -87,6 +98,19 @@
 
     .community-entry:last-child {
       border-color: var(--dark-mode-main-color);
+    }
+
+    @media (max-width: 768px) {
+      .communities-list {
+        border: 0;
+        width: 100%;
+        background: 0;
+        border-radius: 0;
+      }
+
+      main {
+        display: block;
+      }
     }
 </style>
 
