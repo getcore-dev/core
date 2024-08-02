@@ -253,6 +253,10 @@ div.jobs-container>div.job-list>.job {
   cursor: pointer;
 }
 
+div.jobs-container>div.job-list>.job:hover {
+  filter: brightness(.9);
+}
+
 div.job-title-location .sub-text {
   display: inline-block;
 }
@@ -488,17 +492,44 @@ div.job-counts {
   margin-right: auto;
 }
 
+.job-post-date.green::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #0daf0d;
+  border-radius: 50%;
+  margin-right: 3px;
+}
+
+.job-post-date.yellow::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: yellow;
+  border-radius: 50%;
+  margin-right: 3px;
+}
+
+.job-post-date.red::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: red;
+  border-radius: 50%;
+  margin-right: 3px;
+}
+
 div.job-counts::before {
   content: '';
   display: inline-block;
   width: 10px;
-  /* Adjust the size as needed */
   height: 10px;
-  /* Adjust the size as needed */
   background-color: green;
   border-radius: 50%;
   margin-right: 3px;
-  /* Adjust the spacing as needed */
 }
 
 div.buttons {
@@ -782,6 +813,10 @@ div .material-symbols-outlined:not(:only-child) {
   div.jobs-container>div.job-list>.job {
     background-color: var(--dark-mode-body-color);
     border-color: var(--dark-mode-border-color);
+  }
+
+  div.jobs-container>div.job-list>.job:hover {
+    background: var(--dark-mode-main-color);
   }
 
   .title-filter .sort-options-button {

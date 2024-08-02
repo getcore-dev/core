@@ -501,7 +501,7 @@ OUTER APPLY (
       SELECT TOP 7 *
       FROM (
           SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id,
-                 p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.views, u.username, u.avatar,
+                 p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.views, u.username, u.avatar, u.firstname, u.lastname, 
                  SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
                  SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
                  SUM(CASE WHEN upa.action_type = 'DISLIKE' THEN 1 ELSE 0 END) as dislikeCount,
@@ -510,12 +510,13 @@ OUTER APPLY (
                  SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
                  DATEDIFF(MINUTE, p.created_at, GETDATE()) as minutesElapsed,
                  (SELECT shortname FROM communities WHERE id = p.communities_id) AS community_name,
+                  (SELECT community_color FROM communities WHERE id = p.communities_id) AS community_color,
                  (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count
           FROM posts p
           INNER JOIN users u ON p.user_id = u.id
           LEFT JOIN userPostActions upa ON p.id = upa.post_id
           WHERE p.deleted = 0 AND communities_id != 9
-          GROUP BY p.id, p.created_at, p.deleted,  p.title, p.content, p.subtitle, p.link, p.communities_id,
+          GROUP BY p.id, p.created_at, p.deleted,  p.title, p.content, p.subtitle, p.link, p.communities_id, u.firstname, u.lastname,
                    u.username, u.avatar, p.react_like, p.react_love, p.react_curious,
                    p.react_interesting, p.react_celebrate, p.views
       ) AS SubQuery

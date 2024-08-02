@@ -598,7 +598,7 @@ router.get('/jobs/:id', async (req, res) => {
   }
 });
 
-router.get('/jobs/:id/similar', async (req, res) => {
+router.get('/jobs/:id/similar', cacheMiddleware(2400), async (req, res) => {
   try {
     const id = req.params.id;
     const jobPosting = await jobQueries.findById(id);
@@ -610,7 +610,7 @@ router.get('/jobs/:id/similar', async (req, res) => {
   }
 });
 
-router.get('/jobs/:id/similar-company', async (req, res) => {
+router.get('/jobs/:id/similar-company', cacheMiddleware(2400), async (req, res) => {
   try {
     const id = req.params.id;
     const jobPosting = await jobQueries.findById(id);

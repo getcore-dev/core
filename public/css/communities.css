@@ -19,6 +19,13 @@ body {
   margin: 1.2rem;
 }
 
+.post-quick-info {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: .2rem;
+}
+
 .comm-flairs .material-symbols-outlined {
   font-size: .95rem;
   vertical-align: -2px;
@@ -44,6 +51,7 @@ body {
 
 .post:hover {
   cursor: pointer;
+  background: var(--light-mode-hover-color);
   filter: brightness(.95);
 }
 
@@ -64,11 +72,6 @@ main {
   background: var(--light-mode-body-color);
   width: auto;
   flex: auto;
-}
-
-
-.post:hover {
-  cursor: pointer;
 }
 
 .link {
@@ -811,11 +814,15 @@ div.community-tags {
 
 .reaction-popup button:hover {
   transform: scale(1.2);
-  background: var(--light-mode-hover-color);
+  filter: brightness(1.1);
 }
 
 div.join-community,
 div.join-website {
+  border-radius: 10px;
+  margin: 1.2rem;
+  margin-bottom: 0;
+  border: 1.5px solid var(--border-color);
   padding: .95rem 1.2rem;
 }
 
@@ -946,13 +953,6 @@ div.join-website-body {
   border: 1px solid #afd4ff;
 }
 
-.post-quick-info {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: .2rem;
-}
-
 
 .job-header {
   margin-top: 26px;
@@ -1050,6 +1050,7 @@ button.see-more {
 
   div.community {
     border: 0;
+    border-radius: 0;
     margin: 0;
     border: 0;
     padding: .65rem .85rem;
@@ -1123,6 +1124,14 @@ button.see-more {
     align-items: center;
   }
 
+  div.join-community,
+  div.join-website {
+    border: 0;
+    border-radius: 0;
+    border-bottom: 1px solid var(--border-color);
+    margin: 0;
+  }
+
   .footer-container {
     display: block;
   }
@@ -1169,6 +1178,10 @@ button.see-more {
   .thumbnail {
     display: flex;
     align-items: center;
+  }
+
+  .post-quick-info {
+    flex-direction: row;
   }
 
   .jobslist {
@@ -1425,6 +1438,16 @@ button.see-more {
     border-color: var(--dark-mode-border-color);
   }
 
+  div.join-community,
+  div.join-website {
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
+  }
+
+  .post:hover {
+    background-color: var(--dark-mode-main-color);
+  }
+
   #filterMenu button {
     color: var(--btn-text-dark);
   }
@@ -1435,6 +1458,11 @@ button.see-more {
 
   .post-type-circle {
     border-color: var(--dark-mode-body-color);
+  }
+
+  .reaction-popup button:hover {
+    background-color: var(--dark-mode-main-color);
+    filter: brightness(1.2);
   }
 
   .comments {
@@ -1658,5 +1686,6 @@ button.see-more {
       background-color: var(--dark-mode-body-color);
       border-color: var(--dark-mode-border-color);
     }
+
   }
 }
