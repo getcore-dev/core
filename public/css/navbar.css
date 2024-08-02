@@ -1417,6 +1417,7 @@ button:hover {
 #null-button-normal {
   font-size: .875rem;
   border: none;
+  height: 34px;
   display: flex;
   width: auto;
   font-weight: 550;
