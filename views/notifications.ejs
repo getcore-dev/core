@@ -17,13 +17,17 @@
 <body>
   <%- include('partials/navbar', { pagePath: 'notifications', user: user }) %>
   <main>
-        <div class="notification-header">
-      <h5> Notifications </h5>
-      </div>
     <div class="container">
       <%- include('partials/com-btn-container', { }) %>
-      <div id="notification-list" class="column">
-      </div>
+      <span style="width:100%;">
+        <div class="notification-header">
+          <h5> Notifications </h5>
+        </div>
+
+        <div id="notification-list" class="column">
+
+        </div>
+      </span>
     </div>
     <%- include('partials/footer') %>
 
@@ -125,33 +129,33 @@
       notificationText.classList.add('notification-text');
 
       switch (notification.type) {
-        case 'NEW_COMMENT':
-          notificationText.textContent = `${notification.senderUsername} commented on your post`;
-          break;
-        case 'like':
-        case 'love':
-        case 'celebrate':
-        case 'curious':
-        case 'boost':
-          notificationText.textContent = `${notification.senderUsername} reacted to your post`;
-          break;
-        case 'follow':
-          notificationText.textContent = `${notification.senderUsername} followed you`;
-          break;
-        case 'ADMIN_BAN':
-          notificationText.textContent = `You have been banned by ${notification.senderUsername}`;
-          break;
-        case 'ADMIN_UNBAN':
-          notificationText.textContent = `You have been unbanned by ${notification.senderUsername}`;
-          break;
-        case 'ADMIN_VERIFIED':
-          notificationText.textContent = `You have been verified by ${notification.senderUsername}`;
-          break;
-        case 'ADMIN_UNVERIFIED':
-          notificationText.textContent = `Your verification has been removed by ${notification.senderUsername}`;
-          break;
-        default:
-          notificationText.textContent = `You have a new notification from ${notification.senderUsername}`;
+      case 'NEW_COMMENT':
+        notificationText.textContent = `${notification.senderUsername} commented on your post`;
+        break;
+      case 'like':
+      case 'love':
+      case 'celebrate':
+      case 'curious':
+      case 'boost':
+        notificationText.textContent = `${notification.senderUsername} reacted to your post`;
+        break;
+      case 'follow':
+        notificationText.textContent = `${notification.senderUsername} followed you`;
+        break;
+      case 'ADMIN_BAN':
+        notificationText.textContent = `You have been banned by ${notification.senderUsername}`;
+        break;
+      case 'ADMIN_UNBAN':
+        notificationText.textContent = `You have been unbanned by ${notification.senderUsername}`;
+        break;
+      case 'ADMIN_VERIFIED':
+        notificationText.textContent = `You have been verified by ${notification.senderUsername}`;
+        break;
+      case 'ADMIN_UNVERIFIED':
+        notificationText.textContent = `Your verification has been removed by ${notification.senderUsername}`;
+        break;
+      default:
+        notificationText.textContent = `You have a new notification from ${notification.senderUsername}`;
       }
 
       notificationTextDiv.appendChild(notificationText);
@@ -179,7 +183,7 @@
       clearIcon.textContent = 'clear';
       clearBtn.appendChild(clearIcon);
 
-      clearBtn.onclick = async function(event) {
+      clearBtn.onclick = async function (event) {
         event.stopPropagation();
         await fetch(`/notifications/${notification.id}`, {
           method: 'DELETE'

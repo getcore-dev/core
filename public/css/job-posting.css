@@ -160,8 +160,10 @@ div.similar-job {
   cursor: pointer;
   display: flex;
   background-color: var(--light-mode-main-color);
-  border-radius: 0;
-  border-bottom: 1px solid var(--border-color);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  margin: 1.2rem;
+  margin-bottom: 0;
   padding: 1.2rem 1.33rem;
   position: relative;
 }
@@ -252,7 +254,11 @@ div.similar-job h4 {
 
 .job-listing-menu {
   background: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
   padding: 0.75rem 1.15rem;
+  margin: 1.2rem;
+
 
 }
 
@@ -310,6 +316,10 @@ div.interact-buttons div {
   box-sizing: border-box;
   max-width: 100%;
   overflow-x: auto;
+}
+
+.job-listing-menu .dropdown {
+  display: inline-block; 
 }
 
 .job-info-flairs {
@@ -389,6 +399,7 @@ div.interact-buttons div {
   }
 
   .job-listing-menu {
+    border-color: var(--dark-mode-border-color);
     background: var(--dark-mode-main-color);
   }
 
@@ -427,8 +438,26 @@ div.interact-buttons div {
     font-size: 1.1rem;
   }
 
+  div.similar-job {
+    flex-direction: column;
+    cursor: pointer;
+    display: flex;
+    background-color: var(--light-mode-main-color);
+    border-radius: 0;
+    border: 0;
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.2rem 1.33rem;
+    position: relative;
+    margin: 0;
+  }
+
   .job-info-flairs p {
     font-size: .925rem;
+  }
+
+  .job-listing-menu {
+    margin: 0;
+    border-radius: 0;
   }
 
   .container {

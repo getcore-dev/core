@@ -12,19 +12,30 @@
 
 <style>
   main {
-    display: block;
+    display: flex;
+  }
+
+  .followers {
+    max-width: 800px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    width: 100%;
+    background: var(--light-mode-body-color);
   }
 
   .follower {
+    box-sizing: border-box;
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 10px;
-    background-color: var(--light-mode-main-color);
     border-bottom: 1px solid var(--border-color);
-
     width: 100%;
     padding: 10px 13px;
+  }
+
+  .follower:last-child {
+    border-bottom: none;
   }
 
   .follower:hover {
@@ -39,9 +50,13 @@
   }
 
   @media (prefers-color-scheme: dark) {
-    .follower {
+    .followers {
       border-color: var(--dark-mode-border-color);
       background-color: var(--dark-mode-body-color);
+    }
+
+    .follower {
+      border-color: var(--dark-mode-border-color);
     }
 
     .follower:hover {

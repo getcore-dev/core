@@ -569,7 +569,7 @@ function formatDate(date) {
                       <% } %>
                       <% if (user && user.isAdmin) { %>
                       <span>
-                        <form id="admin-delete-comment-form-<%= comment.id %>" class="reactionButton" action="/admin/comment/<%= comment.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                        <form id="admin-delete-comment-form-<%= comment.id %>" class="reactionButton" action="/admin/comment/<%= comment.id %>?_method=DELETE" method="POST">
                           <input type="hidden" name="_method" value="DELETE" />
                           <button type="submit" class="admin-delete-comment-button-<%= comment.id %>">
                             <span style="color: red" class="material-symbols-outlined">gavel</span>
@@ -587,6 +587,35 @@ function formatDate(date) {
                 </div>
               </div>
             </div>
+            <script>
+              document.getElementById('admin-delete-comment-form-<%= comment.id %>').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                if (confirm('Are you sure you want to delete this comment?')) {
+                  fetch(this.action, {
+                      method: 'POST',
+                      body: new FormData(this),
+                      headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                      }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                      showBannerNotification(data.message);
+                      if (data.success) {
+                        // Optionally, remove the comment from the DOM or update the UI
+                        // For example: document.getElementById('comment-<%= comment.id %>').remove();
+                      }
+                    })
+                    .catch(error => {
+                      console.error('Error:', error);
+                      showBannerNotification({
+                        error: 'An error occurred while deleting the comment.'
+                      });
+                    });
+                }
+              });
+            </script>
 
             <div class="user-actions <%= comment.id %>">
               <% const reactionTypes = [

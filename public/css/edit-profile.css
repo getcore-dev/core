@@ -1,5 +1,8 @@
 body {
     font-family: 'Inter', sans-serif;
+    display: flex;
+    width: 100%;
+    justify-content: center;
 }
 
 .edit-profile-header {
@@ -15,6 +18,8 @@ body {
     flex-direction: column;
     background: none;
     border: none;
+    width: 100%;
+    max-width: 800px;
     border-radius: 6px;
     margin: 10px;
     box-sizing: border-box;

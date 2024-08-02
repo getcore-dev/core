@@ -578,14 +578,14 @@ ${job.location
 </ul>
 </div>
 </div>
-<div class="similar-jobs company-profile-section">
+<div class="similar-jobs company-profile-section" style="display: none;">
         <div id="loading-indicator">
           <div class="spinner-container">
             <div class="spinner"></div>
           </div>
         </div>
 </div>
-<div class="similar-company-jobs company-profile-section">
+<div class="similar-company-jobs company-profile-section" style="display: none;">
         <div id="loading-indicator">
           <div class="spinner-container">
             <div class="spinner"></div>

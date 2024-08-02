@@ -8,6 +8,7 @@ main {
 .main-container {
   max-height: calc(100dvh - var(--navbar-height));
   overflow: hidden;
+  margin-left: auto;
 }
 
 .EasyMDEContainer .CodeMirror-scroll {

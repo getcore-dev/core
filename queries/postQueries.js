@@ -29,6 +29,30 @@ const postQueries = {
     }
   },
 
+  deleteCommentById: async (commentId) => {
+    try {
+      await sql.query`UPDATE comments SET deleted = 1 WHERE id = ${commentId}`;
+    } catch (err) {
+      console.error('Database delete error:', err);
+      throw err; // Rethrow the error for the caller to handle
+    }
+  },
+  
+  getCommentById: async (commentId) => {
+    try {
+      const result = await sql.query`
+        SELECT * 
+        FROM comments 
+        WHERE id = ${commentId}`;
+
+      return result.recordset[0];
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+
   getFavoritePostByPostIdAndUserId: async (postId, userId) => {
     try {
       const result = await sql.query`

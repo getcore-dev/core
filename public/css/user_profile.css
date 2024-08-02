@@ -57,6 +57,11 @@ main {
   justify-content: space-between;
 }
 
+.social-display .material-symbols-outlined {
+  padding: 0 !important;
+  font-size: .95rem !important;
+}
+
 .edit-controls-and-follow-button button {
   flex-grow: 1;
 }
@@ -66,6 +71,7 @@ main {
 }
 
 .main-container {
+  width: 100%;
   max-width: 800px;
 }
 
@@ -571,8 +577,7 @@ button#edit-button {
   align-items: center;
 }
 
-.social-display a,
-.social-display .material-symbols-outlined {
+.social-display a {
   color: var(--active-indicator-color) !important;
   font-size: 1.2rem;
   font-weight: 500;
