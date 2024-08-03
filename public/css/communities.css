@@ -371,7 +371,7 @@ div.vote-interactions {
 
 .description,
 .job-description {
-  font-weight: normal;
+  font-weight: 500;
   line-height: 1.6rem;
   overflow: hidden;
   display: -webkit-box;
