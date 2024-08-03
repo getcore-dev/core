@@ -665,19 +665,25 @@ function formatLocation(location) {
     return fullName ? stateMappings[fullName] : state;
   };
 
+  // Helper function to get country abbreviation
+  const getCountryAbbr = (country) => {
+    const fullName = Object.keys(countryMappings).find(key => key.toLowerCase() === country.toLowerCase());
+    return fullName ? countryMappings[fullName] : country;
+  };
+
   if (parts.length === 1) {
-    return parts[0];
+    return getCountryAbbr(parts[0]);
   } else if (parts.length === 2) {
     if (isUSState(parts[1])) {
       return getStateAbbr(parts[1]);
     } else {
-      return parts[1]; // Assume it's a non-US country
+      return getCountryAbbr(parts[1]);
     }
   } else if (parts.length >= 3) {
     if (parts[2].trim().toLowerCase() === 'united states') {
       return getStateAbbr(parts[1]);
     } else {
-      return parts[2]; // Return the country for non-US locations
+      return getCountryAbbr(parts[2]);
     }
   }
 
@@ -722,6 +728,7 @@ function createJobElement(job) {
   const tagsArray = job.skills
   ? job.skills.split(',').map(skill => skill.trim())
   : [];
+  console.log(job.skills);
 
   const sortedTags = tagsArray.sort((a, b) => {
     if (state.filters.skills[a] && !state.filters.skills[b]) return -1;
@@ -745,16 +752,16 @@ function createJobElement(job) {
         <div class="company-info margin-03-bottom">
           ${
   job.company_logo
-    ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 32px; width: auto;" src="${job.company_logo}" alt="" />`
+    ? `<img class="thumbnail thumbnail-regular thumbnail-micro" src="${job.company_logo}" alt="" />`
     : ''
 }
           <div class="job-posting-company-info">
             <p class="company-name secondary-text">${job.company_name}</p>
-            <h3 class="job-title"><a href="/jobs/${job.id}">${
-  job.title
-}</a></h3>
           </div>
         </div>
+                    <h3 class="job-title"><a href="/jobs/${job.id}">${
+  job.title
+}</a></h3>
         <div class="job-posting-information job-subtitle secondary-text">
         <div class="job-description margin-03-bottom">
         ${job.description}

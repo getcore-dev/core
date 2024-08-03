@@ -100,18 +100,18 @@ function getSimilarJobs(jobId) {
               ${
   job.company_logo
     ? `
-              <img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${job.company_logo}" alt="${job.company_name} logo" />`
+              <img class="thumbnail thumbnail-regular thumbnail-micro" src="${job.company_logo}" alt="${job.company_name} logo" />`
     : ''
 }
               <div class="job-posting-company-info">
               <p  class="posting-company-name secondary-text">${
   job.company_name
 }</p>
-              <h3 class="company-name main-text"><a href="/jobs/${job.id}">${
-  job.title
-} </a> </h3>
               </div>
             </div>
+                          <h3 class="company-name main-text"><a href="/jobs/${job.id}">${
+  job.title
+} </a> </h3>
                 <div class="job-tags sub-text secondary-text margin-06-bottom">
                   ${tagsHTML}
                 </div>
@@ -202,18 +202,18 @@ function getSimilarJobsByCompany(jobId, companyName) {
               ${
   job.company_logo
     ? `
-              <img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 40px; width: auto;" src="${job.company_logo}" alt="" />`
+              <img class="thumbnail thumbnail-regular thumbnail-micro" src="${job.company_logo}" alt="" />`
     : ''
 }
               <div class="job-posting-company-info">
               <p class="posting-company-name secondary-text">${
   job.company_name
 }</p>
-              <h3 class="company-name"><a href="/jobs/${job.id}">${
-  job.title
-}</a> </h3>
               </div>
             </div>
+                          <h3 class="company-name"><a href="/jobs/${job.id}">${
+  job.title
+}</a> </h3>
                 <div class="job-tags sub-text secondary-text margin-06-bottom">
                   ${tagsHTML}
                 </div>
@@ -341,7 +341,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     : ''
 }
 
-          <div class="company-info margin-1-bottom">
+          <div class="company-info margin-03-bottom">
           ${
   job.company_logo
     ? `
@@ -354,14 +354,15 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
             <a class="secondary-text sub-text"href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</h2>
 
             </div>
-              <h3 class="company-name">
+
+            </div>
+            
+          </div>
+                        <h3 class="company-name margin-06-bottom">
               <a>
               ${job.title}
               </a>
               </h3>
-
-            </div>
-          </div>
           
           
 
@@ -410,13 +411,13 @@ ${formatDate(job.postedDate)}
 
       </div>
       
-      <div id="horizontal-scroll" class="interact-buttons margin-1-bottom">
+      <div class="interact-buttons margin-1-bottom">
       ${
   isOlderThan30Days(job)
     ? ''
     : `<div class="apply-button-container flex">
 <button id="submit-button-normal" class="margin-h-auto grow-button" onclick="window.open('${job.link}', '_blank')">
-  <span class="material-symbols-outlined">open_in_new</span>Apply <span class="number-display">
+  <span class="material-symbols-outlined">open_in_new</span><span>Apply </span><span class="number-display">
   ${job.applicants ? job.applicants : 0}
   </span>
 </button>
@@ -430,7 +431,9 @@ ${formatDate(job.postedDate)}
                 <button id="null-button-normal" onclick="favorite('job', ${job.id});" class="margin-h-auto"><span class="material-symbols-outlined">
 favorite
 </span>
+<span>
 Favorite
+</span>
 </button>
               </div>
             </div>`
@@ -441,9 +444,9 @@ Favorite
   userIsAdmin
     ? `
         <div class="delete-button-container flex">
-          <button id="null-button-normal" class="margin-h-auto" onclick="window.location.href='/jobs/delete/${job.id}'"><span class="material-symbols-outlined">
+          <button id="cancel-button-normal" onclick="window.location.href='/jobs/delete/${job.id}'"><span class="material-symbols-outlined">
 delete
-</span> Delete</button>
+</span><span>Delete</span></button>
         </div>
         
       `
@@ -452,7 +455,7 @@ delete
       <div class="share-button-container flex" style="margin-left: auto">
       <button id="null-button-normal" class="margin-h-auto grow-button null-button-bordered" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');"><span class="material-symbols-outlined">
 ios_share
-</span> Share <span class="number-display">${job.share_count ? job.share_count : 0}</span></button>
+</span><span>Share</span> <span class="number-display">${job.share_count ? job.share_count : 0}</span></button>
       </div>
 
       </div>

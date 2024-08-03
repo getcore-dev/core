@@ -32,6 +32,9 @@ div.comment-author {
 }
 
 .company-menu {
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  margin: 1.2rem;
   padding: .75rem 1.3rem;
   padding-bottom: 0;
   background: var(--light-mode-body-color);
@@ -355,6 +358,10 @@ div.jobs-company-header {
 @media screen and (max-width: 600px) {
   main {
     height: calc(100dvh - var(--mobile-navbar-height));
+  }
+
+  .company-menu {
+    margin-bottom: 0;
   }
 
   .job-flairs {

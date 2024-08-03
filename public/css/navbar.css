@@ -1046,6 +1046,7 @@ a>.menu-item {
 
 .secondary-text,
 .secondary-text:visited {
+  font-weight: 500;
   color: var(--light-mode-secondary-text-color);
 }
 
