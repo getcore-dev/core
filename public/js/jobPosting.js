@@ -411,13 +411,13 @@ ${formatDate(job.postedDate)}
 
       </div>
       
-      <div id="horizontal-scroll" class="interact-buttons margin-1-bottom">
+      <div class="interact-buttons margin-1-bottom">
       ${
   isOlderThan30Days(job)
     ? ''
     : `<div class="apply-button-container flex">
 <button id="submit-button-normal" class="margin-h-auto grow-button" onclick="window.open('${job.link}', '_blank')">
-  <span class="material-symbols-outlined">open_in_new</span>Apply <span class="number-display">
+  <span class="material-symbols-outlined">open_in_new</span><span>Apply </span><span class="number-display">
   ${job.applicants ? job.applicants : 0}
   </span>
 </button>
@@ -431,7 +431,9 @@ ${formatDate(job.postedDate)}
                 <button id="null-button-normal" onclick="favorite('job', ${job.id});" class="margin-h-auto"><span class="material-symbols-outlined">
 favorite
 </span>
+<span>
 Favorite
+</span>
 </button>
               </div>
             </div>`
@@ -442,9 +444,9 @@ Favorite
   userIsAdmin
     ? `
         <div class="delete-button-container flex">
-          <button id="cancel-button-normal" class="margin-h-auto" onclick="window.location.href='/jobs/delete/${job.id}'"><span class="material-symbols-outlined">
+          <button id="cancel-button-normal" onclick="window.location.href='/jobs/delete/${job.id}'"><span class="material-symbols-outlined">
 delete
-</span> Delete</button>
+</span><span>Delete</span></button>
         </div>
         
       `
@@ -453,7 +455,7 @@ delete
       <div class="share-button-container flex" style="margin-left: auto">
       <button id="null-button-normal" class="margin-h-auto grow-button null-button-bordered" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');"><span class="material-symbols-outlined">
 ios_share
-</span> Share <span class="number-display">${job.share_count ? job.share_count : 0}</span></button>
+</span><span>Share</span> <span class="number-display">${job.share_count ? job.share_count : 0}</span></button>
       </div>
 
       </div>

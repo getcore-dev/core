@@ -317,15 +317,15 @@ ul.locations,
 
 .interact-buttons {
   display: flex;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  max-width: 100%;
   gap: 1rem;
-}
-
-div.interact-buttons div {
-  width: 100%;
+  box-sizing: border-box;
 }
 
 .share-button-container {
-  width: 32px;
+  width: 34px;
 }
 
 .job-details {
@@ -483,17 +483,25 @@ div.interact-buttons div {
     font-size: .925rem;
   }
 
-  .job-listing-menu {
-    margin: 0;
-    border: 0;
-    border-bottom: 1px solid var(--border-color);
-    border-radius: 0;
+  .job-listing-menu .interact-buttons button span:not(.material-symbols-outlined) {
+    display: none;
   }
+
+  .job-listing-menu .interact-buttons button span.material-symbols-outlined {
+    padding: 0;
+    margin: 0;
+  }
+
+
 
   .container {
     width: 100% !important;
     border: 0 !important;
     border: 0;
+  }
+
+  .job-listing-menu {
+    margin-bottom: 0;
   }
 
   @media (prefers-color-scheme: dark) {
