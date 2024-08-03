@@ -728,6 +728,7 @@ function createJobElement(job) {
   const tagsArray = job.skills
   ? job.skills.split(',').map(skill => skill.trim())
   : [];
+  console.log(job.skills);
 
   const sortedTags = tagsArray.sort((a, b) => {
     if (state.filters.skills[a] && !state.filters.skills[b]) return -1;
@@ -751,7 +752,7 @@ function createJobElement(job) {
         <div class="company-info margin-03-bottom">
           ${
   job.company_logo
-    ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" style="height: 32px; width: auto;" src="${job.company_logo}" alt="" />`
+    ? `<img class="thumbnail thumbnail-regular thumbnail-micro" src="${job.company_logo}" alt="" />`
     : ''
 }
           <div class="job-posting-company-info">

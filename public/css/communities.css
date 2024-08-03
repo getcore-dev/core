@@ -272,6 +272,7 @@ div.vote-interactions {
 .communities {
   display: flex;
   flex-direction: row;
+  font-weight: 500;
   gap: 8px;
   align-items: center;
 }

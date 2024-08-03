@@ -32,6 +32,9 @@ div.comment-author {
 }
 
 .company-menu {
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  margin: 1.2rem;
   padding: .75rem 1.3rem;
   padding-bottom: 0;
   background: var(--light-mode-body-color);
@@ -357,6 +360,13 @@ div.jobs-company-header {
     height: calc(100dvh - var(--mobile-navbar-height));
   }
 
+  .company-menu {
+    margin: 0;
+    border-radius: 0;
+    border: 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
   .job-flairs {
     padding-bottom: 5px;
   }
@@ -375,6 +385,7 @@ div.jobs-company-header {
 
   .company-menu {
     background: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color)
   }
 
   .comments-count,
