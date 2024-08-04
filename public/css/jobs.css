@@ -581,7 +581,7 @@ div.buttons {
 .location-filter label,
 .experienceLevel-filter label,
 .salary-filter label {
-  position: absolute;
+  display: none;
   left: 8px;
   top: 9px;
   pointer-events: none;
