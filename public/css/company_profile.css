@@ -54,7 +54,7 @@ div.company-comments {
 }
 
 div.jobs {
-  padding: .75rem 1.15rem;
+  padding: 0 1.15rem;
 }
 
 div.company-menu .second-nav-links {
@@ -363,7 +363,11 @@ div.jobs-company-header {
   }
 
   .company-menu {
-    margin-bottom: 0;
+    margin: 0;
+    border-radius: 0;
+    border: 0;
+    border-bottom: 1px solid var(--border-color);
+
   }
 
   .job-flairs {

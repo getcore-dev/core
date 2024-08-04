@@ -302,22 +302,21 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         .join('');
 
       const maxTags = 15;
-      const maxSkills = 7;
+      const maxSkills = 15;
       const displayedTags = tagsArray.slice(0, maxTags);
       const displayedSkills = skillsArray.slice(0, maxSkills);
 
       const tagsHTML = displayedTags
         .map(
           (tag) =>
-            `<span class="job-flair"
-            ><a href="/tags/${tag}"><p>${tag}</p></a></span>`
+            `<a class="tag green-tag" href="/tags/${tag}">${tag}</a>`
         )
         .join('');
       const skillsHTML = displayedSkills
         .map(
           (skill) =>
             `<span class="skill"
-            ><a class="link underlined" href="/skills/${skill.trim()}"><p class="link">${skill.trim()}</p></a></span>`
+            ><a class="tag" href="/skills/jobs/${skill.trim()}">${skill.trim()}</a></span>`
         )
         .join('');
 
@@ -444,9 +443,9 @@ Favorite
   userIsAdmin
     ? `
         <div class="delete-button-container flex">
-          <button id="cancel-button-normal" onclick="window.location.href='/jobs/delete/${job.id}'"><span class="material-symbols-outlined">
+          <button id="cancel-button-normal" onclick="window.location.href='/jobs/delete/${job.id}'"><span style="padding:0;" class="material-symbols-outlined">
 delete
-</span><span>Delete</span></button>
+</span></button>
         </div>
         
       `
@@ -640,10 +639,9 @@ ${job.location
             <div class="spinner"></div>
           </div>
         </div></div>
-
             <div class="job-skills-display">
-              <h3 class="margin-1-bottom">Tags</h4>
-              ${tagsHTML}
+
+              Tags: ${tagsHTML}
               ${
   remainingTags > 0
     ? `<span class="see-more" id="secondary-text">+${remainingTags} more</span>`

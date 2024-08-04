@@ -10,7 +10,33 @@
   <link rel="shortcut icon" href="/img/core.png" />
 </head>
 
+
+
 <style>
+  .tags-container {
+    display: flex;
+    font-size: .925rem;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    max-width: 100%;
+    gap: .45rem;
+    overflow-x: auto;
+  }
+
+  .hidden-tags {
+    display: flex;
+    font-size: .925rem;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    max-width: 100%;
+    gap: .45rem;
+    overflow-x: auto;
+  }
+
   main {
     display: flex;
     overflow-y: auto;
@@ -274,7 +300,7 @@
 
       // Render hidden tags and toggle button if there are any
       if (hiddenTags.length > 0) {
-        html += `<span class="tag-toggle" onclick="toggleHiddenTags(event, this)">+${hiddenTags.length} more</span>`;
+        html += `<span class="tag-toggle sub-text secondary-text" onclick="toggleHiddenTags(event, this)">+${hiddenTags.length} more</span>`;
         html += '<div class="hidden-tags" style="display: none;">';
         hiddenTags.forEach(tag => {
           html += `<span class="tag">${tag}</span>`;
@@ -292,7 +318,7 @@
       event.stopPropagation();
       const hiddenTags = element.nextElementSibling;
       const isHidden = hiddenTags.style.display === 'none';
-      hiddenTags.style.display = isHidden ? 'inline' : 'none';
+      hiddenTags.style.display = isHidden ? 'inline-flex' : 'none';
       element.textContent = isHidden ? 'Show less' : `+${hiddenTags.children.length} more`;
     }
 

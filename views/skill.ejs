@@ -7,7 +7,6 @@
   <title>CORE - #<%= skill %></title>
   <link rel="stylesheet" href="/css/navbar.css" />
   <link rel="stylesheet" href="/css/tags.css" />
-  <link rel="stylesheet" href="/css/search.css" />
   <link rel="stylesheet" href="/css/company_profile.css" />
 
   <link rel="shortcut icon" href="/img/core.png" />
@@ -16,6 +15,7 @@
   <meta name="description" content="Search results for the tag <%= skill %> on CORE. Find related jobs, posts, and more.">
   <meta name="keywords" content="<%= skill %>, CORE, tag search, job search, post search">
   <meta name="robots" content="index, follow">
+  <meta name="skill" content="<%= skill %>">
 
   <!-- Open Graph Meta Tags -->
   <meta property="og:title" content="CORE - skill Results for <%= skill %>">
@@ -30,17 +30,24 @@
   <meta name="twitter:description" content="Search results for the skill <%= skill %> on CORE. Find related jobs, posts, and more.">
   <meta name="twitter:image" content="/img/core.png"> <!-- Replace with a suitable image if needed -->
 </head>
-<style>
-</style>
 
 <body>
   <%- include('partials/navbar', { pagePath: 'updates' }) %>
   <main>
-    <div class="tag-search-header">
-      <h4>Results for <span class="tag active"><%= skill %></span></h4>
+    <div class="tag-search-menu">
+      <div class="tag-search-header margin-06-bottom">
+        <h4>Results for <span class="tag active"><%= skill %></span></h4>
+      </div>
+      <div class="similar-tags sub-text margin-1-bottom secondary-text">
+        Similar skills:
+      </div>
     </div>
     <%
-    function getTintFromName(name) {
+
+  
+
+  
+  function getTintFromName(name) {
         let hash = 0;
         for (let i = 0; i < name.length; i++) {
           hash = name.charCodeAt(i) + ((hash << 5) - hash);
@@ -55,7 +62,9 @@
         const baseColor = "#808080"; // Light gray
         const blendedColor = blendColors(tintColor, baseColor, 0.5);
         return blendedColor;
-    }
+  }
+
+
 
 function getTintFromNameSecondary(name) {
   let hash = 0;
@@ -91,45 +100,12 @@ function blendColors(color1, color2, ratio) {
     .toString(16)
     .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
   return blendedColor;
-}%>
-    <% if (jobs.length > 0) { %>
+}
+
+%>
     <div class="jobs">
-      <% jobs.forEach((job) => { %>
-      <div class="job" onclick="window.location.href='/jobs/<%= job.id %>'">
-        <div class="job-preview">
-          <div class="job-info">
-            <div class="company-info">
-              <img class="thumbnail thumbnail-tiny" src="<%= job.company_logo %>" alt="<%= job.company_name %> logo" />
-              <p class="company-name"><%= job.company_name %></p>
-            </div>
-            <h3 class="job-title">
-              <%= job.title %>
-              <span style=""><%= job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1) %></span>
-            </h3>
-            <span style="">USD $<%= Math.floor((job.salary + job.salary_max) / 2 / 1000) %>k</span>
-            <span><%= job.location %></span>
-            <div class="job-skills">
-              <% (job.skills.split(',') || []).forEach(jobSkill => { %>
-
-              <span class="tag <% if (jobSkill.trim() === skill) { %>active<% } %>" onclick="window.location.href='/skills/<%= jobSkill.trim() %>'">
-                <p><%= jobSkill.trim() %></p>
-              </span>
-              <% }); %>
-            </div>
-          </div>
-        </div>
-      </div>
-      <% }); %>
-      <div id="load-more-container">
-        <button id="load-more-btn" class="load-more-btn null-button">Load More</button>
-      </div>
     </div>
-    <% } else { %>
-    <div class="jobs-header">
-      <p>No jobs found.</p>
-    </div>
-    <% } %>
-
+    <div id="load-more-container"></div>
     <% if (posts.length > 0) { %>
     <div class="posts">
       <% posts.forEach((post) => { %>
@@ -198,63 +174,225 @@ function blendColors(color1, color2, ratio) {
 
   </main>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      let page = 1;
-      const pageSize = 10;
-      const skill = '<%= skill %>';
-      const loadMoreButton = document.getElementById('load-more-btn');
-      const loadMoreContainer = document.getElementById('load-more-container');
+    function formatRelativeDate(dateString) {
+      const now = new Date();
+      const postedDate = new Date(dateString);
+      const diffTime = Math.abs(now - postedDate);
+      const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const diffMonths = Math.floor(diffDays / 30);
+      const diffYears = Math.floor(diffDays / 365);
 
-      function loadMoreJobs() {
-        fetch(`/api/skills/jobs/${skill}`)
-          .then(response => response.json())
-          .then(data => {
-            if (data.jobs.length > 0) {
-              page += 1;
-              // Insert new jobs into the page
-              const jobsContainer = document.querySelector('.jobs');
-              data.jobs.forEach(job => {
-                const jobElement = document.createElement('div');
-                jobElement.classList.add('job');
-                jobElement.onclick = () => window.location.href = `/jobs/${job.id}`;
-                jobElement.innerHTML = `
-                  <div class="job-preview">
-                    <div class="job-info">
-                      <div class="company-info">
-                        <img class="thumbnail thumbnail-tiny" src="${job.company_logo}" alt="${job.company_name} logo" />
-                        <p class="company-name">${job.company_name}</p>
-                      </div>
-                      <h3 class="job-title">
-                        ${job.title}
-                        <span>${job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1)}</span>
-                      </h3>
-                      <span>USD $${Math.floor((job.salary + job.salary_max) / 2 / 1000)}k</span>
-                      <span>${job.location}</span>
-                    </div>
-                  </div>
-                `;
-                jobsContainer.appendChild(jobElement);
-              });
-            } else {
-              loadMoreButton.style.display = 'none';
-            }
-          })
-          .catch(err => console.error('Error loading jobs:', err));
+      if (diffYears > 0) {
+        return `${diffYears}y`;
+      } else if (diffMonths > 0) {
+        return `${diffMonths}m`;
+      } else if (diffDays > 0) {
+        return `${diffDays}d`;
+      } else if (diffHours > 0) {
+        return `${diffHours}h`;
+      } else {
+        return 'Just now';
+      }
+    }
+
+
+    function formatLocation(location) {
+      if (!location) return "";
+
+      const parts = location.split(',').map(part => part.trim());
+
+      // Helper function to check if a string is a US state
+      const isUSState = (str) => Object.keys(stateMappings).includes(str) || Object.values(stateMappings).includes(str);
+
+      // Helper function to get state abbreviation
+      const getStateAbbr = (state) => {
+        const fullName = Object.keys(stateMappings).find(key => key.toLowerCase() === state.toLowerCase());
+        return fullName ? stateMappings[fullName] : state;
+      };
+
+      if (parts.length === 1) {
+        return parts[0];
+      } else if (parts.length === 2) {
+        if (isUSState(parts[1])) {
+          return getStateAbbr(parts[1]);
+        } else {
+          return parts[1]; // Assume it's a non-US country
+        }
+      } else if (parts.length >= 3) {
+        if (parts[2].trim().toLowerCase() === 'united states') {
+          return getStateAbbr(parts[1]);
+        } else {
+          return parts[2]; // Return the country for non-US locations
+        }
       }
 
-      // Load more on button click
-      loadMoreButton.addEventListener('click', loadMoreJobs);
+      return location.trim();
+    }
+
+    function formatDateColor(dateString) {
+      const now = new Date();
+      const postedDate = new Date(dateString);
+      // if within 2 weeks, green, if within 2 months, yellow, if older, red
+      const diffTime = Math.abs(now - postedDate);
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays <= 14) {
+        return 'green';
+      } else if (diffDays <= 60) {
+        return 'yellow';
+      } else {
+        return 'red';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      let page = 1;
+      const pageSize = 15;
+      const skillMeta = document.querySelector('meta[name="skill"]');
+      const skill = skillMeta ? skillMeta.getAttribute('content') : null;
+      const loadMoreContainer = document.getElementById('load-more-container');
+      const jobsContainer = document.querySelector('.jobs');
+      let isLoading = false;
+      let hasMoreJobs = true;
+
+      if (!skill) {
+        console.error('Skill meta tag not found');
+        return;
+      }
+
+      if (!jobsContainer) {
+        console.error('Jobs container not found');
+        return;
+      }
+
+      function createJobElement(job) {
+        const skillMeta = document.querySelector('meta[name="skill"]');
+        const skillName = skillMeta ? skillMeta.getAttribute('content') : null;
+
+        const jobElement = document.createElement('div');
+        jobElement.classList.add('job');
+        jobElement.onclick = () => window.location.href = `/jobs/${job.id}`;
+        jobElement.innerHTML = `
+          <div class="job-preview">
+            <div class="job-info">
+              <div class="company-info">
+                <img class="thumbnail thumbnail-micro thumbnail-regular" src="${job.company_logo}" alt="${job.company_name} logo" />
+                <p class="company-name secondary-text sub-text">${job.company_name}</p>
+              </div>
+              <h3 class="job-title margin-03-bottom">
+                ${job.title}
+              </h3>
+      
+<div class="job-skills secondary-text margin-06-bottom sub-text">
+  Skills:
+  ${skillName ? `
+    <span class="tag green-tag" onclick="window.location.href='/skills/${skillName}'">
+      <p>${skillName}</p>
+    </span>
+  ` : ''}
+  ${job.skills.split(',').map(skill => skill.trim()).map(jobSkill => `
+    <span class="tag" onclick="window.location.href='/skills/${jobSkill}'">
+      <p>${jobSkill}</p>
+    </span>
+  `).join('')}
+</div>
+              <div class="job-title-location secondary-text sub-text">
+              <span class="job-post-date ${formatDateColor(job.postedDate)}">${formatRelativeDate(job.postedDate)}</span>
+              <span style="font-size:.7rem;">•</span>
+                <span style="">
+                  ${job.experienceLevel === 'Mid Level'
+                    ? 'L3/L4'
+                    : job.experienceLevel === 'Entry Level'
+                      ? 'L1/L2'
+                      : job.experienceLevel === 'Senior'
+                        ? 'L5/L6'
+                        : job.experienceLevel}
+                </span>
+                <span style="font-size:.7rem;">•</span>
+                <span style="">USD $${Math.floor((job.salary + job.salary_max) / 2 / 1000)}k</span>
+                <span style="font-size:.7rem;">•</span>
+                <span><span class="material-symbols-outlined">location_on</span>
+                  ${formatLocation(job.location)}</span>
+                <span style="font-size:.7rem;">•</span>
+                <div class="applicants sub-text">
+                  <span class="material-symbols-outlined">person</span>
+                  <span>${job.applicants}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        return jobElement;
+      }
+
+      async function loadMoreJobs() {
+        if (isLoading || !hasMoreJobs) return;
+
+        isLoading = true;
+        try {
+          const response = await fetch(`/api/skills/jobs/${skill}?page=${page}&pageSize=${pageSize}`);
+          if (!response.ok) throw new Error('Network response was not ok');
+          const data = await response.json();
+
+          if (data.jobs && data.jobs.length > 0) {
+            data.jobs.forEach(job => {
+              jobsContainer.appendChild(createJobElement(job));
+            });
+            page += 1;
+          } else {
+            hasMoreJobs = false;
+            if (loadMoreContainer) {
+              loadMoreContainer.style.display = 'none';
+            }
+          }
+        } catch (err) {
+          console.error('Error loading jobs:', err);
+        } finally {
+          isLoading = false;
+        }
+      }
+
+      async function getSimilarSkills() {
+        try {
+          const response = await fetch(`/api/similar-skills/${skill}`);
+          if (!response.ok) throw new Error('Network response was not ok');
+          const data = await response.json();
+
+          const similarTagsContainer = document.querySelector('.similar-tags');
+          if (similarTagsContainer) {
+            data.forEach(similarSkill => {
+              const tagElement = document.createElement('span');
+              tagElement.classList.add('tag');
+              tagElement.textContent = similarSkill.name;
+              tagElement.onclick = () => window.location.href = `/skills/${similarSkill.name}`;
+              similarTagsContainer.appendChild(tagElement);
+            });
+          } else {
+            console.error('Similar tags container not found');
+          }
+        } catch (err) {
+          console.error('Error loading similar skills:', err);
+        }
+      }
 
       // IntersectionObserver to load more when scrolling to bottom
-      const observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          loadMoreJobs();
-        }
-      }, {
-        rootMargin: '100px'
-      });
+      if (loadMoreContainer) {
+        const observer = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting && !isLoading) {
+            loadMoreJobs();
+          }
+        }, {
+          rootMargin: '100px'
+        });
 
-      observer.observe(loadMoreContainer);
+        observer.observe(loadMoreContainer);
+      } else {
+        console.error('Load more container not found, falling back to initial load only');
+        loadMoreJobs();
+      }
+
+      // Initial load of similar skills
+      getSimilarSkills();
     });
   </script>
 

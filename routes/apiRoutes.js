@@ -861,15 +861,33 @@ router.get('/skills/jobs/:skill', async (req, res) => {
     const skill = req.params.skill;
     const skillId = await jobQueries.getSkillsId(skill);
     const page = req.query.page || 1;
-    const pageSize = req.query.pageSize || 10;
+    const pageSize = req.query.pageSize || 15;
     if (!skillId) {
-      res.status(404).send('Tag not found');
+      res.status(404).send('Skill not found');
     }
     const jobs = await jobQueries.getJobsBySkills(skillId, page, pageSize);
+    console.log(jobs.length);
     res.json({jobs});
   } catch (err) {
     console.error('Error fetching job postings:', err);
     res.status(500).send('Error fetching job postings');
+  }
+});
+
+router.get('/similar-skills/:skill', async (req, res) => {
+  try {
+    const skill = req.params.skill;
+    const skillId = await jobQueries.getSkillsId(skill);
+    console.log(skillId);
+    if (!skillId) {
+      res.status(404).send('Skill not found');
+    }
+    const similarSkills = await jobQueries.getSimilarSkills(skillId);
+    res.json(similarSkills);
+  }
+  catch (err) {
+    console.error('Error fetching similar skills:', err);
+    res.status(500).send('Error fetching similar skills');
   }
 });
 

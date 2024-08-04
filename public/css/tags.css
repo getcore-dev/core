@@ -1,9 +1,11 @@
 main {
     overflow-x: hidden;
+    overflow-y: scroll !important;
     flex-direction: column !important;
 }
 
-.jobs-header, .posts-header  {
+.jobs-header,
+.posts-header {
     width: 100%;
     margin-top: 13px;
     padding: 7px;
@@ -19,6 +21,10 @@ main {
     display: inline !important;
 }
 
+div.jobs {
+    padding: 0 !important;
+}
+
 div.posts {
     display: flex;
     flex-direction: column;
@@ -28,10 +34,69 @@ div.posts {
 
 .tag-search-header {
     width: 100%;
-    margin-top: 14px !important;
-    margin-bottom: 8px !important;
-    padding: 0 13px !important;
-  }
+}
+
+.job-title-location {
+    display: flex;
+    gap: .3rem;
+    align-items: center;
+}
+
+.job-post-date.green::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #0daf0d;
+    border-radius: 50%;
+    margin-right: 3px;
+}
+
+.job-post-date.yellow::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: yellow;
+    border-radius: 50%;
+    margin-right: 3px;
+}
+
+.job-post-date.red::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    border-radius: 50%;
+    margin-right: 3px;
+}
+
+.job-title-location .material-symbols-outlined {
+    font-size: 1.05rem;
+    vertical-align: -3px;
+}
+
+.similar-tags,
+.job-skills {
+    display: flex;
+    font-size: .925rem;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    max-width: 100%;
+    gap: .45rem;
+    overflow-x: auto;
+}
+
+.tag-search-menu {
+    background: var(--light-mode-body-color);
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 0;
+    padding: 0.75rem 1.3rem;
+    padding-bottom: 0;
+}
 
 
 .post {
@@ -43,7 +108,8 @@ div.posts {
 
 .link .material-symbols-outlined {
     font-size: .9rem;
-    vertical-align: -2px;;
+    vertical-align: -2px;
+    ;
 }
 
 div.votes {
@@ -56,32 +122,38 @@ div.votes {
 .job {
     background: none !important;
     border: 0 !important;
+    padding: 0 1.3rem !important;
     border-bottom: 1px solid var(--border-color) !important;
-    } 
+}
 
 
 .jobs {
     display: flex;
     flex-direction: column;
-    width: 100%; /* Ensures the container takes up 100% of the available width */
-    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+    width: 100%;
+    /* Ensures the container takes up 100% of the available width */
+    box-sizing: border-box;
+    /* Includes padding and border in the element's total width and height */
     -ms-overflow-style: none;
     scrollbar-width: none;
     padding: 0 13px;
-    }
+}
 
-    .jobs > div {
-        width: 100%; /* Ensures each child div takes up the full width of its grid cell */
-        box-sizing: border-box; /* Includes padding and border in the element's total width and height */
-    }
-    
-
-    .job .job-preview {
-        padding: .65rem .95rem;
-    }
+.jobs>div {
+    width: 100%;
+    /* Ensures each child div takes up the full width of its grid cell */
+    box-sizing: border-box;
+    /* Includes padding and border in the element's total width and height */
+}
 
 
-.job:hover, .post:hover {
+.job .job-preview {
+    padding: .65rem .95rem;
+}
+
+
+.job:hover,
+.post:hover {
     background: var(--light-mode-hover-color);
 }
 
@@ -89,10 +161,18 @@ div.votes {
     .job:hover {
         background: var(--dark-mode-hover-color);
     }
-    .post, .job {
+
+    .post,
+    .job {
         background: var(--dark-mode-main-color);
         border-color: var(--dark-mode-border-color) !important;
     }
+
+    .tag-search-menu {
+        background: var(--dark-mode-main-color);
+        border-bottom: 1px solid var(--dark-mode-border-color);
+    }
+
     .post:hover {
         background: var(--dark-mode-hover-color);
     }
