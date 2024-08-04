@@ -27,6 +27,9 @@ body {
   margin-right: 10px;
 }
 
+.core-logo:hover{
+  pointer:cursor;
+}
 .github-login-btn:hover {
   background-color: #443eaa;
 }

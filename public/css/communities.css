@@ -21,7 +21,7 @@ body {
 
 .post-quick-info {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-wrap: wrap;
   gap: .2rem;
 }
@@ -1038,7 +1038,7 @@ button.see-more {
   align-items: center;
   justify-content: center;
   background: transparent !important;
-  margin-bottom: 1.3rem;
+  margin: 1.3rem;
 }
 
 .see-more a {
@@ -1324,7 +1324,7 @@ button.see-more {
 
 .avatar img {
   border: 1px solid var(--border-color);
-  width: 28px;
+  width: 40px;
   aspect-ratio: 1/1;
   border-radius: 6px;
   object-fit: cover;

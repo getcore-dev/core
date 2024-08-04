@@ -30,6 +30,18 @@ const jobQueries = {
     }
   },
 
+  searchJobs: async (searchTerm) => {
+    try {
+      const result = await sql.query`
+          SELECT * FROM jobPostings WHERE title LIKE ${'%' + searchTerm + '%'}`;
+
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   getCompaniesCount: async () => {
     try {
       const result = await sql.query`

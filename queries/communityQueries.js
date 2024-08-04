@@ -29,9 +29,10 @@ const communityQueries = {
   },
 
   updateCommunityInfo: async (communityId, updateData) => {
-    const { description, rules, PrivacySetting, JobsEnabled, Tags, mini_icon } =
+    const { description, rules, community_color, PrivacySetting, JobsEnabled, banList, ModeratorIDs, Tags, mini_icon } =
       updateData;
 
+    console.log('Updating community info:', updateData);
     try {
       const community = await sql.query`
           SELECT * FROM communities WHERE id = ${communityId}`;
@@ -40,9 +41,6 @@ const communityQueries = {
         throw new Error('Community not found.');
       }
 
-      console.log(community.recordset[0]);
-
-      console.log('Updating community with ID', communityId);
 
       // compare with the existing data and update only the changed fields
       if (
@@ -52,6 +50,78 @@ const communityQueries = {
         await sql.query`
           UPDATE communities 
           SET description = ${description}
+          WHERE id = ${communityId}`;
+      }
+
+      if (
+        PrivacySetting !== undefined &&
+        PrivacySetting !== community.recordset[0].PrivacySetting
+      ) {
+        await sql.query`
+          UPDATE communities 
+          SET PrivacySetting = ${PrivacySetting}
+          WHERE id = ${communityId}`;
+      }
+
+      // Convert the radio button value to a boolean
+      const jobsEnabledBoolean = JobsEnabled === 'on';
+      
+      if (
+        jobsEnabledBoolean !== undefined &&
+        jobsEnabledBoolean !== community.recordset[0].JobsEnabled
+      ) {
+        await sql.query`
+          UPDATE communities 
+          SET JobsEnabled = ${jobsEnabledBoolean}
+          WHERE id = ${communityId}`;
+      }
+      const parseCommaSeparatedIds = (ids) => ids.split(',').map(id => id.trim()).sort().join(',');
+
+      if (banList !== undefined) {
+        const currentBanList = parseCommaSeparatedIds(community.recordset[0].banList);
+        const newBanList = parseCommaSeparatedIds(banList);
+
+        if (newBanList !== currentBanList) {
+          await sql.query`
+            UPDATE communities  
+            SET banList = ${newBanList}
+            WHERE id = ${communityId}`;
+        }
+      }
+      
+      if (Array.isArray(ModeratorIDs)) {
+        const currentModeratorIDs = parseCommaSeparatedIds(community.recordset[0].ModeratorIDs);
+        const newModeratorIDs = parseCommaSeparatedIds(ModeratorIDs.join(','));
+      
+        const currentSet = new Set(currentModeratorIDs);
+        const newSet = new Set(newModeratorIDs);
+      
+        const addedModerators = newModeratorIDs.filter(id => !currentSet.has(id));
+        const removedModerators = currentModeratorIDs.filter(id => !newSet.has(id));
+      
+        for (const id of addedModerators) {
+          await this.promoteModerator(id);
+        }
+      
+        for (const id of removedModerators) {
+          await this.removeModerator(id);
+        }
+      
+        if (newModeratorIDs.join(',') !== currentModeratorIDs.join(',')) {
+          await sql.query`
+            UPDATE communities 
+            SET ModeratorIDs = ${newModeratorIDs.join(',')}
+            WHERE id = ${communityId}`;
+        }
+      }
+
+      if (
+        community_color !== undefined &&
+        community_color !== community.recordset[0].community_color
+      ) {
+        await sql.query`
+          UPDATE communities
+          SET community_color = ${community_color}
           WHERE id = ${communityId}`;
       }
 
@@ -81,6 +151,30 @@ const communityQueries = {
       return true;
     } catch (err) {
       console.error('Database query error');
+      throw err;
+    }
+  },
+
+  promoteModerator: async (userId) => {
+    try {
+      await sql.query`
+        UPDATE community_memberships
+        SET is_moderator = 1
+        WHERE user_id = ${userId}`;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  removeModerator: async (userId) => {
+    try {
+      await sql.query`
+        UPDATE community_memberships
+        SET is_moderator = 0
+        WHERE user_id = ${userId}`;
+    } catch (err) {
+      console.error('Database query error:', err);
       throw err;
     }
   },
