@@ -59,8 +59,11 @@ router.post('/community-update', checkAuthenticated, async (req, res) => {
     description,
     rules,
     PrivacySetting,
+    community_color,
     JobsEnabled,
     Tags,
+    ModeratorIDs,
+    banList,
     mini_icon,
   } = req.body;
   console.log(req.body);
@@ -82,14 +85,17 @@ router.post('/community-update', checkAuthenticated, async (req, res) => {
   if (PrivacySetting !== undefined) updateData.PrivacySetting = PrivacySetting;
   if (JobsEnabled !== undefined) updateData.JobsEnabled = JobsEnabled;
   if (Tags !== undefined) updateData.Tags = Tags;
+  if (ModeratorIDs !== undefined) updateData.ModeratorIDs = ModeratorIDs;
+  if (banList !== undefined) updateData.banList = banList;
+  if (community_color !== undefined) updateData.community_color = community_color;
   if (mini_icon !== undefined) updateData.mini_icon = mini_icon;
 
   try {
     const success = await communityQueries.updateCommunityInfo(id, updateData);
     if (success) {
-      res.status(200).send('Community information updated successfully.');
+      res.status(200).send({ message: 'Community information updated.', success });
     } else {
-      res.status(500).send('Failed to update community information.');
+      res.status(500).send({ message: 'Error updating community information.', success });
     }
   } catch (error) {
     console.error('Server error:', error);
@@ -183,7 +189,7 @@ router.get('/:communityName/admin', checkAuthenticated, async (req, res) => {
       return res.status(404).send('Community not found');
     }
 
-    res.render('edit-community.ejs', {
+    res.status(200).render('edit-community.ejs', {
       user: req.user,
       community: community.recordset[0],
     });

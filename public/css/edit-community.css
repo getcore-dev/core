@@ -1,0 +1,21 @@
+.edit-community-form {
+    margin: 1.4rem 1.3rem;
+}
+
+.edit-community-form>div {
+    display: flex;
+    flex-direction: column;
+    margin: .6rem 0;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.edit-community-form>div>label {
+    font-weight: 500;
+}
+
+.select2-container--default .select2-search--inline .select2-search__field {
+    height: 20px !important;
+    border: 0 !important;
+    font-size: 16px !important;
+}

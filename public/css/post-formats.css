@@ -86,8 +86,8 @@
 
 .comment-header a,
 #blog-username {
-  color: var(--light-mode-text-color);
-  font-weight: 500;
+  color: var(--light-mode-secondary-text-color);
+  font-weight: 600;
 }
 
 .post-body a:visited {
@@ -153,10 +153,9 @@
   background-color: #fafafa;
   padding: .8rem 1.1rem;
   overflow: auto;
-  margin-bottom: 1.1rem;
-  border-radius: 0;
-  line-height: 1.4rem;
-  letter-spacing: 0.01rem;
+  margin: 1.2rem;
+  border-radius: 10px;
+  line-height: 1.6rem;
 }
 
 .post-body img {
@@ -193,6 +192,13 @@
     max-width: 100dvw;
   }
 
+  .solution,
+  .post-body pre {
+    margin: 0;
+    border-radius: 0;
+    margin-bottom: 1.2rem;
+  }
+
 }
 
 
@@ -217,7 +223,7 @@
 
   .comment-header a,
   #blog-username {
-    color: var(--dark-mode-text-color);
+    color: var(--dark-mode-secondary-text-color);
   }
 
   .project-link,

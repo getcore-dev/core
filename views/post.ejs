@@ -71,13 +71,13 @@
             
               // Decide the format based on the time difference
               if (minutes < 60) {
-                formattedDate = minutes + 'm ago';
+                formattedDate = minutes + 'm';
               } else if (hours < 24) {
-                formattedDate = hours + 'h ago';
+                formattedDate = hours + 'h';
               } else if (days < 365) {
-                formattedDate = days + 'd ago';
+                formattedDate = days + 'd';
               } else {
-                formattedDate = years + 'y ago';
+                formattedDate = years + 'y';
               }
               %>
             <span class="post-title-navigator">
@@ -168,12 +168,12 @@ function formatDate(date) {
 
 
               <% if (user && user.username !== post.user.username) { %>
-              <button style="border:0;background:0;" class="regular-button-normal margin-l-auto" data-username="<%= post.user.username %>" onclick="followUser('<%= post.user.id %>')">
+              <button class="regular-button-normal margin-l-auto" data-username="<%= post.user.username %>" onclick="followUser('<%= post.user.id %>')">
                 <span class="material-symbols-outlined">person_add</span>
                 <p class="bold">Follow</p>
               </button>
               <% } else { %>
-              <button style="border:0;background:0;" class="regular-button-normal margin-l-auto" onclick="window.location.href = '/user/<%= post.user.username %>'">
+              <button class="regular-button-normal margin-l-auto" onclick="window.location.href = '/user/<%= post.user.username %>'">
                 <span class="material-symbols-outlined">person</span>
                 <p class="bold">Profile</p>
               </button>
@@ -307,16 +307,16 @@ function formatDate(date) {
                   
                     // Decide the format based on the time difference
                     if (minutes < 60) {
-                      formattedDate = minutes + 'm ago';
+                      formattedDate = minutes + 'm';
                     } else if (hours < 24) {
-                      formattedDate = hours + 'h ago';
+                      formattedDate = hours + 'h';
                     } else if (days < 365) {
-                      formattedDate = days + 'd ago';
+                      formattedDate = days + 'd';
                     } else {
-                      formattedDate = years + 'y ago';
+                      formattedDate = years + 'y';
                     }
                     %>
-                This post was last edited <%= formattedDate %>
+                <span class="secondary-text">Edited: <%= formattedDate %></span>
               </p>
               <% } %>
               <div class="reaction-container">
@@ -500,11 +500,11 @@ function formatDate(date) {
                 let timeSinceComment = '';
 
                 if (days > 0) {
-                  timeSinceComment = days + 'd ago';
+                  timeSinceComment = days + 'd';
                 } else if (hours > 0) {
-                  timeSinceComment = hours + 'h ago';
+                  timeSinceComment = hours + 'h';
                 } else if (minutes > 0) {
-                  timeSinceComment = minutes + 'm ago';
+                  timeSinceComment = minutes + 'm';
                 } else {
                   timeSinceComment = 'Just now';
                 }
@@ -756,13 +756,13 @@ function formatDate(date) {
               let years = Math.floor(diff / 31536000000); 
 
               if (minutes < 60) {
-                formattedDate = minutes + ' minutes ago';
+                formattedDate = minutes + ' m';
               } else if (hours < 24) {
-                formattedDate = hours + ' hours ago';
+                formattedDate = hours + ' h';
               } else if (days < 365) {
-                formattedDate = days + ' days ago';
+                formattedDate = days + ' d';
               } else {
-                formattedDate = years + ' years ago';
+                formattedDate = years + ' y';
               }
               return formattedDate;
             }

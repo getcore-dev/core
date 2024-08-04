@@ -425,10 +425,14 @@ a:visited {
   visibility: hidden;
 }
 
+.select2-container--default .select2-selection--multiple .select2-selection__choice,
+.select2-container--default .select2-search--inline .select2-search__field {
+  margin: 0 !important;
+}
+
 .select2-container--default .select2-selection--multiple {
   width: 100%;
-  padding: 10px 20px;
-  font-family: 'Inter', sans-serif;
+  padding: 4px;
   margin: 8px 0;
   box-sizing: border-box;
   border-radius: 10px;
@@ -458,8 +462,10 @@ a:visited {
 }
 
 .EasyMDEContainer .CodeMirror.CodeMirror-focused,
-.select2-container--default.select2-container--focus .select2-selection--multiple {
+.select2-container--default.select2-container--focus .select2-selection--multiple,
+.select2-container--default .select2-selection--multiple {
   outline: none;
+  max-height: 34px !important;
   border-color: #a0cfe6 !important;
   box-shadow: 0 0 3px 1px rgba(160, 207, 230, 0.5);
 }
@@ -1353,10 +1359,36 @@ select:focus {
   box-shadow: 0 0 3px 1px rgba(160, 207, 230, 0.5);
 }
 
-input {
+input[type='text'] {
   width: 100%;
   height: 34px;
   padding: 10px 20px;
+  font-family: 'Inter', sans-serif;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border-radius: 6px;
+  background-color: var(--light-mode-body-color) !important;
+  border: 1.5px solid var(--border-color) !important;
+  font-size: 16px;
+  transition: box-shadow 0.3s ease;
+}
+
+textarea {
+  width: 100%;
+  padding: 10px 20px;
+  font-family: 'Inter', sans-serif;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border-radius: 6px;
+  background-color: var(--light-mode-body-color) !important;
+  border: 1.5px solid var(--border-color) !important;
+  font-size: 16px;
+  transition: box-shadow 0.3s ease;
+}
+
+select {
+  width: 100%;
+  height: 34px;
   font-family: 'Inter', sans-serif;
   margin: 8px 0;
   box-sizing: border-box;
@@ -1936,7 +1968,19 @@ button .material-symbols-outlined:not(:only-child) {
     border-color: var(--dark-mode-border-color) !important;
   }
 
-  input {
+  input[type='text'] {
+    background-color: var(--dark-mode-main-color) !important;
+    border: 1.5px solid var(--dark-mode-border-color) !important;
+    color: var(--dark-mode-text-color);
+  }
+
+  textarea {
+    background-color: var(--dark-mode-main-color) !important;
+    border: 1.5px solid var(--dark-mode-border-color) !important;
+    color: var(--dark-mode-text-color);
+  }
+
+  select {
     background-color: var(--dark-mode-main-color) !important;
     border: 1.5px solid var(--dark-mode-border-color) !important;
     color: var(--dark-mode-text-color);

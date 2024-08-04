@@ -49,13 +49,13 @@
 
       // Decide the format based on the time difference
       if (minutes < 60) {
-        formattedDate = minutes + ' minutes ago';
+        formattedDate = minutes + 'm';
       } else if (hours < 24) {
-        formattedDate = hours + ' hours ago';
+        formattedDate = hours + 'h';
       } else if (days < 365) {
-        formattedDate = days + ' days ago';
+        formattedDate = days + 'd';
       } else {
-        formattedDate = years + ' years ago';
+        formattedDate = years + 'y';
       }
       return formattedDate;
     }

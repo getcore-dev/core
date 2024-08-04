@@ -16,6 +16,7 @@ const userQueries = require('./queries/userQueries');
 const passportConfig = require('./config/passportConfig');
 const errorHandler = require('./middleware/errorHandling');
 const authRoutes = require('./routes/authRoutes');
+const autocompleteRoutes = require('./routes/autocompleteRoutes');
 const jobRoutes = require('./routes/jobRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const searchRoutes = require('./routes/searchRoutes');
@@ -89,6 +90,8 @@ app.use(authRoutes);
 app.use(postRoutes);
 app.use(commentRoutes);
 app.use('/admin', adminRoutes);
+app.use('/autocomplete', autocompleteRoutes);
+
 app.use('/search', searchRoutes);
 app.use('/jobs', jobRoutes);
 app.use('/api', apiRoutes);

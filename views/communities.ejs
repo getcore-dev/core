@@ -1041,9 +1041,9 @@ add
       const hours = Math.floor(minutes / 60);
       const days = Math.floor(hours / 24);
 
-      if (days > 0) return `${days}d ago`;
-      if (hours > 0) return `${hours}h ago`;
-      if (minutes > 0) return `${minutes}m ago`;
+      if (days > 0) return `${days}d`;
+      if (hours > 0) return `${hours}h`;
+      if (minutes > 0) return `${minutes}m`;
       return 'Just now';
     }
 
@@ -1274,13 +1274,13 @@ add
 
       // Decide the format based on the time difference
       if (minutes < 60) {
-        formattedDate = minutes + ' minutes ago';
+        formattedDate = minutes + ' m';
       } else if (hours < 24) {
-        formattedDate = hours + ' hours ago';
+        formattedDate = hours + ' h';
       } else if (days < 365) {
-        formattedDate = days + ' days ago';
+        formattedDate = days + ' d';
       } else {
-        formattedDate = years + ' years ago';
+        formattedDate = years + ' y';
       }
       return formattedDate;
     }

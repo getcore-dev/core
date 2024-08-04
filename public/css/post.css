@@ -529,10 +529,10 @@ div.interact-buttons {
 }
 
 .solution {
-  margin-bottom: 1.8rem;
-  display: flex;
   position: relative;
   gap: .9rem;
+  border-radius: 10px;
+  margin: 1.2rem;
   flex-direction: column;
   white-space-collapse: collapse;
   background-color: #e2efe2;

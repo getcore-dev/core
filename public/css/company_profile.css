@@ -2,11 +2,13 @@ main {
   height: calc(100dvh - var(--navbar-height));
   background-color: var(--light-mode-main-color);
   display: flex;
+  overflow: hidden;
   flex-direction: row;
 }
 
 .company-info-container {
   max-width: 800px;
+  overflow-y: scroll;
   margin-right: auto;
 }
 
@@ -381,6 +383,7 @@ div.jobs-company-header {
 
 
   .company-menu {
+    border-color: var(--dark-mode-border-color);
     background: var(--dark-mode-main-color);
   }
 

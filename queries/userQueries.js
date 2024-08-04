@@ -32,6 +32,17 @@ const userQueries = {
     }
   },
 
+  searchUsers: async (searchTerm) => {
+      try {
+        const result = await sql.query`
+          SELECT * FROM users WHERE username LIKE ${'%' + searchTerm + '%'}`;
+        return result.recordset;
+      } catch (err) {
+        console.error('Database query error:', err);
+        throw err;
+      }
+    },
+
   updateLastLogin: async (userId) => {
     try {
       await sql.query`

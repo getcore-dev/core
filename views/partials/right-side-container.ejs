@@ -2,12 +2,13 @@
 
 
        <div class="right-side-container">
+
          <div class="job-header">
            <h5>Openings</h5>
          </div>
          <div class="jobslist flex-col gap-1">
-
          </div>
+
        </div>
        <script>
          const stateMappings = {
@@ -318,7 +319,7 @@
                   <div class="job-content-header">
                     <div class="company-logo-container">
                     ${job.company_logo ? `
-                      <img loading="lazy" src="${job.company_logo}" alt="" class="thumbnail ${isMobile ? `thumbnail-tiny` : `thumbnail-tiny`} thumbnail-regular" />
+                      <img loading="lazy" src="${job.company_logo}" alt="" class="thumbnail ${isMobile ? `thumbnail-micro` : `thumbnail-tiny`} thumbnail-regular" />
                       ` : ``}
                                             <div class="job-posting-header">
                         <div class="job-company-name sub-text secondary-text">
@@ -326,34 +327,34 @@
                         <a class="secondary-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
                         
                         </div>
-                        
-                                          <div class="job-title main-text"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
-                                                    
+                                                                            
                                
                       </div>
                     
                     </div>
+                                                              <div class="job-title main-text"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
+
                     <div class="job-title-location secondary-text">
-${job.salary || job.salary_max ? `
-  <span class="job-salary sub-text">
-    ${getFormattedSalary(job.salary, job.salary_max)}
-  </span>
-  <span style="font-size:.7rem;">•</span>
-` : ``}
+                ${job.salary || job.salary_max ? `
+                  <span class="job-salary sub-text">
+                    ${getFormattedSalary(job.salary, job.salary_max)}
+                  </span>
+                  <span style="font-size:.7rem;">•</span>
+                ` : ``}
 
-<div class="location sub-text">
-  <span class="material-symbols-outlined">location_on</span>
-  ${formatLocation(job.location)}
-</div>
-  <span style="font-size:.7rem;">•</span>
+                <div class="location sub-text">
+                  <span class="material-symbols-outlined">location_on</span>
+                  ${formatLocation(job.location)}
+                </div>
+                  <span style="font-size:.7rem;">•</span>
 
-<div class="applicants sub-text"><span class="material-symbols-outlined">person</span>${job.applicants ? job.applicants : '0'}</div>
-  <span style="font-size:.7rem;">•</span>
+                <div class="applicants sub-text"><span class="material-symbols-outlined">person</span>${job.applicants ? job.applicants : '0'}</div>
+                  <span style="font-size:.7rem;">•</span>
 
-<div class="job-post-date sub-text">
-  <span class="material-symbols-outlined">calendar_month</span>
-  ${formatRelativeDate(job.postedDate)}
-</div>
+                <div class="job-post-date sub-text">
+                  <span class="material-symbols-outlined">calendar_month</span>
+                  ${formatRelativeDate(job.postedDate)}
+                </div>
 
                     </div>
 
@@ -361,9 +362,7 @@ ${job.salary || job.salary_max ? `
 
 
                   ${!isMobile ? `
-                    <div class="job-description sub-text secondary-text">
-                      <p>${job.description}</p> 
-                    </div>
+
                   ` : `
                   `}
                 </div>
@@ -401,25 +400,51 @@ ${job.salary || job.salary_max ? `
                 <div class="job-content">
                   <div class="job-content-header">
                     <div class="company-logo-container">
-                      ${job.company_logo ? `
-                      <img loading="lazy" src="${job.company_logo}" alt="" class="job-company-logo" />
+                    ${job.company_logo ? `
+                      <img loading="lazy" src="${job.company_logo}" alt="" class="thumbnail ${isMobile ? `thumbnail-tiny` : `thumbnail-tiny`} thumbnail-regular" />
                       ` : ``}
-                    </div>
-                    <div class="job-title-location">
-                      <div class="job-posting-header">
-                        <div class="job-company-name">${job.company_name}</div>
+                                            <div class="job-posting-header">
+                        <div class="job-company-name sub-text secondary-text">
+                        
+                        <a class="secondary-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
+                        
+                        </div>
+                                                                            
+                               
                       </div>
+                    
                     </div>
-                    <div class="job-flairs">
-                      <span class="job-flair" id="pay-flair">$${Math.floor((job.salary) /  1000)}k+</span>
+                                                              <div class="job-title main-text"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
+
+                    <div class="job-title-location secondary-text">
+                ${job.salary || job.salary_max ? `
+                  <span class="job-salary sub-text">
+                    ${getFormattedSalary(job.salary, job.salary_max)}
+                  </span>
+                  <span style="font-size:.7rem;">•</span>
+                ` : ``}
+
+                <div class="location sub-text">
+                  <span class="material-symbols-outlined">location_on</span>
+                  ${formatLocation(job.location)}
+                </div>
+                  <span style="font-size:.7rem;">•</span>
+
+                <div class="applicants sub-text"><span class="material-symbols-outlined">person</span>${job.applicants ? job.applicants : '0'}</div>
+                  <span style="font-size:.7rem;">•</span>
+
+                <div class="job-post-date sub-text">
+                  <span class="material-symbols-outlined">calendar_month</span>
+                  ${formatRelativeDate(job.postedDate)}
+                </div>
+
+                    </div>
+
                   </div>
-                  </div>
-                  <div class="job-title"><a>${job.title.slice(0, 40)}</a></div>
+
 
                   ${!isMobile ? `
-                    <div class="job-description sub-text secondary-text">
-                      <p>${job.description}</p>
-                    </div>
+
                   ` : `
                   `}
                 </div>
