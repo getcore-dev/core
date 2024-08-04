@@ -126,10 +126,6 @@ ul.locations {
   margin: .9rem 0;
 }
 
-.job-skills-display {
-  padding: .75rem 1.3rem;
-}
-
 div.similar-jobs-list {
   display: flex;
   flex-wrap: nowrap;
@@ -210,9 +206,6 @@ div.job-info-flairs span.material-symbols-outlined {
   padding-right: .6rem;
 }
 
-div.job-info-flairs p {
-  margin-right: .6rem !important;
-}
 
 .job-skills p {
   display: inline-block;
@@ -322,10 +315,6 @@ ul.locations,
   max-width: 100%;
   gap: 1rem;
   box-sizing: border-box;
-}
-
-.share-button-container {
-  width: 34px;
 }
 
 .job-details {
@@ -483,15 +472,6 @@ ul.locations,
     font-size: .925rem;
   }
 
-  .job-listing-menu .interact-buttons button span:not(.material-symbols-outlined) {
-    display: none;
-  }
-
-  .job-listing-menu .interact-buttons button span.material-symbols-outlined {
-    padding: 0;
-    margin: 0;
-  }
-
 
 
   .container {
@@ -501,7 +481,10 @@ ul.locations,
   }
 
   .job-listing-menu {
-    margin-bottom: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    border-bottom: 1px solid var(--border-color);
   }
 
   @media (prefers-color-scheme: dark) {

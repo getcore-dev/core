@@ -120,7 +120,7 @@ function renderJobPostings(jobPostings) {
     const tagsHTML = displayedTags
       .map(
         (tag) =>
-        `<span class="job-flair"><p>${tag}</p></span>`
+        `<a class="tag">${tag}</a>`
       )
       .join("");
     const remainingTags = tagsArray.length - maxTags;

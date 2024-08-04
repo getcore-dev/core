@@ -178,11 +178,10 @@ a:visited {
 
 .tag {
   display: inline-flex;
-  gap: 5px;
-  padding: .2rem .45rem;
-  margin: 3px 7px 0px 0px;
-  margin-bottom: 3px;
-  background-color: #6790f436;
+  font-weight: 600;
+  padding: 0;
+  margin: 0;
+  background-color: 0;
   color: #3d73e2;
   border-radius: 5px;
   font-size: .825rem;
@@ -191,16 +190,31 @@ a:visited {
   transition: all 0.3s ease;
 }
 
-.tag.active {
-  background-color: #04ca2e52;
-  color: #209939;
-  font-weight: 500;
+.tag:visited {
+  color: #3d73e2;
 }
 
 .green-tag {
-  background-color: #67f48336;
-  color: #51c63d;
+  color: #5abe6e;
 }
+
+.green-tag:visited {
+  color: #5abe6e;
+}
+
+.tag::before {
+  content: '[';
+}
+
+.tag::after {
+  content: ']';
+}
+
+.tag.active {
+  color: #209939;
+  font-weight: 600;
+}
+
 
 .red-tag {
   background-color: #f4676736;

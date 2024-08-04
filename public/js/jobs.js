@@ -740,9 +740,10 @@ function createJobElement(job) {
   const tagsHTML = displayedTags
     .map(
       (skill) =>
-        `<span class="tag ${
+        `<a href="/skills/jobs/${skill}">
+      <span onclick="event.stopPropagation()" class="tag ${
           state.filters.skills[skill] ? 'highlighted' : ''
-        }">${skill}</span>`
+        }">${skill}</span></a>`
     )
     .join('');
 
@@ -767,7 +768,7 @@ function createJobElement(job) {
         ${job.description}
         </div>
         </div>
-        <div class="job-posting-flairs margin-06-bottom">${tagsHTML}</div>
+        <div class="job-posting-flairs margin-06-bottom secondary-text">Skills:${tagsHTML}</div>
                             <div class="job-title-location secondary-text sub-text">
                             <div class="job-post-date ${formatDateColor(job.postedDate)} sub-text">
   ${formatRelativeDate(job.postedDate)} 

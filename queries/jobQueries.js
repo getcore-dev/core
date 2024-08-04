@@ -1858,14 +1858,12 @@ getCompanyByName: async (name) => {
     }
   },
 
-  getSkillsId: async (tagName) => {
+  getSkillsId: async (skillName) => {
     try {
-      const pool = await sql.connect();
+      const jobTagResult = await sql.query`
+        SELECT id FROM skills WHERE name = ${skillName}
+      `;
 
-      const jobTagResult = await pool
-        .request()
-        .input('tagName', sql.NVarChar, tagName)
-        .query('SELECT id FROM skills WHERE name = @tagName');
 
       if (jobTagResult.recordset.length > 0) {
         return jobTagResult.recordset[0].id;
@@ -1878,7 +1876,30 @@ getCompanyByName: async (name) => {
     }
   },
 
-  getJobsBySkills: async (tagId, page = 1, pageSize = 10) => {
+  getSimilarSkills: async (skillId) => {
+    try {
+      const result = await sql.query(`
+        SELECT TOP 9 s.name, COUNT(*) as skill_count
+        FROM job_skills js
+        JOIN skills s ON js.skill_id = s.id
+        WHERE js.job_id IN (
+          SELECT job_id
+          FROM job_skills
+          WHERE skill_id = '${skillId}'
+        )
+        AND js.skill_id != '${skillId}'
+        GROUP BY s.id, s.name
+        ORDER BY skill_count DESC
+      `);
+  
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  getJobsBySkills: async (skillId, page = 1, pageSize = 15) => {
     try {
       const offset = (page - 1) * pageSize;
       const result = await sql.query(`
@@ -1894,7 +1915,7 @@ getCompanyByName: async (name) => {
         WHERE JobPostings.id IN (
           SELECT job_id
           FROM job_skills
-          WHERE skill_id = '${tagId}'
+          WHERE skill_id = '${skillId}'
         )
         ORDER BY JobPostings.postedDate DESC
         OFFSET ${offset} ROWS
