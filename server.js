@@ -29,5 +29,5 @@ app.listen(environment.port, () => {
   // Schedule the first run of the job board service
   setTimeout(() => {
     runJobBoardService();
-  }, 5000); // Wait 5 seconds after server start before first run
+   }, 5000); // Wait 5 seconds after server start before first run
 });
