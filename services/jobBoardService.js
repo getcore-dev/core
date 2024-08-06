@@ -1,5 +1,7 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const OpenAI = require('openai');
+const { zodResponseFormat } = require('openai/helpers/zod');
+const { z } = require('zod');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
@@ -23,8 +25,10 @@ class JobProcessor {
     this.DELAY_BETWEEN_REQUESTS = 3000; // 3 seconds delay between requests
     this.DELAY_BETWEEN_SEARCHES = 10000; // 10 seconds delay between searches
     this.MAX_PAGES_PER_SEARCH = 3; // Limit to 3 pages per search term
+    this.jobBoardPlatforms = ['greenhouse.io', 'ashbyhq.com', 'myworkday.com', 'lever.co'];
+    this.LINKEDIN_SEARCH_DELAY = 60000; // 1 minute delay between LinkedIn searches
+    this.MAX_LINKEDIN_PAGES = 5; // Limit to 5 pages per LinkedIn search
   }
-
   async init() {
     await this.loadProcessedLinks();
   }
@@ -291,25 +295,19 @@ class JobProcessor {
       const textContent = $('body').text().replace(/\s\s+/g, ' ').trim();
   
       let extractedData;
-      try {
+
         if (this.useGemini) {
           extractedData = await this.useGeminiAPI(link, textContent);
+          extractedData = this.validateAndCleanJobData(extractedData);
         } else {
           extractedData = await this.useChatGPTAPI(link, textContent);
         }
   
-        extractedData = this.validateAndCleanJobData(extractedData);
-  
-        if (!this.isTechJob(extractedData.title)) {
-          console.log(`Skipping non-tech job: ${extractedData.title}`);
-          return { skipped: true };
-        }
-  
-      } catch (error) {
-        throw error;
-      }
-  
       await this.saveProcessedLink(link);
+
+      if (extractedData.skipped) {
+        return { skipped: true };
+      }
       return extractedData;
     } catch (error) {
       console.error(`Error processing job link ${link}:`, error);
@@ -353,9 +351,42 @@ class JobProcessor {
   }
 
   async useChatGPTAPI(link, textContent) {
+    const jobResponse = z.object({
+      title: z.string(),
+      company_name: z.string(),
+      company_description: z.string(),
+      company_industry: z.string(),
+      company_size: z.string(),
+      company_stock_symbol: z.string(),
+      company_logo: z.string(),
+      company_founded: z.string().nullable(),
+      location: z.string(),
+      salary: z.number(),
+      salary_max: z.number(),
+      experience_level: z.string(),
+      skills: z.string(),
+      tags: z.string(),
+      description: z.string(),
+      benefits: z.string(),
+      additional_information: z.string(),
+      PreferredQualifications: z.string(),
+      MinimumQualifications: z.string(),
+      Responsibilities: z.string(),
+      Requirements: z.string(),
+      NiceToHave: z.string(),
+      Schedule: z.string(),
+      HoursPerWeek: z.number(),
+      H1BVisaSponsorship: z.boolean(),
+      IsRemote: z.boolean(),
+      EqualOpportunityEmployerInfo: z.string(),
+      Relocation: z.boolean()
+    });
+
+
     const prompt = this.generatePrompt(link, textContent);
     try {
-      const completion = await this.openai.chat.completions.create({
+      const completion = await this.openai.beta.chat.completions.parse({
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
@@ -363,12 +394,20 @@ class JobProcessor {
           },
           { role: 'user', content: prompt },
         ],
-        model: 'gpt-4o-mini',
+        response_format: zodResponseFormat(jobResponse, 'jobResponse')
       });
 
-      const responseContent = completion.choices[0].message.content;
-      const cleanedResponse = responseContent.match(/\{.*\}/s)?.[0] || '';
-      return JSON.parse(cleanedResponse);
+      const message = completion.choices[0]?.message;
+      console.log('OpenAI API Response:', message);
+      console.log('Parsed:', message.parsed);
+      const jobPosting = message.parsed;
+
+      if (this.isTechJob(jobPosting.title)) {
+        return jobPosting;
+      } else {
+        console.log(`Skipping non-tech job: ${jobPosting.title}`);
+        return { skipped: true };
+      }
     } catch (error) {
       console.error('OpenAI API Error:', error.message);
       throw error;
@@ -382,7 +421,7 @@ class JobProcessor {
       - title (e.g., Software Engineer, Data Analyst, include if there is a specific team or project in the title like :'Software Engineer, Frontend'. if the title is not something related to computer science or software engineering, please DO NOT include it)
       - company_name NVARCHAR(50) (as simple as possible and you can tell the company name from the job posting link: ${link})
       - company_description NVARCHAR(MAX)(write a short paragraph about the company, where they're located, their mission, etc)
-      - company_industry (e.g., Technology, Healthcare, Finance, etc.)
+      - company_industry (just write down the general industry of the company, like tech, healthcare, finance, etc, those are not the only options.)
       - company_size (e.g., 1-10, 11-50, 51-200, 201-500, 501-1000, 1001-5000, 5001-10000, 10001+)
       - company_stock_symbol (if public, otherwise leave blank)
       - company_logo (in the format of /src/<company-name>logo.png do not include space in the company logo)
@@ -393,7 +432,7 @@ class JobProcessor {
       - experience_level ("Internship", "Entry Level", "Junior", "Mid Level", "Senior", "Lead" or "Manager" only)
       - skills (6-10 skills, prefer single word skills, as a comma-separated list)
       - tags (at least 10, these should be different from skills and are things commonly searched related to the job. e.g., "remote", "healthcare", "startup" as a comma-separated list)
-      - description (try to take up to 3 paragraphs from the original source)
+      - description (write this in the format of "<company name> is looking for a" try to take up to 3 paragraphs from the original source)
       - benefits (as a comma-separated list) 
       - additional_information (blank if nothing detected in the job posting, otherwise provide any additional information that you think is relevant to the job posting)
       - PreferredQualifications (if available)
@@ -401,11 +440,11 @@ class JobProcessor {
       - Responsibilities (responsibilities of the job)
       - Requirements (requirements of the job)
       - NiceToHave (nice to have skills or experience)
-      - Schedule (mon-fri, 9-5, etc.)
-      - HoursPerWeek (integer only)
-      - H1BVisaSponsorship BIT
-      - IsRemote BIT
-      - EqualOpportunityEmployerInfo NVARCHAR(MAX)
+      - Schedule (assume monday to friday, 9am to 5pm, if not specified, default to this)
+      - HoursPerWeek (integer only, this can be defaulted to 40 for full-time, and 20 for part-time. If not specified, default to 40)
+      - H1BVisaSponsorship BIT (assume no if not specified)
+      - IsRemote BIT (if the job location is remote or n/a then assume yes)
+      - EqualOpportunityEmployerInfo NVARCHAR(MAX) (if available, attempt to give the companie's equal opportunity employer information)
       - Relocation BIT
       Provide the extracted information in JSON format.
     `;
@@ -487,61 +526,207 @@ class JobProcessor {
     );
   }
 
-  async start() {
-    await this.init();
-    console.log('Running job processor');
-  
-    const companies = await jobQueries.getCompanies();
-    const processedJobTitles = new Set();
-  
-    // Phase 1: Process regular job boards
-    for (const company of companies.filter(c => c.job_board_url && !c.job_board_url.includes('linkedin.com'))) {
-      const result = await this.collectJobLinks(company);
-      const links = result.links;
-      for (const link of links) {
-        try {
-          const jobData = await this.processJobLinkWithRetry(link);
-          if (jobData && !jobData.error && !jobData.alreadyProcessed && !jobData.skipped) {
-            await this.createJobPosting(jobData, company.id, link);
-            processedJobTitles.add(jobData.title);
-            console.log(`Processed job data for ${link}`);
+  getLinkedInSearchTerms(processedJobTitles) {
+    const defaultTerms = this.getDefaultTechJobTitles();
+    return Array.from(new Set([...processedJobTitles, ...defaultTerms]));
+  }
+
+  async crawlLinkedIn(searchTerm) {
+    const jobs = new Set();
+    const encodedTerm = encodeURIComponent(searchTerm);
+    const baseUrl = `https://www.linkedin.com/jobs/search/?keywords=${encodedTerm}&f_TPR=r86400`;
+
+    console.log(`Crawling LinkedIn for: ${searchTerm}`);
+
+    for (let page = 0; page < this.MAX_LINKEDIN_PAGES; page++) {
+      const pageUrl = `${baseUrl}&start=${page * 25}`;
+      try {
+        const response = await this.makeRequest(pageUrl);
+        const $ = cheerio.load(response.data);
+
+        $('.job-card-container').each((index, element) => {
+          const jobLink = $(element).find('.job-card-container__link').attr('href');
+          const jobTitle = $(element).find('.job-card-list__title').text().trim();
+          const companyName = $(element).find('.job-card-container__company-name').text().trim();
+
+          if (jobLink && this.isTechJob(jobTitle)) {
+            jobs.add({
+              url: new URL(jobLink, baseUrl).href,
+              title: jobTitle,
+              company_name: companyName
+            });
           }
-        } catch (error) {
-          console.error(`Error processing job link ${link}:`, error);
+        });
+        console.log(jobs);
+
+        if (!this.hasNextPage($, pageUrl)) {
+          break;
         }
         
+
         await this.delay(this.DELAY_BETWEEN_REQUESTS);
+      } catch (error) {
+        console.error(`Error crawling LinkedIn page for ${searchTerm}:`, error);
+        break;
       }
     }
-  
-    console.log('Regular job board processing completed.');
 
-    // Phase 2: Search LinkedIn for additional jobs
-    console.log('Starting LinkedIn job search');
-    const linkedInSearchTerms = Array.from(processedJobTitles)
-      .concat(this.getDefaultTechJobTitles())
-      .filter((title, index, self) => self.indexOf(title) === index); // Remove duplicates
+    return Array.from(jobs);
+  }
 
-    const allLinkedInJobs = new Set();
-    for (const searchTerm of linkedInSearchTerms) {
-      await this.searchLinkedInJobs(allLinkedInJobs, searchTerm);
-    }
-
-    // Process LinkedIn jobs
-    for (const jobData of allLinkedInJobs) {
+  async processJobLinks(links, companyId, isLinkedIn = false) {
+    for (const link of links) {
       try {
-        if (!jobData.alreadyProcessed && !jobData.skipped) {
-          await this.createJobPosting(jobData, null, jobData.url);
-          console.log(`Processed LinkedIn job data for ${jobData.url}`);
+        let jobData;
+        if (isLinkedIn) {
+          jobData = await this.processLinkedInJob(link);
+        } else {
+          jobData = await this.processJobLinkWithRetry(link);
+        }
+
+        if (jobData && !jobData.error && !jobData.alreadyProcessed && !jobData.skipped) {
+          await this.createJobPosting(jobData, companyId, link.url || link);
+          console.log(`Processed job data for ${link.url || link}`);
         }
       } catch (error) {
-        console.error(`Error processing LinkedIn job ${jobData.url}:`, error);
+        console.error(`Error processing job link ${link.url || link}:`, error);
       }
       
       await this.delay(this.DELAY_BETWEEN_REQUESTS);
     }
+  }
+
+  async processLinkedInJob(jobData) {
+    if (this.processedLinks.has(jobData.url)) {
+      console.log('LinkedIn job already processed:', jobData.url);
+      return { alreadyProcessed: true };
+    }
   
-    console.log('Job processing completed, including LinkedIn searches.');
+    try {
+      console.log('Processing LinkedIn job:', jobData.url);
+      const response = await this.makeRequest(jobData.url);
+      const $ = cheerio.load(response.data);
+  
+      const extractedData = {
+        title: $('.job-details-jobs-unified-top-card__job-title').text().trim(),
+        company_name: $('.job-details-jobs-unified-top-card__company-name').text().trim(),
+        location: $('.job-details-jobs-unified-top-card__bullet').first().text().trim(),
+        job_type: $('.job-details-jobs-unified-top-card__job-insight:contains("Internship")').text().trim(),
+        salary_range: $('.job-details-jobs-unified-top-card__job-insight:contains("$")').text().trim(),
+        description: $('.jobs-description__content').text().trim(),
+        skills: $('.job-details-how-you-match-card__skills-item-subtitle').map((i, el) => $(el).text().trim()).get().join(', '),
+        company_details: {
+          size: $('.job-details-jobs-unified-top-card__job-insight:contains("employees")').text().trim(),
+          industry: $('div.t-14:contains("Technology, Information and Internet")').first().text().trim()
+        },
+        application_info: {
+          total_applicants: $('.job-details-jobs-unified-top-card__applicant-count').text().trim(),
+          post_date: $('time').attr('datetime')
+        },
+        benefits: $('.jobs-description__content ul li').map((i, el) => $(el).text().trim()).get().join(', ')
+      };
+  
+      // Extract qualifications
+      $('.jobs-description__content h3').each((i, el) => {
+        const header = $(el).text().trim().toLowerCase();
+        const content = $(el).next('ul').find('li').map((i, li) => $(li).text().trim()).get().join('; ');
+        
+        if (header.includes('qualifications')) {
+          extractedData.qualifications = content;
+        } else if (header.includes('responsibilities')) {
+          extractedData.responsibilities = content;
+        }
+      });
+  
+      // Check if it's a tech job
+      if (this.isTechJob(extractedData.title)) {
+        const processedData = this.useGemini ? 
+          await this.useGeminiAPI(jobData.url, JSON.stringify(extractedData)) :
+          await this.useChatGPTAPI(jobData.url, JSON.stringify(extractedData));
+  
+        await this.saveProcessedLink(jobData.url);
+        return this.validateAndCleanJobData(processedData);
+      } else {
+        console.log(`Skipping non-tech job: ${extractedData.title}`);
+        return { skipped: true };
+      }
+    } catch (error) {
+      console.error(`Error processing LinkedIn job ${jobData.url}:`, error);
+      throw error;
+    }
+  }
+
+  async searchAdditionalJobBoards(companyName) {
+    const jobBoards = [];
+    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(companyName + ' careers')}`;
+
+    try {
+      const response = await this.makeRequest(searchUrl);
+      const $ = cheerio.load(response.data);
+
+      $('a').each((index, element) => {
+        const href = $(element).attr('href');
+        if (href) {
+          for (const platform of this.jobBoardPlatforms) {
+            if (href.includes(platform)) {
+              jobBoards.push(href);
+              break;
+            }
+          }
+        }
+      });
+
+      // Search for company's own career page
+      $('a').each((index, element) => {
+        const href = $(element).attr('href');
+        const text = $(element).text().toLowerCase();
+        if (href && (text.includes('career') || text.includes('job'))) {
+          jobBoards.push(href);
+        }
+      });
+    } catch (error) {
+      console.error(`Error searching additional job boards for ${companyName}:`, error);
+    }
+
+    return [...new Set(jobBoards)]; // Remove duplicates
+  }
+
+  async start() {
+    await this.init();
+    console.log('Running enhanced job processor');
+
+    const companies = await jobQueries.getCompanies();
+    const processedJobTitles = new Set();
+
+    // Phase 1: Process regular job boards and search for additional career pages
+    for (const company of companies) {
+      if (company.job_board_url) {
+        const result = await this.collectJobLinks(company);
+        await this.processJobLinks(result.links, company.id);
+      }
+
+      // Search for additional career pages
+      const additionalJobBoards = await this.searchAdditionalJobBoards(company.name);
+      if (additionalJobBoards.length > 0) {
+        console.log(`Found additional job boards for ${company.name}:`, additionalJobBoards);
+        // Update company with new job board URLs
+        await jobQueries.updateCompanyJobBoards(company.id, additionalJobBoards);
+      }
+    }
+
+    console.log('Regular job board processing and additional career page search completed.');
+
+    // Phase 2: LinkedIn Crawler
+    console.log('Starting LinkedIn job search');
+    const linkedInSearchTerms = this.getLinkedInSearchTerms(processedJobTitles);
+    
+    for (const searchTerm of linkedInSearchTerms) {
+      const linkedInJobs = await this.crawlLinkedIn(searchTerm);
+      await this.processJobLinks(linkedInJobs, null, true);
+      await this.delay(this.LINKEDIN_SEARCH_DELAY);
+    }
+
+    console.log('LinkedIn job processing completed.');
   }
 }
 
