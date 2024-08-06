@@ -46,22 +46,23 @@
       <form action="/posts" method="POST">
         <input type="hidden" id="post_type" name="post_type" value="discussion" />
         <div class="form-group" id="community">
+          <label class="secondary-text sub-text" for="community_id">Community</label>
           <select id="community_choice" name="community_id" placeholder="Communities" </select>
         </div>
         <div class="form-group">
           <input type="hidden" name="userId" value="<%= user.id %>" />
           <div class="form-group" id="title-field">
 
-            <label for="title">Title</label>
+            <label class="secondary-text sub-text" for="title">Title</label>
             <input type="text" id="title" name="title" required />
           </div>
           <div class="form-group" id="subtitle-field">
 
-            <label id="subtitle2" for="subtitle">Subtitle</label>
+            <label class="secondary-text sub-text" id="subtitle2" for="subtitle">Subtitle</label>
             <input type="text" id="subtitle" name="subtitle" />
           </div>
           <div class="form-group" id="link-field">
-            <label id="link-label" for="link">Link</label>
+            <label class="secondary-text sub-text" id="link-label" for="link">Link</label>
             <input type="text" id="link" name="link" />
           </div>
           <div class="form-group">
@@ -84,35 +85,35 @@
     </div>
   </main>
   <script>
-    $('.post-type-button').click(function(e) {
+    $('.post-type-button').click(function (e) {
       e.preventDefault(); // Prevent the default link behavior
 
       // Update header text, hidden input value, and link field visibility based on the clicked element
       const selectedPostType = $(this).attr('id'); // Get the id of the clicked element
       switch (selectedPostType) {
-        case 'discussion':
-          $('#link-field').show();
-          $('#subtitle').hide();
-          $('#link-label').text('Link:');
-          $('#subtitle2').hide();
-          break;
-        case 'question':
-          $('#link-field').hide();
-          $('#subtitle').hide();
-          $('#subtitle2').hide();
-          break;
-        case 'blog':
-          $('#subtitle').show();
-          $('#subtitle2').show();
-          $('#link-field').hide();
+      case 'discussion':
+        $('#link-field').show();
+        $('#subtitle').hide();
+        $('#link-label').text('Link:');
+        $('#subtitle2').hide();
+        break;
+      case 'question':
+        $('#link-field').hide();
+        $('#subtitle').hide();
+        $('#subtitle2').hide();
+        break;
+      case 'blog':
+        $('#subtitle').show();
+        $('#subtitle2').show();
+        $('#link-field').hide();
 
-          break;
-        case 'project':
-          $('#link-field').show();
-          $('#subtitle').hide();
-          $('#subtitle2').hide();
-          $('#link-label').text('GitHub URL:');
-          break;
+        break;
+      case 'project':
+        $('#link-field').show();
+        $('#subtitle').hide();
+        $('#subtitle2').hide();
+        $('#link-label').text('GitHub URL:');
+        break;
       }
       $('#post_type').val(selectedPostType); // Set the hidden input field's value
       $('.post-type').css('background-color', '');
@@ -125,7 +126,7 @@
     });
 
 
-    $(document).ready(function() {
+    $(document).ready(function () {
       $('#subtitle').hide();
       $('#subtitle2').hide();
 
@@ -143,7 +144,7 @@
         placeholder: "Body text"
       });
 
-      $('form').on('submit', function(e) {
+      $('form').on('submit', function (e) {
         var easyMDE = new EasyMDE({
           element: document.getElementById('content')
         });

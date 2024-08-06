@@ -33,4 +33,57 @@ router.get('/jobs', async (req, res) => {
     }
 });
 
+router.get('/communities', async (req, res) => {
+    const searchTerm = req.query.term;
+
+    try {
+        const communities = await communityQueries.searchCommunities(searchTerm);
+        res.json(communities);
+    } catch (err) {
+        console.error('Error searching communities:', err);
+        res.status(500).send('Error searching communities');
+    }
+});
+
+router.get('/skills', async (req, res) => {
+    const searchTerm = req.query.term;
+
+    try {
+        const skills = await jobQueries.searchSkills(searchTerm);
+        res.json(skills);
+    } catch (err) {
+        console.error('Error searching skills:', err);
+        res.status(500).send('Error searching skills');
+    }
+});
+
+router.get('/companies', async (req, res) => {
+    const searchTerm = req.query.term;
+
+    try {
+        const companies = await jobQueries.searchCompanies(searchTerm);
+        res.json(companies);
+    } catch (err) {
+        console.error('Error searching companies:', err);
+        res.status(500).send('Error searching companies');
+    }
+});
+
+router.get('/all', async (req, res) => {
+    const searchTerm = req.query.term;
+
+    try {
+        const users = await userQueries.searchUsers(searchTerm);
+        const jobs = await jobQueries.searchJobs(searchTerm);
+        const communities = await communityQueries.searchCommunities(searchTerm);
+        const skills = await jobQueries.searchSkills(searchTerm);
+        const companies = await jobQueries.searchCompanies(searchTerm);
+
+        res.json({ users, jobs, communities, skills, companies });
+    } catch (err) {
+        console.error('Error searching all:', err);
+        res.status(500).send('Error searching all');
+    }
+});
+
 module.exports = router;

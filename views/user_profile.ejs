@@ -139,15 +139,15 @@
                 </span>
                 <% } %>
               </p>
-              <div class="user-bio" style="background: 0 !important; padding-top: 0;">
+              <div class="user-bio margin-06-bottom" style="background: 0 !important; padding-top: 0;">
                 <p>
                   <%= otheruser.bio %>
                 </p>
               </div>
               <div class="followers-info">
-                <a class="link" href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; align-items: center;gap: 5px;"> <span id="followerCount"> <%= otheruser.followerCount %> Followers </a></span>
-                <a class="link" href="/user/<%= otheruser.username %>/following" style="display: flex; align-items: center;flex-direction:row; gap: 5px;">
-                  <span id="followCount"> <%= otheruser.followingCount %> Following</a></span>
+                <a class="secondary-text" href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; align-items: center;gap: 5px;"> <span class="bold primary-text" id="followerCount"><%= otheruser.followerCount %></span>Followers</a>
+                <a class="secondary-text" href="/user/<%= otheruser.username %>/following" style="display: flex; align-items: center;flex-direction:row; gap: 5px;">
+                  <span class="bold primary-text" id="followCount"> <%= otheruser.followingCount %></span>Following</a>
               </div>
 
             </div>

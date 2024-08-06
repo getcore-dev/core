@@ -1070,6 +1070,12 @@ a>.menu-item {
   color: var(--light-mode-secondary-text-color);
 }
 
+.primary-text,
+.primary-text:visited {
+  font-weight: 500;
+  color: var(--light-mode-text-color);
+}
+
 .thumbnail {
   width: 50px;
   height: 50px;
@@ -1297,6 +1303,7 @@ a>.menu-item {
   .latest-commit-banner {
     top: calc(var(--mobile-navbar-height));
     margin-top: 14px;
+    padding: .8rem;
     width: 100%;
   }
 
@@ -1373,7 +1380,8 @@ select:focus {
   box-shadow: 0 0 3px 1px rgba(160, 207, 230, 0.5);
 }
 
-input[type='text'] {
+input[type='text'],
+input[type='number'] {
   width: 100%;
   height: 34px;
   padding: 10px 20px;
@@ -1899,6 +1907,11 @@ button .material-symbols-outlined:not(:only-child) {
     color: var(--dark-mode-secondary-text-color);
   }
 
+  .primary-text,
+  .pimary-text:visited {
+    color: var(--dark-mode-text-color);
+  }
+
   .core-header-img {
     content: url('/img/core-dark.png');
   }
@@ -1982,7 +1995,8 @@ button .material-symbols-outlined:not(:only-child) {
     border-color: var(--dark-mode-border-color) !important;
   }
 
-  input[type='text'] {
+  input[type='text'],
+  input[type='number'] {
     background-color: var(--dark-mode-main-color) !important;
     border: 1.5px solid var(--dark-mode-border-color) !important;
     color: var(--dark-mode-text-color);
@@ -2262,8 +2276,7 @@ button .material-symbols-outlined:not(:only-child) {
 }
 
 .mobile-menu-header {
-  border-top: 1px solid var(--dark-mode-border-color);
-  padding: 0 10px;
+  padding: 0 1.3rem;
   padding-top: .8rem;
   margin-top: .8rem;
 }

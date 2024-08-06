@@ -157,7 +157,9 @@ router.get('/posts/:postId', viewLimiter, async (req, res) => {
     }
 
     // Render content
-    postData.content = marked.parse(postData.content);
+    if (postData.content && postData.content.length > 0) {
+      postData.content = marked.parse(postData.content);
+    }
 
     // Fetch similar posts
     const similarPosts = await postQueries.fetchSimilarPosts(

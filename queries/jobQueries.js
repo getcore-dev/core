@@ -30,6 +30,18 @@ const jobQueries = {
     }
   },
 
+  searchCompanies: async (searchTerm) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM companies WHERE name LIKE ${'%' + searchTerm + '%'}`;
+
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   searchJobs: async (searchTerm) => {
     try {
       const result = await sql.query`
@@ -377,7 +389,6 @@ const jobQueries = {
     pageSize
   ) => {
     try {
-      console.log('searchAllJobsFromLast30Days', title, location, experienceLevel, salary, parsedTags, page, pageSize);
       const offset = (page - 1) * pageSize;
   
       let query = `
@@ -399,7 +410,7 @@ const jobQueries = {
             FROM job_skills js
             JOIN skills s ON js.skill_id = s.id
             WHERE js.job_id = j.id AND s.name IS NOT NULL
-          ) AS job_skills,
+          ) AS skills,
           (
             CASE WHEN @title = '' THEN 1 ELSE 0 END +
             CASE WHEN @location = '' THEN 1 ELSE 0 END +
@@ -1580,6 +1591,23 @@ getCompanyByName: async (name) => {
     }
   },
 
+  getCountOfTopJobSkills: async () => {
+    try {
+      const result = await sql.query`
+        SELECT TOP 30 skills.name, COUNT(skill_id) AS count, skills.id
+        FROM job_skills
+        INNER JOIN skills ON job_skills.skill_id = skills.id
+        GROUP BY skill_id, skills.name, skills.id
+        ORDER BY count DESC
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error in getCountOfTopJobSkills:', err);
+      throw err;
+    }
+  },
+
+
   getCountOfTopJobTagsByCompany: async (companyId) => {
     try {
       const result = await sql.query`
@@ -1602,21 +1630,6 @@ getCompanyByName: async (name) => {
     }
   },
 
-  getCountOfTopJobSkills: async () => {
-    try {
-      const result = await sql.query`
-        SELECT TOP 30 skills.name, COUNT(skill_id) AS count
-        FROM job_skills
-        INNER JOIN skills ON job_skills.skill_id = skills.id
-        GROUP BY skill_id, skills.name
-        ORDER BY count DESC
-      `;
-      return result.recordset;
-    } catch (err) {
-      console.error('Database query error in getCountOfTopJobSkills:', err);
-      throw err;
-    }
-  },
 
   getUserJobExperience: async (userId) => {
     try {

@@ -474,6 +474,7 @@ div.job-title-location .sub-text {
 
 .sort-options.show {
   display: flex;
+  align-items: center;
   flex-wrap: nowrap;
   gap: 0.6rem 1.2rem;
 }
@@ -671,11 +672,9 @@ select {
   pointer-events: none;
 }
 
+.salary-filter,
 .salary-filter .input-container {
   position: relative;
-}
-
-.salary-filter {
   display: flex;
   justify-content: center;
 }

@@ -348,6 +348,7 @@ function blendColors(color1, color2, ratio) {
         } catch (err) {
           console.error('Error loading jobs:', err);
         } finally {
+          getSimilarSkills();
           isLoading = false;
         }
       }
@@ -391,8 +392,6 @@ function blendColors(color1, color2, ratio) {
         loadMoreJobs();
       }
 
-      // Initial load of similar skills
-      getSimilarSkills();
     });
   </script>
 

@@ -41,7 +41,11 @@ const sendEmailNotification = async (receiverUserId, type) => {
       text =
           'Someone commented on your post. Please check your account for more details.';
       break;
-      // Add other notification types as needed
+    case 'NEW_FEEDBACK':
+      subject = '[ADMIN] New core feedback';
+      text =
+          'A new feedback has been submitted. Please check the feedback network for more details.';
+      break;
     default:
       subject = 'You have a new notification';
       text =
@@ -84,6 +88,7 @@ const notificationQueries = {
       throw err;
     }
   },
+
 
   deleteDuplicateNotifications: async (userId, type, postId) => {
     try {
@@ -151,6 +156,28 @@ const notificationQueries = {
 
       // Send email notification
       await sendEmailNotification(receiverUserId, type);
+    } catch (err) {
+      console.error('Database insert error:', err);
+      throw err;
+    }
+  },
+
+  //       await notificationQueries.createAdminNotification(uniqueId, userId, new Date());
+
+  // Create a new admin notification
+  createAdminNotification: async (type, feedbackId, senderId, createdAt) => {
+    try {
+      // get all admin users
+      const result = await sql.query`
+        SELECT id FROM users WHERE isAdmin = 1`;
+      const adminUsers = result.recordset;
+
+      // create a notification for each admin user
+      adminUsers.forEach(async (admin) => {
+        await sql.query`
+          INSERT INTO notifications (type, isRead, createdAt, receiverUserId, senderUserId, postId) 
+          VALUES (${type}, 0, ${createdAt}, ${admin.id}, ${senderId}, ${feedbackId})`;
+      });
     } catch (err) {
       console.error('Database insert error:', err);
       throw err;

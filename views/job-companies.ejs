@@ -24,7 +24,138 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       fetchCompaniesAndJobs();
+
+      const searchInput = document.getElementById('search');
+      const searchButton = document.getElementById('companies-search-button');
+
+      searchButton.addEventListener('click', performSearch);
+      searchInput.addEventListener('keyup', handleSearchInput);
+
+      // Create autocomplete container
+      const autocompleteContainer = document.createElement('div');
+      autocompleteContainer.id = 'autocomplete-container';
+      autocompleteContainer.style.display = 'none';
+      searchInput.parentNode.appendChild(autocompleteContainer);
     });
+
+    let allCompanies = [];
+    let autocompleteTimeout = null;
+
+    async function fetchCompaniesAndJobs() {
+      try {
+        const response = await fetch('/api/companiesJobs');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        allCompanies = await response.json();
+        renderCompanies(allCompanies);
+      } catch (error) {
+        console.error('Error fetching companies and jobs:', error);
+        document.getElementById('companies-container').innerHTML = '<p>Error loading companies and job counts. Please try again later.</p>';
+      }
+    }
+
+    function renderCompanies(companies) {
+      const container = document.getElementById('companies-container');
+      let html = '';
+      companies.forEach(company => {
+        html += `
+      <div onclick="window.location.href='/jobs/company/${company.name}'">
+        <div class="company-info-header margin-06-bottom">
+          <img class="thumbnail thumbnail-regular thumbnail-tiny" src="${company.logo}" alt="${company.name} logo" />
+          <h3 class="main-text">${company.name}</h3>
+        </div>
+        <div class="company-info-tags secondary-text sub-text">
+          <span class="company-info-jobs">${company.jobCount} jobs</span>
+          <span style="font-size:.7rem;">•</span>
+          <span><span class="material-symbols-outlined">factory</span> ${company.industry}</span>
+        </div>
+      </div>
+    `;
+      });
+      container.innerHTML = html;
+    }
+
+    function handleSearchInput(event) {
+      const searchTerm = event.target.value.trim();
+
+      if (event.key === 'Enter') {
+        performSearch();
+        return;
+      }
+
+      if (searchTerm.length < 2) {
+        hideAutocomplete();
+        return;
+      }
+
+      if (autocompleteTimeout) {
+        clearTimeout(autocompleteTimeout);
+      }
+
+      autocompleteTimeout = setTimeout(() => fetchAutocomplete(searchTerm), 300);
+    }
+
+    async function fetchAutocomplete(searchTerm) {
+      try {
+        const response = await fetch(`/autocomplete/companies?term=${encodeURIComponent(searchTerm)}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const companies = await response.json();
+        displayAutocomplete(companies);
+      } catch (error) {
+        console.error('Error fetching autocomplete suggestions:', error);
+      }
+    }
+
+    function displayAutocomplete(companies) {
+      const container = document.getElementById('autocomplete-container');
+      if (companies.length === 0) {
+        hideAutocomplete();
+        return;
+      }
+
+      let html = '<ul>';
+      companies.forEach(company => {
+        html += `<li onclick="selectAutocompleteSuggestion('${company.name}')"><img class="thumbnail thumbnail-micro thumbnail-regular" src="${company.logo}" alt="${company.name} logo" />${company.name}</li>`;
+      });
+      html += '</ul>';
+
+      container.innerHTML = html;
+      container.style.display = 'block';
+    }
+
+    function hideAutocomplete() {
+      const container = document.getElementById('autocomplete-container');
+      container.style.display = 'none';
+    }
+
+    function selectAutocompleteSuggestion(companyName) {
+      document.getElementById('search').value = companyName;
+      hideAutocomplete();
+      performSearch();
+    }
+
+    function performSearch() {
+      const searchTerm = document.getElementById('search').value.toLowerCase().trim();
+      hideAutocomplete();
+
+      if (searchTerm === '') {
+        renderCompanies(allCompanies);
+        return;
+      }
+
+      const filteredCompanies = allCompanies.filter(company =>
+        company.name.toLowerCase().includes(searchTerm)
+      );
+
+      renderCompanies(filteredCompanies);
+
+      if (filteredCompanies.length === 0) {
+        document.getElementById('companies-container').innerHTML = '<p>No companies found matching your search.</p>';
+      }
+    }
 
     function formatLocation(location) {
       if (!location) return "";
@@ -57,42 +188,6 @@
       }
 
       return location.trim();
-    }
-
-    async function fetchCompaniesAndJobs() {
-      try {
-        const response = await fetch('/api/companiesJobs');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const companies = await response.json();
-        renderCompanies(companies);
-      } catch (error) {
-        console.error('Error fetching companies and jobs:', error);
-        document.getElementById('companies-container').innerHTML = '<p>Error loading companies and job counts. Please try again later.</p>';
-      }
-    }
-
-    function renderCompanies(companies) {
-      const container = document.getElementById('companies-container');
-      let html = '';
-      companies.forEach(company => {
-        html += `
-          <div onclick="window.location.href='/jobs/company/${company.name}'">
-          <div class="company-info-header margin-06-bottom">
-            <img class="thumbnail thumbnail-regular thumbnail-tiny" src="${company.logo}" alt="${company.name} logo" />
-            <h3 class="main-text">${company.name}</h3>
-        </div>
-        <div class="company-info-tags secondary-text sub-text">
-            <span class="company-info-jobs">${company.jobCount} jobs</span>
-            <span style="font-size:.7rem;">•</span>
-            <span><span class="material-symbols-outlined">factory</span> ${company.industry}</span>
-            
-          </div>
-        </div>
-        `;
-      });
-      container.innerHTML = html;
     }
   </script>
 </body>

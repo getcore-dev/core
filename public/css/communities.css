@@ -844,18 +844,18 @@ div.join-website-body {
 #reaction-button,
 #favorite-button,
 #share-button {
-  height: 32px;
-  padding: 0 0.3rem;
-  min-width: 32px;
+  height: 26px;
+  padding: 0 0.5rem;
+  min-width: 26px;
   border-radius: 10px;
-  border: 0;
+  background: 0;
 }
 
 #share-button {
   font-weight: 550;
-  height: 32px;
+  height: 25px;
   gap: .6rem;
-  padding: 0 .85rem;
+  padding: 0 .65rem;
   align-items: center;
   padding-top: 0;
   padding-bottom: 0;
@@ -876,7 +876,6 @@ div.join-website-body {
   width: 32px;
   border: 0;
   align-items: center;
-  justify-content: center;
 }
 
 .job-title a,
@@ -886,7 +885,6 @@ div.join-website-body {
 
 .comment-button-right,
 .reaction-button-right {
-  padding-right: .6rem;
   font-weight: 550;
 }
 
@@ -956,6 +954,12 @@ div.join-website-body {
   max-width: 100%;
   gap: .45rem;
   overflow-x: auto;
+}
+
+.comm-flairs .material-symbols-outlined {
+  font-size: .95rem;
+  vertical-align: -2px;
+  padding-right: .6rem;
 }
 
 .main-reaction-button.active {
@@ -1064,7 +1068,8 @@ button.see-more {
     border-radius: 0;
     margin: 0;
     border: 0;
-    padding: .65rem .85rem;
+    padding: .65rem 1.3rem;
+    box-sizing: border-box;
     padding-bottom: 0;
     background-color: var(--light-mode-body-color);
   }
@@ -1160,7 +1165,7 @@ button.see-more {
   .community-header,
   .job-header {
     margin: 0;
-    padding: .35rem .95rem;
+    padding: .35rem 1.3rem;
     color: var(--light-mode-secondary-text-color);
   }
 

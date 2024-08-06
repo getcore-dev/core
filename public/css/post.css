@@ -373,7 +373,7 @@ img.blog-avatar {
   justify-content: space-between;
   align-items: center;
   margin-top: 0px;
-  margin-bottom: .4rem;
+  margin-bottom: .2rem;
 }
 
 div.interact-buttons {
@@ -488,6 +488,18 @@ div.interact-buttons {
   gap: .6rem;
   padding: 0.6rem 1.9rem !important;
   height: 34px;
+}
+
+.post-info-container {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+}
+
+.post-info-container .material-symbols-outlined {
+  font-size: 1.05rem;
+  vertical-align: -3px;
+  padding: 0 !important;
 }
 
 .dicussion-link {
@@ -2163,6 +2175,10 @@ div.username {
 
   .link-image img {
     width: 100%;
+  }
+
+  .discussion-link {
+    border-radius: 0;
   }
 
   .main-container {

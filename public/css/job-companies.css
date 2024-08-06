@@ -15,6 +15,16 @@ div.company-info-tags {
     align-items: center;
 }
 
+#autocomplete-container li {
+    padding: 1rem 0;
+    background: var(--light-mode-main-color);
+    display: flex;
+    gap: .8rem;
+    border-bottom: 1px solid var(--border-color);
+    list-style: none;
+    align-items: center;
+}
+
 div#companies-container {
     display: flex;
     flex-direction: column;

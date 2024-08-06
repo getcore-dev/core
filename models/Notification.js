@@ -48,6 +48,10 @@ class Notification {
         subject = 'New comment on your post';
         text = 'Someone commented on your post. Please check your account for more details.';
         break;
+
+      case 'NEW_FEEDBACK':
+        subject = '[ADMIN] New core feedback';
+        text = 'A new feedback has been submitted. Please check the feedback network for more details.';
       default:
         subject = 'You have a new notification';
         text = 'You have received a new notification. Please check your account for more details.';

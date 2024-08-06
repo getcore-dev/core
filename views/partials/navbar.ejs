@@ -298,7 +298,7 @@
           </a>
         </li>
         <li class="dropdown">
-          <% if (isActive('/posts')) { %>
+          <% if (isActive('/posts') && typeof post !== 'undefined') { %>
           <span class="community-preview" style="color: <%= post.community.community_color%>">
             <span class="material-symbols-outlined" style="color:<%= community.community_color %>;">
               <%= post.community ? post.community.mini_icon : '' %>
@@ -314,8 +314,7 @@
           </span>
           <% } %>
 
-          <a href="/networks/" class="navbar-button <%= isActive('/networks') | isActive('/posts') ? 'active' : '' %>" style="border-color:<%= isActive('/posts') ? post.community.community_color : isActive('/networks') && typeof community !== 'undefined' ? community.community_color : '' %>; display: flex;">
-            <% if ((isActive('/networks') && typeof community !== 'undefined') || isActive('/posts')) { %>
+          <a href="/networks/" class="navbar-button <%= (isActive('/networks') || (isActive('/posts') && typeof post !== 'undefined')) ? 'active' : '' %>" style="border-color:<%= isActive('/posts') && typeof post !== 'undefined' ? post.community.community_color : (isActive('/networks') && typeof community !== 'undefined' ? community.community_color : '') %>; display: flex;"> <% if ((isActive('/networks') && typeof community !== 'undefined') || isActive('/posts')) { %>
             <span class="material-symbols-outlined hidden">
               workspaces
             </span>
@@ -504,16 +503,42 @@
     }
   }
 
-  function showBannerNotification(message) {
+  let bannerTimeout;
+
+  function showBannerNotification(message, duration = 7000) {
     const banner = document.getElementById("latestCommitBanner");
     const messageElement = banner.querySelector(".latest-commit-message");
 
     messageElement.textContent = message;
     banner.style.display = "block"; // Show the banner
 
-    setTimeout(() => {
-      banner.style.display = "none";
-    }, 3000);
+    // Clear any existing timeout
+    if (bannerTimeout) {
+      clearTimeout(bannerTimeout);
+    }
+
+    // Set up auto-hide if duration is provided
+    if (duration > 0) {
+      bannerTimeout = setTimeout(() => {
+        hideBanner();
+      }, duration);
+    }
+
+    // Add click event listener to the banner itself for manual dismissal
+    banner.onclick = hideBanner;
+  }
+
+  function hideBanner() {
+    const banner = document.getElementById("latestCommitBanner");
+    banner.style.display = "none";
+
+    // Remove the click event listener from the banner
+    banner.onclick = null;
+
+    // Clear the timeout if it exists
+    if (bannerTimeout) {
+      clearTimeout(bannerTimeout);
+    }
   }
 
   function getTrendingPosts() {

@@ -154,7 +154,6 @@ main {
 .points-info,
 .communities-info {
   font-size: .875rem;
-  color: var(--primary-text-color);
 
 }
 
@@ -877,9 +876,6 @@ td {
     background-color: var(--dark-mode-body-color);
   }
 
-  #profile a {
-    color: var(--dark-mode-text-color);
-  }
 
 
   .link-display a {
