@@ -154,6 +154,9 @@
       case 'ADMIN_UNVERIFIED':
         notificationText.textContent = `Your verification has been removed by ${notification.senderUsername}`;
         break;
+      case 'NEW_FEEDBACK':
+        notificationText.textContent = `[ADMIN] New feedback submission from ${notification.senderUsername}`;
+        break;
       default:
         notificationText.textContent = `You have a new notification from ${notification.senderUsername}`;
       }
@@ -204,7 +207,7 @@
       notificationIsReadIndicator.classList.add('read');
       notificationIsReadIndicator.classList.remove('unread');
 
-      if (notification.type === 'NEW_COMMENT' || ['like', 'love', 'celebrate', 'curious', 'boost'].includes(notification.type)) {
+      if (notification.type === 'NEW_COMMENT' || notification.type === 'NEW_FEEDBACK' || ['like', 'love', 'celebrate', 'curious', 'boost'].includes(notification.type)) {
         window.location.href = `/posts/${notification.postId}`;
       } else if (notification.type === 'follow') {
         window.location.href = `/user/${notification.senderUsername}`;

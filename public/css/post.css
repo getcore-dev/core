@@ -2165,6 +2165,10 @@ div.username {
     width: 100%;
   }
 
+  .discussion-link {
+    border-radius: 0;
+  }
+
   .main-container {
     width: 100%;
     border: 0;

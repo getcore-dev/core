@@ -459,6 +459,7 @@ router.get('/getTopTags', cacheMiddleware(3600), async (req, res) => {
   }
 });
 
+
 router.get('/getTopSkills', cacheMiddleware(3600), async (req, res) => {
   try {
     const skills = await jobQueries.getCountOfTopJobSkills();
@@ -907,7 +908,17 @@ router.get('/posts/:postId', async (req, res) => {
     const postId = req.params.postId;
     const user = req.user ? req.user : null;
     const postData = await utilFunctions.getPostData(postId, user);
-    postData.content = marked.marked(postData.content);
+    if (!postData) {
+      return res.status(404).send('Post not found');
+    }
+
+    if (postData.content) { 
+      try {
+        postData.content = marked(postData.content);
+      } catch (error) {
+        console.error('Error parsing markdown:', error);
+      }
+    }
     res.json(postData);
   } catch (err) {
     console.error('Error fetching post data:', err);
@@ -929,7 +940,7 @@ router.get('/posts/:postId/getReaction', async (req, res) => {
 
 router.get('/communities', cacheMiddleware(2400), async (req, res) => {
   try {
-    const user = req.user; // Assuming the user object is attached to the request by middleware
+    const user = req.user; 
     const communities = await utilFunctions.getAllCommunities(user);
     return res.json(communities);
   } catch (err) {

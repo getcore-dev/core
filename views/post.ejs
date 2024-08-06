@@ -5,21 +5,29 @@
   <title>CORE - <%= post.title %></title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="<%= post.content.substring(0, 160) %>" />
-  <meta name="keywords" content="<%= post.tags.map(tag => tag.name).join(', ') %>" />
   <meta name="author" content="<%= post.user.name %>">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article" />
+  <% if (post.title) { %>
+  <meta name="twitter:title" content="<%= post.title %>" />
+
   <meta property="og:title" content="<%= post.title %>" />
+  <% } %>
+  <% if (post.content) { %>
+  <meta name="description" content="<%= post.content.substring(0, 160) %>" />
   <meta property="og:description" content="<%= post.content.substring(0, 160) %>" />
+  <meta name="twitter:description" content="<%= post.content.substring(0, 160) %>" />
+  <% } %>
+
+  <% if (post.tags) { %>
+  <meta name="keywords" content="<%= post.tags.map(tag => tag.name).join(', ') %>" />
+  <% } %>
   <meta property="og:image" content="<%= post.user.avatar || '/img/default-avatar.png' %>" />
   <meta property="og:url" content="https://getcore.dev/post/<%= post.id %>" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="<%= post.title %>" />
-  <meta name="twitter:description" content="<%= post.content.substring(0, 160) %>" />
   <meta name="twitter:image" content="<%= post.user.avatar || '/img/default-avatar.png' %>" />
 
   <link rel="stylesheet" href="/css/navbar.css" />
@@ -974,14 +982,18 @@ function formatDate(date) {
               'Content-Type': 'application/json',
             },
           })
-          .then(response => response.json())
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
           .then(data => {
             if (data.success) {
               showBannerNotification('Post deleted successfully');
-              // Redirect to home page or remove the post from the DOM
               window.location.href = '/';
             } else {
-              showBannerNotification('Error deleting post');
+              showBannerNotification(data.message || 'Error deleting post');
             }
           })
           .catch(error => {

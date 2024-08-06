@@ -216,10 +216,11 @@ router.get('/feedback/success', checkAuthenticated, async (req, res) => {
 
 router.post('/feedback', checkAuthenticated, async (req, res) => {
   const userId = req.user.id;
-  const { title, attachmentUrl, bodyText } = req.body;
+  const { title, attachmentUrl, content } = req.body;
 
   try {
-    await postQueries.createFeedback(userId, title, attachmentUrl, bodyText);
+    console.log('Creating feedback:', userId, title, attachmentUrl, content);
+    await postQueries.createFeedback(userId, title, attachmentUrl, content);
     res.redirect('/feedback/success');
   } catch (err) {
     console.error('Error creating feedback:', err);

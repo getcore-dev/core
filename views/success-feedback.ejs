@@ -23,6 +23,10 @@
   .account-stuff .user-res {
     margin-bottom: .9rem;
   }
+
+  .redirect-button:hover {
+    background-color: #0056b3;
+  }
 </style>
 
 <body>
@@ -30,14 +34,38 @@
   <main>
     <div class="account-stuff">
       <h3>Success!</h3>
-      <div class="user-res">
+      <div class="user-res main-text">
         Your feedback has been submitted successfully.
       </div>
+      <div class="timer sub-text secondary-text" id="timer">Redirecting in 5 seconds...</div>
+      <button class="special-button-normal redirect-button" id="skipButton">Skip</button>
     </div>
     <%- include('partials/footer') %>
   </main>
   <script>
+    let countdown = 5;
+    const timerElement = document.getElementById('timer');
 
+    // Update the timer every second
+    const interval = setInterval(() => {
+      countdown--;
+      timerElement.textContent = `Redirecting in ${countdown} seconds...`;
+      if (countdown <= 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    // Redirect after 5 seconds
+    const redirectTimeout = setTimeout(() => {
+      window.location.href = '/';
+    }, 5000);
+
+    // Skip wait button
+    document.getElementById('skipButton').addEventListener('click', () => {
+      clearTimeout(redirectTimeout);
+      clearInterval(interval);
+      window.location.href = '/';
+    });
   </script>
 </body>
 

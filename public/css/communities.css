@@ -958,6 +958,12 @@ div.join-website-body {
   overflow-x: auto;
 }
 
+.comm-flairs .material-symbols-outlined {
+  font-size: .95rem;
+  vertical-align: -2px;
+  padding-right: .6rem;
+}
+
 .main-reaction-button.active {
   background-color: #b8e9ff4a;
   color: #3073c1;
@@ -1064,7 +1070,8 @@ button.see-more {
     border-radius: 0;
     margin: 0;
     border: 0;
-    padding: .65rem .85rem;
+    padding: .65rem 1.3rem;
+    box-sizing: border-box;
     padding-bottom: 0;
     background-color: var(--light-mode-body-color);
   }
@@ -1160,7 +1167,7 @@ button.see-more {
   .community-header,
   .job-header {
     margin: 0;
-    padding: .35rem .95rem;
+    padding: .35rem 1.3rem;
     color: var(--light-mode-secondary-text-color);
   }
 

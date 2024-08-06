@@ -1,6 +1,7 @@
 const sql = require('mssql');
 const crypto = require('crypto');
 const tagQueries = require('./tagsQueries');
+const notificationQueries = require('./notificationQueries');
 
 const generateUniqueId = () => {
   // Use the last 4 characters of the current timestamp in base 36
@@ -473,6 +474,8 @@ const postQueries = {
   createFeedback: async (userId, title, attachmentUrl, body) => {
     try {
       const uniqueId = generateUniqueId();
+
+      await notificationQueries.createAdminNotification('NEW_FEEDBACK', uniqueId, userId, new Date());
 
       // Insert into the posts table
       await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id, post_type, views) VALUES (${uniqueId}, ${userId}, ${title}, ${body}, ${attachmentUrl}, 9, 'discussion', 1)`;

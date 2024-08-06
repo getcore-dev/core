@@ -152,8 +152,8 @@ function setupFilter(filterType, values) {
     const input = document.createElement('input');
     input.className = 'filter-input input-theme';
     input.type = 'text';
-    input.placeholder = `Search by ${
-      filterType === 'title' ? 'job title' : 'location'
+    input.placeholder = `${
+      filterType === 'title' ? 'Job Title' : 'Location'
     }`;
     input.addEventListener(
       'input',
@@ -256,49 +256,15 @@ function applySalaryFilter() {
   resetJobListings();
 }
 
-async function fetchTopTags() {
-  try {
-    const response = await fetch('/api/getTopTags');
-    state.allTags = await response.json();
-    renderTags();
-  } catch (error) {
-    console.error('Error fetching top tags:', error);
-  }
-}
-
 async function fetchTopSkills() {
   try {
     const response = await fetch('/api/getTopSkills');
+    console.log(response);
     state.allSkills = await response.json();
+    console.log(state.allSkills);
     renderSkills();
   } catch (error) {
     console.error('Error fetching top skills:', error);
-  }
-}
-
-function renderTags() {
-  const { topTags } = elements;
-  const maxTags = 3;
-  const displayedTags = state.allTags.slice(0, maxTags);
-  const remainingTags = state.allTags.slice(maxTags);
-
-  topTags.innerHTML = displayedTags
-    .map((tag, index) => createTagHTML(tag, index))
-    .join('');
-
-  const remainingTagsCount = remainingTags.length;
-  seeMoreButton = createSeeMoreButton(remainingTagsCount);
-  seeMoreButton.id = 'secondary-text';
-  seeMoreButton.onclick = toggleHiddenTags;
-  document.getElementById('remaining-tags-count').appendChild(seeMoreButton);
-
-  if (remainingTags.length > 0) {
-    topTags.insertAdjacentHTML(
-      'beforeend',
-      remainingTags
-        .map((tag, index) => createTagHTML(tag, index + maxTags, true))
-        .join('')
-    );
   }
 }
 
@@ -346,13 +312,7 @@ function renderSkills() {
 function createSkillHTML(skill, index, hidden = false) {
   return `<span class="tag-clickable ${hidden ? 'hidden' : ''}" data-tag="${
     skill.name
-  }" data-index="${index}">${skill.name} ${skill.count}</span>`;
-}
-
-function createTagHTML(tag, index, hidden = false) {
-  return `<span class="tag-clickable ${hidden ? 'hidden' : ''}" data-tag="${
-    tag.tagName
-  }" data-index="${index}">${tag.tagName} ${tag.count}</span>`;
+  }" data-index="${index}" data-id="${skill.id}">${skill.name} ${skill.count}</span>`;
 }
 
 function createSeeMoreButton(count) {
@@ -420,12 +380,13 @@ function handleSkillClick(event) {
   if (event.target.classList.contains('tag-clickable')) {
     const skill = event.target;
     const skillName = skill.dataset.tag;
-    if (state.filters.skills[skillName]) {
-      delete state.filters.skills[skillName];
+    const skillId = skill.dataset.id;
+    if (state.filters.skills[skillId]) {
+      delete state.filters.skills[skillId];
       skill.classList.remove('selected');
       moveTagToOriginalPosition(skill);
     } else {
-      state.filters.skills[skillName] = true;
+      state.filters.skills[skillId] = skillName;
       skill.classList.add('selected');
       elements.selectedTags.appendChild(skill);
     }
@@ -566,7 +527,7 @@ async function fetchJobPostings() {
     jobLocation: location || '',
     jobExperienceLevel: experienceLevel || '',
     jobSalary: salary || '0',
-    skills: Object.keys(skills).join(','),
+    tags: Object.keys(skills).join(','),
   });
 
   try {
@@ -726,25 +687,36 @@ function createJobElement(job) {
   jobElement.onclick = () => (window.location.href = `/jobs/${job.id}`);
 
   const tagsArray = job.skills
-  ? job.skills.split(',').map(skill => skill.trim())
-  : [];
-  console.log(job.skills);
+    ? job.skills.split(',').map(skill => skill.trim())
+    : [];
 
   const sortedTags = tagsArray.sort((a, b) => {
     if (state.filters.skills[a] && !state.filters.skills[b]) return -1;
     if (!state.filters.skills[a] && state.filters.skills[b]) return 1;
     return a.localeCompare(b);
   });
-  const displayedTags = sortedTags.slice(0, 3);
+  const displayedTags = sortedTags.slice(0, 10);
+  console.log(state.filters.skills);
 
-  const tagsHTML = displayedTags
-    .map(
-      (skill) =>
-        `<a href="/skills/jobs/${skill}">
-      <span onclick="event.stopPropagation()" class="tag ${
-          state.filters.skills[skill] ? 'highlighted' : ''
-        }">${skill}</span></a>`
-    )
+  const skillsArray = Object.values(state.filters.skills).map(skill => skill.trim());
+
+  const filteredSkills = displayedTags.filter(skill => skillsArray.includes(skill.trim()));
+  const otherSkills = displayedTags.filter(skill => !skillsArray.includes(skill.trim()));
+
+  const sortedSkills = [...filteredSkills, ...otherSkills];
+
+  const tagsHTML = sortedSkills
+    .map((skill) => {
+      const skillId = Object.keys(state.filters.skills).find(
+        key => state.filters.skills[key].trim() === skill.trim()
+      );
+      return `
+        <a href="/skills/jobs/${skill}">
+          <span onclick="event.stopPropagation()" class="tag ${
+            skillId ? 'green-tag' : ''
+          }">${skill}</span>
+        </a>`;
+    })
     .join('');
 
   jobElement.innerHTML = `
@@ -752,53 +724,50 @@ function createJobElement(job) {
       <div class="job-info">
         <div class="company-info margin-03-bottom">
           ${
-  job.company_logo
-    ? `<img class="thumbnail thumbnail-regular thumbnail-micro" src="${job.company_logo}" alt="" />`
-    : ''
-}
+            job.company_logo
+              ? `<img class="thumbnail thumbnail-regular thumbnail-micro" src="${job.company_logo}" alt="" />`
+              : ''
+          }
           <div class="job-posting-company-info">
             <p class="company-name secondary-text">${job.company_name}</p>
           </div>
         </div>
-                    <h3 class="job-title"><a href="/jobs/${job.id}">${
-  job.title
-}</a></h3>
+        <h3 class="job-title"><a href="/jobs/${job.id}">${job.title}</a></h3>
         <div class="job-posting-information job-subtitle secondary-text">
-        <div class="job-description margin-03-bottom">
-        ${job.description}
-        </div>
+          <div class="job-description margin-03-bottom">
+            ${job.description}
+          </div>
         </div>
         <div class="job-posting-flairs margin-06-bottom secondary-text">Skills:${tagsHTML}</div>
-                            <div class="job-title-location secondary-text sub-text">
-                            <div class="job-post-date ${formatDateColor(job.postedDate)} sub-text">
-  ${formatRelativeDate(job.postedDate)} 
-  </div>
-  <span style="font-size:.7rem;">•</span>
-                                      <div class="experience-level sub-text">${
-  job.experienceLevel === 'Mid Level'
-    ? 'L3/L4'
-    : job.experienceLevel === 'Entry Level'
-      ? 'L1/L2'
-      : job.experienceLevel === 'Senior'
-        ? 'L5/L6'
-        : job.experienceLevel
-}</div>
-${job.salary || job.salary_max ? `
-  <span style="font-size:.7rem;">•</span><div class="job-salary sub-text">
-    <span class="material-symbols-outlined">attach_money</span>
-    ${getFormattedSalary(job.salary, job.salary_max)}/yr
-  </div>
-` : ``}
-
-<span style="font-size:.7rem;">•</span><div class="location sub-text">
-  <span class="material-symbols-outlined">location_on</span>
-  ${formatLocation(job.location).trim()}
-</div>
-<span style="font-size:.7rem;">•</span><div class="applicants sub-text">
-<span class="material-symbols-outlined">person</span>
-${job.applicants ? job.applicants : '0'}
-</div>
-                    </div>
+        <div class="job-title-location secondary-text sub-text">
+          <div class="job-post-date ${formatDateColor(job.postedDate)} sub-text">
+            ${formatRelativeDate(job.postedDate)} 
+          </div>
+          <span style="font-size:.7rem;">•</span>
+          <div class="experience-level sub-text">${
+            job.experienceLevel === 'Mid Level'
+              ? 'L3/L4'
+              : job.experienceLevel === 'Entry Level'
+                ? 'L1/L2'
+                : job.experienceLevel === 'Senior'
+                  ? 'L5/L6'
+                  : job.experienceLevel
+          }</div>
+          ${job.salary || job.salary_max ? `
+            <span style="font-size:.7rem;">•</span><div class="job-salary sub-text">
+              <span class="material-symbols-outlined">attach_money</span>
+              ${getFormattedSalary(job.salary, job.salary_max)}/yr
+            </div>
+          ` : ``}
+          <span style="font-size:.7rem;">•</span><div class="location sub-text">
+            <span class="material-symbols-outlined">location_on</span>
+            ${formatLocation(job.location).trim()}
+          </div>
+          <span style="font-size:.7rem;">•</span><div class="applicants sub-text">
+            <span class="material-symbols-outlined">person</span>
+            ${job.applicants ? job.applicants : '0'}
+          </div>
+        </div>
       </div>
     </div>
   `;

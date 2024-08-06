@@ -117,8 +117,6 @@ div.form-group {
 .main-container input[type="date"] {
     width: 100%;
     box-sizing: border-box;
-    padding: .9rem;
-    padding-top: 1.6rem;
     background-color: var(--light-mode-body-color);
     border: 1px solid var(--border-color);
     font-size: 16px;
@@ -201,7 +199,7 @@ i.fa {
 .EasyMDEContainer .CodeMirror {
     border: 0 !important;
     border-radius: 6px;
-    min-height: 60px;
+    min-height: 300px;
 }
 
 .main-container .post-title,
@@ -241,13 +239,6 @@ i.fa {
     position: relative;
 }
 
-.form-group label {
-    position: absolute;
-    top: 8px;
-    left: 10px;
-    font-size: .75rem;
-    color: var(--light-mode-secondary-text-color);
-}
 
 
 .post-type {
@@ -449,10 +440,6 @@ i.fa {
     .main-container .post,
     .main-container .comment {
         border-bottom-color: var(--dark-mode-border-color);
-    }
-
-    .form-group label {
-        color: var(--dark-mode-secondary-text-color);
     }
 
     .main-container .post-title,
