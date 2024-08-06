@@ -1070,6 +1070,12 @@ a>.menu-item {
   color: var(--light-mode-secondary-text-color);
 }
 
+.primary-text,
+.primary-text:visited {
+  font-weight: 500;
+  color: var(--light-mode-text-color);
+}
+
 .thumbnail {
   width: 50px;
   height: 50px;
@@ -1899,6 +1905,11 @@ button .material-symbols-outlined:not(:only-child) {
   .secondary-text,
   .secondary-text:visited {
     color: var(--dark-mode-secondary-text-color);
+  }
+
+  .primary-text,
+  .pimary-text:visited {
+    color: var(--dark-mode-text-color);
   }
 
   .core-header-img {

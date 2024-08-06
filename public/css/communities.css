@@ -844,18 +844,18 @@ div.join-website-body {
 #reaction-button,
 #favorite-button,
 #share-button {
-  height: 32px;
-  padding: 0 0.3rem;
-  min-width: 32px;
+  height: 26px;
+  padding: 0 0.5rem;
+  min-width: 26px;
   border-radius: 10px;
-  border: 0;
+  background: 0;
 }
 
 #share-button {
   font-weight: 550;
-  height: 32px;
+  height: 25px;
   gap: .6rem;
-  padding: 0 .85rem;
+  padding: 0 .65rem;
   align-items: center;
   padding-top: 0;
   padding-bottom: 0;
@@ -876,7 +876,6 @@ div.join-website-body {
   width: 32px;
   border: 0;
   align-items: center;
-  justify-content: center;
 }
 
 .job-title a,
@@ -886,7 +885,6 @@ div.join-website-body {
 
 .comment-button-right,
 .reaction-button-right {
-  padding-right: .6rem;
   font-weight: 550;
 }
 
