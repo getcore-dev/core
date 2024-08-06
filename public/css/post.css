@@ -1325,16 +1325,6 @@ div .mini-link {
   padding-top: 50px;
 }
 
-.post-body p,
-.comment-body p {
-  line-height: 1.6em;
-  letter-spacing: .01rem;
-}
-
-.post-body p,
-.comment-body p {
-  font-size: .825rem;
-}
 
 .preview-description {
   font-size: 12px;
@@ -2071,9 +2061,11 @@ div.username {
 
   .post-body p,
   .comment-body p {
-    font-size: 1.125rem;
-    line-height: 150%;
-    font-weight: 400;
+    color: var(--light-mode-text-color);
+    font-size: var(--mobile-default-font-size);
+    line-height: 1.6;
+    margin: 0;
+    margin-bottom: 0;
   }
 
   .description {

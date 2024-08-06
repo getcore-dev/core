@@ -705,13 +705,6 @@ class JobProcessor {
         await this.processJobLinks(result.links, company.id);
       }
 
-      // Search for additional career pages
-      const additionalJobBoards = await this.searchAdditionalJobBoards(company.name);
-      if (additionalJobBoards.length > 0) {
-        console.log(`Found additional job boards for ${company.name}:`, additionalJobBoards);
-        // Update company with new job board URLs
-        await jobQueries.updateCompanyJobBoards(company.id, additionalJobBoards);
-      }
     }
 
     console.log('Regular job board processing and additional career page search completed.');

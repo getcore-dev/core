@@ -1260,6 +1260,12 @@ button.see-more {
 
 
 @media (max-width: 768px) {
+  .title {
+    font-size: 1.2rem;
+    margin-top: 0rem;
+    font-weight: 600;
+  }
+
   .post {
     margin: 0;
     background-color: var(--light-mode-main-color);
@@ -1306,12 +1312,6 @@ button.see-more {
   main {
     height: auto !important;
     overflow-y: hidden !important;
-  }
-
-  .title {
-    font-size: 1.2rem;
-    margin-top: 0rem;
-    font-weight: 600;
   }
 
   .post-info {

@@ -245,7 +245,7 @@ div.similar-job h4 {
 .job-details h4,
 .similar-jobs h4,
 .similar-company-jobs h4 {
-  font-size: var(--default-sub-font-size);
+  font-size: 1.4rem;
   margin: .8rem 0;
   margin-top: 1.35rem;
 }
