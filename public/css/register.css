@@ -1,5 +1,5 @@
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-family);
   padding-top: 0 !important;
 }
 
@@ -12,7 +12,7 @@ main {
   align-items: center;
   height: calc(100dvh);
   background-color: #fff;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-family);
 }
 
 nav {

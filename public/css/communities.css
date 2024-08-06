@@ -1,6 +1,6 @@
 body {
   color: var(--light-mode-text-color);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-family);
 }
 
 .post,
@@ -23,7 +23,13 @@ body {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: .2rem;
+  align-items: center;
+  gap: 0 .2rem;
+}
+
+span.post-tag-symbol {
+  font-size: 1.05rem;
+  padding: 0 !important;
 }
 
 .comm-flairs .material-symbols-outlined {
@@ -184,7 +190,7 @@ div.vote-interactions {
 .post-content {
   position: relative;
   flex-grow: 1;
-  padding: .45rem 1.3rem;
+  padding: 1rem 1.3rem;
 }
 
 
@@ -195,9 +201,9 @@ div.vote-interactions {
 .post-header-username {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   border-radius: 9px;
-  gap: .3rem;
+  gap: 0;
 }
 
 .job-flair {
@@ -358,13 +364,6 @@ div.vote-interactions {
   gap: 5px;
 }
 
-.user-info,
-.post-info,
-.description,
-.reactions {
-  color: var(--light-mode-text-color);
-}
-
 .post-date {
   font-size: .85rem;
   color: var(--light-mode-secondary-text-color);
@@ -460,11 +459,11 @@ a.community:hover {
 }
 
 .post-quick-info {
-  font-size: .8rem;
+  font-size: var(--mobile-default-sub-font-size);
 }
 
 #post-username {
-  font-size: .9rem;
+  font-size: var(--mobile-default-sub-font-size);
   color: var(--light-mode-bold-text-color);
 }
 
@@ -844,16 +843,22 @@ div.join-website-body {
 #reaction-button,
 #favorite-button,
 #share-button {
-  height: 26px;
+  height: 30px;
   padding: 0 0.5rem;
   min-width: 26px;
+  font-weight: 400;
   border-radius: 10px;
   background: 0;
+  border: 1.5px solid var(--border-color);
+}
+
+#reaction-button .material-symbols-outlined {
+  font-weight: 300;
 }
 
 #share-button {
-  font-weight: 550;
-  height: 25px;
+  font-weight: 400;
+  height: 30px;
   gap: .6rem;
   padding: 0 .65rem;
   align-items: center;
@@ -873,7 +878,7 @@ div.join-website-body {
 .reaction-button-left {
   display: inline-flex;
   height: 100%;
-  width: 32px;
+  width: 26px;
   border: 0;
   align-items: center;
 }
@@ -1083,7 +1088,7 @@ button.see-more {
   }
 
   .jobslist .job {
-    min-width: 280px;
+    min-width: 250px;
     height: 100px;
     border: 0;
     background: var(--light-mode-body-color);
@@ -1165,7 +1170,7 @@ button.see-more {
   .community-header,
   .job-header {
     margin: 0;
-    padding: .35rem 1.3rem;
+    padding: 0 1.3rem;
     color: var(--light-mode-secondary-text-color);
   }
 
@@ -1224,6 +1229,7 @@ button.see-more {
     flex-direction: row;
     padding: .4rem 0;
     padding-left: 10px;
+    margin: 0 1.3rem;
     padding-right: 10px;
     gap: 10px;
     overflow-x: auto;
@@ -1237,7 +1243,7 @@ button.see-more {
   }
 
   .avatar img {
-    width: 28px !important;
+    width: 22px !important;
   }
 
   .jobslist::-webkit-scrollbar {
@@ -1254,6 +1260,12 @@ button.see-more {
 
 
 @media (max-width: 768px) {
+  .title {
+    font-size: 1.2rem;
+    margin-top: 0rem;
+    font-weight: 600;
+  }
+
   .post {
     margin: 0;
     background-color: var(--light-mode-main-color);
@@ -1302,12 +1314,6 @@ button.see-more {
     overflow-y: hidden !important;
   }
 
-  .title {
-    font-size: 1.1rem;
-    margin-top: 0rem;
-    font-weight: 600;
-  }
-
   .post-info {
     font-size: 14px;
   }
@@ -1342,7 +1348,6 @@ button.see-more {
 
 
 .avatar img {
-  border: 1px solid var(--border-color);
   width: 40px;
   aspect-ratio: 1/1;
   border-radius: 6px;
@@ -1559,10 +1564,6 @@ button.see-more {
     color: #ccc;
   }
 
-  .avatar img {
-    border-color: var(--dark-mode-border-color);
-  }
-
   .header-button:hover,
   .boost-button:hover,
   .reaction-menu button:hover,
@@ -1641,13 +1642,6 @@ button.see-more {
   .title {
     color: #fff;
     /* Light color for titles */
-  }
-
-  .user-info,
-  .description,
-  .reactions {
-    color: #ccc;
-    /* Lighter text color for additional information */
   }
 
   .post-dropdown-menu {

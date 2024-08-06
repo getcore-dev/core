@@ -738,7 +738,7 @@ function createJobElement(job) {
             ${job.description}
           </div>
         </div>
-        <div class="job-posting-flairs margin-06-bottom secondary-text">Skills:${tagsHTML}</div>
+        <div class="job-posting-flairs margin-06-bottom secondary-text sub-text">Skills:${tagsHTML}</div>
         <div class="job-title-location secondary-text sub-text">
           <div class="job-post-date ${formatDateColor(job.postedDate)} sub-text">
             ${formatRelativeDate(job.postedDate)} 

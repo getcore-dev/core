@@ -89,14 +89,28 @@
               }
               %>
             <span class="post-title-navigator">
+              <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="blog-avatar" onclick="window.location.href = '/user/<%= post.user.username %>'" />
+
               <a id="community-header-text" href="/networks/<%= post.community.shortname %>"><%= post.community.shortname.toLowerCase() %></a>
               <span>
                 /
               </span>
 
-              <a href="/user/<%= post.user.username %>" id="blog-username">
-                <%= post.user.username %>
-              </a>
+              <span class="post-user-info-span main-text">
+                <a href="/user/<%= post.user.username %>" id="blog-username">
+                  <% if (post.user.firstname && post.user.lastname) { %>
+                  <%= post.user.firstname %> <%= post.user.lastname %>
+                  <% } else { %>
+                  <%= post.user.username %>
+                  <% } %>
+
+                </a>
+                <% if (post.user.verified) { %>
+                <span>
+                  <span class="material-symbols-outlined" style="padding: 0;font-size: .85rem;color: #169da8;">verified_user</span>
+                </span>
+                <% } %>
+              </span>
             </span>
 
             <div class="post-title-container">
@@ -193,39 +207,6 @@
         <div class="post-information margin-1-bottom">
 
           <div class="post-userinfo">
-            <div class="blog-post-info">
-              <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="blog-avatar" onclick="window.location.href = '/user/<%= post.user.username %>'" />
-              <div class="post-user-info">
-                <span class="post-user-info-span main-text">
-                  <a href="/user/<%= post.user.username %>" id="blog-username">
-                    <% if (post.user.firstname && post.user.lastname) { %>
-                    <%= post.user.firstname %> <%= post.user.lastname %>
-                    <% } else { %>
-                    <%= post.user.username %>
-                    <% } %>
-
-                  </a>
-                  <% if (post.user.verified) { %>
-                  <span>
-                    <span class="material-symbols-outlined" style="padding: 0;font-size: .85rem;color: #169da8;">verified_user</span>
-                  </span>
-                  <% } %>
-                </span>
-              </div>
-
-
-              <% if (user && user.username !== post.user.username) { %>
-              <button class="regular-button-normal margin-l-auto" data-username="<%= post.user.username %>" onclick="followUser('<%= post.user.id %>')">
-                <span class="material-symbols-outlined">person_add</span>
-                <p class="bold">Follow</p>
-              </button>
-              <% } else { %>
-              <button class="regular-button-normal margin-l-auto" onclick="window.location.href = '/user/<%= post.user.username %>'">
-                <span class="material-symbols-outlined">person</span>
-                <p class="bold">Profile</p>
-              </button>
-              <% } %>
-            </div>
             <div class="post-userinfo2">
             </div>
 
@@ -329,7 +310,7 @@
                 <div class="link-info" onclick="window.location.href='<%= encodeURIComponent(post.link) %>'">
                   <div class="link-info-url"><%= post.linkPreview.url %></div>
                   <div class="link-info-title">
-                    <h3><%= post.linkPreview.title %></h3>
+                    <h3><%= post.linkPreview.title %></h3><span class="material-symbols-outlined post-tag-symbol">tag</span>
                   </div>
                   <div class="link-info-description" id="secondary-text"><%= post.linkPreview.description.substring(0, 100) %></div>
                 </div>
@@ -338,7 +319,7 @@
               <%- post.content %>
 
               <% if (post.updated_at) { %>
-              <p class="post-updatedat secondary-text"><%
+              <p class="post-updatedat secondary-text sub-text"><%
                     let editedDate = new Date(post.updated_at);
                     let today = new Date();
                     let formattedDate;

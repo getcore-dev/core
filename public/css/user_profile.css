@@ -45,7 +45,7 @@ main {
 
 .profile-content {
   display: flex;
-  gap: 2rem;
+  gap: .7rem;
   flex-direction: row;
 }
 
