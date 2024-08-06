@@ -4,7 +4,7 @@ h2,
 h3,
 p {
   margin: 0px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-family);
 }
 
 body {
@@ -218,10 +218,6 @@ select:hover,
 #com-btn-container::-webkit-scrollbar,
 #job-btn-container::-webkit-scrollbar {
   display: none;
-}
-
-.job-posting-information {
-  font-size: .825rem;
 }
 
 .job-posting-flairs>span {

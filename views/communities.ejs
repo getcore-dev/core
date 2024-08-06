@@ -377,7 +377,7 @@ add
 
             // Post header div
             const postHeaderDiv = document.createElement('div');
-            postHeaderDiv.className = 'post-header margin-06-bottom';
+            postHeaderDiv.className = 'post-header margin-03-bottom';
 
 
             const postHeaderUsernameDiv = document.createElement('div');
@@ -488,46 +488,11 @@ add
             postHeaderDiv.appendChild(postHeaderUsernameDiv);
 
 
-            const threeDotsDiv = document.createElement('div');
-            threeDotsDiv.className = 'three-dots';
-            threeDotsDiv.innerHTML = '<span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>';
-            let dropdownVisible = false;
-            let dropdown;
-
-            threeDotsDiv.onclick = (event) => {
-              event.stopPropagation();
-
-              if (dropdownVisible) {
-                dropdown.remove();
-                dropdownVisible = false;
-                return;
-              }
-
-              dropdown = document.createElement('div');
-              dropdown.className = 'post-dropdown-menu';
-              dropdown.innerHTML = `
-    <button class="dropdown-item" onclick="window.location.href='/posts/${post.id}'">View Post</button>
-    <button class="dropdown-item" onclick="window.location.href='/user/${post.username}'">Visit @${post.username}</button>
-    <button class="dropdown-item" onclick="window.location.href='/networks/${post.community_shortname}'">Visit /${post.community_shortname}</button>
-    <button class="dropdown-item" onclick="share('${post.title}','','https://getcore.dev/posts/${post.id}')">Share</button>
-  `;
-              threeDotsDiv.appendChild(dropdown);
-              dropdownVisible = true;
-            };
-
-            document.addEventListener('click', (event) => {
-              if (dropdownVisible && !threeDotsDiv.contains(event.target)) {
-                dropdown.remove();
-                dropdownVisible = false;
-              }
-            });
-            postHeaderDiv.appendChild(threeDotsDiv);
-
             postContentDiv.appendChild(postHeaderDiv);
 
             // Title div
             const titleDiv = document.createElement('div');
-            titleDiv.className = 'title margin-06-bottom';
+            titleDiv.className = 'title margin-03-bottom';
             const titleLink = document.createElement('a');
             titleLink.href = '/posts/' + post.id;
             titleLink.innerText = post.title;
@@ -540,7 +505,7 @@ add
             if (post.post_tags) {
               linkPreviewDiv.className = 'link-preview margin-06-bottom';
             } else {
-              linkPreviewDiv.className = 'link-preview margin-1-bottom';
+              linkPreviewDiv.className = 'link-preview margin-03-bottom';
             }
             linkPreviewDiv.onclick = () => window.location.href = '/posts/' + post.id;
 
@@ -594,7 +559,7 @@ add
             linkPreviewDiv.style.background = "none";
             linkPreviewDiv.style.border = "none";
             const descriptionDiv = document.createElement('div');
-            descriptionDiv.className = 'description sub-text';
+            descriptionDiv.className = 'description secondary-text sub-text';
 
             if (post.content) {
               let contentWithoutMarkdown = post.content
@@ -696,21 +661,6 @@ add
 
             buttonsDiv.appendChild(reactionButton);
 
-            // comment button
-            const commentButton = document.createElement('button');
-            commentButton.className = 'null-button-normal';
-            commentButton.id = 'comment-button';
-            commentButton.innerHTML = `<span class="comment-button-left"><span class="material-symbols-outlined">chat_bubble</span></span><span class="comment-button-right">${post.comment_count}</span>`;
-            commentButton.onclick = (event) => {
-              event.stopPropagation();
-              const commentsDiv = document.getElementById(`comments-${post.id}`);
-              if (commentsDiv.style.display === 'none' || commentsDiv.innerHTML.trim() === '') {
-                fetchPreviewComments(post.id);
-              } else {
-                commentsDiv.style.display = 'none';
-              }
-            };
-            buttonsDiv.appendChild(commentButton);
 
 
             // share button 
@@ -728,7 +678,7 @@ add
             // tags div 
             if (post.post_tags) {
               const tagsDiv = document.createElement('div');
-              tagsDiv.className = 'tags margin-1-bottom';
+              tagsDiv.className = 'tags margin-06-bottom secondary-text';
               post.post_tags.split(',').forEach(tag => {
                 const tagDiv = document.createElement('div');
                 tagDiv.className = 'tag';
@@ -758,6 +708,7 @@ add
               '<%= user %>' == '') {
               const joinWebsiteDiv = document.createElement('div');
               joinWebsiteDiv.className = 'join-website adaptive-border-bottom';
+              joinWebsiteDiv.onclick = () => window.location.href = '/login';
               joinWebsiteDiv.innerHTML = ` 
               <div class="join-website-header">
               <div class="icon"><span class="material-symbols-outlined">person_add</span></div>
@@ -765,7 +716,6 @@ add
               </div>
               <div class="join-website-body">
               <p class="description">Join CORE to stay updated on the latest posts and discussions.</p>
-              <button class="regular-button-normal" onclick="window.location.href='/login'">Join</button>
               </div>
               `;
               postCommentsDiv.appendChild(joinWebsiteDiv);
@@ -774,6 +724,7 @@ add
             // percent chance to show a join community section below post 
             if (Math.random() < 0.06 && '<%= communityId %>' == '') {
               const joinCommunityDiv = document.createElement('div');
+              joinCommunityDiv.onclick = () => window.location.href = `/networks/${post.community_shortname}`;
               joinCommunityDiv.className = 'join-community';
               joinCommunityDiv.innerHTML = ` 
               <div class="join-community-header">
@@ -782,7 +733,6 @@ add
               </div>
               <div class="join-community-body">
               <p class="description">Join the community to stay updated on the latest posts and discussions.</p>
-              <button class="submit-button-normal" onclick="window.location.href='/networks/${post.community_shortname}'">Visit</button>
               </div>
               `;
               postCommentsDiv.appendChild(joinCommunityDiv);

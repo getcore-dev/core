@@ -20,7 +20,7 @@ form>div {
 
 form>div>textarea {
     width: 100%;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-family);
     line-height: 1.65rem;
     padding: 10px 20px;
     margin: 8px 0;

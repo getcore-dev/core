@@ -55,7 +55,7 @@ main {
 }
 
 body {
-  font-family: "Inter", sans-serif !important;
+  font-family: var(--font-family);
   background-color: var(--background-color);
   color: var(--light-mode-text-color);
   display: flex;
@@ -345,7 +345,6 @@ img.blog-avatar {
   height: 36px;
   aspect-ratio: 1/1;
   object-fit: cover;
-  border: 1px solid var(--border-color);
   overflow: hidden;
   cursor: pointer;
   padding: 0 !important;
@@ -497,9 +496,10 @@ div.interact-buttons {
 }
 
 .post-info-container .material-symbols-outlined {
-  font-size: 1.05rem;
-  vertical-align: -3px;
+  font-size: .85rem;
+  vertical-align: -2px;
   padding: 0 !important;
+  padding-right: .3rem;
 }
 
 .dicussion-link {
@@ -548,7 +548,7 @@ div.interact-buttons {
   flex-direction: column;
   white-space-collapse: collapse;
   background-color: #e2efe2;
-  padding: 1.2rem 1.3rem;
+  padding: .6rem 1.3rem;
 }
 
 .solution-header {
@@ -847,7 +847,7 @@ div.repliees-avatar {
 }
 
 .total-reactions-count {
-  font-family: 'Inter', sans-serif !important;
+  font-family: var(--font-family) !important;
   font-size: .875rem;
   color: var(--light-mode-secondary-text-color);
 }
@@ -1314,10 +1314,6 @@ div .mini-link {
 .preview-title {
   font-size: 14px;
   font-weight: bold;
-}
-
-.post-body {
-  font-size: .955rem;
 }
 
 .no-comments {
@@ -2075,7 +2071,9 @@ div.username {
 
   .post-body p,
   .comment-body p {
-    font-size: var(--mobile-default-font-size);
+    font-size: 1.125rem;
+    line-height: 150%;
+    font-weight: 400;
   }
 
   .description {
@@ -2124,7 +2122,7 @@ div.username {
   }
 
   img.blog-avatar {
-    height: 40px !important;
+    height: 22px !important;
   }
 
   .preview-image {
@@ -2217,9 +2215,6 @@ div.username {
     max-width: 100% !important;
   }
 
-  .post-body {
-    font-size: .95rem;
-  }
 
   .post-title {
     font-weight: 700;

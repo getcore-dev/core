@@ -23,11 +23,12 @@ function scheduleNextRun() {
 }
 
 // Start the server
-app.listen(environment.port, () => {
+app.listen(environment.port, '0.0.0.0', () => {
   console.log(`Server running on http://localhost:${environment.port}`);
-  
+  /*
   // Schedule the first run of the job board service
   setTimeout(() => {
     runJobBoardService();
    }, 5000); // Wait 5 seconds after server start before first run
+   */
 });
