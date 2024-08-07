@@ -4,6 +4,13 @@ const JobProcessor = require('./services/jobBoardService');
 const jobProcessor = new JobProcessor();
 const MS_PER_HOUR = 3600000;
 
+let currentProgress = {};
+
+jobProcessor.on('progress', (progress) => {
+  currentProgress = progress;
+  console.log('Job processing progress:', progress);
+});
+
 async function runJobBoardService() {
   console.log('Job board service started');
   try {
@@ -22,11 +29,35 @@ function scheduleNextRun() {
   setTimeout(runJobBoardService, delayMs);
 }
 
+// Add a new route to view the progress
+app.get('/job-processing-progress', (req, res) => {
+  if (!req.user) {
+    return res.redirect('/login');
+  }
+  if (!req.user.isAdmin) {
+    return res.status(403).redirect('/');
+  }
+  res.render('progress', { progress: currentProgress });
+});
+
+// Add a new route to get the progress as JSON (for AJAX requests)
+app.get('/api/job-processing-progress', (req, res) => {
+  if (!req.user) {
+    return res.redirect('/login');
+  }
+  if (!req.user.isAdmin) {
+    return res.status(403).redirect('/');
+  }
+  res.json(currentProgress);
+});
+
 // Start the server
 app.listen(environment.port, '0.0.0.0', () => {
   console.log(`Server running on http://localhost:${environment.port}`);
-  // Schedule the first run of the job board service
-  setTimeout(() => {
-    runJobBoardService();
-   }, 5000); // Wait 5 seconds after server start before first run
+
+
+    setTimeout(() => {
+      runJobBoardService();
+    }, 5000); 
+
 });

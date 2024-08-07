@@ -5,30 +5,47 @@ const { z } = require('zod');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
+const EventEmitter = require('events');
 const path = require('path');
 const jobQueries = require('../queries/jobQueries');
 
-class JobProcessor {
+class JobProcessor extends EventEmitter {
   constructor() {
+    super();
     const geminiKey = process.env.GEMINI_API_KEY;
     const openaiKey = process.env.OPENAI_API_KEY;
     this.genAI = new GoogleGenerativeAI(geminiKey);
     this.openai = new OpenAI({ apiKey: openaiKey });
     this.useGemini = false;
     this.lastRequestTime = 0;
-    this.GEMINI_DELAY_MS = 1000;
-    this.OPENAI_DELAY_MS = 20000;
+    this.GEMINI_DELAY_MS = 3000;
+    this.OPENAI_DELAY_MS = 3000;
     this.MAX_RETRIES = 5;
     this.BACKOFF_FACTOR = 1.5;
     this.processedLinksFile = path.join(__dirname, 'processed_links.txt');
     this.processedLinks = new Set();
-    this.DELAY_BETWEEN_REQUESTS = 3000; // 3 seconds delay between requests
-    this.DELAY_BETWEEN_SEARCHES = 10000; // 10 seconds delay between searches
-    this.MAX_PAGES_PER_SEARCH = 3; // Limit to 3 pages per search term
+    this.DELAY_BETWEEN_REQUESTS = 3000; 
+    this.DELAY_BETWEEN_SEARCHES = 10000;
+    this.MAX_PAGES_PER_SEARCH = 3; 
     this.jobBoardPlatforms = ['greenhouse.io', 'ashbyhq.com', 'myworkday.com', 'lever.co'];
-    this.LINKEDIN_SEARCH_DELAY = 60000; // 1 minute delay between LinkedIn searches
-    this.MAX_LINKEDIN_PAGES = 5; // Limit to 5 pages per LinkedIn search
+    this.LINKEDIN_SEARCH_DELAY = 60000; 
+    this.MAX_LINKEDIN_PAGES = 5; 
+    this.progress = {
+      phase: 'Initializing',
+      company: '',
+      totalCompanies: 0,
+      processedCompanies: 0,
+      totalJobs: 0,
+      processedJobs: 0,
+      currentAction: ''
+    };
   }
+
+  updateProgress(update) {
+    this.progress = { ...this.progress, ...update };
+    this.emit('progress', this.progress);
+  }
+
   async init() {
     await this.loadProcessedLinks();
   }
@@ -575,8 +592,13 @@ class JobProcessor {
   }
 
   async processJobLinks(links, companyId, isLinkedIn = false) {
-    for (const link of links) {
+    for (const [index, link] of links.entries()) {
       try {
+        this.updateProgress({ 
+          processedJobs: index + 1,
+          currentAction: `Processing job: ${link.url || link}`
+        });
+
         let jobData;
         if (isLinkedIn) {
           jobData = await this.processLinkedInJob(link);
@@ -691,35 +713,65 @@ class JobProcessor {
     return [...new Set(jobBoards)]; // Remove duplicates
   }
 
-  async start() {
+ async start() {
     await this.init();
     console.log('Running enhanced job processor');
 
     const companies = await jobQueries.getCompanies();
     const processedJobTitles = new Set();
 
+    this.updateProgress({ 
+      phase: 'Processing job boards', 
+      totalCompanies: companies.length
+    });
+
     // Phase 1: Process regular job boards and search for additional career pages
-    for (const company of companies) {
+    for (const [index, company] of companies.entries()) {
+      this.updateProgress({ 
+        company: company.name, 
+        processedCompanies: index + 1,
+        currentAction: 'Collecting job links'
+      });
+
       if (company.job_board_url) {
         const result = await this.collectJobLinks(company);
+        this.updateProgress({ 
+          totalJobs: result.links.length,
+          currentAction: 'Processing job links'
+        });
         await this.processJobLinks(result.links, company.id);
       }
-
     }
 
-    console.log('Regular job board processing and additional career page search completed.');
+    this.updateProgress({ 
+      phase: 'LinkedIn Crawler',
+      company: '',
+      processedCompanies: 0,
+      totalJobs: 0,
+      processedJobs: 0
+    });
 
     // Phase 2: LinkedIn Crawler
-    console.log('Starting LinkedIn job search');
     const linkedInSearchTerms = this.getLinkedInSearchTerms(processedJobTitles);
     
-    for (const searchTerm of linkedInSearchTerms) {
+    for (const [index, searchTerm] of linkedInSearchTerms.entries()) {
+      this.updateProgress({ 
+        currentAction: `Searching LinkedIn for: ${searchTerm}`,
+        processedCompanies: index + 1,
+        totalCompanies: linkedInSearchTerms.length
+      });
+
       const linkedInJobs = await this.crawlLinkedIn(searchTerm);
+      this.updateProgress({ 
+        totalJobs: linkedInJobs.length,
+        currentAction: 'Processing LinkedIn jobs'
+      });
       await this.processJobLinks(linkedInJobs, null, true);
       await this.delay(this.LINKEDIN_SEARCH_DELAY);
     }
 
-    console.log('LinkedIn job processing completed.');
+    this.updateProgress({ phase: 'Completed' });
+    console.log('Job processing completed.');
   }
 }
 

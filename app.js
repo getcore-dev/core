@@ -72,7 +72,13 @@ app.use(
     secret: environment.sessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: environment.isProduction, maxAge: 1000 * 60 * 60 * 24 },
+    cookie: { 
+      secure: environment.isProduction,
+      sameSite: 'lax',
+      httpOnly: true,
+      path: '/',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
   })
 );
 app.use(limiter);

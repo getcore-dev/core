@@ -101,6 +101,7 @@
 .job-title-location {
   display: flex;
   gap: .3rem;
+  flex-wrap: wrap;
   align-items: center;
 }
 
@@ -192,6 +193,7 @@ div.job-title-location .sub-text {
 
   .jobslist {
     display: flex;
+    overflow-y: hidden;
     flex-direction: column;
     gap: 1rem;
     background: 0 !important;

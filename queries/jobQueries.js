@@ -1102,7 +1102,6 @@ ORDER BY jp.postedDate DESC
       `);
   
       const jobs = result.recordset;
-      console.log(jobs);
       return jobs;
     } catch (err) {
       console.error('Database query error:', err);
