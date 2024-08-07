@@ -1,9 +1,10 @@
-.settings-header, .settings-body {
-    padding: 0 13px;
+.settings-header,
+.settings-body {
+    padding: 0 1.3rem;
 }
 
 .settings-header {
-    padding: 6px 13px;
+    padding: 6px 1.3rem;
     padding-top: 15px;
 }
 
@@ -11,8 +12,118 @@
     margin-top: 30px;
 }
 
+.admin-progress {
+    margin: 1.3rem;
+    padding: .6rem .9rem;
+    background-color: var(--light-mode-main-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-progress h4 {
+    margin-top: 0;
+    color: #333;
+}
+
+.progress-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.progress-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.progress-indicator.pending {
+    background-color: #f0f0f0;
+}
+
+.progress-indicator.in-progress {
+    background-color: #ffd700;
+    animation: pulse 1s infinite;
+}
+
+.progress-indicator.completed {
+    background-color: #4CAF50;
+}
+
+.progress-label {
+    font-weight: bold;
+    margin-right: 10px;
+    width: 120px;
+}
+
+.progress-value {
+    flex-grow: 1;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
 .settings-body {
     display: flex;
     flex-direction: column;
     gap: 6px;
+}
+
+
+.server-output {
+    font-family: "IBM Plex Mono", monospace;
+    background-color: #fafafa;
+    color: black;
+    border: 1px solid var(--border-color);
+    padding: 0.9rem;
+    text-wrap: balance;
+    overflow-wrap: break-word;
+    width: 100%;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    box-sizing: border-box;
+}
+
+.action-item {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.progress-header {
+    display: flex;
+    align-items: center;
+}
+
+@media (prefers-color-scheme: dark) {
+    .settings-header {
+        background-color: var(--dark-mode-body-color);
+    }
+
+    .server-output {
+        background-color: var(--dark-mode-body-color);
+        color: var(--dark-mode-text-color);
+        border-color: var(--dark-mode-border-color);
+    }
+
+    .admin-progress {
+        background-color: var(--dark-mode-main-color);
+        border-color: var(--dark-mode-border-color);
+    }
+
+    .admin-progress h4 {
+        color: var(--dark-mode-text-color);
+    }
 }
