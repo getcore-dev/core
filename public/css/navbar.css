@@ -1395,7 +1395,7 @@ input[type='search'] {
   height: 34px;
   padding: 10px 20px;
   font-family: var(--font-family);
-  margin: 8px 0;
+  margin: 0;
   box-sizing: border-box;
   border-radius: 6px;
   background-color: var(--light-mode-body-color) !important;
