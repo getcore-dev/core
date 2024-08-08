@@ -507,7 +507,7 @@ function createCompanyElement(company) {
   };
   companyElement.innerHTML = `
     <img class="thumbnail-micro thumbnail thumbnail-regular" src="${company.logo}" alt="${company.name}" />
-    <p class="main-text secondary-text sub-text">${company.name}</p> <span class="counter red-counter">${company.job_count}</span>
+    <p class="main-text secondary-text sub-text">${company.name}</p> <span class="counter grey-counter">${company.job_count}</span>
   `;
   return companyElement;
 }

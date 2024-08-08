@@ -1,6 +1,7 @@
 .right-side-container {
   width: 24%;
   margin-right: auto;
+  padding-left: 2%;
   max-width: 300px;
   flex: none;
   display: flex;
@@ -129,6 +130,7 @@
 }
 
 .job-header {
+  margin: 0;
   margin-top: 18px;
   margin-bottom: 25px;
   padding: 0;

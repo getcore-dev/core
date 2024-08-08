@@ -910,10 +910,10 @@ button.clear-btn {
   padding: 0 5px;
 }
 
-.red-counter {
-  background: #ff5e5e !important;
+.grey-counter {
+  background: #9393935e !important;
   color: white !important;
-  border: 1px solid #aa0202 !important;
+  border: 1px solid #64646457
 }
 
 .menu-content {

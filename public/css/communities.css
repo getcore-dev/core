@@ -507,9 +507,9 @@ div .mini-link-title {
   font-size: .875rem;
 }
 
-.community-header,
-.job-header {
-  margin: 10px 10px 0px 10px;
+.community-header {
+  margin: 0 1.3rem;
+
 }
 
 .mini-link-image {
