@@ -10,7 +10,7 @@
   --light-mode-button-hover-color: #BECBDA;
   --light-mode-text-color: #000;
   --light-mode-bold-text-color: #000000;
-  --light-mode-secondary-text-color: #5c5c5c;
+  --light-mode-secondary-text-color: #d4d4d9;
   --hover-background-color: #ddd;
   --active-indicator-color: #5083ca;
   --dark-mode-main-color: #0b0c0c;
@@ -1153,7 +1153,7 @@ a>.menu-item {
   }
 
   .search-bar {
-    height: calc(var(--mobile-navbar-height) + var(--mobile-second-navbar-height));
+    height: calc(var(--mobile-navbar-height));
   }
 
   .dropdown {
@@ -1218,7 +1218,6 @@ a>.menu-item {
   }
 
   .second-nav-bar {
-    display: block;
     background-color: var(--light-mode-main-color);
     color: var(--primary-text-color);
     position: fixed;
@@ -1308,7 +1307,7 @@ a>.menu-item {
   }
 
   .latest-commit-banner {
-    top: calc(var(--mobile-navbar-height));
+    top: 16px;
     margin-top: 14px;
     padding: .8rem;
     width: 100%;
@@ -1559,7 +1558,7 @@ div .material-symbols-outlined:not(:only-child) {
 }
 
 button .material-symbols-outlined {
-  font-size: 18px;
+  font-size: 20px;
 }
 
 button .material-symbols-outlined:not(:only-child) {
@@ -2189,9 +2188,9 @@ button .material-symbols-outlined:not(:only-child) {
   #null-button,
   .null-button-normal,
   #null-button-normal {
-    background: #121212;
+    background: #212121;
     color: #b0b0b0;
-    border: 1.5px solid #1f1f1f;
+    border: 1.5px solid #2d2d2d;
   }
 
 
@@ -2253,8 +2252,8 @@ button .material-symbols-outlined:not(:only-child) {
 
   @media (max-width: 768px) {
     body {
-      padding-top: calc(constant(safe-area-inset-top) + calc(var(--mobile-navbar-height) + var(--mobile-second-navbar-height))) !important;
-      padding-top: calc(env(safe-area-inset-top) + calc(var(--mobile-navbar-height) + var(--mobile-second-navbar-height))) !important;
+      padding-top: calc(constant(safe-area-inset-top) + calc(var(--mobile-navbar-height))) !important;
+      padding-top: calc(env(safe-area-inset-top) + calc(var(--mobile-navbar-height))) !important;
       background-color: #000 !important;
     }
 
@@ -2587,7 +2586,7 @@ button .material-symbols-outlined:not(:only-child) {
   }
 
   .null-button-bordered {
-    border-color: var(--dark-mode-border-color) !important;
+    border-color: #2d2d2d !important;
   }
 
   #com-btn-container {

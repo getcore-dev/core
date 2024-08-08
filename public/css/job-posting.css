@@ -288,9 +288,9 @@ div.similar-job h4 {
 .job-details ul,
 ul.locations,
 .job-listing-menu p {
-  color: var(--light-mode-text-color);
-  font-size: var(--mobile-default-font-size);
-  line-height: 1.6;
+  color: var(--light-mode-secondary-text-color);
+  font-size: var(--mobile-default-sub-font-size);
+  line-height: 1.4;
   margin: 0;
   margin-bottom: 0;
 }
@@ -423,7 +423,7 @@ ul.locations,
   .job-details p,
   .job-details ul,
   .job-listing-menu p {
-    color: var(--dark-mode-text-color);
+    color: var(--dark-mode-secondary-text-color);
   }
 
   .company-location,
@@ -468,9 +468,6 @@ ul.locations,
     margin: 0;
   }
 
-  .job-info-flairs p {
-    font-size: .925rem;
-  }
 
 
 

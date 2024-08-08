@@ -78,7 +78,7 @@
 
 .job-description {
   font-weight: 500;
-  line-height: 1.6rem;
+  line-height: 1.4;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -107,7 +107,7 @@
 }
 
 .job .material-symbols-outlined {
-  font-size: 1.05rem;
+  font-size: .85rem;
   vertical-align: -3px;
 }
 

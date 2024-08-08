@@ -451,13 +451,6 @@ div.interact-buttons {
   flex-direction: row;
 }
 
-#share-button {
-  margin-left: auto;
-  border-radius: 10px;
-  border: 0;
-  padding: 0.35rem .85rem;
-}
-
 .reaction-button>p {
   margin-bottom: 0 !important;
   font-size: .8rem;
@@ -478,21 +471,32 @@ div.interact-buttons {
   font-size: 1rem;
 }
 
-.reaction-button {
+.reaction-button,
+#favorite-button,
+#share-button {
   border: 0;
   font-size: .875rem;
   display: flex;
   align-items: center;
-  border-radius: 10px;
+  border-radius: 19px;
   gap: .6rem;
-  padding: 0.6rem 1.9rem !important;
+  padding: 0.6rem 2rem !important;
   height: 34px;
+}
+
+#favorite-button,
+#share-button {
+  padding: 0.6rem .8rem !important;
 }
 
 .post-info-container {
   display: flex;
   gap: .5rem;
   align-items: center;
+}
+
+.post-info-container.post {
+  margin: 0 1.3rem;
 }
 
 .post-info-container .material-symbols-outlined {
@@ -571,7 +575,7 @@ div.interact-buttons {
 }
 
 .solution-body {
-  line-height: 1.6rem;
+  line-height: 1.4;
 }
 
 .solution-avatar img {
@@ -940,7 +944,7 @@ div.repliees-avatar {
 .post-user-info-header .avatar {
   border-radius: 6px;
   border: 1px solid var(--border-color);
-  height: 32px;
+  height: 22px;
   cursor: pointer;
   aspect-ratio: 1 / 1;
   object-fit: cover;
@@ -1278,10 +1282,10 @@ div .mini-link {
 
 .post-title-navigator {
   display: flex;
-  gap: .4rem;
+  gap: .7rem;
   font-size: .9rem;
   font-weight: 400;
-  margin-bottom: .2rem;
+  margin-bottom: 0;
 }
 
 .sidebar-description {
@@ -1470,12 +1474,6 @@ p.preview-description {
 .reply-button {
   padding: .35rem;
   color: var(--light-mode-secondary-text-color);
-}
-
-#favorite-button {
-  border-radius: 10px;
-  border: 0;
-  padding: .35rem .65rem;
 }
 
 
@@ -1770,11 +1768,6 @@ div.post-information {
     color: var(--dark-mode-text-color);
   }
 
-
-  .post-body p {
-    color: #b1b1b1;
-  }
-
   .nested-comment.level-1>.comment:first-child {
     background-color: var(--dark-mode-body-color);
   }
@@ -1966,7 +1959,10 @@ div.post-information {
 }
 
 .post-user-info-span {
+  display: flex;
+  gap: .2rem;
   font-size: .85rem;
+  align-items: center;
 }
 
 .post-subinfo {
@@ -2007,7 +2003,7 @@ div.username {
 @media screen and (max-width: 600px) {
 
   .user-interactions {
-    gap: 10px;
+    gap: .9rem;
   }
 
   .similar-posts-header {
@@ -2062,8 +2058,8 @@ div.username {
   .post-body p,
   .comment-body p {
     color: var(--light-mode-text-color);
-    font-size: var(--mobile-default-font-size);
-    line-height: 1.6;
+    font-size: var(--mobile-default-sub-font-size);
+    line-height: 1.4;
     margin: 0;
     margin-bottom: 0;
   }
@@ -2111,10 +2107,6 @@ div.username {
 
   .tag-flair {
     font-size: .95rem;
-  }
-
-  img.blog-avatar {
-    height: 22px !important;
   }
 
   .preview-image {

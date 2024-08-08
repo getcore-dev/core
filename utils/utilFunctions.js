@@ -621,30 +621,59 @@ OUTER APPLY (
 
       const result = await sql.query`
         SELECT 
-          p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, p.share_count,
-          p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, 
-          p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.updated_at, p.isLocked,
-          p.views, u.username, u.id as user_id, u.avatar,
-          ISNULL(u2.username, 'unknown') AS user_username,
-          ISNULL(u2.avatar, null) AS user_avatar,
-          SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
-          SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
-          SUM(CASE WHEN upa.action_type = 'DISLIKE' THEN 1 ELSE 0 END) as dislikeCount,
-          SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
-          SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
-          SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
-          upa2.action_type as userReaction
-        FROM posts p
-        INNER JOIN users u ON p.user_id = u.id
-        LEFT JOIN userPostActions upa ON p.id = upa.post_id
-        LEFT JOIN users u2 ON u.id = u2.id
-        LEFT JOIN userPostActions upa2 ON p.id = upa2.post_id AND upa2.user_id = ${userId}
-        WHERE p.id = ${postId}
-        GROUP BY 
-          p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.subtitle, p.link, p.communities_id,
-          p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious,
-          p.react_interesting, p.react_celebrate, u.avatar, u.id, p.post_type, p.updated_at, p.isLocked, p.share_count,
-          p.views, u2.username, u2.avatar, upa2.action_type
+  p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, p.share_count,
+  p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, 
+  p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.updated_at, p.isLocked,
+  p.views, u.username, u.id as user_id, u.avatar,
+  ISNULL(u2.username, 'unknown') AS user_username,
+  ISNULL(u2.avatar, null) AS user_avatar,
+  SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
+  SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
+  SUM(CASE WHEN upa.action_type = 'DISLIKE' THEN 1 ELSE 0 END) as dislikeCount,
+  SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
+  SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
+  SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
+  upa2.action_type as userReaction,
+  CASE 
+    WHEN je.title IS NOT NULL THEN je.title
+    ELSE ee.institutionName
+  END AS experience_title,
+  CASE 
+    WHEN je.companyName IS NOT NULL THEN 
+      CASE 
+        WHEN u.settings_PrivateJobNames = 1 THEN 'Company'
+        ELSE je.companyName 
+      END
+    ELSE 
+      CASE 
+        WHEN u.settings_PrivateSchoolNames = 1 THEN 'Institution'
+        ELSE ee.institutionName
+      END
+  END AS experience_place
+FROM posts p
+INNER JOIN users u ON p.user_id = u.id
+LEFT JOIN userPostActions upa ON p.id = upa.post_id
+LEFT JOIN users u2 ON u.id = u2.id
+LEFT JOIN userPostActions upa2 ON p.id = upa2.post_id AND upa2.user_id = ${userId}
+OUTER APPLY (
+  SELECT TOP 1 title, companyName
+  FROM job_experiences
+  WHERE userId = u.id
+  ORDER BY startDate DESC
+) je
+OUTER APPLY (
+  SELECT TOP 1 institutionName
+  FROM education_experiences
+  WHERE userId = u.id
+  ORDER BY startDate DESC
+) ee
+WHERE p.id = ${postId}
+GROUP BY 
+  p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.subtitle, p.link, p.communities_id,
+  p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, p.react_curious,
+  p.react_interesting, p.react_celebrate, u.avatar, u.id, p.post_type, p.updated_at, p.isLocked, p.share_count,
+  p.views, u2.username, u2.avatar, upa2.action_type, je.title, je.companyName, ee.institutionName,
+  u.settings_PrivateJobNames, u.settings_PrivateSchoolNames
       `;
 
       const postData = result.recordset[0];

@@ -191,7 +191,7 @@ div.company-buttons button {
 }
 
 .company-description {
-  line-height: 1.6rem;
+  line-height: 1.4;
   font-size: .925rem;
 }
 
@@ -229,7 +229,7 @@ p.job-description {
   width: 100%;
   overflow: hidden;
   box-sizing: border-box;
-  line-height: 1.6rem;
+  line-height: 1.4;
   margin: 0;
   font-size: .9255rem;
   margin: 2px 0;

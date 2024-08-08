@@ -4,6 +4,11 @@
   padding: 0 1.3rem;
 }
 
+.post-body p,
+.comment-body p {
+  color: var(--light-mode-secondary-text-color);
+}
+
 .project-link :is(h1, h2, h3, h4, h5, h6) {
   font-size: 1rem;
   padding: 0;
@@ -18,7 +23,7 @@
   color: var(--light-mode-secondary-text-color);
   font-size: 1.4rem;
   margin: .8rem 0;
-  margin-top: 1.35rem;
+  margin-top: .35rem;
 }
 
 .alt-text {
@@ -46,7 +51,7 @@
 
 .post-body>h3,
 .post-body>h4 {
-  font-size: 1.40rem;
+  font-size: var(--mobile-default-sub-font-size);
   margin-bottom: .9rem;
   font-weight: 600;
 }
@@ -55,6 +60,21 @@
   font-size: 1.25rem;
   margin-bottom: .9rem;
   font-weight: 700;
+}
+
+.post-flair {
+  display: inline-block;
+  padding: 0 3px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  border: 1px solid #3466e5;
+  border-radius: 2em;
+  padding-right: 10px;
+  padding-left: 10px;
+  line-height: 18px;
+  color: white;
+  background-color: #1a4dd0;
 }
 
 .post-body>h6 {
@@ -67,7 +87,7 @@
 .post-body>p {
   margin-top: 0;
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.4;
   margin-bottom: .9rem;
   padding: 0 1.3rem;
 }
@@ -148,7 +168,7 @@
   overflow: auto;
   margin: 1.2rem;
   border-radius: 10px;
-  line-height: 1.6rem;
+  line-height: 1.4;
 }
 
 .post-body img {
@@ -201,8 +221,9 @@
     background-color: var(--dark-mode-main-color);
   }
 
-  .post-body p {
-    color: var(--dark-mode-text-color);
+  .post-body p,
+  .comment-body p {
+    color: var(--dark-mode-secondary-text-color);
   }
 
   .alt-text {
@@ -236,6 +257,7 @@
   .post-body h4,
   .post-body h5,
   .post-body h6 {
+    font-weight: 650;
     color: var(--dark-mode-secondary-text-color);
   }
 

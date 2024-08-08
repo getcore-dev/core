@@ -69,7 +69,7 @@
              }
            }
 
-           return location.trim();
+           return 'Remote';
          }
 
 
@@ -119,7 +119,7 @@
                       </div>
                     
                     </div>
-                                                              <div class="job-title main-text"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
+                                                              <div class="job-title sub-text"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
 
                     <div class="job-title-location secondary-text">
                 ${job.salary || job.salary_max ? `
@@ -201,7 +201,7 @@
                       </div>
                     
                     </div>
-                                                              <div class="job-title main-text"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
+                                                              <div class="job-title sub-text"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
 
                     <div class="job-title-location secondary-text">
                 ${job.salary || job.salary_max ? `
