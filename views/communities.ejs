@@ -85,7 +85,7 @@
                   Admin Tools</button>
                 <button class="mod-btn null-button-normal null-button-bordered" style="margin-left:auto" id="communityActionBtn" onclick="share('<%= community.name %>','','https://getcore.dev/networks/<%= community.shortname %>')">
                   <span class="material-symbols-outlined share-glyph">
-                    ios_share
+                    share
                   </span></button>
               </div>
               <div class="community-picture">
@@ -492,7 +492,7 @@ add
 
             // Title div
             const titleDiv = document.createElement('div');
-            titleDiv.className = 'title margin-03-bottom';
+            titleDiv.className = 'title main-text margin-03-bottom';
             const titleLink = document.createElement('a');
             titleLink.href = '/posts/' + post.id;
             titleLink.innerText = post.title;
@@ -503,7 +503,7 @@ add
 
             const linkPreviewDiv = document.createElement('div');
             if (post.post_tags) {
-              linkPreviewDiv.className = 'link-preview margin-06-bottom';
+              linkPreviewDiv.className = 'link-preview';
             } else {
               linkPreviewDiv.className = 'link-preview margin-03-bottom';
             }
@@ -559,7 +559,7 @@ add
             linkPreviewDiv.style.background = "none";
             linkPreviewDiv.style.border = "none";
             const descriptionDiv = document.createElement('div');
-            descriptionDiv.className = 'description secondary-text sub-text';
+            descriptionDiv.className = 'description secondary-text margin-06-bottom sub-text';
 
             if (post.content) {
               let contentWithoutMarkdown = post.content
@@ -667,7 +667,7 @@ add
             const shareButton = document.createElement('button');
             shareButton.className = 'null-button-normal';
             shareButton.id = 'share-button';
-            shareButton.innerHTML = `<span class="material-symbols-outlined">ios_share</span> ${post.share_count ? post.share_count : 0}`;
+            shareButton.innerHTML = `<span class="material-symbols-outlined">share</span> ${post.share_count ? post.share_count : 0}`;
             shareButton.onclick = (event) => {
               event.stopPropagation();
               share(post.title, "", `https://getcore.dev/posts/${post.id}`, 'post', post.id);
@@ -731,7 +731,7 @@ add
               <div class="icon"><span style="color:${post.community_color};" class="material-symbols-outlined">${post.community_icon}</span></div>
               <div class="title"><a>/${post.community_shortname}</a></div>
               </div>
-              <div class="join-community-body">
+              <div class="join-community-body sub-text secondary-text">
               <p class="description">Join the community to stay updated on the latest posts and discussions.</p>
               </div>
               `;

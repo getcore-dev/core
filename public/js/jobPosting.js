@@ -453,7 +453,7 @@ delete
 }
       <div class="share-button-container flex" style="margin-left: auto">
       <button id="null-button-normal" class="margin-h-auto grow-button null-button-bordered" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');"><span class="material-symbols-outlined">
-ios_share
+share
 </span><span>Share</span> <span class="number-display">${job.share_count ? job.share_count : 0}</span></button>
       </div>
 

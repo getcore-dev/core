@@ -149,7 +149,7 @@ p.job-description {
   width: 100%;
   overflow: hidden;
   box-sizing: border-box;
-  line-height: 1.6rem;
+  line-height: 1.4;
   margin: 0;
   font-size: .875rem;
   margin: 2px 0;
@@ -641,7 +641,7 @@ select {
 .jobs-header {
   display: flex;
   flex-direction: column;
-  margin: 19px 1.3rem;
+  margin: 8px 14px;
   gap: 5px;
 }
 
@@ -915,6 +915,7 @@ div .material-symbols-outlined:not(:only-child) {
   }
 
   .jobs-header {
+    margin: 19px 1.3rem;
     margin-bottom: 1rem;
   }
 

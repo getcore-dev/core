@@ -21,7 +21,7 @@ form>div {
 form>div>textarea {
     width: 100%;
     font-family: var(--font-family);
-    line-height: 1.65rem;
+    line-height: 1.45rem;
     padding: 10px 20px;
     margin: 8px 0;
     box-sizing: border-box;

@@ -60,6 +60,12 @@
       <% } %>
       <% if (post.post_type != 'blog') { %>
       <% } %>
+      <% const reactionTypes = [
+                    { type: "LOVE", icon: "❤️" },
+                    { type: "LIKE", icon: "👍" },
+                    { type: "CURIOUS", icon: "🤔" },
+                    { type: "DISLIKE", icon: "👎" }
+                  ]; %>
       <div class="post">
         <div class="header">
           <div class="title">
@@ -90,27 +96,65 @@
               %>
             <span class="post-title-navigator">
               <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="blog-avatar" onclick="window.location.href = '/user/<%= post.user.username %>'" />
+              <div class="post-nav-header">
+                <div class="post-nav-user sub-text">
+                  <a id="community-header-text" href="/networks/<%= post.community.shortname %>">/<%= post.community.shortname.toLowerCase() %></a>
+                  <span style="font-size:.7rem;">•</span>
 
-              <a id="community-header-text" href="/networks/<%= post.community.shortname %>"><%= post.community.shortname.toLowerCase() %></a>
-              <span>
-                /
-              </span>
+                  <span class="post-time sub-text secondary-text">
+                    <% postDate = new Date(post.created_at); %>
+                    <%
+                      function formatRelativeDate(dateString) {
+                        const now = new Date();
+                        const postedDate = new Date(dateString);
+                        const diffTime = Math.abs(now - postedDate);
+                        const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+                        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                        const diffMonths = Math.floor(diffDays / 30);
+                        const diffYears = Math.floor(diffDays / 365);
 
-              <span class="post-user-info-span main-text">
-                <a href="/user/<%= post.user.username %>" id="blog-username">
-                  <% if (post.user.firstname && post.user.lastname) { %>
-                  <%= post.user.firstname %> <%= post.user.lastname %>
-                  <% } else { %>
-                  <%= post.user.username %>
-                  <% } %>
+                        if (diffYears > 0) {
+                          return `${diffYears}y`;
+                        } else if (diffMonths > 0) {
+                          return `${diffMonths}m`;
+                        } else if (diffDays > 0) {
+                          return `${diffDays}d`;
+                        } else if (diffHours > 0) {
+                          return `${diffHours}h`;
+                        } else {
+                          return 'Just now';
+                        }
+                      }
+                %>
 
-                </a>
-                <% if (post.user.verified) { %>
-                <span>
-                  <span class="material-symbols-outlined" style="padding: 0;font-size: .85rem;color: #169da8;">verified_user</span>
-                </span>
-                <% } %>
-              </span>
+                    <%formattedPostDate = formatRelativeDate(postDate);%>
+                    <%= formattedPostDate %>
+                  </span>
+                  <span>
+
+                  </span>
+                </div>
+                <div class="post-info-container margin-06-bottom secondary-text sub-text">
+                  <span class="post-user-info-span main-text">
+                    <a href="/user/<%= post.user.username %>" id="blog-username">
+                      <% if (post.user.firstname && post.user.lastname) { %>
+                      <%= post.user.firstname %> <%= post.user.lastname %>
+                      <% } else { %>
+                      <%= post.user.username %>
+                      <% } %>
+
+                    </a>
+                    <% if (post.user.verified) { %>
+                    <span>
+                      <span class="material-symbols-outlined" style="padding: 0;font-size: .85rem;color: #169da8;">verified_user</span>
+                    </span>
+                    <% } %>
+                    <span class="post-flair">
+                      <%= post.experience_title %>
+                    </span>
+                  </span>
+                </div>
+              </div>
             </span>
 
             <div class="post-title-container">
@@ -126,93 +170,9 @@
                 <% } %>
               </div>
             </div>
-            <div class="post-info-container margin-06-bottom secondary-text sub-text">
-              <div class="post-views-container">
-                <span class="material-symbols-outlined">visibility</span>
-                <span class="post-views"><%= post.views %></span>
-              </div>
-              <span style="font-size:.7rem;">•</span>
-              <div class="post-comments-container">
-                <span class="material-symbols-outlined">comment</span>
-                <span class="post-comments">
-
-                  <% 
-                        function countAllReplies(replies) {
-                          if (!replies || replies.length === 0) return 0;
-                          let total = 0;
-                          for (const reply of replies) {
-                            total += 1 + countAllReplies(reply.replies);
-                          }
-                          return total;
-                        }
-                        const totalReplies = countAllReplies(post.comments);
-                      %><%= String(totalReplies).trim() %>
-                </span>
-              </div>
-              <span style="font-size:.7rem;">•</span>
-              <div class="post-reactions-container">
-                <span class="material-symbols-outlined">bolt</span>
-                <span class="post-reactions">
-                  <% const reactionTypes = [
-                    { type: "LOVE", icon: "❤️" },
-                    { type: "LIKE", icon: "👍" },
-                    { type: "CURIOUS", icon: "🤔" },
-                    { type: "DISLIKE", icon: "👎" }
-                  ]; %>
-                  <% let totalReactions = 0; %>
-                  <% reactionTypes.forEach(reaction => { %>
-                  <% totalReactions += post[reaction.type.toLowerCase() + 'Count']; %>
-                  <% }); %>
-                  <%= totalReactions %>
-                </span>
-              </div>
-              <span style="font-size:.7rem;">•</span>
-              <div class="post-timestamp-container">
-                <span class="material-symbols-outlined">today</span>
-                <span class="post-time">
-                  <% postDate = new Date(post.created_at); %>
-                  <%
-                function formatRelativeDate(dateString) {
-                  const now = new Date();
-                  const postedDate = new Date(dateString);
-                  const diffTime = Math.abs(now - postedDate);
-                  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-                  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                  const diffMonths = Math.floor(diffDays / 30);
-                  const diffYears = Math.floor(diffDays / 365);
-
-                  if (diffYears > 0) {
-                    return `${diffYears}y`;
-                  } else if (diffMonths > 0) {
-                    return `${diffMonths}m`;
-                  } else if (diffDays > 0) {
-                    return `${diffDays}d`;
-                  } else if (diffHours > 0) {
-                    return `${diffHours}h`;
-                  } else {
-                    return 'Just now';
-                  }
-                }
-                %>
-
-                  <%formattedPostDate = formatRelativeDate(postDate);%>
-                  <%= formattedPostDate %>
-                </span>
-              </div>
-            </div>
 
           </div>
 
-        </div>
-        <div class="post-information margin-1-bottom">
-
-          <div class="post-userinfo">
-            <div class="post-userinfo2">
-            </div>
-
-
-
-          </div>
         </div>
         <div class="post-container">
 
@@ -347,7 +307,48 @@
                 <span class="secondary-text">Edited: <%= formattedDate %></span>
               </p>
               <% } %>
+
+              <div class="post-info-container post secondary-text sub-text">
+                <div class="post-views-container">
+                  <span class="material-symbols-outlined">visibility</span>
+                  <span class="post-views"><%= post.views %></span>
+                </div>
+                <span style="font-size:.7rem;">•</span>
+                <div class="post-comments-container">
+                  <span class="material-symbols-outlined">comment</span>
+                  <span class="post-comments">
+
+                    <% 
+                        function countAllReplies(replies) {
+                          if (!replies || replies.length === 0) return 0;
+                          let total = 0;
+                          for (const reply of replies) {
+                            total += 1 + countAllReplies(reply.replies);
+                          }
+                          return total;
+                        }
+                        const totalReplies = countAllReplies(post.comments);
+                      %><%= String(totalReplies).trim() %>
+                  </span>
+                </div>
+                <span style="font-size:.7rem;">•</span>
+                <div class="post-reactions-container">
+                  <span class="material-symbols-outlined">bolt</span>
+                  <span class="post-reactions">
+                    <% let totalReactions = 0; %>
+                    <% reactionTypes.forEach(reaction => { %>
+                    <% totalReactions += post[reaction.type.toLowerCase() + 'Count']; %>
+                    <% }); %>
+                    <%= totalReactions %>
+                  </span>
+                </div>
+                <span style="font-size:.7rem;">•</span>
+                <div class="post-timestamp-container">
+                  <span class="material-symbols-outlined">today</span>
+                </div>
+              </div>
               <div class="reaction-container">
+
                 <div class="user-interactions post-user-interactions">
                   <div id="reactionPopup-post-<%= post.id %>" class="reaction-popup post-reaction-popup">
                     <div class="reaction-popup-content">
@@ -388,7 +389,7 @@
                   <% if (!post.deleted && !post.isLocked) { %>
 
 
-                  <button class="null-button-normal reaction-button" onclick="<% if (user) { %>showCommentForm()<% } else { %>window.location.href = '/login';<% } %>">
+                  <button class="null-button-normal reaction-button">
                     <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">chat_bubble</span></span>
                     <span id="secondary-text">
                       <% 
@@ -413,7 +414,7 @@
                     <span class="material-symbols-outlined">favorite</span>
                   </button>
                   <button class="null-button-normal" id="share-button" onclick="share('<%= post.title %>', '', 'https://getcore.dev/posts/<%= post.id %>', 'post', '<%= post.id%>')">
-                    <span class="material-symbols-outlined">ios_share</span> <%= post.share_count ? post.share_count : 0 %>
+                    <span class="material-symbols-outlined">share</span> <%= post.share_count ? post.share_count : 0 %>
                   </button>
                   <% if (user && user.isAdmin) { %>
                   <div class="dropdown">
@@ -469,6 +470,7 @@
               </div>
             </div>
           </div>
+
         </div>
         <div class="comments-section">
           <% if (post.isLocked) { %>
