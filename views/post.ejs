@@ -98,10 +98,10 @@
               <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="blog-avatar" onclick="window.location.href = '/user/<%= post.user.username %>'" />
               <div class="post-nav-header">
                 <div class="post-nav-user sub-text">
-                  <a id="community-header-text" href="/networks/<%= post.community.shortname %>">/<%= post.community.shortname.toLowerCase() %></a>
+                  <a id="community-header-text" class="sub-text" href="/networks/<%= post.community.shortname %>">/<%= post.community.shortname.toLowerCase() %></a>
                   <span style="font-size:.7rem;">•</span>
 
-                  <span class="post-time sub-text secondary-text">
+                  <span class="post-time mini-text secondary-text">
                     <% postDate = new Date(post.created_at); %>
                     <%
                       function formatRelativeDate(dateString) {
@@ -149,9 +149,11 @@
                       <span class="material-symbols-outlined" style="padding: 0;font-size: .85rem;color: #169da8;">verified_user</span>
                     </span>
                     <% } %>
+                    <% if (post.experience_title) { %>
                     <span class="post-flair">
                       <%= post.experience_title %>
                     </span>
+                    <% } %>
                   </span>
                 </div>
               </div>

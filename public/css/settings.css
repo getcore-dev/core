@@ -1,10 +1,10 @@
 .settings-header,
 .settings-body {
-    padding: 0 1.3rem;
+    padding: 0 1rem;
 }
 
 .settings-header {
-    padding: 6px 1.3rem;
+    padding: 6px 1rem;
     padding-top: 15px;
 }
 
@@ -13,7 +13,7 @@
 }
 
 .admin-progress {
-    margin: 1.3rem;
+    margin: 1rem;
     padding: .6rem .9rem;
     background-color: var(--light-mode-main-color);
     border: 1px solid var(--border-color);

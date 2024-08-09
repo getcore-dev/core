@@ -151,7 +151,7 @@ pre code {
   position: relative;
   margin-bottom: .8rem;
   margin-top: 1.1rem;
-  padding: 0 1.3rem;
+  padding: 0 1rem;
   display: flex;
   align-items: center;
   align-content: stretch;
@@ -496,7 +496,7 @@ div.interact-buttons {
 }
 
 .post-info-container.post {
-  margin: 0 1.3rem;
+  margin: 0 1rem;
 }
 
 .post-info-container .material-symbols-outlined {
@@ -552,7 +552,7 @@ div.interact-buttons {
   flex-direction: column;
   white-space-collapse: collapse;
   background-color: #e2efe2;
-  padding: .6rem 1.3rem;
+  padding: .6rem 1rem;
 }
 
 .solution-header {
@@ -639,7 +639,7 @@ div.interact-buttons {
   display: flex;
   align-items: center;
   gap: 4px;
-  margin: 0 1.3rem;
+  margin: 0 1rem;
   margin-top: 1.5rem;
   margin-bottom: 0;
 }
@@ -809,7 +809,7 @@ div.interact-buttons {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  padding: 0 1.3rem;
+  padding: 0 1rem;
   margin-bottom: 2px;
 }
 
@@ -1024,7 +1024,7 @@ div.repliees-avatar {
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
-  padding: 0 1.3rem;
+  padding: 0 1rem;
   margin-top: 3rem;
 }
 
@@ -1612,12 +1612,12 @@ p.preview-description {
 }
 
 div.post-information {
-  padding: 0rem 1.3rem;
+  padding: 0rem 1rem;
 }
 
 .blog-tags-div {
   margin-bottom: .4rem;
-  padding: 0 1.3rem;
+  padding: 0 1rem;
 }
 
 #github-flair {
@@ -2074,7 +2074,7 @@ div.username {
   }
 
   .jobslist {
-    margin: 0 1.3rem;
+    margin: 0 1rem;
     margin-top: 3rem;
   }
 
@@ -2120,7 +2120,7 @@ div.username {
 
   main {
     display: flex;
-    overflow-y: hidden;
+    height: 100%;
     flex-direction: column;
   }
 
@@ -2138,6 +2138,10 @@ div.username {
   .link-image img {
     width: 80% !important;
     margin: 0 auto !important;
+  }
+
+  .main-container {
+    max-height: 100%;
   }
 
   .reaction-button,
@@ -2166,7 +2170,7 @@ div.username {
   .main-container {
     width: 100%;
     border: 0;
-    height: calc(100dvh - var(--mobile-navbar-height)) !important;
+    height: 100%;
   }
 
   .header {
@@ -2231,7 +2235,8 @@ div.username {
 
   body {
     overflow: hidden;
-    height: calc(100dvh - var(--mobile-navbar-height));
+    overflow-y: scroll;
+    height: 100%;
   }
 
   .comment-body {

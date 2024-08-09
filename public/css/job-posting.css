@@ -46,12 +46,12 @@ main {
 }
 
 .job-details>* {
-  padding: 0 1.3rem;
+  padding: 0 1rem;
 }
 
 .similar-company-jobs h4,
 .similar-jobs h4 {
-  padding: 0 1.3rem;
+  padding: 0 1rem;
 }
 
 .similar-company-jobs,
@@ -278,7 +278,7 @@ div.similar-job h4 {
   background: var(--light-mode-body-color);
   border: 1px solid var(--border-color);
   border-radius: 10px;
-  padding: 0.75rem 1.3rem;
+  padding: 0.75rem 1rem;
   margin: 1.2rem;
 
 
@@ -448,7 +448,7 @@ ul.locations,
 
 @media screen and (max-width: 600px) {
   main {
-    height: calc(100dvh - var(--mobile-navbar-height) - var(--mobile-second-navbar-height)) !important;
+    height: 100%;
   }
 
   .company-name {
@@ -473,6 +473,7 @@ ul.locations,
 
   .container {
     width: 100% !important;
+    height: 100%;
     border: 0 !important;
     border: 0;
   }
