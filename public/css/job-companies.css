@@ -45,7 +45,7 @@ div#companies-container {
 }
 
 div#companies-container>div {
-    padding: 1.4rem 1.3rem;
+    padding: 1.4rem 1rem;
     background: var(--light-mode-main-color);
     border-bottom: 1px solid var(--border-color);
 }
@@ -61,7 +61,7 @@ div#companies-container>div:hover {
 div.companies-search-container {
     display: flex;
     flex-direction: column;
-    padding: 1.4rem 1.3rem;
+    padding: 1.4rem 1rem;
     padding-bottom: 0;
 }
 

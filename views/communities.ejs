@@ -446,19 +446,18 @@ add
 
                 ${post.verified ? '<span class="material-symbols-outlined" style="padding:0;font-size: .85rem;color:#169da8;">verified_user</span>' : ''}
                 ${post.isModerator ? '<span class="material-symbols-outlined" style="font-size:.85rem;color:#169da8;">admin_panel_settings</span>' : ''}
+                <span class="post-timestamp" id="secondary-text">${formatDate(post.created_at)}</span>
+                ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="padding:0;color:#ffdf34;">push_pin</span>' : ''}
+
               </p> 
               
               </span>
               <span>
               <p>
-              ${post.job_title && post.job_company ? `${post.job_title} at ${post.job_company}` : post.education_institution ? `Student at ${post.education_institution}` : ''}</p>
-              
+              ${post.job_title ? (post.job_company !== 'Company' ? `${post.job_title} at ${post.job_company}` : post.job_title) : post.education_institution ? `Student at ${post.education_institution}` : ''}
+          
               </span>
               <p>
-              
-              <a class="secondary-text" style="color:${post.community_color}" href="/networks/${post.community_shortname}">/${post.community_shortname}</a>
-              <span class="post-timestamp" id="secondary-text">${formatDate(post.created_at)}</span>
-                                              ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="padding:0;color:#ffdf34;">push_pin</span>' : ''}
 
                           </p>
             `;
@@ -1240,13 +1239,13 @@ add
 
       // Decide the format based on the time difference
       if (minutes < 60) {
-        formattedDate = minutes + ' m';
+        formattedDate = minutes + 'm';
       } else if (hours < 24) {
-        formattedDate = hours + ' h';
+        formattedDate = hours + 'h';
       } else if (days < 365) {
-        formattedDate = days + ' d';
+        formattedDate = days + 'd';
       } else {
-        formattedDate = years + ' y';
+        formattedDate = years + 'y';
       }
       return formattedDate;
     }

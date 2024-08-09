@@ -94,7 +94,7 @@ div.posts {
     background: var(--light-mode-body-color);
     border-bottom: 1px solid var(--border-color);
     border-radius: 0;
-    padding: 0.75rem 1.3rem;
+    padding: 0.75rem 1rem;
     padding-bottom: 0;
 }
 
@@ -122,7 +122,7 @@ div.votes {
 .job {
     background: none !important;
     border: 0 !important;
-    padding: 0 1.3rem !important;
+    padding: 0 1rem !important;
     border-bottom: 1px solid var(--border-color) !important;
 }
 

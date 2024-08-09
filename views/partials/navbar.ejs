@@ -387,7 +387,7 @@
 
   <% if (navbarTint) {
     %>.navbar {
-      border-color: <%=navbarTint %>;
+      border-color: <%=navbarTint %>b5;
     }
 
     #community-header-text {
@@ -1104,14 +1104,14 @@
 
   document.addEventListener('click', function (event) {
     var content = document.getElementById("menu-content");
-    var overlay = document.getElementById("overlay");
+    var overlay = document.getElementById("search-overlay");
     var menuButton = document.getElementById("menu-button");
     var menuIcon = document.getElementById("menu-icon");
 
     if (!content.contains(event.target) && event.target !== menuIcon && !menuButton.contains(event.target)) {
       if (content.classList.contains("sidebar-open")) {
         content.classList.remove("sidebar-open");
-        overlay.style.opacity = '0';
+        overlay.style.display = 'none';
         setTimeout(() => {
           overlay.style.pointerEvents = 'none'; // Block clicks when the overlay is fully transparent
         }, 500);
@@ -1124,11 +1124,11 @@
       menuButton.classList.toggle('active');
       content.classList.toggle("sidebar-open");
       if (content.classList.contains("sidebar-open")) {
-        overlay.style.opacity = '1';
-        overlay.style.pointerEvents = 'auto';
+        overlay.style.display = 'block';
+        overlay.style.pointerEvents = 'auto'; // Enable clicks when the overlay is visible
         document.body.style.overflow = "hidden"; // Disable scrolling when sidebar is open
       } else {
-        overlay.style.opacity = '0';
+        overlay.style.display = 'none';
         setTimeout(() => {
           overlay.style.pointerEvents = 'none';
         }, 500);

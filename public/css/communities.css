@@ -190,7 +190,7 @@ div.vote-interactions {
 .post-content {
   position: relative;
   flex-grow: 1;
-  padding: 1rem 1.3rem;
+  padding: 1rem 1rem;
 }
 
 
@@ -507,7 +507,7 @@ div .mini-link-title {
 }
 
 .community-header {
-  margin: 0 1.3rem;
+  margin: 0 1rem;
 
 }
 
@@ -661,7 +661,6 @@ div .mini-link-desc {
   overflow-y: hidden;
   flex-wrap: nowrap;
   flex-direction: row;
-  max-height: calc(100vh - var(--navbar-height));
   justify-content: space-between;
   z-index: 1;
 }
@@ -849,7 +848,7 @@ div.join-website-body {
   border-radius: 2rem;
   gap: .6rem;
   padding: 0.6rem !important;
-  height: 34px;
+  height: 32px;
 }
 
 #reaction-button .material-symbols-outlined {
@@ -1055,7 +1054,7 @@ button.see-more {
   align-items: center;
   justify-content: center;
   background: transparent !important;
-  margin: 1.3rem;
+  margin: 1.3rem 1rem;
 }
 
 .see-more a {
@@ -1071,7 +1070,7 @@ button.see-more {
     border-radius: 0;
     margin: 0;
     border: 0;
-    padding: .65rem 1.3rem;
+    padding: .65rem 1rem;
     box-sizing: border-box;
     padding-bottom: 0;
     background-color: var(--light-mode-body-color);
@@ -1168,7 +1167,7 @@ button.see-more {
   .community-header,
   .job-header {
     margin: 0;
-    padding: .3rem 1.3rem;
+    padding: .3rem 1rem;
     color: var(--light-mode-secondary-text-color);
   }
 
@@ -1199,10 +1198,15 @@ button.see-more {
     align-items: center;
   }
 
-  .post-quick-info,
+
   .job-title-location .sub-text {
     flex-direction: row;
     font-size: .8rem !important;
+  }
+
+  .post-quick-info {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .jobslist {
@@ -1229,7 +1233,7 @@ button.see-more {
     flex-direction: row;
     padding: .4rem 0;
     padding-left: 10px;
-    margin: 0 1.3rem;
+    margin: 0 .8rem;
     padding-right: 10px;
     gap: 10px;
     overflow-x: auto;
@@ -1305,12 +1309,7 @@ button.see-more {
   }
 
   body {
-    overflow-y: auto;
-  }
-
-  main {
-    height: auto !important;
-    overflow-y: hidden !important;
+    overflow-y: scroll;
   }
 
   .post-info {

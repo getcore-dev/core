@@ -694,7 +694,7 @@ div.job-skills-display {
 }
 
 div.job-skills-display {
-  padding: 0 1.3rem;
+  padding: 0 1rem;
 }
 
 
@@ -717,7 +717,7 @@ div.job-skills-display {
 
 .company-list {
   gap: .9rem;
-  padding: 0 1.3rem;
+  padding: 0 1rem;
   margin-top: .9rem;
 }
 
@@ -915,14 +915,14 @@ div .material-symbols-outlined:not(:only-child) {
   }
 
   .jobs-header {
-    margin: 19px 1.3rem;
+    margin: 19px 1rem;
     margin-bottom: 1rem;
   }
 
   div.jobs-container>div.job-list>.job {
     margin: 0 0px;
     border: 0;
-    padding: 1.2rem 1.3rem;
+    padding: 1.2rem 1rem;
     border-radius: 0;
     border-top: 1px solid var(--border-color);
   }
