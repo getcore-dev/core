@@ -1299,6 +1299,8 @@ ORDER BY jp.postedDate DESC
       throw err;
     }
   },
+
+
   createJobPosting: async (
     title,
     salary = 0,
@@ -1583,6 +1585,71 @@ getCompanyByName: async (name) => {
       await sql.query`
       DELETE FROM JobPostings WHERE id = ${jobId}
     `;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  deleteOldJobs: async (expirationDays) => {
+    try {
+      // First, identify and delete old jobs
+      const result = await sql.query`
+        DECLARE @CutoffDate DATETIME = DATEADD(DAY, -${expirationDays}, GETUTCDATE());
+
+        DELETE FROM JobPostingsTags
+        WHERE jobId IN (SELECT id FROM JobPostings WHERE postedDate <= @CutoffDate);
+
+        DELETE FROM job_skills
+        WHERE job_id IN (SELECT id FROM JobPostings WHERE postedDate <= @CutoffDate);
+
+        DELETE FROM JobPostings
+        WHERE postedDate <= @CutoffDate;
+      `;
+
+      console.log(`Deleted ${result.rowsAffected[2]} old jobs.`);
+      return result.rowsAffected[2]; // Returns the count of deleted JobPostings
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  removeDuplicateJobs: async () => {
+    try {
+      // Identify duplicate jobs
+      const duplicateJobs = await sql.query`
+        WITH DuplicateJobs AS (
+          SELECT 
+            id,
+            ROW_NUMBER() OVER (
+              PARTITION BY title, company_id, location, description, salary, salary_max, experienceLevel
+              ORDER BY id DESC
+            ) AS rownum
+          FROM JobPostings
+        )
+        SELECT id
+        FROM DuplicateJobs
+        WHERE rownum > 1
+      `;
+
+      let deletedCount = 0;
+
+      // Delete related records and the job itself for each duplicate job
+      for (const job of duplicateJobs.recordset) {
+        await sql.query`
+          DELETE FROM JobPostingsTags WHERE jobId = ${job.id}
+        `;
+        await sql.query`
+          DELETE FROM job_skills WHERE job_id = ${job.id}
+        `;
+        await sql.query`
+          DELETE FROM JobPostings WHERE id = ${job.id}
+        `;
+        deletedCount++;
+      }
+
+      return deletedCount;
     } catch (err) {
       console.error('Database query error:', err);
       throw err;

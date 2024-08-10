@@ -21,6 +21,7 @@ class JobProcessor extends EventEmitter {
     this.GEMINI_DELAY_MS = 3000;
     this.OPENAI_DELAY_MS = 3000;
     this.MAX_RETRIES = 5;
+    this.JOB_EXPIRATION_DAYS = 60; 
     this.BACKOFF_FACTOR = 1.5;
     this.processedLinksFile = path.join(__dirname, 'processed_links.txt');
     this.processedLinks = new Set();
@@ -39,6 +40,29 @@ class JobProcessor extends EventEmitter {
       processedJobs: 0,
       currentAction: ''
     };
+  }
+
+  async cleanupOldJobs() {
+    console.log('Cleaning up old jobs...');
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() - this.JOB_EXPIRATION_DAYS);
+    
+    try {
+      const deletedCount = await jobQueries.deleteOldJobs(expirationDate);
+      console.log(`Deleted ${deletedCount} old jobs.`);
+    } catch (error) {
+      console.error('Error cleaning up old jobs:', error);
+    }
+  }
+
+  async removeDuplicateJobs() {
+    console.log('Removing duplicate jobs...');
+    try {
+      const deletedCount = await jobQueries.removeDuplicateJobs();
+      console.log(`Removed ${deletedCount} duplicate jobs.`);
+    } catch (error) {
+      console.error('Error removing duplicate jobs:', error);
+    }
   }
 
   updateProgress(update) {
@@ -716,6 +740,9 @@ class JobProcessor extends EventEmitter {
  async start() {
     await this.init();
     console.log('Running enhanced job processor');
+
+    await this.cleanupOldJobs();
+    await this.removeDuplicateJobs();
 
     const companies = await jobQueries.getCompanies();
     const processedJobTitles = new Set();
