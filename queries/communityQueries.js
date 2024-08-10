@@ -14,6 +14,20 @@ const communityQueries = {
       throw err;
     }
   },
+
+  searchCommunities: async (searchTerm) => {
+    try {
+      const result = await sql.query`
+        SELECT * FROM communities 
+        WHERE name LIKE ${'%' + searchTerm + '%'}
+        OR shortname LIKE ${'%' + searchTerm + '%'}`;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   getUserMemberships: async (userId) => {
     try {
       const result = await sql.query`

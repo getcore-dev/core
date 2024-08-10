@@ -15,6 +15,20 @@ const generateUniqueId = () => {
 };
 
 const postQueries = {
+  searchPosts: async (searchTerm) => {
+    try {
+      const result = await sql.query`
+        SELECT * 
+        FROM posts 
+        WHERE title LIKE '%${searchTerm}%' AND deleted = 0`;
+
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   getPosts: async () => {
     try {
       const result = await sql.query(

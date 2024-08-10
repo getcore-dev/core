@@ -297,7 +297,7 @@ function blendColors(color1, color2, ratio) {
   `).join('')}
 </div>
               <div class="job-title-location secondary-text sub-text">
-              <span class="job-post-date ${formatDateColor(job.postedDate)}">${formatRelativeDate(job.postedDate)}</span>
+              <span class="job-post-date ${formatDateColor(job.postedDate)}"><time>${formatRelativeDate(job.postedDate)}</time></span>
               <span style="font-size:.7rem;">•</span>
                 <span style="">
                   ${job.experienceLevel === 'Mid Level'

@@ -881,7 +881,7 @@ div .material-symbols-outlined:not(:only-child) {
   }
 
   .jobs-container {
-    height: calc(100dvh - 58px);
+    height: 100%;
   }
 
   .job-list {

@@ -722,7 +722,7 @@ function createJobElement(job) {
   jobElement.innerHTML = `
     <div class="job-preview">
       <div class="job-info">
-        <div class="company-info margin-03-bottom">
+        <div class="company-info margin-06-bottom">
           ${
             job.company_logo
               ? `<img class="thumbnail thumbnail-regular thumbnail-micro" src="${job.company_logo}" alt="" />`
@@ -741,7 +741,7 @@ function createJobElement(job) {
         <div class="job-posting-flairs margin-06-bottom secondary-text sub-text">Skills:${tagsHTML}</div>
         <div class="job-title-location secondary-text sub-text">
           <div class="job-post-date ${formatDateColor(job.postedDate)} sub-text">
-            ${formatRelativeDate(job.postedDate)} 
+            <time>${formatRelativeDate(job.postedDate)}</time>
           </div>
           <span style="font-size:.7rem;">•</span>
           <div class="experience-level sub-text">${

@@ -446,7 +446,7 @@ add
 
                 ${post.verified ? '<span class="material-symbols-outlined" style="padding:0;font-size: .85rem;color:#169da8;">verified_user</span>' : ''}
                 ${post.isModerator ? '<span class="material-symbols-outlined" style="font-size:.85rem;color:#169da8;">admin_panel_settings</span>' : ''}
-                <span class="post-timestamp" id="secondary-text">${formatDate(post.created_at)}</span>
+                <span class="post-timestamp" id="secondary-text"><time>${formatDate(post.created_at)}</time></span>
                 ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="padding:0;color:#ffdf34;">push_pin</span>' : ''}
 
               </p> 
@@ -660,7 +660,29 @@ add
 
             buttonsDiv.appendChild(reactionButton);
 
+            // comment button 
+            const commentButton = document.createElement('button');
+            commentButton.className = 'null-button-normal';
+            commentButton.id = 'share-button';
+            commentButton.innerHTML = `<span class="material-symbols-outlined">comment</span> ${post.comment_count}`;
+            commentButton.onclick = (event) => {
+              event.stopPropagation();
+              window.location.href = `/networks/${post.community_shortname}`
 
+            };
+            buttonsDiv.appendChild(commentButton);
+
+            // community button 
+            const communityButton = document.createElement('button');
+            communityButton.className = 'null-button-normal';
+            communityButton.id = 'share-button';
+            communityButton.innerHTML = `<span class="material-symbols-outlined">${post.community_icon}</span> ${post.community_shortname}`;
+            communityButton.onclick = (event) => {
+              event.stopPropagation();
+              window.location.href = `/networks/${post.community_shortname}`
+
+            };
+            buttonsDiv.appendChild(communityButton);
 
             // share button 
             const shareButton = document.createElement('button');
@@ -672,6 +694,7 @@ add
               share(post.title, "", `https://getcore.dev/posts/${post.id}`, 'post', post.id);
             };
             buttonsDiv.appendChild(shareButton);
+
 
 
             // tags div 
@@ -1051,7 +1074,7 @@ add
           <input type="hidden" name="_method" value="DELETE" />
           <button type="submit" class="admin-delete-comment-button-${comment.id}">
             <span style="color: red" class="material-symbols-outlined">gavel</span>
-            <strong style="color: red">Admin Delete (Logged)</strong>
+            <strong class="admin-option caution">Remove</strong>
           </button>
         </form>
       </span>

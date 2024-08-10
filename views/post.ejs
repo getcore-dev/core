@@ -306,11 +306,11 @@
                       formattedDate = years + 'y';
                     }
                     %>
-                <span class="secondary-text">Edited: <%= formattedDate %></span>
+                <span class="secondary-text mini-text">Edited: <%= formattedDate %></span>
               </p>
               <% } %>
 
-              <div class="post-info-container post secondary-text sub-text">
+              <div class="post-info-container post secondary-text mini-text">
                 <div class="post-views-container">
                   <span class="material-symbols-outlined">visibility</span>
                   <span class="post-views"><%= post.views %></span>
@@ -321,6 +321,16 @@
                   <span class="post-comments">
 
                     <% 
+                                          function formatDateLong(date) {
+                                            let postDate = new Date(date);
+                                            let dateOptions = { year: 'numeric', month: 'long', day: '2-digit' };
+                                            let timeOptions = { hour: '2-digit', minute: '2-digit' };
+                                            
+                                            let formattedDate = postDate.toLocaleDateString('en-US', dateOptions);
+                                            let formattedTime = postDate.toLocaleTimeString('en-US', timeOptions);
+                                            
+                                            return `${formattedDate} ${formattedTime}`;
+                                          }
                         function countAllReplies(replies) {
                           if (!replies || replies.length === 0) return 0;
                           let total = 0;
@@ -347,6 +357,7 @@
                 <span style="font-size:.7rem;">•</span>
                 <div class="post-timestamp-container">
                   <span class="material-symbols-outlined">today</span>
+                  <span class="post-timestamp"><time><%= formatDateLong(post.created_at) %></time></span>
                 </div>
               </div>
               <div class="reaction-container">
@@ -419,18 +430,15 @@
                     <span class="material-symbols-outlined">share</span> <%= post.share_count ? post.share_count : 0 %>
                   </button>
                   <% if (user && user.isAdmin) { %>
-                  <div class="dropdown">
-                    <button class="null-button-normal" onclick="showDropdown(event)">
-                      <span class="material-symbols-outlined">more_horiz</span>
+                  <div class="dropdown" style="margin-left:auto;">
+                    <button class="null-button-normal" style="background:0;border:0;padding:0;" onclick="showDropdown(event)">
+                      <span class="material-symbols-outlined" style="font-size:26px;">more_horiz</span>
                     </button>
                     <div class="dropdown-content" style="display: none;">
                       <div class="dropdown-item">
                         <button onclick="adminDeletePost('<%= post.id %>')">
-                          <span style="color: red;" class="material-symbols-outlined">
-                            gavel
-                          </span>
-                          <strong style="color: red;">
-                            <p>Admin Delete (Logged)</p>
+                          <strong>
+                            <p class="admin-option caution">Remove</p>
                           </strong>
                         </button>
                       </div>
@@ -458,10 +466,7 @@
                       <div class="dropdown-item">
                         <span>
                           <button onclick="toggleLockPost('<%= post.id %>')">
-                            <span class="material-symbols-outlined">
-                              lock
-                            </span>
-                            <p>Lock Post</p>
+                            <p class="admin-option warning">Lock</p>
                           </button>
                         </span>
                       </div>
@@ -556,7 +561,6 @@
                       <span>
                         <form id="answer-form-<%= comment.id %>" action="/posts/<%= post.id %>/answer/<%= comment.id %>" method="POST">
                           <button type="submit">
-                            <span class="material-symbols-outlined">check</span>
                             <p style="color: green">Accept</p>
                           </button>
                         </form>
@@ -566,7 +570,6 @@
                       <span>
                         <form id="favorite-form-<%= comment.id %>" action="/favorites/comment/<%= post.id %>/<%= comment.id %>" method="POST">
                           <button type="submit">
-                            <span class="material-symbols-outlined">favorite</span>
                             <p>Favorite</p>
                           </button>
                         </form>
@@ -577,7 +580,6 @@
                         <form id="delete-comment-form-<%= comment.id %>" class="reactionButton" action="/comment/<%= comment.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?');">
                           <input type="hidden" name="_method" value="DELETE" />
                           <button type="submit" class="delete-comment-button-<%= comment.id %>">
-                            <span style="color: red" class="material-symbols-outlined">delete</span>
                             <strong style="color: red">Delete</strong>
                           </button>
                         </form>
@@ -587,7 +589,6 @@
                       <span>
                         <form id="pin-comment-form-<%= comment.id %>" action="/comment/<%= comment.id %>/toggle-pin" method="POST">
                           <button type="submit">
-                            <span class="material-symbols-outlined" style="color:#ffdf34;">push_pin</span>
                             <p>Pin</p>
                           </button>
                         </form>
@@ -598,8 +599,7 @@
                         <form id="admin-delete-comment-form-<%= comment.id %>" class="reactionButton" action="/admin/comment/<%= comment.id %>?_method=DELETE" method="POST">
                           <input type="hidden" name="_method" value="DELETE" />
                           <button type="submit" class="admin-delete-comment-button-<%= comment.id %>">
-                            <span style="color: red" class="material-symbols-outlined">gavel</span>
-                            <strong style="color: red">Admin Delete (Logged)</strong>
+                            <strong class="admin-option warning">Remove</strong>
                           </button>
                         </form>
                       </span>

@@ -351,7 +351,7 @@ OUTER APPLY (
     try {
       const result = await sql.query`
         SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views, u.username, u.avatar, p.share_count,
-        c.name AS community_name, c.shortname AS community_shortname, c.community_color AS community_color,
+        c.name AS community_name, c.shortname AS community_shortname, c.community_color AS community_color, c.mini_icon as community_icon,
               SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
               SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
               SUM(CASE WHEN upa.action_type = 'DISLIKE' THEN 1 ELSE 0 END) as dislikeCount,
@@ -364,7 +364,7 @@ OUTER APPLY (
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
         LEFT JOIN communities c ON p.communities_id = c.id
         WHERE p.communities_id = ${communityID} AND p.deleted = 0
-        GROUP BY p.id, p.created_at, p.share_count, p.deleted, u.username, p.title, p.content, p.subtitle, p.link, p.communities_id, u.avatar, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views, c.name, c.shortname, c.community_color
+        GROUP BY p.id, p.created_at, p.share_count, p.deleted, u.username, p.title, p.content, p.subtitle, p.link, p.communities_id, u.avatar, p.react_like, p.react_love, p.react_curious, p.react_interesting, c.mini_icon, p.react_celebrate, p.post_type, p.views, c.name, c.shortname, c.community_color
         ORDER BY p.created_at DESC
         OFFSET ${offset} ROWS
         FETCH NEXT ${limit} ROWS ONLY
