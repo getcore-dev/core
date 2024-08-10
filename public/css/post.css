@@ -1223,12 +1223,11 @@ div .mini-link {
   border: 0;
   right: 0;
   border-radius: 16px;
-  width: 140px;
+  width: 200px;
   pointer-events: all;
   display: flex;
   flex-direction: column;
   font-size: 1rem;
-  flex-direction: column;
   gap: .8rem;
   padding: 10px 6px;
   background-color: var(--light-mode-main-color);
@@ -1523,7 +1522,7 @@ p.preview-description {
 .project-link {
   margin: 1.2rem;
   border-radius: 10px;
-  background-color: #eff5fc;
+  background-color: #eeeeee;
   padding: 16px 21px;
 }
 
@@ -1596,7 +1595,10 @@ p.preview-description {
 .tag-flair {
   display: inline-flex;
   gap: .6rem;
+  background: #7348aa33;
   font-size: .725rem;
+  border-radius: 6px;
+  padding: .2rem;
   position: relative;
   align-items: center;
 }
@@ -2026,8 +2028,21 @@ div.username {
     padding-top: 2px;
   }
 
+  .jobslist {
+    border-radius: 0 !important;
+    max-height: 100% !important;
+  }
+
+  .jobslist .job {
+    border: 0;
+    border: 1px solid var(--border-color);
+    padding: .6rem 0.9rem !important;
+  }
+
   .dropdown-content {
     right: 0;
+    width: auto;
+    top: 50px;
   }
 
   .sidebar-container {
@@ -2045,10 +2060,6 @@ div.username {
     width: 100%;
     height: auto;
     display: block;
-  }
-
-  .dropdown-content {
-    right: 0;
   }
 
   .post-subtitle {
@@ -2178,7 +2189,7 @@ div.username {
   }
 
   .project-link {
-    margin: 0;
+    margin: 1rem 0;
     border-radius: 0;
   }
 

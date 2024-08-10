@@ -69,17 +69,29 @@ router.get('/companies', async (req, res) => {
     }
 });
 
+router.get('/posts', async (req, res) => {
+    const searchTerm = req.query.term;
+
+    try {
+        const posts = await postQueries.searchPosts(searchTerm);
+        res.json(posts);
+    } catch (err) {
+        console.error('Error searching posts:', err);
+        res.status(500).send('Error searching posts');
+    }
+});
+
 router.get('/all', async (req, res) => {
     const searchTerm = req.query.term;
 
     try {
+        const posts = await postQueries.searchPosts(searchTerm);
         const users = await userQueries.searchUsers(searchTerm);
         const jobs = await jobQueries.searchJobs(searchTerm);
         const communities = await communityQueries.searchCommunities(searchTerm);
-        const skills = await jobQueries.searchSkills(searchTerm);
         const companies = await jobQueries.searchCompanies(searchTerm);
 
-        res.json({ users, jobs, communities, skills, companies });
+        res.json({ users, posts, jobs, communities, companies });
     } catch (err) {
         console.error('Error searching all:', err);
         res.status(500).send('Error searching all');

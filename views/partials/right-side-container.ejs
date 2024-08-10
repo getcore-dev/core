@@ -140,7 +140,7 @@
 
                 <div class="job-post-date sub-text">
                   <span class="material-symbols-outlined">calendar_month</span>
-                  ${formatRelativeDate(job.postedDate)}
+                  <time>${formatRelativeDate(job.postedDate)}</time>
                 </div>
 
                     </div>
@@ -222,7 +222,7 @@
 
                 <div class="job-post-date sub-text">
                   <span class="material-symbols-outlined">calendar_month</span>
-                  ${formatRelativeDate(job.postedDate)}
+                  <time>${formatRelativeDate(job.postedDate)}</time>
                 </div>
 
                     </div>
@@ -237,7 +237,7 @@
                 </div>
               </div>
             `).join('');
-                 jobslistContainer.innerHTML += '<div class="see-more regular-button-normal"><a href="/jobs">See More</a></div>';
+                 jobslistContainer.innerHTML += '<div class="see-more regular-button-normal"><a href="/jobs">More Jobs</a></div>';
 
 
                  const jobElements = jobslistContainer.querySelectorAll('.job');

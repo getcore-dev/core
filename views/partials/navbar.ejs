@@ -187,14 +187,6 @@
                     </span>
                   </div>
                 </a>
-
-                <a href="/feedback">
-                  <div class="avatar-dropdown-item">
-
-                    <span class="material-symbols-outlined secondary-text" id="nb-icon">feedback</span>
-                  </div>
-
-                </a>
                 <a href="/user/<%= user.username %>">
                   <div class="avatar-dropdown-item">
                     <span class="material-symbols-outlined secondary-text" id="nb-icon">
@@ -367,13 +359,14 @@
 </nav>
 <div class="search-bar adaptive-main adaptive-border-bottom" id="search-bar-div">
   <div class="search-bar-container">
-    <form action="/search" method="GET">
-      <input type="text" name="searchTerm" id="search-bar" placeholder="Search" />
-      <button class="submit-button-normal" id="search-button" type="submit">
-        Search
+    <form action="/search" method="GET" id="search-form">
+      <button id="search-back-button" class="search-back-button" type="button">
+        <span class="adaptive-text material-symbols-outlined">arrow_back</span>
       </button>
+      <input type="text" name="searchTerm" id="search-bar" placeholder="Search" autocomplete="off" />
     </form>
   </div>
+  <div id="search-results" class="search-results" style="display: none;"></div>
 </div>
 <div class="overlay" id="search-overlay"></div>
 <style>
@@ -418,8 +411,97 @@
   %>
 </style>
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script>
+  const searchBar = document.getElementById('search-bar');
+  const searchResults = document.getElementById('search-results');
+  const searchForm = document.getElementById('search-form');
+
+  let debounceTimer;
+
+  searchBar.addEventListener('input', function () {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      const searchTerm = this.value.trim();
+      if (searchTerm.length > 1) {
+        fetchAutocompleteResults(searchTerm);
+      } else {
+        searchResults.style.display = 'none';
+      }
+    }, 300);
+  });
+
+  searchForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const searchTerm = searchBar.value.trim();
+    if (searchTerm) {
+      window.location.href = `/search?searchTerm=${encodeURIComponent(searchTerm)}`;
+    }
+  });
+
+  async function fetchAutocompleteResults(searchTerm) {
+    try {
+      const response = await axios.get(`/autocomplete/all?term=${encodeURIComponent(searchTerm)}`);
+      const data = response.data;
+      displayAutocompleteResults(data);
+    } catch (error) {
+      console.error('Error fetching autocomplete results:', error);
+    }
+  }
+
+  function displayAutocompleteResults(data) {
+    searchResults.innerHTML = '';
+    let resultsHtml = '';
+
+    // Display top results (assuming 3 from each category)
+    const categories = ['users', 'posts', 'jobs', 'communities', 'companies'];
+    categories.forEach(category => {
+      const items = data[category].slice(0, 3);
+      items.forEach(item => {
+        let name = item.name || item.title || item.firstname + ' ' + item.lastname || item.username;
+        if (!name) {
+          name = item.username;
+        }
+        resultsHtml += `<div class="search-result-item">${name}</div>`;
+      });
+    });
+
+    // Add category options
+    resultsHtml += `
+                <div class="search-categories">
+                    <span class="search-category" data-category="posts">Posts</span>
+                    <span class="search-category" data-category="users">Users</span>
+                    <span class="search-category" data-category="jobs">Jobs</span>
+                </div>
+            `;
+
+    searchResults.innerHTML = resultsHtml;
+    searchResults.style.display = 'block';
+
+    // Add event listeners for category options
+    document.querySelectorAll('.search-category').forEach(category => {
+      category.addEventListener('click', function () {
+        const selectedCategory = this.getAttribute('data-category');
+        window.location.href = `/search?searchTerm=${encodeURIComponent(searchBar.value)}&category=${selectedCategory}`;
+      });
+    });
+
+    // Add event listeners for result items
+    document.querySelectorAll('.search-result-item').forEach(item => {
+      item.addEventListener('click', function () {
+        searchBar.value = this.textContent;
+        searchResults.style.display = 'none';
+      });
+    });
+  }
+
+  // Close search results when clicking outside
+  document.addEventListener('click', function (event) {
+    if (!searchBar.contains(event.target) && !searchResults.contains(event.target)) {
+      searchResults.style.display = 'none';
+    }
+  });
+
   function checkFollowing(userId) {
     fetch(`/users/${userId}/is-following`)
       .then(response => response.json())
@@ -1105,6 +1187,7 @@
   document.addEventListener('click', function (event) {
     var content = document.getElementById("menu-content");
     var overlay = document.getElementById("search-overlay");
+    var searchBackButton = document.getElementById("search-back-button");
     var menuButton = document.getElementById("menu-button");
     var menuIcon = document.getElementById("menu-icon");
 
@@ -1135,5 +1218,14 @@
         document.body.style.overflow = ""; // Re-enable scrolling when sidebar is closed
       }
     }
+
+    searchBackButton.addEventListener('click', () => {
+      document.getElementById('search-bar').value = '';
+      document.getElementById('search-bar').blur();
+      document.getElementById('search-bar-div').style.display = 'none';
+      document.querySelector('.navbar').style.display = 'flex';
+      document.body.style.overflow = '';
+      document.getElementById('search-overlay').style.display = 'none';
+    });
   });
 </script>

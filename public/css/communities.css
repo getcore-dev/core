@@ -201,7 +201,7 @@ div.vote-interactions {
 .post-header-username {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   border-radius: 9px;
   gap: 0;
 }
@@ -856,7 +856,7 @@ div.join-website-body {
 }
 
 #share-button {
-  font-weight: 400;
+  font-weight: 600;
   gap: .6rem;
   padding: 0 .65rem;
   align-items: center;
@@ -1085,10 +1085,12 @@ button.see-more {
   }
 
   .jobslist .job {
-    min-width: 270px;
+    min-width: 200px;
     height: 100px;
+    padding: 0;
+    margin: 0;
     border: 0;
-    background: var(--light-mode-body-color);
+    background: 0;
   }
 
   #posts-container>h5 {
@@ -1189,7 +1191,7 @@ button.see-more {
 
   .job-content {
     width: 100%;
-    padding: 0.45rem .75rem;
+    padding: 0;
     box-sizing: border-box;
   }
 
@@ -1289,7 +1291,7 @@ button.see-more {
     }
 
     .jobslist .job {
-      background: var(--dark-mode-main-color);
+      background: 0;
     }
   }
 

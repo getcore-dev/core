@@ -116,7 +116,7 @@ function getSimilarJobs(jobId) {
                   ${tagsHTML}
                 </div>
                 <div class="job-posting-information job-subtitle secondary-text">
-                                                <span class="job-date ${formatDateColor(job.postedDate)}">${formatRelativeDate(job.postedDate)}</span>
+                                                <span class="job-date ${formatDateColor(job.postedDate)}"><time>${formatRelativeDate(job.postedDate)}</time></span>
                 <span> • </span>
 
                 <span style="">${
@@ -218,7 +218,7 @@ function getSimilarJobsByCompany(jobId, companyName) {
                   ${tagsHTML}
                 </div>
                 <div class="job-posting-information job-subtitle secondary-text">
-                                <span class="job-date ${formatDateColor(job.postedDate)}">${formatRelativeDate(job.postedDate)}</span>
+                                <span class="job-date ${formatDateColor(job.postedDate)}"><time>${formatRelativeDate(job.postedDate)}</time></span>
                 <span> • </span>
 
                 <span style="">${
@@ -340,7 +340,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     : ''
 }
 
-          <div class="company-info margin-03-bottom">
+          <div class="company-info margin-06-bottom">
           ${
   job.company_logo
     ? `
@@ -404,7 +404,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 <span class="material-symbols-outlined">
                 today
                 </span>
-${formatDate(job.postedDate)}
+<time>${formatDate(job.postedDate)}</time>
 </p>
 
 

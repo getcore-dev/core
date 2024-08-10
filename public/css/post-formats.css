@@ -191,7 +191,7 @@
   white-space-collapse: collapse;
 }
 
-.post-body> :first-child {
+.post-body> :first-child:not(.project-link) {
   margin-top: 0;
 }
 
