@@ -747,11 +747,15 @@ li.dropdown a.active {
 }
 
 .menu-button.active .top-bar {
-  transform: translate(0px, 16px);
+  transform: translate(0, 6px) rotate(45deg);
 }
 
 .menu-button.active .middle-bar {
-  transform: translate(0px, 8px);
+  opacity: 0;
+}
+
+.menu-button.active .bottom-bar {
+  transform: translate(0, -6px) rotate(-45deg);
 }
 
 .avatar-dropdown-item #nb-icon {
