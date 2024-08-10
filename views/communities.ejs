@@ -444,10 +444,11 @@ add
               
                 <a id="post-username" class="bold secondary-text" href="/user/${post.username}">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username}</a>
 
-                ${post.verified ? '<span class="material-symbols-outlined" style="padding:0;font-size: .85rem;color:#169da8;">verified_user</span>' : ''}
+                ${post.verified ? '<span class="material-symbols-outlined" style="padding:0;font-size: .85rem;color:#16a86b;font-weight: 600;">verified</span>' : ''}
                 ${post.isModerator ? '<span class="material-symbols-outlined" style="font-size:.85rem;color:#169da8;">admin_panel_settings</span>' : ''}
-                <span class="post-timestamp" id="secondary-text"><time>${formatDate(post.created_at)}</time></span>
-                ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="padding:0;color:#ffdf34;">push_pin</span>' : ''}
+                ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="padding:0;color:#113ae2;">push_pin</span>' : ''}
+
+                <span class="post-timestamp" id="third-text"><time>${formatDate(post.created_at)}</time></span>
 
               </p> 
               
@@ -939,7 +940,7 @@ add
                   </div>
                 </a>
                 <span class="comment-timestamp" id="secondary-text">${formatTimestamp(comment.created_at)}</span>
-                ${comment.isPinned ? '<span class="tag comment-tag pinned-comment"><span class="material-symbols-outlined" id="secondary-text" style="color:#ffdf34;">push_pin</span></span>' : ''}
+                ${comment.isPinned ? '<span class="tag comment-tag pinned-comment"><span class="material-symbols-outlined" id="secondary-text" style="color:#113ae2;">push_pin</span></span>' : ''}
                 ${comment.user.isAdmin ? '<span class="tag admin-tag comment-tag">Admin</span>' : ''}
               </div>
               ${user ? renderCommentActions(comment, user) : ''}

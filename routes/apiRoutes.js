@@ -599,6 +599,16 @@ router.get('/jobs/:id', async (req, res) => {
   }
 });
 
+router.get('/duplicate-jobs', async (req, res) => {
+  try {
+    const duplicateJobs = await jobQueries.getDuplicateJobPostings();
+    res.json(duplicateJobs);
+  } catch (err) {
+    console.error('Error fetching duplicate jobs:', err);
+    res.status(500).send('Error fetching duplicate jobs');
+  }
+});
+
 router.get('/jobs/:id/similar', cacheMiddleware(2400), async (req, res) => {
   try {
     const id = req.params.id;

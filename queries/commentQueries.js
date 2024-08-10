@@ -202,11 +202,10 @@ const commentQueries = {
           WHERE id = ${commentId}`;
       } else {
         // If there are no replies, delete the comment
+        await sql.query`DELETE FROM userCommentActions WHERE comment_id = ${commentId}`;
         await sql.query`DELETE FROM comments WHERE id = ${commentId}`;
       }
 
-      // Delete all reactions to the comment
-      await sql.query`DELETE FROM userCommentActions WHERE comment_id = ${commentId}`;
     } catch (err) {
       console.error('Database delete error:', err);
       throw err; // Rethrow the error for the caller to handle
@@ -230,7 +229,7 @@ const commentQueries = {
       const replyId = `${Date.now().toString(36)}-${crypto
         .randomBytes(3)
         .toString('hex')}`;
-      await sql.query`INSERT INTO replies (id, comment_id, user_id, reply) VALUES (${replyId}, ${commentId}, ${userId}, ${replyText})`;
+      await sql.query`INSERT INTO comments (id, post_id, parent_comment_id, user_id, comment) VALUES (${replyId}, (SELECT post_id FROM comments WHERE id = ${commentId}), ${commentId}, ${userId}, ${replyText})`;
 
       // Fetch the user ID of the original comment author
       const result =
@@ -241,19 +240,18 @@ const commentQueries = {
 
         // Create a notification for the original comment author
         if (originalCommentAuthorId !== userId) {
-          const username = await findById(userId).then((user) => user.username);
           // Check to avoid notifying if commenting on own post
           await notificationQueries.createNotification(
             userId,
             originalCommentAuthorId,
-            'NEW_COMMENT',
+            'NEW_REPLY',
             postId
           );
         }
+        await commentQueries.interactWithComment(postId, replyId, userId, 'LIKE');
       }
 
       // like your comment by default
-      await commentQueries.interactWithComment(0, commentId, userId, 'LIKE');
 
       return replyId;
     } catch (err) {

@@ -747,11 +747,15 @@ li.dropdown a.active {
 }
 
 .menu-button.active .top-bar {
-  transform: translate(0px, 16px);
+  transform: translate(0, 6px) rotate(45deg);
 }
 
 .menu-button.active .middle-bar {
-  transform: translate(0px, 8px);
+  opacity: 0;
+}
+
+.menu-button.active .bottom-bar {
+  transform: translate(0, -6px) rotate(-45deg);
 }
 
 .avatar-dropdown-item #nb-icon {
@@ -1080,6 +1084,14 @@ a>.menu-item {
   color: var(--light-mode-secondary-text-color);
 }
 
+.third-text,
+#third-text,
+.third-text:visited,
+#third-text:visited {
+  font-weight: 500;
+  color: #707070;
+}
+
 .primary-text,
 .primary-text:visited {
   font-weight: 500;
@@ -1313,7 +1325,7 @@ a>.menu-item {
 
   .user-btns {
     position: absolute;
-    right: 3.7rem;
+    right: 3.4rem;
     top: 7px;
     z-index: 500;
   }
@@ -1350,7 +1362,7 @@ a>.menu-item {
   }
 
   .latest-commit-banner {
-    top: 16px;
+    top: 14px;
     margin-top: 14px;
     padding: .8rem;
     width: 100%;
@@ -1862,7 +1874,7 @@ button .material-symbols-outlined:not(:only-child) {
 .user-links {
   position: relative;
   display: flex;
-  gap: .7rem;
+  gap: .4rem;
   align-items: center;
   transition: transform 0.1s linear;
 }
@@ -1968,6 +1980,14 @@ button .material-symbols-outlined:not(:only-child) {
   .secondary-text,
   .secondary-text:visited {
     color: var(--dark-mode-secondary-text-color);
+  }
+
+  .third-text,
+  #third-text,
+  .third-text:visited,
+  #third-text:visited {
+    font-weight: 500;
+    color: #a5a5a5;
   }
 
   .primary-text,
