@@ -1080,6 +1080,14 @@ a>.menu-item {
   color: var(--light-mode-secondary-text-color);
 }
 
+.third-text,
+#third-text,
+.third-text:visited,
+#third-text:visited {
+  font-weight: 500;
+  color: #707070;
+}
+
 .primary-text,
 .primary-text:visited {
   font-weight: 500;
@@ -1968,6 +1976,14 @@ button .material-symbols-outlined:not(:only-child) {
   .secondary-text,
   .secondary-text:visited {
     color: var(--dark-mode-secondary-text-color);
+  }
+
+  .third-text,
+  #third-text,
+  .third-text:visited,
+  #third-text:visited {
+    font-weight: 500;
+    color: #a5a5a5;
   }
 
   .primary-text,

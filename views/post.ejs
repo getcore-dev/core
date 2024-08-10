@@ -101,7 +101,7 @@
                   <a id="community-header-text" class="sub-text" href="/networks/<%= post.community.shortname %>">/<%= post.community.shortname.toLowerCase() %></a>
                   <span style="font-size:.7rem;">•</span>
 
-                  <span class="post-time mini-text secondary-text">
+                  <span class="post-time mini-text third-text">
                     <% postDate = new Date(post.created_at); %>
                     <%
                       function formatRelativeDate(dateString) {
@@ -146,7 +146,7 @@
                     </a>
                     <% if (post.user.verified) { %>
                     <span>
-                      <span class="material-symbols-outlined" style="padding: 0;font-size: .85rem;color: #169da8;">verified_user</span>
+                      <span class="material-symbols-outlined" style="padding: 0;font-size: .85rem;color:#16a86b;font-weight: 600;">verified</span>
                     </span>
                     <% } %>
                     <% if (post.experience_title) { %>
@@ -306,11 +306,11 @@
                       formattedDate = years + 'y';
                     }
                     %>
-                <span class="secondary-text mini-text">Edited: <%= formattedDate %></span>
+                <span class="third-text mini-text">Edited: <%= formattedDate %></span>
               </p>
               <% } %>
 
-              <div class="post-info-container post secondary-text mini-text">
+              <div class="post-info-container post third-text mini-text">
                 <div class="post-views-container">
                   <span class="material-symbols-outlined">visibility</span>
                   <span class="post-views"><%= post.views %></span>
@@ -540,13 +540,13 @@
                   timeSinceComment = 'Just now';
                 }
                 %>
-
-                    <span class="comment-timestamp" id="secondary-text"><%= timeSinceComment %></span>
                     <% if (comment.isPinned) { %>
                     <span class="tag comment-tag pinned-comment">
-                      <span class="material-symbols-outlined" id="secondary-text" style="color:#ffdf34;">push_pin</span>
+                      <span class="material-symbols-outlined" id="secondary-text" style="color:#113ae2;">push_pin</span>
                     </span>
                     <% } %>
+
+                    <span class="comment-timestamp" id="third-text"><%= timeSinceComment %></span>
 
 
                   </div>
@@ -655,7 +655,7 @@
 
                 <div class="replies">
 
-                  <a href="#" class="secondary-text reply-button" id="reply-button-<%= comment.id %>" onclick="<% if (user) { %>showReplyForm('<%= comment.id %>', event)<% } else { %>window.location.href = '/login';<% } %>">
+                  <a href="#" class="third-text reply-button" id="reply-button-<%= comment.id %>" onclick="<% if (user) { %>showReplyForm('<%= comment.id %>', event)<% } else { %>window.location.href = '/login';<% } %>">
                     Reply
                   </a>
 

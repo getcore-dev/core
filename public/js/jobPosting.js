@@ -115,7 +115,7 @@ function getSimilarJobs(jobId) {
                 <div class="job-tags sub-text secondary-text margin-06-bottom">
                   ${tagsHTML}
                 </div>
-                <div class="job-posting-information job-subtitle secondary-text">
+                <div class="job-posting-information job-subtitle third-text">
                                                 <span class="job-date ${formatDateColor(job.postedDate)}"><time>${formatRelativeDate(job.postedDate)}</time></span>
                 <span> • </span>
 
@@ -217,7 +217,7 @@ function getSimilarJobsByCompany(jobId, companyName) {
                 <div class="job-tags sub-text secondary-text margin-06-bottom">
                   ${tagsHTML}
                 </div>
-                <div class="job-posting-information job-subtitle secondary-text">
+                <div class="job-posting-information job-subtitle third-text">
                                 <span class="job-date ${formatDateColor(job.postedDate)}"><time>${formatRelativeDate(job.postedDate)}</time></span>
                 <span> • </span>
 
@@ -380,7 +380,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
                 location_city
                 </span> ${job.location}
               </p>
-                  <div class="job-skills">
+                  <div class="job-skills main-text">
       <p id="secondary-text">Skills:</p>
       ${skillsHTML}
       ${
@@ -493,7 +493,7 @@ share
             </div>
                       <div class="job-details company-profile-section">
             <div class="job-posting-description">
-            <h4 class="secondary-text">Job Description</h4>
+            <h4 class="third-text">Job Description</h4>
             
 
               <p>${job.description}</p>
@@ -502,7 +502,7 @@ share
   job.Requirements
     ? `
             <div class="job-requirements">
-              <h4 class="secondary-text">Requirements</h4>
+              <h4 class="third-text">Requirements</h4>
               <p>${job.Requirements}</p>
             </div>
             `
@@ -513,14 +513,14 @@ share
   job.Responsibilities
     ? `
             <div class="job-responsibilities">
-              <h4 class="secondary-text">Responsibilities</h4>
+              <h4 class="third-text">Responsibilities</h4>
               <p>${job.Responsibilities}</p>
             </div>
             `
     : ''
 }
             <div class="company-description">
-              <h4 class="secondary-text">Company Description</h4>
+              <h4 class="third-text">Company Description</h4>
               <p>${job.company_description}</p>
             </div>
             
@@ -528,7 +528,7 @@ share
   job.MinimumQualifications
     ? `
 <div class="minimum-qualifications">
-  <h4 class="secondary-text">Minimum Qualifications</h4>
+  <h4 class="third-text">Minimum Qualifications</h4>
   <p>${job.MinimumQualifications}</p>
 </div>
 `
@@ -539,7 +539,7 @@ ${
   job.PreferredQualifications
     ? `
 <div class="preferred-qualifications">
-  <h4 class="secondary-text">Preferred Qualifications</h4>
+  <h4 class="third-text">Preferred Qualifications</h4>
   <p>${job.PreferredQualifications}</p>
 </div>
 `
@@ -550,7 +550,7 @@ ${
   formattedBenefits
     ? `
 <div class="job-benefits">
-  <h4 class="secondary-text">Job Benefits</h4>
+  <h4 class="third-text">Job Benefits</h4>
   <ul>
     ${formattedBenefits}
   </ul>
@@ -563,7 +563,7 @@ ${
   job.NiceToHave
     ? `
 <div class="job-nice-to-have">
-  <h4 class="secondary-text">Nice to Have</h4>
+  <h4 class="third-text">Nice to Have</h4>
   <p>${job.NiceToHave}</p>
 </div>
 `
@@ -574,7 +574,7 @@ ${
   job.schedule
     ? `
 <div class="job-schedule">
-  <h4 class="secondary-text">Schedule</h4>
+  <h4 class="third-text">Schedule</h4>
   <p>${job.schedule}</p>
 </div>
 `
@@ -585,7 +585,7 @@ ${
   job.hoursPerWeek
     ? `
 <div class="job-hours-per-week">
-  <h4 class="secondary-text">Hours per Week</h4>
+  <h4 class="third-text">Hours per Week</h4>
   <p>${job.hoursPerWeek}</p>
 </div>
 `
@@ -596,7 +596,7 @@ ${
   job.equalOpportunityEmployerInfo
     ? `
 <div class="job-equal-opportunity-employer-info">
-  <h4 class="secondary-text">Equal Opportunity Employer Info</h4>
+  <h4 class="third-text">Equal Opportunity Employer Info</h4>
   <p>${job.equalOpportunityEmployerInfo}</p>
 </div>
 `
@@ -604,14 +604,14 @@ ${
 }
 
 <div class="job-relocation">
-  <h4 class="secondary-text">Relocation</h4>
+  <h4 class="third-text">Relocation</h4>
   <p>${job.relocation ? 'Yes' : 'No'}</p>
 </div>
 <div class="similar-jobs-location">
 ${
   job.location
     ? `
-  <h4 class="secondary-text">More jobs in </h4>
+  <h4 class="third-text">More jobs in </h4>
   <ul class="locations">
 ${job.location
     .split(',')
