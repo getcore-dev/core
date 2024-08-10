@@ -1591,70 +1591,64 @@ getCompanyByName: async (name) => {
     }
   },
 
-  deleteOldJobs: async (expirationDays) => {
+  automatedDeleteJob: async (jobId) => {
     try {
-      // First, identify and delete old jobs
-      const result = await sql.query`
-        DECLARE @CutoffDate DATETIME = DATEADD(DAY, -${expirationDays}, GETUTCDATE());
-
-        DELETE FROM JobPostingsTags
-        WHERE jobId IN (SELECT id FROM JobPostings WHERE postedDate <= @CutoffDate);
-
-        DELETE FROM job_skills
-        WHERE job_id IN (SELECT id FROM JobPostings WHERE postedDate <= @CutoffDate);
-
-        DELETE FROM JobPostings
-        WHERE postedDate <= @CutoffDate;
+      await sql.query`
+        DELETE FROM JobPostingsTags WHERE jobId = ${jobId}
       `;
+      await sql.query`
+        DELETE FROM job_skills WHERE job_id = ${jobId}
+      `;
+      await sql.query`
+      DELETE FROM JobPostings WHERE id = ${jobId}
+    `;
+    
+    console.log(`Deleted job with ID ${jobId}`);
 
-      console.log(`Deleted ${result.rowsAffected[2]} old jobs.`);
-      return result.rowsAffected[2]; // Returns the count of deleted JobPostings
     } catch (err) {
       console.error('Database query error:', err);
       throw err;
     }
   },
 
-  removeDuplicateJobs: async () => {
+  getDuplicateJobPostings: async () => {
     try {
-      // Identify duplicate jobs
-      const duplicateJobs = await sql.query`
-        WITH DuplicateJobs AS (
-          SELECT 
+      const result = await sql.query(`
+        SELECT id
+        FROM (
+          SELECT
             id,
             ROW_NUMBER() OVER (
-              PARTITION BY title, company_id, location, description, salary, salary_max, experienceLevel
-              ORDER BY id DESC
-            ) AS rownum
+              PARTITION BY title, company_id, salary
+              ORDER BY postedDate DESC
+            ) AS rn
           FROM JobPostings
-        )
-        SELECT id
-        FROM DuplicateJobs
-        WHERE rownum > 1
-      `;
-
-      let deletedCount = 0;
-
-      // Delete related records and the job itself for each duplicate job
-      for (const job of duplicateJobs.recordset) {
-        await sql.query`
-          DELETE FROM JobPostingsTags WHERE jobId = ${job.id}
-        `;
-        await sql.query`
-          DELETE FROM job_skills WHERE job_id = ${job.id}
-        `;
-        await sql.query`
-          DELETE FROM JobPostings WHERE id = ${job.id}
-        `;
-        deletedCount++;
-      }
-
-      return deletedCount;
+        ) AS duplicates
+        WHERE rn > 1
+      `);
+      console.log(`Found ${result.recordset.length} duplicate job postings`);
+      return result.recordset;
     } catch (err) {
       console.error('Database query error:', err);
       throw err;
     }
   },
+
+  // return list of ids of jobs that are older than 60 days
+  getOldJobs: async () => {
+    try {
+      const result = await sql.query(`
+        SELECT id
+        FROM JobPostings
+        WHERE postedDate < DATEADD(day, -60, GETDATE())
+      `);
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   getCountOfTopJobTags: async () => {
     try {
       const result = await sql.query`

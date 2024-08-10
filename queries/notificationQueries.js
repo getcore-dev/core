@@ -36,6 +36,16 @@ const sendEmailNotification = async (receiverUserId, type) => {
       text =
           'You have received a new message. Please check your account for more details.';
       break;
+    case 'NEW_FOLLOWER':
+      subject = 'You have a new follower';
+      text =
+          'You have a new follower. Please check your account for more details.';
+      break;
+    case 'NEW_REPLY':
+      subject = 'New reply to your comment';
+      text =
+          'Someone replied to your comment. Please check your account for more details.';
+      break;
     case 'NEW_COMMENT':
       subject = 'New comment on your post';
       text =
@@ -54,7 +64,7 @@ const sendEmailNotification = async (receiverUserId, type) => {
 
     // Send the email
     const mailOptions = {
-      from: '"CORE Support" <support@getcore.dev>',
+      from: '"core" <support@getcore.dev>',
       to: user.email,
       subject: subject,
       text: text,

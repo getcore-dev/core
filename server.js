@@ -55,9 +55,11 @@ app.get('/api/job-processing-progress', (req, res) => {
 app.listen(environment.port, '0.0.0.0', () => {
   console.log(`Server running on http://localhost:${environment.port}`);
 
-
+  /*
     setTimeout(() => {
       runJobBoardService();
     }, 5000); 
+    */
+
 
 });

@@ -31,11 +31,8 @@ router.post(
       const parentCommentId = req.params.commentId;
       const userId = req.user.id; // Assuming the user ID is stored in req.user
       const { comment } = req.body;
-
-      const replyId = `${Date.now().toString(36)}-${crypto
-        .randomBytes(3)
-        .toString("hex")}`;
-      await sql.query`INSERT INTO comments (id, post_id, parent_comment_id, user_id, comment) VALUES (${replyId}, (SELECT post_id FROM comments WHERE id = ${parentCommentId}), ${parentCommentId}, ${userId}, ${comment})`;
+      
+      await commentQueries.addReply(parentCommentId, userId, comment);
 
       res.redirect("back");
     } catch (err) {
@@ -166,7 +163,7 @@ router.delete('/comment/:commentId', checkAuthenticated, async (req, res) => {
     }
 
     await commentQueries.deleteCommentById(commentId);
-    res.redirect('back');
+    res.json('Comment deleted successfully');
   } catch (error) {
     console.error('Database delete error:', error);
     res.status(500).send('Error deleting comment');

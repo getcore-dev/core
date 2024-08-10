@@ -1313,7 +1313,7 @@ a>.menu-item {
 
   .user-btns {
     position: absolute;
-    right: 3.7rem;
+    right: 3.4rem;
     top: 7px;
     z-index: 500;
   }
@@ -1350,7 +1350,7 @@ a>.menu-item {
   }
 
   .latest-commit-banner {
-    top: 16px;
+    top: 14px;
     margin-top: 14px;
     padding: .8rem;
     width: 100%;
@@ -1862,7 +1862,7 @@ button .material-symbols-outlined:not(:only-child) {
 .user-links {
   position: relative;
   display: flex;
-  gap: .7rem;
+  gap: .4rem;
   align-items: center;
   transition: transform 0.1s linear;
 }

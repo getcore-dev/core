@@ -44,22 +44,57 @@ class JobProcessor extends EventEmitter {
 
   async cleanupOldJobs() {
     console.log('Cleaning up old jobs...');
-    const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() - this.JOB_EXPIRATION_DAYS);
     
     try {
-      const deletedCount = await jobQueries.deleteOldJobs(expirationDate);
-      console.log(`Deleted ${deletedCount} old jobs.`);
+      const deletedJobIds = await jobQueries.getOldJobs();
+      const batchSize = 5;
+
+      this.updateProgress({
+        phase: 'Cleaning up old jobs',
+        totalJobs: deletedJobIds.length,
+        processedJobs: 0,
+        currentAction: 'Deleting old jobs'
+      });
+
+      for (let i = 0; i < deletedJobIds.length; i += batchSize) {
+        const batch = deletedJobIds.slice(i, i + batchSize);
+        const deletePromises = batch.map(job => jobQueries.automatedDeleteJob(job.id));
+
+        await Promise.all(deletePromises);
+        this.updateProgress({ processedJobs: i + batch.length });
+      }
+    
+      console.log(`Removed ${deletedJobIds.length} old jobs.`);
+
     } catch (error) {
       console.error('Error cleaning up old jobs:', error);
     }
   }
 
   async removeDuplicateJobs() {
-    console.log('Removing duplicate jobs...');
     try {
-      const deletedCount = await jobQueries.removeDuplicateJobs();
-      console.log(`Removed ${deletedCount} duplicate jobs.`);
+      const duplicateJobIds = await jobQueries.getDuplicateJobPostings();
+      const batchSize = 5; 
+
+      this.updateProgress({
+        phase: 'Removing duplicate jobs',
+        totalJobs: duplicateJobIds.length,
+        processedJobs: 0,
+        currentAction: 'Deleting duplicate jobs'
+      });
+  
+      for (let i = 0; i < duplicateJobIds.length; i += batchSize) {
+        const batch = duplicateJobIds.slice(i, i + batchSize);
+        const deletePromises = batch.map(job => {
+          const jobId = job.id;
+          return jobQueries.automatedDeleteJob(jobId);
+
+        });
+  
+        await Promise.all(deletePromises);
+        this.updateProgress({ processedJobs: i + batch.length });
+      }
+  
     } catch (error) {
       console.error('Error removing duplicate jobs:', error);
     }
@@ -777,6 +812,8 @@ class JobProcessor extends EventEmitter {
       totalJobs: 0,
       processedJobs: 0
     });
+    
+    await this.removeDuplicateJobs();
 
     // Phase 2: LinkedIn Crawler
     const linkedInSearchTerms = this.getLinkedInSearchTerms(processedJobTitles);
