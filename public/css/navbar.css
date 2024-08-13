@@ -1106,8 +1106,8 @@ a>.menu-item {
 }
 
 .thumbnail-micro {
-  width: 20px;
-  height: 20px;
+  width: 20px !important;
+  height: 20px !important;
 }
 
 
@@ -1136,10 +1136,9 @@ a>.menu-item {
 }
 
 .thumbnail-regular {
-  border-radius: 0;
   aspect-ratio: 1/1;
   width: auto;
-  border-radius: 8px;
+  border-radius: 8px !important;
   object-fit: contain;
 
 }

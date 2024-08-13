@@ -987,14 +987,15 @@ add
 
       return `
     <div class="user-actions">
+          <div class="replies">
+        ${user ? `<a href="#" id="reply-button-${comment.id}" onclick="showReplyForm('${comment.id}', event)">Add Reply</a>` : ''}
+      </div>
       <div class="comment-user-interactions ${comment.id}" data-type="comment" data-id="${comment.id}">
         ${user ? renderReactionButton(comment, user, reactionTypes) : ''}
         <span id="secondary-text" class="total-reactions-count-comment-${comment.id}">${totalReactions} reaction${totalReactions !== 1 ? 's' : ''}</span>
         <span id="secondary-text" class="total-reactions-count">${totalReplies} repl${totalReplies !== 1 ? 'ies' : 'y'}</span>
       </div>
-      <div class="replies">
-        ${user ? `<a href="#" id="reply-button-${comment.id}" onclick="showReplyForm('${comment.id}', event)">Add Reply</a>` : ''}
-      </div>
+
     </div>
   `;
     }

@@ -66,7 +66,7 @@
                     { type: "CURIOUS", icon: "🤔" },
                     { type: "DISLIKE", icon: "👎" }
                   ]; %>
-      <div class="post">
+      <div class="post" data-post-id="<%= post.id %>" data-author-username="<%= post.user.username %>">
         <div class="header">
           <div class="title">
             <%
@@ -210,18 +210,20 @@
                     }
                   %>
               <div class="project-link">
-                <div class="project-link-body margin-06-bottom">
+                <div class="project-link-body">
 
-                  <div class="project-link-image">
-                    <img src="<%= gitHubData.owner.avatar_url %>" alt="Preview" class="large-preview-image" />
-                  </div>
+
                   <div class="project-link-header">
-                    <a href="<%= post.link %>" class="project-link-title margin-06-bottom">
-                      <img src="/src/github.png" alt="GitHub Logo" class="github-logo" style="display: inline-block; background-color: white; border-radius: 100%; height: 16px; width: 16px; aspect-ratio: 1/1; padding: 0; margin: 0; margin-right: 5px;" />
-                      <%= post.link %>
-                    </a>
+                    <div class="project-link-title">
+                      <div class="project-link-image">
+                        <img src="<%= gitHubData.owner.avatar_url %>" alt="Preview" class="thumbnail thumbnail-regular thumbnail-tiny thumbnail-micro" />
+                      </div>
+                      <a href="<%= post.link %>" class="project-link-title margin-06-bottom">
+                        <%= post.link %>
+                      </a>
+                    </div>
                     <div class="project-link-info margin-06-bottom">
-                      <h5 class="margin-03-bottom"><%= gitHubData.name %></h5>
+                      <p class="main-text margin-03-bottom"><%= gitHubData.name %></h5>
                       <div class="project-link-description sub-text secondary-text">
                         <%= gitHubData.description %>
                       </div>
@@ -488,10 +490,10 @@
 
           <% let curUser = user; %>
           <% if (curUser) { %>
-          <div class="comment-form" style="display: none;">
+          <div class="comment-form">
             <form action="/posts/<%= post.id %>/comments" method="POST">
               <textarea id="comment-form-textarea" name="comment"></textarea>
-              <div class="button-container">
+              <div class="button-container" style="display: none;">
                 <button type="button" id="cancel-button-normal">Cancel</button>
                 <button type="submit" id="submit-button-normal" class="fab">Submit</button>
               </div>
@@ -728,13 +730,10 @@
           <% }); %>
           <% } %>
 
-          <% if (post.comments.length === 0) { %>
+
           <div class="no-comments">
             No comments yet, start a discussion!
           </div>
-          <% } else { %>
-          <% renderComments(post.comments); %>
-          <% } %>
         </div>
         <% if (post.tags && post.tags.length > 0) { %>
         <div class="header">
@@ -760,160 +759,6 @@
           </div>
         </div>
         <% } %>
-        <% if (similarPosts.length > 0) { %>
-
-        <div class="similar-posts">
-          <h3 class="sub-text" id="secondary-text">Explore</h3>
-          <% similarPosts.forEach(similarPost => { %>
-          <div class="post" onclick="window.location.href='/posts/<%= similarPost.id %>'">
-            <div class="post-content">
-              <div class="post-header">
-                <% 
-            function formatDate(date) {
-              let postDate = new Date(date);
-              let today = new Date();
-              let formattedDate;
-
-              let diff = today - postDate;
-
-              let minutes = Math.floor(diff / 60000); 
-              let hours = Math.floor(diff / 3600000); 
-              let days = Math.floor(diff / 86400000); 
-              let years = Math.floor(diff / 31536000000); 
-
-              if (minutes < 60) {
-                formattedDate = minutes + ' m';
-              } else if (hours < 24) {
-                formattedDate = hours + ' h';
-              } else if (days < 365) {
-                formattedDate = days + ' d';
-              } else {
-                formattedDate = years + ' y';
-              }
-              return formattedDate;
-            }
-          %>
-                <div class="post-header-username">
-                  <div class="avatar">
-                    <img src="<%= similarPost.avatar %>" loading="lazy">
-                  </div>
-                  <div class="username">
-                    <p>
-                      <a href="/user/<%= similarPost.username %>" class="username-link"><strong><%= similarPost.username %></strong></a>
-                      <span id="secondary-text">
-                        in
-                      </span>
-                      <a style="color: <%= similarPost.community_color %>;" href="/networks/<%= similarPost.community_shortname %>" class="community">/<%= similarPost.community_shortname %></a>
-                      <span id="secondary-text">
-                        <%= formatDate(similarPost.created_at) %>
-                      </span>
-                    </p>
-                  </div>
-                </div>
-                <div class="dropdown">
-                  <button class="dropbtn" onclick="showDropdown(event)">
-                    <span class="material-symbols-outlined">more_horiz</span>
-                  </button>
-                  <div class="dropdown-content" style="display: none;">
-                    <% if (user) { %>
-                    <div class="dropdown-item">
-                      <span>
-                        <form id="favorite-form-<%= similarPost.id %>" action="/favorites/post/<%= similarPost.id %>" method="POST">
-                          <button type="submit">Favorite Post</button>
-                        </form>
-                      </span>
-                    </div>
-                    <% } %>
-                    <div class="dropdown-item">
-                      <button onclick="share('<%= similarPost.title %>', '', 'https://getcore.dev/posts/<%= similarPost.id %>')">
-                        <p>Share Post</p>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="title">
-                <a href="/posts/<%= similarPost.id %>">
-                  <%= similarPost.title %>
-                </a>
-              </div>
-              <div class="link-preview" style="<% if (similarPost.link) { %> flex-direction: column; <% } %>">
-                <% if (similarPost.link) { %>
-                <div class="link">
-                  <div class="similar-link-preview" id="similar-link-preview-<%= similarPost.id %>"></div>
-                  <script>
-                    (function fetchLinkPreview(link, containerId) {
-                      fetch(`/api/link-preview/${encodeURIComponent(link)}`)
-                        .then(response => response.json())
-                        .then(linkPreview => {
-                          if (linkPreview) {
-                            let imageUrl = linkPreview.image || linkPreview.favicon;
-                            let htmlContent = `
-                        <div class="mini-link">
-                          <div class="mini-link-image">
-                            ${imageUrl ? `<img loading="lazy" src="${imageUrl}" alt="thumbnail" class="thumbnail-image" />` : ''}
-                          </div>
-                          <div class="mini-link-body">
-                            <div class="mini-link-body-header">
-                              <div class="mini-link-favicon">
-                                <img src="${linkPreview.favicon}" alt="" class="favicon" />
-                              </div>
-                              <div class="mini-link-url" id="main-text"><a>${new URL(linkPreview.url || '').hostname || ''}</a></div>
-                            </div>
-                            <div class="mini-link-title"><p>${linkPreview.title || ''}</p></div>
-                            <div class="mini-link-description"><p>${linkPreview.description || ''}</p></div>
-                          </div>
-                        </div>`;
-                            document.getElementById(containerId).innerHTML = htmlContent;
-                          }
-                        });
-                    })('<%= similarPost.link %>', 'similar-link-preview-<%= similarPost.id %>');
-                  </script>
-                </div>
-
-                <% } %>
-              </div>
-              <% 
-            let imageUrl;
-            const imageUrlMatch = similarPost.content.match(/!\[.*?\]\((.*?)\)/);
-            if (imageUrlMatch && imageUrlMatch[1]) {
-              imageUrl = imageUrlMatch[1];
-            }
-          %>
-              <% if (imageUrl) { %>
-              <div class="image">
-                <img class="thumbnail-image" src="<%= imageUrl %>" alt="Preview" />
-              </div>
-              <% } %>
-              <% if (similarPost.post_type !== 'question' && (!similarPost.link || (similarPost.post_type !== 'post' && similarPost.post_type !== 'project'))) { %>
-              <div class="description">
-                <%
-              let contentWithoutMarkdown = similarPost.content
-                .replace(/(?:\r\n|\r|\n)/g, ' ')
-                .replace(/\*\*(.*?)\*\*/g, '$1')
-                .replace(/\*(.*?)\*/g, '$1')
-                .replace(/__(.*?)__/g, '$1')
-                .replace(/_(.*?)_/g, '$1')
-                .replace(/!\[.*?\]\(.*?\)/g, '')
-                .replace(/\[.*?\]\(.*?\)/g, '$1');
-            %>
-                <%- contentWithoutMarkdown %>
-              </div>
-              <% } %>
-
-              <div class="votes">
-                <div class="reaction-interactions <%= similarPost.id %>-reactions" id="reaction-interactions <%= similarPost.id %>-reactions">
-                  <%= similarPost.totalReactionCount %> reactions
-                </div>
-                <div class="comments">
-                  <%= similarPost.commentCount %> comment<%= similarPost.commentCount > 1 ? 's' : '' %>
-                </div>
-              </div>
-            </div>
-          </div>
-          <% }) %>
-        </div>
-        <% } %>
         <div class="mobile-jobs-container">
           <div class="jobslist">
 
@@ -930,6 +775,311 @@
   </main>
 
   <script>
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${month}/${day}/${year}`;
+    }
+
+    function fetchComments(postId, postAuthorUsername) {
+      fetch(`/posts/${postId}/comments`)
+        .then(response => response.json())
+        .then(comments => {
+          renderComments(comments, <%- linkify %>, postAuthorUsername);
+        })
+        .catch(error => console.error('Error fetching comments:', error));
+    }
+
+    function fetchSimilarPosts(postId) {
+      fetch(`/posts/${postId}/similar`)
+        .then(response => response.json())
+        .then(similarPosts => {
+          renderSimilarPosts(similarPosts);
+        })
+        .catch(error => console.error('Error fetching similar posts:', error));
+    }
+
+    function renderComments(comments, linkify, postAuthorUsername, postId) {
+      const commentsSection = document.querySelector('.comments-section');
+      commentsSection.innerHTML = ''; // Clear existing comments
+
+      function renderCommentTree(comments, level = 0) {
+        const sortedComments = comments.sort((a, b) => b.isPinned - a.isPinned);
+        return sortedComments.map(comment => createCommentHTML(comment, level, postId)).join('');
+      }
+
+      function createCommentHTML(comment, level, postId) {
+        const nestedLevel = level + 1;
+        const maxDisplayLevel = 5;
+
+        return `
+            <div class="comment-with-replies ${level === 0 ? 'top-level' : ''}">
+                <div class="comment level-${level}">
+                    <div class="comment-main">
+                        <div class="comment-content">
+                            <div class="comment-header" onclick="toggleNestedComments('${comment.id}')">
+                                <div class="comment-avatar">
+                                    <img src="${comment.user.avatar || '/img/default-avatar.png'}" alt="Avatar" class="avatar" onclick="window.location.href = '/user/${comment.user.username}'; event.stopPropagation();" />
+                                </div>
+                                <a class="comment-user-info" href="/user/${comment.user.username}" onclick="event.stopPropagation()">
+                                    <div class="repliers-info">
+                                        <span>${comment.user.username}</span>
+                                        ${comment.user.username === postAuthorUsername ? '<span class="tag author-tag comment-tag">OP</span>' : ''}
+                                        ${comment.user.isAdmin ? '<span class="tag admin-tag comment-tag">ADMIN</span>' : ''}
+                                    </div>
+                                </a>
+                                ${comment.isPinned ? `
+                                    <span class="tag comment-tag pinned-comment">
+                                        <span class="material-symbols-outlined" id="secondary-text" style="color:#113ae2;">push_pin</span>
+                                    </span>
+                                ` : ''}
+                                <span class="comment-timestamp" id="third-text">${formatTimeSince(comment.created_at)}</span>
+                            </div>
+                            ${renderCommentDropdown(comment, postId)}
+                        </div>
+                        <div class="comment-body">
+                            <p>${linkify(comment.comment)}</p>
+                        </div>
+                    </div>
+                </div>
+                ${renderCommentActions(comment, postId)}
+                ${comment.replies && comment.replies.length > 0 ? `
+                    <div class="nested-comments level-${Math.min(nestedLevel, 6)}" id="nested-comments-${comment.id}" style="display: ${nestedLevel <= maxDisplayLevel ? 'block' : 'none'};">
+                        ${renderCommentTree(comment.replies, nestedLevel)}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+      }
+
+      const commentsList = renderCommentTree(comments);
+      commentsSection.innerHTML = commentsList || '<div class="no-comments">No comments yet, start a discussion!</div>';
+    }
+
+    function renderCommentDropdown(comment, postId) {
+      if (!window.user) return '';
+
+      return `
+        <div class="dropdown-${comment.id}" style="position: relative; display: inline-block;">
+            <button class="dropbtn" onclick="showDropdown(event)" style="z-index:0;">
+                <span class="material-symbols-outlined" style="z-index:0;">more_horiz</span>
+            </button>
+            <div class="dropdown-content" style="display: none;">
+                ${window.user && window.post.username === window.user.username && window.post.post_type == 'question' ? `
+                    <span>
+                        <form id="answer-form-${comment.id}" action="/posts/${postId}/answer/${comment.id}" method="POST">
+                            <button type="submit">
+                                <p style="color: green">Accept</p>
+                            </button>
+                        </form>
+                    </span>
+                ` : ''}
+                <span>
+                    <form id="favorite-form-${comment.id}" action="/favorites/comment/${postId}/${comment.id}" method="POST">
+                        <button type="submit">
+                            <p>Favorite</p>
+                        </button>
+                    </form>
+                </span>
+                ${window.user && window.user.username === comment.user.username ? `
+                    <span>
+                        <form id="delete-comment-form-${comment.id}" class="reactionButton" action="/comment/${comment.id}?_method=DELETE" method="POST" onsubmit="return handleDeleteComment(event, ${comment.id});">
+                            <input type="hidden" name="_method" value="DELETE" />
+                            <button type="submit" class="delete-comment-button-${comment.id}">
+                                <strong style="color: red">Delete</strong>
+                            </button>
+                        </form>
+                    </span>
+                ` : ''}
+                ${window.user && window.user.username == window.post.username ? `
+                    <span>
+                        <form id="pin-comment-form-${comment.id}" action="/comment/${comment.id}/toggle-pin" method="POST">
+                            <button type="submit">
+                                <p>Pin</p>
+                            </button>
+                        </form>
+                    </span>
+                ` : ''}
+                ${window.user && window.user.isAdmin ? `
+                    <span>
+                        <form id="admin-delete-comment-form-${comment.id}" class="reactionButton" action="/admin/comment/${comment.id}?_method=DELETE" method="POST">
+                            <input type="hidden" name="_method" value="DELETE" />
+                            <button type="submit" class="admin-delete-comment-button-${comment.id}">
+                                <strong class="admin-option warning">Remove</strong>
+                            </button>
+                        </form>
+                    </span>
+                ` : ''}
+            </div>
+        </div>
+    `;
+    }
+
+    function renderCommentActions(comment, postId) {
+      const reactionTypes = [{
+          type: "LOVE",
+          icon: "❤️"
+        },
+        {
+          type: "LIKE",
+          icon: "👍"
+        },
+        {
+          type: "CURIOUS",
+          icon: "🤔"
+        },
+        {
+          type: "DISLIKE",
+          icon: "👎"
+        }
+      ];
+
+      let totalReactions = 0;
+      reactionTypes.forEach(reaction => {
+        totalReactions += comment[reaction.type.toLowerCase() + 'Count'] || 0;
+      });
+
+      return `
+        <div class="user-actions ${comment.id}">
+            <div class="comment-user-interactions ${comment.id}" data-type="comment" data-id="${comment.id}">
+                ${!window.post.isLocked ? `
+                    <div class="replies">
+                        <a href="#" class="third-text reply-button" id="reply-button-${comment.id}" onclick="${window.user ? `showReplyForm('${comment.id}', event)` : `window.location.href = '/login'`}">
+                            Reply
+                        </a>
+                    </div>
+                ` : ''}
+
+                <button class="commentMainReactionButton null-button-normal reaction-button ${comment.userReaction ? 'active' : ''}" data-type="comment" data-id="${comment.id}">
+                    <span class="reaction-emote ${comment.id}" id="secondary-text">
+                        ${comment.userReaction ? 
+                            reactionTypes.find(r => r.type === comment.userReaction)?.icon || '<span class="material-symbols-outlined">thumb_up</span>' 
+                            : '<span class="material-symbols-outlined">thumb_up</span>'}
+                    </span>
+                    <span id="secondary-text" class="total-reactions-count-comment-${comment.id}">${totalReactions}</span>
+                </button>
+
+                <div id="reactionPopup-comment-${comment.id}" class="reaction-popup comment-reaction-popup" style="display:block; opacity:0; position: sticky;left: 0; ${window.post.post_type == "discussion" ? 'bottom: 30px;' : 'bottom: 37px;'}">
+                    <div class="reaction-popup-content">
+                        ${reactionTypes.map(reaction => `
+                            <button class="reaction-button-popup${comment.userReaction === reaction.type ? ' active' : ''}" 
+                                    data-type="comment" 
+                                    data-id="${comment.id}" 
+                                    data-reaction="${reaction.type}" 
+                                    onclick="interactWithComment('${postId}', '${comment.id}', '${window.user?.id}', '${reaction.type}')">
+                                ${reaction.icon}
+                                <span class="reaction-count">${comment[reaction.type.toLowerCase() + 'Count'] || 0}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reply-form">
+            <form id="reply-form-${comment.id}" action="/comments/${comment.id}/replies" method="POST" style="display: none">
+                <div class="input-container margin-06-bottom">
+                    <textarea id="comment-${comment.id}" name="comment" rows="6" required maxlength="500" placeholder="Reply to ${comment.user.username}"></textarea>
+                    <div class="reply-buttons" id="reply-buttons-${comment.id}" style="display: none;">
+                        <button id="cancel-button-normal" type="button" class="fab" onclick="showReplyForm('${comment.id}', event)">Cancel</button>
+                        <button id="submit-button-normal" type="submit" class="fab">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    `;
+    }
+
+    // Function to render similar posts
+    function renderSimilarPosts(similarPosts) {
+      const similarPostsSection = document.querySelector('.similar-posts');
+      if (!similarPostsSection) return;
+
+      let html = '<h3 class="sub-text" id="secondary-text">Explore</h3>';
+
+      similarPosts.forEach(post => {
+        html += `
+            <div class="post" onclick="window.location.href='/posts/${post.id}'">
+                <div class="post-content">
+                    <div class="post-header">
+                        <div class="post-header-username">
+                            <div class="avatar">
+                                <img src="${post.avatar}" loading="lazy">
+                            </div>
+                            <div class="username">
+                                <p>
+                                    <a href="/user/${post.username}" class="username-link"><strong>${post.username}</strong></a>
+                                    <span id="secondary-text">in</span>
+                                    <a style="color: ${post.community_color};" href="/networks/${post.community_shortname}" class="community">/${post.community_shortname}</a>
+                                    <span id="secondary-text">${formatDate(post.created_at)}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="title">
+                        <a href="/posts/${post.id}">${post.title}</a>
+                    </div>
+                    ${post.link ? renderLinkPreview(post) : ''}
+                    ${renderPostContent(post)}
+                    <div class="votes">
+                        <div class="reaction-interactions ${post.id}-reactions" id="reaction-interactions ${post.id}-reactions">
+                            ${post.totalReactionCount} reactions
+                        </div>
+                        <div class="comments">
+                            ${post.commentCount} comment${post.commentCount !== 1 ? 's' : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+      });
+
+      similarPostsSection.innerHTML = html;
+    }
+
+    // Helper function to format date
+    function formatTimeSince(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffTime = Math.abs(now - date);
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+      const diffMinutes = Math.floor(diffTime / (1000 * 60));
+
+      if (diffDays > 0) return `${diffDays}d`;
+      if (diffHours > 0) return `${diffHours}h`;
+      if (diffMinutes > 0) return `${diffMinutes}m`;
+      return 'Just now';
+    }
+
+    function renderLinkPreview(post) {
+      return `
+        <div class="link-preview">
+            <div class="link">
+                <div class="similar-link-preview" id="similar-link-preview-${post.id}"></div>
+            </div>
+        </div>
+    `;
+    }
+
+    function renderPostContent(post) {
+      let content = '';
+      if (post.post_type !== 'question' && (!post.link || (post.post_type !== 'post' && post.post_type !== 'project'))) {
+        content = post.content
+          .replace(/(?:\r\n|\r|\n)/g, ' ')
+          .replace(/\*\*(.*?)\*\*/g, '$1')
+          .replace(/\*(.*?)\*/g, '$1')
+          .replace(/__(.*?)__/g, '$1')
+          .replace(/_(.*?)_/g, '$1')
+          .replace(/!\[.*?\]\(.*?\)/g, '')
+          .replace(/\[.*?\]\(.*?\)/g, '$1');
+
+        return `<div class="description">${content}</div>`;
+      }
+      return '';
+    }
     // Function to handle favoriting a post
     function favorite(postId) {
       fetch(`/favorites/post/${postId}`, {
@@ -986,9 +1136,14 @@
 
     // Call checkFavorite when the page loads
     document.addEventListener('DOMContentLoaded', () => {
-      const postId = '<%= post.id %>'; // Assuming you have access to the post ID in your EJS template
+      const postId = '<%= post.id %>';
+      const postContainer = document.querySelector('.post');
+
       checkFavorite(postId);
       checkFollowing('<%= post.user.id %>');
+      const postAuthorUsername = postContainer.dataset.authorUsername;
+      fetchComments(postId, postAuthorUsername);
+      fetchSimilarPosts(postId);
     });
 
     // Function to handle deleting a post
@@ -1186,12 +1341,26 @@
 
       });
 
+      easyMDE.codemirror.on('change', function () {
+        var content = easyMDE.value();
+        var submitButton = document.getElementById('submit-button-normal');
+        var cancelButton = document.getElementById('cancel-button-normal');
+        var buttonContainer = document.querySelector('.button-container');
+
+        if (content.trim() === '') {
+          submitButton.disabled = true;
+          buttonContainer.style.display = 'none';
+        } else {
+          submitButton.disabled = false;
+          buttonContainer.style.display = 'flex';
+        }
+      });
+
       $('#cancel-button-normal').on('click', function () {
         easyMDE.value(''); // Clear the content of the EasyMDE editor
         $('.button-container').hide();
-        $(this).closest('.input-container').find('textarea').hide(); // Hide the textarea within the input-container
+        $(this).closest('.input-container').find('textarea').val(''); // Clear the textarea
         $(this).closest('.reply-buttons').hide(); // Hide the reply buttons
-        $('.editor-toolbar').hide();
       });
 
       // Attach the submit event handler to the form

@@ -92,12 +92,6 @@
       notificationSenderAvatar.classList.add('notification-sender-avatar');
       notificationAvatarDiv.appendChild(notificationSenderAvatar);
 
-      const notificationTypeIcon = document.createElement('span');
-      notificationTypeIcon.classList.add('material-symbols-outlined');
-      notificationTypeIcon.classList.add('notification-type-icon');
-      notificationTypeIcon.textContent = notification.type === 'NEW_COMMENT' ? 'comment' : notification.type === 'like' ? 'favorite' : 'person';
-      notificationAvatarDiv.appendChild(notificationTypeIcon);
-
       notificationDiv.appendChild(notificationAvatarDiv);
 
       const notificationTextDiv = createNotificationText(notification);

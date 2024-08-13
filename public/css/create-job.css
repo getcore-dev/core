@@ -1,84 +1,107 @@
 input {
-font-size: 16px;
+  font-size: 16px;
 }
 
-textarea#company_description, textarea#description, textarea#benefits, textarea#additional-information {
-    font-family: var(--font-family);
-    font-size: 16px;
-    min-height: 200px;
-    box-sizing: border-box;
+textarea#company_description,
+textarea#description,
+textarea#benefits,
+textarea#additional-information {
+  font-family: var(--font-family);
+  font-size: 16px;
+  min-height: 200px;
+  box-sizing: border-box;
 }
 
 .page-header {
-    display: flex;
-    padding: 0 13px !important;
-    padding-bottom: 5px !important;
-    width: 100%;
-    box-sizing: border-box;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  padding: 0 13px !important;
+  padding-bottom: 5px !important;
+  width: 100%;
+  box-sizing: border-box;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .toggle-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-  }
-  .toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 34px;
-  }
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-  }
-  input:checked + .slider {
-    background-color: #2196F3;
-  }
-  input:checked + .slider:before {
-    transform: translateX(26px);
-  }
-  .toggle-label {
-    margin: 0 10px;
-  }
-
-select {
-font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.main-container input[type="text"], .main-container textarea, .main-container select, .main-container input[type="number"], .main-container input[type="date"] {
-    font-size: 16px;
-    font-family: var(--font-family);
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked+.slider {
+  background-color: #2196F3;
+}
+
+input:checked+.slider:before {
+  transform: translateX(26px);
+}
+
+.toggle-label {
+  margin: 0 10px;
+}
+
+select {
+  font-size: 16px;
+}
+
+.main-container input[type="text"],
+.main-container textarea,
+.main-container select,
+.main-container input[type="number"],
+.main-container input[type="date"] {
+  font-size: 16px;
+  font-family: var(--font-family);
 }
 
 .post-header {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
+@media (prefers-color-scheme: dark) {
+
+  .slider {
+    background-color: #1d1d1d;
+  }
+
+  .slider:before {
+    background-color: #333333;
+  }
+}

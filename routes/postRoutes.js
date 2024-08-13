@@ -117,12 +117,9 @@ router.get('/posts/:postId', viewLimiter, async (req, res) => {
     const postId = req.params.postId;
     const user = req.user;
 
-    // First, fetch the post data
+    // Fetch only essential post data
     const postResult = await utilFunctions.getPostData(postId, user);
-
-    // Then, fetch all other data concurrently
-    const [comments, tags, community, postUser] = await Promise.all([
-      fetchComments(postId, user),
+    const [tags, community, postUser] = await Promise.all([
       utilFunctions.getTags(postId),
       utilFunctions.getCommunityDetails(postResult.communities_id),
       getUserDetails(postResult.user_id)
@@ -132,7 +129,6 @@ router.get('/posts/:postId', viewLimiter, async (req, res) => {
       ...postResult,
       tags,
       user: postUser,
-      comments,
       community
     };
 
@@ -161,26 +157,47 @@ router.get('/posts/:postId', viewLimiter, async (req, res) => {
       postData.content = marked.parse(postData.content);
     }
 
-    // Fetch similar posts
-    const similarPosts = await postQueries.fetchSimilarPosts(
-      user,
-      postId,
-      postData.communities_id,
-      postData.tags,
-      postData.title
-    );
-
     res.render('post.ejs', {
       post: postData,
       user: req.user,
       communityId: postData.communities_id,
       community: postData.community,
       linkify: utilFunctions.linkify,
-      similarPosts: similarPosts,
     });
   } catch (err) {
     console.error('Database query error:', err);
     res.redirect('/');
+  }
+});
+
+router.get('/posts/:postId/comments', async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const user = req.user;
+    const comments = await fetchComments(postId, user);
+    res.json(comments);
+  } catch (err) {
+    console.error('Error fetching comments:', err);
+    res.status(500).json({ error: 'Error fetching comments' });
+  }
+});
+
+router.get('/posts/:postId/similar', async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const user = req.user;
+    const post = await postQueries.getPostById(postId);
+    const similarPosts = await postQueries.fetchSimilarPosts(
+      user,
+      postId,
+      post.communities_id,
+      await utilFunctions.getTags(postId),
+      post.title
+    );
+    res.json(similarPosts);
+  } catch (err) {
+    console.error('Error fetching similar posts:', err);
+    res.status(500).json({ error: 'Error fetching similar posts' });
   }
 });
 
