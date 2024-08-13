@@ -791,7 +791,7 @@ li.dropdown a.active {
 .clear-btn .material-symbols-outlined {
   font-size: 1.35rem;
   font-weight: 400;
-  color: #bababa;
+  color: var(--light-mode-secondary-text-color);
 }
 
 

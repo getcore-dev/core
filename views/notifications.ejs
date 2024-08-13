@@ -66,8 +66,12 @@
       // Fetch notifications based on the specified type
       const response = await fetch(`/notifications/${type}/<%= user.id %>`);
       const notifications = await response.json();
+      const notificationHeader = document.querySelector('.notification-header');
       const notificationList = document.getElementById('notification-list');
       notificationList.innerHTML = ''; // Clear previous notifications
+
+      const clearAllBtn = createClearAllButton();
+      notificationHeader.appendChild(clearAllBtn);
 
       notifications.forEach(notification => {
         const li = createNotificationElement(notification);
@@ -162,7 +166,9 @@
 
       const notificationTime = document.createElement('span');
       notificationTime.classList.add('time-flair');
-      notificationTime.classList.add('secondary-text');
+      notificationTime.classList.add('third-text');
+      notificationTime.classList.add('sub-text');
+
 
       notificationTime.textContent = formatDate(notification.createdAt);
       flairs.appendChild(notificationTime);
@@ -170,6 +176,26 @@
       notificationTextDiv.appendChild(flairs);
 
       return notificationTextDiv;
+    }
+
+    function createClearAllButton() {
+      const clearAllBtn = document.createElement('button');
+      clearAllBtn.classList.add('clear-all-btn');
+      clearAllBtn.classList.add('cancel-button-normal');
+
+      clearAllBtn.textContent = 'Clear all';
+
+      clearAllBtn.onclick = async function () {
+        const response = await fetch(`/notifications/deleteAll/<%= user.id %>`, {
+          method: 'DELETE'
+        });
+        if (response.ok) {
+          const notificationList = document.getElementById('notification-list');
+          notificationList.innerHTML = '';
+        }
+      };
+
+      return clearAllBtn;
     }
 
     function createClearButton(notification, li) {

@@ -31,15 +31,19 @@
         <span class="toggle-label">Manual</span>
       </div>
     </div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    <div class="progress-text" id="progress-text">0% complete</div>
     <div class="main-container">
       <form id="jobPostForm">
         <div class="form-group">
-  <label for="job-link">Job URL</label>
-  <div class="input-group">
-    <input type="text" id="job-link" name="link" />
-    <button type="button" class="null-button null-button-bordered" id="paste-button">Paste</button>
-  </div>
-</div>
+          <label for="job-link">Job URL</label>
+          <div class="input-group">
+            <input type="text" id="job-link" name="link" />
+            <button type="button" class="null-button null-button-bordered" id="paste-button">Paste</button>
+          </div>
+        </div>
         <button id="submit-button" type="submit">Extract Job Details</button>
       </form>
       <form id="editJobPostForm" style="display: none;">
@@ -157,102 +161,158 @@
     </div>
   </main>
   <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const pasteButton = document.getElementById('paste-button');
+      const jobLinkInput = document.getElementById('job-link');
+      const jobPostForm = document.getElementById('jobPostForm');
+      const editJobPostForm = document.getElementById('editJobPostForm');
+      const formToggle = document.getElementById('form-toggle');
+      const progressBar = document.getElementById('progress-bar');
+      const progressText = document.getElementById('progress-text');
 
-document.getElementById('paste-button').addEventListener('click', async () => {
-  try {
-    const text = await navigator.clipboard.readText();
-    document.getElementById('job-link').value = text;
-  } catch (err) {
-    console.error('Failed to read clipboard contents: ', err);
-    alert('Unable to paste. Please paste manually.');
-  }
-});
-
-    $(document).ready(function() {
-      const toggle = $('#form-toggle');
-      const jobPostForm = $('#jobPostForm');
-      const editJobPostForm = $('#editJobPostForm');
-
-      toggle.change(function() {
-        if (this.checked) {
-          jobPostForm.hide();
-          editJobPostForm.show();
-        } else {
-          jobPostForm.show();
-          editJobPostForm.hide();
+      // Paste button functionality
+      pasteButton.addEventListener('click', async () => {
+        try {
+          if (navigator.clipboard && navigator.clipboard.readText) {
+            const text = await navigator.clipboard.readText();
+            jobLinkInput.value = text;
+          } else {
+            const textArea = document.createElement('textarea');
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            document.execCommand('paste');
+            jobLinkInput.value = textArea.value;
+            document.body.removeChild(textArea);
+          }
+        } catch (err) {
+          console.error('Failed to read clipboard contents: ', err);
+          alert('Unable to paste. Please paste manually.');
         }
       });
-      // Form submission handling for extracting job details
-      $('#jobPostForm').on('submit', function(e) {
-        e.preventDefault();
-        var jobLink = $('#job-link').val();
-        $.ajax({
-          url: '/api/extract-job-details',
-          method: 'POST',
-          data: {
-            link: jobLink
-          },
-          success: function(response) {
-            console.log(response);
-            // Populate the form fields with the extracted job details
-            $('#title').val(response.title);
-            $('#company').val(response.company_name);
-            $('#location').val(response.location);
-            $('#salary').val(response.salary);
-            $('#salary_max').val(response.salary_max);
-            $('#experienceLevel').val(response.experience_level);
-            $('#skills').val(response.skills);
-            $('#tags').val(response.tags);
-            $('#description').val(response.description);
-            $('#benefits').val(response.benefits);
-            $('#additional-information').val(response.additional_information);
-            $('#logo_url').val(response.company_logo);
-            $('#link').val(jobLink);
-            $('#preferred-qualifications').val(response.PreferredQualifications);
-            $('#minimum-qualifications').val(response.MinimumQualifications);
-            $('#responsibilities').val(response.Responsibilities);
-            $('#requirements').val(response.Requirements);
-            $('#nice-to-have').val(response.NiceToHave);
-            $('#schedule').val(response.Schedule);
-            $('#hours-per-week').val(response.HoursPerWeek);
-            $('#h1b-visa-sponsorship').val(response.H1BVisaSponsorship ? 'true' : 'false');
-            $('#is-remote').val(response.IsRemote ? 'true' : 'false');
-            $('#equal-opportunity-employer-info').val(response.EqualOpportunityEmployerInfo);
-            $('#relocation').val(response.relocation ? 'true' : 'false');
 
-            // Show the edit form and hide the extract form
-            $('#jobPostForm').hide();
-            $('#editJobPostForm').show();
-          },
-          error: function(xhr, status, error) {
-            alert('An error occurred while extracting job details.');
-            console.error(error);
-          }
-        });
+      // Form toggle functionality
+      formToggle.addEventListener('change', function () {
+        if (this.checked) {
+          jobPostForm.style.display = 'none';
+          editJobPostForm.style.display = 'block';
+        } else {
+          jobPostForm.style.display = 'block';
+          editJobPostForm.style.display = 'none';
+        }
       });
 
-      // Form submission handling for submitting the edited job post
-      $('#editJobPostForm').on('submit', function(e) {
+      // Progress bar update function
+      function updateProgress(percent, message = '') {
+        progressBar.style.width = `${percent}%`;
+        progressText.textContent = message || `${percent}% complete`;
+      }
+
+      // Job Post Form submission (for extracting job details)
+      jobPostForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        var formData = $(this).serialize();
-        $.ajax({
-          url: '/api/job-postings',
-          method: 'POST',
-          data: formData,
-          success: function(response) {
-            showBannerNotification('Job posting created successfully!');
-            // Reset the forms
-            $('#jobPostForm')[0].reset();
-            $('#editJobPostForm')[0].reset();
-            $('#editJobPostForm').hide();
-            $('#jobPostForm').show();
-          },
-          error: function(xhr, status, error) {
+        const jobLink = jobLinkInput.value;
+        updateProgress(0, 'Starting job extraction...');
+
+        const eventSource = new EventSource(`/api/extract-job-details?link=${encodeURIComponent(jobLink)}`);
+
+        eventSource.onmessage = function (event) {
+          const data = JSON.parse(event.data);
+          if (data.progress) {
+            updateProgress(data.progress, data.message);
+          }
+          if (data.complete) {
+            eventSource.close();
+            const response = data.data;
+            populateEditForm(response);
+            jobPostForm.style.display = 'none';
+            editJobPostForm.style.display = 'block';
+            formToggle.checked = true;
+          }
+        };
+
+        eventSource.onerror = function () {
+          eventSource.close();
+          alert('An error occurred while extracting job details.');
+          updateProgress(0, 'Error occurred. Please try again.');
+        };
+      });
+
+      // Function to populate the edit form with extracted data
+      function populateEditForm(data) {
+        document.getElementById('title').value = data.title || '';
+        document.getElementById('company').value = data.company_name || '';
+        document.getElementById('location').value = data.location || '';
+        document.getElementById('salary').value = data.salary || '';
+        document.getElementById('salary_max').value = data.salary_max || '';
+        document.getElementById('experienceLevel').value = data.experience_level || '';
+        document.getElementById('skills').value = data.skills || '';
+        document.getElementById('tags').value = data.tags || '';
+        document.getElementById('description').value = data.description || '';
+        document.getElementById('benefits').value = data.benefits || '';
+        document.getElementById('additional-information').value = data.additional_information || '';
+        document.getElementById('link').value = data.link || '';
+        document.getElementById('preferred-qualifications').value = data.PreferredQualifications || '';
+        document.getElementById('minimum-qualifications').value = data.MinimumQualifications || '';
+        document.getElementById('responsibilities').value = data.Responsibilities || '';
+        document.getElementById('requirements').value = data.Requirements || '';
+        document.getElementById('nice-to-have').value = data.NiceToHave || '';
+        document.getElementById('schedule').value = data.Schedule || '';
+        document.getElementById('hours-per-week').value = data.HoursPerWeek || '';
+        document.getElementById('h1b-visa-sponsorship').value = data.H1BVisaSponsorship ? 'true' : 'false';
+        document.getElementById('is-remote').value = data.IsRemote ? 'true' : 'false';
+        document.getElementById('equal-opportunity-employer-info').value = data.EqualOpportunityEmployerInfo || '';
+        document.getElementById('relocation').value = data.relocation ? 'true' : 'false';
+      }
+
+      // Edit Job Post Form submission
+      editJobPostForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        updateProgress(90, 'Submitting job posting...');
+
+        const formData = new FormData(this);
+        fetch('/api/job-postings', {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.jobPostingId) {
+              showBannerNotification('Job posting created successfully!');
+              updateProgress(100, 'Job posting created!');
+              setTimeout(() => {
+                updateProgress(0, '');
+                jobPostForm.reset();
+                editJobPostForm.reset();
+                jobPostForm.style.display = 'block';
+                editJobPostForm.style.display = 'none';
+                formToggle.checked = false;
+              }, 2000);
+            } else {
+              throw new Error('Job posting creation failed');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
             showBannerNotification('An error occurred while creating the job posting.');
-            console.error(error);
-          }
-        });
+            updateProgress(0, 'Error occurred. Please try again.');
+          });
       });
+
+
+      // Optional: Add event listeners to form fields to update progress as user fills out the form
+      const formFields = editJobPostForm.querySelectorAll('input, textarea, select');
+      formFields.forEach(field => {
+        field.addEventListener('change', updateFormProgress);
+      });
+
+      function updateFormProgress() {
+        const totalFields = formFields.length;
+        const filledFields = Array.from(formFields).filter(field => field.value.trim() !== '').length;
+        const progressPercent = Math.round((filledFields / totalFields) * 100);
+        updateProgress(progressPercent, `Form ${progressPercent}% complete`);
+      }
     });
   </script>
 </body>

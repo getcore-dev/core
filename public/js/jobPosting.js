@@ -519,7 +519,7 @@ share
             `
     : ''
 }
-            <div class="company-description">
+            <div class="company-description main-text">
               <h4 class="third-text">Company Description</h4>
               <p>${job.company_description}</p>
             </div>

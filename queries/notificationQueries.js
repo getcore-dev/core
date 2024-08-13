@@ -99,6 +99,17 @@ const notificationQueries = {
     }
   },
 
+  deleteAllNotifications: async (userId) => {
+    try {
+      await sql.query`
+        DELETE FROM notifications
+        WHERE receiverUserId = ${userId}`;
+    } catch (err) {
+      console.error('Database delete error:', err);
+      throw err;
+    }
+  },
+
 
   deleteDuplicateNotifications: async (userId, type, postId) => {
     try {

@@ -64,10 +64,13 @@ li.notification-item.unread {
 
 
 .notification-header {
-    font-size: .925rem;
-    margin: 0 13px;
+    font-size: 1rem;
+    margin: 0 1rem;
     margin-top: 1.2rem;
+    display: flex;
     margin-bottom: .7rem;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .notification-text {
@@ -124,7 +127,7 @@ div .notification-type-icon {
 .notification-item>div {
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: .2rem;
     align-items: center;
 }
 

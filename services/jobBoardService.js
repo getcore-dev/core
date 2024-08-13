@@ -355,38 +355,49 @@ class JobProcessor extends EventEmitter {
     }
   }
 
-  async processJobLink(link) {
+  async processJobLink(link, sendProgress) {
     if (this.processedLinks.has(link)) {
       console.log('Link already processed:', link);
+      sendProgress(100, 'Link already processed');
       return { alreadyProcessed: true };
     }
   
     try {
       console.log('Processing job link:', link);
+      sendProgress(10, 'Fetching job posting...');
       const response = await this.makeRequest(link);
       const { data } = response;
   
+      sendProgress(30, 'Parsing job content...');
       const $ = cheerio.load(data);
       $('script, style').remove();
       const textContent = $('body').text().replace(/\s\s+/g, ' ').trim();
   
       let extractedData;
-
-        if (this.useGemini) {
-          extractedData = await this.useGeminiAPI(link, textContent);
-          extractedData = this.validateAndCleanJobData(extractedData);
-        } else {
-          extractedData = await this.useChatGPTAPI(link, textContent);
-        }
   
+      sendProgress(50, 'Extracting job details...');
+      if (this.useGemini) {
+        sendProgress(60, 'Using Gemini API for extraction...');
+        extractedData = await this.useGeminiAPI(link, textContent);
+        extractedData = this.validateAndCleanJobData(extractedData);
+      } else {
+        sendProgress(60, 'Using ChatGPT API for extraction...');
+        extractedData = await this.useChatGPTAPI(link, textContent);
+      }
+  
+      sendProgress(80, 'Finalizing job data...');
       await this.saveProcessedLink(link);
-
+  
       if (extractedData.skipped) {
+        sendProgress(90, 'Job posting skipped (not relevant)');
         return { skipped: true };
       }
+  
+      sendProgress(100, 'Job details extracted successfully');
       return extractedData;
     } catch (error) {
       console.error(`Error processing job link ${link}:`, error);
+      sendProgress(100, `Error: ${error.message}`);
       throw error;
     }
   }

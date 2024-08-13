@@ -85,6 +85,17 @@ router.delete('/:notificationId', async (req, res) => {
   }
 });
 
+// delete all notifications
+router.delete('/deleteAll/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    await notificationQueries.deleteAllNotifications(userId);
+    res.send('All notifications deleted');
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
 router.get('/:userId/unread-count', checkAuthenticated, async (req, res) => {
   try {
     const userId = req.params.userId;

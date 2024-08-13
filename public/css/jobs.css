@@ -12,6 +12,12 @@ body {
   justify-content: center;
 }
 
+#personalized-job-list {
+  margin: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+}
+
 .tags {
   display: none;
 }
@@ -235,7 +241,6 @@ select:hover,
 }
 
 div.jobs-container>div.job-list>.job {
-  background-color: var(--light-mode-main-color);
   margin: 0 13px;
   padding: 0 10px;
   border-radius: 11px;
@@ -764,7 +769,7 @@ div .material-symbols-outlined:not(:only-child) {
   }
 
   .job {
-    background-color: var(--dark-mode-body-color);
+    background-color: none !important;
     border-color: var(--dark-mode-border-color);
   }
 
@@ -807,7 +812,6 @@ div .material-symbols-outlined:not(:only-child) {
 
 
   div.jobs-container>div.job-list>.job {
-    background-color: var(--dark-mode-body-color);
     border-color: var(--dark-mode-border-color);
   }
 
@@ -857,6 +861,11 @@ div .material-symbols-outlined:not(:only-child) {
     border-color: #15516e !important;
     box-shadow: 0 0 3px 1px rgba(21, 81, 110, 0.5);
   }
+
+  #personalized-job-list {
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
+  }
 }
 
 
@@ -865,6 +874,7 @@ div .material-symbols-outlined:not(:only-child) {
   body {
     display: block;
   }
+
 
   .title-filter label,
   .location-filter label,
@@ -875,6 +885,7 @@ div .material-symbols-outlined:not(:only-child) {
 
   .job {
     margin: 0;
+    background: 0 !important;
     border: 0;
     border-radius: 0;
     border-bottom: 1px solid var(--border-color);
@@ -925,6 +936,10 @@ div .material-symbols-outlined:not(:only-child) {
     padding: 1.2rem 1rem;
     border-radius: 0;
     border-top: 1px solid var(--border-color);
+  }
+
+  div.jobs-container>div.job-list>.job:first-child {
+    border-top: 0;
   }
 
 }

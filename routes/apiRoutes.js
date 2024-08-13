@@ -718,19 +718,48 @@ router.post('/job-postings', checkAuthenticated, async (req, res) => {
   }
 });
 
-router.post('/extract-job-details', async (req, res) => {
-  try {
-    const { link } = req.body;
+router.get('/extract-job-details', async (req, res) => {
+  const link = req.query.link;
 
-    if (!link) {
-      return res.status(400).json({ error: 'Invalid job link' });
+  if (!link) {
+    return res.status(400).json({ error: 'Invalid job link' });
+  }
+
+  // Set up SSE
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive'
+  });
+
+  const sendProgress = (progress, message) => {
+    res.write(`data: ${JSON.stringify({ progress, message })}\n\n`);
+  };
+
+  try {
+    sendProgress(5, 'Starting job extraction...');
+
+    const extractedData = await jobProcessor.processJobLink(link, sendProgress);
+
+    if (extractedData.alreadyProcessed) {
+      sendProgress(100, 'This job has already been processed');
+      res.end();
+      return;
     }
 
-    const extractedData = await jobProcessor.processJobLink(link);
+    if (extractedData.skipped) {
+      sendProgress(100, 'Job posting skipped (not relevant)');
+      res.end();
+      return;
+    }
 
     if (extractedData.error) {
-      return res.status(500).json({ error: extractedData.error });
+      sendProgress(100, 'Error: ' + extractedData.error);
+      res.end();
+      return;
     }
+
+    sendProgress(85, 'Job details extracted. Checking company information...');
 
     try {
       if (extractedData.company_name) {
@@ -739,8 +768,8 @@ router.post('/extract-job-details', async (req, res) => {
           extractedData.company_name
         );
 
-        // create it if not
         if (!company) {
+          sendProgress(90, 'Creating new company...');
           company = await jobQueries.createCompany(
             extractedData.company_name,
             extractedData.company_logo,
@@ -758,14 +787,16 @@ router.post('/extract-job-details', async (req, res) => {
         `Error creating company: ${extractedData.company_name}`,
         error
       );
+      sendProgress(95, 'Warning: Error creating company, but job details extracted successfully.');
     }
 
-    res.json(extractedData);
+    sendProgress(100, 'Job extraction complete!');
+    res.write(`data: ${JSON.stringify({ complete: true, data: extractedData })}\n\n`);
+    res.end();
   } catch (error) {
     console.error('Error extracting job details:', error);
-    res
-      .status(500)
-      .json({ error: 'An error occurred while extracting job details' });
+    sendProgress(100, 'Error: An error occurred while extracting job details');
+    res.end();
   }
 });
 

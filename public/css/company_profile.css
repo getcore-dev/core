@@ -94,7 +94,7 @@ div.company-menu .second-nav-links .navbar-button {
   margin: 3px 7px 0px 0px;
   margin-bottom: 3px;
   border-radius: 7px;
-  font-size: .925rem;
+  font-size: 1rem;
   position: relative;
 }
 
@@ -157,11 +157,6 @@ div.company-menu .second-nav-links .navbar-button {
   margin: 0;
 }
 
-.company-location {
-  font-size: 14px;
-  margin: 0;
-}
-
 div.company-buttons {
   display: flex;
   flex-direction: row;
@@ -192,7 +187,6 @@ div.company-buttons button {
 
 .company-description {
   line-height: 1.4;
-  font-size: .925rem;
 }
 
 .company-description {

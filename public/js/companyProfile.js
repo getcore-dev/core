@@ -127,7 +127,7 @@ function renderJobPostings(jobPostings) {
     jobElement.innerHTML = `
         <div class="job-preview">
           <div class="job-info">
-            <h3 class="job-title">
+            <h3 class="job-title main-text">
             <a href="/jobs/${job.id}">
             ${job.title}
             </a>
@@ -135,14 +135,14 @@ function renderJobPostings(jobPostings) {
              <span style="margin-left: auto; float: right;">${
                job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1)
              }</span></h3>
-            <h5 class="job-subtitle secondary-text">
+            <h5 class="job-subtitle third-text">
               <span style="margin-left: auto; float:right;">USD $${Math.floor(
                 (job.salary + job.salary_max) / 2 / 1000
               )}k</span>
               ${job.location}
             </h5> 
             <div class="job-main">
-              <div class="job-description">
+              <div class="job-description secondary-text sub-text">
                 <p class="job-description">${job.description}</p>
               </div>
             </div>
