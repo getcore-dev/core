@@ -449,6 +449,18 @@ router.get('/randomJobs', cacheMiddleware(600), async (req, res) => {
   }
 });
 
+router.get('/recentJobs', cacheMiddleware(600), async (req, res) => {
+  try {
+    const jobPostings = await jobQueries.getRecentJobs(1, 6);
+    res.json({
+      jobPostings,
+    });
+  } catch (err) {
+    console.error('Error fetching job postings:', err);
+    res.status(500).send('Error fetching job postings');
+  }
+});
+
 router.get('/getTopTags', cacheMiddleware(3600), async (req, res) => {
   try {
     const tags = await jobQueries.getCountOfTopJobTags();
@@ -488,9 +500,23 @@ router.get('/company/:name/comments', async (req, res) => {
 router.get('/jobs', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const { jobTitle, jobLocation, jobExperienceLevel, jobSalary, tags } =
-      req.query;
-    const parsedTags = tags ? tags.split(',') : [];
+    const pageSize = parseInt(req.query.pageSize) || 20;
+    const {
+      titles,
+      locations,
+      experiencelevels,
+      salary,
+      skills,
+      companies
+    } = req.query;
+
+    // Parse the query parameters
+    const parsedTitles = titles ? JSON.parse(titles) : [];
+    const parsedLocations = locations ? JSON.parse(locations) : [];
+    const parsedExperienceLevels = experiencelevels ? JSON.parse(experiencelevels) : [];
+    const parsedSalary = parseInt(salary) || 0;
+    const parsedSkills = skills ? JSON.parse(skills) : [];
+    const parsedCompanies = companies ? JSON.parse(companies) : [];
 
     const user = req.user;
     let userPreferences = {};
@@ -509,42 +535,43 @@ router.get('/jobs', async (req, res) => {
     }
 
     const isEmptySearch =
-      jobTitle == '' &&
-      jobLocation == '' &&
-      jobExperienceLevel == '' &&
-      jobSalary == 0 &&
-      parsedTags.length === 0;
-      console.log('isEmptySearch', isEmptySearch);
+      parsedTitles.length === 0 &&
+      parsedLocations.length === 0 &&
+      parsedExperienceLevels.length === 0 &&
+      parsedSalary === 0 &&
+      parsedSkills.length === 0 &&
+      parsedCompanies.length === 0;
+
+    console.log('isEmptySearch', isEmptySearch);
 
     let allJobPostings;
-    let postingPage = parseInt(req.query.page) || 1;
-    let pageSize = parseInt(req.query.pageSize) || 20;
 
     if (isEmptySearch && user && Object.keys(userPreferences).length > 0) {
       console.log('Fetching jobs based on user preferences');
       allJobPostings = await jobQueries.searchAllJobsFromLast30Days(
-        userPreferences.jobPreferredTitle,
-        userPreferences.jobPreferredLocation,
-        userPreferences.jobExperienceLevel,
-        userPreferences.jobPreferredSalary,
-        userPreferences.jobPreferredSkills,
-        postingPage, 
+        userPreferences,
+        page,
         pageSize
       );
     } else if (isEmptySearch) {
       console.log('Fetching random jobs');
-      allJobPostings = await jobQueries.getRecentJobs(postingPage, pageSize);
+      allJobPostings = await jobQueries.getRecentJobs(page, pageSize);
     } else {
       console.log('Fetching jobs based on search criteria');
       allJobPostings = await jobQueries.searchAllJobsFromLast30Days(
-        jobTitle,
-        jobLocation,
-        jobExperienceLevel,
-        jobSalary,
-        parsedTags,
-        postingPage, pageSize
+        {
+          titles: parsedTitles,
+          locations: parsedLocations,
+          experienceLevels: parsedExperienceLevels,
+          salary: parsedSalary,
+          skills: parsedSkills,
+          companies: parsedCompanies
+        },
+        page,
+        pageSize
       );
     }
+
     res.json({
       jobPostings: allJobPostings,
       currentPage: page,
@@ -718,48 +745,19 @@ router.post('/job-postings', checkAuthenticated, async (req, res) => {
   }
 });
 
-router.get('/extract-job-details', async (req, res) => {
-  const link = req.query.link;
-
-  if (!link) {
-    return res.status(400).json({ error: 'Invalid job link' });
-  }
-
-  // Set up SSE
-  res.writeHead(200, {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive'
-  });
-
-  const sendProgress = (progress, message) => {
-    res.write(`data: ${JSON.stringify({ progress, message })}\n\n`);
-  };
-
+router.post('/extract-job-details', async (req, res) => {
   try {
-    sendProgress(5, 'Starting job extraction...');
+    const { link } = req.body;
 
-    const extractedData = await jobProcessor.processJobLink(link, sendProgress);
-
-    if (extractedData.alreadyProcessed) {
-      sendProgress(100, 'This job has already been processed');
-      res.end();
-      return;
+    if (!link) {
+      return res.status(400).json({ error: 'Invalid job link' });
     }
 
-    if (extractedData.skipped) {
-      sendProgress(100, 'Job posting skipped (not relevant)');
-      res.end();
-      return;
-    }
+    const extractedData = await jobProcessor.processJobLink(link);
 
     if (extractedData.error) {
-      sendProgress(100, 'Error: ' + extractedData.error);
-      res.end();
-      return;
+      return res.status(500).json({ error: extractedData.error });
     }
-
-    sendProgress(85, 'Job details extracted. Checking company information...');
 
     try {
       if (extractedData.company_name) {
@@ -768,8 +766,8 @@ router.get('/extract-job-details', async (req, res) => {
           extractedData.company_name
         );
 
+        // create it if not
         if (!company) {
-          sendProgress(90, 'Creating new company...');
           company = await jobQueries.createCompany(
             extractedData.company_name,
             extractedData.company_logo,
@@ -787,16 +785,14 @@ router.get('/extract-job-details', async (req, res) => {
         `Error creating company: ${extractedData.company_name}`,
         error
       );
-      sendProgress(95, 'Warning: Error creating company, but job details extracted successfully.');
     }
 
-    sendProgress(100, 'Job extraction complete!');
-    res.write(`data: ${JSON.stringify({ complete: true, data: extractedData })}\n\n`);
-    res.end();
+    res.json(extractedData);
   } catch (error) {
     console.error('Error extracting job details:', error);
-    sendProgress(100, 'Error: An error occurred while extracting job details');
-    res.end();
+    res
+      .status(500)
+      .json({ error: 'An error occurred while extracting job details' });
   }
 });
 
@@ -913,6 +909,16 @@ router.get('/skills/jobs/:skill', async (req, res) => {
   } catch (err) {
     console.error('Error fetching job postings:', err);
     res.status(500).send('Error fetching job postings');
+  }
+});
+
+router.get('/company-name-test/:name', async (req, res) => {
+  try {
+    const company = jobQueries.getCompanyIdByName(req.params.name);
+    res.json(company);
+  } catch (err) {
+    console.error('Error fetching company:', err);
+    res.status(500).send('Error fetching company');
   }
 });
 

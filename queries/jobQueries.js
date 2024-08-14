@@ -30,6 +30,39 @@ const jobQueries = {
     }
   },
 
+  searchJobLevels: async (searchTerm) => {
+    try {
+      searchTerm = searchTerm.toLowerCase();
+      const result = await sql.query`
+        SELECT experienceLevel, COUNT(*) as jobCount
+        FROM JobPostings
+        WHERE experienceLevel LIKE ${'%' + searchTerm + '%'}
+        GROUP BY experienceLevel
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+
+  searchJobLocations: async (searchTerm) => {
+    try {
+      const result = await sql.query`
+        SELECT location, COUNT(*) as jobCount 
+        FROM JobPostings 
+        WHERE location LIKE ${'%' + searchTerm + '%'}
+        GROUP BY location
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+
   updateCompanyJobBoards: async (companyId, jobBoardUrl) => {
     try {
       const result = await sql.query`
@@ -47,9 +80,20 @@ const jobQueries = {
   searchCompanies: async (searchTerm) => {
     try {
       const result = await sql.query`
-        SELECT * FROM companies WHERE name LIKE ${'%' + searchTerm + '%'}`;
-
-      return result.recordset;
+        SELECT TOP 5 c.id, c.name, c.logo, COUNT(jp.id) AS job_count
+        FROM companies c
+        LEFT JOIN JobPostings jp ON c.id = jp.company_id
+        WHERE c.name LIKE ${'%' + searchTerm + '%'}
+        GROUP BY c.id, c.name, c.logo
+        ORDER BY job_count DESC, c.name
+      `;
+  
+      return result.recordset.map(record => ({
+        id: record.id,
+        name: record.name,
+        logo: record.logo,
+        jobCount: record.job_count
+      }));
     } catch (err) {
       console.error('Database query error:', err);
       throw err;
@@ -393,26 +437,24 @@ const jobQueries = {
     }
   },
 
-  searchAllJobsFromLast30Days: async (
-    title = '',
-    location = '',
-    experienceLevel = '',
-    salary = '',
-    parsedTags = [],
-    page,
-    pageSize
-  ) => {
+  
+  searchAllJobsFromLast30Days: async (filters, page, pageSize) => {
     try {
+      const {
+        titles = [],
+        locations = [],
+        experienceLevels = [],
+        salary = 0,
+        skills = [],
+        companies = []
+      } = filters;
+  
       const offset = (page - 1) * pageSize;
   
       let query = `
       WITH JobScores AS (
         SELECT 
           j.*,
-          c.name AS company_name, 
-          c.logo AS company_logo, 
-          c.location AS company_location, 
-          c.description AS company_description,
           (
             SELECT STRING_AGG(jt.tagName, ',') WITHIN GROUP (ORDER BY jt.tagName)
             FROM JobPostingsTags jpt
@@ -426,44 +468,63 @@ const jobQueries = {
             WHERE js.job_id = j.id AND s.name IS NOT NULL
           ) AS skills,
           (
-            CASE WHEN @title = '' THEN 1 ELSE 0 END +
-            CASE WHEN @location = '' THEN 1 ELSE 0 END +
-            CASE WHEN @experienceLevel = '' THEN 1 ELSE 0 END +
-            CASE WHEN @title != '' AND j.title LIKE '%' + @title + '%' THEN 1 ELSE 0 END +
-            CASE WHEN @location != '' AND j.location LIKE '%' + @location + '%' THEN 1 ELSE 0 END +
-            CASE WHEN @experienceLevel != '' AND j.experienceLevel LIKE '%' + @experienceLevel + '%' THEN 1 ELSE 0 END
+            1 +
+            ${titles.length > 0 ? `CASE WHEN j.title IN (${titles.map((_, i) => `@title${i}`).join(', ')}) THEN 1 ELSE 0 END` : '0'} +
+            ${locations.length > 0 ? `CASE WHEN j.location IN (${locations.map((_, i) => `@location${i}`).join(', ')}) THEN 1 ELSE 0 END` : '0'} +
+            ${experienceLevels.length > 0 ? `CASE WHEN j.experienceLevel IN (${experienceLevels.map((_, i) => `@experienceLevel${i}`).join(', ')}) THEN 1 ELSE 0 END` : '0'}
           ) AS preference_score
         FROM JobPostings j
-        LEFT JOIN companies c ON j.company_id = c.id
         WHERE j.postedDate >= DATEADD(day, -30, GETDATE())
       )
-      SELECT * FROM JobScores
-      WHERE preference_score > 0
-    `;
+      SELECT 
+        js.*,
+        c.name AS company_name, 
+        c.logo AS company_logo, 
+        c.location AS company_location, 
+        c.description AS company_description
+      FROM JobScores js
+      LEFT JOIN companies c ON js.company_id = c.id
+      WHERE js.preference_score > 0
+      `;
   
       const conditions = [];
-      const queryParams = {
-        title: title,
-        location: location,
-        experienceLevel: experienceLevel
-      };
+      const queryParams = {};
   
-      if (salary) {
-        conditions.push('salary >= @salary');
-        queryParams.salary = parseInt(salary, 10);
+      titles.forEach((title, i) => {
+        queryParams[`title${i}`] = title;
+      });
+  
+      locations.forEach((location, i) => {
+        queryParams[`location${i}`] = location;
+      });
+  
+      experienceLevels.forEach((level, i) => {
+        queryParams[`experienceLevel${i}`] = level;
+      });
+  
+      if (salary > 0) {
+        conditions.push('js.salary >= @salary');
+        queryParams.salary = salary;
       }
   
-      if (parsedTags.length > 0) {
-        const tagConditions = parsedTags.map((_, i) => `@skill${i}`).join(', ');
+      if (skills.length > 0) {
+        const skillConditions = skills.map((_, i) => `@skill${i}`).join(', ');
         conditions.push(`
           EXISTS (
-            SELECT 1 FROM job_skills js
-            JOIN skills s ON js.skill_id = s.id
-            WHERE js.job_id = JobScores.id AND s.id IN (${tagConditions})
+            SELECT 1 FROM job_skills js_inner
+            JOIN skills s ON js_inner.skill_id = s.id
+            WHERE js_inner.job_id = js.id AND s.name IN (${skillConditions})
           )
         `);
-        parsedTags.forEach((tag, i) => {
-          queryParams[`skill${i}`] = tag;
+        skills.forEach((skill, i) => {
+          queryParams[`skill${i}`] = skill;
+        });
+      }
+  
+      if (companies.length > 0) {
+        conditions.push(`c.name IN (${companies.map((_, i) => `@company${i}`).join(', ')})`);
+        companies.forEach((company, i) => {
+          queryParams[`company${i}`] = company;
         });
       }
   
@@ -472,22 +533,24 @@ const jobQueries = {
       }
   
       query += ` 
-        ORDER BY preference_score DESC, postedDate DESC
-        OFFSET ${offset} ROWS
-        FETCH NEXT ${pageSize} ROWS ONLY
+        ORDER BY js.preference_score DESC, js.postedDate DESC
+        OFFSET @offset ROWS
+        FETCH NEXT @pageSize ROWS ONLY
       `;
   
       const request = new sql.Request();
       Object.entries(queryParams).forEach(([key, value]) => {
         request.input(key, value);
       });
+      request.input('offset', sql.Int, offset);
+      request.input('pageSize', sql.Int, pageSize);
   
       const result = await request.query(query);
   
       // Fallback query if no results are found
       if (result.recordset.length === 0) {
         let fallbackQuery = `
-          SELECT TOP ${pageSize}
+          SELECT TOP (@pageSize)
             j.*,
             c.name AS company_name, 
             c.logo AS company_logo, 
@@ -520,7 +583,7 @@ const jobQueries = {
       console.error('Error in searchAllJobsFromLast30Days:', error);
       throw error;
     }
-  },
+  }, 
   
   
   getJobTitles: async () => {
@@ -1511,17 +1574,38 @@ ORDER BY jp.postedDate DESC
     }
   },
 
-getCompanyByName: async (name) => {
-  try {
-    const result = await sql.query`
-      SELECT TOP 1 * FROM companies WHERE name = ${name}
-    `;
-    return result.recordset[0];
-  } catch (err) {
-    console.error('Database query error:', err);
-    throw err;
-  }
-},
+  searchSkills: async (searchTerm) => {
+    try {
+      const result = await sql.query`
+        SELECT TOP 5 s.name, s.id, COUNT(js.job_id) AS job_count
+        FROM skills s
+        LEFT JOIN job_skills js ON s.id = js.skill_id
+        WHERE s.name LIKE ${searchTerm + '%'}
+        GROUP BY s.name, s.id
+        ORDER BY job_count DESC, s.name
+      `;
+      return result.recordset.map(record => ({
+        name: record.name,
+        id: record.id,
+        jobCount: record.job_count
+      }));
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  getCompanyByName: async (name) => {
+    try {
+      const result = await sql.query`
+        SELECT TOP 1 * FROM companies WHERE name = ${name}
+      `;
+      return result.recordset[0];
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
 
   getCompanyById: async (id) => {
     try {
@@ -1534,17 +1618,54 @@ getCompanyByName: async (name) => {
       throw err;
     }
   },
-  getCompanyIdByName: async (name) => {
+getCompanyIdByName: async (name) => {
     try {
-      const result = await sql.query`
-        SELECT * FROM companies WHERE name = ${name}
+      // Normalize the input name
+      const normalizedName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+      // First, try to find an exact match
+      const exactMatchResult = await sql.query`
+        SELECT TOP 1 c.id, c.name, c.logo, c.location, c.description, c.industry, c.size, c.stock_symbol, c.founded,
+               COUNT(jp.id) as job_count
+        FROM companies c
+        LEFT JOIN JobPostings jp ON c.id = jp.company_id
+        WHERE LOWER(REPLACE(c.name, ' ', '')) = ${normalizedName}
+        GROUP BY c.id, c.name, c.logo, c.location, c.description, c.industry, c.size, c.stock_symbol, c.founded
+        ORDER BY job_count DESC
       `;
 
-      if (result.recordset.length === 0) {
-        return null;
+      if (exactMatchResult.recordset.length > 0) {
+        return exactMatchResult.recordset[0];
       }
 
-      return result.recordset[0];
+      // If no exact match, try partial matches
+      const partialMatchResult = await sql.query`
+        SELECT TOP 5 c.id, c.name, c.logo, c.location, c.description, c.industry, c.size, c.stock_symbol, c.founded,
+               COUNT(jp.id) as job_count,
+               LEN(c.name) as name_length
+        FROM companies c
+        LEFT JOIN JobPostings jp ON c.id = jp.company_id
+        WHERE LOWER(REPLACE(c.name, ' ', '')) LIKE '%' + ${normalizedName} + '%'
+           OR ${normalizedName} LIKE '%' + LOWER(REPLACE(c.name, ' ', '')) + '%'
+        GROUP BY c.id, c.name, c.logo, c.location, c.description, c.industry, c.size, c.stock_symbol, c.founded
+        ORDER BY 
+          CASE 
+            WHEN LOWER(REPLACE(c.name, ' ', '')) = ${normalizedName} THEN 1
+            WHEN LOWER(REPLACE(c.name, ' ', '')) LIKE ${normalizedName} + '%' THEN 2
+            WHEN LOWER(REPLACE(c.name, ' ', '')) LIKE '%' + ${normalizedName} THEN 3
+            ELSE 4
+          END,
+          COUNT(jp.id) DESC,
+          name_length ASC
+      `;
+
+      if (partialMatchResult.recordset.length > 0) {
+        // If we have multiple matches, choose the one with the highest job count
+        return partialMatchResult.recordset[0];
+      }
+
+      // If still no match, return null
+      return null;
     } catch (err) {
       console.error('Database query error:', err);
       throw err;

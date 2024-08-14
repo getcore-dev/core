@@ -89,7 +89,7 @@
          }
 
          function fetchJobPreviews() {
-           fetch(`/api/randomJobs`)
+           fetch(`/api/recentJobs`)
              .then(response => response.json())
              .then(data => {
                const jobs = data.jobPostings;

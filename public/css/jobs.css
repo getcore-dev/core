@@ -14,8 +14,30 @@ body {
 
 #personalized-job-list {
   margin: 1rem;
+  background: var(--light-mode-body-color);
   border: 1px solid var(--border-color);
   border-radius: 10px;
+}
+
+.job-search-results {
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
+.selected-item {
+  display: inline-flex;
+  gap: .4rem;
+  margin: 2px;
+  padding: 2px 5px;
+  background-color: var(--light-mode-body-color);
+  border-radius: 3px;
+  align-items: center;
+}
+
+.selected-tech-job-titles {
+  display: inline-flex;
+  gap: .4rem;
+  flex-direction: column;
 }
 
 .tags {
@@ -808,6 +830,11 @@ div .material-symbols-outlined:not(:only-child) {
     background-color: var(--dark-mode-main-color) !important;
     color: var(--dark-mode-text-color) !important;
     border-color: var(--dark-mode-border-color) !important;
+  }
+
+  .selected-item {
+    background-color: var(--dark-mode-main-color);
+    color: var(--dark-mode-text-color);
   }
 
 

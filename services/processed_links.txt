@@ -3264,3 +3264,5 @@ https://job-boards.greenhouse.io/duolingo/jobs/7027410002
 https://job-boards.greenhouse.io/duolingo/jobs/7587684002
 https://www.paycomonline.net/v4/ats/web.php/jobs/ViewJobDetails?src=LinkedIn&clientkey=8E7F16AD6654E4ED3797EE9F40DB0A48&job=173361
 https://www.paycomonline.net/v4/ats/web.php/jobs/ViewJobDetails?src=LinkedIn&clientkey=8E7F16AD6654E4ED3797EE9F40DB0A48&job=173361
+https://jobs.siemens.com/careers?query=ILT%2FOPC%20Product%20Engineer&pid=563156120358041&domain=siemens.com&sort_by=relevance&triggerGoButton=false
+https://www.msgentertainment.com/job/?gh_jid=4409689007&gh_src=9a74a7c57us
