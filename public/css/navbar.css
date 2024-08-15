@@ -11,17 +11,22 @@
   --light-mode-text-color: #000;
   --light-mode-bold-text-color: #000000;
   --light-mode-secondary-text-color: #2e2e2e;
+  --light-mode-third-text-color: #707070;
   --hover-background-color: #ddd;
   --active-indicator-color: #5083ca;
-  --dark-mode-main-color: #0b0c0c;
+  --dark-mode-main-color: #0c0e15;
   --dark-mode-body-color: #000;
   --dark-mode-hover-color: #1b1f22;
+  --dark-mode-button-color: #0e1119;
   --dark-mode-button-hover-color: #363F44;
   --dark-mode-lighter-color: #1F2427;
   --dark-mode-text-color: #fff;
+  --dark-mode-third-text-color: #a5a5a5;
   --dark-mode-secondary-text-color: #d4d4d9;
   --dark-mode-border-color: #181a1b;
   --dark-mode-hover-background-color: #151515;
+  --focus-shadow-color: rgba(80, 131, 202, 0.4);
+
 
   /* Font and size variables */
   --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
@@ -1327,7 +1332,7 @@ a>.menu-item {
 
   .user-btns {
     position: absolute;
-    right: 3.4rem;
+    right: 3.1rem;
     top: 7px;
     z-index: 500;
   }
@@ -1449,17 +1454,45 @@ input[type='email'],
 input[type='password'],
 input[type='search'] {
   width: 100%;
-  height: 38px;
-  padding: 10px 20px;
-  font-family: var(--font-family);
+  height: 40px;
+  padding: 8px 12px;
+  font-family: var(--font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif);
   margin: 0;
   box-sizing: border-box;
   border-radius: 6px;
-  background-color: var(--light-mode-body-color) !important;
-  border: 1.5px solid var(--border-color) !important;
   font-size: 16px;
-  transition: box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
+
+input[type='text'],
+input[type='number'],
+input[type='email'],
+input[type='password'],
+input[type='search'] {
+  background-color: var(--light-mode-main-color);
+  border: 1px solid var(--border-color);
+  color: var(--light-mode-text-color);
+}
+
+input[type='text']:hover,
+input[type='number']:hover,
+input[type='email']:hover,
+input[type='password']:hover,
+input[type='search']:hover {
+  border-color: var(--light-mode-secondary-text-color);
+  background-color: var(--hover-background-color);
+}
+
+input[type='text']:focus,
+input[type='number']:focus,
+input[type='email']:focus,
+input[type='password']:focus,
+input[type='search']:focus {
+  outline: none;
+  border-color: var(--active-indicator-color);
+  box-shadow: 0 0 0 3px var(--focus-shadow-color);
+}
+
 
 textarea {
   width: 100%;
@@ -1897,7 +1930,7 @@ button .material-symbols-outlined:not(:only-child) {
 .user-links {
   position: relative;
   display: flex;
-  gap: .4rem;
+  gap: .15rem;
   align-items: center;
   transition: transform 0.1s linear;
 }
@@ -2039,6 +2072,11 @@ button .material-symbols-outlined:not(:only-child) {
     /* Highlight item on hover */
   }
 
+  .spinner {
+    border: 5px solid #121212;
+    border-top: 5px solid #3498db;
+  }
+
   .menu-content a.active>.menu-item {
     color: var(--dark-mode-text-color);
   }
@@ -2081,6 +2119,48 @@ button .material-symbols-outlined:not(:only-child) {
   color: var(--light-mode-secondary-text-color);
 }
 
+@media (prefers-color-scheme: dark) {
+
+  input[type='text'],
+  input[type='number'],
+  input[type='email'],
+  input[type='password'],
+  input[type='search'] {
+    background-color: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
+    color: var(--dark-mode-text-color);
+  }
+
+  input[type='text']:hover,
+  input[type='number']:hover,
+  input[type='email']:hover,
+  input[type='password']:hover,
+  input[type='search']:hover {
+    border-color: var(--dark-mode-secondary-text-color);
+    background-color: var(--dark-mode-hover-background-color);
+  }
+
+  input[type='text']:focus,
+  input[type='number']:focus,
+  input[type='email']:focus,
+  input[type='password']:focus,
+  input[type='search']:focus {
+    border-color: var(--active-indicator-color);
+    box-shadow: 0 0 0 3px rgba(80, 131, 202, 0.3);
+  }
+}
+
+/* Placeholder styles */
+input::placeholder {
+  color: var(--light-mode-secondary-text-color);
+  opacity: 0.7;
+}
+
+@media (prefers-color-scheme: dark) {
+  input::placeholder {
+    color: var(--dark-mode-secondary-text-color);
+  }
+}
 
 @media (prefers-color-scheme: dark) {
   #search-bar {
@@ -2118,15 +2198,6 @@ button .material-symbols-outlined:not(:only-child) {
     -webkit-backdrop-filter: blur(8px);
   }
 
-  input[type='text'],
-  input[type='number'],
-  input[type='email'],
-  input[type='password'],
-  input[type='search'] {
-    background-color: var(--dark-mode-main-color) !important;
-    border: 1.5px solid var(--dark-mode-border-color) !important;
-    color: var(--dark-mode-text-color);
-  }
 
   textarea {
     background-color: var(--dark-mode-main-color) !important;
@@ -2303,7 +2374,7 @@ button .material-symbols-outlined:not(:only-child) {
   #null-button,
   .null-button-normal,
   #null-button-normal {
-    background: #212121;
+    background: var(--dark-mode-button-color);
     color: #b0b0b0;
     border: 1.5px solid #2d2d2d;
   }

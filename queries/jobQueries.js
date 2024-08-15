@@ -30,6 +30,54 @@ const jobQueries = {
     }
   },
 
+
+  //const jobPostings = await jobQueries.getJobsByCompanies(parsedCompanies, page, pageSize);
+
+  /*
+  parsedCompanies [
+  '{"id":"71","name":"Apple","logo":"/src/applelogo.png"}',
+  '{"id":"86","name":"Microsoft","logo":"/src/Microsoftlogo.png"}'
+  ]
+  */
+ 
+
+  getJobsByCompanies: async (companies, page, pageSize) => {
+    try {
+      const offset = (page - 1) * pageSize;
+      const companyIds = companies.map((company) => company.id);
+      const result = await sql.query`
+        SELECT 
+          JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
+          (
+            SELECT STRING_AGG(JobTags.tagName, ', ')
+            FROM JobPostingsTags
+            INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
+            WHERE JobPostingsTags.jobId = JobPostings.id
+          ) AS tags,
+          (
+            SELECT STRING_AGG(s.name, ', ')
+            FROM job_skills js
+            JOIN skills s ON js.skill_id = s.id
+            WHERE js.job_id = JobPostings.id
+          ) AS skills
+        FROM JobPostings
+        LEFT JOIN companies ON JobPostings.company_id = companies.id
+        WHERE JobPostings.company_id IN (${companyIds.join(',')})
+        ORDER BY JobPostings.postedDate DESC
+        OFFSET ${offset} ROWS
+        FETCH NEXT ${pageSize} ROWS ONLY
+      `;
+      const jobs = result.recordset;
+      return jobs;
+    }
+    catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+
+
   searchJobLevels: async (searchTerm) => {
     try {
       searchTerm = searchTerm.toLowerCase();

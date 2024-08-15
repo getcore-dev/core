@@ -1,9 +1,30 @@
-function formatDate(dateString) {
+function formatDateJob(dateString) {
   const date = new Date(dateString);
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const year = date.getFullYear();
-  return `${month}/${day}/${year}`;
+  const now = new Date();
+  const diffInSeconds = Math.floor((now - date) / 1000);
+
+  if (diffInSeconds < 60) {
+    return 'Just now';
+  } else if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60);
+    return `${minutes} min${minutes > 1 ? 's' : ''} ago`;
+  } else if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600);
+    return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+  } else if (diffInSeconds < 172800) {
+    return '1 d ago';
+  } else {
+    const month = date.toLocaleString('default', { month: 'short' });
+    const day = String(date.getDate());
+    const year = date.getFullYear();
+    const currentYear = now.getFullYear();
+
+    if (year === currentYear) {
+      return `${month} ${day}`;
+    } else {
+      return `${month} ${day}, ${year}`;
+    }
+  }
 }
 
 function getTintFromName(name) {
@@ -266,7 +287,6 @@ function formatDateColor(dateString) {
   }
 }
 
-
 function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   fetch(`/api/jobs/${jobId}`)
     .then((response) => response.json())
@@ -365,30 +385,18 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
           
           
 
-            <div class="job-info-flairs secondary-text margin-1-bottom">
+            <div class="job-info-flairs third-text margin-1-bottom">
               <p>
                 <span class="material-symbols-outlined">
                 engineering
                 </span> ${job.experienceLevel}
               </p>
-              <p class="company-size">
-  <span class="material-symbols-outlined">group</span>
-  ${job.company_size ? job.company_size.toString().toLowerCase().includes('employees') ? job.company_size : `${job.company_size} employees` : 'Unknown employees'}
-</p>
               <p> 
                 <span class="material-symbols-outlined">
                 location_city
                 </span> ${job.location}
               </p>
-                  <div class="job-skills main-text">
-      <p id="secondary-text">Skills:</p>
-      ${skillsHTML}
-      ${
-  remainingSkills > 0
-    ? `<span class="see-more" id="secondary-text">+${remainingSkills} more</span>`
-    : ''
-}
-    </div>
+
                           <p> 
               <span class="material-symbols-outlined">
               visibility
@@ -396,15 +404,15 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
             </p>
               <p>
               
-                ${job.salary != 0 ? ' <span class="material-symbols-outlined">attach_money</span>USD $' + job.salary.toLocaleString() : ''} ${
-  job.salary_max != 0 ? '- $' + job.salary_max.toLocaleString() : ''
+                ${job.salary != 0 ? ' <span class="material-symbols-outlined">attach_money</span>USD $' + formatSalary(job.salary) : ''} ${
+  job.salary_max != 0 ? '- $' + formatSalary(job.salary_max) : ''
 }
             </p>
             <p>
 <span class="material-symbols-outlined">
                 today
                 </span>
-<time>${formatDate(job.postedDate)}</time>
+<time>${formatDateJob(job.postedDate)}</time>
 </p>
 
 
@@ -498,6 +506,18 @@ share
 
               <p>${job.description}</p>
             </div>
+            <div class="job-skills-container">
+            <h4 class="third-text">Skills</h4>
+                              <div class="job-skills main-text">
+    \
+      ${skillsHTML}
+      ${
+  remainingSkills > 0
+    ? `<span class="see-more" id="secondary-text">+${remainingSkills} more</span>`
+    : ''
+}
+    </div>
+    </div>
             ${
   job.Requirements
     ? `

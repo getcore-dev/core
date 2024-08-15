@@ -517,10 +517,19 @@ router.get('/jobs', async (req, res) => {
     const parsedSalary = parseInt(salary) || 0;
     const parsedSkills = skills ? JSON.parse(skills) : [];
     const parsedCompanies = companies ? JSON.parse(companies) : [];
+    console.log(parsedCompanies);
 
     const user = req.user;
     let userPreferences = {};
 
+    // parsedCompanies = [ '{"id":"71","name":"Apple","logo":"/src/applelogo.png"}' ]
+    if (parsedCompanies.length !== 0) {
+      const jobPostings = await jobQueries.getJobsByCompanies(parsedCompanies, page, pageSize);
+      return res.json({
+        jobPostings,
+        currentPage: page,
+      });
+    }
     if (user) {
       userPreferences = {
         jobPreferredTitle: user.jobPreferredTitle,

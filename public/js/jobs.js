@@ -382,7 +382,7 @@ async function fetchJobPostings() {
     experiencelevels: JSON.stringify(Array.from(state.filters.experiencelevels)),
     salary: state.filters.salary || '0',
     skills: JSON.stringify(Array.from(state.filters.skills)),
-    companies: JSON.stringify(Array.from(state.filters.companies))
+    companies: JSON.stringify(Array.from(state.filters.companies)) || '[]', // Default to empty array
   });
 
   try {
@@ -550,18 +550,16 @@ function createJobElement(job) {
   const otherSkills = displayedTags.filter(skill => !skillsArray.includes(skill.trim()));
 
   const sortedSkills = [...filteredSkills, ...otherSkills];
-
-  const tagsHTML = sortedSkills
+const tagsHTML = sortedSkills
     .map((skill) => {
-      const skillId = Object.keys(state.filters.skills).find(
-        key => state.filters.skills[key].trim() === skill.trim()
-      );
-      return `
-        <a href="/skills/jobs/${skill}">
-          <span onclick="event.stopPropagation()" class="tag ${
-            skillId ? 'green-tag' : ''
-          }">${skill}</span>
-        </a>`;
+        const skillExists = state.filters.skills.has(skill);
+        console.log(skillExists);
+        return `
+          <a href="/skills/jobs/${skill}">
+            <span onclick="event.stopPropagation()" class="tag ${
+              skillExists ? 'green-tag' : ''
+            }">${skill}</span>
+          </a>`;
     })
     .join('');
 
@@ -609,9 +607,9 @@ function createJobElement(job) {
             <span class="material-symbols-outlined">location_on</span>
             ${formatLocation(job.location).trim()}
           </div>
-          <span style="font-size:.7rem;">•</span><div class="applicants sub-text">
-            <span class="material-symbols-outlined">person</span>
-            ${job.applicants ? job.applicants : '0'}
+          <span style="font-size:.7rem;">•</span><div class="views sub-text">
+            <span class="material-symbols-outlined">visibility</span>
+            ${job.views ? job.views : '0'}
           </div>
         </div>
       </div>
@@ -658,6 +656,10 @@ state.jobSearchInput.addEventListener('input',
       }).then(response => response.json())
     ))
     .then(results => {
+      if (results.every(result => result.length === 0)) {
+        clearSearchResults();
+        return;
+      }
       // Normalize and combine all results
       const combinedResults = results.flatMap((routeResults, index) => {
         const type = routes[index];
@@ -700,7 +702,7 @@ function displaySearchResults(results) {
       const logo = document.createElement('img');
       logo.src = result.logo;
       logo.alt = `${result.name} logo`;
-      logo.className = 'company-logo';
+      logo.className = 'thumbnail-micro thumnbnail thumbnail-regular';
       resultItem.appendChild(logo);
     }
     
@@ -771,7 +773,7 @@ function addToSelectedFilters(type, id, name, logo) {
     const logoImg = document.createElement('img');
     logoImg.src = logo;
     logoImg.alt = `${name} logo`;
-    logoImg.className = 'thumbnail-micro';
+    logoImg.className = 'thumbnail-micro thumbnail thumbnail-regular';
     item.appendChild(logoImg);
   }
 
@@ -820,9 +822,6 @@ function clearSearchResults() {
 // Add some basic styles
 const style = document.createElement('style');
 style.textContent = `
-  .jobs-selected-filters {
-    margin-top: 10px;
-  }
   .remove-item {
     margin-left: 5px;
     border: none;

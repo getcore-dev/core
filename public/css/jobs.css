@@ -26,11 +26,11 @@ body {
 
 .selected-item {
   display: inline-flex;
-  gap: .4rem;
+  gap: .2rem;
   margin: 2px;
-  padding: 2px 5px;
-  background-color: var(--light-mode-body-color);
-  border-radius: 3px;
+  padding: .1rem .7rem;
+  background-color: var(--border-color);
+  border-radius: .6em;
   align-items: center;
 }
 
@@ -710,7 +710,7 @@ select {
 div.job-skills,
 div.job-skills-display {
   display: flex;
-  font-size: .925rem;
+  font-size: var(--mobile-default-font-size);
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
@@ -833,7 +833,7 @@ div .material-symbols-outlined:not(:only-child) {
   }
 
   .selected-item {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
 
@@ -953,8 +953,8 @@ div .material-symbols-outlined:not(:only-child) {
   }
 
   .jobs-header {
-    margin: 19px 1rem;
-    margin-bottom: 1rem;
+    margin: 0 1rem;
+    gap: .5rem;
   }
 
   div.jobs-container>div.job-list>.job {

@@ -200,6 +200,7 @@ div.apply-button-container {
 }
 
 div.job-info-flairs span.material-symbols-outlined {
+  color: var(--light-mode-text-color);
   font-size: .95rem;
   vertical-align: -2px;
   padding-right: .6rem;
@@ -288,7 +289,7 @@ div.similar-job h4 {
 .job-details ul,
 ul.locations,
 .job-listing-menu p {
-  color: var(--light-mode-secondary-text-color);
+  color: var(--light-mode-third-text-color);
   font-size: var(--mobile-default-font-size);
   line-height: 1.5;
   font-weight: 400;
@@ -296,11 +297,9 @@ ul.locations,
   margin-bottom: 0;
 }
 
-.job-listing-menu p {
-  color: var(--light-mode-secondary-text-color);
-}
 
 .job-info-flairs p {
+  font-weight: 500;
   font-size: 1rem;
 }
 
@@ -345,7 +344,7 @@ ul.locations,
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: .2rem 1.3rem;
 }
 
 .job-listing-menu {
@@ -424,12 +423,12 @@ ul.locations,
   .job-details p,
   .job-details ul,
   .job-listing-menu p {
-    color: var(--dark-mode-secondary-text-color);
+    color: var(--dark-mode-third-text-color);
   }
 
   .company-location,
   .job-listing-menu p {
-    color: var(--dark-mode-secondary-text-color);
+    color: var(--dark-mode-third-text-color);
   }
 
   .container {
@@ -444,6 +443,10 @@ ul.locations,
   .related-jobs-company-count {
     background: #232323;
     border-color: #414141;
+  }
+
+  div.job-info-flairs span.material-symbols-outlined {
+    color: var(--dark-mode-text-color);
   }
 }
 

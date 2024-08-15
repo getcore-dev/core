@@ -152,6 +152,12 @@ div.company-menu .second-nav-links .navbar-button {
   padding-right: .8rem;
 }
 
+.job-list {
+  margin: 1rem 0;
+  background: var(--light-mode-body-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+}
 
 div.company-buttons {
   display: flex;
@@ -309,6 +315,36 @@ h3.job-title {
   position: relative;
 }
 
+.job-post-date.green::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #0daf0d;
+  border-radius: 50%;
+  margin-right: 3px;
+}
+
+.job-post-date.yellow::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: yellow;
+  border-radius: 50%;
+  margin-right: 3px;
+}
+
+.job-post-date.red::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: red;
+  border-radius: 50%;
+  margin-right: 3px;
+}
+
 .job {
   background-color: var(--light-mode-main-color);
   margin: 0;
@@ -387,9 +423,14 @@ div.jobs-company-header {
     border-color: #414141;
   }
 
+  .job-list {
+    background: var(--dark-mode-main-color);
+    border-color: var(--dark-mode-border-color);
+  }
+
 
   .job {
-    background-color: var(--dark-mode-body-color);
-    border-color: var(--dark-mode-border-color);
+    background: none !important;
+    border: none;
   }
 }

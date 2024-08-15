@@ -93,6 +93,43 @@ async function loadCompanyJobs(companyName) {
   }
 }
 
+function formatDateColor(dateString) {
+  const now = new Date();
+  const postedDate = new Date(dateString); 
+  // if within 2 weeks, green, if within 2 months, yellow, if older, red
+  const diffTime = Math.abs(now - postedDate);
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  if (diffDays <= 14) {
+    return 'green';
+  } else if (diffDays <= 60) {
+    return 'yellow';
+  } else {
+    return 'red';
+  }
+}
+
+function formatRelativeDate(dateString) {
+  const now = new Date();
+  const postedDate = new Date(dateString);
+  const diffTime = Math.abs(now - postedDate);
+  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  const diffMonths = Math.floor(diffDays / 30);
+  const diffYears = Math.floor(diffDays / 365);
+
+  if (diffYears > 0) {
+    return `${diffYears}y`;
+  } else if (diffMonths > 0) {
+    return `${diffMonths}m`;
+  } else if (diffDays > 0) {
+    return `${diffDays}d`;
+  } else if (diffHours > 0) {
+    return `${diffHours}h`;
+  } else {
+    return 'Just now';
+  }
+}
+
 function getTintFromName(name) {
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
@@ -125,56 +162,51 @@ function renderJobPostings(jobPostings) {
       .join("");
     const remainingTags = tagsArray.length - maxTags;
     jobElement.innerHTML = `
-        <div class="job-preview">
-          <div class="job-info">
-            <h3 class="job-title main-text">
-            <a href="/jobs/${job.id}">
-            ${job.title}
-            </a>
-            
-             <span style="margin-left: auto; float: right;">${
-               job.experienceLevel[0].toUpperCase() + job.experienceLevel.slice(1)
-             }</span></h3>
-            <h5 class="job-subtitle third-text">
-              <span style="margin-left: auto; float:right;">USD $${Math.floor(
-                (job.salary + job.salary_max) / 2 / 1000
-              )}k</span>
-              ${job.location}
-            </h5> 
-            <div class="job-main">
-              <div class="job-description secondary-text sub-text">
-                <p class="job-description">${job.description}</p>
-              </div>
-            </div>
-            <div class="job-posting-flairs">
-              ${tagsHTML}
-              ${
-                remainingTags > 0
-                  ? `<span class="see-more">+${remainingTags} more</span>`
-                  : ""
-              }
-            </div>
+    <div class="job-preview">
+      <div class="job-info">
+        <h3 class="job-title"><a href="/jobs/${job.id}">${job.title}</a></h3>
+        <div class="job-posting-information job-subtitle secondary-text">
+          <div class="job-description margin-03-bottom">
+            ${job.description}
           </div>
         </div>
-      `;
+        <div class="job-posting-flairs margin-06-bottom secondary-text sub-text">Skills:${tagsHTML}</div>
+        <div class="job-title-location secondary-text sub-text">
+          <div class="job-post-date ${formatDateColor(job.postedDate)} sub-text">
+            <time>${formatRelativeDate(job.postedDate)}</time>
+          </div>
+          <span style="font-size:.7rem;">•</span>
+          <div class="experience-level sub-text">${
+            job.experienceLevel === 'Mid Level'
+              ? 'L3/L4'
+              : job.experienceLevel === 'Entry Level'
+                ? 'L1/L2'
+                : job.experienceLevel === 'Senior'
+                  ? 'L5/L6'
+                  : job.experienceLevel
+          }</div>
+          ${job.salary || job.salary_max ? `
+            <span style="font-size:.7rem;">•</span><div class="job-salary sub-text">
+              <span class="material-symbols-outlined">attach_money</span>
+              ${getFormattedSalary(job.salary, job.salary_max)}/yr
+            </div>
+          ` : ``}
+          <span style="font-size:.7rem;">•</span><div class="location sub-text">
+            <span class="material-symbols-outlined">location_on</span>
+            ${formatLocation(job.location).trim()}
+          </div>
+          <span style="font-size:.7rem;">•</span><div class="views sub-text">
+            <span class="material-symbols-outlined">visibility</span>
+            ${job.views ? job.views : '0'}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
     jobListContainer.appendChild(jobElement);
   });
 
 }
-
-/*
-router.get('/company/:name/comments', async (req, res) => {
-  try {
-    const companyName = req.params.name;
-    const company = await jobQueries.getCompanyByName(companyName);
-    const comments = await jobQueries.getCompanyComments(company.id);
-    res.json(comments);
-  } catch (err) {
-    console.error('Error fetching company comments:', err);
-    res.status(500).send('Error fetching company comments');
-  }
-});
-*/
 
 function fetchCompanyComments(companyName) {
   return fetch(`/api/company/${encodeURIComponent(companyName)}/comments`)
