@@ -177,7 +177,7 @@ div.vote-interactions {
 }
 
 .three-dots {
-  margin-right: 3px;
+  margin-left: auto;
 }
 
 .post-header-buttons {
@@ -190,12 +190,26 @@ div.vote-interactions {
 .post-content {
   position: relative;
   flex-grow: 1;
-  padding: 1rem 1rem;
+  padding: .6rem .9rem;
 }
 
 
 .com-btn {
   background: rgba(0, 0, 0, 0);
+}
+
+.three-dots-button {
+  background: 0;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--light-mode-secondary-text-color);
+}
+
+.three-dots-button .material-symbols-outlined {
+  font-size: 1.4rem;
+  line-height: 1rem;
 }
 
 .post-header-username {
@@ -204,6 +218,7 @@ div.vote-interactions {
   align-items: center;
   border-radius: 9px;
   gap: 0;
+  width: 100%;
 }
 
 .job-flair {
@@ -371,7 +386,7 @@ div.vote-interactions {
 
 .description,
 .job-description {
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.4;
   overflow: hidden;
   display: -webkit-box;
@@ -472,7 +487,7 @@ a.community:hover {
   width: 100%;
   overflow: hidden;
   box-sizing: border-box;
-  line-height: 1.4;
+  line-height: 1.6;
 }
 
 div .mini-link {
@@ -847,7 +862,7 @@ div.join-website-body {
   align-items: center;
   border-radius: 2rem;
   gap: .6rem;
-  padding: 0.6rem !important;
+  padding: 0.4rem .9rem !important;
   height: 32px;
 }
 
@@ -866,7 +881,7 @@ div.join-website-body {
 
 .buttons {
   display: inline-flex;
-  gap: 1rem;
+  gap: .5rem;
   width: 100%;
   align-items: center;
 }
@@ -918,7 +933,7 @@ div.join-website-body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-weight: 550;
+  font-weight: 400;
   margin: 0;
   margin: 4px 0;
   overflow: hidden;
@@ -1268,7 +1283,7 @@ button.see-more {
 @media (max-width: 768px) {
   .title {
     margin-top: 0rem;
-    font-weight: 600;
+    font-weight: 500;
   }
 
   .post {
@@ -1573,6 +1588,10 @@ button.see-more {
 
   #post-username {
     color: var(--dark-mode-text-color);
+  }
+
+  .three-dots-button {
+    color: var(--dark-mode-secondary-text-color);
   }
 
   .reaction-menu button {

@@ -21,6 +21,20 @@
         <div class="user-res">Already a member? <a href="/login">Login</a></div>
       </div>
       <div id="registration">
+        <% if (successMessages && successMessages.length > 0) { %>
+        <div class="success-messages">
+          <% successMessages.forEach(function(msg) { %>
+          <p class="success-message"><%= msg %></p>
+          <% }); %>
+        </div>
+        <% } %>
+        <% if (errorMessages && errorMessages.length > 0) { %>
+        <div class="error-messages">
+          <% errorMessages.forEach(function(msg) { %>
+          <p class="error-message"><%= msg %></p>
+          <% }); %>
+        </div>
+        <% } %>
         <form action="/register" method="POST">
           <div class="input-container">
             <label for="firstname">First Name</label>

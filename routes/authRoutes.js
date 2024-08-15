@@ -174,7 +174,7 @@ router.get('/recruiter', checkNotAuthenticated, async (req, res) => {
 });
 
 router.get('/register', checkNotAuthenticated, async (req, res) => {
-  res.render('register.ejs', { user: req.user });
+  res.render('register.ejs', { user: req.user, errorMessages: req.flash('error'), successMessages: req.flash('success') });
 });
 
 router.post(
@@ -189,7 +189,14 @@ router.post(
       .trim()
       .isEmail()
       .normalizeEmail()
-      .withMessage('Invalid email address'),
+      .isLength({ max: 255 })
+      .withMessage('Invalid email address')
+      .custom(async (value) => {
+        const result = await sql.query`SELECT * FROM users WHERE email = ${value}`;
+        if (result.recordset.length > 0) {
+          return Promise.reject('Email address is already in use');
+        }
+      }),
     body('password')
       .isLength({ min: 6 })
       .withMessage('Password must be at least 6 characters long'),
@@ -200,7 +207,7 @@ router.post(
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(400).render('error.ejs', { errors: errors.array() });
+        return res.status(400).render('register.ejs', { errorMessages: errors, successMessages: [], user: req.user});
       }
 
       const userId = uuidv4();
@@ -218,7 +225,6 @@ router.post(
         created_at,
         avatar,
         isAdmin,
-        points,
         bio,
         verified,
         verification_token
@@ -232,7 +238,6 @@ router.post(
         ${req.body.lastname},
         ${new Date()},
         '/img/default-avatar.png',
-        0,
         0,
         '',
         0,

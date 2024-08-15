@@ -1167,7 +1167,7 @@ a>.menu-item {
   width: 100%;
   max-height: 300px;
   overflow-y: auto;
-  background-color: white;
+  background-color: var(--light-mode-main-color);
   border: 1px solid #ddd;
   border-top: none;
   z-index: 1000;
@@ -1701,6 +1701,27 @@ button .material-symbols-outlined:not(:only-child) {
   color: #ae4444;
 }
 
+.interact-button {
+  border: 0;
+  font-size: .875rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  border-radius: 2rem;
+  gap: .6rem;
+  padding: 0.4rem .9rem !important;
+  height: 32px;
+  background: var(--light-mode-body-color);
+}
+
+#cancel-button-text,
+.cancel-button-text {
+  color: #ae4444;
+  background: 0 !important;
+  border: 0 !important;
+
+}
+
 #regular-button,
 #regular-button-normal,
 .regular-button,
@@ -2041,6 +2062,16 @@ button .material-symbols-outlined:not(:only-child) {
     color: var(--dark-mode-text-color);
   }
 
+  .search-results {
+    background-color: var(--dark-mode-body-color);
+    border-color: var(--dark-mode-border-color);
+  }
+
+  .search-categories {
+    background-color: var(--dark-mode-body-color);
+    border-color: var(--dark-mode-border-color);
+  }
+
   #secondary-text {
     color: var(--dark-mode-secondary-text-color);
   }
@@ -2100,6 +2131,11 @@ button .material-symbols-outlined:not(:only-child) {
   textarea {
     background-color: var(--dark-mode-main-color) !important;
     border: 1.5px solid var(--dark-mode-border-color) !important;
+    color: var(--dark-mode-text-color);
+  }
+
+  .interact-button {
+    background-color: var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
 

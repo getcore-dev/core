@@ -66,6 +66,7 @@
       // Fetch notifications based on the specified type
       const response = await fetch(`/notifications/${type}/<%= user.id %>`);
       const notifications = await response.json();
+      console.log(notifications);
       const notificationHeader = document.querySelector('.notification-header');
       const notificationList = document.getElementById('notification-list');
       notificationList.innerHTML = ''; // Clear previous notifications
@@ -77,6 +78,13 @@
         const li = createNotificationElement(notification);
         notificationList.appendChild(li);
       });
+
+      if (notifications.length === 0) {
+        const noNotifications = document.createElement('div');
+        noNotifications.classList.add('no-notifications');
+        noNotifications.textContent = 'No notifications to show';
+        notificationList.appendChild(noNotifications);
+      }
     }
 
     function createNotificationElement(notification) {
@@ -86,7 +94,17 @@
 
       const notificationDiv = document.createElement('div');
       const notificationIsReadIndicator = createReadIndicator(notification);
+      const notificationReplyButtonDiv = document.createElement('div');
+      notificationReplyButtonDiv.classList.add('notification-reply-button-div');
       notificationDiv.appendChild(notificationIsReadIndicator);
+
+      const notificationReplyButton = document.createElement('button');
+      notificationReplyButton.classList.add('notification-reply-button');
+      notificationReplyButton.classList.add('interact-button');
+
+      notificationReplyButton.textContent = 'Open';
+      notificationReplyButtonDiv.appendChild(notificationReplyButton);
+
 
       const notificationAvatarDiv = document.createElement('div');
       notificationAvatarDiv.classList.add('notification-avatar-div');
@@ -105,7 +123,8 @@
       notificationDiv.appendChild(clearBtn);
 
       li.appendChild(notificationDiv);
-      li.onclick = () => handleNotificationClick(notification, li, notificationIsReadIndicator);
+      notificationTextDiv.appendChild(notificationReplyButtonDiv);
+      notificationReplyButton.onclick = () => handleNotificationClick(notification, li, notificationIsReadIndicator);
       return li;
     }
 
@@ -163,6 +182,8 @@
 
       const flairs = document.createElement('div');
       flairs.classList.add('flairs');
+      flairs.classList.add('margin-06-bottom');
+
 
       const notificationTime = document.createElement('span');
       notificationTime.classList.add('time-flair');
@@ -181,9 +202,9 @@
     function createClearAllButton() {
       const clearAllBtn = document.createElement('button');
       clearAllBtn.classList.add('clear-all-btn');
-      clearAllBtn.classList.add('cancel-button-normal');
+      clearAllBtn.classList.add('cancel-button-text');
 
-      clearAllBtn.textContent = 'Clear all';
+      clearAllBtn.innerHTML = 'Clear all';
 
       clearAllBtn.onclick = async function () {
         const response = await fetch(`/notifications/deleteAll/<%= user.id %>`, {

@@ -119,15 +119,17 @@ router.get('/posts/:postId', viewLimiter, async (req, res) => {
 
     // Fetch only essential post data
     const postResult = await utilFunctions.getPostData(postId, user);
-    const [tags, community, postUser] = await Promise.all([
+    const [tags, community, comments, postUser] = await Promise.all([
       utilFunctions.getTags(postId),
       utilFunctions.getCommunityDetails(postResult.communities_id),
+      fetchComments(postId, user),
       getUserDetails(postResult.user_id)
     ]);
 
     const postData = {
       ...postResult,
       tags,
+      comments,
       user: postUser,
       community
     };
@@ -162,6 +164,13 @@ router.get('/posts/:postId', viewLimiter, async (req, res) => {
       user: req.user,
       communityId: postData.communities_id,
       community: postData.community,
+      similarPosts: await postQueries.fetchSimilarPosts(
+        user,
+        postId,
+        postData.communities_id,
+        tags,
+        postData.title
+      ),
       linkify: utilFunctions.linkify,
     });
   } catch (err) {

@@ -483,6 +483,18 @@ add
             postHeaderUsernameDiv.appendChild(followButtonDiv);
             */
 
+            // three dots div
+            const threeDotsDiv = document.createElement('div');
+            threeDotsDiv.className = 'three-dots';
+            const threeDotsButton = document.createElement('button');
+            threeDotsButton.className = 'three-dots-button';
+            threeDotsButton.innerHTML = '<span class="material-symbols-outlined">more_horiz</span>';
+            threeDotsButton.onclick = (event) => {
+              event.stopPropagation();
+            };
+            threeDotsDiv.appendChild(threeDotsButton);
+            postHeaderUsernameDiv.appendChild(threeDotsDiv);
+
 
 
             postHeaderDiv.appendChild(postHeaderUsernameDiv);
@@ -559,7 +571,7 @@ add
             linkPreviewDiv.style.background = "none";
             linkPreviewDiv.style.border = "none";
             const descriptionDiv = document.createElement('div');
-            descriptionDiv.className = 'description secondary-text margin-06-bottom sub-text';
+            descriptionDiv.className = 'description third-text margin-06-bottom sub-text';
 
             if (post.content) {
               let contentWithoutMarkdown = post.content
@@ -668,8 +680,7 @@ add
             commentButton.innerHTML = `<span class="material-symbols-outlined">comment</span> ${post.comment_count}`;
             commentButton.onclick = (event) => {
               event.stopPropagation();
-              window.location.href = `/networks/${post.community_shortname}`
-
+              window.location.href = '/posts/' + post.id;
             };
             buttonsDiv.appendChild(commentButton);
 
@@ -677,7 +688,7 @@ add
             const communityButton = document.createElement('button');
             communityButton.className = 'null-button-normal';
             communityButton.id = 'share-button';
-            communityButton.innerHTML = `<span class="material-symbols-outlined">${post.community_icon}</span> ${post.community_shortname}`;
+            communityButton.innerHTML = `<span style="color:${post.community_color};" class="material-symbols-outlined">${post.community_icon}</span> ${post.community_shortname}`;
             communityButton.onclick = (event) => {
               event.stopPropagation();
               window.location.href = `/networks/${post.community_shortname}`

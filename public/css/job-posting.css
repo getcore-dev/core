@@ -65,7 +65,6 @@ img.company-logo {
 
 .company-name {
   font-size: 20px;
-  font-weight: bold;
 }
 
 .company-location,
@@ -290,8 +289,9 @@ div.similar-job h4 {
 ul.locations,
 .job-listing-menu p {
   color: var(--light-mode-secondary-text-color);
-  font-size: var(--mobile-default-sub-font-size);
-  line-height: 1.4;
+  font-size: var(--mobile-default-font-size);
+  line-height: 1.5;
+  font-weight: 400;
   margin: 0;
   margin-bottom: 0;
 }
