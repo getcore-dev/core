@@ -289,7 +289,7 @@ div.similar-job h4 {
 .job-details ul,
 ul.locations,
 .job-listing-menu p {
-  color: var(--light-mode-third-text-color);
+  color: var(--light-mode-secondary-text-color);
   font-size: var(--default-sub-font-size);
   line-height: 1.5;
   font-weight: 500;
@@ -424,7 +424,7 @@ ul.locations,
   .job-details p,
   .job-details ul,
   .job-listing-menu p {
-    color: var(--dark-mode-third-text-color);
+    color: var(--dark-mode-secondary-text-color);
   }
 
   .company-location,

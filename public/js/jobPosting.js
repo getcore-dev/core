@@ -499,7 +499,7 @@ share
         </ul>
 
             </div>
-                      <div class="job-details company-profile-section">
+                      <div class="job-details secondary-text company-profile-section">
             <div class="job-posting-description">
             <h4 class="third-text">Job Description</h4>
             
