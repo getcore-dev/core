@@ -3,23 +3,15 @@ const router = express.Router();
 const sql = require('mssql');
 const {
   checkAuthenticated,
-  checkNotAuthenticated,
 } = require('../middleware/authMiddleware');
 const viewController = require('../controllers/viewController');
 const userQueries = require('../queries/userQueries');
 const jobQueries = require('../queries/jobQueries');
 const utilFunctions = require('../utils/utilFunctions');
-const githubService = require('../services/githubService');
 const postQueries = require('../queries/postQueries');
-const { util } = require('chai');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const { BlobServiceClient } = require('@azure/storage-blob');
-const notificationQueries = require('../queries/notificationQueries');
-const cacheMiddleware = require('../middleware/cache');
-const { cache } = require('ejs');
-const sharp = require('sharp'); // Example library for image processing
-const communityQueries = require('../queries/communityQueries');
 const updateQueries = require('../queries/updateQueries');
 const AZURE_STORAGE_CONNECTION_STRING =
   process.env.AZURE_STORAGE_CONNECTION_STRING; // Ensure this is set in your environment variables

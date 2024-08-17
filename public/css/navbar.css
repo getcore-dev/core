@@ -1537,6 +1537,13 @@ input[type='search']::placeholder {
   color: var(--light-mode-secondary-text-color);
 }
 
+.empty-text {
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 
 textarea {
   width: 100%;
@@ -1546,7 +1553,7 @@ textarea {
   box-sizing: border-box;
   border-radius: 6px;
   background-color: var(--light-mode-body-color) !important;
-  border: 1.5px solid var(--border-color) !important;
+  border: 1.5px solid var(--light-mode-input-border-color) !important;
   font-size: 16px;
   transition: box-shadow 0.3s ease;
 }

@@ -1,6 +1,12 @@
+const { BlobServiceClient } = require('@azure/storage-blob');
 const express = require('express');
 const router = express.Router();
 const jobQueries = require('../queries/jobQueries');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+const AZURE_STORAGE_CONNECTION_STRING =
+  process.env.AZURE_STORAGE_CONNECTION_STRING;
+
 const {
   checkAuthenticated,
   checkNotAuthenticated,
@@ -75,30 +81,46 @@ router.get('/company/:name/edit', checkAuthenticated, async (req, res) => {
   }
 });
 
-router.post('/company/:name/edit', checkAuthenticated, async (req, res) => {
+router.post('/company/:name/edit', 
+  checkAuthenticated,
+  upload.single('logo'),
+  async (req, res) => {
   try {
+    const file = req.file;
     const companyName = req.params.name;
     const company = await jobQueries.getCompanyByName(companyName);
-    const {
+    let {
       name,
       location,
       description,
-      logo,
-      logo_url,
       industry,
       founded,
       size,
       stock_symbol,
       job_board_url,
     } = req.body;
+    let pictureUrl;
+
+    if (file) {
+      const blobServiceClient = BlobServiceClient.fromConnectionString(
+        AZURE_STORAGE_CONNECTION_STRING
+      );
+      const containerClient =
+        blobServiceClient.getContainerClient('coreavatars');
+      const blobName = 'company-profiles/' + companyName + '/' + file.originalname;
+      const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+      const containerName = 'coreavatars';
+      await blockBlobClient.uploadFile(file.path); // Uploads the file to Azure Blob Storage
+      pictureUrl = `https://${blobServiceClient.accountName}.blob.core.windows.net/${containerName}/${blobName}`;
+    }
 
     await jobQueries.updateCompany(
       company.id,
       name || undefined,
       location || undefined,
       description || undefined,
-      logo || undefined,
-      logo_url || undefined,
+      pictureUrl || undefined,
+      undefined,
       industry || undefined,
       founded || undefined,
       size || undefined,

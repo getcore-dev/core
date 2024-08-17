@@ -3266,3 +3266,5 @@ https://www.paycomonline.net/v4/ats/web.php/jobs/ViewJobDetails?src=LinkedIn&cli
 https://www.paycomonline.net/v4/ats/web.php/jobs/ViewJobDetails?src=LinkedIn&clientkey=8E7F16AD6654E4ED3797EE9F40DB0A48&job=173361
 https://jobs.siemens.com/careers?query=ILT%2FOPC%20Product%20Engineer&pid=563156120358041&domain=siemens.com&sort_by=relevance&triggerGoButton=false
 https://www.msgentertainment.com/job/?gh_jid=4409689007&gh_src=9a74a7c57us
+https://jobs.lever.co/belvederetrading/239f7600-1755-4ef7-a5cb-d423b7323881
+https://jobs.lever.co/belvederetrading/5eead42f-2531-4411-8866-e007f431115c

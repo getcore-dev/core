@@ -20,7 +20,7 @@
     <div class="edit-company-header">
       <h5>Edit <%= company.name %> company profile</h5>
     </div>
-    <form action="/jobs/company/<%= encodeURIComponent(company.name) %>/edit" method="POST">
+    <form action="/jobs/company/<%= encodeURIComponent(company.name) %>/edit" method="POST" enctype="multipart/form-data">
       <input type="hidden" name="id" value="<%= company.id %>">
       <div>
         <label for="name">Name:</label>
@@ -36,7 +36,8 @@
       </div>
       <div>
         <label for="logo">Logo:</label>
-        <input type="text" id="logo" name="logo" value="<%= company.logo %>">
+        <input type="file" id="logo" name="logo" class="upload-logo" accept="image/*">
+        <input type="hidden" id="logo-data" name="logo-data">
       </div>
       <div>
         <label for="industry">Industry:</label>
@@ -69,6 +70,20 @@
         textarea.style.height = "auto"; // Reset height to calculate the new height
         textarea.style.height = textarea.scrollHeight + "px"; // Set new height based on scrollHeight
       }
+
+      const logoInput = document.getElementById('logo');
+      const logoDataInput = document.getElementById('logo-data');
+
+      logoInput.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            logoDataInput.value = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
 
       // Adjust height on page load
       adjustTextareaHeight(textarea);

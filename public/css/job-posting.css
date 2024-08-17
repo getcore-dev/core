@@ -290,9 +290,9 @@ div.similar-job h4 {
 ul.locations,
 .job-listing-menu p {
   color: var(--light-mode-third-text-color);
-  font-size: var(--mobile-default-font-size);
+  font-size: var(--default-sub-font-size);
   line-height: 1.5;
-  font-weight: 400;
+  font-weight: 500;
   margin: 0;
   margin-bottom: 0;
 }
@@ -310,11 +310,12 @@ ul.locations,
 
 .interact-buttons {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   overflow: hidden;
   max-width: 100%;
   gap: 1rem;
   box-sizing: border-box;
+  justify-content: space-between;
 }
 
 .job-details {
@@ -342,7 +343,7 @@ ul.locations,
 
 .job-info-flairs {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   gap: .2rem 1.3rem;
 }
@@ -481,6 +482,20 @@ ul.locations,
     border: 0 !important;
     border: 0;
   }
+
+  .job-details p,
+  .job-details ul,
+  ul.locations,
+  .job-listing-menu p,
+  .job-posting-flairs,
+  div.job-skills,
+  div.job-skills-display,
+  .job-details h4,
+  .similar-jobs h4,
+  .similar-company-jobs h4 {
+    font-size: var(--mobile-default-sub-font-size);
+  }
+
 
   .job-listing-menu {
     margin: 0;

@@ -83,9 +83,9 @@ div.company-menu .second-nav-links .navbar-button {
 
 .company-flair {
   display: flex;
-  flex-direction: row;
-  gap: 4px;
+  flex-direction: column;
   flex-wrap: wrap;
+  gap: .2rem 1.3rem;
 }
 
 .company-flair-item {
@@ -133,6 +133,7 @@ div.company-menu .second-nav-links .navbar-button {
 .company-flair-item .material-symbols-outlined,
 #job-filter-button .material-symbols-outlined,
 .company-menu .material-symbols-outlined {
+  color: var(--light-mode-text-color);
   font-size: .95rem;
   vertical-align: -2px;
   padding-right: .6rem;

@@ -201,7 +201,7 @@ function getSimilarJobsByCompany(jobId, companyName) {
       const similarCompanyJobsCount = document.querySelector('.related-jobs-company-count');
       similarCompanyJobsCount.innerHTML = `${jobs.length}`;
       if (jobs.length === 0) {
-        similarJobsContainer.innerHTML = '';
+        similarJobsContainer.innerHTML = '<div class="empty-text">No jobs found at this company.</div>';
         return;
       }
       similarJobsContainer.innerHTML = `
@@ -370,7 +370,7 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 }
             <div class="company-details">
                           <div class="company-information">
-            <a class="secondary-text sub-text"href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</h2>
+            <a class="secondary-text bold sub-text"href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</h2>
 
             </div>
 
@@ -451,16 +451,16 @@ Favorite
   userIsAdmin
     ? `
         <div class="delete-button-container flex">
-          <button id="cancel-button-normal" onclick="window.location.href='/jobs/delete/${job.id}'"><span style="padding:0;" class="material-symbols-outlined">
+          <button id="cancel-button-normal" onclick="window.location.href='/jobs/delete/${job.id}'"><span class="material-symbols-outlined">
 delete
-</span></button>
+</span> Delete</button>
         </div>
         
       `
     : ''
 }
-      <div class="share-button-container flex" style="margin-left: auto">
-      <button id="null-button-normal" class="margin-h-auto grow-button null-button-bordered" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');"><span class="material-symbols-outlined">
+      <div class="share-button-container flex">
+      <button class="margin-h-auto null-button-normal grow-button null-button-bordered" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');"><span class="material-symbols-outlined">
 share
 </span><span>Share</span> <span class="number-display">${job.share_count ? job.share_count : 0}</span></button>
       </div>
@@ -508,7 +508,7 @@ share
             </div>
             <div class="job-skills-container">
             <h4 class="third-text">Skills</h4>
-                              <div class="job-skills main-text">
+                              <div class="job-skills sub-text">
     \
       ${skillsHTML}
       ${
@@ -539,7 +539,7 @@ share
             `
     : ''
 }
-            <div class="company-description main-text">
+            <div class="company-description sub-text">
               <h4 class="third-text">Company Description</h4>
               <p>${job.company_description}</p>
             </div>
@@ -675,7 +675,6 @@ ${job.location
         </div>
       `;
       bindSelectorButtons();
-      getSimilarJobs(jobId);
       getSimilarJobsByCompany(jobId, job.company_name);
       if (userIsLoggedIn) {
         checkFavorite(jobId);
