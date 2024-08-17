@@ -679,10 +679,11 @@
       </span> 
       </div>
                 <div class="trending-post-content">
-                  <div class="trending-post-user-info main-text">
-                    <p class="main-text"><strong>${(trending_post.firstname && trending_post.lastname) ? `${trending_post.firstname.charAt(0).toUpperCase() + trending_post.firstname.slice(1).toLowerCase()} ${trending_post.lastname.charAt(0).toUpperCase() + trending_post.lastname.slice(1).toLowerCase()}` : `@${trending_post.username}`}</strong> <span class="sub-text" style="color:${trending_post.community_color}">/${trending_post.community_name}</span></p>
+                                        <div class="main-text"><p>${trending_post.title} </p> </div>
+
+                  <div class="trending-post-user-info third-text">
+                    <p class="sub-text third-text"><strong>${(trending_post.firstname && trending_post.lastname) ? `${trending_post.firstname.charAt(0).toUpperCase() + trending_post.firstname.slice(1).toLowerCase()} ${trending_post.lastname.charAt(0).toUpperCase() + trending_post.lastname.slice(1).toLowerCase()}` : `@${trending_post.username}`}</strong> <span class="sub-text" style="color:${trending_post.community_color}">/${trending_post.community_name}</span></p>
                     </div>
-                                        <div class="secondary-text sub-text"><p>${trending_post.title} </p> </div>
 
                 </div>
 

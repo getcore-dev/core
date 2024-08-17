@@ -16,6 +16,7 @@
   --active-indicator-color: #5083ca;
   --dark-mode-main-color: #0c0e15;
   --dark-mode-body-color: #000;
+  --dark-mode-input-border-color: #272f33;
   --dark-mode-hover-color: #1b1f22;
   --dark-mode-button-color: #0e1119;
   --dark-mode-button-hover-color: #363F44;
@@ -60,6 +61,12 @@ body {
   font-weight: 400;
   font-style: normal;
   color: var(--light-mode-text-color);
+}
+
+label {
+  font-weight: 550;
+  font-size: var(--default-sub-font-size);
+  color: var(--light-mode-secondary-text-color);
 }
 
 .number-display {
@@ -1187,7 +1194,7 @@ a>.menu-item {
 }
 
 .search-result-item:hover {
-  background-color: #f0f0f0;
+  background-color: var(--light-mode-body-color);
 }
 
 .search-categories {
@@ -1209,6 +1216,10 @@ a>.menu-item {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+
+  label {
+    font-size: var(--mobile-default-sub-font-size);
+  }
 
   body {
     padding-top: constant(safe-area-inset-top);
@@ -1445,12 +1456,14 @@ textarea:focus,
 select:focus {
   outline: none;
   border-color: #a0cfe6 !important;
-  box-shadow: 0 0 3px 1px rgba(160, 207, 230, 0.5);
+  box-shadow: 0 0 2px 3px rgba(160, 207, 230, 0.5);
 }
 
 input[type='text'],
 input[type='number'],
+input[type='url'],
 input[type='email'],
+input[type='datetime-local'],
 input[type='password'],
 input[type='search'] {
   width: 100%;
@@ -1464,8 +1477,23 @@ input[type='search'] {
   transition: all 0.3s ease;
 }
 
+input:required,
+textarea:required,
+select:required {
+  border-color: #f44336 !important;
+}
+
+input:required:valid,
+textarea:required:valid,
+select:required:valid {
+  border-color: #1e2f24 !important;
+}
+
+
 input[type='text'],
 input[type='number'],
+input[type='url'],
+input[type='datetime-local'],
 input[type='email'],
 input[type='password'],
 input[type='search'] {
@@ -1474,9 +1502,13 @@ input[type='search'] {
   color: var(--light-mode-text-color);
 }
 
+
+
 input[type='text']:hover,
+input[type='url']:hover,
 input[type='number']:hover,
 input[type='email']:hover,
+input[type='datetime-local']:hover,
 input[type='password']:hover,
 input[type='search']:hover {
   border-color: var(--light-mode-secondary-text-color);
@@ -1486,11 +1518,22 @@ input[type='search']:hover {
 input[type='text']:focus,
 input[type='number']:focus,
 input[type='email']:focus,
+input[type='datetime-local']:focus,
 input[type='password']:focus,
 input[type='search']:focus {
   outline: none;
   border-color: var(--active-indicator-color);
-  box-shadow: 0 0 0 3px var(--focus-shadow-color);
+  box-shadow: 0 0 2px 3px var(--focus-shadow-color);
+}
+
+input[type='text']::placeholder,
+input[type='number']::placeholder,
+input[type='url']::placeholder,
+input[type='email']::placeholder,
+input[type='datetime-local']::placeholder,
+input[type='password']::placeholder,
+input[type='search']::placeholder {
+  color: var(--light-mode-secondary-text-color);
 }
 
 
@@ -1676,6 +1719,10 @@ button .material-symbols-outlined:not(:only-child) {
   background: #eaeaea;
   color: #2b2b2b;
   border: 0;
+}
+
+em.red {
+  color: #ff0000;
 }
 
 .null-button-bordered {
@@ -1987,6 +2034,10 @@ button .material-symbols-outlined:not(:only-child) {
     color: var(--dark-mode-text-color);
   }
 
+  label {
+    color: var(--dark-mode-secondary-text-color);
+  }
+
   .adaptive-main {
     background: var(--dark-mode-body-color);
   }
@@ -2092,6 +2143,10 @@ button .material-symbols-outlined:not(:only-child) {
     color: white;
   }
 
+  em.red {
+    color: #7d0000;
+  }
+
   button.clear-btn {
     color: var(--dark-mode-text-color);
   }
@@ -2124,30 +2179,70 @@ button .material-symbols-outlined:not(:only-child) {
   input[type='text'],
   input[type='number'],
   input[type='email'],
+  input[type='url'],
+  input[type='datetime-local'],
   input[type='password'],
   input[type='search'] {
     background-color: var(--dark-mode-main-color);
-    border-color: var(--dark-mode-border-color);
+    border-color: var(--dark-mode-input-border-color) !important;
     color: var(--dark-mode-text-color);
+  }
+
+  .search-result-item:hover {
+    background-color: var(--dark-mode-main-color);
   }
 
   input[type='text']:hover,
   input[type='number']:hover,
   input[type='email']:hover,
+  input[type='url']:hover,
+  input[type='datetime-local']:hover,
   input[type='password']:hover,
-  input[type='search']:hover {
-    border-color: var(--dark-mode-secondary-text-color);
-    background-color: var(--dark-mode-hover-background-color);
+  input[type='search']:hover,
+  textarea:hover,
+  select:hover {
+    border-color: #303436;
+    background-color: var(--dark-mode-main-color);
   }
 
   input[type='text']:focus,
   input[type='number']:focus,
   input[type='email']:focus,
+  input[type='datetime-local']:focus,
+  input[type='url']:focus,
   input[type='password']:focus,
-  input[type='search']:focus {
+  input[type='search']:focus,
+  textarea:focus,
+  select:focus {
     border-color: var(--active-indicator-color);
-    box-shadow: 0 0 0 3px rgba(80, 131, 202, 0.3);
+    box-shadow: 0 0 3px 2px rgba(80, 131, 202, 0.3);
   }
+
+  input[type='text']::placeholder,
+  input[type='number']::placeholder,
+  input[type='url']::placeholder,
+  input[type='email']::placeholder,
+  input[type='datetime-local']::placeholder,
+  input[type='password']::placeholder,
+  input[type='search']::placeholder,
+  textarea::placeholder,
+  select::placeholder {
+    color: var(--dark-mode-secondary-text-color);
+  }
+
+  input:required,
+  textarea:required,
+  select:required {
+    border-color: #331717 !important;
+  }
+
+  input:required:valid,
+  textarea:required:valid,
+  select:required:valid {
+    border-color: #1e2f24 !important;
+  }
+
+
 }
 
 /* Placeholder styles */
@@ -2201,7 +2296,7 @@ input::placeholder {
 
   textarea {
     background-color: var(--dark-mode-main-color) !important;
-    border: 1.5px solid var(--dark-mode-border-color) !important;
+    border: 1.5px solid var(--dark-mode-input-border-color) !important;
     color: var(--dark-mode-text-color);
   }
 
@@ -2386,7 +2481,7 @@ input::placeholder {
   select:focus {
     outline: none;
     border-color: #15516e !important;
-    box-shadow: 0 0 3px 1px rgba(21, 81, 110, 0.5);
+    box-shadow: 0 0 3px 2px rgba(21, 81, 110, 0.5);
   }
 
   #login-btn {
@@ -2834,6 +2929,13 @@ input::placeholder {
   #null-button-normal {
     padding: 0.35rem .85rem;
     height: 34px;
+  }
+
+  #submit-button-normal:hover,
+  #submit-button:hover,
+  .submit-button:hover,
+  .submit-button-normal:hover {
+    box-shadow: 0 0 4px 1px #27944e;
   }
 
   #com-btn-container {

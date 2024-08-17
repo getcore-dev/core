@@ -37,6 +37,19 @@
         </div>
       </div>
       <div class="jobs-header">
+        <% if (user) { %>
+        <% if (user.isAdmin) { %>
+        <div class="jobs-buttons">
+          <a href="/jobs/create">
+            <button class="job-posting-create-btn link no-border no-bg" id="job-posting-create-btn">Post a Job</button>
+          </a>
+          <a href="/jobs/company/create">
+            <button class="job-posting-create-btn link no-border no-bg" id="job-posting-create-btn">Create a Company Profile</button>
+          </a>
+
+        </div>
+        <% } %>
+        <% } %>
         <input type="text" id="job-search-input" class="job-posting-search-input" placeholder="Search jobs & companies" />
         <div class="jobs-selected-filters">
         </div>

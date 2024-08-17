@@ -154,7 +154,7 @@
 }
 
 .accepted-badge {
-  background-color: #84aa84;
+  background-color: #072313;
   color: white;
   padding: 5px 10px;
   border-radius: 3px;
@@ -166,7 +166,7 @@
 
 .post-body pre {
   background-color: #fafafa;
-  padding: .8rem 1.1rem;
+  padding: 1.1rem 1.1rem;
   overflow: auto;
   margin: 1.2rem;
   border-radius: 10px;
@@ -209,8 +209,6 @@
 
   .solution,
   .post-body pre {
-    margin: 0;
-    border-radius: 0;
     margin-bottom: 1.2rem;
   }
 

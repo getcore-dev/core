@@ -24,46 +24,17 @@
     form {
       display: grid;
       gap: 15px;
-      padding: 0 13px;
+      padding: 0 1rem;
     }
 
     .page-header {
-      padding: 19px 13px !important;
-    }
-
-    label {
-      color: var(--light-mode-secondary-text-color);
-      margin-bottom: .6rem;
-      letter-spacing: 0.00625rem;
-      font-weight: 600;
-      font-size: .9rem;
+      padding: 19px 1rem !important;
     }
 
     #companyForm>div {
       display: inline-grid;
       align-items: start;
       justify-items: start;
-    }
-
-    input,
-    textarea {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background-color: var(--light-mode-body-color) !important;
-      border: 1px solid var(--border-color) !important;
-      font-size: 16px;
-      font-family: "Inter", sans-serif;
-    }
-
-    button {
-      padding: 10px 15px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
     }
 
     button:hover {
@@ -77,28 +48,24 @@
 
   <span class="container">
     <div class="page-header">
-      <h5 id="post-header-title">Create a company</h5>
+      <h4 id="post-header-title">New Company Profile</h5>
     </div>
     <form id="companyForm">
       <div>
-        <label for="name">Name</label>
+        <label for="name">Name <em class="red">*</em></label>
         <input type="text" id="name" name="name" required>
       </div>
       <div>
-        <label for="location">Location</label>
-        <input type="text" id="location" name="location">
+        <label for="location">Location <em class="red">*</em></label>
+        <input type="text" id="location" name="location" required>
       </div>
       <div>
-        <label for="description">Description</label>
-        <textarea id="description" name="description"></textarea>
+        <label for="description">Description <em class="red">*</em></label>
+        <textarea id="description" name="description" required></textarea>
       </div>
       <div>
         <label for="logo">Logo</label>
         <input type="text" id="logo" name="logo">
-      </div>
-      <div>
-        <label for="logo_url">Logo URL</label>
-        <input type="url" id="logo_url" name="logo_url">
       </div>
       <div>
         <label for="industry">Industry</label>
@@ -118,7 +85,7 @@
       </div>
       <div>
         <label for="job_board_url">Job Board URL</label>
-        <input type="url" id="job_board_url" name="job_board_url">
+        <input type="url" id="job_board_url" name="job_board_url" placeholder="https://example.com" pattern="https://.*">
       </div>
       <button class="submit-button" type="submit">Create Company</button>
     </form>

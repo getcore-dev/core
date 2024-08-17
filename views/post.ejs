@@ -245,7 +245,7 @@
 
               <% if (post.post_type == 'question' && post.solution) { %>
               <div class="solution">
-                <div class="solution-header">
+                <div class="solution-header margin-06-bottom">
                   <div class="solution-avatar">
                     <img src="<%= post.solution.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" />
                   </div>
@@ -1619,6 +1619,12 @@
         if (!withinBoundaries) {
           closeAllDropdowns();
         }
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
       });
     });
   </script>

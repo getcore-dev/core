@@ -72,8 +72,7 @@
 }
 
 .communities .material-symbols-outlined {
-  padding-right: 15px !important;
-  padding-left: 13px !important;
+  padding: 0;
 }
 
 .job-description {
@@ -146,6 +145,7 @@ div.job-title-location .sub-text {
   gap: 0;
   max-height: 450px;
   overflow: scroll;
+  border: 1px solid var(--border-color);
   background: var(--light-mode-body-color);
   padding: .1rem;
   border-radius: 10px;
@@ -197,6 +197,7 @@ div.job-title-location .sub-text {
     display: flex;
     overflow-y: hidden;
     flex-direction: column;
+    border: 0;
     gap: 1rem;
     background: 0 !important;
     padding: .1rem;
@@ -212,11 +213,12 @@ div.job-title-location .sub-text {
 
 @media (prefers-color-scheme: dark) {
   .jobslist {
+    border-color: var(--dark-mode-border-color);
     background: var(--dark-mode-main-color);
   }
 
   .right-side-container>div.jobslist .job {
-    border-color: var(--dark-mode-body-color) !important;
+    border-color: var(--dark-mode-border-color) !important;
     background-color: var(--dark-mode-main-color);
   }
 

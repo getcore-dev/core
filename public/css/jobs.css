@@ -263,11 +263,10 @@ select:hover,
 }
 
 div.jobs-container>div.job-list>.job {
-  margin: 0 13px;
   padding: 0 10px;
-  border-radius: 11px;
+  border-radius: 0;
   margin-bottom: 0;
-  border: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
   cursor: pointer;
 }
 
@@ -363,6 +362,7 @@ div.job-title-location .sub-text {
 }
 
 .see-more {
+  margin: 1rem;
   font-size: .825rem;
 }
 
@@ -429,7 +429,7 @@ div.job-title-location .sub-text {
 .job-list {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 0;
 }
 
 .job-content {
@@ -839,6 +839,7 @@ div .material-symbols-outlined:not(:only-child) {
 
 
   div.jobs-container>div.job-list>.job {
+    background: none;
     border-color: var(--dark-mode-border-color);
   }
 
