@@ -15,7 +15,7 @@ body {
 #personalized-job-list {
   margin: 1rem;
   background: var(--light-mode-body-color);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--light-mode-input-border-color);
   border-radius: 10px;
 }
 
@@ -892,7 +892,7 @@ div .material-symbols-outlined:not(:only-child) {
 
   #personalized-job-list {
     background-color: var(--dark-mode-main-color);
-    border-color: var(--dark-mode-border-color);
+    border-color: var(--dark-mode-input-border-color);
   }
 }
 

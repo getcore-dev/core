@@ -46,7 +46,7 @@
             <% } %>
           </div>
           <div class="company-info">
-            <span class="company-name main-text"><%= company.name %></span>
+            <span class="company-name main-text bold"><%= company.name %></span>
           </div>
           <% if (user && user.isAdmin) { %>
           <a href="/jobs/company/<%= encodeURIComponent(company.name) %>/edit">
@@ -157,7 +157,7 @@
 
         </div>
         <div class="jobs company-profile-section">
-          <div class="jobs-company-header">
+          <div class="jobs-company-header margin-06-bottom">
             <h3 class="jobs-company-header-text"> <%= jobsCount %> Open Jobs</h3>
             <button class="null-button-normal null-button-bordered" id="job-filter-button"> <span class="material-symbols-outlined">
                 sort

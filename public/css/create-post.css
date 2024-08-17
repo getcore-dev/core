@@ -189,7 +189,7 @@ i.fa {
 .main-container .comment {
     padding: 20px;
     margin-bottom: 20px;
-    border-bottom: 1px solid #eaeaea;
+    border-bottom: 1px solid var(--light-mode-body-color);
 }
 
 .select2-container--default .select2-selection--multiple {

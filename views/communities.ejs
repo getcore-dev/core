@@ -661,7 +661,7 @@ add
             reactionButton.id = 'reaction-button';
             reactionButton.setAttribute('data-type', 'post');
             reactionButton.setAttribute('data-id', post.id);
-            reactionButton.className = `mainReactionButton null-button-normal reaction-button${post.userReaction ? ' active' : ''}`;
+            reactionButton.className = `mainReactionButton null-button-normal null-button-bordered reaction-button${post.userReaction ? ' active' : ''}`;
 
             reactionButton.innerHTML = `<span class="reaction-button-left"><span class="material-symbols-outlined">thumb_up</span></span><span class="reaction-button-right">${totalReactions > 0 ? `${totalReactions}` : "0"}</span>`;
 
@@ -675,7 +675,7 @@ add
 
             // comment button 
             const commentButton = document.createElement('button');
-            commentButton.className = 'null-button-normal';
+            commentButton.className = 'null-button-normal null-button-bordered';
             commentButton.id = 'share-button';
             commentButton.innerHTML = `<span class="material-symbols-outlined">comment</span> ${post.comment_count}`;
             commentButton.onclick = (event) => {
@@ -686,7 +686,7 @@ add
 
             // community button 
             const communityButton = document.createElement('button');
-            communityButton.className = 'null-button-normal';
+            communityButton.className = 'null-button-normal null-button-bordered';
             communityButton.id = 'share-button';
             communityButton.innerHTML = `<span style="color:${post.community_color};" class="material-symbols-outlined">${post.community_icon}</span> ${post.community_shortname}`;
             communityButton.onclick = (event) => {
@@ -698,7 +698,7 @@ add
 
             // share button 
             const shareButton = document.createElement('button');
-            shareButton.className = 'null-button-normal';
+            shareButton.className = 'null-button-normal null-button-bordered';
             shareButton.id = 'share-button';
             shareButton.innerHTML = `<span class="material-symbols-outlined">share</span> ${post.share_count ? post.share_count : 0}`;
             shareButton.onclick = (event) => {

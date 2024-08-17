@@ -409,6 +409,7 @@ async function fetchJobPostings() {
     state.isLoading = false;
     toggleLoadingState(false);
   }
+  setupInfiniteScroll();
 }
 
 function renderJobPostings(jobs) {

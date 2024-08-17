@@ -130,7 +130,7 @@ function getSimilarJobs(jobId) {
 }</p>
               </div>
             </div>
-                          <h3 class="company-name main-text"><a href="/jobs/${job.id}">${
+                          <h3 class="company-name main-text bold"><a href="/jobs/${job.id}">${
   job.title
 } </a> </h3>
                 <div class="job-tags sub-text secondary-text margin-06-bottom">

@@ -135,11 +135,12 @@
                 </div>
                   <span style="font-size:.7rem;">•</span>
 
-                <div class="views sub-text"><span class="material-symbols-outlined">visibility</span>${job.views ? job.views : '0'}</div>
+                <div class="views sub-text"><span class="material-symbols-outlined" style="padding:0;">visibility</span>
+                <span>${job.views ? job.views : '0'}</span></div>
                   <span style="font-size:.7rem;">•</span>
 
                 <div class="job-post-date sub-text">
-                  <span class="material-symbols-outlined">calendar_month</span>
+                  <span class="material-symbols-outlined" style="padding:0;">calendar_month</span>
                   <time>${formatRelativeDate(job.postedDate)}</time>
                 </div>
 

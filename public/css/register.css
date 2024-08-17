@@ -214,7 +214,7 @@ input:focus {
 
 @media screen and (max-width: 600px) {
   .account-stuff {
-    width: 78%;
+    width: 85%;
   }
 
   .input-container input {

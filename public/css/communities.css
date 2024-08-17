@@ -353,7 +353,7 @@ div.vote-interactions {
 
 .title {
   font-size: .9rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .title>a {
@@ -389,7 +389,7 @@ div.vote-interactions {
 
 .description,
 .job-description {
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.4;
   overflow: hidden;
   display: -webkit-box;
@@ -864,8 +864,8 @@ div.join-website-body {
   align-items: center;
   border-radius: 2rem;
   gap: .6rem;
-  padding: 0.4rem .9rem !important;
-  height: 32px;
+  padding: 0.4rem .6rem !important;
+  height: 30px;
 }
 
 #reaction-button .material-symbols-outlined {
@@ -874,7 +874,7 @@ div.join-website-body {
 
 #share-button {
   font-weight: 600;
-  gap: .6rem;
+  gap: .4rem;
   padding: 0 .65rem;
   align-items: center;
   padding-top: 0;
@@ -892,13 +892,13 @@ div.join-website-body {
 .reaction-button-left {
   display: inline-flex;
   height: 100%;
-  width: 26px;
   border: 0;
   align-items: center;
 }
 
 .job-title a,
 .job-title a:visited {
+  font-weight: 600;
   color: var(--light-mode-bold-text-color);
 }
 
@@ -1286,7 +1286,7 @@ button.see-more {
 @media (max-width: 768px) {
   .title {
     margin-top: 0rem;
-    font-weight: 500;
+    font-weight: 600;
   }
 
   .post {

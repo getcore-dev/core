@@ -7,6 +7,7 @@
   --light-mode-hover-color: #eef3f7;
   --border-color: #00000019;
   --light-mode-button-color: #DCE6F2;
+  --light-mode-input-border-color: #abaeba;
   --light-mode-button-hover-color: #BECBDA;
   --light-mode-text-color: #000;
   --light-mode-bold-text-color: #000000;
@@ -1497,8 +1498,8 @@ input[type='datetime-local'],
 input[type='email'],
 input[type='password'],
 input[type='search'] {
-  background-color: var(--light-mode-main-color);
-  border: 1px solid var(--border-color);
+  background-color: var(--light-mode-body-color);
+  border: 1px solid var(--light-mode-input-border-color);
   color: var(--light-mode-text-color);
 }
 
@@ -1691,7 +1692,7 @@ div .material-symbols-outlined:not(:only-child) {
 }
 
 button .material-symbols-outlined {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 300;
 }
 
@@ -1716,9 +1717,13 @@ button .material-symbols-outlined:not(:only-child) {
 #null-button,
 .null-button-normal,
 #null-button-normal {
-  background: #eaeaea;
-  color: #2b2b2b;
+  background: var(--light-mode-body-color);
+  color: #6a6a6a;
   border: 0;
+}
+
+div.buttons .null-button-normal {
+  background: #f6f9fd !important;
 }
 
 em.red {
@@ -1726,7 +1731,7 @@ em.red {
 }
 
 .null-button-bordered {
-  border: 1.5px solid var(--border-color) !important;
+  border: 1px solid var(--light-mode-input-border-color) !important;
 }
 
 .margin-v-auto {
@@ -1812,7 +1817,7 @@ em.red {
 }
 
 .bold {
-  font-weight: 500 !important;
+  font-weight: 600 !important;
 }
 
 .select2-container--open .select2-dropdown--above {
