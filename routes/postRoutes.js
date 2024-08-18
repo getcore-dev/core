@@ -10,9 +10,10 @@ const userQueries = require('../queries/userQueries');
 const marked = require('marked');
 const rateLimit = require('express-rate-limit');
 const PostController = require('../controllers/postController');
+const notificationQueries = require('../queries/notificationQueries');
 const viewLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
-  max: 3,
+  max: 2400,
   handler: (req, res, next) => {
     req.rateLimit = {
       exceeded: true,
@@ -72,9 +73,13 @@ router.post(
       const commentId = req.params.commentId;
       const userId = req.user.id;
 
-      console.log(postId, commentId, userId);
-
       const result = await postQueries.acceptAnswer(postId, commentId, userId);
+
+      await notificationQueries.createNotification(
+        userId,
+        result.comment.user_id,
+        'ACCEPTED_ANSWER',
+        postId);
 
       if (result) {
         // redirect to the post page

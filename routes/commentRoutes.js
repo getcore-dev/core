@@ -6,6 +6,7 @@ const { checkAuthenticated } = require('../middleware/authMiddleware');
 const commentQueries = require('../queries/commentQueries');
 const utilFunctions = require('../utils/utilFunctions');
 const postQueries = require('../queries/postQueries');
+const notificationQueries = require('../queries/notificationQueries');
 
 // Route to add a comment to a post
 router.post('/posts/:postId/comments', checkAuthenticated, async (req, res) => {

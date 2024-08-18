@@ -28,6 +28,9 @@ class Notification {
 
   static async sendEmailNotification(receiverUserId, type) {
     try {
+      if (type in ['dislike', 'like', 'accept', 'curious', 'love']) {
+        return;
+      }
       const result = await sql.query`
         SELECT email, username 
         FROM users 

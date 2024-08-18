@@ -809,12 +809,6 @@ li.dropdown a.active {
   /* Active button indicator */
 }
 
-.notification-sender-avatar {
-  border-radius: 6px;
-  height: 40px;
-  object-fit: cover;
-  aspect-ratio: 1 / 1;
-}
 
 .clear-btn .material-symbols-outlined {
   font-size: 1.35rem;

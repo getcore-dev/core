@@ -103,6 +103,7 @@
       notificationReplyButton.classList.add('interact-button');
 
       notificationReplyButton.textContent = 'Open';
+      notificationReplyButton.onclick = () => handleNotificationClick(notification, li, notificationIsReadIndicator);
       notificationReplyButtonDiv.appendChild(notificationReplyButton);
 
 
@@ -112,6 +113,12 @@
       const notificationSenderAvatar = document.createElement('img');
       notificationSenderAvatar.src = notification.senderProfilePicture || '/img/default-avatar.png';
       notificationSenderAvatar.classList.add('notification-sender-avatar');
+      notificationSenderAvatar.classList.add('thumbnail');
+      notificationSenderAvatar.classList.add('thumbnail-regular');
+      notificationSenderAvatar.classList.add('thumbnail-small');
+
+
+
       notificationAvatarDiv.appendChild(notificationSenderAvatar);
 
       notificationDiv.appendChild(notificationAvatarDiv);
@@ -138,8 +145,28 @@
       return notificationIsReadIndicator;
     }
 
+    const reactionTypes = [{
+        type: "LOVE",
+        icon: "❤️"
+      },
+      {
+        type: "LIKE",
+        icon: "👍"
+      },
+      {
+        type: "CURIOUS",
+        icon: "🤔"
+      },
+      {
+        type: "DISLIKE",
+        icon: "👎"
+      }
+    ];
+
     function createNotificationText(notification) {
       const notificationTextDiv = document.createElement('div');
+      notificationTextDiv.dataset.notificationId = notification.id;
+      notificationTextDiv.dataset.notificationType = notification.type;
       notificationTextDiv.classList.add('notification-text-div');
 
       const notificationText = document.createElement('span');
@@ -149,12 +176,24 @@
       case 'NEW_COMMENT':
         notificationText.textContent = `${notification.senderUsername} commented on your post`;
         break;
-      case 'like':
-      case 'love':
-      case 'celebrate':
-      case 'curious':
-      case 'boost':
-        notificationText.textContent = `${notification.senderUsername} reacted to your post`;
+      case 'ACCEPTED_ANSWER':
+        notificationText.textContent = `${notification.senderUsername} accepted your answer`;
+        break;
+      case 'LIKE':
+      case 'LOVE':
+      case 'DISLIKE':
+      case 'CURIOUS':
+        let reactionType = reactionTypes.find(reaction => reaction.type === notification.type);
+        const reactionIcon = reactionType ? reactionType.icon : '';
+        notificationText.textContent = `${reactionIcon} ${notification.senderUsername} ${notification.type.toLowerCase()}d your comment`;
+        break;
+      case 'POST_LIKE':
+      case 'POST_LOVE':
+      case 'POST_DISLIKE':
+      case 'POST_CURIOUS':
+        let postReactionType = reactionTypes.find(reaction => reaction.type === notification.type.replace('POST_', ''));
+        const postReactionIcon = postReactionType ? postReactionType.icon : '';
+        notificationText.textContent = `${notification.senderUsername} reacted ${postReactionIcon} to your post`;
         break;
       case 'NEW_USER':
         notificationText.textContent = `${notification.senderUsername} joined CORE`;
@@ -175,7 +214,7 @@
         notificationText.textContent = `Your verification has been removed by ${notification.senderUsername}`;
         break;
       case 'NEW_FEEDBACK':
-        notificationText.textContent = `[ADMIN] New feedback submission from ${notification.senderUsername}`;
+        notificationText.textContent = `New feedback submission from ${notification.senderUsername}`;
         break;
       default:
         notificationText.textContent = `You have a new notification from ${notification.senderUsername}`;
@@ -251,7 +290,7 @@
       notificationIsReadIndicator.classList.add('read');
       notificationIsReadIndicator.classList.remove('unread');
 
-      if (notification.type === 'NEW_COMMENT' || notification.type === 'NEW_FEEDBACK' || ['like', 'love', 'celebrate', 'curious', 'boost'].includes(notification.type)) {
+      if (notification.type === 'NEW_COMMENT' || notification.type === 'NEW_FEEDBACK' || ['LIKE', 'LOVE', 'DISLIKE', 'CURIOUS'].includes(notification.type)) {
         window.location.href = `/posts/${notification.postId}`;
       } else if (notification.type === 'follow') {
         window.location.href = `/user/${notification.senderUsername}`;

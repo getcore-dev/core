@@ -1491,7 +1491,7 @@
         })
         .then(response => response.json())
         .then(data => {
-          if (data.userReaction !== undefined && data.totalReactions !== undefined && data.reactionsMap !== undefined) {
+          if (data.actionType !== undefined && data.totalReactions !== undefined && data.reactionsMap !== undefined) {
             updateCommentReactionUI(commentId, data.totalReactions, data.reactionsMap);
           } else {
             console.error('Server response does not contain expected data');

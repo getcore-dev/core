@@ -93,8 +93,6 @@ const commentQueries = {
         throw new Error('Invalid action type');
       }
 
-      let dbActionType = actionType === 'BOOST' ? 'B' : actionType;
-
       // Check if the user has already interacted with the comment
       const userAction = await sql.query`
         SELECT action_type 
@@ -123,21 +121,38 @@ const commentQueries = {
         // If no existing interaction, insert new action
         await sql.query`
           INSERT INTO userCommentActions (user_id, comment_id, action_type, action_timestamp) 
-          VALUES (${userId}, ${commentId}, ${dbActionType}, GETDATE())`;
-        userReaction = actionType;
-      } else if (userAction.recordset[0].action_type !== dbActionType) {
+          VALUES (${userId}, ${commentId}, ${actionType}, GETDATE())`;
+        await notificationQueries.createNotification(
+          userId,
+          commentExists.recordset[0].user_id,
+          actionType,
+          postId
+        );
+      } else if (userAction.recordset[0].action_type !== actionType) {
+        // check if the comment exists
+        const commentExists = await sql.query`
+          SELECT * FROM comments WHERE id = ${commentId} AND post_id = ${postId}`;
+        if (commentExists.recordset.length === 0) {
+          throw new Error(
+            `Comment with id ${commentId} for post id ${postId} does not exist`
+          );
+        }
         // If existing interaction is different, update action
         await sql.query`
           UPDATE userCommentActions 
-          SET action_type = ${dbActionType}
+          SET action_type = ${actionType}
           WHERE user_id = ${userId} AND comment_id = ${commentId}`;
-        userReaction = actionType;
+        await notificationQueries.createNotification(
+          userId,
+          commentExists.recordset[0].user_id,
+          actionType,
+          postId);
       } else {
         // If user is repeating the same action, remove the action
         await sql.query`
           DELETE FROM userCommentActions 
           WHERE user_id = ${userId} AND comment_id = ${commentId}`;
-        userReaction = null;
+        actionType = null;
       }
 
       // Recalculate and update the reactions count for the comment
@@ -167,7 +182,7 @@ const commentQueries = {
       );
 
       return {
-        userReaction,
+        actionType,
         totalReactions,
         reactionsMap,
       };

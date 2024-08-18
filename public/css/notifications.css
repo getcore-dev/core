@@ -85,10 +85,6 @@ li.notification-item.unread {
     margin-bottom: 8px;
 }
 
-.notification-sender-avatar {
-    height: 35px;
-}
-
 .notification-item {
     border-bottom: 1px solid var(--border-color);
     background-color: var(--light-mode-main-color);

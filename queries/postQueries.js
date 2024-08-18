@@ -605,6 +605,7 @@ const postQueries = {
       if (!validActions.includes(actionType)) {
         throw new Error('Invalid action type');
       }
+      const postObject = await postQueries.getPostById(postId);
 
       let dbActionType = actionType === 'BOOST' ? 'B' : actionType;
 
@@ -621,6 +622,13 @@ const postQueries = {
         await sql.query`
           INSERT INTO userPostActions (user_id, post_id, action_type) 
           VALUES (${userId}, ${postId}, ${dbActionType})`;
+        await notificationQueries.createNotification(
+          userId,
+          postObject.user_id,
+          'POST_'+actionType,
+          postId
+        );
+
         userReaction = actionType;
       } else if (userAction.recordset[0].action_type !== dbActionType) {
         // If existing interaction is different, update action
@@ -628,6 +636,12 @@ const postQueries = {
           UPDATE userPostActions 
           SET action_type = ${dbActionType}
           WHERE user_id = ${userId} AND post_id = ${postId}`;
+        await notificationQueries.createNotification(
+          userId,
+          postObject.user_id,
+          'POST_'+actionType,
+          postId
+        );
         userReaction = actionType;
       } else {
         // If user is repeating the same action, remove the action
