@@ -195,7 +195,7 @@ const commentQueries = {
   getCommentsByPostId: async (postId) => {
     try {
       const result =
-        await sql.query`SELECT * FROM comments WHERE post_id = ${postId} AND deleted = 0`;
+        await sql.query`SELECT * FROM comments WHERE post_id = ${postId}`;
       return result.recordset;
     } catch (err) {
       console.error('Database query error:', err);
@@ -242,7 +242,42 @@ const commentQueries = {
 
   addReply: async (commentId, userId, replyText) => {
     try {
-      // Insert the reply into the database
+      // check if post is locked
+      const postResult = await sql.query`
+        SELECT * FROM posts WHERE id = (SELECT post_id FROM comments WHERE id = ${commentId})`;
+      if (postResult.recordset.length > 0) {
+        if (postResult.recordset[0].isLocked) {
+          return 'Post is locked';
+        }
+      }
+
+      // check if comment replying to is deleted
+      const commentResult = await sql.query`
+        SELECT * FROM comments WHERE id = ${commentId}`;
+      if (commentResult.recordset.length > 0) {
+        if (commentResult.recordset[0].deleted) {
+          throw new Error('Comment is deleted');
+        }
+      }
+
+      // get the user's most recent comment
+      const userComments = await sql.query`
+        SELECT * FROM comments WHERE user_id = ${userId} ORDER BY created_at DESC`;
+
+      // if the user has commented before and the comment is not deleted and its within last 5 minutes
+      if (userComments.recordset.length > 0) {
+        const lastComment = userComments.recordset[0];
+        const lastCommentTime = new Date(lastComment.created_at);
+        const currentTime = new Date();
+        const timeDifference = Math.abs(currentTime - lastCommentTime) / 60000;
+        if (
+          lastComment.deleted === 0 &&
+          timeDifference < 5 &&
+          lastComment.comment === replyText
+        ) {
+          throw new Error('You have already posted this comment');
+        }
+      }
       const replyId = `${Date.now().toString(36)}-${crypto
         .randomBytes(3)
         .toString('hex')}`;

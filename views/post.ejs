@@ -489,7 +489,7 @@
 
                 <div class="comment-content">
                   <div class="comment-header" onclick="toggleNestedComments('<%= comment.id %>')">
-                    <a class="comment-user-info" href="/user/<%= comment.user.username %>" onclick="event.stopPropagation()">
+                    <a class="comment-user-info" <%= comment.deleted ? '' : 'href=/user/' + comment.user.username + '' %> onclick="event.stopPropagation()">
                       <div class="repliers-info">
                         <span><%= comment.user.username %></span>
                         <% if (comment.user.username == post.user.username) { %>
@@ -564,6 +564,7 @@
                       </span>
                       <% } %>
                       <% if (user && user.username == post.username) { %>
+                      <% if (!comment.deleted) { %>
                       <span>
                         <form id="pin-comment-form-<%= comment.id %>" action="/comment/<%= comment.id %>/toggle-pin" method="POST">
                           <button type="submit">
@@ -571,6 +572,7 @@
                           </button>
                         </form>
                       </span>
+                      <% } %>
                       <% } %>
                       <% if (user && user.isAdmin) { %>
                       <span>
@@ -641,6 +643,7 @@
 
                 <% } %>
 
+                <% if (!comment.deleted) { %>
                 <button class="commentMainReactionButton null-button-normal reaction-button <% if (comment.userReaction) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>">
                   <% if (comment.userReaction) { %>
 
@@ -677,6 +680,7 @@
                     <% }); %>
                   </div>
                 </div>
+                <% } %>
 
               </div>
 
@@ -930,16 +934,16 @@
       $('[id^=admin-delete-comment-form-]').submit(function (e) {
         e.preventDefault();
         var form = $(this);
-        var url = '/admin/comment/' + form.attr('id').split('-').pop() + '?_method=DELETE';
+        var url = '/admin/comment/' + form.attr('id').replace('admin-delete-comment-form-', '') + '?_method=DELETE';
 
         $.ajax({
           url: url,
           type: 'POST',
           data: form.serialize(),
           success: function (data) {
-            showBannerNotification(data);
+            showBannerNotification(data.message);
             // Optionally, you can remove the comment from the DOM here
-            // form.closest('.comment').remove();
+            form.closest('.comment-with-replies').remove();
           },
           error: function (xhr, status, error) {
             showBannerNotification('An error occurred: ' + error);

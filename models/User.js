@@ -89,9 +89,9 @@ class User {
   static async createFromGoogleProfile(profile) {
     try {
       const result = await sql.query`
-        INSERT INTO users (username, email, avatar, google_id, created_at, isAdmin, bio, points, verified)
+        INSERT INTO users (username, email, avatar, google_id, created_at, isAdmin, bio, verified)
         OUTPUT INSERTED.*
-        VALUES (${profile.username.toLowerCase()}, ${profile.emails[0].value}, ${profile.photos[0].value}, ${profile.id}, GETDATE(), 0, '', 0, 0)`;
+        VALUES (${profile.username.toLowerCase()}, ${profile.emails[0].value}, ${profile.photos[0].value}, ${profile.id}, GETDATE(), 0, '', 0)`;
 
       return new User(result.recordset[0]);
     } catch (err) {

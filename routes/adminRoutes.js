@@ -29,7 +29,7 @@ router.delete('/post/:postId', checkAuthenticated, async (req, res) => {
       return res.status(401).send('Unauthorized');
     }
 
-    const originalPostAuthorId = post.userId;
+    const originalPostAuthorId = post.user_id;
 
     await postQueries.deletePostById(postId);
 
@@ -39,7 +39,7 @@ router.delete('/post/:postId', checkAuthenticated, async (req, res) => {
       'ADMIN_DELETED',
       postId
     );
-    res.send({ message: 'Post deleted' });
+    return res.status(200).send('Post deleted');
   } catch (error) {
     res.status(500).send('Error deleting post');
   }
@@ -90,7 +90,6 @@ router.delete('/comment/:commentId', checkAuthenticated, async (req, res) => {
 
   try {
     const comment = await postQueries.getCommentById(commentId);
-    console.log('found comment');
 
     if (!comment) {
       return res.status(404).send('Comment not found');
@@ -103,14 +102,15 @@ router.delete('/comment/:commentId', checkAuthenticated, async (req, res) => {
 
     await postQueries.deleteCommentById(commentId);
 
-    const originalPostAuthorId = comment.userId;
-    const postId = comment.postId;
+    const originalPostAuthorId = comment.user_id;
+    const postId = comment.post_id;
 
     await notificationQueries.createNotification(
       userId,
       originalPostAuthorId,
       'ADMIN_DELETED_COMMENT',
-      postId
+      postId,
+      comment.comment
     );
     res.send({ message: 'Comment deleted' });
   } catch (error) {

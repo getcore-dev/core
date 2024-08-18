@@ -3,6 +3,7 @@ const sql = require('mssql');
 const userQueries = {
   findByUsername: async (username) => {
     try {
+      await userQueries.removeUserRelationshipsWithDeadAccounts();
       const result = await sql.query`
       SELECT 
         u.*, 
@@ -18,6 +19,7 @@ const userQueries = {
         ) AS followingCount
       FROM users u
       WHERE u.username = ${username}`;
+      console.log(result.recordset[0].followingCount);
 
       const user = result.recordset[0];
       if (user) {
@@ -220,7 +222,7 @@ const userQueries = {
       const result = await sql.query`
       SELECT 
         p.*,
-        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count,
+        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id AND c.deleted = 0) AS comment_count,
         (SELECT COUNT(*) FROM UserPostActions upa WHERE upa.post_id = p.id) AS reaction_count
       FROM 
         posts p
@@ -574,11 +576,11 @@ const userQueries = {
   createUserFromGitHubProfile: async (profile) => {
     try {
       const result = await sql.query`
-        INSERT INTO users (github_url, username, avatar, email, github_id, created_at, isAdmin, bio, points, verified)
+        INSERT INTO users (github_url, username, avatar, email, github_id, created_at, isAdmin, bio, verified)
         OUTPUT INSERTED.*
         VALUES (${profile.username.toLowerCase()}, ${profile.username}, ${
   profile.photos[0].value
-}, ${profile.emails[0].value}, ${profile.id}, GETDATE(), 0, '', 0, 0)`;
+}, ${profile.emails[0].value}, ${profile.id}, GETDATE(), 0, '', 0)`;
 
       return result.recordset[0];
     } catch (err) {
@@ -586,6 +588,20 @@ const userQueries = {
       throw err;
     }
   },
+
+  removeUserRelationshipsWithDeadAccounts: async () => {
+    try {
+      const result = await sql.query`
+        DELETE FROM user_relationships
+        WHERE followed_id NOT IN (SELECT id FROM users) OR follower_id NOT IN (SELECT id FROM users)`;
+
+      return result.rowsAffected[0];
+    } catch (err) {
+      console.error('Database delete error:', err);
+      throw err;
+    }
+  },
+
   removeDuplicateFollows: async () => {
     try {
       const result = await sql.query`
@@ -645,6 +661,7 @@ const userQueries = {
         JOIN user_relationships r ON u.id = r.followed_id
         WHERE r.follower_id = ${userId}`;
 
+        console.log(result);
       return result.recordset;
     } catch (err) {
       console.error('Database query error:', err);
@@ -659,6 +676,7 @@ const userQueries = {
         FROM users u
         JOIN user_relationships r ON u.id = r.follower_id
         WHERE r.followed_id = ${userId}`;
+        console.log(result);
 
       return result.recordset;
     } catch (err) {

@@ -225,20 +225,25 @@ router.get('/posts/:postId/similar', async (req, res) => {
 
 async function fetchComments(postId, user) {
   const query = `
-    SELECT
-      c.id, c.created_at, c.deleted, c.comment, c.user_id, c.parent_comment_id, c.post_id, c.isPinned,
-      SUM(CASE WHEN uca.action_type = 'LOVE' THEN 1 ELSE 0 END) AS loveCount,
-      SUM(CASE WHEN uca.action_type = 'B' THEN 1 ELSE 0 END) AS boostCount,
-      SUM(CASE WHEN uca.action_type = 'DISLIKE' THEN 1 ELSE 0 END) AS dislikeCount,
-      SUM(CASE WHEN uca.action_type = 'CURIOUS' THEN 1 ELSE 0 END) AS curiousCount,
-      SUM(CASE WHEN uca.action_type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount,
-      SUM(CASE WHEN uca.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) AS celebrateCount,
-      ${user ? `(SELECT TOP 1 uca2.action_type FROM UserCommentActions uca2 WHERE uca2.comment_id = c.id AND uca2.user_id = @userId) AS userReaction` : 'NULL AS userReaction'}
-    FROM comments c
-    LEFT JOIN UserCommentActions uca ON c.id = uca.comment_id
-    WHERE c.post_id = @postId AND c.deleted = 0
-    GROUP BY c.id, c.created_at, c.deleted, c.comment, c.isPinned, c.user_id, c.parent_comment_id, c.post_id
-    ORDER BY c.created_at DESC;
+    WITH CommentCTE AS (
+      SELECT
+        c.id, c.created_at, c.deleted, c.comment, c.user_id, c.parent_comment_id, c.post_id, c.isPinned,
+        SUM(CASE WHEN uca.action_type = 'LOVE' THEN 1 ELSE 0 END) AS loveCount,
+        SUM(CASE WHEN uca.action_type = 'B' THEN 1 ELSE 0 END) AS boostCount,
+        SUM(CASE WHEN uca.action_type = 'DISLIKE' THEN 1 ELSE 0 END) AS dislikeCount,
+        SUM(CASE WHEN uca.action_type = 'CURIOUS' THEN 1 ELSE 0 END) AS curiousCount,
+        SUM(CASE WHEN uca.action_type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount,
+        SUM(CASE WHEN uca.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) AS celebrateCount,
+        ${user ? `(SELECT TOP 1 uca2.action_type FROM UserCommentActions uca2 WHERE uca2.comment_id = c.id AND uca2.user_id = @userId) AS userReaction,` : 'NULL AS userReaction,'}
+        CASE WHEN EXISTS (SELECT 1 FROM comments child WHERE child.parent_comment_id = c.id) THEN 1 ELSE 0 END AS hasReplies
+      FROM comments c
+      LEFT JOIN UserCommentActions uca ON c.id = uca.comment_id
+      WHERE c.post_id = @postId
+      GROUP BY c.id, c.created_at, c.deleted, c.comment, c.isPinned, c.user_id, c.parent_comment_id, c.post_id
+    )
+    SELECT * FROM CommentCTE
+    WHERE NOT (deleted = 1 AND hasReplies = 0)
+    ORDER BY created_at DESC;
   `;
 
   const request = new sql.Request();
@@ -258,6 +263,10 @@ function nestComments(commentList) {
   const nestedComments = [];
 
   commentList.forEach(comment => {
+    if (comment.deleted && comment.hasReplies) {
+      comment.comment = '[deleted]';
+      comment.user_id = null; // We'll use this to set username to 'deleted' later
+    }
     commentMap.set(comment.id, { ...comment, replies: [] });
   });
 
@@ -273,15 +282,19 @@ function nestComments(commentList) {
 }
 
 async function fetchCommentDetails(comment, user) {
-  const [commentUser, parentUsername] = await Promise.all([
-    getUserDetails(comment.user_id),
-    comment.parent_comment_id ? postQueries.getParentAuthorUsernameByCommentId(comment.id) : null
-  ]);
+  if (comment.deleted && comment.hasReplies) {
+    comment.user = { username: 'deleted' };
+  } else if (comment.user_id) {
+    const [commentUser, parentUsername] = await Promise.all([
+      getUserDetails(comment.user_id),
+      comment.parent_comment_id ? postQueries.getParentAuthorUsernameByCommentId(comment.id) : null
+    ]);
 
-  comment.user = commentUser;
-  if (parentUsername) {
-    comment.parent_author = await userQueries.findByUsername(parentUsername);
-    comment.replyingTo = comment.parent_comment_id ? 'comment' : 'post';
+    comment.user = commentUser;
+    if (parentUsername) {
+      comment.parent_author = await userQueries.findByUsername(parentUsername);
+      comment.replyingTo = comment.parent_comment_id ? 'comment' : 'post';
+    }
   }
 
   if (comment.replies.length > 0) {

@@ -113,6 +113,7 @@
       const notificationSenderAvatar = document.createElement('img');
       notificationSenderAvatar.src = notification.senderProfilePicture || '/img/default-avatar.png';
       notificationSenderAvatar.classList.add('notification-sender-avatar');
+      notificationSenderAvatar.onclick = () => window.location.href = `/user/${notification.senderUsername}`;
       notificationSenderAvatar.classList.add('thumbnail');
       notificationSenderAvatar.classList.add('thumbnail-regular');
       notificationSenderAvatar.classList.add('thumbnail-small');
@@ -178,6 +179,10 @@
         break;
       case 'ACCEPTED_ANSWER':
         notificationText.textContent = `${notification.senderUsername} accepted your answer`;
+        break;
+
+      case 'ADMIN_DELETED_COMMENT':
+        notificationText.innerHTML = `Your comment has been deleted by <strong class="admin-text">${notification.senderUsername}</strong><br> <span class="third-text">"${notification.important_message}"</span>`;
         break;
       case 'LIKE':
       case 'LOVE':

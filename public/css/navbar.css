@@ -324,6 +324,10 @@ a:visited {
   margin-right: 1px;
 }
 
+.admin-text {
+  color: #b40000 !important;
+}
+
 .jobs-search-container {
   position: relative;
 }

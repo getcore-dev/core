@@ -139,7 +139,7 @@ OUTER APPLY (
          FROM post_tags 
          INNER JOIN tags ON post_tags.tag_id = tags.id
          WHERE post_tags.post_id = CTE.id) AS post_tags,
-        (SELECT COUNT(*) FROM comments c WHERE c.post_id = CTE.id) AS comment_count
+        (SELECT COUNT(*) FROM comments c WHERE c.post_id = CTE.id AND c.deleted != 1) AS comment_count
       FROM CTE
       WHERE RowNum > ${offset} AND RowNum <= ${offset + limit}
       ORDER BY created_at DESC
@@ -358,7 +358,7 @@ OUTER APPLY (
               SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
               SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
               SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
-              (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count
+              (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id AND c.deleted != 1) AS comment_count
         FROM posts p
         INNER JOIN users u ON p.user_id = u.id
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
@@ -511,7 +511,7 @@ OUTER APPLY (
                  DATEDIFF(MINUTE, p.created_at, GETDATE()) as minutesElapsed,
                  (SELECT shortname FROM communities WHERE id = p.communities_id) AS community_name,
                   (SELECT community_color FROM communities WHERE id = p.communities_id) AS community_color,
-                 (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count
+                 (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id AND c.deleted != 1) AS comment_count
           FROM posts p
           INNER JOIN users u ON p.user_id = u.id
           LEFT JOIN userPostActions upa ON p.id = upa.post_id
