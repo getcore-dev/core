@@ -156,6 +156,9 @@
       case 'boost':
         notificationText.textContent = `${notification.senderUsername} reacted to your post`;
         break;
+      case 'NEW_USER':
+        notificationText.textContent = `${notification.senderUsername} joined CORE`;
+        break;
       case 'follow':
         notificationText.textContent = `${notification.senderUsername} followed you`;
         break;

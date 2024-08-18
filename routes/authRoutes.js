@@ -11,6 +11,7 @@ const { body, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer');
 const userQueries = require('../queries/userQueries');
+const notificationQueries = require('../queries/notificationQueries');
 
 // Set up nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -218,7 +219,6 @@ router.post(
       const userId = uuidv4();
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const verificationToken = uuidv4();
-      console.log('Verification token:', verificationToken);
 
       await sql.query`INSERT INTO users (
         id,
@@ -271,6 +271,12 @@ router.post(
       req.flash(
         'success',
         'Registration successful! A verification email has been sent. Please check your inbox.'
+      );
+      await notificationQueries.createAdminNotification(
+        'NEW_USER',
+        null,
+        userId,
+        new Date()
       );
       res.redirect('/login');
     } catch (error) {
