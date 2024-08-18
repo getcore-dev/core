@@ -1035,6 +1035,16 @@ add
   `;
     }
 
+    document.addEventListener("click", function (event) {
+      const reactionPopups = document.querySelectorAll(".reaction-popup");
+      reactionPopups.forEach(popup => {
+        if (popup.style.display === "flex" && !popup.contains(event.target)) {
+          popup.style.display = "none";
+          event.stopPropagation();
+        }
+      });
+    });
+
     function formatTimestamp(timestamp) {
       const commentDate = new Date(timestamp);
       const currentDate = new Date();

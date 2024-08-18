@@ -807,12 +807,10 @@ div.community-tags {
   border-radius: 6px;
   pointer-events: none;
   z-index: 999;
-}
-
-.reaction-popup {
   display: flex;
   position: absolute;
-  bottom: 53px;
+  bottom: 37px;
+  left: 0;
   opacity: 1;
   flex-direction: row;
   width: max-content;
@@ -1066,6 +1064,13 @@ button.see-more {
 
 .comm-description {
   margin-bottom: .8rem;
+}
+
+.reaction-popup-content {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  flex-direction: row;
 }
 
 .join-community-header .material-symbols-outlined {
