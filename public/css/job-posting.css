@@ -175,9 +175,7 @@ div.similar-job {
   gap: .8rem;
   cursor: pointer;
   display: flex;
-  background-color: var(--light-mode-main-color);
   border-radius: 10px;
-  border: 1px solid var(--border-color);
   margin: 1.2rem;
   margin-bottom: 0;
   padding: .9rem 1.33rem;
@@ -409,10 +407,6 @@ ul.locations,
     background-color: var(--dark-mode-body-color);
   }
 
-  div.similar-job {
-    background: var(--dark-mode-main-color);
-  }
-
   .job-listing-menu {
     border-color: var(--dark-mode-border-color);
     background: var(--dark-mode-main-color);
@@ -461,7 +455,7 @@ ul.locations,
     flex-direction: row;
     cursor: pointer;
     display: flex;
-    background-color: var(--light-mode-main-color);
+    background: 0;
     border-radius: 0;
     border: 0;
     padding: .6rem 1.33rem;
@@ -514,8 +508,8 @@ ul.locations,
     }
 
     div.similar-job {
-      border-color: var(--dark-mode-border-color);
-      background: var(--dark-mode-body-color);
+      border: 0;
+      background: 0;
     }
 
 

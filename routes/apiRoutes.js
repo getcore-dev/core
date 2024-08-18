@@ -227,8 +227,9 @@ router.get(
       let page = 1;
       const commitsPerPage = 100;
       let commitCount = 0;
+      const maxResults = 1000;
 
-      while (true) {
+      while (commitCount < maxResults) {
         const { data } = await octokit.search.commits({
           q: `author:${username} committer-date:>=${oneYearAgoDate}`,
           sort: 'committer-date',
@@ -244,7 +245,7 @@ router.get(
           commitGraph[date] = (commitGraph[date] || 0) + 1;
         });
 
-        if (commits.length < commitsPerPage) {
+        if (commits.length < commitsPerPage || page >= 10) {
           break;
         }
         page++;

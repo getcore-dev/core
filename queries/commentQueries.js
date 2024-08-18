@@ -198,7 +198,9 @@ const commentQueries = {
         // If there are replies, set comment to deleted and user id to 0
         await sql.query`
           UPDATE comments 
-          SET comment = '[deleted]'
+          SET comment = '[deleted]',
+              deleted=1,
+              user_id='7d9dbdd1-1916-45e0-a4cc-b1fe942a0736'
           WHERE id = ${commentId}`;
       } else {
         // If there are no replies, delete the comment

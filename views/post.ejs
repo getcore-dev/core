@@ -3,7 +3,8 @@
 
 <head>
   <title>CORE - <%= post.title %></title>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="author" content="<%= post.user.name %>">
 
@@ -572,7 +573,7 @@
                       <% } %>
                       <% if (user && user.username === comment.user.username) { %>
                       <span>
-                        <form id="delete-comment-form-<%= comment.id %>" class="reactionButton" action="/comment/<%= comment.id %>?_method=DELETE" method="POST" onsubmit="return handleDeleteComment(event, <%= comment.id %>);">
+                        <form id="delete-comment-form-<%= comment.id %>" class="reactionButton">
                           <input type="hidden" name="_method" value="DELETE" />
                           <button type="submit" class="delete-comment-button-<%= comment.id %>">
                             <strong style="color: red">Delete</strong>
@@ -591,7 +592,7 @@
                       <% } %>
                       <% if (user && user.isAdmin) { %>
                       <span>
-                        <form id="admin-delete-comment-form-<%= comment.id %>" class="reactionButton" action="/admin/comment/<%= comment.id %>?_method=DELETE" method="POST">
+                        <form id="admin-delete-comment-form-<%= comment.id %>" class="reactionButton">
                           <input type="hidden" name="_method" value="DELETE" />
                           <button type="submit" class="admin-delete-comment-button-<%= comment.id %>">
                             <strong class="admin-option warning">Remove</strong>
@@ -921,6 +922,49 @@
   </main>
 
   <script>
+    $(document).ready(function () {
+      $('[id^=delete-comment-form-]').submit(function (e) {
+        e.preventDefault();
+        var form = $(this);
+        var commentId = form.attr('id').replace('delete-comment-form-', '');
+        var url = '/comment/' + commentId + '?_method=DELETE';
+
+        $.ajax({
+          url: url,
+          type: 'POST',
+          data: form.serialize(),
+          success: function (data) {
+            showBannerNotification(data);
+            // Optionally, remove the comment from the DOM
+            form.closest('.comment-with-replies').remove();
+          },
+          error: function (xhr, status, error) {
+            showBannerNotification('An error occurred: ' + error);
+          }
+        });
+      });
+    });
+    $(document).ready(function () {
+      $('[id^=admin-delete-comment-form-]').submit(function (e) {
+        e.preventDefault();
+        var form = $(this);
+        var url = '/admin/comment/' + form.attr('id').split('-').pop() + '?_method=DELETE';
+
+        $.ajax({
+          url: url,
+          type: 'POST',
+          data: form.serialize(),
+          success: function (data) {
+            showBannerNotification(data);
+            // Optionally, you can remove the comment from the DOM here
+            // form.closest('.comment').remove();
+          },
+          error: function (xhr, status, error) {
+            showBannerNotification('An error occurred: ' + error);
+          }
+        });
+      });
+    });
     // Function to handle favoriting a post
     function favorite(postId) {
       fetch(`/favorites/post/${postId}`, {
@@ -1173,7 +1217,8 @@
     $(document).ready(function () {
       var easyMDE = new EasyMDE({
         element: document.getElementById('comment-form-textarea'),
-        placeholder: 'Reply to <%= post.user.username %>'
+        placeholder: 'Reply to <%= post.user.username %>',
+        spellChecker: false
 
       });
 

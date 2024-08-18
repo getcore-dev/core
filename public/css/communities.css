@@ -17,7 +17,7 @@ body {
   flex: 0 1 auto;
   transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
   overflow-y: none;
-  border: 1px solid var(--border-color);
+  border: 0;
   margin: 1.2rem;
 }
 
@@ -1232,6 +1232,7 @@ button.see-more {
   }
 
   .jobslist {
+    overflow-x: auto !important;
     flex-direction: row !important;
   }
 

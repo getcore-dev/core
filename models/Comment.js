@@ -97,7 +97,8 @@ class Comment {
       if (result.recordset.length > 0) {
         await sql.query`
           UPDATE comments 
-          SET comment = '[deleted]', deleted = 1
+          SET comment = '[deleted]', deleted = 1,
+                        user_id='7d9dbdd1-1916-45e0-a4cc-b1fe942a0736'
           WHERE id = ${this.id}`;
       } else {
         await sql.query`DELETE FROM comments WHERE id = ${this.id}`;

@@ -141,11 +141,6 @@ a:visited {
   display: flex;
 }
 
-.user-links.slide-left {
-  margin: 2px;
-  margin-right: 0;
-}
-
 .navigation-button,
 .avatar-dropdown a {
   height: 34px;
@@ -1439,6 +1434,11 @@ a>.menu-item {
     display: flex;
   }
 
+  .user-links.slide-left {
+    margin: 2px;
+    margin-right: 0;
+  }
+
   .user-links .user-avatar img {
     border-radius: 50%;
     width: 16px;
@@ -2017,7 +2017,7 @@ em.red {
 
 .avatar-dropdown {
   position: absolute;
-  right: 146px;
+  right: 118px;
   z-index: 10;
   background: none;
   display: flex;
@@ -2926,10 +2926,10 @@ input::placeholder {
   }
 
   .avatar-dropdown {
+    right: 0;
     gap: 0;
     opacity: 0;
     visibility: hidden;
-    right: 0;
     pointer-events: none;
   }
 

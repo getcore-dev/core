@@ -152,10 +152,12 @@ router.post(
 // Route to delete a comment
 router.delete('/comment/:commentId', checkAuthenticated, async (req, res) => {
   const commentId = req.params.commentId;
+  console.log(commentId);
   const userId = req.user.id; // Assuming the user ID is stored in req.user
 
   try {
     const comment = await commentQueries.getCommentById(commentId);
+    console.log(comment);
     if (comment.user_id !== userId) {
       return res
         .status(403)

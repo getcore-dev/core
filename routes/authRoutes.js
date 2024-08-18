@@ -205,14 +205,20 @@ router.post(
   ],
   async (req, res, next) => {
     try {
+      console.log('Registering user:', req.body);
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(400).render('register.ejs', { errorMessages: errors, successMessages: [], user: req.user});
+        return res.status(400).render('register.ejs', {
+          errorMessages: errors.array().map((error) => error.msg),
+          successMessages: req.flash('success'),
+          user: req.user,
+        });
       }
 
       const userId = uuidv4();
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const verificationToken = uuidv4();
+      console.log('Verification token:', verificationToken);
 
       await sql.query`INSERT INTO users (
         id,
@@ -273,7 +279,7 @@ router.post(
         'error',
         'An error occurred during registration. Please try again later.'
       );
-      res.redirect('/register');
+      res.status(500).render('register.ejs', { errorMessages: req.flash('error'), successMessages: req.flash('success'), user: req.user});
     }
   }
 );
