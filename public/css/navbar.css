@@ -131,6 +131,11 @@ a:visited {
   display: flex;
 }
 
+.user-links.slide-left {
+  margin: 2px;
+  margin-right: 0;
+}
+
 .navigation-button,
 .avatar-dropdown a {
   height: 34px;
@@ -1024,9 +1029,9 @@ a>.menu-item {
 
 
 #user-avatar {
-  width: 34px;
+  width: 30px;
   border-radius: 6px;
-  height: 34px;
+  height: 30px;
   object-fit: cover;
   overflow: hidden;
   z-index: 10;
@@ -1344,7 +1349,7 @@ a>.menu-item {
 
   .user-btns {
     position: absolute;
-    right: 3.1rem;
+    right: 3.3rem;
     top: 7px;
     z-index: 500;
   }
@@ -1440,9 +1445,9 @@ a>.menu-item {
 
   .logo img {
     position: absolute;
-    top: 7.4px;
+    top: 9.4px;
     left: 1rem;
-    max-height: 34px;
+    max-height: 30px;
     z-index: 999;
   }
 }
@@ -1730,7 +1735,7 @@ button .material-symbols-outlined:not(:only-child) {
 }
 
 div.buttons .null-button-normal {
-  background: #f6f9fd !important;
+  background: #f6f9fd;
 }
 
 em.red {
@@ -1989,7 +1994,7 @@ em.red {
 .user-links {
   position: relative;
   display: flex;
-  gap: .15rem;
+  gap: .35rem;
   align-items: center;
   transition: transform 0.1s linear;
 }
@@ -2147,6 +2152,12 @@ em.red {
   .search-form {
     background-color: var(--dark-mode-main-color);
   }
+
+
+  div.buttons .null-button-normal {
+    background: var(--dark-mode-main-color);
+  }
+
 
   .null-button,
   #null-button,
