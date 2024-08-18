@@ -173,6 +173,9 @@ const notificationQueries = {
     important_message = ''
   ) => {
     try {
+      if (senderUserId === receiverUserId) {
+        return;
+      }
       const createdAt = new Date();
       const result = await sql.query`
         SELECT * FROM notifications
@@ -181,7 +184,7 @@ const notificationQueries = {
       if (result.recordset.length > 0) {
         await sql.query`
           UPDATE notifications
-          SET type = ${type}, createdAt = ${createdAt}, isRead = 0
+          SET type = ${type}, createdAt = ${createdAt}, isRead = 0, important_message = ${important_message}
           WHERE senderUserId = ${senderUserId} AND receiverUserId = ${receiverUserId} AND postId = ${postId}`;
       } else {
         await sql.query`

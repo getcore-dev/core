@@ -8,6 +8,18 @@ function GETDATE() {
   return new Date().toISOString().slice(0, 19).replace('T', ' ');
 }
 
+const debounce = (func, delay) => {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    return new Promise((resolve) => {
+      timeoutId = setTimeout(() => {
+        resolve(func(...args));
+      }, delay);
+    });
+  };
+};
+
 const commentQueries = {
   removeDuplicateActions: async () => {
     try {
@@ -310,7 +322,8 @@ const commentQueries = {
       console.error('Database insert error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
-  }
+  },
+  
 };
 
 module.exports = commentQueries;

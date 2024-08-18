@@ -632,6 +632,7 @@
                 ]; %>
               <div class="comment-user-interactions <%= comment.id %>" data-type="comment" data-id="<%= comment.id %>">
                 <% if (!post.deleted && !post.isLocked) { %>
+                <% if (!comment.deleted) { %>
 
                 <div class="replies">
 
@@ -640,6 +641,7 @@
                   </a>
 
                 </div>
+                <% } %>
 
                 <% } %>
 
@@ -669,6 +671,8 @@
                   <span id="secondary-text" class="total-reactions-count-comment-<%= comment.id %>"><%= totalReactions %></span>
 
                 </button>
+                <% } %>
+
                 <div id="reactionPopup-comment-<%= comment.id %>" class="reaction-popup comment-reaction-popup" style="display:block; opacity:0; position: sticky;left: 0; <% if (post.post_type == "discussion") { %> bottom: 30px; <% } else { %> bottom: 37px; <% } %>">
 
                   <div class="reaction-popup-content">
@@ -680,7 +684,7 @@
                     <% }); %>
                   </div>
                 </div>
-                <% } %>
+
 
               </div>
 
