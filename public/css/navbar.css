@@ -206,7 +206,7 @@ a:visited {
   padding: 0;
   margin: 0;
   background-color: 0;
-  color: #3d73e2;
+  color: #969696;
   border-radius: 5px;
   font-size: inherit;
   position: relative;
@@ -214,8 +214,12 @@ a:visited {
   transition: all 0.3s ease;
 }
 
+.tag:hover {
+  color: #209939;
+}
+
 .tag:visited {
-  color: #3d73e2;
+  color: #969696;
 }
 
 .green-tag {
@@ -226,12 +230,13 @@ a:visited {
   color: #5abe6e;
 }
 
-.tag::before {
-  content: '[';
+.tag::after {
+  content: "•";
+  margin-left: 5px;
 }
 
-.tag::after {
-  content: ']';
+.tag:last-child::after {
+  content: "";
 }
 
 .tag.active {
@@ -1194,6 +1199,7 @@ a>.menu-item {
 .search-result-item {
   padding: 10px;
   cursor: pointer;
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   gap: .6rem;
   align-items: center;
@@ -2209,6 +2215,10 @@ em.red {
     background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-input-border-color) !important;
     color: var(--dark-mode-text-color);
+  }
+
+  .search-result-item {
+    border-color: var(--dark-mode-border-color);
   }
 
   .search-result-item:hover {

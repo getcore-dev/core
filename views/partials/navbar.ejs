@@ -443,6 +443,7 @@
     try {
       const response = await axios.get(`/autocomplete/all?term=${encodeURIComponent(searchTerm)}`);
       const data = response.data;
+      console.log(data);
       displayAutocompleteResults(data);
     } catch (error) {
       console.error('Error fetching autocomplete results:', error);
@@ -459,10 +460,16 @@
       const items = data[category].slice(0, 3);
       items.forEach(item => {
         let name = item.name || item.title || item.firstname + ' ' + item.lastname || item.username;
+
         if (!name) {
           name = item.username;
         }
-        resultsHtml += `<div class="search-result-item">${name}</div>`;
+
+        let id = category === 'users' ? item.username : item.id;
+        resultsHtml += `<div data-id="${id}" data-category="${category}" class="search-result-item">
+        
+        <img src="${item.avatar || item.logo || '/img/glyph.png'}" alt="Avatar" class="thumbnail thumbnail-regular thumbnail-micro" />
+        ${name}</div>`;
       });
     });
 
@@ -490,8 +497,22 @@
     // Add event listeners for result items
     document.querySelectorAll('.search-result-item').forEach(item => {
       item.addEventListener('click', function () {
-        searchBar.value = this.textContent;
-        searchResults.style.display = 'none';
+        const id = this.getAttribute('data-id');
+        const name = this.textContent;
+        const category = this.getAttribute('data-category');
+        let url = '';
+        if (category === 'users') {
+          url = `/user/${id}`;
+        } else if (category === 'posts') {
+          url = `/posts/${id}`;
+        } else if (category === 'jobs') {
+          url = `/jobs/${id}`;
+        } else if (category === 'communities') {
+          url = `/networks/${id}`;
+        } else if (category === 'companies') {
+          url = `/jobs/company/${encodeURIComponent(name.trim())}`;
+        }
+        window.location.href = url;
       });
     });
   }

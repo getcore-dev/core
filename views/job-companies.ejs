@@ -98,7 +98,7 @@
 
     async function fetchAutocomplete(searchTerm) {
       try {
-        const response = await fetch(`/autocomplete/companies?term=${encodeURIComponent(searchTerm)}`);
+        const response = await fetch(`/autocomplete/companies?term=${encodeURIComponent(searchTerm.trim())}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

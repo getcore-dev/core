@@ -89,13 +89,10 @@ div.company-menu .second-nav-links .navbar-button {
 }
 
 .company-flair-item {
-  display: inline-flex;
-  gap: 5px;
-  margin: 3px 7px 0px 0px;
-  margin-bottom: 3px;
-  border-radius: 7px;
-  font-size: 1rem;
-  position: relative;
+  line-height: 1.5;
+  font-weight: 500;
+  margin: 0;
+  margin-bottom: 0;
 }
 
 
@@ -436,6 +433,12 @@ div.jobs-company-header {
   .jobs-count {
     background: #232323;
     border-color: #414141;
+  }
+
+  .company-flair-item .material-symbols-outlined,
+  #job-filter-button .material-symbols-outlined,
+  .company-menu .material-symbols-outlined {
+    color: var(--dark-mode-text-color);
   }
 
   .job-list {

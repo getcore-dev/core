@@ -388,7 +388,6 @@ async function fetchJobPostings() {
   try {
     const response = await fetch(`/api/jobs?${queryParams}`);
     const data = await response.json();
-    console.log(data);
 
     // Filter out jobs that have already been rendered
     const newJobs = data.jobPostings.filter(
@@ -543,7 +542,6 @@ function createJobElement(job) {
     return a.localeCompare(b);
   });
   const displayedTags = sortedTags.slice(0, 10);
-  console.log(state.filters.skills);
 
   const skillsArray = Object.values(state.filters.skills).map(skill => skill.trim());
 
@@ -551,18 +549,31 @@ function createJobElement(job) {
   const otherSkills = displayedTags.filter(skill => !skillsArray.includes(skill.trim()));
 
   const sortedSkills = [...filteredSkills, ...otherSkills];
-const tagsHTML = sortedSkills
-    .map((skill) => {
-        const skillExists = state.filters.skills.has(skill);
-        console.log(skillExists);
-        return `
-          <a href="/skills/jobs/${skill}">
-            <span onclick="event.stopPropagation()" class="tag ${
-              skillExists ? 'green-tag' : ''
-            }">${skill}</span>
-          </a>`;
-    })
-    .join('');
+  let tagsHTML = sortedSkills
+      .sort((a, b) => {
+          const aExists = state.filters.skills.has(a);
+          const bExists = state.filters.skills.has(b);
+          return bExists - aExists; // Sort so that true (1) comes before false (0)
+      })
+      .map((skill) => {
+          const skillExists = state.filters.skills.has(skill);
+          return `
+            <span onclick="event.stopPropagation(); handleResultClick(event)" data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="tag ${
+                skillExists ? 'green-tag' : ''
+              }">
+              ${skill}
+            </span>`;
+      })
+      .join('');
+  const remainingSkillsCount = sortedTags.length - 10;
+  if (remainingSkillsCount > 0) {
+    tagsHTML += `
+      <span class="tag remaining-tags" style="cursor: pointer;" onclick="toggleHiddenTags()">
+        +${remainingSkillsCount} more
+      </span>
+    `;
+  }
+  
 
   jobElement.innerHTML = `
     <div class="job-preview">
@@ -574,16 +585,11 @@ const tagsHTML = sortedSkills
               : ''
           }
           <div class="job-posting-company-info">
-            <p class="company-name secondary-text">${job.company_name}</p>
+            <a class="company-name third-text bold" href="/jobs/company/${job.company_name}">${job.company_name}</a>
           </div>
         </div>
         <h3 class="job-title"><a href="/jobs/${job.id}">${job.title}</a></h3>
-        <div class="job-posting-information job-subtitle secondary-text">
-          <div class="job-description margin-03-bottom">
-            ${job.description}
-          </div>
-        </div>
-        <div class="job-posting-flairs margin-06-bottom secondary-text sub-text">Skills:${tagsHTML}</div>
+        <div class="job-posting-flairs margin-06-bottom secondary-text sub-text">${tagsHTML}</div>
         <div class="job-title-location secondary-text sub-text">
           <div class="job-post-date ${formatDateColor(job.postedDate)} sub-text">
             <time>${formatRelativeDate(job.postedDate)}</time>
@@ -728,7 +734,7 @@ function handleResultClick(event) {
   const id = result.dataset.id;
   const name = result.dataset.name;
   const logo = result.dataset.logo;
-  console.log(type);
+  console.log(result);
 
   if (type === 'job-locations' || type === 'tech-job-titles') {
     addToSelectedFilters(type, name, name, logo);
@@ -825,6 +831,7 @@ const style = document.createElement('style');
 style.textContent = `
   .remove-item {
     margin-left: 5px;
+    padding: 0;
     border: none;
     background: none;
         font-size: 1.4rem;
@@ -867,6 +874,5 @@ function updateState(type, id, name, logo, isRemoval = false) {
     }
   }
 
-  console.log('Updated state:', state);
   triggerJobSearch();
 }

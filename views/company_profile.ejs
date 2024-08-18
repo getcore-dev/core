@@ -85,23 +85,36 @@
           <% if (company.industry)  { %>
 
           <span class="company-flair-item">
-            <p>
-              <span class="material-symbols-outlined">
-                factory
-              </span>
+            <span class="material-symbols-outlined">
+              factory
+            </span>
+            <span class="company-industry">
               <%= company.industry %>
-            </p>
+            </span>
+
+          </span>
+          <% } %>
+          <% if (company.stock_symbol)  { %>
+
+          <span class="company-flair-item">
+            <span class="material-symbols-outlined">
+              show_chart
+            </span>
+            <a class="company-stock_symbol" href="https://finance.yahoo.com/chart/<%= company.stock_symbol %>" target="_blank">
+              $<%= company.stock_symbol %>
+            </a>
+
           </span>
           <% } %>
           <% if (company.size)  { %>
 
           <span class="company-flair-item">
-            <p>
-              <span class="material-symbols-outlined">
-                person
-              </span>
+            <span class="material-symbols-outlined">
+              person
+            </span>
+            <span class="company-size">
               <%= company.size %>
-            </p>
+            </span>
           </span>
           <% } %>
         </div>

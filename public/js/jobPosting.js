@@ -90,7 +90,7 @@ function formatSalary(salary) {
   }
 }
 
-function getSimilarJobs(jobId) {
+async function getSimilarJobs(jobId) {
   fetch(`/api/jobs/${jobId}/similar`)
     .then((response) => response.json())
     .then((jobs) => {
@@ -191,7 +191,7 @@ function formatRelativeDate(dateString) {
   }
 }
 
-function getSimilarJobsByCompany(jobId, companyName) {
+async function getSimilarJobsByCompany(jobId, companyName) {
   fetch(`/api/jobs/${jobId}/similar-company`)
     .then((response) => response.json())
     .then((jobs) => {
@@ -287,7 +287,7 @@ function formatDateColor(dateString) {
   }
 }
 
-function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
+async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   fetch(`/api/jobs/${jobId}`)
     .then((response) => response.json())
     .then((job) => {
@@ -431,11 +431,12 @@ function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
           </div>
           `
 }
+<div class="second-buttons-container">
       ${
   userIsLoggedIn
     ? `<div class="favorite-button-container">
               <div id="favorite-form-${job.id}" class="flex">
-                <button id="null-button-normal" onclick="favorite('job', ${job.id});" class="margin-h-auto"><span class="material-symbols-outlined">
+                <button class="grow-button" id="null-button-normal" onclick="favorite('job', ${job.id});" class="margin-h-auto"><span class="material-symbols-outlined">
 favorite
 </span>
 <span>
@@ -451,7 +452,7 @@ Favorite
   userIsAdmin
     ? `
         <div class="delete-button-container flex">
-          <button id="cancel-button-normal" onclick="window.location.href='/jobs/delete/${job.id}'"><span class="material-symbols-outlined">
+          <button class="grow-button" id="cancel-button-normal" onclick="window.location.href='/jobs/delete/${job.id}'"><span class="material-symbols-outlined">
 delete
 </span> Delete</button>
         </div>
@@ -463,6 +464,7 @@ delete
       <button class="margin-h-auto null-button-normal grow-button null-button-bordered" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');"><span class="material-symbols-outlined">
 share
 </span><span>Share</span> <span class="number-display">${job.share_count ? job.share_count : 0}</span></button>
+      </div>
       </div>
 
       </div>
@@ -684,6 +686,8 @@ ${job.location
     .catch((error) => {
       console.error('Error fetching job details:', error);
     });
+
+    getSimilarJobs(jobId);
 }
 
 function bindSelectorButtons() {

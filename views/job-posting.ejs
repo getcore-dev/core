@@ -63,7 +63,6 @@
       const userIsAdmin = "<%= user && user.isAdmin %>" === "true";
       const userIsLoggedIn = "<%= user %>" !== "";
       lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn);
-      getSimilarJobs(jobId);
     });
 
     document.addEventListener('DOMContentLoaded', function () {

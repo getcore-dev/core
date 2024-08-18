@@ -701,16 +701,36 @@ router.post('/job-postings', checkAuthenticated, async (req, res) => {
     } = req.body;
     //console.log(req.body);
 
-    // Check if the company exists in the database
+    console.log({      title,
+      company,
+      location,
+      salary,
+      salary_max,
+      experienceLevel,
+      skills,
+      tags,
+      description,
+      link,
+      benefits,
+      additional_information,
+      preferredQualifications,
+      minimumQualifications,
+      responsibilities,
+      requirements,
+      niceToHave,
+      schedule,
+      hoursPerWeek,
+      h1bVisaSponsorship,
+      isRemote,
+      equalOpportunityEmployerInfo,
+      relocation});
+      
     let companyObject = await jobQueries.getCompanyIdByName(company);
-    //console.log(companyObject);
     let companyId = companyObject ? companyObject.id : null;
-    //console.log(companyId);
     const user = req.user;
 
     if (!companyId) {
-      //console.log(`Error creating company: ${company}`);
-      return res.status(400).json({ error: 'Company does not exist' });
+      companyId = await jobQueries.createCompany(company, null, location, null, null, null, null, null);
     }
 
     const jobPostingId = await jobQueries.createJobPosting(
@@ -795,6 +815,8 @@ router.post('/extract-job-details', async (req, res) => {
         error
       );
     }
+
+
 
     res.json(extractedData);
   } catch (error) {

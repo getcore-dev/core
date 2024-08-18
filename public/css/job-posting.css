@@ -397,6 +397,17 @@ ul.locations,
   margin: 0;
 }
 
+.second-buttons-container {
+  width: 100%;
+  gap: .7rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.second-buttons-container>* {
+  width: 100%;
+}
+
 .button:hover {
   background-color: #0056b3;
 }

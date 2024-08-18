@@ -125,11 +125,11 @@ class JobProcessor extends EventEmitter {
     const techKeywords = [
       'software', 'developer', 'programmer', 'data', 'analyst', 'scientist', 'systems', 'systems administrator', 'systems engineer', 'systems architect', 'cloud engineer', 'cloud admin',
       'information technology', 'web', 'frontend', 'backend', 'full stack',
-      'devops', 'cloud', 'network', 'security', 'database', 'machine learning',
+      'devops', 'cloud', 'network', 'security', 'database', 'machine learning', 'quantitative', 'quant', 'quantitative analyst', 'quantitative researcher', 'quantitative developer', 'customer analytics', 'technology', 'technology engineer', 'research and development', 
       'ai', 'artificial intelligence', 'qa engineer', 'ui designer', 'ux/ui', 'quality assurance',
       'product manager', 'scrum master', 'agile', 'systems', 
       'infrastructure', 'mobile developer', 'ios developer', 'android', 'cybersecurity', 'blockchain', 'robotics', 'automation', 'sre', 'reliability', 'architect',
-      'engineering', 'java', 'python', 'javascript', 'c++', 'ruby', 'php', 'project manager', 'program manager', 
+      'engineering', 'java', 'python', 'javascript', 'c++', 'ruby', 'php', 'project manager', 'program manager', 'algorithmic trader',
       'scala', 'typescript', 'sql', 'nosql', 'azure', 'machine learning', 'data science', 'data engineer', 'data analyst', 'data visualization',
       'cloud engineer', 'cloud architect', 'cloud security', 'network engineer', 'network security', 'database administrator', 'database developer',
       'devops engineer', 'site reliability engineer', 'security engineer', 'security analyst', 'security architect', 'frontend developer', 'backend developer',
