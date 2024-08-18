@@ -411,7 +411,6 @@ ul.locations,
 
   div.similar-job {
     background: var(--dark-mode-main-color);
-    border-color: var(--dark-mode-border-color)
   }
 
   .job-listing-menu {
@@ -465,7 +464,6 @@ ul.locations,
     background-color: var(--light-mode-main-color);
     border-radius: 0;
     border: 0;
-    border-bottom: 1px solid var(--border-color);
     padding: .6rem 1.33rem;
     position: relative;
     margin: 0;

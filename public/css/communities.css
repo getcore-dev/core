@@ -844,7 +844,6 @@ div.join-website {
   border-radius: 10px;
   margin: 1.2rem;
   margin-bottom: 0;
-  border: 1.5px solid var(--border-color);
   padding: .95rem 1.2rem;
 }
 
@@ -1109,8 +1108,9 @@ button.see-more {
   }
 
   .jobslist .job {
-    min-width: 200px;
-    height: 130px;
+    min-width: 220px;
+    height: 100px;
+    gap: .8rem;
     padding: 0;
     margin: 0;
     border: 0;
@@ -1172,7 +1172,6 @@ button.see-more {
   div.join-website {
     border: 0;
     border-radius: 0;
-    border-bottom: 1px solid var(--border-color);
     margin: 0;
   }
 
@@ -1197,11 +1196,6 @@ button.see-more {
     padding: .3rem 1rem;
     border: 0;
     color: var(--light-mode-secondary-text-color);
-  }
-
-  .community-header {
-    border-top: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--border-color);
   }
 
   .job-header {
@@ -1299,7 +1293,6 @@ button.see-more {
     border-radius: 0;
     margin: 0;
     border: 0;
-    border-bottom: 1.5px solid var(--border-color);
     max-width: 100%;
   }
 
@@ -1490,7 +1483,6 @@ button.see-more {
   div.join-community,
   div.join-website {
     background-color: var(--dark-mode-body-color);
-    border-color: var(--dark-mode-border-color);
   }
 
   .post:hover {

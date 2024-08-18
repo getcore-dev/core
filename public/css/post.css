@@ -1608,6 +1608,11 @@ div.post-information {
   width: 100%;
 }
 
+.mobile-jobs-container h3 {
+  margin: 1.1rem 1rem;
+  margin-top: 2rem;
+}
+
 @media (prefers-color-scheme: dark) {
 
   body,
@@ -1988,8 +1993,8 @@ div.username {
 
   .jobslist .job {
     border: 0;
-    border: 1px solid var(--border-color);
-    padding: .6rem 0.9rem !important;
+    padding: 0;
+    gap: .8rem;
   }
 
   .dropdown-content {
