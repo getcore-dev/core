@@ -31,6 +31,7 @@ const axios = require('axios');
 const communityQueries = require('../queries/communityQueries');
 const linkFunctions = require('../utils/linkFunctions');
 const commentQueries = require('../queries/commentQueries');
+const { default: rateLimit } = require('express-rate-limit');
 
 const renderer = new marked.Renderer();
 renderer.image = function (href, title, text) {
@@ -982,7 +983,7 @@ router.get('/posts/:postId/comments', async (req, res) => {
   }
 });
 
-router.get('/posts/:postId', async (req, res) => {
+router.get('/posts/:postId', rateLimit({ windowMs: 60000, max: 100 }), async (req, res) => {
   try {
     const postId = req.params.postId;
     const user = req.user ? req.user : null;

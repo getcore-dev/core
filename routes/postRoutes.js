@@ -117,6 +117,13 @@ router.get('/posts/:postId', viewLimiter, async (req, res) => {
     const postId = req.params.postId;
     const user = req.user;
 
+    if (req.rateLimit && req.rateLimit.exceeded) {
+      return res.render('error.ejs', {
+        user: req.user,
+        error: { status: 429, message: 'Rate limit exceeded' },
+      });
+    }
+
     // Fetch only essential post data
     const postResult = await utilFunctions.getPostData(postId, user);
     const [tags, community, comments, postUser] = await Promise.all([
@@ -159,6 +166,7 @@ router.get('/posts/:postId', viewLimiter, async (req, res) => {
       postData.content = marked.parse(postData.content);
     }
 
+    await postQueries.viewPost(postId);
     res.render('post.ejs', {
       post: postData,
       user: req.user,
