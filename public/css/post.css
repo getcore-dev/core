@@ -150,7 +150,7 @@ pre code {
   margin: 1rem 0;
   transition: transform .5s ease;
   position: relative;
-  padding: 0 1rem;
+  padding: 0 .8rem;
   display: flex;
   align-items: center;
   align-content: stretch;
@@ -493,7 +493,8 @@ div.interact-buttons {
 }
 
 .post-info-container.post {
-  margin: 0 1rem;
+  margin: .9rem 1rem;
+  margin-bottom: 0;
 }
 
 .post-info-container .material-symbols-outlined {
@@ -802,11 +803,13 @@ div.interact-buttons {
   color: var(--primary-text-color);
 }
 
+
 .comment {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   padding: 0 1rem;
+  gap: .7rem;
   margin-bottom: 2px;
 }
 
@@ -937,7 +940,6 @@ div.repliees-avatar {
   margin: 6px 0;
 }
 
-.comment .avatar,
 .post-user-info-header .avatar {
   border-radius: 6px;
   border: 1px solid var(--border-color);
@@ -959,8 +961,7 @@ div.repliees-avatar {
 }
 
 .similar-posts .post-content {
-  padding: 12px 14px;
-  padding-top: 10px;
+  width: 100%;
 }
 
 .comment-header a {
@@ -970,7 +971,7 @@ div.repliees-avatar {
 .comments-section {
   display: flex;
   flex-direction: column;
-  gap: 1.6rem;
+  gap: 1.1rem;
 }
 
 
@@ -1031,9 +1032,12 @@ div.repliees-avatar {
 }
 
 .similar-posts .post {
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  background: var(--light-mode-main-color);
+  display: flex;
+  gap: .8rem;
+  width: 100%;
+  flex-direction: row;
+  align-items: flex-start;
+  border: 0;
   box-sizing: border-box;
 }
 
@@ -1071,6 +1075,7 @@ a.comment-user-info:hover {
 
 .dropbtn .material-symbols-outlined {
   font-size: 22px;
+  line-height: .4rem;
 }
 
 .user-actions a {
@@ -1214,6 +1219,14 @@ div .mini-link {
   display: inline-block;
 }
 
+.comments-buttons-container {
+  display: flex;
+  margin: 0 1rem;
+  max-width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .dropdown-content {
   display: none;
   position: absolute;
@@ -1229,7 +1242,7 @@ div .mini-link {
   padding: 10px 6px;
   background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
-  z-index: 10;
+  z-index: 1000;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
@@ -1317,12 +1330,10 @@ div .mini-link {
 }
 
 .no-comments {
-  font-size: 1.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-bottom: 50px;
-  padding-top: 50px;
+  height: 300px;
 }
 
 
@@ -1388,7 +1399,6 @@ p.preview-description {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  font-size: .8rem;
 }
 
 .link-preview {
@@ -1408,20 +1418,6 @@ p.preview-description {
   border-radius: 6px;
   object-fit: cover;
   overflow: hidden;
-}
-
-.description,
-.mini-link-description p,
-.mini-link-title p {
-  font-size: .85rem;
-  color: var(--light-mode-text-color);
-  font-weight: normal;
-  line-height: 1.25rem;
-  overflow: hidden;
-  display: -webkit-box;
-  letter-spacing: .01rem;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
 }
 
 .mini-link-description p,
@@ -1514,14 +1510,6 @@ p.preview-description {
 
 .project-link-header a {
   font-size: 0.775rem;
-}
-
-.post-content>.title {
-  font-size: 1rem;
-  font-weight: 500;
-  margin: 0;
-  margin-bottom: .15rem;
-  color: var(--light-mode-text-color);
 }
 
 .post-subtitle {
@@ -1793,18 +1781,10 @@ div.post-information {
     border-color: var(--dark-mode-border-color) !important;
   }
 
-  .post-content>.title {
-    color: var(--dark-mode-text-color);
-  }
-
   .similar-posts .post-content {
     background: none !important;
   }
 
-
-  .description {
-    color: var(--dark-mode-text-color);
-  }
 
   .discussion-link {
     background-color: var(--dark-mode-main-color);
@@ -2046,10 +2026,6 @@ div.username {
     line-height: 1.4;
     margin: 0;
     margin-bottom: 0;
-  }
-
-  .description {
-    font-size: .95rem;
   }
 
   .tag p {

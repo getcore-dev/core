@@ -117,26 +117,27 @@ async function getSimilarJobs(jobId) {
             <div class="similar-job" onclick="window.location.href='/jobs/${
   job.id
 }'">
-              <div class="company-info margin-06-bottom">
               ${
   job.company_logo
     ? `
-              <img class="thumbnail thumbnail-regular thumbnail-micro" src="${job.company_logo}" alt="${job.company_name} logo" />`
+              <img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="${job.company_name} logo" />`
     : ''
 }
+    <div class="job-content">
+              <div class="company-info margin-03-bottom">
               <div class="job-posting-company-info">
               <p  class="posting-company-name secondary-text">${
   job.company_name
 }</p>
               </div>
             </div>
-                          <h3 class="company-name main-text bold"><a href="/jobs/${job.id}">${
+                          <h3 class="company-name sub-text bold"><a href="/jobs/${job.id}">${
   job.title
 } </a> </h3>
                 <div class="job-tags sub-text secondary-text margin-06-bottom">
                   ${tagsHTML}
                 </div>
-                <div class="job-posting-information job-subtitle third-text">
+                <div class="job-posting-information job-subtitle sub-text third-text">
                                                 <span class="job-date ${formatDateColor(job.postedDate)}"><time>${formatRelativeDate(job.postedDate)}</time></span>
                 <span> • </span>
 
@@ -157,6 +158,7 @@ async function getSimilarJobs(jobId) {
 }</span>
 
         </div>
+            </div>
             </div>
           `;
     })
@@ -209,37 +211,35 @@ async function getSimilarJobsByCompany(jobId, companyName) {
         <div class="similar-jobs-list">
           ${jobs
     .map((job) => {
-      const tagsArray =
-                job.skills && job.skills ? job.skills.split(', ') : [];
+      const tagsArray = job.skills
+      ? job.skills.split(',').map(skill => skill.trim())
+      : [];
       const maxTags = 3;
       const displayedTags = tagsArray.slice(0, maxTags);
-      const tagsHTML = displayedTags.map((tag) => `${tag}`).join(', ');
+      const tagsHTML = displayedTags.map((tag) => `<span onclick="event.stopPropagation(); handleResultClick(event)" data-name="${tag}" data-type="skills" data-id="${tag}"class="tag">${tag}</span>`).join('');
 
       return `
             <div class="similar-job" onclick="window.location.href='/jobs/${
   job.id
 }'">
-              <div class="company-info margin-06-bottom">
               ${
   job.company_logo
     ? `
-              <img class="thumbnail thumbnail-regular thumbnail-micro" src="${job.company_logo}" alt="" />`
+              <img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="${job.company_name} logo" />`
     : ''
 }
+    <div class="job-content">
+              <div class="company-info margin-03-bottom">
               <div class="job-posting-company-info">
-              <p class="posting-company-name secondary-text">${
+              <p  class="posting-company-name secondary-text">${
   job.company_name
 }</p>
               </div>
             </div>
-                          <h3 class="company-name"><a href="/jobs/${job.id}">${
-  job.title
-}</a> </h3>
-                <div class="job-tags sub-text secondary-text margin-06-bottom">
-                  ${tagsHTML}
-                </div>
-                <div class="job-posting-information job-subtitle third-text">
-                                <span class="job-date ${formatDateColor(job.postedDate)}"><time>${formatRelativeDate(job.postedDate)}</time></span>
+        <span class="job-text sub-text"><h3 class="job-title margin-06-bottom sub-text">${job.title}</h3> — ${tagsHTML}</span>
+
+                <div class="job-posting-information job-subtitle sub-text third-text">
+                                                <span class="job-date ${formatDateColor(job.postedDate)}"><time>${formatRelativeDate(job.postedDate)}</time></span>
                 <span> • </span>
 
                 <span style="">${
@@ -253,13 +253,13 @@ async function getSimilarJobsByCompany(jobId, companyName) {
 }</span>
                 <span> • </span>
                 <span class="job-salary" style="margin-left: auto;">${
-  job.salary != 0 ? 'USD $' + job.salary.toLocaleString() : ''
+  job.salary ? 'USD $' + job.salary.toLocaleString() : ''
 } ${
-  job.salary_max != 0 ? '- $' + job.salary_max.toLocaleString() : ''
+  (job.salary_max != 0 && job.salary) ? '- $' + job.salary_max.toLocaleString() : ''
 }</span>
 
         </div>
-
+            </div>
             </div>
           `;
     })
@@ -335,8 +335,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       const skillsHTML = displayedSkills
         .map(
           (skill) =>
-            `<span class="skill"
-            ><a class="tag" href="/skills/jobs/${skill.trim()}">${skill.trim()}</a></span>`
+            `<a class="tag" href="/skills/jobs/${skill.trim()}">${skill.trim()}</a>`
         )
         .join('');
 
@@ -360,7 +359,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     : ''
 }
 
-          <div class="company-info margin-06-bottom">
+          <div class="company-info margin-03-bottom">
           ${
   job.company_logo
     ? `

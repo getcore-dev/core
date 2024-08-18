@@ -187,12 +187,20 @@ div.vote-interactions {
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: 100%;
   gap: 10px;
+  justify-content: space-between;
 }
 
 .post-content {
   position: relative;
   flex-grow: 1;
+}
+
+.post {
+  display: flex;
+  flex-direction: row;
+  gap: .9rem;
   padding: .6rem .9rem;
 }
 
@@ -446,7 +454,6 @@ div.votes {
 
 
 .username {
-  margin-left: .6rem;
   max-width: 100%;
 }
 
@@ -557,7 +564,7 @@ div .mini-link-title {
 
 #filter-button,
 #post-button {
-  height: 32px;
+  height: 22px;
   background: 0;
   font-weight: 600;
   border: 0;
@@ -1103,7 +1110,7 @@ button.see-more {
 
   .jobslist .job {
     min-width: 200px;
-    height: 100px;
+    height: 130px;
     padding: 0;
     margin: 0;
     border: 0;
@@ -1181,13 +1188,14 @@ button.see-more {
 
   #filter-button,
   #post-button {
-    font-size: var(--default-mobile-sub-font-size);
+    font-size: var(--mobile-default-sub-font-size);
   }
 
   .community-header,
   .job-header {
     margin: 0;
     padding: .3rem 1rem;
+    border: 0;
     color: var(--light-mode-secondary-text-color);
   }
 
@@ -1264,10 +1272,6 @@ button.see-more {
 
     -ms-overflow-style: none;
     scrollbar-width: none;
-  }
-
-  .avatar img {
-    width: 22px !important;
   }
 
   .jobslist::-webkit-scrollbar {
@@ -1363,13 +1367,12 @@ button.see-more {
 
 .avatar {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
 }
 
 
 .avatar img {
-  width: 25px;
   aspect-ratio: 1/1;
   border-radius: 6px;
   object-fit: cover;
@@ -1471,7 +1474,7 @@ button.see-more {
 
   .community-header,
   .job-header {
-    border-color: var(--dark-mode-border-color);
+    border: 0;
     color: var(--dark-mode-secondary-text-color) !important;
   }
 
@@ -1716,8 +1719,8 @@ button.see-more {
 
   @media (max-width: 768px) {
     .post {
-      background-color: var(--dark-mode-body-color);
-      border-color: var(--dark-mode-border-color);
+      border: 0;
+      background: 0;
     }
 
   }

@@ -149,9 +149,9 @@
                       <span class="material-symbols-outlined" style="padding: 0;font-size: .85rem;color:#16a86b;font-weight: 600;">verified</span>
                     </span>
                     <% } %>
-                    <% if (post.experience_title) { %>
+                    <% if (post.experience_title && post.experience_place) { %>
                     <span class="post-flair">
-                      <%= post.experience_title %>
+                      <%= post.experience_title %> at <%= post.experience_place %>
                     </span>
                     <% } %>
                   </span>
@@ -341,7 +341,7 @@
                           }
                           return total;
                         }
-                        const totalReplies = countAllReplies(post.comments);
+                        let totalReplies = countAllReplies(post.comments);
                       %><%= String(totalReplies).trim() %>
                   </span>
                 </div>
@@ -401,30 +401,6 @@
                     <% } %>
                   </button>
 
-                  <% if (!post.deleted && !post.isLocked) { %>
-
-
-                  <button class="null-button-normal reaction-button">
-                    <span class="reaction-emote" id="secondary-text"><span class="material-symbols-outlined">chat_bubble</span></span>
-                    <span id="secondary-text">
-                      <% 
-                        function countAllReplies(replies) {
-                          if (!replies || replies.length === 0) return 0;
-                          let total = 0;
-                          for (const reply of replies) {
-                            total += 1 + countAllReplies(reply.replies);
-                          }
-                          return total;
-                        }
-                        const totalReplies = countAllReplies(post.comments);
-                      %><%= String(totalReplies).trim() %>
-                    </span>
-                  </button>
-
-
-                  <% } %>
-
-
                   <button class="null-button-normal" id="favorite-button" onclick="favorite('<%= post.id %>')">
                     <span class="material-symbols-outlined">favorite</span>
                   </button>
@@ -482,6 +458,22 @@
 
         </div>
         <div class="comments-section">
+          <div class="comments-buttons-container">
+            <div class="comments-count secondary-text sub-text">
+              <% 
+                        function countAllReplies(replies) {
+                          if (!replies || replies.length === 0) return 0;
+                          let total = 0;
+                          for (const reply of replies) {
+                            total += 1 + countAllReplies(reply.replies);
+                          }
+                          return total;
+                        }
+                        totalReplies = countAllReplies(post.comments);
+                      %><%= String(totalReplies).trim() %> Comment<% if (totalReplies !== 1) { %>s<% } %>
+            </div>
+            <button class="null-button-normal">Sort</button>
+          </div>
           <% if (post.isLocked) { %>
           <div class="caution-messages">
             <p>This post has been locked from new comments</p>
@@ -506,13 +498,14 @@
           <% sortedComments.forEach(comment => { %>
           <div class="comment-with-replies <%= level === 0 ? 'top-level' : '' %>">
             <div class="comment level-<%= level %>">
+              <div class="comment-avatar">
+                <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="thumbnail thumbnail-tiny thumbnail-regular" onclick="window.location.href = '/user/<%= comment.user.username %>'; event.stopPropagation();" />
+              </div>
 
               <div class="comment-main">
+
                 <div class="comment-content">
                   <div class="comment-header" onclick="toggleNestedComments('<%= comment.id %>')">
-                    <div class="comment-avatar">
-                      <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="avatar" onclick="window.location.href = '/user/<%= comment.user.username %>'; event.stopPropagation();" />
-                    </div>
                     <a class="comment-user-info" href="/user/<%= comment.user.username %>" onclick="event.stopPropagation()">
                       <div class="repliers-info">
                         <span><%= comment.user.username %></span>
@@ -731,7 +724,7 @@
           <% } %>
 
           <% if (post.comments.length === 0) { %>
-          <div class="no-comments">
+          <div class="no-comments main-text">
             No comments yet, start a discussion!
           </div>
           <% } else { %>
@@ -768,6 +761,9 @@
           <h3 class="sub-text" id="secondary-text">Explore</h3>
           <% similarPosts.forEach(similarPost => { %>
           <div class="post" onclick="window.location.href='/posts/<%= similarPost.id %>'">
+            <div>
+              <img class="thumbnail thumbnail-regular thumbnail-tiny" src="<%= similarPost.avatar %>" loading="lazy">
+            </div>
             <div class="post-content">
               <div class="post-header">
                 <% 
@@ -796,18 +792,16 @@
             }
           %>
                 <div class="post-header-username">
-                  <div class="avatar">
-                    <img src="<%= similarPost.avatar %>" loading="lazy">
-                  </div>
                   <div class="username">
                     <p>
                       <a href="/user/<%= similarPost.username %>" class="username-link"><strong><%= similarPost.username %></strong></a>
-                      <span id="secondary-text">
-                        in
-                      </span>
-                      <a style="color: <%= similarPost.community_color %>;" href="/networks/<%= similarPost.community_shortname %>" class="community">/<%= similarPost.community_shortname %></a>
-                      <span id="secondary-text">
+                      <time class="third-text sub-text">
                         <%= formatDate(similarPost.created_at) %>
+                      </time>
+                    </p>
+                    <p>
+                      <span id="secondary-text">
+                        <%= similarPost.experience_title %> at <%= similarPost.experience_place %>
                       </span>
                     </p>
                   </div>
@@ -834,10 +828,8 @@
                   </div>
                 </div>
               </div>
-              <div class="title">
-                <a href="/posts/<%= similarPost.id %>">
-                  <%= similarPost.title %>
-                </a>
+              <div class="title bold">
+                <%= similarPost.title %>
               </div>
               <div class="link-preview" style="<% if (similarPost.link) { %> flex-direction: column; <% } %>">
                 <% if (similarPost.link) { %>
@@ -888,29 +880,25 @@
               </div>
               <% } %>
               <% if (similarPost.post_type !== 'question' && (!similarPost.link || (similarPost.post_type !== 'post' && similarPost.post_type !== 'project'))) { %>
-              <div class="description">
+              <div class="description sub-text third-text">
                 <%
               let contentWithoutMarkdown = similarPost.content
+                .replace(/^#{1,6}\s+/gm, '')
                 .replace(/(?:\r\n|\r|\n)/g, ' ')
+                .replace(/```[\s\S]*?```/g, '')
+                .replace(/`([^`]+)`/g, '$1')
                 .replace(/\*\*(.*?)\*\*/g, '$1')
                 .replace(/\*(.*?)\*/g, '$1')
-                .replace(/__(.*?)__/g, '$1')
                 .replace(/_(.*?)_/g, '$1')
-                .replace(/!\[.*?\]\(.*?\)/g, '')
-                .replace(/\[.*?\]\(.*?\)/g, '$1');
+                .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
+                .replace(/!\[([^\]]+)\]\([^\)]+\)/g, '')
+                .replace(/<[^>]*>/g, '')
+                // Trim leading/trailing whitespace
+                .trim();
             %>
                 <%- contentWithoutMarkdown %>
               </div>
               <% } %>
-
-              <div class="votes">
-                <div class="reaction-interactions <%= similarPost.id %>-reactions" id="reaction-interactions <%= similarPost.id %>-reactions">
-                  <%= similarPost.totalReactionCount %> reactions
-                </div>
-                <div class="comments">
-                  <%= similarPost.commentCount %> comment<%= similarPost.commentCount > 1 ? 's' : '' %>
-                </div>
-              </div>
             </div>
           </div>
           <% }) %>

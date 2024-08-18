@@ -73,7 +73,7 @@ div.company-menu .second-nav-links .navbar-button {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 10px;
+  gap: .8rem;
   width: 100%;
 }
 
@@ -89,6 +89,9 @@ div.company-menu .second-nav-links .navbar-button {
 }
 
 .company-flair-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   line-height: 1.5;
   font-weight: 500;
   margin: 0;
@@ -152,9 +155,9 @@ div.company-menu .second-nav-links .navbar-button {
 
 .job-list {
   margin: 1rem 0;
-  background: var(--light-mode-body-color);
-  border: 1px solid var(--light-mode-input-border-color);
-  border-radius: 10px;
+  display: flex;
+  gap: 1.2rem;
+  flex-direction: column;
 }
 
 div.company-buttons {
@@ -263,7 +266,6 @@ p.job-description {
   color: var(--active-indicator-color);
   cursor: pointer;
   padding: 0;
-  font-size: 14px;
   margin-top: 5px;
 }
 
@@ -284,11 +286,15 @@ h3.job-title {
   font-size: 1rem;
 }
 
+.job {
+  display: flex;
+  gap: .9rem;
+}
+
 .job-info .company-info {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 10px;
   padding-top: 0px;
   width: 100%;
 }
@@ -346,6 +352,8 @@ h3.job-title {
 .job {
   background-color: var(--light-mode-body-color) !important;
   margin: 0;
+  padding: 0 !important;
+  border: 0 !important;
   border-radius: 0 !important;
   margin-bottom: 0;
   border-bottom: 1px solid var(--border-color);
@@ -380,13 +388,11 @@ div.jobs-company-header {
 .job-preview {
   display: flex;
   align-items: center;
-  padding: .8rem 0;
 }
 
 .job-info {
   flex-grow: 1;
   display: flex;
-  gap: 6px;
   max-width: 100%;
   box-sizing: border-box;
   flex-direction: column;
@@ -441,10 +447,6 @@ div.jobs-company-header {
     color: var(--dark-mode-text-color);
   }
 
-  .job-list {
-    background: var(--dark-mode-main-color);
-    border-color: var(--dark-mode-border-color);
-  }
 
 
   .job {

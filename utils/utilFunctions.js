@@ -624,7 +624,7 @@ OUTER APPLY (
   p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, p.share_count,
   p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, 
   p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.updated_at, p.isLocked,
-  p.views, u.username, u.id as user_id, u.avatar,
+  p.views, u.username, u.id as user_id, u.avatar, u.settings_PrivateJobNames, u.settings_PrivateSchoolNames,
   ISNULL(u2.username, 'unknown') AS user_username,
   ISNULL(u2.avatar, null) AS user_avatar,
   SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
@@ -636,7 +636,11 @@ OUTER APPLY (
   upa2.action_type as userReaction,
   CASE 
     WHEN je.title IS NOT NULL THEN je.title
-    ELSE ee.institutionName
+    ELSE 
+      CASE
+        WHEN u.settings_PrivateSchoolNames = 1 THEN 'Student'
+        ELSE ee.institutionName
+      END
   END AS experience_title,
   CASE 
     WHEN je.companyName IS NOT NULL THEN 

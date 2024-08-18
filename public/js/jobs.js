@@ -541,7 +541,7 @@ function createJobElement(job) {
     if (!state.filters.skills[a] && state.filters.skills[b]) return 1;
     return a.localeCompare(b);
   });
-  const displayedTags = sortedTags.slice(0, 10);
+  const displayedTags = sortedTags.slice(0, 3);
 
   const skillsArray = Object.values(state.filters.skills).map(skill => skill.trim());
 
@@ -565,7 +565,7 @@ function createJobElement(job) {
             </span>`;
       })
       .join('');
-  const remainingSkillsCount = sortedTags.length - 10;
+  const remainingSkillsCount = sortedTags.length - 3;
   if (remainingSkillsCount > 0) {
     tagsHTML += `
       <span class="tag remaining-tags" style="cursor: pointer;" onclick="toggleHiddenTags()">
@@ -576,20 +576,23 @@ function createJobElement(job) {
   
 
   jobElement.innerHTML = `
-    <div class="job-preview">
-      <div class="job-info">
-        <div class="company-info margin-06-bottom">
-          ${
+  <a href="/jobs/${job.id}">
+  <div class="job-preview-image">
+            ${
             job.company_logo
-              ? `<img class="thumbnail thumbnail-regular thumbnail-micro" src="${job.company_logo}" alt="" />`
+              ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="" />`
               : ''
           }
+  </div>
+    <div class="job-preview">
+      <div class="job-info">
+        <div class="company-info margin-03-bottom">
           <div class="job-posting-company-info">
             <a class="company-name third-text bold" href="/jobs/company/${job.company_name}">${job.company_name}</a>
           </div>
         </div>
-        <h3 class="job-title"><a href="/jobs/${job.id}">${job.title}</a></h3>
-        <div class="job-posting-flairs margin-06-bottom secondary-text sub-text">${tagsHTML}</div>
+        <span class="job-text"><h3 class="job-title margin-06-bottom sub-text">${job.title}</h3> — ${tagsHTML}</span>
+        
         <div class="job-title-location secondary-text sub-text">
           <div class="job-post-date ${formatDateColor(job.postedDate)} sub-text">
             <time>${formatRelativeDate(job.postedDate)}</time>
@@ -621,6 +624,7 @@ function createJobElement(job) {
         </div>
       </div>
     </div>
+    </a>
   `;
   return jobElement;
 }

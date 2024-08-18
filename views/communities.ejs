@@ -389,9 +389,10 @@ add
             const avatarImg = document.createElement('img');
             avatarImg.onclick = () => window.location.href = '/user/' + post.username;
             avatarImg.src = post.avatar;
+            avatarImg.className = 'thumbnail thumbnail-regular thumbnail-tiny'
             avatarImg.loading = "lazy";
             avatarDiv.appendChild(avatarImg);
-            postHeaderUsernameDiv.appendChild(avatarDiv);
+            postDiv.appendChild(avatarDiv);
 
             // post type circle div thats on avatar
             const postTypes = {

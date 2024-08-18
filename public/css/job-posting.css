@@ -41,6 +41,7 @@ main {
 
 .company-info {
   display: flex;
+  gap: .9rem;
   align-items: center;
   box-sizing: border-box;
 }
@@ -63,10 +64,6 @@ img.company-logo {
   max-height: 55px !important;
 }
 
-.company-name {
-  font-size: 20px;
-}
-
 .company-location,
 .company-size,
 .company-industry {
@@ -77,11 +74,6 @@ img.company-logo {
 .company-information {
   display: flex;
   gap: 10px;
-}
-
-.job-title {
-  font-size: 24px;
-  margin: 0 0 8px;
 }
 
 .experience-level,
@@ -179,7 +171,8 @@ div.similar-jobs-list::-webkit-scrollbar {
 }
 
 div.similar-job {
-  flex-direction: column;
+  flex-direction: row;
+  gap: .8rem;
   cursor: pointer;
   display: flex;
   background-color: var(--light-mode-main-color);
@@ -369,12 +362,6 @@ ul.locations,
   margin: 0;
 }
 
-.job-title {
-  font-size: 1.2rem;
-  margin: 0 0 7px;
-  margin-bottom: .4rem !important;
-}
-
 .company-name {
   color: var(--light-mode-text-color);
 }
@@ -467,12 +454,12 @@ ul.locations,
     height: 100%;
   }
 
-  .company-name {
-    font-size: 1.15rem;
+  .job-content {
+    padding: 0;
   }
 
   div.similar-job {
-    flex-direction: column;
+    flex-direction: row;
     cursor: pointer;
     display: flex;
     background-color: var(--light-mode-main-color);

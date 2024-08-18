@@ -46,7 +46,7 @@
 
 
 .job-title {
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
   align-items: center;
   margin: 0;
@@ -54,6 +54,13 @@
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+.job-text {
+  display: inline-flex;
+  gap: 0 .45rem;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 #pay-flair {

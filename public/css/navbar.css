@@ -88,7 +88,17 @@ label {
   font-size: var(--default-font-size);
 }
 
+div.green-circle {
+  height: 6px;
+  width: 6px;
+  margin: 0 4px;
+  margin-right: 12px;
+  background: green;
+  border-radius: 50%;
+}
+
 .sub-text {
+  line-height: 1.5;
   font-size: var(--default-sub-font-size);
 }
 

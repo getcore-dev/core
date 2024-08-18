@@ -140,6 +140,67 @@ function getTintFromName(name) {
   return tintColor;
 }
 
+function formatRelativeDate(dateString) {
+  const now = new Date();
+  const postedDate = new Date(dateString);
+  const diffTime = Math.abs(now - postedDate);
+  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  const diffMonths = Math.floor(diffDays / 30);
+  const diffYears = Math.floor(diffDays / 365);
+
+  if (diffYears > 0) {
+    return `${diffYears}y`;
+  } else if (diffMonths > 0) {
+    return `${diffMonths}m`;
+  } else if (diffDays > 0) {
+    return `${diffDays}d`;
+  } else if (diffHours > 0) {
+    return `${diffHours}h`;
+  } else {
+    return 'Just now';
+  }
+}
+
+function formatLocation(location) {
+  if (!location) return "";
+
+  const parts = location.split(',').map(part => part.trim());
+
+  // Helper function to check if a string is a US state
+  const isUSState = (str) => Object.keys(stateMappings).includes(str) || Object.values(stateMappings).includes(str);
+
+  // Helper function to get state abbreviation
+  const getStateAbbr = (state) => {
+    const fullName = Object.keys(stateMappings).find(key => key.toLowerCase() === state.toLowerCase());
+    return fullName ? stateMappings[fullName] : state;
+  };
+
+  // Helper function to get country abbreviation
+  const getCountryAbbr = (country) => {
+    const fullName = Object.keys(countryMappings).find(key => key.toLowerCase() === country.toLowerCase());
+    return fullName ? countryMappings[fullName] : country;
+  };
+
+  if (parts.length === 1) {
+    return getCountryAbbr(parts[0]);
+  } else if (parts.length === 2) {
+    if (isUSState(parts[1])) {
+      return getStateAbbr(parts[1]);
+    } else {
+      return getCountryAbbr(parts[1]);
+    }
+  } else if (parts.length >= 3) {
+    if (parts[2].trim().toLowerCase() === 'united states') {
+      return getStateAbbr(parts[1]);
+    } else {
+      return getCountryAbbr(parts[2]);
+    }
+  }
+
+  return location.trim();
+}
+
 function renderJobPostings(jobPostings) {
   const jobListContainer = document.querySelector(".job-list");
   jobListContainer.innerHTML = ''; // Clear existing job postings
@@ -162,47 +223,56 @@ function renderJobPostings(jobPostings) {
       .join("");
     const remainingTags = tagsArray.length - maxTags;
     jobElement.innerHTML = `
-    <div class="job-preview">
-      <div class="job-info">
-        <h3 class="job-title"><a href="/jobs/${job.id}">${job.title}</a></h3>
-        <div class="job-posting-information job-subtitle secondary-text">
-          <div class="job-description margin-03-bottom">
-            ${job.description}
-          </div>
-        </div>
-        <div class="job-posting-flairs margin-06-bottom secondary-text sub-text">Skills:${tagsHTML}</div>
-        <div class="job-title-location secondary-text sub-text">
-          <div class="job-post-date ${formatDateColor(job.postedDate)} sub-text">
-            <time>${formatRelativeDate(job.postedDate)}</time>
-          </div>
-          <span style="font-size:.7rem;">•</span>
-          <div class="experience-level sub-text">${
-            job.experienceLevel === 'Mid Level'
-              ? 'L3/L4'
-              : job.experienceLevel === 'Entry Level'
-                ? 'L1/L2'
-                : job.experienceLevel === 'Senior'
-                  ? 'L5/L6'
-                  : job.experienceLevel
-          }</div>
-          ${job.salary || job.salary_max ? `
-            <span style="font-size:.7rem;">•</span><div class="job-salary sub-text">
-              <span class="material-symbols-outlined">attach_money</span>
-              ${getFormattedSalary(job.salary, job.salary_max)}/yr
+    <a href="/jobs/${job.id}">
+    <div class="job-preview-image">
+              ${
+              job.company_logo
+                ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="" />`
+                : ''
+            }
+    </div>
+      <div class="job-preview">
+        <div class="job-info">
+          <div class="company-info">
+            <div class="job-posting-company-info">
+              <a class="company-name third-text bold" href="/jobs/company/${job.company_name}">${job.company_name}</a>
             </div>
-          ` : ``}
-          <span style="font-size:.7rem;">•</span><div class="location sub-text">
-            <span class="material-symbols-outlined">location_on</span>
-            ${formatLocation(job.location).trim()}
           </div>
-          <span style="font-size:.7rem;">•</span><div class="views sub-text">
-            <span class="material-symbols-outlined">visibility</span>
-            ${job.views ? job.views : '0'}
+          <span class="job-text"><h3 class="job-title margin-06-bottom sub-text">${job.title}</h3> — ${tagsHTML}</span>
+          
+          <div class="job-title-location secondary-text sub-text">
+            <div class="job-post-date ${formatDateColor(job.postedDate)} sub-text">
+              <time>${formatRelativeDate(job.postedDate)}</time>
+            </div>
+            <span style="font-size:.7rem;">•</span>
+            <div class="experience-level sub-text">${
+              job.experienceLevel === 'Mid Level'
+                ? 'L3/L4'
+                : job.experienceLevel === 'Entry Level'
+                  ? 'L1/L2'
+                  : job.experienceLevel === 'Senior'
+                    ? 'L5/L6'
+                    : job.experienceLevel
+            }</div>
+            ${job.salary || job.salary_max ? `
+              <span style="font-size:.7rem;">•</span><div class="job-salary sub-text">
+                <span class="material-symbols-outlined">attach_money</span>
+                ${getFormattedSalary(job.salary, job.salary_max)}/yr
+              </div>
+            ` : ``}
+            <span style="font-size:.7rem;">•</span><div class="location sub-text">
+              <span class="material-symbols-outlined">location_on</span>
+              ${formatLocation(job.location).trim()}
+            </div>
+            <span style="font-size:.7rem;">•</span><div class="views sub-text">
+              <span class="material-symbols-outlined">visibility</span>
+              ${job.views ? job.views : '0'}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  `;
+      </a>
+    `;
     jobListContainer.appendChild(jobElement);
   });
 

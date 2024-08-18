@@ -180,31 +180,64 @@ const postQueries = {
     if (user) {
       userReactionSubquery = `, ( SELECT TOP 1 upa.action_type FROM userPostActions upa WHERE upa.post_id = p.id AND upa.user_id = '${user.id}' ) AS userReaction`;
     }
-
+  
     // Step 1: Find posts with matching tags, regardless of community
     let queryWithMatchingTags = `
       SELECT
         p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
-        u.username, u.avatar,
+        u.username, u.avatar, u.settings_PrivateJobNames, u.settings_PrivateSchoolNames,
         c.name AS community_name, c.community_color as community_color, c.shortname as community_shortname,
         p.post_type, p.views,
         (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
         (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount,
-        COUNT(t.name) AS tagMatchCount
+        COUNT(t.name) AS tagMatchCount,
+        CASE 
+          WHEN je.title IS NOT NULL THEN je.title
+          ELSE 
+            CASE
+              WHEN u.settings_PrivateSchoolNames = 1 THEN 'Student'
+              ELSE ee.institutionName
+            END
+        END AS experience_title,
+        CASE 
+          WHEN je.companyName IS NOT NULL THEN 
+            CASE 
+              WHEN u.settings_PrivateJobNames = 1 THEN 'Company'
+              ELSE je.companyName 
+            END
+          ELSE 
+            CASE 
+              WHEN u.settings_PrivateSchoolNames = 1 THEN 'Institution'
+              ELSE ee.institutionName
+            END
+        END AS experience_place
         ${userReactionSubquery}
       FROM posts p
       JOIN users u ON p.user_id = u.id
       JOIN communities c ON p.communities_id = c.id
       LEFT JOIN post_tags pt ON p.id = pt.post_id
       LEFT JOIN tags t ON pt.tag_id = t.id
+      OUTER APPLY (
+        SELECT TOP 1 title, companyName
+        FROM job_experiences
+        WHERE userId = u.id
+        ORDER BY startDate DESC
+      ) je
+      OUTER APPLY (
+        SELECT TOP 1 institutionName
+        FROM education_experiences
+        WHERE userId = u.id
+        ORDER BY startDate DESC
+      ) ee
       WHERE p.id != '${postId}' AND p.deleted = 0 AND ${tagsCondition} AND p.communities_id != 9
       GROUP BY p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
-               u.username, u.avatar, c.name, p.post_type, p.views, c.community_color, c.shortname
+               u.username, u.avatar, c.name, p.post_type, p.views, c.community_color, c.shortname,
+               je.title, je.companyName, ee.institutionName, u.settings_PrivateJobNames, u.settings_PrivateSchoolNames
       ORDER BY tagMatchCount DESC, p.created_at DESC
       OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY;
     `;
     const resultWithMatchingTags = await sql.query(queryWithMatchingTags);
-
+  
     // If less than 5 posts with matching tags are found, fill up with random posts from any community
     let finalResults = resultWithMatchingTags.recordset;
     if (finalResults.length < 5) {
@@ -215,27 +248,59 @@ const postQueries = {
             .map((post) => `'${post.id}'`)
             .join(',')})`
           : '';
-
+  
       let queryWithRandomPosts = `
         SELECT TOP ${additionalPostsNeeded}
           p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
-          u.username, u.avatar, 
+          u.username, u.avatar, u.settings_PrivateJobNames, u.settings_PrivateSchoolNames,
           c.name AS community_name, c.community_color as community_color, c.shortname as community_shortname,
           p.post_type, p.views,
           (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
-          (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount
+          (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount,
+          CASE 
+            WHEN je.title IS NOT NULL THEN je.title
+            ELSE 
+              CASE
+                WHEN u.settings_PrivateSchoolNames = 1 THEN 'Student'
+                ELSE ee.institutionName
+              END
+          END AS experience_title,
+          CASE 
+            WHEN je.companyName IS NOT NULL THEN 
+              CASE 
+                WHEN u.settings_PrivateJobNames = 1 THEN 'Company'
+                ELSE je.companyName 
+              END
+            ELSE 
+              CASE 
+                WHEN u.settings_PrivateSchoolNames = 1 THEN 'Institution'
+                ELSE ee.institutionName
+              END
+          END AS experience_place
           ${userReactionSubquery}
         FROM posts p
         JOIN users u ON p.user_id = u.id
         JOIN communities c ON p.communities_id = c.id
-      WHERE p.id != '${postId}' AND p.deleted = 0 AND p.communities_id != 9
+        OUTER APPLY (
+          SELECT TOP 1 title, companyName
+          FROM job_experiences
+          WHERE userId = u.id
+          ORDER BY startDate DESC
+        ) je
+        OUTER APPLY (
+          SELECT TOP 1 institutionName
+          FROM education_experiences
+          WHERE userId = u.id
+          ORDER BY startDate DESC
+        ) ee
+        WHERE p.id != '${postId}' AND p.deleted = 0 AND p.communities_id != 9
           ${excludePostIds}
         ORDER BY NEWID();
       `;
       const resultWithRandomPosts = await sql.query(queryWithRandomPosts);
       finalResults = finalResults.concat(resultWithRandomPosts.recordset);
     }
-
+  
     return finalResults;
   },
 

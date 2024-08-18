@@ -1017,7 +1017,6 @@ ORDER BY jp.postedDate DESC
       const result = await sql.query(`
         SELECT COUNT(*) AS jobCount
         FROM JobPostings
-        WHERE postedDate >= DATEADD(day, -30, GETDATE())
       `);
       const jobCount = result.recordset[0].jobCount;
       return jobCount;
