@@ -32,6 +32,7 @@ const communityQueries = require('../queries/communityQueries');
 const linkFunctions = require('../utils/linkFunctions');
 const commentQueries = require('../queries/commentQueries');
 const { default: rateLimit } = require('express-rate-limit');
+const notificationQueries = require('../queries/notificationQueries.js');
 
 const renderer = new marked.Renderer();
 renderer.image = function (href, title, text) {
@@ -157,7 +158,6 @@ router.get('/get-skill/:skillName', async (req, res) => {
 router.get('/updates', cacheMiddleware(1600), async (req, res) => {
   try {
     const updates = await updateQueries.getUpdates();
-    console.log(updates);
     res.json({'updates': updates});
   } catch (err) {
     console.error('Error fetching updates:', err);
@@ -519,7 +519,6 @@ router.get('/jobs', async (req, res) => {
     const parsedSalary = parseInt(salary) || 0;
     const parsedSkills = skills ? JSON.parse(skills) : [];
     const parsedCompanies = companies ? JSON.parse(companies) : [];
-    console.log(parsedCompanies);
 
     const user = req.user;
     let userPreferences = {};
@@ -553,22 +552,17 @@ router.get('/jobs', async (req, res) => {
       parsedSkills.length === 0 &&
       parsedCompanies.length === 0;
 
-    console.log('isEmptySearch', isEmptySearch);
-
     let allJobPostings;
 
     if (isEmptySearch && user && Object.keys(userPreferences).length > 0) {
-      console.log('Fetching jobs based on user preferences');
       allJobPostings = await jobQueries.searchAllJobsFromLast30Days(
         userPreferences,
         page,
         pageSize
       );
     } else if (isEmptySearch) {
-      console.log('Fetching random jobs');
       allJobPostings = await jobQueries.getRecentJobs(page, pageSize);
     } else {
-      console.log('Fetching jobs based on search criteria');
       allJobPostings = await jobQueries.searchAllJobsFromLast30Days(
         {
           titles: parsedTitles,
@@ -812,6 +806,13 @@ router.post('/extract-job-details', async (req, res) => {
         }
       }
     } catch (error) {
+      await notificationQueries.createAdminNotification(
+        'JOB_EXTRACTION_ERROR',
+        null,
+        req.user.id || null,
+        new Date(),
+        'error',
+      );
       console.log(
         `Error creating company: ${extractedData.company_name}`,
         error
@@ -937,7 +938,6 @@ router.get('/skills/jobs/:skill', async (req, res) => {
       res.status(404).send('Skill not found');
     }
     const jobs = await jobQueries.getJobsBySkills(skillId, page, pageSize);
-    console.log(jobs.length);
     res.json({jobs});
   } catch (err) {
     console.error('Error fetching job postings:', err);
@@ -959,7 +959,6 @@ router.get('/similar-skills/:skill', async (req, res) => {
   try {
     const skill = req.params.skill;
     const skillId = await jobQueries.getSkillsId(skill);
-    console.log(skillId);
     if (!skillId) {
       res.status(404).send('Skill not found');
     }

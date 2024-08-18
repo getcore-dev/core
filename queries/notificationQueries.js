@@ -169,7 +169,8 @@ const notificationQueries = {
     senderUserId,
     receiverUserId,
     type,
-    postId = ''
+    postId = '',
+    important_message = ''
   ) => {
     try {
       const createdAt = new Date();
@@ -184,8 +185,8 @@ const notificationQueries = {
           WHERE senderUserId = ${senderUserId} AND receiverUserId = ${receiverUserId} AND postId = ${postId}`;
       } else {
         await sql.query`
-          INSERT INTO notifications (type, isRead, createdAt, receiverUserId, senderUserId, postId)
-          VALUES (${type}, 0, ${createdAt}, ${receiverUserId}, ${senderUserId}, ${postId})`;
+          INSERT INTO notifications (type, isRead, createdAt, receiverUserId, senderUserId, postId, important_message)
+          VALUES (${type}, 0, ${createdAt}, ${receiverUserId}, ${senderUserId}, ${postId} , ${important_message})`;
       }
 
       await sendEmailNotification(receiverUserId, type);
@@ -195,7 +196,7 @@ const notificationQueries = {
     }
   },
 
-  createAdminNotification: async (type, feedbackId, senderId, createdAt) => {
+  createAdminNotification: async (type, feedbackId, senderId, createdAt, important_message = '') => {
     try {
       // get all admin users
       const result = await sql.query`
@@ -205,8 +206,8 @@ const notificationQueries = {
       // create a notification for each admin user
       adminUsers.forEach(async (admin) => {
         await sql.query`
-          INSERT INTO notifications (type, isRead, createdAt, receiverUserId, senderUserId, postId) 
-          VALUES (${type}, 0, ${createdAt}, ${admin.id}, ${senderId}, ${feedbackId})`;
+          INSERT INTO notifications (type, isRead, createdAt, receiverUserId, senderUserId, postId, important_message) 
+          VALUES (${type}, 0, ${createdAt}, ${admin.id}, ${senderId}, ${feedbackId}, '${important_message}')`;
       });
     } catch (err) {
       console.error('Database insert error:', err);

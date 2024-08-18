@@ -139,7 +139,7 @@
                 </span>
                 <% } %>
               </p>
-              <div class="user-bio margin-06-bottom" style="background: 0 !important; padding-top: 0;">
+              <div class="user-bio " style="background: 0 !important; padding-top: 0;">
                 <p>
                   <%= otheruser.bio %>
                 </p>
@@ -522,41 +522,35 @@
         }
         experiences.forEach(experience => {
           const formattedStartDate = formatDate2(experience.startDate);
-          const formattedEndDate = experience.endDate ? formatDate2(experience.endDate) : 'Present';
+          const formattedEndDate = experience.isCurrent ? '' : formatDate2(experience.endDate);
 
           const jobElement = document.createElement('div');
           jobElement.innerHTML = `
-<% if (otheruser.settings_PrivateJobNames) { %>
-<% } else { %>
-  <% if (typeof experience !== 'undefined' && experience.logo) { %>
-    <div class="job-experience-image">
-      <img class="thumbnail-regular thumbnail-small" src="<%= experience.logo %>" alt="Job Experience" />
-    </div>
-  <% } else { %>
-  <% } %>
-<% } %>
-          <div class="job-experience-body">
-            <div class="job-experience-header">
-            <% if (otheruser.settings_PrivateJobNames) { %>
-              <h4>Company Name Hidden</h4>
-            <% } else { %>
-              <h4><a href="/jobs/company/${encodeURIComponent(experience.companyName)}">
-              ${experience.companyName}</a></h4>
-            <% } %>
-
-                  <div class="date-range">
-      <p>${formattedStartDate} - ${formattedEndDate}</p>
-                  </div>
-                </div>
-                <h4>${experience.title}</h4>
-                <p>${experience.employmentType}</p>
-                <p>${experience.description}</p>
-                <p>${ experience.tags ? experience.tags.split(',').slice(0, 3).map(tag => {
-                  const trimmedTag = tag.trim();
-                  return `<span class="job-tag" onclick="window.location.href='/tags/${encodeURIComponent(trimmedTag)}'">${trimmedTag}</span>`;
-                }).join('') : ''}</p>
+            <div class="job-experience-image">
+              ${!<%= otheruser.settings_PrivateJobNames %> ? (typeof experience !== 'undefined' && experience.logo ? `<img class="thumbnail-regular thumbnail-small" src="${experience.logo}" alt="Job Experience" />` : '') : ''}
             </div>
-              `;
+                        <div class="job-experience-body">
+              <div class="job-experience-header">
+
+                <% if (otheruser.settings_PrivateJobNames) { %>
+                  <h4>Company Name Hidden</h4>
+                <% } else { %>
+                  <h4><a href="/jobs/company/${encodeURIComponent(experience.companyName)}">
+                  ${experience.companyName}</a></h4>
+                <% } %>
+                <div class="date-range">
+                  <p><time>${formattedStartDate}</time> - <time>${experience.isCurrent ? 'Present' : formattedEndDate}</time></p>
+                </div>
+              </div>
+              <h4>${experience.title}</h4>
+              <p>${experience.employmentType}</p>
+              <p>${experience.description}</p>
+              <p>${ experience.tags ? experience.tags.split(',').slice(0, 3).map(tag => {
+                const trimmedTag = tag.trim();
+                return `<span class="job-tag" onclick="window.location.href='/tags/${encodeURIComponent(trimmedTag)}'">${trimmedTag}</span>`;
+              }).join('') : ''}</p>
+            </div>
+          `;
           currentJobContainer.appendChild(jobElement);
         });
       }

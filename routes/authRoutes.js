@@ -134,6 +134,12 @@ router.post('/reset-password/:token', async (req, res) => {
   } catch (error) {
     console.error('Error resetting password:', error);
     req.flash('error', 'An error occurred. Please try again later.');
+    await notificationQueries.createAdminNotification(
+      'PASSWORD_RESET_ERROR',
+      null,
+      req.user.id || null,
+      new Date(),
+      error);
     res.redirect(`/reset-password/${token}`);
   }
 });
@@ -350,6 +356,13 @@ router.post('/login', checkNotAuthenticated, async (req, res, next) => {
         process.nextTick(() => {
           transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
+              notificationQueries.createAdminNotification(
+                'EMAIL_VERIFICATION_ERROR',
+                null,
+                user.id,
+                new Date(),
+                error
+              );
               console.log('Error sending verification email:', error);
               req.flash(
                 'error',
@@ -376,11 +389,19 @@ router.post('/login', checkNotAuthenticated, async (req, res, next) => {
         return res.redirect('/login');
       }
     } else {
-      req.logIn(user, (err) => {
+      req.logIn(user, async (err) => {
         if (err) {
           console.error('Login error:', err);
+          await notificationQueries.createAdminNotification(
+            'LOGIN_ERROR',
+            null,
+            user.id,
+            new Date(),
+            err
+          );
           return next(err);
         }
+
         userQueries.updateLastLogin(user.id);
         const redirectUrl = req.session.returnTo || '/';
         delete req.session.returnTo;

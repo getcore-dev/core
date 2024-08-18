@@ -316,14 +316,9 @@
               <div class="post-info-container post third-text mini-text">
                 <div class="post-views-container">
                   <span class="material-symbols-outlined">visibility</span>
-                  <span class="post-views"><%= post.views %></span>
+                  <span class="post-views"><%= post.views %> views</span>
                 </div>
-                <span style="font-size:.7rem;">•</span>
-                <div class="post-comments-container">
-                  <span class="material-symbols-outlined">comment</span>
-                  <span class="post-comments">
-
-                    <% 
+                <% 
                                           function formatDateLong(date) {
                                             let postDate = new Date(date);
                                             let dateOptions = { year: 'numeric', month: 'long', day: '2-digit' };
@@ -343,20 +338,7 @@
                           return total;
                         }
                         let totalReplies = countAllReplies(post.comments);
-                      %><%= String(totalReplies).trim() %>
-                  </span>
-                </div>
-                <span style="font-size:.7rem;">•</span>
-                <div class="post-reactions-container">
-                  <span class="material-symbols-outlined">bolt</span>
-                  <span class="post-reactions">
-                    <% let totalReactions = 0; %>
-                    <% reactionTypes.forEach(reaction => { %>
-                    <% totalReactions += post[reaction.type.toLowerCase() + 'Count']; %>
-                    <% }); %>
-                    <%= totalReactions %>
-                  </span>
-                </div>
+                      %>
                 <span style="font-size:.7rem;">•</span>
                 <div class="post-timestamp-container">
                   <span class="material-symbols-outlined">today</span>

@@ -1948,6 +1948,7 @@ getCompanyIdByName: async (name) => {
     employmentType,
     companyName,
     location,
+    isCurrent,
     startDate,
     endDate,
     description,
@@ -1955,9 +1956,9 @@ getCompanyIdByName: async (name) => {
   ) => {
     try {
       const result = await sql.query`
-        INSERT INTO job_experiences (userId, title, employmentType, employmentHours, companyName, location, startDate, endDate, description, tags)
+        INSERT INTO job_experiences (userId, title, employmentType, companyName, isCurrent, location, startDate, endDate, description, tags)
         OUTPUT INSERTED.id
-        VALUES (${userId}, ${title}, ${employmentType}, ${companyName}, ${location}, ${startDate}, ${endDate}, ${description}, ${tags})
+        VALUES (${userId}, ${title}, ${employmentType}, ${companyName}, ${isCurrent}, ${location}, ${startDate}, ${endDate}, ${description}, ${tags})
       `;
 
       const newExperienceId = result.recordset[0].id;

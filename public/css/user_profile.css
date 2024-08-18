@@ -492,8 +492,7 @@ button#edit-button {
 #currentJobContainer>div {
   display: flex;
   flex-direction: row;
-  gap: 1.2rem;
-  align-items: center;
+  gap: .9rem;
 }
 
 .job-experience-body {
@@ -631,10 +630,6 @@ td {
     overflow-y: auto;
   }
 
-  .profile-info .profile-picture {
-    width: 30%;
-  }
-
   .profile-info .profile-details {
     width: 85%;
     gap: .05rem;
@@ -660,11 +655,6 @@ td {
 
 
 
-}
-
-
-#firstname-display {
-  margin-bottom: .4rem;
 }
 
 .profile-details>h2,
