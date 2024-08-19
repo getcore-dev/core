@@ -1,22 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
   <!-- SEO Meta Tags -->
-  <meta name="description" content="Join CORE communities to connect with like-minded individuals. Discover, share, and engage in various topics and interests.">
-  <meta name="keywords" content="CORE communities, community engagement, social platform, join communities, discover communities, social network">
+  <meta name="description" content="Discover core jobs, SWE jobs, and remote jobs at CORE. Connect with top employers and find your next career opportunity in tech.">
+  <meta name="keywords" content="core jobs, SWE jobs, remote jobs, tech careers, software engineering, job search, CORE platform, core, data analyst, software engineer">
   <meta name="author" content="CORE">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
   <meta property="og:url" content="https://getcore.dev/">
-  <meta property="og:title" content="CORE - Connect and Engage in Communities">
-  <meta property="og:description" content="Join CORE communities to connect with like-minded individuals. Discover, share, and engage in various topics and interests.">
-  <meta property="og:image" content="/img/core.png">
+  <meta property="og:title" content="CORE - Find Core Jobs, SWE Jobs, and Remote Jobs">
+  <meta property="og:description" content="Discover core jobs, SWE jobs, and remote jobs at CORE. Connect with top employers and find your next career opportunity in tech.">
+  <meta property="og:image" content="https://getcore.dev/img/core.png">
+
+  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="CORE - Connect and Engage in Communities">
-  <meta name="twitter:description" content="Join CORE communities to connect with like-minded individuals. Discover, share, and engage in various topics and interests.">
-  <meta name="twitter:image" content="/img/core.png">
+  <meta name="twitter:url" content="https://getcore.dev/">
+  <meta name="twitter:title" content="CORE - Find Core Jobs, SWE Jobs, and Remote Jobs">
+  <meta name="twitter:description" content="Discover core jobs, SWE jobs, and remote jobs at CORE. Connect with top employers and find your next career opportunity in tech.">
+  <meta name="twitter:image" content="https://getcore.dev/img/core.png">
 
   <!-- Favicons -->
   <link rel="shortcut icon" href="/img/core.png" />
@@ -31,7 +37,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
   <!-- Title -->
-  <title>CORE - <%= communityId ? '/' + community.shortname : 'Home' %></title>
+  <title>CORE - Find SWE Jobs, and Remote Jobs | <%= communityId ? '/' + community.shortname : 'Home' %></title>
 </head>
 
 <body>
@@ -44,7 +50,7 @@
 
       <div id="posts-container" data-community-id="<%= communityId || '' %>">
         <% if (communityId != null) { %>
-        <div class="community adaptive-border-bottom">
+        <div class="community">
           <div class="community-content">
             <div class="community-info">
               <div class="community-title">
@@ -55,7 +61,7 @@
                 <span class="comm-short-title sub-text">/<%= community.shortname %></span>
               </div>
               <div class="comm-description sub-text secondary-text">
-                <%= community.description%>
+                <%= community.description || 'No description available' %>
               </div>
               <div class="comm-flairs margin-1-bottom">
                 <div class="comm-members sub-text secondary-text">

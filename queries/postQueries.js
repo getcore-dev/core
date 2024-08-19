@@ -181,7 +181,7 @@ const postQueries = {
       userReactionSubquery = `, ( SELECT TOP 1 upa.action_type FROM userPostActions upa WHERE upa.post_id = p.id AND upa.user_id = '${user.id}' ) AS userReaction`;
     }
   
-    // Step 1: Find posts with matching tags, regardless of community
+    // Step 1: Find posts with matching tags, excluding private communities
     let queryWithMatchingTags = `
       SELECT
         p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
@@ -230,6 +230,7 @@ const postQueries = {
         ORDER BY startDate DESC
       ) ee
       WHERE p.id != '${postId}' AND p.deleted = 0 AND ${tagsCondition} AND p.communities_id != 9
+        AND c.PrivacySetting != 'private'
       GROUP BY p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
                u.username, u.avatar, c.name, p.post_type, p.views, c.community_color, c.shortname,
                je.title, je.companyName, ee.institutionName, u.settings_PrivateJobNames, u.settings_PrivateSchoolNames
@@ -238,7 +239,7 @@ const postQueries = {
     `;
     const resultWithMatchingTags = await sql.query(queryWithMatchingTags);
   
-    // If less than 5 posts with matching tags are found, fill up with random posts from any community
+    // If less than 5 posts with matching tags are found, fill up with random posts from any non-private community
     let finalResults = resultWithMatchingTags.recordset;
     if (finalResults.length < 5) {
       const additionalPostsNeeded = 5 - finalResults.length;
@@ -294,6 +295,7 @@ const postQueries = {
           ORDER BY startDate DESC
         ) ee
         WHERE p.id != '${postId}' AND p.deleted = 0 AND p.communities_id != 9
+          AND c.PrivacySetting != 'private'
           ${excludePostIds}
         ORDER BY NEWID();
       `;
@@ -303,7 +305,7 @@ const postQueries = {
   
     return finalResults;
   },
-
+  
   fetchPostsByCommunity: async (communityId) => {
     try {
       const result = await sql.query`
@@ -312,9 +314,10 @@ const postQueries = {
         (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount
         FROM posts p
         JOIN users u ON p.user_id = u.id
-        WHERE p.communities_id = ${communityId} AND p.deleted = 0
+        JOIN communities c ON p.communities_id = c.id
+        WHERE p.communities_id = ${communityId} AND p.deleted = 0 AND c.PrivacySetting != 'private'
         ORDER BY p.created_at DESC`;
-
+  
       return result.recordset;
     } catch (err) {
       console.error('Database query error:', err);

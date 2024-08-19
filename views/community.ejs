@@ -152,7 +152,7 @@
       <% if (community.id == 9) { %>
       <div class="community-entry" onclick="window.location.href='/networks/<%= community.shortname %>'">
 
-        <div class="community-info margin-06-bottom">
+        <div class="community-info">
           <span class="material-symbols-outlined" style="padding:0;margin:0;font-size: 1.1rem;color:<%= community.community_color %>;"><%= community.mini_icon %></span>
 
           <span class="community-info-title" style="color:<%= community.community_color %>;">
@@ -164,15 +164,15 @@
             </span>
           </span>
         </div>
-        <div class="community-flairs secondary-text sub-text">
+        <div class="community-flairs third-text sub-text">
           <div>
-            <span class="material-symbols-outlined" style="padding:0;margin:0;vertical-align:-2px;font-size:.9rem;margin-right: 4px;">person</span>
-            <%= community.MemberCount%>
+            <span class="material-symbols-outlined" style="padding:0;margin:0;vertical-align:-2px;font-size: .9rem;margin-right: 4px;">person</span>
+            <%= community.MemberCount%> member<%= community.MemberCount > 1 ? 's' : '' %>
           </div>
           <span style="font-size:.7rem;">•</span>
           <div>
-            <span class="material-symbols-outlined" style="padding:0;margin:0;vertical-align:-2px;font-size:.9rem;margin-right: 4px;">description</span>
-            <%= community.PostCount[1]%>
+            <span class="material-symbols-outlined" style="padding:0;margin:0;vertical-align:-2px;font-size: .9rem; margin-right: 4px;">description</span>
+            <%= community.PostCount[1]%> post<%= community.PostCount[1] > 1 ? 's' : '' %>
           </div>
 
         </div>
@@ -194,32 +194,28 @@
       <% if (community.isMember) { %>
       <div class="community-entry" onclick="window.location.href='/networks/<%= community.shortname %>'">
 
-        <div class="community-info margin-06-bottom">
+        <div class="community-info">
           <span class="material-symbols-outlined" style="padding:0;margin:0;font-size: 1.1rem;color:<%= community.community_color %>;"><%= community.mini_icon %></span>
 
-          <span class="community-info-title" style="color:<%= community.community_color %>;">
-            <span class="main-text bold">
-              <%= community.name%>
-              <span class="sub-text">
-                /<%= community.shortname%>
-              </span>
+          <span class="community-info-title">
+            <span class="sub-text third-text">
+              /<%= community.shortname%>
             </span>
           </span>
-        </div>
-        <div class="community-tags margin-03-bottom secondary-text sub-text">
-          <%= community.Tags%>
 
         </div>
-
-        <div class="community-flairs secondary-text sub-text">
+        <span class="sub-text bold">
+          <%= community.name%>
+        </span>
+        <div class="community-flairs third-text sub-text">
           <div>
-            <span class="material-symbols-outlined" style="padding:0;margin:0;vertical-align:-2px;font-size:.9rem;margin-right: 4px;">person</span>
-            <%= community.MemberCount%>
+            <span class="material-symbols-outlined" style="padding:0;margin:0;vertical-align:-2px;font-size: .9rem;margin-right: 4px;">person</span>
+            <%= community.MemberCount%> member<%= community.MemberCount > 1 ? 's' : '' %>
           </div>
           <span style="font-size:.7rem;">•</span>
           <div>
-            <span class="material-symbols-outlined" style="padding:0;margin:0;vertical-align:-2px;font-size:.9rem;margin-right: 4px;">description</span>
-            <%= community.PostCount[1]%>
+            <span class="material-symbols-outlined" style="padding:0;margin:0;vertical-align:-2px;font-size: .9rem; margin-right: 4px;">description</span>
+            <%= community.PostCount[1]%> post<%= community.PostCount[1] > 1 ? 's' : '' %>
           </div>
 
         </div>
@@ -240,11 +236,11 @@
       <% if (!community.isMember) { %>
       <div class="community-entry" onclick="window.location.href='/networks/<%= community.shortname %>'">
 
-        <div class="community-info margin-06-bottom">
+        <div class="community-info">
           <span class="material-symbols-outlined" style="padding:0;margin:0;font-size: 1.1rem;color:<%= community.community_color %>;"><%= community.mini_icon %></span>
 
-          <span class="community-info-title" style="color:<%= community.community_color %>;">
-            <span class="main-text bold">
+          <span class="community-info-title">
+            <span class="sub-text bold">
               <%= community.name%>
               <span class="sub-text">
                 /<%= community.shortname%>
@@ -255,20 +251,16 @@
         <div class="community-body margin-03-bottom">
           <span class="community-body sub-text" id="secondary-text"><%= community.description%></span>
         </div>
-        <div class="community-tags margin-03-bottom secondary-text sub-text">
-          <%= community.Tags%>
 
-        </div>
-
-        <div class="community-flairs secondary-text sub-text">
+        <div class="community-flairs secondary-text sub-text third-text">
           <div>
             <span class="material-symbols-outlined" style="padding:0;margin:0;vertical-align:-2px;font-size: .9rem;margin-right: 4px;">person</span>
-            <%= community.MemberCount%>
+            <%= community.MemberCount%> member<%= community.MemberCount > 1 ? 's' : '' %>
           </div>
           <span style="font-size:.7rem;">•</span>
           <div>
             <span class="material-symbols-outlined" style="padding:0;margin:0;vertical-align:-2px;font-size: .9rem; margin-right: 4px;">description</span>
-            <%= community.PostCount[1]%>
+            <%= community.PostCount[1]%> post<%= community.PostCount[1] > 1 ? 's' : '' %>
           </div>
 
         </div>

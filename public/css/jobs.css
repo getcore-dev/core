@@ -397,6 +397,12 @@ div.job-title-location .sub-text {
   pointer-events: none;
 }
 
+.quick-options {
+  display: inline-flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
 .job-info {
   flex-grow: 1;
 }
