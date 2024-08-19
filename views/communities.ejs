@@ -64,24 +64,16 @@
                 <%= community.description || 'No description available' %>
               </div>
               <div class="comm-flairs margin-1-bottom">
-                <div class="comm-members sub-text secondary-text">
-                  <span class="material-symbols-outlined">
-                    person
-                  </span>
-                  <%= community.MemberCount%> members
-                </div>
-                <div class="comm-view-rules sub-text link">
-                  <span class="material-symbols-outlined">
-                    rule
-                  </span>
-                  View Rules
-                </div>
-
               </div>
               <div class="community-buttons margin-1-bottom">
                 <button class="submit-button-normal join-btn grow-button" id="communityActionBtn" data-action="join"><span class="material-symbols-outlined">
                     person_add
-                  </span>Join</button>
+                  </span>Join
+
+                  <div class="counter" style="margin-left: .4rem">
+                    <%= community.MemberCount%>
+                  </div>
+                </button>
 
 
                 <button class="mod-btn regular-button-normal" id="communityActionBtn" style="display: none;pointer-events: none;" onclick="window.location.href='/networks/<%= community.shortname %>/admin'">

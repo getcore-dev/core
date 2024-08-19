@@ -18,6 +18,20 @@ const state = {
   jobSearchInput: document.getElementById('job-search-input'),
 };
 
+async function updateJobCount() {
+  try {
+    const response = await fetch('/api/jobs-count');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const jobCount = await response.json();
+    document.getElementById('recent-jobs-count').textContent = jobCount + ' recent jobs';
+  } catch (error) {
+    console.error('Error fetching job count:', error);
+  }
+}
+
+
 const ITEMS_PER_PAGE = 20;
 const DEBOUNCE_DELAY = 300;
 
@@ -121,6 +135,7 @@ document.addEventListener('DOMContentLoaded', initialize);
 // Main functions
 function initialize() {
   fetchJobPostings();
+  updateJobCount();
 }
 
 

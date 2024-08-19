@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CORE/</title>
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/jobs.css" />
+  <link rel="stylesheet" href="/css/applied-jobs.css" />
+
+
+  <link rel="shortcut icon" href="/img/core.png" />
+</head>
+<style>
+</style>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'updates' }) %>
+  <main>
+    <div class="main-container">
+      Applied Jobs
+      <div id="data-container" class="job-list">
+      </div>
+    </div>
+
+  </main>
+  <script>
+    const appliedJobsData = <%- JSON.stringify(appliedJobs) %>;
+
+    function formatSalary(salary) {
+      if (!salary) return "";
+      return salary >= 1000 ? (salary / 1000).toFixed(0) + "k" : salary.toString();
+    }
+
+    function getFormattedSalary(salary, salaryMax) {
+      if (salary && salaryMax) {
+        const average = Math.round((salary + salaryMax) / 2);
+        return `${formatSalary(average)}`;
+      } else if (salary) {
+        return formatSalary(salary);
+      }
+      return "";
+    }
+
+    function formatDateColor(dateString) {
+      const now = new Date();
+      const postedDate = new Date(dateString);
+      // if within 2 weeks, green, if within 2 months, yellow, if older, red
+      const diffTime = Math.abs(now - postedDate);
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays <= 14) {
+        return 'green';
+      } else if (diffDays <= 60) {
+        return 'yellow';
+      } else {
+        return 'red';
+      }
+    }
+
+    function formatRelativeDate(dateString) {
+      const now = new Date();
+      const postedDate = new Date(dateString);
+      const diffTime = Math.abs(now - postedDate);
+      const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const diffMonths = Math.floor(diffDays / 30);
+      const diffYears = Math.floor(diffDays / 365);
+
+      if (diffYears > 0) {
+        return `${diffYears}y`;
+      } else if (diffMonths > 0) {
+        return `${diffMonths}m`;
+      } else if (diffDays > 0) {
+        return `${diffDays}d`;
+      } else if (diffHours > 0) {
+        return `${diffHours}h`;
+      } else {
+        return 'Just now';
+      }
+    }
+
+    function renderJobPostings(jobPostings) {
+      const jobListContainer = document.querySelector(".job-list");
+      jobListContainer.innerHTML = ''; // Clear existing job postings
+
+      if (jobPostings.length === 0) {
+        // render no jobs message and link to jobs page
+        const noJobsMessage = document.createElement("div");
+        noJobsMessage.classList.add("no-jobs-message");
+        noJobsMessage.innerHTML = `
+        <h2 class="sub-text">You haven't applied to any jobs yet.</h2>
+        <a href="/jobs" class="link">Browse Jobs</a>
+        `;
+        jobListContainer.appendChild(noJobsMessage);
+        return;
+      }
+
+      jobPostings.forEach((job) => {
+        const jobElement = document.createElement("div");
+        jobElement.classList.add("job");
+        jobElement.onclick = () => {
+          window.location.href = `/jobs/${job.id}`;
+        };
+        const tagsArray = job.tags && job.tags[1] ? job.tags[1].split(", ") : [];
+
+        const maxTags = 3;
+        const displayedTags = tagsArray.slice(0, maxTags);
+        const tagsHTML = displayedTags
+          .map(
+            (tag) =>
+            `<a class="tag">${tag}</a>`
+          )
+          .join("");
+        const remainingTags = tagsArray.length - maxTags;
+        jobElement.innerHTML = `
+        <a href="/jobs/${job.id}">
+        <div class="job-preview-image">
+                ${
+                job.company_logo
+                    ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="" />`
+                    : ''
+                }
+        </div>
+        <div class="job-preview">
+            <div class="job-info">
+            <div class="company-info">
+                <div class="job-posting-company-info">
+                <a class="company-name third-text bold" href="/jobs/company/${job.company_name}">${job.company_name}</a>
+                </div>
+            </div>
+            <span class="job-text"><h3 class="job-title margin-06-bottom sub-text">${job.title}</h3> — ${tagsHTML}</span>
+            
+            <div class="job-title-location third-text sub-text">
+                <div class="job-post-date ${formatDateColor(job.postedDate)} sub-text">
+                <time>${formatRelativeDate(job.postedDate)}</time>
+                </div>
+                <span style="font-size:.7rem;">•</span>
+                <div class="experience-level sub-text">${
+                job.experienceLevel === 'Mid Level'
+                    ? 'L3/L4'
+                    : job.experienceLevel === 'Entry Level'
+                    ? 'L1/L2'
+                    : job.experienceLevel === 'Senior'
+                        ? 'L5/L6'
+                        : job.experienceLevel
+                }</div>
+                ${job.salary || job.salary_max ? `
+                <span style="font-size:.7rem;">•</span><div class="job-salary sub-text">
+                    <span class="material-symbols-outlined">attach_money</span>
+                    ${getFormattedSalary(job.salary, job.salary_max)}/yr
+                </div>
+                ` : ``}
+                <span style="font-size:.7rem;">•</span><div class="location sub-text">
+                <span class="material-symbols-outlined">location_on</span>
+                ${formatLocation(job.location).trim()}
+                </div>
+                <span style="font-size:.7rem;">•</span><div class="views sub-text">
+                <span class="material-symbols-outlined">visibility</span>
+                ${job.views ? job.views : '0'}
+                </div>
+            </div>
+            </div>
+        </div>
+     <div class="job-remove-apply">
+        <button class="cancel-button-normal delete-job" data-job-id="${job.id}">
+          <span class="material-symbols-outlined">delete</span>
+        </button>
+      </div>
+        </a>
+        `;
+
+        const deleteButton = jobElement.querySelector('.delete-job');
+        deleteButton.addEventListener('click', async (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+
+          const jobId = deleteButton.getAttribute('data-job-id');
+
+          try {
+            const response = await fetch(`/api/jobs/${jobId}/remove-apply`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+
+            if (response.ok) {
+              // Remove the job element from the DOM
+              jobElement.remove();
+            } else {
+              console.error('Failed to remove job application');
+            }
+          } catch (error) {
+            console.error('Error removing job application:', error);
+          }
+        });
+        jobListContainer.appendChild(jobElement);
+      });
+
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      renderJobPostings(appliedJobsData);
+    });
+  </script>
+</body>
+
+</html>

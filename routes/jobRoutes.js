@@ -34,6 +34,17 @@ router.get('/', async (req, res) => {
   res.render('jobs.ejs', { user: req.user, recentJobs: [] });
 });
 
+router.get('/applied', checkAuthenticated, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const appliedJobs = await jobQueries.getUserAppliedJobs(userId);
+    res.render('applied-jobs.ejs', { user: req.user, appliedJobs });
+  } catch (err) {
+    console.error('Error fetching applied jobs:', err);
+    res.status(500).send('Error fetching applied jobs');
+  }
+});
+
 router.get('/create', checkAuthenticated, async (req, res) => {
   try {
     const skills = await jobQueries.getSkills();

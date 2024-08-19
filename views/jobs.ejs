@@ -33,21 +33,36 @@
 
     <div class="jobs-container">
       <div class="jobs-header">
+
+        <div class="jobs-buttons">
+          <span class="recent-jobs-count-container">
+            <div class="radar-pulse">
+              <div class="circle"></div>
+              <div class="pulse"></div>
+              <div class="pulse"></div>
+            </div>
+            <p class="recent-jobs-count sub-text secondary-text" id="recent-jobs-count">
+            </p>
+          </span>
+          <% if (user) { %>
+          <a class="link sub-text" href="/jobs/applied">
+            Applied Jobs
+          </a>
+          <% } %>
+        </div>
         <% if (user) { %>
         <% if (user.isAdmin) { %>
-        <div class="jobs-buttons">
-          <p class="recent-jobs-count" id="recent-jobs-count">
-          </p>
+        <div class="jobs-buttons admin-job-buttons">
           <a class="link sub-text" href="/jobs/create">
-            Post a Job
+            + Job Posting
           </a>
           <a class="link sub-text" href="/jobs/company/create">
-            Create a Company Profile
+            + Company Profile
           </a>
-
         </div>
         <% } %>
         <% } %>
+
         <div class="jobs-search-container">
           <input type="text" id="job-search-input" class="job-posting-search-input" placeholder="Search jobs & companies" />
           <svg class="job-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

@@ -1,0 +1,14 @@
+.main-container {
+    margin: 1.4rem 1rem;
+}
+
+main {
+    display: block;
+    width: 100%;
+}
+
+.job {
+    align-items: center;
+    padding: .6rem .1rem;
+    width: 100%;
+}

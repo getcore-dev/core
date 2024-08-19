@@ -401,6 +401,13 @@ div.job-title-location .sub-text {
   gap: .5rem;
 }
 
+.jobs-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+
 .job-info {
   flex-grow: 1;
 }
@@ -753,6 +760,11 @@ div.job-skills-display {
   flex-direction: row;
   gap: 10px;
   width: 100%;
+}
+
+.recent-jobs-count-container {
+  display: flex;
+  align-items: center;
 }
 
 .input-container input:focus {

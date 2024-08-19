@@ -287,6 +287,35 @@ function formatDateColor(dateString) {
   }
 }
 
+function applyForJob(event, jobId, jobLink) {
+  // Prevent the default action (which might be causing the redirect)
+  event.preventDefault();
+  window.open(jobLink, '_blank');
+  // Make the POST request
+  fetch(`/api/jobs/${jobId}/apply`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    // You can add a body here if needed
+    // body: JSON.stringify({}),
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    // showBannerNotification(data.message);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showBannerNotification('An error occurred. Please try again.');
+  }
+  );
+}
+
 async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   fetch(`/api/jobs/${jobId}`)
     .then((response) => response.json())
@@ -422,7 +451,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   isOlderThan30Days(job)
     ? ''
     : `<div class="apply-button-container flex">
-<button id="submit-button-normal" class="margin-h-auto grow-button" onclick="window.open('${job.link}', '_blank')">
+<button id="submit-button-normal" class="margin-h-auto grow-button" onclick="applyForJob(event, '${job.id}', '${job.link}')">
   <span class="material-symbols-outlined">open_in_new</span><span>Apply </span><span class="number-display">
   ${job.applicants ? job.applicants : 0}
   </span>

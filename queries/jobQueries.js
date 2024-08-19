@@ -29,6 +29,40 @@ const jobQueries = {
       throw err;
     }
   },
+  
+  incrementJobApplicantCount: async (jobId) => {
+    try {
+      if (!jobId) {
+        throw new Error('jobId is required');
+      }
+
+      await sql.query`
+        UPDATE JobPostings
+        SET applicants = COALESCE(applicants, 0) + 1
+        WHERE id = ${jobId}`;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  decrementJobApplicantCount: async (jobId) => {
+    try {
+      if (!jobId) {
+        throw new Error('jobId is required');
+      }
+
+      await sql.query`
+        UPDATE JobPostings
+        SET applicants = COALESCE(applicants, 0) - 1
+        WHERE id = ${jobId}`;
+    }
+    catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
 
 
   //const jobPostings = await jobQueries.getJobsByCompanies(parsedCompanies, page, pageSize);
@@ -528,7 +562,8 @@ const jobQueries = {
         c.name AS company_name, 
         c.logo AS company_logo, 
         c.location AS company_location, 
-        c.description AS company_description
+        c.description AS company_description,
+        CASE WHEN c.logo IS NOT NULL AND c.logo != '' THEN 1 ELSE 0 END AS has_logo
       FROM JobScores js
       LEFT JOIN companies c ON js.company_id = c.id
       WHERE js.preference_score > 0
@@ -583,7 +618,10 @@ const jobQueries = {
       }
   
       query += ` 
-        ORDER BY js.preference_score DESC, js.postedDate DESC
+        ORDER BY 
+          has_logo DESC,
+          js.preference_score DESC, 
+          js.postedDate DESC
         OFFSET @offset ROWS
         FETCH NEXT @pageSize ROWS ONLY
       `;
@@ -922,7 +960,6 @@ ORDER BY jp.postedDate DESC
     }
   },
 
-  // You would also need to update the getJobsCount function similarly
   getJobsCount: async (allowedJobLevels, tags) => {
     try {
       let query = `
@@ -982,6 +1019,73 @@ ORDER BY jp.postedDate DESC
       throw error;
     }
   },
+
+  applyForJob: async (userId, jobId) => {
+    try {
+      const result = await sql.query`
+        INSERT INTO user_jobs (user_id, job_id)
+        VALUES (${userId}, ${jobId})
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  removeJobApplication: async (userId, jobId) => {
+    try {
+      const result = await sql.query`
+        DELETE FROM user_jobs
+        WHERE user_id = ${userId} AND job_id = ${jobId}
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  getUserAppliedJobs: async (userId) => {
+    try {
+      const result = await sql.query`
+        SELECT 
+          j.*,
+          uj.applied_at,
+          uj.status,
+          c.name AS company_name,
+          c.logo AS company_logo,
+          c.location AS company_location,
+          c.description AS company_description,
+          c.industry AS company_industry,
+          c.size AS company_size,
+          c.stock_symbol AS company_stock_symbol,
+          c.founded AS company_founded,
+          (
+            SELECT STRING_AGG(jt.tagName, ', ')
+            FROM JobPostingsTags jpt
+            INNER JOIN JobTags jt ON jpt.tagId = jt.id
+            WHERE jpt.jobId = j.id
+          ) AS tags,
+          (
+            SELECT STRING_AGG(s.name, ', ')
+            FROM job_skills js
+            INNER JOIN skills s ON js.skill_id = s.id
+            WHERE js.job_id = j.id
+          ) AS skills
+        FROM user_jobs uj
+        JOIN JobPostings j ON uj.job_id = j.id
+        LEFT JOIN companies c ON j.company_id = c.id
+        WHERE uj.user_id = ${userId}
+        ORDER BY uj.applied_at DESC
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
 
   getRecentJobCount: async () => {
     try {

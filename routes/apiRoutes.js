@@ -33,6 +33,21 @@ const linkFunctions = require('../utils/linkFunctions');
 const commentQueries = require('../queries/commentQueries');
 const { default: rateLimit } = require('express-rate-limit');
 const notificationQueries = require('../queries/notificationQueries.js');
+const jobLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000,
+  max: 1,
+  handler: (req, res, next) => {
+    req.rateLimit = {
+      exceeded: true,
+    };
+    next();
+  },
+  keyGenerator: (req) => `${req.ip}_${req.params.jobId}`,
+  skip: (req) => {
+    const eightHoursAgo = Date.now() - 8 * 60 * 60 * 1000;
+    return req.rateLimit.resetTime && req.rateLimit.resetTime < eightHoursAgo;
+  },
+});
 
 const renderer = new marked.Renderer();
 renderer.image = function (href, title, text) {
@@ -599,6 +614,54 @@ router.get('/job-experience/:userId', async (req, res) => {
   } catch (err) {
     console.error('Error fetching job experience:', err);
     res.status(500).send('Error fetching job experience');
+  }
+});
+
+router.post('/jobs/:jobId/apply', jobLimiter, async (req, res) => {
+  try {
+    const jobId = req.params.jobId;
+
+    const user = req.user;
+
+    if (!user) {
+      return await jobQueries.incrementJobApplicantCount(jobId);
+    } else {
+      await jobQueries.applyForJob(user.id, jobId);
+      return await jobQueries.incrementJobApplicantCount(jobId);
+    }
+
+  } catch (error) {
+    console.error('Error applying to job:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/jobs/:jobId/remove-apply', async (req, res) => {
+  try {
+    const jobId = req.params.jobId;
+    const user = req.user;
+
+    if (!user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    await jobQueries.removeJobApplication(user.id, jobId);
+    await jobQueries.decrementJobApplicantCount(jobId);
+
+    res.json({ message: 'Job application removed successfully' });
+  } catch (error) {
+    console.error('Error removing job application:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.get('/jobs-count', cacheMiddleware(2400), async (req, res) => {
+  try {
+    const jobCount = await jobQueries.simpleGetJobsCount();
+    res.json(jobCount);
+  } catch (err) {
+    console.error('Error fetching job count:', err);
+    res.status(500).send('Error fetching job count');
   }
 });
 
