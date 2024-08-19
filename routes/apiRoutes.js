@@ -499,7 +499,7 @@ router.get('/company/:name/comments', async (req, res) => {
 
 
 
-router.get('/jobs', async (req, res) => {
+router.get('/jobs', cacheMiddleware(2400), async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 20;
@@ -531,6 +531,7 @@ router.get('/jobs', async (req, res) => {
         currentPage: page,
       });
     }
+    /*
     if (user) {
       userPreferences = {
         jobPreferredTitle: user.jobPreferredTitle,
@@ -543,6 +544,7 @@ router.get('/jobs', async (req, res) => {
         jobPreferredSalary: user.jobPreferredSalary,
       };
     }
+      */
 
     const isEmptySearch =
       parsedTitles.length === 0 &&
@@ -575,6 +577,7 @@ router.get('/jobs', async (req, res) => {
         page,
         pageSize
       );
+      console.log(allJobPostings);
     }
 
     res.json({

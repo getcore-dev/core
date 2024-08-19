@@ -518,8 +518,7 @@ const jobQueries = {
           (
             1 +
             ${titles.length > 0 ? `CASE WHEN j.title IN (${titles.map((_, i) => `@title${i}`).join(', ')}) THEN 1 ELSE 0 END` : '0'} +
-            ${locations.length > 0 ? `CASE WHEN j.location IN (${locations.map((_, i) => `@location${i}`).join(', ')}) THEN 1 ELSE 0 END` : '0'} +
-            ${experienceLevels.length > 0 ? `CASE WHEN j.experienceLevel IN (${experienceLevels.map((_, i) => `@experienceLevel${i}`).join(', ')}) THEN 1 ELSE 0 END` : '0'}
+            ${locations.length > 0 ? `CASE WHEN j.location IN (${locations.map((_, i) => `@location${i}`).join(', ')}) THEN 1 ELSE 0 END` : '0'}
           ) AS preference_score
         FROM JobPostings j
         WHERE j.postedDate >= DATEADD(day, -30, GETDATE())
@@ -546,9 +545,12 @@ const jobQueries = {
         queryParams[`location${i}`] = location;
       });
   
-      experienceLevels.forEach((level, i) => {
-        queryParams[`experienceLevel${i}`] = level;
-      });
+      if (experienceLevels.length > 0) {
+        conditions.push(`js.experienceLevel IN (${experienceLevels.map((_, i) => `@experienceLevel${i}`).join(', ')})`);
+        experienceLevels.forEach((level, i) => {
+          queryParams[`experienceLevel${i}`] = level;
+        });
+      }
   
       if (salary > 0) {
         conditions.push('js.salary >= @salary');
@@ -595,43 +597,12 @@ const jobQueries = {
   
       const result = await request.query(query);
   
-      // Fallback query if no results are found
-      if (result.recordset.length === 0) {
-        let fallbackQuery = `
-          SELECT TOP (@pageSize)
-            j.*,
-            c.name AS company_name, 
-            c.logo AS company_logo, 
-            c.location AS company_location, 
-            c.description AS company_description,
-            (
-              SELECT STRING_AGG(jt.tagName, ',') WITHIN GROUP (ORDER BY jt.tagName)
-              FROM JobPostingsTags jpt
-              JOIN JobTags jt ON jpt.tagId = jt.id
-              WHERE jpt.jobId = j.id AND jt.tagName IS NOT NULL
-            ) AS tags,
-            (
-              SELECT STRING_AGG(s.name, ',') WITHIN GROUP (ORDER BY s.name)
-              FROM job_skills js
-              JOIN skills s ON js.skill_id = s.id
-              WHERE js.job_id = j.id AND s.name IS NOT NULL
-            ) AS skills
-          FROM JobPostings j
-          LEFT JOIN companies c ON j.company_id = c.id
-          WHERE j.postedDate >= DATEADD(day, -30, GETDATE())
-          ORDER BY j.postedDate DESC
-        `;
-  
-        const fallbackResult = await request.query(fallbackQuery);
-        return fallbackResult.recordset;
-      }
-  
       return result.recordset;
     } catch (error) {
       console.error('Error in searchAllJobsFromLast30Days:', error);
       throw error;
     }
-  }, 
+  },
   
   
   getJobTitles: async () => {

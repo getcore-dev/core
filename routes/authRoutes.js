@@ -190,8 +190,8 @@ router.post(
   [
     body('username')
       .trim()
-      .isLength({ min: 5 })
-      .withMessage('Username must be at least 5 characters long'),
+      .isLength({ min: 5, max: 30 })
+      .withMessage('Username must be between 5 and 30 characters'),
     body('email')
       .trim()
       .isEmail()

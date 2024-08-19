@@ -19,6 +19,24 @@ nav {
   display: none !important;
 }
 
+.input-container {
+  position: relative;
+}
+
+#email-validity {
+  position: absolute;
+  bottom: -11px;
+  right: 0;
+  font-size: 0.8em;
+}
+
+#username-char-count {
+  position: absolute;
+  bottom: -11px;
+  font-size: .8rem;
+  right: 0;
+}
+
 .core-logo {
   height: 120px;
   top: 50px;

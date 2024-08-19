@@ -639,6 +639,8 @@ function setupInfiniteScroll() {
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting && !state.isLoading) {
       fetchJobPostings();
+    } else if (entries[0].isIntersecting && state.isLoading) {
+      observer.unobserve(entries[0].target);
     }
   }, options);
 
@@ -744,7 +746,6 @@ function handleResultClick(event) {
     addToSelectedFilters(type, name, name, logo);
     updateState(type, name, name, logo);
   } else {
-    addToSelectedFilters(type, id, name, logo);
     updateState(type, id, name, logo);
   }
   
@@ -813,6 +814,81 @@ function removeSelectedItem(item) {
   }
   updateState(type, id, name, null, true); // true indicates removal
 }
+
+function toggleSelectedFilter(event) {
+  const result = event.currentTarget;
+  const type = result.dataset.type;
+  const id = result.dataset.id;
+  const name = result.dataset.name;
+  const logo = result.dataset.logo;
+
+  const isAlreadySelected = isFilterSelected(type, id, name);
+  if (isAlreadySelected) {
+    event.target.className = 'null-button-normal';
+    updateState(type, id, name, logo, true);
+  } else {
+    clearSelectedFilters(type); // Clear previously selected filters
+    const buttons = document.querySelectorAll(`[data-type="${type}"]`);
+    buttons.forEach(button => {
+      button.className = 'null-button-normal';
+    });
+    event.target.className = 'regular-button-normal';
+    handleResultClick(event);
+    updateState(type, id, name, logo);
+  }
+}
+
+function clearSelectedFilters(type) {
+  let filterSet;
+  switch(type) {
+    case 'tech-job-titles':
+      filterSet = state.filters.titles;
+      break;
+    case 'job-locations':
+      filterSet = state.filters.locations;
+      break;
+    case 'skills':
+      filterSet = state.filters.skills;
+      break;
+    case 'companies':
+      filterSet = state.filters.companies;
+      break;
+    case 'job-levels':
+      filterSet = state.filters.experiencelevels;
+      break;
+  }
+
+  filterSet.clear();
+}
+
+function isFilterSelected(type, id, name) {
+  let filterSet;
+  switch(type) {
+    case 'tech-job-titles':
+      filterSet = state.filters.titles;
+      break;
+    case 'job-locations':
+      filterSet = state.filters.locations;
+      break;
+    case 'skills':
+      filterSet = state.filters.skills;
+      break;
+    case 'companies':
+      filterSet = state.filters.companies;
+      break;
+    case 'job-levels':
+      filterSet = state.filters.experiencelevels;
+      break;
+  }
+
+  if (type === 'companies') {
+    const filter = JSON.stringify({ id, name });
+    return filterSet.has(filter);
+  } else {
+    return filterSet.has(name);
+  }
+}
+
 
 function applySalaryFilter() {
   state.filters.salary = parseInt(document.getElementById('min-salary').value) || 0;

@@ -49,11 +49,13 @@
           <div class="input-container">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" required />
+            <span class="sub-text third-text" id="email-validity">Empty</span>
           </div>
 
           <div class="input-container">
             <label for="username">Username</label>
-            <input type="text" id="username" name="username" required maxlength="25" />
+            <input type="text" id="username" name="username" required minlength="5" maxlength="30" />
+            <span class="sub-text third-text" id="username-char-count">0/30</span>
           </div>
 
           <div class="input-container">
@@ -89,6 +91,43 @@
       var passwordStrengthText = document.getElementById("password-strength");
       var passwordMatchText = document.getElementById("password-match");
       var username = document.getElementById("username");
+      const usernameInput = document.getElementById('username');
+      const charCount = document.getElementById('username-char-count');
+      const emailInput = document.getElementById('email');
+      const emailValidity = document.getElementById('email-validity');
+
+      function validateEmail(email) {
+        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+      }
+
+      function updateEmailValidity() {
+        if (emailInput.value.length === 0) {
+          emailValidity.textContent = 'Empty';
+          emailValidity.className = 'sub-text third-text';
+        } else if (validateEmail(emailInput.value)) {
+          emailValidity.textContent = 'Valid';
+          emailValidity.className = 'valid sub-text';
+        } else {
+          emailValidity.textContent = 'Invalid';
+          emailValidity.className = 'invalid sub-text';
+        }
+      }
+
+      emailInput.addEventListener('input', updateEmailValidity);
+
+      function updateCharCount() {
+        const currentLength = usernameInput.value.length;
+        charCount.textContent = `${currentLength}/30`;
+
+        if (currentLength < 5) {
+          charCount.style.color = '#ae4444';
+        } else {
+          charCount.style.color = '#4b9263';
+        }
+      }
+
+      usernameInput.addEventListener('input', updateCharCount);
 
       function checkUserName() {
         const invalidCharacters = /[^a-zA-Z0-9_]/; // Only allow letters, numbers, and underscores

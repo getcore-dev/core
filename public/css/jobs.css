@@ -398,9 +398,7 @@ div.job-title-location .sub-text {
 }
 
 .quick-options {
-  display: inline-flex;
   gap: .5rem;
-  flex-wrap: wrap;
 }
 
 .job-info {

@@ -3,7 +3,6 @@ const sql = require('mssql');
 const userQueries = {
   findByUsername: async (username) => {
     try {
-      await userQueries.removeUserRelationshipsWithDeadAccounts();
       const result = await sql.query`
       SELECT 
         u.*, 
@@ -19,7 +18,6 @@ const userQueries = {
         ) AS followingCount
       FROM users u
       WHERE u.username = ${username}`;
-      console.log(result.recordset[0].followingCount);
 
       const user = result.recordset[0];
       if (user) {
