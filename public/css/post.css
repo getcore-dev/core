@@ -340,6 +340,7 @@ div .user-info,
 img.blog-avatar {
   border-radius: 6px;
   height: 36px;
+  width: 36px !important;
   aspect-ratio: 1/1;
   object-fit: cover;
   overflow: hidden;
@@ -1921,7 +1922,8 @@ div.post-information {
   display: flex;
   gap: .2rem;
   font-size: .85rem;
-  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .post-subinfo {

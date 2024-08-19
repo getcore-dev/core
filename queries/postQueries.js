@@ -625,12 +625,6 @@ const postQueries = {
         await sql.query`
           INSERT INTO userPostActions (user_id, post_id, action_type) 
           VALUES (${userId}, ${postId}, ${dbActionType})`;
-        await notificationQueries.createNotification(
-          userId,
-          postObject.user_id,
-          'POST_'+actionType,
-          postId
-        );
 
         userReaction = actionType;
       } else if (userAction.recordset[0].action_type !== dbActionType) {
@@ -639,12 +633,6 @@ const postQueries = {
           UPDATE userPostActions 
           SET action_type = ${dbActionType}
           WHERE user_id = ${userId} AND post_id = ${postId}`;
-        await notificationQueries.createNotification(
-          userId,
-          postObject.user_id,
-          'POST_'+actionType,
-          postId
-        );
         userReaction = actionType;
       } else {
         // If user is repeating the same action, remove the action
@@ -660,6 +648,34 @@ const postQueries = {
         FROM userPostActions 
         WHERE post_id = ${postId}
         GROUP BY action_type`;
+
+      // send notification if the user reaches 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000 reactions
+      const totalReactions = reactionCounts.recordset.reduce((acc, row) => {
+        acc[row.action_type] = row.count;
+        return acc;
+      }, {});
+
+      const totalReactionCount = Object.values(totalReactions).reduce(
+        (acc, count) => acc + count,
+        0
+      );
+
+      const reactionThresholds = [
+        5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000,
+        100000,
+      ];
+
+      for (const threshold of reactionThresholds) {
+        if (totalReactionCount === threshold) {
+          await notificationQueries.createNotification(
+            '38f8326c-fe4f-4113-8e42-8a2253b2dcda', // core modereator user id, this is not a hard coded credential.
+            userId,
+            'NEW_POST_MILESTONE',
+            postId,
+            threshold
+          );
+        }
+      }
 
       // Convert the result to a map of reaction names to their counts
       const reactionsMap = reactionCounts.recordset.reduce((acc, row) => {

@@ -138,6 +138,11 @@ router.get('/posts/:postId', viewLimiter, async (req, res) => {
       getUserDetails(postResult.user_id)
     ]);
 
+    // if community.PrivacySetting === 'private' and user.isAdmin is 0 then send them to the home page
+    if (community.PrivacySetting === 'private' && !user.isAdmin) {
+      return res.redirect('/');
+    }
+
     const postData = {
       ...postResult,
       tags,

@@ -982,6 +982,16 @@ router.get('/posts/:postId/comments', async (req, res) => {
   }
 });
 
+router.get('/get-current-user-count', cacheMiddleware(600), async (req, res) => {
+  try {
+    const userCount = await userQueries.getUserCount();
+    res.json(userCount);
+  } catch (err) {
+    console.error('Error fetching user count:', err);
+    res.status(500).send('Error fetching user count');
+  }
+});
+
 router.get('/posts/:postId', rateLimit({ windowMs: 60000, max: 100 }), async (req, res) => {
   try {
     const postId = req.params.postId;

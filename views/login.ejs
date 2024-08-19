@@ -16,9 +16,14 @@
 
   <main>
     <img src="/img/core.png" onclick="window.location.href = '/'" alt="CORE Logo" class="core-logo" />
-
     <div class="account-stuff">
       <div id="register">
+        <div class="current-user-container">
+          <div class="green-circle">
+          </div>
+          <span class="current-user-count">0</span>
+        </div>
+
         <div class="user-res">
           Not a member? <a href="/register">Register here</a>
         </div>
@@ -78,6 +83,19 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback" async defer></script>
 
 <script>
+  async function updateUserCount() {
+    try {
+      const response = await fetch('/api/get-current-user-count');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const userCount = await response.json();
+      document.querySelector('.current-user-count').textContent = userCount + ' active users';
+    } catch (error) {
+      console.error('Error fetching user count:', error);
+    }
+  }
+
   function togglePasswordVisibility() {
     const passwordInput = document.getElementById('password');
     const toggleButton = document.querySelector('.toggle-password');
@@ -86,6 +104,7 @@
     toggleButton.innerHTML = type === 'password' ? '<span class="material-symbols-outlined">visibility</span> Show' : '<span class="material-symbols-outlined">visibility_off</span> Hide';
   }
   document.addEventListener("DOMContentLoaded", function () {
+    updateUserCount();
     const inputs = document.querySelectorAll('.input-container input');
     const labels = document.querySelectorAll('.input-container label');
 

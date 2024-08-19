@@ -14,6 +14,11 @@ body {
   margin-bottom: 0 !important;
 }
 
+div.current-user-container {
+  display: flex;
+  align-items: center;
+}
+
 .login-buttons-container {
   display: flex;
   flex-direction: row;

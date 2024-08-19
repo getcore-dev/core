@@ -202,6 +202,12 @@ router.get('/:communityName/admin', checkAuthenticated, async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const user = req.user;
+    if (user && user.id) {
+      if (user.isAdmin) {
+        const communities = await communityQueries.getAdminCommunities();
+        return res.render('community.ejs', { user, communities });
+      }
+    }
     let communities = await communityQueries.getCommunities();
 
     if (user && user.id) {

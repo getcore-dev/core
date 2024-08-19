@@ -78,7 +78,8 @@ const commentQueries = {
             userId,
             originalPostAuthorId,
             'NEW_COMMENT',
-            postId
+            postId,
+            commentText,
           );
         }
 
@@ -309,7 +310,8 @@ const commentQueries = {
             userId,
             originalCommentAuthorId,
             'NEW_REPLY',
-            postId
+            postId,
+            replyText
           );
         }
         await commentQueries.interactWithComment(postId, replyId, userId, 'LIKE');

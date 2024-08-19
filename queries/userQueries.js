@@ -460,6 +460,17 @@ const userQueries = {
     }
   },
 
+  getUserCount: async () => {
+    try {
+      const result = await sql.query`
+        SELECT COUNT(*) AS count FROM users`;
+      return result.recordset[0].count;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   followUser: async (followerId, followedId) => {
     try {
       // Check if the follow relationship already exists

@@ -37,7 +37,8 @@ router.delete('/post/:postId', checkAuthenticated, async (req, res) => {
       userId,
       originalPostAuthorId,
       'ADMIN_DELETED',
-      postId
+      postId,
+      'Rules violation'
     );
     return res.status(200).send('Post deleted');
   } catch (error) {
@@ -72,7 +73,8 @@ router.post(
         user.id,
         originalPostAuthorId,
         result.isLocked ? 'ADMIN_LOCKED' : 'ADMIN_UNLOCKED',
-        postId
+        postId,
+        result.isLocked ? 'Rules violations in the comments' : null
       );
       res.send({ message: result.message });
     } catch (error) {
@@ -110,7 +112,7 @@ router.delete('/comment/:commentId', checkAuthenticated, async (req, res) => {
       originalPostAuthorId,
       'ADMIN_DELETED_COMMENT',
       postId,
-      comment.comment
+      'Rules violation'
     );
     res.send({ message: 'Comment deleted' });
   } catch (error) {
@@ -185,7 +187,7 @@ router.post(
         currentUserId,
         userId,
         result.verified ? 'ADMIN_VERIFIED' : 'ADMIN_UNVERIFIED',
-        null
+        null,
       );
       res.send({ message: result.message });
     } catch (error) {
@@ -223,7 +225,8 @@ router.post(
         currentUserId,
         userId,
         result.isBanned ? 'ADMIN_BAN' : 'ADMIN_UNBAN',
-        null
+        null,
+        result.isBanned ? 'Rules violation' : null
       );
       res.send({ message: result.message });
     } catch (error) {

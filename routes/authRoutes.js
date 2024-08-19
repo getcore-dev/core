@@ -212,7 +212,6 @@ router.post(
   ],
   async (req, res, next) => {
     try {
-      console.log('Registering user:', req.body);
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         return res.status(400).render('register.ejs', {
@@ -284,6 +283,10 @@ router.post(
         userId,
         new Date()
       );
+
+      // follow the core account by default.
+      await userQueries.followUser(userId, '38f8326c-fe4f-4113-8e42-8a2253b2dcda'); 
+      
       res.redirect('/login');
     } catch (error) {
       console.error('Registration error:', error);

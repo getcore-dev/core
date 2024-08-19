@@ -618,11 +618,9 @@ OUTER APPLY (
   ISNULL(u2.username, 'unknown') AS user_username,
   ISNULL(u2.avatar, null) AS user_avatar,
   SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
-  SUM(CASE WHEN upa.action_type = 'B' THEN 1 ELSE 0 END) as boostCount,
   SUM(CASE WHEN upa.action_type = 'DISLIKE' THEN 1 ELSE 0 END) as dislikeCount,
   SUM(CASE WHEN upa.action_type = 'CURIOUS' THEN 1 ELSE 0 END) as curiousCount,
   SUM(CASE WHEN upa.action_type = 'LIKE' THEN 1 ELSE 0 END) as likeCount,
-  SUM(CASE WHEN upa.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) as celebrateCount,
   upa2.action_type as userReaction,
   CASE 
     WHEN je.title IS NOT NULL THEN je.title
@@ -687,6 +685,7 @@ GROUP BY
         c.mini_icon, 
         c.community_color,
         c.shortname, 
+        c.PrivacySetting,
         CASE WHEN cm.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_member,
         (SELECT COUNT(*) FROM community_memberships WHERE community_id = c.id) AS MemberCount
       FROM 
@@ -697,11 +696,11 @@ GROUP BY
         c.id = cm.community_id 
         AND cm.user_id = ${user ? user.id : null}
       WHERE 
-        c.PrivacySetting == 'Public'
+        ${user && user.isAdmin ? sql`1=1` : sql`c.PrivacySetting = 'Public' OR (c.PrivacySetting != 'Public' AND cm.user_id IS NOT NULL)`}
       ORDER BY 
         MemberCount DESC
     `;
-
+  
       const result = await query;
       return result.recordset;
     } catch (err) {

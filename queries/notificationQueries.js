@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Function to send email notification
-const sendEmailNotification = async (receiverUserId, type) => {
+const sendEmailNotification = async (senderUserId, receiverUserId, postId = null, important_message = '', type) => {
   try {
     // Fetch the receiver's email and username
     const result = await sql.query`
@@ -21,6 +21,16 @@ const sendEmailNotification = async (receiverUserId, type) => {
       FROM users 
       WHERE id = ${receiverUserId}`;
     const user = result.recordset[0];
+
+    const sender = await sql.query`
+      SELECT username
+      FROM users
+      WHERE id = ${senderUserId}`;
+    const senderUsername = sender.recordset[0].username;
+    
+    if (!sender) {
+      throw new Error('User not found');
+    }
 
     if (!user) {
       throw new Error('User not found');
@@ -31,31 +41,63 @@ const sendEmailNotification = async (receiverUserId, type) => {
     let text;
 
     switch (type) {
-    case 'NEW_MESSAGE':
-      subject = 'You have a new message';
-      text =
-          'You have received a new message. Please check your account for more details.';
-      break;
-    case 'NEW_FOLLOWER':
-      subject = 'You have a new follower';
-      text =
-          'You have a new follower. Please check your account for more details.';
+    case 'NEW_COMMENT':
+      subject = 'New comment on your post';
+      text = `${senderUsername} replied "${important_message}" to your post. https://getcore.dev/post/${postId}`;
       break;
     case 'NEW_REPLY':
       subject = 'New reply to your comment';
-      text =
-          'Someone replied to your comment. Please check your account for more details.';
+      text = `${senderUsername} replied "${important_message}" to your comment. https://getcore.dev/post/${postId}`;
       break;
-    case 'NEW_COMMENT':
-      subject = 'New comment on your post';
-      text =
-          'Someone commented on your post. Please check your account for more details.';
+    case 'NEW_POST_MILESTONE':
+      subject = 'Your post is getting popular';
+      text = `Your post has reached ${important_message} likes. https://getcore.dev/post/${postId}`;
       break;
-    case 'NEW_FEEDBACK':
-      subject = '[ADMIN] New core feedback';
-      text =
-          'A new feedback has been submitted. Please check the feedback network for more details.';
+    case 'NEW_FOLLOWER':
+      subject = 'You have a new follower';
+      text = `${senderUsername} is now following you. https://getcore.dev/profile/${senderUserId}`;
       break;
+    case 'ADMIN_DELETED':
+      subject = 'Your post has been deleted';
+      text = `Your post has been deleted by an admin. Reason: ${important_message}`;
+      break;
+    case 'ADMIN_LOCKED':
+      subject = 'Your post has been locked';
+      text = `Your post has been locked by an admin. Reason: ${important_message}`;
+      break;
+    case 'ADMIN_UNLOCKED':
+      subject = 'Your post has been unlocked';
+      text = 'Your post has been unlocked by an admin.';
+      break;
+    case 'ADMIN_DELETED_COMMENT':
+      subject = 'Your comment has been deleted';
+      text = `Your comment has been deleted by an admin. Comment: ${important_message}`;
+      break;
+    case 'ADMIN_REMOVED':
+      subject = 'You have been removed from the admin team';
+      text = 'You have been removed from the admin team.';
+      break;
+    case 'ADMIN_VERIFIED':
+      subject = 'Your account has been verified on getcore.dev';
+      text = 'Your account has been verified on getcore.dev.';
+      break;
+    case 'ADMIN_UNVERIFIED':
+      subject = 'Your verification has been revoked';
+      text = 'Your account has been unverified on getcore.dev.';
+      break;
+    case 'ADMIN_BAN':
+      subject = 'Your account has been banned';
+      text = `Your account has been banned on getcore.dev. Reason: ${important_message}`;
+      break;
+    case 'ADMIN_UNBAN':
+      subject = 'Your account has been unbanned';
+      text = 'Your account has been unbanned on getcore.dev.';
+      break;
+    case 'ACCEPTED_ANSWER':
+      subject = 'Your answer has been accepted';
+      text = `Your answer has been accepted by the post creator. https://getcore.dev/post/${postId}`;
+      break;
+
     default:
       subject = 'You have a new notification';
       text =
@@ -192,7 +234,7 @@ const notificationQueries = {
           VALUES (${type}, 0, ${createdAt}, ${receiverUserId}, ${senderUserId}, ${postId} , ${important_message})`;
       }
 
-      await sendEmailNotification(receiverUserId, type);
+      await sendEmailNotification(senderUserId, receiverUserId, postId, important_message, type);
     } catch (err) {
       console.error('Database operation error:', err);
       throw err;

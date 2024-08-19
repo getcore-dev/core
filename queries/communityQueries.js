@@ -241,6 +241,21 @@ const communityQueries = {
     }
   },
 
+  getAdminCommunities: async () => {
+    try {
+      const result = await sql.query`
+        SELECT c.*,
+        (SELECT COUNT(DISTINCT user_id) FROM community_memberships WHERE community_id = c.id) AS CommunityMemberCount,
+        (SELECT COUNT(*) FROM posts WHERE communities_id = c.id AND deleted = 0) AS PostCount
+        FROM communities c`;
+
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
 
   joinCommunity: async (userId, communityId) => {
     try {

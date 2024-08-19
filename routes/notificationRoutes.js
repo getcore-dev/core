@@ -63,17 +63,6 @@ router.put('/markAsRead/:notificationId', async (req, res) => {
   }
 });
 
-// Create a new notification
-router.post('/create', async (req, res) => {
-  try {
-    const { userId, type, message } = req.body;
-    await notificationQueries.createNotification(userId, type, message);
-    res.send('Notification created');
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
-});
-
 // Delete a notification
 router.delete('/:notificationId', async (req, res) => {
   try {
