@@ -484,17 +484,6 @@ OUTER APPLY (
     }
   },
 
-  getAllCommunities: async () => {
-    try {
-      const result = await sql.query`
-        SELECT name FROM communities`;
-      return result.recordset;
-    } catch (err) {
-      console.error('Database query error:', err);
-      throw err;
-    }
-  },
-
   getTrendingPosts: async () => {
     try {
       const result = await sql.query`
@@ -515,7 +504,8 @@ OUTER APPLY (
           FROM posts p
           INNER JOIN users u ON p.user_id = u.id
           LEFT JOIN userPostActions upa ON p.id = upa.post_id
-          WHERE p.deleted = 0 AND communities_id != 9
+          LEFT JOIN communities c ON p.communities_id = c.id
+          WHERE p.deleted = 0 AND communities_id != 9 AND c.PrivacySetting != 'private'
           GROUP BY p.id, p.created_at, p.deleted,  p.title, p.content, p.subtitle, p.link, p.communities_id, u.firstname, u.lastname,
                    u.username, u.avatar, p.react_like, p.react_love, p.react_curious,
                    p.react_interesting, p.react_celebrate, p.views
@@ -707,9 +697,7 @@ GROUP BY
         c.id = cm.community_id 
         AND cm.user_id = ${user ? user.id : null}
       WHERE 
-        c.PrivacySetting = 'Public'
-      AND 
-        c.id != 9
+        c.PrivacySetting == 'Public'
       ORDER BY 
         MemberCount DESC
     `;

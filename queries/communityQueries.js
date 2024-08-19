@@ -231,7 +231,8 @@ const communityQueries = {
         SELECT c.*,
         (SELECT COUNT(DISTINCT user_id) FROM community_memberships WHERE community_id = c.id) AS CommunityMemberCount,
         (SELECT COUNT(*) FROM posts WHERE communities_id = c.id AND deleted = 0) AS PostCount
-        FROM communities c`;
+        FROM communities c
+        WHERE c.PrivacySetting = 'public'`;
 
       return result.recordset;
     } catch (err) {

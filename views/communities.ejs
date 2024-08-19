@@ -794,13 +794,13 @@ add
               const loadMoreButton = document.querySelector('.load-more-button');
               const loadMoreDiv = document.querySelector('.load-more');
               const observer = new IntersectionObserver((entries) => {
-                if (entries[0].isIntersecting) {
+                if (entries[0].isIntersecting && posts.length > 0) {
                   const nextPage = page + 1;
                   fetchAndDisplayPosts(communityId, sortBy, nextPage);
                 }
               });
 
-              if (loadMoreDiv) {
+              if (loadMoreDiv && posts.length > 0) {
                 observer.observe(loadMoreDiv);
               }
 
