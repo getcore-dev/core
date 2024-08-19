@@ -217,19 +217,25 @@ const userQueries = {
       throw err;
     }
   },
-  getPostsByUserIdUserProfile: async (userId) => {
+  getPostsByUserIdUserProfile: async (userId, currentUserId) => {
     try {
       const result = await sql.query`
       SELECT 
         p.*,
-        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id AND c.deleted = 0) AS comment_count,
+        c.PrivacySetting,
+        (SELECT COUNT(*) FROM comments com WHERE com.post_id = p.id AND com.deleted = 0) AS comment_count,
         (SELECT COUNT(*) FROM UserPostActions upa WHERE upa.post_id = p.id) AS reaction_count
       FROM 
         posts p
+      INNER JOIN
+        communities c ON p.communities_id = c.id
+      LEFT JOIN
+        community_memberships cm ON c.id = cm.community_id AND cm.user_id = ${currentUserId}
       WHERE 
         p.user_id = ${userId} AND 
         p.deleted = 0 AND
-        p.communities_id != 9
+        p.communities_id != 9 AND
+        (c.PrivacySetting = 'Public' OR cm.user_id IS NOT NULL)
       ORDER BY 
         p.created_at DESC
       OFFSET 0 ROWS
@@ -282,34 +288,45 @@ const userQueries = {
     }
   },
 
-  getCommentsByUserIdUserProfile: async (userId) => {
+  getCommentsByUserIdUserProfile: async (userId, currentUserId) => {
     try {
       const result = await sql.query`
-      SELECT comments.*, posts.title 
-      FROM comments 
-      INNER JOIN posts ON comments.post_id = posts.id 
-      WHERE comments.user_id = ${userId} AND comments.deleted = 0 
-      ORDER BY comments.created_at DESC 
-      OFFSET 0 ROWS 
-      FETCH NEXT 10 ROWS ONLY`;
+        SELECT 
+          comments.*, 
+          posts.title,
+          communities.PrivacySetting
+        FROM comments 
+        INNER JOIN posts ON comments.post_id = posts.id 
+        INNER JOIN communities ON posts.communities_id = communities.id
+        LEFT JOIN community_memberships cm ON communities.id = cm.community_id AND cm.user_id = ${currentUserId}
+        WHERE 
+          comments.user_id = ${userId} 
+          AND comments.deleted = 0 
+          AND (communities.PrivacySetting = 'Public' OR cm.user_id IS NOT NULL)
+        ORDER BY comments.created_at DESC 
+        OFFSET 0 ROWS 
+        FETCH NEXT 10 ROWS ONLY
+      `;
       const comments = result.recordset;
-
+  
       const enrichedComments = await Promise.all(
         comments.map(async (comment) => {
           const author = await userQueries.getCommentAuthorByCommentId(
-            comment.id
+            comment.id,
+            currentUserId
           );
           let receiver = null;
           if (comment.parent_comment_id) {
             receiver = await userQueries.getCommentAuthorByCommentId(
-              comment.parent_comment_id
+              comment.parent_comment_id,
+              currentUserId
             );
-            receiver = receiver.username;
+            receiver = receiver ? receiver.username : null;
           }
           return { ...comment, author, receiver };
         })
       );
-
+  
       return enrichedComments;
     } catch (err) {
       console.error('Database query error:', err);
