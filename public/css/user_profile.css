@@ -287,8 +287,7 @@ main {
   border: 1px solid var(--border-color);
 }
 
-.profile-picture button,
-.profile-info button {
+.profile-picture button {
   background-color: var(--light-mode-body-color);
   /* Same as navbar button */
   color: var(--light-mode-text-color);
@@ -413,10 +412,6 @@ main {
   border-radius: 6px;
   font-size: 14px;
   position: relative;
-}
-
-button#edit-button {
-  background: none;
 }
 
 #date-flair {
@@ -891,7 +886,6 @@ td {
 
 
   .profile-picture button,
-  .profile-info button,
   #imageEditControls button {
     background-color: var(--dark-mode-main-color);
     color: var(--dark-mode-text-color);
@@ -911,7 +905,6 @@ td {
   /* Hover effect for buttons in dark mode */
   .profile-picture button:hover,
   #imageEditControls button:hover,
-  .profile-info button:hover,
   .current-job button:hover {
     background-color: #444;
   }

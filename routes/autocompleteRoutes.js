@@ -2,6 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
+const cacheMiddleware = require('../middleware/cache');
 const sql = require('mssql');
 const { checkAuthenticated } = require('../middleware/authMiddleware');
 const communityQueries = require('../queries/communityQueries');
@@ -332,7 +333,7 @@ const techJobTitles = [
     "Manager", "Director", "VP",
   ];
 
-router.get('/users', async (req, res) => {
+  router.get('/users', cacheMiddleware(600, 'autocomplete:users:'), async (req, res) => {
     const searchTerm = req.query.term;
     
     try {
@@ -344,7 +345,7 @@ router.get('/users', async (req, res) => {
     }
 });
 
-router.get('/jobs', async (req, res) => {
+router.get('/jobs', cacheMiddleware(600), async (req, res) => {
     const searchTerm = req.query.term;
 
     try {
@@ -356,7 +357,7 @@ router.get('/jobs', async (req, res) => {
     }
 });
 
-router.get('/job-levels', async (req, res) => {
+router.get('/job-levels', cacheMiddleware(600), async (req, res) => {
     const searchTerm = req.query.term;
 
     const filteredLevels = jobLevels.filter(level => level.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -375,7 +376,7 @@ router.get('/job-levels', async (req, res) => {
         res.status(500).send('Error searching job levels');
     }
 });
-router.get('/job-locations', async (req, res) => {
+router.get('/job-locations', cacheMiddleware(600), async (req, res) => {
     const searchTerm = req.query.term;
 
     if (!searchTerm) {
@@ -414,7 +415,7 @@ router.get('/job-locations', async (req, res) => {
     }
 });
 
-router.get('/job-levels', async (req, res) => {
+router.get('/job-levels', cacheMiddleware(600), async (req, res) => {
     const searchTerm = req.query.term;
 
     const filteredLevels = jobLevels.filter(level => level.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -423,7 +424,7 @@ router.get('/job-levels', async (req, res) => {
 
 
 
-router.get('/tech-job-titles', async (req, res) => {
+router.get('/tech-job-titles', cacheMiddleware(600), async (req, res) => {
     const searchTerm = req.query.term;
 
     try {
@@ -448,7 +449,7 @@ router.get('/tech-job-titles', async (req, res) => {
     }
 });
 
-router.get('/skills', async (req, res) => {
+router.get('/skills', cacheMiddleware(600), async (req, res) => {
     const searchTerm = req.query.term;
 
     try {
@@ -460,7 +461,7 @@ router.get('/skills', async (req, res) => {
     }
 });
 
-router.get('/companies', async (req, res) => {
+router.get('/companies', cacheMiddleware(600), async (req, res) => {
     const searchTerm = req.query.term;
 
     try {
@@ -472,7 +473,7 @@ router.get('/companies', async (req, res) => {
     }
 });
 
-router.get('/posts', async (req, res) => {
+router.get('/posts', cacheMiddleware(600), async (req, res) => {
     const searchTerm = req.query.term;
 
     try {
@@ -484,7 +485,7 @@ router.get('/posts', async (req, res) => {
     }
 });
 
-router.get('/all', async (req, res) => {
+router.get('/all', cacheMiddleware(600), async (req, res) => {
     const searchTerm = req.query.term;
 
     try {

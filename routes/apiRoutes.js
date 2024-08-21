@@ -592,7 +592,6 @@ router.get('/jobs', cacheMiddleware(2400), async (req, res) => {
         page,
         pageSize
       );
-      console.log(allJobPostings);
     }
 
     res.json({

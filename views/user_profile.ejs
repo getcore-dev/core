@@ -29,8 +29,6 @@
 <% } %>
 <style>
   .link-display,
-  #edit-button,
-  #followButton,
   .github-commit-repos {
     background: <%=otheruser.profile_border_color%>0f !important;
     border: 1px solid <%=otheruser.profile_border_color%>52 !important;
@@ -91,8 +89,6 @@
   @media (prefers-color-scheme: dark) {
 
     .link-display,
-    #edit-button,
-    #followButton,
     .github-commit-repos,
     .post,
     .comment {
@@ -153,28 +149,27 @@
             </div>
           </div>
           <div class="edit-controls-and-follow-button">
-            <button id="edit-button" onclick="share('User Profile', '', 'https://getcore.dev/user/<%= otheruser.username %>')" style="margin-bottom: auto;">
+            <button class="null-button-normal" id="edit-button" onclick="share('User Profile', '', 'https://getcore.dev/user/<%= otheruser.username %>')" style="margin-bottom: auto;">
               Share
             </button>
             <% if (user) { %>
             <% if (otheruser.username === user.username) { %>
-            <button id="edit-button" onclick="window.location.href='/edit-profile'" style="margin-bottom: auto;">
+            <button class="regular-button-normal" id="edit-button" onclick="window.location.href='/edit-profile'" style="margin-bottom: auto;">
               Edit
             </button>
             <% } else { %>
-            <form id="followForm" action="/users/<%= otheruser.id %>/<%= isFollowing ? 'unfollow' : 'follow' %>" method="POST">
-              <button type="submit" id="followButton" style="margin-bottom: auto;"><%= isFollowing ? 'Unfollow' : 'Follow' %></button>
-            </form>
-
+            <button class="<%= isFollowing ? 'cancel-button-normal' : 'submit-button-normal' %>" id="followButton" style="margin-bottom: auto;">
+              <%= isFollowing ? 'Unfollow' : 'Follow' %>
+            </button>
             <% if (user.isAdmin ) { %>
             <form action="/admin/users/<%= otheruser.id %>/toggle-admin" method="POST">
-              <button class="admin-button" type="submit" style="margin-bottom: auto;"><%= otheruser.isAdmin ? 'Demote' : 'Promote' %></button>
+              <button class="admin-button cancel-button-normal" type="submit" style="margin-bottom: auto;"><%= otheruser.isAdmin ? 'Demote' : 'Promote' %></button>
             </form>
             <form action="/admin/users/<%= otheruser.id %>/toggle-verified" method="POST">
-              <button class="admin-button" type="submit" style="margin-bottom: auto;"><%= otheruser.verified ? 'Unverify' : 'Verify' %></button>
+              <button class="admin-button cancel-button-normal" type="submit" style="margin-bottom: auto;"><%= otheruser.verified ? 'Unverify' : 'Verify' %></button>
             </form>
             <form action="/admin/users/<%= otheruser.id %>/toggle-ban" method="POST">
-              <button class="admin-button" type="submit" style="margin-bottom: auto;"><%= otheruser.isBanned ? 'Unban' : 'Ban' %></button>
+              <button class="admin-button cancel-button-normal" type="submit" style="margin-bottom: auto;"><%= otheruser.isBanned ? 'Unban' : 'Ban' %></button>
             </form>
             <% } %>
             <% } %>
@@ -527,7 +522,7 @@
           const jobElement = document.createElement('div');
           jobElement.innerHTML = `
             <div class="job-experience-image">
-              ${!<%= otheruser.settings_PrivateJobNames %> ? (typeof experience !== 'undefined' && experience.logo ? `<img class="thumbnail-regular thumbnail-small" src="${experience.logo}" alt="Job Experience" />` : '') : ''}
+              ${!'<%= otheruser.settings_PrivateJobNames %>' ? (typeof experience !== 'undefined' && experience.logo ? `<img class="thumbnail-regular thumbnail-small" src="${experience.logo}" alt="Job Experience" />` : '') : ''}
             </div>
                         <div class="job-experience-body">
               <div class="job-experience-header">
@@ -680,18 +675,46 @@
       displayNoRepositoriesMessage();
     }
     <% if (user && otheruser.username !== user.username) { %>
-    document.getElementById('followForm').addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const form = document.getElementById('followForm');
-      const response = await fetch(form.action, {
-        method: form.method
-      });
-      const data = await response.json();
-      document.getElementById('followButton').textContent = data.buttonText;
-      document.getElementById('followerCount').textContent = data.followerCount;
-      console.log(data);
+    document.addEventListener('DOMContentLoaded', () => {
+      const button = document.getElementById('followButton');
+      const followerCountElement = document.getElementById('followerCount');
+      let isFollowing = <%= isFollowing %>;
 
-      form.action = data.action;
+      button.addEventListener('click', async () => {
+        try {
+          const action = isFollowing ? 'unfollow' : 'follow';
+          const response = await fetch(`/users/<%= otheruser.id %>/${action}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'same-origin'
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          // Update button text
+          button.textContent = isFollowing ? 'Follow' : 'Unfollow';
+          button.className = isFollowing ? 'submit-button-normal' : 'cancel-button-normal';
+
+          // Update follower count
+          if (followerCountElement && data.followerCount !== undefined) {
+            followerCountElement.textContent = data.followerCount;
+          }
+
+          // Toggle isFollowing state
+          isFollowing = !isFollowing;
+
+        } catch (error) {
+          console.error('Error:', error);
+          showBannerNotification('An error occurred. Please try again.');
+        }
+      });
     });
     <% } %>
 
@@ -709,7 +732,7 @@
 
       // Continue only if the imageUrl is not empty
       if (imageUrl.trim() !== "") {
-        // Send the POST request to the `/edits` endpoint with the imageURL
+        // Send the POST request to the ` / edits` endpoint with the imageURL
         fetch("/edits", {
             method: "POST",
             headers: {
@@ -742,7 +765,10 @@
     }
 
     function editField(field, button) {
-      const displayElement = document.getElementById(`${field}-display`);
+      const displayElement = document.getElementById(`
+                        $ {
+                          field
+                        } - display`);
       const currentValue = displayElement.innerText;
 
       if (button.textContent === "Edit") {
@@ -750,7 +776,10 @@
         const inputField = document.createElement("input");
         inputField.type = "text";
         inputField.value = currentValue;
-        inputField.id = `${field}-input`;
+        inputField.id = `
+                        $ {
+                          field
+                        } - input`;
         inputField.classList.add("edit-input"); // Add this class to style the input
 
         displayElement.parentNode.insertBefore(inputField, displayElement);
@@ -841,7 +870,9 @@
         button.classList.remove('active');
       });
 
-      document.querySelector(`.${section}-button`).classList.add('active');
+      document.querySelector(`.$ {
+                          section
+                        } - button`).classList.add('active');
 
 
     }

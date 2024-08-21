@@ -41,7 +41,7 @@
               <div class="pulse"></div>
               <div class="pulse"></div>
             </div>
-            <p class="recent-jobs-count sub-text secondary-text" id="recent-jobs-count">
+            <p class="recent-jobs-count sub-text third-text" id="recent-jobs-count">
             </p>
           </span>
           <% if (user) { %>
@@ -65,20 +65,18 @@
 
         <div class="jobs-search-container">
           <input type="text" id="job-search-input" class="job-posting-search-input" placeholder="Search jobs & companies" />
-          <svg class="job-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
         </div>
         <div class="quick-options" id="horizontal-scroll">
           <button class="quick-option-btn null-button-normal" data-type="job-levels" data-id="undefined" data-name="Internship" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Internships</button>
-          <button class="quick-option-btn null-button-normal" data-type="job-levels" data-name="Entry Level" data-id="undefined" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">New-Grad</button>
-          <button class="quick-option-btn null-button-normal" data-type="job-levels" data-name="Mid Level" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Junior</button>
-          <button class="quick-option-btn null-button-normal" data-type="job-levels" data-name="Senior" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Senior</button>
-          <button class="quick-option-btn null-button-normal" data-type="job-levels" data-name="Lead" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Lead</button>
-          <button class="quick-option-btn null-button-normal" data-type="job-levels" data-name="Manager" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Manager</button>
-          <button class="quick-option-btn null-button-normal" data-type="job-levels" data-name="Director" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Director</button>
-          <button class="quick-option-btn null-button-normal" data-type="job-levels" data-name="VP" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">VP</button>
+          <button class="quick-option-btn null-button-normal" data-type="job-levels" data-id="undefined" data-name="Entry Level" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">New-Grad</button>
+          <button class="quick-option-btn null-button-normal" data-type="job-levels" data-id="undefined" data-name="Mid Level" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Junior</button>
+          <button class="quick-option-btn null-button-normal" data-type="job-levels" data-id="undefined" data-name="Senior" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Senior</button>
+          <button class="quick-option-btn null-button-normal" data-type="job-levels" data-id="undefined" data-name="Lead" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Lead</button>
+          <button class="quick-option-btn null-button-normal" data-type="job-levels" data-id="undefined" data-name="Manager" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Manager</button>
+          <button class="quick-option-btn null-button-normal" data-type="job-levels" data-id="undefined" data-name="Director" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Director</button>
+          <button class="quick-option-btn null-button-normal" data-type="job-levels" data-id="undefined" data-name="VP" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">VP</button>
+        </div>
+        <div class="quick-options" id="horizontal-scroll">
 
         </div>
         <div class="jobs-selected-filters">

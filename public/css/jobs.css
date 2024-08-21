@@ -154,10 +154,6 @@ div.job-filters {
   margin: 0;
 }
 
-h3.job-title {
-  margin: 0;
-  margin-top: 0;
-}
 
 .job-title a,
 .job-title a:visited {
@@ -382,7 +378,6 @@ div.job-title-location .sub-text {
 .job-posting-search-input {
   width: 100%;
   padding: 8px 12px;
-  padding-left: 35px !important;
   border: 1px solid #ccc;
   border-radius: 4px;
 }

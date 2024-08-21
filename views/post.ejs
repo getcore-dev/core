@@ -871,7 +871,7 @@
               </div>
               <% } %>
               <% if (similarPost.post_type !== 'question' && (!similarPost.link || (similarPost.post_type !== 'post' && similarPost.post_type !== 'project'))) { %>
-              <div class="description sub-text third-text">
+              <div class="description sub-text condensed third-text">
                 <%
               let contentWithoutMarkdown = similarPost.content
                 .replace(/^#{1,6}\s+/gm, '')

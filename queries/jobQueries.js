@@ -29,6 +29,18 @@ const jobQueries = {
       throw err;
     }
   },
+
+  getCompanyJobLinks: async (companyId) => {
+    try {
+      const result = await sql.query`
+        SELECT id, title, link FROM JobPostings WHERE company_id = ${companyId}
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
   
   incrementJobApplicantCount: async (jobId) => {
     try {
@@ -339,18 +351,7 @@ const jobQueries = {
       const result = await sql.query`
         WITH RecentJobs AS (
           SELECT TOP (${page * pageSize + pageSize}) 
-            j.id,
-            j.title,
-            j.salary,
-            j.salary_max,
-            j.experienceLevel,
-            j.location,
-            j.postedDate,
-            j.link,
-            j.description,
-            j.company_id,
-            j.recruiter_id,
-            j.views,
+            j.*,
             c.name AS company_name,
             c.logo AS company_logo,
             c.location AS company_location,
@@ -531,6 +532,7 @@ const jobQueries = {
         companies = []
       } = filters;
   
+      console.log(filters);
       const offset = (page - 1) * pageSize;
   
       let query = `
@@ -551,8 +553,7 @@ const jobQueries = {
           ) AS skills,
           (
             1 +
-            ${titles.length > 0 ? `CASE WHEN j.title IN (${titles.map((_, i) => `@title${i}`).join(', ')}) THEN 1 ELSE 0 END` : '0'} +
-            ${locations.length > 0 ? `CASE WHEN j.location IN (${locations.map((_, i) => `@location${i}`).join(', ')}) THEN 1 ELSE 0 END` : '0'}
+            ${titles.length > 0 ? `CASE WHEN j.title IN (${titles.map((_, i) => `@title${i}`).join(', ')}) THEN 1 ELSE 0 END` : '0'}
           ) AS preference_score
         FROM JobPostings j
         WHERE j.postedDate >= DATEADD(day, -30, GETDATE())
@@ -566,7 +567,7 @@ const jobQueries = {
         CASE WHEN c.logo IS NOT NULL AND c.logo != '' THEN 1 ELSE 0 END AS has_logo
       FROM JobScores js
       LEFT JOIN companies c ON js.company_id = c.id
-      WHERE js.preference_score > 0
+      WHERE 1=1
       `;
   
       const conditions = [];
@@ -576,9 +577,12 @@ const jobQueries = {
         queryParams[`title${i}`] = title;
       });
   
-      locations.forEach((location, i) => {
-        queryParams[`location${i}`] = location;
-      });
+      if (locations.length > 0) {
+        conditions.push(`(${locations.map((_, i) => `js.location LIKE @location${i}`).join(' OR ')})`);
+        locations.forEach((location, i) => {
+          queryParams[`location${i}`] = `%${location}%`;
+        });
+      }
   
       if (experienceLevels.length > 0) {
         conditions.push(`js.experienceLevel IN (${experienceLevels.map((_, i) => `@experienceLevel${i}`).join(', ')})`);
@@ -593,16 +597,16 @@ const jobQueries = {
       }
   
       if (skills.length > 0) {
-        const skillConditions = skills.map((_, i) => `@skill${i}`).join(', ');
-        conditions.push(`
+        const skillConditions = skills.map((_, i) => `
           EXISTS (
             SELECT 1 FROM job_skills js_inner
             JOIN skills s ON js_inner.skill_id = s.id
-            WHERE js_inner.job_id = js.id AND s.name IN (${skillConditions})
+            WHERE js_inner.job_id = js.id AND LOWER(s.name) LIKE '%' + LOWER(@skill${i}) + '%'
           )
-        `);
+        `).join(' AND ');
+        conditions.push(`(${skillConditions})`);
         skills.forEach((skill, i) => {
-          queryParams[`skill${i}`] = skill;
+          queryParams[`skill${i}`] = skill.toLowerCase();
         });
       }
   

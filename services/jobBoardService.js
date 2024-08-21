@@ -357,7 +357,6 @@ class JobProcessor extends EventEmitter {
 
   async processJobLink(link) {
     if (this.processedLinks.has(link)) {
-      console.log('Job already processed:', link);
       return { alreadyProcessed: true };
     }
   
@@ -373,15 +372,19 @@ class JobProcessor extends EventEmitter {
       let extractedData;
 
         if (this.useGemini) {
+          this.updateProgress({ currentAction: 'Using Gemini API' });
           extractedData = await this.useGeminiAPI(link, textContent);
           extractedData = this.validateAndCleanJobData(extractedData);
         } else {
+          this.updateProgress({ currentAction: 'Using ChatGPT API' });
           extractedData = await this.useChatGPTAPI(link, textContent);
         }
+      this.updateProgress({ currentAction: 'Saving processed link' });
   
       await this.saveProcessedLink(link);
 
       if (extractedData.skipped) {
+        this.updateProgress({ currentAction: 'Skipped job' });
         return { skipped: true };
       }
       return extractedData;
@@ -572,6 +575,7 @@ class JobProcessor extends EventEmitter {
   }
 
   async createJobPosting(jobData, companyId, link) {
+    this.updateProgress({ currentAction: 'Creating job posting' });
     await jobQueries.createJobPosting(
       jobData.title,
       jobData.salary,
@@ -658,6 +662,13 @@ class JobProcessor extends EventEmitter {
           currentAction: `Processing job: ${link.url || link}`
         });
 
+        const currentCompanyJobLinks = await jobQueries.getCompanyJobLinks(companyId);
+
+        if (currentCompanyJobLinks.some(job => job.link === link.url || job.link === link)) {
+          console.log('Job already processed:', link.url || link);
+          continue;
+        }
+
         let jobData;
         if (isLinkedIn) {
           jobData = await this.processLinkedInJob(link);
@@ -665,11 +676,14 @@ class JobProcessor extends EventEmitter {
           jobData = await this.processJobLinkWithRetry(link);
         }
 
+        this.updateProgress({ currentAction: 'Creating job posting' });
+
         if (jobData && !jobData.error && !jobData.alreadyProcessed && !jobData.skipped) {
           await this.createJobPosting(jobData, companyId, link.url || link);
           console.log(`Processed job data for ${link.url || link}`);
         }
       } catch (error) {
+        this.updateProgress({ currentAction: 'Error processing job' });
         console.error(`Error processing job link ${link.url || link}:`, error);
       }
       
@@ -776,8 +790,8 @@ class JobProcessor extends EventEmitter {
     await this.init();
     console.log('Running enhanced job processor');
 
-    await this.cleanupOldJobs();
-    await this.removeDuplicateJobs();
+    //await this.cleanupOldJobs();
+    //await this.removeDuplicateJobs();
 
     const companies = await jobQueries.getCompanies();
     const processedJobTitles = new Set();

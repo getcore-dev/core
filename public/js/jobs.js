@@ -12,11 +12,31 @@ const state = {
     skills: new Set(),
     companies: new Set(),
   },
+  hasMoreData: true,
   allTags: [],
   isTagsExpanded: false,
   isSkillsExpanded: false,
   jobSearchInput: document.getElementById('job-search-input'),
 };
+
+function setupInfiniteScroll() {
+  const options = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1,
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !state.isLoading && state.hasMoreData) {
+      fetchJobPostings();
+    }
+  }, options);
+
+  const loadMoreBtn = document.querySelector('.load-more-btn');
+  if (loadMoreBtn) {
+    observer.observe(loadMoreBtn);
+  }
+}
 
 async function updateJobCount() {
   try {
@@ -25,7 +45,7 @@ async function updateJobCount() {
       throw new Error('Network response was not ok');
     }
     const jobCount = await response.json();
-    document.getElementById('recent-jobs-count').textContent = jobCount + ' recent jobs';
+    document.getElementById('recent-jobs-count').textContent = jobCount + ' postings in the last 60 days';
   } catch (error) {
     console.error('Error fetching job count:', error);
   }
@@ -385,7 +405,7 @@ function createCompanyElement(company) {
 
 
 async function fetchJobPostings() {
-  if (state.isLoading) return;
+  if (state.isLoading || !state.hasMoreData) return;
   state.isLoading = true;
   toggleLoadingState(true);
 
@@ -413,6 +433,9 @@ async function fetchJobPostings() {
       state.jobPostings = [...state.jobPostings, ...newJobs];
       renderJobPostings(newJobs);
       state.currentPage++;
+    } else {
+      state.hasMoreData = false;
+      removeInfiniteScroll();
     }
 
     state.isLoading = false;
@@ -422,6 +445,8 @@ async function fetchJobPostings() {
     console.error('Error fetching job postings:', error);
     state.isLoading = false;
     toggleLoadingState(false);
+    state.hasMoreData = false;
+    removeInfiniteScroll();
   }
   setupInfiniteScroll();
 }
@@ -548,46 +573,47 @@ function createJobElement(job) {
   jobElement.onclick = () => (window.location.href = `/jobs/${job.id}`);
 
   const tagsArray = job.skills
-    ? job.skills.split(',').map(skill => skill.trim())
-    : [];
+  ? job.skills.split(',').map(skill => skill.trim().toLowerCase())
+  : [];
 
-  const sortedTags = tagsArray.sort((a, b) => {
-    if (state.filters.skills[a] && !state.filters.skills[b]) return -1;
-    if (!state.filters.skills[a] && state.filters.skills[b]) return 1;
-    return a.localeCompare(b);
-  });
-  const displayedTags = sortedTags.slice(0, 3);
+const sortedTags = tagsArray.sort((a, b) => {
+  if (state.filters.skills.has(a.toLowerCase()) && !state.filters.skills.has(b.toLowerCase())) return -1;
+  if (!state.filters.skills.has(a.toLowerCase()) && state.filters.skills.has(b.toLowerCase())) return 1;
+  return a.localeCompare(b, undefined, { sensitivity: 'base' });
+});
+const displayedTags = sortedTags.slice(0, 3);
 
-  const skillsArray = Object.values(state.filters.skills).map(skill => skill.trim());
+const skillsArray = Array.from(state.filters.skills).map(skill => skill.trim().toLowerCase());
 
-  const filteredSkills = displayedTags.filter(skill => skillsArray.includes(skill.trim()));
-  const otherSkills = displayedTags.filter(skill => !skillsArray.includes(skill.trim()));
+const filteredSkills = displayedTags.filter(skill => skillsArray.includes(skill.toLowerCase()));
+const otherSkills = displayedTags.filter(skill => !skillsArray.includes(skill.toLowerCase()));
 
-  const sortedSkills = [...filteredSkills, ...otherSkills];
-  let tagsHTML = sortedSkills
-      .sort((a, b) => {
-          const aExists = state.filters.skills.has(a);
-          const bExists = state.filters.skills.has(b);
-          return bExists - aExists; // Sort so that true (1) comes before false (0)
-      })
-      .map((skill) => {
-          const skillExists = state.filters.skills.has(skill);
-          return `
-            <span onclick="event.stopPropagation(); handleResultClick(event)" data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="tag ${
-                skillExists ? 'green-tag' : ''
-              }">
-              ${skill}
-            </span>`;
-      })
-      .join('');
-  const remainingSkillsCount = sortedTags.length - 3;
-  if (remainingSkillsCount > 0) {
-    tagsHTML += `
-      <span class="tag remaining-tags" style="cursor: pointer;" onclick="toggleHiddenTags()">
-        +${remainingSkillsCount} more
-      </span>
-    `;
-  }
+const sortedSkills = [...filteredSkills, ...otherSkills];
+let tagsHTML = sortedSkills
+  .sort((a, b) => {
+    const aExists = state.filters.skills.has(a.toLowerCase());
+    const bExists = state.filters.skills.has(b.toLowerCase());
+    return bExists - aExists || a.localeCompare(b, undefined, { sensitivity: 'base' });
+  })
+  .map((skill) => {
+    const skillExists = state.filters.skills.has(skill.toLowerCase());
+    return `
+      <span onclick="event.stopPropagation(); handleResultClick(event)" data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="tag ${
+        skillExists ? 'green-tag' : ''
+      }">
+        ${skill}
+      </span>`;
+  })
+  .join('');
+
+const remainingSkillsCount = sortedTags.length - 3;
+if (remainingSkillsCount > 0) {
+  tagsHTML += `
+    <span class="remaining-tags" style="cursor: pointer;" onclick="toggleHiddenTags()">
+      +${remainingSkillsCount} more
+    </span>
+  `;
+}
   
 
   jobElement.innerHTML = `
@@ -595,8 +621,8 @@ function createJobElement(job) {
   <div class="job-preview-image">
             ${
             job.company_logo
-              ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="" />`
-              : ''
+              ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo ? job.company_logo : '/img/glyph.png'}" alt="" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
+                            : ''
           }
   </div>
     <div class="job-preview">
@@ -606,9 +632,14 @@ function createJobElement(job) {
             <a class="company-name third-text bold" href="/jobs/company/${job.company_name}">${job.company_name}</a>
           </div>
         </div>
-        <span class="job-text"><h3 class="job-title margin-06-bottom sub-text">${job.title}</h3> — ${tagsHTML}</span>
+        <h3 class="job-title margin-06-bottom sub-text">${job.title}</h3>
+        ${tagsHTML}
         
         <div class="job-title-location secondary-text sub-text">
+                  <div class="applicants sub-text">
+            <span class="material-symbols-outlined">person</span>
+            ${job.applicants ? `${job.applicants} applicants` : '0'}
+          </div>
           <div class="job-post-date ${formatDateColor(job.postedDate)} sub-text">
             <time>${formatRelativeDate(job.postedDate)}</time>
           </div>
@@ -628,11 +659,13 @@ function createJobElement(job) {
               ${getFormattedSalary(job.salary, job.salary_max)}/yr
             </div>
           ` : ``}
-          <span style="font-size:.7rem;">•</span><div class="location sub-text">
+          <span style="font-size:.7rem;">•</span>
+          <div class="location sub-text">
             <span class="material-symbols-outlined">location_on</span>
             ${formatLocation(job.location).trim()}
           </div>
-          <span style="font-size:.7rem;">•</span><div class="views sub-text">
+          <span style="font-size:.7rem;">•</span>
+          <div class="views sub-text">
             <span class="material-symbols-outlined">visibility</span>
             ${job.views ? job.views : '0'}
           </div>
@@ -783,7 +816,7 @@ function addToSelectedFilters(type, id, name, logo) {
     typeSection = document.createElement('div');
     typeSection.className = `selected-${type.toLowerCase().replace(' ', '-')}`;
     const header = document.createElement('h4');
-    header.textContent = type;
+    header.textContent = type === 'tech-job-titles' ? 'Jobs' : type === 'job-locations' ? 'Locations' : capitalizeFirstLetter(type);
     typeSection.appendChild(header);
     selectedFiltersContainer.appendChild(typeSection);
   }
@@ -792,7 +825,7 @@ function addToSelectedFilters(type, id, name, logo) {
   if (existingItem) return; // Item already added
 
   const item = document.createElement(type === 'skills' ? 'span' : 'div');
-  item.className = 'selected-item';
+  item.className = 'tag green-tag';
   item.dataset.id = id;
   item.dataset.type = type;
   
@@ -823,6 +856,8 @@ function removeSelectedItem(item) {
   const name = item.querySelector('span').textContent;
 
   const typeSection = item.parentElement;
+  console.log(typeSection.children.length);
+  console.log(typeSection.children);
   typeSection.removeChild(item);
   if (typeSection.children.length === 1) { // Only header left
     typeSection.parentElement.removeChild(typeSection);
@@ -926,6 +961,7 @@ const style = document.createElement('style');
 style.textContent = `
   .remove-item {
     margin-left: 5px;
+    line-height: .5rem;
     padding: 0;
     border: none;
     background: none;
@@ -940,6 +976,7 @@ style.textContent = `
 document.head.appendChild(style);
 
 function updateState(type, id, name, logo, isRemoval = false) {
+  state.hasMoreData = true;
   let filterSet;
   switch(type) {
     case 'tech-job-titles':
@@ -949,6 +986,9 @@ function updateState(type, id, name, logo, isRemoval = false) {
       filterSet = state.filters.locations;
       break;
     case 'skills':
+      if (!isRemoval) {
+      addToSelectedFilters(type, id, name, logo);
+      }
       filterSet = state.filters.skills;
       break;
     case 'companies':

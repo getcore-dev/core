@@ -8,7 +8,6 @@ let currentProgress = {};
 
 jobProcessor.on('progress', (progress) => {
   currentProgress = progress;
-  console.log('Job processing progress:', progress);
 });
 
 async function runJobBoardService() {
