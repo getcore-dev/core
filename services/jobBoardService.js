@@ -12,6 +12,8 @@ const jobQueries = require('../queries/jobQueries');
 const { title } = require('process');
 const rateLimit = require('axios-rate-limit');
 const http = rateLimit(axios.create(), { maxRequests: 2, perMilliseconds: 1000 });
+const WebScraper = require('./webScraperService');
+const web = new WebScraper();
 
 
 class JobProcessor extends EventEmitter {
@@ -314,7 +316,7 @@ class JobProcessor extends EventEmitter {
       let companyId;
       if (!matchingBoard) {
         console.log(`No matching job board found for ${jobBoardUrl}. Creating company for job board URL...`);
-        const response = await this.makeRequest(jobBoardUrl);
+        const response = await web.makeRequest(jobBoardUrl);
         const $ = cheerio.load(response.data);
         const company = await this.useChatGPTAPI_CompanyInfo(jobBoardUrl, $('body').text().replace(/\s\s+/g, ' ').trim());
         
@@ -399,7 +401,7 @@ class JobProcessor extends EventEmitter {
   async collectJobLinks(company) {
     const jobBoardUrl = company.job_board_url;
     const allLinks = new Set();
-    let maxPages = 15;
+    let maxPages = 4;
 
     try {
       if (jobBoardUrl.includes('linkedin.com')) {
@@ -412,7 +414,7 @@ class JobProcessor extends EventEmitter {
           const paginationText = $firstPage('.jobs-search-pagination__page-state').text().trim();
           const match = paginationText.match(/Page \d+ of (\d+)/);
           if (match) {
-            maxPages = Math.min(parseInt(match[1], 10), 15);
+            maxPages = 1;
           }
         }
 
@@ -492,20 +494,122 @@ class JobProcessor extends EventEmitter {
     const baseUrlObj = new URL(baseUrl);
   
     if (baseUrlObj.hostname.includes('linkedin.com')) {
-      $('.job-card-container').each(async (index, element) => {
-        const linkElement = $(element).find('.job-card-container__link');
-        const link = linkElement.attr('href');
-        const title = linkElement.text().trim();
+      let currentUrl = baseUrl;
+      let hasMore = true;
+      let start = 0;
+      let maxPages = this.getMaxPages($, currentUrl) || 1;
   
-        if (this.isTechJob(title)) {
-          const jobUrl = new URL(link, baseUrl).href;
-          if (new URL(jobUrl).hostname === jobBoardDomain) {
-            const applyType = await this.checkLinkedInApplyType(jobUrl);
-            links.add({ url: jobUrl, title, applyType });
+      while (hasMore && start < maxPages * 25) {
+        const url = new URL(currentUrl);
+        url.searchParams.set('start', start.toString());
+        console.log(`Scraping page: ${url.toString()}`);
+  
+        const response = await this.makeRequest(url.toString());
+        const $page = cheerio.load(response.data);
+  
+        $page('.base-card').each((index, element) => {
+          const linkElement = $page(element).find('a.base-card__full-link');
+          const link = linkElement.attr('href');
+          const title = $page(element).find('.base-search-card__title').text().trim();
+          const company = $page(element).find('.base-search-card__subtitle').text().trim();
+          const location = $page(element).find('.job-search-card__location').text().trim();
+  
+          if (this.isTechJob(title)) {
+            const jobUrl = new URL(link, baseUrl).href;
+            if (new URL(jobUrl).hostname === jobBoardDomain) {
+              links.add({ url: jobUrl, title, company, location });
+            }
           }
-        }
+          console.log(links);
+        });
+  
+        hasMore = false;
+  
+        console.log(`Collected ${links.size} links so far`);
+  
+        // Add a delay to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 10000));
+      }
+    } else if (baseUrlObj.hostname.includes('ashbyhq.com')) {
+      // Ashby HQ handling (unchanged)
+      const companyName = baseUrlObj.pathname.split('/').pop();
+      const apiUrl = 'https://jobs.ashbyhq.com/api/non-user-graphql?op=ApiJobBoardWithTeams';
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          operationName: "ApiJobBoardWithTeams",
+          variables: {
+            organizationHostedJobsPageName: companyName
+          },
+          query: `query ApiJobBoardWithTeams($organizationHostedJobsPageName: String!) {
+            jobBoard: jobBoardWithTeams(
+              organizationHostedJobsPageName: $organizationHostedJobsPageName
+            ) {
+              teams {
+                id
+                name
+                parentTeamId
+                __typename
+              }
+              jobPostings {
+                id
+                title
+                teamId
+                locationId
+                locationName
+                employmentType
+                secondaryLocations {
+                  ...JobPostingSecondaryLocationParts
+                  __typename
+                }
+                compensationTierSummary
+                __typename
+              }
+              __typename
+            }
+          }
+          
+          fragment JobPostingSecondaryLocationParts on JobPostingSecondaryLocation {
+            locationId
+            locationName
+            __typename
+          }`
+        })
       });
+  
+      const data = await response.json();
+      if (data.data && data.data.jobBoard && data.data.jobBoard.jobPostings) {
+        data.data.jobBoard.jobPostings.forEach(job => {
+          const jobUrl = `${baseUrl}/${job.id}`;
+          links.add({ url: jobUrl, title: job.title, location: job.locationName });
+        });
+      }
+    } else if (baseUrlObj.hostname.includes('careers.microsoft.com')) {
+      // Microsoft careers handling
+      const apiUrl = new URL(baseUrl);
+      apiUrl.hostname = 'gcsservices.careers.microsoft.com';
+      apiUrl.pathname = '/search/api/v1/search';
+      apiUrl.searchParams.append('flt', 'true');
+  
+      try {
+        const response = await fetch(apiUrl.toString());
+        const data = await response.json();
+  
+        if (data.jobs && Array.isArray(data.jobs)) {
+          data.jobs.forEach(job => {
+            const jobUrl = `https://jobs.careers.microsoft.com/global/en/job/${job.jobId}`;
+            links.add({ url: jobUrl, title: job.title, location: job.location });
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching Microsoft jobs:', error);
+      }
     } else {
+      // Generic job board handling (unchanged)
       $('a[href*="job"], a[href*="career"], a[href*="position"]').each((index, element) => {
         const link = $(element).attr('href');
         const fullUrl = new URL(link, baseUrl).href;
@@ -541,33 +645,74 @@ class JobProcessor extends EventEmitter {
   async hasNextPage($, currentUrl) {
     this.updateProgress({ currentAction: 'Checking next page' });
     const url = new URL(currentUrl);
-    const currentPage = parseInt(url.searchParams.get('page')) || 1;
-    
-    // Increment the page number
-    url.searchParams.set('page', (currentPage + 1).toString());
-    const nextPageUrl = url.toString();
   
-    console.log(`Checking next page: ${nextPageUrl}`);
+    if (url.hostname.includes('linkedin.com')) {
+      // LinkedIn-specific handling
+      const start = parseInt(url.searchParams.get('start')) || 0;
+      const nextStart = start + 25; // LinkedIn typically shows 25 jobs per page
   
-    try {
-      const response = await this.makeRequest(nextPageUrl);
-      
-      if (response.status === 200) {
-        const $nextPage = cheerio.load(response.data);
-        const nextPageJobs = await this.extractJobLinks($nextPage, nextPageUrl);
+      const nextPageUrl = new URL(currentUrl);
+      nextPageUrl.searchParams.set('start', nextStart.toString());
+  
+      console.log(`Checking next page: ${nextPageUrl}`);
+  
+      try {
+        const response = await this.makeRequest(nextPageUrl.toString());
         
-        // If the next page has job listings, return true
-        if (nextPageJobs.size > 0) {
-          console.log(`Found ${nextPageJobs.size} jobs on next page. Continuing...`);
-          return true;
-        } else {
-          console.log('No jobs found on next page. Stopping pagination.');
-          return false;
+        if (response.status === 200) {
+          const $nextPage = cheerio.load(response.data);
+          const jobCards = $nextPage('.base-card');
+          
+          if (jobCards.length > 0) {
+            console.log(`Found ${jobCards.length} jobs on next page. Continuing...`);
+            return true;
+          } else {
+            console.log('No more jobs found. Stopping pagination.');
+            return false;
+          }
         }
+      } catch (error) {
+        console.error(`Error checking next page ${nextPageUrl}:`, error);
+        if (error.response) {
+          console.log('Error response:', error.response.data);
+        }
+        return false;
       }
-    } catch (error) {
-      console.error(`Error checking next page ${nextPageUrl}:`, error);
-      return false;
+    }
+    else if (url.hostname.includes('careers.microsoft.com')) {
+      // Microsoft careers handling (unchanged)
+      // ... (keep the existing Microsoft-specific code here)
+    } else {
+      // Generic handling for other job boards
+      let currentPage = parseInt(url.searchParams.get('page')) || parseInt(url.searchParams.get('pg')) || 1;
+      const pageParam = url.searchParams.has('page') ? 'page' : 'pg';
+      url.searchParams.set(pageParam, (currentPage + 1).toString());
+      const nextPageUrl = url.toString();
+  
+      console.log(`Checking next page: ${nextPageUrl}`);
+  
+      try {
+        const response = await this.makeRequest(nextPageUrl);
+        
+        if (response.status === 200) {
+          const $nextPage = cheerio.load(response.data);
+          const nextPageJobs = await this.extractJobLinks($nextPage, nextPageUrl);
+          
+          if (nextPageJobs.size > 0) {
+            console.log(`Found ${nextPageJobs.size} jobs on next page. Continuing...`);
+            return true;
+          } else {
+            console.log('No more jobs found. Stopping pagination.');
+            return false;
+          }
+        }
+      } catch (error) {
+        console.error(`Error checking next page ${nextPageUrl}:`, error);
+        if (error.response) {
+          console.log('Error response:', error.response.data);
+        }
+        return false;
+      }
     }
   
     return false;
@@ -734,8 +879,6 @@ class JobProcessor extends EventEmitter {
       });
 
       const message = completion.choices[0]?.message;
-      console.log('OpenAI API Response:', message);
-      console.log('Parsed:', message.parsed);
       return message.parsed;
     } catch (error) {
       console.error('OpenAI API Error:', error.message);
@@ -794,8 +937,6 @@ class JobProcessor extends EventEmitter {
       });
 
       const message = completion.choices[0]?.message;
-      console.log('OpenAI API Response:', message);
-      console.log('Parsed:', message.parsed);
       const jobPosting = message.parsed;
 
       if (this.isTechJob(jobPosting.title)) {
@@ -958,7 +1099,6 @@ class JobProcessor extends EventEmitter {
             });
           }
         });
-        console.log(jobs);
 
         if (!this.hasNextPage($, pageUrl)) {
           break;

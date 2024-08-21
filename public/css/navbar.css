@@ -2906,6 +2906,12 @@ input::placeholder {
   border-radius: 7px;
 }
 
+.error-messages-nm,
+.caution-messages-nm {
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .error-messages a {
   color: #ae4444 !important;
   text-decoration: underline;

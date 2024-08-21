@@ -33,6 +33,19 @@
         <span class="toggle-label">Manual</span>
       </div>
     </div>
+    <div class="output-container">
+      <div class="error-messages" id="output-alert">
+        <div class="error-message-glyph">
+          <span class="material-symbols-outlined">
+            warning
+          </span>
+        </div>
+        <div class="error-message-text">
+          <p class="sub-text" id="output-text">
+          </p>
+        </div>
+      </div>
+    </div>
     <div class="main-container">
       <form id="jobPostForm">
         <div class="form-group">
@@ -51,6 +64,8 @@
       const toggle = $('#form-toggle');
       const jobPostForm = $('#jobPostForm');
       const editJobPostForm = $('#editJobPostForm');
+      const errorMessages = $('#output-alert');
+      errorMessages.hide();
 
       toggle.change(function () {
         if (this.checked) {
@@ -71,6 +86,10 @@
           method: 'POST',
           success: function (response) {
             if (!response || !response.jobLinks || !response.jobLinks.links) {
+
+              errorMessages.show();
+              const outputText = $('#output-text');
+              outputText.text('error: ' + error);
               showBannerNotification('An error occurred while extracting job details.');
               return;
             }
@@ -81,6 +100,9 @@
             displayJobLinks(response.jobLinks.links);
           },
           error: function (xhr, status, error) {
+            errorMessages.show();
+            const outputText = $('#output-text');
+            outputText.text('error: ' + error);
             showBannerNotification('An error occurred while extracting job details.');
             console.error(error);
           }

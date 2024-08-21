@@ -42,6 +42,14 @@ li.job-link {
     transition: background-color 0.3s ease;
 }
 
+.output-container {
+    width: 100%;
+}
+
+.output-alert {
+    margin: 0 1rem;
+}
+
 .job-loading {
     background-color: #bb972521;
 }
