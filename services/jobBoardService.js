@@ -1,3 +1,4 @@
+const url = require('url');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const OpenAI = require('openai');
 const { zodResponseFormat } = require('openai/helpers/zod');
@@ -9,6 +10,9 @@ const EventEmitter = require('events');
 const path = require('path');
 const jobQueries = require('../queries/jobQueries');
 const { title } = require('process');
+const rateLimit = require('axios-rate-limit');
+const http = rateLimit(axios.create(), { maxRequests: 2, perMilliseconds: 1000 });
+
 
 class JobProcessor extends EventEmitter {
   constructor() {
@@ -239,12 +243,57 @@ class JobProcessor extends EventEmitter {
     return null;
   }
 
-  async makeRequest(url) {
-    return axios.get(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36'
+  async  makeRequest(url) {
+    try {
+      const response = await http.get(url, {
+        headers: {
+          'User-Agent': 'core/1.0 (support@getcore.dev)',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.5',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'DNT': '1',
+          'Connection': 'keep-alive',
+          'Upgrade-Insecure-Requests': '1'
+        },
+        // Implement proper error handling
+        validateStatus: function (status) {
+          return status >= 200 && status < 300; // default
+        },
+      });
+  
+      return response;
+    } catch (error) {
+      if (error.response) {
+        console.error(`Request failed with status ${error.response.status}`);
+      } else if (error.request) {
+        console.error('No response received:', error.request);
+      } else {
+        console.error('Error setting up request:', error.message);
       }
-    });
+      throw error;
+    }
+  }
+  getCompanyIdentifier(jobBoardUrl) {
+    const parsedUrl = new URL(jobBoardUrl);
+    const pathParts = parsedUrl.pathname.split('/').filter(part => part);
+  
+    if (parsedUrl.hostname.includes('greenhouse.io')) {
+      // For Greenhouse, the company identifier is usually the last part of the path
+      return pathParts[pathParts.length - 1];
+    } else if (parsedUrl.hostname.includes('lever.co')) {
+      // For Lever, the company identifier is usually the first part of the path
+      return pathParts[0];
+    } else {
+      // For other job boards, use the subdomain if present, otherwise the first path part
+      const subdomain = parsedUrl.hostname.split('.')[0];
+      return subdomain !== 'www' ? subdomain : pathParts[0];
+    }
+  }
+  
+  urlMatches(url1, url2) {
+    const identifier1 = this.getCompanyIdentifier(url1);
+    const identifier2 = this.getCompanyIdentifier(url2);
+    return identifier1 === identifier2;
   }
 
   async collectJobLinksFromLink(jobBoardUrl) {
@@ -254,26 +303,41 @@ class JobProcessor extends EventEmitter {
     let currentPage = 1;
   
     try {
-      const jobBoardDomain = new URL(jobBoardUrl).hostname;
-      
-      // Check if the job board URL is in the database before starting the scraping process
-      const jobBoardInDb = companyJobBoards.some(board => board.job_board_url === jobBoardUrl);
-      
-      if (!jobBoardInDb) {
-        console.log(`Job board ${jobBoardUrl} not found in database. Creating company for job board URL...`);
+      const parsedUrl = new URL(jobBoardUrl);
+      const jobBoardDomain = parsedUrl.hostname;
+  
+      // Function to check if a URL matches our job board
+      const matchingBoard = companyJobBoards.find(board => this.urlMatches(board.job_board_url, jobBoardUrl));
+
+
+  
+      let companyId;
+      if (!matchingBoard) {
+        console.log(`No matching job board found for ${jobBoardUrl}. Creating company for job board URL...`);
         const response = await this.makeRequest(jobBoardUrl);
         const $ = cheerio.load(response.data);
         const company = await this.useChatGPTAPI_CompanyInfo(jobBoardUrl, $('body').text().replace(/\s\s+/g, ' ').trim());
+        
         const existingCompany = await jobQueries.getCompanyIdByName(company.name);
   
         if (!existingCompany) {
-          const companyId = await jobQueries.createCompany(company.name, company.description, company.industry, company.size, company.stock_symbol, company.logo, company.founded);
+          companyId = await jobQueries.createCompany(company.name, company.logo, company.location, company.description, company.industry, company.size, company.stock_symbol, company.founded);
           console.log(`Created company ${company.name} with ID ${companyId}`);
         } else {
-          console.log(`Company ${company.name} found in database.`);
+          companyId = existingCompany.id;
+          console.log(`Company ${company.name} found in database with ID ${companyId}.`);
         }
+        
+        // Add the new job board URL to the database
+        await jobQueries.addJobBoardUrl(companyId, jobBoardUrl);
       } else {
-        console.log(`Job board ${jobBoardUrl} found in database.`);
+        console.log(`Matching job board found: ${matchingBoard.job_board_url}`);
+        companyId = matchingBoard.company_id;
+        // You might want to update the existing job board URL if it's different
+        if (matchingBoard.job_board_url !== jobBoardUrl) {
+          console.log(`Updating job board URL from ${matchingBoard.job_board_url} to ${jobBoardUrl}`);
+          await jobQueries.updateJobBoardUrl(matchingBoard.id, jobBoardUrl);
+        }
       }
   
       while (true) {
@@ -290,23 +354,14 @@ class JobProcessor extends EventEmitter {
             this.normalizeUrl(job.link) === normalizedNewUrl
           );
   
-          if (!existingJob) {
-            allLinks.add({
-              link: link.url, 
-              title: link.title, 
-              new: true, 
-              techJob: this.isTechJob(link.title),
-              applyType: link.applyType
-            });
-          } else {
-            allLinks.add({
-              link: link.url, 
-              title: link.title, 
-              new: false,
-              techJob: this.isTechJob(link.title),
-              applyType: link.applyType
-            });
-          }
+          allLinks.add({
+            link: link.url, 
+            title: link.title, 
+            new: !existingJob,
+            techJob: this.isTechJob(link.title),
+            applyType: link.applyType,
+            companyId: companyId  // Add the company ID to each job link
+          });
         });
   
         console.log(`Collected ${pageLinks.length} links from page ${currentPage}`);
@@ -642,24 +697,29 @@ class JobProcessor extends EventEmitter {
       name: z.string(),
       description: z.string(),
       industry: z.string(),
+      location: z.string(),
       size: z.string().nullable(),
       stock_symbol: z.string().nullable(),
       logo: z.string().nullable(),
       founded: z.string().nullable()
     });
 
+    const maxCharacters = 200000;
+    const truncatedTextContent = textContent.length > maxCharacters ? textContent.slice(0, maxCharacters) : textContent;
+    
     const prompt = `
-    From the job posting data at ${link}, please extract or provide the following information about the company:
-      - name
-      - description
-      - industry
-      - size (estimated number of employees)
-      - stock_symbol (nullable)
-      - logo (usually default to the format of /src/<company-name>logo.png, do not include space in the company logo)
-      - full date company was founded (datetime format, string)
-      Provide the extracted information in JSON format.
-      ${textContent}
-      `;
+        From the job posting data at ${link}, please extract or provide the following information about the company:
+          - name
+          - description
+          - industry
+          - location (where the city is based out of: city, state)
+          - size (estimated number of employees)
+          - stock_symbol (nullable)
+          - logo (usually default to the format of /src/<company-name>logo.png, do not include space in the company logo)
+          - full date company was founded (datetime format, string)
+          Provide the extracted information in JSON format.
+          ${truncatedTextContent}
+          `;
     try {
       const completion = await this.openai.beta.chat.completions.parse({
         model: 'gpt-4o-mini',
@@ -715,7 +775,11 @@ class JobProcessor extends EventEmitter {
       Relocation: z.boolean()
     });
 
-    const prompt = this.generatePrompt(link, textContent);
+    const maxCharacters = 200000;
+    const truncatedTextContent = textContent.length > maxCharacters ? textContent.slice(0, maxCharacters) : textContent;
+    
+    const prompt = this.generatePrompt(link, truncatedTextContent);
+    
     try {
       const completion = await this.openai.beta.chat.completions.parse({
         model: 'gpt-4o-mini',
@@ -1047,8 +1111,8 @@ class JobProcessor extends EventEmitter {
     await this.init();
     console.log('Running enhanced job processor');
 
-    //await this.cleanupOldJobs();
-    //await this.removeDuplicateJobs();
+    await this.cleanupOldJobs();
+    await this.removeDuplicateJobs();
 
     const companies = await jobQueries.getCompanies();
     const processedJobTitles = new Set();

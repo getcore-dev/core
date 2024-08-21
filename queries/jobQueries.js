@@ -30,10 +30,25 @@ const jobQueries = {
     }
   },
 
+  updateJobBoardUrl: async (companyId, jobBoardUrl) => {
+    try {
+      const result = await sql.query`
+        UPDATE companies
+        SET job_board_url = ${jobBoardUrl}
+        WHERE id = ${companyId}
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   getAllCompanyJobBoards: async () => {
     try {
       const result = await sql.query`
         SELECT id, job_board_url FROM companies
+        WHERE job_board_url IS NOT NULL
       `;
       return result.recordset;
     } catch (err) {
