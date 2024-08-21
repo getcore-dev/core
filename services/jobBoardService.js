@@ -8,6 +8,7 @@ const fs = require('fs').promises;
 const EventEmitter = require('events');
 const path = require('path');
 const jobQueries = require('../queries/jobQueries');
+const { title } = require('process');
 
 class JobProcessor extends EventEmitter {
   constructor() {
@@ -71,6 +72,25 @@ class JobProcessor extends EventEmitter {
     }
   }
 
+  normalizeUrl(url) {
+    try {
+      const parsedUrl = new URL(url);
+      let hostname = parsedUrl.hostname;
+      
+      // Remove 'www.' if present
+      hostname = hostname.replace(/^www\./, '');
+      
+      // Handle the specific case of 'boards.greenhouse.io' vs 'job-boards.greenhouse.io'
+      hostname = hostname.replace(/^(job-)?boards\./, 'boards.');
+      
+      // Reconstruct the URL with the normalized hostname
+      return `${parsedUrl.protocol}//${hostname}${parsedUrl.pathname}${parsedUrl.search}`;
+    } catch (error) {
+      console.error(`Error normalizing URL ${url}:`, error);
+      return url; // Return the original URL if parsing fails
+    }
+  }
+
   async removeDuplicateJobs() {
     try {
       const duplicateJobIds = await jobQueries.getDuplicateJobPostings();
@@ -122,25 +142,59 @@ class JobProcessor extends EventEmitter {
   }
 
   isTechJob(title) {
-    const techKeywords = [
-      'software', 'developer', 'programmer', 'data', 'analyst', 'scientist', 'systems', 'systems administrator', 'systems engineer', 'systems architect', 'cloud engineer', 'cloud admin',
-      'information technology', 'web', 'frontend', 'backend', 'full stack',
-      'devops', 'cloud', 'network', 'security', 'database', 'machine learning', 'quantitative', 'quant', 'quantitative analyst', 'quantitative researcher', 'quantitative developer', 'customer analytics', 'technology', 'technology engineer', 'research and development', 
-      'ai', 'artificial intelligence', 'qa engineer', 'ui designer', 'ux/ui', 'quality assurance',
-      'product manager', 'scrum master', 'agile', 'systems', 
-      'infrastructure', 'mobile developer', 'ios developer', 'android', 'cybersecurity', 'blockchain', 'robotics', 'automation', 'sre', 'reliability', 'architect',
-      'engineering', 'java', 'python', 'javascript', 'c++', 'ruby', 'php', 'project manager', 'program manager', 'algorithmic trader',
-      'scala', 'typescript', 'sql', 'nosql', 'azure', 'machine learning', 'data science', 'data engineer', 'data analyst', 'data visualization',
-      'cloud engineer', 'cloud architect', 'cloud security', 'network engineer', 'network security', 'database administrator', 'database developer',
-      'devops engineer', 'site reliability engineer', 'security engineer', 'security analyst', 'security architect', 'frontend developer', 'backend developer',
-      'full stack developer', 'mobile developer', 'ios developer', 'android developer', 'cybersecurity analyst', 'cybersecurity engineer', 'frontend engineer',
-      'backend engineer', 'full stack engineer', 'mobile engineer', 'ios engineer', 'android engineer', 'qa engineer', 'quality assurance engineer',
-      'ux designer', 'ui designer', 'product manager', 'scrum master', 'agile coach', 'tech lead', 'systems engineer', 'infrastructure engineer',
-      'mobile architect', 'ios architect', 'android architect', 'cybersecurity architect', 'front-end', 'gameplay engineer', 'game engineer', 'analytics engineer', 'graphics engineer', 'game designer', 'research engineer', 
-    ];
-    
+    // Convert title to lowercase for case-insensitive matching
     const lowercaseTitle = title.toLowerCase();
-    return techKeywords.some(keyword => lowercaseTitle.includes(keyword));
+  
+    // Define tech job categories with associated keywords
+    const techCategories = {
+      software: ['software', 'developer', 'programmer', 'engineer', 'coder', 'c#', 'test'],
+      data: ['data', 'analyst', 'analytics', 'machine learning', 'ai', 'artificial intelligence'],
+      web: ['web', 'frontend', 'backend', 'full stack', 'ui', 'ux'],
+      systems: ['system', 'architect', 'devops', 'cloud', 'infrastructure'],
+      network: ['network', 'security', 'cybersecurity'],
+      database: ['database', 'sql', 'nosql', 'administrator'],
+      mobile: ['mobile', 'ios', 'android'],
+      specific_roles: ['product manager', 'scrum master', 'agile coach', 'tech lead', 'qa engineer', 'quality assurance'],
+      languages: ['java', 'python', 'javascript', 'c++', 'ruby', 'php', 'scala', 'typescript'],
+      game_dev: ['game', 'gameplay', 'graphics'],
+      blockchain: ['blockchain', 'crypto', 'ethereum', 'solidity'],
+      devops: ['devops', 'site reliability', 'qa', 'quality assurance', 'automation', 'tools'],
+      cloud: ['cloud', 'azure'],
+      tech: ['technology', 'technical', 'information technology'],
+      graphics: ['graphics', 'ui/ux', 'designer', 'animator'],
+    };
+  
+    // Function to check if the title contains any of the keywords
+    const containsKeyword = (keywords) => keywords.some(keyword => lowercaseTitle.includes(keyword));
+  
+    // Check for exact matches or highly specific tech roles
+    if (containsKeyword(['software engineer', 'gameplay animator', 'desktop support', 'saas administrator', 'character assembly artist', 'environment artist', 'data scientist', 'technical artist', 'engine programmer', 'ui programmer', 'graphic designer', 'systems designer', 'systems engineer', 'full stack developer', 'machine learning engineer', 'devops engineer', 'systems architect'])) {
+      return true;
+    }
+  
+    // Check if the title contains keywords from at least two different categories
+    const categoriesFound = Object.values(techCategories).filter(category => containsKeyword(category)).length;
+    if (categoriesFound >= 2) {
+      return true;
+    }
+  
+    // Check for titles that explicitly mention technology or engineering
+    if (lowercaseTitle.includes('technology') || lowercaseTitle.includes('engineer')) {
+      // But exclude non-tech engineering roles
+      const nonTechEngineering = ['civil engineer', 'mechanical engineer', 'chemical engineer', 'electrical engineer'];
+      if (!nonTechEngineering.some(role => lowercaseTitle.includes(role))) {
+        return true;
+      }
+    }
+  
+    // Check for specific tech-related words that might appear alone
+    const standaloneKeywords = ['programmer', 'developer', 'coder', 'analyst', 'architect', 'admin'];
+    if (standaloneKeywords.some(keyword => lowercaseTitle.split(/\s+/).includes(keyword))) {
+      return true;
+    }
+  
+    // If none of the above conditions are met, it's likely not a tech job
+    return false;
   }
 
   async saveProcessedLink(link) {
@@ -192,6 +246,100 @@ class JobProcessor extends EventEmitter {
       }
     });
   }
+
+  async collectJobLinksFromLink(jobBoardUrl) {
+    const companyJobBoards = await jobQueries.getAllCompanyJobBoards();
+    const allJobPostingLinks = await jobQueries.getAllCompanyJobLinks();
+    const allLinks = new Set();
+    let currentPage = 1;
+  
+    try {
+      const jobBoardDomain = new URL(jobBoardUrl).hostname;
+      
+      // Check if the job board URL is in the database before starting the scraping process
+      const jobBoardInDb = companyJobBoards.some(board => board.job_board_url === jobBoardUrl);
+      
+      if (!jobBoardInDb) {
+        console.log(`Job board ${jobBoardUrl} not found in database. Creating company for job board URL...`);
+        const response = await this.makeRequest(jobBoardUrl);
+        const $ = cheerio.load(response.data);
+        const company = await this.useChatGPTAPI_CompanyInfo(jobBoardUrl, $('body').text().replace(/\s\s+/g, ' ').trim());
+        const existingCompany = await jobQueries.getCompanyIdByName(company.name);
+  
+        if (!existingCompany) {
+          const companyId = await jobQueries.createCompany(company.name, company.description, company.industry, company.size, company.stock_symbol, company.logo, company.founded);
+          console.log(`Created company ${company.name} with ID ${companyId}`);
+        } else {
+          console.log(`Company ${company.name} found in database.`);
+        }
+      } else {
+        console.log(`Job board ${jobBoardUrl} found in database.`);
+      }
+  
+      while (true) {
+        const pageUrl = this.getPageUrl(jobBoardUrl, currentPage);
+        console.log(`Scraping page ${currentPage}: ${pageUrl}`);
+  
+        const response = await this.makeRequest(pageUrl);
+        const $ = cheerio.load(response.data);
+  
+        const pageLinks = await this.fullExtractJobLinks($, pageUrl, jobBoardDomain);
+        pageLinks.forEach(link => {
+          const normalizedNewUrl = this.normalizeUrl(link.url);
+          const existingJob = allJobPostingLinks.find(job => 
+            this.normalizeUrl(job.link) === normalizedNewUrl
+          );
+  
+          if (!existingJob) {
+            allLinks.add({
+              link: link.url, 
+              title: link.title, 
+              new: true, 
+              techJob: this.isTechJob(link.title),
+              applyType: link.applyType
+            });
+          } else {
+            allLinks.add({
+              link: link.url, 
+              title: link.title, 
+              new: false,
+              techJob: this.isTechJob(link.title),
+              applyType: link.applyType
+            });
+          }
+        });
+  
+        console.log(`Collected ${pageLinks.length} links from page ${currentPage}`);
+  
+        // Check if there's a next page
+        if (!await this.hasNextPage($, pageUrl)) {
+          console.log(`No more pages found after page ${currentPage}`);
+          break;
+        }
+  
+        currentPage++;
+        await this.delay(this.DELAY_BETWEEN_REQUESTS);
+      }
+  
+      console.log(`Collected a total of ${allLinks.size} job links from ${jobBoardUrl}`);
+      return { links: Array.from(allLinks) };
+    } catch (error) {
+      console.error(`Error collecting job links from ${jobBoardUrl}:`, error);
+      return { links: [] };
+    }
+  }
+
+  getMaxPages($, jobBoardUrl) {
+    // Implement logic to extract max pages based on the specific job board
+    // This is just an example and should be adapted for each job board
+    const paginationText = $('.pagination').text().trim();
+    const match = paginationText.match(/Page \d+ of (\d+)/);
+    if (match) {
+      return Math.min(parseInt(match[1], 10), 15);
+    }
+    return null;
+  }
+  
 
   async collectJobLinks(company) {
     const jobBoardUrl = company.job_board_url;
@@ -284,6 +432,39 @@ class JobProcessor extends EventEmitter {
     return links;
   }
 
+  async fullExtractJobLinks($, baseUrl, jobBoardDomain) {
+    const links = new Set();
+    const baseUrlObj = new URL(baseUrl);
+  
+    if (baseUrlObj.hostname.includes('linkedin.com')) {
+      $('.job-card-container').each(async (index, element) => {
+        const linkElement = $(element).find('.job-card-container__link');
+        const link = linkElement.attr('href');
+        const title = linkElement.text().trim();
+  
+        if (this.isTechJob(title)) {
+          const jobUrl = new URL(link, baseUrl).href;
+          if (new URL(jobUrl).hostname === jobBoardDomain) {
+            const applyType = await this.checkLinkedInApplyType(jobUrl);
+            links.add({ url: jobUrl, title, applyType });
+          }
+        }
+      });
+    } else {
+      $('a[href*="job"], a[href*="career"], a[href*="position"]').each((index, element) => {
+        const link = $(element).attr('href');
+        const fullUrl = new URL(link, baseUrl).href;
+        
+        if (new URL(fullUrl).hostname === jobBoardDomain) {
+          const title = $(element).find('p').map((i, el) => $(el).text().trim()).get().join(' ') || $(element).text().trim();
+          links.add({ url: fullUrl, title });
+        }
+      });
+    }
+  
+    return Array.from(links);
+  }
+
   async checkLinkedInApplyType(jobUrl) {
     try {
       const response = await this.makeRequest(jobUrl);
@@ -302,12 +483,38 @@ class JobProcessor extends EventEmitter {
     }
   }
 
-  hasNextPage($, currentUrl) {
-    if (currentUrl.includes('linkedin.com')) {
-      return $('.jobs-search-pagination__button--next').length > 0;
-    } else {
-      return $('a[href]:contains("Next"), a[href]:contains("»"), a[rel="next"]').length > 0;
+  async hasNextPage($, currentUrl) {
+    const url = new URL(currentUrl);
+    const currentPage = parseInt(url.searchParams.get('page')) || 1;
+    
+    // Increment the page number
+    url.searchParams.set('page', (currentPage + 1).toString());
+    const nextPageUrl = url.toString();
+  
+    console.log(`Checking next page: ${nextPageUrl}`);
+  
+    try {
+      const response = await this.makeRequest(nextPageUrl);
+      
+      if (response.status === 200) {
+        const $nextPage = cheerio.load(response.data);
+        const nextPageJobs = await this.extractJobLinks($nextPage, nextPageUrl);
+        
+        // If the next page has job listings, return true
+        if (nextPageJobs.size > 0) {
+          console.log(`Found ${nextPageJobs.size} jobs on next page. Continuing...`);
+          return true;
+        } else {
+          console.log('No jobs found on next page. Stopping pagination.');
+          return false;
+        }
+      }
+    } catch (error) {
+      console.error(`Error checking next page ${nextPageUrl}:`, error);
+      return false;
     }
+  
+    return false;
   }
 
   async searchLinkedInJobs(allLinks, searchTerm) {
@@ -429,6 +636,52 @@ class JobProcessor extends EventEmitter {
     return JSON.parse(cleanedResponse);
   }
 
+  async useChatGPTAPI_CompanyInfo(link, textContent) {
+    const companyResponse = z.object({
+      name: z.string(),
+      description: z.string(),
+      industry: z.string(),
+      size: z.string().nullable(),
+      stock_symbol: z.string().nullable(),
+      logo: z.string().nullable(),
+      founded: z.string().nullable()
+    });
+
+    const prompt = `
+    From the job posting data at ${link}, please extract or provide the following information about the company:
+      - name
+      - description
+      - industry
+      - size (estimated number of employees)
+      - stock_symbol (nullable)
+      - logo (usually default to the format of /src/<company-name>logo.png, do not include space in the company logo)
+      - full date company was founded (datetime format, string)
+      Provide the extracted information in JSON format.
+      ${textContent}
+      `;
+    try {
+      const completion = await this.openai.beta.chat.completions.parse({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a helpful assistant that extracts company information from text.',
+          },
+          { role: 'user', content: prompt },
+        ],
+        response_format: zodResponseFormat(companyResponse, 'companyResponse')
+      });
+
+      const message = completion.choices[0]?.message;
+      console.log('OpenAI API Response:', message);
+      console.log('Parsed:', message.parsed);
+      return message.parsed;
+    } catch (error) {
+      console.error('OpenAI API Error:', error.message);
+      throw error;
+    }
+  }
+
   async useChatGPTAPI(link, textContent) {
     const jobResponse = z.object({
       title: z.string(),
@@ -461,7 +714,6 @@ class JobProcessor extends EventEmitter {
       Relocation: z.boolean()
     });
 
-
     const prompt = this.generatePrompt(link, textContent);
     try {
       const completion = await this.openai.beta.chat.completions.parse({
@@ -485,7 +737,7 @@ class JobProcessor extends EventEmitter {
         return jobPosting;
       } else {
         console.log(`Skipping non-tech job: ${jobPosting.title}`);
-        return { skipped: true };
+        return { skipped: true, title: jobPosting.title };
       }
     } catch (error) {
       console.error('OpenAI API Error:', error.message);

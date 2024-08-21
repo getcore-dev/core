@@ -262,7 +262,6 @@ div.jobs-container>div.job-list>.job {
   padding: 0 10px;
   border-radius: 0;
   margin-bottom: 0;
-  border-bottom: 1px solid var(--border-color);
   cursor: pointer;
 }
 

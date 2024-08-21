@@ -94,7 +94,6 @@
   display: flex;
   background: var(--light-mode-main-color);
   border-radius: 0;
-  border-bottom: 1px solid var(--border-color);
   flex-direction: row;
   justify-content: space-between;
   position: relative;

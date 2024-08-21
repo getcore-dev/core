@@ -895,6 +895,26 @@ router.post('/extract-job-details', async (req, res) => {
   }
 });
 
+router.post('/extract-job-postings/:link', async (req, res) => {
+  try {
+    const link = req.params.link;
+
+    if (!link) {
+      return res.status(400).json({ error: 'Invalid job link' });
+    }
+
+    let jobLinks = await jobProcessor.collectJobLinksFromLink(link);
+    res.json({ jobLinks });
+
+  } catch (error) {
+    console.error('Error extracting job postings:', error);
+    res
+      .status(500)
+      .json({ error: 'An error occurred while extracting job postings' });
+  }
+
+});
+
 router.post('/auto-create-job-posting', async (req, res) => {
   try {
     const { link } = req.body;

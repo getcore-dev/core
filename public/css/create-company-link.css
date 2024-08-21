@@ -1,0 +1,65 @@
+#jobLinksContainer {
+    margin-top: 20px;
+}
+
+p.new-job {
+    text-wrap: balance;
+    overflow-wrap: break-word;
+}
+
+.job-link {
+    margin-bottom: 10px;
+}
+
+.new-job {
+    color: #27944e !important;
+    font-weight: bold;
+}
+
+#jobLinksContainer ul {
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+}
+
+#selectedJobsForm {
+    margin-top: 20px;
+}
+
+.checkbox-wrapper {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+li.job-link {
+    list-style-type: none;
+}
+
+.job-link {
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.job-loading {
+    background-color: #bb972521;
+}
+
+.job-complete {
+    background-color: #1ac2421f;
+}
+
+.job-error {
+    background-color: #da3d4b1f;
+}
+
+.job-link:not(.job-loading):not(.job-complete):not(.job-error) {
+    background-color: var(--light-mode-body-color);
+}
+
+@media (prefers-color-scheme: dark) {
+    .job-link:not(.job-loading):not(.job-complete):not(.job-error) {
+        background-color: var(--dark-mode-main-color);
+    }
+}

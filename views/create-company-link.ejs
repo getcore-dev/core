@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>CORE - Create Job Post</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="shortcut icon" href="/img/core.png" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/create-post.css" />
+  <link rel="stylesheet" href="/css/create-company-link.css" />
+  <link rel="stylesheet" href="/css/create-job.css" />
+
+  <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+</head>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'jobs' }) %>
+  <main>
+    <div class="page-header">
+      <h5 id="post-header-title">Import Company Board</h5>
+      <div class="toggle-container">
+        <span class="toggle-label">URL</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="form-toggle">
+          <span class="slider"></span>
+        </label>
+        <span class="toggle-label">Manual</span>
+      </div>
+    </div>
+    <div class="main-container">
+      <form id="jobPostForm">
+        <div class="form-group">
+          <input type="text" id="job-link" name="link" />
+        </div>
+        <button id="submit-button" type="submit">Extract Job Details</button>
+      </form>
+      <div id="jobLinksContainer"></div>
+      <form id="selectedJobsForm" style="display: none;">
+        <button class="submit-button" type="submit">Submit Selected Jobs</button>
+      </form>
+    </div>
+  </main>
+  <script>
+    $(document).ready(function () {
+      const toggle = $('#form-toggle');
+      const jobPostForm = $('#jobPostForm');
+      const editJobPostForm = $('#editJobPostForm');
+
+      toggle.change(function () {
+        if (this.checked) {
+          jobPostForm.hide();
+          editJobPostForm.show();
+        } else {
+          jobPostForm.show();
+          editJobPostForm.hide();
+        }
+      });
+
+      // Form submission handling for extracting job details
+      $('#jobPostForm').on('submit', function (e) {
+        e.preventDefault();
+        var jobLink = $('#job-link').val();
+        $.ajax({
+          url: '/api/extract-job-postings/' + encodeURIComponent(jobLink),
+          method: 'POST',
+          success: function (response) {
+            if (!response || !response.jobLinks || !response.jobLinks.links) {
+              showBannerNotification('An error occurred while extracting job details.');
+              return;
+            }
+
+            showBannerNotification('Job links extracted successfully!');
+
+            // Display the job links
+            displayJobLinks(response.jobLinks.links);
+          },
+          error: function (xhr, status, error) {
+            showBannerNotification('An error occurred while extracting job details.');
+            console.error(error);
+          }
+        });
+      });
+
+      // Handle submission of selected jobs
+      $('#selectedJobsForm').on('submit', function (e) {
+        e.preventDefault();
+        const selectedJobs = $('input[name="selectedJobs[]"]:checked').get();
+
+        if (selectedJobs.length === 0) {
+          showBannerNotification('Please select at least one job to submit.');
+          return;
+        }
+
+        processSelectedJobs(selectedJobs);
+      });
+
+      async function processSelectedJobs(selectedJobs) {
+        for (const job of selectedJobs) {
+          const jobLink = job.value;
+          const jobElement = $(job).closest('li');
+
+          // Set job status to loading
+          updateJobStatus(jobElement, 'loading');
+
+          try {
+            const result = await extractJobDetails(jobLink);
+            updateJobStatus(jobElement, 'complete');
+          } catch (error) {
+            console.error('Error processing job:', error);
+            updateJobStatus(jobElement, 'error');
+          }
+        }
+      }
+
+      async function extractJobDetails(jobLink) {
+        return new Promise((resolve, reject) => {
+          $.ajax({
+            url: '/api/extract-job-details',
+            method: 'POST',
+            data: {
+              link: jobLink
+            },
+            success: function (response) {
+              resolve(response);
+            },
+            error: function (xhr, status, error) {
+              reject(error);
+            }
+          });
+        });
+      }
+
+      function updateJobStatus(jobElement, status) {
+        // Remove all status classes
+        jobElement.removeClass('job-loading job-complete job-error');
+
+        switch (status) {
+        case 'loading':
+          jobElement.addClass('job-loading');
+          break;
+        case 'complete':
+          jobElement.addClass('job-complete');
+          break;
+        case 'error':
+          jobElement.addClass('job-error');
+          break;
+          // 'no processing' is the default state, so we don't need to add a class for it
+        }
+      }
+
+      // Function to display job links with checkboxes (updated)
+      function displayJobLinks(links) {
+        const container = $('#jobLinksContainer');
+        container.empty(); // Clear previous links
+
+        if (links.length === 0) {
+          container.append('<p>No job links found.</p>');
+          return;
+        }
+
+        // Sort links to show new jobs first
+        links.sort((a, b) => {
+          if (a.new && !b.new) return -1;
+          if (!a.new && b.new) return 1;
+          return 0;
+        });
+
+        const ul = $('<ul></ul>');
+        links.forEach(function (link, index) {
+          const li = $('<li class="job-link"></li>');
+          const checkbox = $('<input>').attr({
+            type: 'checkbox',
+            id: 'job-' + index,
+            name: 'selectedJobs[]',
+            value: link.link
+          });
+          const label = $('<label>').attr('for', 'job-' + index);
+          const title = $('<span></span>').attr('href', link.link).attr('target', '_blank').text(link.title);
+          const url = $('<a></a>')
+            .attr('href', link.link)
+            .attr('target', '_blank')
+            .text(link.link.replace(/https?:\/\/(?:job-)?(boards\.greenhouse\.io)\/.*/, '$1'));
+          url.addClass('job-url link sub-text');
+
+          if (link.new && link.techJob && link.techJob === true) {
+            title.addClass('new-job');
+            title.append(' (New)');
+          }
+
+          label.append(checkbox);
+          if (link.techJob && link.techJob === true && link.new) {
+            checkbox.prop('checked', true);
+          }
+          label.append(title);
+          label.append('<br>');
+          label.append(url);
+
+          li.append(label);
+          ul.append(li);
+        });
+
+        container.append('<h3>Extracted Job Links:</h3>');
+        container.append(ul);
+
+        // Show the form for submitting selected jobs
+        $('#selectedJobsForm').show();
+      }
+
+      // Rest of the JavaScript remains the same
+    });
+  </script>
+</body>
+
+</html>

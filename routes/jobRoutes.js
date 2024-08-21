@@ -64,10 +64,22 @@ router.get('/company/create', checkAuthenticated, async (req, res) => {
   }
 });
 
+router.get('/company-link/create', async (req, res) => {
+  try {
+    res.render('create-company-link.ejs', { user: req.user });
+  } catch (err) {
+    console.error('Error fetching job postings:', err);
+    res.status(500).send('Error fetching job postings');
+  }
+});
+
 router.get('/company/:name', async (req, res) => {
   try {
     const companyName = decodeURIComponent(req.params.name);
     const company = await jobQueries.getCompanyByName(companyName);
+    if (!company) {
+      return res.status(404).redirect('/jobs');
+    }
     const jobs = [];
     const jobsCount = await jobQueries.getJobCountByCompany(companyName);
     res.render('company_profile.ejs', {

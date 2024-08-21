@@ -30,6 +30,18 @@ const jobQueries = {
     }
   },
 
+  getAllCompanyJobBoards: async () => {
+    try {
+      const result = await sql.query`
+        SELECT id, job_board_url FROM companies
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   getCompanyJobLinks: async (companyId) => {
     try {
       const result = await sql.query`
@@ -40,6 +52,18 @@ const jobQueries = {
       console.error('Database query error:', err);
       throw err;
     }
+  },
+
+  getAllCompanyJobLinks: async () => {
+    try {
+      const result = await sql.query`
+        SELECT id, title, link, company_id FROM JobPostings
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    } 
   },
   
   incrementJobApplicantCount: async (jobId) => {
