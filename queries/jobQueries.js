@@ -111,11 +111,27 @@ const jobQueries = {
   */
  
 
-  getJobsByCompanies: async (companies, page, pageSize) => {
+  
+  getJobsByCompanies: async (companyIds, page, pageSize) => {
     try {
       const offset = (page - 1) * pageSize;
-      const companyIds = companies.map((company) => company.id);
-      const result = await sql.query`
+      console.log(companyIds);
+  
+      // Create a string of @p1, @p2, etc. for each companyId
+      const parameterPlaceholders = companyIds.map((_, index) => `@p${index + 1}`).join(',');
+  
+      const request = new sql.Request();
+  
+      // Add parameters for each companyId
+      companyIds.forEach((id, index) => {
+        request.input(`p${index + 1}`, sql.Int, id);
+      });
+  
+      // Add parameters for offset and pageSize
+      request.input('offset', sql.Int, offset);
+      request.input('pageSize', sql.Int, pageSize);
+  
+      const query = `
         SELECT 
           JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
           (
@@ -132,11 +148,13 @@ const jobQueries = {
           ) AS skills
         FROM JobPostings
         LEFT JOIN companies ON JobPostings.company_id = companies.id
-        WHERE JobPostings.company_id IN (${companyIds.join(',')})
+        WHERE JobPostings.company_id IN (${parameterPlaceholders})
         ORDER BY JobPostings.postedDate DESC
-        OFFSET ${offset} ROWS
-        FETCH NEXT ${pageSize} ROWS ONLY
+        OFFSET @offset ROWS
+        FETCH NEXT @pageSize ROWS ONLY
       `;
+  
+      const result = await request.query(query);
       const jobs = result.recordset;
       return jobs;
     }
@@ -574,11 +592,7 @@ const jobQueries = {
             FROM job_skills js
             JOIN skills s ON js.skill_id = s.id
             WHERE js.job_id = j.id AND s.name IS NOT NULL
-          ) AS skills,
-          (
-            1 +
-            ${titles.length > 0 ? `CASE WHEN j.title IN (${titles.map((_, i) => `@title${i}`).join(', ')}) THEN 1 ELSE 0 END` : '0'}
-          ) AS preference_score
+          ) AS skills
         FROM JobPostings j
         WHERE j.postedDate >= DATEADD(day, -30, GETDATE())
       )
@@ -597,14 +611,17 @@ const jobQueries = {
       const conditions = [];
       const queryParams = {};
   
-      titles.forEach((title, i) => {
-        queryParams[`title${i}`] = title;
-      });
-  
       if (locations.length > 0) {
         conditions.push(`(${locations.map((_, i) => `js.location LIKE @location${i}`).join(' OR ')})`);
         locations.forEach((location, i) => {
           queryParams[`location${i}`] = `%${location}%`;
+        });
+      }
+  
+      if (titles.length > 0) {
+        conditions.push(`(${titles.map((_, i) => `js.title LIKE @title${i}`).join(' OR ')})`);
+        titles.forEach((title, i) => {
+          queryParams[`title${i}`] = `%${title}%`;
         });
       }
   
@@ -635,7 +652,8 @@ const jobQueries = {
       }
   
       if (companies.length > 0) {
-        conditions.push(`c.name IN (${companies.map((_, i) => `@company${i}`).join(', ')})`);
+        const parameterPlaceholders = companies.map((_, i) => `@company${i}`).join(',');
+        conditions.push(`js.company_id IN (${parameterPlaceholders})`);
         companies.forEach((company, i) => {
           queryParams[`company${i}`] = company;
         });
@@ -648,7 +666,6 @@ const jobQueries = {
       query += ` 
         ORDER BY 
           has_logo DESC,
-          js.preference_score DESC, 
           js.postedDate DESC
         OFFSET @offset ROWS
         FETCH NEXT @pageSize ROWS ONLY
@@ -669,7 +686,6 @@ const jobQueries = {
       throw error;
     }
   },
-  
   
   getJobTitles: async () => {
     try {
@@ -1487,6 +1503,7 @@ ORDER BY jp.postedDate DESC
           users.firstname AS recruiter_firstname,
           users.lastname AS recruiter_lastname,
           users.avatar AS recruiter_image,
+          users.username AS recruiter_username,
 
           (
             SELECT STRING_AGG(JobTags.tagName, ', ') 
@@ -1526,7 +1543,7 @@ ORDER BY jp.postedDate DESC
     tags = [],
     description,
     salary_max = null,
-    recruiter_id,
+    recruiter_id = '1',
     skills = [],
     benefits = [],
     additional_information = '',

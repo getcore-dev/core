@@ -181,7 +181,7 @@ class JobProcessor extends EventEmitter {
     // Check for titles that explicitly mention technology or engineering
     if (lowercaseTitle.includes('technology') || lowercaseTitle.includes('engineer')) {
       // But exclude non-tech engineering roles
-      const nonTechEngineering = ['civil engineer', 'mechanical engineer', 'chemical engineer', 'electrical engineer'];
+      const nonTechEngineering = ['civil engineer', 'smart meter engineer', 'meter engineer', 'mechanical engineer', 'chemical engineer', 'electrical engineer'];
       if (!nonTechEngineering.some(role => lowercaseTitle.includes(role))) {
         return true;
       }
@@ -484,6 +484,7 @@ class JobProcessor extends EventEmitter {
   }
 
   async hasNextPage($, currentUrl) {
+    this.updateProgress({ currentAction: 'Checking next page' });
     const url = new URL(currentUrl);
     const currentPage = parseInt(url.searchParams.get('page')) || 1;
     
@@ -746,6 +747,7 @@ class JobProcessor extends EventEmitter {
   }
 
   generatePrompt(link, textContent) {
+    this.updateProgress({ currentAction: 'Generating prompt' });
     return `
     IF THE JOB POSTING DATA IS NOT A JOB RELATED TO A COMPUTER SCIENCE, MATHEMATICS, OR ENGINEERING FIELD, PLEASE SKIP THIS JOB POSTING.
       Please extract the following information from this job posting data: ${textContent}
@@ -782,6 +784,7 @@ class JobProcessor extends EventEmitter {
   }
 
   validateAndCleanJobData(data) {
+    this.updateProgress({ currentAction: 'Validating and cleaning job data' });
     return {
       title: data.title || '',
       company_name: data.company_name || '',
@@ -840,7 +843,7 @@ class JobProcessor extends EventEmitter {
       jobData.tags.split(','),
       jobData.description,
       jobData.salary_max,
-      null,
+      '1',
       jobData.skills.split(','),
       jobData.benefits.split(','),
       jobData.additional_information,
@@ -856,6 +859,8 @@ class JobProcessor extends EventEmitter {
       jobData.EqualOpportunityEmployerInfo,
       jobData.Relocation
     );
+
+    this.updateProgress({ processedJobs: this.progress.processedJobs + 1 });
   }
 
   getLinkedInSearchTerms(processedJobTitles) {

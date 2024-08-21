@@ -33,6 +33,7 @@ const linkFunctions = require('../utils/linkFunctions');
 const commentQueries = require('../queries/commentQueries');
 const { default: rateLimit } = require('express-rate-limit');
 const notificationQueries = require('../queries/notificationQueries.js');
+const { check } = require('express-validator');
 const jobLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
   max: 1,
@@ -538,14 +539,6 @@ router.get('/jobs', cacheMiddleware(2400), async (req, res) => {
     const user = req.user;
     let userPreferences = {};
 
-    // parsedCompanies = [ '{"id":"71","name":"Apple","logo":"/src/applelogo.png"}' ]
-    if (parsedCompanies.length !== 0) {
-      const jobPostings = await jobQueries.getJobsByCompanies(parsedCompanies, page, pageSize);
-      return res.json({
-        jobPostings,
-        currentPage: page,
-      });
-    }
     /*
     if (user) {
       userPreferences = {
@@ -580,6 +573,10 @@ router.get('/jobs', cacheMiddleware(2400), async (req, res) => {
     } else if (isEmptySearch) {
       allJobPostings = await jobQueries.getRecentJobs(page, pageSize);
     } else {
+      let companyIds;
+      if (parsedCompanies.length !== 0) {
+        companyIds = parsedCompanies.map((company) => JSON.parse(company).id);
+      }
       allJobPostings = await jobQueries.searchAllJobsFromLast30Days(
         {
           titles: parsedTitles,
@@ -587,7 +584,7 @@ router.get('/jobs', cacheMiddleware(2400), async (req, res) => {
           experienceLevels: parsedExperienceLevels,
           salary: parsedSalary,
           skills: parsedSkills,
-          companies: parsedCompanies
+          companies: companyIds || [],
         },
         page,
         pageSize
@@ -835,7 +832,7 @@ router.post('/job-postings', checkAuthenticated, async (req, res) => {
   }
 });
 
-router.post('/extract-job-details', async (req, res) => {
+router.post('/extract-job-details', checkAuthenticated, async (req, res) => {
   try {
     const { link } = req.body;
 
@@ -895,7 +892,7 @@ router.post('/extract-job-details', async (req, res) => {
   }
 });
 
-router.post('/extract-job-postings/:link', async (req, res) => {
+router.post('/extract-job-postings/:link', checkAuthenticated, async (req, res) => {
   try {
     const link = req.params.link;
 
@@ -915,104 +912,6 @@ router.post('/extract-job-postings/:link', async (req, res) => {
 
 });
 
-router.post('/auto-create-job-posting', async (req, res) => {
-  try {
-    const { link } = req.body;
-
-    if (!link) {
-      return res.status(400).json({ error: 'Invalid job link' });
-    }
-
-    let jobLinks = [link];
-
-    if (link.includes('greenhouse.io')) {
-      jobLinks = await linkFunctions.scrapeGreenhouseJobs(link);
-    } else if (link.includes('lever.co')) {
-      jobLinks = await linkFunctions.scrapeLeverJobs(link);
-    }
-
-    for (const jobLink of jobLinks) {
-      const extractedData = await jobProcessor.processJobLink(jobLink);
-
-      if (extractedData.error) {
-        console.error(
-          `Error processing job link ${jobLink}:`,
-          extractedData.error
-        );
-        continue;
-      }
-
-      try {
-        let company = await jobQueries.getCompanyIdByName(
-          extractedData.company_name
-        );
-
-        if (!company) {
-          company = await jobQueries.createCompany(
-            extractedData.company_name,
-            extractedData.company_logo,
-            extractedData.location,
-            extractedData.company_description,
-            extractedData.company_industry,
-            extractedData.company_size,
-            extractedData.company_stock_symbol,
-            extractedData.company_founded
-          );
-        }
-
-        await jobQueries.createJobPosting(
-          extractedData.title,
-          extractedData.salary,
-          extractedData.experience_level,
-          extractedData.location,
-          new Date(),
-          company.id,
-          jobLink,
-          null,
-          extractedData.tags
-            ? extractedData.tags.split(',').map((tag) => tag.trim())
-            : [],
-          extractedData.description,
-          extractedData.salary_max,
-          1,
-          extractedData.skills
-            ? extractedData.skills.split(',').map((skill) => skill.trim())
-            : [],
-          extractedData.benefits,
-          extractedData.additional_information,
-          extractedData.PreferredQualifications,
-          extractedData.MinimumQualifications,
-          extractedData.Responsibilities,
-          extractedData.Requirements,
-          extractedData.NiceToHave,
-          extractedData.Schedule,
-          extractedData.HoursPerWeek,
-          extractedData.H1BVisaSponsorship,
-          extractedData.IsRemote,
-          extractedData.EqualOpportunityEmployerInfo,
-          extractedData.Relocation
-        );
-
-        console.log(
-          `Job posting created successfully for job link: ${jobLink}`
-        );
-      } catch (error) {
-        console.error(
-          `Error creating job posting for job link: ${jobLink}`,
-          error
-        );
-      }
-    }
-
-    res.status(201).json({ message: 'Job postings processed successfully' });
-  } catch (error) {
-    console.error('Error processing job postings:', error);
-    res
-      .status(500)
-      .json({ error: 'An error occurred while processing job postings' });
-  }
-});
-
 router.get('/skills/jobs/:skill', async (req, res) => {
   try {
     const skill = req.params.skill;
@@ -1027,16 +926,6 @@ router.get('/skills/jobs/:skill', async (req, res) => {
   } catch (err) {
     console.error('Error fetching job postings:', err);
     res.status(500).send('Error fetching job postings');
-  }
-});
-
-router.get('/company-name-test/:name', async (req, res) => {
-  try {
-    const company = jobQueries.getCompanyIdByName(req.params.name);
-    res.json(company);
-  } catch (err) {
-    console.error('Error fetching company:', err);
-    res.status(500).send('Error fetching company');
   }
 });
 

@@ -122,6 +122,27 @@
 
           </div>
         </div>
+        <% if (errorMessages && errorMessages.length > 0) { %>
+        <div class="error-messages">
+          <div class="error-message-glyph">
+            <span class="material-symbols-outlined">
+              warning
+            </span>
+          </div>
+          <div class="error-message-text">
+            <% errorMessages.forEach(function(msg) { %>
+            <p class="error-message"><%= msg %></p>
+            <% }); %>
+          </div>
+        </div>
+        <% } %>
+        <% if (successMessages && successMessages.length > 0) { %>
+        <div class="success-messages">
+          <% successMessages.forEach(function(msg) { %>
+          <p class="success-message"><%= msg %></p>
+          <% }); %>
+        </div>
+        <% } %>
       </div>
       <% } %>
       <% if (!communityId) { %>

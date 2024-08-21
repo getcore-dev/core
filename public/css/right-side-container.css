@@ -198,13 +198,9 @@ div.job-title-location .sub-text {
     border-radius: 10px;
   }
 
-  .jobslist {
-    display: flex;
-    overflow-y: hidden;
-    overflow-x: hidden;
-    flex-direction: column;
-    border: 0;
-    gap: 1.1rem;
+  .jobslist-container {
+    overflow: hidden;
+    width: 100%;
     background: 0 !important;
     padding: .1rem;
     margin: 0 1rem;
@@ -216,6 +212,13 @@ div.job-title-location .sub-text {
     padding: 0 .6rem;
   }
 
+  .jobslist {
+    overflow-x: hidden;
+  }
+
+  .jobslist {
+    background: var(--dark-mode-main-color);
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -237,4 +240,10 @@ div.job-title-location .sub-text {
     background-color: var(--dark-mode-body-color);
   }
 
+}
+
+@media (max-width: 768px) {
+  .jobslist {
+    background: none;
+  }
 }

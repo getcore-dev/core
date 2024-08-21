@@ -438,12 +438,12 @@ router.get('/users/:userId/followers', async (req, res) => {
   }
 });
 
-router.get('/:whateverbs', async (req, res) => {
-  res.redirect('/');
+router.get('/:catchAll', async (req, res) => {
+  res.render('communities.ejs' , { user: req.user, communityId: null, errorMessages: ['Page not found'], successMessages: [] });
 });
 
 // Error handling middleware
-router.use((error, req, res, next) => {
+router.use((error, req, res, next)  => {
   console.error(error);
   res
     .status(error.status || 500)

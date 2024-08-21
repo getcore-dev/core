@@ -358,6 +358,7 @@ const userQueries = {
       const validFields = [
         'firstname',
         'lastname',
+        'username',
         'avatar',
         'bio',
         'email',
@@ -419,6 +420,7 @@ const userQueries = {
           throw new Error(`Invalid recruiter_id: ${value}`);
         }
       }
+
   
       // Handle boolean conversion for specific fields
       if (

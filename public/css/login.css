@@ -220,7 +220,6 @@ input:not(:placeholder-shown)+.floating-label,
   box-sizing: border-box;
   border-radius: 10px;
   background-color: #f6f8fa91 !important;
-  border: 1px solid #868686 !important;
   font-size: .8rem;
   transition: box-shadow 0.3s ease;
 }
@@ -390,7 +389,6 @@ nav {
 
   .input-container input {
     background-color: #0b0c0c8c !important;
-    border-color: #646464d1 !important;
     color: var(--dark-mode-text-color) !important;
 
   }

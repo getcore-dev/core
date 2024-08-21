@@ -9,6 +9,8 @@ const viewController = {
       // Send basic post data to the client
       res.render('communities.ejs', {
         user: req.user,
+        errorMessages: req.flash('error'),
+        successMessages: req.flash('success'),
         communityId: null,
         community: null,
       });
@@ -133,7 +135,9 @@ const viewController = {
   },
 
   renderJobsPage: (req, res) => {
-    res.render('jobs.ejs', { user: req.user });
+    res.render('jobs.ejs', { user: req.user,        
+      errorMessages: req.flash('error'),
+      successMessages: req.flash('success'),});
   },
 };
 

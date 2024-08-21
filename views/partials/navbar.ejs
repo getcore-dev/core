@@ -466,10 +466,11 @@
         }
 
         let id = category === 'users' ? item.username : item.id;
-        resultsHtml += `<div data-id="${id}" data-category="${category}" class="search-result-item">
-        
+        resultsHtml += `
+        <div data-id="${id}" data-category="${category}" class="search-result-item">
         <img src="${item.avatar || item.logo || '/img/glyph.png'}" alt="Avatar" class="thumbnail thumbnail-regular thumbnail-micro" />
-        ${name}</div>`;
+        ${name}
+        </div>`;
       });
     });
 
@@ -1105,7 +1106,7 @@
           // Check if the user is logged in and the banner is not closed
           <% if (user) { %>
           if (storedHash !== String(commitHash)) {
-            document.querySelector('.latest-commit-message').innerHTML = `Website was just updated.`;
+            document.querySelector('.latest-commit-message').innerHTML = `Website was just updated. <strong><a href="/updates">Notes</a></strong>`;
             banner.style.display = 'block';
           } else {
             banner.style.display = 'none';

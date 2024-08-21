@@ -24,6 +24,8 @@ router.get('/:communityName', async (req, res) => {
 
     res.render('communities.ejs', {
       user: req.user,
+      errorMessages: req.flash('error'),
+      successMessages: req.flash('success'),
       community: community.recordset[0],
       communityId: communityId,
       communityPostCount: await communityQueries.getCommunityPostCount(

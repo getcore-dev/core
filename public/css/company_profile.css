@@ -39,7 +39,6 @@ div.comment-author {
   margin: 1.2rem;
   padding: .75rem 1rem;
   padding-bottom: 0;
-  background: var(--light-mode-body-color);
 }
 
 div.comments-container {
@@ -84,8 +83,8 @@ div.company-menu .second-nav-links .navbar-button {
 .company-flair {
   display: flex;
   flex-direction: column;
+  padding: 0 0.5rem;
   flex-wrap: wrap;
-  gap: .2rem 1.3rem;
 }
 
 .company-flair-item {
@@ -431,7 +430,6 @@ div.jobs-company-header {
 
   .company-menu {
     border-color: var(--dark-mode-border-color);
-    background: var(--dark-mode-main-color);
   }
 
   .comments-count,

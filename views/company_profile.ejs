@@ -60,7 +60,7 @@
           <p class="description-text" id="companyDescription"><%= company.description %></p>
           <button id="toggleButton" style="display: none;">Show more</button>
         </div>
-        <div class="company-flair sub-text third-text margin-1-bottom">
+        <div class="company-flair sub-text margin-03-bottom">
           <% if (company.job_board_url) { %>
           <span class="company-flair-item">
 
@@ -116,14 +116,16 @@
           </span>
           <% } %>
         </div>
+        <!--
         <div class="company-buttons margin-1-bottom">
-          <button class="null-button-normal null-button-bordered" id="follow-company-button"><span class="material-symbols-outlined">
+          <button class="special-button-normal" id="follow-company-button"><span class="material-symbols-outlined">
               person_add
             </span>Follow</button>
-          <button class="null-button-normal null-button-bordered" id="share-company-button" onclick="share('<%= company.name %>', '', 'https://getcore.dev/jobs/company/<%= encodeURIComponent(company.name) %>')">
+          <button class="null-button-normal" id="share-company-button" onclick="share('<%= company.name %>', '', 'https://getcore.dev/jobs/company/<%= encodeURIComponent(company.name) %>')">
             <span class="material-symbols-outlined">share</span> Share
           </button>
         </div>
+        -->
         <ul class="second-nav-links">
           <li class="dropdown active">
             <a class="navbar-button company-navbar-button active no-bg no-border" data-id="jobs" id="company-updates-selector">

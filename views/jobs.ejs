@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>CORE - Job Postings</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <link rel="stylesheet" href="css/jobs.css" />
-  <link rel="stylesheet" href="css/navbar.css" />
-  <link rel="stylesheet" href="./css/com-btn-container.css" />
+  <link rel="stylesheet" href="/css/jobs.css" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/com-btn-container.css" />
   <link rel="shortcut icon" href="/img/core.png" />
 
   <meta name="description" content="Explore job openings at CORE. Find your next career opportunity and join our team to make a difference.">
@@ -81,7 +81,29 @@
         </div>
         <div class="jobs-selected-filters">
         </div>
+        <% if (errorMessages && errorMessages.length > 0) { %>
+        <div class="error-messages">
+          <div class="error-message-glyph">
+            <span class="material-symbols-outlined">
+              warning
+            </span>
+          </div>
+          <div class="error-message-text">
+            <% errorMessages.forEach(function(msg) { %>
+            <p class="error-message"><%= msg %></p>
+            <% }); %>
+          </div>
+        </div>
+        <% } %>
+        <% if (successMessages && successMessages.length > 0) { %>
+        <div class="success-messages">
+          <% successMessages.forEach(function(msg) { %>
+          <p class="success-message"><%= msg %></p>
+          <% }); %>
+        </div>
+        <% } %>
       </div>
+
       <div id="recent-job-list" class="recent-job-list">
       </div>
       <div id="personalized-job-list" class="job-list">
@@ -105,7 +127,7 @@
 
   </main>
 
-  <script src="js/jobs.js"></script>
+  <script src="/js/jobs.js"></script>
 </body>
 
 </html>

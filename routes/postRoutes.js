@@ -192,8 +192,11 @@ router.get('/posts/:postId', viewLimiter, async (req, res) => {
       linkify: utilFunctions.linkify,
     });
   } catch (err) {
+    // handle TypeError: Cannot read property 'communities_id' of undefined
     console.error('Database query error:', err);
-    res.redirect('/');
+    res.status(500).render('communities.ejs' , { user: req.user, communityId: null, errorMessages: ["Error finding that post"], successMessages: [] });
+
+
   }
 });
 
@@ -344,7 +347,7 @@ router.delete('/post/:postId', checkAuthenticated, async (req, res) => {
     }
 
     await postQueries.deletePostById(postId);
-    res.redirect('/');
+    res.render('communities.ejs' , { user: req.user, communityId: null, errorMessages: [], successMessages: ['Post deleted successfully'] });
   } catch (error) {
     res.status(500).send('Error deleting post');
   }

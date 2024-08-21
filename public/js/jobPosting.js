@@ -124,7 +124,7 @@ async function getSimilarJobs(jobId) {
     : ''
 }
     <div class="job-content">
-              <div class="company-info margin-03-bottom">
+              <div class="company-info">
               <div class="job-posting-company-info">
               <p  class="posting-company-name secondary-text">${
   job.company_name
@@ -134,10 +134,10 @@ async function getSimilarJobs(jobId) {
                           <h3 class="company-name sub-text bold"><a href="/jobs/${job.id}">${
   job.title
 } </a> </h3>
-                <div class="job-tags sub-text secondary-text margin-06-bottom">
+                <div class="job-tags mini-text secondary-text margin-03-bottom">
                   ${tagsHTML}
                 </div>
-                <div class="job-posting-information job-subtitle sub-text third-text">
+                <div class="job-posting-information job-subtitle mini-text third-text">
                                                 <span class="job-date ${formatDateColor(job.postedDate)}"><time>${formatRelativeDate(job.postedDate)}</time></span>
                 <span> • </span>
 
@@ -216,7 +216,7 @@ async function getSimilarJobsByCompany(jobId, companyName) {
       : [];
       const maxTags = 3;
       const displayedTags = tagsArray.slice(0, maxTags);
-      const tagsHTML = displayedTags.map((tag) => `<span onclick="event.stopPropagation(); handleResultClick(event)" data-name="${tag}" data-type="skills" data-id="${tag}"class="tag">${tag}</span>`).join('');
+      const tagsHTML = displayedTags.map((tag) => `${tag}`).join(', ');
 
       return `
             <div class="similar-job" onclick="window.location.href='/jobs/${
@@ -229,16 +229,20 @@ async function getSimilarJobsByCompany(jobId, companyName) {
     : ''
 }
     <div class="job-content">
-              <div class="company-info margin-03-bottom">
+              <div class="company-info">
               <div class="job-posting-company-info">
               <p  class="posting-company-name secondary-text">${
   job.company_name
 }</p>
               </div>
             </div>
-        <span class="job-text sub-text"><h3 class="job-title margin-06-bottom sub-text">${job.title}</h3> — ${tagsHTML}</span>
-
-                <div class="job-posting-information job-subtitle sub-text third-text">
+                          <h3 class="company-name sub-text bold"><a href="/jobs/${job.id}">${
+  job.title
+} </a> </h3>
+                <div class="job-tags mini-text secondary-text margin-03-bottom">
+                  ${tagsHTML}
+                </div>
+                <div class="job-posting-information job-subtitle mini-text third-text">
                                                 <span class="job-date ${formatDateColor(job.postedDate)}"><time>${formatRelativeDate(job.postedDate)}</time></span>
                 <span> • </span>
 
@@ -398,22 +402,20 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 }
             <div class="company-details">
                           <div class="company-information">
-            <a class="secondary-text bold sub-text"href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</h2>
-
+            <a class="secondary-text bold link sub-text"href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
+            ${job.company_size ? `<span class="mini-text third-text">${job.company_size} employees</span>` : ''}
             </div>
 
             </div>
             
           </div>
-                        <h3 class="company-name margin-06-bottom">
-              <a>
+                        <h3 class="company-name main margin-03-bottom">
               ${job.title}
-              </a>
               </h3>
           
           
 
-            <div class="job-info-flairs third-text margin-1-bottom">
+            <div class="job-info-flairs margin-03-bottom">
               <p>
                 <span class="material-symbols-outlined">
                 engineering
@@ -424,29 +426,17 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
                 location_city
                 </span> ${job.location}
               </p>
-
-                          <p> 
-              <span class="material-symbols-outlined">
-              visibility
-              </span> ${job.views ? job.views : 0} views
-            </p>
               <p>
               
                 ${job.salary != 0 ? ' <span class="material-symbols-outlined">attach_money</span>USD $' + formatSalary(job.salary) : ''} ${
   job.salary_max != 0 ? '- $' + formatSalary(job.salary_max) : ''
 }
             </p>
-            <p>
-<span class="material-symbols-outlined">
-                today
-                </span>
-<time>${formatDateJob(job.postedDate)}</time>
-</p>
 
 
       </div>
       
-      <div class="interact-buttons margin-1-bottom">
+      <div class="interact-buttons margin-06-bottom">
       ${
   isOlderThan30Days(job)
     ? ''
@@ -489,7 +479,7 @@ delete
     : ''
 }
       <div class="share-button-container flex">
-      <button class="margin-h-auto null-button-normal grow-button null-button-bordered" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');"><span class="material-symbols-outlined">
+      <button class="margin-h-auto null-button-normal grow-button" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');"><span class="material-symbols-outlined">
 share
 </span><span>Share</span> <span class="number-display">${job.share_count ? job.share_count : 0}</span></button>
       </div>
@@ -518,7 +508,7 @@ share
             </a>
           </li>
           <li class="dropdown">
-            <a class="navbar-button company-navbar-button no-bg no-border" data-id="similar-company-jobs" id="company-updates-selector">
+            <a class="navbar-button sub-text company-navbar-button no-bg no-border" data-id="similar-company-jobs" id="company-updates-selector">
               <span class="material-symbols-outlined">
                 factory
               </span>Company
@@ -527,14 +517,24 @@ share
               </a>
           </li>
         </ul>
-
+          </div>
+            <div class="job-details secondary-text company-profile-section">
+            <div class="job-posting-recruiter">
+            <h4 class="mini-text bold" style="margin-bottom: 0.8rem;">Posted by</h4>  
+            <div class="job-recruiter-container">
+            <a href="/user/${job.recruiter_username}">
+            <img src="${job.recruiter_image}" alt="${job.company_name} logo" class="thumbnail thumbnail-regular thumbnail-tiny" />
+            </a>
+            <div class="job-recruiter-name">
+              <span class="sub-text bold secondary-text">${(job.recruiter_firstname && job.recruiter_lastname) ? `<a href="/user/${job.recruiter_username}" class="bold">${job.recruiter_firstname} ${job.recruiter_lastname}</a>` : ''}</span>
+              <span class="${(job.recruiter_firstname && job.recruiter_lastname) ? 'third-text mini-text' : 'secondary-text sub-text'}"><a href="/user/${job.recruiter_username}" class="link">${job.recruiter_username}</a>
+              <time>${formatDateJob(job.postedDate)}</time></span>
             </div>
-                      <div class="job-details secondary-text company-profile-section">
+            </div>
+            </div>
             <div class="job-posting-description">
-            <h4 class="third-text">Job Description</h4>
-            
-
-              <p>${job.description}</p>
+            <h4>Job Description</h4>
+              <p class="third-text">${job.description}</p>
             </div>
             <div class="job-skills-container">
             <h4 class="third-text">Skills</h4>
@@ -552,8 +552,8 @@ share
   job.Requirements
     ? `
             <div class="job-requirements">
-              <h4 class="third-text">Requirements</h4>
-              <p>${job.Requirements}</p>
+              <h4>Requirements</h4>
+              <p class="third-text">${job.Requirements}</p>
             </div>
             `
     : ''
@@ -563,15 +563,15 @@ share
   job.Responsibilities
     ? `
             <div class="job-responsibilities">
-              <h4 class="third-text">Responsibilities</h4>
-              <p>${job.Responsibilities}</p>
+              <h4>Responsibilities</h4>
+              <p class="third-text">${job.Responsibilities}</p>
             </div>
             `
     : ''
 }
             <div class="company-description sub-text">
-              <h4 class="third-text">Company Description</h4>
-              <p>${job.company_description}</p>
+              <h4>Company Description</h4>
+              <p class="third-text">${job.company_description}</p>
             </div>
             
             ${
@@ -600,8 +600,8 @@ ${
   formattedBenefits
     ? `
 <div class="job-benefits">
-  <h4 class="third-text">Job Benefits</h4>
-  <ul>
+  <h4>Job Benefits</h4>
+  <ul class="third-text">
     ${formattedBenefits}
   </ul>
 </div>
@@ -613,8 +613,8 @@ ${
   job.NiceToHave
     ? `
 <div class="job-nice-to-have">
-  <h4 class="third-text">Nice to Have</h4>
-  <p>${job.NiceToHave}</p>
+  <h4>Nice to Have</h4>
+  <p class="third-text">${job.NiceToHave}</p>
 </div>
 `
     : ''
@@ -624,8 +624,8 @@ ${
   job.schedule
     ? `
 <div class="job-schedule">
-  <h4 class="third-text">Schedule</h4>
-  <p>${job.schedule}</p>
+  <h4>Schedule</h4>
+  <p class="third-text">${job.schedule}</p>
 </div>
 `
     : ''
@@ -635,8 +635,8 @@ ${
   job.hoursPerWeek
     ? `
 <div class="job-hours-per-week">
-  <h4 class="third-text">Hours per Week</h4>
-  <p>${job.hoursPerWeek}</p>
+  <h4>Hours per Week</h4>
+  <p class="third-text">${job.hoursPerWeek}</p>
 </div>
 `
     : ''
@@ -646,22 +646,22 @@ ${
   job.equalOpportunityEmployerInfo
     ? `
 <div class="job-equal-opportunity-employer-info">
-  <h4 class="third-text">Equal Opportunity Employer Info</h4>
-  <p>${job.equalOpportunityEmployerInfo}</p>
+  <h4>Equal Opportunity Employer Info</h4>
+  <p class="third-text">${job.equalOpportunityEmployerInfo}</p>
 </div>
 `
     : ''
 }
 
 <div class="job-relocation">
-  <h4 class="third-text">Relocation</h4>
-  <p>${job.relocation ? 'Yes' : 'No'}</p>
+  <h4>Relocation</h4>
+  <p class="third-text">${job.relocation ? 'Yes' : 'No'}</p>
 </div>
 <div class="similar-jobs-location">
 ${
   job.location
     ? `
-  <h4 class="third-text">More jobs in </h4>
+  <h4>More jobs in </h4>
   <ul class="locations">
 ${job.location
     .split(',')
@@ -691,7 +691,7 @@ ${job.location
         </div></div>
             <div class="job-skills-display">
 
-              Tags: ${tagsHTML}
+              ${tagsHTML}
               ${
   remainingTags > 0
     ? `<span class="see-more" id="secondary-text">+${remainingTags} more</span>`

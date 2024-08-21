@@ -73,7 +73,7 @@ label {
   min-width: 10px;
   font-size: .7rem;
   margin-left: .5rem;
-  background: #ffffff45;
+  background: #ffffff21;
   border: 1px solid #707070;
   border-radius: 10px;
   display: flex;
@@ -246,19 +246,20 @@ a:visited {
 
 .tag {
   display: inline-flex;
-  font-weight: 600;
+  gap: .5rem;
+  font-weight: 500;
   padding: .2rem .5rem;
   margin: .2rem;
   margin-left: 0;
-  background: #1764d761;
-  color: #7295ca !important;
-  background-color: 0;
+  background: #1764d72e;
+  color: #1463b7 !important;
   color: #969696;
   border-radius: .4em;
-  font-size: inherit;
+  font-size: .85rem;
   position: relative;
   cursor: pointer;
   transition: all 0.3s ease;
+  align-items: center;
 }
 
 .tag:hover {
@@ -272,6 +273,10 @@ a:visited {
 .green-tag {
   background: #28dd5c5c;
   color: #87ba96 !important;
+}
+
+.green-text-tag {
+  color: #309b4f !important;
 }
 
 .condensed {
@@ -403,16 +408,14 @@ a:visited {
 }
 
 .overlay {
-  position: absolute;
-  /* Cover the whole screen */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  /* Semi-transparent black */
+  background: rgba(0, 0, 0, 0.3);
+  transition: cubic-bezier(1, 0, 0, 1) 0.3s;
   z-index: 5;
-  /* Ensure it's above other content but below the search form */
 }
 
 .latest-commit-banner {
@@ -1198,8 +1201,11 @@ a>.menu-item {
   height: 100px;
 }
 
+
+
 .mini-text {
   font-size: .8rem;
+  line-height: .9rem;
 }
 
 .thumbnail-regular {
@@ -1243,7 +1249,7 @@ a>.menu-item {
 .search-result-item {
   padding: 10px;
   cursor: pointer;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 0;
   display: flex;
   gap: .6rem;
   align-items: center;
@@ -1563,7 +1569,7 @@ input[type='email'],
 input[type='password'],
 input[type='search'] {
   background-color: var(--light-mode-body-color);
-  border: 1px solid var(--light-mode-input-border-color);
+  border: 0;
   color: var(--light-mode-text-color);
 }
 
@@ -1651,7 +1657,6 @@ select {
   border: none;
   border-radius: 6px;
   background: #12803629;
-  border: 1.5px solid #27944e;
   color: #27944e;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -1701,7 +1706,6 @@ button:hover {
   margin: 0;
   border-radius: 6px;
   background: #0dd64e3d;
-  border: 1.5px solid #57ab73;
   color: #57ab73;
   cursor: pointer;
   word-wrap: break-word;
@@ -1801,10 +1805,6 @@ em.red {
   color: #ff0000;
 }
 
-.null-button-bordered {
-  border: 1px solid var(--light-mode-input-border-color) !important;
-}
-
 .margin-v-auto {
   margin-top: auto !important;
   margin-bottom: auto !important;
@@ -1852,7 +1852,6 @@ em.red {
 #cancel-button-normal,
 .cancel-button,
 .cancel-button-normal {
-  border: 1.5px solid #ae4444;
   background-color: #cd3a3a1c;
   color: #ae4444;
 }
@@ -1884,7 +1883,6 @@ em.red {
 .regular-button-normal {
   background: #007bff36;
   color: #1463b7;
-  border: 1.5px solid #1463b7;
 }
 
 .bold {
@@ -2266,7 +2264,7 @@ em.red {
   input[type='password'],
   input[type='search'] {
     background-color: var(--dark-mode-main-color);
-    border-color: var(--dark-mode-input-border-color) !important;
+    border-color: 0;
     color: var(--dark-mode-text-color);
   }
 
@@ -2557,7 +2555,6 @@ input::placeholder {
   #null-button-normal {
     background: var(--dark-mode-button-color);
     color: #b0b0b0;
-    border: 1.5px solid #2d2d2d;
   }
 
 
@@ -2895,6 +2892,10 @@ input::placeholder {
 
 .error-messages {
   max-width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
   border: 1.5px solid #ae4444;
   background-color: #cd3a3a1c;
   color: #ae4444;
@@ -2950,10 +2951,6 @@ input::placeholder {
   #com-btn-container a {
     text-decoration: none;
     color: #ddd;
-  }
-
-  .null-button-bordered {
-    border-color: #2d2d2d !important;
   }
 
   #com-btn-container {

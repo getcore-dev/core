@@ -13,11 +13,14 @@ body {
 }
 
 #personalized-job-list {
-  margin: 1rem;
+  margin: .4rem .9rem;
 }
 
 .job-search-results {
   max-height: 200px;
+  background: var(--light-mode-body-color);
+  margin: .6rem 0;
+  border-radius: 10px;
   overflow-y: scroll;
 }
 
@@ -276,6 +279,7 @@ div.job-title-location .sub-text {
 .job-title-location {
   display: flex;
   align-items: center;
+  margin-top: .4rem;
   gap: .55rem;
   flex-grow: 1;
 }
@@ -881,6 +885,10 @@ div .material-symbols-outlined:not(:only-child) {
     background: var(--dark-mode-main-color) !important;
     color: var(--dark-mode-text-color) !important;
     border-color: var(--dark-mode-border-color) !important;
+  }
+
+  .job-search-results {
+    background: var(--dark-mode-main-color);
   }
 
 

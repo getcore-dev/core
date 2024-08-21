@@ -598,18 +598,16 @@ let tagsHTML = sortedSkills
   .map((skill) => {
     const skillExists = state.filters.skills.has(skill.toLowerCase());
     return `
-      <span onclick="event.stopPropagation(); handleResultClick(event)" data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="tag ${
-        skillExists ? 'green-tag' : ''
-      }">
-        ${skill}
-      </span>`;
+      <span onclick="event.stopPropagation(); handleResultClick(event)" data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="mini-text text-tag ${
+        skillExists ? 'green-text-tag' : ''
+      }">${skill}</span>`;
   })
-  .join('');
+  .join(', ');
 
 const remainingSkillsCount = sortedTags.length - 3;
 if (remainingSkillsCount > 0) {
   tagsHTML += `
-    <span class="remaining-tags" style="cursor: pointer;" onclick="toggleHiddenTags()">
+    <span class="remaining-tags mini-text" style="cursor: pointer;" onclick="toggleHiddenTags()">
       +${remainingSkillsCount} more
     </span>
   `;
@@ -627,24 +625,24 @@ if (remainingSkillsCount > 0) {
   </div>
     <div class="job-preview">
       <div class="job-info">
-        <div class="company-info margin-03-bottom">
+        <div class="company-info">
           <div class="job-posting-company-info">
-            <a class="company-name third-text bold" href="/jobs/company/${job.company_name}">${job.company_name}</a>
+            <a class="company-name third-text mini-text bold" href="/jobs/company/${job.company_name}">${job.company_name}</a>
           </div>
         </div>
-        <h3 class="job-title margin-06-bottom sub-text">${job.title}</h3>
+        <h3 class="job-title margin-1-bottom sub-text">${job.title}</h3>
         ${tagsHTML}
         
-        <div class="job-title-location secondary-text sub-text">
-                  <div class="applicants sub-text">
+        <div class="job-title-location secondary-text mini-text">
+                  <div class="applicants  mini-text">
             <span class="material-symbols-outlined">person</span>
             ${job.applicants ? `${job.applicants} applicants` : '0'}
           </div>
-          <div class="job-post-date ${formatDateColor(job.postedDate)} sub-text">
+          <div class="job-post-date ${formatDateColor(job.postedDate)} mini-text">
             <time>${formatRelativeDate(job.postedDate)}</time>
           </div>
           <span style="font-size:.7rem;">•</span>
-          <div class="experience-level sub-text">${
+          <div class="experience-level mini-text">${
             job.experienceLevel === 'Mid Level'
               ? 'L3/L4'
               : job.experienceLevel === 'Entry Level'
@@ -654,18 +652,18 @@ if (remainingSkillsCount > 0) {
                   : job.experienceLevel
           }</div>
           ${job.salary || job.salary_max ? `
-            <span style="font-size:.7rem;">•</span><div class="job-salary sub-text">
+            <span style="font-size:.7rem;">•</span><div class="job-salary mini-text">
               <span class="material-symbols-outlined">attach_money</span>
               ${getFormattedSalary(job.salary, job.salary_max)}/yr
             </div>
           ` : ``}
           <span style="font-size:.7rem;">•</span>
-          <div class="location sub-text">
+          <div class="location mini-text">
             <span class="material-symbols-outlined">location_on</span>
             ${formatLocation(job.location).trim()}
           </div>
           <span style="font-size:.7rem;">•</span>
-          <div class="views sub-text">
+          <div class="views mini-text">
             <span class="material-symbols-outlined">visibility</span>
             ${job.views ? job.views : '0'}
           </div>
@@ -703,6 +701,10 @@ function removeInfiniteScroll() {
 }
 state.jobSearchInput.addEventListener('input', 
   debounce(() => {
+    if (!state.jobSearchInput.value) {
+      clearSearchResults();
+      return;
+    }
     if (state.jobSearchInput.value.length < 2) return;
 
     const searchTerm = state.jobSearchInput.value;
@@ -757,7 +759,7 @@ function displaySearchResults(results) {
     resultItem.dataset.name = result.name;
     if (result.logo) resultItem.dataset.logo = result.logo;
     
-    let content = `${result.name} (${result.type}) - ${result.jobCount} jobs`;
+    let content = `<p class="sub-text link">${result.name}</p> <p class="mini-text secondary-text">in <strong>${result.type}</strong> - ${result.jobCount} jobs</p>`;
     
     if (result.type === 'companies' && result.logo) {
       const logo = document.createElement('img');
@@ -767,7 +769,9 @@ function displaySearchResults(results) {
       resultItem.appendChild(logo);
     }
     
-    resultItem.appendChild(document.createTextNode(content));
+    resultDiv = document.createElement('div');
+    resultDiv.innerHTML = content;
+    resultItem.appendChild(resultDiv);
     resultItem.addEventListener('click', handleResultClick);
     resultsContainer.appendChild(resultItem);
   });
@@ -793,6 +797,9 @@ function handleResultClick(event) {
   if (type === 'job-locations' || type === 'tech-job-titles') {
     addToSelectedFilters(type, name, name, logo);
     updateState(type, name, name, logo);
+  } else if (type == 'companies') {
+    addToSelectedFilters(type, id, name, logo);
+    updateState(type, id, name, logo);
   } else {
     updateState(type, id, name, logo);
   }
@@ -809,6 +816,7 @@ function handleResultClick(event) {
 }
 
 function addToSelectedFilters(type, id, name, logo) {
+  console.log(id);
   const selectedFiltersContainer = document.querySelector('.jobs-selected-filters');
   
   let typeSection = selectedFiltersContainer.querySelector(`.selected-${type.toLowerCase().replace(' ', '-')}`);
@@ -853,7 +861,9 @@ function addToSelectedFilters(type, id, name, logo) {
 function removeSelectedItem(item) {
   const type = item.dataset.type;
   const id = item.dataset.id;
-  const name = item.querySelector('span').textContent;
+  console.log(id);
+
+  const name = item.dataset.name || item.querySelector('span').textContent;
 
   const typeSection = item.parentElement;
   console.log(typeSection.children.length);
@@ -862,6 +872,7 @@ function removeSelectedItem(item) {
   if (typeSection.children.length === 1) { // Only header left
     typeSection.parentElement.removeChild(typeSection);
   }
+  console.log(item.dataset);
   updateState(type, id, name, null, true); // true indicates removal
 }
 
@@ -967,10 +978,11 @@ style.textContent = `
     background: none;
         font-size: 1.4rem;
     cursor: pointer;
-    color: #999;
+    color: inherit;
   }
   .remove-item:hover {
-    color: #f00;
+    color: inherit;
+    filter: brightness(0.8);
   }
 `;
 document.head.appendChild(style);
@@ -999,8 +1011,18 @@ function updateState(type, id, name, logo, isRemoval = false) {
       break;
   }
 
-  if (isRemoval) {
-    filterSet.delete(name);
+    if (isRemoval) {
+    console.log('before: ', filterSet);
+    if (type === 'companies') {
+      filterSet.forEach(item => {
+        const parsedItem = JSON.parse(item);
+        if (parsedItem.name === name) {
+          filterSet.delete(item);
+        }
+      });
+    } else {
+      filterSet.delete(name);
+    }
   } else {
     if (type === 'companies') {
       filterSet.add(JSON.stringify({ id, name, logo }));
