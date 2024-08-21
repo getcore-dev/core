@@ -64,6 +64,26 @@ marked.setOptions({
   renderer: renderer,
 });
 
+router.post('/extract-job-postings/:link', checkAuthenticated, async (req, res) => {
+  try {
+    const link = req.params.link;
+
+    if (!link) {
+      return res.status(400).json({ error: 'Invalid job link' });
+    }
+
+    let jobLinks = await jobProcessor.collectJobLinksFromLink(link);
+    res.json({ jobLinks });
+
+  } catch (error) {
+    console.error('Error extracting job postings:', error);
+    res
+      .status(500)
+      .json({ error: 'An error occurred while extracting job postings' });
+  }
+
+});
+
 router.get('/getUsername/:id', async (req, res) => {
   const id = req.params.id;
   try {
@@ -892,25 +912,6 @@ router.post('/extract-job-details', checkAuthenticated, async (req, res) => {
   }
 });
 
-router.post('/extract-job-postings/:link', checkAuthenticated, async (req, res) => {
-  try {
-    const link = req.params.link;
-
-    if (!link) {
-      return res.status(400).json({ error: 'Invalid job link' });
-    }
-
-    let jobLinks = await jobProcessor.collectJobLinksFromLink(link);
-    res.json({ jobLinks });
-
-  } catch (error) {
-    console.error('Error extracting job postings:', error);
-    res
-      .status(500)
-      .json({ error: 'An error occurred while extracting job postings' });
-  }
-
-});
 
 router.get('/skills/jobs/:skill', async (req, res) => {
   try {
