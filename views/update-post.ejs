@@ -138,6 +138,12 @@
             if (prData && prData.pr_url) {
               bodyContent += displayPullRequestInfo(prData);
             }
+
+            let additionalInfo = updateData.additional_info;
+            if (additionalInfo) {
+              additionalInfo = additionalInfo.replace(/\n/g, '<br>');
+              bodyContent += `<p class="update-additional-info">${additionalInfo}</p>`;
+            }
             updatePostBody.innerHTML = bodyContent;
 
             // Render comments (assuming this part stays the same)

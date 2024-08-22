@@ -1,6 +1,6 @@
 :root {
-  --primary-text-color: #1D2935;
-  --light-mode-body-color: #F6F8FA;
+  --primary-text-color: #1d2935;
+  --light-mode-body-color: rgb(238, 242, 247);
   --light-mode-main-color: #fff;
   --light-mode-hover-color: #eef3f7;
   --border-color: #00000019;
@@ -55,8 +55,7 @@ body {
   -webkit-font-smoothing: antialiased;
   padding-top: var(--navbar-height);
   font-family: var(--font-family);
-  font-variation-settings:
-    "wdth" 100;
+  font-variation-settings: "wdth" 100;
   font-weight: 400;
   font-style: normal;
   color: var(--light-mode-text-color);
@@ -1798,7 +1797,7 @@ button .material-symbols-outlined:not(:only-child) {
 }
 
 div.buttons .null-button-normal {
-  background: #f6f9fd;
+  background: var(--light-mode-body-color);
 }
 
 em.red {
@@ -1828,6 +1827,18 @@ em.red {
 
 .flex {
   display: flex;
+}
+
+.sb {
+  justify-content: space-between;
+}
+
+.v-center {
+  align-items: center;
+}
+
+.h-center {
+  justify-content: center;
 }
 
 .margin-l-auto {

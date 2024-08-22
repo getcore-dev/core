@@ -82,6 +82,19 @@ const updateQueries = {
     }
   },
 
+  createUpdatePost: async (userId, title, additional_information, content) => {
+    try {
+      const result = await sql.query`
+        INSERT INTO update_posts (user_id, title, additional_info, content, post_date, pull_request_url)
+        VALUES (${userId}, ${title}, ${additional_information}, ${content}, GETDATE(), '')
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   createUpdateComment: async (comment) => {
     try {
       console.log(comment);

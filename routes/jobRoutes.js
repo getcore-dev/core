@@ -48,6 +48,7 @@ router.get('/applied', checkAuthenticated, async (req, res) => {
   }
 });
 
+
 router.get('/create', checkAuthenticated, async (req, res) => {
   try {
     const skills = await jobQueries.getSkills();
@@ -65,6 +66,22 @@ router.get('/create-company', async (req, res) => {
   } catch (err) {
     console.error('Error fetching job postings:', err);
     res.status(500).send('Error fetching job postings');
+  }
+});
+
+router.put('/update-job-status', checkAuthenticated, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const jobId = req.body.jobId;
+    const status = req.body.status;
+    if (status.trim().toLowerCase() === 'remove') {
+      await jobQueries.removeJobApplication(userId, jobId);
+    }
+    await jobQueries.changeJobStatus(userId, jobId, status);
+    res.status(200).send('Job status updated');
+  } catch (err) {
+    console.error('Error updating job status:', err);
+    res.status(500).send('Error updating job status');
   }
 });
 

@@ -161,6 +161,17 @@ router.get('/leetcode-experience/:username', async (req, res) => {
   }
 });
 
+router.get('/applied-jobs-count', checkAuthenticated, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const appliedJobsCount = await jobQueries.getUserAppliedJobsCount(userId);
+    res.json(appliedJobsCount);
+  } catch (err) {
+    console.error('Error fetching applied jobs:', err);
+    res.status(500).send('Error fetching applied jobs');
+  }
+});
+
 router.get('/get-skill/:skillName', async (req, res) => {
   try {
     const skillName = req.params.skillName;

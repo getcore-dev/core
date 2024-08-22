@@ -1,6 +1,11 @@
 div.update-post-content,
 p.update-data {
+    padding: .75rem 1rem;
+}
+
+p.update-additional-info {
     padding: .75rem;
+    background: var(--border-color);
 }
 
 li.commit-item {
@@ -51,6 +56,11 @@ div.update-comments {
 @media (prefers-color-scheme: dark) {
     div.update-post-content {
         background: var(--dark-mode-body-color);
+    }
+
+    p.update-additional-info {
+        padding: .75rem 1.4rem;
+        background: var(--dark-mode-border-color);
     }
 
     div.pr-info {

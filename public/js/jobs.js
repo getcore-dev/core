@@ -152,7 +152,12 @@ const debounce = (func, delay) => {
 document.addEventListener('DOMContentLoaded', initialize);
 
 function initialize() {
+  try {
   loadStateFromLocalStorage();
+  } catch (error) {
+    console.error('Error loading state from local storage:', error);
+    fetchJobPostings();
+  }
   if (state.jobPostings.length === 0) {
     fetchJobPostings();
   }
@@ -638,7 +643,7 @@ function loadStateFromLocalStorage() {
     state.jobPostings = parsedState.jobPostings;
     state.currentPage = parsedState.currentPage;
     state.filters = {
-      experiencelevels: new Set(parsedState.filters.experiencelevels),
+      experiencelevels: Array.isArray(parsedState.filters.experiencelevels) ? new Set(parsedState.filters.experiencelevels) : new Set(),
       locations: new Set(parsedState.filters.locations),
       titles: new Set(parsedState.filters.titles),
       salary: parsedState.filters.salary,
@@ -690,6 +695,23 @@ function restoreUIState() {
     document.getElementById('min-salary').value = state.filters.salary;
   }
 }
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const appliedJobsLink = document.getElementById('applied-jobs-link');
+
+  if (appliedJobsLink) {
+    fetch('/api/applied-jobs-count')
+      .then(response => response.json())
+      .then(data => {
+        appliedJobsLink.textContent = `${data} Applied Job${data === 1 ? '' : 's'}`;
+      })
+      .catch(error => {
+        console.error('Error fetching applied jobs count:', error);
+        appliedJobsLink.textContent = 'Applied Jobs';
+      });
+  }
+});
 
 function createJobElement(job) {
   const jobElement = document.createElement('div');

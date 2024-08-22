@@ -7,8 +7,134 @@ main {
     width: 100%;
 }
 
+.job-title-location {
+    margin: 0;
+}
+
+.job-list {
+    position: relative;
+    z-index: 1;
+}
+
+
+.job a {
+    position: relative;
+    z-index: 5;
+}
+
+.job-preview {
+    width: 53%;
+}
+
+.custom-select select {
+    display: none;
+    /* Hide the actual select element */
+}
+
+
+.selected-text {
+    font-size: 14px;
+}
+
+.icon-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+
 .job {
+    gap: .6rem;
+    position: relative;
     align-items: center;
     padding: .6rem .1rem;
     width: 100%;
+}
+
+.custom-select {
+    position: absolute;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 120px;
+    z-index: 1000;
+}
+
+.select-trigger {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 6px;
+    background-color: var(--light-mode-body-color);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.icon-wrapper svg {
+    width: 6px;
+    height: 16px;
+    transition: transform 0.3s ease;
+}
+
+.custom-select.open .icon-wrapper svg {
+    transform: rotate(180deg);
+}
+
+.select-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    box-sizing: border-box;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    display: none;
+    max-height: 70px;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.custom-select.open .select-options {
+    display: block;
+}
+
+.select-option {
+    padding: 6px;
+    cursor: pointer;
+}
+
+.select-option:hover {
+    background-color: #f0f0f0;
+}
+
+.color-circle {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.color-circle.pending {
+    background-color: #dbbd01;
+}
+
+.color-circle.responded {
+    background-color: #27944e;
+}
+
+.color-circle.expired {
+    background-color: #b40000;
+}
+
+.color-circle.remove {
+    background-color: gray;
+}
+
+.select-trigger .color-circle {
+    margin-right: 8px;
 }

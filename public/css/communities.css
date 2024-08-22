@@ -1191,7 +1191,7 @@ button.see-more {
 
   #filter-button,
   #post-button {
-    font-size: var(--mobile-default-sub-font-size);
+    font-size: .85rem;
   }
 
   .community-header,

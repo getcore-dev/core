@@ -280,8 +280,9 @@ div.job-title-location .sub-text {
   display: flex;
   align-items: center;
   margin-top: .4rem;
-  gap: .55rem;
+  gap: 0 .55rem;
   flex-grow: 1;
+  flex-wrap: wrap;
 }
 
 .company-logo-container {

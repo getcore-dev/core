@@ -13,6 +13,7 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const { BlobServiceClient } = require('@azure/storage-blob');
 const updateQueries = require('../queries/updateQueries');
+const notificationQueries = require('../queries/notificationQueries');
 const AZURE_STORAGE_CONNECTION_STRING =
   process.env.AZURE_STORAGE_CONNECTION_STRING; // Ensure this is set in your environment variables
 
@@ -215,6 +216,27 @@ router.post('/feedback', checkAuthenticated, async (req, res) => {
   try {
     console.log('Creating feedback:', userId, title, attachmentUrl, content);
     await postQueries.createFeedback(userId, title, attachmentUrl, content);
+    res.redirect('/feedback/success');
+  } catch (err) {
+    console.error('Error creating feedback:', err);
+    res.status(500).send('Error creating feedback');
+  }
+});
+
+router.post('/update', checkAuthenticated, async (req, res) => {
+  const userId = req.user.id;
+  if (!userId) {
+    return res.status(401).send('Unauthorized');
+  }
+
+  if (!req.user.isAdmin) {
+    return res.status(403).send('Forbidden');
+  }
+  const { title, content, additional_information } = req.body;
+
+  try {
+    await updateQueries.createUpdatePost(userId, title, additional_information, content);
+    await notificationQueries.createGlobalNotification('NEW_UPDATE', title);
     res.redirect('/feedback/success');
   } catch (err) {
     console.error('Error creating feedback:', err);

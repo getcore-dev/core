@@ -1090,6 +1090,29 @@ ORDER BY jp.postedDate DESC
     }
   },
 
+  changeJobStatus: async (userId, jobId, status) => {
+    try {
+      if (!userId || !jobId || !status) {
+        throw new Error('userId, jobId, and status are required');
+      }
+      
+      status = status.toLowerCase();
+      if (status !== 'pending' && status !== 'responded' && status !== 'expired') {
+        return null;
+      }
+
+      const result = await sql.query`
+        UPDATE user_jobs
+        SET job_status = ${status}
+        WHERE user_id = ${userId} AND job_id = ${jobId}
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   removeJobApplication: async (userId, jobId) => {
     try {
       const result = await sql.query`
@@ -1110,6 +1133,7 @@ ORDER BY jp.postedDate DESC
           j.*,
           uj.applied_at,
           uj.status,
+          uj.job_status,
           c.name AS company_name,
           c.logo AS company_logo,
           c.location AS company_location,
@@ -1137,6 +1161,20 @@ ORDER BY jp.postedDate DESC
         ORDER BY uj.applied_at DESC
       `;
       return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  getUserAppliedJobsCount: async (userId) => {
+    try {
+      const result = await sql.query`
+        SELECT COUNT(*) as count
+        FROM user_jobs
+        WHERE user_id = ${userId}
+      `;
+      return result.recordset[0].count;
     } catch (err) {
       console.error('Database query error:', err);
       throw err;

@@ -34,18 +34,18 @@
     <div class="jobs-container">
       <div class="jobs-header">
 
-        <div class="jobs-buttons">
+        <div class="jobs-buttons v-center">
           <span class="recent-jobs-count-container">
             <div class="radar-pulse">
               <div class="circle"></div>
               <div class="pulse"></div>
               <div class="pulse"></div>
             </div>
-            <p class="recent-jobs-count sub-text third-text" id="recent-jobs-count">
+            <p class="recent-jobs-count mini-text third-text" id="recent-jobs-count">
             </p>
           </span>
           <% if (user) { %>
-          <a class="link sub-text" href="/jobs/applied">
+          <a class="link mini-text" id="applied-jobs-link" href="/jobs/applied">
             Applied Jobs
           </a>
           <% } %>
@@ -53,10 +53,10 @@
         <% if (user) { %>
         <% if (user.isAdmin) { %>
         <div class="jobs-buttons admin-job-buttons">
-          <a class="link sub-text" href="/jobs/create">
+          <a class="link mini-text" href="/jobs/create">
             + Job Posting
           </a>
-          <a class="link sub-text" href="/jobs/create-company">
+          <a class="link mini-text" href="/jobs/create-company">
             + Company Profile
           </a>
         </div>

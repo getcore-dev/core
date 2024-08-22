@@ -272,6 +272,29 @@ const notificationQueries = {
     }
   },
 
+  createGlobalNotification: async (type, important_message = '') => {
+    try {
+      const createdAt = new Date();
+      const allUsers = await sql.query`
+        SELECT id FROM users`;
+      const users = allUsers.recordset;
+
+      users.forEach(async (user) => {
+        try {
+          await sql.query`
+            INSERT INTO notifications (type, isRead, createdAt, receiverUserId, senderUserId, postId, important_message)
+            VALUES (${type}, 0, ${createdAt}, ${user.id}, 0, '0', ${important_message})`;
+        } catch (err) {
+          console.error(`Error creating global notification for user ${user.id}:`, err);
+          throw err;
+        }
+      });
+    } catch (err) {
+      console.error('Database insert error:', err);
+      throw err;
+    }
+  },
+
   // Fetch all notifications for a specific user
   getAllNotifications: async (userId) => {
     try {
