@@ -496,7 +496,6 @@ const jobQueries = {
           ) AS skills
         FROM JobPostings j
         LEFT JOIN companies c ON j.company_id = c.id
-        WHERE j.postedDate >= DATEADD(day, -30, GETDATE())
       `;
 
       const conditions = [];
@@ -609,7 +608,6 @@ const jobQueries = {
             WHERE js.job_id = j.id AND s.name IS NOT NULL
           ) AS skills
         FROM JobPostings j
-        WHERE j.postedDate >= DATEADD(day, -30, GETDATE())
       )
       SELECT 
         js.*,

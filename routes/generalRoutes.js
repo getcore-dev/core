@@ -145,6 +145,8 @@ router.get('/updates', async (req, res) => {
   }
 });
 
+
+
 router.get('/updates/new', checkAuthenticated, async (req, res) => {
   try {
     res.render('create-update.ejs', { user: req.user });

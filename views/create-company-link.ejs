@@ -82,7 +82,7 @@
         e.preventDefault();
         var jobLink = $('#job-link').val();
         $.ajax({
-          url: '/api/extract-job-postings/' + encodeURIComponent(jobLink),
+          url: '/api/company-link/' + encodeURIComponent(jobLink),
           method: 'POST',
           success: function (response) {
             if (!response || !response.jobLinks || !response.jobLinks.links) {
