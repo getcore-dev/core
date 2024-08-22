@@ -149,12 +149,13 @@ const debounce = (func, delay) => {
   };
 };
 
-// Event listeners
 document.addEventListener('DOMContentLoaded', initialize);
 
-// Main functions
 function initialize() {
-  fetchJobPostings();
+  loadStateFromLocalStorage();
+  if (state.jobPostings.length === 0) {
+    fetchJobPostings();
+  }
   updateJobCount();
 }
 
@@ -352,15 +353,62 @@ async function fetchTotalCompaniesCount() {
   }
 }
 
+function clearAllFilters() {
+  state.filters = {
+    experiencelevels: new Set(),
+    locations: new Set(),
+    titles: new Set(),
+    salary: 0,
+    skills: new Set(),
+    companies: new Set(),
+  };
+  state.currentPage = 1;
+  state.jobPostings = [];
+  state.renderedJobIds.clear();
+  state.hasMoreData = true;
+
+  // Clear UI
+  elements.jobList.innerHTML = '';
+  elements.recentJobList.innerHTML = '';
+  document.querySelector('.jobs-selected-filters').innerHTML = '';
+  document.getElementById('min-salary').value = '';
+
+  saveStateToLocalStorage();
+  fetchJobPostings();
+}
+
 function triggerJobSearch() {
-  // Reset the current page and clear existing job listings
   state.currentPage = 1;
   state.jobPostings = [];
   state.renderedJobIds.clear();
   elements.jobList.innerHTML = '';
   elements.recentJobList.innerHTML = '';
 
-  // Fetch new job postings with updated filters
+  saveStateToLocalStorage(); // Save the cleared state
+  fetchJobPostings();
+}
+
+function resetState() {
+  state.filters = {
+    experiencelevels: new Set(),
+    locations: new Set(),
+    titles: new Set(),
+    salary: 0,
+    skills: new Set(),
+    companies: new Set(),
+  };
+  state.currentPage = 1;
+  state.jobPostings = [];
+  state.renderedJobIds.clear();
+  state.hasMoreData = true;
+
+  // Clear UI
+  elements.jobList.innerHTML = '';
+  elements.recentJobList.innerHTML = '';
+  document.querySelector('.jobs-selected-filters').innerHTML = '';
+  document.getElementById('min-salary').value = '';
+
+  saveStateToLocalStorage();
   fetchJobPostings();
 }
 
@@ -433,9 +481,9 @@ async function fetchJobPostings() {
       state.jobPostings = [...state.jobPostings, ...newJobs];
       renderJobPostings(newJobs);
       state.currentPage++;
+      saveStateToLocalStorage();
     } else {
       state.hasMoreData = false;
-      removeInfiniteScroll();
     }
 
     state.isLoading = false;
@@ -446,7 +494,6 @@ async function fetchJobPostings() {
     state.isLoading = false;
     toggleLoadingState(false);
     state.hasMoreData = false;
-    removeInfiniteScroll();
   }
   setupInfiniteScroll();
 }
@@ -567,6 +614,83 @@ function formatDateColor(dateString) {
   }
 }
 
+function saveStateToLocalStorage() {
+  const stateToSave = {
+    jobPostings: state.jobPostings,
+    currentPage: state.currentPage,
+    filters: {
+      experiencelevels: Array.from(state.filters.experiencelevels),
+      locations: Array.from(state.filters.locations),
+      titles: Array.from(state.filters.titles),
+      salary: state.filters.salary,
+      skills: Array.from(state.filters.skills),
+      companies: Array.from(state.filters.companies),
+    },
+    hasMoreData: state.hasMoreData,
+  };
+  localStorage.setItem('jobSearchState', JSON.stringify(stateToSave));
+}
+
+function loadStateFromLocalStorage() {
+  const savedState = localStorage.getItem('jobSearchState');
+  if (savedState) {
+    const parsedState = JSON.parse(savedState);
+    state.jobPostings = parsedState.jobPostings;
+    state.currentPage = parsedState.currentPage;
+    state.filters = {
+      experiencelevels: new Set(parsedState.filters.experiencelevels),
+      locations: new Set(parsedState.filters.locations),
+      titles: new Set(parsedState.filters.titles),
+      salary: parsedState.filters.salary,
+      skills: new Set(parsedState.filters.skills),
+      companies: new Set(parsedState.filters.companies),
+    };
+    state.hasMoreData = parsedState.hasMoreData;
+
+    // Restore the UI state
+    restoreUIState();
+  }
+}
+
+function restoreUIState() {
+  // Clear existing job listings
+  elements.jobList.innerHTML = '';
+  elements.recentJobList.innerHTML = '';
+
+  // Render saved job postings
+  renderJobPostings(state.jobPostings);
+
+  // Restore selected filters
+  const selectedFiltersContainer = document.querySelector('.jobs-selected-filters');
+  selectedFiltersContainer.innerHTML = ''; // Clear existing filters
+
+  for (let [type, filterSet] of Object.entries(state.filters)) {
+    if (type === 'titles') type = 'tech-job-titles';
+    if (type === 'locations') type = 'job-locations';
+    if (type === 'experiencelevels') type = 'job-levels';
+    console.log(type);
+
+    if (type !== 'salary' && filterSet.size > 0) {
+      filterSet.forEach(filter => {
+        if (type === 'companies') {
+          const { id, name, logo } = JSON.parse(filter);
+          addToSelectedFilters(type, id, name, logo);
+        } else if (type === 'job-levels') {
+       const button = document.querySelector(`button[data-type="job-levels"][data-name="${filter}"]`);
+        button.className = 'regular-button-normal';
+        } else {
+          addToSelectedFilters(type, filter, filter);
+        }
+      });
+    }
+  }
+
+  // Restore salary filter
+  if (state.filters.salary) {
+    document.getElementById('min-salary').value = state.filters.salary;
+  }
+}
+
 function createJobElement(job) {
   const jobElement = document.createElement('div');
   jobElement.classList.add('job');
@@ -598,7 +722,7 @@ let tagsHTML = sortedSkills
   .map((skill) => {
     const skillExists = state.filters.skills.has(skill.toLowerCase());
     return `
-      <span onclick="event.stopPropagation(); handleResultClick(event)" data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="mini-text text-tag ${
+      <span data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="mini-text text-tag ${
         skillExists ? 'green-text-tag' : ''
       }">${skill}</span>`;
   })
@@ -990,29 +1114,37 @@ document.head.appendChild(style);
 function updateState(type, id, name, logo, isRemoval = false) {
   state.hasMoreData = true;
   let filterSet;
+
   switch(type) {
     case 'tech-job-titles':
+    case 'titles':
       filterSet = state.filters.titles;
       break;
     case 'job-locations':
       filterSet = state.filters.locations;
       break;
     case 'skills':
-      if (!isRemoval) {
-      addToSelectedFilters(type, id, name, logo);
-      }
       filterSet = state.filters.skills;
       break;
     case 'companies':
       filterSet = state.filters.companies;
       break;
+    case 'experiencelevels':
     case 'job-levels':
       filterSet = state.filters.experiencelevels;
       break;
+    default:
+      console.error(`Unknown filter type: ${type}`);
+      return; // Exit the function if we don't recognize the type
   }
 
-    if (isRemoval) {
-    console.log('before: ', filterSet);
+  if (!filterSet) {
+    console.error(`Filter set is undefined for type: ${type}`);
+    return; // Exit the function if filterSet is undefined
+  }
+
+  if (isRemoval) {
+    console.log('Before removal:', filterSet);
     if (type === 'companies') {
       filterSet.forEach(item => {
         const parsedItem = JSON.parse(item);
@@ -1020,16 +1152,28 @@ function updateState(type, id, name, logo, isRemoval = false) {
           filterSet.delete(item);
         }
       });
+    } else if (type === 'tech-job-titles') {
+      console.log('Removing job title:', id);
+      filterSet.delete(id);
     } else {
+      console.log('Removing item:', name);
       filterSet.delete(name);
     }
+    console.log('After removal:', filterSet);
   } else {
     if (type === 'companies') {
       filterSet.add(JSON.stringify({ id, name, logo }));
+    } else if (type === 'tech-job-titles') {
+      filterSet.add(id);
     } else {
       filterSet.add(name);
     }
   }
 
+  if (!isRemoval && type === 'skills') {
+    addToSelectedFilters(type, id, name, logo);
+  }
+
+  saveStateToLocalStorage(); // Save state after updating filters
   triggerJobSearch();
 }

@@ -64,7 +64,7 @@ marked.setOptions({
   renderer: renderer,
 });
 
-router.post('/extract-job-postings/:link', checkAuthenticated, async (req, res) => {
+router.post('/extract-job-postings/:link', async (req, res) => {
   try {
     const link = req.params.link;
 
