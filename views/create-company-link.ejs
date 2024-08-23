@@ -81,32 +81,34 @@
       $('#jobPostForm').on('submit', function (e) {
         e.preventDefault();
         var jobLink = $('#job-link').val();
-        $.ajax({
-          url: '/api/company-link/' + encodeURIComponent(jobLink),
-          method: 'POST',
-          success: function (response) {
-            if (!response || !response.jobLinks || !response.jobLinks.links) {
 
-              errorMessages.show();
-              const outputText = $('#output-text');
-              outputText.text('error: ' + error);
-              showBannerNotification('An error occurred while extracting job details.');
-              return;
+        fetch('/api/company-link', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              link: jobLink
+            }),
+          })
+          .then(response => {
+            console.log(response);
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
             }
-
+            return response.json();
+          })
+          .then(data => {
             showBannerNotification('Job links extracted successfully!');
-
-            // Display the job links
-            displayJobLinks(response.jobLinks.links);
-          },
-          error: function (xhr, status, error) {
+            displayJobLinks(data.jobLinks.links);
+          })
+          .catch(error => {
             errorMessages.show();
             const outputText = $('#output-text');
-            outputText.text('error: ' + error);
+            outputText.text('error: ' + error.message);
             showBannerNotification('An error occurred while extracting job details.');
             console.error(error);
-          }
-        });
+          });
       });
 
       // Handle submission of selected jobs
@@ -127,7 +129,6 @@
           const jobLink = job.value;
           const jobElement = $(job).closest('li');
 
-          // Set job status to loading
           updateJobStatus(jobElement, 'loading');
 
           try {
@@ -141,25 +142,24 @@
       }
 
       async function extractJobDetails(jobLink) {
-        return new Promise((resolve, reject) => {
-          $.ajax({
-            url: '/api/extract-job-details',
-            method: 'POST',
-            data: {
-              link: jobLink
-            },
-            success: function (response) {
-              resolve(response);
-            },
-            error: function (xhr, status, error) {
-              reject(error);
-            }
-          });
+        const response = await fetch('/api/extract-job-details', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            link: jobLink
+          }),
         });
+
+        if (!response.ok) {
+          throw new Error('Failed to extract job details');
+        }
+
+        return response.json();
       }
 
       function updateJobStatus(jobElement, status) {
-        // Remove all status classes
         jobElement.removeClass('job-loading job-complete job-error');
 
         switch (status) {
@@ -172,21 +172,18 @@
         case 'error':
           jobElement.addClass('job-error');
           break;
-          // 'no processing' is the default state, so we don't need to add a class for it
         }
       }
 
-      // Function to display job links with checkboxes (updated)
       function displayJobLinks(links) {
         const container = $('#jobLinksContainer');
-        container.empty(); // Clear previous links
+        container.empty();
 
         if (links.length === 0) {
           container.append('<p>No job links found.</p>');
           return;
         }
 
-        // Sort links to show new jobs first
         links.sort((a, b) => {
           if (a.new && !b.new) return -1;
           if (!a.new && b.new) return 1;
@@ -203,11 +200,11 @@
             value: link.link
           });
           const label = $('<label>').attr('for', 'job-' + index);
-          const title = $('<span></span>').attr('href', link.link).attr('target', '_blank').text(link.title);
+          const title = $('<span></span>').text(link.title);
           const url = $('<a></a>')
-            .attr('href', link.link)
-            .attr('target', '_blank')
-            .text(link.link.replace(/https?:\/\/(?:job-)?(boards\.greenhouse\.io)\/.*/, '$1'));
+                      .attr('href', link.link)
+                      .attr('target', '_blank')
+                      .text(link.link.replace(/^(?:https?:\/\/)?(?:www\.)?([^\/]+).*$/, '$1'));
           url.addClass('job-url link sub-text');
 
           if (link.new && link.techJob && link.techJob === true) {
@@ -230,11 +227,13 @@
         container.append('<h3>Extracted Job Links:</h3>');
         container.append(ul);
 
-        // Show the form for submitting selected jobs
         $('#selectedJobsForm').show();
       }
 
-      // Rest of the JavaScript remains the same
+      function showBannerNotification(message) {
+        // Implement this function to show notifications
+        console.log(message);
+      }
     });
   </script>
 </body>

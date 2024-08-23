@@ -678,30 +678,33 @@ GROUP BY
 
   getAllCommunities: async (user) => {
     try {
-      let query = sql.query`
-      SELECT 
-        c.id, 
-        c.name, 
-        c.mini_icon, 
-        c.community_color,
-        c.shortname, 
-        c.PrivacySetting,
-        CASE WHEN cm.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_member,
-        (SELECT COUNT(*) FROM community_memberships WHERE community_id = c.id) AS MemberCount
-      FROM 
-        communities c
-      LEFT JOIN 
-        community_memberships cm 
-      ON 
-        c.id = cm.community_id 
-        AND cm.user_id = ${user ? user.id : null}
-      WHERE 
-        ${user && user.isAdmin ? sql`1=1` : sql`c.PrivacySetting = 'Public' OR (c.PrivacySetting != 'Public' AND cm.user_id IS NOT NULL)`}
-      ORDER BY 
-        MemberCount DESC
-    `;
+      const query = `
+        SELECT 
+          c.id, 
+          c.name, 
+          c.mini_icon, 
+          c.community_color,
+          c.shortname, 
+          c.PrivacySetting,
+          CASE WHEN cm.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_member,
+          (SELECT COUNT(*) FROM community_memberships WHERE community_id = c.id) AS MemberCount
+        FROM 
+          communities c
+        LEFT JOIN 
+          community_memberships cm 
+        ON 
+          c.id = cm.community_id 
+          AND cm.user_id = @userId
+        WHERE 
+          ${user && user.isAdmin ? '1=1' : "c.PrivacySetting = 'Public' OR (c.PrivacySetting != 'Public' AND cm.user_id IS NOT NULL)"}
+        ORDER BY 
+          MemberCount DESC
+      `;
   
-      const result = await query;
+      const request = new sql.Request();
+      request.input('userId', sql.NVarChar, user ? user.id : null);
+  
+      const result = await request.query(query);
       return result.recordset;
     } catch (err) {
       console.error('Database query error:', err);

@@ -469,16 +469,17 @@ a:visited {
   border: 1px solid #ba5b65;
   color: #fff;
   border-radius: 50%;
-  font-size: 12px;
+  font-size: 8px;
   position: absolute;
-  height: 16px;
-  top: -6px;
-  margin-left: 21px;
+  height: 13px;
+  top: -9px;
+  left: 10px;
   font-weight: bold;
   text-align: center;
-  width: 16px;
-  aspect-ratio: 1/1;
-  line-height: 1rem;
+  width: 13px;
+  aspect-ratio: 1 / 1;
+  align-items: center;
+  justify-content: center;
 }
 
 #loading-indicator.hidden {

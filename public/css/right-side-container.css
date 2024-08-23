@@ -92,6 +92,7 @@
 
 .job {
   display: flex;
+  align-items: center;
   background: var(--light-mode-main-color);
   border-radius: 0;
   flex-direction: row;
