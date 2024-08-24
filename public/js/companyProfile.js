@@ -218,34 +218,38 @@ function renderJobPostings(jobPostings) {
     const tagsHTML = displayedTags
       .map(
         (tag) =>
-        `<a class="tag">${tag}</a>`
+        `<span class="sub-text text-tag">${tag}</span>`
       )
-      .join("");
+      .join(", ");
     const remainingTags = tagsArray.length - maxTags;
     jobElement.innerHTML = `
     <a href="/jobs/${job.id}">
     <div class="job-preview-image">
               ${
               job.company_logo
-                ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="" />`
-                : ''
+                ? `<img class="thumbnail thumbnail-regular thumbnail-small" src="${job.company_logo ? job.company_logo : '/img/glyph.png'}" alt="" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
+                              : ''
             }
     </div>
       <div class="job-preview">
         <div class="job-info">
           <div class="company-info">
             <div class="job-posting-company-info">
-              <a class="company-name third-text bold" href="/jobs/company/${job.company_name}">${job.company_name}</a>
+              <a class="company-name third-text mini-text bold" href="/jobs/company/${job.company_name}">${job.company_name}</a>
             </div>
           </div>
-          <span class="job-text"><h3 class="job-title margin-06-bottom sub-text">${job.title}</h3> — ${tagsHTML}</span>
+          <h3 class="job-title margin-1-bottom main-text">${job.title}</h3>
+          <p class="sub-text secondary-text margin-03-bottom">${tagsHTML}</p>
           
-          <div class="job-title-location secondary-text sub-text">
-            <div class="job-post-date ${formatDateColor(job.postedDate)} sub-text">
+          <div class="job-title-location third-text mini-text">
+                    <div class="applicants  mini-text">
+              ${job.applicants ? `${job.applicants} applicants` : '0 applicants'}
+            </div>
+            <div class="job-post-date ${formatDateColor(job.postedDate)} mini-text">
               <time>${formatRelativeDate(job.postedDate)}</time>
             </div>
             <span style="font-size:.7rem;">•</span>
-            <div class="experience-level sub-text">${
+            <div class="experience-level mini-text">${
               job.experienceLevel === 'Mid Level'
                 ? 'L3/L4'
                 : job.experienceLevel === 'Entry Level'
@@ -255,18 +259,14 @@ function renderJobPostings(jobPostings) {
                     : job.experienceLevel
             }</div>
             ${job.salary || job.salary_max ? `
-              <span style="font-size:.7rem;">•</span><div class="job-salary sub-text">
-                <span class="material-symbols-outlined">attach_money</span>
-                ${getFormattedSalary(job.salary, job.salary_max)}/yr
+              <span style="font-size:.7rem;">•</span><div class="job-salary mini-text">
+                ${formatSalary(job.salary)} - ${formatSalary(job.salary_max)}/yr
               </div>
             ` : ``}
-            <span style="font-size:.7rem;">•</span><div class="location sub-text">
+            <span style="font-size:.7rem;">•</span>
+            <div class="location mini-text">
               <span class="material-symbols-outlined">location_on</span>
               ${formatLocation(job.location).trim()}
-            </div>
-            <span style="font-size:.7rem;">•</span><div class="views sub-text">
-              <span class="material-symbols-outlined">visibility</span>
-              ${job.views ? job.views : '0'}
             </div>
           </div>
         </div>

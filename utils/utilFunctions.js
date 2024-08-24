@@ -45,6 +45,18 @@ const utilFunctions = {
       throw err;
     }
   },
+
+  checkForDuplicateLink: async (link) => {
+    try {
+      const result = await sql.query`
+        SELECT id FROM JobPostings WHERE link = ${link}
+      `;
+      return result.recordset.length > 0;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
     
 
   shareJob: async (jobId) => {
@@ -145,12 +157,12 @@ OUTER APPLY (
       ORDER BY created_at DESC
     `;
 
-    if (user.settings_PrivateJobNames === 1) {
-      result.recordset.forEach((post) => {
-        post.job_title = post.job_title || 'Job Title';
-        post.job_company = post.job_company || 'Company';
-      });
-    }
+      if (user.settings_PrivateJobNames === 1) {
+        result.recordset.forEach((post) => {
+          post.job_title = post.job_title || 'Job Title';
+          post.job_company = post.job_company || 'Company';
+        });
+      }
 
 
       const countResult = await sql.query`
@@ -696,7 +708,7 @@ GROUP BY
           c.id = cm.community_id 
           AND cm.user_id = @userId
         WHERE 
-          ${user && user.isAdmin ? '1=1' : "c.PrivacySetting = 'Public' OR (c.PrivacySetting != 'Public' AND cm.user_id IS NOT NULL)"}
+          ${user && user.isAdmin ? '1=1' : 'c.PrivacySetting = \'Public\' OR (c.PrivacySetting != \'Public\' AND cm.user_id IS NOT NULL)'}
         ORDER BY 
           MemberCount DESC
       `;

@@ -744,7 +744,7 @@ let tagsHTML = sortedSkills
   .map((skill) => {
     const skillExists = state.filters.skills.has(skill.toLowerCase());
     return `
-      <span data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="mini-text text-tag ${
+      <span data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="sub-text text-tag ${
         skillExists ? 'green-text-tag' : ''
       }">${skill}</span>`;
   })
@@ -765,7 +765,7 @@ if (remainingSkillsCount > 0) {
   <div class="job-preview-image">
             ${
             job.company_logo
-              ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo ? job.company_logo : '/img/glyph.png'}" alt="" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
+              ? `<img class="thumbnail thumbnail-regular thumbnail-small" src="${job.company_logo ? job.company_logo : '/img/glyph.png'}" alt="" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
                             : ''
           }
   </div>
@@ -776,13 +776,12 @@ if (remainingSkillsCount > 0) {
             <a class="company-name third-text mini-text bold" href="/jobs/company/${job.company_name}">${job.company_name}</a>
           </div>
         </div>
-        <h3 class="job-title margin-1-bottom sub-text">${job.title}</h3>
-        ${tagsHTML}
+        <h3 class="job-title margin-1-bottom main-text">${job.title}</h3>
+        <p class="sub-text secondary-text margin-03-bottom">${tagsHTML}</p>
         
-        <div class="job-title-location secondary-text mini-text">
+        <div class="job-title-location third-text mini-text">
                   <div class="applicants  mini-text">
-            <span class="material-symbols-outlined">person</span>
-            ${job.applicants ? `${job.applicants} applicants` : '0'}
+            ${job.applicants ? `${job.applicants} applicants` : '0 applicants'}
           </div>
           <div class="job-post-date ${formatDateColor(job.postedDate)} mini-text">
             <time>${formatRelativeDate(job.postedDate)}</time>
@@ -799,19 +798,13 @@ if (remainingSkillsCount > 0) {
           }</div>
           ${job.salary || job.salary_max ? `
             <span style="font-size:.7rem;">•</span><div class="job-salary mini-text">
-              <span class="material-symbols-outlined">attach_money</span>
-              ${getFormattedSalary(job.salary, job.salary_max)}/yr
+              ${formatSalary(job.salary)} - ${formatSalary(job.salary_max)}/yr
             </div>
           ` : ``}
           <span style="font-size:.7rem;">•</span>
           <div class="location mini-text">
             <span class="material-symbols-outlined">location_on</span>
             ${formatLocation(job.location).trim()}
-          </div>
-          <span style="font-size:.7rem;">•</span>
-          <div class="views mini-text">
-            <span class="material-symbols-outlined">visibility</span>
-            ${job.views ? job.views : '0'}
           </div>
         </div>
       </div>

@@ -103,8 +103,8 @@
                jobslistContainer.innerHTML = jobs.map(job => `
               <div class="job" onclick="window.location.href='/jobs/${job.id}'">
                                   ${job.company_logo ? `
-                      <img loading="lazy" src="${job.company_logo}" alt="" class="thumbnail ${isMobile ? `thumbnail-tiny` : `thumbnail-tiny`} thumbnail-regular" />
-                      ` : ``}
+                      <img loading="lazy" src="${job.company_logo}" alt="" onerror="this.onerror=null;this.src='/img/glyph.png';" class="thumbnail ${isMobile ? `thumbnail-tiny` : `thumbnail-tiny`} thumbnail-regular" />
+                      ` : `<img loading="lazy" src="/img/gylph.png" alt="" class="thumbnail ${isMobile ? `thumbnail-tiny` : `thumbnail-tiny`} thumbnail-regular" />`}
                 <div class="job-content">
                   <div class="job-content-header">
                     <div class="company-logo-container">
@@ -189,8 +189,8 @@
                   <div class="job-content-header">
                     <div class="company-logo-container">
                     ${job.company_logo ? `
-                      <img loading="lazy" src="${job.company_logo}" alt="" class="thumbnail ${isMobile ? `thumbnail-micro` : `thumbnail-tiny`} thumbnail-regular" />
-                      ` : ``}
+                      <img loading="lazy" src="${job.company_logo}" alt="" onerror="this.onerror=null;this.src='/img/glyph.png';" class="thumbnail ${isMobile ? `thumbnail-micro` : `thumbnail-tiny`} thumbnail-regular" />
+                      ` : `<img loading="lazy" src="/img/gylph.png" alt="" class="thumbnail ${isMobile ? `thumbnail-tiny` : `thumbnail-tiny`} thumbnail-regular" />`}
                                             <div class="job-posting-header">
                         <div class="job-company-name sub-text secondary-text">
                         

@@ -385,6 +385,7 @@ div.jobs-company-header {
 
 .job-preview {
   display: flex;
+  width: 100%;
   align-items: center;
 }
 

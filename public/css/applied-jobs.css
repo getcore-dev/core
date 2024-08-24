@@ -64,7 +64,7 @@ main {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 6px;
+    padding: 9px 13px;
     background-color: var(--light-mode-body-color);
     border-radius: 4px;
     cursor: pointer;
@@ -137,4 +137,17 @@ main {
 
 .select-trigger .color-circle {
     margin-right: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+
+    .select-trigger {
+        background-color: var(--dark-mode-main-color);
+    }
+
+
+    .select-options {
+        background-color: var(--dark-mode-body-color);
+        border-color: var(--dark-mode-border-color);
+    }
 }

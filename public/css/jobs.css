@@ -276,11 +276,14 @@ div.job-title-location .sub-text {
   display: inline-block;
 }
 
+.applicants {
+  color: #3b72e6;
+}
+
 .job-title-location {
   display: flex;
   align-items: center;
-  margin-top: .4rem;
-  gap: 0 .55rem;
+  gap: .15rem .55rem;
   flex-grow: 1;
   flex-wrap: wrap;
 }

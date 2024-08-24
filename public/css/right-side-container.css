@@ -106,7 +106,7 @@
 
 .job-title-location {
   display: flex;
-  gap: 0 .3em;
+  gap: .15rem .6em;
   flex-wrap: wrap;
   align-items: center;
 }

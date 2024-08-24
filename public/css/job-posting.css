@@ -303,7 +303,7 @@ ul.locations,
   flex-wrap: wrap;
   overflow: hidden;
   max-width: 100%;
-  gap: .4rem 1rem;
+  gap: .8rem 1rem;
   box-sizing: border-box;
   justify-content: space-between;
 }
@@ -318,6 +318,7 @@ ul.locations,
 
 .job-tags {
   display: flex;
+  overflow: hidden;
   flex-direction: row;
   align-items: center;
   gap: 7px;
@@ -335,7 +336,7 @@ ul.locations,
   display: flex;
   flex-direction: column;
   padding: 0 0.5rem;
-  gap: 0;
+  gap: .25rem;
   flex-wrap: wrap;
 }
 

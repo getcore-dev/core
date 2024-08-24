@@ -1654,6 +1654,13 @@ ORDER BY jp.postedDate DESC
         return null;
       }
 
+      // check if link already in database
+      const linkExists = await utilFunctions.checkForDuplicateLink(link);
+      if (linkExists) {
+        console.log('Link already exists in database, not inserting.');
+        return null;
+      }
+
       let jobPostingId;
       try {
         // Insert the job posting into the JobPostings table
@@ -1836,13 +1843,13 @@ ORDER BY jp.postedDate DESC
       throw err;
     }
   },
-getCompanyIdByName: async (name) => {
-  try {
+  getCompanyIdByName: async (name) => {
+    try {
     // Normalize the input name
-    const normalizedName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const normalizedName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
     
-    // First, try to find an exact match
-    const exactMatchResult = await sql.query`
+      // First, try to find an exact match
+      const exactMatchResult = await sql.query`
       SELECT TOP 1 c.id, c.name, c.logo, c.location, c.description, c.industry, c.size, c.stock_symbol, c.founded,
              COUNT(jp.id) as job_count
       FROM companies c
@@ -1851,12 +1858,12 @@ getCompanyIdByName: async (name) => {
       GROUP BY c.id, c.name, c.logo, c.location, c.description, c.industry, c.size, c.stock_symbol, c.founded
       ORDER BY job_count DESC
     `;
-    if (exactMatchResult.recordset.length > 0) {
-      return exactMatchResult.recordset[0];
-    }
+      if (exactMatchResult.recordset.length > 0) {
+        return exactMatchResult.recordset[0];
+      }
 
-    // If no exact match, try partial matches with stricter conditions
-    const partialMatchResult = await sql.query`
+      // If no exact match, try partial matches with stricter conditions
+      const partialMatchResult = await sql.query`
       SELECT TOP 5 c.id, c.name, c.logo, c.location, c.description, c.industry, c.size, c.stock_symbol, c.founded,
              COUNT(jp.id) as job_count,
              LEN(c.name) as name_length,
@@ -1883,17 +1890,17 @@ getCompanyIdByName: async (name) => {
         COUNT(jp.id) DESC,
         ABS(LEN(LOWER(REPLACE(c.name, ' ', ''))) - LEN(${normalizedName})) ASC
     `;
-    if (partialMatchResult.recordset.length > 0) {
-      return partialMatchResult.recordset[0];
-    }
+      if (partialMatchResult.recordset.length > 0) {
+        return partialMatchResult.recordset[0];
+      }
     
-    // If still no match, return null
-    return null;
-  } catch (err) {
-    console.error('Database query error:', err);
-    throw err;
-  }
-},
+      // If still no match, return null
+      return null;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
 
   createCompany: async (
     name,
@@ -1935,6 +1942,8 @@ getCompanyIdByName: async (name) => {
     }
   },
 
+  
+
   automatedDeleteJob: async (jobId) => {
     try {
       await sql.query`
@@ -1947,8 +1956,32 @@ getCompanyIdByName: async (name) => {
       DELETE FROM JobPostings WHERE id = ${jobId}
     `;
     
-    console.log(`Deleted job with ID ${jobId}`);
+      console.log(`Deleted job with ID ${jobId}`);
 
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  mergeJobs: async (primaryJobId, duplicateJobId) => {
+    try {
+
+      // Update applied jobs
+      await sql.query`
+          UPDATE user_jobs
+          SET job_id = ${primaryJobId}
+          WHERE job_id = ${duplicateJobId}
+        `;
+      
+      // Delete the duplicate job from related tables
+      await sql.query`
+          DELETE FROM JobPostingsTags WHERE jobId = ${duplicateJobId}
+          DELETE FROM job_skills WHERE job_id = ${duplicateJobId}
+          DELETE FROM JobPostings WHERE id = ${duplicateJobId}
+        `;
+  
+      console.log(`Merged job ${duplicateJobId} into ${primaryJobId}`);
     } catch (err) {
       console.error('Database query error:', err);
       throw err;
@@ -1958,20 +1991,28 @@ getCompanyIdByName: async (name) => {
   getDuplicateJobPostings: async () => {
     try {
       const result = await sql.query(`
-        SELECT id
-        FROM (
-          SELECT
-            id,
-            ROW_NUMBER() OVER (
-              PARTITION BY title, company_id, salary
-              ORDER BY postedDate DESC
-            ) AS rn
+        SELECT id, title, company_id, salary
+        FROM JobPostings
+        WHERE (title, company_id, salary) IN (
+          SELECT title, company_id, salary
           FROM JobPostings
-        ) AS duplicates
-        WHERE rn > 1
+          GROUP BY title, company_id, salary
+          HAVING COUNT(*) > 1
+        )
+        ORDER BY title, company_id, salary, postedDate DESC
       `);
-      console.log(`Found ${result.recordset.length} duplicate job postings`);
-      return result.recordset;
+      
+      // Group the results
+      const groupedResults = result.recordset.reduce((acc, job) => {
+        const key = `${job.title}-${job.company_id}-${job.salary}`;
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(job);
+        return acc;
+      }, {});
+  
+      return Object.values(groupedResults);
     } catch (err) {
       console.error('Database query error:', err);
       throw err;
