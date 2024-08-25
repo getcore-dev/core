@@ -2099,8 +2099,40 @@ em.red {
   transition: 0.3s;
 }
 
+summary {
+  display: flex;
+}
+
+details {
+  transition: 0.3s;
+}
+
+details[open] {
+  max-height: 1000px;
+  transition: max-height 0.5s ease-out;
+}
+
+details.open {
+  transform: translateY(0);
+}
+
+@keyframes slideOut {
+  from {
+    max-height: 0;
+  }
+
+  to {
+    max-height: 1000px;
+  }
+}
+
+details[open] {
+  animation: slideOut 0.5s ease-out;
+}
+
 .menu-content a {
   border-radius: 10px;
+  width: 100%;
   margin-bottom: .4rem;
   text-decoration: none;
   font-size: .925rem;
@@ -2264,6 +2296,14 @@ em.red {
 
 .search-category-option {
   color: var(--light-mode-secondary-text-color);
+}
+
+.mobile-communities-container {
+  padding: 21px;
+  padding-top: 0;
+  display: flex;
+  gap: .6rem;
+  flex-direction: column;
 }
 
 @media (prefers-color-scheme: dark) {

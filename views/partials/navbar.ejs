@@ -98,15 +98,23 @@
               Openings
             </div>
           </a>
-          <a href="/networks" class="<%= isActive('/networks') ? 'active' : '' %>">
-            <div class="menu-item main-text secondary-text">
-              <span class="material-symbols-outlined" id="menu-community-icon">
-                workspaces
-              </span>
-              Networks
+          <details open>
+            <summary>
+              <a class="<%= isActive('/networks') ? 'active' : '' %>">
 
+                <div class="menu-item main-text secondary-text">
+                  <span class="material-symbols-outlined" id="menu-community-icon">
+                    workspaces
+                  </span>
+                  Networks
+
+                </div>
+              </a>
+
+            </summary>
+            <div class="mobile-communities-container">
             </div>
-          </a>
+          </details>
           <a href="/updates" class="<%= isActive('/updates') ? 'active' : '' %>">
             <div class="menu-item main-text secondary-text">
               <span class="material-symbols-outlined" id="menu-community-icon">
@@ -980,8 +988,15 @@
         // Use window.matchMedia to check for mobile devices
         const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
         // Select the container based on whether or not it is a mobile device
-        const containerClassName = '.communities-container';
+        let containerClassName;
+        if (isMobile) {
+          containerClassName = '.mobile-communities-container';
+          console.log(containerClassName);
+        } else {
+          containerClassName = '.communities-container';
+        }
         const communitiesContainer = document.querySelector(containerClassName);
+
 
         if (communitiesContainer) {
           communitiesContainer.innerHTML = ''; // Clear existing communities
@@ -1078,10 +1093,8 @@
       searchOverlay.style.display = 'none';
     });
 
-    if (!window.matchMedia("only screen and (max-width: 768px)").matches) {
-      getAllCommunities();
-      getTrendingPosts();
-    }
+    getAllCommunities();
+    getTrendingPosts();
 
     function createHashFromString(string) {
       var hash = 0,
