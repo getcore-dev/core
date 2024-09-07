@@ -327,31 +327,21 @@
         communityHeader.innerHTML = `
 
               <div class=post-header-buttons style="position:relative;">
-              <span class="filter-button-container">
-                <button class="null-button-normal" id="filter-button" onclick="toggleFilterMenu()">
-                  Sort
-                  <span class="material-symbols-outlined">
-keyboard_arrow_down
-</span>
-                </button>
-                              <div class="filter-menu" id="filterMenu">
-                <button class="filter-button">
-                  <span style="text-align: center; width: 100%;"><strong>Sort By</strong></span>
-                </button>
-                <button class="filter-button" onclick="filterPosts('trending')">
-                  <span style="margin-left: 10px;">Trending</span>
-                </button>
-                <button class="filter-button" onclick="filterPosts('new')">
-                  <span style="margin-left: 10px;">New</span>
-                </button>
-                <button class="filter-button" onclick="filterPosts('top')">
-                  <span style="margin-left: 10px;">Top</span>
-                </button>
-                <button class="filter-button" onclick="filterPosts('explore')">
-                  <span style="margin-left: 10px;">Explore</span>
-                </button>
-              </div>
+              <span class="filter-button-container" style="display: flex; flex-direction: row; gap: .4rem;">
+                 <a class="link" onclick="filterPosts('trending')">
+                  <span>Trending</span>
+                </a>
+                <a class="link" onclick="filterPosts('new')">
+                  <span >New</span>
+                </a>
+                <a class="link" onclick="filterPosts('top')">
+                  <span>Top</span>
+                </a>
+                <a class="link" onclick="filterPosts('explore')">
+                  <span>Explore</span>
+                </a>
               </span>
+              
 <% if (user) { %>
   <button class="submit-button-normal" id="post-button" onclick="window.location.href='<%= communityId ? `/networks/${community.shortname}/create` : '/create' %>'">
     Post <span class="material-symbols-outlined">
@@ -402,54 +392,19 @@ add
             const postHeaderUsernameDiv = document.createElement('div');
             postHeaderUsernameDiv.className = 'post-header-username';
 
+            /* 
             // avatar div
             const avatarDiv = document.createElement('div');
-            avatarDiv.className = 'avatar';
-            const avatarImg = document.createElement('img');
-            avatarImg.onclick = () => window.location.href = '/user/' + post.username;
-            avatarImg.src = post.avatar;
-            avatarImg.className = 'thumbnail thumbnail-regular thumbnail-tiny'
-            avatarImg.loading = "lazy";
-            avatarDiv.appendChild(avatarImg);
-            postDiv.appendChild(avatarDiv);
+                        avatarDiv.className = 'avatar';
+                        const avatarImg = document.createElement('img');
+                        avatarImg.onclick = () => window.location.href = '/user/' + post.username;
+                        avatarImg.src = post.avatar;
+                        avatarImg.className = 'thumbnail thumbnail-regular thumbnail-tiny'
+                        avatarImg.loading = "lazy";
+                        avatarDiv.appendChild(avatarImg);
+                        postDiv.appendChild(avatarDiv);
+                        */
 
-            // post type circle div thats on avatar
-            const postTypes = {
-              'blog': {
-                'icon': 'news',
-                'color': '#c3745b',
-                'bcolor': '#985641'
-              },
-              'discussion': {
-
-                'icon': 'forum',
-                'color': '#586eca',
-                'bcolor': '#45538c',
-              },
-              'post': {
-
-                'icon': 'forum',
-                'color': '#586eca',
-                'bcolor': '#45538c',
-              },
-              'question': {
-                'icon': 'question_mark',
-                'color': '#60a373',
-                'bcolor': '#50865f'
-              },
-              'project': {
-                'icon': 'web',
-                'color': '#ca65a8',
-                'bcolor': '#914f7b'
-              }
-            }
-            if (postTypes.hasOwnProperty(post.post_type)) {
-              const postTypeCircleDiv = document.createElement('div');
-              postTypeCircleDiv.className = 'post-type-circle';
-              postTypeCircleDiv.style.backgroundColor = postTypes[post.post_type].color || '#000';
-              postTypeCircleDiv.innerHTML = '<span class="material-symbols-outlined">' + postTypes[post.post_type].icon + '</span>';
-              avatarDiv.appendChild(postTypeCircleDiv);
-            }
 
             // Username, community and current job div
             const usernameDiv = document.createElement('div');
@@ -462,21 +417,17 @@ add
               <span>
               <p>
               
-                <a id="post-username" class="bold secondary-text" href="/user/${post.username}">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username}</a>
+                <a id="post-username" style="color: ${post.user_color !== '#000000' ? `${post.user_color}` : 'var(--active-indicator-color)'}" class="bold link secondary-text" href="/user/${post.username}">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username}</a>
 
                 ${post.verified ? '<span class="material-symbols-outlined" style="padding:0;font-size: .85rem;color:#16a86b;font-weight: 600;">verified</span>' : ''}
                 ${post.isModerator ? '<span class="material-symbols-outlined" style="font-size:.85rem;color:#169da8;">admin_panel_settings</span>' : ''}
                 ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="padding:0;color:#113ae2;">push_pin</span>' : ''}
 
-                <span class="post-timestamp" id="third-text"><time>${formatDate(post.created_at)}</time></span>
-
               </p> 
               
               </span>
               <span>
-              <p>
-              ${post.job_title ? (post.job_company !== 'Company' ? `${post.job_title} at ${post.job_company}` : post.job_title) : post.education_institution ? `Student at ${post.education_institution}` : ''}
-          
+              <p>          
               </span>
               <p>
 
@@ -513,31 +464,26 @@ add
               event.stopPropagation();
             };
             threeDotsDiv.appendChild(threeDotsButton);
-            postHeaderUsernameDiv.appendChild(threeDotsDiv);
-
-
-
-            postHeaderDiv.appendChild(postHeaderUsernameDiv);
-
 
             postContentDiv.appendChild(postHeaderDiv);
 
             // Title div
             const titleDiv = document.createElement('div');
-            titleDiv.className = 'title main-text margin-03-bottom';
+            titleDiv.className = 'title main-text';
             const titleLink = document.createElement('a');
             titleLink.href = '/posts/' + post.id;
-            titleLink.innerText = post.title;
+            titleLink.innerHTML = `${post.title} <span class="post-timestamp mini-text" id="third-text"><time>${formatDate(post.created_at)}</time></span>`;
             titleDiv.appendChild(titleLink);
             titleDiv.onclick = () => window.location.href = '/posts/' + post.id;
 
             postContentDiv.appendChild(titleDiv);
+            titleDiv.appendChild(threeDotsDiv);
 
             const linkPreviewDiv = document.createElement('div');
             if (post.post_tags) {
               linkPreviewDiv.className = 'link-preview';
             } else {
-              linkPreviewDiv.className = 'link-preview margin-03-bottom';
+              linkPreviewDiv.className = 'link-preview';
             }
             linkPreviewDiv.onclick = () => window.location.href = '/posts/' + post.id;
 
@@ -591,7 +537,7 @@ add
             linkPreviewDiv.style.background = "none";
             linkPreviewDiv.style.border = "none";
             const descriptionDiv = document.createElement('div');
-            descriptionDiv.className = 'description third-text margin-06-bottom sub-text';
+            descriptionDiv.className = 'description third-text sub-text';
 
             if (post.content) {
               let contentWithoutMarkdown = post.content
@@ -644,7 +590,7 @@ add
 
             // buttons div
             const buttonsDiv = document.createElement('div');
-            buttonsDiv.className = 'buttons';
+            buttonsDiv.className = 'buttons third-text mini-text';
 
             const reactionPopup = document.createElement('div');
             reactionPopup.id = `reactionPopup-post-${post.id}`;
@@ -676,14 +622,16 @@ add
             reactionPopup.appendChild(reactionPopupContent);
             buttonsDiv.appendChild(reactionPopup);
 
+            buttonsDiv.appendChild(postHeaderUsernameDiv);
+
             // reaction button
-            const reactionButton = document.createElement('button');
+            const reactionButton = document.createElement('p');
             reactionButton.id = 'reaction-button';
             reactionButton.setAttribute('data-type', 'post');
             reactionButton.setAttribute('data-id', post.id);
-            reactionButton.className = `mainReactionButton null-button-normal null-button-bordered reaction-button${post.userReaction ? ' active' : ''}`;
+            reactionButton.className = `mainReactionButton reaction-button${post.userReaction ? ' active' : ''}`;
 
-            reactionButton.innerHTML = `<span class="reaction-button-left"><span class="material-symbols-outlined">thumb_up</span></span><span class="reaction-button-right">${totalReactions > 0 ? `${totalReactions}` : "0"}</span>`;
+            reactionButton.innerHTML = `${totalReactions > 0 ? `${totalReactions}` : "0"} reacts`;
 
             reactionButton.onclick = (event) => {
               event.stopPropagation();
@@ -694,10 +642,9 @@ add
             buttonsDiv.appendChild(reactionButton);
 
             // comment button 
-            const commentButton = document.createElement('button');
-            commentButton.className = 'null-button-normal null-button-bordered';
+            const commentButton = document.createElement('p');
             commentButton.id = 'share-button';
-            commentButton.innerHTML = `<span class="material-symbols-outlined">comment</span> ${post.comment_count}`;
+            commentButton.innerHTML = `${post.comment_count} comments`;
             commentButton.onclick = (event) => {
               event.stopPropagation();
               window.location.href = '/posts/' + post.id;
@@ -705,10 +652,9 @@ add
             buttonsDiv.appendChild(commentButton);
 
             // community button 
-            const communityButton = document.createElement('button');
-            communityButton.className = 'null-button-normal null-button-bordered';
+            const communityButton = document.createElement('p');
             communityButton.id = 'share-button';
-            communityButton.innerHTML = `<span style="color:${post.community_color};" class="material-symbols-outlined">${post.community_icon}</span> ${post.community_shortname}`;
+            communityButton.innerHTML = `<span style="font-size:1rem;color:${post.community_color};" class="material-symbols-outlined">${post.community_icon}</span> ${post.community_shortname}`;
             communityButton.onclick = (event) => {
               event.stopPropagation();
               window.location.href = `/networks/${post.community_shortname}`
@@ -717,10 +663,9 @@ add
             buttonsDiv.appendChild(communityButton);
 
             // share button 
-            const shareButton = document.createElement('button');
-            shareButton.className = 'null-button-normal null-button-bordered';
+            const shareButton = document.createElement('p');
             shareButton.id = 'share-button';
-            shareButton.innerHTML = `<span class="material-symbols-outlined">share</span> ${post.share_count ? post.share_count : 0}`;
+            shareButton.innerHTML = `${post.share_count ? post.share_count : 0} shares`;
             shareButton.onclick = (event) => {
               event.stopPropagation();
               share(post.title, "", `https://getcore.dev/posts/${post.id}`, 'post', post.id);
@@ -744,6 +689,7 @@ add
             }
 
             postContentDiv.appendChild(buttonsDiv);
+
 
             const commentsDiv = document.createElement('div');
             commentsDiv.className = 'comments';
@@ -1333,12 +1279,38 @@ add
       const postsContainer = document.getElementById('posts-container');
       const communityId = postsContainer.dataset.communityId;
       const posts = postsContainer.getElementsByClassName('post');
+      const joinComs = postsContainer.getElementsByClassName('join-community');
+      const joinSite = postsContainer.getElementsByClassName('join-website');
 
+      // Remove all posts
       while (posts.length > 0) {
         posts[0].parentNode.removeChild(posts[0]);
       }
 
+      // Remove all join community elements
+      while (joinComs.length > 0) {
+        joinComs[0].parentNode.removeChild(joinComs[0]);
+      }
+
+      // Remove all join site elements
+      while (joinSite.length > 0) {
+        joinSite[0].parentNode.removeChild(joinSite[0]);
+      }
+
+      // Fetch and display posts based on the selected filter
       fetchAndDisplayPosts(communityId, filter.toLowerCase());
+
+      // Update the filter links to make the current filter bold
+      const filterLinks = document.querySelectorAll('.link');
+      filterLinks.forEach(link => {
+        if (link.getAttribute('onclick').includes(filter)) {
+          link.classList.add('bold');
+          link.style.color = 'inherit';
+
+        } else {
+          link.classList.remove('bold');
+        }
+      });
     }
     document.addEventListener("DOMContentLoaded", () => {
       const postsContainer = document.getElementById('posts-container');

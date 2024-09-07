@@ -761,18 +761,15 @@ if (remainingSkillsCount > 0) {
   
 
   jobElement.innerHTML = `
-  <a href="/jobs/${job.id}">
-  <div class="job-preview-image">
-            ${
-            job.company_logo
-              ? `<img class="thumbnail thumbnail-regular thumbnail-small" src="${job.company_logo ? job.company_logo : '/img/glyph.png'}" alt="" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
-                            : ''
-          }
-  </div>
     <div class="job-preview">
       <div class="job-info">
         <div class="company-info">
           <div class="job-posting-company-info">
+            ${
+            job.company_logo
+              ? `<img class="thumbnail thumbnail-regular thumbnail-micro" src="${job.company_logo ? job.company_logo : '/img/glyph.png'}" alt="" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
+                            : ''
+          }
             <a class="company-name third-text mini-text bold" href="/jobs/company/${job.company_name}">${job.company_name}</a>
           </div>
         </div>
@@ -809,7 +806,6 @@ if (remainingSkillsCount > 0) {
         </div>
       </div>
     </div>
-    </a>
   `;
   return jobElement;
 }

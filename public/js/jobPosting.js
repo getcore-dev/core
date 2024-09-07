@@ -212,8 +212,8 @@ async function getSimilarJobsByCompany(jobId, companyName) {
           ${jobs
     .map((job) => {
       const tagsArray = job.skills
-      ? job.skills.split(',').map(skill => skill.trim())
-      : [];
+        ? job.skills.split(',').map(skill => skill.trim())
+        : [];
       const maxTags = 3;
       const displayedTags = tagsArray.slice(0, maxTags);
       const tagsHTML = displayedTags.map((tag) => `${tag}`).join(', ');
@@ -304,20 +304,20 @@ function applyForJob(event, jobId, jobLink) {
     // You can add a body here if needed
     // body: JSON.stringify({}),
   })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
     // showBannerNotification(data.message);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    showBannerNotification('An error occurred. Please try again.');
-  }
-  );
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showBannerNotification('An error occurred. Please try again.');
+    }
+    );
 }
 
 async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
@@ -396,7 +396,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
           ${
   job.company_logo
     ? `
-            <img src="${job.company_logo}" style="width: auto;" alt="${job.company_name} logo" class="thumbnail thumbnail-tiny thumbnail-regular" />
+            <img src="${job.company_logo ? job.company_logo : '/img/glyph.png'}" style="width: auto;" alt="${job.company_name} logo" onerror="this.onerror=null;this.src='/img/glyph.png';"class="thumbnail thumbnail-tiny thumbnail-regular" />
           `
     : ''
 }
@@ -715,35 +715,35 @@ ${job.location
       console.error('Error fetching job details:', error);
     });
 
-    getSimilarJobs(jobId);
+  getSimilarJobs(jobId);
 }
 
 function bindSelectorButtons() {
   const companyProfileButtons = document.querySelectorAll('.company-navbar-button');
-      console.log(companyProfileButtons);
-      const companyProfileSections = document.querySelectorAll('.company-profile-section');
-      console.log(companyProfileSections);
+  console.log(companyProfileButtons);
+  const companyProfileSections = document.querySelectorAll('.company-profile-section');
+  console.log(companyProfileSections);
 
-      companyProfileButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          const targetId = button.getAttribute('data-id');
+  companyProfileButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const targetId = button.getAttribute('data-id');
 
-          companyProfileSections.forEach(section => {
-            if (section.className.includes(targetId)) {
-              section.style.display = 'block';
-            } else {
-              section.style.display = 'none';
-            }
-          });
-
-          // Update active button state (optional)
-          companyProfileButtons.forEach(btn => {
-            btn.classList.remove('active');
-          });
-          button.classList.add('active');
-        });
+      companyProfileSections.forEach(section => {
+        if (section.className.includes(targetId)) {
+          section.style.display = 'block';
+        } else {
+          section.style.display = 'none';
+        }
       });
-    }
+
+      // Update active button state (optional)
+      companyProfileButtons.forEach(btn => {
+        btn.classList.remove('active');
+      });
+      button.classList.add('active');
+    });
+  });
+}
 function checkFavorite(jobId) {
   fetch(`/favorites/isFavorite/job/${jobId}`)
     .then((response) => response.json())

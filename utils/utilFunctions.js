@@ -87,7 +87,7 @@ const utilFunctions = {
           p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, 
           p.communities_id, p.react_like, p.react_love, p.react_curious, p.share_count,
           p.react_interesting, p.react_celebrate, p.post_type, p.views, 
-          p.isGlobalPinned, u.username, u.avatar, u.isAdmin, u.verified, u.firstname, u.lastname, u.id as user_id,
+          p.isGlobalPinned, u.username, u.avatar, u.isAdmin, u.verified, u.firstname, u.lastname, u.id as user_id, u.profile_border_color as user_color,
           CASE WHEN ur.follower_id IS NOT NULL THEN 1 ELSE 0 END AS is_following,
           c.name AS community_name, c.community_color as community_color, c.mini_icon as community_icon,
           c.shortname AS community_shortname,
@@ -137,7 +137,7 @@ OUTER APPLY (
 ) ee
         WHERE p.deleted = 0 AND c.PrivacySetting = 'Public' AND c.id != 9
         GROUP BY 
-          p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.subtitle, 
+          p.id, p.created_at, p.deleted, u.username, p.title, p.content, p.link, p.subtitle, u.profile_border_color,
           p.communities_id, u.avatar, c.name, c.shortname, c.community_color, c.mini_icon, u.isAdmin, u.verified, u.firstname, u.lastname,
           p.react_like, p.react_love, p.react_curious, p.react_interesting, u.id, p.share_count,
           p.react_celebrate, p.post_type, p.views, p.isGlobalPinned, ur.follower_id,

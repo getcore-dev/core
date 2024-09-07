@@ -1158,13 +1158,11 @@ a>.menu-item {
 #third-text,
 .third-text:visited,
 #third-text:visited {
-  font-weight: 500;
   color: #707070;
 }
 
 .primary-text,
 .primary-text:visited {
-  font-weight: 500;
   color: var(--light-mode-text-color);
 }
 
@@ -1733,7 +1731,7 @@ div .material-symbols-outlined:not(:only-child) {
 }
 
 .link {
-  color: var(--active-indicator-color) !important;
+  color: var(--active-indicator-color);
   font-weight: 500;
   text-decoration: none;
 }
@@ -2211,8 +2209,7 @@ details[open] {
   #third-text,
   .third-text:visited,
   #third-text:visited {
-    font-weight: 500;
-    color: #a5a5a5;
+    color: rgb(90, 116, 124);
   }
 
   .primary-text,
