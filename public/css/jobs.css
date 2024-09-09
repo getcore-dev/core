@@ -146,6 +146,8 @@ div.job-filters {
   width: 100%;
 }
 
+
+
 .job-posting-company-info {
   display: flex;
   flex-direction: row;
@@ -375,7 +377,8 @@ div.job-title-location .sub-text {
 .job-preview {
   display: flex;
   width: 100%;
-  align-items: center;
+  align-items: start;
+  gap: .6rem;
   padding: 12px 0;
 }
 
@@ -552,7 +555,6 @@ div.job-counts {
   height: 8px;
   background-color: #0daf0d;
   border-radius: 50%;
-  margin-right: 3px;
 }
 
 .job-post-date.yellow::before {
@@ -1003,9 +1005,10 @@ div .material-symbols-outlined:not(:only-child) {
     margin: 0 0px;
     width: 100%;
     border: 0;
-    padding: 0.4rem 0;
+    padding: 0.7rem 0;
     border-radius: 0;
     border-top: 0;
+    border-bottom: 1px solid var(--border-color);
   }
 
   div.jobs-container>div.job-list>.job:first-child {

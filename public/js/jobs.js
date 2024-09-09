@@ -762,25 +762,30 @@ if (remainingSkillsCount > 0) {
 
   jobElement.innerHTML = `
     <div class="job-preview">
+                ${
+            job.company_logo
+              ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo ? job.company_logo : '/img/glyph.png'}" alt="" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
+                            : ''
+          }
       <div class="job-info">
         <div class="company-info">
           <div class="job-posting-company-info">
-            ${
-            job.company_logo
-              ? `<img class="thumbnail thumbnail-regular thumbnail-micro" src="${job.company_logo ? job.company_logo : '/img/glyph.png'}" alt="" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
-                            : ''
-          }
             <a class="company-name third-text mini-text bold" href="/jobs/company/${job.company_name}">${job.company_name}</a>
           </div>
         </div>
         <h3 class="job-title margin-1-bottom main-text">${job.title}</h3>
-        <p class="sub-text secondary-text margin-03-bottom">${tagsHTML}</p>
+        <p class="sub-text third-text margin-03-bottom">${tagsHTML}</p>
         
         <div class="job-title-location third-text mini-text">
+                  <div class="location mini-text" style="color:#bc3737">
+            📍
+            ${formatLocation(job.location).trim()}
+          </div>
+          <span style="font-size:.7rem;">•</span>
                   <div class="applicants  mini-text">
             ${job.applicants ? `${job.applicants} applicants` : '0 applicants'}
           </div>
-          <div class="job-post-date ${formatDateColor(job.postedDate)} mini-text">
+          <div class="job-post-date secondary-text ${formatDateColor(job.postedDate)} mini-text">
             <time>${formatRelativeDate(job.postedDate)}</time>
           </div>
           <span style="font-size:.7rem;">•</span>
@@ -798,11 +803,6 @@ if (remainingSkillsCount > 0) {
               ${formatSalary(job.salary)} - ${formatSalary(job.salary_max)}/yr
             </div>
           ` : ``}
-          <span style="font-size:.7rem;">•</span>
-          <div class="location mini-text">
-            <span class="material-symbols-outlined">location_on</span>
-            ${formatLocation(job.location).trim()}
-          </div>
         </div>
       </div>
     </div>
