@@ -342,13 +342,13 @@
                 </a>
               </span>
               
-<% if (user) { %>
-  <button class="submit-button-normal" id="post-button" onclick="window.location.href='<%= communityId ? `/networks/${community.shortname}/create` : '/create' %>'">
-    Post <span class="material-symbols-outlined">
-add
-</span>
-  </button>
-<% } %>
+          <% if (user) { %>
+            <button class="submit-button-normal" id="post-button" onclick="window.location.href='<%= communityId ? `/networks/${community.shortname}/create` : '/create' %>'">
+              Post <span class="material-symbols-outlined">
+          add
+          </span>
+            </button>
+          <% } %>
             </div>
      `;
 
@@ -654,7 +654,7 @@ add
             // community button 
             const communityButton = document.createElement('p');
             communityButton.id = 'share-button';
-            communityButton.innerHTML = `<span style="font-size:1rem;color:${post.community_color};" class="material-symbols-outlined">${post.community_icon}</span> ${post.community_shortname}`;
+            communityButton.innerHTML = `<span style="color:${post.community_color};">${post.community_shortname}</span>`;
             communityButton.onclick = (event) => {
               event.stopPropagation();
               window.location.href = `/networks/${post.community_shortname}`
@@ -722,17 +722,17 @@ add
             }
 
             // percent chance to show a join community section below post 
-            if (Math.random() < 0.06 && '<%= communityId %>' == '') {
+            if (Math.random() < 4 && '<%= communityId %>' == '') {
               const joinCommunityDiv = document.createElement('div');
               joinCommunityDiv.onclick = () => window.location.href = `/networks/${post.community_shortname}`;
               joinCommunityDiv.className = 'join-community';
               joinCommunityDiv.innerHTML = ` 
               <div class="join-community-header">
               <div class="icon"><span style="color:${post.community_color};" class="material-symbols-outlined">${post.community_icon}</span></div>
-              <div class="title"><a>/${post.community_shortname}</a></div>
+              <div class="job-community-title"><a class="secondary-text sub-text">/${post.community_shortname}</a></div>
               </div>
-              <div class="join-community-body sub-text secondary-text">
-              <p class="description">Join the community to stay updated on the latest posts and discussions.</p>
+              <div class="join-community-body">
+              <p class="description third-text sub-text">Join the community to stay updated on the latest posts and discussions.</p>
               </div>
               `;
               postCommentsDiv.appendChild(joinCommunityDiv);
