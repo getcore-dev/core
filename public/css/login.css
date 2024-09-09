@@ -57,14 +57,6 @@ footer {
   background-color: transparent !important;
 }
 
-.footer-container a {
-  color: black !important;
-}
-
-.mobile-search-input {
-  border: 1px solid transparent !important;
-  background: transparent !important;
-}
 
 .navbar {
   background-color: #ffffff7d !important;
@@ -76,7 +68,6 @@ footer {
 
 main {
   display: flex;
-  background-image: url("../core-login-backgrounds/ISS071E170979 Large.jpg") !important;
   padding-top: 240px;
   flex-direction: column;
   align-items: center;
@@ -215,11 +206,8 @@ input:not(:placeholder-shown)+.floating-label,
 
 .input-container input {
   width: 100%;
-  padding: 11px 9px;
   margin: 8px 0;
   box-sizing: border-box;
-  border-radius: 10px;
-  background-color: #f6f8fa91 !important;
   font-size: .8rem;
   transition: box-shadow 0.3s ease;
 }
@@ -318,41 +306,9 @@ nav {
 }
 
 
-@media screen and (max-width: 600px) {
-  main {
-    height: calc(100dvh - 58px);
-  }
-
-  .floating-label {
-    font-size: .725rem;
-  }
-
-  .input-container input {
-    padding: 11px 14px;
-    background: #f6f8fa7a !important;
-    font-size: 16px;
-  }
-
-  .account-stuff {
-    width: 85%;
-  }
-
-  #register,
-  #login {
-    max-width: 100%;
-    background: none;
-    border-radius: 0;
-  }
-}
-
 @media (prefers-color-scheme: dark) {
   main {
-    background-image: url("/core-login-backgrounds/Web First Images Release.webp") !important;
     color: var(--dark-mode-text-color);
-  }
-
-  .footer-container a {
-    color: white !important;
   }
 
   #login {
@@ -387,9 +343,25 @@ nav {
     color: var(--dark-mode-text-color);
   }
 
-  .input-container input {
-    background-color: #0b0c0c8c !important;
-    color: var(--dark-mode-text-color) !important;
+}
 
+@media screen and (max-width: 600px) {
+  .account-stuff {
+    width: 85%;
+    background: 0;
+    border: 0;
+  }
+
+  main {
+    padding-top: 40vh;
+  }
+
+  .core-logo {
+    top: 20vh;
+  }
+
+
+  .input-container input {
+    font-size: 16px;
   }
 }

@@ -367,10 +367,11 @@ img.blog-avatar {
 .post-title-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
   margin-top: 0px;
+  gap: .4rem;
   margin-bottom: .2rem;
+  flex-wrap: wrap;
 }
 
 div.interact-buttons {
@@ -1920,9 +1921,8 @@ div.post-information {
 
 .post-user-info-span {
   display: flex;
-  gap: .2rem;
   font-size: .85rem;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
 }
 
@@ -1949,10 +1949,6 @@ div.post-information {
   background: none;
   border: none;
   font-size: 24px;
-}
-
-div.username {
-  font-size: .9rem;
 }
 
 .post-date,

@@ -16,6 +16,7 @@
   --hover-background-color: #ddd;
   --active-indicator-color: #5083ca;
   --dark-mode-main-color: #0c0e15;
+  --dark-mode-input-color: #1c1c1c;
   --dark-mode-body-color: #000;
   --dark-mode-input-border-color: #272f33;
   --dark-mode-hover-color: #1b1f22;
@@ -137,7 +138,6 @@ label {
 }
 
 .sub-text {
-  line-height: 1.5;
   font-size: var(--default-sub-font-size);
 }
 
@@ -1537,7 +1537,11 @@ input[type='datetime-local'],
 input[type='password'],
 input[type='search'] {
   width: 100%;
+  appearance: none;
   height: 40px;
+  font-weight: 500;
+  letter-spacing: 0em;
+  line-height: 1em;
   padding: 8px 12px;
   font-family: var(--font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif);
   margin: 0;
@@ -1572,18 +1576,6 @@ input[type='search'] {
   color: var(--light-mode-text-color);
 }
 
-
-
-input[type='text']:hover,
-input[type='url']:hover,
-input[type='number']:hover,
-input[type='email']:hover,
-input[type='datetime-local']:hover,
-input[type='password']:hover,
-input[type='search']:hover {
-  border-color: var(--light-mode-secondary-text-color);
-  background-color: var(--hover-background-color);
-}
 
 input[type='text']:focus,
 input[type='number']:focus,
@@ -2313,9 +2305,19 @@ details[open] {
   input[type='datetime-local'],
   input[type='password'],
   input[type='search'] {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-input-color);
     border-color: 0;
     color: var(--dark-mode-text-color);
+  }
+
+  input[type='text']::placeholder,
+  input[type='number']::placeholder,
+  input[type='url']::placeholder,
+  input[type='email']::placeholder,
+  input[type='datetime-local']::placeholder,
+  input[type='password']::placeholder,
+  input[type='search']::placeholder {
+    color: var(--dark-mode-third-text-color);
   }
 
   .search-result-item {
@@ -2326,18 +2328,6 @@ details[open] {
     background-color: var(--dark-mode-main-color);
   }
 
-  input[type='text']:hover,
-  input[type='number']:hover,
-  input[type='email']:hover,
-  input[type='url']:hover,
-  input[type='datetime-local']:hover,
-  input[type='password']:hover,
-  input[type='search']:hover,
-  textarea:hover,
-  select:hover {
-    border-color: #303436;
-    background-color: var(--dark-mode-main-color);
-  }
 
   input[type='text']:focus,
   input[type='number']:focus,
@@ -3078,6 +3068,7 @@ input::placeholder {
   input[type='password'],
   input[type='search'] {
     height: auto;
+    border-radius: 8px;
     padding: 12px 16px 12px 20px;
   }
 
@@ -3089,6 +3080,19 @@ input::placeholder {
   .avatar-dropdown a {
     width: 100%;
     padding: 5px 0;
+  }
+
+  #submit-button,
+  #cancel-button,
+  #regular-button,
+  .submit-button,
+  .cancel-button,
+  .regular-button,
+  .special-button,
+  #special-button,
+  .null-button,
+  #null-button {
+    height: 44px;
   }
 
 

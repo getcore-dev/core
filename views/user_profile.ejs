@@ -129,7 +129,7 @@
               <h2><%= otheruser.firstname %> <%= otheruser.lastname%>
               </h2>
 
-              <p id="firstname-display" style="color: <%= otheruser.isAdmin ? '#b40000' : 'inherit' %>;">@<%= otheruser.username %> <% if (otheruser.verified) { %>
+              <p id="firstname-display" class="third-text sub-text" style="color: <%= otheruser.isAdmin ? '#b40000' : '' %>;">@<%= otheruser.username %> <% if (otheruser.verified) { %>
                 <span class="material-symbols-outlined" style="color: green">
                   check
                 </span>

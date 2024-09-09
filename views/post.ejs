@@ -96,45 +96,8 @@
               }
               %>
             <span class="post-title-navigator">
-              <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="blog-avatar" onclick="window.location.href = '/user/<%= post.user.username %>'" />
+              <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="thumbnail thumbnail-micro thumbnail-regular" onclick="window.location.href = '/user/<%= post.user.username %>'" />
               <div class="post-nav-header">
-                <div class="post-nav-user sub-text">
-                  <a id="community-header-text" class="sub-text" href="/networks/<%= post.community.shortname %>">/<%= post.community.shortname.toLowerCase() %></a>
-                  <span style="font-size:.7rem;">•</span>
-
-                  <span class="post-time mini-text third-text">
-                    <% postDate = new Date(post.created_at); %>
-                    <%
-                      function formatRelativeDate(dateString) {
-                        const now = new Date();
-                        const postedDate = new Date(dateString);
-                        const diffTime = Math.abs(now - postedDate);
-                        const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-                        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                        const diffMonths = Math.floor(diffDays / 30);
-                        const diffYears = Math.floor(diffDays / 365);
-
-                        if (diffYears > 0) {
-                          return `${diffYears}y`;
-                        } else if (diffMonths > 0) {
-                          return `${diffMonths}m`;
-                        } else if (diffDays > 0) {
-                          return `${diffDays}d`;
-                        } else if (diffHours > 0) {
-                          return `${diffHours}h`;
-                        } else {
-                          return 'Just now';
-                        }
-                      }
-                %>
-
-                    <%formattedPostDate = formatRelativeDate(postDate);%>
-                    <%= formattedPostDate %>
-                  </span>
-                  <span>
-
-                  </span>
-                </div>
                 <div class="post-info-container margin-06-bottom secondary-text sub-text">
                   <span class="post-user-info-span main-text">
                     <a href="/user/<%= post.user.username %>" id="blog-username">
@@ -143,15 +106,14 @@
                       <% } else { %>
                       <%= post.user.username %>
                       <% } %>
-
+                      <% if (post.user.verified) { %>
+                      <span>
+                        <span class="material-symbols-outlined" style="padding: 0;font-size: .85rem;color:#16a86b;font-weight: 600;">verified</span>
+                      </span>
+                      <% } %>
                     </a>
-                    <% if (post.user.verified) { %>
-                    <span>
-                      <span class="material-symbols-outlined" style="padding: 0;font-size: .85rem;color:#16a86b;font-weight: 600;">verified</span>
-                    </span>
-                    <% } %>
                     <% if (post.experience_title && post.experience_place) { %>
-                    <span class="post-flair">
+                    <span class="post-flair third-text sub-text">
                       <%= post.experience_title %> at <%= post.experience_place %>
                     </span>
                     <% } %>
@@ -162,16 +124,53 @@
 
             <div class="post-title-container">
 
-              <div>
-                <h2 class="post-title" style="font-size: 1.35rem;font-weight: bold;margin-bottom: .05rem;"><%= post.title %>
-                </h2>
+              <a id="community-header-text" class="sub-text" href="/networks/<%= post.community.shortname %>"> <%= post.community.shortname.toLowerCase() %></a> /
 
-                <% if (post.post_type == "blog") { %>
-                <div class="post-subtitle-text">
-                  <p><%= post.subtitle %></p>
-                </div>
-                <% } %>
+              <h2 class="post-title" style="font-size: 1.35rem;font-weight: bold;margin-bottom: .05rem;">
+
+                <%= post.title %>
+
+
+                <span class="post-time mini-text third-text">
+                  <% postDate = new Date(post.created_at); %>
+                  <%
+                        function formatRelativeDate(dateString) {
+                        const now = new Date();
+                        const postedDate = new Date(dateString);
+                        const diffTime = Math.abs(now - postedDate);
+                        const diffMinutes = Math.floor(diffTime / (1000 * 60));
+                        const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+                        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                        const diffMonths = Math.floor(diffDays / 30);
+                        const diffYears = Math.floor(diffDays / 365);
+
+                        if (diffYears > 0) {
+                          return `${diffYears}y ago`;
+                        } else if (diffMonths > 0) {
+                          return `${diffMonths}m ago`;
+                        } else if (diffDays > 0) {
+                          return `${diffDays}d ago`;
+                        } else if (diffHours > 0) {
+                          return `${diffHours}h ago`;
+                        } else if (diffMinutes > 0) {
+                          return `${diffMinutes}m ago`;
+                        } else {
+                          return 'Just now';
+                        }
+                        }
+                  %>
+
+                  <%formattedPostDate = formatRelativeDate(postDate);%>
+                  <%= formattedPostDate %>
+                </span>
+              </h2>
+
+              <% if (post.post_type == "blog") { %>
+              <div class="post-subtitle-text">
+                <p><%= post.subtitle %></p>
               </div>
+              <% } %>
+
             </div>
 
           </div>
@@ -481,17 +480,26 @@
           <% sortedComments.forEach(comment => { %>
           <div class="comment-with-replies <%= level === 0 ? 'top-level' : '' %>">
             <div class="comment level-<%= level %>">
-              <div class="comment-avatar">
-                <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="thumbnail thumbnail-tiny thumbnail-regular" onclick="window.location.href = '/user/<%= comment.user.username %>'; event.stopPropagation();" />
-              </div>
+
 
               <div class="comment-main">
 
                 <div class="comment-content">
                   <div class="comment-header" onclick="toggleNestedComments('<%= comment.id %>')">
+                    <div class="comment-avatar">
+                      <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="thumbnail thumbnail-micro thumbnail-regular" onclick="<%= comment.deleted ? 'event.stopPropagation();' : 'window.location.href = \'/user/' + comment.user.username + '\'; event.stopPropagation();' %>" />
+                    </div>
                     <a class="comment-user-info" <%= comment.deleted ? '' : 'href=/user/' + comment.user.username + '' %> onclick="event.stopPropagation()">
                       <div class="repliers-info">
-                        <span><%= comment.user.username %></span>
+                        <span>
+
+                          <% if (comment.user.firstname && comment.user.lastname) { %>
+                          <%= comment.user.firstname %> <%= comment.user.lastname %>
+                          <% } else { %>
+                          <%= comment.user.username %>
+                          <% } %>
+
+                        </span>
                         <% if (comment.user.username == post.user.username) { %>
                         <span class="tag author-tag comment-tag">OP</span>
                         <% } else if (comment.user.isAdmin) { %>
@@ -751,49 +759,36 @@
         <div class="similar-posts">
           <h3 class="sub-text" id="secondary-text">Explore Posts</h3>
           <% similarPosts.forEach(similarPost => { %>
-          <div class="post" onclick="window.location.href='/posts/<%= similarPost.id %>'">
-            <div>
-              <img class="thumbnail thumbnail-regular thumbnail-tiny" src="<%= similarPost.avatar %>" loading="lazy">
-            </div>
+          <div class="post <%= similarPost.isGlobalPinned ? 'pinned' : '' %>" onclick="window.location.href='/posts/<%= similarPost.id %>'">
             <div class="post-content">
-              <div class="post-header">
-                <% 
-            function formatDate(date) {
-              let postDate = new Date(date);
-              let today = new Date();
-              let formattedDate;
-
-              let diff = today - postDate;
-
-              let minutes = Math.floor(diff / 60000); 
-              let hours = Math.floor(diff / 3600000); 
-              let days = Math.floor(diff / 86400000); 
-              let years = Math.floor(diff / 31536000000); 
-
-              if (minutes < 60) {
-                formattedDate = minutes + ' m';
-              } else if (hours < 24) {
-                formattedDate = hours + ' h';
-              } else if (days < 365) {
-                formattedDate = days + ' d';
-              } else {
-                formattedDate = years + ' y';
-              }
-              return formattedDate;
-            }
-          %>
+              <div class="post-header margin-03-bottom">
                 <div class="post-header-username">
                   <div class="username">
                     <p>
-                      <a href="/user/<%= similarPost.username %>" class="username-link"><strong><%= similarPost.username %></strong></a>
-                      <time class="third-text sub-text">
+                      <a id="post-username" style="color: <%= similarPost.user_color !== '#000000' ? similarPost.user_color : 'var(--active-indicator-color)' %>" class="bold link secondary-text" href="/user/<%= similarPost.username %>">
+                        <%= similarPost.firstname && similarPost.lastname ? `${similarPost.firstname} ${similarPost.lastname}` : similarPost.username %>
+                      </a>
+                      <% if (similarPost.verified) { %>
+                      <span class="material-symbols-outlined" style="padding:0;font-size: .85rem;color:#16a86b;font-weight: 600;">verified</span>
+                      <% } %>
+                      <% if (similarPost.isModerator) { %>
+                      <span class="material-symbols-outlined" style="font-size:.85rem;color:#169da8;">admin_panel_settings</span>
+                      <% } %>
+                      <% if (similarPost.isGlobalPinned) { %>
+                      <span class="material-symbols-outlined" style="padding:0;color:#113ae2;">push_pin</span>
+                      <% } %>
+                      <time class="third-text mini-text">
+                        <%
+                                            function formatDate(dateString) {
+                      const date = new Date(dateString);
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const year = date.getFullYear();
+                      return `${month}/${day}/${year}`;
+                    }
+                    %>
                         <%= formatDate(similarPost.created_at) %>
                       </time>
-                    </p>
-                    <p>
-                      <span id="secondary-text">
-                        <%= similarPost.experience_title %> at <%= similarPost.experience_place %>
-                      </span>
                     </p>
                   </div>
                 </div>
@@ -834,37 +829,36 @@
                           if (linkPreview) {
                             let imageUrl = linkPreview.image || linkPreview.favicon;
                             let htmlContent = `
-                        <div class="mini-link">
-                          <div class="mini-link-image">
-                            ${imageUrl ? `<img loading="lazy" src="${imageUrl}" alt="thumbnail" class="thumbnail-image" />` : ''}
-                          </div>
-                          <div class="mini-link-body">
-                            <div class="mini-link-body-header">
-                              <div class="mini-link-favicon">
-                                <img src="${linkPreview.favicon}" alt="" class="favicon" />
-                              </div>
-                              <div class="mini-link-url" id="main-text"><a>${new URL(linkPreview.url || '').hostname || ''}</a></div>
-                            </div>
-                            <div class="mini-link-title"><p>${linkPreview.title || ''}</p></div>
-                            <div class="mini-link-description"><p>${linkPreview.description || ''}</p></div>
-                          </div>
-                        </div>`;
+                                  <div class="mini-link">
+                                    <div class="mini-link-image">
+                                      ${imageUrl ? `<img loading="lazy" src="${imageUrl}" alt="thumbnail" class="thumbnail-image" />` : ''}
+                                    </div>
+                                    <div class="mini-link-body">
+                                      <div class="mini-link-body-header">
+                                        <div class="mini-link-favicon">
+                                          <img src="${linkPreview.favicon}" alt="" class="favicon" />
+                                        </div>
+                                        <div class="mini-link-url" id="main-text"><a>${new URL(linkPreview.url || '').hostname || ''}</a></div>
+                                      </div>
+                                      <div class="mini-link-title"><p>${linkPreview.title || ''}</p></div>
+                                      <div class="mini-link-description"><p>${linkPreview.description || ''}</p></div>
+                                    </div>
+                                  </div>`;
                             document.getElementById(containerId).innerHTML = htmlContent;
                           }
                         });
                     })('<%= similarPost.link %>', 'similar-link-preview-<%= similarPost.id %>');
                   </script>
                 </div>
-
                 <% } %>
               </div>
               <% 
-            let imageUrl;
-            const imageUrlMatch = similarPost.content.match(/!\[.*?\]\((.*?)\)/);
-            if (imageUrlMatch && imageUrlMatch[1]) {
-              imageUrl = imageUrlMatch[1];
-            }
-          %>
+                  let imageUrl;
+                  const imageUrlMatch = similarPost.content.match(/!\[.*?\]\((.*?)\)/);
+                  if (imageUrlMatch && imageUrlMatch[1]) {
+                    imageUrl = imageUrlMatch[1];
+                  }
+                %>
               <% if (imageUrl) { %>
               <div class="image">
                 <img class="thumbnail-image" src="<%= imageUrl %>" alt="Preview" />
@@ -873,20 +867,19 @@
               <% if (similarPost.post_type !== 'question' && (!similarPost.link || (similarPost.post_type !== 'post' && similarPost.post_type !== 'project'))) { %>
               <div class="description sub-text condensed third-text">
                 <%
-              let contentWithoutMarkdown = similarPost.content
-                .replace(/^#{1,6}\s+/gm, '')
-                .replace(/(?:\r\n|\r|\n)/g, ' ')
-                .replace(/```[\s\S]*?```/g, '')
-                .replace(/`([^`]+)`/g, '$1')
-                .replace(/\*\*(.*?)\*\*/g, '$1')
-                .replace(/\*(.*?)\*/g, '$1')
-                .replace(/_(.*?)_/g, '$1')
-                .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
-                .replace(/!\[([^\]]+)\]\([^\)]+\)/g, '')
-                .replace(/<[^>]*>/g, '')
-                // Trim leading/trailing whitespace
-                .trim();
-            %>
+                      let contentWithoutMarkdown = similarPost.content
+                        .replace(/^#{1,6}\s+/gm, '')
+                        .replace(/(?:\r\n|\r|\n)/g, ' ')
+                        .replace(/```[\s\S]*?```/g, '')
+                        .replace(/`([^`]+)`/g, '$1')
+                        .replace(/\*\*(.*?)\*\*/g, '$1')
+                        .replace(/\*(.*?)\*/g, '$1')
+                        .replace(/_(.*?)_/g, '$1')
+                        .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
+                        .replace(/!\[([^\]]+)\]\([^\)]+\)/g, '')
+                        .replace(/<[^>]*>/g, '')
+                        .trim();
+                    %>
                 <%- contentWithoutMarkdown %>
               </div>
               <% } %>

@@ -1021,22 +1021,45 @@ class JobProcessor extends EventEmitter {
     }
   }
 
+
   async processJobLink(link) {
-    if (this.processedLinks.has(link)) {
+    const url = typeof link === 'object' && link.url ? link.url : link;
+  
+    if (typeof url !== 'string' || !url.startsWith('http')) {
+      console.error('Invalid URL:', url);
+      return { error: 'Invalid URL' };
+    }
+  
+    if (this.processedLinks.has(url)) {
       return { alreadyProcessed: true };
     }
   
     try {
-      console.log('Processing job link:', link);
-      const response = await this.makeRequest(link);
-      const { data } = response;
+      console.log('Processing job link:', url);
+      
+      this.updateProgress({ currentAction: 'Launching browser' });
+      const browser = await puppeteer.launch();
+      const page = await browser.newPage();
   
-      const $ = cheerio.load(data);
-      $('script, style').remove();
-      const textContent = $('body').text().replace(/\s\s+/g, ' ').trim();
+      this.updateProgress({ currentAction: 'Loading page' });
+      await page.goto(url, { waitUntil: 'networkidle0' });
+  
+      this.updateProgress({ currentAction: 'Extracting content' });
+      const textContent = await page.evaluate(() => {
+        const scripts = document.getElementsByTagName('script');
+        const styles = document.getElementsByTagName('style');
+        
+        for (const element of [...scripts, ...styles]) {
+          element.remove();
+        }
+        
+        return document.body.innerText.replace(/\s\s+/g, ' ').trim();
+      });
+  
+      await browser.close();
   
       let extractedData;
-
+  
       if (this.useGemini) {
         this.updateProgress({ currentAction: 'Using Gemini API' });
         extractedData = await this.useGeminiAPI(link, textContent);
@@ -1045,14 +1068,15 @@ class JobProcessor extends EventEmitter {
         this.updateProgress({ currentAction: 'Using ChatGPT API' });
         extractedData = await this.useChatGPTAPI(link, textContent);
       }
-      this.updateProgress({ currentAction: 'Saving processed link' });
   
+      this.updateProgress({ currentAction: 'Saving processed link' });
       await this.saveProcessedLink(link);
-
+  
       if (extractedData.skipped) {
         this.updateProgress({ currentAction: 'Skipped job' });
         return { skipped: true };
       }
+  
       return extractedData;
     } catch (error) {
       console.error(`Error processing job link ${link}:`, error);

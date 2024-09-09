@@ -612,9 +612,9 @@
               };
 
               reactionButton.innerHTML = `
-    ${reaction.icon}
-    <span class="reaction-count">${post[reaction.type.toLowerCase() + 'Count']}</span>
-  `;
+              ${reaction.icon}
+              <span class="reaction-count">${post[reaction.type.toLowerCase() + 'Count']}</span>
+            `;
 
               reactionPopupContent.appendChild(reactionButton);
             });
@@ -722,7 +722,7 @@
             }
 
             // percent chance to show a join community section below post 
-            if (Math.random() < 4 && '<%= communityId %>' == '') {
+            if (Math.random() < .04 && '<%= communityId %>' == '') {
               const joinCommunityDiv = document.createElement('div');
               joinCommunityDiv.onclick = () => window.location.href = `/networks/${post.community_shortname}`;
               joinCommunityDiv.className = 'join-community';
