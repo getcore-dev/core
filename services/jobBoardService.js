@@ -1168,6 +1168,74 @@ class JobProcessor extends EventEmitter {
     }
   }
 
+  async verifyAndUpdateCompanyData() {
+    const companies = await jobQueries.getCompanies();
+    
+    this.updateProgress({ 
+      phase: 'Verifying and updating company data', 
+      totalCompanies: companies.length,
+      processedCompanies: 0
+    });
+
+    for (const [index, company] of companies.entries()) {
+      if (company.id === 8) {
+        console.log(`Skipping company with id 8: ${company.name}`);
+        continue;
+      }
+
+      this.updateProgress({ 
+        company: company.name, 
+        processedCompanies: index + 1,
+        currentAction: 'Verifying company data'
+      });
+
+      const missingFields = this.checkMissingFields(company);
+
+      if (missingFields.length > 4) {
+        this.updateProgress({ currentAction: 'Updating company data' });
+        
+        const prompt = this.generateCompanyPrompt({ name: company.name });
+        let updatedData;
+
+        try {
+          if (this.useGemini) {
+            updatedData = await this.useGeminiAPI(company.name, prompt);
+          } else {
+            updatedData = await this.useChatGPTAPI_CompanyInfo(company.name, prompt);
+          }
+
+          // Merge existing data with updated data
+          const mergedData = { ...company, ...updatedData };
+          console.log('Merged data:', mergedData);
+
+          // Update company in the database
+          await jobQueries.forceUpdateCompany(company.id, mergedData);
+
+          console.log(`Updated company data for ${company.name}`);
+        } catch (error) {
+          console.error(`Error updating data for ${company.name}:`, error);
+        }
+      } else {
+        console.log(`Company data for ${company.name} is complete`);
+      }
+
+    }
+
+    this.updateProgress({ phase: 'Company data verification completed' });
+  }
+
+  checkMissingFields(company) {
+    const requiredFields = [
+      'name', 'location', 'description', 'industry', 'founded', 'size',
+      'stock_symbol', 'company_stage', 'company_recent_news_sentiment',
+      'company_sentiment', 'company_issues', 'company_engineer_choice',
+      'company_website', 'twitter_username', 'company_linkedin_page'
+    ];
+
+    return requiredFields.filter(field => !company[field]);
+  }
+
+
   async useChatGPTAPI(link, textContent) {
     const jobResponse = z.object({
       title: z.string(),
@@ -1234,6 +1302,72 @@ class JobProcessor extends EventEmitter {
     }
   }
 
+  async useChatGPTAPI_CompanyInfo(name, textContent) {
+    const companyResponse = z.object({
+      name: z.string(),
+      description: z.string(),
+      industry: z.string(),
+      location: z.string(),
+      size: z.string().nullable(),
+      stock_symbol: z.string().nullable(),
+      founded: z.string().nullable(),
+      company_stage: z.string().nullable(),
+      company_recent_news_sentiment: z.string().nullable(),
+      company_sentiment: z.string().nullable(),
+      company_issues: z.string().nullable(),
+      company_engineer_choice: z.string().nullable(),
+      company_website: z.string().nullable(),
+      twitter_username: z.string().nullable(),
+      company_linkedin_page: z.string().nullable()
+    });
+  
+    const maxCharacters = 200000;
+    const truncatedTextContent = textContent.length > maxCharacters ? textContent.slice(0, maxCharacters) : textContent;
+    
+    const prompt = this.generateCompanyPrompt({ name: name });
+  
+  
+    try {
+      const completion = await this.openai.beta.chat.completions.parse({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a helpful assistant that extracts company information from text.',
+          },
+          { role: 'user', content: prompt },
+        ],
+        response_format: zodResponseFormat(companyResponse, 'companyResponse')
+      });
+  
+      const message = completion.choices[0]?.message;
+      return message.parsed;
+    } catch (error) {
+      console.error('OpenAI API Error:', error.message);
+      throw error;
+    }
+  }
+
+  generateCompanyPrompt(companyContext) {
+    return `
+     Currently for the company ${companyContext.name}, please given all current information known on the company give the following information:
+     - location (where the city is based out of: city, state),
+     - description (description of the company and what their main products are),
+     - industry (what industry or industries the company is in, comma-separated),
+     - founded (year the company was founded),
+     - size (estimated number of employees, can be a range or exact number, only give number like '1000' or '1000-5000'),
+     - stock_symbol (nullable),
+     - company_stage (if available, e.g., "Startup", "Scaleup", "Enterprise"),
+     - company_recent_news_sentiment (if available, write a sentence or two about the recent news sentiment),
+     - company_sentiment (if available, write a sentence or two about the general sentiment of the company),
+     - company_issues (if available, write a sentence or two about the issues the company is facing),
+     - company_engineer_choice (if available, write a sentence or two about why people choose to work at the company),
+     - company_website (if available),
+     - twitter_username (if available),
+     - company_linkedin_page (if available)
+     `;
+  }
+
   generatePrompt(link, textContent) {
     this.updateProgress({ currentAction: 'Generating prompt' });
     return `
@@ -1241,13 +1375,13 @@ class JobProcessor extends EventEmitter {
       Please extract the following information from this job posting data: ${textContent}
       - title (e.g., Software Engineer, Data Analyst, include if there is a specific team or project in the title like :'Software Engineer, Frontend'. if the title is not something related to computer science or software engineering, please DO NOT include it)
       - company_name NVARCHAR(50) (as simple as possible and you can tell the company name from the job posting link: ${link})
-      - company_description NVARCHAR(MAX)(write a short paragraph about the company, where they're located, their mission, etc)
-      - company_location (City, State(full name), Country(full name), if remote N/A)
-      - company_industry (just write down the general industry of the company, like tech, healthcare, finance, etc, those are not the only options.)
-      - company_size (e.g., 1-10, 11-50, 51-200, 201-500, 501-1000, 1001-5000, 5001-10000, 10001+)
-      - company_stock_symbol (if public, otherwise leave blank)
-      - company_logo (in the format of /src/<company-name>logo.png do not include space in the company logo)
-      - company_founded (year founded, if available, otherwise leave blank, format in SQL datetime format)
+      - company_description (blank)
+      - company_location (blank)
+      - company_industry (blank)
+      - company_size (blank)
+      - company_stock_symbol (blank)
+      - company_logo (blank)
+      - company_founded (blank)
       - location (City, State(full name), Country(full name), if remote N/A)
       - salary (integer only, ALWAYS ATTEMPT TO CONVERT TO USD USING A CURRENT CONVERSION RATE no currency symbol, no matter what format the salary in (hourly, monthly, weekly) convert to yearly salary, if none present 0)
       - salary_max (integer only, ALWAYS ATTEMPT TO CONVERT TO USD USING A CURRENT CONVERSION RATE, no currency symbol, no matter what format the salary in (hourly, monthly, weekly) convert to yearly salary, if none present 0)
@@ -1834,6 +1968,8 @@ class JobProcessor extends EventEmitter {
   async start() {
 
     await this.init();
+
+    await this.verifyAndUpdateCompanyData();
 
     await this.removeDuplicateJobs();
     this.updateProgress({ phase: 'Cleaning job postings' });

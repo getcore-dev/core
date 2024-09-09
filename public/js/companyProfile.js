@@ -201,6 +201,44 @@ function formatLocation(location) {
   return location.trim();
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+  const stockSymbols = document.querySelectorAll('.company-stock_symbol');
+  
+  stockSymbols.forEach(symbolElement => {
+    const symbol = symbolElement.dataset.symbol;
+    if (symbol) {
+      fetchStockMovement(symbol, symbolElement);
+    }
+  });
+});
+
+async function fetchStockMovement(symbol, element) {
+  const API_KEY = 'YOUR_ALPHA_VANTAGE_API_KEY_HERE'; // Replace with your actual API key
+  const API_URL = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${API_KEY}`;
+
+  try {
+    const response = await fetch(API_URL);
+    const data = await response.json();
+    
+    if (data['Global Quote']) {
+      const changePercent = parseFloat(data['Global Quote']['10. change percent'].replace('%', ''));
+      updateStockMovement(element, changePercent);
+    }
+  } catch (error) {
+    console.error('Error fetching stock data:', error);
+  }
+}
+
+function updateStockMovement(element, changePercent) {
+  const movementElement = element.querySelector('.stock-movement');
+  if (movementElement) {
+    const formattedChange = changePercent.toFixed(2);
+    const sign = changePercent >= 0 ? '+' : '';
+    movementElement.textContent = `${sign}${formattedChange}%`;
+    movementElement.classList.add(changePercent >= 0 ? 'positive' : 'negative');
+  }
+}
+
 function renderJobPostings(jobPostings) {
   const jobListContainer = document.querySelector(".job-list");
   jobListContainer.innerHTML = ''; // Clear existing job postings

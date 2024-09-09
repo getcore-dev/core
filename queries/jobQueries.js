@@ -825,6 +825,58 @@ const jobQueries = {
     await request.query(query);
   },
 
+  forceUpdateCompany: async (id, companyData) => {
+    // Construct the SET clause dynamically
+    const fields = [];
+    const values = {};
+  
+    // List of valid fields that can be updated
+    const validFields = [
+      'name', 'location', 'description', 'logo', 'logo_url',
+      'industry', 'founded', 'size', 'stock_symbol', 'job_board_url',
+      'new_id', 'company_stage', 'company_recent_news_sentiment',
+      'company_sentiment', 'company_issues', 'company_engineer_choice',
+      'company_website', 'job_board_url2', 'job_board_url3',
+      'company_linkedin_page', 'twitter_username'
+    ];
+  
+    // Function to determine SQL type based on field name
+    const getSqlType = (fieldName) => {
+      if (fieldName === 'founded') return sql.DateTime;
+      if (fieldName === 'new_id') return sql.UniqueIdentifier;
+      if (['description', 'company_recent_news_sentiment', 'company_sentiment', 'company_issues', 'company_engineer_choice'].includes(fieldName)) {
+        return sql.NVarChar;
+      }
+      return sql.VarChar;
+    };
+  
+    // Iterate over valid fields and add them to the update if present in companyData
+    for (const field of validFields) {
+      if (companyData[field] !== undefined) {
+        fields.push(`${field} = @${field}`);
+        values[field] = { value: companyData[field], type: getSqlType(field) };
+      }
+    }
+  
+    if (fields.length === 0) {
+      throw new Error('No fields to update');
+    }
+  
+    const query = `
+      UPDATE companies
+      SET ${fields.join(', ')}
+      WHERE id = @id
+    `;
+  
+    const request = new sql.Request();
+    request.input('id', sql.Int, id);
+    Object.entries(values).forEach(([key, { value, type }]) => {
+      request.input(key, type, value);
+    });
+  
+    await request.query(query);
+  },
+
   getUserJobPreferences: async (userId) => {
     try {
       const result = await sql.query`

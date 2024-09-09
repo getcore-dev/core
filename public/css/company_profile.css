@@ -82,9 +82,101 @@ div.company-menu .second-nav-links .navbar-button {
 
 .company-flair {
   display: flex;
-  flex-direction: column;
   padding: 0 0.5rem;
   flex-wrap: wrap;
+  gap: 10px;
+}
+
+.company-flair-item {
+  display: flex;
+  align-items: center;
+  background-color: var(--light-mode-body-color);
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 0.9em;
+}
+
+.material-symbols-outlined {
+  font-size: 1.2em;
+  margin-right: 5px;
+}
+
+.radar-pulse {
+  display: inline-block;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.circle {
+  width: 8px !important;
+  height: 8px !important;
+  background-color: #22c55e !important;
+  border-radius: 50%;
+  position: absolute;
+  top: 6px !important;
+  left: 6px !important;
+}
+
+.pulse {
+  border: 2px solid #22c55e !important;
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50%;
+  position: absolute;
+  top: -2px !important;
+  left: -2px !important;
+  animation: pulse 2s infinite !important;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}
+
+.ai-generated-info {
+  margin-top: 20px;
+  margin-bottom: 15px;
+  border: 1px solid #fbbf24;
+  border-radius: 10px;
+  padding: 15px;
+  background-color: #fef3c7;
+}
+
+.ai-info-header {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.ai-warning {
+  margin-bottom: 15px;
+  font-size: 0.9em;
+  color: #92400e;
+}
+
+.ai-item {
+  background-color: #fff;
+  border: 1px solid #fbbf24;
+}
+
+.ai-generated-content {
+  background: linear-gradient(135deg, rgba(173, 216, 230, 0.1), rgba(221, 160, 221, 0.1));
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 15px;
 }
 
 .company-flair-item {
@@ -318,6 +410,19 @@ h3.job-title {
   position: relative;
 }
 
+.stock-movement {
+  font-size: 0.8em;
+  margin-left: 5px;
+}
+
+.stock-movement.positive {
+  color: #4caf50;
+}
+
+.stock-movement.negative {
+  color: #f44336;
+}
+
 .job-post-date.green::before {
   content: '';
   display: inline-block;
@@ -428,6 +533,23 @@ div.jobs-company-header {
     color: var(--dark-mode-text-color);
   }
 
+  .ai-generated-info {
+    background-color: #342c09;
+    border: 1px solid #866614;
+  }
+
+  .ai-item {
+    background-color: #000000;
+    border: 1px solid #6d5412;
+  }
+
+  .ai-warning {
+    color: #c09073;
+  }
+
+  .company-flair-item {
+    background-color: var(--dark-mode-main-color);
+  }
 
   .company-menu {
     border-color: var(--dark-mode-border-color);

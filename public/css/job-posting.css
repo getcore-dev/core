@@ -20,7 +20,7 @@ main {
 
 
 .ai-generated-content {
-  background: linear-gradient(135deg, rgba(173, 216, 230, 0.2), rgba(221, 160, 221, 0.2));
+  background: linear-gradient(135deg, rgba(173, 216, 230, 0.15), rgba(221, 160, 221, 0.15));
   border-radius: 8px;
   padding: 20px;
   margin-top: 15px;
@@ -543,6 +543,10 @@ ul.locations,
   .job-listing-menu {
     border-color: var(--dark-mode-border-color);
     background: var(--dark-mode-body-color);
+  }
+
+  .card-header {
+    color: #c9cdd6;
   }
 
   .company-location,
