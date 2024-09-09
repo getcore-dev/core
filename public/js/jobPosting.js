@@ -408,10 +408,10 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     </div>
   </div>
 
-  <h3 class="company-name main margin-03-bottom">
+  <h3 class="company-name main-text margin-03-bottom">
     ${job.title}
   </h3>
-<div class="job-info-flairs margin-03-bottom">
+<div class="job-info-flairs margin-1-bottom">
   <p class="job-detail">
     🧑‍💻 ${job.experienceLevel}
   </p>
@@ -504,13 +504,17 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 <div class="card">
         <div class="card-header">Recruiter Information</div>
         <div class="job-recruiter-container">
+            <div class="job-recruiter-info">
+            <div class="recruiter-info flex flex-row">
             <a href="/user/autojob" class="recruiter-image">
                 <img src="${job.recruiter_image}" alt="${job.company_name} logo" />
             </a>
-            <div class="job-recruiter-info">
-                <div class="job-recruiter-name">Automated Job System</div>
+            <div class="recruiter-details flex flex-col">
+                <div class="job-recruiter-name">${job.recruiter_firstname} ${job.recruiter_lastname}</div>
                 <div class="username-date">
-                    <a href="/user/autojob">autojob</a> • Aug 21
+                    <a href="/user/autojob">${job.recruiter_username}</a> • Aug 21
+                </div>
+                </div>
                 </div>
                 <div class="autojob-warning">
                     <span class="warning-icon">⚠️</span>
@@ -544,7 +548,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     ? `
             <div class="job-requirements">
               <h4 class="card-header">Requirements</h4>
-              <p class="third-text">${job.Requirements}</p>
+              <p>${job.Requirements}</p>
             </div>
             `
     : ''
@@ -555,7 +559,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     ? `
             <div class="job-responsibilities">
               <h4 class="card-header">Responsibilities</h4>
-              <p class="third-text">${job.Responsibilities}</p>
+              <p>${job.Responsibilities}</p>
             </div>
             `
     : ''
@@ -588,7 +592,7 @@ ${
     ? `
 <div class="job-benefits">
   <h4 class="card-header">Job Benefits</h4>
-  <ul class="third-text">
+  <ul>
     ${formattedBenefits}
   </ul>
 </div>
@@ -601,7 +605,7 @@ ${
     ? `
 <div class="job-nice-to-have">
   <h4 class="card-header">Nice to Have</h4>
-  <p class="third-text">${job.NiceToHave}</p>
+  <p>${job.NiceToHave}</p>
 </div>
 `
     : ''
@@ -612,7 +616,7 @@ ${
     ? `
 <div class="job-schedule">
   <h4 class="card-header">Schedule</h4>
-  <p class="third-text">${job.schedule}</p>
+  <p>${job.schedule}</p>
 </div>
 `
     : ''
@@ -623,7 +627,7 @@ ${
     ? `
 <div class="job-hours-per-week">
   <h4 class="card-header">Hours per Week</h4>
-  <p class="third-text">${job.hoursPerWeek}</p>
+  <p>${job.hoursPerWeek}</p>
 </div>
 `
     : ''
@@ -634,7 +638,7 @@ ${
     ? `
 <div class="job-equal-opportunity-employer-info">
   <h4 class="card-header">Equal Opportunity Employer Info</h4>
-  <p class="third-text">${job.equalOpportunityEmployerInfo}</p>
+  <p>${job.equalOpportunityEmployerInfo}</p>
 </div>
 `
     : ''
@@ -642,7 +646,7 @@ ${
 
 <div class="job-relocation">
   <h4 class="card-header">Relocation</h4>
-  <p class="third-text">${job.relocation ? 'Yes' : 'No'}</p>
+  <p>${job.relocation ? 'Yes' : 'No'}</p>
 </div>
 <div class="similar-jobs-location">
 ${
@@ -663,19 +667,6 @@ ${job.location
 </ul>
 </div>
 </div>
-<div class="similar-jobs company-profile-section" style="display: none;">
-        <div id="loading-indicator">
-          <div class="spinner-container">
-            <div class="spinner"></div>
-          </div>
-        </div>
-</div>
-<div class="similar-company-jobs company-profile-section" style="display: none;">
-        <div id="loading-indicator">
-          <div class="spinner-container">
-            <div class="spinner"></div>
-          </div>
-        </div></div>
             <div class="job-skills-display">
 
               ${tagsHTML}
@@ -690,6 +681,21 @@ ${job.location
               
           </div>
         </div>
+        <div class="similar-jobs company-profile-section" style="display: none;">
+        <div id="loading-indicator">
+          <div class="spinner-container">
+            <div class="spinner"></div>
+          </div>
+        </div>
+</div>
+<div class="similar-company-jobs company-profile-section" style="display: none;">
+        <div id="loading-indicator">
+          <div class="spinner-container">
+            <div class="spinner">
+            </div>
+          </div>
+        </div>
+</div>
       `;
       bindSelectorButtons();
       getSimilarJobsByCompany(jobId, job.company_name);

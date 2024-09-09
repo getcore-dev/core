@@ -403,10 +403,22 @@ ul.locations,
 }
 
 .job-detail {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  line-height: 1.5;
+  font-weight: 500;
+  margin: 0;
+  margin-bottom: 0;
+}
+
+.job-detail {
+  display: flex;
+  align-items: center;
   background-color: var(--light-mode-body-color);
   padding: 5px 10px;
-  border-radius: 20px;
-  font-size: 14px;
+  border-radius: 7px;
+  font-size: 0.9em !important;
 }
 
 .interact-buttons {
@@ -445,10 +457,9 @@ ul.locations,
 
 .job-info-flairs {
   display: flex;
-  flex-direction: row;
-  padding: 0;
-  gap: .25rem;
+  padding: 0 0rem;
   flex-wrap: wrap;
+  gap: 10px;
 }
 
 .currency-warning {

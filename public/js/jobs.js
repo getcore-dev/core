@@ -744,11 +744,11 @@ let tagsHTML = sortedSkills
   .map((skill) => {
     const skillExists = state.filters.skills.has(skill.toLowerCase());
     return `
-      <span data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="sub-text text-tag ${
+      <span data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="mini-text bold text-tag ${
         skillExists ? 'green-text-tag' : ''
       }">${skill}</span>`;
   })
-  .join(', ');
+  .join('');
 
 const remainingSkillsCount = sortedTags.length - 3;
 if (remainingSkillsCount > 0) {
@@ -760,53 +760,59 @@ if (remainingSkillsCount > 0) {
 }
   
 
-  jobElement.innerHTML = `
-    <div class="job-preview">
-                ${
-            job.company_logo
-              ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo ? job.company_logo : '/img/glyph.png'}" alt="" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
-                            : ''
-          }
-      <div class="job-info">
-        <div class="company-info">
-          <div class="job-posting-company-info">
-            <a class="company-name third-text mini-text bold" href="/jobs/company/${job.company_name}">${job.company_name}</a>
-          </div>
-        </div>
-        <h3 class="job-title margin-1-bottom main-text">${job.title}</h3>
-        <p class="sub-text third-text margin-03-bottom">${tagsHTML}</p>
-        
-        <div class="job-title-location third-text mini-text">
-                  <div class="location mini-text" style="color:#bc3737">
-            📍
-            ${formatLocation(job.location).trim()}
-          </div>
-          <span style="font-size:.7rem;">•</span>
-                  <div class="applicants  mini-text">
-            ${job.applicants ? `${job.applicants} applicants` : '0 applicants'}
-          </div>
-          <div class="job-post-date secondary-text ${formatDateColor(job.postedDate)} mini-text">
-            <time>${formatRelativeDate(job.postedDate)}</time>
-          </div>
-          <span style="font-size:.7rem;">•</span>
-          <div class="experience-level mini-text">${
-            job.experienceLevel === 'Mid Level'
-              ? 'L3/L4'
-              : job.experienceLevel === 'Entry Level'
-                ? 'L1/L2'
-                : job.experienceLevel === 'Senior'
-                  ? 'L5/L6'
-                  : job.experienceLevel
-          }</div>
-          ${job.salary || job.salary_max ? `
-            <span style="font-size:.7rem;">•</span><div class="job-salary mini-text">
-              ${formatSalary(job.salary)} - ${formatSalary(job.salary_max)}/yr
-            </div>
-          ` : ``}
-        </div>
+jobElement.innerHTML = `
+<div class="job-preview">
+  <div class="job-info">
+    <div class="job-header gap-03">
+    <div class="flex flex-row gap-06">
+      ${
+    job.company_logo
+      ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="${job.company_name}" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
+      : ''
+  }
+      <div class="flex flex-col">
+        <h3 class="job-title">${job.title}</h3>
+        <a class="company-name" href="/jobs/company/${job.company_name}">${job.company_name}</a>
+      </div>
+      </div>
+      <div class="location-badge">
+        📍 ${formatLocation(job.location).trim()}
       </div>
     </div>
-  `;
+    <div class="job-tags">
+      ${tagsHTML}
+    </div>
+    <div class="job-details">
+      <span class="job-detail applicants">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        ${job.applicants ? `${job.applicants} applicants` : '0 applicants'}
+      </span>
+      <span class="job-detail post-date">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+        <time>${formatRelativeDate(job.postedDate)}</time>
+      </span>
+      <span class="job-detail experience-level">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+        ${
+          job.experienceLevel === 'Mid Level'
+            ? 'L3/L4'
+            : job.experienceLevel === 'Entry Level'
+              ? 'L1/L2'
+              : job.experienceLevel === 'Senior'
+                ? 'L5/L6'
+                : job.experienceLevel
+        }
+      </span>
+      ${job.salary || job.salary_max ? `
+        <span class="job-detail salary">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+          ${formatSalary(job.salary)} - ${formatSalary(job.salary_max)}/yr
+        </span>
+      ` : ``}
+    </div>
+  </div>
+</div>
+`;
   return jobElement;
 }
 

@@ -57,8 +57,29 @@
           <% } %>
         </div>
         <div class="company-description secondary-text sub-text margin-06-bottom">
-          <p class="description-text" id="companyDescription"><%= company.description %></p>
+          <p class="description-text secondary-text" id="companyDescription"><%= company.description %></p>
           <button id="toggleButton" style="display: none;">Show more</button>
+        </div>
+        <div class="external-links flex flex-row gap-06 margin-06-bottom">
+          <% if (company.twitter_username) { %>
+          <span class="company-flair-item flair-bordered">
+            <span style="margin-right: .5rem;font-weight:600;" class="symbol">&Xopf;</span>
+            <a href="https://twitter.com/<%= company.twitter_username %>" target="_blank" class="company-twitter_username"><%= company.twitter_username.replace('@', '') %></a>
+            <span style="padding:0;margin-left:.4rem;" class="material-symbols-outlined">
+              north_east
+            </span>
+          </span>
+          <% } %>
+
+          <% if (company.company_website) { %>
+          <span class="company-flair-item flair-bordered">
+            <span class="material-symbols-outlined">language</span>
+            <a href="<%= company.company_website %>" target="_blank" class="company-company_website"><%= company.company_website %></a>
+            <span style="padding:0;margin-left:.4rem;" class="material-symbols-outlined">
+              north_east
+            </span>
+          </span>
+          <% } %>
         </div>
         <div class="company-flair sub-text margin-03-bottom">
           <% if (company.job_board_url) { %>
@@ -96,20 +117,6 @@
           <span class="company-flair-item">
             <span class="material-symbols-outlined">group</span>
             <span class="company-size"><%= company.size %></span>
-          </span>
-          <% } %>
-
-          <% if (company.twitter_username) { %>
-          <span class="company-flair-item">
-            <span class="material-symbols-outlined">alternate_email</span>
-            <a href="https://twitter.com/<%= company.twitter_username %>" target="_blank" class="company-twitter_username"><%= company.twitter_username.replace('@', '') %></a>
-          </span>
-          <% } %>
-
-          <% if (company.company_website) { %>
-          <span class="company-flair-item">
-            <span class="material-symbols-outlined">language</span>
-            <a href="<%= company.company_website %>" target="_blank" class="company-company_website"><%= company.company_website %></a>
           </span>
           <% } %>
 

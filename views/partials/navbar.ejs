@@ -308,23 +308,24 @@
           </a>
         </li>
         <li class="dropdown">
-          <% if (isActive('/posts') && typeof post !== 'undefined') { %>
-          <span class="community-preview" style="color: <%= post.community.community_color%>">
-            <span class="material-symbols-outlined" style="color:<%= community.community_color %>;">
-              <%= post.community ? post.community.mini_icon : '' %>
+          <% if (isActive('/posts') && typeof post !== 'undefined' && typeof post.community !== 'undefined') { %>
+          <span class="community-preview" style="color: <%= post.community.community_color %>">
+            <span class="material-symbols-outlined" style="color: <%= post.community.community_color %>;">
+              <%= post.community.mini_icon %>
             </span>
           </span>
           <% } %>
 
           <% if (isActive('/networks') && typeof community !== 'undefined') { %>
-          <span class="community-preview" style="color: <%= community.community_color%>">
-            <span class="material-symbols-outlined" style="color:<%= community.community_color %>;">
+          <span class="community-preview" style="color: <%= community.community_color %>">
+            <span class="material-symbols-outlined" style="color: <%= community.community_color %>;">
               <%= community.mini_icon %>
             </span>
           </span>
           <% } %>
 
-          <a href="/networks/" class="navbar-button <%= (isActive('/networks') || (isActive('/posts') && typeof post !== 'undefined')) ? 'active' : '' %>" style="border-color:<%= isActive('/posts') && typeof post !== 'undefined' ? post.community.community_color : (isActive('/networks') && typeof community !== 'undefined' ? community.community_color : '') %>; display: flex;"> <% if ((isActive('/networks') && typeof community !== 'undefined') || isActive('/posts')) { %>
+          <a href="/networks/" class="navbar-button <%= (isActive('/networks') || (isActive('/posts') && typeof post !== 'undefined')) ? 'active' : '' %>" style="border-color:<%= (isActive('/posts') && typeof post !== 'undefined' && typeof post.community !== 'undefined') ? post.community.community_color : (isActive('/networks') && typeof community !== 'undefined' ? community.community_color : '') %>; display: flex;">
+            <% if ((isActive('/networks') && typeof community !== 'undefined') || (isActive('/posts') && typeof post !== 'undefined' && typeof post.community !== 'undefined')) { %>
             <span class="material-symbols-outlined hidden">
               workspaces
             </span>
@@ -341,7 +342,6 @@
           <span class="community-preview secondary-text">
             <img src="<%= typeof job !== 'undefined' ? job.company_logo : company.logo %>" style="height: 16px;">
           </span>
-
           <% } %>
           <a href="/jobs" class="navbar-button <%= isActive('/jobs') ? 'active' : '' %>" style="display: flex;">
             <span class="material-symbols-outlined">

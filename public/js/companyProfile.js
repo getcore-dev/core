@@ -77,11 +77,42 @@ async function loadCompanyJobs(companyName) {
   isLoading = true;
 
   try {
+
+    if (isLoading) {
+    const loadingSpinner = document.querySelector('#loading-indicator');
+    if (loadingSpinner) {
+      loadingSpinner.style.display = 'block';
+      const jobListContainer = document.querySelector('.job-list');
+      jobListContainer.appendChild(loadingSpinner);
+    }
+  } else {
+    const loadingSpinner = document.querySelector('#loading-indicator');
+    if (loadingSpinner) {
+      loadingSpinner.style.display = 'none';
+    }
+  }
+
     const response = await fetch(`/api/jobs/company/${encodeURIComponent(companyName)}?page=${currentPage}&pageSize=${pageSize}`);
     const jobs = await response.json();
 
     if (jobs.length === 0) {
       hasMoreJobs = false;
+      isLoading = false;
+      // hide loading indicator and display 'end of the list message'
+      const loadingSpinner = document.querySelector('#loading-indicator');
+      if (loadingSpinner) {
+        loadingSpinner.style.display = 'none';
+      }
+      const jobListContainer = document.querySelector('.job-list');
+      const endOfListMessage = document.createElement('div');
+      endOfListMessage.classList.add('end-of-list-message');
+      endOfListMessage.classList.add('third-text');
+      endOfListMessage.classList.add('mini-text');
+      endOfListMessage.classList.add('flex');
+      endOfListMessage.classList.add('h-center');
+      endOfListMessage.textContent = 'No more job postings to display';
+      jobListContainer.appendChild(endOfListMessage);
+
     } else {
       renderJobPostings(jobs);
       currentPage++;
@@ -240,8 +271,12 @@ function updateStockMovement(element, changePercent) {
 }
 
 function renderJobPostings(jobPostings) {
+  // remove the loading spinner
+  const loadingSpinner = document.querySelector('#loading-indicator');
+  if (loadingSpinner) {
+    loadingSpinner.style.display = 'none';
+  }
   const jobListContainer = document.querySelector(".job-list");
-  jobListContainer.innerHTML = ''; // Clear existing job postings
 
   jobPostings.forEach((job) => {
     const jobElement = document.createElement("div");

@@ -314,7 +314,6 @@
 
       const postsContainer = document.getElementById('posts-container');
 
-
       if (page === 1) {
         // Remove the existing header element
         const existingHeader = postsContainer.querySelector('.community-header');
@@ -325,35 +324,24 @@
         const communityHeader = document.createElement('div');
         communityHeader.className = 'community-header posting-header';
         communityHeader.innerHTML = `
-
-              <div class=post-header-buttons style="position:relative;">
-              <span class="filter-button-container" style="display: flex; flex-direction: row; gap: .4rem;">
-                 <a class="link" onclick="filterPosts('trending')">
-                  <span>Trending</span>
-                </a>
-                <a class="link" onclick="filterPosts('new')">
-                  <span >New</span>
-                </a>
-                <a class="link" onclick="filterPosts('top')">
-                  <span>Top</span>
-                </a>
-                <a class="link" onclick="filterPosts('explore')">
-                  <span>Explore</span>
-                </a>
-              </span>
-              
-          <% if (user) { %>
-            <button class="submit-button-normal" id="post-button" onclick="window.location.href='<%= communityId ? `/networks/${community.shortname}/create` : '/create' %>'">
-              Post <span class="material-symbols-outlined">
-          add
-          </span>
-            </button>
-          <% } %>
-            </div>
-     `;
+      <div class="post-header-buttons" style="position:relative;">
+        <span class="filter-button-container" style="display: flex; flex-direction: row; gap: .4rem;">
+          <a class="link" onclick="filterPosts('trending')"><span>Trending</span></a>
+          <a class="link" onclick="filterPosts('new')"><span>New</span></a>
+          <a class="link" onclick="filterPosts('top')"><span>Top</span></a>
+          <a class="link" onclick="filterPosts('explore')"><span>Explore</span></a>
+        </span>
+        <% if (user) { %>
+          <button class="submit-button-normal" id="post-button" onclick="window.location.href='<%= communityId ? `/networks/${community.shortname}/create` : '/create' %>'">
+            Post <span class="material-symbols-outlined">add</span>
+          </button>
+        <% } %>
+      </div>
+    `;
 
         postsContainer.appendChild(communityHeader);
       }
+
       const existingLoadMoreButton = postsContainer.querySelector('.load-more-button');
       if (existingLoadMoreButton) {
         existingLoadMoreButton.remove();
@@ -362,424 +350,138 @@
       fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
-          const fetchPromises = [];
           const posts = data.posts;
           const totalPages = data.totalPages;
-          posts.forEach(post => {
-            // Main post div
-            const postCommentsDiv = document.createElement('div');
-            postCommentsDiv.className = 'post-comments';
-            const postDiv = document.createElement('div');
-            if (post.isGlobalPinned) {
-              postDiv.className = 'post pinned';
-            } else {
 
-              postDiv.className = 'post';
-            }
+          posts.forEach(post => {
+            const postDiv = document.createElement('div');
+            postDiv.className = 'post bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-200';
             postDiv.onclick = () => window.location.href = '/posts/' + post.id;
 
-            postCommentsDiv.appendChild(postDiv);
-
-            // Post content div
-            const postContentDiv = document.createElement('div');
-            postContentDiv.className = 'post-content';
-
-            // Post header div
-            const postHeaderDiv = document.createElement('div');
-            postHeaderDiv.className = 'post-header margin-03-bottom';
+            const networkIconColor = post.community_color;
+            const avatarHtml = post.avatar ?
+              `<img src="${post.avatar}" alt="${post.username}" class="thumbnail thumbnail-regular thumbnail-tiny">` :
+              `<div class="w-8 h-8 rounded ${networkIconColor} flex items-center justify-center text-white font-bold">
+               ${post.firstname[0].toUpperCase()}${post.lastname[0].toUpperCase()}
+             </div>`;
 
 
-            const postHeaderUsernameDiv = document.createElement('div');
-            postHeaderUsernameDiv.className = 'post-header-username';
+            postDiv.innerHTML = `
+          <div class="flex items-start margin-06-bottom">
+            ${avatarHtml}
 
-            /* 
-            // avatar div
-            const avatarDiv = document.createElement('div');
-                        avatarDiv.className = 'avatar';
-                        const avatarImg = document.createElement('img');
-                        avatarImg.onclick = () => window.location.href = '/user/' + post.username;
-                        avatarImg.src = post.avatar;
-                        avatarImg.className = 'thumbnail thumbnail-regular thumbnail-tiny'
-                        avatarImg.loading = "lazy";
-                        avatarDiv.appendChild(avatarImg);
-                        postDiv.appendChild(avatarDiv);
-                        */
+            <div class="ml-3 flex-grow">
+              <h2 class="main-text bold">${post.title}</h2>
+              <p class="mini-text third-text">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username}</p>
+            </div>
+            <div class="text-sm bg-gray-100 text-gray-800 py-1 px-2 rounded" style="line-height:0;font-size:12px;color:${networkIconColor};background:${networkIconColor}26;border:1px solid ${networkIconColor}9e;">
+                            <span class="material-symbols-outlined" style="font-size: 1rem;">
+                            ${post.community_icon.toUpperCase()}
+                            </span>
 
-
-            // Username, community and current job div
-            const usernameDiv = document.createElement('div');
-            usernameDiv.className = 'username';
-            const usernameLink = document.createElement('div');
-            usernameLink.className = 'post-quick-info secondary-text';
-            usernameLink.href = '/user/' + post.username;
-
-            usernameLink.innerHTML = `
-              <span>
-              <p>
-              
-                <a id="post-username" style="color: ${post.user_color !== '#000000' ? `${post.user_color}` : 'var(--active-indicator-color)'}" class="bold link secondary-text" href="/user/${post.username}">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username}</a>
-
-                ${post.verified ? '<span class="material-symbols-outlined" style="padding:0;font-size: .85rem;color:#16a86b;font-weight: 600;">verified</span>' : ''}
-                ${post.isModerator ? '<span class="material-symbols-outlined" style="font-size:.85rem;color:#169da8;">admin_panel_settings</span>' : ''}
-                ${post.isGlobalPinned ? '<span class="material-symbols-outlined" style="padding:0;color:#113ae2;">push_pin</span>' : ''}
-
-              </p> 
-              
+              ${post.community_shortname.toUpperCase()}
+            </div>
+          </div>
+${post.post_tags ? `
+  <div class="post-tags-div">
+    ${post.post_tags ? post.post_tags.split(',').map(tag => `
+      <span class="post-tag">${tag}</span>
+    `).join('') : ''}
+    ${post.post_tags ? post.post_tags.split(',').length > 3 ? `
+      <span class="text-blue-500 text-sm flex items-center">
+        +${Math.max(0, (post.post_tags ? post.post_tags.split(',').length : 0) - 3)} more 
+        <span class="material-symbols-outlined" style="font-size: 1rem;">chevron_right</span>
+      </span>
+    ` : '' : ''}
+  </div>
+` : ''}
+          <p class="description mb-2">${truncateContent(post.content, 150)}</p>
+          <div class="flex items-center text-sm text-gray-500 justify-between">
+            <div class="flex items-center space-x-4">
+              <span class="flex items-center">
+                <span class="material-symbols-outlined" style="font-size: 1rem;">person</span>
+                ${post.views} reader${post.views > 1 ? 's' : ''}
               </span>
-              <span>
-              <p>          
+              <span class="flex items-center">
+                <span class="material-symbols-outlined" style="font-size: 1rem;">schedule</span>
+                ${formatDate(post.created_at)}
               </span>
-              <p>
+            </div>
+            <div class="flex items-center space-x-4">
+              <span class="flex items-center">
+                <span class="material-symbols-outlined" style="font-size: 1rem;">thumb_up</span>
+                ${post.loveCount + post.likeCount + post.dislikeCount + post.curiousCount}
+              </span>
+              <span class="flex items-center">
+                <span class="material-symbols-outlined" style="font-size: 1rem;">comment</span>
+                ${post.comment_count}
+              </span>
+              <span class="flex items-center">
+                <span class="material-symbols-outlined" style="font-size: 1rem;">share</span>
+                ${post.share_count || 0}
+              </span>
+            </div>
+          </div>
+        `;
 
-                          </p>
-            `;
-            usernameDiv.appendChild(usernameLink);
+            postsContainer.appendChild(postDiv);
+          });
 
-
-
-            postHeaderUsernameDiv.appendChild(usernameDiv);
-            // follow button div
-            /* 
-            const followButtonDiv = document.createElement('div');
-            followButtonDiv.className = 'follow-button';
-            const followButton = document.createElement('button');
-            followButton.className = 'follow-button no-bg no-border link';
-            followButton.textContent = 'Follow';
-            followButton.onclick = (event) => {
-              event.stopPropagation();
-              console.log(post)
-              followUser(post.user_id);
+          if (posts.length > 0 && page < totalPages) {
+            const loadMoreDiv = document.createElement('div');
+            loadMoreDiv.className = 'load-more';
+            const loadMoreButton = document.createElement('button');
+            loadMoreButton.className = 'load-more-button';
+            loadMoreButton.id = 'regular-button';
+            loadMoreButton.innerText = 'Load More';
+            loadMoreButton.onclick = () => {
+              const nextPage = page + 1;
+              fetchAndDisplayPosts(communityId, sortBy, nextPage);
             };
-            followButtonDiv.appendChild(followButton);
-            postHeaderUsernameDiv.appendChild(followButtonDiv);
-            */
+            loadMoreDiv.appendChild(loadMoreButton);
+            postsContainer.appendChild(loadMoreDiv);
+          }
 
-            // three dots div
-            const threeDotsDiv = document.createElement('div');
-            threeDotsDiv.className = 'three-dots';
-            const threeDotsButton = document.createElement('button');
-            threeDotsButton.className = 'three-dots-button';
-            threeDotsButton.innerHTML = '<span class="material-symbols-outlined">more_horiz</span>';
-            threeDotsButton.onclick = (event) => {
-              event.stopPropagation();
-            };
-            threeDotsDiv.appendChild(threeDotsButton);
-
-            postContentDiv.appendChild(postHeaderDiv);
-
-            // Title div
-            const titleDiv = document.createElement('div');
-            titleDiv.className = 'title main-text';
-            const titleLink = document.createElement('a');
-            titleLink.href = '/posts/' + post.id;
-            titleLink.innerHTML = `${post.title} <span class="post-timestamp mini-text" id="third-text"><time>${formatDate(post.created_at)}</time></span>`;
-            titleDiv.appendChild(titleLink);
-            titleDiv.onclick = () => window.location.href = '/posts/' + post.id;
-
-            postContentDiv.appendChild(titleDiv);
-            titleDiv.appendChild(threeDotsDiv);
-
-            const linkPreviewDiv = document.createElement('div');
-            if (post.post_tags) {
-              linkPreviewDiv.className = 'link-preview';
-            } else {
-              linkPreviewDiv.className = 'link-preview';
-            }
-            linkPreviewDiv.onclick = () => window.location.href = '/posts/' + post.id;
-
-            postContentDiv.appendChild(linkPreviewDiv);
-
-            if (post.link) {
-              const linkDiv = document.createElement('div');
-              linkDiv.className = 'link';
-              linkDiv.innerHTML = '<div class="placeholder-link-preview">Loading link preview...</div>'; // Placeholder
-              linkPreviewDiv.appendChild(linkDiv);
-              fetchPromises.push(fetchLinkPreview(post.link, linkDiv));
-
-            }
-            try {
-              const imageUrlMatch = post.content.match(/!\[.*?\]\((.*?)\)/);
-              if (imageUrlMatch && imageUrlMatch[1]) {
-                linkPreviewDiv.style.background = 'none';
-                linkPreviewDiv.style.display = 'flex';
-                linkPreviewDiv.style.gap = '1.2rem';
-                linkPreviewDiv.style.alignItems = 'center';
-                const imageUrl = imageUrlMatch[1];
-                const thumbnailDiv = document.createElement('div');
-                thumbnailDiv.className = 'post-thumbnail';
-                const thumbnailImg = document.createElement('img');
-                thumbnailImg.src = imageUrl;
-                thumbnailImg.alt = 'Post Thumbnail';
-                // make the thumbnail image larger on click
-                thumbnailImg.onclick = (event) => {
-                  event.stopPropagation();
-                  if (thumbnailImg.style.width === 'auto' && thumbnailImg.style.height === '300px') {
-                    linkPreviewDiv.style.flexDirection = 'row';
-                    thumbnailImg.style.width = '';
-                    thumbnailImg.style.height = '';
-                  } else {
-                    linkPreviewDiv.style.flexDirection = 'column';
-                    thumbnailImg.style.height = '300px';
-                    thumbnailImg.style.width = 'auto';
-                  }
-                };
-                thumbnailImg.className = 'thumbnail-image';
-                thumbnailImg.loading = "lazy";
-                thumbnailDiv.appendChild(thumbnailImg);
-                linkPreviewDiv.appendChild(thumbnailDiv);
-              }
-            } catch (error) {
-              console.error('Error displaying image for post:', post.id);
-            }
-
-
-
-            linkPreviewDiv.style.background = "none";
-            linkPreviewDiv.style.border = "none";
-            const descriptionDiv = document.createElement('div');
-            descriptionDiv.className = 'description third-text sub-text';
-
-            if (post.content) {
-              let contentWithoutMarkdown = post.content
-                .replace(/^#{1,6}\s+/gm, '')
-                .replace(/(?:\r\n|\r|\n)/g, ' ')
-                .replace(/```[\s\S]*?```/g, '')
-                .replace(/`([^`]+)`/g, '$1')
-                .replace(/\*\*(.*?)\*\*/g, '$1')
-                .replace(/\*(.*?)\*/g, '$1')
-                .replace(/_(.*?)_/g, '$1')
-                .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
-                .replace(/!\[([^\]]+)\]\([^\)]+\)/g, '')
-                .replace(/<[^>]*>/g, '')
-                // Trim leading/trailing whitespace
-                .trim();
-
-              descriptionDiv.append(contentWithoutMarkdown);
-            }
-
-
-
-            linkPreviewDiv.appendChild(descriptionDiv);
-
-
-            // Reaction buttons
-            const reactionTypes = [{
-                type: "LOVE",
-                icon: "❤️"
-              },
-              {
-                type: "LIKE",
-                icon: "👍"
-              },
-              {
-                type: "CURIOUS",
-                icon: "🤔"
-              },
-              {
-                type: "DISLIKE",
-                icon: "👎"
-              }
-            ];
-
-            let totalReactions = 0;
-            reactionTypes.forEach(reaction => {
-              totalReactions += post[reaction.type.toLowerCase() + 'Count'];
-            });
-
-            // reaction menu
-
-            // buttons div
-            const buttonsDiv = document.createElement('div');
-            buttonsDiv.className = 'buttons third-text mini-text';
-
-            const reactionPopup = document.createElement('div');
-            reactionPopup.id = `reactionPopup-post-${post.id}`;
-            reactionPopup.className = 'reaction-popup';
-            reactionPopup.style.display = 'none';
-
-            const reactionPopupContent = document.createElement('div');
-            reactionPopupContent.className = 'reaction-popup-content';
-
-            reactionTypes.forEach(reaction => {
-              const reactionButton = document.createElement('button');
-              reactionButton.className = `reaction-button-popup${post.userReaction === reaction.type ? ' active' : ''}`;
-              reactionButton.setAttribute('data-type', 'post');
-              reactionButton.setAttribute('data-id', post.id);
-              reactionButton.setAttribute('data-reaction', reaction.type);
-              reactionButton.onclick = (event) => {
-                event.stopPropagation();
-                interactWithPost(post.id, '<%= user %>', reaction.type);
-              };
-
-              reactionButton.innerHTML = `
-              ${reaction.icon}
-              <span class="reaction-count">${post[reaction.type.toLowerCase() + 'Count']}</span>
-            `;
-
-              reactionPopupContent.appendChild(reactionButton);
-            });
-
-            reactionPopup.appendChild(reactionPopupContent);
-            buttonsDiv.appendChild(reactionPopup);
-
-            buttonsDiv.appendChild(postHeaderUsernameDiv);
-
-            // reaction button
-            const reactionButton = document.createElement('p');
-            reactionButton.id = 'reaction-button';
-            reactionButton.setAttribute('data-type', 'post');
-            reactionButton.setAttribute('data-id', post.id);
-            reactionButton.className = `mainReactionButton reaction-button${post.userReaction ? ' active' : ''}`;
-
-            reactionButton.innerHTML = `${totalReactions > 0 ? `${totalReactions}` : "0"} reacts`;
-
-            reactionButton.onclick = (event) => {
-              event.stopPropagation();
-              const popup = document.getElementById(`reactionPopup-post-${post.id}`);
-              popup.style.display = popup.style.display === 'none' ? 'flex' : 'none';
-            };
-
-            buttonsDiv.appendChild(reactionButton);
-
-            // comment button 
-            const commentButton = document.createElement('p');
-            commentButton.id = 'share-button';
-            commentButton.innerHTML = `${post.comment_count} comments`;
-            commentButton.onclick = (event) => {
-              event.stopPropagation();
-              window.location.href = '/posts/' + post.id;
-            };
-            buttonsDiv.appendChild(commentButton);
-
-            // community button 
-            const communityButton = document.createElement('p');
-            communityButton.id = 'share-button';
-            communityButton.innerHTML = `<span style="color:${post.community_color};">${post.community_shortname}</span>`;
-            communityButton.onclick = (event) => {
-              event.stopPropagation();
-              window.location.href = `/networks/${post.community_shortname}`
-
-            };
-            buttonsDiv.appendChild(communityButton);
-
-            // share button 
-            const shareButton = document.createElement('p');
-            shareButton.id = 'share-button';
-            shareButton.innerHTML = `${post.share_count ? post.share_count : 0} shares`;
-            shareButton.onclick = (event) => {
-              event.stopPropagation();
-              share(post.title, "", `https://getcore.dev/posts/${post.id}`, 'post', post.id);
-            };
-            buttonsDiv.appendChild(shareButton);
-
-
-
-            // tags div 
-            if (post.post_tags) {
-              const tagsDiv = document.createElement('div');
-              tagsDiv.className = 'tags margin-06-bottom secondary-text';
-              post.post_tags.split(',').forEach(tag => {
-                const tagDiv = document.createElement('div');
-                tagDiv.className = 'tag';
-                tagDiv.innerHTML = tag;
-                tagsDiv.appendChild(tagDiv);
-              });
-
-              postContentDiv.appendChild(tagsDiv);
-            }
-
-            postContentDiv.appendChild(buttonsDiv);
-
-
-            const commentsDiv = document.createElement('div');
-            commentsDiv.className = 'comments';
-            commentsDiv.id = `comments-${post.id}`;
-            commentsDiv.style.display = 'none';
-            postCommentsDiv.appendChild(commentsDiv);
-
-
-
-
-            postDiv.appendChild(postContentDiv);
-            postsContainer.appendChild(postCommentsDiv);
-
-            // if user not logged in show a join the website section
-            if (Math.random() < 0.04 &&
-              '<%= user %>' == '') {
-              const joinWebsiteDiv = document.createElement('div');
-              joinWebsiteDiv.className = 'join-website adaptive-border-bottom';
-              joinWebsiteDiv.onclick = () => window.location.href = '/login';
-              joinWebsiteDiv.innerHTML = ` 
-              <div class="join-website-header">
-              <div class="icon"><span class="material-symbols-outlined">person_add</span></div>
-              <div class="title"><a>Join CORE</a></div>
-              </div>
-              <div class="join-website-body">
-              <p class="description">Join CORE to stay updated on the latest posts and discussions.</p>
-              </div>
-              `;
-              postCommentsDiv.appendChild(joinWebsiteDiv);
-            }
-
-            // percent chance to show a join community section below post 
-            if (Math.random() < .04 && '<%= communityId %>' == '') {
-              const joinCommunityDiv = document.createElement('div');
-              joinCommunityDiv.onclick = () => window.location.href = `/networks/${post.community_shortname}`;
-              joinCommunityDiv.className = 'join-community';
-              joinCommunityDiv.innerHTML = ` 
-              <div class="join-community-header">
-              <div class="icon"><span style="color:${post.community_color};" class="material-symbols-outlined">${post.community_icon}</span></div>
-              <div class="job-community-title"><a class="secondary-text sub-text">/${post.community_shortname}</a></div>
-              </div>
-              <div class="join-community-body">
-              <p class="description third-text sub-text">Join the community to stay updated on the latest posts and discussions.</p>
-              </div>
-              `;
-              postCommentsDiv.appendChild(joinCommunityDiv);
+          // Infinite scroll
+          const loadMoreDiv = document.querySelector('.load-more');
+          const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && posts.length > 0) {
+              const nextPage = page + 1;
+              fetchAndDisplayPosts(communityId, sortBy, nextPage);
             }
           });
-          Promise.all(fetchPromises)
-            .then(() => {
-              if (posts.length > 0 && page < totalPages) {
-                const loadMoreDiv = document.createElement('div');
-                loadMoreDiv.className = 'load-more';
-                const loadMoreButton = document.createElement('button');
-                loadMoreButton.className = 'load-more-button';
-                loadMoreButton.id = 'regular-button';
-                loadMoreButton.innerText = 'Load More';
-                loadMoreButton.onclick = () => {
-                  const nextPage = page + 1;
-                  fetchAndDisplayPosts(communityId, sortBy, nextPage);
-                };
-                loadMoreDiv.appendChild(loadMoreButton);
-                postsContainer.appendChild(loadMoreDiv);
-              }
 
-              // Infinite scroll
-              const loadMoreButton = document.querySelector('.load-more-button');
-              const loadMoreDiv = document.querySelector('.load-more');
-              const observer = new IntersectionObserver((entries) => {
-                if (entries[0].isIntersecting && posts.length > 0) {
-                  const nextPage = page + 1;
-                  fetchAndDisplayPosts(communityId, sortBy, nextPage);
-                }
-              });
+          if (loadMoreDiv && posts.length > 0) {
+            observer.observe(loadMoreDiv);
+          }
 
-              if (loadMoreDiv && posts.length > 0) {
-                observer.observe(loadMoreDiv);
-              }
-
-              if (posts.length === 0 && page === 1) {
-                const noPostsDiv = document.createElement('div');
-                noPostsDiv.className = 'no-posts secondary-text';
-                noPostsDiv.innerText = 'No posts to show';
-                postsContainer.appendChild(noPostsDiv);
-              }
-            });
-
-
+          if (posts.length === 0 && page === 1) {
+            const noPostsDiv = document.createElement('div');
+            noPostsDiv.className = 'no-posts secondary-text';
+            noPostsDiv.innerText = 'No posts to show';
+            postsContainer.appendChild(noPostsDiv);
+          }
         })
         .catch(error => console.error('Error fetching posts:', error));
+    }
+
+    function truncateContent(content, maxLength) {
+      if (content.length <= maxLength) return content;
+      return content.substr(0, maxLength) + '...';
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffTime = Math.abs(now - date);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays < 1) return 'Today';
+      if (diffDays === 1) return 'Yesterday';
+      if (diffDays < 7) return `${diffDays} days ago`;
+      if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
+      if (diffDays < 365) return `${Math.ceil(diffDays / 30)} months ago`;
+      return `${Math.ceil(diffDays / 365)} years ago`;
     }
 
     <% if (communityId) {%>

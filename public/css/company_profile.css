@@ -82,7 +82,7 @@ div.company-menu .second-nav-links .navbar-button {
 
 .company-flair {
   display: flex;
-  padding: 0 0.5rem;
+  padding: 0;
   flex-wrap: wrap;
   gap: 10px;
 }
@@ -90,9 +90,10 @@ div.company-menu .second-nav-links .navbar-button {
 .company-flair-item {
   display: flex;
   align-items: center;
+  color: var(--light-mode-third-text-color);
   background-color: var(--light-mode-body-color);
   padding: 5px 10px;
-  border-radius: 15px;
+  border-radius: 7px;
   font-size: 0.9em;
 }
 
@@ -548,6 +549,7 @@ div.jobs-company-header {
   }
 
   .company-flair-item {
+    color: var(--dark-mode-third-text-color);
     background-color: var(--dark-mode-main-color);
   }
 

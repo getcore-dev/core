@@ -11,7 +11,7 @@
   --light-mode-button-hover-color: #BECBDA;
   --light-mode-text-color: #000;
   --light-mode-bold-text-color: #000000;
-  --light-mode-secondary-text-color: #2e2e2e;
+  --light-mode-secondary-text-color: #505050;
   --light-mode-third-text-color: #707070;
   --hover-background-color: #ddd;
   --active-indicator-color: #5083ca;
@@ -1370,8 +1370,8 @@ a>.menu-item {
 
   .nav-text-and-user-btns {
     position: relative;
-    top: 13px;
-    left: 3.4rem;
+    top: 14px;
+    left: 2.6rem;
   }
 
   .notification-popup {
@@ -1683,7 +1683,7 @@ div .material-symbols-outlined:not(:only-child) {
 }
 
 .link {
-  color: var(--active-indicator-color);
+  color: var(--active-indicator-color) !important;
   font-weight: 500;
   text-decoration: none;
 }
@@ -1786,6 +1786,10 @@ em.red {
 
 .v-center {
   align-items: center;
+}
+
+.symbol {
+  color: var(--light-mode-text-color);
 }
 
 .h-center {
@@ -2033,6 +2037,9 @@ em.red {
   transition: transform 0.3s ease, opacity 0.05s ease 0.0125s, visibility 0.3s ease 0.15s;
 }
 
+.flair-bordered {
+  border: 1px solid var(--light-mode-text-color);
+}
 
 .avatar-dropdown-item .material-symbols-outlined {
   padding-left: 0 !important;
@@ -2126,12 +2133,20 @@ details[open] {
     border-color: var(--dark-mode-border-color);
   }
 
+  .symbol {
+    color: var(--dark-mode-text-color);
+  }
+
   .adaptive-border-bottom {
     border-color: var(--dark-mode-border-color);
   }
 
   .adaptive-border {
     border-color: var(--dark-mode-border-color);
+  }
+
+  .flair-bordered {
+    border-color: var(--dark-mode-text-color);
   }
 
   a {
@@ -2264,7 +2279,7 @@ details[open] {
   input[type='datetime-local'],
   input[type='password'],
   input[type='search'] {
-    background-color: var(--dark-mode-input-color);
+    background-color: var(--dark-mode-main-color);
     border-color: 0;
     color: var(--dark-mode-text-color);
   }
