@@ -180,22 +180,6 @@ img.company-logo {
   flex-direction: column;
 }
 
-.experience-level,
-.job-location,
-.expiry-date,
-.posted-date,
-.salary-range {
-  display: inline-block;
-  padding: 3px 5px;
-  margin-bottom: 2px;
-  background-color: #2f2f2f66;
-  border: 1px solid #4949499e;
-  color: white;
-  border-radius: 9px;
-  font-size: .825rem;
-  position: relative;
-}
-
 .job-benefits ul,
 ul.locations {
   padding: 0 14px;
@@ -224,7 +208,7 @@ ul.locations {
 div.similar-jobs-list {
   display: flex;
   flex-wrap: nowrap;
-  /* Prevent wrapping of job elements */
+  padding: 0 1rem;
   flex-direction: column;
 
   -webkit-scrollbar {
@@ -544,6 +528,14 @@ ul.locations,
 .job-details {
   display: flex;
   flex-direction: column;
+}
+
+.job-posting-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: #6b7280;
 }
 
 @media (prefers-color-scheme: dark) {

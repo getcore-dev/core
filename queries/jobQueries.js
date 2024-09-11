@@ -1395,6 +1395,7 @@ ORDER BY jp.postedDate DESC
             jp.experienceLevel,
             jp.salary_max,
             jp.postedDate,
+            jp.location,
             jp.company_id,
             c.name AS company_name, 
             c.logo AS company_logo, 

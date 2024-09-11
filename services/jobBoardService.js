@@ -366,84 +366,23 @@ class JobProcessor extends EventEmitter {
       const page = await browser.newPage();
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
   
-      // Set up request interception once
-      await page.setRequestInterception(true);
-      page.on('request', request => {
-        if (request.resourceType() === 'xhr' || request.resourceType() === 'fetch') {
-          request.continue();
-        } else {
-          request.continue();
-        }
+      const links = await this.handlePagination(page, jobBoardUrl, jobBoardDomain);
+
+      links.forEach(link => {
+        const normalizedNewUrl = this.normalizeUrl(link.url);
+        const existingJob = allJobPostingLinks.find(job =>
+          this.normalizeUrl(job.link) === normalizedNewUrl
+        );
+        
+        allLinks.add({
+          link: link.url,
+          title: link.title,
+          new: !existingJob,
+          techJob: this.isTechJob(link.title),
+          applyType: link.applyType,
+          companyId: companyId
+        });
       });
-  
-      let previousLinksLength = 0;
-          
-      while (true && currentPage <= 5) {
-        const pageUrl = this.getPageUrl(jobBoardUrl, currentPage);
-        console.log(`Scraping page ${currentPage}: ${pageUrl}`);
-          
-        try {
-          await page.goto(pageUrl, { waitUntil: 'networkidle0' });
-        } catch (error) {
-          console.error(`Error navigating to ${pageUrl}:`, error);
-          break;
-        }
-          
-        // Clear previous response listeners
-        page.removeAllListeners('response');
-          
-        const apiResponses = [];
-        page.on('response', async response => {
-          if (response.request().resourceType() === 'xhr' || response.request().resourceType() === 'fetch') {
-            try {
-              const responseBody = await response.json();
-              apiResponses.push(responseBody);
-            } catch (e) {
-              // Not JSON, ignore
-            }
-          }
-        });
-          
-        const pageContent = await page.content();
-        const $ = cheerio.load(pageContent);
-          
-        console.log(`pageUrl: ${pageUrl}`);
-        const pageLinks = await this.fullExtractJobLinks($, pageUrl, jobBoardDomain);
-          
-        // Process API responses
-        for (const apiResponse of apiResponses) {
-          const apiLinks = this.extractJobLinksFromAPI(apiResponse);
-          pageLinks.push(...apiLinks);
-        }
-          
-        pageLinks.forEach(link => {
-          const normalizedNewUrl = this.normalizeUrl(link.url);
-          const existingJob = allJobPostingLinks.find(job =>
-            this.normalizeUrl(job.link) === normalizedNewUrl
-          );
-          
-          allLinks.add({
-            link: link.url,
-            title: link.title,
-            new: !existingJob,
-            techJob: this.isTechJob(link.title),
-            applyType: link.applyType,
-            companyId: companyId
-          });
-        });
-          
-        console.log(`Collected ${pageLinks.length} links from page ${currentPage}`);
-          
-        // Check if the length of links stays the same
-        if (allLinks.size === previousLinksLength) {
-          console.log('No new links found, stopping the scraping process.');
-          break;
-        }
-          
-        previousLinksLength = allLinks.size;
-        currentPage++;
-        await this.delay(this.DELAY_BETWEEN_REQUESTS);
-      }
   
       await browser.close();
   
@@ -1021,6 +960,49 @@ class JobProcessor extends EventEmitter {
     }
   }
 
+  async handlePagination(page, baseUrl, jobBoardDomain) {
+    let hasNextPage = true;
+    let currentPage = 1;
+    const allLinks = new Set();
+  
+    while (hasNextPage && currentPage <= this.MAX_PAGES_PER_SEARCH) {
+      console.log(`Scraping page ${currentPage}: ${baseUrl}`);
+  
+      // Handle URL-based pagination
+      const pageUrl = this.getPageUrl(baseUrl, currentPage);
+      await page.goto(pageUrl, { waitUntil: 'networkidle0' });
+  
+      // Extract links from the current page
+      const pageLinks = await this.fullExtractJobLinks(await page.content(), pageUrl, jobBoardDomain);
+      pageLinks.forEach(link => allLinks.add(link));
+  
+      // Check for "Load More" button
+      const loadMoreButton = await page.$('button:contains("Load More"), button:contains("Show More")');
+      if (loadMoreButton) {
+        await loadMoreButton.click();
+        await page.waitForNavigation({ waitUntil: 'networkidle0' });
+      } else {
+        // Check for traditional pagination
+        const nextPageButton = await page.$('a:contains("Next"), a:contains("»"), .pagination .next a');
+        if (nextPageButton) {
+          await nextPageButton.click();
+          await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        } else {
+          hasNextPage = false;
+        }
+      }
+  
+      // If no new links were found, stop pagination
+      if (allLinks.size === pageLinks.length) {
+        hasNextPage = false;
+      }
+  
+      currentPage++;
+      await this.delay(this.DELAY_BETWEEN_REQUESTS);
+    }
+  
+    return Array.from(allLinks);
+  }
 
   async processJobLink(link) {
     const url = typeof link === 'object' && link.url ? link.url : link;
@@ -1969,9 +1951,9 @@ class JobProcessor extends EventEmitter {
 
     await this.init();
 
-    await this.verifyAndUpdateCompanyData();
+    //await this.verifyAndUpdateCompanyData();
 
-    await this.removeDuplicateJobs();
+    //await this.removeDuplicateJobs();
     this.updateProgress({ phase: 'Cleaning job postings' });
 
     const companies = await jobQueries.getCompanies();

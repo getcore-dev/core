@@ -118,8 +118,8 @@ router.get('/job-postings', async (req, res) => {
     const jobPostings = await jobQueries.getJobs();
     res.json(jobPostings);
   } catch (err) {
-    console.error('Error fetching job postings:', err);
-    res.status(500).send('Error fetching job postings');
+    console.error(`Error fetching job postings in /job-postings: ${err}`);
+    res.status(500).send('Error fetching job postings in /job-postings');
   }
 });
 
@@ -433,8 +433,8 @@ router.get('/community/:communityId/jobs', async (req, res) => {
       totalPages: Math.ceil(allJobs.length / limit),
     });
   } catch (err) {
-    console.error('Error fetching job postings:', err);
-    res.status(500).send('Error fetching job postings');
+    console.error('Error fetching job postings in /community/:communityId/jobs:', err);
+    res.status(500).send('Error fetching job postings in /community/:communityId/jobs');
   }
 });
 
@@ -494,7 +494,7 @@ router.get('/randomJobs', cacheMiddleware(600), async (req, res) => {
       jobPostings,
     });
   } catch (err) {
-    console.error('Error fetching job postings:', err);
+    console.error('Error fetching job postings in /randomJobs:', err);
     res.status(500).send('Error fetching job postings');
   }
 });

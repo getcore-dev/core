@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>CORE - <%= company.name %></title>
   <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/jobs.css" />
   <link rel="stylesheet" href="/css/company_profile.css" />
   <link rel="shortcut icon" href="/img/core.png" />
 
@@ -45,7 +46,7 @@
             <img class="thumbnail thumbnail-tiny thumbnail-regular" src="<%= company.logo %>" alt="" />
             <% } %>
           </div>
-          <div class="company-info">
+          <div class="company-posting-info">
             <span class="company-name main-text bold"><%= company.name %></span>
           </div>
           <% if (user && user.isAdmin) { %>

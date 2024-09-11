@@ -426,6 +426,7 @@ div.job-title-location .sub-text {
 
 .location-badge {
   font-size: 0.75rem;
+  font-weight: 600;
   color: #bc3737;
   background-color: #df919142;
   border: 1px solid #ce2e2e57;
@@ -438,22 +439,10 @@ div.job-title-location .sub-text {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.55rem;
   align-items: center;
 }
 
-.text-tag {
-  font-size: 0.75rem;
-  background-color: #f3f4f6;
-  color: #374151;
-  padding: 0.25rem 0.5rem;
-  border-radius: 7px;
-}
-
-.green-text-tag {
-  background-color: #d1fae5;
-  color: #065f46;
-}
 
 .remaining-tags {
   font-size: 0.75rem;
@@ -851,8 +840,7 @@ select {
 }
 
 .job-posting-flairs,
-div.job-skills,
-div.job-skills-display {
+div.job-skills {
   display: flex;
   font-size: var(--mobile-default-font-size);
   flex-direction: row;
@@ -864,10 +852,17 @@ div.job-skills-display {
   overflow-x: auto;
 }
 
-div.job-skills-display {
-  padding: 0 1rem;
+.job-skills-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.55rem;
+  align-items: center;
 }
 
+.job-skills-display .see-more {
+  margin: 0;
+}
 
 .job-posting-flairs .job-flair {
   margin: 0;
@@ -1007,11 +1002,6 @@ div .material-symbols-outlined:not(:only-child) {
     border-color: var(--dark-mode-border-color) !important;
   }
 
-  .text-tag {
-    background-color: var(--dark-mode-main-color);
-    color: var(--dark-mode-text-color);
-  }
-
   .job-search-results {
     background: var(--dark-mode-main-color);
   }
@@ -1113,17 +1103,25 @@ div .material-symbols-outlined:not(:only-child) {
     gap: .5rem;
   }
 
-  div.jobs-container>div.job-list>.job {
+.job {
+    display: flex;
+    align-items: center;
+    background: var(--light-mode-main-color);
+    flex-direction: row;
+    justify-content: space-between;
+    position: relative;
+    height: auto;
+    flex: 0 1 auto;
+    transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+    overflow-y: none;
     margin: 0;
     width: 100%;
-    padding: 0.7rem 0;
-    border-radius: 0;
-    border: 0;
-    margin-bottom: .9rem;
+    padding: 0.4rem 0 !important;
+    margin-bottom: .9rem !important;
     border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    border-radius: 10px !important;
+    padding-left: .7rem !important;
+    padding-right: .7rem !important;
     box-sizing: border-box;
   }
 

@@ -374,7 +374,7 @@
               <h2 class="main-text bold">${post.title}</h2>
               <p class="mini-text third-text">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username}</p>
             </div>
-            <div class="text-sm bg-gray-100 text-gray-800 py-1 px-2 rounded" style="line-height:0;font-size:12px;color:${networkIconColor};background:${networkIconColor}26;border:1px solid ${networkIconColor}9e;">
+            <div class="text-sm bg-gray-100 text-gray-800 py-1 px-2 rounded" style="font-weight:500;line-height:0;font-size:12px;color:${networkIconColor};background:${networkIconColor}26;border:1px solid ${networkIconColor}9e;">
                             <span class="material-symbols-outlined" style="font-size: 1rem;">
                             ${post.community_icon.toUpperCase()}
                             </span>
@@ -396,7 +396,7 @@ ${post.post_tags ? `
   </div>
 ` : ''}
           <p class="description mb-2">${truncateContent(post.content, 150)}</p>
-          <div class="flex items-center text-sm text-gray-500 justify-between">
+          <div class="flex post-flairs-container text-sm text-gray-500 justify-between">
             <div class="flex items-center space-x-4">
               <span class="flex items-center">
                 <span class="material-symbols-outlined" style="font-size: 1rem;">person</span>

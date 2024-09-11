@@ -91,10 +91,11 @@ div.posts {
 }
 
 .tag-search-menu {
-    background: var(--light-mode-body-color);
+    background: var(--light-mode-main-color);
     border-bottom: 1px solid var(--border-color);
     border-radius: 0;
     padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
     padding-bottom: 0;
 }
 
@@ -119,25 +120,6 @@ div.votes {
     font-size: .9rem;
 }
 
-.job {
-    background: none !important;
-    border: 0 !important;
-    padding: 0 1rem !important;
-    border-bottom: 1px solid var(--border-color) !important;
-}
-
-
-.jobs {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    /* Ensures the container takes up 100% of the available width */
-    box-sizing: border-box;
-    /* Includes padding and border in the element's total width and height */
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    padding: 0 13px;
-}
 
 .jobs>div {
     width: 100%;
@@ -146,9 +128,8 @@ div.votes {
     /* Includes padding and border in the element's total width and height */
 }
 
-
-.job .job-preview {
-    padding: .65rem .95rem;
+div.jobs {
+    margin: 0 1rem;
 }
 
 
@@ -162,19 +143,18 @@ div.votes {
         background: var(--dark-mode-hover-color);
     }
 
-    .post,
-    .job {
+    .post {
         background: var(--dark-mode-main-color);
         border-color: var(--dark-mode-border-color) !important;
-    }
 
-    .tag-search-menu {
-        background: var(--dark-mode-main-color);
-        border-bottom: 1px solid var(--dark-mode-border-color);
-    }
 
-    .post:hover {
-        background: var(--dark-mode-hover-color);
-    }
+        .tag-search-menu {
+            background: var(--dark-mode-body-color);
+            border-bottom: 1px solid var(--dark-mode-border-color);
+        }
 
-}
+        .post:hover {
+            background: var(--dark-mode-hover-color);
+        }
+
+    }

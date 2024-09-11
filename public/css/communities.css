@@ -206,6 +206,7 @@ div.vote-interactions {
 
 .post .flex {
   display: flex;
+  align-items: center;
 }
 
 .post .items-start {
@@ -494,7 +495,7 @@ div.vote-interactions {
   display: flex;
   flex-direction: row;
   font-weight: 500;
-  gap: 8px;
+  gap: 1rem;
   align-items: center;
 }
 
@@ -825,7 +826,7 @@ div.community {
   border: 1px solid var(--border-color);
   margin: 1.4rem;
   border-radius: 10px;
-  background-color: var(--light-mode-body-color);
+  background-color: var(--light-mode-main-color);
 }
 
 .community-header {
@@ -1113,6 +1114,10 @@ div.join-website-body {
   color: white;
 }
 
+.post-flairs-container {
+  align-items: center;
+}
+
 .job-title {
   display: flex;
   flex-direction: row;
@@ -1279,7 +1284,7 @@ button.see-more {
     padding: .65rem 1rem;
     box-sizing: border-box;
     padding-bottom: 0;
-    background-color: var(--light-mode-body-color);
+    background-color: var(--light-mode-main-color);
   }
 
   .see-more {
@@ -1503,7 +1508,7 @@ button.see-more {
     background-color: var(--light-mode-main-color);
     border-radius: 7px;
     margin: .4rem 1rem;
-    padding: .85rem 1rem;
+    padding: .65rem .7rem;
     border: 1px solid var(--border-color);
     max-width: 100%;
   }
@@ -1730,7 +1735,7 @@ button.see-more {
   }
 
   div.community {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-body-color);
     border-color: var(--dark-mode-border-color);
   }
 
@@ -1922,6 +1927,7 @@ button.see-more {
   .post-date {
     color: var(--dark-mode-secondary-text-color);
   }
+
   .post-tag {
     background-color: var(--dark-mode-main-color);
     color: var(--dark-mode-text-color);

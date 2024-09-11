@@ -98,7 +98,7 @@
               Openings
             </div>
           </a>
-          <details>
+          <details open>
             <summary>
               <a class="<%= isActive('/networks') ? 'active' : '' %>">
 
@@ -622,7 +622,6 @@
       }
     } catch (error) {
       console.error('Error sharing content:', error);
-      alert('Failed to share content. Please try again.');
     }
   }
 
@@ -726,57 +725,57 @@
   }
 
   const stateMappings = {
-    Alabama: 'AL',
-    Alaska: 'AK',
-    Arizona: 'AZ',
-    Arkansas: 'AR',
-    California: 'CA',
-    Colorado: 'CO',
-    Connecticut: 'CT',
-    Delaware: 'DE',
-    Florida: 'FL',
-    Georgia: 'GA',
-    Hawaii: 'HI',
-    Idaho: 'ID',
-    Illinois: 'IL',
-    Indiana: 'IN',
-    Iowa: 'IA',
-    Kansas: 'KS',
-    Kentucky: 'KY',
-    Louisiana: 'LA',
-    Maine: 'ME',
-    Maryland: 'MD',
-    Massachusetts: 'MA',
-    Michigan: 'MI',
-    Minnesota: 'MN',
-    Mississippi: 'MS',
-    Missouri: 'MO',
-    Montana: 'MT',
-    Nebraska: 'NE',
-    Nevada: 'NV',
+    'Alabama': 'AL',
+    'Alaska': 'AK',
+    'Arizona': 'AZ',
+    'Arkansas': 'AR',
+    'California': 'CA',
+    'Colorado': 'CO',
+    'Connecticut': 'CT',
+    'Delaware': 'DE',
+    'Florida': 'FL',
+    'Georgia': 'GA',
+    'Hawaii': 'HI',
+    'Idaho': 'ID',
+    'Illinois': 'IL',
+    'Indiana': 'IN',
+    'Iowa': 'IA',
+    'Kansas': 'KS',
+    'Kentucky': 'KY',
+    'Louisiana': 'LA',
+    'Maine': 'ME',
+    'Maryland': 'MD',
+    'Massachusetts': 'MA',
+    'Michigan': 'MI',
+    'Minnesota': 'MN',
+    'Mississippi': 'MS',
+    'Missouri': 'MO',
+    'Montana': 'MT',
+    'Nebraska': 'NE',
+    'Nevada': 'NV',
     'New Hampshire': 'NH',
     'New Jersey': 'NJ',
     'New Mexico': 'NM',
     'New York': 'NY',
     'North Carolina': 'NC',
     'North Dakota': 'ND',
-    Ohio: 'OH',
-    Oklahoma: 'OK',
-    Oregon: 'OR',
-    Pennsylvania: 'PA',
+    'Ohio': 'OH',
+    'Oklahoma': 'OK',
+    'Oregon': 'OR',
+    'Pennsylvania': 'PA',
     'Rhode Island': 'RI',
     'South Carolina': 'SC',
     'South Dakota': 'SD',
-    Tennessee: 'TN',
-    Texas: 'TX',
-    Utah: 'UT',
-    Vermont: 'VT',
-    Virginia: 'VA',
-    Washington: 'WA',
+    'Tennessee': 'TN',
+    'Texas': 'TX',
+    'Utah': 'UT',
+    'Vermont': 'VT',
+    'Virginia': 'VA',
+    'Washington': 'WA',
     'West Virginia': 'WV',
-    Wisconsin: 'WI',
-    Wyoming: 'WY',
-    'United States': 'US',
+    'Wisconsin': 'WI',
+    'Wyoming': 'WY',
+    'District of Columbia': 'DC',
   };
 
   const countryMappings = {
@@ -942,7 +941,9 @@
   };
 
   function formatLocation(location) {
-    if (!location) return "";
+    if (location === 'N/A') {
+      return 'Remote';
+    }
 
     const parts = location.split(',').map(part => part.trim());
 
@@ -961,23 +962,75 @@
       return fullName ? countryMappings[fullName] : country;
     };
 
-    if (parts.length === 1) {
-      return getCountryAbbr(parts[0]);
-    } else if (parts.length === 2) {
-      if (isUSState(parts[1])) {
-        return getStateAbbr(parts[1]);
+    // Helper function to format a single location
+    const formatSingleLocation = (city, state, country) => {
+      const isRemote = (city.toLowerCase() === 'remote' || city.toLowerCase() === 'n/a');
+
+      if (country && country !== 'N/A') {
+        const countryAbbr = getCountryAbbr(country);
+        if (countryAbbr.toLowerCase() === 'usa' || country.toLowerCase() === 'united states' || country.toLowerCase() === 'us') {
+          if (isRemote) {
+            return `Remote, USA`;
+          } else {
+            return `${city !== 'N/A' ? city + ', ' : ''}${state !== 'N/A' ? getStateAbbr(state) : 'USA'}`;
+          }
+        } else {
+          if (isRemote) {
+            return `Remote, ${countryAbbr}`;
+          } else {
+            return `${city !== 'N/A' ? city : ''}${state !== 'N/A' && state !== city ? '/' + getStateAbbr(state) : ''}, ${countryAbbr}`;
+          }
+        }
+      } else if (state && state !== 'N/A') {
+        return `${isRemote ? 'Remote, ' : ''}${isUSState(state) ? getStateAbbr(state) : state}`;
+      } else if (city && city !== 'N/A') {
+        return city;
       } else {
-        return getCountryAbbr(parts[1]);
+        return 'Remote';
       }
-    } else if (parts.length >= 3) {
-      if (parts[2].trim().toLowerCase() === 'united states') {
-        return getStateAbbr(parts[1]);
-      } else {
-        return getCountryAbbr(parts[2]);
-      }
+    };
+
+    // Process multiple locations
+    const locations = [];
+    for (let i = 0; i < parts.length; i += 3) {
+      const city = parts[i];
+      const state = parts[i + 1] || '';
+      const country = parts[i + 2] || '';
+
+      locations.push(formatSingleLocation(city, state, country));
     }
 
-    return location.trim();
+    return locations.join('; ');
+  }
+
+  function formatSalary(salary) {
+    if (!salary) return "";
+    return salary >= 1000 ? (salary / 1000).toFixed(0) + "k" : salary.toString();
+  }
+
+  function getFormattedSalary(salary, salaryMax) {
+    if (salary && salaryMax) {
+      const average = Math.round((salary + salaryMax) / 2);
+      return `${formatSalary(average)}`;
+    } else if (salary) {
+      return formatSalary(salary);
+    }
+    return "";
+  }
+
+  function formatDateColor(dateString) {
+    const now = new Date();
+    const postedDate = new Date(dateString);
+    // if within 2 weeks, green, if within 2 months, yellow, if older, red
+    const diffTime = Math.abs(now - postedDate);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    if (diffDays <= 14) {
+      return 'green';
+    } else if (diffDays <= 60) {
+      return 'yellow';
+    } else {
+      return 'red';
+    }
   }
 
   function getAllCommunities() {
@@ -991,7 +1044,7 @@
         let containerClassName;
         if (isMobile) {
           containerClassName = '.mobile-communities-container';
-          console.log(containerClassName);
+
         } else {
           containerClassName = '.communities-container';
         }
@@ -1000,6 +1053,18 @@
 
         if (communitiesContainer) {
           communitiesContainer.innerHTML = ''; // Clear existing communities
+          // add a public networks label
+          const publicNetworksLabel = document.createElement('div');
+          publicNetworksLabel.className = 'public-networks-label flex flex-row v-center';
+          publicNetworksLabel.innerHTML = `
+            <span class="material-symbols-outlined" style="font-size: 1rem;color: var(--active-indicator-color);">
+              public
+            </span>
+            <div class="community-name secondary-text mini-text">
+              <p class="community-text" style="color: inherit;">Public Networks</p>
+            </div>
+          `;
+          communitiesContainer.appendChild(publicNetworksLabel);
           communities.forEach(community => {
             if (community.is_member) {
 
@@ -1017,7 +1082,7 @@
                   ${community.mini_icon}
                 </span>
                 <div class="community-name">
-                  <p class="community-text" style="color: inherit;">${isMobile ? community.shortname : community.name}</p>
+                  <p class="community-text" style="color: inherit;">${isMobile ? community.name : community.name}</p>
                 </div>
               `;
 
@@ -1042,7 +1107,7 @@
                   ${community.mini_icon}
                 </span>
                 <div class="community-name">
-                  <p class="community-text" style="color: inherit;">${isMobile ? community.shortname : community.name}</p>
+                  <p class="community-text" style="color: inherit;">${isMobile ? community.name : community.name}</p>
                 </div>
               `;
 

@@ -68,10 +68,6 @@ div.votes {
     }
     
 
-    .job .job-preview {
-        padding: .65rem .95rem;
-    }
-
 
 .job:hover, .post:hover {
     background: var(--light-mode-hover-color);

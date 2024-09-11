@@ -550,74 +550,6 @@ function formatRelativeDate(dateString) {
   }
 }
 
-function formatLocation(location) {
-  if (!location) return "";
-
-  const parts = location.split(',').map(part => part.trim());
-
-  // Helper function to check if a string is a US state
-  const isUSState = (str) => Object.keys(stateMappings).includes(str) || Object.values(stateMappings).includes(str);
-
-  // Helper function to get state abbreviation
-  const getStateAbbr = (state) => {
-    const fullName = Object.keys(stateMappings).find(key => key.toLowerCase() === state.toLowerCase());
-    return fullName ? stateMappings[fullName] : state;
-  };
-
-  // Helper function to get country abbreviation
-  const getCountryAbbr = (country) => {
-    const fullName = Object.keys(countryMappings).find(key => key.toLowerCase() === country.toLowerCase());
-    return fullName ? countryMappings[fullName] : country;
-  };
-
-  if (parts.length === 1) {
-    return getCountryAbbr(parts[0]);
-  } else if (parts.length === 2) {
-    if (isUSState(parts[1])) {
-      return getStateAbbr(parts[1]);
-    } else {
-      return getCountryAbbr(parts[1]);
-    }
-  } else if (parts.length >= 3) {
-    if (parts[2].trim().toLowerCase() === 'united states') {
-      return getStateAbbr(parts[1]);
-    } else {
-      return getCountryAbbr(parts[2]);
-    }
-  }
-
-  return location.trim();
-}
-
-function formatSalary(salary) {
-  if (!salary) return "";
-  return salary >= 1000 ? (salary / 1000).toFixed(0) + "k" : salary.toString();
-}
-
-function getFormattedSalary(salary, salaryMax) {
-  if (salary && salaryMax) {
-    const average = Math.round((salary + salaryMax) / 2);
-    return `${formatSalary(average)}`;
-  } else if (salary) {
-    return formatSalary(salary);
-  }
-  return "";
-}
-
-function formatDateColor(dateString) {
-  const now = new Date();
-  const postedDate = new Date(dateString); 
-  // if within 2 weeks, green, if within 2 months, yellow, if older, red
-  const diffTime = Math.abs(now - postedDate);
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  if (diffDays <= 14) {
-    return 'green';
-  } else if (diffDays <= 60) {
-    return 'yellow';
-  } else {
-    return 'red';
-  }
-}
 
 function saveStateToLocalStorage() {
   const stateToSave = {
@@ -771,12 +703,12 @@ jobElement.innerHTML = `
       : ''
   }
       <div class="flex flex-col">
-        <h3 class="job-title">${job.title}</h3>
-        <a class="company-name" href="/jobs/company/${job.company_name}">${job.company_name}</a>
+        <a href="/jobs/${job.id}"><h3 class="job-title main-text">${job.title}</h3></a>
+        <p class="company-name">${job.company_name}</p>
       </div>
       </div>
       <div class="location-badge">
-        📍 ${formatLocation(job.location).trim()}
+        📍 ${formatLocation(job.location).trim().substring(0, 25)}
       </div>
     </div>
     <div class="job-tags">

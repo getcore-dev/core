@@ -90,85 +90,34 @@ function formatSalary(salary) {
   }
 }
 
+
 async function getSimilarJobs(jobId) {
-  fetch(`/api/jobs/${jobId}/similar`)
-    .then((response) => response.json())
-    .then((jobs) => {
-      const similarJobsContainer = document.querySelector('.similar-jobs');
-      const similarJobsCount = document.querySelector('.related-jobs-count');
-      similarJobsCount.innerHTML = `${jobs.length}`;
+  try {
+    const response = await fetch(`/api/jobs/${jobId}/similar`);
+    const jobs = await response.json();
 
-      if (jobs.length === 0) {
-        similarJobsContainer.innerHTML = '';
-        return;
-      }
-      similarJobsContainer.innerHTML = `
-        <h4 class="secondary-text">Related Jobs</h4>
-        <div class="similar-jobs-list">
-          ${jobs
-    .map((job) => {
-      const tagsArray =
-                job.skills && job.skills ? job.skills.split(', ') : [];
-      const maxTags = 3;
-      const displayedTags = tagsArray.slice(0, maxTags);
-      const tagsHTML = displayedTags.map((tag) => `${tag}`).join(', ');
+    const similarJobsContainer = document.querySelector('.similar-jobs');
+    const similarJobsCount = document.querySelector('.related-jobs-count');
+    similarJobsCount.innerHTML = `${jobs.length}`;
 
-      return `
-            <div class="similar-job" onclick="window.location.href='/jobs/${
-  job.id
-}'">
-              ${
-  job.company_logo
-    ? `
-              <img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="${job.company_name} logo" />`
-    : ''
-}
-    <div class="job-content">
-              <div class="company-info">
-              <div class="job-posting-company-info">
-              <p  class="posting-company-name secondary-text">${
-  job.company_name
-}</p>
-              </div>
-            </div>
-                          <h3 class="company-name sub-text bold"><a href="/jobs/${job.id}">${
-  job.title
-} </a> </h3>
-                <div class="job-tags mini-text secondary-text margin-03-bottom">
-                  ${tagsHTML}
-                </div>
-                <div class="job-posting-information job-subtitle mini-text third-text">
-                                                <span class="job-date ${formatDateColor(job.postedDate)}"><time>${formatRelativeDate(job.postedDate)}</time></span>
-                <span> • </span>
+    if (jobs.length === 0) {
+      similarJobsContainer.innerHTML = '';
+      return;
+    }
 
-                <span style="">${
-  job.experienceLevel === 'Mid Level'
-    ? 'L3/L4'
-    : job.experienceLevel === 'Entry Level'
-      ? 'L1/L2'
-      : job.experienceLevel === 'Senior'
-        ? 'L5/L6'
-        : job.experienceLevel
-}</span>
-                <span> • </span>
-                <span class="job-salary" style="margin-left: auto;">${
-  job.salary ? 'USD $' + job.salary.toLocaleString() : ''
-} ${
-  (job.salary_max != 0 && job.salary) ? '- $' + job.salary_max.toLocaleString() : ''
-}</span>
+    similarJobsContainer.innerHTML = '<h4 class="secondary-text">Related Jobs</h4>';
+    const similarJobsList = document.createElement('div');
+    similarJobsList.className = 'similar-jobs-list';
 
-        </div>
-            </div>
-            </div>
-          `;
-    })
-    .join('')}
-        </div>
-      `;
-    })
-    .catch((error) => {
-      console.error('Error fetching similar jobs:', error);
+    jobs.forEach((job) => {
+      const jobElement = createJobElement(job);
+      similarJobsList.appendChild(jobElement);
     });
+
+    similarJobsContainer.appendChild(similarJobsList);
+  } catch (error) {
+    console.error('Error fetching similar jobs:', error);
+  }
 }
 
 function formatRelativeDate(dateString) {
@@ -193,60 +142,72 @@ function formatRelativeDate(dateString) {
   }
 }
 
-async function getSimilarJobsByCompany(jobId, companyName) {
-  fetch(`/api/jobs/${jobId}/similar-company`)
-    .then((response) => response.json())
-    .then((jobs) => {
-      const similarJobsContainer = document.querySelector(
-        '.similar-company-jobs'
-      );
-      const similarCompanyJobsCount = document.querySelector('.related-jobs-company-count');
-      similarCompanyJobsCount.innerHTML = `${jobs.length}`;
-      if (jobs.length === 0) {
-        similarJobsContainer.innerHTML = '<div class="empty-text">No jobs found at this company.</div>';
-        return;
-      }
-      similarJobsContainer.innerHTML = `
-        <h4 class="secondary-text">More jobs at ${companyName}</h4>
-        <div class="similar-jobs-list">
-          ${jobs
-    .map((job) => {
-      const tagsArray = job.skills
-        ? job.skills.split(',').map(skill => skill.trim())
-        : [];
-      const maxTags = 3;
-      const displayedTags = tagsArray.slice(0, maxTags);
-      const tagsHTML = displayedTags.map((tag) => `${tag}`).join(', ');
+function createJobElement(job) {
+  const jobElement = document.createElement('div');
+  jobElement.classList.add('job');
+  jobElement.onclick = () => (window.location.href = `/jobs/${job.id}`);
 
+  const tagsArray = job.skills ?
+    job.skills.split(',').map(skill => skill.trim().toLowerCase()) : [];
+
+  const sortedTags = tagsArray.sort((a, b) => {
+    return a.localeCompare(b, undefined, {
+      sensitivity: 'base'
+    });
+  });
+  const displayedTags = sortedTags.slice(0, 3);
+
+  let tagsHTML = displayedTags
+    .map((skill) => {
       return `
-            <div class="similar-job" onclick="window.location.href='/jobs/${
-  job.id
-}'">
-              ${
+            <span data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="mini-text bold text-tag">${skill}</span>`;
+    })
+    .join('');
+
+  const remainingTagsCount = sortedTags.length - 3;
+  if (remainingTagsCount > 0) {
+    tagsHTML += `
+          <span class="remaining-tags mini-text" style="cursor: pointer;" onclick="toggleHiddenTags()">
+            +${remainingTagsCount} more
+          </span>
+        `;
+  }
+
+
+  jobElement.innerHTML = `
+  <div class="job-preview">
+    <div class="job-info">
+      <div class="job-header gap-03">
+      <div class="flex flex-row gap-06">
+        ${
   job.company_logo
-    ? `
-              <img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="${job.company_name} logo" />`
+    ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="${job.company_name}" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
     : ''
 }
-    <div class="job-content">
-              <div class="company-info">
-              <div class="job-posting-company-info">
-              <p  class="posting-company-name secondary-text">${
-  job.company_name
-}</p>
-              </div>
-            </div>
-                          <h3 class="company-name sub-text bold"><a href="/jobs/${job.id}">${
-  job.title
-} </a> </h3>
-                <div class="job-tags mini-text secondary-text margin-03-bottom">
-                  ${tagsHTML}
-                </div>
-                <div class="job-posting-information job-subtitle mini-text third-text">
-                                                <span class="job-date ${formatDateColor(job.postedDate)}"><time>${formatRelativeDate(job.postedDate)}</time></span>
-                <span> • </span>
-
-                <span style="">${
+    <div class="flex flex-col">
+      <a href="/jobs/${job.id}"><h3 class="job-title main-text">${job.title}</h3></a>
+      <p class="company-name">${job.company_name}</p>
+    </div>
+    </div>
+    <div class="location-badge">
+      📍 ${formatLocation(job.location).trim().substring(0, 20)}
+          </div>
+  </div>
+  <div class="job-tags">
+    ${tagsHTML}
+  </div>
+  <div class="job-posting-details">
+    <span class="job-posting-detail applicants">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      ${job.applicants ? `${job.applicants} applicants` : '0 applicants'}
+    </span>
+    <span class="job-posting-detail post-date">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+      <time>${formatRelativeDate(job.postedDate)}</time>
+    </span>
+    <span class="job-posting-detail experience-level">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+      ${
   job.experienceLevel === 'Mid Level'
     ? 'L3/L4'
     : job.experienceLevel === 'Entry Level'
@@ -254,26 +215,47 @@ async function getSimilarJobsByCompany(jobId, companyName) {
       : job.experienceLevel === 'Senior'
         ? 'L5/L6'
         : job.experienceLevel
-}</span>
-                <span> • </span>
-                <span class="job-salary" style="margin-left: auto;">${
-  job.salary ? 'USD $' + job.salary.toLocaleString() : ''
-} ${
-  (job.salary_max != 0 && job.salary) ? '- $' + job.salary_max.toLocaleString() : ''
-}</span>
+}
+    </span>
+    ${job.salary || job.salary_max ? `
+      <span class="job-posting-detail salary">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+        ${formatSalary(job.salary)} - ${formatSalary(job.salary_max)}/yr
+      </span>
+  ` : ''}
+        </div>
+      </div>
+    </div>
+    `;
+  return jobElement;
+}
+async function getSimilarJobsByCompany(jobId) {
+  try {
+    const response = await fetch(`/api/jobs/${jobId}/similar-company`);
+    const jobs = await response.json();
 
-        </div>
-            </div>
-            </div>
-          `;
-    })
-    .join('')}
-        </div>
-      `;
-    })
-    .catch((error) => {
-      console.error('Error fetching similar jobs:', error);
+    const similarJobsContainer = document.querySelector('.similar-company-jobs');
+    const similarJobsCount = document.querySelector('.related-jobs-company-count');
+    similarJobsCount.innerHTML = `${jobs.length}`;
+
+    if (jobs.length === 0) {
+      similarJobsContainer.innerHTML = '<div class="empty-text">No similar jobs found.</div>';
+      return;
+    }
+
+    similarJobsContainer.innerHTML = '<h4 class="secondary-text">Related Jobs</h4>';
+    const similarJobsList = document.createElement('div');
+    similarJobsList.className = 'similar-jobs-list';
+
+    jobs.forEach((job) => {
+      const jobElement = createJobElement(job);
+      similarJobsList.appendChild(jobElement);
     });
+
+    similarJobsContainer.appendChild(similarJobsList);
+  } catch (error) {
+    console.error('Error fetching similar jobs:', error);
+  }
 }
 
 function formatDateColor(dateString) {
@@ -354,15 +336,15 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         .map((benefit) => `<li>${benefit.replace(/'/g, '')}</li>`)
         .join('');
 
-      const maxTags = 15;
-      const maxSkills = 15;
+      const maxTags = 6;
+      const maxSkills = 6;
       const displayedTags = tagsArray.slice(0, maxTags);
       const displayedSkills = skillsArray.slice(0, maxSkills);
 
       const tagsHTML = displayedTags
         .map(
           (tag) =>
-            `<a class="tag green-tag" href="/tags/${tag}">${tag}</a>`
+            `<a class="mini-text bold text-tag" href="/skills/${encodeURIComponent(tag.trim())}">${tag}</a>`
         )
         .join('');
       const skillsHTML = displayedSkills
@@ -386,57 +368,68 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       jobDetailsContainer.innerHTML = `
         <div class="job-listing">
         <div class="job-listing-menu adaptive-border-bottom">
-  ${
+      ${
   isOlderThan30Days(job)
     ? `<div class="caution-messages">This job was posted more than 30 days ago. Apply anyway <a class="link" href="${job.link}">here</a></div>`
     : ''
 }
 
-  <div class="company-info margin-03-bottom">
-    ${
+      <div class="company-info margin-03-bottom">
+        ${
   job.company_logo
     ? `
           <img src="${job.company_logo}" style="width: auto;" alt="${job.company_name} logo" onerror="this.onerror=null;this.src='/img/glyph.png';" class="thumbnail thumbnail-tiny thumbnail-regular" />
         `
     : ''
 }
-    <div class="company-details">
+        <div class="company-details">
       <div class="company-information">
         <a class="secondary-text bold link sub-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
-        ${job.company_size ? `<span class="mini-text third-text">${job.company_size} employees</span>` : ''}
+        ${job.company_location ? `<span class="mini-text third-text">${job.company_location}</span>` : ''}
       </div>
-    </div>
-  </div>
+        </div>
+      </div>
 
-  <h3 class="company-name main-text margin-03-bottom">
-    ${job.title}
-  </h3>
-<div class="job-info-flairs margin-1-bottom">
-  <p class="job-detail">
-    🧑‍💻 ${job.experienceLevel}
-  </p>
-  <p class="job-detail"> 
-    📍 ${job.location}
-  </p>
-  ${job.salary !== 0 ? `
-    <p class="job-detail">
+      <h3 class="company-name main-text margin-03-bottom">
+        ${job.title}
+      </h3>
+    <div class="job-info-flairs margin-06-bottom">
+      <p class="job-detail">
+        🧑‍💻 ${job.experienceLevel}
+      </p>
+      <p class="job-detail"> 
+        📍 ${job.location === 'N/A' ? 'Remote' : job.location}
+      </p>
+      ${job.salary !== 0 ? `
+        <p class="job-detail">
       💰 USD $${formatSalary(job.salary)}
       ${job.salary_max !== 0 ? `- $${formatSalary(job.salary_max)}` : ''}
       ${!job.location.toLowerCase().includes('us') && 
         !job.location.toLowerCase().includes('united states') 
     ? '<span class="currency-warning"> (currency may not be in USD)</span>' 
     : ''}
-    </p>
-  ` : ''}
-</div>
-  
-  <div class="interact-buttons margin-06-bottom">
-    ${
+        </p>
+      ` : ''}
+    </div>
+
+        <div class="job-skills-display">
+
+          ${tagsHTML}
+          ${
+  remainingTags > 0
+    ? `<span class="see-more" id="secondary-text">+${remainingTags} more</span>`
+    : ''
+}
+
+        </div>
+      
+      <div class="interact-buttons margin-06-bottom">
+        ${
   !isOlderThan30Days(job)
     ? `<div class="apply-button-container flex">
-            <button id="submit-button-normal" class="margin-h-auto grow-button" onclick="applyForJob(event, '${job.id}', '${job.link}')">
-              <span class="material-symbols-outlined">open_in_new</span><span>Apply </span><span class="number-display">
-              ${job.applicants ? job.applicants : 0}
+        <button id="submit-button-normal" class="margin-h-auto grow-button" onclick="applyForJob(event, '${job.id}', '${job.link}')">
+          <span class="material-symbols-outlined">open_in_new</span><span>Apply </span><span class="number-display">
+          ${job.applicants ? job.applicants : 0}
               </span>
             </button>
           </div>`
@@ -502,7 +495,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
             <div class="job-posting-recruiter">
             <h4 class="mini-text bold" style="margin-bottom: 0.8rem;"></h4>  
 <div class="card">
-        <div class="card-header">Recruiter Information</div>
+        <h4 class="card-header" style="margin-top:0;">Recruiter Information</h4>
         <div class="job-recruiter-container">
             <div class="job-recruiter-info">
             <div class="recruiter-info flex flex-row">
@@ -524,7 +517,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         </div>
     </div>
 <div class="job-posting-description ${job.recruiter_username === 'autojob' ? 'ai-generated-content' : ''}">
-  <h4 class="card-header" style="margin:0;">Job Description ${job.recruiter_username === 'autojob' ? '<span class="ai-badge">✨ AI Generated</span>' : ''}</h4>
+  <h4 class="card-header" style="margin-top:0;">Job Description ${job.recruiter_username === 'autojob' ? '<span class="ai-badge">✨ AI Generated</span>' : ''}</h4>
   <p>${job.description}</p>
 </div>
             <div class="company-description sub-text">
@@ -667,16 +660,6 @@ ${job.location
 </ul>
 </div>
 </div>
-            <div class="job-skills-display">
-
-              ${tagsHTML}
-              ${
-  remainingTags > 0
-    ? `<span class="see-more" id="secondary-text">+${remainingTags} more</span>`
-    : ''
-}
-
-            </div>
 
               
           </div>

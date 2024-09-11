@@ -454,28 +454,6 @@ h3.job-title {
   margin-right: 3px;
 }
 
-.job {
-  margin: 0;
-  padding: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  margin-bottom: 0;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.job:first-child {
-  border-top-left-radius: 10px !important;
-  border-top-right-radius: 10px !important;
-}
-
-.job:last-child {
-  border-bottom-left-radius: 10px !important;
-  border-bottom-right-radius: 10px !important;
-}
-
-.job:last-child {
-  border-bottom: 0 !important;
-}
 
 button.delete-comment {
   border: 0;
@@ -570,9 +548,4 @@ div.jobs-company-header {
   }
 
 
-
-  .job {
-    background: none !important;
-    border: none;
-  }
 }

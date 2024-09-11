@@ -1022,9 +1022,8 @@ div.repliees-avatar {
 .similar-posts {
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
   padding: 0 1rem;
-  margin-top: 3rem;
+  margin-bottom: 1rem;
 }
 
 .similar-posts .post a {
@@ -1610,8 +1609,8 @@ div.post-information {
 }
 
 .mobile-jobs-container h3 {
-  margin: 1.1rem 1rem;
-  margin-top: 2rem;
+  margin: 0 1rem;
+  margin-top: 0rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1989,8 +1988,8 @@ div.post-information {
   }
 
   .jobslist .job {
-    border: 0;
-    padding: 0;
+    border: 1px solid var(--border-color);
+    padding: .4rem .8rem;
     gap: .8rem;
   }
 
@@ -2037,7 +2036,6 @@ div.post-information {
 
   .jobslist {
     margin: 0 1rem;
-    margin-top: 3rem;
   }
 
   .job {
