@@ -337,7 +337,7 @@
           </button>
         <% } %>
       </div>
-    `;
+      `;
 
         postsContainer.appendChild(communityHeader);
       }
@@ -359,11 +359,14 @@
             postDiv.onclick = () => window.location.href = '/posts/' + post.id;
 
             const networkIconColor = post.community_color;
+
             const avatarHtml = post.avatar ?
-              `<img src="${post.avatar}" alt="${post.username}" class="thumbnail thumbnail-regular thumbnail-tiny">` :
+              `<div class="avatar-img-container"><img src="${post.avatar}" alt="${post.username}" class="thumbnail thumbnail-regular thumbnail-tiny"></div>` :
               `<div class="w-8 h-8 rounded ${networkIconColor} flex items-center justify-center text-white font-bold">
                ${post.firstname[0].toUpperCase()}${post.lastname[0].toUpperCase()}
              </div>`;
+
+
 
 
             postDiv.innerHTML = `
@@ -373,7 +376,10 @@
             <div class="ml-3 flex-grow">
               <h2 class="main-text bold">${post.title}</h2>
               <p class="mini-text third-text">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username}</p>
+                    <!-- The follow/unfollow button will be appended here by JavaScript -->
+
             </div>
+            
             <div class="text-sm bg-gray-100 text-gray-800 py-1 px-2 rounded" style="font-weight:500;line-height:0;font-size:12px;color:${networkIconColor};background:${networkIconColor}26;border:1px solid ${networkIconColor}9e;">
                             <span class="material-symbols-outlined" style="font-size: 1rem;">
                             ${post.community_icon.toUpperCase()}
@@ -382,26 +388,22 @@
               ${post.community_shortname.toUpperCase()}
             </div>
           </div>
-${post.post_tags ? `
-  <div class="post-tags-div">
-    ${post.post_tags ? post.post_tags.split(',').map(tag => `
-      <span class="post-tag">${tag}</span>
-    `).join('') : ''}
-    ${post.post_tags ? post.post_tags.split(',').length > 3 ? `
-      <span class="text-blue-500 text-sm flex items-center">
-        +${Math.max(0, (post.post_tags ? post.post_tags.split(',').length : 0) - 3)} more 
-        <span class="material-symbols-outlined" style="font-size: 1rem;">chevron_right</span>
-      </span>
-    ` : '' : ''}
-  </div>
-` : ''}
+        ${post.post_tags ? `
+          <div class="post-tags-div">
+            ${post.post_tags ? post.post_tags.split(',').map(tag => `
+              <span class="post-tag">${tag}</span>
+            `).join('') : ''}
+            ${post.post_tags ? post.post_tags.split(',').length > 3 ? `
+              <span class="text-blue-500 text-sm flex items-center">
+                +${Math.max(0, (post.post_tags ? post.post_tags.split(',').length : 0) - 3)} more 
+                <span class="material-symbols-outlined" style="font-size: 1rem;">chevron_right</span>
+              </span>
+            ` : '' : ''}
+          </div>
+        ` : ''}
           <p class="description mb-2">${truncateContent(post.content, 150)}</p>
           <div class="flex post-flairs-container text-sm text-gray-500 justify-between">
             <div class="flex items-center space-x-4">
-              <span class="flex items-center">
-                <span class="material-symbols-outlined" style="font-size: 1rem;">person</span>
-                ${post.views} reader${post.views > 1 ? 's' : ''}
-              </span>
               <span class="flex items-center">
                 <span class="material-symbols-outlined" style="font-size: 1rem;">schedule</span>
                 ${formatDate(post.created_at)}
@@ -423,6 +425,23 @@ ${post.post_tags ? `
             </div>
           </div>
         `;
+            if (loggedIn && user.id !== post.user_id) {
+              const followButton = document.createElement('button');
+              followButton.className = 'follow-button';
+              if (post.is_following) {
+                followButton.classList.add('active');
+              }
+              followButton.innerText = post.is_following ? '-' : '+';
+              followButton.onclick = (e) => {
+                e.stopPropagation(); // Prevent the post click event
+                toggleFollow(post.user_id, followButton);
+              };
+              // Append the button next to the username
+              const usernameElement = postDiv.querySelector('.avatar-img-container');
+              usernameElement.parentNode.insertBefore(followButton, usernameElement.nextSibling);
+            }
+
+
 
             postsContainer.appendChild(postDiv);
           });
@@ -455,6 +474,8 @@ ${post.post_tags ? `
             observer.observe(loadMoreDiv);
           }
 
+
+
           if (posts.length === 0 && page === 1) {
             const noPostsDiv = document.createElement('div');
             noPostsDiv.className = 'no-posts secondary-text';
@@ -468,6 +489,22 @@ ${post.post_tags ? `
     function truncateContent(content, maxLength) {
       if (content.length <= maxLength) return content;
       return content.substr(0, maxLength) + '...';
+    }
+
+    function toggleFollow(authorId, button) {
+      const action = button.innerText === '+' ? 'follow' : 'unfollow';
+      fetch(`/users/${authorId}/${action}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          // Include CSRF token if needed
+        })
+        .then(response => response.json())
+        .then(data => {
+          button.innerText = data.following ? '-' : '+';
+        })
+        .catch(err => console.error('Error toggling follow status:', err));
     }
 
     function formatDate(dateString) {

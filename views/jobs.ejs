@@ -51,16 +51,18 @@
           <% } %>
         </div>
         <% if (user) { %>
-        <% if (user.isAdmin) { %>
+
         <div class="jobs-buttons admin-job-buttons">
+          <% if (user.isAdmin) { %>
           <a class="link mini-text" href="/jobs/create">
             + Job Posting
           </a>
-          <a class="link mini-text" href="/jobs/create-company">
-            + Company Profile
+          <% } %>
+          <a class="link mini-text" href="/profile/jobs">
+            Jobs Profile
           </a>
         </div>
-        <% } %>
+
         <% } %>
 
         <div class="jobs-search-container">

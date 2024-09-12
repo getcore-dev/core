@@ -2197,7 +2197,7 @@ details[open] {
   }
 
   .text-tag {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-hover-color);
     color: var(--dark-mode-text-color);
   }
 
@@ -2280,9 +2280,9 @@ details[open] {
 }
 
 .mobile-communities-container {
+  background: var(--light-mode-body-color);
   padding: 1rem;
   display: flex;
-  background: var(--light-mode-body-color);
   gap: .6rem;
   margin: .5rem;
   margin-top: 0;
@@ -2296,6 +2296,10 @@ details[open] {
 }
 
 @media (prefers-color-scheme: dark) {
+
+  .mobile-communities-container {
+    background: var(--dark-mode-main-color);
+  }
 
   input[type='text'],
   input[type='number'],

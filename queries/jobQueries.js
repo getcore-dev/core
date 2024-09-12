@@ -1,6 +1,9 @@
 const sql = require('mssql');
 const utilFunctions = require('../utils/utilFunctions');
+const resumeFunctions = require('../utils/resumeFunctions');
 const config = require('../config/dbConfig');
+const fs = require('fs');
+const path = require('path');
 
 /*
 CREATE TABLE company_comments (
@@ -18,6 +21,22 @@ CREATE TABLE company_comments (
 */
 
 const jobQueries = {
+
+  createResume: async (data) => {
+    resumeFunctions.createResume(data);
+    console.log('Resume created');
+  },
+
+  readResume: async (filePath) => {
+    try {
+      const data = await resumeFunctions.processResume(filePath);
+      return data;
+    } catch (error) {
+      console.error('Error reading resume:', error);
+      throw error;
+    }
+  },
+
   getAllCompanies: async () => {
     try {
       const result = await sql.query`

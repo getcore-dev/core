@@ -75,7 +75,7 @@ const utilFunctions = {
 
   getPosts: async (
     sortBy = 'trending',
-    user,
+    user = null,
     page = 1,
     limit = 10,
     offset
@@ -105,7 +105,7 @@ const utilFunctions = {
         INNER JOIN users u ON p.user_id = u.id
         LEFT JOIN userPostActions upa ON p.id = upa.post_id
         LEFT JOIN communities c ON p.communities_id = c.id
-        LEFT JOIN user_relationships ur ON u.id = ur.followed_id AND ur.follower_id = ${user.id}
+LEFT JOIN user_relationships ur ON u.id = ur.followed_id AND ur.follower_id = ${user ? user.id : null}
 OUTER APPLY (
   SELECT TOP 1 
     title,
@@ -146,7 +146,7 @@ OUTER APPLY (
       SELECT *, 
         (SELECT TOP 1 upa2.action_type 
          FROM userPostActions upa2
-         WHERE upa2.post_id = CTE.id AND upa2.user_id = ${user.id}) as userReaction,
+         WHERE upa2.post_id = CTE.id AND upa2.user_id = ${user ? user.id : null}) AS userReaction,
         (SELECT STRING_AGG(tags.name, ', ') 
          FROM post_tags 
          INNER JOIN tags ON post_tags.tag_id = tags.id
@@ -157,11 +157,13 @@ OUTER APPLY (
       ORDER BY created_at DESC
     `;
 
-      if (user.settings_PrivateJobNames === 1) {
-        result.recordset.forEach((post) => {
-          post.job_title = post.job_title || 'Job Title';
-          post.job_company = post.job_company || 'Company';
-        });
+      if (user) {
+        if (user.settings_PrivateJobNames === 1) {
+          result.recordset.forEach((post) => {
+            post.job_title = post.job_title || 'Job Title';
+            post.job_company = post.job_company || 'Company';
+          });
+        }
       }
 
 

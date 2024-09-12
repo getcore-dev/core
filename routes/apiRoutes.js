@@ -10,6 +10,7 @@ const storage = multer.diskStorage({
     cb(null, 'profile-' + Date.now() + '.jpg');
   },
 });
+const path = require('path');
 const User = require('../models/User.js');
 const JobProcessor = require('../services/jobBoardService');
 const jobProcessor = new JobProcessor();
@@ -747,6 +748,112 @@ router.get('/jobs/:id/similar', cacheMiddleware(2400), async (req, res) => {
   }
 });
 
+router.get('/create-resume',async (req, res) => {
+  try {
+    const resumeData = {
+      name: 'Bryce M. Cole',
+      email: 'brycemcole@icloud.com',
+      phone: '919-724-8794',
+      github: 'github.com/brycemcole',
+      
+      professionalSummary: 'Experienced IT professional with over 2 years of expertise in Software Engineering, and 4 years in IT support specializing in MacOS and Windows. Continuously seeking new opportunities to expand knowledge and skills in cutting-edge technologies. Passionate about leveraging strong technical background to deliver innovative solutions and provide exceptional support in dynamic technology environments.',
+      
+      skills: {
+        'Programming': 'Python, C++, SQL, JavaScript/TypeScript, HTML/CSS',
+        'Libraries/Frameworks': 'Node.js, Express.js, Angular, TensorFlow, NumPy, PyTest, Django',
+        'Other Technologies': 'Microsoft Azure, MacOS/Unix, iOS MDM, Atlassian Jira, GitHub, SQL Server'
+      },
+      
+      experience: [
+        {
+          title: 'Software Engineering Analyst Intern',
+          company: 'BlackRock',
+          location: 'New York, New York',
+          date: 'June 2024-Current',
+          details: [
+            'Full-Stack engineer on the BlackRock Aladdin Engineering team.',
+            'Leveraged in-house AI completions agents to deploy a chat MFE that could understand the context of the webpage for answering questions related to the user\'s current open page within BlackRock Aladdin.',
+            'Worked closely with members of the engineering, finance, investment, and quantitative development teams, regularly participating in their AGILE cycles and daily standups to ensure my project\'s progression.'
+          ]
+        },
+        {
+          title: 'Tech & Sales Specialist',
+          company: 'Apple',
+          location: 'New York, New York',
+          date: 'May 2022 – May 2024',
+          details: [
+            'Continuously learning new and even surprise-release technologies to provide the best solutions for customers and team members who rely on me for mentoring surrounding technical knowledge and troubleshooting skills.',
+            'Demonstrated deep product knowledge about Software and Hardware issues related to Apple products, mentored and taught several team members about different ways to diagnose issues with the products.'
+          ]
+        },
+        {
+          title: 'Software Engineering Co-Op @ All-In Open Source',
+          company: 'GitHub',
+          location: 'Remote',
+          date: 'November 2022 – April 2023',
+          details: [
+            'Learned key skills about using Git for software development in production and development setting.',
+            'Participated in hackathons hosted by Microsoft, and Fidelity, where we practiced studied cybersecurity practices and even tested some of our solutions against automated testing.'
+          ]
+        }
+      ],
+      
+      projects: [
+        {
+          title: 'core – Social Media Platform',
+          link: 'https://getcore.dev',
+          details: [
+            'Developed a comprehensive AI-powered web-platform for ~100 users to find software engineering jobs tailored to them automatically scraped from over 200 websites daily.'
+          ]
+        },
+        {
+          title: 'Flower Recognition Classification Algorithm',
+          details: [
+            'Used TensorFlow to train a neural network to extract data from photos of flowers such as petal details and a classification model to make predictions about what kind of flower it is with a 93% accuracy.'
+          ]
+        }
+      ],
+      
+      education: [
+        {
+          title: 'Bachelor\'s Degree, Computer Science, Minor in Mathematics',
+          company: 'City University of New York',
+          location: 'New York, New York',
+          date: 'September 2021 – May 2024',
+          details: [
+            'Major GPA: 3.4',
+            'Coursework: Application Development, Data Structures, Artificial Intelligence, Database Implementation, Data Analysis',
+            'Certifications: IBM Data Science & AI Development with Python, IBM Cloud Computing'
+          ]
+        }
+      ]
+    };
+    jobQueries.createResume(resumeData);
+
+  } catch (err) {
+    console.error('Error creating resume:', err);
+    res.status(500).send('Error creating resume');
+  }
+});
+
+router.get('/read-resume',async (req, res) => {
+  try {
+    const filePath = path.join(__dirname, '../resume.pdf');
+    jobQueries.readResume(filePath)
+      .then(data => {
+        console.log('Resume data:', data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+
+  } catch (err) {
+    console.error('Error creating resume:', err);
+    res.status(500).send('Error creating resume');
+  }
+});
+
+
 router.get('/jobs/:id/similar-company', cacheMiddleware(2400), async (req, res) => {
   try {
     const id = req.params.id;
@@ -1124,8 +1231,8 @@ router.get('/preview-comments/:postId', async (req, res) => {
 router.get('/posts', async (req, res) => {
   try {
     const sortBy = req.query.sortBy || 'trending'; // Default to "trending"
-    const userId = req.query.userId;
-    const user = userQueries.findById(userId);
+    const userId = req.user ? req.user.id : null;
+    const user = await userQueries.findById(userId);
     const page = parseInt(req.query.page) || 1;
     const limit = 10; // Number of posts per page
     const offset = (page - 1) * limit;

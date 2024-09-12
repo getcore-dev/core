@@ -13,6 +13,9 @@
   <link rel="shortcut icon" href="/img/core.png" />
 </head>
 <style>
+  .job {
+    justify-content: flex-start !important;
+  }
 </style>
 
 <body>
@@ -145,7 +148,7 @@
         <div class="job-preview-image">
                 ${
                 job.company_logo
-                    ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="" />`
+                    ? `<img style="height: 36px;width:36px;" class="thumbnail thumbnail-regular thumbnail-tiny" onerror="this.onerror=null;this.src='/img/glyph.png';" src="${job.company_logo}" alt="" />`
                     : ''
                 }
         </div>

@@ -206,6 +206,7 @@ div.vote-interactions {
 
 .post .flex {
   display: flex;
+  position: relative;
   align-items: center;
 }
 
@@ -1274,6 +1275,24 @@ button.see-more {
   text-decoration: none;
 }
 
+.follow-button {
+  background: #1473d0;
+  border: 1px solid #284d70;
+  border-radius: 50%;
+  color: white;
+  position: absolute;
+  bottom: -3px;
+  height: 20px;
+  width: 20px;
+  font-weight: 600;
+  left: 19px;
+}
+
+.follow-button.active {
+  background: #d1314e;
+  border: 1px solid #81192c;
+}
+
 @media (max-width: 768px) {
 
   div.community {
@@ -1534,17 +1553,12 @@ button.see-more {
   }
 
   .post .thumbnail-tiny {
-    height: 26px;
-    width: 26px;
+    height: 35px;
+    width: 35px;
   }
 
   .description {
     -webkit-line-clamp: 1;
-  }
-
-
-  .follow-button {
-    margin-bottom: auto;
   }
 
   body,
@@ -1929,7 +1943,7 @@ button.see-more {
   }
 
   .post-tag {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-hover-color);
     color: var(--dark-mode-text-color);
   }
 
