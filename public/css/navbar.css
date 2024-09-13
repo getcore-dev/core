@@ -1843,8 +1843,6 @@ hr {
 }
 
 #search-toggle-button .material-symbols-outlined {
-  position: absolute;
-  right: 46px;
   color: var(--light-mode-secondary-text-color);
 }
 

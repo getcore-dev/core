@@ -178,7 +178,6 @@
       <div class="user-btns">
         <ul class="user-links">
           <li class="navigation-button" id="search-toggle-button" style="width: auto">
-            <input type="text" id="search-bar-toggle" placeholder="Search" autocomplete="off" />
             <span id="secondary-text" class="material-symbols-outlined">
               search
             </span>
@@ -1289,7 +1288,7 @@
   document.addEventListener('click', (event) => {
     if (!userAvatar.contains(event.target) && !avatarDropdown.contains(event.target)) {
       navigationButtons.forEach(button => {
-        button.classList.remove('hidden');
+        button.classList.add('hidden');
       });
       avatarDropdown.classList.remove('open');
       userLinks.classList.remove('slide-left');
