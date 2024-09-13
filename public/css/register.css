@@ -1,6 +1,8 @@
 body {
   font-family: var(--font-family);
+  font-size: 1rem;
   padding-top: 0 !important;
+  padding: 0 !important;
 }
 
 /* Original Styles */
@@ -283,11 +285,13 @@ input:focus {
   }
 
   main {
-    padding-top: 30vh;
+    height: calc(100dvh - 240px);
+    padding-top: 20vh;
   }
 
   .core-logo {
-    top: 10vh;
+    top: 6vh;
+    height: 68px;
   }
 
 

@@ -368,12 +368,6 @@ router.get(
 router.get('/skills/:skill', async (req, res) => {
   try {
     const skill = req.params.skill;
-    const skillId = await jobQueries.getSkillsId(skill);
-    const page = req.query.page || 1;
-    const pageSize = req.query.pageSize || 10;
-    if (!skillId) {
-      res.status(404).send('Skill not found');
-    }
     res.render('skill.ejs', { skill, jobs:[], posts: [], user: req.user });
   } catch (err) {
     console.error('Error fetching job postings:', err);

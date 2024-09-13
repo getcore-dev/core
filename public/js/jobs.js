@@ -529,24 +529,31 @@ function renderJobPostings(jobs) {
 }
 
 function formatRelativeDate(dateString) {
+  const date = new Date(dateString);
   const now = new Date();
-  const postedDate = new Date(dateString);
-  const diffTime = Math.abs(now - postedDate);
-  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  const diffMonths = Math.floor(diffDays / 30);
-  const diffYears = Math.floor(diffDays / 365);
+  const diffInSeconds = Math.floor((now - date) / 1000);
 
-  if (diffYears > 0) {
-    return `${diffYears}y`;
-  } else if (diffMonths > 0) {
-    return `${diffMonths}m`;
-  } else if (diffDays > 0) {
-    return `${diffDays}d`;
-  } else if (diffHours > 0) {
-    return `${diffHours}h`;
-  } else {
+  if (diffInSeconds < 60) {
     return 'Just now';
+  } else if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60);
+    return `${minutes}m ago`;
+  } else if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600);
+    return `${hours}h ago`;
+  } else if (diffInSeconds < 172800) {
+    return '1d ago';
+  } else {
+    const month = date.toLocaleString('default', { month: 'short' });
+    const day = String(date.getDate());
+    const year = date.getFullYear();
+    const currentYear = now.getFullYear();
+
+    if (year === currentYear) {
+      return `${month} ${day}`;
+    } else {
+      return `${month} ${day}, ${year}`;
+    }
   }
 }
 

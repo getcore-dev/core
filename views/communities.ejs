@@ -90,29 +90,6 @@
               </div>
             </div>
           </div>
-          <ul class="second-nav-links">
-            <li class="dropdown active">
-              <a class="navbar-button company-navbar-button active no-bg no-border" data-id="jobs" id="company-updates-selector">
-                <span class="material-symbols-outlined">
-                  description
-                </span>Posts
-                <div class="jobs-count">
-
-                </div>
-              </a>
-
-
-            </li>
-            <li class="dropdown">
-              <a class="navbar-button company-navbar-button no-bg no-border" data-id="company-comments" id="company-updates-selector"><span class="material-symbols-outlined">
-                  info
-                </span>Wiki
-                <div class="comments-count">
-                </div>
-              </a>
-            </li>
-
-          </ul>
         </div>
         <% } %>
         <% if (!communityId) { %>
@@ -306,6 +283,7 @@
 
     function fetchAndDisplayPosts(communityId = null, sortBy = 'trending', page = 1) {
       const loggedIn = typeof user !== 'undefined' && user !== null;
+      const community = <%- JSON.stringify(community) %>;
       let apiUrl;
 
       if (loggedIn) {

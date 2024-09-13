@@ -495,18 +495,6 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
               <h4 class="card-header">Company Description</h4>
               <p>${job.company_description}</p>
             </div>
-            <div class="job-skills-container">
-            <h4 class="card-header">Skills</h4>
-                              <div class="job-skills sub-text">
-    \
-      ${skillsHTML}
-      ${
-  remainingSkills > 0
-    ? `<span class="see-more">+${remainingSkills} more</span>`
-    : ''
-}
-    </div>
-    </div>
             ${
   job.Requirements
     ? `

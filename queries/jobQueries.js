@@ -2406,8 +2406,14 @@ ORDER BY jp.postedDate DESC
   getSkillsId: async (skillName) => {
     try {
       const jobTagResult = await sql.query`
-        SELECT id FROM skills WHERE name = ${skillName}
+        SELECT id FROM skills WHERE name LIKE '%' + ${skillName} + '%'
       `;
+
+      if (jobTagResult.recordset.length > 0) {
+        return jobTagResult.recordset[0].id;
+      }
+
+      return null;
 
 
       if (jobTagResult.recordset.length > 0) {

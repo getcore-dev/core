@@ -146,7 +146,7 @@ a:visited {
   width: 34px;
   border-radius: 6px;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 #horizontal-scroll {
@@ -1042,7 +1042,7 @@ a>.menu-item {
 
 #user-avatar {
   width: 30px;
-  border-radius: 6px;
+  border-radius: 50%;
   height: 30px;
   object-fit: cover;
   overflow: hidden;
@@ -1834,6 +1834,20 @@ hr {
   height: 1px;
 }
 
+#search-bar-toggle {
+  width: 64%;
+  border: 1px solid var(--border-color);
+  height: 32px;
+  margin-right: 7px;
+  border-radius: 9999px;
+}
+
+#search-toggle-button .material-symbols-outlined {
+  position: absolute;
+  right: 46px;
+  color: var(--light-mode-secondary-text-color);
+}
+
 .text-tag {
   background-color: white;
   font-size: .9rem;
@@ -2068,7 +2082,7 @@ hr {
 .user-links {
   position: relative;
   display: flex;
-  gap: .35rem;
+  gap: .55rem;
   align-items: center;
   transition: transform 0.1s linear;
 }
@@ -2224,6 +2238,10 @@ details[open] {
     color: #fff;
   }
 
+  #search-toggle-button .material-symbols-outlined {
+    color: var(--dark-mode-third-text-color);
+  }
+
 
   .secondary-text,
   .secondary-text:visted {
@@ -2277,6 +2295,10 @@ details[open] {
   .spinner {
     border: 5px solid #121212;
     border-top: 5px solid #3498db;
+  }
+
+  #search-bar-toggle {
+    border-color: var(--dark-mode-border-color);
   }
 
   hr {

@@ -37,7 +37,7 @@
   <main>
     <div class="tag-search-menu">
       <div class="tag-search-header margin-06-bottom">
-        <h4>Results for <span class="green-text-tag mini-text text-tag"><%= skill %></span></h4>
+        <h4>Results for <span class="green-text-tag mini-text text-tag"><%= skill.trim() %></span></h4>
       </div>
       <div>
         <h4 class="margin-03-bottom third-text mini-text">Similar Results</h4>
@@ -109,70 +109,11 @@ function blendColors(color1, color2, ratio) {
     <div class="jobs">
     </div>
     <div id="load-more-container"></div>
-    <% if (posts.length > 0) { %>
-    <div class="posts">
-      <% posts.forEach((post) => { %>
-      <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
-        <div class="post-content">
-          <div class="post-header">
-            <% 
-                    function formatDate(dateString) {
-                    const date = new Date(dateString);
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const year = date.getFullYear();
-                    return `${month}/${day}/${year}`;
-                  }
-                  %>
-            <div class="post-header-username">
-              <div class="avatar">
-                <img src="<%= post.avatar %>" loading="lazy">
-              </div>
-              <div class="username">
-                <a href="/user/<%= post.username %>" class="username-link"><strong><%= post.username %></strong></a>
-                <div class="post-date" id="secondary-text">
-                  <a style="color: <%= post.community_color %>;" href="/networks/<%= post.communities_id %>" class="community"><%= post.community_name %></a>
-
-                  <%= formatDate(post.created_at) %> • <%= post.views %> views
-                </div>
-              </div>
-            </div>
-            <div class="three-dots">
-              <span class="material-symbols-outlined" style="font-weight: 300; font-size: 22px;">more_horiz</span>
-            </div>
-          </div>
-          <div class="title"><%= post.title %></div>
-          <div class="link-preview">
-            <% if (post.link) { %>
-            <div class="link">
-              <span class="material-symbols-outlined" style="color: var(--active-indicator-color);">
-                link
-              </span>
-              <%= post.link %>
-            </div>
-            <% } %>
-            <% if (post.post_type !== 'question' && (!post.link || (post.post_type !== 'post' && post.post_type !== 'project'))) { %>
-            <div class="description">
-              <%- post.content %>
-            </div>
-            <% } %>
-          </div>
-          <div class="votes">
-            <div class="reaction-interactions <%= post.id %>-reactions" id="reaction-interactions <%= post.id %>-reactions">
-              <%= post.totalReactionCount %> reactions
-            </div>
-            <div class="comments">
-              <%= post.commentCount %> comment<%= post.commentCount > 1 ? 's' : '' %>
-            </div>
-          </div>
-        </div>
+    <div id="loading-indicator">
+      <div class="spinner-container">
+        <div class="spinner"></div>
       </div>
-      <% }); %>
     </div>
-    <% } else { %>
-    <div class="jobs-header">
-    </div>
-    <% } %>
     <%- include('partials/footer') %>
 
   </main>
@@ -244,7 +185,10 @@ function blendColors(color1, color2, ratio) {
       const skillMeta = document.querySelector('meta[name="skill"]');
       const skill = skillMeta ? skillMeta.getAttribute('content') : null;
       const loadMoreContainer = document.getElementById('load-more-container');
+      const loadingIndicator = document.getElementById('loading-indicator');
       const jobsContainer = document.querySelector('.jobs');
+      getSimilarSkills();
+
       let isLoading = false;
       let hasMoreJobs = true;
 
@@ -294,13 +238,13 @@ function blendColors(color1, color2, ratio) {
             return `
                   <span data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="mini-text bold text-tag ${
                     skillExists ? 'green-text-tag' : ''
-                  }">${skill}</span>`;
-                      })
-                      .join('');
+                  }">${skill.trim()}</span>`;
+          })
+          .join('');
 
-                    const remainingSkillsCount = sortedTags.length - 3;
-                    if (remainingSkillsCount > 0) {
-                      tagsHTML += `
+        const remainingSkillsCount = sortedTags.length - 3;
+        if (remainingSkillsCount > 0) {
+          tagsHTML += `
                 <span class="remaining-tags mini-text" style="cursor: pointer;" onclick="toggleHiddenTags()">
                   +${remainingSkillsCount} more
                 </span>
@@ -374,11 +318,13 @@ function blendColors(color1, color2, ratio) {
           const data = await response.json();
 
           if (data.jobs && data.jobs.length > 0) {
+            loadingIndicator.style.display = 'none';
             data.jobs.forEach(job => {
               jobsContainer.appendChild(createJobElement(job));
             });
             page += 1;
           } else {
+            loadingIndicator.style.display = 'none';
             hasMoreJobs = false;
             if (loadMoreContainer) {
               loadMoreContainer.style.display = 'none';
@@ -387,7 +333,6 @@ function blendColors(color1, color2, ratio) {
         } catch (err) {
           console.error('Error loading jobs:', err);
         } finally {
-          getSimilarSkills();
           isLoading = false;
         }
       }
@@ -404,7 +349,7 @@ function blendColors(color1, color2, ratio) {
               const tagElement = document.createElement('span');
               tagElement.classList.add('text-tag');
               tagElement.textContent = similarSkill.name;
-              tagElement.onclick = () => window.location.href = `/skills/${similarSkill.name}`;
+              tagElement.onclick = () => window.location.href = `/skills/${similarSkill.name.trim()}`;
               similarTagsContainer.appendChild(tagElement);
             });
           } else {
@@ -419,6 +364,7 @@ function blendColors(color1, color2, ratio) {
       if (loadMoreContainer) {
         const observer = new IntersectionObserver((entries) => {
           if (entries[0].isIntersecting && !isLoading) {
+            loadingIndicator.style.display = 'block';
             loadMoreJobs();
           }
         }, {
