@@ -239,7 +239,7 @@ async function getSimilarJobsByCompany(jobId) {
       return;
     }
 
-    similarJobsContainer.innerHTML = '<h4 class="secondary-text">Related Jobs</h4>';
+    similarJobsContainer.innerHTML = '<h4 class="secondary-text">Related Jobs at the Same Company</h4>';
     const similarJobsList = document.createElement('div');
     similarJobsList.className = 'similar-jobs-list';
 

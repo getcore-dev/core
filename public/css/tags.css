@@ -146,15 +146,15 @@ div.jobs {
     .post {
         background: var(--dark-mode-main-color);
         border-color: var(--dark-mode-border-color) !important;
-
-
-        .tag-search-menu {
-            background: var(--dark-mode-body-color);
-            border-bottom: 1px solid var(--dark-mode-border-color);
-        }
-
-        .post:hover {
-            background: var(--dark-mode-hover-color);
-        }
-
     }
+
+    .tag-search-menu {
+        background: var(--dark-mode-body-color);
+        border-bottom: 1px solid var(--dark-mode-border-color);
+    }
+
+    .post:hover {
+        background: var(--dark-mode-hover-color);
+    }
+
+}
