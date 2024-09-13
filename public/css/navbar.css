@@ -1171,7 +1171,13 @@ a>.menu-item {
   width: auto;
   border-radius: 6px !important;
   object-fit: contain;
+}
 
+.thumbnail-rounded {
+  aspect-ratio: 1/1;
+  width: auto;
+  border-radius: 50% !important;
+  object-fit: contain;
 }
 
 .dropdown {
@@ -1600,7 +1606,9 @@ select {
 .special-button,
 #special-button,
 .null-button,
-#null-button {
+#null-button,
+.main-button,
+.bordered-button {
   font-size: 16px;
   width: 100%;
   height: 34px;
@@ -1646,7 +1654,9 @@ button:hover {
 .special-button-normal,
 #special-button-normal,
 .null-button-normal,
-#null-button-normal {
+#null-button-normal,
+.main-button-normal,
+.bordered-button-normal {
   font-size: .875rem;
   border: none;
   height: 34px;
@@ -1667,6 +1677,20 @@ button:hover {
   text-wrap: nowrap;
   align-items: center;
   justify-content: center;
+}
+
+
+.main-button,
+.main-button-normal {
+  background: black;
+  color: white;
+}
+
+.bordered-button,
+.bordered-button-normal {
+  background: white;
+  color: black;
+  border: 1px solid #555;
 }
 
 div .material-symbols-outlined:not(:only-child) {
@@ -1792,9 +1816,29 @@ em.red {
   color: var(--light-mode-text-color);
 }
 
+.space-between {
+  justify-content: space-between;
+}
+
+.readable {
+  line-height: 1.5;
+}
+
+hr {
+  width: 100%;
+  margin-top: .85rem;
+  margin-bottom: .85rem;
+  border: 0;
+  background: var(--border-color);
+  display: block;
+  height: 1px;
+}
+
 .text-tag {
-  background-color: #f3f4f6;
+  background-color: white;
+  font-size: .9rem;
   color: #374151;
+  border: 1px solid #f3f4f6;
   padding: 0.25rem 0.5rem;
   border-radius: 7px;
 }
@@ -1859,7 +1903,7 @@ em.red {
 }
 
 .bold {
-  font-weight: 600 !important;
+  font-weight: 700 !important;
 }
 
 .select2-container--open .select2-dropdown--above {
@@ -2121,6 +2165,13 @@ details[open] {
     color: var(--dark-mode-text-color);
   }
 
+  .bordered-button,
+  .bordered-button-normal {
+    background: black;
+    color: white;
+    border: 1px solid #212121;
+  }
+
   label {
     color: var(--dark-mode-secondary-text-color);
   }
@@ -2197,7 +2248,8 @@ details[open] {
   }
 
   .text-tag {
-    background-color: var(--dark-mode-hover-color);
+    background-color: black;
+    border: 1px solid rgb(31 41 55);
     color: var(--dark-mode-text-color);
   }
 
@@ -2227,6 +2279,10 @@ details[open] {
     border-top: 5px solid #3498db;
   }
 
+  hr {
+    background-color: var(--dark-mode-border-color);
+  }
+
   .menu-content a.active>.menu-item {
     color: var(--dark-mode-text-color);
   }
@@ -2240,6 +2296,11 @@ details[open] {
     background: var(--dark-mode-main-color);
   }
 
+  .main-button,
+  .main-button-normal {
+    background: white;
+    color: black;
+  }
 
   .null-button,
   #null-button,

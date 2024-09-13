@@ -218,6 +218,7 @@ div.vote-interactions {
   margin-bottom: 0.75rem;
 }
 
+
 /* Network icon styling */
 .post .w-8 {
   width: 2rem;
@@ -277,13 +278,13 @@ div.vote-interactions {
 }
 
 .post .py-1 {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+  padding-top: 0.15rem;
+  padding-bottom: 0.15rem;
 }
 
 .post .px-2 {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-left: 0.45rem;
+  padding-right: 0.45rem;
 }
 
 /* Tags styling */
@@ -314,6 +315,10 @@ div.vote-interactions {
   gap: 0.5rem;
   margin-bottom: 0.75rem;
   align-items: center;
+}
+
+.post hr {
+  margin-top: .3rem;
 }
 
 .post .px-3 {
@@ -1276,21 +1281,19 @@ button.see-more {
 }
 
 .follow-button {
-  background: #1473d0;
-  border: 1px solid #284d70;
-  border-radius: 50%;
+  background: rgb(37 99 235);
+  border: 0;
+  border-radius: 9999px;
+  padding-left: .75rem;
+  padding-right: .75rem;
+  padding-top: .25rem;
+  padding-bottom: .25rem;
   color: white;
-  position: absolute;
-  bottom: -3px;
-  height: 20px;
-  width: 20px;
   font-weight: 600;
-  left: 19px;
 }
 
 .follow-button.active {
-  background: #d1314e;
-  border: 1px solid #81192c;
+  background: rgb(55 65 81);
 }
 
 @media (max-width: 768px) {
@@ -1526,7 +1529,7 @@ button.see-more {
   .post {
     background-color: var(--light-mode-main-color);
     border-radius: 7px;
-    margin: .4rem 1rem;
+    margin: .4rem .6rem;
     padding: .65rem .7rem;
     border: 1px solid var(--border-color);
     max-width: 100%;
@@ -1558,7 +1561,7 @@ button.see-more {
   }
 
   .description {
-    -webkit-line-clamp: 1;
+    -webkit-line-clamp: 2;
   }
 
   body,
@@ -1943,7 +1946,7 @@ button.see-more {
   }
 
   .post-tag {
-    background-color: var(--dark-mode-hover-color);
+    background-color: rgb(31 41 55);
     color: var(--dark-mode-text-color);
   }
 

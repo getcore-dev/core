@@ -97,8 +97,6 @@ async function getSimilarJobs(jobId) {
     const jobs = await response.json();
 
     const similarJobsContainer = document.querySelector('.similar-jobs');
-    const similarJobsCount = document.querySelector('.related-jobs-count');
-    similarJobsCount.innerHTML = `${jobs.length}`;
 
     if (jobs.length === 0) {
       similarJobsContainer.innerHTML = '';
@@ -235,8 +233,6 @@ async function getSimilarJobsByCompany(jobId) {
     const jobs = await response.json();
 
     const similarJobsContainer = document.querySelector('.similar-company-jobs');
-    const similarJobsCount = document.querySelector('.related-jobs-company-count');
-    similarJobsCount.innerHTML = `${jobs.length}`;
 
     if (jobs.length === 0) {
       similarJobsContainer.innerHTML = '<div class="empty-text">No similar jobs found.</div>';
@@ -384,24 +380,26 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 }
         <div class="company-details">
       <div class="company-information">
-        <a class="secondary-text bold link sub-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
-        ${job.company_location ? `<span class="mini-text third-text">${job.company_location}</span>` : ''}
-      </div>
-        </div>
-      </div>
-
-      <h3 class="company-name main-text margin-03-bottom">
+          <h3 class="company-name main-text margin-03-bottom">
         ${job.title}
       </h3>
-    <div class="job-info-flairs margin-06-bottom">
-      <p class="job-detail">
-        🧑‍💻 ${job.experienceLevel}
+      <p class="third-text mini-text">
+            <a class="secondary-text bold link sub-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
+            </p>
+      </div>
+      
+        </div>
+          <p class="job-detail" style="margin-left:auto;white-space: nowrap;">
+        ${job.experienceLevel}
       </p>
-      <p class="job-detail"> 
+      </div>
+
+        <div class="job-info-flairs margin-06-bottom">
+      <p> 
         📍 ${job.location === 'N/A' ? 'Remote' : job.location}
       </p>
       ${job.salary !== 0 ? `
-        <p class="job-detail">
+        <p class="sub-text">
       💰 USD $${formatSalary(job.salary)}
       ${job.salary_max !== 0 ? `- $${formatSalary(job.salary_max)}` : ''}
       ${!job.location.toLowerCase().includes('us') && 
@@ -410,7 +408,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     : ''}
         </p>
       ` : ''}
-    </div>
+        </div>
 
         <div class="job-skills-display">
 
@@ -422,80 +420,61 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 }
 
         </div>
+<hr>
+        <div class="job-posting-description ${job.recruiter_username === 'autojob' ? 'ai-generated-content' : ''}">
+  <h4 style="margin-top:0;">Job Description ${job.recruiter_username === 'autojob' ? '<span class="ai-badge">✨ AI Overview</span>' : ''}</h4>
+  <p class="mini-text secondary-text readable">${job.description}</p>
+</div>
       
-      <div class="interact-buttons margin-06-bottom">
+      <div class="interact-buttons margin-1-bottom flex space-between v-center">
         ${
   !isOlderThan30Days(job)
     ? `<div class="apply-button-container flex">
-        <button id="submit-button-normal" class="margin-h-auto grow-button" onclick="applyForJob(event, '${job.id}', '${job.link}')">
-          <span class="material-symbols-outlined">open_in_new</span><span>Apply </span><span class="number-display">
-          ${job.applicants ? job.applicants : 0}
-              </span>
-            </button>
-          </div>`
+                <button class="main-button-normal margin-h-auto grow-button" onclick="applyForJob(event, '${job.id}', '${job.link}')">
+                  <span class="material-symbols-outlined">work</span><span>Apply </span><span class="number-display">
+                  ${job.applicants ? job.applicants : 0}
+                  </span>
+                </button>
+                  </div>`
     : ''
-}
-    <div class="second-buttons-container">
+} 
       ${
   userIsLoggedIn
-    ? `<div class="favorite-button-container">
-              <div id="favorite-form-${job.id}" class="flex">
-                <button class="grow-button" id="null-button-normal" onclick="favorite('job', ${job.id});" class="margin-h-auto">
-                  <span class="material-symbols-outlined">favorite</span>
-                  <span>Favorite</span>
-                </button>
-              </div>
-            </div>`
+    ? `<div class="favorite-button-
+                      <div id="favorite-form-${job.id}" class="flex">
+                        <button class="grow-button bordered-button-normal" onclick="favorite('job', ${job.id});" class="margin-h-auto">
+                          <span class="material-symbols-outlined">star</span>
+                          <span>Favorite</span>
+                        </button>
+                      </div>
+                    `
     : ''
 }
+        <div class="second-buttons-container">
 
       ${
   userIsAdmin
     ? `
-            <div class="delete-button-container flex">
-              <button class="grow-button" id="cancel-button-normal" onclick="window.location.href='/jobs/delete/${job.id}'">
-                <span class="material-symbols-outlined">delete</span> Delete
+            <div class="delete-button-container">
+              <button class="grow-button no-bg no-border" onclick="window.location.href='/jobs/delete/${job.id}'">
+                <span class="material-symbols-outlined">delete</span>
               </button>
             </div>
           `
     : ''
 }
-      <div class="share-button-container flex">
-        <button class="margin-h-auto null-button-normal grow-button" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');">
+        <button class="no-bg no-border" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');">
           <span class="material-symbols-outlined">share</span>
-          <span>Share</span> 
-          <span class="number-display">${job.share_count ? job.share_count : 0}</span>
         </button>
-      </div>
     </div>
   </div>
-
-  <ul class="second-nav-links">
-    <li class="dropdown active">
-      <a class="navbar-button company-navbar-button active no-bg no-border" data-id="job-details" id="company-updates-selector">
-        <span class="material-symbols-outlined">info</span>Info
-        <div class="jobs-count"></div>
-      </a>
-    </li>
-    <li class="dropdown">
-      <a class="navbar-button company-navbar-button no-bg no-border" data-id="similar-jobs" id="company-updates-selector">
-        <span class="material-symbols-outlined">chat_bubble</span>Related Jobs
-        <div class="related-jobs-count"></div>
-      </a>
-    </li>
-    <li class="dropdown">
-      <a class="navbar-button sub-text company-navbar-button no-bg no-border" data-id="similar-company-jobs" id="company-updates-selector">
-        <span class="material-symbols-outlined">factory</span>Company
-        <div class="related-jobs-company-count"></div>
-      </a>
-    </li>
-  </ul>
 </div>
             <div class="job-details secondary-text company-profile-section">
             <div class="job-posting-recruiter">
             <h4 class="mini-text bold" style="margin-bottom: 0.8rem;"></h4>  
+                    <h4 class="card-header" style="margin-top:0;">Recruiter Information</h4>
+
 <div class="card">
-        <h4 class="card-header" style="margin-top:0;">Recruiter Information</h4>
         <div class="job-recruiter-container">
             <div class="job-recruiter-info">
             <div class="recruiter-info flex flex-row">
@@ -509,17 +488,9 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
                 </div>
                 </div>
                 </div>
-                <div class="autojob-warning">
-                    <span class="warning-icon">⚠️</span>
-                    <span class="warning-text">This post is scraped from the internet and may contain errors.</span>
-                </div>
             </div>
         </div>
     </div>
-<div class="job-posting-description ${job.recruiter_username === 'autojob' ? 'ai-generated-content' : ''}">
-  <h4 class="card-header" style="margin-top:0;">Job Description ${job.recruiter_username === 'autojob' ? '<span class="ai-badge">✨ AI Generated</span>' : ''}</h4>
-  <p>${job.description}</p>
-</div>
             <div class="company-description sub-text">
               <h4 class="card-header">Company Description</h4>
               <p>${job.company_description}</p>
@@ -658,20 +629,24 @@ ${job.location
     : ''
 }
 </ul>
+                <div class="autojob-warning">
+                    <span class="warning-icon">⚠️</span>
+                    <span class="warning-text">This post is scraped from the internet and may contain errors.</span>
+                </div>
 </div>
 </div>
 
               
           </div>
         </div>
-        <div class="similar-jobs company-profile-section" style="display: none;">
+        <div class="similar-jobs company-profile-section">
         <div id="loading-indicator">
           <div class="spinner-container">
             <div class="spinner"></div>
           </div>
         </div>
 </div>
-<div class="similar-company-jobs company-profile-section" style="display: none;">
+<div class="similar-company-jobs company-profile-section">
         <div id="loading-indicator">
           <div class="spinner-container">
             <div class="spinner">
@@ -680,7 +655,9 @@ ${job.location
         </div>
 </div>
       `;
+      console.log('done loading job, loading companies');
       bindSelectorButtons();
+      getSimilarJobs(jobId);
       getSimilarJobsByCompany(jobId, job.company_name);
       if (userIsLoggedIn) {
         checkFavorite(jobId);
@@ -691,7 +668,6 @@ ${job.location
       console.error('Error fetching job details:', error);
     });
 
-  getSimilarJobs(jobId);
 }
 
 function bindSelectorButtons() {

@@ -19,13 +19,6 @@ main {
 }
 
 
-.ai-generated-content {
-  background: linear-gradient(135deg, rgba(173, 216, 230, 0.15), rgba(221, 160, 221, 0.15));
-  border-radius: 8px;
-  padding: 20px;
-  margin-top: 15px;
-}
-
 .ai-generated-content h4 {
   display: flex;
   align-items: center;
@@ -41,15 +34,20 @@ main {
   font-weight: normal;
 }
 
+.second-buttons-container .material-symbols-outlined {
+  color: var(--light-mode-text-color);
+}
+
 .job-posting-description p {
-  margin-top: 15px;
+  margin-top: .4rem;
+  margin-bottom: .9rem;
 }
 
 .card {
   background-color: white;
   border-radius: 8px;
-  border: 1px solid #e4e6eb;
-  padding: 16px;
+  border: 1px solid var(--border-color);
+  padding: .4rem .6rem;
   width: 100%;
   box-sizing: border-box;
   max-width: 500px;
@@ -151,7 +149,7 @@ main {
 }
 
 .job-details>* {
-  padding: 0 1rem;
+  padding: 0 .7rem;
 }
 
 .similar-company-jobs h4,
@@ -298,6 +296,10 @@ div.job-info-flairs span.material-symbols-outlined {
   padding-right: .6rem;
 }
 
+.second-buttons-container .material-symbols-outlined {
+  padding: 0;
+}
+
 
 
 .similar-company-jobs,
@@ -358,7 +360,7 @@ div.similar-job h4 {
   background: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
   border-radius: 10px;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem .7rem;
   margin: 1.2rem;
 
 
@@ -366,8 +368,7 @@ div.similar-job h4 {
 
 .job-details p,
 .job-details ul,
-ul.locations,
-.job-listing-menu p {
+ul.locations {
   font-size: var(--default-sub-font-size);
   line-height: 1.5;
   font-weight: 500;
@@ -499,10 +500,9 @@ ul.locations,
 }
 
 .second-buttons-container {
-  width: 100%;
   gap: .7rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 .job-recruiter-container {
@@ -515,10 +515,6 @@ ul.locations,
 .job-recruiter-name {
   display: flex;
   flex-direction: column;
-}
-
-.second-buttons-container>* {
-  width: 100%;
 }
 
 .button:hover {
@@ -550,6 +546,10 @@ ul.locations,
 
   .card-header {
     color: #c9cdd6;
+  }
+
+  .second-buttons-container .material-symbols-outlined {
+    color: var(--dark-mode-text-color);
   }
 
   .company-location,
@@ -632,7 +632,6 @@ ul.locations,
   .job-details p,
   .job-details ul,
   ul.locations,
-  .job-listing-menu p,
   .job-posting-flairs,
   div.job-skills,
   div.job-skills-display,
@@ -641,6 +640,8 @@ ul.locations,
   .similar-company-jobs h4 {
     font-size: var(--mobile-default-sub-font-size);
   }
+
+
 
 
   .job-listing-menu {
