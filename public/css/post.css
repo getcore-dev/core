@@ -972,7 +972,7 @@ div.repliees-avatar {
 .comments-section {
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: .5rem;
 }
 
 
