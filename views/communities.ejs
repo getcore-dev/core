@@ -345,7 +345,7 @@
             const networkIconColor = post.community_color;
 
             const avatarHtml = post.avatar ?
-              `<div class="avatar-img-container"><img src="${post.avatar}" alt="${post.username}" class="thumbnail thumbnail-rounded thumbnail-tiny"></div>` :
+              `<div class="avatar-img-container"><img src="${post.avatar}" alt="${post.username}" class="thumbnail thumbnail-regular thumbnail-tiny"></div>` :
               `<div class="w-8 h-8 rounded ${networkIconColor} flex items-center justify-center text-white font-bold">
             ${post.firstname[0].toUpperCase()}${post.lastname[0].toUpperCase()}
           </div>`;
@@ -354,7 +354,7 @@
           <div class="flex items-start margin-06-bottom">
             ${avatarHtml}
 
-            <div class="ml-3 flex flex-col gap-03 flex-grow items-start">
+            <div class="ml-3 flex flex-col flex-grow items-start" style="gap: .08rem .3rem;">
             <div class="flex flex-row gap-03">
               <h2 class="main-text bold">${post.title}</h2>
                             <span class="third-text mini-text"">

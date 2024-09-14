@@ -1282,19 +1282,21 @@ button.see-more {
 }
 
 .follow-button {
-  background: rgb(37 99 235);
-  border: 0;
-  border-radius: 9999px;
+  background: white;
+  border: 1px solid rgb(37 99 235);
+  border-radius: 6px;
   padding-left: .75rem;
   padding-right: .75rem;
   padding-top: .25rem;
   padding-bottom: .25rem;
-  color: white;
+  color: rgb(37 99 235);
   font-weight: 600;
 }
 
 .follow-button.active {
-  background: rgb(55 65 81);
+  background: white;
+  color: black;
+  border-color: rgb(55 65 81);
 }
 
 @media (max-width: 768px) {

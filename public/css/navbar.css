@@ -1047,7 +1047,7 @@ a>.menu-item {
 
 #user-avatar {
   width: 30px;
-  border-radius: 50%;
+  border-radius: 6px;
   height: 30px;
   object-fit: cover;
   overflow: hidden;
