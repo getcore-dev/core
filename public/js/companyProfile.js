@@ -250,7 +250,7 @@ function createJobElement(job) {
   let tagsHTML = displayedTags
     .map((skill) => {
       return `
-            <span data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="mini-text bold text-tag">${skill}</span>`;
+            <span data-name="${skill.trim()}" data-type="skills" data-id="${skill.trim()}" data-index="${sortedTags.indexOf(skill.trim())}" class="mini-text bold text-tag">${skill.trim()}</span>`;
     })
     .join('');
 

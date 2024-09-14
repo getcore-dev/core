@@ -98,7 +98,7 @@
             <span class="post-title-navigator">
               <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="thumbnail thumbnail-micro thumbnail-regular" onclick="window.location.href = '/user/<%= post.user.username %>'" />
               <div class="post-nav-header">
-                <div class="post-info-container margin-06-bottom secondary-text sub-text">
+                <div class="post-info-container secondary-text sub-text">
                   <span class="post-user-info-span main-text">
                     <a href="/user/<%= post.user.username %>" id="blog-username">
                       <% if (post.user.firstname && post.user.lastname) { %>

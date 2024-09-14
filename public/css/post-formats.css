@@ -86,6 +86,10 @@
   padding: 0 1rem;
 }
 
+.post-body>p:last-child {
+  margin-bottom: 0;
+}
+
 
 .post-body a {
   color: var(--active-indicator-color);

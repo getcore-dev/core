@@ -146,7 +146,7 @@ a:visited {
   width: 34px;
   border-radius: 6px;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 #horizontal-scroll {
@@ -236,6 +236,11 @@ a:visited {
 
 .green-text-tag {
   color: #309b4f !important;
+}
+
+.selected-text-tag {
+  border-color: #000 !important;
+  color: #000 !important;
 }
 
 .condensed {
@@ -1834,6 +1839,18 @@ hr {
   height: 1px;
 }
 
+#search-bar-toggle {
+  width: 64%;
+  border: 1px solid var(--border-color);
+  height: 32px;
+  margin-right: 7px;
+  border-radius: 9999px;
+}
+
+#search-toggle-button .material-symbols-outlined {
+  color: var(--light-mode-secondary-text-color);
+}
+
 .text-tag {
   background-color: white;
   font-size: .9rem;
@@ -1941,11 +1958,12 @@ hr {
 }
 
 #login-btn {
-  background: transparent;
-  border: 1px solid var(--border-color);
+  background: #ec803b;
+  border: 1px solid #c6642e;
   font-size: .85rem;
   padding: .25rem 1rem;
-  color: var(--light-mode-text-color);
+  color: white;
+  font-weight: bold;
 }
 
 
@@ -2068,7 +2086,7 @@ hr {
 .user-links {
   position: relative;
   display: flex;
-  gap: .35rem;
+  gap: .55rem;
   align-items: center;
   transition: transform 0.1s linear;
 }
@@ -2220,8 +2238,18 @@ details[open] {
     background-color: var(--dark-mode-main-color);
   }
 
+  .selected-text-tag {
+    border-color: #fff !important;
+    color: #fff !important;
+  }
+
+
   .menu-content a {
     color: #fff;
+  }
+
+  #search-toggle-button .material-symbols-outlined {
+    color: var(--dark-mode-third-text-color);
   }
 
 
@@ -2277,6 +2305,10 @@ details[open] {
   .spinner {
     border: 5px solid #121212;
     border-top: 5px solid #3498db;
+  }
+
+  #search-bar-toggle {
+    border-color: var(--dark-mode-border-color);
   }
 
   hr {
@@ -2715,11 +2747,6 @@ input::placeholder {
   .search-bar input[type="search"]:focus,
   .search-bar input[type="search"]:hover {
     background-color: #666;
-  }
-
-  #login-btn {
-    background: transparent;
-    border: 1px solid var(--dark-mode-border-color);
   }
 
   @media (max-width: 768px) {

@@ -19,6 +19,66 @@ const state = {
   jobSearchInput: document.getElementById('job-search-input'),
 };
 
+function updateStateFromQuery() {
+  const query = getQueryParams();
+  if (Object.keys(query).length > 0) {
+    flushState();
+    console.log(query);
+    console.log('cleared state');
+     
+  }
+  
+  if (query.skill) {
+    state.filters.skills = new Set();
+    if (Array.isArray(query.skill)) {
+      query.skill.forEach(skill =>  {
+        state.filters.skills.add(skill.trim())
+      addToSelectedFilters('skills', query.skill, query.skill);
+      });
+    } else {
+      state.filters.skills.add(query.skill.trim());
+      addToSelectedFilters('skills', query.skill, query.skill);
+    }
+  }
+  if (query.locations) {
+    state.filters.locations = new Set();
+    if (Array.isArray(query.location)) {
+      query.locations.forEach(location => {
+        state.filters.locations.add(location.trim());
+        addToSelectedFilters('job-locations', location, location);
+      });
+    } else {
+      state.filters.locations.add(query.locations.trim());
+      addToSelectedFilters('job-locations', query.locations, query.locations);
+
+    }
+  }
+
+  // trigger search if there are any filters from the query
+  if (Object.keys(query).length > 0) {
+    triggerJobSearch();
+  }
+
+}
+
+function getQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+  const query = {};
+  for (const [key, value] of params.entries()) {
+    if (query[key]) {
+      // If the key already exists, convert it to an array
+      if (Array.isArray(query[key])) {
+        query[key].push(value);
+      } else {
+        query[key] = [query[key], value];
+      }
+    } else {
+      query[key] = value;
+    }
+  }
+  return query;
+}
+
 function setupInfiniteScroll() {
   const options = {
     root: null,
@@ -154,6 +214,8 @@ document.addEventListener('DOMContentLoaded', initialize);
 function initialize() {
   try {
   loadStateFromLocalStorage();
+  updateStateFromQuery();
+  setupInfiniteScroll();
   } catch (error) {
     console.error('Error loading state from local storage:', error);
     fetchJobPostings();
@@ -167,6 +229,12 @@ function initialize() {
 
 
 function toggleLoadingState(isLoading) {
+  if (!state.hasMoreData) {
+    elements.loadMoreButton.classList.add('hidden');
+    elements.loadingIndicator.classList.add('hidden');
+    removeInfiniteScroll();
+    return;
+  }
   if (isLoading) {
     elements.loadMoreButton.classList.add('hidden');
     elements.loadingIndicator.classList.remove('hidden');
@@ -376,7 +444,6 @@ function clearAllFilters() {
   elements.jobList.innerHTML = '';
   elements.recentJobList.innerHTML = '';
   document.querySelector('.jobs-selected-filters').innerHTML = '';
-  document.getElementById('min-salary').value = '';
 
   saveStateToLocalStorage();
   fetchJobPostings();
@@ -406,6 +473,7 @@ function resetState() {
   state.jobPostings = [];
   state.renderedJobIds.clear();
   state.hasMoreData = true;
+  state.isLoading = false;
 
   // Clear UI
   elements.jobList.innerHTML = '';
@@ -415,6 +483,27 @@ function resetState() {
 
   saveStateToLocalStorage();
   fetchJobPostings();
+}
+
+function flushState() {
+  state.filters = {
+    experiencelevels: new Set(),
+    locations: new Set(),
+    titles: new Set(),
+    salary: 0,
+    skills: new Set(),
+    companies: new Set(),
+  };
+  state.currentPage = 1;
+  state.jobPostings = [];
+  state.renderedJobIds.clear();
+  state.hasMoreData = true;
+  state.isLoading = false;
+
+  // Clear UI
+  elements.jobList.innerHTML = '';
+  elements.recentJobList.innerHTML = '';
+  document.querySelector('.jobs-selected-filters').innerHTML = '';
 }
 
 function renderCompaniesCount(companiesCount) {
@@ -488,6 +577,10 @@ async function fetchJobPostings() {
       state.currentPage++;
       saveStateToLocalStorage();
     } else {
+      const noJobsMessage = document.createElement('div');
+      noJobsMessage.classList =  'no-jobs-message flex h-center secondary-text mini-text';
+      noJobsMessage.textContent = '🎉 You reached the end of the list';
+      elements.jobList.appendChild(noJobsMessage);
       state.hasMoreData = false;
     }
 
@@ -529,24 +622,31 @@ function renderJobPostings(jobs) {
 }
 
 function formatRelativeDate(dateString) {
+  const date = new Date(dateString);
   const now = new Date();
-  const postedDate = new Date(dateString);
-  const diffTime = Math.abs(now - postedDate);
-  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  const diffMonths = Math.floor(diffDays / 30);
-  const diffYears = Math.floor(diffDays / 365);
+  const diffInSeconds = Math.floor((now - date) / 1000);
 
-  if (diffYears > 0) {
-    return `${diffYears}y`;
-  } else if (diffMonths > 0) {
-    return `${diffMonths}m`;
-  } else if (diffDays > 0) {
-    return `${diffDays}d`;
-  } else if (diffHours > 0) {
-    return `${diffHours}h`;
-  } else {
+  if (diffInSeconds < 60) {
     return 'Just now';
+  } else if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60);
+    return `${minutes}m ago`;
+  } else if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600);
+    return `${hours}h ago`;
+  } else if (diffInSeconds < 172800) {
+    return '1d ago';
+  } else {
+    const month = date.toLocaleString('default', { month: 'short' });
+    const day = String(date.getDate());
+    const year = date.getFullYear();
+    const currentYear = now.getFullYear();
+
+    if (year === currentYear) {
+      return `${month} ${day}`;
+    } else {
+      return `${month} ${day}, ${year}`;
+    }
   }
 }
 
@@ -582,7 +682,7 @@ function loadStateFromLocalStorage() {
       skills: new Set(parsedState.filters.skills),
       companies: new Set(parsedState.filters.companies),
     };
-    state.hasMoreData = parsedState.hasMoreData;
+    state.hasMoreData = true;
 
     // Restore the UI state
     restoreUIState();
@@ -659,7 +759,7 @@ const sortedTags = tagsArray.sort((a, b) => {
   if (!state.filters.skills.has(a.toLowerCase()) && state.filters.skills.has(b.toLowerCase())) return 1;
   return a.localeCompare(b, undefined, { sensitivity: 'base' });
 });
-const displayedTags = sortedTags.slice(0, 3);
+const displayedTags = sortedTags.slice(0, 6);
 
 const skillsArray = Array.from(state.filters.skills).map(skill => skill.trim().toLowerCase());
 
@@ -674,8 +774,9 @@ let tagsHTML = sortedSkills
     return bExists - aExists || a.localeCompare(b, undefined, { sensitivity: 'base' });
   })
   .map((skill) => {
-    const skillExists = state.filters.skills.has(skill.toLowerCase());
-    return `
+    const skillLower = skill.toLowerCase();
+    const skillExists = Array.from(state.filters.skills).some(s => s.toLowerCase() === skillLower);
+        return `
       <span data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="mini-text bold text-tag ${
         skillExists ? 'green-text-tag' : ''
       }">${skill}</span>`;
@@ -715,6 +816,12 @@ jobElement.innerHTML = `
       ${tagsHTML}
     </div>
     <div class="job-details">
+          ${job.salary || job.salary_max ? `
+        <span class="job-detail salary">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+          ${formatSalary(job.salary)} - ${formatSalary(job.salary_max)}/yr
+        </span>
+      ` : ``}
       <span class="job-detail applicants">
         <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
         ${job.applicants ? `${job.applicants} applicants` : '0 applicants'}
@@ -735,35 +842,11 @@ jobElement.innerHTML = `
                 : job.experienceLevel
         }
       </span>
-      ${job.salary || job.salary_max ? `
-        <span class="job-detail salary">
-          <svg class="icon" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-          ${formatSalary(job.salary)} - ${formatSalary(job.salary_max)}/yr
-        </span>
-      ` : ``}
     </div>
   </div>
 </div>
 `;
   return jobElement;
-}
-
-function setupInfiniteScroll() {
-  const options = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.1,
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting && !state.isLoading) {
-      fetchJobPostings();
-    } else if (entries[0].isIntersecting && state.isLoading) {
-      observer.unobserve(entries[0].target);
-    }
-  }, options);
-
-  observer.observe(document.querySelector('.load-more-btn'));
 }
 
 function removeInfiniteScroll() {
@@ -906,7 +989,7 @@ function addToSelectedFilters(type, id, name, logo) {
   if (existingItem) return; // Item already added
 
   const item = document.createElement(type === 'skills' ? 'span' : 'div');
-  item.className = 'tag green-tag';
+  item.className = 'text-tag selected-text-tag bold tag';
   item.dataset.id = id;
   item.dataset.type = type;
   

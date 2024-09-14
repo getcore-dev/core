@@ -318,7 +318,8 @@ div.vote-interactions {
 }
 
 .post hr {
-  margin-top: .3rem;
+  margin-top: .1rem;
+  margin-bottom: .4rem;
 }
 
 .post .px-3 {
@@ -1281,19 +1282,21 @@ button.see-more {
 }
 
 .follow-button {
-  background: rgb(37 99 235);
-  border: 0;
-  border-radius: 9999px;
+  background: white;
+  border: 1px solid rgb(37 99 235);
+  border-radius: 6px;
   padding-left: .75rem;
   padding-right: .75rem;
   padding-top: .25rem;
   padding-bottom: .25rem;
-  color: white;
+  color: rgb(37 99 235);
   font-weight: 600;
 }
 
 .follow-button.active {
-  background: rgb(55 65 81);
+  background: white;
+  color: black;
+  border-color: rgb(55 65 81);
 }
 
 @media (max-width: 768px) {
@@ -1677,7 +1680,8 @@ button.see-more {
   padding: 0;
 }
 
-#main-text {
+#main-text,
+.primary-text {
   color: var(--light-mode-text-color);
 }
 
@@ -1686,6 +1690,10 @@ button.see-more {
 }
 
 @media (prefers-color-scheme: dark) {
+
+  .primary-text {
+    color: var(--dark-mode-text-color);
+  }
 
   .posting-header {
     color: var(--dark-mode-text-color);

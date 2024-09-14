@@ -333,7 +333,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         .join('');
 
       const maxTags = 6;
-      const maxSkills = 6;
+      const maxSkills = 10;
       const displayedTags = tagsArray.slice(0, maxTags);
       const displayedSkills = skillsArray.slice(0, maxSkills);
 
@@ -346,9 +346,10 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       const skillsHTML = displayedSkills
         .map(
           (skill) =>
-            `<a class="tag" href="/skills/jobs/${skill.trim()}">${skill.trim()}</a>`
+            `<a class="mini-text bold text-tag" href="/jobs?skill=${encodeURIComponent(skill.trim())}">${skill}</a>`
         )
         .join('');
+      
 
       const remainingTags = tagsArray.length - maxTags;
       const remainingSkills = skillsArray.length - maxSkills;
@@ -389,18 +390,37 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       </div>
       
         </div>
-          <p class="job-detail" style="margin-left:auto;white-space: nowrap;">
+          <p class="job-detail bold secondary-text" style="margin-left:auto;white-space: nowrap;">
         ${job.experienceLevel}
       </p>
       </div>
 
-        <div class="job-info-flairs margin-06-bottom">
-      <p> 
-        📍 ${job.location === 'N/A' ? 'Remote' : job.location}
+        <div class="job-info-flairs sub-text margin-06-bottom">
+      <p class="text-tag bold sub-text"> 
+📍 ${
+  job.location
+    .split(',')
+    .map(loc => loc.trim().toLowerCase())
+    .filter(loc => !loc.toLowerCase().includes('n/a'))
+    .map(loc => {
+      if (loc.toLowerCase().includes('remote')) {
+        return '<a class="link bold sub-text" href="/jobs?locations=Remote">Remote</a>';
+      } else {
+        // Capitalize the first letter of each word in the country for display
+        const country = loc
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+        return `<a class="link bold sub-text" href="/jobs?locations=${encodeURIComponent(loc)}">${country}</a>`;
+      }
+    })
+    .join(', ')
+}
+
       </p>
       ${job.salary !== 0 ? `
-        <p class="sub-text">
-      💰 USD $${formatSalary(job.salary)}
+        <p class="text-tag bold salary sub-text">
+      USD $${formatSalary(job.salary)}
       ${job.salary_max !== 0 ? `- $${formatSalary(job.salary_max)}` : ''}
       ${!job.location.toLowerCase().includes('us') && 
         !job.location.toLowerCase().includes('united states') 
@@ -412,7 +432,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 
         <div class="job-skills-display">
 
-          ${tagsHTML}
+          ${skillsHTML}
           ${
   remainingTags > 0
     ? `<span class="see-more" id="secondary-text">+${remainingTags} more</span>`
@@ -423,7 +443,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 <hr>
         <div class="job-posting-description ${job.recruiter_username === 'autojob' ? 'ai-generated-content' : ''}">
   <h4 style="margin-top:0;">Job Description ${job.recruiter_username === 'autojob' ? '<span class="ai-badge">✨ AI Overview</span>' : ''}</h4>
-  <p class="mini-text secondary-text readable">${job.description}</p>
+  <p class="sub-text readable">${job.description}</p>
 </div>
       
       <div class="interact-buttons margin-1-bottom flex space-between v-center">
@@ -469,10 +489,10 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     </div>
   </div>
 </div>
-            <div class="job-details secondary-text company-profile-section">
+            <div class="job-details primary-text company-profile-section">
             <div class="job-posting-recruiter">
             <h4 class="mini-text bold" style="margin-bottom: 0.8rem;"></h4>  
-                    <h4 class="card-header" style="margin-top:0;">Recruiter Information</h4>
+                    <h4  style="margin-top:0;">Recruiter Information</h4>
 
 <div class="card">
         <div class="job-recruiter-container">
@@ -492,26 +512,14 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         </div>
     </div>
             <div class="company-description sub-text">
-              <h4 class="card-header">Company Description</h4>
+              <h4 >Company Description</h4>
               <p>${job.company_description}</p>
             </div>
-            <div class="job-skills-container">
-            <h4 class="card-header">Skills</h4>
-                              <div class="job-skills sub-text">
-    \
-      ${skillsHTML}
-      ${
-  remainingSkills > 0
-    ? `<span class="see-more">+${remainingSkills} more</span>`
-    : ''
-}
-    </div>
-    </div>
             ${
   job.Requirements
     ? `
             <div class="job-requirements">
-              <h4 class="card-header">Requirements</h4>
+              <h4 >Requirements</h4>
               <p>${job.Requirements}</p>
             </div>
             `
@@ -522,7 +530,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   job.Responsibilities
     ? `
             <div class="job-responsibilities">
-              <h4 class="card-header">Responsibilities</h4>
+              <h4 >Responsibilities</h4>
               <p>${job.Responsibilities}</p>
             </div>
             `
@@ -533,7 +541,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   job.MinimumQualifications
     ? `
 <div class="minimum-qualifications">
-  <h4 class="card-header">Minimum Qualifications</h4>
+  <h4 >Minimum Qualifications</h4>
   <p>${job.MinimumQualifications}</p>
 </div>
 `
@@ -544,7 +552,7 @@ ${
   job.PreferredQualifications
     ? `
 <div class="preferred-qualifications">
-  <h4 class="card-header">Preferred Qualifications</h4>
+  <h4 >Preferred Qualifications</h4>
   <p>${job.PreferredQualifications}</p>
 </div>
 `
@@ -555,7 +563,7 @@ ${
   formattedBenefits
     ? `
 <div class="job-benefits">
-  <h4 class="card-header">Job Benefits</h4>
+  <h4 >Job Benefits</h4>
   <ul>
     ${formattedBenefits}
   </ul>
@@ -568,7 +576,7 @@ ${
   job.NiceToHave
     ? `
 <div class="job-nice-to-have">
-  <h4 class="card-header">Nice to Have</h4>
+  <h4 >Nice to Have</h4>
   <p>${job.NiceToHave}</p>
 </div>
 `
@@ -579,7 +587,7 @@ ${
   job.schedule
     ? `
 <div class="job-schedule">
-  <h4 class="card-header">Schedule</h4>
+  <h4 >Schedule</h4>
   <p>${job.schedule}</p>
 </div>
 `
@@ -590,7 +598,7 @@ ${
   job.hoursPerWeek
     ? `
 <div class="job-hours-per-week">
-  <h4 class="card-header">Hours per Week</h4>
+  <h4 >Hours per Week</h4>
   <p>${job.hoursPerWeek}</p>
 </div>
 `
@@ -601,7 +609,7 @@ ${
   job.equalOpportunityEmployerInfo
     ? `
 <div class="job-equal-opportunity-employer-info">
-  <h4 class="card-header">Equal Opportunity Employer Info</h4>
+  <h4 >Equal Opportunity Employer Info</h4>
   <p>${job.equalOpportunityEmployerInfo}</p>
 </div>
 `
@@ -609,31 +617,14 @@ ${
 }
 
 <div class="job-relocation">
-  <h4 class="card-header">Relocation</h4>
+  <h4 >Relocation</h4>
   <p>${job.relocation ? 'Yes' : 'No'}</p>
 </div>
-<div class="similar-jobs-location">
-${
-  job.location
-    ? `
-  <h4 class="card-header">More jobs in </h4>
-  <ul class="locations">
-${job.location
-    .split(',')
-    .map(
-      (loc) =>
-        `<li><a class="link" href="/jobs/location/${loc.trim()}">${loc.trim()}</a></li>`
-    )
-    .join('')}
-  `
-    : ''
-}
-</ul>
                 <div class="autojob-warning">
                     <span class="warning-icon">⚠️</span>
                     <span class="warning-text">This post is scraped from the internet and may contain errors.</span>
                 </div>
-</div>
+
 </div>
 
               

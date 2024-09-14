@@ -170,7 +170,7 @@ input[type="password"]:not(:placeholder-shown)+.floating-label {
   cursor: pointer;
   color: #333;
   align-items: center;
-  top: 4px;
+  top: 0;
 }
 
 #login #submit-button,
@@ -353,11 +353,13 @@ nav {
   }
 
   main {
-    padding-top: 30vh;
+    padding-top: 20vh;
+    height: calc(100dvh - 240px);
   }
 
   .core-logo {
-    top: 10vh;
+    height: 68px;
+    top: 6vh;
   }
 
 
