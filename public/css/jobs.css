@@ -450,11 +450,16 @@ div.job-title-location .sub-text {
   cursor: pointer;
 }
 
+.salary {
+  color: #119f11 !important;
+}
+
 .job-details {
   display: flex;
+  font-weight: 600;
   flex-wrap: wrap;
-  gap: 1rem;
-  font-size: 0.75rem;
+  gap: .8rem;
+  font-size: 14px;
   color: #6b7280;
 }
 
@@ -572,12 +577,11 @@ div.job-title-location .sub-text {
 
 .load-more {
   margin-bottom: 15px;
-  padding: 20px;
+  padding: 0 .7rem;
 }
 
 .load-more-btn {
-  background: none !important;
-  color: var(--light-mode-text-color) !important;
+  margin: 0 !important;
   box-sizing: border-box;
 }
 
@@ -996,12 +1000,6 @@ div .material-symbols-outlined:not(:only-child) {
     color: var(--dark-mode-secondary-text-color);
   }
 
-  .load-more-btn {
-    background: var(--dark-mode-main-color) !important;
-    color: var(--dark-mode-text-color) !important;
-    border-color: var(--dark-mode-border-color) !important;
-  }
-
   .job-search-results {
     background: var(--dark-mode-main-color);
   }
@@ -1103,7 +1101,7 @@ div .material-symbols-outlined:not(:only-child) {
     gap: .5rem;
   }
 
-.job {
+  .job {
     display: flex;
     align-items: center;
     background: var(--light-mode-main-color);

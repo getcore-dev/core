@@ -37,7 +37,7 @@
   <main>
     <div class="tag-search-menu">
       <div class="tag-search-header margin-06-bottom">
-        <h4>Results for <span class="green-text-tag mini-text text-tag"><%= skill.trim() %></span></h4>
+        <h4>Results for <span class="green-text-tag mini-text bold text-tag"><%= skill.trim() %></span></h4>
       </div>
       <div>
         <h4 class="margin-03-bottom third-text mini-text">Similar Results</h4>
@@ -348,6 +348,7 @@ function blendColors(color1, color2, ratio) {
             data.forEach(similarSkill => {
               const tagElement = document.createElement('span');
               tagElement.classList.add('text-tag');
+              tagElement.classList.add('bold');
               tagElement.textContent = similarSkill.name;
               tagElement.onclick = () => window.location.href = `/skills/${similarSkill.name.trim()}`;
               similarTagsContainer.appendChild(tagElement);

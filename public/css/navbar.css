@@ -238,6 +238,11 @@ a:visited {
   color: #309b4f !important;
 }
 
+.selected-text-tag {
+  border-color: #000 !important;
+  color: #000 !important;
+}
+
 .condensed {
   overflow: hidden;
   display: -webkit-box;
@@ -1953,11 +1958,12 @@ hr {
 }
 
 #login-btn {
-  background: transparent;
-  border: 1px solid var(--border-color);
+  background: #ec803b;
+  border: 1px solid #c6642e;
   font-size: .85rem;
   padding: .25rem 1rem;
-  color: var(--light-mode-text-color);
+  color: white;
+  font-weight: bold;
 }
 
 
@@ -2231,6 +2237,12 @@ details[open] {
   .menu-content {
     background-color: var(--dark-mode-main-color);
   }
+
+  .selected-text-tag {
+    border-color: #fff !important;
+    color: #fff !important;
+  }
+
 
   .menu-content a {
     color: #fff;
@@ -2735,11 +2747,6 @@ input::placeholder {
   .search-bar input[type="search"]:focus,
   .search-bar input[type="search"]:hover {
     background-color: #666;
-  }
-
-  #login-btn {
-    background: transparent;
-    border: 1px solid var(--dark-mode-border-color);
   }
 
   @media (max-width: 768px) {

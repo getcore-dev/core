@@ -318,7 +318,8 @@ div.vote-interactions {
 }
 
 .post hr {
-  margin-top: .3rem;
+  margin-top: .1rem;
+  margin-bottom: .4rem;
 }
 
 .post .px-3 {
@@ -1677,7 +1678,8 @@ button.see-more {
   padding: 0;
 }
 
-#main-text {
+#main-text,
+.primary-text {
   color: var(--light-mode-text-color);
 }
 
@@ -1686,6 +1688,10 @@ button.see-more {
 }
 
 @media (prefers-color-scheme: dark) {
+
+  .primary-text {
+    color: var(--dark-mode-text-color);
+  }
 
   .posting-header {
     color: var(--dark-mode-text-color);
