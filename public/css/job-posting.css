@@ -326,9 +326,9 @@ div.similar-job h4 {
 .job-details h4,
 .similar-jobs h4,
 .similar-company-jobs h4 {
-  font-size: 1.2rem;
+  font-size: 16px;
   margin: .8rem 0;
-  font-weight: 700;
+  font-weight: 500;
   margin-top: 1.35rem;
 }
 
@@ -647,14 +647,6 @@ ul.locations {
   @media (prefers-color-scheme: dark) {
     .job-listing-menu {
       border-color: var(--dark-mode-border-color)
-    }
-
-    .job-details h4,
-    .similar-jobs h4,
-    .similar-company-jobs h4 {
-      font-size: var(--mobile-default-font-size);
-      margin: .8rem 0;
-      margin-top: 1.35rem;
     }
 
     div.similar-job {
