@@ -371,7 +371,7 @@ div.similar-job h4 {
 ul.locations {
   font-size: var(--default-sub-font-size);
   line-height: 1.5;
-  font-weight: 500;
+  font-weight: 400;
   margin: 0;
   margin-bottom: 0;
 }
