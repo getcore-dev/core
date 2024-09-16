@@ -351,10 +351,10 @@
           </div>`;
 
             postDiv.innerHTML = `
-          <div class="flex items-start margin-06-bottom">
+          <div class="flex items-start margin-03-bottom">
             ${avatarHtml}
 
-            <div class="ml-3 flex flex-col flex-grow items-start" style="gap: .08rem .3rem;">
+            <div class="ml-3 flex flex-col flex-grow items-start" style="gap: 0;">
             <div class="flex flex-row gap-03">
               <h2 class="main-text bold">${post.title}</h2>
                             <span class="third-text mini-text"">
@@ -362,10 +362,10 @@
                 ${formatDate(post.created_at)}
               </span>
               </div>
-              <div class="flex flex-row gap-03">
+              <div class="flex flex-row">
               <p class="mini-text third-text">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username}</p>
-                          <div class="text-sm bg-gray-100 text-gray-800 py-1 px-2 rounded" style="font-weight:500;line-height:1;font-size:12px;color:${networkIconColor};background:${networkIconColor}26;border:1px solid ${networkIconColor}9e;">
-              ${post.community_shortname.toUpperCase()}
+                          <div class="text-sm py-1 px-2 rounded" style="font-weight:500;line-height:1;font-size:12px;color:${networkIconColor};">
+              /${post.community_shortname}
             </div>
               </div>
             </div>
@@ -391,15 +391,15 @@
           <div class="flex post-flairs-container text-sm text-gray-500 justify-between">
             <div class="mini-text flex items-center space-x-4 flex-grow space-between">
               <span class="flex items-center">
-                <span class="material-symbols-outlined" style="font-size: 1rem;">favorite</span>
+                <span class="material-symbols-outlined" style="font-size: .8rem;">favorite</span>
                 ${post.loveCount + post.likeCount + post.dislikeCount + post.curiousCount} reaction${post.loveCount + post.likeCount + post.dislikeCount + post.curiousCount !== 1 ? 's' : ''}
               </span>
               <span class="flex items-center">
-                <span class="material-symbols-outlined" style="font-size: 1rem;">chat_bubble</span>
+                <span class="material-symbols-outlined" style="font-size: .8rem;">chat_bubble</span>
                 ${post.comment_count} comment${post.comment_count !== 1 ? 's' : ''}
               </span>
               <span class="flex items-center">
-                <span class="material-symbols-outlined" style="font-size: 1rem;">share</span>
+                <span class="material-symbols-outlined" style="font-size: .8rem;">share</span>
                 ${post.share_count || 0} share${post.share_count !== 1 ? 's' : ''}
               </span>
             </div>
