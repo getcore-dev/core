@@ -98,8 +98,8 @@
 
 .comment-header a,
 #blog-username {
-  color: var(--light-mode-secondary-text-color);
-  font-weight: 600;
+  color: var(--light-mode-text-color);
+  font-weight: 500;
 }
 
 .post-body a:visited {
@@ -233,7 +233,7 @@
 
   .comment-header a,
   #blog-username {
-    color: var(--dark-mode-secondary-text-color);
+    color: var(--dark-mode-text-color);
   }
 
   .project-link,
