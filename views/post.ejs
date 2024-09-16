@@ -108,7 +108,7 @@
                       <% } %>
                       <% if (post.user.verified) { %>
                       <span>
-                        <span class="material-symbols-outlined" style="padding: 0;font-size: .85rem;color:#16a86b;font-weight: 600;">verified</span>
+                        <span class="material-symbols-outlined" style="padding: 0;font-size: .85rem;color:#16a86b;font-weight: 500;">verified</span>
                       </span>
                       <% } %>
                     </a>
@@ -126,7 +126,7 @@
 
               <a id="community-header-text" class="sub-text" href="/networks/<%= post.community.shortname %>"> <%= post.community.shortname.toLowerCase() %></a> /
 
-              <h2 class="post-title" style="font-size: 1.35rem;font-weight: bold;margin-bottom: .05rem;">
+              <h2 class="post-title" style="font-size: 1.35rem;font-weight: 500;margin-bottom: .05rem;">
 
                 <%= post.title %>
 
@@ -769,7 +769,7 @@
                         <%= similarPost.firstname && similarPost.lastname ? `${similarPost.firstname} ${similarPost.lastname}` : similarPost.username %>
                       </a>
                       <% if (similarPost.verified) { %>
-                      <span class="material-symbols-outlined" style="padding:0;font-size: .85rem;color:#16a86b;font-weight: 600;">verified</span>
+                      <span class="material-symbols-outlined" style="padding:0;font-size: .85rem;color:#16a86b;font-weight: 500;">verified</span>
                       <% } %>
                       <% if (similarPost.isModerator) { %>
                       <span class="material-symbols-outlined" style="font-size:.85rem;color:#169da8;">admin_panel_settings</span>
