@@ -1542,15 +1542,7 @@ button.see-more {
     max-width: 100%;
   }
 
-  .communities.active {
-    border: 1px solid #afd4ff !important;
-  }
-
   @media (prefers-color-scheme: dark) {
-    .communities.active {
-      border: 1px solid #224368 !important;
-    }
-
     .jobslist .job {
       background: 0;
     }
