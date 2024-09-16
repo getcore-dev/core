@@ -3235,7 +3235,6 @@ input::placeholder {
   .null-button-normal,
   #null-button-normal {
     padding: 0.35rem .85rem;
-    height: 40px;
   }
 
   input[type='text'],
