@@ -12,7 +12,7 @@
   --light-mode-text-color: #000;
   --light-mode-bold-text-color: #000000;
   --light-mode-secondary-text-color: #505050;
-  --light-mode-third-text-color: #707070;
+  --light-mode-third-text-color: rgb(60, 66, 87);
   --hover-background-color: #ddd;
   --active-indicator-color: #5083ca;
   --dark-mode-main-color: #0c0e15;
@@ -32,14 +32,14 @@
 
 
   /* Font and size variables */
-  --font-family: "Inter", sans-serif;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", "Ubuntu";
   --default-font-size: .9rem;
   --default-sub-font-size: .8rem;
   --navbar-button-font-size: 16px;
   --nav-text-font-size: 20px;
   --navbar-height: 65px;
-  --mobile-default-font-size: 1.125rem;
-  --mobile-default-sub-font-size: .975rem;
+  --mobile-default-font-size: 16px;
+  --mobile-default-sub-font-size: 15px;
   --mobile-navbar-height: 50px;
   --mobile-second-navbar-height: 38px;
   --logo-max-height: 65px;
@@ -1308,11 +1308,11 @@ a>.menu-item {
   }
 
   .sub-text {
-    font-size: var(--mobile-default-sub-font-size);
+    font-size: 15px;
   }
 
   .mini-text {
-    font-size: .85rem;
+    font-size: 12px;
   }
 
   .user-links {

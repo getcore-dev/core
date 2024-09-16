@@ -303,8 +303,9 @@ div.vote-interactions {
 
 .post-tag {
   font-size: 0.75rem;
-  background-color: #f3f4f6;
+  background-color: white;
   color: #374151;
+  border: 1px solid #adb2bb;
   padding: 0.25rem 0.5rem;
   border-radius: 7px;
 }
@@ -689,7 +690,9 @@ a.community:hover {
   width: 100%;
   overflow: hidden;
   box-sizing: border-box;
-  line-height: 1.3;
+  line-height: 20px;
+  font-feature-settings: "pnum";
+  font-variant: proportional-nums;
 }
 
 div .mini-link {
@@ -1559,8 +1562,8 @@ button.see-more {
   }
 
   .post .thumbnail-tiny {
-    height: 35px;
-    width: 35px;
+    height: 30px;
+    width: 30px;
   }
 
   .description {
@@ -1954,7 +1957,8 @@ button.see-more {
   }
 
   .post-tag {
-    background-color: rgb(31 41 55);
+    background-color: black;
+    border: 1px solid rgb(31 41 55);
     color: var(--dark-mode-text-color);
   }
 

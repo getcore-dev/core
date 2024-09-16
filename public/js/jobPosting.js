@@ -183,7 +183,7 @@ function createJobElement(job) {
     : ''
 }
     <div class="flex flex-col">
-      <a href="/jobs/${job.id}"><h3 class="job-title main-text">${job.title}</h3></a>
+      <a href="/jobs/${job.id}"><h3 class="job-title sub-text">${job.title}</h3></a>
       <p class="company-name">${job.company_name}</p>
     </div>
     </div>
