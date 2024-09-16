@@ -526,13 +526,6 @@ div.job-title-location .sub-text {
   flex-grow: 1;
 }
 
-.job-location,
-.salary-range,
-.experience-level,
-.posted-date {
-  font-size: 14px;
-}
-
 .apply-button {
   margin-left: 16px;
 }
