@@ -8,6 +8,7 @@ body {
 .post,
 .job {
   display: flex;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   background: var(--light-mode-main-color);
   border-radius: 16px;
   flex-direction: row;

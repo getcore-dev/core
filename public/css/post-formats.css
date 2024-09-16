@@ -4,7 +4,7 @@
 
 .post-body p,
 .comment-body p {
-  color: var(--light-mode-secondary-text-color);
+  color: var(--light-mode-text-color);
 }
 
 .project-link :is(h1, h2, h3, h4, h5, h6) {
@@ -77,7 +77,7 @@
 }
 
 .post-body>p {
-  color: var(--light-mode-secondary-text-color);
+  color: var(--light-mode-text-color);
   font-size: var(--mobile-default-sub-font-size);
   line-height: 1.5;
   font-weight: 400;

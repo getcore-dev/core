@@ -22,48 +22,81 @@
   <%- include('partials/navbar', { pagePath: 'home' }) %>
   <main>
     <div class="post-header" id="secondary-text">
-      <h5>Post Type</h5>
+      <h5 class="main-text">Create Post</h5>
     </div>
-
-    <div class="post-selector">
-      <div class="post-type" style="background-color: #e27b38;border: 1px solid #bc632a;">
-        <a href="#" class="post-type-button" id="discussion" style="color:white">Discussion</a>
-      </div>
-      <div class="post-type">
-        <a href="#" class="post-type-button" id="question">Question</a>
-      </div>
-      <div class="post-type">
-        <a href="#" class="post-type-button" id="blog">Blog</a>
-      </div>
-      <div class="post-type">
-        <a href="#" class="post-type-button" id="project">Project</a>
-      </div>
-    </div>
-
     </div>
     <div class="main-container">
-
+      <details open>
+        <summary>Posting Rules</summary>
+        <ol class="rules-container">
+          <details >
+            <summary><strong>No Harassment or Bullying</strong></summary>
+            <p>Posts or comments that target individuals or groups with harassment, bullying, or intimidation will not be tolerated.</p>
+          </details>
+          <details >
+            <summary><strong>Respect Privacy</strong></summary>
+            <p>Do not share personal information about others without their consent. This includes contact information, addresses, or any private details.</p>
+          </details>
+          <details >
+            <summary><strong>No Spam or Self-Promotion</strong></summary>
+            <p>Avoid posting irrelevant content, spam, or excessive self-promotion. Focus on sharing valuable insights, questions, and professional updates.</p>
+          </details>
+          <details >
+            <summary><strong>No Discrimination</strong></summary>
+            <p>Ensure that all posts and interactions are free from discrimination based on gender, age, disability, sexual orientation, religion, or any other protected characteristic.</p>
+          </details>
+          <details >
+            <summary><strong>Accuracy and Integrity</strong></summary>
+            <p>Share information and projects with integrity and ensure that what you post is accurate. Misinformation or deceptive content should be avoided.</p>
+          </details>
+          <details>
+            <summary><strong>Intellectual Property</strong></summary>
+            <p>Respect intellectual property rights. Do not post content that infringes on copyrights, trademarks, or other intellectual property.</p>
+          </details>
+          <details >
+            <summary><strong>Constructive Feedback</strong></summary>
+            <p>When providing feedback on projects or ideas, ensure that it is constructive and respectful. Avoid derogatory or dismissive comments.</p>
+          </details>
+          <details>
+            <summary><strong>Report Violations</strong></summary>
+            <p>Encourage users to report any content or behavior that violates these rules so that appropriate action can be taken.</p>
+          </details>
+        </ol>
+      </details>
+      <div class="selector">
+        <div class="post-type">
+          <a href="#" class="secondary-text selector-button selected" id="discussion">Discussion</a>
+        </div>
+        <div class="post-type">
+          <a href="#" class="secondary-text selector-button" id="question">Question</a>
+        </div>
+        <div class="post-type">
+          <a href="#" class="secondary-text selector-button" id="blog">Blog</a>
+        </div>
+        <div class="post-type">
+          <a href="#" class="secondary-text selector-button" id="project">Project</a>
+        </div>
+      </div>
       <form action="/posts" method="POST">
         <input type="hidden" id="post_type" name="post_type" value="discussion" />
         <div class="form-group" id="community">
-          <label class="secondary-text sub-text" for="community_id">Community</label>
-          <select id="community_choice" name="community_id" placeholder="Communities" </select>
+          <select id="community_choice" name="community_id" placeholder="Communities">
+            <option class="secondary-text" value="" disabled selected>Select a community</option>
+          </select>
         </div>
         <div class="form-group">
           <input type="hidden" name="userId" value="<%= user.id %>" />
           <div class="form-group" id="title-field">
 
-            <label class="secondary-text sub-text" for="title">Title</label>
-            <input type="text" id="title" name="title" required />
+
+            <input type="text" id="title" name="title" required placeholder="Title" />
           </div>
           <div class="form-group" id="subtitle-field">
 
-            <label class="secondary-text sub-text" id="subtitle2" for="subtitle">Subtitle</label>
-            <input type="text" id="subtitle" name="subtitle" />
+            <input type="text" id="subtitle" name="subtitle" placeholder="Subtitle" />
           </div>
           <div class="form-group" id="link-field">
-            <label class="secondary-text sub-text" id="link-label" for="link">Link</label>
-            <input type="text" id="link" name="link" />
+            <input type="text" id="link" name="link" placeholder="Link (optional)" />
           </div>
           <div class="form-group">
             <textarea id="content" name="content"></textarea>
@@ -80,12 +113,12 @@
           </div>
 
         </div>
-        <button id="submit-button" type="submit">Submit Post</button>
+        <button class="main-button" type="submit">Submit Post</button>
       </form>
     </div>
   </main>
   <script>
-    $('.post-type-button').click(function (e) {
+    $('.selector-button').click(function (e) {
       e.preventDefault(); // Prevent the default link behavior
 
       // Update header text, hidden input value, and link field visibility based on the clicked element
@@ -106,7 +139,6 @@
         $('#subtitle').show();
         $('#subtitle2').show();
         $('#link-field').hide();
-
         break;
       case 'project':
         $('#link-field').show();
@@ -115,14 +147,11 @@
         $('#link-label').text('GitHub URL:');
         break;
       }
-      $('#post_type').val(selectedPostType); // Set the hidden input field's value
-      $('.post-type').css('background-color', '');
-      $('.post-type').css('border-color', '');
-      $('.post-type a').css('color', '');
+      $('#post_type').val(selectedPostType);
 
-      $(this).closest('.post-type').css('background-color', '#e27b38');
-      $(this).closest('.post-type').css('border', '1px solid #bc632a');
-      $(this).closest('.post-type a').css('color', 'white');
+      // Remove the 'selected' class from all buttons and add it to the clicked button
+      $('.selector-button').removeClass('selected');
+      $(this).addClass('selected');
     });
 
 
@@ -134,7 +163,7 @@
       $('.tags-select2').select2({
         width: '100%', // Full width of its container
         tags: true, // Allows user to create new tags
-        placeholder: "Tags",
+        placeholder: "Tags (comma separated)",
         tokenSeparators: [',', ' '] // Optional: Defines separators for tokenization
       });
 
