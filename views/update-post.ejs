@@ -18,12 +18,12 @@
   <main>
     <div class="update-post">
       <div class="update-post-content">
-        <h4 class="update-post-header margin-06-bottom"><a href="/updates">Updates</a> / <span style="color:#b10000;" class="update-post-header-text">Loading...</span></h4>
+        <h4 class="update-post-header sub-text margin-06-bottom"><a href="/updates">Updates</a> / <span style="color:#b10000;" class="update-post-header-text">Loading...</span></h4>
 
         <div class="update-post-info">
           <div class="update-post-details">
             <div class="update-post-title-container">
-              <h3 class="update-post-title">Loading...</h3>
+              <h3 class="update-post-title main-text">Loading...</h3>
             </div>
             <div>
               <p class="update-post-date sub-text secondary-text">Loading...</p>
@@ -129,12 +129,16 @@
 
           if (updatePostHeader && updatePostTitle && updatePostDate && updatePostBody && updateComments) {
             // Update your DOM elements here
-            updatePostHeader.textContent = updateData.user_name;
+            const updatePostHeaderLink = document.createElement('a');
+            updatePostHeaderLink.textContent = updateData.user_name;
+            updatePostHeaderLink.href = `/user/${updateData.user_name}`;
+            updatePostHeader.innerHTML = '';
+            updatePostHeader.appendChild(updatePostHeaderLink);
             updatePostTitle.textContent = updateData.title;
             updatePostDate.textContent = formatDate(updateData.post_date);
 
             // Create HTML content for the update body, including PR info
-            let bodyContent = '<p class="update-data">' + updateData.content + '</p>';
+            let bodyContent = '<p class="update-data sub-text">' + updateData.content + '</p>';
             if (prData && prData.pr_url) {
               bodyContent += displayPullRequestInfo(prData);
             }
@@ -142,7 +146,7 @@
             let additionalInfo = updateData.additional_info;
             if (additionalInfo) {
               additionalInfo = additionalInfo.replace(/\n/g, '<br>');
-              bodyContent += `<p class="update-additional-info">${additionalInfo}</p>`;
+              bodyContent += `<p class="update-additional-info sub-text">${additionalInfo}</p>`;
             }
             updatePostBody.innerHTML = bodyContent;
 
@@ -158,11 +162,11 @@
                 <img class="thumbnail thumbnail-tiny thumbnail-regular" src="${comment.user_avatar}" alt="User Icon">
               </div>
               <div class="comment-details">
-                <div class="comment-author main-text">${comment.user_name}</div>
-                <div class="comment-date sub-text secondary-text">${formatDate(comment.created_at)}</div>
+                <div class="comment-author"><a class="link bold secondary-text" href="/user/${comment.user_name}">${comment.user_name}</a></div>
+                <div class="comment-date sub-text mini-text">${formatDate(comment.created_at)}</div>
               </div>
             </div>
-            <div class="comment-body main-text">${comment.content}</div>
+            <div class="comment-body sub-text">${comment.content}</div>
           `;
               updateComments.appendChild(commentElement);
             });

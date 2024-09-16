@@ -546,8 +546,7 @@ ul.locations {
     color: var(--dark-mode-text-color);
   }
 
-  .company-location,
-  .job-listing-menu p {
+  .company-location {
     color: var(--dark-mode-third-text-color);
   }
 
@@ -653,7 +652,7 @@ ul.locations {
     .job-details h4,
     .similar-jobs h4,
     .similar-company-jobs h4 {
-      font-size: var(--mobile-default-sub-font-size);
+      font-size: var(--mobile-default-font-size);
       margin: .8rem 0;
       margin-top: 1.35rem;
     }

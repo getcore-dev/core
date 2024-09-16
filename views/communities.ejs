@@ -373,7 +373,7 @@
             </div>
           </div>
 
-          <p class="description mb-2">${truncateContent(post.content, 150)}</p>
+          <p class="description sub-text mb-2">${truncateContent(post.content, 150)}</p>
                     ${post.post_tags ? `
             <div class="post-tags-div">
               ${post.post_tags.split(',').map(tag => `
@@ -389,7 +389,7 @@
           ` : ''}
         <hr>
           <div class="flex post-flairs-container text-sm text-gray-500 justify-between">
-            <div class="flex items-center space-x-4 flex-grow space-between">
+            <div class="mini-text flex items-center space-x-4 flex-grow space-between">
               <span class="flex items-center">
                 <span class="material-symbols-outlined" style="font-size: 1rem;">favorite</span>
                 ${post.loveCount + post.likeCount + post.dislikeCount + post.curiousCount} reaction${post.loveCount + post.likeCount + post.dislikeCount + post.curiousCount !== 1 ? 's' : ''}
