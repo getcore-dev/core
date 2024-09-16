@@ -3259,23 +3259,8 @@ input::placeholder {
     padding: 5px 0;
   }
 
-  #submit-button,
-  #cancel-button,
-  #regular-button,
-  .submit-button,
-  .cancel-button,
-  .regular-button,
-  .special-button,
-  #special-button,
-  .null-button,
-  #null-button {
-    height: 44px;
-  }
-
-
   .trending-post a:hover {
     background-color: #555;
-    /* Lighter background on hover */
   }
 }
 
