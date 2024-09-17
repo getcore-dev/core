@@ -173,11 +173,6 @@ input[type="password"]:not(:placeholder-shown)+.floating-label {
   top: 0;
 }
 
-#login #submit-button,
-.github-login-btn {
-  height: 50px !important;
-}
-
 .toggle-password .material-symbols-outlined {
   font-size: 1.15rem;
 }

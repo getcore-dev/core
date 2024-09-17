@@ -457,7 +457,7 @@ router.get('/users/:userId/followers', async (req, res) => {
 });
 
 router.get('/:catchAll', async (req, res) => {
-  res.render('communities.ejs' , { user: req.user, communityId: null, errorMessages: ['Page not found'], successMessages: [] });
+  res.render('communities.ejs' , { user: req.user, communityId: null, community: null, errorMessages: ['Page not found'], successMessages: [] });
 });
 
 // Error handling middleware

@@ -194,7 +194,7 @@ router.get('/posts/:postId', viewLimiter, async (req, res) => {
   } catch (err) {
     // handle TypeError: Cannot read property 'communities_id' of undefined
     console.error('Database query error:', err);
-    res.status(500).render('communities.ejs' , { user: req.user, communityId: null, errorMessages: ["Error finding that post"], successMessages: [] });
+    res.status(500).render('communities.ejs' , { user: req.user, communityId: null, community: null, errorMessages: ['Error finding that post'], successMessages: [] });
 
 
   }
@@ -242,7 +242,7 @@ async function fetchComments(postId, user) {
         SUM(CASE WHEN uca.action_type = 'CURIOUS' THEN 1 ELSE 0 END) AS curiousCount,
         SUM(CASE WHEN uca.action_type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount,
         SUM(CASE WHEN uca.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) AS celebrateCount,
-        ${user ? `(SELECT TOP 1 uca2.action_type FROM UserCommentActions uca2 WHERE uca2.comment_id = c.id AND uca2.user_id = @userId) AS userReaction,` : 'NULL AS userReaction,'}
+        ${user ? '(SELECT TOP 1 uca2.action_type FROM UserCommentActions uca2 WHERE uca2.comment_id = c.id AND uca2.user_id = @userId) AS userReaction,' : 'NULL AS userReaction,'}
         CASE WHEN EXISTS (SELECT 1 FROM comments child WHERE child.parent_comment_id = c.id) THEN 1 ELSE 0 END AS hasReplies
       FROM comments c
       LEFT JOIN UserCommentActions uca ON c.id = uca.comment_id
@@ -347,7 +347,7 @@ router.delete('/post/:postId', checkAuthenticated, async (req, res) => {
     }
 
     await postQueries.deletePostById(postId);
-    res.render('communities.ejs' , { user: req.user, communityId: null, errorMessages: [], successMessages: ['Post deleted successfully'] });
+    res.render('communities.ejs' , { user: req.user, communityId: null, community: null, errorMessages: [], successMessages: ['Post deleted successfully'] });
   } catch (error) {
     res.status(500).send('Error deleting post');
   }

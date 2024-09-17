@@ -14,148 +14,409 @@
 <body>
   <%- include('partials/navbar', { pagePath: 'edit' }) %>
   <div class="container">
-    <div class="avatar-preview-container">
-      <div class="avatar-image">
-        <img src="<%= edit_user.avatar %>" alt="avatar" id="avatar-preview" style="box-shadow: 0 2px 20px <%= edit_user.profile_border_color%>;border: 1px solid <%= edit_user.profile_border_color%> !important;" />
-        <div class="avatar-overlay">
-          <span class="overlay-text">Change Avatar</span>
-        </div>
+    <div id="educationModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Update Education Experience</h2>
+        <div id="educationPreview"></div>
+        <p>Would you like to update your education experience with the data from your resume?</p>
+        <button id="updateEducation">Yes, Update</button>
+        <button id="skipEducation">No, Skip</button>
       </div>
     </div>
-    <span>
-      <label for="avatar">Profile Color</label>
-      <input type="color" id="profile_border_color" name="profile_border_color" value="<%= edit_user.profile_border_color%>">
-    </span>
-    <span id="avatar-upload">
-      <input type="file" id="avatar" class="upload-avatar" name="avatar" accept="image/*">
-    </span>
+    <div id="workModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Update Work Experience</h2>
+        <div id="workPreview"></div>
+        <p>Would you like to update your work experience with the data from your resume?</p>
+        <button id="updateWork">Yes, Update</button>
+        <button id="skipWork">No, Skip</button>
+      </div>
+    </div>
+    <!-- Basic Info Section -->
+    <section class="section">
+      <h2 class="section-title">Basic Info</h2>
+      <div class="basic-info">
+        <div class="avatar-wrapper">
+          <img src="<%= edit_user.avatar %>" alt="avatar" id="avatar-preview" class="avatar-image" />
+          <label for="avatar" class="avatar-overlay">
+            <span>Change Avatar</span>
+          </label>
+          <input type="file" id="avatar" name="avatar" accept="image/*" class="hidden-input" aria-label="Upload Avatar">
+        </div>
+        <div class="name-fields">
+          <div class="form-group">
+            <input type="text" id="firstname" name="firstname" value="<%= edit_user.firstname %>" placeholder="First Name" required aria-label="First Name">
+          </div>
+          <div class="form-group">
+            <input type="text" id="lastname" name="lastname" value="<%= edit_user.lastname %>" placeholder="Last Name" required aria-label="Last Name">
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <span>
-      <label for="firstname">First Name</label>
-      <input type="text" id="firstname" name="firstname" value="<%= edit_user.firstname %>" required>
-    </span>
-    <span>
-      <label for="lastname">Last Name</label>
-      <input type="text" id="lastname" name="lastname" value="<%= edit_user.lastname %>" required>
-    </span>
+    <!-- Profile Settings Section -->
+    <section class="section">
+      <h2 class="section-title">Profile Settings</h2>
+      <div class="form-group">
+        <input type="color" id="profile_border_color" name="profile_border_color" value="<%= edit_user.profile_border_color %>" title="Profile Color" aria-label="Profile Color">
+      </div>
+    </section>
 
+    <!-- Personal Info Section -->
+    <section class="section">
+      <h2 class="section-title">Personal Info</h2>
+      <div class="form-group">
+        <input type="email" id="email" name="email" value="<%= edit_user.email %>" placeholder="Email" required aria-label="Email">
+      </div>
+      <div class="form-group">
+        <textarea id="bio" name="bio" rows="4" placeholder="Bio" aria-label="Bio"><%= edit_user.bio %></textarea>
+      </div>
+      <div class="form-group">
+        <input type="text" id="zipcode" name="zipcode" value="<%= edit_user.zipcode %>" placeholder="Current Location" required aria-label="Current Location">
+      </div>
+    </section>
 
-    <span>
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" value="<%= edit_user.email %>" required>
-    </span>
+    <!-- Resume Upload Section -->
+    <section class="section">
+      <h2 class="section-title">Professional Info</h2>
+      <div class="flex flex-col gap-06">
+        <div>
+          <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" aria-label="Upload Resume">
+          <small>Accepted file types: .pdf, .doc, .docx. Max file size: 5 MB</small>
+        </div>
+        <button id="upload-resume-button" class="regular-button" style="border-color: <%= edit_user.profile_border_color%>;">
+          <span class="material-symbols-outlined">
+            upload_file
+          </span>
+          Upload Resume
+        </button>
+        <a href="/edit-education-experience">
+          <button class="regular-button" style="border-color: <%= edit_user.profile_border_color%>;">
+            <span class="material-symbols-outlined">
+              school
+            </span>
+            Edit School Experience
+          </button>
+        </a>
 
-    <span>
-      <label for="bio">Bio</label>
-      <input type="bio" id="bio" name="bio" value="<%= edit_user.bio %>" required>
-    </span>
+        <a href="/edit-experience">
+          <button class="regular-button" style="border-color: <%= edit_user.profile_border_color%>;">
+            <span class="material-symbols-outlined">
+              work
+            </span>
+            Edit Work Experience
+          </button>
+        </a>
+      </div>
 
-    <span>
-      <label for="linkedin">LinkedIn</label>
-      <input type="text" id="linkedin_url" name="linkedin_url" value="<%= edit_user.linkedin_url %>" required>
-    </span>
+    </section>
 
-    <span>
-      <label for="leetcode">LeetCode Username</label>
-      <input type="text" id="leetcode_url" name="leetcode_url" value="<%= edit_user.leetcode_url %>" required>
-    </span>
+    <!-- Socials Section -->
+    <section class="section">
+      <h2 class="section-title">Socials</h2>
+      <div class="form-group">
+        <input type="text" id="linkedin_url" name="linkedin_url" value="<%= edit_user.linkedin_url %>" placeholder="LinkedIn" required aria-label="LinkedIn">
+      </div>
+      <div class="form-group">
+        <input type="text" id="leetcode_url" name="leetcode_url" value="<%= edit_user.leetcode_url %>" placeholder="LeetCode Username" required aria-label="LeetCode Username">
+      </div>
+      <div class="form-group">
+        <input type="text" id="link" name="link" value="<%= edit_user.link %>" placeholder="Link" required aria-label="Link">
+      </div>
+      <div class="form-group">
+        <input type="text" id="link2" name="link2" value="<%= edit_user.link2 %>" placeholder="Link 2" required aria-label="Link 2">
+      </div>
+    </section>
 
-    <span>
-      <label for="link">Link</label>
-      <input type="text" id="link" name="link" value="<%= edit_user.link %>" required>
-    </span>
+    <!-- Settings Button -->
+    <div class="settings-button-container">
+      <h2 class="section-title">Additional</h2>
+      <a href="/settings">
+        <button class="main-button" style="border-color: <%= edit_user.profile_border_color%>;">
+          <span class="material-symbols-outlined">
+            settings
+          </span>
+          Settings
+        </button>
+      </a>
+    </div>
 
-    <span>
-      <label for="link2">Link 2</label>
-      <input type="text" id="link2" name="link2" value="<%= edit_user.link2 %>" required>
-    </span>
-
-    <span>
-      <label for="currentLocation">Current Location</label>
-      <input type="text" id="zipcode" name="zipcode" value="<%= edit_user.zipcode %>" required>
-    </span>
-
-    <button class="margin-1-bottom" id="submit-button">Submit</button>
+    <!-- Submit Button -->
+    <div class="submit-button-container">
+      <button id="submit-button" style="background: <%= edit_user.profile_border_color%>9a; color: white;">Submit</button>
+    </div>
 
   </div>
 
+
+
+
+
   <script>
-    const fileInput = document.getElementById('avatar');
-    const avatarPreview = document.getElementById('avatar-preview');
+    $(document).ready(function () {
+      let resumeData;
 
-    fileInput.style.display = 'none';
-    avatarPreview.addEventListener('click', function () {
-      fileInput.click();
-    });
+      // Hide modals on page load
+      $('.modal').hide();
 
-    fileInput.addEventListener('change', function () {
-      if (fileInput.files && fileInput.files[0]) {
-        const reader = new FileReader();
+      $('#upload-resume-button').click(function (e) {
+        e.preventDefault();
+        var resumeFile = $('#resume')[0].files[0];
+        if (resumeFile) {
+          var formData = new FormData();
+          formData.append('resume', resumeFile);
 
-        reader.onload = function (e) {
-          avatarPreview.src = e.target.result;
+          var $uploadButton = $(this);
+          $uploadButton.prop('disabled', true);
+          $uploadButton.html('<span class="material-symbols-outlined">autorenew</span> Uploading...');
+
+          $.ajax({
+            url: '/api/read-resume',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+              showBannerNotification('Resume uploaded and processed successfully.');
+              $uploadButton.prop('disabled', false);
+              $uploadButton.html('<span class="material-symbols-outlined">upload_file</span> Upload Resume');
+
+              // Store the resume data
+              resumeData = response.data;
+
+              // Populate and show the education modal
+              populateEducationPreview(resumeData.education);
+              $('#educationModal').show();
+            },
+            error: function (xhr, status, error) {
+              alert('Error uploading resume: ' + error);
+              $uploadButton.prop('disabled', false);
+              $uploadButton.html('<span class="material-symbols-outlined">upload_file</span> Upload Resume');
+            }
+          });
+        } else {
+          alert('Please select a resume file to upload.');
+        }
+      });
+
+      function populateEducationPreview(educationData) {
+        const $preview = $('#educationPreview');
+        $preview.empty();
+
+        educationData.forEach(edu => {
+          const $exp = $('<div class="experience-preview"></div>');
+          $exp.append(`<p><strong>Institution:</strong> ${edu.institutionName}</p>`);
+          $exp.append(`<p><strong>Degree:</strong> ${edu.degree}</p>`);
+          $exp.append(`<p><strong>Field of Study:</strong> ${edu.fieldOfStudy}</p>`);
+          $exp.append(`<p><strong>Start Date:</strong> ${edu.startDate}</p>`);
+          $exp.append(`<p><strong>End Date:</strong> ${edu.endDate || 'Current'}</p>`);
+          if (edu.grade) $exp.append(`<p><strong>Grade:</strong> ${edu.grade}</p>`);
+          if (edu.activities) $exp.append(`<p><strong>Activities:</strong> ${edu.activities}</p>`);
+          if (edu.description) $exp.append(`<p><strong>Description:</strong> ${edu.description}</p>`);
+          $preview.append($exp);
+        });
+      }
+
+      function populateWorkPreview(experienceData) {
+        const $preview = $('#workPreview');
+        $preview.empty();
+
+        experienceData.forEach(exp => {
+          const $exp = $('<div class="experience-preview"></div>');
+          $exp.append(`<p><strong>Title:</strong> ${exp.title}</p>`);
+          $exp.append(`<p><strong>Employment Type:</strong> ${exp.employmentType}</p>`);
+          $exp.append(`<p><strong>Company Name:</strong> ${exp.companyName}</p>`);
+          $exp.append(`<p><strong>Location:</strong> ${exp.location}</p>`);
+          $exp.append(`<p><strong>Start Date:</strong> ${exp.startDate}</p>`);
+          $exp.append(`<p><strong>End Date:</strong> ${exp.endDate || 'Current'}</p>`);
+          $exp.append(`<p><strong>Current Job:</strong> ${exp.isCurrent ? 'Yes' : 'No'}</p>`);
+          if (exp.description) $exp.append(`<p><strong>Description:</strong> ${exp.description}</p>`);
+          if (exp.tags) $exp.append(`<p><strong>Tags:</strong> ${exp.tags}</p>`);
+          $preview.append($exp);
+        });
+      }
+
+      // Education modal handlers
+      $('#updateEducation').click(function () {
+        updateEducationExperience(resumeData.education);
+        $('#educationModal').hide();
+        populateWorkPreview(resumeData.experience);
+        $('#workModal').show();
+      });
+
+      $('#skipEducation').click(function () {
+        $('#educationModal').hide();
+        populateWorkPreview(resumeData.experience);
+        $('#workModal').show();
+      });
+
+      // Work modal handlers
+      $('#updateWork').click(function () {
+        updateWorkExperience(resumeData.experience);
+        $('#workModal').hide();
+        populateFormFields();
+      });
+
+      $('#skipWork').click(function () {
+        $('#workModal').hide();
+        populateFormFields();
+      });
+
+      // Close button for modals
+      $('.close').click(function () {
+        $(this).closest('.modal').hide();
+      });
+
+      function updateEducationExperience(educationData) {
+        $.ajax({
+          url: '/jobs/update-education-experiences',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            experiences: educationData
+          }),
+          success: function (response) {
+            console.log('Education experience updated successfully');
+          },
+          error: function (error) {
+            console.error('Error updating education experience:', error);
+          }
+        });
+      }
+
+      function convertToSQLDatetime(dateString) {
+        if (!dateString) return null;
+
+        const months = {
+          'January': '01',
+          'February': '02',
+          'March': '03',
+          'April': '04',
+          'May': '05',
+          'June': '06',
+          'July': '07',
+          'August': '08',
+          'September': '09',
+          'October': '10',
+          'November': '11',
+          'December': '12'
         };
 
-        reader.readAsDataURL(fileInput.files[0]);
-      }
-    });
-
-
-    // Get the avatar preview container element
-    const avatarPreviewContainer = document.querySelector('.avatar-image');
-
-    // Add event listeners for mouse enter and leave events
-    avatarPreviewContainer.addEventListener('mouseenter', function () {
-      const avatarOverlay = this.querySelector('.avatar-overlay');
-      avatarOverlay.style.opacity = '1';
-
-      timer = setTimeout(() => {
-        avatarOverlay.style.opacity = '0';
-      }, 3000);
-    });
-
-    avatarPreviewContainer.addEventListener('mouseleave', function () {
-      const avatarOverlay = this.querySelector('.avatar-overlay');
-      avatarOverlay.style.opacity = '0';
-    });
-    $(document).ready(function () {
-
-      $('#submit-button').click(function (e) {
-        e.preventDefault(); // Prevent the default button action
-
-        var formData = new FormData(); // Create a new FormData object
-
-        // Append file data from file input to formData
-        var avatarFile = $('#avatar')[0].files[0]; // Get the file from input
-        if (avatarFile) {
-          formData.append('avatar', avatarFile); // Append file to formData
+        const [month, year] = dateString.split(' ');
+        if (!months[month] || !year) {
+          console.error('Invalid date format:', dateString);
+          return null;
         }
 
+        return `${year}-${months[month]}-01 00:00:00`;
+      }
 
-        // Append other form values to formData
-        $('input, select').each(function () {
-          // For each input and select element, add it to the FormData.
-          if (this.name && this.value) {
-            formData.append(this.name, this.value);
+      function updateWorkExperience(experienceData) {
+        console.log('Original experienceData:', JSON.stringify(experienceData, null, 2));
+
+        if (!Array.isArray(experienceData)) {
+          console.error('experienceData is not an array');
+          showBannerNotification('Error: Invalid experience data format');
+          return;
+        }
+
+        // Convert dates to SQL format
+        const convertedExperienceData = experienceData.map(exp => {
+          if (typeof exp !== 'object' || exp === null) {
+            console.error('Invalid experience object:', exp);
+            return null;
           }
-        });
+          return {
+            ...exp,
+            startDate: convertToSQLDatetime(exp.startDate),
+            endDate: convertToSQLDatetime(exp.endDate)
+          };
+        }).filter(exp => exp !== null);
 
-        // Make the AJAX request
+        console.log('Converted experienceData:', JSON.stringify(convertedExperienceData, null, 2));
+        console.log('Number of experiences being sent:', convertedExperienceData.length);
+
         $.ajax({
-          url: '/edit-profile',
-          type: 'POST',
-          data: formData,
-          processData: false, // Important: tell jQuery not to process the data
-          contentType: false, // Important: tell jQuery not to set contentType
+          url: '/jobs/update-experiences',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            experiences: convertedExperienceData
+          }),
           success: function (response) {
-            showBannerNotification('Profile updated successfully.');
-            window.location.href = '/profile';
+            console.log('Work experience update response:', response);
+            showBannerNotification('Work experience updated successfully');
           },
           error: function (xhr, status, error) {
-            alert('Error updating profile: ' + error);
+            console.error('Error updating work experience:', error);
+            console.error('Status:', status);
+            console.error('Response:', xhr.responseText);
+            showBannerNotification('Error updating work experience');
           }
         });
-      });
+      }
+
+      function addExperience(experienceData = {}) {
+        const jobExperienceTemplate = document.getElementById('jobExperienceTemplate');
+        const newExperience = jobExperienceTemplate.content.cloneNode(true);
+        const experienceFields = newExperience.querySelectorAll('input, textarea');
+        experienceFields.forEach(field => {
+          let value = experienceData[field.name] || '';
+          if (field.type === 'date' && value) {
+            value = new Date(value).toISOString().split('T')[0];
+          }
+          if (field.type === 'checkbox') {
+            field.checked = !!experienceData[field.name];
+          } else {
+            field.value = value;
+          }
+        });
+
+        const removeButton = newExperience.querySelector('.removeJobExperience');
+        removeButton.addEventListener('click', function () {
+          newExperience.remove();
+        });
+
+        document.getElementById('jobExperienceContainer').appendChild(newExperience);
+      }
+
+      function populateFormFields() {
+        if (!resumeData) return;
+
+        const fields = ['firstname', 'lastname', 'email', 'bio', 'zipcode', 'linkedin_url'];
+
+        fields.forEach(field => {
+          if (resumeData[field]) {
+            const $input = $(`#${field}`);
+            const currentValue = $input.val();
+            const newValue = resumeData[field];
+
+            if (currentValue !== newValue) {
+              const $updateButton = $('<span class="update-button">Update to: ' + newValue + '</span>');
+              $updateButton.click(function () {
+                $input.val(newValue);
+                $(this).remove();
+              });
+              $input.after($updateButton);
+            }
+          }
+        });
+
+        // Special handling for fields that might need formatting or additional logic
+        if (resumeData.github) {
+          $('#leetcode_url').after('<span class="update-button">Update to GitHub: ' + resumeData.github + '</span>');
+        }
+
+        // You can add more special cases here for other fields as needed
+      }
+
+      // Function to show banner notification
+      function showBannerNotification(message) {
+        // Implement this function based on your UI for showing notifications
+        console.log(message); // Fallback to console.log if not implemented
+      }
     });
   </script>
 </body>

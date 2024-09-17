@@ -300,7 +300,7 @@
       return formattedDate;
     }
 
-%>
+    %>
           <div id="posts" class="content">
             <% if (posts.length === 0) { %>
             <p>No posts yet.</p>
@@ -524,7 +524,7 @@
           const jobElement = document.createElement('div');
           jobElement.innerHTML = `
             <div class="job-experience-image">
-              ${!'<%= otheruser.settings_PrivateJobNames %>' ? (typeof experience !== 'undefined' && experience.logo ? `<img class="thumbnail-regular thumbnail-small" src="${experience.logo}" alt="Job Experience" />` : '') : ''}
+              <img class="thumbnail thumbnail-regular thumbnail-small" src="${experience.companyLogo || '/img/default-company-logo.png'}" alt="Company Logo">
             </div>
                         <div class="job-experience-body">
               <div class="job-experience-header">
@@ -563,7 +563,7 @@
               <h4>${experience.institutionName}</h4>
             <% } %>
               <div class="date-range">
-<p>${new Date(experience.startDate).toLocaleDateString()} - ${experience.isCurrent ? 'Present' : new Date(experience.endDate).toLocaleDateString()}</p>              </div>
+        <p>${new Date(experience.startDate).toLocaleDateString()} - ${experience.isCurrent ? 'Present' : new Date(experience.endDate).toLocaleDateString()}</p>              </div>
             </div>
             <h4>${experience.degree}</h4>
             <p>${experience.fieldOfStudy}</p>

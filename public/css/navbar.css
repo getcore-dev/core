@@ -129,7 +129,7 @@ h2,
 h3,
 h4,
 h5 {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--light-mode-bold-text-color);
 }
 
@@ -1544,13 +1544,6 @@ input[type='search'] {
   transition: all 0.3s ease;
 }
 
-input:required:valid,
-textarea:required:valid,
-select:required:valid {
-  border-color: #1e2f24 !important;
-}
-
-
 input[type='text'],
 input[type='number'],
 input[type='url'],
@@ -1599,6 +1592,7 @@ textarea {
   font-family: var(--font-family);
   margin: 8px 0;
   box-sizing: border-box;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   background-color: transparent !important;
   font-size: 16px;
@@ -1703,6 +1697,10 @@ select {
   padding: .5rem 1rem;
   border: none;
   border-radius: 6px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: .5rem;
   background: #12803629;
   color: #27944e;
   cursor: pointer;
@@ -1765,6 +1763,10 @@ button:hover {
   text-wrap: nowrap;
   align-items: center;
   justify-content: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: .5rem;
 }
 
 
@@ -1890,6 +1892,10 @@ em.red {
 
 .flex {
   display: flex;
+}
+
+.wrap {
+  flex-wrap: wrap;
 }
 
 .sb {
@@ -2041,12 +2047,12 @@ hr {
 }
 
 #login-btn {
-  background: #000;
-  border: 1px solid #000;
+  background: transparent;
+  border: 1px solid var(--border-color);
   font-size: .85rem;
   padding: .25rem 1rem;
-  color: white;
-  font-weight: bold;
+  color: black;
+  font-weight: 500;
 }
 
 
@@ -2538,12 +2544,6 @@ details[open] {
     border-color: #331717 !important;
   }
 
-  input:required:valid,
-  textarea:required:valid,
-  select:required:valid {
-    border-color: #1e2f24 !important;
-  }
-
 
 }
 
@@ -2703,11 +2703,6 @@ input::placeholder {
     color: var(--dark-mode-secondary-text-color);
   }
 
-  #login-btn {
-    color: white;
-  }
-
-
   .nav-text:hover {
     color: var(--active-indicator-color);
   }
@@ -2790,8 +2785,9 @@ input::placeholder {
   }
 
   #login-btn {
-    background: white;
-    border-color: white;
+    background: transparent;
+    color: white;
+    border-color: var(--dark-mode-input-border-color);
   }
 
   .search-results-container>div,

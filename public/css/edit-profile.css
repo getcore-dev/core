@@ -13,19 +13,6 @@ body {
     padding-left: 12px;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    background: none;
-    border: none;
-    width: 100%;
-    max-width: 800px;
-    border-radius: 6px;
-    margin: 10px;
-    box-sizing: border-box;
-    margin-bottom: 25px;
-}
-
 .avatar-preview-container {
     width: 100%;
     box-sizing: border-box;
@@ -34,21 +21,13 @@ body {
 }
 
 #avatar-preview {
-    width: 150px;
+    width: 100px;
     object-fit: cover;
-    box-shadow: 0 2px 20px rgb(25 116 48);
-    border: 4px solid #4c8d6b !important;
-    height: 150px;
+    border: 0;
+    width: 100px;
     border-radius: 50%;
     z-index: 1;
     border: 1px solid var(--border-color);
-}
-
-.container span {
-    max-width: 100%;
-    margin-bottom: 1.2rem;
-    display: flex;
-    flex-direction: column;
 }
 
 #avatar-upload {
@@ -101,6 +80,160 @@ body {
     pointer-events: none;
 }
 
+/* Container Styling */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Section Styling */
+.section {
+    margin-bottom: 40px;
+}
+
+.section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+}
+
+/* Basic Info Styling */
+.basic-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.avatar-wrapper {
+    position: relative;
+    width: 96px;
+    height: 96px;
+}
+
+.avatar-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.avatar-wrapper:hover .avatar-overlay {
+    opacity: 1;
+}
+
+.avatar-overlay span {
+    color: #fff;
+    font-size: 14px;
+}
+
+.hidden-input {
+    display: none;
+}
+
+.name-fields {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+}
+
+.name-fields .form-group {
+    flex: 1;
+}
+
+/* Form Group Styling */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #374151;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #9ca3af;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #6366f1;
+    outline: none;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+/* Settings Button Styling */
+.settings-button-container {
+    margin-bottom: 40px;
+}
+
+.settings-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #374151;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.settings-button:hover {
+    background-color: #f9fafb;
+}
+
+.settings-button .material-symbols-outlined {
+    margin-right: 8px;
+}
+
+/* Submit Button Styling */
+.submit-button-container {
+    text-align: right;
+}
+
+#submit-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+#submit-button:hover {
+    opacity: 0.9;
+}
+
+
 .avatar-preview-container:hover .avatar-overlay {
     opacity: 1;
 }
@@ -113,7 +246,7 @@ body {
 
 .container label {
     margin-left: 10px;
-    width: 35%;
+    width: 100%;
     margin-bottom: .5rem;
     font-size: 16px;
     font-weight: 500;
@@ -131,7 +264,8 @@ body {
 
 .container input[type="file"] {
     padding: 10px;
-    margin: 5px;
+    margin: 0;
+    width: 100%;
     border: 1px solid var(--border-color);
     border-radius: 6px;
     box-sizing: border-box;
@@ -139,7 +273,8 @@ body {
 
 .container input[type="color"] {
     padding: 0px;
-    margin: 5px;
+    width: 100%;
+    margin: 0;
     border: 1px solid var(--border-color);
     border-radius: 6px;
     box-sizing: border-box;

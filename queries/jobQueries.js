@@ -2165,12 +2165,35 @@ ORDER BY jp.postedDate DESC
   getUserJobExperience: async (userId) => {
     try {
       const result = await sql.query`
-      SELECT je.*, c.logo
-      FROM job_experiences je
-      JOIN companies c ON je.companyName = c.name
-      WHERE je.userId = ${userId}
-    `;
-
+        SELECT 
+          je.id,
+          je.userId,
+          je.title,
+          je.startDate,
+          je.isCurrent,
+          je.employmentHours,
+          je.tags,
+          je.endDate,
+          je.description,
+          je.employmentType,
+          je.companyName AS userEnteredCompanyName,
+          c.name AS companyName,
+          c.logo AS companyLogo
+        FROM job_experiences je
+        LEFT JOIN companies c ON 
+          LOWER(TRIM(je.companyName)) = LOWER(TRIM(c.name))
+          OR (
+            LEN(je.companyName) > 3 
+            AND (
+              LOWER(TRIM(je.companyName)) LIKE LOWER(TRIM(c.name)) + ' %'
+              OR LOWER(TRIM(c.name)) LIKE LOWER(TRIM(je.companyName)) + ' %'
+              OR LOWER(TRIM(je.companyName)) LIKE '% ' + LOWER(TRIM(c.name))
+              OR LOWER(TRIM(c.name)) LIKE '% ' + LOWER(TRIM(je.companyName))
+            )
+          )
+        WHERE je.userId = ${userId}
+      `;
+  
       return result.recordset;
     } catch (err) {
       console.error('Database query error:', err);

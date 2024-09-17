@@ -4,12 +4,7 @@ const userQueries = require('../queries/userQueries');
 const updateQueries = require('../queries/updateQueries');
 const multer = require('multer');
 const { checkAuthenticated } = require('../middleware/authMiddleware');
-const storage = multer.diskStorage({
-  destination: './public/uploads/',
-  filename: function (req, file, cb) {
-    cb(null, 'profile-' + Date.now() + '.jpg');
-  },
-});
+const fs = require('fs');
 const path = require('path');
 const User = require('../models/User.js');
 const JobProcessor = require('../services/jobBoardService');
@@ -23,7 +18,16 @@ const cacheMiddleware = require('../middleware/cache');
 const NodeCache = require('node-cache');
 const cache = new NodeCache({ stdTTL: 1200 }); // TTL is 20 minutes
 const utilFunctions = require('../utils/utilFunctions');
-const upload = multer({ storage });
+const storage = multer.diskStorage({
+  destination: './public/uploads/',
+  filename: function (req, file, cb) {
+    cb(null, 'profile-' + Date.now() + '.jpg');
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
+const upload = require('../utils/upload');
 const marked = require('marked');
 const postQueries = require('../queries/postQueries');
 const jobQueries = require('../queries/jobQueries');
@@ -35,6 +39,7 @@ const commentQueries = require('../queries/commentQueries');
 const { default: rateLimit } = require('express-rate-limit');
 const notificationQueries = require('../queries/notificationQueries.js');
 const { check } = require('express-validator');
+const { user } = require('../config/dbConfig.js');
 const jobLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
   max: 1,
@@ -836,20 +841,54 @@ router.get('/create-resume',async (req, res) => {
   }
 });
 
-router.get('/read-resume',async (req, res) => {
+router.post('/read-resume', checkAuthenticated, upload.single('resume'), async (req, res) => {
   try {
-    const filePath = path.join(__dirname, '../resume.pdf');
-    jobQueries.readResume(filePath)
-      .then(data => {
-        console.log('Resume data:', data);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+    console.log('Authenticated user:', req.user);
+    
+    if (!req.user || !req.user.id) {
+      console.log('User not properly authenticated');
+      return res.status(401).json({ message: 'User not authenticated or ID not available' });
+    }
 
+    const userId = req.user.id;
+    console.log('User ID:', userId);
+
+    if (!req.file) {
+      console.log('No file uploaded');
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    console.log('File upload details:', JSON.stringify(req.file, null, 2));
+
+    const filePath = req.file.path;
+    console.log('File path:', filePath);
+
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+      console.log('File does not exist at path:', filePath);
+      
+      // Check if the directory exists
+      const dir = path.dirname(filePath);
+      if (!fs.existsSync(dir)) {
+        console.log('Directory does not exist:', dir);
+      } else {
+        console.log('Directory exists:', dir);
+        console.log('Directory contents:', fs.readdirSync(dir));
+      }
+      
+      return res.status(404).json({ message: 'Uploaded file not found' });
+    }
+
+    console.log('File exists at path:', filePath);
+    console.log('File stats:', fs.statSync(filePath));
+
+    const data = await jobQueries.readResume(filePath);
+    console.log('Resume data:', data);
+
+    res.status(200).json({ message: 'Resume processed successfully', data: data });
   } catch (err) {
-    console.error('Error creating resume:', err);
-    res.status(500).send('Error creating resume');
+    console.error('Error processing resume:', err);
+    res.status(500).json({ message: 'Error processing resume', error: err.message });
   }
 });
 

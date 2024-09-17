@@ -120,109 +120,135 @@ router.post('/company/:name/edit',
   checkAuthenticated,
   upload.single('logo'),
   async (req, res) => {
-  try {
-    const file = req.file;
-    const companyName = req.params.name;
-    const company = await jobQueries.getCompanyByName(companyName);
-    let {
-      name,
-      location,
-      description,
-      industry,
-      founded,
-      size,
-      stock_symbol,
-      job_board_url,
-    } = req.body;
-    let pictureUrl;
+    try {
+      const file = req.file;
+      const companyName = req.params.name;
+      const company = await jobQueries.getCompanyByName(companyName);
+      let {
+        name,
+        location,
+        description,
+        industry,
+        founded,
+        size,
+        stock_symbol,
+        job_board_url,
+      } = req.body;
+      let pictureUrl;
 
-    if (file) {
-      const blobServiceClient = BlobServiceClient.fromConnectionString(
-        AZURE_STORAGE_CONNECTION_STRING
-      );
-      const containerClient =
+      if (file) {
+        const blobServiceClient = BlobServiceClient.fromConnectionString(
+          AZURE_STORAGE_CONNECTION_STRING
+        );
+        const containerClient =
         blobServiceClient.getContainerClient('coreavatars');
-      const blobName = 'company-profiles/' + companyName + '/' + file.originalname;
-      const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-      const containerName = 'coreavatars';
-      await blockBlobClient.uploadFile(file.path); // Uploads the file to Azure Blob Storage
-      pictureUrl = `https://${blobServiceClient.accountName}.blob.core.windows.net/${containerName}/${blobName}`;
+        const blobName = 'company-profiles/' + companyName + '/' + file.originalname;
+        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+        const containerName = 'coreavatars';
+        await blockBlobClient.uploadFile(file.path); // Uploads the file to Azure Blob Storage
+        pictureUrl = `https://${blobServiceClient.accountName}.blob.core.windows.net/${containerName}/${blobName}`;
+      }
+
+      await jobQueries.updateCompany(
+        company.id,
+        name || undefined,
+        location || undefined,
+        description || undefined,
+        pictureUrl || undefined,
+        undefined,
+        industry || undefined,
+        founded || undefined,
+        size || undefined,
+        stock_symbol || undefined,
+        job_board_url || undefined
+      );
+
+      res.redirect(`/jobs/company/${name}`);
+    } catch (err) {
+      console.error('Error updating company details:', err);
+      res.status(500).send('Error updating company details');
     }
-
-    await jobQueries.updateCompany(
-      company.id,
-      name || undefined,
-      location || undefined,
-      description || undefined,
-      pictureUrl || undefined,
-      undefined,
-      industry || undefined,
-      founded || undefined,
-      size || undefined,
-      stock_symbol || undefined,
-      job_board_url || undefined
-    );
-
-    res.redirect(`/jobs/company/${name}`);
-  } catch (err) {
-    console.error('Error updating company details:', err);
-    res.status(500).send('Error updating company details');
-  }
-});
+  });
 
 router.post('/update-experiences', checkAuthenticated, async (req, res) => {
   try {
     const userId = req.user.id;
     let experiences = req.body.experiences;
-
+  
+    console.log('Request body:', JSON.stringify(req.body, null, 2));
+  
     if (!Array.isArray(experiences)) {
+      console.warn('Experiences is not an array, attempting to convert');
       experiences = [experiences];
     }
-
-    console.log('Incoming experiences:', experiences);
-
+  
+    console.log('Incoming experiences:', JSON.stringify(experiences, null, 2));
+    console.log('Number of experiences received:', experiences.length);
+  
     // Clear existing job experiences and tags for the user
     await jobQueries.clearUserJobExperienceTags(userId);
     await jobQueries.clearUserJobExperience(userId);
-
+  
+    let processedCount = 0;
+    let errorCount = 0;
+  
     // Process each job experience
     for (const experience of experiences) {
-      if (!experience) {
-        console.warn('Skipping undefined experience');
-        continue;
+      try {
+        if (!experience) {
+          console.warn('Skipping undefined experience');
+          continue;
+        }
+  
+        console.log('Processing experience:', JSON.stringify(experience, null, 2));
+  
+        const {
+          title,
+          employmentType,
+          companyName,
+          location,
+          isCurrent,
+          startDate,
+          endDate,
+          description,
+          tags,
+        } = experience;
+  
+        // Add new job experience
+        await jobQueries.addJobExperience(
+          userId,
+          title,
+          employmentType,
+          companyName,
+          location,
+          isCurrent,
+          startDate,
+          endDate,
+          description,
+          tags
+        );
+  
+        processedCount++;
+      } catch (expErr) {
+        console.error('Error processing individual experience:', expErr);
+        errorCount++;
       }
-
-      const {
-        title,
-        employmentType,
-        companyName,
-        location,
-        isCurrent,
-        startDate,
-        endDate,
-        description,
-        tags,
-      } = experience;
-
-      // Add new job experience (assuming the function also handles updating if the ID exists)
-      await jobQueries.addJobExperience(
-        userId,
-        title,
-        employmentType,
-        companyName,
-        location,
-        isCurrent,
-        startDate,
-        endDate,
-        description,
-        tags
-      );
     }
-
-    res.status(200).send('Job experiences updated successfully');
+  
+    console.log('Number of experiences processed successfully:', processedCount);
+    console.log('Number of experiences that encountered errors:', errorCount);
+  
+    res.status(200).json({
+      message: 'Job experiences update completed',
+      processedCount,
+      errorCount
+    });
   } catch (err) {
     console.error('Error updating job experiences:', err);
-    res.status(500).send('Error updating job experiences');
+    res.status(500).json({
+      message: 'Error updating job experiences',
+      error: err.message
+    });
   }
 });
 
@@ -321,16 +347,16 @@ router.post('/company/:name/comments', checkAuthenticated, async (req, res) => {
   }
 });
 
-  router.delete('/company/:name/comments/:commentId', checkAuthenticated, async (req, res) => {
-    try {
-      const commentId = req.params.commentId;
-      await jobQueries.deleteCompanyComment(commentId);
-      res.status(200).send('Comment deleted');
-    } catch (err) {
-      console.error('Error deleting company comment:', err);
-      res.status(500).send('Error deleting company comment');
-    }
-  });
+router.delete('/company/:name/comments/:commentId', checkAuthenticated, async (req, res) => {
+  try {
+    const commentId = req.params.commentId;
+    await jobQueries.deleteCompanyComment(commentId);
+    res.status(200).send('Comment deleted');
+  } catch (err) {
+    console.error('Error deleting company comment:', err);
+    res.status(500).send('Error deleting company comment');
+  }
+});
 
 router.get('/getTopTags', cacheMiddleware(3600), async (req, res) => {
   try {

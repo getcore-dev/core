@@ -1,6 +1,11 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const pdf = require('pdf-parse');
+const OpenAI = require('openai');
+const { zodResponseFormat } = require('openai/helpers/zod');
+const { z } = require('zod');
+const openaiKey = process.env.OPENAI_API_KEY;
+
 
 const resumeFunctions = {
   createResume(data) { 
@@ -15,7 +20,7 @@ const resumeFunctions = {
     
     // Header
     doc.fontSize(24).font('Times-Bold').text(data.name, {align: 'center'});
-    doc.fontSize(12).font('Times-Roman').text(`${data.email} | ${data.website} | ${data.github}`, {align: 'center'});
+    doc.fontSize(12).font('Times-Roman').text(`${data.email} | ${data.phone} | ${data.github}`, {align: 'center'});
            
     doc.moveDown();
     
@@ -131,19 +136,141 @@ const resumeFunctions = {
 
     try {
       const data = await pdf(dataBuffer);
-      console.log(data.text);
-      const extractedData = this.extractDataFromText(data.text);
-      // Update user's profile with extractedData
-      // For example: updateUserProfile(userId, extractedData);
+      const extractedData = await this.extractResumeDataFromText(data.text);
+      return extractedData;
     } catch (error) {
       console.error('Error processing resume:', error);
     }
   },
 
-  extractDataFromText(text) {
-
-    // Use gpt to extract data from text
+  async extractResumeDataFromText(text) {
+    const openai = new OpenAI({ apiKey: openaiKey });
+  
+    const experienceSchema = z.array(z.object({
+      title: z.string(),
+      employmentType: z.string(),
+      companyName: z.string(),
+      location: z.string(),
+      startDate: z.string().nullable(),
+      endDate: z.string().nullable(),
+      description: z.string(),
+      tags: z.string(),
+      employmentHours: z.string(),
+      isCurrent: z.boolean()
+    }));
+  
+    const educationSchema = z.array(z.object({
+      institutionName: z.string(),
+      degree: z.string(),
+      fieldOfStudy: z.string(),
+      startDate: z.string().nullable(),
+      endDate: z.string().nullable(),
+      isCurrent: z.boolean(),
+      grade: z.string(),
+      activities: z.string(),
+      description: z.string()
+    }));
+  
+    const resumeResponse = z.object({
+      firstname: z.string(),
+      lastname: z.string(),
+      email: z.string(),
+      phone_number: z.string(),
+      address: z.string(),
+      professional_summary: z.string(),
+      languages: z.string(),
+      awards: z.string(),
+      publications: z.string(),
+      volunteer_experience: z.string(),
+      references: z.string(),
+      personal_websites: z.string(),
+      github: z.string(),
+      linkedin: z.string(),
+      twitter: z.string(),
+      technical_skills: z.string(),
+      soft_skills: z.string(),
+      other_skills: z.string(),
+      projects: z.string(),
+      certifications: z.string(),
+      experience: experienceSchema,
+      education: educationSchema
+    });
+  
+    const maxCharacters = 200000;
+    const truncatedTextContent = text.length > maxCharacters ? text.slice(0, maxCharacters) : text;
+  
+    const prompt = `
+    From the following resume text, extract the following information:
+  
+    - firstname
+    - lastname
+    - email
+    - phone number
+    - address
+    - professional_summary
+    - languages (default English)
+    - awards
+    - publications
+    - volunteer_experience
+    - references
+    - personal_websites 
+    - github (GitHub username)
+    - linkedin
+    - twitter
+    - technical_skills (comma-separated)
+    - soft_skills (comma-separated)
+    - other_skills (comma-separated)
+    - projects
+    - certifications
+  
+    For each job experience, include the following fields:
+    - title
+    - employmentType
+    - companyName
+    - location
+    - startDate (nullable)
+    - endDate (nullable)
+    - description
+    - tags
+    - employmentHours
+    - isCurrent
+  
+    For each education experience, include the following fields:
+    - institutionName
+    - degree 
+    - fieldOfStudy 
+    - startDate (nullable)
+    - endDate (nullable)
+    - isCurrent
+    - grade (GPA)
+    - activities
+    - description
+  
+    ${truncatedTextContent}
+    `;
+  
+    try {
+      const completion = await openai.beta.chat.completions.parse({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a helpful assistant that extracts resume data from text.',
+          },
+          { role: 'user', content: prompt },
+        ],
+        response_format: zodResponseFormat(resumeResponse, 'resumeResponse')
+      });
+  
+      const message = completion.choices[0]?.message;
+      console.log(message);
+      return message.parsed;
+    } catch (error) {
+      console.error('OpenAI API Error:', error.message);
+      throw error;
+    }
   }
+  
   
 };
 
