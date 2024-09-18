@@ -35,118 +35,237 @@
       </div>
     </div>
     <!-- Basic Info Section -->
-    <section class="section">
-      <h2 class="section-title">Basic Info</h2>
-      <div class="basic-info">
-        <div class="avatar-wrapper">
-          <img src="<%= edit_user.avatar %>" alt="avatar" id="avatar-preview" class="avatar-image" />
-          <label for="avatar" class="avatar-overlay">
-            <span>Change Avatar</span>
+    <form action="/edit-profile" method="POST" enctype="multipart/form-data">
+      <section class="section">
+        <h2 class="section-title">Basic Info</h2>
+        <div class="basic-info">
+          <div class="avatar-wrapper">
+            <img src="<%= edit_user.avatar %>" alt="avatar" id="avatar-preview" class="avatar-image" />
+            <label for="avatar" class="avatar-overlay">
+              <span>Change Avatar</span>
+            </label>
+            <input type="file" id="avatar" name="avatar" accept="image/*" class="hidden-input" aria-label="Upload Avatar">
+          </div>
+          <div class="flex flex-col">
+            <div class="name-fields">
+              <div class="form-group">
+                <input type="text" id="firstname" name="firstname" value="<%= edit_user.firstname %>" placeholder="First Name" required aria-label="First Name">
+              </div>
+              <div class="form-group">
+                <input type="text" id="lastname" name="lastname" value="<%= edit_user.lastname %>" placeholder="Last Name" required aria-label="Last Name">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Profile Settings Section -->
+      <section class="section">
+        <h2 class="section-title">Profile Settings</h2>
+        <div class="form-group">
+          <input type="color" id="profile_border_color" name="profile_border_color" value="<%= edit_user.profile_border_color %>" title="Profile Color" aria-label="Profile Color">
+        </div>
+      </section>
+
+      <!-- Personal Info Section -->
+      <section class="section">
+        <h2 class="section-title">Personal Info</h2>
+        <div class="form-group">
+          <input type="email" id="email" name="email" value="<%= edit_user.email %>" placeholder="Email" required aria-label="Email">
+        </div>
+        <div class="form-group">
+          <input type="tel" id="phone_number" name="phone_number" value="<%= edit_user.phone_number %>" placeholder="Phone Number" required aria-label="Phone Number">
+        </div>
+        <div class="form-group">
+          <textarea id="bio" name="bio" rows="4" placeholder="Bio" aria-label="Bio"><%= edit_user.bio %></textarea>
+        </div>
+        <div class="form-group">
+          <input type="text" id="zipcode" name="zipcode" value="<%= edit_user.zipcode %>" placeholder="Current Location" required aria-label="Current Location">
+        </div>
+      </section>
+
+      <!-- Resume Upload Section -->
+      <section class="section">
+        <h2 class="section-title">Professional Info</h2>
+        <div class="flex flex-col gap-06">
+          <div>
+            <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" aria-label="Upload Resume">
+            <small>Accepted file types: .pdf, .doc, .docx. Max file size: 5 MB</small>
+          </div>
+          <button type="button" id="upload-resume-button" class="regular-button" style="border-color: <%= edit_user.profile_border_color%>;">
+            <span class="material-symbols-outlined">
+              upload_file
+            </span>
+            Upload Resume
+          </button>
+          <a href="/edit-education-experience">
+            <button type="button" class="regular-button" style="border-color: <%= edit_user.profile_border_color%>;">
+              <span class="material-symbols-outlined">
+                school
+              </span>
+              Edit School Experience
+            </button>
+          </a>
+
+          <a href="/edit-experience">
+            <button type="button" class="regular-button" style="border-color: <%= edit_user.profile_border_color%>;">
+              <span class="material-symbols-outlined">
+                work
+              </span>
+              Edit Work Experience
+            </button>
+          </a>
+
+          <!-- Settings Button -->
+          <a href="/settings">
+            <button type="button" class="special-button" style="border-color: <%= edit_user.profile_border_color%>;">
+              <span class="material-symbols-outlined">
+                settings
+              </span>
+              Account Settings
+            </button>
+          </a>
+        </div>
+
+
+
+      </section>
+
+      <!-- Job Preferences Section -->
+      <section class="section">
+        <h2 class="section-title">Job Preferences</h2>
+        <div class="form-group">
+          <textarea id="professionalSummary" name="professionalSummary" rows="4" placeholder="Professional Summary" aria-label="Bio"><%= edit_user.professionalSummary %></textarea>
+        </div>
+        <div class="form-group">
+          <input type="text" id="desired_job_title" name="desired_job_title" value="<%= edit_user.desired_job_title %>" placeholder="Desired Job Title" required aria-label="Desired Job Title">
+        </div>
+        <div class="form-group">
+          <label for="employment_type">Desired Employment Type</label>
+          <select id="employment_type" name="employment_type" required aria-label="Desired Employment Type">
+            <option value="" disabled selected>Select Employment Type</option>
+            <option value="full_time" <% if(edit_user.employment_type == 'full_time') { %>selected<% } %>>Full-time</option>
+            <option value="part_time" <% if(edit_user.employment_type == 'part_time') { %>selected<% } %>>Part-time</option>
+            <option value="contract" <% if(edit_user.employment_type == 'contract') { %>selected<% } %>>Contract</option>
+            <option value="temporary" <% if(edit_user.employment_type == 'temporary') { %>selected<% } %>>Temporary</option>
+            <option value="internship" <% if(edit_user.employment_type == 'internship') { %>selected<% } %>>Internship</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <input type="text" id="desired_location" name="desired_location" value="<%= edit_user.desired_location %>" placeholder="Desired Location (City, State, or Remote)" required aria-label="Desired Location">
+        </div>
+        <div class="form-group">
+          <label for="willing_to_relocate" class="flex flex-row v-center">
+            <input type="checkbox" id="willing_to_relocate" name="willing_to_relocate" value="1" <% if(edit_user.willing_to_relocate) { %>checked<% } %> aria-label="Willing to Relocate">
+            Willing to Relocate
           </label>
-          <input type="file" id="avatar" name="avatar" accept="image/*" class="hidden-input" aria-label="Upload Avatar">
         </div>
-        <div class="name-fields">
-          <div class="form-group">
-            <input type="text" id="firstname" name="firstname" value="<%= edit_user.firstname %>" placeholder="First Name" required aria-label="First Name">
-          </div>
-          <div class="form-group">
-            <input type="text" id="lastname" name="lastname" value="<%= edit_user.lastname %>" placeholder="Last Name" required aria-label="Last Name">
-          </div>
+      </section>
+
+      <!-- Salary Preferences Section -->
+      <section class="section">
+        <h2 class="section-title">Salary Preferences</h2>
+        <div class="form-group">
+          <input type="number" id="desired_salary_min" name="desired_salary_min" value="<%= edit_user.desired_salary_min | 0 %>" placeholder="Minimum Desired Salary" required aria-label="Minimum Desired Salary">
         </div>
-      </div>
-    </section>
-
-    <!-- Profile Settings Section -->
-    <section class="section">
-      <h2 class="section-title">Profile Settings</h2>
-      <div class="form-group">
-        <input type="color" id="profile_border_color" name="profile_border_color" value="<%= edit_user.profile_border_color %>" title="Profile Color" aria-label="Profile Color">
-      </div>
-    </section>
-
-    <!-- Personal Info Section -->
-    <section class="section">
-      <h2 class="section-title">Personal Info</h2>
-      <div class="form-group">
-        <input type="email" id="email" name="email" value="<%= edit_user.email %>" placeholder="Email" required aria-label="Email">
-      </div>
-      <div class="form-group">
-        <textarea id="bio" name="bio" rows="4" placeholder="Bio" aria-label="Bio"><%= edit_user.bio %></textarea>
-      </div>
-      <div class="form-group">
-        <input type="text" id="zipcode" name="zipcode" value="<%= edit_user.zipcode %>" placeholder="Current Location" required aria-label="Current Location">
-      </div>
-    </section>
-
-    <!-- Resume Upload Section -->
-    <section class="section">
-      <h2 class="section-title">Professional Info</h2>
-      <div class="flex flex-col gap-06">
-        <div>
-          <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" aria-label="Upload Resume">
-          <small>Accepted file types: .pdf, .doc, .docx. Max file size: 5 MB</small>
+        <div class="form-group">
+          <input type="number" id="desired_salary_max" name="desired_salary_max" value="<%= edit_user.desired_salary_max | 0 %>" placeholder="Maximum Desired Salary" required aria-label="Maximum Desired Salary">
         </div>
-        <button id="upload-resume-button" class="regular-button" style="border-color: <%= edit_user.profile_border_color%>;">
+      </section>
+
+      <!-- Availability Section -->
+      <section class="section">
+        <h2 class="section-title">Availability</h2>
+        <div class="form-group">
+          <label for="availability_date">Available to Start From</label>
+          <input type="date" id="availability_date" name="availability_date" value="<%= edit_user.availability_date %>" required aria-label="Availability Date">
+        </div>
+      </section>
+
+      <!-- Skills Section -->
+      <section class="section">
+        <h2 class="section-title">Skills</h2>
+        <div class="form-group">
+          <textarea id="technical_skills" name="technical_skills" rows="4" placeholder="List your technical skills separated by commas" aria-label="Technical Skills"><%= edit_user.technical_skills %></textarea>
+        </div>
+        <div class="form-group">
+          <textarea id="soft_skills" name="soft_skills" rows="4" placeholder="List your soft skills separated by commas" aria-label="Soft Skills"><%= edit_user.soft_skills %></textarea>
+        </div>
+        <div class="form-group">
+          <textarea id="other_skills" name="other_skills" rows="4" placeholder="List your other skills separated by commas" aria-label="Other Skills"><%= edit_user.other_skills %></textarea>
+        </div>
+      </section>
+
+      <!-- Languages Section -->
+      <section class="section">
+        <h2 class="section-title">Languages</h2>
+        <div class="form-group">
+          <textarea id="languages" name="languages" rows="4" placeholder="List the languages you speak" aria-label="Languages"><%= edit_user.languages %></textarea>
+        </div>
+      </section>
+
+      <!-- Certifications Section -->
+      <section class="section">
+        <h2 class="section-title">Certifications</h2>
+        <div class="form-group">
+          <textarea id="certifications" name="certifications" rows="4" placeholder="List your certifications" aria-label="Certifications"><%= edit_user.certifications %></textarea>
+        </div>
+      </section>
+
+      <!-- Preferred Industries Section -->
+      <section class="section">
+        <h2 class="section-title">Preferred Industries</h2>
+        <div class="form-group">
+          <textarea id="preferred_industries" name="preferred_industries" rows="4" placeholder="List your preferred industries" aria-label="Preferred Industries"><%= edit_user.preferred_industries %></textarea>
+        </div>
+      </section>
+
+      <!-- Preferred Companies Section -->
+      <section class="section">
+        <h2 class="section-title">Preferred Companies</h2>
+        <div class="form-group">
+          <textarea id="preferred_companies" name="preferred_companies" rows="4" placeholder="List your preferred companies" aria-label="Preferred Companies"><%= edit_user.preferred_companies %></textarea>
+        </div>
+      </section>
+
+      <!-- GitHub URL Field in Socials Section -->
+      <section class="section">
+        <h2 class="section-title">Socials</h2>
+        <!-- Existing fields -->
+        <div class="form-group">
+          <input type="text" id="github_url" name="github_url" value="<%= edit_user.github_url %>" placeholder="GitHub URL" required aria-label="GitHub URL">
+        </div>
+      </section>
+
+
+      <!-- Socials Section -->
+      <section class="section">
+        <h2 class="section-title">Socials</h2>
+        <div class="form-group">
+          <input type="text" id="linkedin_url" name="linkedin_url" value="<%= edit_user.linkedin_url %>" placeholder="LinkedIn" required aria-label="LinkedIn">
+        </div>
+        <div class="form-group">
+          <input type="text" id="leetcode_url" name="leetcode_url" value="<%= edit_user.leetcode_url %>" placeholder="LeetCode Username" required aria-label="LeetCode Username">
+        </div>
+        <div class="form-group">
+          <input type="text" id="link" name="link" value="<%= edit_user.link %>" placeholder="Link" required aria-label="Link">
+        </div>
+        <div class="form-group">
+          <input type="text" id="link2" name="link2" value="<%= edit_user.link2 %>" placeholder="Link 2" required aria-label="Link 2">
+        </div>
+      </section>
+
+      <!-- Submit Button -->
+      <div class="submit-button-container">
+        <button id="submit-button" style="background: <%= edit_user.profile_border_color%>9a; color: white;">
           <span class="material-symbols-outlined">
-            upload_file
+            save
           </span>
-          Upload Resume
-        </button>
-        <a href="/edit-education-experience">
-          <button class="regular-button" style="border-color: <%= edit_user.profile_border_color%>;">
-            <span class="material-symbols-outlined">
-              school
-            </span>
-            Edit School Experience
-          </button>
-        </a>
 
-        <a href="/edit-experience">
-          <button class="regular-button" style="border-color: <%= edit_user.profile_border_color%>;">
-            <span class="material-symbols-outlined">
-              work
-            </span>
-            Edit Work Experience
-          </button>
-        </a>
+          Submit</button>
       </div>
+    </form>
 
-    </section>
-
-    <!-- Socials Section -->
-    <section class="section">
-      <h2 class="section-title">Socials</h2>
-      <div class="form-group">
-        <input type="text" id="linkedin_url" name="linkedin_url" value="<%= edit_user.linkedin_url %>" placeholder="LinkedIn" required aria-label="LinkedIn">
-      </div>
-      <div class="form-group">
-        <input type="text" id="leetcode_url" name="leetcode_url" value="<%= edit_user.leetcode_url %>" placeholder="LeetCode Username" required aria-label="LeetCode Username">
-      </div>
-      <div class="form-group">
-        <input type="text" id="link" name="link" value="<%= edit_user.link %>" placeholder="Link" required aria-label="Link">
-      </div>
-      <div class="form-group">
-        <input type="text" id="link2" name="link2" value="<%= edit_user.link2 %>" placeholder="Link 2" required aria-label="Link 2">
-      </div>
-    </section>
-
-    <!-- Settings Button -->
-    <div class="settings-button-container">
-      <h2 class="section-title">Additional</h2>
-      <a href="/settings">
-        <button class="main-button" style="border-color: <%= edit_user.profile_border_color%>;">
-          <span class="material-symbols-outlined">
-            settings
-          </span>
-          Settings
-        </button>
-      </a>
-    </div>
-
-    <!-- Submit Button -->
-    <div class="submit-button-container">
-      <button id="submit-button" style="background: <%= edit_user.profile_border_color%>9a; color: white;">Submit</button>
-    </div>
 
   </div>
 
@@ -244,6 +363,82 @@
         $('#educationModal').hide();
         populateWorkPreview(resumeData.experience);
         $('#workModal').show();
+      });
+
+      $('#submit-button').click(function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        // Collect form data
+        var formData = new FormData(); // Use FormData for file uploads
+
+        // Append all form fields to formData
+        formData.append('firstname', $('#firstname').val());
+        formData.append('lastname', $('#lastname').val());
+        formData.append('email', $('#email').val());
+        formData.append('phone_number', $('#phone_number').val());
+        formData.append('bio', $('#bio').val());
+        formData.append('zipcode', $('#zipcode').val());
+        formData.append('desired_job_title', $('#desired_job_title').val());
+        formData.append('employment_type', $('#employment_type').val());
+        formData.append('desired_location', $('#desired_location').val());
+        formData.append('willing_to_relocate', $('#willing_to_relocate').is(':checked') ? 1 : 0);
+        formData.append('desired_salary_min', $('#desired_salary_min').val());
+        formData.append('desired_salary_max', $('#desired_salary_max').val());
+        formData.append('availability_date', $('#availability_date').val());
+        formData.append('technical_skills', $('#technical_skills').val());
+        formData.append('soft_skills', $('#soft_skills').val());
+        formData.append('other_skills', $('#other_skills').val());
+        formData.append('professionalSummary', $('#professionalSummary').val());
+        formData.append('languages', $('#languages').val());
+        formData.append('certifications', $('#certifications').val());
+        formData.append('preferred_industries', $('#preferred_industries').val());
+        formData.append('preferred_companies', $('#preferred_companies').val());
+        formData.append('github_url', $('#github_url').val());
+        formData.append('linkedin_url', $('#linkedin_url').val());
+        formData.append('leetcode_url', $('#leetcode_url').val());
+        formData.append('link', $('#link').val());
+        formData.append('link2', $('#link2').val());
+        formData.append('profile_border_color', $('#profile_border_color').val());
+
+        // Handle avatar file
+        var avatarFile = $('#avatar')[0].files[0];
+        if (avatarFile) {
+          formData.append('avatar', avatarFile);
+        }
+
+        // Handle resume file (if you want to upload it here as well)
+        var resumeFile = $('#resume')[0].files[0];
+        if (resumeFile) {
+          formData.append('resume', resumeFile);
+        }
+
+        // Optional: Disable the submit button to prevent multiple submissions
+        var $submitButton = $(this);
+        $submitButton.prop('disabled', true);
+        $submitButton.html('<span class="material-symbols-outlined">autorenew</span> Saving...');
+
+        // Send the data to the server via AJAX
+        $.ajax({
+          url: '/edit-profile', // Change to your actual endpoint
+          type: 'POST',
+          data: formData,
+          processData: false, // Prevent jQuery from processing the data
+          contentType: false, // Prevent jQuery from setting the content type
+          success: function (response) {
+            // Handle success
+            alert('Profile updated successfully');
+            // Optionally, redirect or update the page
+            // window.location.href = '/profile';
+            $submitButton.prop('disabled', false);
+            $submitButton.html('<span class="material-symbols-outlined">save</span> Submit');
+          },
+          error: function (xhr, status, error) {
+            // Handle error
+            alert('Error updating profile: ' + error);
+            $submitButton.prop('disabled', false);
+            $submitButton.html('<span class="material-symbols-outlined">save</span> Submit');
+          }
+        });
       });
 
       $('#skipEducation').click(function () {
@@ -385,7 +580,7 @@
       function populateFormFields() {
         if (!resumeData) return;
 
-        const fields = ['firstname', 'lastname', 'email', 'bio', 'zipcode', 'linkedin_url'];
+        const fields = ['firstname', 'lastname', 'email', 'bio', 'zipcode', 'linkedin_url', 'leetcode_url', 'link', 'link2', 'github_url', 'phone_number', 'desired_job_title', 'desired_location', 'desired_salary_min', 'desired_salary_max', 'employment_type', 'availability_date', 'technical_skills', 'languages', 'certifications', 'preferred_industries', 'preferred_companies', 'profile_border_color', 'professionalSummary', 'soft_skills', 'other_skills', 'willing_to_relocate'];
 
         fields.forEach(field => {
           if (resumeData[field]) {
@@ -409,7 +604,10 @@
           $('#leetcode_url').after('<span class="update-button">Update to GitHub: ' + resumeData.github + '</span>');
         }
 
-        // You can add more special cases here for other fields as needed
+        if (resumeData.linkedin) {
+          $('#linkedin_url').after('<span class="update-button">Update to LinkedIn: ' + resumeData.linkedin + '</span>');
+        }
+
       }
 
       // Function to show banner notification

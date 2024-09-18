@@ -32,6 +32,10 @@ const fileFilter = (req, file, cb) => {
     const filetypes = /pdf|doc|docx/;
     const mimetype = filetypes.test(file.mimetype);
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+
+    console.log('File MIME type:', file.mimetype);
+    console.log('File extension:', path.extname(file.originalname).toLowerCase());
+
     if (mimetype && extname) {
       return cb(null, true);
     }

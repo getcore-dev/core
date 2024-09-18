@@ -6,10 +6,6 @@ body {
 }
 
 .github-login-btn {
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-  justify-content: center;
   box-sizing: border-box;
   margin-bottom: 0 !important;
 }
@@ -29,7 +25,6 @@ div.current-user-container {
 .github-login-btn img {
   width: 20px;
   height: 20px;
-  margin-right: 10px;
 }
 
 .core-logo:hover {

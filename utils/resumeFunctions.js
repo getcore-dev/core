@@ -25,12 +25,24 @@ const resumeFunctions = {
     doc.moveDown();
     
     // Sections in order relevant to engineering
-    this.addSection(doc, 'Skills', data.skills, maxContentHeight);
-    this.addSection(doc, 'Projects', data.projects, maxContentHeight);
+    if (data.professionalSummary) {
+      this.addSection(doc, 'Professional Summary', data.professionalSummary, maxContentHeight);
+    }
+    if (data.skills)
+      this.addSection(doc, 'Skills', data.skills, maxContentHeight);
+    if (data.projects.lenth > 0)
+      this.addSection(doc, 'Projects', data.projects, maxContentHeight);
+    if (data.awards)
+      this.addSection(doc, 'Awards', data.awards, maxContentHeight);
+    if (data.publications)
+      this.addSection(doc, 'Publications', data.publications, maxContentHeight);
     this.addSection(doc, 'Experience', data.experience, maxContentHeight);
     this.addSection(doc, 'Education', data.education, maxContentHeight);
     if (data.certifications) {
       this.addSection(doc, 'Certifications', data.certifications, maxContentHeight);
+    }
+    if (data.languages) {
+      this.addSection(doc, 'Languages', data.languages, maxContentHeight);
     }
     
     doc.end();
@@ -50,7 +62,16 @@ const resumeFunctions = {
     
     doc.font('Times-Roman').fontSize(12);
     
-    if (Array.isArray(content)) {
+    if (title === 'Skills' && Array.isArray(content)) {
+      content.forEach(category => {
+        const skills = category.skills.join(', ');
+        doc.font('Times-Roman').text(`${category.category}: ${skills}`);
+        doc.moveDown(0.2);
+      });
+    } else if (typeof content === 'string') {
+      doc.text(content);
+    } else if (Array.isArray(content)) {
+  
       content.forEach(item => {
         if (typeof item === 'string') {
           doc.circle(doc.x - 5, doc.y + 6, 2).fill();
@@ -107,8 +128,10 @@ const resumeFunctions = {
     height += 5; // For the line stroke
   
     tempDoc.font('Times-Roman').fontSize(12);
-  
-    if (Array.isArray(content)) {
+
+    if (typeof content === 'string') {
+      height += tempDoc.heightOfString(content);
+    } else if (Array.isArray(content)) {
       content.forEach(item => {
         if (typeof item === 'string') {
           height += tempDoc.heightOfString(item);
@@ -143,111 +166,265 @@ const resumeFunctions = {
     }
   },
 
-  async extractResumeDataFromText(text) {
+  async extractResumeDataFromText(text, userData = {}) {
     const openai = new OpenAI({ apiKey: openaiKey });
   
-    const experienceSchema = z.array(z.object({
-      title: z.string(),
-      employmentType: z.string(),
-      companyName: z.string(),
-      location: z.string(),
-      startDate: z.string().nullable(),
-      endDate: z.string().nullable(),
-      description: z.string(),
-      tags: z.string(),
-      employmentHours: z.string(),
-      isCurrent: z.boolean()
-    }));
+    const experienceSchema = z.array(
+      z.object({
+        title: z.string().optional(),
+        employmentType: z.string().optional(),
+        companyName: z.string().optional(),
+        location: z.string().optional(),
+        startDate: z.string().nullable().optional(),
+        endDate: z.string().nullable().optional(),
+        description: z.string().optional(),
+        tags: z.string().optional(),
+        employmentHours: z.string().optional(),
+        isCurrent: z.boolean().optional(),
+      })
+    );
   
-    const educationSchema = z.array(z.object({
-      institutionName: z.string(),
-      degree: z.string(),
-      fieldOfStudy: z.string(),
-      startDate: z.string().nullable(),
-      endDate: z.string().nullable(),
-      isCurrent: z.boolean(),
-      grade: z.string(),
-      activities: z.string(),
-      description: z.string()
-    }));
+    const educationSchema = z.array(
+      z.object({
+        institutionName: z.string().optional(),
+        degree: z.string().optional(),
+        fieldOfStudy: z.string().optional(),
+        startDate: z.string().nullable().optional(),
+        endDate: z.string().nullable().optional(),
+        isCurrent: z.boolean().optional(),
+        grade: z.string().optional(),
+        activities: z.string().optional(),
+        description: z.string().optional(),
+      })
+    );
   
-    const resumeResponse = z.object({
-      firstname: z.string(),
-      lastname: z.string(),
-      email: z.string(),
-      phone_number: z.string(),
-      address: z.string(),
-      professional_summary: z.string(),
-      languages: z.string(),
-      awards: z.string(),
-      publications: z.string(),
-      volunteer_experience: z.string(),
-      references: z.string(),
-      personal_websites: z.string(),
-      github: z.string(),
-      linkedin: z.string(),
-      twitter: z.string(),
-      technical_skills: z.string(),
-      soft_skills: z.string(),
-      other_skills: z.string(),
-      projects: z.string(),
-      certifications: z.string(),
-      experience: experienceSchema,
-      education: educationSchema
+    const resumeResponseSchema = z.object({
+      firstname: z.string().optional(),
+      lastname: z.string().optional(),
+      email: z.string().optional(),
+      phone_number: z.string().optional(),
+      address: z.string().optional(),
+      professional_summary: z.string().optional(),
+      languages: z.string().optional(),
+      awards: z.string().optional(),
+      publications: z.string().optional(),
+      volunteer_experience: z.string().optional(),
+      references: z.string().optional(),
+      personal_websites: z.string().optional(),
+      github: z.string().optional(),
+      linkedin: z.string().optional(),
+      twitter: z.string().optional(),
+      technical_skills: z.string().optional(),
+      soft_skills: z.string().optional(),
+      other_skills: z.string().optional(),
+      projects: z.string().optional(),
+      certifications: z.string().optional(),
+      experience: experienceSchema.optional(),
+      education: educationSchema.optional(),
     });
   
     const maxCharacters = 200000;
-    const truncatedTextContent = text.length > maxCharacters ? text.slice(0, maxCharacters) : text;
+    const truncatedTextContent =
+      text.length > maxCharacters ? text.slice(0, maxCharacters) : text;
+  
+    const functions = [
+      {
+        name: 'extract_resume_data',
+        description: 'Extracts resume data from text.',
+        parameters: {
+          type: 'object',
+          properties: {
+            firstname: { type: 'string', description: 'First name' },
+            lastname: { type: 'string', description: 'Last name' },
+            email: { type: 'string', description: 'Email address' },
+            phone_number: { type: 'string', description: 'Phone number' },
+            address: { type: 'string', description: 'Mailing address' },
+            professionalSummary: { type: 'string', description: 'Professional summary' },
+            languages: { type: 'string', description: 'Languages spoken' },
+            awards: { type: 'string', description: 'Awards received' },
+            publications: { type: 'string', description: 'Publications authored' },
+            volunteer_experience: { type: 'string', description: 'Volunteer work' },
+            references: { type: 'string', description: 'Professional references' },
+            personal_websites: { type: 'string', description: 'Personal websites' },
+            github: { type: 'string', description: 'GitHub username' },
+            linkedin: { type: 'string', description: 'LinkedIn profile' },
+            twitter: { type: 'string', description: 'Twitter handle' },
+            technical_skills: { type: 'string', description: 'Technical skills' },
+            soft_skills: { type: 'string', description: 'Soft skills' },
+            other_skills: { type: 'string', description: 'Other skills' },
+            projects: { type: 'string', description: 'Projects completed' },
+            certifications: { type: 'string', description: 'Certifications obtained' },
+            experience: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  title: { type: 'string' },
+                  employmentType: { type: 'string' },
+                  companyName: { type: 'string' },
+                  location: { type: 'string' },
+                  startDate: { type: ['string', 'null'] },
+                  endDate: { type: ['string', 'null'] },
+                  description: { type: 'string' },
+                  tags: { type: 'string' },
+                  employmentHours: { type: 'string' },
+                  isCurrent: { type: 'boolean' },
+                },
+              },
+            },
+            education: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  institutionName: { type: 'string' },
+                  degree: { type: 'string' },
+                  fieldOfStudy: { type: 'string' },
+                  startDate: { type: ['string', 'null'] },
+                  endDate: { type: ['string', 'null'] },
+                  isCurrent: { type: 'boolean' },
+                  grade: { type: 'string' },
+                  activities: { type: 'string' },
+                  description: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    ];
+  
+    const messages = [
+      {
+        role: 'system',
+        content:
+          'You are an assistant that extracts resume data from text and fills in missing information when possible, based on the user-provided data.',
+      },
+      {
+        role: 'user',
+        content: `Please extract resume data from the following text, filling in missing information when possible based on the provided user data.
+  
+  Resume Text:
+  ${truncatedTextContent}
+  
+  User Data:
+  ${JSON.stringify(userData, null, 2)}
+  `,
+      },
+    ];
+  
+    try {
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4o-mini', // or 'gpt-4' if you have access
+        messages: messages,
+        functions: functions,
+        function_call: { name: 'extract_resume_data' },
+        temperature: 0,
+      });
+  
+      const message = completion.choices[0]?.message;
+  
+      if (message.function_call) {
+        const functionArgs = JSON.parse(message.function_call.arguments);
+        const mergedData = { ...userData, ...functionArgs };
+        const validatedData = resumeResponseSchema.parse(mergedData);
+        return validatedData;
+      } else {
+        throw new Error('No function_call in response');
+      }
+    } catch (error) {
+      console.error('Error extracting resume data:', error.message);
+      throw error;
+    }
+  },  
+
+  async createResumeFromUserDataAndJob(user, job) {
+    const experienceSchema = z.object({
+      title: z.string(),
+      company: z.string(),
+      location: z.string(),
+      date: z.string(),
+      details: z.array(z.string())
+    });
+    
+    const projectSchema = z.object({
+      title: z.string(),
+      link: z.string().optional(),
+      details: z.array(z.string())
+    });
+    
+    const educationSchema = z.object({
+      title: z.string(),
+      company: z.string(),
+      location: z.string(),
+      date: z.string(),
+      details: z.array(z.string())
+    });
+
+    const skillCategorySchema = z.object({
+      category: z.string(),
+      skills: z.array(z.string())
+    });
+    
+    
+    const resumeSchema = z.object({
+      name: z.string(),
+      email: z.string(),
+      phone: z.string(),
+      github: z.string(),
+      professionalSummary: z.string(),
+      skills: z.array(skillCategorySchema), // Updated line
+      experience: z.array(experienceSchema),
+      projects: z.array(projectSchema),
+      education: z.array(educationSchema)
+    });
+    
+
+    
+    
+    console.log(user);
+    console.log(job);
+  
+    const openai = new OpenAI({ apiKey: openaiKey });
   
     const prompt = `
-    From the following resume text, extract the following information:
-  
-    - firstname
-    - lastname
-    - email
-    - phone number
-    - address
-    - professional_summary
-    - languages (default English)
-    - awards
-    - publications
-    - volunteer_experience
-    - references
-    - personal_websites 
-    - github (GitHub username)
-    - linkedin
-    - twitter
-    - technical_skills (comma-separated)
-    - soft_skills (comma-separated)
-    - other_skills (comma-separated)
-    - projects
-    - certifications
-  
-    For each job experience, include the following fields:
-    - title
-    - employmentType
-    - companyName
-    - location
-    - startDate (nullable)
-    - endDate (nullable)
-    - description
-    - tags
-    - employmentHours
-    - isCurrent
-  
-    For each education experience, include the following fields:
-    - institutionName
-    - degree 
-    - fieldOfStudy 
-    - startDate (nullable)
-    - endDate (nullable)
-    - isCurrent
-    - grade (GPA)
-    - activities
-    - description
-  
-    ${truncatedTextContent}
-    `;
+Create a resume for a software engineer named ${user.firstname} ${user.lastname} with the following information:
+${JSON.stringify(user, null, 2)}
+
+For the following job:
+${job}
+
+Your output should include the following sections:
+- name
+- email
+- phone
+- github
+- professionalSummary (a brief summary of the candidate's experience and skills and how they align with the job description/requirements)
+- skills (should be skills from the user's resume and implied skills that would be matching the job's required ones an array of objects, each with a 'category' (string) and 'skills' (array of strings))
+- experience (title, company, location, date, details) for each job STAR method each bulletpoint or ensure it is a complete sentence that is relevant to the job.
+- projects (title, link, details)
+- education (title, company, location, date, details)
+
+example of skills:
+skills: [
+  {
+    category: 'Programming',
+    skills: ['Python', 'C++', 'SQL', 'JavaScript', 'TypeScript', 'HTML', 'CSS']
+  },
+  {
+    category: 'Libraries/Frameworks',
+    skills: ['Node.js', 'Express.js', 'Angular', 'TensorFlow', 'NumPy', 'PyTest', 'Django']
+  },
+  {
+    category: 'Other Technologies',
+    skills: ['Microsoft Azure', 'MacOS/Unix', 'iOS MDM', 'Atlassian Jira', 'GitHub', 'SQL Server']
+  }
+],
+
+
+Ensure that the data matches the schema provided.
+
+  `;
   
     try {
       const completion = await openai.beta.chat.completions.parse({
@@ -255,21 +432,23 @@ const resumeFunctions = {
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant that extracts resume data from text.',
+            content: 'You are a helpful assistant that creates a resume from user data and a job description. Output data that strictly conforms to the provided schema.',
           },
           { role: 'user', content: prompt },
         ],
-        response_format: zodResponseFormat(resumeResponse, 'resumeResponse')
+        response_format: zodResponseFormat(resumeSchema, 'resumeSchema')
       });
   
       const message = completion.choices[0]?.message;
-      console.log(message);
-      return message.parsed;
+      const parsedData = resumeSchema.parse(message.parsed);
+      console.log(parsedData);
+      return parsedData;
     } catch (error) {
       console.error('OpenAI API Error:', error.message);
       throw error;
     }
   }
+  
   
   
 };

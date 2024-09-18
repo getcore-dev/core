@@ -150,33 +150,42 @@
           </div>
           <div class="edit-controls-and-follow-button">
             <button class="null-button-normal" id="edit-button" onclick="share('User Profile', '', 'https://getcore.dev/user/<%= otheruser.username %>')" style="margin-bottom: auto;">
+              <span class="material-symbols-outlined">
+                share
+              </span>
               Share
             </button>
             <% if (user) { %>
             <% if (otheruser.username === user.username) { %>
             <button class="regular-button-normal" id="edit-button" onclick="window.location.href='/edit-profile'" style="margin-bottom: auto;">
+              <span class="material-symbols-outlined">
+                edit
+              </span>
               Edit
             </button>
             <% } else { %>
             <button class="<%= isFollowing ? 'cancel-button-normal' : 'submit-button-normal' %>" id="followButton" style="margin-bottom: auto;">
-              <%= isFollowing ? 'Unfollow' : 'Follow' %>
+              <%- isFollowing ? '<span class="material-symbols-outlined">person_remove</span> Unfollow' : '<span class="material-symbols-outlined">person_add</span> Follow' %>
             </button>
-            <% if (user.isAdmin ) { %>
-            <form action="/admin/users/<%= otheruser.id %>/toggle-admin" method="POST">
-              <button class="admin-button cancel-button-normal" type="submit" style="margin-bottom: auto;"><%= otheruser.isAdmin ? 'Demote' : 'Promote' %></button>
-            </form>
-            <form action="/admin/users/<%= otheruser.id %>/toggle-verified" method="POST">
-              <button class="admin-button cancel-button-normal" type="submit" style="margin-bottom: auto;"><%= otheruser.verified ? 'Unverify' : 'Verify' %></button>
-            </form>
-            <form action="/admin/users/<%= otheruser.id %>/toggle-ban" method="POST">
-              <button class="admin-button cancel-button-normal" type="submit" style="margin-bottom: auto;"><%= otheruser.isBanned ? 'Unban' : 'Ban' %></button>
-            </form>
             <% } %>
-            <% } %>
-
             <% } %>
 
           </div>
+          <% if (user) { %>
+          <% if (user.isAdmin ) { %>
+          <div class="flex flex-row gap-06 space-between">
+            <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-admin" method="POST">
+              <button class="w-100 special-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.isAdmin ? '<span class="material-symbols-outlined">admin_panel_settings</span> Revoke Admin' : '<span class="material-symbols-outlined">admin_panel_settings</span> Make Admin' %></button>
+            </form>
+            <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-verified" method="POST">
+              <button class="w-100 submit-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.verified ? '<span class="material-symbols-outlined">check</span> Unverify' : '<span class="material-symbols-outlined">check</span> Verify' %></button>
+            </form>
+            <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-ban" method="POST">
+              <button class="w-100 cancel-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.isBanned ? '<span class="material-symbols-outlined">block</span> Unban' : '<span class="material-symbols-outlined">block</span> Ban' %></button>
+            </form>
+          </div>
+          <% } %>
+          <% } %>
 
           <% if (otheruser.username != "core") { %>
           <% if (otheruser.topCommunities && otheruser.topCommunities.length > 0) { %>
@@ -220,25 +229,12 @@
         <div class="current-education" style="background:none !important; padding: 0;">
           <div class="current-job-header">
             <h4>Education</h4>
-            <% if (user && otheruser.username == user.username) { %>
-            <button class="no-bg no-border" onclick="window.location.href='/edit-education-experience'">
-              <span class="material-symbols-outlined">
-                edit_square
-              </span> Edit
-            </button>
-            <% } %>
           </div>
           <div id="currentEducationContainer"></div>
         </div>
         <div class="current-job" style="background:none !important; padding: 0;">
           <div class="current-job-header">
-            <h4>Experience</h4> <% if (user && otheruser.username == user.username) { %>
-            <button class="no-bg no-border" onclick="window.location.href='/edit-experience'">
-              <span class="material-symbols-outlined">
-                edit_square
-              </span> Edit
-            </button>
-            <% } %>
+            <h4>Experience</h4>
           </div>
           <div id="currentJobContainer"></div>
         </div>
@@ -524,7 +520,11 @@
           const jobElement = document.createElement('div');
           jobElement.innerHTML = `
             <div class="job-experience-image">
-              <img class="thumbnail thumbnail-regular thumbnail-small" src="${experience.companyLogo || '/img/default-company-logo.png'}" alt="Company Logo">
+              <% if (otheruser.settings_PrivateJobNames) { %>
+                <img class="thumbnail thumbnail-regular thumbnail-tiny" src='/img/glyph.png' alt="Company Logo">
+                  <% } else { %>    
+              <img class="thumbnail thumbnail-regular thumbnail-tiny" src="${experience.companyLogo || '/img/glyph.png'}" alt="Company Logo">
+              <% } %> 
             </div>
                         <div class="job-experience-body">
               <div class="job-experience-header">
@@ -532,8 +532,8 @@
                 <% if (otheruser.settings_PrivateJobNames) { %>
                   <h4>Company Name Hidden</h4>
                 <% } else { %>
-                  <h4><a href="/jobs/company/${encodeURIComponent(experience.companyName)}">
-                  ${experience.companyName}</a></h4>
+                  <a class="link bold" href="/jobs/company/${encodeURIComponent(experience.companyName)}">
+                  ${experience.companyName}</a>
                 <% } %>
                 <div class="date-range">
                   <p><time>${formattedStartDate}</time> - <time>${experience.isCurrent ? 'Present' : formattedEndDate}</time></p>
@@ -541,7 +541,11 @@
               </div>
               <h4>${experience.title}</h4>
               <p>${experience.employmentType}</p>
-              <p>${experience.description}</p>
+              <% if (otheruser.settings_PrivateJobNames) { %>
+              <p class="sub-text secondary-text">${experience.description.replace(createNameRegex(experience.companyName), '[Company Name Hidden]')}</p>
+              <% } else { %>
+              <p class="sub-text secondary-text">${experience.description}</p>
+              <% } %>
               <p>${ experience.tags ? experience.tags.split(',').slice(0, 3).map(tag => {
                 const trimmedTag = tag.trim();
                 return `<span class="job-tag" onclick="window.location.href='/tags/${encodeURIComponent(trimmedTag)}'">${trimmedTag}</span>`;
@@ -550,6 +554,27 @@
           `;
           currentJobContainer.appendChild(jobElement);
         });
+      }
+
+
+      function createNameRegex(name) {
+        // List of common suffixes to remove
+        const suffixes = ['Inc', 'Incorporated', 'LLC', 'Ltd', 'Limited', 'Corp', 'Corporation', 'Company', 'Co', 'University', 'College', 'Institute'];
+
+        // Split the name into words
+        let words = name.split(/\s+/);
+
+        // Remove common suffixes
+        words = words.filter(word => !suffixes.includes(word));
+
+        // Escape special regex characters
+        words = words.map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+
+        // Join the words back together with optional whitespace
+        const pattern = words.join('\\s*');
+
+        // Create a regex pattern, case-insensitive
+        return new RegExp(pattern, 'gi');
       }
 
       function displayEducationExperience(experiences) {
@@ -567,7 +592,7 @@
             </div>
             <h4>${experience.degree}</h4>
             <p>${experience.fieldOfStudy}</p>
-            <p>${experience.description}</p>
+            <p class="sub-text secondary-text">${experience.description}</p>
             `;
           currentEducationContainer.appendChild(educationElement);
         });

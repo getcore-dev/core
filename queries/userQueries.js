@@ -379,6 +379,23 @@ const userQueries = {
         'jobExperienceLevel',
         'jobPreferredIndustry',
         'jobPreferredSalary',
+        'desired_job_title',
+        'employment_type',
+        'desired_location',
+        'willing_to_relocate',
+        'desired_salary_min',
+        'professionalSummary',
+        'desired_salary_max',
+        'availability_date',
+        'technical_skills',
+        'soft_skills',
+        'willing_to_relocate',
+        'other_skills',
+        'languages',
+        'certifications',
+        'preferred_industries',
+        'preferred_companies',
+        'phone_number',
       ];
 
       console.log('field', field);
@@ -392,18 +409,18 @@ const userQueries = {
       if (['leetcode_url', 'linkedin_url', 'github_url'].includes(field)) {
         // Extract the username from the provided value
         switch (field) {
-          case 'leetcode_url':
-            value = value.replace(/^https?:\/\/leetcode.com\//i, '');
-            break;
-          case 'linkedin_url':
-            value = value.replace(
-              /^https?:\/\/(?:www\.)?linkedin.com\/in\//i,
-              ''
-            );
-            break;
-          case 'github_url':
-            value = value.replace(/^https?:\/\/github.com\//i, '');
-            break;
+        case 'leetcode_url':
+          value = value.replace(/^https?:\/\/leetcode.com\//i, '');
+          break;
+        case 'linkedin_url':
+          value = value.replace(
+            /^https?:\/\/(?:www\.)?linkedin.com\/in\//i,
+            ''
+          );
+          break;
+        case 'github_url':
+          value = value.replace(/^https?:\/\/github.com\//i, '');
+          break;
         }
       }
   
@@ -418,6 +435,12 @@ const userQueries = {
   
         if (recruiterResult.recordset[0].count === 0) {
           throw new Error(`Invalid recruiter_id: ${value}`);
+        }
+      }
+
+      if (field === 'desired_salary_min' || field === 'desired_salary_max') {
+        if (isNaN(value) || value < 0) {
+          value = 0;
         }
       }
 
@@ -689,7 +712,7 @@ const userQueries = {
         JOIN user_relationships r ON u.id = r.followed_id
         WHERE r.follower_id = ${userId}`;
 
-        console.log(result);
+      console.log(result);
       return result.recordset;
     } catch (err) {
       console.error('Database query error:', err);
@@ -704,7 +727,7 @@ const userQueries = {
         FROM users u
         JOIN user_relationships r ON u.id = r.follower_id
         WHERE r.followed_id = ${userId}`;
-        console.log(result);
+      console.log(result);
 
       return result.recordset;
     } catch (err) {

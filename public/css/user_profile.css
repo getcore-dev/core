@@ -145,12 +145,7 @@ main {
   color: var(--primary-text-color);
 }
 
-#profile p {
-  font-size: .875rem;
-  color: var(--primary-text-color);
-}
-
-#profile a,
+#profile a
 .points-info,
 .communities-info {
   font-size: .875rem;
@@ -160,11 +155,6 @@ main {
 .editable-field a {
   color: var(--active-indicator-color);
   text-decoration: none;
-}
-
-.current-job p,
-.current-education p {
-  font-size: 14px;
 }
 
 main {
@@ -197,10 +187,6 @@ main {
 
 #profile h1 {
   color: var(--primary-text-color);
-}
-
-#profile p {
-  color: var(--secondary-text-color);
 }
 
 /* Profile Picture Styles */

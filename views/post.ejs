@@ -468,8 +468,12 @@
             <form action="/posts/<%= post.id %>/comments" method="POST">
               <textarea id="comment-form-textarea" name="comment"></textarea>
               <div class="button-container" style="display: none;">
-                <button type="button" id="cancel-button-normal">Cancel</button>
-                <button type="submit" id="submit-button-normal" class="fab">Submit</button>
+                <button type="button" id="cancel-button-normal">
+                  <span class="material-symbols-outlined">close</span>
+                  Cancel</button>
+                <button type="submit" id="submit-button-normal" class="fab">
+                  <span class="material-symbols-outlined">send</span>
+                  Submit</button>
               </div>
             </form>
           </div>

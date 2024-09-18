@@ -409,11 +409,11 @@
             // Append the follow button if the user is logged in and not the post owner
             if (loggedIn && user.id !== post.user_id) {
               const followButton = document.createElement('button');
-              followButton.className = 'follow-button';
+              followButton.className = post.is_following ? 'cancel-button-normal mini-button' : 'regular-button-normal mini-button';
               if (post.is_following) {
                 followButton.classList.add('active');
               }
-              followButton.innerText = post.is_following ? 'Remove' : 'Connect';
+              followButton.innerHTML = post.is_following ? '<span class="material-symbols-outlined">person_remove</span>Remove' : '<span class="material-symbols-outlined">person_add</span>Connect';
               console.log(post.user_id, user.id);
 
               followButton.onclick = (e) => {

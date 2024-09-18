@@ -175,6 +175,11 @@ body {
     color: #374151;
 }
 
+.form-group input[type="checkbox"] {
+    width: auto;
+    margin-right: 10px;
+}
+
 .form-group input::placeholder,
 .form-group textarea::placeholder {
     color: #9ca3af;
@@ -220,15 +225,6 @@ body {
     text-align: right;
 }
 
-#submit-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-}
-
 #submit-button:hover {
     opacity: 0.9;
 }
@@ -244,13 +240,6 @@ body {
     font-weight: bold;
 }
 
-.container label {
-    margin-left: 10px;
-    width: 100%;
-    margin-bottom: .5rem;
-    font-size: 16px;
-    font-weight: 500;
-}
 
 .container select {
     padding: 10px;

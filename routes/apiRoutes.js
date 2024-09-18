@@ -40,6 +40,7 @@ const { default: rateLimit } = require('express-rate-limit');
 const notificationQueries = require('../queries/notificationQueries.js');
 const { check } = require('express-validator');
 const { user } = require('../config/dbConfig.js');
+const resumeFunctions = require('../utils/resumeFunctions.js');
 const jobLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
   max: 1,
@@ -753,86 +754,23 @@ router.get('/jobs/:id/similar', cacheMiddleware(2400), async (req, res) => {
   }
 });
 
-router.get('/create-resume',async (req, res) => {
+router.get('/create-resume/:jobId', checkAuthenticated, async (req, res) => {
   try {
-    const resumeData = {
-      name: 'Bryce M. Cole',
-      email: 'brycemcole@icloud.com',
-      phone: '919-724-8794',
-      github: 'github.com/brycemcole',
-      
-      professionalSummary: 'Experienced IT professional with over 2 years of expertise in Software Engineering, and 4 years in IT support specializing in MacOS and Windows. Continuously seeking new opportunities to expand knowledge and skills in cutting-edge technologies. Passionate about leveraging strong technical background to deliver innovative solutions and provide exceptional support in dynamic technology environments.',
-      
-      skills: {
-        'Programming': 'Python, C++, SQL, JavaScript/TypeScript, HTML/CSS',
-        'Libraries/Frameworks': 'Node.js, Express.js, Angular, TensorFlow, NumPy, PyTest, Django',
-        'Other Technologies': 'Microsoft Azure, MacOS/Unix, iOS MDM, Atlassian Jira, GitHub, SQL Server'
-      },
-      
-      experience: [
-        {
-          title: 'Software Engineering Analyst Intern',
-          company: 'BlackRock',
-          location: 'New York, New York',
-          date: 'June 2024-Current',
-          details: [
-            'Full-Stack engineer on the BlackRock Aladdin Engineering team.',
-            'Leveraged in-house AI completions agents to deploy a chat MFE that could understand the context of the webpage for answering questions related to the user\'s current open page within BlackRock Aladdin.',
-            'Worked closely with members of the engineering, finance, investment, and quantitative development teams, regularly participating in their AGILE cycles and daily standups to ensure my project\'s progression.'
-          ]
-        },
-        {
-          title: 'Tech & Sales Specialist',
-          company: 'Apple',
-          location: 'New York, New York',
-          date: 'May 2022 – May 2024',
-          details: [
-            'Continuously learning new and even surprise-release technologies to provide the best solutions for customers and team members who rely on me for mentoring surrounding technical knowledge and troubleshooting skills.',
-            'Demonstrated deep product knowledge about Software and Hardware issues related to Apple products, mentored and taught several team members about different ways to diagnose issues with the products.'
-          ]
-        },
-        {
-          title: 'Software Engineering Co-Op @ All-In Open Source',
-          company: 'GitHub',
-          location: 'Remote',
-          date: 'November 2022 – April 2023',
-          details: [
-            'Learned key skills about using Git for software development in production and development setting.',
-            'Participated in hackathons hosted by Microsoft, and Fidelity, where we practiced studied cybersecurity practices and even tested some of our solutions against automated testing.'
-          ]
-        }
-      ],
-      
-      projects: [
-        {
-          title: 'core – Social Media Platform',
-          link: 'https://getcore.dev',
-          details: [
-            'Developed a comprehensive AI-powered web-platform for ~100 users to find software engineering jobs tailored to them automatically scraped from over 200 websites daily.'
-          ]
-        },
-        {
-          title: 'Flower Recognition Classification Algorithm',
-          details: [
-            'Used TensorFlow to train a neural network to extract data from photos of flowers such as petal details and a classification model to make predictions about what kind of flower it is with a 93% accuracy.'
-          ]
-        }
-      ],
-      
-      education: [
-        {
-          title: 'Bachelor\'s Degree, Computer Science, Minor in Mathematics',
-          company: 'City University of New York',
-          location: 'New York, New York',
-          date: 'September 2021 – May 2024',
-          details: [
-            'Major GPA: 3.4',
-            'Coursework: Application Development, Data Structures, Artificial Intelligence, Database Implementation, Data Analysis',
-            'Certifications: IBM Data Science & AI Development with Python, IBM Cloud Computing'
-          ]
-        }
-      ]
-    };
+    const user = req.user;
+    if (!user) {
+      return res.status(401).json({ message: 'User not authenticated' });
+    }
+
+    const fullUser = await userQueries.findById(user.id);
+    const jobExperience = await jobQueries.getUserJobExperience(user.id);
+    const educationExperience = await jobQueries.getUserEducationExperience(user.id);
+    const jobPosting = await jobQueries.findById(req.params.jobId);
+
+    fullUser.jobExperience = jobExperience;
+    fullUser.educationExperience = educationExperience;
+
+    const resumeData = await resumeFunctions.createResumeFromUserDataAndJob(fullUser, jobPosting);
+
     jobQueries.createResume(resumeData);
 
   } catch (err) {

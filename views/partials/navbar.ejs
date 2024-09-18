@@ -169,10 +169,12 @@
 
       <div class="user-btns">
         <ul class="user-links">
-          <li class="navigation-button" id="search-toggle-button" style="width: auto">
-            <span id="secondary-text" class="material-symbols-outlined">
-              search
-            </span>
+          <li id="search-toggle-button" style="width: auto">
+            <button class="null-button-normal">
+              <span class="material-symbols-outlined primary-text">
+                search
+              </span>
+            </button>
           </li>
           <li>
             <% if (user && user.avatar) { %>
@@ -228,11 +230,14 @@
             </div>
             <% } else if (!user) { %>
             <div class="nav-avatar">
-              <div class="border-background">
-                <a href="/login" class="inbox-button" id="login-btn">
+              <a href="/login">
+                <button class="regular-button-normal">
+                  <span class="material-symbols-outlined">
+                    login
+                  </span>
                   Sign in
-                </a>
-              </div>
+                </button>
+              </a>
             </div>
             <% } %>
             </a>

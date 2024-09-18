@@ -2177,7 +2177,10 @@ ORDER BY jp.postedDate DESC
           je.description,
           je.employmentType,
           je.companyName AS userEnteredCompanyName,
-          c.name AS companyName,
+          CASE 
+            WHEN c.name IS NULL THEN je.companyName
+            ELSE c.name
+          END AS companyName,
           c.logo AS companyLogo
         FROM job_experiences je
         LEFT JOIN companies c ON 

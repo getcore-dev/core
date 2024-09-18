@@ -1066,9 +1066,9 @@ a>.menu-item {
 
 
 #user-avatar {
-  width: 30px;
+  width: 34px;
   border-radius: 6px;
-  height: 30px;
+  height: 34px;
   object-fit: cover;
   overflow: hidden;
   z-index: 10;
@@ -1395,6 +1395,7 @@ a>.menu-item {
   .user-btns {
     position: absolute;
     right: 3.3rem;
+    height: 34px;
     top: 7px;
     z-index: 500;
   }
@@ -1472,9 +1473,8 @@ a>.menu-item {
     display: flex;
   }
 
-  .user-links.slide-left {
-    margin: 2px;
-    margin-right: 0;
+  .user-links.slide-left #search-toggle-button {
+    display: none;
   }
 
   .user-links .user-avatar img {
@@ -1590,7 +1590,6 @@ textarea {
   width: 100%;
   padding: 10px 20px;
   font-family: var(--font-family);
-  margin: 8px 0;
   box-sizing: border-box;
   border: 1px solid var(--border-color);
   border-radius: 6px;
@@ -1769,6 +1768,20 @@ button:hover {
   gap: .5rem;
 }
 
+.mini-button {
+  height: 26px;
+}
+
+.modal {
+  position: fixed;
+  background: white;
+  z-index: 12;
+  max-height: calc(100vh - var(--navbar-height));
+  pointer-events: all;
+  overflow-y: scroll;
+  top: var(--navbar-height);
+}
+
 
 .main-button,
 .main-button-normal {
@@ -1894,6 +1907,10 @@ em.red {
   display: flex;
 }
 
+.w-100 {
+  width: 100%;
+}
+
 .wrap {
   flex-wrap: wrap;
 }
@@ -1934,10 +1951,6 @@ hr {
   height: 32px;
   margin-right: 7px;
   border-radius: 9999px;
-}
-
-#search-toggle-button .material-symbols-outlined {
-  color: var(--light-mode-secondary-text-color);
 }
 
 .text-tag {
@@ -2175,7 +2188,7 @@ hr {
 .user-links {
   position: relative;
   display: flex;
-  gap: .55rem;
+  gap: .75rem;
   align-items: center;
   transition: transform 0.1s linear;
 }
@@ -2334,10 +2347,6 @@ details[open] {
 
   .menu-content a {
     color: #fff;
-  }
-
-  #search-toggle-button .material-symbols-outlined {
-    color: var(--dark-mode-third-text-color);
   }
 
 
@@ -3243,6 +3252,11 @@ input::placeholder {
   input[type='search'] {
     border-radius: 8px;
     padding: .25rem .75rem;
+  }
+
+  .modal {
+    max-height: calc(100vh - var(--mobile-navbar-height));
+    top: var(--mobile-navbar-height);
   }
 
 
