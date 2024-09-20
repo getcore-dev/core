@@ -46,7 +46,7 @@ main {
 .profile-content {
   display: flex;
   gap: .7rem;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 .edit-controls-and-follow-button {
@@ -145,8 +145,7 @@ main {
   color: var(--primary-text-color);
 }
 
-#profile a
-.points-info,
+#profile a .points-info,
 .communities-info {
   font-size: .875rem;
 
@@ -214,9 +213,7 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0px 10px;
-  margin-top: .9rem;
-  padding-top: 0px;
+  padding: 0;
 }
 
 .sort-option {
@@ -247,30 +244,6 @@ main {
   width: 100%;
   /* Full width of posts container */
   /* ... other styles ... */
-}
-
-.points-info,
-.communities-info {
-  color: var(--light-mode-text-color);
-  display: flex;
-  flex-direction: row;
-  gap: 4px;
-  align-items: center;
-  justify-content: space-between;
-  padding-right: 10px;
-}
-
-.communities-info {
-  align-items: baseline;
-  margin-bottom: 0.7rem;
-}
-
-.profile-picture img {
-  width: 80px;
-  height: 80px;
-  border-radius: 10px;
-  object-fit: cover;
-  border: 1px solid var(--border-color);
 }
 
 .profile-picture button {
@@ -496,24 +469,9 @@ main {
   padding: 0 !important;
 }
 
-#currentEducationContainer,
-#currentJobContainer {
-  margin-bottom: .8rem;
-}
-
-.current-job h4,
-.current-education h4,
-.github-commit-graph h4 {
-  margin-top: .7rem;
-  margin-bottom: .8rem;
-}
 
 .github-commit-graph h4 {
   margin-bottom: 0;
-}
-
-.github-commit-graph p {
-  margin-bottom: 1.2rem;
 }
 
 #currentJobContainer h4,
@@ -543,23 +501,6 @@ main {
   padding: .55rem .6rem;
   border-radius: 10px;
 }
-
-.social-display {
-  display: flex;
-  flex-direction: row;
-  gap: 7px;
-  border-radius: 8px;
-  padding: .2rem .4rem;
-  align-items: center;
-}
-
-.social-display a {
-  color: var(--active-indicator-color) !important;
-  font-size: 1.2rem;
-  font-weight: 500;
-}
-
-
 
 th {
   font-size: .875rem;
@@ -611,16 +552,17 @@ td {
   }
 
   .profile-info .profile-details {
-    width: 85%;
-    gap: .05rem;
+    width: 100%;
+    gap: .5rem;
     display: flex;
     flex-direction: column;
+    align-items: center;
   }
 
   #profile {
     padding: 0 1rem;
     padding-top: 0;
-    gap: 0;
+    gap: 1.5rem;
     grid-template-columns: repeat(2, 1fr);
     /* Two columns of equal size */
     grid-template-areas:
@@ -720,7 +662,7 @@ td {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  gap: 12px;
+  gap: .4rem;
 }
 
 .profile-info {
@@ -820,10 +762,6 @@ td {
   }
 
 
-
-  .profile-picture img {
-    border-color: var(--dark-mode-border-color);
-  }
 
   #posts {
     background-color: var(--dark-mode-body-color);

@@ -1191,6 +1191,14 @@ a>.menu-item {
   line-height: .9rem;
 }
 
+.short-text {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+}
+
 .thumbnail-regular {
   aspect-ratio: 1/1;
   width: auto;
@@ -1812,7 +1820,13 @@ div .material-symbols-outlined:not(:only-child) {
 .link {
   color: var(--active-indicator-color) !important;
   font-weight: 500;
+  cursor: pointer;
   text-decoration: none;
+}
+
+.clickable {
+  color: var(--active-indicator-color) !important;
+  cursor: pointer;
 }
 
 
@@ -1960,6 +1974,13 @@ hr {
   border: 1px solid #f3f4f6;
   padding: 0.25rem 0.5rem;
   border-radius: 7px;
+}
+
+.text-tag .material-symbols-outlined {
+  font-size: .9rem;
+  line-height: 1.4rem;
+  vertical-align: -6px;
+  padding-right: .4rem;
 }
 
 .h-center {

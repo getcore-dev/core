@@ -144,11 +144,11 @@
           <label for="employment_type">Desired Employment Type</label>
           <select id="employment_type" name="employment_type" required aria-label="Desired Employment Type">
             <option value="" disabled selected>Select Employment Type</option>
-            <option value="full_time" <% if(edit_user.employment_type == 'full_time') { %>selected<% } %>>Full-time</option>
-            <option value="part_time" <% if(edit_user.employment_type == 'part_time') { %>selected<% } %>>Part-time</option>
-            <option value="contract" <% if(edit_user.employment_type == 'contract') { %>selected<% } %>>Contract</option>
-            <option value="temporary" <% if(edit_user.employment_type == 'temporary') { %>selected<% } %>>Temporary</option>
-            <option value="internship" <% if(edit_user.employment_type == 'internship') { %>selected<% } %>>Internship</option>
+            <option value="full_time" <% if(edit_user.employment_type.toLowerCase() == 'full_time') { %>selected<% } %>>Full-time</option>
+            <option value="part_time" <% if(edit_user.employment_type.toLowerCase() == 'part_time') { %>selected<% } %>>Part-time</option>
+            <option value="contract" <% if(edit_user.employment_type.toLowerCase() == 'contract') { %>selected<% } %>>Contract</option>
+            <option value="temporary" <% if(edit_user.employment_type.toLowerCase() == 'temporary') { %>selected<% } %>>Temporary</option>
+            <option value="internship" <% if(edit_user.employment_type.toLowerCase() == 'internship') { %>selected<% } %>>Internship</option>
           </select>
         </div>
         <div class="form-group">
@@ -228,19 +228,12 @@
         </div>
       </section>
 
-      <!-- GitHub URL Field in Socials Section -->
-      <section class="section">
-        <h2 class="section-title">Socials</h2>
-        <!-- Existing fields -->
-        <div class="form-group">
-          <input type="text" id="github_url" name="github_url" value="<%= edit_user.github_url %>" placeholder="GitHub URL" required aria-label="GitHub URL">
-        </div>
-      </section>
-
-
       <!-- Socials Section -->
       <section class="section">
         <h2 class="section-title">Socials</h2>
+        <div class="form-group">
+          <input type="text" id="github_url" name="github_url" value="<%= edit_user.github_url %>" placeholder="GitHub URL" required aria-label="GitHub URL">
+        </div>
         <div class="form-group">
           <input type="text" id="linkedin_url" name="linkedin_url" value="<%= edit_user.linkedin_url %>" placeholder="LinkedIn" required aria-label="LinkedIn">
         </div>
@@ -372,45 +365,34 @@
         var formData = new FormData(); // Use FormData for file uploads
 
         // Append all form fields to formData
-        formData.append('firstname', $('#firstname').val());
-        formData.append('lastname', $('#lastname').val());
-        formData.append('email', $('#email').val());
-        formData.append('phone_number', $('#phone_number').val());
-        formData.append('bio', $('#bio').val());
-        formData.append('zipcode', $('#zipcode').val());
-        formData.append('desired_job_title', $('#desired_job_title').val());
-        formData.append('employment_type', $('#employment_type').val());
-        formData.append('desired_location', $('#desired_location').val());
-        formData.append('willing_to_relocate', $('#willing_to_relocate').is(':checked') ? 1 : 0);
-        formData.append('desired_salary_min', $('#desired_salary_min').val());
-        formData.append('desired_salary_max', $('#desired_salary_max').val());
-        formData.append('availability_date', $('#availability_date').val());
-        formData.append('technical_skills', $('#technical_skills').val());
-        formData.append('soft_skills', $('#soft_skills').val());
-        formData.append('other_skills', $('#other_skills').val());
-        formData.append('professionalSummary', $('#professionalSummary').val());
-        formData.append('languages', $('#languages').val());
-        formData.append('certifications', $('#certifications').val());
-        formData.append('preferred_industries', $('#preferred_industries').val());
-        formData.append('preferred_companies', $('#preferred_companies').val());
-        formData.append('github_url', $('#github_url').val());
-        formData.append('linkedin_url', $('#linkedin_url').val());
-        formData.append('leetcode_url', $('#leetcode_url').val());
-        formData.append('link', $('#link').val());
-        formData.append('link2', $('#link2').val());
-        formData.append('profile_border_color', $('#profile_border_color').val());
+        $('form').find('input, select, textarea').each(function () {
+          var $field = $(this);
+          var name = $field.attr('name');
+          var type = $field.attr('type');
 
-        // Handle avatar file
-        var avatarFile = $('#avatar')[0].files[0];
-        if (avatarFile) {
-          formData.append('avatar', avatarFile);
-        }
+          // Skip the resume field
+          if (name === 'resume') {
+            return;
+          }
 
-        // Handle resume file (if you want to upload it here as well)
-        var resumeFile = $('#resume')[0].files[0];
-        if (resumeFile) {
-          formData.append('resume', resumeFile);
-        }
+          if (name === 'searchTerm') {
+            return;
+          }
+
+          if (type === 'file') {
+            // Handle file inputs (except resume)
+            var files = $field[0].files;
+            if (files.length > 0) {
+              formData.append(name, files[0]);
+            }
+          } else if (type === 'checkbox') {
+            // Handle checkboxes
+            formData.append(name, $field.is(':checked') ? 1 : 0);
+          } else {
+            // Handle all other input types
+            formData.append(name, $field.val());
+          }
+        });
 
         // Optional: Disable the submit button to prevent multiple submissions
         var $submitButton = $(this);
@@ -580,7 +562,7 @@
       function populateFormFields() {
         if (!resumeData) return;
 
-        const fields = ['firstname', 'lastname', 'email', 'bio', 'zipcode', 'linkedin_url', 'leetcode_url', 'link', 'link2', 'github_url', 'phone_number', 'desired_job_title', 'desired_location', 'desired_salary_min', 'desired_salary_max', 'employment_type', 'availability_date', 'technical_skills', 'languages', 'certifications', 'preferred_industries', 'preferred_companies', 'profile_border_color', 'professionalSummary', 'soft_skills', 'other_skills', 'willing_to_relocate'];
+        const fields = ['firstname', 'lastname', 'email', 'bio', 'zipcode', 'linkedin_url', 'leetcode_url', 'link', 'link2', 'github_url', 'phone_number', 'desired_job_title', 'desired_location', 'desired_salary_min', 'desired_salary_max', 'employment_type', 'availability_date', 'technical_skills', 'languages', 'certifications', 'preferred_industries', 'preferred_companies', 'profile_border_color', 'professionalSummary', 'soft_skills', 'other_skills', 'preferred_companies', 'willing_to_relocate'];
 
         fields.forEach(field => {
           if (resumeData[field]) {
@@ -591,7 +573,11 @@
             if (currentValue !== newValue) {
               const $updateButton = $('<span class="update-button">Update to: ' + newValue + '</span>');
               $updateButton.click(function () {
-                $input.val(newValue);
+                if (field === 'employment_type') {
+                  $input.val(newValue.toLowerCase());
+                } else {
+                  $input.val(newValue);
+                }
                 $(this).remove();
               });
               $input.after($updateButton);

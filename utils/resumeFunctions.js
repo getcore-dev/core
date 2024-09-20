@@ -168,6 +168,14 @@ const resumeFunctions = {
 
   async extractResumeDataFromText(text, userData = {}) {
     const openai = new OpenAI({ apiKey: openaiKey });
+
+    const employmentTypeEnum = [
+      'full_time',
+      'part_time',
+      'contract',
+      'temporary',
+      'internship',
+    ];
   
     const experienceSchema = z.array(
       z.object({
@@ -177,7 +185,7 @@ const resumeFunctions = {
         location: z.string().optional(),
         startDate: z.string().nullable().optional(),
         endDate: z.string().nullable().optional(),
-        description: z.string().optional(),
+        description: z.string().nullable().optional(),
         tags: z.string().optional(),
         employmentHours: z.string().optional(),
         isCurrent: z.boolean().optional(),
@@ -192,9 +200,9 @@ const resumeFunctions = {
         startDate: z.string().nullable().optional(),
         endDate: z.string().nullable().optional(),
         isCurrent: z.boolean().optional(),
-        grade: z.string().optional(),
-        activities: z.string().optional(),
-        description: z.string().optional(),
+        grade: z.string().nullable().optional(),
+        activities: z.string().nullable().optional(),
+        description: z.string().nullable().optional(),
       })
     );
   
@@ -204,9 +212,14 @@ const resumeFunctions = {
       email: z.string().optional(),
       phone_number: z.string().optional(),
       address: z.string().optional(),
-      professional_summary: z.string().optional(),
+      zipcode: z.string().optional(),
+      professionalSummary: z.string().optional(),
+      desired_job_title: z.string().optional(),
+      preferred_industries: z.string().optional(),
+      desired_location: z.string().optional(),
+      employment_type: z.enum(employmentTypeEnum).optional(),
       languages: z.string().optional(),
-      awards: z.string().optional(),
+      awards: z.string().nullable().optional(),
       publications: z.string().optional(),
       volunteer_experience: z.string().optional(),
       references: z.string().optional(),
@@ -230,7 +243,7 @@ const resumeFunctions = {
     const functions = [
       {
         name: 'extract_resume_data',
-        description: 'Extracts resume data from text.',
+        description: 'Extracts and fills in resume data from text. ',
         parameters: {
           type: 'object',
           properties: {
@@ -239,6 +252,7 @@ const resumeFunctions = {
             email: { type: 'string', description: 'Email address' },
             phone_number: { type: 'string', description: 'Phone number' },
             address: { type: 'string', description: 'Mailing address' },
+            zipcode: { type: 'string', description: 'Zip code from address' },
             professionalSummary: { type: 'string', description: 'Professional summary' },
             languages: { type: 'string', description: 'Languages spoken' },
             awards: { type: 'string', description: 'Awards received' },
@@ -254,6 +268,14 @@ const resumeFunctions = {
             other_skills: { type: 'string', description: 'Other skills' },
             projects: { type: 'string', description: 'Projects completed' },
             certifications: { type: 'string', description: 'Certifications obtained' },
+            desired_job_title: { type: 'string', description: 'Desired job title' },
+            preferred_industries: { type: 'string', description: 'Preferred industries' },
+            desired_location: { type: 'string', description: 'Desired work location' },
+            employment_type: {
+              type: 'string',
+              enum: employmentTypeEnum,
+              description: 'Desired employment type, must be one of: ' + employmentTypeEnum.join(', '),
+            },
             experience: {
               type: 'array',
               items: {
@@ -298,11 +320,75 @@ const resumeFunctions = {
       {
         role: 'system',
         content:
-          'You are an assistant that extracts resume data from text and fills in missing information when possible, based on the user-provided data.',
+        'You are an assistant that extracts resume data from text and fills in missing information when possible, based on the user-provided data. For the "employment_type" field, only use one of the following values: "full_time", "part_time", "contract", "temporary", "internship". Ensure the values are spelled exactly as specified, including underscores.',
       },
       {
         role: 'user',
-        content: `Please extract resume data from the following text, filling in missing information when possible based on the provided user data.
+        content: `You are an assistant that extracts resume data from text and fills in missing information when possible, based on the user-provided data. Fill in additional fields based on common assumption you can make from the data. Like that the user speaks english. Skills should always be fit into 3 categories, technical, soft skills and other. Skills should be comma separeted strings. Professional summary should be included or write a new one based on the data.
+        This is an example of the data you should output:
+        {
+            firstname: { type: 'string', description: 'First name' },
+            lastname: { type: 'string', description: 'Last name' },
+            email: { type: 'string', description: 'Email address' },
+            phone_number: { type: 'string', description: 'Phone number' },
+            address: { type: 'string', description: 'Mailing address' },
+            zipcode: { type: 'string', description: 'Zip code from address' },
+            professionalSummary: { type: 'string', description: 'Professional summary' },
+            languages: { type: 'string', description: 'Languages spoken' },
+            awards: { type: 'string', description: 'Awards received' },
+            publications: { type: 'string', description: 'Publications authored' },
+            volunteer_experience: { type: 'string', description: 'Volunteer work' },
+            references: { type: 'string', description: 'Professional references' },
+            personal_websites: { type: 'string', description: 'Personal websites' },
+            github: { type: 'string', description: 'GitHub username' },
+            linkedin: { type: 'string', description: 'LinkedIn profile' },
+            twitter: { type: 'string', description: 'Twitter handle' },
+            technical_skills: { type: 'string', description: 'Technical skills' },
+            soft_skills: { type: 'string', description: 'Soft skills' },
+            other_skills: { type: 'string', description: 'Other skills' },
+            projects: { type: 'string', description: 'Projects completed' },
+            certifications: { type: 'string', description: 'Certifications obtained' },
+            desired_job_title: { type: 'string', description: 'Desired job title' },
+            preferred_industries: { type: 'string', description: 'Preferred industries' },
+            desired_location: { type: 'string', description: 'Desired work location' },
+            employment_type: { type: 'string', description: 'Desired employment type' },
+            experience: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  title: { type: 'string' },
+                  employmentType: { type: 'string' },
+                  companyName: { type: 'string' },
+                  location: { type: 'string' },
+                  startDate: { type: ['string', 'null'] },
+                  endDate: { type: ['string', 'null'] },
+                  description: { type: 'string' },
+                  tags: { type: 'string' },
+                  employmentHours: { type: 'string' },
+                  isCurrent: { type: 'boolean' },
+                },
+              },
+            },
+            education: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  institutionName: { type: 'string' },
+                  degree: { type: 'string' },
+                  fieldOfStudy: { type: 'string' },
+                  startDate: { type: ['string', 'null'] },
+                  endDate: { type: ['string', 'null'] },
+                  isCurrent: { type: 'boolean' },
+                  grade: { type: 'string' },
+                  activities: { type: 'string' },
+                  description: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
   
   Resume Text:
   ${truncatedTextContent}

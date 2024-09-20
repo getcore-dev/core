@@ -18,8 +18,10 @@
     </div>
     <form id="jobExperienceForm">
       <div id="jobExperienceContainer"></div>
-      <button type="button" class="regular-button" id="addJobExperience">Add Job Experience</button>
-      <button type="submit" id="submit-button">Save Changes</button>
+      <span class="flex flex-col gap-06">
+        <button type="button" class="regular-button" id="addJobExperience">Add Job Experience</button>
+        <button type="submit" id="submit-button">Save Changes</button>
+      </span>
     </form>
 
     <template id="jobExperienceTemplate">
@@ -87,48 +89,90 @@
         jobExperienceContainer.appendChild(newExperience);
       }
 
+      function formatDate(date) {
+        let postDate = new Date(date);
+        let today = new Date();
+        let diff = today - postDate;
+        let formattedDate = '';
+
+        // Convert time difference to different units
+        let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+        let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+        let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+
+        // Decide the format based on the time difference
+        if (diff < 86400000) { // Less than 24 hours
+          if (hours < 1) {
+            formattedDate = minutes + 'm';
+          } else {
+            formattedDate = hours + 'h';
+          }
+        } else {
+          // Format date with month spelled out, e.g., "July 19, 2024"
+          let options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          };
+          formattedDate = postDate.toLocaleDateString('en-US', options);
+        }
+
+        return formattedDate;
+      }
+
       function createExperienceElement(experienceData = {}) {
-        const div = document.createElement('div');
-        div.classList.add('jobExperience');
+        const div = createElement('div', 'jobExperience');
+        div.innerHTML = `
+    <p name="companyName" class="bold sub-text">${experienceData.companyName}</p>
+    <div class="flex flex-row space-between w-100 v-center">
+      <p name="title" class="title main-text bold">${experienceData.title}</p>
+      <div class="flex flex-row">
+        <p name="startDate" class="startDate bold mini-text third-text">${experienceData.startDate ? formatDate(experienceData.startDate) : 'Present'}</p>
+        <span>-</span>
+        <p name="endDate" class="endDate bold mini-text third-text">${experienceData.endDate ? formatDate(experienceData.endDate) : 'Present'}</p>
+      </div>
+    </div>
+    <p name="employmentType" class="employmentType sub-text">${experienceData.employmentType}</p>
+    <p name="location" class="location">${experienceData.location ? experienceData.location : ''}</p>
+    <p name="description" class="description sub-text secondary-text">${experienceData.description}</p>
+    <p name="tags" class="tags">${experienceData.tags}</p>
+  `;
 
-        const fields = ['title', 'employmentType', 'companyName', 'location', 'isCurrent', 'startDate', 'endDate', 'description', 'tags'];
-
-        fields.forEach(field => {
-          const p = document.createElement('p');
-          p.innerHTML = `<strong>${field.charAt(0).toUpperCase() + field.slice(1)}:</strong> ${experienceData[field] || ''}`;
-          p.classList.add(field);
-          div.appendChild(p);
-        });
-
-        const buttonContainer = document.createElement('div');
-        buttonContainer.classList.add('button-container');
+        const buttonContainer = createElement('div', 'button-container flex flex-row w-100 gap-06');
         div.appendChild(buttonContainer);
 
-        const editButton = document.createElement('button');
-        editButton.textContent = 'Edit';
-        editButton.type = 'button';
-        editButton.classList.add('editJobExperience');
-        editButton.classList.add('regular-button-normal');
-
-        editButton.addEventListener('click', function () {
+        const editButton = createButton('Edit', 'editJobExperience regular-button-normal w-100', () => {
           div.remove();
           addExperience(experienceData);
-          div.appendChild(removeButton);
         });
-        buttonContainer.appendChild(editButton);
 
-        const removeButton = document.createElement('button');
-        removeButton.textContent = 'Remove';
-        removeButton.type = 'button';
-        removeButton.classList.add('removeJobExperience');
-        removeButton.classList.add('cancel-button-normal');
-
-        removeButton.addEventListener('click', function () {
+        const removeButton = createButton('Remove', 'removeJobExperience cancel-button-normal w-100', () => {
           div.remove();
         });
+
+        buttonContainer.appendChild(editButton);
         buttonContainer.appendChild(removeButton);
 
         jobExperienceContainer.appendChild(div);
+      }
+
+
+      function createElement(tag, className) {
+        const element = document.createElement(tag);
+        element.className = className;
+        return element;
+      }
+
+      function createButton(text, className, onClick) {
+        const button = createElement('button', className);
+        button.textContent = text;
+        button.type = 'button';
+        button.addEventListener('click', onClick);
+        return button;
+      }
+
+      function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
       }
 
       addJobExperienceButton.addEventListener('click', function () {
@@ -166,8 +210,11 @@
             });
           } else {
             div.querySelectorAll('p').forEach(p => {
-              const field = p.className;
-              experience[field] = p.textContent.replace(`${field.charAt(0).toUpperCase() + field.slice(1)}: `, '');
+
+              const field = p.getAttribute('name');
+              if (field) {
+                experience[field] = p.textContent.trim();
+              }
             });
           }
 

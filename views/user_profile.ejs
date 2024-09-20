@@ -119,14 +119,11 @@
         <div class="profile-info">
           <div class="profile-content">
             <div class="profile-picture" data-hue-rotate="0">
-              <% if (otheruser.avatar) { %>
-              <img id="profilePic" src="<%= otheruser.avatar %>" alt="Profile Picture" />
-              <% } else { %>
-              <img src="/img/default-avatar.png" alt="Avatar" class="avatar" />
-              <% } %>
+              <img class="thumbnail thumbnail-large" src="<%= otheruser.avatar || '/img/default-avatar.png' %>" alt="Profile Picture" />
+
             </div>
             <div class="profile-details">
-              <h2><%= otheruser.firstname %> <%= otheruser.lastname%>
+              <h2 class="bold"><%= otheruser.firstname %> <%= otheruser.lastname%>
               </h2>
 
               <p id="firstname-display" class="third-text sub-text" style="color: <%= otheruser.isAdmin ? '#b40000' : '' %>;">@<%= otheruser.username %> <% if (otheruser.verified) { %>
@@ -135,26 +132,29 @@
                 </span>
                 <% } %>
               </p>
-              <div class="user-bio " style="background: 0 !important; padding-top: 0;">
+              <div class="user-bio sub-text" style="background: 0 !important; padding-top: 0;">
                 <p>
                   <%= otheruser.bio %>
                 </p>
               </div>
               <div class="followers-info">
-                <a class="secondary-text" href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; align-items: center;gap: 5px;"> <span class="bold primary-text" id="followerCount"><%= otheruser.followerCount %></span>Followers</a>
-                <a class="secondary-text" href="/user/<%= otheruser.username %>/following" style="display: flex; align-items: center;flex-direction:row; gap: 5px;">
-                  <span class="bold primary-text" id="followCount"> <%= otheruser.followingCount %></span>Following</a>
+                <a class="secondary-text sub-text clickable" href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; align-items: center;gap: 3px;">
+                  <span class="bold link primary-text" id="followerCount">
+                    <%= otheruser.followerCount %>
+                  </span>
+                  Followers
+                </a>
+                <a class="secondary-text sub-text clickable" href="/user/<%= otheruser.username %>/following" style="display: flex; align-items: center;flex-direction:row; gap: 3px;">
+                  <span class="bold link primary-text" id="followCount">
+                    <%= otheruser.followingCount %>
+                  </span>
+                  Following
+                </a>
               </div>
 
             </div>
           </div>
           <div class="edit-controls-and-follow-button">
-            <button class="null-button-normal" id="edit-button" onclick="share('User Profile', '', 'https://getcore.dev/user/<%= otheruser.username %>')" style="margin-bottom: auto;">
-              <span class="material-symbols-outlined">
-                share
-              </span>
-              Share
-            </button>
             <% if (user) { %>
             <% if (otheruser.username === user.username) { %>
             <button class="regular-button-normal" id="edit-button" onclick="window.location.href='/edit-profile'" style="margin-bottom: auto;">
@@ -170,6 +170,11 @@
             <% } %>
             <% } %>
 
+            <button class="null-button-normal" id="edit-button" onclick="share('User Profile', '', 'https://getcore.dev/user/<%= otheruser.username %>')" style="margin-bottom: auto;">
+              <span class="material-symbols-outlined">
+                share
+              </span>
+            </button>
           </div>
           <% if (user) { %>
           <% if (user.isAdmin ) { %>
@@ -189,87 +194,102 @@
 
           <% if (otheruser.username != "core") { %>
           <% if (otheruser.topCommunities && otheruser.topCommunities.length > 0) { %>
-          <div class="communities-info">
-            <p>Active in: <%= otheruser.topCommunities %></p>
+          <h4>Communities</h4>
+
+          <div class="communities-info flex flex-row gap-06 wrap">
+            <% otheruser.topCommunities.split(',').forEach(function(community) { %>
+            <button class="text-tag"><%= community.trim() %></button>
+            <% }); %>
           </div>
           <% } %>
           <div class="links-container">
-            <% if (otheruser.link) { %>
+            <% if (otheruser.link || otheruser.link2 || otheruser.github_url || otheruser.linkedin_url || otheruser.leetcode_url) { %>
             <h4>Links</h4>
-            <div class="social-display"> <span class="material-symbols-outlined">
-                link
-              </span>
-              <p id="link-url-display"> <a href="<%= otheruser.link %>"><%= otheruser.link.startsWith('https://') ? otheruser.link.slice(8) : otheruser.link %></a> </p>
+            <div class="flex flex-row gap-06 w-100">
+              <% if (otheruser.leetcode_url) { %>
+              <a href="https://leetcode.com/<%= otheruser.leetcode_url %>">
+                <button class="null-button-normal"><img src="/src/leetcodeglyph.png" style="width: 16px;border-radius: 0;"></button>
+              </a>
+              <% } else { %><% } %>
+              <% if (otheruser.linkedin_url) { %>
+              <a href="https://linkedin.com/in/<%= otheruser.linkedin_url %>">
+                <button class="null-button-normal"><img src="/src/linkedin.png" style="width: 16px;border-radius: 0;"></button>
+              </a>
+              <% } else { %><% } %>
+              <% if (otheruser.github_url) { %>
+              <a href="https://github.com//<%= otheruser.github_url %>">
+                <button class="null-button-normal"><img src="/src/github.png" style="background: white;width: 16px;border-radius: 50%;"></button>
+              </a>
+              <% } else { %><% } %>
             </div>
-            <% } else { %><% } %>
-            <% if (otheruser.link2) { %>
-            <div class="social-display"> <span class="material-symbols-outlined">
-                link
-              </span>
-              <p id="link2-url-display"> <a href="<%= otheruser.link2 %>"><%= otheruser.link2.startsWith('https://') ? otheruser.link2.slice(8) : otheruser.link2 %></a> </p>
+            <div class="personal-links flex flex-row wrap gap-06">
+              <div class="text-tag flex flex-row">
+                <span class="clickable material-symbols-outlined">
+                  open_in_new
+                </span>
+                <p id="link-url-display"> <a class="link bold sub-text" href="<%= otheruser.link %>"><%= otheruser.link.startsWith('https://') ? otheruser.link.slice(8) : otheruser.link %></a> </p>
+              </div>
+              <% } else { %><% } %>
+              <% if (otheruser.link2) { %>
+              <div class="text-tag flex flex-row">
+                <span class="clickable material-symbols-outlined">
+                  open_in_new
+                </span>
+                <p id="link2-url-display"> <a class="link bold sub-text" href="<%= otheruser.link2 %>"><%= otheruser.link2.startsWith('https://') ? otheruser.link2.slice(8) : otheruser.link2 %></a> </p>
+              </div>
+              <% } else { %><% } %>
             </div>
-            <% } else { %><% } %>
-            <% if (otheruser.github_url) { %>
-            <div class="social-display"> <img src="/src/github.png" style="background: white;width: 16px;border-radius: 50%;">
-              <p id="github-url-display"> <a href="https://github.com/<%= otheruser.github_url %>"><%= otheruser.github_url %></a> </p>
-            </div>
-            <% } else { %><% } %>
-            <% if (otheruser.linkedin_url) { %>
-            <div class="social-display"> <img src="/src/linkedin.png" style="height:16px;width:16px;">
-              <p id="linkedin-url-display"> <a href="https://www.linkedin.com/in/<%= otheruser.linkedin_url %>"><%= otheruser.linkedin_url %></a> </p>
-            </div>
-            <% } else { %><% } %>
-            <% if (otheruser.leetcode_url) { %>
-            <div class="social-display"> <img src="/src/leetcodeglyph.png" style="background: white;width: 16px;border-radius: 50%;">
-              <p id="leetcode-url-display"> <a href="https://leetcode.com/<%= otheruser.leetcode_url %>"><%= otheruser.leetcode_url %></a> </p>
-            </div>
-            <% } else { %><% } %>
           </div>
-        </div>
-        <div class="current-education" style="background:none !important; padding: 0;">
-          <div class="current-job-header">
-            <h4>Education</h4>
+          <div class="current-education" style="background:none !important; padding: 0;">
+            <div class="current-job-header">
+              <h4>Education</h4>
+            </div>
+            <div id="currentEducationContainer"></div>
           </div>
-          <div id="currentEducationContainer"></div>
-        </div>
-        <div class="current-job" style="background:none !important; padding: 0;">
-          <div class="current-job-header">
-            <h4>Experience</h4>
+          <div class="current-job" style="background:none !important; padding: 0;">
+            <div class="current-job-header">
+              <h4>Experience</h4>
+            </div>
+            <div id="currentJobContainer"></div>
           </div>
-          <div id="currentJobContainer"></div>
-        </div>
-        <div class="github-commit-graph">
-          <h4>GitHub Activity</h4>
-          <div id="commit-graph-container"></div>
-        </div>
-        <div class="github-commit-repos">
-          <h5>GitHub Repositories</h5>
-          <table id="repo-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Stars</th>
-                <th>Language</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <% } %>
+          <div class="projecs" style="background:none !important; padding: 0;">
+            <div class="projects-header">
+              <h4>Projects</h4>
+            </div>
+            <div id="projectContainer">
+              <p>No projects available.</p>
+            </div>
+          </div>
+          <div class="github-commit-repos">
+            <h4>GitHub Activity</h4>
+            <!-- Commit Graph -->
+            <div id="commit-graph-container"></div>
+            <!-- Repository List -->
+            <table id="repo-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Stars</th>
+                  <th>Language</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <% } %>
 
-        <div class="user-activity">
-          <div class="user-activity-header">
-            <div class="user-activity-title">
-              <h4><%=otheruser.username%>'s activity</h4>
-            </div>
-            <div class="user-activity-buttons">
-              <button class="sort-option posts-button active" onclick="showSection('posts')">Posts</button>
-              <button class="sort-option comments-button" onclick="showSection('comments')">Comments</button>
-              <button class="sort-option jobs-button" onclick="showSection('jobs')">Jobs</button>
+          <div class="user-activity">
+            <div class="user-activity-header">
+              <div class="user-activity-title">
+                <h4><%=otheruser.username%>'s activity</h4>
+              </div>
+              <div class="user-activity-buttons">
+                <button class="sort-option posts-button active" onclick="showSection('posts')">Posts</button>
+                <button class="sort-option comments-button" onclick="showSection('comments')">Comments</button>
 
+              </div>
             </div>
-          </div>
-          <%
+            <%
                 function formatDate(date) {
       let postDate = new Date(date);
       let today = new Date();
@@ -297,81 +317,81 @@
     }
 
     %>
-          <div id="posts" class="content">
-            <% if (posts.length === 0) { %>
-            <p>No posts yet.</p>
-            <% } else { %>
-            <div class="post-container">
-              <% posts.forEach(function(post) { %>
-              <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
-                <h5 class="post-title">
-                  <%= post.title %>
-                </h5>
-                <p class="post-content" style="font-size: 14px;"><%= post.content %></p>
-                <div class="post-info">
-                  <span class="link-display">
-                    <p>
-                      <%= formatDate(post.created_at) %>
-                    </p>
-                  </span>
-                  <span class="link-display">
-                    <p>
-                      <%= post.views%> views
-                    </p>
-                  </span class="link-display">
-
-                  <span class="link-display">
-                    <p>
-                      <%= post.comment_count %> comments
-                    </p>
-                  </span>
-                  <span class="link-display">
-                    <p>
-                      <%= post.reaction_count %> reactions
-                    </p>
-                  </span>
-                </div>
-              </div>
-              <% }); %>
-            </div>
-            <% } %>
-          </div>
-
-          <div id="comments" class="content" style="display:none;">
-            <% if (comments.length === 0) { %>
-            <p>No comments yet.</p>
-            <% } else { %>
-            <div class="comments-container">
-              <% comments.forEach(function(comment) { %>
-              <div class="com" onclick="window.location.href='/posts/<%= comment.post_id %>'">
-                <div class="comment-header">
-                  <img class="comment-author-avatar" src="<%= comment.author.avatar %>" alt="Avatar" />
-                  <p class="comment-author">
-
-                    <a href="/user/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/user/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
-                  </p>
-                </div>
-                <div class="comment">
-                  <h5 class="comment-title">
-                    <%= comment.title %>
+            <div id="posts" class="content">
+              <% if (posts.length === 0) { %>
+              <p>No posts yet.</p>
+              <% } else { %>
+              <div class="post-container">
+                <% posts.forEach(function(post) { %>
+                <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
+                  <h5 class="post-title">
+                    <%= post.title %>
                   </h5>
-                  <p class="comment-content"><%= comment.comment %></p>
-                  <div class="comment-info">
-                    <span>
+                  <p class="post-content" style="font-size: 14px;"><%= post.content %></p>
+                  <div class="post-info">
+                    <span class="link-display">
                       <p>
-                        <%= formatDate(comment.created_at) %>
+                        <%= formatDate(post.created_at) %>
+                      </p>
+                    </span>
+                    <span class="link-display">
+                      <p>
+                        <%= post.views%> views
+                      </p>
+                    </span class="link-display">
+
+                    <span class="link-display">
+                      <p>
+                        <%= post.comment_count %> comments
+                      </p>
+                    </span>
+                    <span class="link-display">
+                      <p>
+                        <%= post.reaction_count %> reactions
                       </p>
                     </span>
                   </div>
                 </div>
+                <% }); %>
               </div>
-              <% }); %>
+              <% } %>
             </div>
-            <% } %>
+
+            <div id="comments" class="content" style="display:none;">
+              <% if (comments.length === 0) { %>
+              <p>No comments yet.</p>
+              <% } else { %>
+              <div class="comments-container">
+                <% comments.forEach(function(comment) { %>
+                <div class="com" onclick="window.location.href='/posts/<%= comment.post_id %>'">
+                  <div class="comment-header">
+                    <img class="comment-author-avatar" src="<%= comment.author.avatar %>" alt="Avatar" />
+                    <p class="comment-author">
+
+                      <a href="/user/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/user/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
+                    </p>
+                  </div>
+                  <div class="comment">
+                    <h5 class="comment-title">
+                      <%= comment.title %>
+                    </h5>
+                    <p class="comment-content"><%= comment.comment %></p>
+                    <div class="comment-info">
+                      <span>
+                        <p>
+                          <%= formatDate(comment.created_at) %>
+                        </p>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <% }); %>
+              </div>
+              <% } %>
+            </div>
           </div>
         </div>
-      </div>
-      <%- include('partials/footer') %>
+        <%- include('partials/footer') %>
 
 
   </main>
@@ -490,6 +510,7 @@
     function displayNoCommitGraphMessage() {
       const container = document.getElementById('commit-graph-container');
       const message = document.createElement('p');
+      message.className = 'no-data-message sub-text ';
       message.textContent = 'No GitHub activity found.';
       container.appendChild(message);
     }
@@ -532,19 +553,19 @@
                 <% if (otheruser.settings_PrivateJobNames) { %>
                   <h4>Company Name Hidden</h4>
                 <% } else { %>
-                  <a class="link bold" href="/jobs/company/${encodeURIComponent(experience.companyName)}">
+                  <a class="link bold sub-text" href="/jobs/company/${encodeURIComponent(experience.companyName)}">
                   ${experience.companyName}</a>
                 <% } %>
-                <div class="date-range">
+                <div class="date-range secondary-text mini-text">
                   <p><time>${formattedStartDate}</time> - <time>${experience.isCurrent ? 'Present' : formattedEndDate}</time></p>
                 </div>
               </div>
-              <h4>${experience.title}</h4>
-              <p>${experience.employmentType}</p>
+              <h4 class="bold main-text">${experience.title}</h4>
+              <p class="mini-text">${experience.employmentType ? experience.employmentType : 'Employee'}</p>
               <% if (otheruser.settings_PrivateJobNames) { %>
-              <p class="sub-text secondary-text">${experience.description.replace(createNameRegex(experience.companyName), '[Company Name Hidden]')}</p>
+              <p class="sub-text secondary-text short-text">${experience.description.replace(createNameRegex(experience.companyName), '[Company Name Hidden]')}</p>
               <% } else { %>
-              <p class="sub-text secondary-text">${experience.description}</p>
+              <p class="sub-text secondary-text short-text">${experience.description}</p>
               <% } %>
               <p>${ experience.tags ? experience.tags.split(',').slice(0, 3).map(tag => {
                 const trimmedTag = tag.trim();
@@ -583,15 +604,15 @@
           educationElement.innerHTML = `
             <div class="job-experience-header">
             <% if (otheruser.settings_PrivateSchoolNames) { %>
-              <h4>Institution Name Hidden</h4>
+              <h4 class="bold main-text">Institution Name Hidden</h4>
             <% } else { %>
-              <h4>${experience.institutionName}</h4>
+              <h4 class="bold main-text">${experience.institutionName}</h4>
             <% } %>
-              <div class="date-range">
+              <div class="date-range secondary-text mini-text">
         <p>${new Date(experience.startDate).toLocaleDateString()} - ${experience.isCurrent ? 'Present' : new Date(experience.endDate).toLocaleDateString()}</p>              </div>
             </div>
-            <h4>${experience.degree}</h4>
-            <p>${experience.fieldOfStudy}</p>
+            <h4 class="secondary-text sub-text">${experience.degree}</h4>
+            <p class="sub-text">${experience.fieldOfStudy}</p>
             <p class="sub-text secondary-text">${experience.description}</p>
             `;
           currentEducationContainer.appendChild(educationElement);
@@ -633,10 +654,6 @@
       // Create a container element for the commit graph
       const graphContainer = document.createElement('div');
       graphContainer.classList.add('commit-graph');
-
-      const commitCountElement = document.createElement('p');
-      commitCountElement.textContent = `${commitCount} recent commits`;
-      graphContainer.appendChild(commitCountElement);
 
       // Get the dates from the commitGraph keys
       const dates = Object.keys(commitGraph);

@@ -150,6 +150,13 @@ body {
     display: none;
 }
 
+.update-button {
+    font-size: .8rem;
+    color: var(--active-indicator-color);
+    display: flex;
+    justify-content: flex-end;
+}
+
 .name-fields {
     flex: 1;
     display: flex;
