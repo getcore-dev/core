@@ -208,7 +208,6 @@ div.vote-interactions {
 .post .flex {
   display: flex;
   position: relative;
-  align-items: center;
 }
 
 .post .items-start {
@@ -346,15 +345,11 @@ div.vote-interactions {
   margin-bottom: 0.75rem;
 }
 
-/* Engagement metrics */
-.post .space-x-4>*+* {
-  margin-left: 1rem;
-}
-
 /* Material icons adjustments */
 .post .material-symbols-outlined {
   font-size: 1rem;
   vertical-align: middle;
+  line-height: 1rem;
   margin-right: 0.25rem;
 }
 
@@ -751,29 +746,6 @@ div .mini-link-title {
   background-color: var(--light-mode-hover-color);
 }
 
-
-#filter-button,
-#post-button,
-.filter-button-container {
-  position: relative;
-}
-
-#filter-button,
-#post-button {
-  height: 22px;
-  background: 0;
-  border: 0;
-  font-size: .7rem;
-  padding: 0;
-  font-size: var(--default-sub-font-size);
-}
-
-#filter-button .material-symbols-outlined,
-#post-button .material-symbols-outlined {
-  font-size: 1.3rem;
-  vertical-align: -3px;
-}
-
 #filter-button .material-symbols-outlined {
   padding: 0;
 }
@@ -838,13 +810,6 @@ div.community {
   margin: 1.4rem;
   border-radius: 10px;
   background-color: var(--light-mode-main-color);
-}
-
-.community-header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .mini-link-url a {
@@ -1527,6 +1492,11 @@ button.see-more {
 
 
 
+.post .cancel-button-normal .material-symbols-outlined {
+  padding: 0;
+  margin: 0;
+}
+
 
 @media (max-width: 768px) {
   .title {
@@ -1536,9 +1506,10 @@ button.see-more {
   .post {
     background-color: var(--light-mode-main-color);
     border-radius: 7px;
-    margin: .4rem .6rem;
+    margin: .4rem .5rem;
     padding: .65rem .7rem;
-    border: 1px solid var(--border-color);
+    border: 0;
+    box-shadow: none !important;
     max-width: 100%;
   }
 

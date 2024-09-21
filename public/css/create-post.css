@@ -51,35 +51,6 @@ div.form-group {
     flex-direction: row;
 }
 
-
-.selector {
-    display: flex;
-    flex-direction: row;
-    border-radius: 6px;
-    padding: .2rem;
-    background: var(--light-mode-body-color);
-    margin-bottom: .6rem;
-    margin-top: 6px;
-    width: 100%;
-    font-weight: 500;
-    box-sizing: border-box;
-    justify-content: space-between;
-}
-
-.selector-button {
-    background: transparent;
-    border-radius: 6px;
-    display: inline-flex;
-    padding: .35rem 1.2rem
-}
-
-.selector-button.selected {
-    background: white;
-    font-weight: 500;
-    color: var(--light-mode-text-color) !important;
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-}
-
 .post-type a {
     text-decoration: none;
     border-radius: 6px;
@@ -323,15 +294,6 @@ details.posting-rules[open] {
         border-radius: 6px;
     }
 
-    .post-type {
-        background-color: var(--dark-mode-border-color);
-        border-color: var(--dark-mode-border-color);
-    }
-
-    .editor-toolbar button {
-        color: var(--dark-mode-text-color);
-    }
-
     .main-container {
         background-color: var(--dark-mode-body-color);
         border-color: var(--dark-mode-border-color);
@@ -358,15 +320,6 @@ details.posting-rules[open] {
         color: var(--dark-mode-text-color);
     }
 
-    div.form-group .CodeMirror,
-    div.form-group .select2-container--default .select2-selection--multiple,
-    div.form-group .editor-toolbar,
-    div.form-group .select2-dropdown select2-dropdown--above {
-        background: var(--dark-mode-main-color) !important;
-        border: 1px solid var(--dark-mode-border-color) !important;
-        color: var(--dark-mode-text-color);
-    }
-
     .select2-container--default .select2-search--inline .select2-search__field {
         background: var(--dark-mode-main-color) !important;
         border: 1px solid var(--dark-mode-border-color);
@@ -376,6 +329,15 @@ details.posting-rules[open] {
     .select2-results__option--selectable {
         background-color: var(--dark-mode-body-color);
         color: var(--dark-mode-text-color);
+    }
+
+    details {
+        background: var(--dark-mode-main-color);
+        border-color: var(--dark-mode-border-color);
+    }
+
+    details[open]>summary {
+        border-color: var(--dark-mode-border-color);
     }
 
     .select2-container--open .select2-dropdown--above {

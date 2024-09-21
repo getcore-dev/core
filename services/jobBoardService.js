@@ -206,7 +206,7 @@ class JobProcessor extends EventEmitter {
     // Check for titles that explicitly mention technology or engineering
     if (lowercaseTitle.includes('technology') || lowercaseTitle.includes('engineer')) {
       // But exclude non-tech engineering roles
-      const nonTechEngineering = ['civil engineer', 'smart meter engineer', 'meter engineer', 'mechanical engineer', 'chemical engineer'];
+      const nonTechEngineering = ['civil engineer', 'tax analyst', 'field', 'smart meter engineer', 'meter engineer', 'mechanical engineer', 'chemical engineer'];
       if (!nonTechEngineering.some(role => lowercaseTitle.includes(role))) {
         return true;
       }

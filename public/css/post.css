@@ -19,15 +19,6 @@ main {
   display: none !important;
 }
 
-.editor-toolbar {
-  background-color: var(--light-mode-body-color) !important;
-  border: 1px solid var(--border-color) !important;
-  border-radius: 12px !important;
-  margin: 0 12px;
-  margin-bottom: 10px;
-
-}
-
 .button-container {
   padding: 7px 12px;
   padding-bottom: 3px;
@@ -147,7 +138,6 @@ pre code {
 }
 
 .user-interactions {
-  margin: 1rem 0;
   transition: transform .5s ease;
   position: relative;
   padding: 0 .8rem;
@@ -370,7 +360,6 @@ img.blog-avatar {
   align-items: center;
   margin-top: 0px;
   gap: .4rem;
-  margin-bottom: .2rem;
   flex-wrap: wrap;
 }
 
@@ -496,7 +485,6 @@ div.interact-buttons {
 
 .post-info-container.post {
   margin: .9rem 1rem;
-  margin-bottom: 0;
 }
 
 .post-info-container .material-symbols-outlined {
@@ -972,8 +960,7 @@ div.repliees-avatar {
 .comments-section {
   display: flex;
   flex-direction: column;
-  gap: .5
-  rem;
+  gap: .5 rem;
 }
 
 
@@ -1222,7 +1209,8 @@ div .mini-link {
 
 .comments-buttons-container {
   display: flex;
-  margin: 0 1rem;
+  margin-left: .7rem;
+  margin-right: .7rem;
   max-width: 100%;
   align-items: center;
   justify-content: space-between;
@@ -1295,7 +1283,6 @@ div .mini-link {
   gap: .7rem;
   font-size: .9rem;
   font-weight: 400;
-  margin-bottom: 0;
 }
 
 .sidebar-description {
@@ -1610,8 +1597,8 @@ div.post-information {
 }
 
 .mobile-jobs-container h3 {
-  margin: 0 1rem;
-  margin-top: 0rem;
+  margin-left: .8rem;
+  margin-right: .8rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1782,10 +1769,6 @@ div.post-information {
     border: 1px solid var(--dark-mode-border-color);
   }
 
-  .editor-toolbar {
-    background-color: var(--dark-mode-main-color) !important;
-    border-color: var(--dark-mode-border-color) !important;
-  }
 
   .similar-posts .post-content {
     background: none !important;
@@ -1803,10 +1786,6 @@ div.post-information {
     color: var(--dark-mode-text-color) !important;
   }
 
-  .editor-toolbar button {
-    color: var(--dark-mode-text-color) !important;
-  }
-
   .project-link {
     background-color: #161b22;
     border-color: #30363d;
@@ -1814,10 +1793,6 @@ div.post-information {
 
   .reply-form .input-container {
     background-color: var(--dark-mode-body-color);
-  }
-
-  .editor-toolbar i.separator {
-    border-color: var(--dark-mode-border-color) !important;
   }
 
   .comment-header {
@@ -2068,6 +2043,10 @@ div.post-information {
 
   .tag-flair {
     font-size: .95rem;
+  }
+
+  .editor-toolbar {
+    padding: 0 .9rem !important;
   }
 
   .preview-image {

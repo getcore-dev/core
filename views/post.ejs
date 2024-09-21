@@ -95,7 +95,7 @@
                 formattedDate = years + 'y';
               }
               %>
-            <span class="post-title-navigator">
+            <span class="post-title-navigator margin-06-bottom">
               <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="thumbnail thumbnail-micro thumbnail-regular" onclick="window.location.href = '/user/<%= post.user.username %>'" />
               <div class="post-nav-header">
                 <div class="post-info-container secondary-text sub-text">
@@ -113,8 +113,8 @@
                       <% } %>
                     </a>
                     <% if (post.experience_title && post.experience_place) { %>
-                    <span class="post-flair third-text sub-text">
-                      <%= post.experience_title %> at <%= post.experience_place %>
+                    <span class="post-flair mini-text">
+                      <%= post.experience_title %>
                     </span>
                     <% } %>
                   </span>
@@ -122,7 +122,7 @@
               </div>
             </span>
 
-            <div class="post-title-container">
+            <div class="post-title-container margin-1-bottom">
 
               <a id="community-header-text" class="sub-text" href="/networks/<%= post.community.shortname %>"> <%= post.community.shortname.toLowerCase() %></a> /
 
@@ -131,7 +131,7 @@
                 <%= post.title %>
 
 
-                <span class="post-time mini-text third-text">
+                <span class="post-time sub-text primary-text">
                   <% postDate = new Date(post.created_at); %>
                   <%
                         function formatRelativeDate(dateString) {
@@ -346,7 +346,7 @@
               </div>
               <div class="reaction-container">
 
-                <div class="user-interactions post-user-interactions">
+                <div class="user-interactions post-user-interactions margin-06-bottom">
                   <div id="reactionPopup-post-<%= post.id %>" class="reaction-popup post-reaction-popup">
                     <div class="reaction-popup-content">
                       <% reactionTypes.forEach(reaction => { %>
@@ -440,7 +440,7 @@
 
         </div>
         <div class="comments-section">
-          <div class="comments-buttons-container">
+          <div class="comments-buttons-container margin-1-bottom">
             <div class="comments-count secondary-text sub-text">
               <% 
                         function countAllReplies(replies) {
@@ -489,29 +489,34 @@
               <div class="comment-main">
 
                 <div class="comment-content">
-                  <div class="comment-header" onclick="toggleNestedComments('<%= comment.id %>')">
+                  <div class="comment-header w-100" onclick="toggleNestedComments('<%= comment.id %>')">
                     <div class="comment-avatar">
                       <img src="<%= comment.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="thumbnail thumbnail-micro thumbnail-regular" onclick="<%= comment.deleted ? 'event.stopPropagation();' : 'window.location.href = \'/user/' + comment.user.username + '\'; event.stopPropagation();' %>" />
                     </div>
-                    <a class="comment-user-info" <%= comment.deleted ? '' : 'href=/user/' + comment.user.username + '' %> onclick="event.stopPropagation()">
-                      <div class="repliers-info">
-                        <span>
+                    <div class='flex flex-row gap-03w-100'>
 
-                          <% if (comment.user.firstname && comment.user.lastname) { %>
-                          <%= comment.user.firstname %> <%= comment.user.lastname %>
-                          <% } else { %>
-                          <%= comment.user.username %>
-                          <% } %>
+                      <div class="flex flex-col">
+                        <div class="flex flex-row gap-06">
+                          <!-- commentors username-->
+                          <a class="comment-user-info" <%= comment.deleted ? '' : 'href=/user/' + comment.user.username + '' %> onclick="event.stopPropagation()">
+                            <div class="repliers-info">
+                              <span>
 
-                        </span>
-                        <% if (comment.user.username == post.user.username) { %>
-                        <span class="tag author-tag comment-tag">OP</span>
-                        <% } else if (comment.user.isAdmin) { %>
-                        <span class="tag admin-tag comment-tag">ADMIN</span>
-                        <% } %>
-                      </div>
-                    </a>
-                    <% 
+                                <% if (comment.user.firstname && comment.user.lastname) { %>
+                                <%= comment.user.firstname %> <%= comment.user.lastname %>
+                                <% } else { %>
+                                <%= comment.user.username %>
+                                <% } %>
+
+                              </span>
+                              <% if (comment.user.username == post.user.username) { %>
+                              <span class="tag author-tag comment-tag">OP</span>
+                              <% } else if (comment.user.isAdmin) { %>
+                              <span class="tag admin-tag comment-tag">ADMIN</span>
+                              <% } %>
+                            </div>
+                          </a>
+                          <% 
                 let commentDate = new Date(comment.created_at);
                 let currentDate = new Date();
                 let timeDifference = currentDate - commentDate;
@@ -529,15 +534,21 @@
                 } else {
                   timeSinceComment = 'Just now';
                 }
-                %>
-                    <% if (comment.isPinned) { %>
-                    <span class="tag comment-tag pinned-comment">
-                      <span class="material-symbols-outlined" id="secondary-text" style="color:#113ae2;">push_pin</span>
-                    </span>
-                    <% } %>
+                %><span class="comment-timestamp sub-text primary-text"><time><%= timeSinceComment %></time></span>
+                        </div>
+                        <!-- commentors experience -->
+                        <p class="mini-text">
+                          <%= comment.experience_title %>
+                        </p>
+                      </div>
+                      <% if (comment.isPinned) { %>
+                      <span class="tag comment-tag pinned-comment">
+                        <span class="material-symbols-outlined" id="secondary-text" style="color:#113ae2;">push_pin</span>
+                      </span>
+                      <% } %>
 
-                    <span class="comment-timestamp" id="third-text"><%= timeSinceComment %></span>
 
+                    </div>
 
                   </div>
                   <% if (user) { %>
@@ -761,7 +772,7 @@
         <% if (similarPosts.length > 0) { %>
 
         <div class="similar-posts">
-          <h3 class="sub-text" id="secondary-text">Explore Posts</h3>
+          <h3 class="sub-text margin-06-bottom" id="secondary-text">Explore Posts</h3>
           <% similarPosts.forEach(similarPost => { %>
           <div class="post <%= similarPost.isGlobalPinned ? 'pinned' : '' %>" onclick="window.location.href='/posts/<%= similarPost.id %>'">
             <div class="post-content">
@@ -893,7 +904,7 @@
         </div>
         <% } %>
         <div class="mobile-jobs-container">
-          <h3 class="sub-text" id="secondary-text">Explore Jobs</h3>
+          <h3 class="sub-text margin-06-bottom" id="secondary-text">Explore Jobs</h3>
           <div class="jobslist">
 
           </div>

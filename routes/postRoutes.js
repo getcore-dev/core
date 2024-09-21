@@ -233,25 +233,89 @@ router.get('/posts/:postId/similar', async (req, res) => {
 
 async function fetchComments(postId, user) {
   const query = `
-    WITH CommentCTE AS (
-      SELECT
-        c.id, c.created_at, c.deleted, c.comment, c.user_id, c.parent_comment_id, c.post_id, c.isPinned,
-        SUM(CASE WHEN uca.action_type = 'LOVE' THEN 1 ELSE 0 END) AS loveCount,
-        SUM(CASE WHEN uca.action_type = 'B' THEN 1 ELSE 0 END) AS boostCount,
-        SUM(CASE WHEN uca.action_type = 'DISLIKE' THEN 1 ELSE 0 END) AS dislikeCount,
-        SUM(CASE WHEN uca.action_type = 'CURIOUS' THEN 1 ELSE 0 END) AS curiousCount,
-        SUM(CASE WHEN uca.action_type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount,
-        SUM(CASE WHEN uca.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) AS celebrateCount,
-        ${user ? '(SELECT TOP 1 uca2.action_type FROM UserCommentActions uca2 WHERE uca2.comment_id = c.id AND uca2.user_id = @userId) AS userReaction,' : 'NULL AS userReaction,'}
-        CASE WHEN EXISTS (SELECT 1 FROM comments child WHERE child.parent_comment_id = c.id) THEN 1 ELSE 0 END AS hasReplies
-      FROM comments c
-      LEFT JOIN UserCommentActions uca ON c.id = uca.comment_id
-      WHERE c.post_id = @postId
-      GROUP BY c.id, c.created_at, c.deleted, c.comment, c.isPinned, c.user_id, c.parent_comment_id, c.post_id
-    )
-    SELECT * FROM CommentCTE
-    WHERE NOT (deleted = 1 AND hasReplies = 0)
-    ORDER BY created_at DESC;
+WITH CommentCTE AS (
+  SELECT
+    c.id,
+    c.created_at,
+    c.deleted,
+    c.comment,
+    c.user_id,
+    c.parent_comment_id,
+    c.post_id,
+    c.isPinned,
+    SUM(CASE WHEN uca.action_type = 'LOVE' THEN 1 ELSE 0 END) AS loveCount,
+    SUM(CASE WHEN uca.action_type = 'B' THEN 1 ELSE 0 END) AS boostCount,
+    SUM(CASE WHEN uca.action_type = 'DISLIKE' THEN 1 ELSE 0 END) AS dislikeCount,
+    SUM(CASE WHEN uca.action_type = 'CURIOUS' THEN 1 ELSE 0 END) AS curiousCount,
+    SUM(CASE WHEN uca.action_type = 'LIKE' THEN 1 ELSE 0 END) AS likeCount,
+    SUM(CASE WHEN uca.action_type = 'CELEBRATE' THEN 1 ELSE 0 END) AS celebrateCount,
+    ${user ? '(SELECT TOP 1 uca2.action_type FROM UserCommentActions uca2 WHERE uca2.comment_id = c.id AND uca2.user_id = @userId) AS userReaction,' : 'NULL AS userReaction,'}
+    CASE WHEN EXISTS (SELECT 1 FROM comments child WHERE child.parent_comment_id = c.id) THEN 1 ELSE 0 END AS hasReplies,
+    
+    -- Include recent Job Experience
+    je.title AS experience_title,
+    CASE 
+      WHEN je.companyName IS NOT NULL THEN 
+        CASE 
+          WHEN u.settings_PrivateJobNames = 1 THEN 'Company'
+          ELSE je.companyName 
+        END
+      ELSE NULL
+    END AS experience_place,
+    
+    -- Include recent Education Experience
+    ee.institutionName AS education_institution,
+    CASE 
+      WHEN ee.institutionName IS NOT NULL THEN 
+        CASE
+          WHEN u.settings_PrivateSchoolNames = 1 THEN 'Institution'
+          ELSE ee.institutionName
+        END
+      ELSE NULL
+    END AS education_place
+
+  FROM comments c
+  LEFT JOIN UserCommentActions uca ON c.id = uca.comment_id
+  
+  -- Join with users table to access user settings
+  INNER JOIN users u ON c.user_id = u.id
+  
+  -- OUTER APPLY to get the most recent Job Experience
+  OUTER APPLY (
+    SELECT TOP 1 title, companyName
+    FROM job_experiences
+    WHERE userId = c.user_id
+    ORDER BY startDate DESC
+  ) je
+  
+  -- OUTER APPLY to get the most recent Education Experience
+  OUTER APPLY (
+    SELECT TOP 1 institutionName
+    FROM education_experiences
+    WHERE userId = c.user_id
+    ORDER BY startDate DESC
+  ) ee
+
+  WHERE c.post_id = @postId
+  GROUP BY 
+    c.id,
+    c.created_at,
+    c.deleted,
+    c.comment,
+    c.isPinned,
+    c.user_id,
+    c.parent_comment_id,
+    c.post_id,
+    u.settings_PrivateJobNames,
+    u.settings_PrivateSchoolNames,
+    je.title,
+    je.companyName,
+    ee.institutionName
+)
+SELECT * FROM CommentCTE
+WHERE NOT (deleted = 1 AND hasReplies = 0)
+ORDER BY created_at DESC;
+
   `;
 
   const request = new sql.Request();

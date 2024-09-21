@@ -126,7 +126,7 @@
               <h2 class="bold"><%= otheruser.firstname %> <%= otheruser.lastname%>
               </h2>
 
-              <p id="firstname-display" class="third-text sub-text" style="color: <%= otheruser.isAdmin ? '#b40000' : '' %>;">@<%= otheruser.username %> <% if (otheruser.verified) { %>
+              <p id="firstname-display" class="third-text margin-06-bottom sub-text" style="color: <%= otheruser.isAdmin ? '#b40000' : '' %>;">@<%= otheruser.username %> <% if (otheruser.verified) { %>
                 <span class="material-symbols-outlined" style="color: green">
                   check
                 </span>
@@ -539,6 +539,7 @@
           const formattedEndDate = experience.isCurrent ? '' : formatDate2(experience.endDate);
 
           const jobElement = document.createElement('div');
+          jobElement.className = 'flex flex-row v-center';
           jobElement.innerHTML = `
             <div class="job-experience-image">
               <% if (otheruser.settings_PrivateJobNames) { %>
@@ -563,9 +564,9 @@
               <h4 class="bold main-text">${experience.title}</h4>
               <p class="mini-text">${experience.employmentType ? experience.employmentType : 'Employee'}</p>
               <% if (otheruser.settings_PrivateJobNames) { %>
-              <p class="sub-text secondary-text short-text">${experience.description.replace(createNameRegex(experience.companyName), '[Company Name Hidden]')}</p>
+              <p class="sub-text primary-text short-text">${experience.description.replace(createNameRegex(experience.companyName), '[Company Name Hidden]')}</p>
               <% } else { %>
-              <p class="sub-text secondary-text short-text">${experience.description}</p>
+              <p class="sub-text primary-text short-text">${experience.description}</p>
               <% } %>
               <p>${ experience.tags ? experience.tags.split(',').slice(0, 3).map(tag => {
                 const trimmedTag = tag.trim();
@@ -609,11 +610,11 @@
               <h4 class="bold main-text">${experience.institutionName}</h4>
             <% } %>
               <div class="date-range secondary-text mini-text">
-        <p>${new Date(experience.startDate).toLocaleDateString()} - ${experience.isCurrent ? 'Present' : new Date(experience.endDate).toLocaleDateString()}</p>              </div>
+        <p>${formatDate2(experience.startDate)} - ${experience.isCurrent ? 'Present' : formatDate2(experience.endDate)}</p>              </div>
             </div>
             <h4 class="secondary-text sub-text">${experience.degree}</h4>
             <p class="sub-text">${experience.fieldOfStudy}</p>
-            <p class="sub-text secondary-text">${experience.description}</p>
+            <p class="sub-text secondary-text">${experience.description ? experience.description : ''}</p>
             `;
           currentEducationContainer.appendChild(educationElement);
         });
