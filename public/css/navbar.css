@@ -2,6 +2,7 @@
 
 :root {
   --tw-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
+  --radius: 0.5rem;
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-ring-offset-shadow: 0 0 #0000;
   --primary-text-color: #1d2935;
@@ -29,7 +30,7 @@
   --dark-mode-text-color: #fff;
   --dark-mode-third-text-color: #a5a5a5;
   --dark-mode-secondary-text-color: #d4d4d9;
-  --dark-mode-border-color: #181a1b;
+  --dark-mode-border-color: #27272a;
   --dark-mode-hover-background-color: #151515;
   --focus-shadow-color: rgba(80, 131, 202, 0.4);
 
@@ -54,6 +55,7 @@
 
 
 
+
 /* Global Style */
 body {
   tab-size: 4;
@@ -65,6 +67,19 @@ body {
   font-weight: 400;
   font-style: normal;
   color: var(--light-mode-text-color);
+}
+
+button,
+select {
+  text-transform: none;
+}
+
+button {
+  font-family: inherit;
+  font-feature-settings: inherit;
+  font-variation-settings: inherit;
+  cursor: pointer;
+  -webkit-appearance: button;
 }
 
 label {
@@ -1067,7 +1082,7 @@ a>.menu-item {
 
 #user-avatar {
   width: 34px;
-  border-radius: 50%;
+  border-radius: 6px;
   height: 34px;
   object-fit: cover;
   overflow: hidden;
@@ -1404,8 +1419,12 @@ a>.menu-item {
     position: absolute;
     right: 3.3rem;
     height: 34px;
-    top: 7px;
+    top: 10px;
     z-index: 500;
+  }
+
+  .navbar .regular-button-normal {
+    height: 32px;
   }
 
   .nav-text-and-user-btns {
@@ -1755,12 +1774,13 @@ button:hover {
 .main-button-normal,
 .bordered-button-normal {
   font-size: .875rem;
+  line-height: 1.25rem;
   border: none;
   display: flex;
   width: auto;
-  font-weight: 550;
+  font-weight: 500;
   margin: 0;
-  border-radius: 6px;
+  border-radius: calc(var(--radius) - 2px);
   background: #12803629;
   color: #27944e;
   cursor: pointer;
@@ -1989,11 +2009,31 @@ hr {
   justify-content: space-between;
 }
 
+.py-2 {
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+}
+
+.px-2 {
+  padding-left: .5rem;
+  padding-right: .5rem;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
 .selector-button {
   background: transparent;
   border-radius: 6px;
   display: inline-flex;
-  padding: .35rem 1.2rem
+  padding: .5rem 1.2rem
 }
 
 .selector-button.selected {
@@ -2250,7 +2290,7 @@ hr {
 .user-links {
   position: relative;
   display: flex;
-  gap: .75rem;
+  gap: .15rem;
   align-items: center;
   transition: transform 0.1s linear;
 }
@@ -2639,11 +2679,6 @@ details[open] {
     color: var(--dark-mode-secondary-text-color);
   }
 
-  input:required,
-  textarea:required,
-  select:required {
-    border-color: #331717 !important;
-  }
 
 
 }
@@ -3300,19 +3335,6 @@ input::placeholder {
     border: 0;
   }
 
-  #submit-button-normal,
-  #cancel-button-normal,
-  #regular-button-normal,
-  .submit-button-normal,
-  .cancel-button-normal,
-  .regular-button-normal,
-  .special-button-normal,
-  #special-button-normal,
-  .null-button-normal,
-  #null-button-normal {
-    padding: .45rem .85rem;
-  }
-
   .avatar-dropdown.open {
     transform: translateX(-44px);
     transition: transform 0.3s ease, opacity 0.3s ease 0.15s, visibility 0.3s ease 0.15s;
@@ -3334,8 +3356,10 @@ input::placeholder {
   #null-button-normal,
   .main-button-normal,
   .bordered-button-normal {
-    font-size: 13px;
-    padding: 0.35rem .85rem;
+    border-radius: calc(var(--radius) - 2px);
+    font-size: .875rem;
+    line-height: 1.25rem;
+    padding: 0.5rem 1rem;
   }
 
   input[type='text'],

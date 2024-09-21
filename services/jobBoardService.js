@@ -44,16 +44,16 @@ class JobProcessor extends EventEmitter {
     this.GEMINI_DELAY_MS = 3000;
     this.OPENAI_DELAY_MS = 3000;
     this.MAX_RETRIES = 5;
-    this.JOB_EXPIRATION_DAYS = 60; 
+    this.JOB_EXPIRATION_DAYS = 60;
     this.BACKOFF_FACTOR = 1.5;
     this.processedLinksFile = path.join(__dirname, 'processed_links.txt');
     this.processedLinks = new Set();
-    this.DELAY_BETWEEN_REQUESTS = 3000; 
+    this.DELAY_BETWEEN_REQUESTS = 3000;
     this.DELAY_BETWEEN_SEARCHES = 10000;
-    this.MAX_PAGES_PER_SEARCH = 3; 
+    this.MAX_PAGES_PER_SEARCH = 3;
     this.jobBoardPlatforms = ['greenhouse.io', 'ashbyhq.com', 'myworkday.com', 'lever.co'];
-    this.LINKEDIN_SEARCH_DELAY = 60000; 
-    this.MAX_LINKEDIN_PAGES = 5; 
+    this.LINKEDIN_SEARCH_DELAY = 60000;
+    this.MAX_LINKEDIN_PAGES = 5;
     this.progress = {
       phase: 'Initializing',
       company: '',
@@ -63,6 +63,9 @@ class JobProcessor extends EventEmitter {
       processedJobs: 0,
       currentAction: ''
     };
+    this.browser = null;
+    this.maxConcurrentPages = 5;
+    this.currentPages = 0;
   }
 
 
@@ -253,7 +256,6 @@ class JobProcessor extends EventEmitter {
     });
   }
 
-
   parseRateLimitError(error) {
     const message = error.message || error.error?.message || '';
     const match = message.match(/Please try again in (\d+)(\.\d+)?m?s/);
@@ -264,9 +266,11 @@ class JobProcessor extends EventEmitter {
     return null;
   }
 
+
   async makeRequest(url) {
     try {
       const response = await http.get(url, {
+        timeout: 10000, // 10 seconds timeout
         headers: {
           'User-Agent': 'core/1.0 (support@getcore.dev)',
           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -276,12 +280,11 @@ class JobProcessor extends EventEmitter {
           'Connection': 'keep-alive',
           'Upgrade-Insecure-Requests': '1'
         },
-        // Implement proper error handling
         validateStatus: function (status) {
-          return status >= 200 && status < 300; // default
+          return status >= 200 && status < 300;
         },
       });
-  
+
       return response;
     } catch (error) {
       if (error.response) {
@@ -294,18 +297,17 @@ class JobProcessor extends EventEmitter {
       throw error;
     }
   }
+
+
   getCompanyIdentifier(jobBoardUrl) {
     const parsedUrl = new URL(jobBoardUrl);
     const pathParts = parsedUrl.pathname.split('/').filter(part => part);
-  
+
     if (parsedUrl.hostname.includes('greenhouse.io')) {
-      // For Greenhouse, the company identifier is usually the last part of the path
       return pathParts[pathParts.length - 1];
     } else if (parsedUrl.hostname.includes('lever.co')) {
-      // For Lever, the company identifier is usually the first part of the path
       return pathParts[0];
     } else {
-      // For other job boards, use the subdomain if present, otherwise the first path part
       const subdomain = parsedUrl.hostname.split('.')[0];
       return subdomain !== 'www' ? subdomain : pathParts[0];
     }
@@ -509,6 +511,22 @@ class JobProcessor extends EventEmitter {
   
     // Convert Set to Array and parse JSON strings back to objects
     return Array.from(links).map(link => JSON.parse(link));
+  }
+
+  async fetchWithRender(url) {
+    try {
+      const renderUrl = `https://render-tron.appspot.com/render/${encodeURIComponent(url)}`;
+      const response = await axios.get(renderUrl, {
+        headers: {
+          'User-Agent': 'core/1.0 (support@getcore.dev)',
+        },
+        timeout: 15000, // 15 seconds timeout
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching rendered page for ${url}:`, error.message);
+      throw error;
+    }
   }
 
   async fullExtractJobLinks($, baseUrl, jobBoardDomain) {
@@ -1006,42 +1024,89 @@ class JobProcessor extends EventEmitter {
 
   async processJobLink(link) {
     const url = typeof link === 'object' && link.url ? link.url : link;
-  
+
     if (typeof url !== 'string' || !url.startsWith('http')) {
       console.error('Invalid URL:', url);
       return { error: 'Invalid URL' };
     }
-  
+
     if (this.processedLinks.has(url)) {
       return { alreadyProcessed: true };
     }
-  
+
     try {
       console.log('Processing job link:', url);
-      
-      this.updateProgress({ currentAction: 'Launching browser' });
-      const browser = await puppeteer.launch();
-      const page = await browser.newPage();
-  
-      this.updateProgress({ currentAction: 'Loading page' });
-      await page.goto(url, { waitUntil: 'networkidle0' });
-  
-      this.updateProgress({ currentAction: 'Extracting content' });
-      const textContent = await page.evaluate(() => {
-        const scripts = document.getElementsByTagName('script');
-        const styles = document.getElementsByTagName('style');
-        
-        for (const element of [...scripts, ...styles]) {
-          element.remove();
+
+      // Attempt to fetch page content with axios
+      let response;
+      try {
+        response = await axios.get(url, {
+          timeout: 10000, // 10 seconds timeout
+          headers: {
+            'User-Agent': 'Mozilla/5.0',
+          },
+        });
+      } catch (axiosError) {
+        console.log('Axios fetch failed, falling back to Puppeteer:', axiosError.message);
+        response = null;
+      }
+
+      let textContent = '';
+      if (response && response.status === 200) {
+        // Parse HTML with Cheerio
+        const $ = cheerio.load(response.data);
+        textContent = $('body').text().replace(/\s\s+/g, ' ').trim();
+
+        // Check if the content is sufficient
+        if (textContent.length < 500) {
+          console.log('Content too short, possibly requires JavaScript rendering.');
+          textContent = null;
         }
-        
-        return document.body.innerText.replace(/\s\s+/g, ' ').trim();
-      });
-  
-      await browser.close();
-  
+      }
+
+      // If content is empty or insufficient, use Puppeteer
+      if (!textContent) {
+        // Attempt to fetch with a pre-rendering service before Puppeteer
+        try {
+          console.log('Attempting to fetch with rendertron...');
+          const renderedHtml = await this.fetchWithRender(url);
+          const $ = cheerio.load(renderedHtml);
+          textContent = $('body').text().replace(/\s\s+/g, ' ').trim();
+
+          if (textContent.length < 500) {
+            console.log('Content still insufficient after rendertron, falling back to Puppeteer.');
+            textContent = null;
+          }
+        } catch (renderError) {
+          console.error('Rendertron fetch failed:', renderError.message);
+          textContent = null;
+        }
+      }
+
+      if (!textContent) {
+        this.updateProgress({ currentAction: 'Launching browser' });
+        const browser = await this.getBrowserInstance();
+        const page = await browser.newPage();
+
+        this.updateProgress({ currentAction: 'Loading page with Puppeteer' });
+        await page.goto(url, { waitUntil: 'networkidle0' });
+
+        this.updateProgress({ currentAction: 'Extracting content with Puppeteer' });
+        textContent = await page.evaluate(() => {
+          // Remove scripts and styles
+          const scripts = document.getElementsByTagName('script');
+          const styles = document.getElementsByTagName('style');
+          for (const element of [...scripts, ...styles]) {
+            element.remove();
+          }
+          return document.body.innerText.replace(/\s\s+/g, ' ').trim();
+        });
+
+        await page.close();
+      }
+
       let extractedData;
-  
+
       if (this.useGemini) {
         this.updateProgress({ currentAction: 'Using Gemini API' });
         extractedData = await this.useGeminiAPI(link, textContent);
@@ -1050,19 +1115,34 @@ class JobProcessor extends EventEmitter {
         this.updateProgress({ currentAction: 'Using ChatGPT API' });
         extractedData = await this.useChatGPTAPI(link, textContent);
       }
-  
+
       this.updateProgress({ currentAction: 'Saving processed link' });
-      await this.saveProcessedLink(link);
-  
+      await this.saveProcessedLink(url);
+
       if (extractedData.skipped) {
         this.updateProgress({ currentAction: 'Skipped job' });
         return { skipped: true };
       }
-  
+
       return extractedData;
     } catch (error) {
-      console.error(`Error processing job link ${link}:`, error);
+      console.error(`Error processing job link ${url}:`, error);
       throw error;
+    }
+  }
+
+  async getBrowserInstance() {
+    if (!this.browser) {
+      this.browser = await puppeteer.launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      });
+    }
+    return this.browser;
+  }
+  async closeBrowser() {
+    if (this.browser) {
+      await this.browser.close();
+      this.browser = null;
     }
   }
 
@@ -1983,6 +2063,8 @@ class JobProcessor extends EventEmitter {
       }
     }
 
+    await this.closeBrowser();
+
     this.updateProgress({ 
       phase: 'LinkedIn Crawler',
       company: '',
@@ -1995,6 +2077,7 @@ class JobProcessor extends EventEmitter {
     await this.removeDuplicateJobs();
 
     await this.crawlLinkedIn();
+    
 
     this.updateProgress({ phase: 'Completed' });
   }
