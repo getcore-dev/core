@@ -9,7 +9,7 @@ const sql = require('mssql');
 const rateLimit = require('express-rate-limit');
 const ejsAsync = require('ejs-async');
 const MS_PER_HOUR = 3600000;
-
+const MSSQLStore = require('connect-mssql-v2');
 const environment = require('./config/environment');
 const dbConfig = require('./config/dbConfig');
 const userQueries = require('./queries/userQueries');
@@ -67,11 +67,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
-// Place this line before defining your session middleware
-app.set('trust proxy', 1); // Trust the first proxy
-
 app.use(
   session({
+    store: new MSSQLStore(dbConfig),
     secret: environment.sessionSecret,
     resave: false,
     saveUninitialized: false,
@@ -84,12 +82,6 @@ app.use(
     },
   })
 );
-
-
-app.use((req, res, next) => {
-  console.log('X-Forwarded-Proto:', req.headers['x-forwarded-proto']);
-  next();
-});
 app.use(limiter);
 
 app.use(passport.initialize());
