@@ -67,7 +67,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
-app.set('trust proxy', 1);
+// Place this line before defining your session middleware
+app.set('trust proxy', 1); // Trust the first proxy
+
 app.use(
   session({
     secret: environment.sessionSecret,
@@ -82,6 +84,12 @@ app.use(
     },
   })
 );
+
+
+app.use((req, res, next) => {
+  console.log('X-Forwarded-Proto:', req.headers['x-forwarded-proto']);
+  next();
+});
 app.use(limiter);
 
 app.use(passport.initialize());
