@@ -13,6 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
@@ -24,7 +32,7 @@ jobs:
           npm run build --if-present
 
       - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+        run: zip -r release.zip dist package.json package-lock.json
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -45,9 +53,6 @@ jobs:
         with:
           name: node-app
 
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
-
       - name: "Deploy to Azure Web App"
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
@@ -55,12 +60,12 @@ jobs:
           app-name: "coreplatform"
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_65666B72FDCA4DBF84A90C4E2F6F7D4F }}
-          package: .
+          package: release.zip
 
       - name: "Post Deployment Check"
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" https://coreplatform.azurewebsites.net)
-          if [ $response = "200" ]; then
+          if [ "$response" = "200" ]; then
             echo "Deployment successful, site is up"
           else
             echo "Site is not responding with 200 OK, got $response"
