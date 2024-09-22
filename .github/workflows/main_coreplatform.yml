@@ -11,8 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # 1. Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
+      # 2. Cache Node.js modules to speed up builds
       - name: Cache Node.js modules
         uses: actions/cache@v3
         with:
@@ -21,24 +24,43 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Set up Node.js version
+      # 3. Set up Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "20.x"
 
-      - name: npm install and build
+      # 4. Install dependencies
+      - name: Install Dependencies
         run: |
-          npm ci
-          npm run build --if-present
+          echo "Installing dependencies..."
+          npm ci --verbose
 
-      - name: Zip artifact for deployment
-        run: zip -r release.zip dist package.json package-lock.json
+      # 5. (Optional) Run linting
+      - name: Lint Code
+        run: |
+          echo "Running ESLint..."
+          npm run lint
 
-      - name: Upload artifact for deployment job
+      # 6. (Optional) Run tests
+      # If you have tests, uncomment the following step
+      # - name: Run Tests
+      #   run: |
+      #     echo "Running tests..."
+      #     npm test
+
+      # 7. (Optional) Prune devDependencies
+      - name: Prune devDependencies
+        run: |
+          echo "Pruning devDependencies..."
+          npm prune --production
+
+      # 8. Upload artifact for deployment job
+      - name: Upload Artifact for Deployment
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: release.zip
+          path: .  # Upload the entire repository
 
   deploy:
     runs-on: ubuntu-latest
@@ -48,23 +70,28 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: Download artifact from build job
+      # 1. Download artifact from build job
+      - name: Download Artifact from Build
         uses: actions/download-artifact@v3
         with:
           name: node-app
 
-      - name: "Deploy to Azure Web App"
+      # 2. Deploy to Azure Web App
+      - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: "coreplatform"
+          app-name: "coreplatform"  # Replace with your Azure Web App name
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_65666B72FDCA4DBF84A90C4E2F6F7D4F }}
-          package: release.zip
+          package: .  # Deploy the entire repository
 
-      - name: "Post Deployment Check"
+      # 3. Post Deployment Check
+      - name: Post Deployment Check
         run: |
+          echo "Checking deployment status..."
           response=$(curl -s -o /dev/null -w "%{http_code}" https://coreplatform.azurewebsites.net)
+          echo "HTTP response code: $response"
           if [ "$response" = "200" ]; then
             echo "Deployment successful, site is up"
           else
