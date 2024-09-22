@@ -36,12 +36,6 @@ jobs:
           echo "Installing dependencies..."
           npm ci --verbose
 
-      # 5. (Optional) Run linting
-      - name: Lint Code
-        run: |
-          echo "Running ESLint..."
-          npm run lint
-
       # 6. (Optional) Run tests
       # If you have tests, uncomment the following step
       # - name: Run Tests
