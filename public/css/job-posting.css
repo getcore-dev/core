@@ -47,7 +47,6 @@ main {
   background-color: white;
   border-radius: 8px;
   border: 1px solid var(--border-color);
-  padding: .4rem .6rem;
   width: 100%;
   box-sizing: border-box;
   max-width: 500px;
@@ -67,28 +66,10 @@ main {
   align-items: center;
 }
 
-.recruiter-image img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 12px;
-}
-
 .job-recruiter-info {
   flex-grow: 1;
 }
 
-.job-recruiter-name {
-  font-weight: 600;
-  font-size: 16px;
-  color: #050505;
-}
-
-.username-date {
-  color: #65676B;
-  font-size: 13px;
-  margin-top: 2px;
-}
 
 .username-date a {
   color: #1877F2;
@@ -149,7 +130,7 @@ main {
 }
 
 .job-details>* {
-  padding: 0 .7rem;
+  padding: 0 1.2rem;
 }
 
 .similar-company-jobs h4,
@@ -326,7 +307,6 @@ div.similar-job h4 {
 .job-details h4,
 .similar-jobs h4,
 .similar-company-jobs h4 {
-  font-size: 1.2rem;
   margin: .8rem 0;
   font-weight: 700;
   margin-top: 1.35rem;
@@ -369,7 +349,6 @@ div.similar-job h4 {
 .job-details p,
 .job-details ul,
 ul.locations {
-  font-size: var(--default-sub-font-size);
   line-height: 1.5;
   font-weight: 400;
   margin: 0;
@@ -612,8 +591,9 @@ ul.locations {
     margin: 0;
   }
 
-
-
+  .job-details>* {
+    padding: 0 .7rem;
+  }
 
   .container {
     width: 100% !important;
@@ -621,21 +601,6 @@ ul.locations {
     border: 0 !important;
     border: 0;
   }
-
-  .job-details p,
-  .job-details ul,
-  ul.locations,
-  .job-posting-flairs,
-  div.job-skills,
-  div.job-skills-display,
-  .job-details h4,
-  .similar-jobs h4,
-  .similar-company-jobs h4 {
-    font-size: var(--mobile-default-sub-font-size);
-  }
-
-
-
 
   .job-listing-menu {
     margin: 0;
@@ -652,7 +617,6 @@ ul.locations {
     .job-details h4,
     .similar-jobs h4,
     .similar-company-jobs h4 {
-      font-size: var(--mobile-default-font-size);
       margin: .8rem 0;
       margin-top: 1.35rem;
     }

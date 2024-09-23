@@ -82,7 +82,7 @@
         </button>
         <div class="menu-content" id="menu-content">
           <a href="/" class="<%= isActive('/') ? 'active' : '' %>">
-            <div class="menu-item main-text secondary-text">
+            <div class="menu-item main-text primary-text">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 home
               </span>
@@ -91,7 +91,7 @@
           </a>
 
           <a href="/jobs" class="<%= isActive('/jobs') ? 'active' : '' %>">
-            <div class="menu-item main-text secondary-text">
+            <div class="menu-item main-text primary-text">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 work
               </span>
@@ -102,7 +102,7 @@
             <summary>
               <a class="<%= isActive('/networks') ? 'active' : '' %>">
 
-                <div class="menu-item main-text secondary-text">
+                <div class="menu-item main-text primary-text">
                   <span class="material-symbols-outlined" id="menu-community-icon">
                     workspaces
                   </span>
@@ -116,7 +116,7 @@
             </div>
           </details>
           <a href="/updates" class="<%= isActive('/updates') ? 'active' : '' %>">
-            <div class="menu-item main-text secondary-text">
+            <div class="menu-item main-text primary-text">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 update
               </span>
@@ -129,7 +129,7 @@
           <% if (user) { %>
           <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
           <a href="/favorites" class="<%= isActive('/favorites') ? 'active' : '' %>">
-            <div class="menu-item main-text secondary-text">
+            <div class="menu-item main-text primary-text">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 favorite
               </span>
@@ -137,7 +137,7 @@
             </div>
           </a>
           <a href="/feedback" class="<%= isActive('/feedback') ? 'active' : '' %>">
-            <div class="menu-item main-text secondary-text">
+            <div class="menu-item main-text primary-text">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 feedback
               </span>
@@ -147,7 +147,7 @@
           </a>
           <% } %>
           <a href="/about" class="<%= isActive('/about') ? 'active' : '' %>">
-            <div class="menu-item main-text secondary-text">
+            <div class="menu-item main-text primary-text">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 info
               </span>
@@ -170,8 +170,8 @@
       <div class="user-btns flex v-center h-100">
         <ul class="user-links flex-row  gap-06">
           <li id="search-toggle-button" style="width: auto">
-            <button type="button" class="no-bg no-border">
-              <span class="material-symbols-outlined primary-text" style="font-size: 1.4rem;">
+            <button type="button" class="no-bg no-border no-padding">
+              <span id="nb-icon" class="material-symbols-outlined primary-text">
                 search
               </span>
             </button>
@@ -231,10 +231,7 @@
             <% } else if (!user) { %>
             <div class="nav-avatar">
               <a href="/login">
-                <button class="regular-button-normal">
-                  <span class="material-symbols-outlined">
-                    login
-                  </span>
+                <button class="regular-button-normal mini-text flex flex-row v-center px-4">
                   Sign in
                 </button>
               </a>
@@ -1058,6 +1055,7 @@
         if (communitiesContainer) {
           communitiesContainer.innerHTML = ''; // Clear existing communities
           // add a public networks label
+          /*
           const publicNetworksLabel = document.createElement('div');
           publicNetworksLabel.className = 'public-networks-label flex flex-row v-center';
           publicNetworksLabel.innerHTML = `
@@ -1065,15 +1063,16 @@
               public
             </span>
             <div class="community-name secondary-text mini-text">
-              <p class="community-text" style="color: inherit;">Public Networks</p>
+              <p class="community-text main-text" style="color: inherit;">Public Networks</p>
             </div>
           `;
           communitiesContainer.appendChild(publicNetworksLabel);
+           */
           communities.forEach(community => {
             if (community.is_member) {
 
               const communityElement = document.createElement('div');
-              communityElement.className = 'communities active';
+              communityElement.className = 'communities sub-text';
               communityElement.onclick = () => {
                 window.location.href = `/networks/${community.shortname}`;
               };
@@ -1099,7 +1098,7 @@
             if (!community.is_member) {
 
               const communityElement = document.createElement('div');
-              communityElement.className = 'communities';
+              communityElement.className = 'communities sub-text';
               communityElement.onclick = () => {
                 window.location.href = `/networks/${community.shortname}`;
               };
@@ -1111,7 +1110,7 @@
                   ${community.mini_icon}
                 </span>
                 <div class="community-name">
-                  <p class="community-text" style="color: inherit;">${isMobile ? community.name : community.name}</p>
+                  <p class="community-text sub-text" style="color: inherit;">${isMobile ? community.name : community.name}</p>
                 </div>
               `;
 

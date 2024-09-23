@@ -308,7 +308,7 @@
         const communityHeader = document.createElement('div');
         communityHeader.className = 'community-header posting-header flex flex-row w-100';
         communityHeader.innerHTML = `
-      <div class="flex flex-row wrap w-100" style="position:relative;">
+      <div class="flex flex-row wrap w-100 gap-06 space-between" style="position:relative;">
         <span class="selector">
           <a class="selector-button mini-text secondary-text selected" onclick="filterPosts('trending')"><span>Trending</span></a>
           <a class="selector-button mini-text secondary-text" onclick="filterPosts('new')"><span>New</span></a>
@@ -316,7 +316,7 @@
           <a class="selector-button mini-text secondary-text" onclick="filterPosts('explore')"><span>Explore</span></a>
         </span>
         ${loggedIn ? `
-          <button class="submit-button-normal" id="post-button" onclick="window.location.href='${communityId ? `/networks/${community.shortname}/create` : '/create'}'">
+          <button class="submit-button-normal mini-button" id="post-button" onclick="window.location.href='${communityId ? `/networks/${community.shortname}/create` : '/create'}'">
             <span class="material-symbols-outlined">add</span> Create Post
           </button>
         ` : ''}
@@ -351,14 +351,14 @@
           </div>`;
 
             postDiv.innerHTML = `
-          <div class="flex items-start margin-03-bottom">
+          <div class="flex items-start margin-06-bottom">
             ${avatarHtml}
 
             <div class="ml-3 flex flex-col flex-grow items-start" style="gap: 0;">
               <div class="flex flex-row v-center w-100 space-between">
               <div class="flex flex-col start">
               <div class="flex flex-row gap-06 v-center">
-              <p class="mini-text bold clickable">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username} </p>
+              <p class="sub-text bold">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username} </p>
                                         <div class="follow-btn-container">  
             </div>
             </div>
@@ -368,7 +368,7 @@
               </div>
               <div class="flex flex-row gap-06 v-center">
                           <span class="text-tag simple-tag">
-                          <p class="mini-text bold">
+                          <p class="mini-text">
               /${post.community_shortname}
               </p>
             </span>
@@ -376,14 +376,13 @@
               </div>
             </div>
           </div>
-            <div class="flex flex-row gap-03">
-              <h2 class="main-text bold">${post.title}</h2>
+            <div class="flex flex-row gap-03 v-center margin-06-bottom wrap w-100">
+              <p class="sub-text">${post.title}</p>
                             <span class="third-text mini-text"">
-                            <span style="font-size:.7rem">•</span> 
                 ${formatDate(post.created_at)}
               </span>
               </div>
-          <p class="description sub-text mb-2">${truncateContent(post.content, 150)}</p>
+          <p class="description mini-text secondary-text margin-1-bottom">${truncateContent(post.content, 150)}</p>
 
           <div class="flex post-flairs-container text-sm text-gray-500 justify-between">
             <div class="mini-text flex items-center space-x-4 flex-grow gap-06">

@@ -298,14 +298,6 @@ a.comment-url:visited {
 }
 
 
-
-
-.post-title {
-  font-size: 25px;
-  color: var(--light-mode-bold-text-color);
-  margin-top: 0px;
-}
-
 div .user-info,
 .header {
   font-size: 17px;
@@ -406,23 +398,6 @@ div.interact-buttons {
   font-size: .9rem;
 }
 
-.reaction-button,
-.main-reaction-button,
-.boost-button,
-#delete-post-button,
-#delete-comment-button {
-  color: var(--light-mode-text-color);
-  height: 30px;
-  padding: 0;
-  font-weight: 600;
-  display: flex;
-  width: 30px;
-  font-size: .8rem;
-  text-decoration: none;
-  white-space-collapse: collapse;
-  align-items: center;
-  justify-content: center;
-}
 
 #community-header-text {
   font-weight: 600;
@@ -459,18 +434,6 @@ div.interact-buttons {
   font-size: 1rem;
 }
 
-.reaction-button,
-#favorite-button,
-#share-button {
-  border: 0;
-  font-size: .875rem;
-  display: flex;
-  align-items: center;
-  border-radius: 19px;
-  gap: .6rem;
-  padding: 0.6rem 2rem !important;
-  height: 30px;
-}
 
 #favorite-button,
 #share-button {
@@ -1346,11 +1309,7 @@ h4.preview-title {
 }
 
 .EasyMDEContainer .CodeMirror {
-  background-color: var(--light-mode-body-color) !important;
-  border-color: var(--border-color) !important;
   margin: 0 12px;
-  border: 1px solid var(--border-color) !important;
-  border-radius: 12px !important;
 }
 
 .image-container {
@@ -2089,19 +2048,6 @@ div.post-information {
     max-height: 100%;
   }
 
-  .reaction-button,
-  #favorite-button,
-  #share-button {
-    height: 30px;
-  }
-
-  .reaction-button,
-  .main-reaction-button,
-  .boost-button,
-  #delete-post-button,
-  #delete-comment-button {
-    padding: 4px;
-  }
 
 
   #reply-button .reaction-button {
@@ -2153,12 +2099,6 @@ div.post-information {
     max-width: 100% !important;
   }
 
-
-  .post-title {
-    font-weight: 700;
-    margin-top: 0;
-    font-size: 1.65rem;
-  }
 
   .post-subtitle {
     font-size: .85rem;

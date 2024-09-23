@@ -95,7 +95,7 @@
                 formattedDate = years + 'y';
               }
               %>
-            <span class="post-title-navigator margin-06-bottom">
+            <span class="post-title-navigator margin-06-bottom flex flex-row v-center ">
               <img src="<%= post.user.avatar || '/img/default-avatar.png' %>" alt="Avatar" class="thumbnail thumbnail-micro thumbnail-regular" onclick="window.location.href = '/user/<%= post.user.username %>'" />
               <div class="post-nav-header">
                 <div class="post-info-container secondary-text sub-text">
@@ -124,14 +124,15 @@
 
             <div class="post-title-container margin-1-bottom">
 
-              <a id="community-header-text" class="sub-text" href="/networks/<%= post.community.shortname %>"> <%= post.community.shortname.toLowerCase() %></a> /
+              <div class="flex flex-col">
+                <div class="flex-row flex gap-03">
+                  <a id="community-header-text" class="sub-text" href="/networks/<%= post.community.shortname %>"> <%= post.community.shortname.toLowerCase() %></a> /
 
-              <h2 class="post-title" style="font-size: 1.35rem;font-weight: 500;margin-bottom: .05rem;">
-
-                <%= post.title %>
-
-
-                <span class="post-time sub-text primary-text">
+                  <h2 class="post-title main-text">
+                    <%= post.title %>
+                  </h2>
+                </div>
+                <span class="post-time mini-text third-text">
                   <% postDate = new Date(post.created_at); %>
                   <%
                         function formatRelativeDate(dateString) {
@@ -163,8 +164,7 @@
                   <%formattedPostDate = formatRelativeDate(postDate);%>
                   <%= formattedPostDate %>
                 </span>
-              </h2>
-
+              </div>
               <% if (post.post_type == "blog") { %>
               <div class="post-subtitle-text">
                 <p><%= post.subtitle %></p>
@@ -358,7 +358,7 @@
                       <% }); %>
                     </div>
                   </div>
-                  <button class="mainReactionButton null-button-normal reaction-button<% if (post.userReaction) { %> active <% } %>" data-type="post" data-id="<%= post.id %>">
+                  <button class="mainReactionButton mini-button null-button-normal reaction-button<% if (post.userReaction) { %> active <% } %>" data-type="post" data-id="<%= post.id %>">
                     <% if (post.userReaction) { %>
                     <% if (post.userReaction == "B") { post.userReaction = "BOOST"; } %>
                     <% if (post.userReaction != null && reactionTypes.find(reaction => reaction.type === post.userReaction)) { %>
@@ -383,10 +383,10 @@
                     <% } %>
                   </button>
 
-                  <button class="null-button-normal" id="favorite-button" onclick="favorite('<%= post.id %>')">
+                  <button class="null-button-normal mini-button" id="favorite-button" onclick="favorite('<%= post.id %>')">
                     <span class="material-symbols-outlined">favorite</span>
                   </button>
-                  <button class="null-button-normal" id="share-button" onclick="share('<%= post.title %>', '', 'https://getcore.dev/posts/<%= post.id %>', 'post', '<%= post.id%>')">
+                  <button class="null-button-normal mini-button" id="share-button" onclick="share('<%= post.title %>', '', 'https://getcore.dev/posts/<%= post.id %>', 'post', '<%= post.id%>')">
                     <span class="material-symbols-outlined">share</span> <%= post.share_count ? post.share_count : 0 %>
                   </button>
                   <% if (user && user.isAdmin) { %>
@@ -534,7 +534,7 @@
                 } else {
                   timeSinceComment = 'Just now';
                 }
-                %><span class="comment-timestamp sub-text primary-text"><time><%= timeSinceComment %></time></span>
+                %><span class="comment-timestamp sub-text third-text"><time><%= timeSinceComment %></time></span>
                         </div>
                         <!-- commentors experience -->
                         <p class="mini-text">
@@ -669,7 +669,7 @@
                 <% } %>
 
                 <% if (!comment.deleted) { %>
-                <button class="commentMainReactionButton null-button-normal reaction-button <% if (comment.userReaction) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>">
+                <button class="commentMainReactionButton mini-button null-button-normal reaction-button <% if (comment.userReaction) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>">
                   <% if (comment.userReaction) { %>
 
                   <% if (comment.userReaction == "B") {
@@ -700,7 +700,7 @@
 
                   <div class="reaction-popup-content">
                     <% reactionTypes.forEach(reaction => { %>
-                    <button class="reaction-button-popup<% if (comment.userReaction == reaction.type) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>" data-reaction="<%= reaction.type %>" onclick="interactWithComment('<%= post.id%>', '<%= comment.id %>', '<%= user %>', '<%= reaction.type %>')">
+                    <button class="mini-button reaction-button-popup<% if (comment.userReaction == reaction.type) { %> active <% }%>" data-type="comment" data-id="<%= comment.id %>" data-reaction="<%= reaction.type %>" onclick="interactWithComment('<%= post.id%>', '<%= comment.id %>', '<%= user %>', '<%= reaction.type %>')">
                       <%= reaction.icon %>
                       <span class="reaction-count"><%= comment[reaction.type.toLowerCase() + 'Count'] %></span>
                     </button>

@@ -143,7 +143,6 @@
 .reaction-emote {
   display: inline-flex;
   height: 100%;
-  width: 32px;
   border: 0;
   align-items: center;
   justify-content: center;

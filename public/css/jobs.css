@@ -13,7 +13,7 @@ body {
 }
 
 #personalized-job-list {
-  margin: .4rem .7rem;
+  margin: .4rem 1rem;
 }
 
 .job-search-results {
@@ -273,8 +273,8 @@ select:hover,
 
 div.jobs-container>div.job-list>.job {
   padding: 0 10px;
-  border-radius: 0;
-  margin-bottom: 0;
+  border-radius: 6px;
+  margin-bottom: 1.4rem;
   cursor: pointer;
 }
 
@@ -799,9 +799,10 @@ select {
 .jobs-header {
   display: flex;
   flex-direction: column;
-  margin: 8px 14px;
+  margin: 2rem 1rem;
   gap: 5px;
 }
+
 
 .dropdown-button {
   background: none;
@@ -1094,6 +1095,10 @@ div .material-symbols-outlined:not(:only-child) {
     margin-top: 1.4rem;
     gap: .5rem;
   }
+
+  #personalized-job-list {
+    margin: .4rem .7rem;
+}
 
   .job {
     display: flex;

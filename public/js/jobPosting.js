@@ -442,7 +442,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         </div>
 <hr>
         <div class="job-posting-description ${job.recruiter_username === 'autojob' ? 'ai-generated-content' : ''}">
-  <h4 style="margin-top:0;">Job Description ${job.recruiter_username === 'autojob' ? '<span class="ai-badge">✨ AI Overview</span>' : ''}</h4>
+  <h4 class="sub-text bold" style="margin-top:0;">AI-Generated Overview</h4>
   <p class="sub-text readable">${job.description}</p>
 </div>
       
@@ -451,7 +451,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   !isOlderThan30Days(job)
     ? `<div class="apply-button-container flex">
                 <button class="main-button-normal margin-h-auto grow-button" onclick="applyForJob(event, '${job.id}', '${job.link}')">
-                  <span class="material-symbols-outlined">work</span><span>Apply </span><span class="number-display">
+                  <span class="material-symbols-outlined">work</span><span class="sub-text">Apply </span><span class="number-display">
                   ${job.applicants ? job.applicants : 0}
                   </span>
                 </button>
@@ -464,7 +464,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
                       <div id="favorite-form-${job.id}" class="flex">
                         <button class="grow-button bordered-button-normal" onclick="favorite('job', ${job.id});" class="margin-h-auto">
                           <span class="material-symbols-outlined">star</span>
-                          <span>Favorite</span>
+                          <span class="sub-text">Favorite</span>
                         </button>
                       </div>
                     `
@@ -490,21 +490,21 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   </div>
 </div>
             <div class="job-details primary-text company-profile-section">
-            <div class="job-posting-recruiter">
+            <div class="job-posting-recruiter sub-text">
             <h4 class="mini-text bold" style="margin-bottom: 0.8rem;"></h4>  
                     <h4  style="margin-top:0;">Recruiter Information</h4>
 
-<div class="card">
+<div class="card px-4 py-2">
         <div class="job-recruiter-container">
             <div class="job-recruiter-info">
-            <div class="recruiter-info flex flex-row">
-            <a href="/user/autojob" class="recruiter-image">
-                <img src="${job.recruiter_image}" alt="${job.company_name} logo" />
+            <div class="recruiter-info flex flex-row gap-06">
+            <a href="/user/${job.recruiter_username}" class="recruiter-image">
+                <img class="thumbnail thumbnail-tiny thumbnail-regular" src="${job.recruiter_image}" alt="${job.company_name} logo" />
             </a>
             <div class="recruiter-details flex flex-col">
-                <div class="job-recruiter-name">${job.recruiter_firstname} ${job.recruiter_lastname}</div>
+                <div class="job-recruiter-name sub-text">${job.recruiter_firstname} ${job.recruiter_lastname}</div>
                 <div class="username-date">
-                    <a href="/user/autojob">${job.recruiter_username}</a> • Aug 21
+                    <a href="/user/${job.recruiter_username}" class="mini-text">${job.recruiter_username}</a> • <time class="mini-text secondary-text">${formatDateJob(job.postedDate)}</time>
                 </div>
                 </div>
                 </div>
@@ -513,7 +513,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     </div>
             <div class="company-description sub-text">
               <h4 >Company Description</h4>
-              <p>${job.company_description}</p>
+              <p class="sub-text">${job.company_description}</p>
             </div>
             ${
   job.Requirements

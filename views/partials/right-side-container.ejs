@@ -71,9 +71,9 @@
                   <div class="job-content-header">
                     <div class="company-logo-container">
                                             <div class="job-posting-header">
-                        <div class="job-company-name sub-text secondary-text">
+                        <div class="secondary-text">
                         
-                        <a class="secondary-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
+                        <a class="mini-text secondary-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
                         
                         </div>
                                                                             
@@ -81,27 +81,27 @@
                       </div>
                     
                     </div>
-                                                              <div class="job-title sub-text bold"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
+                                                              <div class="job-title mini-text bold"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
 
-                    <div class="job-title-location third-text">
+                    <div class="job-title-location mini-text third-text">
                 ${job.salary || job.salary_max ? `
-                  <span class="job-salary sub-text">
+                  <span class="job-salary mini-text">
                     ${getFormattedSalary(job.salary, job.salary_max)}
                   </span>
                   <span style="font-size:.7rem;">•</span>
                 ` : ``}
 
-                <div class="location sub-text">
+                <div class="location mini-text">
                   <span class="material-symbols-outlined">location_on</span>
                   ${formatLocation(job.location)}
                 </div>
                   <span style="font-size:.7rem;">•</span>
 
-                <div class="views sub-text"><span class="material-symbols-outlined" style="padding:0;">visibility</span>
+                <div class="views mini-text"><span class="material-symbols-outlined" style="padding:0;">visibility</span>
                 <span>${job.views ? job.views : '0'}</span></div>
                   <span style="font-size:.7rem;">•</span>
 
-                <div class="job-post-date sub-text">
+                <div class="job-post-date mini-text">
                   <span class="material-symbols-outlined" style="padding:0;">calendar_month</span>
                   <time>${formatRelativeDate(job.postedDate)}</time>
                 </div>
@@ -164,26 +164,26 @@
                       </div>
                     
                     </div>
-                                                              <div class="job-title sub-text bold"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
+                                                              <div class="job-title mini-text bold"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
 
                     <div class="job-title-location third-text">
                 ${job.salary || job.salary_max ? `
-                  <span class="job-salary sub-text">
+                  <span class="job-salary mini-text">
                     ${getFormattedSalary(job.salary, job.salary_max)}
                   </span>
                   <span style="font-size:.7rem;">•</span>
                 ` : ``}
 
-                <div class="location sub-text">
+                <div class="location mini-text">
                   <span class="material-symbols-outlined">location_on</span>
                   ${formatLocation(job.location)}
                 </div>
                   <span style="font-size:.7rem;">•</span>
 
-                <div class="applicants sub-text"><span class="material-symbols-outlined">person</span>${job.applicants ? job.applicants : '0'}</div>
+                <div class="applicants mini-text"><span class="material-symbols-outlined">person</span>${job.applicants ? job.applicants : '0'}</div>
                   <span style="font-size:.7rem;">•</span>
 
-                <div class="job-post-date sub-text">
+                <div class="job-post-date mini-text">
                   <span class="material-symbols-outlined">calendar_month</span>
                   <time>${formatRelativeDate(job.postedDate)}</time>
                 </div>

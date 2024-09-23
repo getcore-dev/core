@@ -98,6 +98,8 @@
   flex-direction: row;
   justify-content: space-between;
   position: relative;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
   height: auto;
   flex: 0 1 auto;
   transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
