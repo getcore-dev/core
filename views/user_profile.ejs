@@ -122,7 +122,7 @@
               <img class="thumbnail thumbnail-large" src="<%= otheruser.avatar || '/img/default-avatar.png' %>" alt="Profile Picture" />
 
             </div>
-            <div class="profile-details">
+            <div class="profile-details flex flex-col v-center w-100">
               <h2 class="bold"><%= otheruser.firstname %> <%= otheruser.lastname%>
               </h2>
 
@@ -154,53 +154,57 @@
 
             </div>
           </div>
-          <div class="edit-controls-and-follow-button">
-            <% if (user) { %>
-            <% if (otheruser.username === user.username) { %>
-            <button class="regular-button-normal" id="edit-button" onclick="window.location.href='/edit-profile'">
-              <span class="material-symbols-outlined">
-                edit
-              </span>
-              Edit
-            </button>
-            <% } else { %>
-            <button class="<%= isFollowing ? 'cancel-button-normal' : 'submit-button-normal' %>" id="followButton">
-              <%- isFollowing ? '<span class="material-symbols-outlined">person_remove</span> Unfollow' : '<span class="material-symbols-outlined">person_add</span> Follow' %>
-            </button>
-            <% } %>
-            <% } %>
+          <div class="flex flex-col gap-06">
+            <div class="edit-controls-and-follow-button">
+              <% if (user) { %>
+              <% if (otheruser.username === user.username) { %>
+              <button class="regular-button-normal" id="edit-button" onclick="window.location.href='/edit-profile'">
+                <span class="material-symbols-outlined">
+                  edit
+                </span>
+                Edit
+              </button>
+              <% } else { %>
+              <button class="<%= isFollowing ? 'cancel-button-normal' : 'submit-button-normal' %>" id="followButton">
+                <%- isFollowing ? '<span class="material-symbols-outlined">person_remove</span> Unfollow' : '<span class="material-symbols-outlined">person_add</span> Follow' %>
+              </button>
+              <% } %>
+              <% } %>
 
-            <button class="main-button-normal" onclick="share('User Profile', '', 'https://getcore.dev/user/<%= otheruser.username %>')">
-              <span class="material-symbols-outlined">
-                share
-              </span>
-              Share
-            </button>
+              <button class="null-button-normal" onclick="share('User Profile', '', 'https://getcore.dev/user/<%= otheruser.username %>')">
+                <span class="material-symbols-outlined">
+                  share
+                </span>
+                Share
+              </button>
+            </div>
+            <% if (user) { %>
+            <% if (user.isAdmin ) { %>
+            <div class="flex flex-row gap-06 space-between">
+              <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-admin" method="POST">
+                <button class="w-100 special-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.isAdmin ? '<span class="material-symbols-outlined">admin_panel_settings</span> Revoke Admin' : '<span class="material-symbols-outlined">admin_panel_settings</span> Make Admin' %></button>
+              </form>
+              <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-verified" method="POST">
+                <button class="w-100 submit-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.verified ? '<span class="material-symbols-outlined">check</span> Unverify' : '<span class="material-symbols-outlined">check</span> Verify' %></button>
+              </form>
+              <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-ban" method="POST">
+                <button class="w-100 cancel-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.isBanned ? '<span class="material-symbols-outlined">block</span> Unban' : '<span class="material-symbols-outlined">block</span> Ban' %></button>
+              </form>
+            </div>
+            <% } %>
+            <% } %>
           </div>
-          <% if (user) { %>
-          <% if (user.isAdmin ) { %>
-          <div class="flex flex-row gap-06 space-between">
-            <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-admin" method="POST">
-              <button class="w-100 special-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.isAdmin ? '<span class="material-symbols-outlined">admin_panel_settings</span> Revoke Admin' : '<span class="material-symbols-outlined">admin_panel_settings</span> Make Admin' %></button>
-            </form>
-            <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-verified" method="POST">
-              <button class="w-100 submit-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.verified ? '<span class="material-symbols-outlined">check</span> Unverify' : '<span class="material-symbols-outlined">check</span> Verify' %></button>
-            </form>
-            <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-ban" method="POST">
-              <button class="w-100 cancel-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.isBanned ? '<span class="material-symbols-outlined">block</span> Unban' : '<span class="material-symbols-outlined">block</span> Ban' %></button>
-            </form>
-          </div>
-          <% } %>
-          <% } %>
 
           <% if (otheruser.username != "core") { %>
           <% if (otheruser.topCommunities && otheruser.topCommunities.length > 0) { %>
-          <h4>Communities</h4>
+          <div class="flex flex-col gap-06">
+            <h4>Communities</h4>
 
-          <div class="communities-info flex flex-row gap-06 wrap">
-            <% otheruser.topCommunities.split(',').forEach(function(community) { %>
-            <button class="text-tag"><%= community.trim() %></button>
-            <% }); %>
+            <div class="communities-info flex flex-row gap-06 wrap">
+              <% otheruser.topCommunities.split(',').forEach(function(community) { %>
+              <button class="text-tag"><%= community.trim() %></button>
+              <% }); %>
+            </div>
           </div>
           <% } %>
           <div class="links-container">

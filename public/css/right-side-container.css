@@ -144,16 +144,6 @@ div.job-title-location .sub-text {
   display: inline-block;
 }
 
-.jobslist {
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-  max-height: 450px;
-  overflow: scroll;
-  border: 0 !important;
-  padding: .1rem;
-  border-radius: 10px;
-}
 
 .right-side-container {
   overflow-y: auto;
@@ -163,16 +153,11 @@ div.job-title-location .sub-text {
 .right-side-container>div.jobslist .job {
   border: 0;
   width: 100%;
+  box-sizing: border-box;
   gap: .9rem;
-  border-bottom: 0;
-  border-radius: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
   margin: 0;
-}
-
-.right-side-container>div.jobslist .job:first-child {
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
-
 }
 
 .right-side-container>div.jobslist .job:hover {
@@ -224,12 +209,12 @@ div.job-title-location .sub-text {
 
 @media (prefers-color-scheme: dark) {
   .jobslist {
-    background: var(--dark-mode-main-color);
+    background: transparent;
   }
 
   .right-side-container>div.jobslist .job {
-    border-color: var(--dark-mode-border-color) !important;
-    background-color: var(--dark-mode-main-color);
+    background: 0;
+    border-color: var(--dark-mode-border-color);
   }
 
   .right-side-container>div.jobslist .job:hover {

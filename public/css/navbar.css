@@ -89,12 +89,8 @@ label {
 }
 
 .avatar-dropdown-label {
-  position: absolute;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: none;
+  transition: cubic-bezier(1, 0, 0, 1) 0.3s;
 }
 
 .number-display {
@@ -154,15 +150,16 @@ a:visited {
   color: var(--light-mode-bold-text-color);
 }
 
-.top-bar {
+
+.flex-end {
   display: flex;
-  flex-direction: row;
+  justify-content: flex-end;
 }
 
 .user-links {
   list-style: none;
   margin: 0;
-  top: -27px;
+  top: 0;
   padding-left: 0;
   display: flex;
 }
@@ -352,6 +349,8 @@ a:visited {
 }
 
 .hamburger-menu {
+  opacity: 0;
+  pointer-events: none;
   display: none;
 }
 
@@ -805,6 +804,7 @@ li.dropdown a.active {
   flex-direction: column;
   justify-content: space-around;
   width: 16px;
+  align-items: flex-end;
   padding: 0;
   z-index: 100;
   height: 20px;
@@ -820,6 +820,18 @@ li.dropdown a.active {
   height: 1.5px !important;
   background-color: var(--light-mode-text-color);
   transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.top-bar {
+  display: flex;
+  width: 8px;
+  flex-direction: row;
+}
+
+.middle-bar {
+  display: flex;
+  width: 12px;
+  flex-direction: row;
 }
 
 .menu-button.active .top-bar {
@@ -970,6 +982,8 @@ button.clear-btn {
   justify-content: space-between;
   max-width: 1000px;
   width: 100%;
+  height: 100%;
+  box-sizing: border-box;
   gap: 15%;
   z-index: 2;
 }
@@ -1081,9 +1095,9 @@ a>.menu-item {
 
 
 #user-avatar {
-  width: 34px;
+  height: 30px;
   border-radius: 6px;
-  height: 34px;
+  aspect-ratio: 1/1;
   object-fit: cover;
   overflow: hidden;
   z-index: 10;
@@ -1415,11 +1429,15 @@ a>.menu-item {
     top: var(--mobile-navbar-height);
   }
 
+  .h-100 {
+    height: 100%;
+    box-sizing: border-box;
+  }
+
   .user-btns {
     position: absolute;
     right: 3.3rem;
-    height: 34px;
-    top: 10px;
+    top: 0;
     z-index: 500;
   }
 
@@ -1429,7 +1447,8 @@ a>.menu-item {
 
   .nav-text-and-user-btns {
     position: relative;
-    top: 14px;
+    display: none;
+    top: 0;
     left: 2.6rem;
   }
 
@@ -1458,6 +1477,15 @@ a>.menu-item {
     margin-top: 0px;
   }
 
+  .avatar-dropdown-label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .latest-commit-banner {
     top: 14px;
     margin-top: 14px;
@@ -1480,6 +1508,8 @@ a>.menu-item {
 
   .hamburger-menu {
     display: block;
+    pointer-events: all;
+    opacity: 1;
   }
 
   #menu-icon {
@@ -1520,7 +1550,7 @@ a>.menu-item {
   .hamburger-menu {
     position: absolute;
     right: 18px;
-    top: 14px;
+    top: 0;
     z-index: 100;
   }
 
@@ -2290,14 +2320,13 @@ hr {
 .user-links {
   position: relative;
   display: flex;
-  gap: .15rem;
   align-items: center;
   transition: transform 0.1s linear;
 }
 
 .avatar-dropdown {
   position: absolute;
-  right: 118px;
+  right: 135px;
   z-index: 10;
   background: none;
   display: flex;
@@ -2324,6 +2353,7 @@ hr {
 
 .avatar-dropdown a {
   text-decoration: none;
+  background: transparent;
   font-size: 23px;
   color: var(--primary-text-color);
   transition: 0.3s;
@@ -2854,10 +2884,6 @@ input::placeholder {
     color: var(--dark-mode-text-color)
   }
 
-  .avatar-dropdown a {
-    color: var(--dark-mode-text-color)
-  }
-
   .clear-btn .material-symbols-outlined {
     color: var(--dark-mode-secondary-text-color);
   }
@@ -2876,8 +2902,8 @@ input::placeholder {
   }
 
   .avatar-dropdown a {
-    border-color: #1f1f1f;
-    background: #121212;
+    background: transparent;
+    color: var(--dark-mode-text-color);
   }
 
   .menu-content a {

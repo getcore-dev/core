@@ -103,11 +103,6 @@ main {
   background-color: var(--light-mode-main-color);
 }
 
-.profile-details {
-  width: 75%;
-}
-
-
 .profile-details .material-symbols-outlined {
   vertical-align: -2px;
   font-size: 14px;
@@ -154,11 +149,6 @@ main {
 .editable-field a {
   color: var(--active-indicator-color);
   text-decoration: none;
-}
-
-main {
-  background-color: var(--background-color);
-  /* other styles... */
 }
 
 #profile {
@@ -662,7 +652,7 @@ td {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  gap: .4rem;
+  gap: 2.4rem;
 }
 
 .profile-info {
@@ -691,11 +681,11 @@ td {
 }
 
 @media (prefers-color-scheme: dark) {
-  body {
+
+  body,
+  main {
     background-color: var(--dark-mode-body-color);
-    /* Dark background for the body */
     color: var(--dark-mode-text-color);
-    /* Light text color for better readability */
   }
 
   .select2-dropdown {
@@ -913,14 +903,6 @@ td {
   --ring: 212.7 26.8% 83.9%;
 }
 
-/* Typography */
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  color: hsl(var(--foreground));
-  background-color: hsl(var(--background));
-}
-
-/* Layout */
 .container {
   width: 100%;
   max-width: 64rem;
