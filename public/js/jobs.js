@@ -796,7 +796,7 @@ if (remainingSkillsCount > 0) {
 jobElement.innerHTML = `
 <div class="job-preview">
   <div class="job-info">
-    <div class="job-header gap-03">
+    <div class="flex flex-row w-100 space-between v-center gap-03">
     <div class="flex flex-row gap-06">
       ${
     job.company_logo

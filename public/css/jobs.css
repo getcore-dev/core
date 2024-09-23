@@ -416,7 +416,7 @@ div.job-title-location .sub-text {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin: 0.4rem 0 !important;
+  margin-top: 2rem;
 }
 
 .company-name {
