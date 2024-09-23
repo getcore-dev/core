@@ -12,7 +12,7 @@ const dbConfig = {
   },
   options: {
     encrypt: true,
-    trustServerCertificate: false,
+    trustServerCertificate: true,
   },
 };
 

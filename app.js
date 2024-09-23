@@ -67,6 +67,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
+app.set('trust proxy', 1);
 
 app.use(
   session({
@@ -74,13 +75,6 @@ app.use(
     secret: environment.sessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: { 
-      secure: environment.isProduction,
-      sameSite: 'lax',
-      httpOnly: true,
-      path: '/',
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    },
   })
 );
 app.use(limiter);

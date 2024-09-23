@@ -12,7 +12,7 @@ const puppeteer = require('puppeteer');
 const jobQueries = require('../queries/jobQueries');
 const { title } = require('process');
 const rateLimit = require('axios-rate-limit');
-const http = rateLimit(axios.create(), { maxRequests: 2, perMilliseconds: 1000 });
+const http = rateLimit(axios.create(), { maxRequests: 10, perMilliseconds: 1000 }); // 10 requests per second
 const WebScraper = require('./webScraperService');
 const { link } = require('fs');
 const { set } = require('../app');
@@ -48,8 +48,8 @@ class JobProcessor extends EventEmitter {
     this.BACKOFF_FACTOR = 1.5;
     this.processedLinksFile = path.join(__dirname, 'processed_links.txt');
     this.processedLinks = new Set();
-    this.DELAY_BETWEEN_REQUESTS = 3000;
-    this.DELAY_BETWEEN_SEARCHES = 10000;
+    this.DELAY_BETWEEN_REQUESTS = 1000;
+    this.DELAY_BETWEEN_SEARCHES = 5000;
     this.MAX_PAGES_PER_SEARCH = 3;
     this.jobBoardPlatforms = ['greenhouse.io', 'ashbyhq.com', 'myworkday.com', 'lever.co'];
     this.LINKEDIN_SEARCH_DELAY = 60000;
@@ -1896,41 +1896,34 @@ class JobProcessor extends EventEmitter {
 
 
   async processJobLinks(links, companyId, isLinkedIn = false) {
-    for (const [index, link] of links.entries()) {
-      try {
-        this.updateProgress({ 
-          processedJobs: index + 1,
-          currentAction: `Processing job: ${link.url || link}`
+    const concurrencyLimit = 10; // Adjust based on your system's capability
+    const processingQueue = [];
+    
+    for (const link of links) {
+      const processPromise = this.processJobLinkWithRetry(link)
+        .then(jobData => {
+          if (jobData && !jobData.error && !jobData.alreadyProcessed && !jobData.skipped) {
+            return this.createJobPosting(jobData, companyId, link.url || link);
+          }
+        })
+        .catch(error => {
+          console.error(`Error processing job link ${link.url || link}:`, error);
         });
-
-        const currentCompanyJobLinks = await jobQueries.getCompanyJobLinks(companyId);
-
-        if (currentCompanyJobLinks.some(job => job.link === link.url || job.link === link)) {
-          console.log('Job already processed:', link.url || link);
-          continue;
-        }
-
-        let jobData;
-        if (isLinkedIn) {
-          jobData = await this.processLinkedInJob(link);
-        } else {
-          jobData = await this.processJobLinkWithRetry(link);
-        }
-
-        this.updateProgress({ currentAction: 'Creating job posting' });
-
-        if (jobData && !jobData.error && !jobData.alreadyProcessed && !jobData.skipped) {
-          await this.createJobPosting(jobData, companyId, link.url || link);
-          console.log(`Processed job data for ${link.url || link}`);
-        }
-      } catch (error) {
-        this.updateProgress({ currentAction: 'Error processing job' });
-        console.error(`Error processing job link ${link.url || link}:`, error);
+  
+      processingQueue.push(processPromise);
+  
+      if (processingQueue.length >= concurrencyLimit) {
+        await Promise.all(processingQueue);
+        processingQueue.length = 0; // Clear the queue
       }
-      
-      await this.delay(this.DELAY_BETWEEN_REQUESTS);
+    }
+  
+    // Process any remaining promises
+    if (processingQueue.length > 0) {
+      await Promise.all(processingQueue);
     }
   }
+  
 
   async processLinkedInJob(jobData) {
     if (this.processedLinks.has(jobData.url)) {
