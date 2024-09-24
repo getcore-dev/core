@@ -2005,6 +2005,9 @@ ORDER BY job_count DESC
         DELETE FROM JobPostingsTags WHERE jobId = ${jobId}
       `;
       await sql.query`
+      DELETE FROM user_jobs WHERE job_id = ${jobId}
+    `;
+      await sql.query`
         DELETE FROM job_skills WHERE job_id = ${jobId}
       `;
       await sql.query`

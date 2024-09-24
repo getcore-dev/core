@@ -56,7 +56,7 @@ app.listen(environment.port, () => {
 
   if (process.env.NODE_ENV !== 'development') {
     setTimeout(() => {
-      runJobBoardService();
+      scheduleNextRun();
     }, 5000); 
   }
 

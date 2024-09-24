@@ -504,6 +504,13 @@ Your output should include the following sections:
 - languages (if present, a string)
 
 Ensure that the data matches the schema provided.
+
+Tailor your responses for all of the above sections to the job description provided below and take all of the job info into account, it will usually say what they are looking for in the job description though.
+${job.description} 
+YOU MAY PARAPHRASE OR REWORD THE JOB BULLETPOINTS TO FIT THE RESUME FORMAT BETTER. 
+- If the job description mentions any specific skills or technologies, ensure that they are included in the resume if the user has them.
+
+If there are any direct or near direct matches in the job experience that may match the job description, highlight them in the resume.
 `;
   
     try {

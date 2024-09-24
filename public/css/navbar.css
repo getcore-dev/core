@@ -3597,6 +3597,10 @@ input::placeholder {
 }
 
 @media (prefers-color-scheme: dark) {
+  .material-symbols-outlined {
+    color: var(--dark-mode-text-color);
+  }
+
   .dropdown-button {
     background-color: var(--dark-mode-main-color);
     color: var(--dark-mode-text-color);

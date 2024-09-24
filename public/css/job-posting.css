@@ -596,8 +596,10 @@ ul.locations {
   .job-listing-menu {
     margin: 0;
     border: 0;
+    display: flex;
     border-radius: 0;
-    border-bottom: 1px solid var(--border-color);
+    gap: .4rem;
+    flex-direction: column;
   }
 
   @media (prefers-color-scheme: dark) {

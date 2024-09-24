@@ -365,7 +365,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 
       jobDetailsContainer.innerHTML = `
         <div class="job-listing">
-        <div class="job-listing-menu adaptive-border-bottom">
+        <div class="job-listing-menu">
       ${
   isOlderThan30Days(job)
     ? `<div class="caution-messages">This job was posted more than 30 days ago. Apply anyway <a class="link" href="${job.link}">here</a></div>`
@@ -442,7 +442,6 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 }
 
         </div>
-<hr>
         <div class="job-posting-description ${job.recruiter_username === 'autojob' ? 'ai-generated-content' : ''}">
   <h4 class="sub-text bold" style="margin-top:0;">AI-Generated Overview</h4>
   <p class="sub-text readable">${job.description}</p>
@@ -475,7 +474,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         <div class="second-buttons-container">
 
       ${
-  userIsAdmin
+  userIsLoggedIn && userIsAdmin
     ? `
             <div class="delete-button-container">
               <button class="grow-button no-bg no-border" onclick="window.location.href='/jobs/delete/${job.id}'">
@@ -491,9 +490,9 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     </div>
     <div>
          ${
-  userIsLoggedIn
+  userIsLoggedIn && userIsAdmin
     ? `
-                                      <div class="resume-button">
+        <div class="resume-button">
           <a href="/api/create-resume/${job.id}" class="grow-button bordered-button-normal margin-h-auto">
             <span class="material-symbols-outlined">description</span>
             <span class="sub-text">Get Resume</span>
