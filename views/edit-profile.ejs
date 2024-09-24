@@ -152,11 +152,11 @@
           <label for="employment_type">Desired Employment Type</label>
           <select id="employment_type" name="employment_type" required aria-label="Desired Employment Type">
             <option value="" disabled selected>Select Employment Type</option>
-            <option value="full_time" <% if(edit_user.employment_type.toLowerCase() == 'full_time') { %>selected<% } %>>Full-time</option>
-            <option value="part_time" <% if(edit_user.employment_type.toLowerCase() == 'part_time') { %>selected<% } %>>Part-time</option>
-            <option value="contract" <% if(edit_user.employment_type.toLowerCase() == 'contract') { %>selected<% } %>>Contract</option>
-            <option value="temporary" <% if(edit_user.employment_type.toLowerCase() == 'temporary') { %>selected<% } %>>Temporary</option>
-            <option value="internship" <% if(edit_user.employment_type.toLowerCase() == 'internship') { %>selected<% } %>>Internship</option>
+            <option value="full_time" <% if((edit_user.employment_type?.toLowerCase() ?? '') == 'full_time') { %>selected<% } %>>Full-time</option>
+            <option value="part_time" <% if((edit_user.employment_type?.toLowerCase() ?? '') == 'part_time') { %>selected<% } %>>Part-time</option>
+            <option value="contract" <% if((edit_user.employment_type?.toLowerCase() ?? '') == 'contract') { %>selected<% } %>>Contract</option>
+            <option value="temporary" <% if((edit_user.employment_type?.toLowerCase() ?? '') == 'temporary') { %>selected<% } %>>Temporary</option>
+            <option value="internship" <% if((edit_user.employment_type?.toLowerCase() ?? '') == 'internship') { %>selected<% } %>>Internship</option>
           </select>
         </div>
         <div class="form-group">
