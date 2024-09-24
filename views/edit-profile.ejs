@@ -14,24 +14,32 @@
 <body>
   <%- include('partials/navbar', { pagePath: 'edit' }) %>
   <div class="container">
-    <div id="educationModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Update Education Experience</h2>
-        <div id="educationPreview"></div>
-        <p>Would you like to update your education experience with the data from your resume?</p>
-        <button id="updateEducation">Yes, Update</button>
-        <button id="skipEducation">No, Skip</button>
+    <div class="modal-overlay">
+
+      <div id="educationModal" class="modal px-4 py-2">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Update Education Experience</h2>
+          <div id="educationPreview"></div>
+          <p>Would you like to update your education experience with the data from your resume?</p>
+          <div class="flex flex-row w-100 space-between">
+            <button class="submit-button-normal" id="updateEducation">Yes, Update</button>
+            <button class="cancel-button-normal" id="skipEducation">No, Skip</button>
+          </div>
+        </div>
       </div>
-    </div>
-    <div id="workModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Update Work Experience</h2>
-        <div id="workPreview"></div>
-        <p>Would you like to update your work experience with the data from your resume?</p>
-        <button id="updateWork">Yes, Update</button>
-        <button id="skipWork">No, Skip</button>
+      <div id="workModal" class="modal px-4 py-2">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Update Work Experience</h2>
+          <div id="workPreview"></div>
+          <p>Would you like to update your work experience with the data from your resume?</p>
+          <div class="flex flex-row w-100 space-between">
+
+            <button class="submit-button-normal" id="updateWork">Yes, Update</button>
+            <button class="cancel-button-normal" id="skipWork">No, Skip</button>
+          </div>
+        </div>
       </div>
     </div>
     <!-- Basic Info Section -->
@@ -272,6 +280,8 @@
 
       // Hide modals on page load
       $('.modal').hide();
+      $('.modal-overlay').hide();
+
 
       $('#upload-resume-button').click(function (e) {
         e.preventDefault();
@@ -301,6 +311,8 @@
               // Populate and show the education modal
               populateEducationPreview(resumeData.education);
               $('#educationModal').show();
+              $('.modal-overlay').show();
+
             },
             error: function (xhr, status, error) {
               alert('Error uploading resume: ' + error);
@@ -356,6 +368,7 @@
         $('#educationModal').hide();
         populateWorkPreview(resumeData.experience);
         $('#workModal').show();
+        $('.modal-overlay').show();
       });
 
       $('#submit-button').click(function (e) {
@@ -433,17 +446,21 @@
       $('#updateWork').click(function () {
         updateWorkExperience(resumeData.experience);
         $('#workModal').hide();
+        $('.modal-overlay').hide();
         populateFormFields();
       });
 
       $('#skipWork').click(function () {
         $('#workModal').hide();
+        $('.modal-overlay').hide();
+
         populateFormFields();
       });
 
       // Close button for modals
       $('.close').click(function () {
         $(this).closest('.modal').hide();
+        $('.modal-overlay').hide();
       });
 
       function updateEducationExperience(educationData) {

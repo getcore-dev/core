@@ -175,7 +175,7 @@ function createJobElement(job) {
   jobElement.innerHTML = `
   <div class="job-preview">
     <div class="job-info">
-      <div class="flex flex-row w-100 space-between v-center gap-03 margin-06-bottom">
+      <div class="flex flex-row w-100 margin-1-bottom space-between v-center gap-03 margin-06-bottom">
       <div class="flex flex-row gap-06">
         ${
   job.company_logo
@@ -192,7 +192,7 @@ function createJobElement(job) {
       📍 ${formatLocation(job.location).trim().substring(0, 20)}
           </div>
   </div>
-  <div class="job-tags">
+  <div class="job-tags margin-06-bottom">
     ${tagsHTML}
   </div>
   <div class="flex flex-row gap-06 wrap w-100 mini-text third-text v-center">
@@ -468,7 +468,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
                           <span class="material-symbols-outlined">star</span>
                           <span class="sub-text">Favorite</span>
                         </button>
-                      </div>
+                      </div
                     `
     : ''
 }
@@ -488,6 +488,20 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         <button class="no-bg no-border" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');">
           <span class="material-symbols-outlined">share</span>
         </button>
+    </div>
+    <div>
+         ${
+  userIsLoggedIn
+    ? `
+                                      <div class="resume-button">
+          <a href="/api/create-resume/${job.id}" class="grow-button bordered-button-normal margin-h-auto">
+            <span class="material-symbols-outlined">description</span>
+            <span class="sub-text">Get Resume</span>
+          </a>
+        </div>
+        `
+    : ''
+}
     </div>
   </div>
 </div>

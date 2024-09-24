@@ -86,7 +86,6 @@ li.notification-item.unread {
 .notification-item {
     border-bottom: 1px solid var(--border-color);
     background-color: var(--light-mode-main-color);
-    padding: .35rem .55rem;
 }
 
 .notification-item:last-child {
@@ -112,10 +111,6 @@ div .notification-type-icon {
 
 .time-flair {
     font-size: .75rem;
-}
-
-.clear-btn {
-    margin-left: auto;
 }
 
 .no-notifications {

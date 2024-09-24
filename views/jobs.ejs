@@ -69,25 +69,38 @@
           <input type="text" id="job-search-input" class="job-posting-search-input" placeholder="Search jobs & companies" />
         </div>
 
-        <div class="dropdown" tabindex="0">
-          <button class="dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
-            Experience Level
-            <span class="arrow">&#9662;</span>
-          </button>
-
-          <div class="dropdown-content">
-            <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="Internship" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Internship</button>
-            <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="Entry Level" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Entry Level</button>
-            <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="Mid Level" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Junior</button>
-            <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="Senior" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Senior</button>
-            <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="Lead" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Lead</button>
-            <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="Manager" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Manager</button>
-            <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="Director" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Director</button>
-            <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="VP" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">VP</button>
+        <div class="flex flex-row w-100 gap-06">
+          <div class="dropdown" tabindex="0">
+            <button class="dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+              Experience Level
+              <span class="arrow">&#9662;</span>
+            </button>
+        
+            <div class="dropdown-content">
+              <% const experienceLevels = ["Internship", "Entry Level", "Junior", "Senior", "Lead", "Manager", "Director", "VP"]; %>
+              <% experienceLevels.forEach(level => { %>
+              <a class="w-100">
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="<%= level %>" onclick="toggleSelectedFilter(event)"><%= level %></button>
+              </a>
+              <% }); %>
+            </div>
           </div>
-        </div>
-        <div class="quick-options" id="horizontal-scroll">
-
+        
+          <div class="dropdown" tabindex="0">
+            <button class="dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+              Location
+              <span class="arrow">&#9662;</span>
+            </button>
+        
+            <div class="dropdown-content">
+              <% const states = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"]; %>
+              <% states.forEach(state => { %>
+              <a class="w-100">
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="location" data-id="undefined" data-name="<%= state %>" onclick="toggleSelectedFilter(event)"><%= state %></button>
+              </a>
+              <% }); %>
+            </div>
+          </div>
         </div>
         <div class="jobs-selected-filters">
         </div>

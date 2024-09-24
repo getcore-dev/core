@@ -90,6 +90,10 @@
     function createNotificationElement(notification) {
       const li = document.createElement('li');
       li.classList.add('notification-item');
+      li.classList.add('px-4');
+      li.classList.add('py-2');
+
+
       li.classList.add(notification.isRead ? 'read' : 'unread');
 
       const notificationDiv = document.createElement('div');
@@ -99,12 +103,17 @@
       notificationDiv.appendChild(notificationIsReadIndicator);
 
       const notificationReplyButton = document.createElement('button');
-      notificationReplyButton.classList.add('notification-reply-button');
-      notificationReplyButton.classList.add('interact-button');
+      if (notification.isRead) {
+        notificationReplyButton.classList.add('regular-button-normal');
+      } else {
+        notificationReplyButton.classList.add('null-button-normal');
+      }
+      notificationReplyButton.classList.add('mini-button');
+
+      notificationReplyButton.classList.add('ml-auto');
 
       notificationReplyButton.textContent = 'Open';
       notificationReplyButton.onclick = () => handleNotificationClick(notification, li, notificationIsReadIndicator);
-      notificationReplyButtonDiv.appendChild(notificationReplyButton);
 
 
       const notificationAvatarDiv = document.createElement('div');
@@ -116,7 +125,7 @@
       notificationSenderAvatar.onclick = () => window.location.href = `/user/${notification.senderUsername}`;
       notificationSenderAvatar.classList.add('thumbnail');
       notificationSenderAvatar.classList.add('thumbnail-regular');
-      notificationSenderAvatar.classList.add('thumbnail-small');
+      notificationSenderAvatar.classList.add('thumbnail-tiny');
 
 
 
@@ -126,6 +135,7 @@
 
       const notificationTextDiv = createNotificationText(notification);
       notificationDiv.appendChild(notificationTextDiv);
+      notificationDiv.appendChild(notificationReplyButton);
 
       const clearBtn = createClearButton(notification, li);
       notificationDiv.appendChild(clearBtn);
@@ -227,9 +237,7 @@
 
       notificationTextDiv.appendChild(notificationText);
 
-      const flairs = document.createElement('div');
-      flairs.classList.add('flairs');
-      flairs.classList.add('margin-06-bottom');
+      const flairs = document.createElement('span');
 
 
       const notificationTime = document.createElement('span');

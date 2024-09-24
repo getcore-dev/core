@@ -5,37 +5,43 @@ const OpenAI = require('openai');
 const { zodResponseFormat } = require('openai/helpers/zod');
 const { z } = require('zod');
 const openaiKey = process.env.OPENAI_API_KEY;
-
+const { PassThrough } = require('stream');
 
 const resumeFunctions = {
-  createResume(data) { 
+  createResume(data) {
     const doc = new PDFDocument({
       margin: 35,
       size: 'A4',
       font: 'Times-Roman',
     });
-    doc.pipe(fs.createWriteStream('resume.pdf'));
-    
+  
+    const stream = new PassThrough();
+    doc.pipe(stream);
+  
     const maxContentHeight = doc.page.height - doc.page.margins.top - doc.page.margins.bottom;
-    
+  
     // Header
-    doc.fontSize(24).font('Times-Bold').text(data.name, {align: 'center'});
-    doc.fontSize(12).font('Times-Roman').text(`${data.email} | ${data.phone} | ${data.github}`, {align: 'center'});
-           
+    doc.fontSize(24).font('Times-Bold').text(data.name, { align: 'center' });
+    doc.fontSize(12).font('Times-Roman').text(`${data.email} | ${data.phone} | ${data.github}`, { align: 'center' });
+  
     doc.moveDown();
-    
+  
     // Sections in order relevant to engineering
     if (data.professionalSummary) {
       this.addSection(doc, 'Professional Summary', data.professionalSummary, maxContentHeight);
     }
-    if (data.skills)
+    if (data.skills) {
       this.addSection(doc, 'Skills', data.skills, maxContentHeight);
-    if (data.projects.lenth > 0)
+    }
+    if (data.projects.length > 0) {
       this.addSection(doc, 'Projects', data.projects, maxContentHeight);
-    if (data.awards)
+    }
+    if (data.awards) {
       this.addSection(doc, 'Awards', data.awards, maxContentHeight);
-    if (data.publications)
+    }
+    if (data.publications) {
       this.addSection(doc, 'Publications', data.publications, maxContentHeight);
+    }
     this.addSection(doc, 'Experience', data.experience, maxContentHeight);
     this.addSection(doc, 'Education', data.education, maxContentHeight);
     if (data.certifications) {
@@ -44,8 +50,10 @@ const resumeFunctions = {
     if (data.languages) {
       this.addSection(doc, 'Languages', data.languages, maxContentHeight);
     }
-    
+  
     doc.end();
+  
+    return stream;
   },
         
   addSection(doc, title, content, maxContentHeight) {
@@ -423,7 +431,7 @@ const resumeFunctions = {
       throw error;
     }
   },  
-
+  
   async createResumeFromUserDataAndJob(user, job) {
     const experienceSchema = z.object({
       title: z.string(),
@@ -452,26 +460,26 @@ const resumeFunctions = {
       skills: z.array(z.string())
     });
     
-    
     const resumeSchema = z.object({
       name: z.string(),
       email: z.string(),
       phone: z.string(),
       github: z.string(),
       professionalSummary: z.string(),
-      skills: z.array(skillCategorySchema), // Updated line
+      skills: z.array(skillCategorySchema),
       experience: z.array(experienceSchema),
       projects: z.array(projectSchema),
-      education: z.array(educationSchema)
+      education: z.array(educationSchema),
+      awards: z.string().optional(),
+      publications: z.string().optional(),
+      certifications: z.string().optional(),
+      languages: z.string().optional()
     });
-    
-
-    
     
     console.log(user);
     console.log(job);
   
-    const openai = new OpenAI({ apiKey: openaiKey });
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   
     const prompt = `
 Create a resume for a software engineer named ${user.firstname} ${user.lastname} with the following information:
@@ -490,27 +498,13 @@ Your output should include the following sections:
 - experience (title, company, location, date, details) for each job STAR method each bulletpoint or ensure it is a complete sentence that is relevant to the job.
 - projects (title, link, details)
 - education (title, company, location, date, details)
-
-example of skills:
-skills: [
-  {
-    category: 'Programming',
-    skills: ['Python', 'C++', 'SQL', 'JavaScript', 'TypeScript', 'HTML', 'CSS']
-  },
-  {
-    category: 'Libraries/Frameworks',
-    skills: ['Node.js', 'Express.js', 'Angular', 'TensorFlow', 'NumPy', 'PyTest', 'Django']
-  },
-  {
-    category: 'Other Technologies',
-    skills: ['Microsoft Azure', 'MacOS/Unix', 'iOS MDM', 'Atlassian Jira', 'GitHub', 'SQL Server']
-  }
-],
-
+- awards (if present, a string)
+- publications (if present, a string)
+- certifications (if present, a string)
+- languages (if present, a string)
 
 Ensure that the data matches the schema provided.
-
-  `;
+`;
   
     try {
       const completion = await openai.beta.chat.completions.parse({
@@ -526,7 +520,7 @@ Ensure that the data matches the schema provided.
       });
   
       const message = completion.choices[0]?.message;
-      const parsedData = resumeSchema.parse(message.parsed);
+      const parsedData = resumeSchema.parse(JSON.parse(message.content));
       console.log(parsedData);
       return parsedData;
     } catch (error) {

@@ -1504,7 +1504,7 @@ button.see-more {
   .post {
     background-color: var(--light-mode-main-color);
     border-radius: 7px;
-    margin: .4rem .5rem;
+    margin: 1rem .5rem;
     margin-top: 0;
     padding: .65rem .7rem;
     border: 0;

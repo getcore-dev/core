@@ -40,11 +40,6 @@ main {
   cursor: pointer;
 }
 
-
-.comment-form {
-  margin: 0;
-}
-
 body {
   font-family: var(--font-family);
   background-color: var(--background-color);
@@ -1413,12 +1408,6 @@ p.preview-description {
   color: var(--light-mode-secondary-text-color);
 }
 
-
-.see-more {
-  text-align: center;
-  padding: .5rem;
-}
-
 .discussion-link {
   display: flex;
   background: var(--light-mode-body-color);
@@ -2131,10 +2120,6 @@ div.post-information {
     font-size: .825rem;
   }
 
-
-  .comment-form {
-    margin-bottom: 10px;
-  }
 
   .comments-section h3 {
     font-size: .85rem;

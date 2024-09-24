@@ -308,7 +308,7 @@
         const communityHeader = document.createElement('div');
         communityHeader.className = 'community-header posting-header flex flex-row w-100';
         communityHeader.innerHTML = `
-      <div class="flex flex-row wrap w-100 gap-06 space-between" style="position:relative;">
+      <div class="flex flex-row wrap w-100 gap-06 space-between margin-1-bottom" style="position:relative;">
 
 <!-- Dropdown Menu Container -->
 <div class="dropdown" tabindex="0">
@@ -330,7 +330,7 @@
 
 
         ${loggedIn ? `
-          <button class="submit-button-normal mini-button" id="post-button" onclick="window.location.href='${communityId ? `/networks/${community.shortname}/create` : '/create'}'">
+          <button class="main-button-normal mini-button" id="post-button" onclick="window.location.href='${communityId ? `/networks/${community.shortname}/create` : '/create'}'">
             <span class="material-symbols-outlined">add</span> Create Post
           </button>
         ` : ''}
@@ -362,10 +362,10 @@
               `<div class="avatar-img-container"><img src="${post.avatar}" alt="${post.username}" class="thumbnail thumbnail-regular thumbnail-tiny"></div>` :
               `<div class="w-8 h-8 rounded ${networkIconColor} flex items-center justify-center text-white font-bold">
             ${post.firstname[0].toUpperCase()}${post.lastname[0].toUpperCase()}
-          </div>`;
+            </div>`;
 
             postDiv.innerHTML = `
-          <div class="flex items-start margin-06-bottom">
+            <div class="flex items-start margin-06-bottom">
             ${avatarHtml}
 
             <div class="ml-3 flex flex-col flex-grow items-start" style="gap: 0;">
@@ -376,30 +376,30 @@
                                         <div class="follow-btn-container">  
             </div>
             </div>
-              <p class="mini-text">
-              ${post.job_title ? post.job_title : ''}
+              <p class="mini-text secondary-text">
+              ${post.job_title ? post.job_title : '@' + post.username}
               </p>
               </div>
               <div class="flex flex-row gap-06 v-center">
-                          <span class="text-tag simple-tag">
-                          <p class="mini-text">
+                          <span class="text-tag simple-tag px-2 py-2">
+                          <p class="mini-text bold">
               /${post.community_shortname}
               </p>
             </span>
             </div>
               </div>
             </div>
-          </div>
+            </div>
             <div class="flex flex-row gap-03 v-center margin-06-bottom wrap w-100">
               <p class="sub-text">${post.title}</p>
                             <span class="third-text mini-text"">
                 ${formatDate(post.created_at)}
               </span>
               </div>
-          <p class="description mini-text secondary-text margin-1-bottom">${truncateContent(post.content, 150)}</p>
+            <p class="description mini-text secondary-text margin-1-bottom">${truncateContent(post.content, 150)}</p>
 
-          <div class="flex post-flairs-container text-sm text-gray-500 justify-between">
-            <div class="mini-text flex items-center space-x-4 flex-grow gap-06">
+            <div class="flex post-flairs-container text-sm text-gray-500 justify-between">
+            <div class="mini-text flex items-center space-x-4 flex-grow gap-1">
               <span class="text-tag mini-text">
                 <span class="material-symbols-outlined" style="font-size: .8rem;">favorite</span>
                 ${post.loveCount + post.likeCount + post.dislikeCount + post.curiousCount}
@@ -413,8 +413,8 @@
                 ${post.share_count || 0}
               </span>
             </div>
-          </div>
-        `;
+           </div>
+            `;
 
             // Append the follow button if the user is logged in and not the post owner
             if (loggedIn && user.id !== post.user_id) {

@@ -798,7 +798,7 @@ if (remainingSkillsCount > 0) {
 jobElement.innerHTML = `
 <div class="job-preview">
   <div class="job-info">
-    <div class="flex flex-row w-100 space-between v-center gap-03">
+    <div class="flex flex-row w-100 space-between v-center margin-06-bottom gap-03">
     <div class="flex flex-row gap-06">
       ${
     job.company_logo
@@ -814,7 +814,7 @@ jobElement.innerHTML = `
         📍 ${formatLocation(job.location).trim().substring(0, 25)}
       </div>
     </div>
-    <div class="job-tags">
+    <div class="job-tags margin-06-bottom">
       ${tagsHTML}
     </div>
     <div class="job-details mini-text">

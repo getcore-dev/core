@@ -283,7 +283,7 @@ function createJobElement(job) {
       📍 ${formatLocation(job.location).trim()}
     </div>
   </div>
-  <div class="job-tags">
+  <div class="job-tags margin-06-bottom">
     ${tagsHTML}
   </div>
   <div class="flex flex-row gap-03 wrap w-100 mini-text third-text v-center">

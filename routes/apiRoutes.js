@@ -758,7 +758,7 @@ router.get('/create-resume/:jobId', checkAuthenticated, async (req, res) => {
   try {
     const user = req.user;
     if (!user) {
-      return res.status(401).json({ message: 'User not authenticated' });
+      return res.status(401).send('User not authenticated');
     }
 
     const fullUser = await userQueries.findById(user.id);
@@ -769,15 +769,32 @@ router.get('/create-resume/:jobId', checkAuthenticated, async (req, res) => {
     fullUser.jobExperience = jobExperience;
     fullUser.educationExperience = educationExperience;
 
+    // Generate the resume data
     const resumeData = await resumeFunctions.createResumeFromUserDataAndJob(fullUser, jobPosting);
+    
+    // Create the PDF
+    const pdfStream = resumeFunctions.createResume(resumeData);
 
-    jobQueries.createResume(resumeData);
+    // Convert stream to buffer
+    const chunks = [];
+    pdfStream.on('data', (chunk) => chunks.push(chunk));
+    pdfStream.on('end', () => {
+      const pdfBuffer = Buffer.concat(chunks);
+
+      // Send the resume as a downloadable PDF file
+      res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'attachment; filename="resume.pdf"',
+      });
+      res.send(pdfBuffer);
+    });
 
   } catch (err) {
     console.error('Error creating resume:', err);
-    res.status(500).send('Error creating resume');
+    res.status(500).send('Error creating resume: ' + err.message);
   }
 });
+
 
 router.post('/read-resume', checkAuthenticated, upload.single('resume'), async (req, res) => {
   try {

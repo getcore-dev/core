@@ -194,11 +194,6 @@ div.interact-buttons {
     margin-bottom: 6px;
 }
 
-/* Comment form */
-.comment-form {
-    margin: 0;
-}
-
 .comment-container {
     display: flex;
     flex-direction: column;
@@ -277,11 +272,6 @@ div.interact-buttons {
 
     .comment-body {
         font-size: .825rem;
-    }
-
-
-    .comment-form {
-        margin-bottom: 10px;
     }
 
     .comments-section h3 {

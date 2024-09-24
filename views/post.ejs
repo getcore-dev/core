@@ -458,7 +458,7 @@
                         totalReplies = countAllReplies(post.comments);
                       %><%= String(totalReplies).trim() %> Comment<% if (totalReplies !== 1) { %>s<% } %>
             </div>
-            <button class="null-button-normal">Sort</button>
+            <button class="dropdown-button px-4 py-2">Sort</button>
           </div>
           <% if (post.isLocked) { %>
           <div class="caution-messages">
@@ -468,7 +468,7 @@
 
           <% let curUser = user; %>
           <% if (curUser) { %>
-          <div class="comment-form">
+          <div class="comment-form margin-1-bottom">
             <form action="/posts/<%= post.id %>/comments" method="POST">
               <textarea id="comment-form-textarea" name="comment"></textarea>
               <div class="button-container" style="display: none;">
@@ -774,7 +774,6 @@
         </div>
         <% } %>
         <% if (similarPosts.length > 0) { %>
-
         <div class="similar-posts">
           <h3 class="sub-text margin-06-bottom" id="secondary-text">Explore Posts</h3>
           <% similarPosts.forEach(similarPost => { %>
@@ -924,6 +923,102 @@
   </main>
 
   <script>
+    function createPosts(posts, user, loggedIn) {
+      const postsContainer = document.querySelector('.similar-posts');
+
+
+      posts.forEach(post => {
+        const postDiv = document.createElement('div');
+        postDiv.className = 'post bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-200';
+        postDiv.onclick = () => window.location.href = '/posts/' + post.id;
+
+        const networkIconColor = post.community_color;
+
+        const avatarHtml = post.avatar ?
+          `<div class="avatar-img-container"><img src="${post.avatar}" alt="${post.username}" class="thumbnail thumbnail-regular thumbnail-tiny"></div>` :
+          `<div class="w-8 h-8 rounded ${networkIconColor} flex items-center justify-center text-white font-bold">
+            ${post.firstname[0].toUpperCase()}${post.lastname[0].toUpperCase()}
+            </div>`;
+
+        postDiv.innerHTML = `
+            <div class="flex items-start margin-06-bottom">
+            ${avatarHtml}
+
+            <div class="ml-3 flex flex-col flex-grow items-start" style="gap: 0;">
+              <div class="flex flex-row v-center w-100 space-between">
+              <div class="flex flex-col start">
+              <div class="flex flex-row gap-06 v-center">
+              <p class="sub-text bold">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username} </p>
+                                        <div class="follow-btn-container">  
+            </div>
+            </div>
+              <p class="mini-text secondary-text">
+              ${post.job_title ? post.job_title : '@' + post.username}
+              </p>
+              </div>
+              <div class="flex flex-row gap-06 v-center">
+                          <span class="text-tag simple-tag px-2 py-2">
+                          <p class="mini-text bold">
+              /${post.community_shortname}
+              </p>
+            </span>
+            </div>
+              </div>
+            </div>
+            </div>
+            <div class="flex flex-row gap-03 v-center margin-06-bottom wrap w-100">
+              <p class="sub-text">${post.title}</p>
+                            <span class="third-text mini-text"">
+                ${formatDate(post.created_at)}
+              </span>
+              </div>
+            <p class="description mini-text secondary-text margin-1-bottom">${truncateContent(post.content, 150)}</p>
+
+            <div class="flex post-flairs-container text-sm text-gray-500 justify-between">
+            <div class="mini-text flex items-center space-x-4 flex-grow gap-1">
+              <span class="text-tag mini-text">
+                <span class="material-symbols-outlined" style="font-size: .8rem;">favorite</span>
+                ${post.loveCount + post.likeCount + post.dislikeCount + post.curiousCount}
+              </span>
+              <span class="text-tag mini-text">
+                <span class="material-symbols-outlined" style="font-size: .8rem;">chat_bubble</span>
+                ${post.comment_count}
+              </span>
+              <span class="text-tag mini-text">
+                <span class="material-symbols-outlined" style="font-size: .8rem;">share</span>
+                ${post.share_count || 0}
+              </span>
+            </div>
+           </div>
+            `;
+
+        // Append the follow button if the user is logged in and not the post owner
+        if (loggedIn && user.id !== post.user_id) {
+          const followButton = document.createElement('button');
+          followButton.className = post.is_following ? 'no-bg no-border clickable mini-text no-padding' : 'no-bg no-border no-padding mini-text no-padding';
+          if (post.is_following) {
+            followButton.classList.add('active');
+          }
+          followButton.innerHTML = post.is_following ? '<span class="material-symbols-outlined">person_remove</span> Remove' : '<span class="material-symbols-outlined">person_add</span> Connect';
+          console.log(post.user_id, user.id);
+
+          followButton.onclick = (e) => {
+            e.stopPropagation(); // Prevent the post click event
+            toggleFollow(post.user_id, followButton);
+          };
+
+          // Append the button next to the username
+          const usernameElement = postDiv.querySelector('.follow-btn-container');
+          if (usernameElement) {
+            usernameElement.appendChild(followButton);
+          }
+        }
+
+        postsContainer.appendChild(postDiv);
+      });
+
+      return postsContainer;
+    }
     $(document).ready(function () {
       $('[id^=delete-comment-form-]').submit(function (e) {
         e.preventDefault();
