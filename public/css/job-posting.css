@@ -53,7 +53,7 @@ main {
 }
 
 .card-header {
-  font-weight: 600;
+
   font-size: 14px;
   color: #65676B;
   margin-bottom: 12px;
@@ -147,13 +147,6 @@ img.company-logo {
   max-height: 55px !important;
 }
 
-.company-location,
-.company-size,
-.company-industry {
-  font-size: 0.825rem;
-  color: var(--light-mode-secondary-text-color);
-}
-
 .company-information {
   display: flex;
   flex-direction: column;
@@ -165,7 +158,6 @@ ul.locations {
   list-style: none;
   margin: 0;
   line-height: 1.5;
-  font-size: .875rem;
 }
 
 .job-benefits ul li,
@@ -272,7 +264,7 @@ div.job-info-flairs span.material-symbols-outlined {
 
 
 .interact-buttons .material-symbols-outlined {
-  font-size: .95rem;
+  font-size: 1.25rem;
   vertical-align: -2px;
   padding-right: .6rem;
 }
@@ -308,7 +300,7 @@ div.similar-job h4 {
 .similar-jobs h4,
 .similar-company-jobs h4 {
   margin: .8rem 0;
-  font-weight: 700;
+
   margin-top: 1.35rem;
 }
 
@@ -376,7 +368,6 @@ ul.locations {
   background-color: var(--light-mode-body-color);
   padding: 5px 10px;
   border-radius: 7px;
-  font-size: 0.9em !important;
 }
 
 .interact-buttons {

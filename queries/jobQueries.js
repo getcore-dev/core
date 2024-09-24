@@ -1918,17 +1918,19 @@ ORDER BY jp.postedDate DESC
   getCompanyIdByName: async (name) => {
     try {
     // Normalize the input name
-      const normalizedName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const normalizedName = name.toLowerCase().replace(/[^a-z0-9&]/g, '');
     
       // First, try to find an exact match
       const exactMatchResult = await sql.query`
-      SELECT TOP 1 c.id, c.name, c.logo, c.location, c.description, c.industry, c.size, c.stock_symbol, c.founded,
-             COUNT(jp.id) as job_count
-      FROM companies c
-      LEFT JOIN JobPostings jp ON c.id = jp.company_id
-      WHERE LOWER(REPLACE(c.name, ' ', '')) = ${normalizedName}
-      GROUP BY c.id, c.name, c.logo, c.location, c.description, c.industry, c.size, c.stock_symbol, c.founded
-      ORDER BY job_count DESC
+SELECT TOP 1 c.id, c.name, c.logo, c.location, c.description, c.industry, c.size, c.stock_symbol, c.founded,
+       COUNT(jp.id) as job_count
+FROM companies c
+LEFT JOIN JobPostings jp ON c.id = jp.company_id
+WHERE
+    dbo.NormalizeCompanyName(c.name) = ${normalizedName}
+    OR (dbo.NormalizeCompanyName(c.name) LIKE '%' + ${normalizedName} + '%' AND LEN(${normalizedName}) >= 3)
+GROUP BY c.id, c.name, c.logo, c.location, c.description, c.industry, c.size, c.stock_symbol, c.founded
+ORDER BY job_count DESC
     `;
       if (exactMatchResult.recordset.length > 0) {
         return exactMatchResult.recordset[0];

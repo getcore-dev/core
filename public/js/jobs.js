@@ -714,7 +714,9 @@ function restoreUIState() {
           addToSelectedFilters(type, id, name, logo);
         } else if (type === 'job-levels') {
        const button = document.querySelector(`button[data-type="job-levels"][data-name="${filter}"]`);
-        button.className = 'regular-button-normal';
+        button.className = 'quick-option-btn clickable no-bg no-border w-100 mini-text';
+        const dropdown = document.querySelector('.experience-dropdown');
+        dropdown.innerHTML = filter + '<span class="arrow">&#9662;</span>';
         } else {
           addToSelectedFilters(type, filter, filter);
         }
@@ -759,7 +761,7 @@ const sortedTags = tagsArray.sort((a, b) => {
   if (!state.filters.skills.has(a.toLowerCase()) && state.filters.skills.has(b.toLowerCase())) return 1;
   return a.localeCompare(b, undefined, { sensitivity: 'base' });
 });
-const displayedTags = sortedTags.slice(0, 6);
+const displayedTags = sortedTags.slice(0, 3);
 
 const skillsArray = Array.from(state.filters.skills).map(skill => skill.trim().toLowerCase());
 
@@ -803,9 +805,9 @@ jobElement.innerHTML = `
       ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="${job.company_name}" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
       : ''
   }
-      <div class="flex flex-col">
-        <a href="/jobs/${job.id}"><h3 class="job-title sub-text">${job.title}</h3></a>
-        <p class="company-name">${job.company_name}</p>
+      <div class="flex flex-col margin-06-bottom">
+              <a class="company-name secondary-text sub-text" href="/jobs/company/${job.company_name}">${job.company_name}</a>
+        <a href="/jobs/${job.id}"><h3 class="job-title main-text">${job.title}</h3></a>
       </div>
       </div>
       <div class="location-badge">
@@ -1041,15 +1043,18 @@ function toggleSelectedFilter(event) {
 
   const isAlreadySelected = isFilterSelected(type, id, name);
   if (isAlreadySelected) {
-    event.target.className = 'null-button-normal';
+    event.target.className = 'quick-option-btn no-bg no-border w-100 mini-text';
     updateState(type, id, name, logo, true);
   } else {
     clearSelectedFilters(type); // Clear previously selected filters
     const buttons = document.querySelectorAll(`[data-type="${type}"]`);
     buttons.forEach(button => {
-      button.className = 'null-button-normal';
+      button.className = 'quick-option-btn no-bg no-border w-100 mini-text';
     });
-    event.target.className = 'regular-button-normal';
+    event.target.className = 'quick-option-btn clickable no-bg no-border w-100 mini-text';
+    // set the dropdown to the selected value
+    const dropdown = document.querySelector('.experience-dropdown');
+    dropdown.innerHTML = name + '<span class="arrow">&#9662;</span>';
     handleResultClick(event);
     updateState(type, id, name, logo);
   }

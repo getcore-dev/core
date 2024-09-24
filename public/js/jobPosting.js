@@ -175,7 +175,7 @@ function createJobElement(job) {
   jobElement.innerHTML = `
   <div class="job-preview">
     <div class="job-info">
-      <div class="job-header gap-03">
+      <div class="flex flex-row w-100 space-between v-center gap-03 margin-06-bottom">
       <div class="flex flex-row gap-06">
         ${
   job.company_logo
@@ -183,8 +183,9 @@ function createJobElement(job) {
     : ''
 }
     <div class="flex flex-col">
+          <p class="company-name">${job.company_name}</p>
+
       <a href="/jobs/${job.id}"><h3 class="job-title sub-text">${job.title}</h3></a>
-      <p class="company-name">${job.company_name}</p>
     </div>
     </div>
     <div class="location-badge">
@@ -194,16 +195,16 @@ function createJobElement(job) {
   <div class="job-tags">
     ${tagsHTML}
   </div>
-  <div class="job-posting-details">
-    <span class="job-posting-detail applicants">
+  <div class="flex flex-row gap-06 wrap w-100 mini-text third-text v-center">
+    <span class="job-posting-detail applicants flex v-center">
       <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
       ${job.applicants ? `${job.applicants} applicants` : '0 applicants'}
     </span>
-    <span class="job-posting-detail post-date">
+    <span class="job-posting-detail post-date flex v-center">
       <svg class="icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
       <time>${formatRelativeDate(job.postedDate)}</time>
     </span>
-    <span class="job-posting-detail experience-level">
+    <span class="job-posting-detail flex v-center experience-level">
       <svg class="icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
       ${
   job.experienceLevel === 'Mid Level'
@@ -371,7 +372,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     : ''
 }
 
-      <div class="company-info margin-03-bottom">
+      <div class="company-info margin-1-bottom">
         ${
   job.company_logo
     ? `
@@ -381,12 +382,13 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 }
         <div class="company-details">
       <div class="company-information">
+            <p class="third-text mini-text">
+            <a class="secondary-text bold link sub-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
+            </p>
           <h3 class="company-name main-text margin-03-bottom">
         ${job.title}
       </h3>
-      <p class="third-text mini-text">
-            <a class="secondary-text bold link sub-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
-            </p>
+
       </div>
       
         </div>
@@ -450,7 +452,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         ${
   !isOlderThan30Days(job)
     ? `<div class="apply-button-container flex">
-                <button class="main-button-normal margin-h-auto grow-button" onclick="applyForJob(event, '${job.id}', '${job.link}')">
+                <button class="submit-button-normal margin-h-auto grow-button" onclick="applyForJob(event, '${job.id}', '${job.link}')">
                   <span class="material-symbols-outlined">work</span><span class="sub-text">Apply </span><span class="number-display">
                   ${job.applicants ? job.applicants : 0}
                   </span>
@@ -563,8 +565,8 @@ ${
   formattedBenefits
     ? `
 <div class="job-benefits">
-  <h4 >Job Benefits</h4>
-  <ul>
+  <h4 class="main-text">Job Benefits</h4>
+  <ul class="sub-text">
     ${formattedBenefits}
   </ul>
 </div>

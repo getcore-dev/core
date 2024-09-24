@@ -78,13 +78,13 @@
     <div class="followers">
       <% followers.forEach((follower) => { %>
       <div class="follower" onclick="window.location.href='/user/<%= follower.username %>'">
-        <img class="thumbnail thumbnail-tiny" src="<%= follower.avatar %>" alt="<%= follower.username %>" />
+        <img class="thumbnail thumbnail-regular thumbnail-tiny" src="<%= follower.avatar %>" alt="<%= follower.username %>" />
         <div class="follower-info">
-          <h3>
+          <p class="main-text">
             <%= follower.firstname %>
             <%= follower.lastname %>
-          </h3>
-          <p id="secondary-text">
+          </p>
+          <p class="sub-text secondary-textx">
             @<%= follower.username.toLowerCase() %>
           </p>
         </div>

@@ -309,12 +309,26 @@
         communityHeader.className = 'community-header posting-header flex flex-row w-100';
         communityHeader.innerHTML = `
       <div class="flex flex-row wrap w-100 gap-06 space-between" style="position:relative;">
-        <span class="selector">
-          <a class="selector-button mini-text secondary-text selected" onclick="filterPosts('trending')"><span>Trending</span></a>
-          <a class="selector-button mini-text secondary-text" onclick="filterPosts('new')"><span>New</span></a>
-          <a class="selector-button mini-text secondary-text" onclick="filterPosts('top')"><span>Top</span></a>
-          <a class="selector-button mini-text secondary-text" onclick="filterPosts('explore')"><span>Explore</span></a>
-        </span>
+
+<!-- Dropdown Menu Container -->
+<div class="dropdown">
+  <!-- Dropdown Button -->
+  <button class="dropdown-button px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+    Trending
+    <span class="arrow">&#9662;</span> <!-- Down Arrow Indicator -->
+  </button>
+  
+  <!-- Dropdown Content -->
+  <div class="dropdown-content">
+    <a href="#" onclick="filterPosts('trending')">Trending</a>
+    <a href="#" onclick="filterPosts('new')">New</a>
+    <a href="#" onclick="filterPosts('top')">Top</a>
+    <a href="#" onclick="filterPosts('explore')">Explore</a>
+  </div>
+</div>
+
+
+
         ${loggedIn ? `
           <button class="submit-button-normal mini-button" id="post-button" onclick="window.location.href='${communityId ? `/networks/${community.shortname}/create` : '/create'}'">
             <span class="material-symbols-outlined">add</span> Create Post
@@ -1029,6 +1043,10 @@
           link.classList.remove('selected');
         }
       });
+
+      // update button text
+      const dropdownButton = document.querySelector('.dropdown-button');
+      dropdownButton.innerHTML = filter.charAt(0).toUpperCase() + filter.slice(1) + ' ' + '<span class="arrow">&#9662;</span>';
     }
     document.addEventListener("DOMContentLoaded", () => {
       const postsContainer = document.getElementById('posts-container');

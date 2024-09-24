@@ -153,46 +153,46 @@
               </div>
 
             </div>
-          </div>
-          <div class="flex flex-col gap-06">
-            <div class="edit-controls-and-follow-button">
-              <% if (user) { %>
-              <% if (otheruser.username === user.username) { %>
-              <button class="regular-button-normal" id="edit-button" onclick="window.location.href='/edit-profile'">
-                <span class="material-symbols-outlined">
-                  edit
-                </span>
-                Edit
-              </button>
-              <% } else { %>
-              <button class="<%= isFollowing ? 'cancel-button-normal' : 'submit-button-normal' %>" id="followButton">
-                <%- isFollowing ? '<span class="material-symbols-outlined">person_remove</span> Unfollow' : '<span class="material-symbols-outlined">person_add</span> Follow' %>
-              </button>
-              <% } %>
-              <% } %>
+            <div class="flex flex-col gap-06">
+              <div class="edit-controls-and-follow-button">
+                <% if (user) { %>
+                <% if (otheruser.username === user.username) { %>
+                <button class="regular-button-normal" id="edit-button" onclick="window.location.href='/edit-profile'">
+                  <span class="material-symbols-outlined">
+                    edit
+                  </span>
+                  Edit
+                </button>
+                <% } else { %>
+                <button class="<%= isFollowing ? 'cancel-button-normal' : 'submit-button-normal' %>" id="followButton">
+                  <%- isFollowing ? '<span class="material-symbols-outlined">person_remove</span> Unfollow' : '<span class="material-symbols-outlined">person_add</span> Follow' %>
+                </button>
+                <% } %>
+                <% } %>
 
-              <button class="null-button-normal" onclick="share('User Profile', '', 'https://getcore.dev/user/<%= otheruser.username %>')">
-                <span class="material-symbols-outlined">
-                  share
-                </span>
-                Share
-              </button>
+                <button class="null-button-normal" onclick="share('User Profile', '', 'https://getcore.dev/user/<%= otheruser.username %>')">
+                  <span class="material-symbols-outlined">
+                    share
+                  </span>
+                  Share
+                </button>
+              </div>
+              <% if (user && otheruser.username !== user.username) { %>
+              <% if (user.isAdmin ) { %>
+              <div class="flex flex-row gap-06 space-between">
+                <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-admin" method="POST">
+                  <button class="w-100 special-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.isAdmin ? '<span class="material-symbols-outlined">admin_panel_settings</span> Revoke Admin' : '<span class="material-symbols-outlined">admin_panel_settings</span> Make Admin' %></button>
+                </form>
+                <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-verified" method="POST">
+                  <button class="w-100 submit-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.verified ? '<span class="material-symbols-outlined">check</span> Unverify' : '<span class="material-symbols-outlined">check</span> Verify' %></button>
+                </form>
+                <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-ban" method="POST">
+                  <button class="w-100 cancel-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.isBanned ? '<span class="material-symbols-outlined">block</span> Unban' : '<span class="material-symbols-outlined">block</span> Ban' %></button>
+                </form>
+              </div>
+              <% } %>
+              <% } %>
             </div>
-            <% if (user) { %>
-            <% if (user.isAdmin ) { %>
-            <div class="flex flex-row gap-06 space-between">
-              <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-admin" method="POST">
-                <button class="w-100 special-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.isAdmin ? '<span class="material-symbols-outlined">admin_panel_settings</span> Revoke Admin' : '<span class="material-symbols-outlined">admin_panel_settings</span> Make Admin' %></button>
-              </form>
-              <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-verified" method="POST">
-                <button class="w-100 submit-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.verified ? '<span class="material-symbols-outlined">check</span> Unverify' : '<span class="material-symbols-outlined">check</span> Verify' %></button>
-              </form>
-              <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-ban" method="POST">
-                <button class="w-100 cancel-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.isBanned ? '<span class="material-symbols-outlined">block</span> Unban' : '<span class="material-symbols-outlined">block</span> Ban' %></button>
-              </form>
-            </div>
-            <% } %>
-            <% } %>
           </div>
 
           <% if (otheruser.username != "core") { %>
@@ -208,43 +208,64 @@
           </div>
           <% } %>
           <div class="links-container">
-            <% if (otheruser.link || otheruser.link2 || otheruser.github_url || otheruser.linkedin_url || otheruser.leetcode_url) { %>
+            <% if (otheruser && (otheruser.link || otheruser.link2 || otheruser.github_url || otheruser.linkedin_url || otheruser.leetcode_url)) { %>
             <h4>Links</h4>
             <div class="flex flex-row gap-06 w-100">
               <% if (otheruser.leetcode_url) { %>
-              <a href="https://leetcode.com/<%= otheruser.leetcode_url %>">
-                <button class="null-button-normal"><img src="/src/leetcodeglyph.png" style="width: 16px;border-radius: 0;"></button>
+              <a href="https://leetcode.com/<%= otheruser.leetcode_url %>" target="_blank" rel="noopener noreferrer">
+                <button class="null-button-normal">
+                  <img src="/src/leetcodeglyph.png" alt="LeetCode" style="width: 16px; border-radius: 0;">
+                </button>
               </a>
-              <% } else { %><% } %>
+              <% } %>
+
               <% if (otheruser.linkedin_url) { %>
-              <a href="https://linkedin.com/in/<%= otheruser.linkedin_url %>">
-                <button class="null-button-normal"><img src="/src/linkedin.png" style="width: 16px;border-radius: 0;"></button>
+              <a href="https://linkedin.com/in/<%= otheruser.linkedin_url %>" target="_blank" rel="noopener noreferrer">
+                <button class="null-button-normal">
+                  <img src="/src/linkedin.png" alt="LinkedIn" style="width: 16px; border-radius: 0;">
+                </button>
               </a>
-              <% } else { %><% } %>
+              <% } %>
+
               <% if (otheruser.github_url) { %>
-              <a href="https://github.com//<%= otheruser.github_url %>">
-                <button class="null-button-normal"><img src="/src/github.png" style="background: white;width: 16px;border-radius: 50%;"></button>
+              <a href="https://github.com/<%= otheruser.github_url %>" target="_blank" rel="noopener noreferrer">
+                <button class="null-button-normal">
+                  <img src="/src/github.png" alt="GitHub" style="background: white; width: 16px; border-radius: 50%;">
+                </button>
               </a>
-              <% } else { %><% } %>
+              <% } %>
             </div>
+
             <div class="personal-links flex flex-row wrap gap-06">
+              <% if (otheruser.link) { %>
               <div class="text-tag flex flex-row">
                 <span class="clickable material-symbols-outlined">
                   open_in_new
                 </span>
-                <p id="link-url-display"> <a class="link bold sub-text" href="<%= otheruser.link %>"><%= otheruser.link.startsWith('https://') ? otheruser.link.slice(8) : otheruser.link %></a> </p>
+                <p id="link-url-display">
+                  <a class="link bold sub-text" href="<%= otheruser.link %>" target="_blank" rel="noopener noreferrer">
+                    <%= otheruser.link.startsWith('https://') ? otheruser.link.slice(8) : otheruser.link %>
+                  </a>
+                </p>
               </div>
-              <% } else { %><% } %>
+              <% } %>
+
               <% if (otheruser.link2) { %>
               <div class="text-tag flex flex-row">
                 <span class="clickable material-symbols-outlined">
                   open_in_new
                 </span>
-                <p id="link2-url-display"> <a class="link bold sub-text" href="<%= otheruser.link2 %>"><%= otheruser.link2.startsWith('https://') ? otheruser.link2.slice(8) : otheruser.link2 %></a> </p>
+                <p id="link2-url-display">
+                  <a class="link bold sub-text" href="<%= otheruser.link2 %>" target="_blank" rel="noopener noreferrer">
+                    <%= otheruser.link2.startsWith('https://') ? otheruser.link2.slice(8) : otheruser.link2 %>
+                  </a>
+                </p>
               </div>
-              <% } else { %><% } %>
+              <% } %>
             </div>
+            <% } %>
           </div>
+
           <div class="current-education" style="background:none !important; padding: 0;">
             <div class="current-job-header">
               <h4>Education</h4>

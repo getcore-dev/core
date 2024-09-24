@@ -22,9 +22,7 @@ li.notification-item {
     list-style-type: none;
 }
 
-.notification-text {
-    font-weight: 600;
-}
+.notification-text {}
 
 .notification-text-div {
     display: flex;

@@ -279,7 +279,7 @@ a:visited {
 
 .tag.active {
   color: #209939;
-  font-weight: 600;
+
 }
 
 
@@ -1232,14 +1232,14 @@ a>.menu-item {
   aspect-ratio: 1/1;
   width: auto;
   border-radius: 6px !important;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .thumbnail-rounded {
   aspect-ratio: 1/1;
   width: auto;
   border-radius: 50% !important;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .dropdown {
@@ -1249,7 +1249,7 @@ a>.menu-item {
 
 
 #nb-icon {
-  padding: 9px;
+  padding: 9px !important;
 }
 
 .search-bar {
@@ -1380,8 +1380,8 @@ a>.menu-item {
   }
 
   #nb-icon {
-    font-size: 20px;
-    padding: 7px;
+    font-size: 23px;
+    padding: 7px !important;
   }
 
   #nb-icon:hover {
@@ -1808,8 +1808,8 @@ button:hover {
   font-weight: 500;
   margin: 0;
   border-radius: calc(var(--radius) - 2px);
-  background: #12803629;
-  color: #27944e;
+  background: #128036;
+  color: #deffe9;
   cursor: pointer;
   word-wrap: break-word;
   transition: all 0.3s ease;
@@ -2618,6 +2618,14 @@ details[open] {
     border-color: var(--dark-mode-border-color);
   }
 
+  .avatar-dropdown-item #nb-icon {
+    color: var(--dark-mode-text-color);
+  }
+
+  #nb-icon:hover {
+    background-color: #121212;
+  }
+
   #secondary-text {
     color: var(--dark-mode-secondary-text-color);
   }
@@ -3218,7 +3226,7 @@ input::placeholder {
 
 #com-btn-container .user {
   font-size: 14px;
-  font-weight: 700;
+
   margin: 3px;
 }
 
@@ -3416,6 +3424,10 @@ input::placeholder {
     display: none;
   }
 
+  .job-details-container {
+    border: 0;
+  }
+
   .avatar-dropdown a {
     width: 100%;
     padding: 5px 0;
@@ -3434,9 +3446,7 @@ input::placeholder {
   color: var(--tint-color) !important;
 }
 
-.admin-option {
-  font-weight: 600;
-}
+.admin-option {}
 
 .admin-option.caution {
   color: #b40000 !important;
@@ -3444,4 +3454,138 @@ input::placeholder {
 
 .admin-option.warning {
   color: #dbbd01 !important;
+}
+
+/* Dropdown Container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  font-family: Arial, sans-serif;
+  /* Optional: Customize as needed */
+}
+
+/* Dropdown Button */
+.dropdown-button {
+  background-color: var(--light-mode-body-color);
+  /* Button background */
+  color: #333;
+  /* Button text color */
+  font-size: 16px;
+  border: 1px solid var(--border-color);
+  /* Border for button */
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Button Hover Effect */
+.dropdown-button:hover {
+  background-color: #e0e0e0;
+  border-color: #ccc;
+}
+
+/* Arrow Indicator */
+.dropdown-button .arrow {
+  margin-left: 10px;
+  font-size: 12px;
+  transition: transform 0.3s ease;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  /* Hidden by default */
+  position: absolute;
+  background-color: #ffffff;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  z-index: 1;
+  margin-top: 5px;
+  /* Space between button and dropdown */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Show Dropdown Content When Focused */
+.dropdown:focus-within .dropdown-content {
+  display: flex;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Rotate Arrow When Dropdown is Active */
+.dropdown:focus-within .arrow {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Links */
+.dropdown-content a {
+  color: #333;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+/* Hover Effect for Dropdown Links */
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+/* Responsive Adjustments (Optional) */
+@media screen and (max-width: 600px) {
+  .dropdown-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .dropdown-content {
+    min-width: 100%;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .dropdown-button {
+    background-color: var(--dark-mode-main-color);
+    color: var(--dark-mode-text-color);
+    border: 1px solid var(--dark-mode-border-color);
+  }
+
+  .dropdown-button:hover {
+    background-color: #333;
+    border-color: #555;
+  }
+
+  .dropdown-content {
+    background-color: var(--dark-mode-main-color);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    color: var(--dark-mode-text-color);
+    z-index: 1;
+    margin-top: 5px;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .dropdown-content a {
+    color: var(--dark-mode-text-color);
+  }
+
+  .dropdown-content a:hover {
+    background-color: #333;
+  }
+
+  .dropdown-content button {
+    color: var(--dark-mode-text-color);
+  }
 }

@@ -68,15 +68,25 @@
         <div class="jobs-search-container">
           <input type="text" id="job-search-input" class="job-posting-search-input" placeholder="Search jobs & companies" />
         </div>
-        <div class="quick-options" id="horizontal-scroll">
-          <button class="quick-option-btn null-button-normal mini-text" data-type="job-levels" data-id="undefined" data-name="Internship" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Internships</button>
-          <button class="quick-option-btn null-button-normal mini-text" data-type="job-levels" data-id="undefined" data-name="Entry Level" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">New-Grad</button>
-          <button class="quick-option-btn null-button-normal mini-text" data-type="job-levels" data-id="undefined" data-name="Mid Level" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Junior</button>
-          <button class="quick-option-btn null-button-normal mini-text" data-type="job-levels" data-id="undefined" data-name="Senior" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Senior</button>
-          <button class="quick-option-btn null-button-normal mini-text" data-type="job-levels" data-id="undefined" data-name="Lead" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Lead</button>
-          <button class="quick-option-btn null-button-normal mini-text" data-type="job-levels" data-id="undefined" data-name="Manager" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Manager</button>
-          <button class="quick-option-btn null-button-normal mini-text" data-type="job-levels" data-id="undefined" data-name="Director" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Director</button>
-          <button class="quick-option-btn null-button-normal mini-text" data-type="job-levels" data-id="undefined" data-name="VP" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">VP</button>
+
+        <div class="dropdown">
+          <!-- Dropdown Button -->
+          <button class="dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+            Experience Level
+            <span class="arrow">&#9662;</span>
+          </button>
+
+          <!-- Dropdown Content -->
+          <div class="dropdown-content">
+            <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="Internship" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Internship</button>
+            <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="Entry Level" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Entry Level</button>
+            <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="Mid Level" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Junior</button>
+            <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="Senior" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Senior</button>
+            <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="Lead" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Lead</button>
+            <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="Manager" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Manager</button>
+            <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="Director" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">Director</button>
+            <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="VP" id="all-jobs-btn" onclick="toggleSelectedFilter(event)">VP</button>
+          </div>
         </div>
         <div class="quick-options" id="horizontal-scroll">
 

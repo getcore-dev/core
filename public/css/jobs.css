@@ -457,7 +457,7 @@ div.job-title-location .sub-text {
 
 .job-details {
   display: flex;
-  font-weight: 600;
+
   flex-wrap: wrap;
   gap: .8rem;
   font-size: 14px;
@@ -1098,7 +1098,7 @@ div .material-symbols-outlined:not(:only-child) {
 
   #personalized-job-list {
     margin: .4rem .7rem;
-}
+  }
 
   .job {
     display: flex;

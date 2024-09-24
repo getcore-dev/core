@@ -112,10 +112,14 @@
                       </span>
                       <% } %>
                     </a>
-                    <% if (post.experience_title && post.experience_place) { %>
+                    <% if (post.experience_title) { %>
                     <span class="post-flair mini-text">
                       <%= post.experience_title %>
                     </span>
+                    <% } else { %>
+                    <a class="clickable mini-text" href="/user/<%= post.username %>">
+                      @<%= post.username %>
+                    </a>
                     <% } %>
                   </span>
                 </div>

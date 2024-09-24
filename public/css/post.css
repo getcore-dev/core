@@ -399,9 +399,7 @@ div.interact-buttons {
 }
 
 
-#community-header-text {
-  font-weight: 600;
-}
+#community-header-text {}
 
 #share-button .material-symbols-outlined {
   padding-right: .4rem;

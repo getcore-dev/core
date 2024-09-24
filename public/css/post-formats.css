@@ -51,13 +51,13 @@
 .post-body>h4 {
   font-size: var(--mobile-default-sub-font-size);
   margin-bottom: .9rem;
-  font-weight: 600;
+
 }
 
 .post-body>h5 {
   font-size: 1.25rem;
   margin-bottom: .9rem;
-  font-weight: 700;
+
 }
 
 .post-flair {
