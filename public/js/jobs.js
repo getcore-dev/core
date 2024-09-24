@@ -578,7 +578,7 @@ async function fetchJobPostings() {
       saveStateToLocalStorage();
     } else {
       const noJobsMessage = document.createElement('div');
-      noJobsMessage.classList =  'no-jobs-message flex h-center secondary-text mini-text';
+      noJobsMessage.classList =  'no-jobs-message flex h-center py-4 secondary-text mini-text';
       noJobsMessage.textContent = '🎉 You reached the end of the list';
       elements.jobList.appendChild(noJobsMessage);
       state.hasMoreData = false;
@@ -608,10 +608,6 @@ function renderJobPostings(jobs) {
   elements.jobList.appendChild(fragment);
 
   if (state.jobPostings.length === 0 && elements.jobList.children.length === 0) {
-    const noJobsMessage = document.createElement('div');
-    noJobsMessage.classList.add('no-jobs-message');
-    noJobsMessage.textContent = 'No job postings found matching your criteria.';
-    elements.jobList.appendChild(noJobsMessage);
   } else {
     const existingNoJobsMessage = elements.jobList.querySelector('.no-jobs-message');
     if (existingNoJobsMessage) {

@@ -1105,9 +1105,9 @@
           const favoriteButton = document.querySelector(`button[onclick="favorite('${postId}')"]`);
           if (favoriteButton) {
             if (data.isFavorite) {
-              favoriteButton.innerHTML = '<span class="material-symbols-outlined">heart_minus</span>';
+              favoriteButton.innerHTML = '<span class="material-symbols-outlined">star</span>';
             } else {
-              favoriteButton.innerHTML = '<span class="material-symbols-outlined">favorite</span>';
+              favoriteButton.innerHTML = '<span class="material-symbols-outlined">star</span>';
             }
           }
         })

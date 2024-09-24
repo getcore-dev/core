@@ -432,6 +432,16 @@ const resumeFunctions = {
     }
   },  
   
+  /**
+   * Creates a resume based on user data and a job description.
+   * @param {Object} user - The user data.
+   * @param {Object} job - The job description.
+   * @returns {Object} - The generated resume data.
+   * @throws {Error} - If an error occurs during the OpenAI API call.
+   * @throws {z.ZodError} - If the response data does not match the expected schema.
+   * @async
+   */
+
   async createResumeFromUserDataAndJob(user, job) {
     const experienceSchema = z.object({
       title: z.string(),
@@ -523,7 +533,9 @@ If there are any direct or near direct matches in the job experience that may ma
           },
           { role: 'user', content: prompt },
         ],
-        response_format: zodResponseFormat(resumeSchema, 'resumeSchema')
+        response_format: zodResponseFormat(resumeSchema, 'resumeSchema'),
+        temperature: 0.7,
+        max_tokens: 2000
       });
   
       const message = completion.choices[0]?.message;
@@ -534,7 +546,129 @@ If there are any direct or near direct matches in the job experience that may ma
       console.error('OpenAI API Error:', error.message);
       throw error;
     }
-  }
+  },
+
+  /**
+   * Generates a cover letter based on user and job data.
+   * @param {Object} user - The user data.
+   * @param {Object} job - The job data.
+   * @returns {Stream} - A readable stream of the generated PDF cover letter.
+   */
+  async generateCoverLetter(user, job) {
+    // Define the schema for the cover letter response
+    const coverLetterSchema = z.object({
+      coverLetter: z.string(),
+    });
+  
+    // Initialize OpenAI
+    const openai = new OpenAI({ apiKey: openaiKey });
+  
+    // Craft the prompt for generating the cover letter
+    const prompt = `
+  Create a professional cover letter for the following job application.
+  - YOU MUST NOT INCLUDE ANY BLANK FIELDS OR FIELDS WITH PLACEHOLDER TEXT IN THE COVER LETTER.
+  - DONT INCLUDE ADDRESS OR ANY OTHER IDENTIFIABLE INFORMATION IN THE COVER LETTER.
+  - DONT JUST WRITE SAYING YOU WANT THE JOB, LIST ACCOMPLISHMENTS AND HOW YOU CAN HELP THE COMPANY.
+  - STATE THAT YOURE INTERESTED IN GROWING IN THE COMPANY AND HELPING THEM ACHIEVE THEIR GOALS.
+  **User Information:**
+  Name: ${user.firstname} ${user.lastname}
+  Email: ${user.email}
+  Phone: ${user.phone}
+  LinkedIn: ${user.linkedin}
+  GitHub: ${user.github}
+  
+  **Job Information:**
+  Position: ${job.title}
+  Company: ${job.company}
+  Job Description: ${job.description}
+  
+  **Additional Information:**
+  Todays Date: ${new Date().toLocaleDateString()}
+  full user json:
+  ${user}
+
+  full job json:
+  ${job}
+  
+  The cover letter should:
+  - Address the hiring manager by name if available, otherwise use a generic greeting to the hiring team.
+  - Highlight the user's relevant skills and experiences that match the job description.
+  - Convey enthusiasm for the position and the company.
+  - Be concise, professional, and well-structured.
+  
+  **Output Format:**
+  Provide the cover letter text only, without any additional explanations or formatting.
+  UNDER NO CIRCUMSTANCES SHOULD YOU WRITE THAT YOU ARE AN AI OR THAT YOU ARE NOT HUMAN.
+  ANY MENTION OF AI WILL RESULT IN A REJECTION OF YOUR COVER LETTER.
+  `;
+  
+    try {
+      const completion = await openai.beta.chat.completions.parse({
+        model: 'gpt-4o-mini', 
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a professional assistant that writes cover letters based on user and job information.',
+          },
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+        response_format: zodResponseFormat(coverLetterSchema, 'coverLetterSchema'),
+        temperature: 0.7, // Adjust creativity
+        max_tokens: 1000, // Adjust as needed
+
+      });
+  
+      const coverLetterText = completion.choices[0]?.message?.content.trim();
+  
+      if (!coverLetterText) {
+        throw new Error('Failed to generate cover letter.');
+      }
+  
+      // Validate the response using Zod
+      const validatedData = coverLetterSchema.parse({ coverLetter: coverLetterText });
+  
+      // Create PDF using pdfkit
+      const doc = new PDFDocument({
+        margin: 50,
+        size: 'A4',
+        font: 'Times-Roman',
+      });
+  
+      const stream = new PassThrough();
+      doc.pipe(stream);
+  
+      // Header
+      doc.fontSize(14).font('Times-Bold').text(`${user.firstname} ${user.lastname}`, { align: 'left' });
+      doc.fontSize(12).font('Times-Roman').text(`${user.email}`, { align: 'left' });
+      doc.fontSize(12).font('Times-Roman').text(`${user.phone_number}`, { align: 'left' });
+      doc.fontSize(12).font('Times-Roman').text(`${user.linkedin_url}`, { align: 'left' });
+      doc.fontSize(12).font('Times-Roman').text(`${user.github_url}`, { align: 'left' });
+
+
+      doc.moveDown(2);
+  
+      const coverLetterString = validatedData.coverLetter;
+      console.log('coverLetterString', coverLetterString);
+      const coverLetter = JSON.parse(coverLetterString).coverLetter;
+      console.log('coverLetter', coverLetter);
+
+      // Cover Letter Content
+      doc.fontSize(12).font('Times-Roman').text(coverLetter, {
+        align: 'left',
+        lineGap: 4,
+      });
+  
+      doc.end();
+  
+      return stream;
+    } catch (error) {
+      console.error('Error generating cover letter:', error.message);
+      throw error;
+    }
+  },
   
   
   

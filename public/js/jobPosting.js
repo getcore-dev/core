@@ -463,9 +463,8 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   userIsLoggedIn
     ? `<div class="favorite-button-
                       <div id="favorite-form-${job.id}" class="flex">
-                        <button class="grow-button bordered-button-normal" onclick="favorite('job', ${job.id});" class="margin-h-auto">
-                          <span class="material-symbols-outlined">star</span>
-                          <span class="sub-text">Favorite</span>
+                        <button class="submit-button-normal favorite-action-button" onclick="favorite('job', ${job.id});" class="margin-h-auto">
+                          <span class="material-symbols-outlined no-margin no-padding">star</span>
                         </button>
                       </div
                     `
@@ -477,31 +476,37 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   userIsLoggedIn && userIsAdmin
     ? `
             <div class="delete-button-container">
-              <button class="grow-button no-bg no-border" onclick="window.location.href='/jobs/delete/${job.id}'">
-                <span class="material-symbols-outlined">delete</span>
+              <button class="null-button-normal" onclick="window.location.href='/jobs/delete/${job.id}'">
+                <span class="material-symbols-outlined no-margin no-padding">delete</span>
               </button>
             </div>
           `
     : ''
 }
-        <button class="no-bg no-border" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');">
-          <span class="material-symbols-outlined">share</span>
+        <button class="null-button-normal" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');">
+          <span class="material-symbols-outlined no-margin no-padding">share</span>
         </button>
     </div>
-    <div>
          ${
   userIsLoggedIn && userIsAdmin
     ? `
+      <div class="flex flex-row w-100 gap-06">
         <div class="resume-button">
           <a href="/api/create-resume/${job.id}" class="grow-button bordered-button-normal margin-h-auto">
             <span class="material-symbols-outlined">description</span>
-            <span class="sub-text">Get Resume</span>
+            <span class="sub-text">Resume</span>
           </a>
         </div>
+                <div class="cover-letter-button">
+          <a href="/api/create-cover-letter/${job.id}" class="grow-button bordered-button-normal margin-h-auto">
+            <span class="material-symbols-outlined">description</span>
+            <span class="sub-text">Cover Letter</span>
+          </a>
+        </div>
+      </div>
         `
     : ''
 }
-    </div>
   </div>
 </div>
             <div class="job-details primary-text company-profile-section">
@@ -707,14 +712,14 @@ function checkFavorite(jobId) {
     .then((response) => response.json())
     .then((data) => {
       const favoriteButton = document.querySelector(
-        `#favorite-form-${jobId} button`
+        '.favorite-action-button'
       );
       if (data.isFavorite) {
         favoriteButton.id = 'cancel-button-normal';
-        favoriteButton.innerHTML = data.buttonText + 'Unfavorite';
+        favoriteButton.innerHTML = data.buttonText;
       } else {
-        favoriteButton.id = 'submit-button-normal';
-        favoriteButton.innerHTML = data.buttonText + 'Favorite';
+        favoriteButton.id = 'bordered-button-normal';
+        favoriteButton.innerHTML = data.buttonText;
       }
     })
     .catch((error) => {
@@ -723,6 +728,7 @@ function checkFavorite(jobId) {
 }
 
 function favorite(favoriteType, TypeId) {
+  console.log('Favorite type:', favoriteType);
   const endpoints = {
     job: `/favorites/jobs/${TypeId}`,
     post: `/favorites/posts/${TypeId}`,
@@ -736,7 +742,7 @@ function favorite(favoriteType, TypeId) {
 
   let favoriteButton;
   if (favoriteType === 'job') {
-    favoriteButton = document.querySelector(`#favorite-form-${TypeId} button`);
+    favoriteButton = document.querySelector('.favorite-action-button');
     toggleFavoriteButton(favoriteButton);
   }
 
@@ -777,11 +783,11 @@ function favorite(favoriteType, TypeId) {
 }
 
 function toggleFavoriteButton(button) {
-  if (button.innerHTML === '<span class="material-symbols-outlined">heart_minus</span> Unfavorite') {
+  if (button.innerHTML === '<span class="material-symbols-outlined no-margin no-padding">star</span>') {
     button.id = 'submit-button-normal';
-    button.innerHTML = '<span class="material-symbols-outlined">favorite</span> Favorite';
+    button.innerHTML = '<span class="material-symbols-outlined no-margin no-padding">star</span>';
   } else {
     button.id = 'cancel-button-normal';
-    button.innerHTML = '<span class="material-symbols-outlined">heart_minus</span> Unfavorite';
+    button.innerHTML = '<span class="material-symbols-outlined no-margin no-padding">star</span>';
   }
 }

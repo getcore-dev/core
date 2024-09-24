@@ -796,6 +796,53 @@ router.get('/create-resume/:jobId', checkAuthenticated, async (req, res) => {
 });
 
 
+router.get('/create-cover-letter/:jobId', checkAuthenticated, async (req, res) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      return res.status(401).send('User not authenticated');
+    }
+
+    // Fetch full user data and job data
+    const fullUser = await userQueries.findById(user.id);
+    const jobExperience = await jobQueries.getUserJobExperience(user.id);
+    const educationExperience = await jobQueries.getUserEducationExperience(user.id);
+    const jobPosting = await jobQueries.findById(req.params.jobId);
+
+    // Attach additional data to the user object
+    fullUser.jobExperience = jobExperience;
+    fullUser.educationExperience = educationExperience;
+
+    // Generate the cover letter PDF stream
+    const coverLetterStream = await resumeFunctions.generateCoverLetter(fullUser, jobPosting);
+
+    // Convert stream to buffer
+    const chunks = [];
+    coverLetterStream.on('data', (chunk) => chunks.push(chunk));
+    coverLetterStream.on('end', () => {
+      const pdfBuffer = Buffer.concat(chunks);
+
+      // Send the cover letter as a downloadable PDF file
+      res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'attachment; filename="cover_letter.pdf"',
+      });
+      res.send(pdfBuffer);
+    });
+
+    // Handle stream errors
+    coverLetterStream.on('error', (err) => {
+      console.error('Error generating cover letter stream:', err);
+      res.status(500).send('Error generating cover letter.');
+    });
+
+  } catch (err) {
+    console.error('Error creating cover letter:', err);
+    res.status(500).send('Error creating cover letter: ' + err.message);
+  }
+});
+
+
 router.post('/read-resume', checkAuthenticated, upload.single('resume'), async (req, res) => {
   try {
     console.log('Authenticated user:', req.user);

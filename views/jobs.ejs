@@ -75,7 +75,7 @@
               Experience Level
               <span class="arrow">&#9662;</span>
             </button>
-        
+
             <div class="dropdown-content">
               <% const experienceLevels = ["Internship", "Entry Level", "Junior", "Senior", "Lead", "Manager", "Director", "VP"]; %>
               <% experienceLevels.forEach(level => { %>
@@ -85,13 +85,13 @@
               <% }); %>
             </div>
           </div>
-        
+
           <div class="dropdown" tabindex="0">
             <button class="dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
               Location
               <span class="arrow">&#9662;</span>
             </button>
-        
+
             <div class="dropdown-content">
               <% const states = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"]; %>
               <% states.forEach(state => { %>
@@ -132,12 +132,14 @@
       <div id="personalized-job-list" class="job-list">
       </div>
       <div class="load-more">
-        <button class="load-more-btn regular-button" id="load-more-btn">Load More</button>
-        <div id="loading-indicator">
-          <div class="spinner-container">
-            <div class="spinner"></div>
+        <button class="load-more-btn flex flex-row gap-06 main-button" id="load-more-btn">
+          <div id="loading-indicator">
+            <div class="spinner-container">
+              <div class="spinner"></div>
+            </div>
           </div>
-        </div>
+          <p class="sub-text">Load More</p>
+        </button>
 
       </div>
       <%- include('partials/footer') %>

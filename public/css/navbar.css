@@ -1486,8 +1486,8 @@ a>.menu-item {
   }
 
   .latest-commit-banner {
-    top: 14px;
-    margin-top: 14px;
+    top: calc(var(--mobile-navbar-height) - 2px);
+    margin-top: 0;
     padding: .8rem;
     width: 100%;
   }
@@ -1901,20 +1901,20 @@ div .material-symbols-outlined:not(:only-child) {
 
 
 .spinner {
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid #3498db;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #4c4c4c;
   border-radius: 50%;
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   animation: spin 2s linear infinite;
-  margin: 0 auto;
+  margin: 0;
 }
 
 .spinner-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 50px;
+  height: auto;
 }
 
 @keyframes spin {
@@ -2076,6 +2076,11 @@ hr {
   padding-bottom: 1rem;
 }
 
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
 .selector-button {
   background: transparent;
   border-radius: 6px;
@@ -2141,8 +2146,8 @@ hr {
 #cancel-button-normal,
 .cancel-button,
 .cancel-button-normal {
-  background-color: #cd3a3a1c;
-  color: #ae4444;
+  background-color: #ef4444;
+  color: #fff4f4;
 }
 
 .interact-button {
@@ -2590,8 +2595,8 @@ details[open] {
   }
 
   .spinner {
-    border: 5px solid #121212;
-    border-top: 5px solid #3498db;
+    border: 2px solid #121212;
+    border-top: 2px solid #cbcbcb;
   }
 
   #search-bar-toggle {
@@ -3599,6 +3604,11 @@ input::placeholder {
 @media (prefers-color-scheme: dark) {
   .material-symbols-outlined {
     color: var(--dark-mode-text-color);
+  }
+
+  .main-button .material-symbols-outlined,
+  .main-button-normal .material-symbols-outlined {
+    color: var(--light-mode-text-color);
   }
 
   .dropdown-button {
