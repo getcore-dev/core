@@ -3496,8 +3496,6 @@ input::placeholder {
 
 /* Dropdown Content (Hidden by Default) */
 .dropdown-content {
-  display: none;
-  /* Hidden by default */
   position: absolute;
   background-color: #ffffff;
   min-width: 160px;
@@ -3516,7 +3514,6 @@ input::placeholder {
 
 /* Show Dropdown Content When Focused */
 .dropdown:focus-within .dropdown-content {
-  display: flex;
   opacity: 1;
   visibility: visible;
 }
