@@ -1917,57 +1917,100 @@ ORDER BY jp.postedDate DESC
   },
   getCompanyIdByName: async (name) => {
     try {
-    // Normalize the input name
+      // Normalize the input name
       const normalizedName = name.toLowerCase().replace(/[^a-z0-9&]/g, '');
-    
+  
+      // Define the minimum length for partial matching
+      const MIN_PARTIAL_LENGTH = 3;
+  
       // First, try to find an exact match
       const exactMatchResult = await sql.query`
-SELECT TOP 1 c.id, c.name, c.logo, c.location, c.description, c.industry, c.size, c.stock_symbol, c.founded,
-       COUNT(jp.id) as job_count
-FROM companies c
-LEFT JOIN JobPostings jp ON c.id = jp.company_id
-WHERE
-    dbo.NormalizeCompanyName(c.name) = ${normalizedName}
-    OR (dbo.NormalizeCompanyName(c.name) LIKE '%' + ${normalizedName} + '%' AND LEN(${normalizedName}) >= 3)
-GROUP BY c.id, c.name, c.logo, c.location, c.description, c.industry, c.size, c.stock_symbol, c.founded
-ORDER BY job_count DESC
-    `;
+        SELECT TOP 1 
+          c.id, 
+          c.name, 
+          c.logo, 
+          c.location, 
+          c.description, 
+          c.industry, 
+          c.size, 
+          c.stock_symbol, 
+          c.founded,
+          COUNT(jp.id) as job_count
+        FROM companies c
+        LEFT JOIN JobPostings jp ON c.id = jp.company_id
+        WHERE
+          dbo.NormalizeCompanyName(c.name) = ${normalizedName}
+          OR (
+            dbo.NormalizeCompanyName(c.name) LIKE '%' + ${normalizedName} + '%'
+            AND LEN(${normalizedName}) >= ${MIN_PARTIAL_LENGTH}
+          )
+        GROUP BY 
+          c.id, c.name, c.logo, c.location, 
+          c.description, c.industry, c.size, 
+          c.stock_symbol, c.founded
+        ORDER BY job_count DESC
+      `;
       if (exactMatchResult.recordset.length > 0) {
         return exactMatchResult.recordset[0];
       }
-
+  
       // If no exact match, try partial matches with stricter conditions
       const partialMatchResult = await sql.query`
-      SELECT TOP 5 c.id, c.name, c.logo, c.location, c.description, c.industry, c.size, c.stock_symbol, c.founded,
-             COUNT(jp.id) as job_count,
-             LEN(c.name) as name_length,
-             LEN(${normalizedName}) as input_length
-      FROM companies c
-      LEFT JOIN JobPostings jp ON c.id = jp.company_id
-      WHERE 
-        /* Match if the normalized company name contains the input */
-        LOWER(REPLACE(c.name, ' ', '')) LIKE '%' + ${normalizedName} + '%'
-        /* Or if the input contains the normalized company name, but only if the company name is at least 5 characters long */
-        OR (${normalizedName} LIKE '%' + LOWER(REPLACE(c.name, ' ', '')) + '%' AND LEN(REPLACE(c.name, ' ', '')) >= 5)
-      GROUP BY c.id, c.name, c.logo, c.location, c.description, c.industry, c.size, c.stock_symbol, c.founded
-      HAVING 
-        /* Ensure the match is at least 50% of the longer string's length */
-        (LEN(LOWER(REPLACE(c.name, ' ', ''))) >= 0.5 * CASE WHEN LEN(${normalizedName}) > LEN(LOWER(REPLACE(c.name, ' ', ''))) THEN LEN(${normalizedName}) ELSE LEN(LOWER(REPLACE(c.name, ' ', ''))) END)
-      ORDER BY 
-        CASE 
-          WHEN LOWER(REPLACE(c.name, ' ', '')) = ${normalizedName} THEN 1
-          WHEN LOWER(REPLACE(c.name, ' ', '')) LIKE ${normalizedName} + '%' THEN 2
-          WHEN LOWER(REPLACE(c.name, ' ', '')) LIKE '%' + ${normalizedName} + '%' THEN 3
-          WHEN ${normalizedName} LIKE '%' + LOWER(REPLACE(c.name, ' ', '')) + '%' THEN 4
-          ELSE 5
-        END,
-        COUNT(jp.id) DESC,
-        ABS(LEN(LOWER(REPLACE(c.name, ' ', ''))) - LEN(${normalizedName})) ASC
-    `;
+        SELECT TOP 5 
+          c.id, 
+          c.name, 
+          c.logo, 
+          c.location, 
+          c.description, 
+          c.industry, 
+          c.size, 
+          c.stock_symbol, 
+          c.founded,
+          COUNT(jp.id) as job_count,
+          LEN(c.name) as name_length,
+          LEN(${normalizedName}) as input_length
+        FROM companies c
+        LEFT JOIN JobPostings jp ON c.id = jp.company_id
+        WHERE 
+          (
+            /* Match if the normalized company name contains the input */
+            LOWER(REPLACE(c.name, ' ', '')) LIKE '%' + ${normalizedName} + '%'
+            /* Or if the input contains the normalized company name, 
+               but only if the company name is at least 5 characters long */
+            OR (
+              ${normalizedName} LIKE '%' + LOWER(REPLACE(c.name, ' ', '')) + '%'
+              AND LEN(REPLACE(c.name, ' ', '')) >= 5
+            )
+          )
+          /* Ensure the input name meets the minimum length for partial matching */
+          AND LEN(${normalizedName}) >= ${MIN_PARTIAL_LENGTH}
+        GROUP BY 
+          c.id, c.name, c.logo, c.location, 
+          c.description, c.industry, c.size, 
+          c.stock_symbol, c.founded
+        HAVING 
+          /* Ensure the match is at least 50% of the longer string's length */
+          LEN(LOWER(REPLACE(c.name, ' ', ''))) >= 0.5 * 
+            CASE 
+              WHEN LEN(${normalizedName}) > LEN(LOWER(REPLACE(c.name, ' ', ''))) 
+                THEN LEN(${normalizedName}) 
+              ELSE LEN(LOWER(REPLACE(c.name, ' ', ''))) 
+            END
+        ORDER BY 
+          CASE 
+            WHEN LOWER(REPLACE(c.name, ' ', '')) = ${normalizedName} THEN 1
+            WHEN LOWER(REPLACE(c.name, ' ', '')) LIKE ${normalizedName} + '%' THEN 2
+            WHEN LOWER(REPLACE(c.name, ' ', '')) LIKE '%' + ${normalizedName} + '%' THEN 3
+            WHEN ${normalizedName} LIKE '%' + LOWER(REPLACE(c.name, ' ', '')) + '%' THEN 4
+            ELSE 5
+          END,
+          COUNT(jp.id) DESC,
+          ABS(LEN(LOWER(REPLACE(c.name, ' ', ''))) - LEN(${normalizedName})) ASC
+      `;
       if (partialMatchResult.recordset.length > 0) {
         return partialMatchResult.recordset[0];
       }
-    
+  
       // If still no match, return null
       return null;
     } catch (err) {
@@ -1975,11 +2018,13 @@ ORDER BY job_count DESC
       throw err;
     }
   },
+  
 
   createCompany: async (
     name,
     logo_url,
     location,
+    job_board_url,
     description,
     industry,
     size,
@@ -1988,9 +2033,9 @@ ORDER BY job_count DESC
   ) => {
     try {
       const result = await sql.query`
-        INSERT INTO companies (name, logo, location, description, industry, size, stock_symbol, founded)
+        INSERT INTO companies (name, logo, location, description, job_board_url, industry, size, stock_symbol, founded)
         OUTPUT INSERTED.id
-        VALUES (${name}, ${logo_url}, ${location}, ${description}, ${industry}, ${size}, ${stock_symbol}, ${founded})
+        VALUES (${name}, ${logo_url}, ${location}, ${description}, ${job_board_url}, ${industry}, ${size}, ${stock_symbol}, ${founded})
       `;
       const companyObject = result.recordset[0];
       return companyObject;

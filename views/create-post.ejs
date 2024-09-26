@@ -18,6 +18,120 @@
 
 </head>
 
+<style>
+  details {
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background-color: white;
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    margin-bottom: 0.5rem;
+  }
+
+  details>summary {
+    list-style: none;
+    padding: .45rem .6rem;
+    cursor: pointer;
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    position: relative;
+    font-weight: 500;
+  }
+
+  details>summary::after {
+    content: '▼';
+    position: absolute;
+    right: 1rem;
+    transition: transform 0.5s ease;
+  }
+
+  details[open]>summary::after {
+    transform: rotate(180deg);
+  }
+
+  details>summary::-webkit-details-marker {
+    display: none;
+  }
+
+  details[open]>summary {
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  summary {
+    border-radius: 7px;
+    transition: border-radius 0.3s ease;
+  }
+
+  details[open]>summary {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
+
+
+  details>summary:hover {
+    background-color: var(--hover-color);
+  }
+
+  details p {
+    padding: 1rem;
+    margin: 0;
+  }
+
+  .rules-container {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .rules-container>details {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
+  .rules-container>details:first-child {
+    margin-top: 1rem;
+  }
+
+  .rules-container>details:last-child {
+    margin-bottom: 1rem;
+  }
+
+  details.posting-rules {
+    background-color: var(--background-color);
+    border: none;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  details.posting-rules>summary {
+
+    font-size: 1.1rem;
+  }
+
+  details.posting-rules[open] {
+    padding-bottom: 1rem;
+  }
+
+
+  @media (prefers-color-scheme: dark) {
+
+    summary {
+      background-color: var(--dark-mode-main-color);
+    }
+
+    details {
+      background: var(--dark-mode-body-color);
+      border-color: var(--dark-mode-border-color);
+    }
+
+    details details {
+      background: var(--dark-mode-body-color);
+    }
+
+    details[open]>summary {
+
+      border-color: var(--dark-mode-border-color);
+    }
+  }
+</style>
+
 <body>
   <%- include('partials/navbar', { pagePath: 'home' }) %>
   <main>

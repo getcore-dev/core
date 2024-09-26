@@ -8,7 +8,9 @@ const cheerio = require('cheerio');
 const fs = require('fs').promises;
 const EventEmitter = require('events');
 const path = require('path');
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(StealthPlugin());
 const jobQueries = require('../queries/jobQueries');
 const { title } = require('process');
 const rateLimit = require('axios-rate-limit');
@@ -196,7 +198,7 @@ class JobProcessor extends EventEmitter {
     const containsKeyword = (keywords) => keywords.some(keyword => lowercaseTitle.includes(keyword));
   
     // Check for exact matches or highly specific tech roles
-    if (containsKeyword(['software engineer', 'gameplay animator', 'data center technician', 'desktop support', 'saas administrator', 'character assembly artist', 'environment artist', 'data scientist', 'technical artist', 'engine programmer', 'ui programmer', 'graphic designer', 'systems designer', 'systems engineer', 'full stack developer', 'machine learning engineer', 'devops engineer', 'systems architect'])) {
+    if (containsKeyword(['software engineer', 'tech project manager', 'gameplay animator', 'data center technician', 'desktop support', 'saas administrator', 'character assembly artist', 'environment artist', 'data scientist', 'technical artist', 'engine programmer', 'ui programmer', 'graphic designer', 'systems designer', 'systems engineer', 'full stack developer', 'machine learning engineer', 'devops engineer', 'systems architect'])) {
       return true;
     }
   
@@ -318,6 +320,209 @@ class JobProcessor extends EventEmitter {
     const identifier2 = this.getCompanyIdentifier(url2);
     return identifier1 === identifier2;
   }
+
+  async collectJobLinksFromSimplify() {
+    const simplifyUrl = 'https://raw.githubusercontent.com/SimplifyJobs/Summer2025-Internships/refs/heads/dev/README.md';
+    
+    try {
+      const response = await axios.get(simplifyUrl);
+      const markdownContent = response.data;
+  
+      // Split the content into lines
+      const lines = markdownContent.split('\n');
+  
+      // Find the start of the table by locating the header
+      const tableStartIndex = lines.findIndex(line => line.startsWith('| Company'));
+  
+      if (tableStartIndex === -1) {
+        console.error('Table not found in the markdown content');
+        return [];
+      }
+  
+      // The table headers are at tableStartIndex, the separator is at tableStartIndex +1
+      // The table data starts at tableStartIndex + 2
+      const tableDataLines = lines.slice(tableStartIndex + 2);
+  
+      const jobLinks = [];
+      let currentCompanyName = '';
+      let currentCompanyLink = null;
+  
+      for (const line of tableDataLines) {
+        // Stop processing if the line doesn't start with '|', indicating the end of the table
+        if (!line.startsWith('|')) {
+          break;
+        }
+  
+        // Split the line into columns by '|', trimming whitespace
+        const columns = line.split('|').map(col => col.trim());
+  
+        // Ensure there are enough columns to process
+        // Expected columns: [Empty, Company, Role, Location, Application/Link, Date Posted, ...]
+        if (columns.length < 5) {
+          continue; // Skip lines that don't have enough columns
+        }
+  
+        const companyCell = columns[1];
+        const role = columns[2];
+        const location = columns[3];
+        const applicationLinkCell = columns[4];
+        const datePosted = columns[5] || '';
+  
+        // Check if the row is a main company entry or a sub-entry
+        if (companyCell !== '↳') {
+          // Extract company name and link using regex
+          const companyMatch = /\*\*\[([^\]]+)\]\((https?:\/\/[^\)]+)\)\*\*/.exec(companyCell);
+          if (companyMatch) {
+            currentCompanyName = companyMatch[1];
+            currentCompanyLink = companyMatch[2];
+          } else {
+            // If the company cell doesn't match the expected format, use the raw text
+            currentCompanyName = companyCell;
+            currentCompanyLink = null;
+          }
+        }
+        // If the companyCell is '↳', retain the currentCompanyName and currentCompanyLink
+  
+        // Extract all href URLs from the applicationLinkCell using regex
+        const linkMatches = [...applicationLinkCell.matchAll(/href="(https?:\/\/[^"]+)"/g)].map(m => m[1]);
+  
+        // Assign the extracted links
+        let applyLink = null;
+        let simplifyLink = null;
+        if (linkMatches.length >= 2) {
+          applyLink = linkMatches[0];
+          simplifyLink = linkMatches[1];
+        } else if (linkMatches.length === 1) {
+          applyLink = linkMatches[0];
+        }
+  
+        // Push the extracted job information into the jobLinks array
+        jobLinks.push({
+          companyName: currentCompanyName,
+          companyLink: currentCompanyLink,
+          role,
+          location,
+          applyLink,
+          simplifyLink,
+          datePosted
+        });
+      }
+  
+      console.log(`Found ${jobLinks.length} job links from SimplifyJobs`);
+  
+      await this.processSimplifyJobLinks(jobLinks);
+  
+      return jobLinks;
+      
+    } catch (error) {
+      console.error('Error fetching SimplifyJobs internships:', error);
+      return [];
+    }
+  }
+
+  /*
+  jobLinks = 
+[
+  {
+    companyName: 'Dow Jones',
+    companyLink: 'https://simplify.jobs/c/Dow-Jones',
+    role: 'Summer 2025 Internship – Software Engineer Intern',
+    location: 'Princeton, NJ</br>NYC',
+    applyLink: 'https://dowjones.wd1.myworkdayjobs.com/en-US/Dow_Jones_Career/job/NYC---1211-Ave-of-the-Americas/Summer-2025-Internship---Software-Engineer-Intern_Job_Req_43114?utm_source=Simplify&ref=Simplify',
+    simplifyLink: 'https://simplify.jobs/p/54c64056-7e71-42a1-a119-0abfdfd66fe9?utm_source=GHList',
+    datePosted: 'Sep 17'
+  },
+  {
+    companyName: 'CACI',
+    companyLink: 'https://simplify.jobs/c/CACI',
+    role: 'Cleared Software Engineer Intern - Summer 2025',
+    location: 'Denver, CO</br>Dulles, VA',
+    applyLink: 'https://caci.wd1.myworkdayjobs.com/External/job/US-CO-Denver/Cleared-Software-Engineer-Intern---Summer-2025_301978-1?utm_source=Simplify&ref=Simplify',
+    simplifyLink: 'https://simplify.jobs/p/7ff71059-98f4-4f29-ae65-4134ccec468f?utm_source=GHList',
+    datePosted: 'Sep 17'
+  },
+  ... 572 more items
+]
+  */
+  async processSimplifyJobLinks(jobLinks) {
+    try {
+    // Retrieve all existing company job links from the database
+      const companyJobLinks = await jobQueries.getAllCompanyJobLinks();
+
+      // Iterate over each job link in the provided array
+      for (const jobLink of jobLinks) {
+        try {
+        // Check if the applyLink exists
+          if (!jobLink.applyLink) {
+            console.log(`No apply link found for ${jobLink.companyName} - ${jobLink.role}`);
+            continue; // Skip to the next jobLink
+          }
+
+          // Check if the job link already exists in the database
+          const existingJob = companyJobLinks.find(link => link.link === jobLink.applyLink);
+          if (existingJob) {
+            console.log(`Job posting for ${jobLink.companyName} - ${jobLink.role} already exists in the database`);
+            continue; // Skip to the next jobLink
+          }
+
+          // Process the job link to extract job data
+          const jobData = await this.processJobLink(jobLink.applyLink);
+          console.log('jobData', jobData);
+
+          // If the job is not marked as skipped, add it to the database
+          if (!jobData.skipped) {
+            await jobQueries.createJobPosting(
+              jobData.title ? jobData.title : '',
+              jobData.salary ? jobData.salary : 0,
+              jobData.experience_level ? jobData.experience_level : '',
+              jobData.location ? jobData.location : '',
+              new Date(),
+              jobData.company_id,
+              jobLink.applyLink ? jobLink.applyLink : '',
+              null,
+              jobData.tags ? jobData.tags.split(',') : [],
+              jobData.description ? jobData.description : '',
+              jobData.salary_max ? jobData.salary_max : 0,
+              '1',
+              jobData.skills ? jobData.skills.split(',') : [],
+              jobData.benefits ? jobData.benefits.split(',') : [],
+              jobData.additional_information ? jobData.additional_information : '',
+              jobData.PreferredQualifications ? jobData.PreferredQualifications : '',
+              jobData.MinimumQualifications ? jobData.MinimumQualifications : '',
+              jobData.Responsibilities ? jobData.Responsibilities : '',
+              jobData.Requirements ? jobData.Requirements : '',
+              jobData.NiceToHave ? jobData.NiceToHave : '',
+              jobData.Schedule ? jobData.Schedule : '',
+              jobData.HoursPerWeek ?  jobData.HoursPerWeek : 0,
+              jobData.H1BVisaSponsorship ? jobData.H1BVisaSponsorship : 0,
+              jobData.IsRemote ? jobData.IsRemote : 0,
+              jobData.EqualOpportunityEmployerInfo ? jobData.EqualOpportunityEmployerInfo : '',
+              jobData.Relocation ? jobData.Relocation : 0
+            );
+            console.log(`Added job posting for ${jobData.company_name} - ${jobData.title} with ID ${jobData.company_id}`);
+          } else {
+          // Log the reason for skipping the job posting
+            console.log(`Skipped job posting for ${jobLink.companyName} - ${jobData.reason}`);
+          }
+        } catch (linkError) {
+        // Log any errors that occur while processing the individual jobLink
+          console.error(`Error processing job link for ${jobLink.companyName} - ${jobLink.role}: ${linkError.message}`);
+          // Optionally, you can log the entire error stack for more detailed debugging
+          // console.error(linkError);
+          // Continue with the next jobLink without interrupting the flow
+          continue;
+        }
+      }
+    } catch (error) {
+    // Handle errors that occur while fetching all company job links
+      console.error(`Failed to retrieve company job links: ${error.message}`);
+      // Depending on your application's requirements, you might want to rethrow the error
+      // or handle it in another appropriate way
+      throw error;
+    }
+  }
+
+
 
   async collectJobLinksFromLink(jobBoardUrl) {
     const companyJobBoards = await jobQueries.getAllCompanyJobBoards();
@@ -1031,7 +1236,7 @@ class JobProcessor extends EventEmitter {
     }
 
     if (this.processedLinks.has(url)) {
-      return { alreadyProcessed: true };
+      return { skipped: true, reason: 'Already processed' };
     }
 
     try {
@@ -1116,12 +1321,26 @@ class JobProcessor extends EventEmitter {
         extractedData = await this.useChatGPTAPI(link, textContent);
       }
 
+      const companyId = await this.getOrCreateCompany(
+        extractedData.company_name || '',
+        extractedData.company_description || '',
+        extractedData.company_location || '',
+        extractedData.company_job_board_url || '',
+        extractedData.company_industry || '',
+        extractedData.company_size || '',
+        extractedData.company_stock_symbol || '',
+        extractedData.company_logo || '',
+        extractedData.company_founded || null
+      );
+      extractedData.company_id = companyId;
+
+
       this.updateProgress({ currentAction: 'Saving processed link' });
       await this.saveProcessedLink(url);
 
       if (extractedData.skipped) {
         this.updateProgress({ currentAction: 'Skipped job' });
-        return { skipped: true };
+        return { skipped: true, title: extractedData.title, reason: extractedData.reason };
       }
 
       return extractedData;
@@ -1304,6 +1523,7 @@ class JobProcessor extends EventEmitter {
       company_name: z.string(),
       company_description: z.string(),
       company_location: z.string(),
+      company_job_board_url: z.string(),
       company_industry: z.string(),
       company_size: z.string(),
       company_stock_symbol: z.string(),
@@ -1356,7 +1576,7 @@ class JobProcessor extends EventEmitter {
         return jobPosting;
       } else {
         console.log(`Skipping non-tech job: ${jobPosting.title}`);
-        return { skipped: true, title: jobPosting.title };
+        return { skipped: true, title: jobPosting.title, reason: 'Non-tech job' };
       }
     } catch (error) {
       console.error('OpenAI API Error:', error.message);
@@ -1439,6 +1659,7 @@ class JobProcessor extends EventEmitter {
       - company_name NVARCHAR(50) (as simple as possible and you can tell the company name from the job posting link: ${link})
       - company_description (blank)
       - company_location (blank)
+      - company_job_board_url (the url of the job careers page if you can get it, for example: 'https://careers.micron.com/careers?pid=25250316&domain=micron.com&sort_by=relevance' -> 'https://careers.micron.com/careers')
       - company_industry (blank)
       - company_size (blank)
       - company_stock_symbol (blank)
@@ -1475,6 +1696,7 @@ class JobProcessor extends EventEmitter {
       company_name: data.company_name || '',
       company_description: data.company_description || '',
       company_location: data.company_location || '',
+      company_job_board_url: data.company_job_board_url || '',
       company_industry: data.company_industry || '',
       company_size: data.company_size || '',
       company_stock_symbol: data.company_stock_symbol || '',
@@ -1531,8 +1753,6 @@ class JobProcessor extends EventEmitter {
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
   
     await page.goto(linkedInSearchUrl, { waitUntil: 'networkidle2' });
-    
-    await page.waitForSelector('.base-search-card__info', { timeout: 10000 });
   
     // Function to scroll the page
     const scrollPage = async () => {
@@ -1713,30 +1933,21 @@ class JobProcessor extends EventEmitter {
     const jobTitles = [
       'Software Engineer', 'Data Analyst', 'Web Developer', 'System Architect',
       'Network Security Specialist', 'Database Administrator', 'Mobile App Developer',
-      'Product Manager', 'QA Engineer', 'Java Developer', 'Python Developer',
+      'Project Manager', 'QA Engineer', 'Java Developer', 'Python Developer',
       'JavaScript Developer', 'Game Developer', 'Blockchain Developer',
       'DevOps Engineer', 'Cloud Architect', 'UI/UX Designer', 'Machine Learning Engineer',
       'Full Stack Developer', 'Frontend Developer', 'Backend Developer'
     ];
   
     const stateMappings = {
-      Alabama: 'AL', Alaska: 'AK', Arizona: 'AZ', Arkansas: 'AR', California: 'CA',
-      Colorado: 'CO', Connecticut: 'CT', Delaware: 'DE', Florida: 'FL', Georgia: 'GA',
-      Hawaii: 'HI', Idaho: 'ID', Illinois: 'IL', Indiana: 'IN', Iowa: 'IA',
-      Kansas: 'KS', Kentucky: 'KY', Louisiana: 'LA', Maine: 'ME', Maryland: 'MD',
-      Massachusetts: 'MA', Michigan: 'MI', Minnesota: 'MN', Mississippi: 'MS', Missouri: 'MO',
-      Montana: 'MT', Nebraska: 'NE', Nevada: 'NV', 'New Hampshire': 'NH', 'New Jersey': 'NJ',
-      'New Mexico': 'NM', 'New York': 'NY', 'North Carolina': 'NC', 'North Dakota': 'ND', Ohio: 'OH',
-      Oklahoma: 'OK', Oregon: 'OR', Pennsylvania: 'PA', 'Rhode Island': 'RI', 'South Carolina': 'SC',
-      'South Dakota': 'SD', Tennessee: 'TN', Texas: 'TX', Utah: 'UT', Vermont: 'VT',
-      Virginia: 'VA', Washington: 'WA', 'West Virginia': 'WV', Wisconsin: 'WI', Wyoming: 'WY',
-      'United States': 'US'
+      'United States': 'US', 'California': 'US-CA', 'New York': 'US-NY', 'Texas': 'US-TX',
+      'Florida': 'US-FL', 'Illinois': 'US-IL', 'Pennsylvania': 'US-PA', 'Ohio': 'US-OH',
     };
   
     const getRandomElement = (array) => array[Math.floor(Math.random() * array.length)];
   
     let allJobLinks = [];
-    const batchSize = 500;
+    const batchSize = 250;
     const createdJobs = [];
 
     this.updateProgress({ currentAction: 'Collecting job links' });
@@ -1789,6 +2000,7 @@ class JobProcessor extends EventEmitter {
           validatedJobData.company_name || jobInfo.company,
           validatedJobData.company_description || jobInfo.company,
           validatedJobData.company_location || jobInfo.location,
+          validatedJobData.company_job_board_url || '',
           validatedJobData.company_industry || '',
           validatedJobData.company_size || '',
           validatedJobData.company_stock_symbol || '',
@@ -1825,7 +2037,7 @@ class JobProcessor extends EventEmitter {
     return createdJobs;
   }
 
-  async getOrCreateCompany(companyName, companyDescription, companyLocation, companyIndustry, companySize, companyStockSymbol, companyLogo, companyFounded) {
+  async getOrCreateCompany(companyName, companyDescription, companyLocation, companyJobBoardUrl, companyIndustry, companySize, companyStockSymbol, companyLogo, companyFounded) {
     try {
       // First, try to get the company by name
       let company = await jobQueries.getCompanyIdByName(companyName);
@@ -1840,6 +2052,7 @@ class JobProcessor extends EventEmitter {
           companyName,
           companyLogo,
           companyLocation,
+          companyJobBoardUrl,
           companyDescription,
           companyIndustry,
           companySize,
@@ -1883,7 +2096,7 @@ class JobProcessor extends EventEmitter {
       jobData.H1BVisaSponsorship ? jobData.H1BVisaSponsorship : 0,
       jobData.IsRemote ? jobData.IsRemote : 0,
       jobData.EqualOpportunityEmployerInfo ? jobData.EqualOpportunityEmployerInfo : '',
-      jobData.Relocatio ? jobData.Relocation : 0
+      jobData.Relocation ? jobData.Relocation : 0
     );
 
     this.updateProgress({ processedJobs: this.progress.processedJobs + 1 });
@@ -1902,7 +2115,7 @@ class JobProcessor extends EventEmitter {
     for (const link of links) {
       const processPromise = this.processJobLinkWithRetry(link)
         .then(jobData => {
-          if (jobData && !jobData.error && !jobData.alreadyProcessed && !jobData.skipped) {
+          if (jobData && !jobData.error && !jobData.skipped) {
             return this.createJobPosting(jobData, companyId, link.url || link);
           }
         })
@@ -1928,7 +2141,7 @@ class JobProcessor extends EventEmitter {
   async processLinkedInJob(jobData) {
     if (this.processedLinks.has(jobData.url)) {
       console.log('LinkedIn job already processed:', jobData.url);
-      return { alreadyProcessed: true };
+      return { skipped: true, title: jobData.title, reason: 'Already processed' };
     }
   
     try {
@@ -1977,7 +2190,7 @@ class JobProcessor extends EventEmitter {
         return this.validateAndCleanJobData(processedData);
       } else {
         console.log(`Skipping non-tech job: ${extractedData.title}`);
-        return { skipped: true };
+        return { skipped: true, title: extractedData.title, reason: 'Non-tech job' };
       }
     } catch (error) {
       console.error(`Error processing LinkedIn job ${jobData.url}:`, error);
@@ -2024,13 +2237,11 @@ class JobProcessor extends EventEmitter {
 
     await this.init();
 
-    //await this.verifyAndUpdateCompanyData();
+    await this.collectJobLinksFromSimplify();
 
-    //await this.removeDuplicateJobs();
-    this.updateProgress({ phase: 'Cleaning job postings' });
+    await this.verifyAndUpdateCompanyData();
 
     const companies = await jobQueries.getCompanies();
-    const processedJobTitles = new Set();
 
     this.updateProgress({ 
       phase: 'Processing job boards', 
@@ -2056,8 +2267,6 @@ class JobProcessor extends EventEmitter {
       }
     }
 
-    await this.closeBrowser();
-
     this.updateProgress({ 
       phase: 'LinkedIn Crawler',
       company: '',
@@ -2066,11 +2275,17 @@ class JobProcessor extends EventEmitter {
       processedJobs: 0
     });
     
-    
+    // Phase 2: Process LinkedIn jobs
+    let linkedInJobs = [];
+    while (linkedInJobs.length < 5000) {
+      const linkedInAddedJobs = await this.crawlLinkedIn();
+      linkedInJobs = linkedInJobs.concat(linkedInAddedJobs);
+    }
+
+    await this.closeBrowser();
+    this.updateProgress({ phase: 'Cleaning job postings' });
     await this.removeDuplicateJobs();
 
-    await this.crawlLinkedIn();
-    
 
     this.updateProgress({ phase: 'Completed' });
   }
