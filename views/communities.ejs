@@ -60,13 +60,13 @@
                 </span>
                 <span class="comm-short-title sub-text">/<%= community.shortname %></span>
               </div>
-              <div class="comm-description sub-text secondary-text">
+              <div class="comm-description sub-text">
                 <%= community.description || 'No description available' %>
               </div>
               <div class="comm-flairs margin-1-bottom">
               </div>
               <div class="community-buttons margin-1-bottom">
-                <button class="submit-button-normal join-btn grow-button" id="communityActionBtn" data-action="join"><span class="material-symbols-outlined">
+                <button class="main-button-normal join-btn grow-button" id="communityActionBtn" data-action="join"><span class="material-symbols-outlined">
                     person_add
                   </span>Join
 
@@ -354,12 +354,11 @@
           posts.forEach(post => {
             const postDiv = document.createElement('div');
             postDiv.className = 'post bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-200';
-            postDiv.onclick = () => window.location.href = '/posts/' + post.id;
 
             const networkIconColor = post.community_color;
 
             const avatarHtml = post.avatar ?
-              `<div class="avatar-img-container"><img src="${post.avatar}" alt="${post.username}" class="thumbnail thumbnail-regular thumbnail-tiny"></div>` :
+              `<div class="avatar-img-container" onclick="window.location.href='/user/${post.username}'"><img src="${post.avatar}" alt="${post.username}" class="thumbnail thumbnail-regular thumbnail-tiny"></div>` :
               `<div class="w-8 h-8 rounded ${networkIconColor} flex items-center justify-center text-white font-bold">
             ${post.firstname[0].toUpperCase()}${post.lastname[0].toUpperCase()}
             </div>`;
@@ -372,7 +371,9 @@
               <div class="flex flex-row v-center w-100 space-between">
               <div class="flex flex-col start">
               <div class="flex flex-row gap-06 v-center">
-              <p class="sub-text bold">${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username} </p>
+              <a class="sub-text bold" href="/user/${post.username}">
+              ${post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username} 
+              </a>
                                         <div class="follow-btn-container">  
             </div>
             </div>
@@ -381,20 +382,22 @@
               </p>
               </div>
               <div class="flex flex-row gap-06 v-center">
-                          <span class="text-tag simple-tag px-2 py-2">
-                          <p class="mini-text bold">
-              /${post.community_shortname}
-              </p>
+                          <span class="text-tag simple-tag px-4 py-2">
+                          <a class="mini-text secondary-text bold" href="/networks/${post.community_shortname}">
+              ${post.community_shortname}
+              </a>
             </span>
             </div>
               </div>
             </div>
             </div>
-            <div class="flex flex-row gap-03 v-center margin-06-bottom wrap w-100">
-              <p class="sub-text">${post.title}</p>
-                            <span class="third-text mini-text"">
+            <div class="flex flex-col adaptive-border px-4 py-4" onclick="window.location.href='/posts/${post.id}'">
+            <div class="flex flex-col margin-06-bottom wrap w-100">
+              <p class="main-text bold clickable">${post.title}</p>
+              <time>                            <span class="third-text mini-text"">
                 ${formatDate(post.created_at)}
               </span>
+              </time>
               </div>
             <p class="description mini-text secondary-text margin-1-bottom">${truncateContent(post.content, 150)}</p>
 
@@ -412,6 +415,7 @@
                 <span class="material-symbols-outlined" style="font-size: .8rem;">share</span>
                 ${post.share_count || 0}
               </span>
+            </div>
             </div>
            </div>
             `;
@@ -582,11 +586,11 @@
           .then(data => {
             if (data.isMember) {
               communityActionBtn.className = "cancel-button-normal join-btn grow-button";
-              communityActionBtn.innerHTML = '<span class="material-symbols-outlined">close</span>Leave';
+              communityActionBtn.innerHTML = '<span class="material-symbols-outlined">person_remove</span>Leave <div class="counter" style="margin-left: .4rem"><%= community.MemberCount%></div>';
               communityActionBtn.dataset.action = "leave";
             } else {
-              communityActionBtn.className = "submit-button-normal join-btn grow-button";
-              communityActionBtn.innerHTML = '<span class="material-symbols-outlined">add</span>Join';
+              communityActionBtn.className = "main-button-normal join-btn grow-button";
+              communityActionBtn.innerHTML = '<span class="material-symbols-outlined">person_add</span>Join <div class="counter" style="margin-left: .4rem"><%= community.MemberCount%></div>';
               communityActionBtn.dataset.action = "join";
             }
 

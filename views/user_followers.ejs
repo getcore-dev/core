@@ -12,30 +12,21 @@
 
 <style>
   main {
-    display: flex;
-  }
-
-  .followers {
-    max-width: 800px;
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    width: 100%;
-    background: var(--light-mode-body-color);
+    display: block;
   }
 
   .follower {
-    box-sizing: border-box;
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 10px;
+    background-color: var(--light-mode-main-color);
     border-bottom: 1px solid var(--border-color);
     width: 100%;
-    padding: 10px 13px;
   }
 
-  .follower:last-child {
-    border-bottom: none;
+  .follower-info {
+    display: flex;
+    flex-direction: column;
   }
 
   .follower:hover {
@@ -43,25 +34,26 @@
     cursor: pointer;
   }
 
+  .clickable,
+  .link {
+    color: <%=otheruser.profile_border_color%> !important;
+  }
+
   .followers-header {
-    margin: 13px 10px;
-    margin-top: 1.7rem;
-    margin-bottom: 1.3rem;
+    padding: 0 .8rem;
+    margin-top: 1.2rem;
   }
 
   @media (prefers-color-scheme: dark) {
-    .followers {
-      border-color: var(--dark-mode-border-color);
-      background-color: var(--dark-mode-body-color);
-    }
-
     .follower {
+      background-color: var(--dark-mode-body-color);
       border-color: var(--dark-mode-border-color);
     }
 
     .follower:hover {
       background-color: var(--dark-mode-hover-background-color);
     }
+
   }
 
   @media screen and (max-width: 768px) {
@@ -74,17 +66,29 @@
 <body>
   <%- include('partials/navbar', { pagePath: 'updates' }) %>
   <main>
-    <h5 class="followers-header">Followers</h5>
+    <div class="followers-header flex flex-col margin-06-bottom w-100">
+      <a class="link" href="/user/<%= otheruser.username %>">
+        <span class="material-symbols-outlined" style="font-size: 12px;">
+          arrow_back
+        </span>
+        Back</a>
+      <div class="flex flex-row gap-06 v-center">
+        <p class="main-text bold">Following</p>
+        <div class="counter">
+          <%= followersCount %>
+        </div>
+      </div>
+    </div>
     <div class="followers">
       <% followers.forEach((follower) => { %>
-      <div class="follower" onclick="window.location.href='/user/<%= follower.username %>'">
-        <img class="thumbnail thumbnail-regular thumbnail-tiny" src="<%= follower.avatar %>" alt="<%= follower.username %>" />
-        <div class="follower-info">
-          <p class="main-text">
+      <div class="follower px-4 py-2 gap-06" onclick="window.location.href='/user/<%= follower.username %>'">
+        <img class="thumbnail thumbnail-tiny thumbnail-regular" src="<%= follower.avatar %>" alt="<%= follower.username %>" />
+        <div class="follower-info px-2 py-2">
+          <a class="main-text link">
             <%= follower.firstname %>
             <%= follower.lastname %>
-          </p>
-          <p class="sub-text secondary-textx">
+          </a>
+          <p class="sub-text secondary-text">
             @<%= follower.username.toLowerCase() %>
           </p>
         </div>

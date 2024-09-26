@@ -115,7 +115,6 @@ main {
 
 /* Style for each section */
 #profile>div,
-.post,
 .comment {
   display: inline-block;
   border: 0;
@@ -227,14 +226,6 @@ main {
   border-right: 1px solid var(--border-color);
 }
 
-
-.post {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  /* Full width of posts container */
-  /* ... other styles ... */
-}
 
 .profile-picture button {
   background-color: var(--light-mode-body-color);
@@ -371,15 +362,6 @@ main {
 #emp-type-flair {
   background-color: #DB5461;
   border-color: #D43545;
-}
-
-.post,
-.comment {
-  background-color: var(--light-mode-body-color);
-  border: 0;
-  width: 100%;
-  box-sizing: border-box;
-  max-width: 100%;
 }
 
 .post-title,
@@ -543,7 +525,6 @@ td {
 
   .profile-info .profile-details {
     width: 100%;
-    gap: 0rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -567,15 +548,6 @@ td {
 
 
 
-}
-
-.profile-details>h2,
-.profile-details>p#firstname-display {
-  font-weight: bold;
-}
-
-.profile-details>h2 {
-  font-weight: normal;
 }
 
 .commit-graph {

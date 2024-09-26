@@ -168,8 +168,9 @@ div.company-menu .second-nav-links .navbar-button {
 }
 
 .ai-item {
-  background-color: #fff;
-  border: 1px solid #fbbf24;
+  margin-bottom: .4rem !important;
+  background-color: #fff !important;
+  border: 1px solid #fbbf24 !important;
 }
 
 .ai-generated-content {
@@ -518,8 +519,8 @@ div.jobs-company-header {
   }
 
   .ai-item {
-    background-color: #000000;
-    border: 1px solid #6d5412;
+    background-color: #000000 !important;
+    border: 1px solid #6d5412 !important;
   }
 
   .ai-warning {

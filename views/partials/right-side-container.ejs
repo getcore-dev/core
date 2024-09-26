@@ -63,7 +63,8 @@
                  jobslistContainer = document.querySelector('.right-side-container > div.jobslist');
                }
                jobslistContainer.innerHTML = jobs.map(job => `
-              <div class="job px-4 py-2" onclick="window.location.href='/jobs/${job.id}'">
+              <div class="job px-4 py-4 flex flex-col" onclick="window.location.href='/jobs/${job.id}'">
+              <div class="flex flex-row gap-06">
                                   ${job.company_logo ? `
                       <img loading="lazy" src="${job.company_logo}" alt="" onerror="this.onerror=null;this.src='/img/glyph.png';" class="thumbnail ${isMobile ? `thumbnail-tiny` : `thumbnail-tiny`} thumbnail-regular" />
                       ` : `<img loading="lazy" src="/img/gylph.png" alt="" class="thumbnail ${isMobile ? `thumbnail-tiny` : `thumbnail-tiny`} thumbnail-regular" />`}
@@ -83,7 +84,17 @@
                     </div>
                                                               <div class="job-title mini-text bold"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
 
-                    <div class="job-title-location mini-text third-text">
+
+                  </div>
+
+
+                  ${!isMobile ? `
+
+                  ` : `
+                  `}
+                </div>
+                </div>
+                <div class="job-title-location mini-text third-text">
                 ${job.salary || job.salary_max ? `
                   <span class="job-salary mini-text">
                     ${getFormattedSalary(job.salary, job.salary_max)}
@@ -107,15 +118,6 @@
                 </div>
 
                     </div>
-
-                  </div>
-
-
-                  ${!isMobile ? `
-
-                  ` : `
-                  `}
-                </div>
               </div>
             `).join('');
                jobslistContainer.innerHTML += '<div class="see-more"><a href="/jobs"><button class="regular-button">More</button></a></div>';

@@ -33,11 +33,9 @@ function updateStateFromQuery() {
     if (Array.isArray(query.skill)) {
       query.skill.forEach(skill =>  {
         state.filters.skills.add(skill.trim())
-      addToSelectedFilters('skills', query.skill, query.skill);
       });
     } else {
       state.filters.skills.add(query.skill.trim());
-      addToSelectedFilters('skills', query.skill, query.skill);
     }
   }
   if (query.locations) {
@@ -45,11 +43,9 @@ function updateStateFromQuery() {
     if (Array.isArray(query.location)) {
       query.locations.forEach(location => {
         state.filters.locations.add(location.trim());
-        addToSelectedFilters('job-locations', location, location);
       });
     } else {
       state.filters.locations.add(query.locations.trim());
-      addToSelectedFilters('job-locations', query.locations, query.locations);
 
     }
   }
@@ -707,14 +703,24 @@ function restoreUIState() {
       filterSet.forEach(filter => {
         if (type === 'companies') {
           const { id, name, logo } = JSON.parse(filter);
-          addToSelectedFilters(type, id, name, logo);
         } else if (type === 'job-levels') {
-       const button = document.querySelector(`button[data-type="job-levels"][data-name="${filter}"]`);
-        button.className = 'quick-option-btn clickable no-bg no-border w-100 mini-text';
-        const dropdown = document.querySelector('.experience-dropdown');
-        dropdown.innerHTML = filter + '<span class="arrow">&#9662;</span>';
-        } else {
-          addToSelectedFilters(type, filter, filter);
+          const button = document.querySelector(`button[data-type="job-levels"][data-name="${filter}"]`);
+          button.className = 'quick-option-btn clickable no-bg no-border w-100 mini-text';
+          const dropdown = document.querySelector('.experience-dropdown');
+          dropdown.classList.add('active');
+          dropdown.innerHTML = filter + '<span class="arrow">&#9662;</span>';
+        } else if (type == 'job-locations') {
+          const button = document.querySelector(`button[data-type="job-locations"][data-name="${filter}"]`);
+          button.className = 'quick-option-btn clickable no-bg no-border w-100 mini-text';
+          const dropdown = document.querySelector('.location-dropdown');
+          dropdown.classList.add('active');
+          dropdown.innerHTML = filter + '<span class="arrow">&#9662;</span>';
+        } else if (type == 'tech-job-titles') {
+          const button = document.querySelector(`button[data-type="tech-job-titles"][data-name="${filter}"]`);
+          button.className = 'quick-option-btn clickable no-bg no-border w-100 mini-text';
+          const dropdown = document.querySelector('.title-dropdown');
+          dropdown.classList.add('active');
+          dropdown.innerHTML = filter + '<span class="arrow">&#9662;</span>';
         }
       });
     }
@@ -746,6 +752,10 @@ document.addEventListener('DOMContentLoaded', () => {
 function createJobElement(job) {
   const jobElement = document.createElement('div');
   jobElement.classList.add('job');
+  jobElement.classList.add('px-4');
+  jobElement.classList.add('py-4');
+
+
   jobElement.onclick = () => (window.location.href = `/jobs/${job.id}`);
 
   const tagsArray = job.skills
@@ -815,20 +825,20 @@ jobElement.innerHTML = `
     </div>
     <div class="job-details mini-text">
           ${job.salary || job.salary_max ? `
-        <span class="job-detail salary">
+        <span class="text-tag bold flex flex-row v-center salary">
           <svg class="icon" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-          ${formatSalary(job.salary)} - ${formatSalary(job.salary_max)}/yr
+          ~${formatSalary(job.salary)}/yr
         </span>
       ` : ``}
-      <span class="job-detail applicants">
+      <span class="text-tag flex flex-row v-center applicants">
         <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
         ${job.applicants ? `${job.applicants} applicants` : '0 applicants'}
       </span>
-      <span class="job-detail post-date">
+      <span class="text-tag flex flex-row v-center post-date">
         <svg class="icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
         <time>${formatRelativeDate(job.postedDate)}</time>
       </span>
-      <span class="job-detail experience-level">
+      <span class="text-tag flex flex-row v-center experience-level">
         <svg class="icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
         ${
           job.experienceLevel === 'Mid Level'
@@ -949,10 +959,8 @@ function handleResultClick(event) {
   console.log(result);
 
   if (type === 'job-locations' || type === 'tech-job-titles') {
-    addToSelectedFilters(type, name, name, logo);
     updateState(type, name, name, logo);
   } else if (type == 'companies') {
-    addToSelectedFilters(type, id, name, logo);
     updateState(type, id, name, logo);
   } else {
     updateState(type, id, name, logo);
@@ -1028,6 +1036,45 @@ function removeSelectedItem(item) {
   }
   console.log(item.dataset);
   updateState(type, id, name, null, true); // true indicates removal
+  
+  // Update the corresponding dropdown or button
+  updateDropdownAfterRemoval(type, name);
+}
+
+function updateDropdownAfterRemoval(type, name) {
+  const dropdownClassMap = {
+    'job-levels': 'experience-dropdown',
+    'job-locations': 'location-dropdown',
+    'tech-job-titles': 'job-title-dropdown',
+    'skills': 'skills-dropdown', // Add if applicable
+    'companies': 'companies-dropdown', // Add if applicable
+  };
+  const dropdownDefaultTextMap = {
+    'job-levels': 'Experience Level',
+    'job-locations': 'Location',
+    'tech-job-titles': 'Job Title',
+    'skills': 'Skills', // Add if applicable
+    'companies': 'Companies', // Add if applicable
+  };
+
+  const dropdownClass = dropdownClassMap[type];
+  const dropdownDefaultText = dropdownDefaultTextMap[type];
+
+  if (dropdownClass) {
+    const dropdown = document.querySelector(`.${dropdownClass}`);
+    if (dropdown) {
+      // Reset the dropdown text to default or remove the specific selection
+      dropdown.innerHTML = `${dropdownDefaultText}<span class="arrow">&#9662;</span>`;
+      
+      // Additionally, update the filter buttons to reflect the removal
+      const buttons = document.querySelectorAll(`[data-type="${type}"]`);
+      buttons.forEach(button => {
+        if (button.dataset.name === name || button.dataset.id === id) {
+          button.className = 'quick-option-btn no-bg no-border w-100 mini-text';
+        }
+      });
+    }
+  }
 }
 
 function toggleSelectedFilter(event) {
@@ -1057,10 +1104,15 @@ function toggleSelectedFilter(event) {
   const dropdown = document.querySelector(`.${dropdownClass}`);
 
   if (isAlreadySelected) {
+    clearSelectedFilters(type); // Clear previously selected filters
     event.target.className = 'quick-option-btn no-bg no-border w-100 mini-text';
     dropdown.innerHTML = `${dropdownDefaultText}<span class="arrow">&#9662;</span>`;
+    dropdown.classList.remove('active');
     updateState(type, id, name, logo, true);
+    console.log(event.target);  
+    console.log(type, id, name, logo, true);
   } else {
+    dropdown.classList.add('active');
     clearSelectedFilters(type); // Clear previously selected filters
     const buttons = document.querySelectorAll(`[data-type="${type}"]`);
     buttons.forEach(button => {
@@ -1222,10 +1274,7 @@ function updateState(type, id, name, logo, isRemoval = false) {
     }
   }
 
-  if (!isRemoval && type === 'skills') {
-    addToSelectedFilters(type, id, name, logo);
-  }
-
   saveStateToLocalStorage(); // Save state after updating filters
   triggerJobSearch();
 }
+

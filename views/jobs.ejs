@@ -69,7 +69,7 @@
           <input type="text" id="job-search-input" class="job-posting-search-input" placeholder="Search jobs & companies" />
         </div>
 
-        <div class="flex flex-row w-100 gap-06">
+        <div class="flex flex-row w-100 gap-06 wrap">
           <div class="dropdown" tabindex="0">
             <button class="dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
               Experience Level
@@ -85,18 +85,19 @@
               <% }); %>
             </div>
           </div>
-  
+
           <div class="dropdown" tabindex="0">
-            <button class="dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+            <button class="dropdown-button job-title-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
               Role
               <span class="arrow">&#9662;</span>
             </button>
 
             <div class="dropdown-content">
               <% const techJobTitles = ["Software Engineer", "Data Scientist", "Project Manager", "Graphic Designer"]; %>
+              <% const userJobTitles = user && user.desired_job_title ? user.desired_job_title.split(',').map(title => title.trim()) : []; %>
               <% techJobTitles.forEach(title => { %>
               <a class="w-100">
-                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="tech-job-titles" data-id="undefined" data-name="<%= title %>" onclick="toggleSelectedFilter(event)"><%= title %></button>
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="tech-job-titles" data-id="<%= title %>" data-name="<%= title %>" onclick="toggleSelectedFilter(event)" <% if(userJobTitles.includes(title)) { %>class="selected" <% } %>><%= title %></button>
               </a>
               <% }); %>
             </div>

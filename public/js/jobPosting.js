@@ -217,7 +217,7 @@ function createJobElement(job) {
 }
     </span>
     ${job.salary || job.salary_max ? `
-      <span class="job-posting-detail salary">
+      <span class="job-posting-detail flex v-center salary">
         <svg class="icon" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
         ${formatSalary(job.salary)} - ${formatSalary(job.salary_max)}/yr
       </span>
@@ -392,7 +392,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       </div>
       
         </div>
-          <p class="job-detail bold secondary-text" style="margin-left:auto;white-space: nowrap;">
+          <p class="job-detail mini-text bold secondary-text" style="margin-left:auto;white-space: nowrap;">
         ${job.experienceLevel}
       </p>
       </div>
@@ -447,11 +447,11 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   <p class="sub-text readable">${job.description}</p>
 </div>
       
-      <div class="interact-buttons margin-1-bottom flex space-between v-center">
+      <div class="interact-buttons flex space-between v-center">
         ${
   !isOlderThan30Days(job)
     ? `<div class="apply-button-container flex">
-                <button class="submit-button-normal margin-h-auto grow-button" onclick="applyForJob(event, '${job.id}', '${job.link}')">
+                <button class="main-button-normal margin-h-auto grow-button" onclick="applyForJob(event, '${job.id}', '${job.link}')">
                   <span class="material-symbols-outlined">work</span><span class="sub-text">Apply </span><span class="number-display">
                   ${job.applicants ? job.applicants : 0}
                   </span>
@@ -463,7 +463,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   userIsLoggedIn
     ? `<div class="favorite-button-
                       <div id="favorite-form-${job.id}" class="flex">
-                        <button class="submit-button-normal favorite-action-button" onclick="favorite('job', ${job.id});" class="margin-h-auto">
+                        <button class="special-button-normal favorite-action-button" onclick="favorite('job', ${job.id});" class="margin-h-auto">
                           <span class="material-symbols-outlined no-margin no-padding">star</span>
                         </button>
                       </div
@@ -476,14 +476,14 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   userIsLoggedIn && userIsAdmin
     ? `
             <div class="delete-button-container">
-              <button class="null-button-normal" onclick="window.location.href='/jobs/delete/${job.id}'">
+              <button class="bordered-button-normal" onclick="window.location.href='/jobs/delete/${job.id}'">
                 <span class="material-symbols-outlined no-margin no-padding">delete</span>
               </button>
             </div>
           `
     : ''
 }
-        <button class="null-button-normal" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');">
+        <button class="bordered-button-normal" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');">
           <span class="material-symbols-outlined no-margin no-padding">share</span>
         </button>
     </div>
@@ -491,14 +491,14 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   userIsLoggedIn && userIsAdmin
     ? `
       <div class="flex flex-row w-100 gap-06">
-        <div class="resume-button">
-          <a href="/api/create-resume/${job.id}" class="grow-button bordered-button-normal margin-h-auto">
+        <div class="resume-button w-100">
+          <a href="/api/create-resume/${job.id}" class="grow-button main-button-normal margin-h-auto">
             <span class="material-symbols-outlined">description</span>
             <span class="sub-text">Resume</span>
           </a>
         </div>
-                <div class="cover-letter-button">
-          <a href="/api/create-cover-letter/${job.id}" class="grow-button bordered-button-normal margin-h-auto">
+        <div class="cover-letter-button w-100">
+          <a href="/api/create-cover-letter/${job.id}" class="grow-button main-button-normal margin-h-auto">
             <span class="material-symbols-outlined">description</span>
             <span class="sub-text">Cover Letter</span>
           </a>

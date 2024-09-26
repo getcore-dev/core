@@ -661,15 +661,6 @@ div.interact-buttons {
   font-size: 12px;
 }
 
-.post-info {
-  padding: 8px 13px;
-  margin-bottom: 1rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .sort-selector {
   display: inline-flex;
   border-radius: 6px;
@@ -970,20 +961,6 @@ div.repliees-avatar {
   margin-bottom: 1rem;
 }
 
-.similar-posts .post a {
-  text-decoration: none;
-  color: var(--light-mode-text-color);
-}
-
-.similar-posts .post {
-  display: flex;
-  gap: .8rem;
-  width: 100%;
-  flex-direction: row;
-  align-items: flex-start;
-  border: 0;
-  box-sizing: border-box;
-}
 
 .similar-posts .post:hover {
   background: var(--light-mode-hover-color);
@@ -1329,10 +1306,6 @@ p.preview-description {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
-}
-
-.link {
-  font-size: .775rem;
 }
 
 .votes {
@@ -1681,10 +1654,6 @@ div.post-information {
     color: var(--dark-mode-text-color) !important;
   }
 
-  .similar-posts .post a {
-    color: var(--dark-mode-text-color);
-  }
-
   .nested-comments {
     border-color: #242424;
   }
@@ -1911,8 +1880,10 @@ div.post-information {
 
   .jobslist .job {
     border: 1px solid var(--border-color);
-    padding: .4rem .8rem;
     gap: .8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .dropdown-content {
@@ -1925,10 +1896,6 @@ div.post-information {
     padding: 0;
   }
 
-  .post {
-    padding: 0;
-
-  }
 
   .large-preview-image {
     border-radius: 18px;
@@ -2095,11 +2062,6 @@ div.post-information {
     max-width: 100%;
   }
 
-  .post,
-  .comment {
-    padding-bottom: 0px;
-    margin-bottom: 0px;
-  }
 
   .commment {
     margin-bottom: 0;

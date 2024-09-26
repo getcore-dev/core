@@ -35,9 +35,8 @@
     color: black;
   }
 
-  .job-tag {
-    background: <%=otheruser.profile_border_color%>70 !important;
-    border: 1px solid <%=otheruser.profile_border_color%>70 !important;
+  .clickable,
+  .link {
     color: <%=otheruser.profile_border_color%> !important;
   }
 
@@ -122,15 +121,23 @@
               <img class="thumbnail thumbnail-large" src="<%= otheruser.avatar || '/img/default-avatar.png' %>" alt="Profile Picture" />
 
             </div>
-            <div class="profile-details flex flex-col v-center w-100">
+            <div class="profile-details flex flex-col gap-03 v-center w-100">
               <h2 class="bold"><%= otheruser.firstname %> <%= otheruser.lastname%>
               </h2>
 
-              <p id="firstname-display" class="third-text margin-06-bottom sub-text" style="color: <%= otheruser.isAdmin ? '#b40000' : '' %>;">@<%= otheruser.username %> <% if (otheruser.verified) { %>
-                <span class="material-symbols-outlined" style="color: green">
+              <p id="firstname-display" class="third-text sub-text">@<%= otheruser.username %>
+                <% if (otheruser.verified) { %>
+                <span class="material-symbols-outlined no-padding" style="color: green">
                   check
                 </span>
                 <% } %>
+
+                <% if (otheruser.isAdmin) { %>
+                <span class="material-symbols-outlined no-padding" style="color: #b40000">
+                  admin_panel_settings
+                </span>
+                <% } %>
+
               </p>
               <div class="user-bio sub-text" style="background: 0 !important; padding-top: 0;">
                 <p>
@@ -139,12 +146,18 @@
               </div>
               <div class="followers-info">
                 <a class="secondary-text sub-text clickable" href="/user/<%= otheruser.username %>/followers" style="display: flex; flex-direction:row; align-items: center;gap: 3px;">
+                  <span class="material-symbols-outlined no-padding">
+                    person
+                  </span>
                   <span class="bold link primary-text" id="followerCount">
                     <%= otheruser.followerCount %>
                   </span>
                   Followers
                 </a>
                 <a class="secondary-text sub-text clickable" href="/user/<%= otheruser.username %>/following" style="display: flex; align-items: center;flex-direction:row; gap: 3px;">
+                  <span class="material-symbols-outlined no-padding">
+                    person
+                  </span>
                   <span class="bold link primary-text" id="followCount">
                     <%= otheruser.followingCount %>
                   </span>
@@ -157,41 +170,60 @@
               <div class="edit-controls-and-follow-button">
                 <% if (user) { %>
                 <% if (otheruser.username === user.username) { %>
-                <button class="regular-button-normal" id="edit-button" onclick="window.location.href='/edit-profile'">
+                <button class="main-button-normal" id="edit-button" onclick="window.location.href='/edit-profile'">
                   <span class="material-symbols-outlined">
-                    edit
+                    person_edit
                   </span>
                   Edit
                 </button>
                 <% } else { %>
-                <button class="<%= isFollowing ? 'cancel-button-normal' : 'submit-button-normal' %>" id="followButton">
+                <button class="<%= isFollowing ? 'cancel-button-normal' : 'main-button-normal' %>" id="followButton">
                   <%- isFollowing ? '<span class="material-symbols-outlined">person_remove</span> Unfollow' : '<span class="material-symbols-outlined">person_add</span> Follow' %>
                 </button>
                 <% } %>
                 <% } %>
 
-                <button class="null-button-normal" onclick="share('User Profile', '', 'https://getcore.dev/user/<%= otheruser.username %>')">
+                <button class="bordered-button-normal" onclick="share('User Profile', '', 'https://getcore.dev/user/<%= otheruser.username %>')">
                   <span class="material-symbols-outlined">
                     share
                   </span>
                   Share
                 </button>
+
+                <% if (user && otheruser.username !== user.username) { %>
+                <% if (user.isAdmin ) { %>
+                <div class="dropdown" tabindex="0">
+                  <!-- Dropdown Button -->
+                  <button class="bordered-button-normal px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+                    <span class="material-symbols-outlined">
+                      more_vert
+                    </span>
+                  </button>
+
+                  <!-- Dropdown Content -->
+                  <div class="dropdown-content">
+                    <a href="#">
+                      <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-verified" method="POST">
+                        <button class="w-100 no-bg no-border flex flex-row space-between cancel-button-text" type="submit" style="margin-bottom: auto;"><%- otheruser.verified ? '<span class="material-symbols-outlined">check</span> Unverify' : '<span class="material-symbols-outlined">check</span> Verify' %></button>
+                      </form>
+                    </a>
+                    <a href="#">
+
+                      <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-admin" method="POST">
+                        <button class="w-100 no-bg no-border flex flex-row space-between cancel-button-text" type="submit" style="margin-bottom: auto;"><%- otheruser.isAdmin ? '<span class="material-symbols-outlined">admin_panel_settings</span> Revoke Admin' : '<span class="material-symbols-outlined">admin_panel_settings</span> Make Admin' %></button>
+                      </form>
+                    </a>
+                    <a href="#">
+
+                      <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-ban" method="POST">
+                        <button class="w-100 no-bg no-border flex flex-row space-between cancel-button-text" type="submit" style="margin-bottom: auto;"><%- otheruser.isBanned ? '<span class="material-symbols-outlined">block</span> Unban' : '<span class="material-symbols-outlined">block</span> Ban' %></button>
+                      </form>
+                    </a>
+                  </div>
+                </div>
+                <% } %>
+                <% } %>
               </div>
-              <% if (user && otheruser.username !== user.username) { %>
-              <% if (user.isAdmin ) { %>
-              <div class="flex flex-row gap-06 space-between">
-                <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-admin" method="POST">
-                  <button class="w-100 special-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.isAdmin ? '<span class="material-symbols-outlined">admin_panel_settings</span> Revoke Admin' : '<span class="material-symbols-outlined">admin_panel_settings</span> Make Admin' %></button>
-                </form>
-                <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-verified" method="POST">
-                  <button class="w-100 submit-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.verified ? '<span class="material-symbols-outlined">check</span> Unverify' : '<span class="material-symbols-outlined">check</span> Verify' %></button>
-                </form>
-                <form class="flex w-100" action="/admin/users/<%= otheruser.id %>/toggle-ban" method="POST">
-                  <button class="w-100 cancel-button-normal" type="submit" style="margin-bottom: auto;"><%- otheruser.isBanned ? '<span class="material-symbols-outlined">block</span> Unban' : '<span class="material-symbols-outlined">block</span> Ban' %></button>
-                </form>
-              </div>
-              <% } %>
-              <% } %>
             </div>
           </div>
 
@@ -316,7 +348,7 @@
               </div>
             </div>
             <%
-                function formatDate(date) {
+            function formatDate(date) {
       let postDate = new Date(date);
       let today = new Date();
       let formattedDate;
@@ -349,29 +381,29 @@
               <% } else { %>
               <div class="post-container">
                 <% posts.forEach(function(post) { %>
-                <div class="post" onclick="window.location.href='/posts/<%= post.id %>'">
-                  <h5 class="post-title">
+                <div class="post w-100 adaptive-border px-4 py-4" onclick="window.location.href='/posts/<%= post.id %>'">
+                  <a class="link main-text">
                     <%= post.title %>
-                  </h5>
-                  <p class="post-content" style="font-size: 14px;"><%= post.content %></p>
+                  </a>
+                  <p class="readable sub-text short-text"><%= post.content %></p>
                   <div class="post-info">
-                    <span class="link-display">
+                    <span class="job-tag">
                       <p>
                         <%= formatDate(post.created_at) %>
                       </p>
                     </span>
-                    <span class="link-display">
+                    <span class="job-tag">
                       <p>
                         <%= post.views%> views
                       </p>
-                    </span class="link-display">
+                    </span class="job-tag">
 
-                    <span class="link-display">
+                    <span class="job-tag">
                       <p>
                         <%= post.comment_count %> comments
                       </p>
                     </span>
-                    <span class="link-display">
+                    <span class="job-tag">
                       <p>
                         <%= post.reaction_count %> reactions
                       </p>
@@ -383,38 +415,37 @@
               <% } %>
             </div>
 
-            <div id="comments" class="content" style="display:none;">
+            <section id="comments" class="comments-section" style="display:none;">
               <% if (comments.length === 0) { %>
-              <p>No comments yet.</p>
+              <p class="no-comments">No comments yet.</p>
               <% } else { %>
               <div class="comments-container">
                 <% comments.forEach(function(comment) { %>
-                <div class="com" onclick="window.location.href='/posts/<%= comment.post_id %>'">
-                  <div class="comment-header">
-                    <img class="comment-author-avatar" src="<%= comment.author.avatar %>" alt="Avatar" />
-                    <p class="comment-author">
-
-                      <a href="/user/<%= comment.author.username %>"><%= comment.author.username %></a> <% if (comment.receiver) { %> to <a href="/user/<%= comment.receiver %>"><%= comment.receiver %></a> <% } %>
-                    </p>
-                  </div>
-                  <div class="comment">
-                    <h5 class="comment-title">
-                      <%= comment.title %>
-                    </h5>
-                    <p class="comment-content"><%= comment.comment %></p>
-                    <div class="comment-info">
-                      <span>
-                        <p>
-                          <%= formatDate(comment.created_at) %>
-                        </p>
-                      </span>
+                <article class="comment" onclick="window.location.href='/posts/<%= comment.post_id %>'" tabindex="0" role="button" aria-pressed="false">
+                  <header class="comment-header flex flex-row ">
+                    <img class="comment-author-avatar" src="<%= comment.author.avatar %>" alt="<%= comment.author.username %>'s avatar" loading="lazy" />
+                    <div class="comment-author-info">
+                      <p class="comment-author-name">
+                        <a class="main-text" href="/user/<%= comment.author.username %>"><%= comment.author.username %></a>
+                        <% if (comment.receiver) { %>
+                        <span class="to">to</span>
+                        <a href="/user/<%= comment.receiver %>"><%= comment.receiver %></a>
+                        <% } %>
+                      </p>
+                      <time class="comment-date mini-text" datetime="<%= comment.created_at.toISOString() %>">
+                        <%= formatDate(comment.created_at) %>
+                      </time>
                     </div>
+                  </header>
+                  <div class="comment-body adaptive-border px-4 py-2">
+                    <h4 class="comment-title"><%= comment.title %></h4>
+                    <p class="comment-content"><%= comment.comment %></p>
                   </div>
-                </div>
+                </article>
                 <% }); %>
               </div>
               <% } %>
-            </div>
+            </section>
           </div>
         </div>
         <%- include('partials/footer') %>

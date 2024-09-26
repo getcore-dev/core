@@ -774,133 +774,80 @@
         </div>
         <% } %>
         <% if (similarPosts.length > 0) { %>
-        <div class="similar-posts">
+        <%
+            function formatDate(date) {
+      let postDate = new Date(date);
+      let today = new Date();
+      let formattedDate;
+
+      let diff = today - postDate;
+
+      // Convert time difference to different units
+      let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+      let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+      let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+      let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+
+      // Decide the format based on the time difference
+      if (minutes < 60) {
+        formattedDate = minutes + 'm';
+      } else if (hours < 24) {
+        formattedDate = hours + 'h';
+      } else if (days < 365) {
+        formattedDate = days + 'd';
+      } else {
+        formattedDate = years + 'y';
+      }
+      return formattedDate;
+    }
+
+    %>
+        <div class="similar-posts flex flex-col gap-1">
           <h3 class="sub-text margin-06-bottom" id="secondary-text">Explore Posts</h3>
-          <% similarPosts.forEach(similarPost => { %>
-          <div class="post <%= similarPost.isGlobalPinned ? 'pinned' : '' %>" onclick="window.location.href='/posts/<%= similarPost.id %>'">
-            <div class="post-content">
-              <div class="post-header margin-03-bottom">
-                <div class="post-header-username">
-                  <div class="username">
-                    <p>
-                      <a id="post-username" style="color: <%= similarPost.user_color !== '#000000' ? similarPost.user_color : 'var(--active-indicator-color)' %>" class="bold link secondary-text" href="/user/<%= similarPost.username %>">
-                        <%= similarPost.firstname && similarPost.lastname ? `${similarPost.firstname} ${similarPost.lastname}` : similarPost.username %>
-                      </a>
-                      <% if (similarPost.verified) { %>
-                      <span class="material-symbols-outlined" style="padding:0;font-size: .85rem;color:#16a86b;font-weight: 500;">verified</span>
-                      <% } %>
-                      <% if (similarPost.isModerator) { %>
-                      <span class="material-symbols-outlined" style="font-size:.85rem;color:#169da8;">admin_panel_settings</span>
-                      <% } %>
-                      <% if (similarPost.isGlobalPinned) { %>
-                      <span class="material-symbols-outlined" style="padding:0;color:#113ae2;">push_pin</span>
-                      <% } %>
-                      <time class="third-text mini-text">
-                        <%
-                                            function formatDate(dateString) {
-                      const date = new Date(dateString);
-                      const month = String(date.getMonth() + 1).padStart(2, '0');
-                      const day = String(date.getDate()).padStart(2, '0');
-                      const year = date.getFullYear();
-                      return `${month}/${day}/${year}`;
-                    }
-                    %>
-                        <%= formatDate(similarPost.created_at) %>
-                      </time>
-                    </p>
-                  </div>
-                </div>
-                <div class="dropdown">
-                  <button class="dropbtn" onclick="showDropdown(event)">
-                    <span class="material-symbols-outlined">more_horiz</span>
-                  </button>
-                  <div class="dropdown-content" style="display: none;">
-                    <% if (user) { %>
-                    <div class="dropdown-item">
-                      <span>
-                        <form id="favorite-form-<%= similarPost.id %>" action="/favorites/post/<%= similarPost.id %>" method="POST">
-                          <button type="submit">Favorite Post</button>
-                        </form>
-                      </span>
-                    </div>
-                    <% } %>
-                    <div class="dropdown-item">
-                      <button onclick="share('<%= similarPost.title %>', '', 'https://getcore.dev/posts/<%= similarPost.id %>')">
-                        <p>Share Post</p>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="title bold">
-                <%= similarPost.title %>
-              </div>
-              <div class="link-preview" style="<% if (similarPost.link) { %> flex-direction: column; <% } %>">
-                <% if (similarPost.link) { %>
-                <div class="link">
-                  <div class="similar-link-preview" id="similar-link-preview-<%= similarPost.id %>"></div>
-                  <script>
-                    (function fetchLinkPreview(link, containerId) {
-                      fetch(`/api/link-preview/${encodeURIComponent(link)}`)
-                        .then(response => response.json())
-                        .then(linkPreview => {
-                          if (linkPreview) {
-                            let imageUrl = linkPreview.image || linkPreview.favicon;
-                            let htmlContent = `
-                                  <div class="mini-link">
-                                    <div class="mini-link-image">
-                                      ${imageUrl ? `<img loading="lazy" src="${imageUrl}" alt="thumbnail" class="thumbnail-image" />` : ''}
-                                    </div>
-                                    <div class="mini-link-body">
-                                      <div class="mini-link-body-header">
-                                        <div class="mini-link-favicon">
-                                          <img src="${linkPreview.favicon}" alt="" class="favicon" />
-                                        </div>
-                                        <div class="mini-link-url" id="main-text"><a>${new URL(linkPreview.url || '').hostname || ''}</a></div>
-                                      </div>
-                                      <div class="mini-link-title"><p>${linkPreview.title || ''}</p></div>
-                                      <div class="mini-link-description"><p>${linkPreview.description || ''}</p></div>
-                                    </div>
-                                  </div>`;
-                            document.getElementById(containerId).innerHTML = htmlContent;
-                          }
-                        });
-                    })('<%= similarPost.link %>', 'similar-link-preview-<%= similarPost.id %>');
-                  </script>
-                </div>
-                <% } %>
-              </div>
-              <% 
-                  let imageUrl;
-                  const imageUrlMatch = similarPost.content.match(/!\[.*?\]\((.*?)\)/);
-                  if (imageUrlMatch && imageUrlMatch[1]) {
-                    imageUrl = imageUrlMatch[1];
-                  }
-                %>
-              <% if (imageUrl) { %>
-              <div class="image">
-                <img class="thumbnail-image" src="<%= imageUrl %>" alt="Preview" />
-              </div>
-              <% } %>
-              <% if (similarPost.post_type !== 'question' && (!similarPost.link || (similarPost.post_type !== 'post' && similarPost.post_type !== 'project'))) { %>
-              <div class="description sub-text condensed third-text">
-                <%
-                      let contentWithoutMarkdown = similarPost.content
-                        .replace(/^#{1,6}\s+/gm, '')
-                        .replace(/(?:\r\n|\r|\n)/g, ' ')
-                        .replace(/```[\s\S]*?```/g, '')
-                        .replace(/`([^`]+)`/g, '$1')
-                        .replace(/\*\*(.*?)\*\*/g, '$1')
-                        .replace(/\*(.*?)\*/g, '$1')
-                        .replace(/_(.*?)_/g, '$1')
-                        .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
-                        .replace(/!\[([^\]]+)\]\([^\)]+\)/g, '')
-                        .replace(/<[^>]*>/g, '')
-                        .trim();
-                    %>
-                <%- contentWithoutMarkdown %>
-              </div>
-              <% } %>
+          <% similarPosts.forEach(post => { %>
+          <div class="post w-100 adaptive-border px-4 py-4" onclick="window.location.href='/posts/<%= post.id %>'">
+            <div class="flex flex-col">
+              <a class="link main-text">
+                <%= post.title %>
+              </a>
+              <a class="third-text mini-text" href="/user/<%= post.username %>">
+                <%= post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username %>
+              </a>
+            </div>
+            <p class="readable sub-text short-text margin-06-bottom"><%= post.content %></p>
+            <div class="post-info wrap flex flex-row gap-06 margin-06-bottom">
+              <span class="text-tag flex flex-row">
+                <span class="material-symbols-outlined" style="font-size:12px">
+                  today
+                </span>
+                <p class="mini-text">
+                  <%= formatDate(post.created_at) %>
+                </p>
+              </span>
+              <span class="text-tag flex flex-row">
+                <span class="material-symbols-outlined" style="font-size:12px">
+                  chat_bubble
+                </span>
+                <p class="mini-text">
+                  <%= post.commentCount %> comments
+                </p>
+              </span>
+              <span class="text-tag flex flex-row">
+                <span class="material-symbols-outlined" style="font-size:12px">
+                  mood
+                </span>
+                <p class="mini-text">
+                  <%= post.totalReactionCount %> reactions
+                </p>
+              </span>
+              <span class="text-tag flex flex-row">
+                <span class=" material-symbols-outlined" style="font-size:12px">
+                  visibility
+                </span>
+                <p class="mini-text">
+                  <%= post.views%> views
+                </p>
+              </span>
             </div>
           </div>
           <% }) %>

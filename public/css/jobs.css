@@ -272,7 +272,6 @@ select:hover,
 }
 
 div.jobs-container>div.job-list>.job {
-  padding: 0 10px;
   border-radius: 6px;
   margin-bottom: 1.4rem;
   cursor: pointer;
@@ -1112,12 +1111,9 @@ div .material-symbols-outlined:not(:only-child) {
     overflow-y: none;
     margin: 0;
     width: 100%;
-    padding: 0.4rem 0 !important;
     margin-bottom: .9rem !important;
     border: 1px solid var(--border-color);
-    border-radius: 10px !important;
-    padding-left: .7rem !important;
-    padding-right: .7rem !important;
+    border-radius: 6px !important;
     box-sizing: border-box;
   }
 

@@ -104,9 +104,9 @@
 
       const notificationReplyButton = document.createElement('button');
       if (notification.isRead) {
-        notificationReplyButton.classList.add('regular-button-normal');
+        notificationReplyButton.classList.add('bordered-button-normal');
       } else {
-        notificationReplyButton.classList.add('null-button-normal');
+        notificationReplyButton.classList.add('main-button-normal');
       }
       notificationReplyButton.classList.add('mini-button');
 
@@ -257,9 +257,10 @@
     function createClearAllButton() {
       const clearAllBtn = document.createElement('button');
       clearAllBtn.classList.add('clear-all-btn');
-      clearAllBtn.classList.add('cancel-button-text');
+      clearAllBtn.classList.add('cancel-button-normal');
+      clearAllBtn.classList.add('mini-button');
 
-      clearAllBtn.innerHTML = 'Clear all';
+      clearAllBtn.innerHTML = '<span class="material-symbols-outlined">close</span> Clear';
 
       clearAllBtn.onclick = async function () {
         const response = await fetch(`/notifications/deleteAll/<%= user.id %>`, {

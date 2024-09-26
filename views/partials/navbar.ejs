@@ -93,7 +93,7 @@
                   <p class="mini-text secondary-text"><%= user.username %></p>
                 </div>
                 <div class="ml-auto px-2 py-2 clickable">
-                  <a class="clickable bold" href="/user/<%= user.username %>">
+                  <a class="clickable mini-text bold" href="/user/<%= user.username %>">
                     Profile
                   </a>
                 </div>
@@ -186,14 +186,6 @@
 
           <% if (user) { %>
           <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
-          <a href="/favorites" class="<%= isActive('/favorites') ? 'active' : '' %>">
-            <div class="menu-item main-text primary-text px-4">
-              <span class="material-symbols-outlined" id="menu-community-icon">
-                favorite
-              </span>
-              Favorites
-            </div>
-          </a>
           <a href="/feedback" class="<%= isActive('/feedback') ? 'active' : '' %>">
             <div class="menu-item main-text primary-text px-4">
               <span class="material-symbols-outlined" id="menu-community-icon">

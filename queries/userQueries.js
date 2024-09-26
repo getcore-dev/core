@@ -712,7 +712,6 @@ const userQueries = {
         JOIN user_relationships r ON u.id = r.followed_id
         WHERE r.follower_id = ${userId}`;
 
-      console.log(result);
       return result.recordset;
     } catch (err) {
       console.error('Database query error:', err);

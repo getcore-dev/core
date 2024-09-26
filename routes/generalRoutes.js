@@ -430,19 +430,6 @@ router.get('/tags/:tagName', async (req, res) => {
   }
 });
 
-router.get('/users/:userId/following', async (req, res) => {
-  try {
-    const userId = req.params.userId;
-
-    const following = await userQueries.getFollowing(userId);
-
-    res.render('following.ejs', { user: req.user, following });
-  } catch (err) {
-    console.error('Error fetching following users:', err);
-    res.status(500).send('Error fetching following users');
-  }
-});
-
 router.get('/users/:userId/followers', async (req, res) => {
   try {
     const userId = req.params.userId;

@@ -58,12 +58,6 @@ span.post-tag-symbol {
 }
 
 
-.post:hover {
-  cursor: pointer;
-  background: var(--light-mode-hover-color);
-  filter: brightness(.95);
-}
-
 .job:hover {
   cursor: pointer;
   filter: brightness(.95);
@@ -1693,11 +1687,7 @@ button.see-more {
   div.join-community,
   div.join-website {
     background-color: var(--dark-mode-main-color);
-  }
-
-  .post:hover {
-    background-color: var(--dark-mode-main-color);
-  }
+  }c
 
   #filterMenu button {
     color: var(--btn-text-dark);

@@ -56,6 +56,62 @@
 }
 
 
+:root {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 3.9%;
+  --primary: 240 5.9% 10%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 240 4.8% 95.9%;
+  --secondary-foreground: 240 5.9% 10%;
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+  --accent: 240 4.8% 95.9%;
+  --accent-foreground: 240 5.9% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  --ring: 240 5.9% 10%;
+  --radius: 0.5rem;
+  --chart-1: 12 76% 61%;
+  --chart-2: 173 58% 39%;
+  --chart-3: 197 37% 24%;
+  --chart-4: 43 74% 66%;
+  --chart-5: 27 87% 67%;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 0 0% 98%;
+  --primary-foreground: 240 5.9% 10%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: 240 4.9% 83.9%;
+  --chart-1: 220 70% 50%;
+  --chart-2: 160 60% 45%;
+  --chart-3: 30 80% 55%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
+}
+
+
 
 
 /* Global Style */
@@ -181,6 +237,7 @@ a:visited {
   overflow-x: scroll;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  position: relative;
 }
 
 #horizontal-scroll::-webkit-scrollbar {
@@ -1813,7 +1870,7 @@ button:hover {
   font-weight: 500;
   margin: 0;
   border-radius: calc(var(--radius) - 2px);
-  background: #128036;
+  background: #4da068;
   color: #deffe9;
   cursor: pointer;
   word-wrap: break-word;
@@ -1867,6 +1924,7 @@ button:hover {
 .main-button,
 .main-button-normal {
   background: black;
+  border: 1px solid black;
   color: white;
 }
 
@@ -1947,9 +2005,9 @@ button .material-symbols-outlined:not(:only-child) {
 #special-button,
 .special-button-normal,
 #special-button-normal {
-  border-color: #ffa600 !important;
-  background: #ffa60038 !important;
-  color: #ffa600 !important;
+  border-color: #f6c15d !important;
+  background: #f6c15d !important;
+  color: white !important;
 }
 
 .null-button,
@@ -1957,8 +2015,7 @@ button .material-symbols-outlined:not(:only-child) {
 .null-button-normal,
 #null-button-normal {
   background: var(--light-mode-body-color);
-  color: #6a6a6a;
-  border: 0;
+  color: black;
 }
 
 div.buttons .null-button-normal {
@@ -2118,7 +2175,7 @@ hr {
 
 .text-tag .material-symbols-outlined {
   font-size: .9rem;
-  line-height: 1.4rem;
+  line-height: .9rem;
   vertical-align: -6px;
   padding-right: .4rem;
 }
@@ -2149,6 +2206,7 @@ hr {
 #cancel-button-normal,
 .cancel-button,
 .cancel-button-normal {
+  border: 1px solid #ef4444;
   background-color: #ef4444;
   color: #fff4f4;
 }
@@ -2169,9 +2227,6 @@ hr {
 #cancel-button-text,
 .cancel-button-text {
   color: #ae4444 !important;
-  background: 0 !important;
-  border: 0 !important;
-
 }
 
 #regular-button,
@@ -2179,6 +2234,7 @@ hr {
 .regular-button,
 .regular-button-normal {
   background: #007bff36;
+  border: 1px solid #007bff36;
   color: #1463b7;
 }
 
@@ -2264,11 +2320,11 @@ hr {
 }
 
 .adaptive-border-bottom {
-  border-bottom: 1.5px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .adaptive-border {
-  border: 1.5px solid var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
 }
 
@@ -2636,6 +2692,7 @@ details[open] {
   .main-button,
   .main-button-normal {
     background: white;
+    border-color: white;
     color: black;
   }
 
@@ -2985,7 +3042,7 @@ input::placeholder {
   #null-button,
   .null-button-normal,
   #null-button-normal {
-    background: var(--dark-mode-button-color);
+    background: #16171a;
     color: #b0b0b0;
   }
 
@@ -3526,6 +3583,11 @@ input::placeholder {
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
+.dropdown-button.active {
+  background-color: #35aee44a;
+  border-color: #afd4ff;
+}
+
 /* Button Hover Effect */
 .dropdown-button:hover {
   background-color: #e0e0e0;
@@ -3645,6 +3707,11 @@ input::placeholder {
 
   .dropdown-content a {
     color: var(--dark-mode-text-color);
+  }
+
+  .dropdown-button.active {
+    background-color: #1c2830;
+    border-color: #224368;
   }
 
   .dropdown-content a:hover {

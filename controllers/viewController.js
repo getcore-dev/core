@@ -43,10 +43,12 @@ const viewController = {
       const username = req.params.username;
       const user = await userQueries.findByUsername(username);
       const followers = await userQueries.getFollowers(user.id);
+      const followersCount = followers.length;
       res.render('user_followers.ejs', {
         user: req.user,
         otheruser: user,
         followers,
+        followersCount,
       });
     } catch (err) {
       res.render('error.ejs', {
@@ -61,10 +63,12 @@ const viewController = {
       const username = req.params.username;
       const user = await userQueries.findByUsername(username);
       const following = await userQueries.getFollowing(user.id);
+      const followingCount = following.length;
       res.render('user_following.ejs', {
         user: req.user,
         otheruser: user,
         followers: following, // lmfao.
+        followersCount: followingCount, // lmfao 2.
       });
     } catch (err) {
       res.render('error.ejs', {
