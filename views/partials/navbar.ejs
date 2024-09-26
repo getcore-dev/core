@@ -81,8 +81,66 @@
         <button id="expandSearch" class="search-button">
         </button>
         <div class="menu-content" id="menu-content">
+          <% if (user && user.avatar) { %>
+
+          <div class="flex flex-col w-100">
+            <div class="flex flex-col">
+              <h4 class="mini-text third-text margin-06-bottom">Account</h4>
+              <div class="flex flex-row v-center w-100 gap-06 adaptive-border px-2 py-2 margin-03-bottom">
+                <img src="<%= user.avatar %>" alt="Avatar" class="thumbnail thumbnail-regular thumbnail-tiny">
+                <div class="flex flex-col">
+                  <p class="sub-text bold"><%= user.firstname %> <%= user.lastname %></p>
+                  <p class="mini-text secondary-text"><%= user.username %></p>
+                </div>
+                <div class="ml-auto px-2 py-2 clickable">
+                  <a class="clickable bold" href="/user/<%= user.username %>">
+                    Profile
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col margin-06-bottom">
+            <a class="<%= isActive('/notifications') ? 'active' : '' %>" href="/notifications">
+              <div class="menu-item main-text primary-text relative px-4">
+                <span class="material-symbols-outlined" id="menu-community-icon">
+                  notifications
+                </span>
+                Notifications
+                <span id="unreadCount" class="count-bubble"></span>
+
+              </div>
+            </a>
+            <a class="<%= isActive('/favorites') ? 'active' : '' %>" href="/favorites">
+              <div class="menu-item main-text primary-text px-4">
+                <span class="material-symbols-outlined" id="menu-community-icon">
+                  star
+                </span>
+                Favorites
+              </div>
+            </a>
+            <a href="#" onclick="document.getElementById('logoutForm').submit()">
+              <div class="menu-item main-text primary-text cancel-button-text px-4">
+                <span class="material-symbols-outlined cancel-button-text" id="menu-community-icon">
+                  logout
+                </span>
+                Logout
+              </div>
+            </a>
+          </div>
+
+          <% } %>
+
+
+          <div class="flex">
+            <div class="mobile-menu-header sub-text">
+              <h4 class="mini-text third-text margin-06-bottom">Navigation</h4>
+            </div>
+          </div>
+
           <a href="/" class="<%= isActive('/') ? 'active' : '' %>">
-            <div class="menu-item main-text primary-text">
+            <div class="menu-item main-text primary-text px-4">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 home
               </span>
@@ -91,18 +149,18 @@
           </a>
 
           <a href="/jobs" class="<%= isActive('/jobs') ? 'active' : '' %>">
-            <div class="menu-item main-text primary-text">
+            <div class="menu-item main-text primary-text px-4">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 work
               </span>
               Openings
             </div>
           </a>
-          <details open>
+          <details>
             <summary>
               <a class="<%= isActive('/networks') ? 'active' : '' %>">
 
-                <div class="menu-item main-text primary-text">
+                <div class="menu-item main-text primary-text px-4">
                   <span class="material-symbols-outlined" id="menu-community-icon">
                     workspaces
                   </span>
@@ -116,7 +174,7 @@
             </div>
           </details>
           <a href="/updates" class="<%= isActive('/updates') ? 'active' : '' %>">
-            <div class="menu-item main-text primary-text">
+            <div class="menu-item main-text primary-text px-4">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 update
               </span>
@@ -129,7 +187,7 @@
           <% if (user) { %>
           <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
           <a href="/favorites" class="<%= isActive('/favorites') ? 'active' : '' %>">
-            <div class="menu-item main-text primary-text">
+            <div class="menu-item main-text primary-text px-4">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 favorite
               </span>
@@ -137,7 +195,7 @@
             </div>
           </a>
           <a href="/feedback" class="<%= isActive('/feedback') ? 'active' : '' %>">
-            <div class="menu-item main-text primary-text">
+            <div class="menu-item main-text primary-text px-4">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 feedback
               </span>
@@ -147,7 +205,7 @@
           </a>
           <% } %>
           <a href="/about" class="<%= isActive('/about') ? 'active' : '' %>">
-            <div class="menu-item main-text primary-text">
+            <div class="menu-item main-text primary-text px-4">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 info
               </span>
@@ -157,7 +215,7 @@
           </a>
 
           <div class="mobile-menu-header sub-text">
-            <h4 class="secondary-text">Trending Posts</h4>
+            <h4 class="mini-text third-text margin-06-bottom">Trending Posts</h4>
           </div>
           <div class="mobile-trending-posts">
           </div>
@@ -179,46 +237,8 @@
           <li>
             <% if (user && user.avatar) { %>
             <div class="nav-avatar">
-              <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar">
+              <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar" onclick="window.location.href='/user/<%= user.username %>'" />
               <div class="avatar-online-status" style="background: <% if (user.profile_border_color) { %>#5fb968<% } else { %>#5fb968<% } %>;height: 7px;width: 7px;z-index: 10;border-radius: 6px;position: absolute;bottom: 0;right: 0;"> </div>
-              <div class="avatar-dropdown">
-                <a href="#" onclick="document.getElementById('logoutForm').submit()">
-                  <div class="avatar-dropdown-item">
-                    <span class="material-symbols-outlined secondary-text" id="nb-icon">
-                      logout
-                    </span>
-                    <p class="avatar-dropdown-label mini-text">Logout</p>
-
-                  </div>
-                </a>
-                <a href="/user/<%= user.username %>">
-                  <div class="avatar-dropdown-item">
-                    <span class="material-symbols-outlined secondary-text" id="nb-icon">
-                      person
-                    </span>
-                    <p class="avatar-dropdown-label mini-text">Profile</p>
-                  </div>
-                </a>
-                <a href="/favorites">
-                  <div class="avatar-dropdown-item">
-                    <span class="material-symbols-outlined secondary-text" id="nb-icon">
-                      star
-                    </span>
-                    <p class="avatar-dropdown-label mini-text">Saved</p>
-
-                  </div>
-                </a>
-                <a href="/notifications">
-                  <div class="avatar-dropdown-item">
-                    <span class="material-symbols-outlined secondary-text" id="nb-icon">
-                      notifications
-                    </span>
-                    <span id="unreadCount" class="count-bubble"></span>
-                    <p class="avatar-dropdown-label mini-text">Alerts</p>
-
-                  </div>
-                </a>
-              </div>
             </div>
             <% } else if (user && !user.avatar) { %>
             <div class="nav-avatar">
@@ -1268,37 +1288,6 @@
     window.location.href = `/redirect?url=${encodeURIComponent(linkUrl)}`;
   }
 
-
-
-  <% if (user) { %>
-
-  const userAvatar = document.getElementById('user-avatar');
-  const avatarDropdown = document.querySelector('.avatar-dropdown');
-  const userLinks = document.querySelector('.user-links');
-  const navigationButtons = document.querySelectorAll('.navigation-button');
-  const userText = document.querySelector('.nav-text-container');
-
-  userAvatar.addEventListener('click', () => {
-    navigationButtons.forEach(button => {
-      button.classList.toggle('hidden');
-    });
-    avatarDropdown.classList.toggle('open');
-    userLinks.classList.toggle('slide-left');
-    userText.classList.toggle('hidden');
-  });
-
-  // close if clicked outside
-  document.addEventListener('click', (event) => {
-    if (!userAvatar.contains(event.target) && !avatarDropdown.contains(event.target)) {
-      navigationButtons.forEach(button => {
-        button.classList.add('hidden');
-      });
-      avatarDropdown.classList.remove('open');
-      userLinks.classList.remove('slide-left');
-      userText.classList.remove('hidden');
-    }
-  });
-  <% } %>
 
   document.addEventListener('click', function (event) {
     var content = document.getElementById("menu-content");

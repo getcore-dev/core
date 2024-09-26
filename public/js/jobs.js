@@ -1038,8 +1038,27 @@ function toggleSelectedFilter(event) {
   const logo = result.dataset.logo;
 
   const isAlreadySelected = isFilterSelected(type, id, name);
+
+  // Mapping from type to dropdown class and default text
+  const dropdownClassMap = {
+    'job-levels': 'experience-dropdown',
+    'job-locations': 'location-dropdown',
+    'tech-job-titles': 'job-title-dropdown',
+  };
+  const dropdownDefaultTextMap = {
+    'job-levels': 'Experience Level',
+    'job-locations': 'Location',
+    'tech-job-titles': 'Job Title',
+  };
+
+  const dropdownClass = dropdownClassMap[type];
+  const dropdownDefaultText = dropdownDefaultTextMap[type];
+
+  const dropdown = document.querySelector(`.${dropdownClass}`);
+
   if (isAlreadySelected) {
     event.target.className = 'quick-option-btn no-bg no-border w-100 mini-text';
+    dropdown.innerHTML = `${dropdownDefaultText}<span class="arrow">&#9662;</span>`;
     updateState(type, id, name, logo, true);
   } else {
     clearSelectedFilters(type); // Clear previously selected filters
@@ -1048,13 +1067,13 @@ function toggleSelectedFilter(event) {
       button.className = 'quick-option-btn no-bg no-border w-100 mini-text';
     });
     event.target.className = 'quick-option-btn clickable no-bg no-border w-100 mini-text';
-    // set the dropdown to the selected value
-    const dropdown = document.querySelector('.experience-dropdown');
-    dropdown.innerHTML = name + '<span class="arrow">&#9662;</span>';
+    // Set the dropdown to the selected value
+    dropdown.innerHTML = `${name}<span class="arrow">&#9662;</span>`;
     handleResultClick(event);
     updateState(type, id, name, logo);
   }
 }
+
 
 function clearSelectedFilters(type) {
   let filterSet;

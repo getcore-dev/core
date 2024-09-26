@@ -85,9 +85,25 @@
               <% }); %>
             </div>
           </div>
-
+  
           <div class="dropdown" tabindex="0">
             <button class="dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+              Role
+              <span class="arrow">&#9662;</span>
+            </button>
+
+            <div class="dropdown-content">
+              <% const techJobTitles = ["Software Engineer", "Data Scientist", "Project Manager", "Graphic Designer"]; %>
+              <% techJobTitles.forEach(title => { %>
+              <a class="w-100">
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="tech-job-titles" data-id="undefined" data-name="<%= title %>" onclick="toggleSelectedFilter(event)"><%= title %></button>
+              </a>
+              <% }); %>
+            </div>
+          </div>
+
+          <div class="dropdown" tabindex="0">
+            <button class="dropdown-button location-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
               Location
               <span class="arrow">&#9662;</span>
             </button>
@@ -96,7 +112,7 @@
               <% const states = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"]; %>
               <% states.forEach(state => { %>
               <a class="w-100">
-                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="location" data-id="undefined" data-name="<%= state %>" onclick="toggleSelectedFilter(event)"><%= state %></button>
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-locations" data-id="undefined" data-name="<%= state %>" onclick="toggleSelectedFilter(event)"><%= state %></button>
               </a>
               <% }); %>
             </div>
