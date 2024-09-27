@@ -71,7 +71,7 @@
 
         <div class="flex flex-row w-100 gap-06 wrap">
           <div class="dropdown" tabindex="0">
-            <button class="dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+            <button aria-label="Experience Level" class="dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
               Experience Level
               <span class="arrow">&#9662;</span>
             </button>
@@ -85,9 +85,23 @@
               <% }); %>
             </div>
           </div>
+          <div class="dropdown" tabindex="0">
+            <button aria-label="Companies" class="dropdown-button companies-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+              Companies
+              <span class="arrow">&#9662;</span>
+            </button>
+
+            <div class="dropdown-content companies-dropdown-content">
+              <% companies.forEach(company => { %>
+              <a class="w-100">
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="<%= company.name %>" onclick="toggleSelectedFilter(event)"><%= company.name %></button>
+              </a>
+              <% }); %>
+            </div>
+          </div>
 
           <div class="dropdown" tabindex="0">
-            <button class="dropdown-button job-title-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+            <button aria-label="Role" class="dropdown-button job-title-button job-title-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
               Role
               <span class="arrow">&#9662;</span>
             </button>
@@ -95,16 +109,22 @@
             <div class="dropdown-content">
               <% const techJobTitles = ["Software Engineer", "Data Scientist", "Project Manager", "Graphic Designer"]; %>
               <% const userJobTitles = user && user.desired_job_title ? user.desired_job_title.split(',').map(title => title.trim()) : []; %>
+              <% if (userJobTitles.length > 0) { %>
+              <a class="w-100">
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="tech-job-titles" data-id="undefined" data-name="Role" onclick="clearSelectedFilters('tech-job-titles');">Role</button>
+              </a>
+              <% } %>
               <% techJobTitles.forEach(title => { %>
               <a class="w-100">
                 <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="tech-job-titles" data-id="<%= title %>" data-name="<%= title %>" onclick="toggleSelectedFilter(event)" <% if(userJobTitles.includes(title)) { %>class="selected" <% } %>><%= title %></button>
               </a>
               <% }); %>
+
             </div>
           </div>
 
           <div class="dropdown" tabindex="0">
-            <button class="dropdown-button location-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+            <button aria-label="Location" class="dropdown-button location-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
               Location
               <span class="arrow">&#9662;</span>
             </button>
@@ -118,6 +138,10 @@
               <% }); %>
             </div>
           </div>
+
+          <button aria-label="Reset Filters" class="dropdown-button no-bg no-border link clear-button px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false" type="button" onclick="resetState()">
+            Reset Filters
+          </button>
         </div>
         <div class="jobs-selected-filters">
         </div>

@@ -30,9 +30,9 @@ const viewLimiter = rateLimit({
 });
 
 router.get('/', async (req, res) => {
-  // const recentJobs = await jobQueries.getRecentJobCount();
+  const companies = await jobQueries.getCompanies();
   res.render('jobs.ejs', { user: req.user, 
-    recentJobs: [],         
+    companies,       
     errorMessages: req.flash('error'),
     successMessages: req.flash('success'),});
 });
@@ -398,7 +398,8 @@ router.get('/delete/:id', checkAuthenticated, async (req, res) => {
     }
     const jobId = req.params.id;
     await jobQueries.deleteJob(jobId);
-    res.render('jobs.ejs', { user: req.user, errorMessages: req.flash('error'), successMessages: ['Job deleted successfully'] });
+    const companies = await jobQueries.getCompanies();
+    res.render('jobs.ejs', { user: req.user, companies, errorMessages: req.flash('error'), successMessages: ['Job deleted successfully'] });
   } catch (err) {
     console.error('Error deleting job:', err);
     res.status(500).send('Error deleting job');

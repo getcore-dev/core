@@ -412,16 +412,42 @@ async function fetchRecentCompanies() {
   }
 }
 
-async function fetchTotalCompaniesCount() {
+
+/*
+[{"id":1,"name":"Waymo","location":"Mountain View, California","description":"Waymo is an autonomous driving technology company that develops self-driving cars and associated software. It originated from Google's self-driving car project and focuses on making transportation safer and more accessible through automation.","logo":null,"logo_url":null,"new_id":"DCE0D462-4078-47ED-9432-D5DF39098F67","industry":"Automotive, Technology, Transportation","founded":"2016-01-01T00:00:00.000Z","size":"1000-
+*/ 
+
+function renderCompaniesDropdown(companies) {
+  const companiesDropdownContent = document.querySelector('.companies-dropdown-content');
+
+  // Sort companies by name
+  companies.sort((a, b) => a.name.localeCompare(b.name));
+
+  companies.forEach((company) => {
+    const companyElement = document.createElement('a');
+    companyElement.className = 'w-100';
+    companyElement.innerHTML = `
+      <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="companies" data-id="${company.id}" data-name="${company.name}" onclick="toggleSelectedFilter(event)">${company.name}</button>
+    `;
+    companiesDropdownContent.appendChild(companyElement);
+  });
+}
+
+async function fetchTotalCompanies() {
   try {
-    const response = await fetch('/api/totalCompaniesCount');
-    const companiesCount = await response.json();
-    renderCompaniesCount(companiesCount);
+    const response = await fetch('/api/companies');
+    const companies = await response.json();
+    renderCompaniesDropdown(companies);
   } catch (error) {
     console.error('Error fetching recent companies count:', error);
   }
 }
 
+/*
+              <a class="w-100">
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="companies" data-id="<%= company %>" data-name="<%= company %>" onclick="toggleSelectedFilter(event)"><%= company %></button>
+              </a>
+              */
 function clearAllFilters() {
   state.filters = {
     experiencelevels: new Set(),
@@ -475,7 +501,11 @@ function resetState() {
   elements.jobList.innerHTML = '';
   elements.recentJobList.innerHTML = '';
   document.querySelector('.jobs-selected-filters').innerHTML = '';
-  document.getElementById('min-salary').value = '';
+  document.querySelectorAll('.dropdown-button').forEach((button) => {
+    if (button.getAttribute('aria-label') === 'Reset Filters') return;
+    button.innerHTML = button.getAttribute('aria-label') + '<span class="arrow">&#9662;</span>';
+    button.classList.remove('active');
+  }); 
 
   saveStateToLocalStorage();
   fetchJobPostings();
@@ -718,9 +748,12 @@ function restoreUIState() {
         } else if (type == 'tech-job-titles') {
           const button = document.querySelector(`button[data-type="tech-job-titles"][data-name="${filter}"]`);
           button.className = 'quick-option-btn clickable no-bg no-border w-100 mini-text';
-          const dropdown = document.querySelector('.title-dropdown');
+          const dropdown = document.querySelector('.job-title-button');
           dropdown.classList.add('active');
           dropdown.innerHTML = filter + '<span class="arrow">&#9662;</span>';
+        } else if (type == 'companies') {
+          const button = document.querySelector(`button[data-type="companies"][data-id="${id}"]`);
+          button.className = 'quick-option-btn clickable no-bg no-border w-100 mini-text';
         }
       });
     }
@@ -1091,11 +1124,15 @@ function toggleSelectedFilter(event) {
     'job-levels': 'experience-dropdown',
     'job-locations': 'location-dropdown',
     'tech-job-titles': 'job-title-dropdown',
+    'skills': 'skills-dropdown', // Add if applicable
+    'companies': 'companies-dropdown', // Add if applicable
   };
   const dropdownDefaultTextMap = {
     'job-levels': 'Experience Level',
     'job-locations': 'Location',
     'tech-job-titles': 'Job Title',
+    'skills': 'Skills', // Add if applicable
+    'companies': 'Companies', // Add if applicable
   };
 
   const dropdownClass = dropdownClassMap[type];
@@ -1248,8 +1285,10 @@ function updateState(type, id, name, logo, isRemoval = false) {
   }
 
   if (isRemoval) {
+    console.log(type, id, name)
     console.log('Before removal:', filterSet);
     if (type === 'companies') {
+      console.log(item);
       filterSet.forEach(item => {
         const parsedItem = JSON.parse(item);
         if (parsedItem.name === name) {
@@ -1266,7 +1305,7 @@ function updateState(type, id, name, logo, isRemoval = false) {
     console.log('After removal:', filterSet);
   } else {
     if (type === 'companies') {
-      filterSet.add(JSON.stringify({ id, name, logo }));
+      filterSet.add(id);
     } else if (type === 'tech-job-titles') {
       filterSet.add(id);
     } else {

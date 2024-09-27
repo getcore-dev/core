@@ -3607,7 +3607,9 @@ input::placeholder {
   box-sizing: border-box;
   max-height: 400px;
   text-wrap: nowrap;
-  overflow-y: scroll;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  overflow-y: auto;
   z-index: 1000;
   background-color: var(--light-mode-main-color);
   border: 1px solid var(--border-color);
@@ -3617,8 +3619,9 @@ input::placeholder {
   gap: .5rem;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
-  z-index: 1;
+  z-index: 1000;
   right: 0;
+  left: 0;
   margin-top: 5px;
   transition: opacity 0.3s ease, visibility 0.3s ease;
   opacity: 0;
@@ -3661,6 +3664,35 @@ input::placeholder {
 
 /* Responsive Adjustments (Optional) */
 @media screen and (max-width: 600px) {
+  .dropdown-content {
+    position: fixed;
+    box-sizing: border-box;
+    height: 60vh;
+    text-wrap: nowrap;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    overflow-y: auto;
+    z-index: 1000;
+    background-color: var(--light-mode-main-color);
+    border: 1px solid var(--border-color);
+    display: flex;
+    width: 100vw;
+    left: 0;
+    flex-direction: column;
+    gap: .5rem;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    z-index: 1000;
+    right: 0;
+    bottom: 0;
+    margin-top: 5px;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+  }
+
   .dropdown-button {
     justify-content: center;
   }

@@ -771,16 +771,6 @@ select {
   justify-content: space-between;
 }
 
-.dropdown-content {
-  position: absolute;
-  background-color: var(--light-mode-main-color);
-  max-width: 135px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-  padding: 2px 5px;
-  z-index: 2;
-  align-items: flex-start;
-}
-
 .job-flair {
   display: inline-flex;
   gap: 5px;

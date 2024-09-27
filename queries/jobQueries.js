@@ -1550,6 +1550,7 @@ ORDER BY jp.postedDate DESC
       const pool = await sql.connect();
       const result = await pool.request().query(`
         SELECT * FROM companies
+        ORDER BY name
       `);
       return result.recordset;
     } catch (err) {
