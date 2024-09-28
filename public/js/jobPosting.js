@@ -432,6 +432,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       ` : ''}
         </div>
 
+        ${job.isProcessed ? `
         <div class="job-skills-display">
 
           ${skillsHTML}
@@ -440,11 +441,18 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     ? `<span class="see-more" id="secondary-text">+${remainingTags} more</span>`
     : ''
 }
-
         </div>
+            ` : ''}
         <div class="job-posting-description ${job.recruiter_username === 'autojob' ? 'ai-generated-content' : ''}">
-  <h4 class="sub-text bold" style="margin-top:0;">AI-Generated Overview</h4>
-  <p class="sub-text readable">${job.description}</p>
+  ${job.isProcessed ? `
+      <h4 class="sub-text bold" style="margin-top:0;">AI-Generated Overview</h4>
+    <p class="sub-text readable">
+    ${job.description}
+    </p>
+    ` : `                <div class="autojob-warning">
+                    <span class="warning-icon">⚠️</span>
+                    <span class="warning-text">This post is scraped from the internet and may contain errors.</span>
+                </div>`}
 </div>
       
       <div class="interact-buttons flex space-between v-center">
@@ -531,10 +539,18 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
             </div>
         </div>
     </div>
+</div>
             <div class="company-description sub-text">
-              <h4 >Company Description</h4>
+              <h4>Company Description</h4>
               <p class="sub-text">${job.company_description}</p>
             </div>
+
+            ${ !job.isProcessed ? `
+            <div class="job-posting-description sub-text">
+              <h4 >Company Description</h4>
+              <p class="sub-text">${job.description}</p>
+            </div>
+            ` : ''}
             ${
   job.Requirements
     ? `
@@ -640,10 +656,7 @@ ${
   <h4 >Relocation</h4>
   <p>${job.relocation ? 'Yes' : 'No'}</p>
 </div>
-                <div class="autojob-warning">
-                    <span class="warning-icon">⚠️</span>
-                    <span class="warning-text">This post is scraped from the internet and may contain errors.</span>
-                </div>
+
 
 </div>
 

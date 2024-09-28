@@ -202,8 +202,14 @@ h5 {
 
 a,
 a:visited {
-  text-decoration: none;
+
+  text-decoration: underline;
   color: var(--light-mode-bold-text-color);
+}
+
+ul li {
+  list-style: none;
+  margin: .2rem .5rem;
 }
 
 

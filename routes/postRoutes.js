@@ -8,6 +8,7 @@ const getUserDetails = utilFunctions.getUserDetails;
 const { getLinkPreview } = require('../utils/utilFunctions');
 const userQueries = require('../queries/userQueries');
 const marked = require('marked');
+const DOMpurify = require('dompurify');
 const rateLimit = require('express-rate-limit');
 const PostController = require('../controllers/postController');
 const notificationQueries = require('../queries/notificationQueries');

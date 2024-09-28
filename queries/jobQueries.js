@@ -99,6 +99,18 @@ const jobQueries = {
       throw err;
     } 
   },
+
+  getCompanyJobs: async (companyId) => {
+    try {
+      const result = await sql.query`
+        SELECT id, title, link, company_id FROM JobPostings WHERE company_id = ${companyId}
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
   
   incrementJobApplicantCount: async (jobId) => {
     try {
@@ -1508,6 +1520,7 @@ ORDER BY jp.postedDate DESC
     }
   },
 
+
   getJobsByCompany: async (companyId, page, pageSize) => {
     try {
       const offset = (page - 1) * pageSize;
@@ -1681,7 +1694,9 @@ ORDER BY jp.postedDate DESC
     h1bVisaSponsorship,
     isRemote,
     equalOpportunityEmployerInfo,
-    relocation
+    relocation,
+    isProcessed = 0,
+    employmentType = 'Traditional'
   ) => {
     try {
       if (typeof link !== 'string') {
@@ -1763,7 +1778,9 @@ ORDER BY jp.postedDate DESC
             isRemote,
             equalOpportunityEmployerInfo,
             relocation,
-            applicants
+            applicants,
+            isProcessed,
+            employmentType
           )
           OUTPUT INSERTED.id
           VALUES (
@@ -1791,7 +1808,9 @@ ORDER BY jp.postedDate DESC
             ${isRemote},
             ${equalOpportunityEmployerInfo},
             ${relocation},
-            0
+            0,
+            ${isProcessed},
+            ${employmentType}
           )
         `;
         jobPostingId = result.recordset[0].id;

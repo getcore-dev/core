@@ -69,7 +69,7 @@
           <input type="text" id="job-search-input" class="job-posting-search-input" placeholder="Search jobs & companies" />
         </div>
 
-        <div class="flex flex-row w-100 gap-06 wrap">
+        <ul class="flex flex-row w-100 gap-06 wrap">
           <div class="dropdown" tabindex="0">
             <button aria-label="Experience Level" class="dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
               Experience Level
@@ -130,6 +130,7 @@
             </button>
 
             <div class="dropdown-content">
+              <input type="text" id="location-search-input" class="location-search-input" placeholder="Search locations" />
               <% const states = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"]; %>
               <% states.forEach(state => { %>
               <a class="w-100">
@@ -142,7 +143,7 @@
           <button aria-label="Reset Filters" class="dropdown-button no-bg no-border link clear-button px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false" type="button" onclick="resetState()">
             Reset Filters
           </button>
-        </div>
+        </ul>
         <div class="jobs-selected-filters">
         </div>
         <% if (errorMessages && errorMessages.length > 0) { %>

@@ -1,3 +1,4 @@
+const sanitizeHtml = require('sanitize-html'); // Import the sanitization library
 const url = require('url');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const OpenAI = require('openai');
@@ -19,6 +20,8 @@ const WebScraper = require('./webScraperService');
 const { link } = require('fs');
 const { set } = require('../app');
 const web = new WebScraper();
+const TurndownService = require('turndown');
+
 
 
 class ObjectSet extends Set {
@@ -174,58 +177,92 @@ class JobProcessor extends EventEmitter {
     // Convert title to lowercase for case-insensitive matching
     const lowercaseTitle = title.toLowerCase();
   
-    // Define tech job categories with associated keywords
-    const techCategories = {
-      software: ['software', 'developer', 'programmer', 'engineer', 'coder', 'c#', 'test'],
-      data: ['data', 'analyst', 'analytics', 'machine learning', 'ai', 'artificial intelligence'],
-      web: ['web', 'frontend', 'backend', 'full stack', 'ui', 'ux'],
-      systems: ['system', 'architect', 'devops', 'cloud', 'infrastructure'],
-      network: ['network', 'security', 'cybersecurity'],
-      database: ['database', 'sql', 'nosql', 'administrator'],
-      mobile: ['mobile', 'ios', 'android'],
-      specific_roles: ['product manager', 'scrum master', 'agile coach', 'tech lead', 'qa engineer', 'quality assurance'],
-      languages: ['java', 'python', 'javascript', 'c++', 'ruby', 'php', 'scala', 'typescript'],
-      game_dev: ['game', 'gameplay', 'graphics'],
-      blockchain: ['blockchain', 'crypto', 'ethereum', 'solidity'],
-      devops: ['devops', 'site reliability', 'qa', 'quality assurance', 'automation', 'tools'],
-      cloud: ['cloud', 'azure'],
-      tech: ['technology', 'technical', 'information technology'],
-      graphics: ['graphics', 'ui/ux', 'designer', 'animator'],
-      product: ['program', 'project'],
-    };
+    // Highly specific tech roles
+    const exactMatches = [
+      'software engineer', 'data scientist', 'full stack developer', 'machine learning engineer',
+      'devops engineer', 'systems architect', 'systems engineer', 'network engineer', 'data analyst',
+      'backend developer', 'frontend developer', 'web developer', 'mobile developer', 'cloud architect',
+      'cloud engineer', 'security engineer', 'cybersecurity analyst', 'technical lead', 'tech lead',
+      'database administrator', 'qa engineer', 'quality assurance engineer', 'ux designer', 'ui designer',
+      'product manager', 'scrum master', 'agile coach', 'site reliability engineer', 'automation engineer',
+      'blockchain developer', 'game developer', 'game designer', 'graphic designer', 'systems administrator',
+      'it support', 'it specialist', 'it manager', 'technical support', 'technical writer',
+      'ai engineer', 'artificial intelligence engineer', 'deep learning engineer', 'data engineer',
+      'big data engineer', 'data architect', 'information security analyst', 'robotics engineer',
+      'network administrator', 'embedded systems engineer', 'firmware engineer', 'test engineer',
+      'software tester', 'business analyst', 'it analyst', 'solution architect', 'enterprise architect',
+      'devsecops engineer', 'cloud specialist', 'systems analyst', 'applications engineer',
+      'platform engineer', 'release engineer', 'build engineer', 'hardware engineer',
+      'electrical engineer', 'electronics engineer', 'microcontroller engineer', 'ios developer',
+      'android developer', 'webmaster', 'security analyst', 'information technology specialist',
+      'technical consultant', 'pre-sales engineer', 'post-sales engineer', 'technical account manager',
+      'computer vision engineer', 'natural language processing engineer', 'nlp engineer',
+      'database developer', 'data warehouse engineer', 'etl developer', 'bi developer',
+      'business intelligence developer', 'data visualization engineer', 'cloud consultant',
+      'solutions engineer', 'integration engineer', 'salesforce developer', 'sap consultant',
+      'oracle developer', 'erp consultant', 'crm consultant', 'help desk technician',
+      'desktop support technician', 'it technician', '3d artist', 'vr developer', 'ar developer',
+      'qa tester', 'quality assurance tester', 'network technician', 'it director', 'cto',
+      'chief technology officer', 'cio', 'chief information officer', 'ciso',
+      'chief information security officer'
+    ];
   
-    // Function to check if the title contains any of the keywords
-    const containsKeyword = (keywords) => keywords.some(keyword => lowercaseTitle.includes(keyword));
+    // Non-tech engineering roles to exclude
+    const nonTechEngineering = [
+      'civil engineer', 'mechanical engineer', 'chemical engineer', 'aeronautical engineer',
+      'structural engineer', 'environmental engineer', 'biomedical engineer', 'agricultural engineer',
+      'nuclear engineer', 'petroleum engineer', 'geological engineer', 'industrial engineer',
+      'materials engineer', 'construction engineer', 'metallurgical engineer', 'mining engineer',
+      'transportation engineer', 'textile engineer', 'automotive engineer', 'marine engineer',
+      'naval engineer', 'sound engineer', 'production engineer', 'architect', 'draftsman',
+      'fashion designer', 'interior designer', 'graphic artist', 'chemist', 'physicist',
+      'lab technician', 'laboratory technician', 'field technician'
+    ];
   
-    // Check for exact matches or highly specific tech roles
-    if (containsKeyword(['software engineer', 'tech project manager', 'gameplay animator', 'data center technician', 'desktop support', 'saas administrator', 'character assembly artist', 'environment artist', 'data scientist', 'technical artist', 'engine programmer', 'ui programmer', 'graphic designer', 'systems designer', 'systems engineer', 'full stack developer', 'machine learning engineer', 'devops engineer', 'systems architect'])) {
+    // Function to create regex patterns for exact matches and keywords
+    const createPattern = (words) => new RegExp(`\\b(${words.join('|')})\\b`, 'i');
+  
+    const techPattern = createPattern(exactMatches);
+    const nonTechPattern = createPattern(nonTechEngineering);
+  
+    // If title matches a non-tech engineering role, return false
+    if (nonTechPattern.test(lowercaseTitle)) {
+      return false;
+    }
+  
+    // If title matches a tech role, return true
+    if (techPattern.test(lowercaseTitle)) {
       return true;
     }
   
-    // Check if the title contains keywords from at least two different categories
-    const categoriesFound = Object.values(techCategories).filter(category => containsKeyword(category)).length;
-    if (categoriesFound >= 2) {
-      return true;
-    }
+    // List of generic tech-related keywords
+    const techKeywords = [
+      'developer', 'programmer', 'engineer', 'software', 'hardware', 'technology', 'technician',
+      'administrator', 'analyst', 'architect', 'consultant', 'specialist', 'support', 'coder',
+      'tester', 'manager', 'devops', 'cloud', 'data', 'ai', 'artificial intelligence',
+      'machine learning', 'ml', 'blockchain', 'crypto', 'cybersecurity', 'security', 'database',
+      'web', 'mobile', 'ios', 'android', 'ux', 'ui', 'qa', 'quality assurance', 'sre',
+      'automation', 'product', 'agile', 'scrum', 'network', 'system', 'systems', 'it',
+      'information technology', 'digital', 'full stack', 'front end', 'backend', 'back end',
+      'saas', 'paas', 'big data', 'data science', 'devsecops', 'nlp', 'natural language processing',
+      'vr', 'ar', 'virtual reality', 'augmented reality', 'robotics', 'embedded', 'firmware',
+      'microcontroller', 'fpga', 'simulation', 'cloud computing', 'docker', 'kubernetes',
+      'container', 'microservices', 'serverless', 'distributed systems', 'e-commerce', 'ecommerce',
+      'internet', 'digital transformation', 'iot', 'internet of things', 'opensource', 'open source',
+      'technical', 'computing', 'computational', 'scientist'
+    ];
   
-    // Check for titles that explicitly mention technology or engineering
-    if (lowercaseTitle.includes('technology') || lowercaseTitle.includes('engineer')) {
-      // But exclude non-tech engineering roles
-      const nonTechEngineering = ['civil engineer', 'tax analyst', 'field', 'smart meter engineer', 'meter engineer', 'mechanical engineer', 'chemical engineer'];
-      if (!nonTechEngineering.some(role => lowercaseTitle.includes(role))) {
-        return true;
-      }
-    }
+    const techKeywordsPattern = createPattern(techKeywords);
   
-    // Check for specific tech-related words that might appear alone
-    const standaloneKeywords = ['programmer', 'developer', 'coder', 'analyst', 'architect', 'admin'];
-    if (standaloneKeywords.some(keyword => lowercaseTitle.split(/\s+/).includes(keyword))) {
+    // If title contains any tech keywords, return true
+    if (techKeywordsPattern.test(lowercaseTitle)) {
       return true;
     }
   
     // If none of the above conditions are met, it's likely not a tech job
     return false;
   }
+  
 
   async saveProcessedLink(link) {
     this.processedLinks.add(link);
@@ -271,6 +308,7 @@ class JobProcessor extends EventEmitter {
 
   async makeRequest(url) {
     try {
+      if (url.includes('myworkdayjobs.com')) return await this.grabWorkDayLinks(url);
       const response = await http.get(url, {
         timeout: 10000, // 10 seconds timeout
         headers: {
@@ -286,18 +324,63 @@ class JobProcessor extends EventEmitter {
           return status >= 200 && status < 300;
         },
       });
-
+  
       return response;
     } catch (error) {
-      if (error.response) {
-        console.error(`Request failed with status ${error.response.status}`);
-      } else if (error.request) {
-        console.error('No response received:', error.request);
-      } else {
-        console.error('Error setting up request:', error.message);
-      }
-      throw error;
+      console.error('HTTP request failed. Falling back to Puppeteer.');
+      return await this.usePuppeteerFallback(url);
     }
+  }
+
+  async usePuppeteerFallback(url) {
+    let browser;
+    try {
+      browser = await puppeteer.launch({ headless: 'new' });
+      const page = await browser.newPage();
+      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+      
+      console.log('loadde the fucking browser');
+      // Navigate to the page and wait for network to be idle
+      await page.goto(url, { 
+        waitUntil: 'networkidle0',
+        timeout: 30000 // Increase timeout to 30 seconds
+      });
+
+      console.log('okay we have the page loaded at least');
+  
+      const content = await page.content();
+  
+      return {
+        data: content,
+        status: 200,
+      };
+    } catch (error) {
+      console.error('Puppeteer fallback failed:', error);
+      throw error;
+    } finally {
+      if (browser) {
+        await browser.close();
+      }
+    }
+  }
+
+  async autoScroll(page) {
+    await page.evaluate(async () => {
+      await new Promise((resolve) => {
+        let totalHeight = 0;
+        const distance = 100;
+        const timer = setInterval(() => {
+          const scrollHeight = document.body.scrollHeight;
+          window.scrollBy(0, distance);
+          totalHeight += distance;
+  
+          if (totalHeight >= scrollHeight) {
+            clearInterval(timer);
+            resolve();
+          }
+        }, 100);
+      });
+    });
   }
 
 
@@ -466,7 +549,7 @@ class JobProcessor extends EventEmitter {
           }
 
           // Process the job link to extract job data
-          const jobData = await this.processJobLink(jobLink.applyLink);
+          const jobData = await this.processJobLinkWithRetry(jobLink.applyLink);
           console.log('jobData', jobData);
 
           // If the job is not marked as skipped, add it to the database
@@ -620,7 +703,11 @@ class JobProcessor extends EventEmitter {
 
     try {
       if (jobBoardUrl.includes('linkedin.com')) {
+        return;
         await this.searchLinkedInJobs(allLinks);
+      }  else if (jobBoardUrl.includes('myworkdayjobs.com')) {
+        const links = await this.grabWorkDayLinks(jobBoardUrl);
+        return { companyId: company.id, links };
       } else {
         const firstPageResponse = await this.makeRequest(jobBoardUrl);
         const $firstPage = cheerio.load(firstPageResponse.data);
@@ -633,23 +720,15 @@ class JobProcessor extends EventEmitter {
           }
         }
 
-        for (let page = 1; page <= maxPages; page++) {
-          const pageUrl = this.getPageUrl(jobBoardUrl, page);
-          console.log(`Scraping page ${page} of ${maxPages}: ${pageUrl}`);
 
-          const response = await this.makeRequest(pageUrl);
-          const $ = cheerio.load(response.data);
-          const pageLinks = await this.extractJobLinks($, pageUrl);
+        const firstPageLinks = await this.extractJobLinks($firstPage, jobBoardUrl);
           
-          pageLinks.forEach(link => allLinks.add(link));
-
-          if (!this.hasNextPage($, pageUrl)) {
-            console.log(`No more pages found after page ${page}`);
-            break;
+        firstPageLinks.forEach(link => {
+          if (!Array.from(allLinks).some(existingLink => existingLink.url.trim() === link.url.trim())) {
+            allLinks.add(link);
           }
+        });
 
-          await this.delay(this.DELAY_BETWEEN_REQUESTS);
-        }
       }
 
       console.log(`Collected ${allLinks.size} job links from ${jobBoardUrl}`);
@@ -658,6 +737,18 @@ class JobProcessor extends EventEmitter {
       console.error(`Error collecting job links from ${jobBoardUrl}:`, error);
       return { companyId: company.id, links: [] };
     }
+  }
+
+  async extractJobLinksFromPage(jobBoardUrl) {
+    console.log(`Extracting job links from ${jobBoardUrl}`);
+    const pageUrl = this.getPageUrl(jobBoardUrl, 1);
+
+    const response = await this.makeRequest(pageUrl);
+    console.log(response.data);
+    const $ = cheerio.load(response.data);
+    const pageLinks = await this.extractJobLinks($, pageUrl);
+    console.log(pageLinks);
+    return pageLinks;
   }
 
   getPageUrl(baseUrl, page) {
@@ -686,12 +777,13 @@ class JobProcessor extends EventEmitter {
 
   async extractJobLinks($, baseUrl) {
     const links = new ObjectSet();
+    console.log('baseUrl', baseUrl);
   
     if (baseUrl.includes('linkedin.com')) {
       const promises = [];
       $('.job-card-container').each((index, element) => {
         const linkElement = $(element).find('.job-card-container__link');
-        const link = linkElement.attr('href');
+        const link = linkElement.attr('href').trim();
         const title = linkElement.text().trim();
   
         if (this.isTechJob(title)) {
@@ -705,13 +797,27 @@ class JobProcessor extends EventEmitter {
     } else {
       $('a').each((index, element) => {
         const link = $(element).attr('href');
-        const title = $(element).text().toLowerCase();
-        console.log(title);
-        if (this.isTechJob(title)) {
+        if (!link) return;
+    
+        const title = $(element).text().trim();
+        if (!title) return; // Skip if title is empty after trimming
+        const jobLinkPattern = /(\b(job|career|position|opportunity)\b.*)|.*(jobId=|jobID=|job_id=|positionId=|openingId=).*/i;
+
+        // Only process links that are job postings
+        if (!jobLinkPattern.test(link)) return;
+    
+        // Normalize the title by replacing special characters with spaces
+        const normalizedTitle = title.replace(/[\/\-]/g, ' ').toLowerCase();
+    
+    
+        if (this.isTechJob(normalizedTitle)) {
           const jobUrl = new URL(link, baseUrl).href;
           links.add(JSON.stringify({ url: jobUrl }));
+        } else {
+          // console.log(`Not a tech job: ${title}`);
         }
       });
+    
     }
   
     // Convert Set to Array and parse JSON strings back to objects
@@ -930,16 +1036,25 @@ class JobProcessor extends EventEmitter {
   }
 
   async hasNextPage($, currentUrl) {
+    // if greenhouse it doesnt have a next page
+    if (currentUrl.includes('greenhouse.io')) {
+      return false;
+    }
     this.updateProgress({ currentAction: 'Checking next page' });
     const url = new URL(currentUrl);
 
+    try {
     // Specific handling for known job board domains
-    if (url.hostname.includes('linkedin.com')) {
-      return this.hasNextPageLinkedIn($, url);
-    } else if (url.hostname.includes('careers.microsoft.com')) {
-      return this.hasNextPageMicrosoft($, url);
-    } else {
-      return this.hasNextPageGeneric($, url);
+      if (url.hostname.includes('linkedin.com')) {
+        return await this.hasNextPageLinkedIn($, url);
+      } else if (url.hostname.includes('careers.microsoft.com')) {
+        return await this.hasNextPageMicrosoft($, url);
+      } else {
+        return await this.hasNextPageGeneric($, url);
+      }
+    } catch (error) {
+      console.error(`Error checking next page for ${url}:`, error);
+      return false;
     }
   }
 
@@ -990,7 +1105,7 @@ class JobProcessor extends EventEmitter {
       }
   
       if (nextPageUrl && nextPageUrl !== url.toString()) {
-        return await this.checkNextPage(nextPageUrl);
+        return nextPageUrl;
       }
     }
   
@@ -1022,7 +1137,8 @@ class JobProcessor extends EventEmitter {
         nextPageUrl.searchParams.set(pageParam || 'page', (currentPage + 1).toString());
       }
   
-      return await this.checkNextPage(nextPageUrl.toString());
+      console.log(`Checking next page: ${nextPageUrl}`);
+      return nextPageUrl.toString();
     }
   
     console.log('No more jobs found. Stopping pagination.');
@@ -1169,7 +1285,7 @@ class JobProcessor extends EventEmitter {
   async processJobLinkWithRetry(link, retryCount = 0) {
     try {
       await this.rateLimit(!this.useGemini);
-      return await this.processJobLink(link);
+      return this.processJobLink(link);
     } catch (error) {
       const rateLimitDelay = this.parseRateLimitError(error);
       if (rateLimitDelay && retryCount < this.MAX_RETRIES) {
@@ -1227,6 +1343,359 @@ class JobProcessor extends EventEmitter {
     return Array.from(allLinks);
   }
 
+  async processGreenhouseJobLink (url) {
+    // grab div.job__title and div.job__description from the page
+
+    // get the company part of the url
+    // https://job-boards.greenhouse.io/flexport/jobs/6035440?gh_jid=6035440 you should grab 'flexport'
+    const company = url.split('/')[3];
+    const companyUrl = `https://job-boards.greenhouse.io/${company}`;
+    const companyId = await this.getOrCreateCompany(company, '', '', companyUrl, '', '', '', '', '');
+    console.log(companyId);
+
+    // return an object with title and description
+    const response = await axios.get(url);
+    const $ = cheerio.load(response.data);
+    const title = $('.section-header').text().trim();
+    const location = $('.body--metadata').text().trim();
+    const descriptionHtml = $('div.job__description').html();
+
+    const turndownService = new TurndownService({
+      headingStyle: 'atx', // Use ATX-style headings (e.g., # Heading)
+      bulletListMarker: '-', // Use dashes for bullet lists
+      codeBlockStyle: 'fenced', // Use fenced code blocks
+      emDelimiter: '*', // Use asterisks for emphasis
+      strongDelimiter: '**', // Use double asterisks for strong emphasis
+    });
+
+    const descriptionMarkdown = turndownService.turndown(descriptionHtml).trim();
+    
+
+    console.log({ url, companyId, title, description: descriptionMarkdown, location });
+    return { url, companyId, title, description: descriptionMarkdown, location };
+  }
+
+  async processLeverJobLink (url) {
+    // ensure there is no /apply after the url like https://jobs.lever.co/immuta/6f50874d-64c9-4fb2-b87a-d6a8c18a7db6/apply
+    url = url.split('/apply')[0];
+    // grab div.job__title and div.job__description from the page
+
+    // get the company part of the url
+    // https://jobs.lever.co/immuta/6f50874d-64c9-4fb2-b87a-d6a8c18a7db6, should grab 'immuta'
+    const company = url.split('/')[3];
+    const companyUrl = `https://jobs.lever.co/${company}`;
+    // check if it exists in the db, if not create it
+    const companyId = await this.getOrCreateCompany(company, '', '', companyUrl, '', '', '', '', '');
+
+    // return an object with title and description
+    const response = await axios.get(url);
+    const $ = cheerio.load(response.data);
+
+    /*
+    <div class="posting-headline"><h2>Product Engineering Internship (Summer 2025)</h2><div class="posting-categories"><div href="#" class="sort-by-time posting-category medium-category-label width-full capitalize-labels location">College Park, MD</div><div href="#" class="sort-by-team posting-category medium-category-label capitalize-labels department">Internships – Internships /</div><div href="#" class="sort-by-commitment posting-category medium-category-label capitalize-labels commitment">Intern /</div><div href="#" class="sort-by-time posting-category medium-category-label capitalize-labels workplaceTypes">Hybrid</div></div></div>
+    */
+    // get the h2 element within posting-headline div
+    const title = $('.posting-headline h2').text().trim();
+    const location = $('.location').text().trim();
+    const experience_level = $('.commitment').text().replace('Intern', 'Internship').replace('/', '').trim();
+    const employmentType = $('.workplaceTypes').text().trim();
+    const descriptionHtml = $('div[data-qa="job-description"]').html() + $('div[data-qa="closing-description"]').html();
+
+    const turndownService = new TurndownService({
+      headingStyle: 'atx', // Use ATX-style headings (e.g., # Heading)
+      bulletListMarker: '-', // Use dashes for bullet lists
+      codeBlockStyle: 'fenced', // Use fenced code blocks
+      emDelimiter: '*', // Use asterisks for emphasis
+      strongDelimiter: '**', // Use double asterisks for strong emphasis
+    });
+
+    const descriptionMarkdown = turndownService.turndown(descriptionHtml).trim();
+    
+
+    console.log({ url, companyId, title, experience_level, employmentType, description: descriptionMarkdown, location });
+    return { url, companyId, title, experience_level, employmentType, description: descriptionMarkdown, location };
+  }
+
+  async processBoFALink (url) {
+    // grab div.job__title and div.job__description from the page
+
+    // get the company part of the url
+    // https://job-boards.greenhouse.io/flexport/jobs/6035440?gh_jid=6035440 you should grab 'flexport'
+    const company = 'Bank of America';
+    const companyId = await this.getOrCreateCompany(company, '', '', '', '', '', '', '', '');
+    console.log(companyId);
+
+    // return an object with title and description
+    const response = await axios.get(url);
+    const $ = cheerio.load(response.data);
+    const title = $('.job-description-body__title').text().trim();
+    const location = $('.locations__names').text().trim();
+    const descriptionHtml = $('.job-description-body__internal').html();
+
+    const turndownService = new TurndownService({
+      headingStyle: 'atx', // Use ATX-style headings (e.g., # Heading)
+      bulletListMarker: '-', // Use dashes for bullet lists
+      codeBlockStyle: 'fenced', // Use fenced code blocks
+      emDelimiter: '*', // Use asterisks for emphasis
+      strongDelimiter: '**', // Use double asterisks for strong emphasis
+    });
+
+    const descriptionMarkdown = turndownService.turndown(descriptionHtml).trim();
+    
+
+    console.log({ url, companyId, title, description: descriptionMarkdown, location });
+    return { url, companyId, title, description: descriptionMarkdown, location };
+  }
+
+  convertWorkdayLink(url) {
+    try {
+      // Parse the URL
+      const parsedUrl = new URL(url);
+      
+      // Extract the company name and wd number
+      const hostParts = parsedUrl.hostname.split('.');
+      const company = hostParts[0];
+      const wdNumber = hostParts[1].replace('wd', '');
+      
+      // Construct the standardized URL
+      const standardizedUrl = `https://${company}.wd${wdNumber}.myworkdayjobs.com/wday/cxs/${company}/Careers/jobs`;
+      
+      return standardizedUrl;
+    } catch (error) {
+      console.error('Error converting Workday link:', error.message);
+      return null;
+    }
+  }
+  
+  async grabWorkDayLinks(url) {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+  
+    // Enable request interception
+    await page.setRequestInterception(true);
+  
+    let allJobs = [];
+    let interceptedData = null;
+  
+    page.on('request', request => {
+      if (request.url().includes('/jobs') && request.method() === 'POST') {
+        request.continue();
+      } else {
+        request.continue();
+      }
+    });
+  
+    page.on('response', async response => {
+      if (response.url().includes('/jobs') && response.request().method() === 'POST') {
+        try {
+          const data = await response.json();
+          if (data && data.jobPostings) {
+            interceptedData = data;
+          }
+        } catch (error) {
+          console.error('Error parsing response:', error);
+        }
+      }
+    });
+  
+    try {
+      // Navigate to the page
+      await page.goto(url, { waitUntil: 'networkidle0' });
+  
+      // Wait for the job postings data to be intercepted
+      while (!interceptedData) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+  
+      // Process the intercepted data
+      const total = interceptedData.total;
+      allJobs = interceptedData.jobPostings.map(job => ({
+        ...job,
+        externalPath: `${url.replace('/jobs', '')}${job.externalPath}`
+      }));
+  
+      console.log(`Fetched ${allJobs.length} out of ${total} jobs`);
+  
+      // If there are more jobs to fetch, you may need to implement pagination here
+      // This would involve clicking a "Load More" button or handling infinite scroll
+  
+      console.log('All job data fetched successfully:', allJobs);
+      return allJobs;
+    } catch (error) {
+      console.error('Error fetching job data:', error.message);
+      return null;
+    } finally {
+      await browser.close();
+    }
+  }
+
+  async processC3AILink(url) {
+    let browser;
+    try {
+    // Define the company
+      const company = 'C3.ai';
+      const companyId = await this.getOrCreateCompany(company, '', '', '', '', '', '', '', '');
+      console.log(`Company ID: ${companyId}`);
+
+      // Launch Puppeteer
+      browser = await puppeteer.launch({ headless: true });
+      const page = await browser.newPage();
+
+      // Optional: Set a user-agent to mimic a real browser
+      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
+      'AppleWebKit/537.36 (KHTML, like Gecko) ' +
+      'Chrome/113.0.0.0 Safari/537.36');
+
+      // Navigate to the URL and wait until the network is idle
+      console.log(`Navigating to ${url}...`);
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+
+      // Introduce an explicit delay of 3 seconds to allow dynamic content to load
+      console.log('Waiting for 3 seconds to ensure dynamic content loads...');
+      await this.delay(3000);
+
+      // Use Locators to wait for elements
+      const titleLocator = page.locator('.app-title');
+      await titleLocator.waitHand;
+      const title = await titleLocator.textContent();
+      console.log(`Title: ${title.trim()}`);
+
+      const locationLocator = page.locator('.location');
+      await locationLocator.wait();
+      const location = await locationLocator.textContent();
+      console.log(`Location: ${location.trim()}`);
+
+      // Locate the description element
+      const descriptionLocator = page.locator('div.page > div.section > div.layoutArea > div.column > div.page > div.section > div.layoutArea > div.column');
+      await descriptionLocator.wait();
+      const descriptionHtml = await descriptionLocator.evaluate(el => el.innerHTML);
+
+      if (!descriptionHtml) {
+        console.log('No description found, skipping...');
+        return { skipped: true, reason: 'No description found' };
+      }
+
+      if (!this.isTechJob(title.trim())) { 
+        console.log('Not a tech job, skipping...');
+        return { skipped: true, reason: 'Not a tech job' };
+      }
+
+      // Convert HTML to Markdown
+      const turndownService = new TurndownService({
+        headingStyle: 'atx',
+        bulletListMarker: '-',
+        codeBlockStyle: 'fenced',
+        emDelimiter: '*',
+        strongDelimiter: '**',
+      });
+
+      const descriptionMarkdown = turndownService.turndown(descriptionHtml).trim();
+      console.log('Description converted to Markdown.');
+
+      // Return the extracted data
+      return { url, companyId, title: title.trim(), description: descriptionMarkdown, location: location.trim() };
+
+    } catch (error) {
+      console.error(`Error processing URL ${url}:`, error);
+      return { skipped: true, reason: 'Error occurred' };
+    } finally {
+      if (browser) {
+        await browser.close();
+        console.log('Browser closed.');
+      }
+    }
+  }
+
+
+  async processWorkDayJobLink(url) {
+    // make a get request to the url it will reply with something in the format:
+    /*
+    {
+  "jobPostingInfo": {
+    "id": "79d7e6973b75100165f39588d4bf0001",
+    "title": "PGIM Investments - IBD Regional Director, North Carolina",
+    "jobDescription": "\u003Cp\u003EJob Classification:\u003C/p\u003ESales - Sales\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cb\u003E\u003Cspan\u003EWhat you will do\u003C/span\u003E\u003C/b\u003E\u003C/p\u003E\u003Cp\u003EThe External Wholesaler is responsible for representing PGIM through retail investment vehicles (mutual funds, separate accounts &amp; 401(k) platforms) to investment professionals and partner firm product coordinators.\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003EThe External Wholesaler will engage advisors/teams in several relationship building activities. These activities include: providing technical information on the products they represent, demonstrating a strong knowledge of the competitive landscape, financial markets and industry related topics. The External Wholesaler would also act as a consultant in the areas of practice management and portfolio construction.\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cb\u003EIn field responsibilities are to drive Prudential Investments separate account and mutual fund sales and improve retention of PGIM assets under management including\u003C/b\u003E\u003C/p\u003E\u003Cul\u003E\u003Cli\u003ERepresenting Prudential Investments mutual funds and separate accounts to advisors knowledgeably and effectively so that advisors can clearly identify the benefits of the products relative to its competitors.\u003C/li\u003E\u003C/ul\u003E\u003Cul\u003E\u003Cli\u003ESharing business building ideas and strategies with financial advisors.\u003C/li\u003E\u003Cli\u003EProviding expert perspective in client meetings.\u003C/li\u003E\u003Cli\u003EProviding technical information to advisors\u003C/li\u003E\u003Cli\u003EOffering and coordinating client marketing assistance to advisors (i.e., client and prospect seminars).\u003C/li\u003E\u003Cli\u003EWorking closely with other business partners to align activities and plans for the given region and its advisors\u003C/li\u003E\u003Cli\u003EDevelop collaborative quarterly business plans for their region around meeting each of the above objectives.\u003C/li\u003E\u003C/ul\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cb\u003E\u003Cspan\u003EWhat you will bring\u003C/span\u003E\u003C/b\u003E\u003C/p\u003E\u003Cul\u003E\u003Cli\u003EThe candidate must be motivated with strong territory management and selling skills, and the ability to drive to his/her objectives relatively autonomously.\u003C/li\u003E\u003Cli\u003EThe candidate should have 5-7 years of experience in the Investments industry, and 3-5 years of wholesaling experience.\u003C/li\u003E\u003Cli\u003EThe candidate will be required to travel extensively in the field, approximately 90% of the time.\u003C/li\u003E\u003Cli\u003ERequired licenses: Series 7 and Series 63 or 65.\u003C/li\u003E\u003C/ul\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cb\u003E\u003Cspan\u003EWhat we offer you \u003C/span\u003E\u003C/b\u003E\u003C/p\u003E\u003Cul\u003E\u003Cli\u003EMedical, dental, vision, life insurance and PTO (Paid Time Off)\u003C/li\u003E\u003Cli\u003ERetirement plans:401(k) plan with generous company match (up to 4%) and Company-funded pension plan\u003C/li\u003E\u003Cli\u003EWellness Programs to help you achieve your wellbeing goals, including up to $1,600 a year for reimbursement of items purchased to support personal wellbeing needs\u003C/li\u003E\u003Cli\u003EWork/Life Resources to help support topics such as parenting, housing, senior care, finances, pets, legal matters, education, emotional health, and career development.\u003C/li\u003E\u003Cli\u003ETuition Assistance to help finance traditional college enrollment, approved degrees, many accredited certificate programs, and industry designations.\u003C/li\u003E\u003C/ul\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cb\u003EAbout PGIM Investments\u003C/b\u003E\u003C/p\u003E\u003Cp\u003EPGIM Investments is a diversified distributor of asset management capabilities, with over 100 actively managed funds globally. We are dedicated to helping clients tackle their toughest investment challenges and base the foundation of our investment strategy around collaboration and innovation. Our leadership team welcomes new ideas and challenging the status-quo and are committed to developing talent for long-term success. \u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cb\u003EA GLOBAL FIRM WITH A DIVERSE &amp; INCLUSIVE CULTURE\u003C/b\u003E\u003C/p\u003E\u003Cp\u003EAs the Global Asset Management business of Prudential, we’re always looking for ways to improve financial services. We’re passionate about making a meaningful impact - touching the lives of millions and solving financial challenges in an ever-changing world. We also believe talent is key to achieving our vision and are intentional about building a culture on respect and collaboration. When you join PGIM, you’ll unlock a motivating and impactful career – all while growing your skills and advancing your profession at one of the world’s leading global asset managers! If you’re not afraid to think differently and challenge the status quo, come and be a part of a dedicated team that’s investing in your future by shaping tomorrow today.\u003C/p\u003E\u003Cp\u003EAt PGIM, You Can!\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cp\u003E\u003Cspan\u003EPrudential Financial, Inc. of the United States is not affiliated with Prudential plc. which is headquartered in the United Kingdom.\u003C/span\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cspan\u003EPrudential is a multinational financial services leader with operations in the United States, Asia, Europe, and Latin America. Leveraging its heritage of life insurance and asset management expertise, Prudential is focused on helping individual and institutional customers grow and protect their wealth. The company&#39;s well-known Rock symbol is an icon of strength, stability, expertise and innovation that has stood the test of time. Prudential&#39;s businesses offer a variety of products and services, including life insurance, annuities, retirement-related services, mutual funds, asset management, and real estate services.\u003C/span\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cspan\u003EWe recognize that our strength and success are directly linked to the quality and skills of our diverse associates. We are proud to be a place where talented people who want to make a difference can grow as professionals, leaders, and as individuals. Visit \u003Ca href=\"http://www.prudential.com/\" target=\"_blank\"\u003Ewww.prudential.com\u003C/a\u003E to learn more about our values, our history and our brand.\u003C/span\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cspan\u003EPrudential is an equal opportunity employer. All qualified applicants will receive consideration for employment without regard to race, color, religion, national origin, ancestry, sex, sexual orientation, gender identity, national origin, genetics, disability, marital status, age, veteran status, domestic partner status , medical condition or any other characteristic protected by law. \u003C/span\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cspan\u003EThe Prudential Insurance Company of America, Newark, NJ and its affiliates.\u003C/span\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cspan\u003ENote that this posting is intended for individual applicants. Search firms or agencies should email Staffing at \u003Ca href=\"mailto:staffingagencies&#64;prudential.com\" target=\"_blank\"\u003E\u003Cu\u003E\u003Cspan\u003Estaffingagencies&#64;prudential.com\u003C/span\u003E\u003C/u\u003E\u003C/a\u003E for more information about doing business with Prudential.\u003C/span\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cspan\u003EPEOPLE WITH DISABILITIES:\u003Cbr /\u003EIf you need an accommodation to complete the application process, which may include an assessment, please email \u003C/span\u003E\u003Ca href=\"mailto:accommodations.hw&#64;prudential.com\" target=\"_blank\"\u003Eaccommodations.hw&#64;prudential.com\u003C/a\u003E.\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cspan\u003EPlease note that the above email is solely for individuals with disabilities requesting an accommodation.  If you are experiencing a technical issue with your application or an assessment, please email \u003C/span\u003E \u003Cspan\u003E\u003Ca href=\"mailto:careers.technicalsupport&#64;prudential.com\" target=\"_blank\"\u003E\u003Cspan\u003Ecareers.technicalsupport&#64;prudential.com\u003C/span\u003E\u003C/a\u003E\u003C/span\u003E \u003Cspan\u003E to request assistance.\u003C/span\u003E\u003C/p\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E",
+    "location": "NC-Virtual Office",
+    "postedOn": "Posted 16 Days Ago",
+    "startDate": "2024-09-11",
+    "timeType": "Full time",
+    "jobReqId": "R-118647",
+    "jobPostingId": "PGIM-Investments---IBD-Regional-Director--North-Carolina_R-118647-1",
+    "jobPostingSiteId": "Careers",
+    "country": {
+      "descriptor": "United States of America",
+      "id": "bc33aa3152ec42d4995f4791a106ed09"
+    },
+    "canApply": true,
+    "posted": true,
+    "includeResumeParsing": true,
+    "jobRequisitionLocation": {
+      "descriptor": "NC-Virtual Office",
+      "country": {
+        "descriptor": "United States of America",
+        "id": "bc33aa3152ec42d4995f4791a106ed09",
+        "alpha2Code": "US"
+      }
+    },
+    "externalUrl": "https://pru.wd5.myworkdayjobs.com/Careers/job/NC-Virtual-Office/PGIM-Investments---IBD-Regional-Director--North-Carolina_R-118647-1",
+    "questionnaireId": "095bc6d2e6db0101b58b3f616e600000",
+    "secondaryQuestionnaireId": "666020109e0710019c47e39b43130000",
+    "supplementaryQuestionnaireId": "72f882abbfd11001b1e02fc8cc580000"
+  },
+  "hiringOrganization": {
+    "name": "072 PGIM Investments,LLC",
+    "url": ""
+  },
+  "similarJobs": [],
+  "userAuthenticated": false
+}
+  */
+
+    const response = await axios.get(url);
+    const data = response.data;
+    console.log(data);
+    const jobPostingInfo = data.jobPostingInfo;
+    const title = jobPostingInfo.title;
+    const location = jobPostingInfo.location;
+    const date = jobPostingInfo.startDate;
+    const descriptionHtml = jobPostingInfo.jobDescription;
+
+    const hiringOrganization = data.hiringOrganization;
+
+
+  }
+
+
+
+  async processAbbVieLink (url) {
+    // grab div.job__title and div.job__description from the page
+
+    // get the company part of the url
+    // https://job-boards.greenhouse.io/flexport/jobs/6035440?gh_jid=6035440 you should grab 'flexport'
+    const company = 'AbbVie';
+    const companyId = await this.getOrCreateCompany(company, '', '', '', '', '', '', '', '');
+    console.log(companyId);
+
+    // return an object with title and description
+    const response = await axios.get(url);
+    const $ = cheerio.load(response.data);
+    const title = $('.header__text').text().trim();
+    const location = $('.attrax-job-information-widget__freetext-field-value').text().trim();
+    const descriptionHtml = $('.description-widget').html();
+
+    const turndownService = new TurndownService({
+      headingStyle: 'atx', // Use ATX-style headings (e.g., # Heading)
+      bulletListMarker: '-', // Use dashes for bullet lists
+      codeBlockStyle: 'fenced', // Use fenced code blocks
+      emDelimiter: '*', // Use asterisks for emphasis
+      strongDelimiter: '**', // Use double asterisks for strong emphasis
+    });
+
+    const descriptionMarkdown = turndownService.turndown(descriptionHtml).trim();
+    
+    return { url, companyId, title, description: descriptionMarkdown, location };
+  }
+
   async processJobLink(link) {
     const url = typeof link === 'object' && link.url ? link.url : link;
 
@@ -1239,6 +1708,31 @@ class JobProcessor extends EventEmitter {
       return { skipped: true, reason: 'Already processed' };
     }
 
+    // check if link contains greenhouse.io
+    if (url && url.includes('greenhouse.io')) {
+      const jobData = await this.processGreenhouseJobLink(url);
+      return jobData;
+    } else if (url && url.includes('bankofamerica.com')) {
+      const jobData = await this.processBoFALink(url);
+      return jobData;
+    } else if (url && url.includes('abbvie.com')) {
+      const jobData = await this.processAbbVieLink(url);
+      return jobData;
+    } else if (url && url.includes('c3.ai')) {
+      const jobData = await this.processC3AILink(url);
+      return jobData;
+    } else if (url && url.includes('lever.co')) {
+      const jobData = await this.processLeverJobLink(url);
+      return jobData;
+    } else if (url && url.includes('myworkdayjobs.com')) {
+      const jobData = await this.processWorkDayJobLink(url);
+      return jobData;
+    } else {
+      console.error('Unsupported job board:', url);
+      return { error: 'Unsupported job board' };
+    }
+
+    /*
     try {
       console.log('Processing job link:', url);
 
@@ -1348,6 +1842,7 @@ class JobProcessor extends EventEmitter {
       console.error(`Error processing job link ${url}:`, error);
       throw error;
     }
+      */
   }
 
   async getBrowserInstance() {
@@ -1584,7 +2079,7 @@ class JobProcessor extends EventEmitter {
     }
   }
 
-  async useChatGPTAPI_CompanyInfo(name, textContent) {
+  async useChatGPTAPI_CompanyInfo2(name, textContent) {
     const companyResponse = z.object({
       name: z.string(),
       description: z.string(),
@@ -1910,7 +2405,7 @@ class JobProcessor extends EventEmitter {
         if (request.resourceType() !== 'document') {
           request.abort();
         } else {
-          request.continue();
+          request.continue();2;
         }
       });
   
@@ -2070,35 +2565,77 @@ class JobProcessor extends EventEmitter {
 
   async createJobPosting(jobData, companyId, link) {
     this.updateProgress({ currentAction: 'Creating job posting' });
+  
+    const fields = [
+      jobData.title,
+      jobData.salary,
+      jobData.experience_level,
+      jobData.location,
+      jobData.tags,
+      jobData.description,
+      jobData.salary_max,
+      jobData.skills,
+      jobData.benefits,
+      jobData.additional_information,
+      jobData.PreferredQualifications,
+      jobData.MinimumQualifications,
+      jobData.Responsibilities,
+      jobData.Requirements,
+      jobData.NiceToHave,
+      jobData.Schedule,
+      jobData.HoursPerWeek,
+      jobData.H1BVisaSponsorship,
+      jobData.IsRemote,
+      jobData.EqualOpportunityEmployerInfo,
+      jobData.Relocation,
+      jobData.employmentType
+    ];
+
+    const sanitizeField = (field) => {
+      if (typeof field === 'string') {
+        return sanitizeHtml(field, {
+          allowedTags: [], // Disallow all HTML tags
+          allowedAttributes: {}, // Disallow all HTML attributes
+          // Optionally, you can allow specific tags or attributes
+        });
+      }
+      return field;
+    };
+  
+    const missingFieldsCount = fields.filter(field => !field).length;
+    const isProcessed = missingFieldsCount > 6 ? '0' : '1';
+  
     await jobQueries.createJobPosting(
-      jobData.title ? jobData.title : '',
-      jobData.salary ? jobData.salary : 0,
-      jobData.experience_level ? jobData.experience_level : '',
-      jobData.location ? jobData.location : '',
+      sanitizeField(jobData.title),
+      jobData.salary || 0,
+      jobData.experience_level || '',
+      jobData.location || '',
       new Date(),
       companyId || null,
-      link ? link : '',
-      null,
+      link || '',
+      null, // expiration_date
       jobData.tags ? jobData.tags.split(',') : [],
-      jobData.description ? jobData.description : '',
-      jobData.salary_max ? jobData.salary_max : 0,
-      '1',
+      sanitizeField(jobData.description) || '',
+      jobData.salary_max || null,
+      '1', // recruiter_id (add this line)
       jobData.skills ? jobData.skills.split(',') : [],
       jobData.benefits ? jobData.benefits.split(',') : [],
-      jobData.additional_information ? jobData.additional_information : '',
-      jobData.PreferredQualifications ? jobData.PreferredQualifications : '',
-      jobData.MinimumQualifications ? jobData.MinimumQualifications : '',
-      jobData.Responsibilities ? jobData.Responsibilities : '',
-      jobData.Requirements ? jobData.Requirements : '',
-      jobData.NiceToHave ? jobData.NiceToHave : '',
-      jobData.Schedule ? jobData.Schedule : '',
-      jobData.HoursPerWeek ?  jobData.HoursPerWeek : 0,
-      jobData.H1BVisaSponsorship ? jobData.H1BVisaSponsorship : 0,
-      jobData.IsRemote ? jobData.IsRemote : 0,
-      jobData.EqualOpportunityEmployerInfo ? jobData.EqualOpportunityEmployerInfo : '',
-      jobData.Relocation ? jobData.Relocation : 0
+      jobData.additional_information || '',
+      jobData.PreferredQualifications || '',
+      jobData.MinimumQualifications || '',
+      jobData.Responsibilities || '',
+      jobData.Requirements || '',
+      jobData.NiceToHave || '',
+      jobData.Schedule || '',
+      jobData.HoursPerWeek || 0,
+      jobData.H1BVisaSponsorship || 0,
+      jobData.IsRemote || 0,
+      jobData.EqualOpportunityEmployerInfo || '',
+      jobData.Relocation || 0,
+      isProcessed,
+      jobData.employmentType || ''
     );
-
+  
     this.updateProgress({ processedJobs: this.progress.processedJobs + 1 });
   }
 
@@ -2113,27 +2650,13 @@ class JobProcessor extends EventEmitter {
     const processingQueue = [];
     
     for (const link of links) {
-      const processPromise = this.processJobLinkWithRetry(link)
-        .then(jobData => {
-          if (jobData && !jobData.error && !jobData.skipped) {
-            return this.createJobPosting(jobData, companyId, link.url || link);
-          }
-        })
-        .catch(error => {
-          console.error(`Error processing job link ${link.url || link}:`, error);
-        });
-  
-      processingQueue.push(processPromise);
-  
-      if (processingQueue.length >= concurrencyLimit) {
-        await Promise.all(processingQueue);
-        processingQueue.length = 0; // Clear the queue
+      const jobData = await this.processJobLinkWithRetry(link);
+      console.log(jobData);
+      if (jobData && !jobData.error && !jobData.skipped) {
+        console.log('Creating job posting:', jobData.title);  
+        if (this.isTechJob(jobData.title))
+          return this.createJobPosting(jobData, companyId, link.url || link);
       }
-    }
-  
-    // Process any remaining promises
-    if (processingQueue.length > 0) {
-      await Promise.all(processingQueue);
     }
   }
   
@@ -2233,10 +2756,53 @@ class JobProcessor extends EventEmitter {
     return [...new Set(jobBoards)]; // Remove duplicates
   }
 
+  async updateJobPostings() {
+    const companies = await jobQueries.getCompanies();
+
+    this.updateProgress({ 
+      phase: 'Processing job boards', 
+      totalCompanies: companies.length
+    });
+    
+
+    // Phase 1: Process regular job boards and search for additional career pages
+    for (const [index, company] of companies.entries()) {
+      const existingJobPostings = await jobQueries.getAllCompanyJobLinks();
+      this.updateProgress({ 
+        company: company.name, 
+        processedCompanies: index + 1,
+        currentAction: 'Collecting job links'
+      });
+
+      try {
+        if (company.job_board_url) {
+          const result = await this.collectJobLinks(company);
+          // filter out existing job postings
+          const newJobPostings = [...result.links].filter(link => 
+            !existingJobPostings.some(job => job.link === link.url)
+          );
+          console.log(`New jobs for ${company.name} (${company.job_board_url}):`, newJobPostings);
+          this.updateProgress({ 
+            totalJobs: newJobPostings.length,
+            currentAction: 'Processing job links'
+          });
+
+          console.log('Processing job links:', newJobPostings);
+          await this.processJobLinks(newJobPostings, company.id);
+        }
+      } catch (error) {
+        console.error(`Error processing job links for ${company.name}:`, error);
+      }
+    }
+  }
+
   async start() {
 
     await this.init();
 
+
+    await this.updateJobPostings();
+    /*
     await this.collectJobLinksFromSimplify();
 
     await this.verifyAndUpdateCompanyData();
@@ -2288,6 +2854,7 @@ class JobProcessor extends EventEmitter {
 
 
     this.updateProgress({ phase: 'Completed' });
+    */
   }
 }
 

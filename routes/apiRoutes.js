@@ -724,7 +724,17 @@ router.get('/job-titles', async (req, res) => {
 router.get('/jobs/:id', async (req, res) => {
   try {
     const id = req.params.id;
-    const jobPosting = await jobQueries.findById(id);
+    let jobPosting = await jobQueries.findById(id);
+
+    if (!jobPosting) {
+      return res.status(404).send('Job not found');
+    }
+
+    if (jobPosting.description && !jobPosting.isProcessed) {
+      const processedDescription = marked.marked(jobPosting.description);
+      jobPosting.description = processedDescription;
+    }
+      
     res.json(jobPosting);
   } catch (err) {
     console.error('Error fetching job posting:', err);

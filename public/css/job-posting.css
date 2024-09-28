@@ -42,6 +42,7 @@ main {
   margin-top: .4rem;
 }
 
+
 .card {
   background-color: white;
   border-radius: 8px;
@@ -84,7 +85,6 @@ main {
   border: 1px solid #FFEEBA;
   border-radius: 6px;
   padding: 8px 12px;
-  margin-top: 12px;
   display: flex;
   align-items: center;
 }
@@ -340,6 +340,7 @@ div.similar-job h4 {
 .job-details p,
 .job-details ul,
 ul.locations {
+  word-wrap: break-word;
   line-height: 1.5;
   font-weight: 400;
   margin: 0;
@@ -582,14 +583,26 @@ ul.locations {
   }
 
   .job-details>* {
+    width: 100%;
     padding: 0 .7rem;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
   }
 
   .container {
-    width: 100% !important;
+    max-width: 100%;
     height: 100%;
+    overflow-x: hidden;
+    width: 100%;
+    box-sizing: border-box;
     border: 0 !important;
     border: 0;
+  }
+
+  .job-details-container {
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
 
   .job-listing-menu {
