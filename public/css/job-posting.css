@@ -132,6 +132,15 @@ main {
   padding: 0 1.2rem;
 }
 
+.job-details h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--default-font-size);
+}
+
 .similar-company-jobs h4,
 .similar-jobs h4 {
   padding: 0 1rem;

@@ -305,7 +305,6 @@ class JobProcessor extends EventEmitter {
     return null;
   }
 
-
   async makeRequest(url) {
     try {
       if (url.includes('myworkdayjobs.com')) return await this.grabWorkDayLinks(url);
@@ -325,10 +324,32 @@ class JobProcessor extends EventEmitter {
         },
       });
   
+      if (response.status !== 200) {
+        throw new Error(`HTTP request failed with status ${response.status}`);
+      }
+  
+      // Check if the response is too short (e.g., less than 1000 characters)
+      if (response.data.length < 1000) {
+        console.log('Response too short. Falling back to Puppeteer.');
+        return await this.usePuppeteerFallback(url);
+      }
+  
       return response;
     } catch (error) {
       console.error('HTTP request failed. Falling back to Puppeteer.');
-      return await this.usePuppeteerFallback(url);
+      const puppeteerResponse = await this.usePuppeteerFallback(url);
+      
+      // Check if the response is job data or HTML content
+      if (puppeteerResponse.data && typeof puppeteerResponse.data === 'object' && puppeteerResponse.intercepted) {
+        console.log('Returning job data from Puppeteer fallback');
+        return puppeteerResponse;
+      } else {
+        console.log('Returning HTML content from Puppeteer fallback');
+        return {
+          data: puppeteerResponse.data,
+          status: puppeteerResponse.status,
+        };
+      }
     }
   }
 
@@ -339,17 +360,63 @@ class JobProcessor extends EventEmitter {
       const page = await browser.newPage();
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
       
-      console.log('loadde the fucking browser');
+      console.log('Loaded the browser');
+  
+      // Enable request interception
+      await page.setRequestInterception(true);
+  
+      let jobData = null;
+  
+      page.on('request', request => {
+        request.continue();
+      });
+  
+      page.on('response', async response => {
+        const url = response.url();
+        const contentType = response.headers()['content-type'];
+        
+        if (contentType && contentType.includes('application/json')) {
+          try {
+            const responseData = await response.json();
+            if (responseData && responseData.departments) {
+              // iterate over each department and get the .jobs [Array]
+              jobData = [];
+              for (const department of responseData.departments) {
+                if (department.jobs) {
+                  for (const job of department.jobs) {
+                    jobData.push({link: job.absolute_url, title: job.title});
+                  }
+                }
+              }
+              
+              console.log('Found job data in intercepted request');
+            }
+          } catch (error) {
+            console.error('Error parsing JSON response:', error);
+          }
+        }
+      });
+  
       // Navigate to the page and wait for network to be idle
       await page.goto(url, { 
         waitUntil: 'networkidle0',
         timeout: 30000 // Increase timeout to 30 seconds
       });
-
-      console.log('okay we have the page loaded at least');
+  
+      console.log('Page loaded');
   
       const content = await page.content();
   
+      // If job data was found in an intercepted request, return it
+      if (jobData) {
+        return {
+          data: jobData,
+          status: 200,
+          intercepted: true
+        };
+      }
+  
+      // Otherwise, return the page content as before
       return {
         data: content,
         status: 200,
@@ -608,76 +675,17 @@ class JobProcessor extends EventEmitter {
 
 
   async collectJobLinksFromLink(jobBoardUrl) {
-    const companyJobBoards = await jobQueries.getAllCompanyJobBoards();
-    const allJobPostingLinks = await jobQueries.getAllCompanyJobLinks();
-    const allLinks = new Set();
-    let currentPage = 1;
-  
     try {
-      const parsedUrl = new URL(jobBoardUrl);
+      const parsedUrl = new URL(jobBoardUrl);;
       const jobBoardDomain = parsedUrl.hostname;
+      console.log('parsedUrl:', jobBoardDomain);
   
-      const matchingBoard = companyJobBoards.find(board => this.urlMatches(board.job_board_url, jobBoardUrl));
+      const links = await this.extractJobLinksFromPage(jobBoardUrl);
+      console.log(links);
   
-      let companyId;
-      if (!matchingBoard) {
-        console.log(`No matching job board found for ${jobBoardUrl}. Creating company for job board URL...`);
-        const browser = await puppeteer.launch({ args: ['--disable-http2'] });
-        const page = await browser.newPage();
-        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
-        await page.goto(jobBoardUrl, { waitUntil: 'networkidle0' });
-        const pageContent = await page.content();
-        const $ = cheerio.load(pageContent);
   
-        const company = await this.useChatGPTAPI_CompanyInfo(jobBoardUrl, $('body').text().replace(/\s\s+/g, ' ').trim());
-  
-        const existingCompany = await jobQueries.getCompanyIdByName(company.name);
-  
-        if (!existingCompany) {
-          companyId = await jobQueries.createCompany(company.name, company.logo, company.location, company.description, company.industry, company.size, company.stock_symbol, company.founded);
-          console.log(`Created company ${company.name} with ID ${companyId}`);
-        } else {
-          companyId = existingCompany.id;
-          console.log(`Company ${company.name} found in database with ID ${companyId}.`);
-        }
-  
-        await jobQueries.addJobBoardUrl(companyId, jobBoardUrl);
-        await browser.close();
-      } else {
-        console.log(`Matching job board found: ${matchingBoard.job_board_url}`);
-        companyId = matchingBoard.company_id;
-        if (matchingBoard.job_board_url !== jobBoardUrl) {
-          console.log(`Updating job board URL from ${matchingBoard.job_board_url} to ${jobBoardUrl}`);
-          await jobQueries.updateJobBoardUrl(matchingBoard.id, jobBoardUrl);
-        }
-      }
-  
-      const browser = await puppeteer.launch({ args: ['--disable-http2'] });
-      const page = await browser.newPage();
-      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
-  
-      const links = await this.handlePagination(page, jobBoardUrl, jobBoardDomain);
-
-      links.forEach(link => {
-        const normalizedNewUrl = this.normalizeUrl(link.url);
-        const existingJob = allJobPostingLinks.find(job =>
-          this.normalizeUrl(job.link) === normalizedNewUrl
-        );
-        
-        allLinks.add({
-          link: link.url,
-          title: link.title,
-          new: !existingJob,
-          techJob: this.isTechJob(link.title),
-          applyType: link.applyType,
-          companyId: companyId
-        });
-      });
-  
-      await browser.close();
-  
-      console.log(`Collected a total of ${allLinks.size} job links from ${jobBoardUrl}`);
-      return { links: Array.from(allLinks) };
+      console.log(`Collected a total of ${links.size} job links from ${jobBoardUrl}`);
+      return { links };
     } catch (error) {
       console.error(`Error collecting job links from ${jobBoardUrl}:`, error);
       return { links: [] };
@@ -744,10 +752,13 @@ class JobProcessor extends EventEmitter {
     const pageUrl = this.getPageUrl(jobBoardUrl, 1);
 
     const response = await this.makeRequest(pageUrl);
-    console.log(response.data);
+    if (response.intercepted) { 
+      console.log('hello');
+      const jobData = response.data;
+      return jobData;
+    }
     const $ = cheerio.load(response.data);
-    const pageLinks = await this.extractJobLinks($, pageUrl);
-    console.log(pageLinks);
+    const pageLinks = await this.fullExtractJobLinksFromPage(response.data, pageUrl, new URL(jobBoardUrl).hostname);
     return pageLinks;
   }
 
@@ -838,6 +849,30 @@ class JobProcessor extends EventEmitter {
       console.error(`Error fetching rendered page for ${url}:`, error.message);
       throw error;
     }
+  }
+
+  async fullExtractJobLinksFromPage(content, pageUrl, jobBoardDomain) {
+    const $ = cheerio.load(content);
+    const links = [];
+  
+    $('a').each((index, element) => {
+      const href = $(element).attr('href');
+      if (href) {
+        const title = $(element).text().trim();
+        const fullUrl = new URL(href, pageUrl).href;
+        
+        // Only include links that belong to the same domain
+        if (new URL(fullUrl).hostname === jobBoardDomain) {
+          links.push({
+            url: fullUrl,
+            title: title,
+            applyType: 'external' // You might want to determine this based on the link
+          });
+        }
+      }
+    });
+  
+    return links;
   }
 
   async fullExtractJobLinks($, baseUrl, jobBoardDomain) {
@@ -1350,15 +1385,15 @@ class JobProcessor extends EventEmitter {
     // https://job-boards.greenhouse.io/flexport/jobs/6035440?gh_jid=6035440 you should grab 'flexport'
     const company = url.split('/')[3];
     const companyUrl = `https://job-boards.greenhouse.io/${company}`;
-    const companyId = await this.getOrCreateCompany(company, '', '', companyUrl, '', '', '', '', '');
+    const companyId = await jobQueries.getCompanyByName(company);
     console.log(companyId);
 
     // return an object with title and description
     const response = await axios.get(url);
     const $ = cheerio.load(response.data);
-    const title = $('.section-header').text().trim();
-    const location = $('.body--metadata').text().trim();
-    const descriptionHtml = $('div.job__description').html();
+    const title = $('.section-header').text().trim() || $('.app-title').text().trim();
+    const location = $('.body--metadata').text().trim() || $('div.location').text().trim();
+    const descriptionHtml = $('div.job__description').html() || $('div#content').html();
 
     const turndownService = new TurndownService({
       headingStyle: 'atx', // Use ATX-style headings (e.g., # Heading)
@@ -1368,11 +1403,16 @@ class JobProcessor extends EventEmitter {
       strongDelimiter: '**', // Use double asterisks for strong emphasis
     });
 
-    const descriptionMarkdown = turndownService.turndown(descriptionHtml).trim();
-    
+    let descriptionMarkdown;
+    if (descriptionHtml) {
+      descriptionMarkdown = turndownService.turndown(descriptionHtml).trim();
+    } else {
+      descriptionMarkdown = 'No description provided';
+    }
 
-    console.log({ url, companyId, title, description: descriptionMarkdown, location });
-    return { url, companyId, title, description: descriptionMarkdown, location };
+
+    console.log({ url, companyId, title, company_name: company, description: descriptionMarkdown, location });
+    return { url, companyId, title, company_name: company, description: descriptionMarkdown, location };
   }
 
   async processLeverJobLink (url) {
@@ -1412,8 +1452,9 @@ class JobProcessor extends EventEmitter {
     const descriptionMarkdown = turndownService.turndown(descriptionHtml).trim();
     
 
+    // return company name capitalize properly
     console.log({ url, companyId, title, experience_level, employmentType, description: descriptionMarkdown, location });
-    return { url, companyId, title, experience_level, employmentType, description: descriptionMarkdown, location };
+    return { url, companyId, company_name: company, title, experience_level, employmentType, description: descriptionMarkdown, location };
   }
 
   async processBoFALink (url) {
@@ -2535,7 +2576,7 @@ class JobProcessor extends EventEmitter {
   async getOrCreateCompany(companyName, companyDescription, companyLocation, companyJobBoardUrl, companyIndustry, companySize, companyStockSymbol, companyLogo, companyFounded) {
     try {
       // First, try to get the company by name
-      let company = await jobQueries.getCompanyIdByName(companyName);
+      let company = await jobQueries.getCompanyByName(companyName);
       
       if (company) {
         console.log(`Found existing company: ${companyName}`);
@@ -2554,7 +2595,7 @@ class JobProcessor extends EventEmitter {
           companyStockSymbol,
           companyFounded
         );
-
+  
         return newCompany.id;
       }
     } catch (error) {

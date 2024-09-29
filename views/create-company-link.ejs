@@ -133,12 +133,34 @@
 
           try {
             const result = await extractJobDetails(jobLink);
+            const jobID = await createJobPosting(result);
+            if (result.error) {
+              throw new Error('Failed to extract job details');
+            } else {
+              showBannerNotification('Job details extracted successfully!');
+            }
             updateJobStatus(jobElement, 'complete');
           } catch (error) {
             console.error('Error processing job:', error);
             updateJobStatus(jobElement, 'error');
           }
         }
+      }
+
+      async function createJobPosting(jobDetails) {
+        const response = await fetch('/api/create-job-posting', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jobDetails),
+        });
+
+        if (response.error) {
+          throw new Error('Failed to create job posting');
+        }
+
+        return response.json();
       }
 
       async function extractJobDetails(jobLink) {
@@ -152,7 +174,7 @@
           }),
         });
 
-        if (!response.ok) {
+        if (response.error) {
           throw new Error('Failed to extract job details');
         }
 
@@ -197,14 +219,15 @@
             type: 'checkbox',
             id: 'job-' + index,
             name: 'selectedJobs[]',
-            value: link.link
+            value: link.link,
+            checked: true
           });
           const label = $('<label>').attr('for', 'job-' + index);
           const title = $('<span></span>').text(link.title);
           const url = $('<a></a>')
-                      .attr('href', link.link)
-                      .attr('target', '_blank')
-                      .text(link.link.replace(/^(?:https?:\/\/)?(?:www\.)?([^\/]+).*$/, '$1'));
+            .attr('href', link.link)
+            .attr('target', '_blank')
+            .text(link.link.replace(/^(?:https?:\/\/)?(?:www\.)?([^\/]+).*$/, '$1'));
           url.addClass('job-url link sub-text');
 
           if (link.new && link.techJob && link.techJob === true) {

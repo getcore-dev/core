@@ -1030,48 +1030,9 @@ router.post('/extract-job-details', checkAuthenticated, async (req, res) => {
       return res.status(400).json({ error: 'Invalid job link' });
     }
 
+    console.log(link);
     const extractedData = await jobProcessor.processJobLink(link);
-
-    if (extractedData.error) {
-      return res.status(500).json({ error: extractedData.error });
-    }
-
-    try {
-      if (extractedData.company_name) {
-        // Check if the company exists in the database
-        let company = await jobQueries.getCompanyIdByName(
-          extractedData.company_name
-        );
-
-        // create it if not
-        if (!company) {
-          company = await jobQueries.createCompany(
-            extractedData.company_name,
-            extractedData.company_logo,
-            extractedData.location,
-            extractedData.company_description,
-            extractedData.company_industry,
-            extractedData.company_size,
-            extractedData.company_stock_symbol,
-            extractedData.company_founded
-          );
-        }
-      }
-    } catch (error) {
-      await notificationQueries.createAdminNotification(
-        'JOB_EXTRACTION_ERROR',
-        null,
-        req.user.id || null,
-        new Date(),
-        'error',
-      );
-      console.log(
-        `Error creating company: ${extractedData.company_name}`,
-        error
-      );
-    }
-
-
+    console.log(extractedData);
 
     res.json(extractedData);
   } catch (error) {

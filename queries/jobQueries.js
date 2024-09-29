@@ -3,6 +3,7 @@ const utilFunctions = require('../utils/utilFunctions');
 const resumeFunctions = require('../utils/resumeFunctions');
 const config = require('../config/dbConfig');
 const fs = require('fs');
+const jobBoardService = require('../services/jobBoardService');
 const path = require('path');
 
 /*
@@ -1666,16 +1667,104 @@ ORDER BY jp.postedDate DESC
       throw err;
     }
   },
-
+  isTechJob(title) {
+    // Convert title to lowercase for case-insensitive matching
+    const lowercaseTitle = title.toLowerCase();
+  
+    // Highly specific tech roles
+    const exactMatches = [
+      'software engineer', 'data scientist', 'full stack developer', 'machine learning engineer',
+      'devops engineer', 'systems architect', 'systems engineer', 'network engineer', 'data analyst',
+      'backend developer', 'frontend developer', 'web developer', 'mobile developer', 'cloud architect',
+      'cloud engineer', 'security engineer', 'cybersecurity analyst', 'technical lead', 'tech lead',
+      'database administrator', 'qa engineer', 'quality assurance engineer', 'ux designer', 'ui designer',
+      'product manager', 'scrum master', 'agile coach', 'site reliability engineer', 'automation engineer',
+      'blockchain developer', 'game developer', 'game designer', 'graphic designer', 'systems administrator',
+      'it support', 'it specialist', 'it manager', 'technical support', 'technical writer',
+      'ai engineer', 'artificial intelligence engineer', 'deep learning engineer', 'data engineer',
+      'big data engineer', 'data architect', 'information security analyst', 'robotics engineer',
+      'network administrator', 'embedded systems engineer', 'firmware engineer', 'test engineer',
+      'software tester', 'business analyst', 'it analyst', 'solution architect', 'enterprise architect',
+      'devsecops engineer', 'cloud specialist', 'systems analyst', 'applications engineer',
+      'platform engineer', 'release engineer', 'build engineer', 'hardware engineer',
+      'electrical engineer', 'electronics engineer', 'microcontroller engineer', 'ios developer',
+      'android developer', 'webmaster', 'security analyst', 'information technology specialist',
+      'technical consultant', 'pre-sales engineer', 'post-sales engineer', 'technical account manager',
+      'computer vision engineer', 'natural language processing engineer', 'nlp engineer',
+      'database developer', 'data warehouse engineer', 'etl developer', 'bi developer',
+      'business intelligence developer', 'data visualization engineer', 'cloud consultant',
+      'solutions engineer', 'integration engineer', 'salesforce developer', 'sap consultant',
+      'oracle developer', 'erp consultant', 'crm consultant', 'help desk technician',
+      'desktop support technician', 'it technician', '3d artist', 'vr developer', 'ar developer',
+      'qa tester', 'quality assurance tester', 'network technician', 'it director', 'cto',
+      'chief technology officer', 'cio', 'chief information officer', 'ciso',
+      'chief information security officer'
+    ];
+  
+    // Non-tech engineering roles to exclude
+    const nonTechEngineering = [
+      'civil engineer', 'mechanical engineer', 'chemical engineer', 'aeronautical engineer',
+      'structural engineer', 'environmental engineer', 'biomedical engineer', 'agricultural engineer',
+      'nuclear engineer', 'petroleum engineer', 'geological engineer', 'industrial engineer',
+      'materials engineer', 'construction engineer', 'metallurgical engineer', 'mining engineer',
+      'transportation engineer', 'textile engineer', 'automotive engineer', 'marine engineer',
+      'naval engineer', 'sound engineer', 'production engineer', 'architect', 'draftsman',
+      'fashion designer', 'interior designer', 'graphic artist', 'chemist', 'physicist',
+      'lab technician', 'laboratory technician', 'field technician'
+    ];
+  
+    // Function to create regex patterns for exact matches and keywords
+    const createPattern = (words) => new RegExp(`\\b(${words.join('|')})\\b`, 'i');
+  
+    const techPattern = createPattern(exactMatches);
+    const nonTechPattern = createPattern(nonTechEngineering);
+  
+    // If title matches a non-tech engineering role, return false
+    if (nonTechPattern.test(lowercaseTitle)) {
+      return false;
+    }
+  
+    // If title matches a tech role, return true
+    if (techPattern.test(lowercaseTitle)) {
+      return true;
+    }
+  
+    // List of generic tech-related keywords
+    const techKeywords = [
+      'developer', 'programmer', 'engineer', 'software', 'hardware', 'technology', 'technician',
+      'administrator', 'analyst', 'architect', 'consultant', 'specialist', 'support', 'coder',
+      'tester', 'manager', 'devops', 'cloud', 'data', 'ai', 'artificial intelligence',
+      'machine learning', 'ml', 'blockchain', 'crypto', 'cybersecurity', 'security', 'database',
+      'web', 'mobile', 'ios', 'android', 'ux', 'ui', 'qa', 'quality assurance', 'sre',
+      'automation', 'product', 'agile', 'scrum', 'network', 'system', 'systems', 'it',
+      'information technology', 'digital', 'full stack', 'front end', 'backend', 'back end',
+      'saas', 'paas', 'big data', 'data science', 'devsecops', 'nlp', 'natural language processing',
+      'vr', 'ar', 'virtual reality', 'augmented reality', 'robotics', 'embedded', 'firmware',
+      'microcontroller', 'fpga', 'simulation', 'cloud computing', 'docker', 'kubernetes',
+      'container', 'microservices', 'serverless', 'distributed systems', 'e-commerce', 'ecommerce',
+      'internet', 'digital transformation', 'iot', 'internet of things', 'opensource', 'open source',
+      'technical', 'computing', 'computational', 'scientist'
+    ];
+  
+    const techKeywordsPattern = createPattern(techKeywords);
+  
+    // If title contains any tech keywords, return true
+    if (techKeywordsPattern.test(lowercaseTitle)) {
+      return true;
+    }
+  
+    // If none of the above conditions are met, it's likely not a tech job
+    return false;
+  },
 
   createJobPosting: async (
     title,
     salary = 0,
     experienceLevel,
     location,
-    postedDate,
-    company_id,
-    link = '',
+    postedDate = new Date(),
+    company_id = 99999,
+    link,
     expiration_date = null,
     tags = [],
     description,
@@ -1684,17 +1773,17 @@ ORDER BY jp.postedDate DESC
     skills = [],
     benefits = [],
     additional_information = '',
-    preferredQualifications,
-    minimumQualifications,
-    responsibilities,
-    requirements,
-    niceToHave,
-    schedule,
-    hoursPerWeek,
-    h1bVisaSponsorship,
-    isRemote,
-    equalOpportunityEmployerInfo,
-    relocation,
+    preferredQualifications = '',
+    minimumQualifications = '',
+    responsibilities = '',
+    requirements = '',
+    niceToHave = '',
+    schedule = '9 - 5',
+    hoursPerWeek = 40,
+    h1bVisaSponsorship = false,
+    isRemote = false,
+    equalOpportunityEmployerInfo = '',
+    relocation = false,
     isProcessed = 0,
     employmentType = 'Traditional'
   ) => {
@@ -1702,6 +1791,24 @@ ORDER BY jp.postedDate DESC
       if (typeof link !== 'string') {
         throw new Error('Link must be a string');
       }
+
+      // check if type of salary, and salary_max is a string, if so attempt to convert to int fail to 0
+      if (typeof salary === 'string') {
+        salary = parseInt(salary) || 0;
+      }
+      if (typeof salary_max === 'string') {
+        salary_max = parseInt(salary_max) || 0;
+      }
+
+      if (typeof title !== 'string') {
+        throw new Error('Title must be a string');
+      }
+
+      if (!this.isTechJob(title)) {
+        console.log('Not a tech job, not inserting.');
+        return null;
+      }
+
       skills = Array.isArray(skills)
         ? skills
         : typeof skills === 'string'
@@ -2504,13 +2611,6 @@ ORDER BY jp.postedDate DESC
       const jobTagResult = await sql.query`
         SELECT id FROM skills WHERE name LIKE '%' + ${skillName} + '%'
       `;
-
-      if (jobTagResult.recordset.length > 0) {
-        return jobTagResult.recordset[0].id;
-      }
-
-      return null;
-
 
       if (jobTagResult.recordset.length > 0) {
         return jobTagResult.recordset[0].id;

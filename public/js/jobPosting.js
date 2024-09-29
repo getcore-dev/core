@@ -540,10 +540,12 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         </div>
     </div>
 </div>
+            ${job.company_description ? `
             <div class="company-description sub-text">
               <h4>Company Description</h4>
               <p class="sub-text">${job.company_description}</p>
             </div>
+            ` : ''}
 
             ${ !job.isProcessed ? `
             <div class="job-posting-description sub-text">

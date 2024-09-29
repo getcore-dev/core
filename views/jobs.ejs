@@ -54,9 +54,14 @@
 
         <div class="jobs-buttons admin-job-buttons">
           <% if (user.isAdmin) { %>
-          <a class="link mini-text" href="/jobs/create">
-            + Job Posting
-          </a>
+          <div class="flex flex-row gap-06 v-center">
+            <a class="link mini-text" href="/jobs/create">
+              + Job Posting
+            </a>
+            <a class="link mini-text" href="/jobs/create-company">
+              + Company
+            </a>
+          </div>
           <% } %>
           <a class="link mini-text" href="/profile/jobs">
             Jobs Profile

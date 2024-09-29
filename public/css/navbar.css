@@ -202,10 +202,16 @@ h5 {
 
 a,
 a:visited {
-
-  text-decoration: underline;
+  font-weight: 600;
+  text-decoration: none;
   color: var(--light-mode-bold-text-color);
 }
+
+a:hover {
+  text-decoration: underline;
+}
+
+
 
 ul li {
   list-style: none;
