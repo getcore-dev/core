@@ -356,6 +356,14 @@ ul.locations {
   margin-bottom: 0;
 }
 
+.job-details ul li::before {
+  content: "•";
+  color: var(--light-mode-bold-text-color);
+  font-size: 1.2rem;
+  margin-right: .5rem;
+  margin-left: -1rem;
+}
+
 .job-flair p {
   font-size: 1rem;
   color: #5abe6e;
@@ -619,7 +627,7 @@ ul.locations {
     border: 0;
     display: flex;
     border-radius: 0;
-    gap: .4rem;
+    gap: 1.8rem;
     flex-direction: column;
   }
 

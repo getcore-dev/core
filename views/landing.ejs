@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+
+  <!-- Primary Meta Tags -->
+  <title>CORE - AI Personalized Job Assistant</title>
+  <meta name="title" content="CORE - Discover STEM Jobs and Connect with Others">
+  <meta name="description" content="Find core jobs, SWE positions, and remote opportunities at CORE. Connect with top tech employers and advance your career in software engineering, data analysis, and more.">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://getcore.dev/">
+  <meta property="og:title" content="CORE - Discover STEM Jobs and Connect with Others">
+  <meta property="og:description" content="Find core jobs, SWE positions, and remote opportunities at CORE. Connect with top tech employers and advance your career in software engineering, data analysis, and more.">
+  <meta property="og:image" content="/img/core.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://getcore.dev/">
+  <meta property="twitter:title" content="CORE - Discover STEM Jobs and Connect with Others">
+  <meta property="twitter:description" content="Find core jobs, SWE positions, and remote opportunities at CORE. Connect with top tech employers and advance your career in software engineering, data analysis, and more.">
+  <meta property="twitter:image" content="/img/core.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/img/core.png">
+  <link rel="apple-touch-icon" href="/img/core.png">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://getcore.dev/">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/navbar.css">
+  <link rel="stylesheet" href="/css/landing.css">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "CORE",
+      "url": "https://getcore.dev",
+      "logo": "https://getcore.dev/img/core-logo.png",
+      "sameAs": [
+        "https://twitter.com/core_platform",
+        "https://www.linkedin.com/company/core-platform",
+        "https://github.com/core-platform"
+      ]
+    }
+  </script>
+</head>
+
+
+<body>
+  <%- include('partials/navbar', { pagePath: '', user: user}) %>
+
+  <!-- Hero Section -->
+  <header class="hero-section">
+    <h1>Welcome to CORE</h1>
+    <p>Your AI-powered partner in finding and securing your next career opportunity.</p>
+    <a href="/signup" class="btn-primary">Get Started</a>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- About Us Section -->
+    <section class="about-us">
+      <h2>About CORE</h2>
+      <p>CORE is a leading platform that connects professionals with top tech employers worldwide. Our mission is to streamline your job search, enhance your applications, and keep you informed with the latest opportunities.</p>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+      <h2>Our Features</h2>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <span class="material-symbols-outlined">work</span>
+          <h3>Global Job Search</h3>
+          <p>Access thousands of job listings from over 400 websites worldwide, updated within 24 hours.</p>
+        </div>
+        <div class="feature-item">
+          <span class="material-symbols-outlined">description</span>
+          <h3>AI-Powered Resumes</h3>
+          <p>Create tailored resumes and cover letters using our advanced AI tools to stand out to employers.</p>
+        </div>
+        <div class="feature-item">
+          <span class="material-symbols-outlined">notifications</span>
+          <h3>Real-Time Job Alerts</h3>
+          <p>Receive instant notifications when new jobs that match your criteria are posted.</p>
+        </div>
+        <div class="feature-item">
+          <span class="material-symbols-outlined">insights</span>
+          <h3>Personalized Job Overviews</h3>
+          <p>Get AI-generated overviews and insights on job positions to make informed career decisions.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+      <h2>How CORE Works</h2>
+      <div class="steps">
+        <div class="step">
+          <h3>1. Sign Up</h3>
+          <p>Create your account and set up your profile to get started.</p>
+        </div>
+        <div class="step">
+          <h3>2. Customize Your Resume</h3>
+          <p>Use our AI tools to build a professional resume tailored to your desired roles.</p>
+        </div>
+        <div class="step">
+          <h3>3. Search and Apply</h3>
+          <p>Find jobs globally, receive real-time alerts, and apply directly through CORE.</p>
+        </div>
+        <div class="step">
+          <h3>4. Get Notified</h3>
+          <p>Stay updated with instant notifications for new job postings that match your profile.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+      <h2>What Our Users Say</h2>
+      <div class="testimonial-grid">
+        <div class="testimonial-item">
+          <p>"CORE made my job search effortless. The AI-generated resume stood out to employers, and I landed my dream job in just a few weeks!"</p>
+          <h4>Jane Doe, Software Engineer</h4>
+        </div>
+        <div class="testimonial-item">
+          <p>"The real-time job alerts kept me informed about the latest opportunities. Highly recommend CORE to anyone looking to advance their career."</p>
+          <h4>John Smith, Data Analyst</h4>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+      <h2>Ready to Take the Next Step?</h2>
+      <a href="/signup" class="btn-primary">Join CORE Today</a>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2023 CORE. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="/about">About Us</a>
+      <a href="/contact">Contact</a>
+      <a href="/privacy">Privacy Policy</a>
+    </div>
+  </footer>
+</body>
+
+</html>

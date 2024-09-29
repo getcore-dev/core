@@ -932,7 +932,7 @@ router.post('/job-postings', checkAuthenticated, async (req, res) => {
       skills,
       tags,
       description,
-      link,
+      link, 
       benefits,
       additional_information,
       preferredQualifications,
@@ -949,7 +949,8 @@ router.post('/job-postings', checkAuthenticated, async (req, res) => {
     } = req.body;
     //console.log(req.body);
 
-    console.log({      title,
+    console.log({      
+      title,
       company,
       location,
       salary,
@@ -990,11 +991,11 @@ router.post('/job-postings', checkAuthenticated, async (req, res) => {
       companyId,
       link,
       null,
-      tags.split(',').map((tag) => tag.trim()),
+      tags ? tags.split(',').map((tag) => tag.trim()) : [],
       description,
       salary_max,
       user.recruiter_id,
-      skills.split(',').map((skill) => skill.trim()),
+      skills ? skills.split(',').map((skill) => skill.trim()) : [],
       benefits,
       additional_information,
       preferredQualifications,
@@ -1009,6 +1010,14 @@ router.post('/job-postings', checkAuthenticated, async (req, res) => {
       equalOpportunityEmployerInfo,
       relocation
     );
+
+    if (!jobPostingId) {
+      return res.status(500).json({ error: 'Job posting was not created' });
+    }
+
+    if (jobPostingId.error) {
+      return res.status(500).json({ error: jobPostingId.error });
+    }
 
     res.status(201).json({
       message: 'Job posting created successfully',

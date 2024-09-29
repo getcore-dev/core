@@ -372,11 +372,11 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     : ''
 }
 
-      <div class="company-info margin-1-bottom">
+      <div class="company-info">
         ${
   job.company_logo
     ? `
-          <img src="${job.company_logo}" style="width: auto;" alt="${job.company_name} logo" onerror="this.onerror=null;this.src='/img/glyph.png';" class="thumbnail thumbnail-tiny thumbnail-regular" />
+          <img src="${job.company_logo}" style="width: auto;" alt="${job.company_name} logo" onerror="this.onerror=null;this.src='/img/glyph.png';" class="thumbnail thumbnail-small thumbnail-regular" />
         `
     : ''
 }
@@ -388,38 +388,41 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
           <h3 class="company-name main-text margin-03-bottom">
         ${job.title}
       </h3>
-
-      </div>
-      
-        </div>
-          <p class="job-detail mini-text bold secondary-text" style="margin-left:auto;white-space: nowrap;">
-        ${job.experienceLevel}
-      </p>
-      </div>
-
-        <div class="job-info-flairs sub-text margin-06-bottom">
-      <p class="text-tag bold sub-text"> 
-📍 ${
+      <p class="mini-text"> 
+${
   job.location
     .split(',')
     .map(loc => loc.trim().toLowerCase())
     .filter(loc => !loc.toLowerCase().includes('n/a'))
     .map(loc => {
       if (loc.toLowerCase().includes('remote')) {
-        return '<a class="link bold sub-text" href="/jobs?locations=Remote">Remote</a>';
+        return '<a class="mini-text" href="/jobs?locations=Remote">Remote</a>';
       } else {
         // Capitalize the first letter of each word in the country for display
         const country = loc
           .split(' ')
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
           .join(' ');
-        return `<a class="link bold sub-text" href="/jobs?locations=${encodeURIComponent(loc)}">${country}</a>`;
+        return `<a class="mini-text third-text" href="/jobs?locations=${encodeURIComponent(loc)}">${country}</a>`;
       }
     })
     .join(', ')
 }
 
       </p>
+
+      </div>
+      
+        </div>
+        ${job.experienceLevel ? `
+          <p class="job-detail mini-text bold secondary-text" style="margin-left:auto;white-space: nowrap;">
+        ${job.experienceLevel}
+        </p>  
+        ` : ''}
+      </div>
+
+      ${ job.salary || job.salary_max ? `
+        <div class="job-info-flairs sub-text">
       ${job.salary !== 0 ? `
         <p class="text-tag bold salary sub-text">
       USD $${formatSalary(job.salary)}
@@ -431,7 +434,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         </p>
       ` : ''}
         </div>
-
+        ` : ''}
         ${job.isProcessed ? `
         <div class="job-skills-display">
 
@@ -455,6 +458,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
                 </div>`}
 </div>
       
+<div class="flex flex-col gap-06">
       <div class="interact-buttons flex space-between v-center">
         ${
   !isOlderThan30Days(job)
@@ -515,6 +519,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         `
     : ''
 }
+</div>
   </div>
 </div>
             <div class="job-details primary-text company-profile-section">

@@ -853,17 +853,11 @@ GROUP BY
   checkForDuplicates: async (jobDetails) => {
     try {
       const {
-        title,
-        company_id,
-        location,
-        description,
-        salary,
-        salary_max,
-        experienceLevel,
+        link
       } = jobDetails;
 
       const potentialDuplicates = await sql.query`
-        SELECT id, title, location, description, salary, salary_max, experienceLevel
+        SELECT link
         FROM JobPostings
         WHERE company_id = ${company_id}
           AND DATEDIFF(day, postedDate, GETDATE()) <= 30  -- Check only recent postings (last 30 days)

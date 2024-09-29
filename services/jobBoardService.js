@@ -71,6 +71,17 @@ class JobProcessor extends EventEmitter {
     this.browser = null;
     this.maxConcurrentPages = 5;
     this.currentPages = 0;
+    this.paginationSelectors = {
+      next: 'button.pagination__btn.pagination__next',
+      prev: 'button.pagination__btn.pagination__previous',
+      active: 'button.pagination__link--active',
+      nextInactive: 'button.pagination__btn.pagination__next.pagination__next--inactive',
+      prevInactive: 'button.pagination__btn.pagination__previous.pagination__previous--inactive'
+    };  
+
+    this.paginationPreferences = {
+      'greenhouse.io': '?page='
+    };
   }
 
 
@@ -308,6 +319,7 @@ class JobProcessor extends EventEmitter {
   async makeRequest(url) {
     try {
       if (url.includes('myworkdayjobs.com')) return await this.grabWorkDayLinks(url);
+      if (url.includes('uber.com')) return await this.usePuppeteerFallback(url);    
       const response = await http.get(url, {
         timeout: 10000, // 10 seconds timeout
         headers: {
@@ -747,42 +759,16 @@ class JobProcessor extends EventEmitter {
     }
   }
 
-  async extractJobLinksFromPage(jobBoardUrl) {
-    console.log(`Extracting job links from ${jobBoardUrl}`);
-    const pageUrl = this.getPageUrl(jobBoardUrl, 1);
 
-    const response = await this.makeRequest(pageUrl);
-    if (response.intercepted) { 
-      console.log('hello');
-      const jobData = response.data;
-      return jobData;
-    }
-    const $ = cheerio.load(response.data);
-    const pageLinks = await this.fullExtractJobLinksFromPage(response.data, pageUrl, new URL(jobBoardUrl).hostname);
-    return pageLinks;
-  }
-
-  getPageUrl(baseUrl, page) {
+  getPageUrl(baseUrl, pageNumber) {
     const url = new URL(baseUrl);
+    const hostname = url.hostname;
+    const paginationPrefix = this.paginationPreferences[hostname] || '?page=';
     
-    if (baseUrl.includes('linkedin.com')) {
-      url.searchParams.set('start', (page - 1) * 25);
-    } else if (baseUrl.includes('ashbyhq.com')) {
-      url.searchParams.set('page', page);
-    } else if (baseUrl.includes('myworkday.com')) {
-      url.searchParams.set('page', page);
-    } else if (baseUrl.includes('bytedance.com')) {
-      url.searchParams.set('current', page);
-    } else if (baseUrl.includes('microsoft.com')) {
-      url.searchParams.set('pg', page);
-      url.searchParams.set('size', 20);
-    } else if (baseUrl.includes('roblox.com')) {
-      url.searchParams.set('page', page);
-      url.searchParams.set('pageSize', 9);
-    } else {
-      url.searchParams.set('page', page);
+    if (pageNumber > 1) {
+      url.searchParams.set('page', pageNumber.toString());
     }
-
+    
     return url.toString();
   }
 
@@ -851,17 +837,53 @@ class JobProcessor extends EventEmitter {
     }
   }
 
+  async extractJobLinksFromPage(jobBoardUrl) {
+    console.log(`Extracting job links from ${jobBoardUrl}`);
+    let currentPage = 1;
+    let allLinks = [];
+    let isLastPage = false;
+
+    while (!isLastPage) {
+      const pageUrl = this.getPageUrl(jobBoardUrl, currentPage);
+      console.log(`Processing page ${currentPage}: ${pageUrl}`);
+
+      const response = await this.makeRequest(pageUrl);
+      if (response.intercepted) {
+        console.log('Request intercepted');
+        return response.data;
+      }
+
+      const result = await this.fullExtractJobLinksFromPage(response.data, pageUrl, new URL(jobBoardUrl).hostname);
+      
+      allLinks = allLinks.concat(result.links);
+      isLastPage = result.pagination.isLastPage;
+
+      if (!isLastPage) {
+        currentPage++;
+      }
+    }
+
+    return allLinks;
+  }
+
   async fullExtractJobLinksFromPage(content, pageUrl, jobBoardDomain) {
     const $ = cheerio.load(content);
     const links = [];
-  
+    const paginationInfo = {
+      isFirstPage: true,
+      isLastPage: true,
+      isOnlyPage: true,
+      nextPageUrl: null,
+      prevPageUrl: null
+    };
+
+    // Extract job links
     $('a').each((index, element) => {
       const href = $(element).attr('href');
       if (href) {
         const title = $(element).text().trim();
         const fullUrl = new URL(href, pageUrl).href;
-        
-        // Only include links that belong to the same domain
+
         if (new URL(fullUrl).hostname === jobBoardDomain) {
           links.push({
             url: fullUrl,
@@ -871,8 +893,32 @@ class JobProcessor extends EventEmitter {
         }
       }
     });
-  
-    return links;
+
+    // Check pagination
+    const nextButton = $(this.paginationSelectors.next);
+    const prevButton = $(this.paginationSelectors.prev);
+    const activeButton = $(this.paginationSelectors.active);
+    const nextInactiveButton = $(this.paginationSelectors.nextInactive);
+    const prevInactiveButton = $(this.paginationSelectors.prevInactive);
+
+    if (nextButton.length > 0 && !nextInactiveButton.length) {
+      paginationInfo.isLastPage = false;
+      paginationInfo.isOnlyPage = false;
+      paginationInfo.nextPageUrl = new URL(nextButton.attr('href'), pageUrl).href;
+    }
+
+    if (prevButton.length > 0 && !prevInactiveButton.length) {
+      paginationInfo.isFirstPage = false;
+      paginationInfo.isOnlyPage = false;
+      paginationInfo.prevPageUrl = new URL(prevButton.attr('href'), pageUrl).href;
+    }
+
+    console.log('Pagination Info:', paginationInfo);
+
+    return {
+      links,
+      pagination: paginationInfo
+    };
   }
 
   async fullExtractJobLinks($, baseUrl, jobBoardDomain) {
@@ -1334,50 +1380,6 @@ class JobProcessor extends EventEmitter {
     }
   }
 
-  async handlePagination(page, baseUrl, jobBoardDomain) {
-    let hasNextPage = true;
-    let currentPage = 1;
-    const allLinks = new Set();
-  
-    while (hasNextPage && currentPage <= this.MAX_PAGES_PER_SEARCH) {
-      console.log(`Scraping page ${currentPage}: ${baseUrl}`);
-  
-      // Handle URL-based pagination
-      const pageUrl = this.getPageUrl(baseUrl, currentPage);
-      await page.goto(pageUrl, { waitUntil: 'networkidle0' });
-  
-      // Extract links from the current page
-      const pageLinks = await this.fullExtractJobLinks(await page.content(), pageUrl, jobBoardDomain);
-      pageLinks.forEach(link => allLinks.add(link));
-  
-      // Check for "Load More" button
-      const loadMoreButton = await page.$('button:contains("Load More"), button:contains("Show More")');
-      if (loadMoreButton) {
-        await loadMoreButton.click();
-        await page.waitForNavigation({ waitUntil: 'networkidle0' });
-      } else {
-        // Check for traditional pagination
-        const nextPageButton = await page.$('a:contains("Next"), a:contains("»"), .pagination .next a');
-        if (nextPageButton) {
-          await nextPageButton.click();
-          await page.waitForNavigation({ waitUntil: 'networkidle0' });
-        } else {
-          hasNextPage = false;
-        }
-      }
-  
-      // If no new links were found, stop pagination
-      if (allLinks.size === pageLinks.length) {
-        hasNextPage = false;
-      }
-  
-      currentPage++;
-      await this.delay(this.DELAY_BETWEEN_REQUESTS);
-    }
-  
-    return Array.from(allLinks);
-  }
-
   async processGreenhouseJobLink (url) {
     // grab div.job__title and div.job__description from the page
 
@@ -1385,13 +1387,13 @@ class JobProcessor extends EventEmitter {
     // https://job-boards.greenhouse.io/flexport/jobs/6035440?gh_jid=6035440 you should grab 'flexport'
     const company = url.split('/')[3];
     const companyUrl = `https://job-boards.greenhouse.io/${company}`;
-    const companyId = await jobQueries.getCompanyByName(company);
+    const companyId = this.getOrCreateCompany(company, '', '', companyUrl, '', '', '', '', '');
     console.log(companyId);
 
     // return an object with title and description
     const response = await axios.get(url);
     const $ = cheerio.load(response.data);
-    const title = $('.section-header').text().trim() || $('.app-title').text().trim();
+    const title = $('.job__title>h1').text().trim() || $('.app-title').text().trim();
     const location = $('.body--metadata').text().trim() || $('div.location').text().trim();
     const descriptionHtml = $('div.job__description').html() || $('div#content').html();
 
@@ -1411,8 +1413,8 @@ class JobProcessor extends EventEmitter {
     }
 
 
-    console.log({ url, companyId, title, company_name: company, description: descriptionMarkdown, location });
-    return { url, companyId, title, company_name: company, description: descriptionMarkdown, location };
+    console.log({ url, companyId, title, company, description: descriptionMarkdown, location });
+    return { url, companyId, title, company, description: descriptionMarkdown, location };
   }
 
   async processLeverJobLink (url) {

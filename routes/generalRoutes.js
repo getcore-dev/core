@@ -18,7 +18,7 @@ const AZURE_STORAGE_CONNECTION_STRING =
   process.env.AZURE_STORAGE_CONNECTION_STRING; // Ensure this is set in your environment variables
 
 // Home page
-router.get('/', viewController.renderHomePage);
+router.get('/', viewController.renderLandingPage);;
 
 router.get('/about', viewController.renderAboutPage);
 

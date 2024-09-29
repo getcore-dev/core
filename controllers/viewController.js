@@ -22,6 +22,10 @@ const viewController = {
     }
   },
 
+  renderLandingPage: async (req, res) => {
+    res.render('landing.ejs', { user: req.user });
+  },
+
   renderPrivacyPage: async (req, res) => {
     res.render('privacy.ejs', { user: req.user });
   },

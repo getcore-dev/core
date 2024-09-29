@@ -92,7 +92,6 @@
             }),
           })
           .then(response => {
-            console.log(response);
             if (!response.ok) {
               throw new Error('Network response was not ok');
             }
@@ -132,14 +131,23 @@
           updateJobStatus(jobElement, 'loading');
 
           try {
+            console.log('jobLink', jobLink);
             const result = await extractJobDetails(jobLink);
-            const jobID = await createJobPosting(result);
             if (result.error) {
               throw new Error('Failed to extract job details');
             } else {
               showBannerNotification('Job details extracted successfully!');
             }
-            updateJobStatus(jobElement, 'complete');
+
+            const jobID = await createJobPosting(result);
+
+            if (jobID.error) {
+              throw new Error('Failed to create job posting');
+              updateJobStatus(jobElement, 'error');
+            } else {
+              showBannerNotification('Job posting created successfully!');
+              updateJobStatus(jobElement, 'complete');
+            }
           } catch (error) {
             console.error('Error processing job:', error);
             updateJobStatus(jobElement, 'error');
@@ -148,7 +156,11 @@
       }
 
       async function createJobPosting(jobDetails) {
-        const response = await fetch('/api/create-job-posting', {
+        // edit jobDetails.url to be jobDetails.link or it breaks
+        jobDetails.link = jobDetails.url;
+        console.log(jobDetails);
+
+        const response = await fetch('/api/job-postings', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -214,6 +226,9 @@
 
         const ul = $('<ul></ul>');
         links.forEach(function (link, index) {
+          if (link.link === undefined && link.url !== undefined) {
+            link.link = link.url;
+          }
           const li = $('<li class="job-link"></li>');
           const checkbox = $('<input>').attr({
             type: 'checkbox',
@@ -224,10 +239,11 @@
           });
           const label = $('<label>').attr('for', 'job-' + index);
           const title = $('<span></span>').text(link.title);
+          const linkText = link.link ? link.link : link.url;
           const url = $('<a></a>')
             .attr('href', link.link)
             .attr('target', '_blank')
-            .text(link.link.replace(/^(?:https?:\/\/)?(?:www\.)?([^\/]+).*$/, '$1'));
+            .text(linkText.replace(/^(?:https?:\/\/)?(?:www\.)?([^\/]+).*$/, '$1'));
           url.addClass('job-url link sub-text');
 
           if (link.new && link.techJob && link.techJob === true) {
@@ -251,11 +267,6 @@
         container.append(ul);
 
         $('#selectedJobsForm').show();
-      }
-
-      function showBannerNotification(message) {
-        // Implement this function to show notifications
-        console.log(message);
       }
     });
   </script>
