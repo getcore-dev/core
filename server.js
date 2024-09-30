@@ -66,7 +66,7 @@ if (cluster.isMaster) {
     cluster.fork(); // Replace the dead worker
   });
 
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== 'development') {
     setTimeout(() => {
       runJobBoardService();
     }, 5000);
