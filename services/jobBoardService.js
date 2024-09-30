@@ -727,31 +727,6 @@ class JobProcessor extends EventEmitter {
       return [];
     }
   }
-
-  /*
-  jobLinks = 
-[
-  {
-    companyName: 'Dow Jones',
-    companyLink: 'https://simplify.jobs/c/Dow-Jones',
-    role: 'Summer 2025 Internship – Software Engineer Intern',
-    location: 'Princeton, NJ</br>NYC',
-    applyLink: 'https://dowjones.wd1.myworkdayjobs.com/en-US/Dow_Jones_Career/job/NYC---1211-Ave-of-the-Americas/Summer-2025-Internship---Software-Engineer-Intern_Job_Req_43114?utm_source=Simplify&ref=Simplify',
-    simplifyLink: 'https://simplify.jobs/p/54c64056-7e71-42a1-a119-0abfdfd66fe9?utm_source=GHList',
-    datePosted: 'Sep 17'
-  },
-  {
-    companyName: 'CACI',
-    companyLink: 'https://simplify.jobs/c/CACI',
-    role: 'Cleared Software Engineer Intern - Summer 2025',
-    location: 'Denver, CO</br>Dulles, VA',
-    applyLink: 'https://caci.wd1.myworkdayjobs.com/External/job/US-CO-Denver/Cleared-Software-Engineer-Intern---Summer-2025_301978-1?utm_source=Simplify&ref=Simplify',
-    simplifyLink: 'https://simplify.jobs/p/7ff71059-98f4-4f29-ae65-4134ccec468f?utm_source=GHList',
-    datePosted: 'Sep 17'
-  },
-  ... 572 more items
-]
-  */
   async processSimplifyJobLinks(jobLinks) {
     try {
     // Retrieve all existing company job links from the database
@@ -900,7 +875,6 @@ class JobProcessor extends EventEmitter {
           console.error(`Error making request for ${jobBoardUrl}:`, error);
           return { companyId: company.id, links: [] };
         }
-
 
         const firstPageLinks = await this.extractJobLinks($firstPage, jobBoardUrl);
           

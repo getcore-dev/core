@@ -34,6 +34,8 @@ main {
   font-weight: normal;
 }
 
+
+
 .second-buttons-container .material-symbols-outlined {
   color: var(--light-mode-text-color);
 }
@@ -43,7 +45,7 @@ main {
 }
 
 .job-posting-description a {
-  color: var(--active-indicator-color); 
+  color: var(--active-indicator-color);
 }
 
 
