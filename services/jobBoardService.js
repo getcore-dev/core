@@ -1907,6 +1907,7 @@ class JobProcessor extends EventEmitter {
 
     for (const [index, company] of companies.entries()) {
       if (company.id === 8) {
+        this.updateProgress({ currentAction: 'Skipping company with id 8: ' + company.name });
         console.log(`Skipping company with id 8: ${company.name}`);
         continue;
       }
@@ -1920,9 +1921,10 @@ class JobProcessor extends EventEmitter {
       const missingFields = this.checkMissingFields(company);
 
       if (missingFields.length > 4) {
-        this.updateProgress({ currentAction: 'Updating company data' });
+        this.updateProgress({ currentAction: 'Updating company data for ' + company.name });
         
         const prompt = this.generateCompanyPrompt({ name: company.name });
+        this.updateProgress({ currentAction: 'Generating prompt for ' + company.name });
         let updatedData;
 
         try {
@@ -1939,8 +1941,10 @@ class JobProcessor extends EventEmitter {
           // Update company in the database
           await jobQueries.forceUpdateCompany(company.id, mergedData);
 
+          this.updateProgress({ currentAction: 'Updated company data for ' + company.name });
           console.log(`Updated company data for ${company.name}`);
         } catch (error) {
+          this.updateProgress({ currentAction: 'Error updating data for ' + company.name });
           console.error(`Error updating data for ${company.name}:`, error);
         }
       } else {
@@ -2494,18 +2498,23 @@ class JobProcessor extends EventEmitter {
     const processingQueue = [];
     
     for (const link of links) {
+      this.updateProgress({ currentAction: 'Processing job link for ' + link.url });
       const jobData = await this.processJobLinkWithRetry(link);
       console.log(jobData);
       if (jobData && !jobData.error && !jobData.skipped) {
+        this.updateProgress({ currentAction: 'Creating job posting for ' + jobData.title });
         console.log('Creating job posting:', jobData.title);  
-        if (this.isTechJob(jobData.title))
+        if (this.isTechJob(jobData.title)) {
+          this.updateProgress({ currentAction: 'Creating job posting for ' + jobData.title });
           return this.createJobPosting(jobData, companyId, link.url || link);
+        }
       }
     }
   }
   
 
   async processLinkedInJob(jobData) {
+    this.updateProgress({ currentAction: 'Processing LinkedIn job for ' + jobData.link });
     try {
       const $ = cheerio.load(jobData);
   
@@ -2594,6 +2603,7 @@ class JobProcessor extends EventEmitter {
         let result;
         if (company.job_board_url) {
           result = await this.collectJobLinks(company);
+          this.updateProgress({ currentAction: 'Collected job links for ' + company.name });
         } else {
           // Attempt to find job board URL by trying common platforms
           const platformPatterns = [
@@ -2642,13 +2652,14 @@ class JobProcessor extends EventEmitter {
             },
             // Additional platforms can be added here
           ];
+          this.updateProgress({ currentAction: 'Searching for job board for ' + company.name });
           for (const platform of platformPatterns) {
             for (const pattern of platform.patterns) {
               const testUrl = pattern.replace('{companyName}', company.name);
               try {
                 const result = await this.collectJobLinks({ ...company, job_board_url: testUrl });
                 if (result && result.links && result.links.length > 0) {
-                  // Update company with found job board URL
+                  this.updateProgress({ currentAction: 'Found job board for ' + company.name });
                   await jobQueries.updateCompany(company.id, { job_board_url: testUrl });
                   console.log(`Found job board for ${company.name}: ${testUrl}`);
                   return; // Exit the function once the job board is found
