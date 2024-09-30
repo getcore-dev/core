@@ -140,6 +140,8 @@ button {
   -webkit-appearance: button;
 }
 
+
+
 label {
   font-size: var(--default-sub-font-size);
 }
@@ -200,6 +202,11 @@ h5 {
   color: var(--light-mode-bold-text-color);
 }
 
+
+th {
+  font-weight: 500;
+}
+
 a,
 a:visited {
   text-decoration: none;
@@ -207,7 +214,7 @@ a:visited {
 }
 
 a:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 
@@ -257,7 +264,6 @@ ul li {
 
 .menu-item {
   display: flex;
-  height: 34px;
   flex-direction: row;
   align-items: center;
 }
@@ -604,7 +610,6 @@ ul li {
 .select2-container--default .select2-selection--multiple {
   width: 100% !important;
   padding: .25rem .75rem !important;
-  height: 40px;
   display: flex !important;
   align-items: center;
   margin: 8px 0;
@@ -777,6 +782,21 @@ li.dropdown a.active {
   padding: 0;
   font-size: 1.05rem;
   font-weight: 500;
+}
+
+.header-text {
+  font-size: 18px;
+}
+
+.hero-logo {
+  height: 90px;
+}
+
+.centered-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
 }
 
 .nav-links::-webkit-scrollbar {
@@ -1261,8 +1281,8 @@ a>.menu-item {
 }
 
 .thumbnail-micro {
-  width: 20px !important;
-  height: 20px !important;
+  width: 25px !important;
+  height: 25px !important;
 }
 
 
@@ -1375,7 +1395,10 @@ a>.menu-item {
   background-color: #f0f0f0;
 }
 
-/* Responsive Design */
+.navbar ul li {
+  margin: 0;
+}
+
 @media (max-width: 768px) {
 
   label {
@@ -1412,6 +1435,9 @@ a>.menu-item {
 
 
   .menu-content {
+    padding-top: calc(var(--mobile-navbar-height) + 6px);
+    padding-left: .4rem;
+    padding-right: .4rem;
     height: calc(100dvh - 58px);
   }
 
@@ -1524,7 +1550,7 @@ a>.menu-item {
 
   .nav-text-and-user-btns {
     position: relative;
-    display: none;
+    display: block;
     top: 0;
     left: 2.6rem;
   }
@@ -1565,6 +1591,10 @@ a>.menu-item {
 
   .avatar-dropdown-item #nb-icon {
     font-size: 22px;
+  }
+
+  .navigation-avatar {
+    display: none;
   }
 
   .condensed {
@@ -1655,7 +1685,6 @@ input[type='password'],
 input[type='search'] {
   width: 100%;
   appearance: none;
-  height: 40px;
   font-weight: 500;
   letter-spacing: 0em;
   line-height: 1em;
@@ -1792,7 +1821,6 @@ textarea {
 
 select {
   width: 100%;
-  height: 40px;
   font-family: var(--font-family);
   padding: .5rem .75rem !important;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
@@ -2132,6 +2160,31 @@ hr {
   padding-bottom: .5rem;
 }
 
+.py-1half {
+  padding-top: .375rem;
+  padding-bottom: .375rem;
+}
+
+.py-3 {
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+}
+
+.px-3 {
+  padding-left: .75rem;
+  padding-right: .75rem;
+}
+
+.py-1 {
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+}
+
+.px-1 {
+  padding-left: .25rem;
+  padding-right: .25rem;
+}
+
 .px-2 {
   padding-left: .5rem;
   padding-right: .5rem;
@@ -2396,23 +2449,15 @@ hr {
 
 
 #menu-community-icon {
-  font-size: 1.1rem;
-  padding: 0px 1.4rem;
-  padding-left: 0;
+  font-size: 16px;
+  padding-right: .75rem;
   vertical-align: -2px;
-  color: var(--light-mode-text-color);
 }
 
 
 
 .sidebar-open {
   transform: translateX(0);
-}
-
-.user-links {
-  display: flex;
-  align-items: center;
-  transition: transform 0.1s ease-out;
 }
 
 .user-links {
@@ -2497,7 +2542,6 @@ details[open] {
   width: 100%;
   text-decoration: none;
   font-size: .925rem;
-  color: var(--primary-text-color);
   display: block;
   transition: 0.3s;
 }
@@ -2580,11 +2624,6 @@ details[open] {
   .selected-text-tag {
     border-color: #fff !important;
     color: #fff !important;
-  }
-
-
-  .menu-content a {
-    color: #fff;
   }
 
 
@@ -2863,10 +2902,6 @@ input::placeholder {
     background-color: var(--dark-mode-text-color);
   }
 
-  #menu-community-icon {
-    color: var(--dark-mode-text-color);
-  }
-
   .navbar,
   .second-nav-bar,
   .search-results-container {
@@ -3025,10 +3060,6 @@ input::placeholder {
   .avatar-dropdown a {
     background: transparent;
     color: var(--dark-mode-text-color);
-  }
-
-  .menu-content a {
-    color: #fff;
   }
 
   .navbar-user-info {

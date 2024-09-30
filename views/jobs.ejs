@@ -70,11 +70,14 @@
 
         <% } %>
 
-        <div class="jobs-search-container">
+        <div class="jobs-search-container flex flex-col gap-03">
           <input type="text" id="job-search-input" class="job-posting-search-input" placeholder="Search jobs & companies" />
+          <div class="flex flex-col active-filters-container">
+            <p id="active-filters-sentence" class="active-filters-sentence mini-text"></p>
+          </div>
         </div>
 
-        <ul class="flex flex-row w-100 gap-06 wrap">
+        <ul class="flex flex-row w-100 gap-06 wrap no-margin">
           <div class="dropdown" tabindex="0">
             <button aria-label="Experience Level" class="dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
               Experience Level
@@ -88,43 +91,6 @@
                 <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="<%= level %>" onclick="toggleSelectedFilter(event)"><%= level %></button>
               </a>
               <% }); %>
-            </div>
-          </div>
-          <div class="dropdown" tabindex="0">
-            <button aria-label="Companies" class="dropdown-button companies-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
-              Companies
-              <span class="arrow">&#9662;</span>
-            </button>
-
-            <div class="dropdown-content companies-dropdown-content">
-              <% companies.forEach(company => { %>
-              <a class="w-100">
-                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="<%= company.name %>" onclick="toggleSelectedFilter(event)"><%= company.name %></button>
-              </a>
-              <% }); %>
-            </div>
-          </div>
-
-          <div class="dropdown" tabindex="0">
-            <button aria-label="Role" class="dropdown-button job-title-button job-title-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
-              Role
-              <span class="arrow">&#9662;</span>
-            </button>
-
-            <div class="dropdown-content">
-              <% const techJobTitles = ["Software Engineer", "Data Scientist", "Project Manager", "Graphic Designer"]; %>
-              <% const userJobTitles = user && user.desired_job_title ? user.desired_job_title.split(',').map(title => title.trim()) : []; %>
-              <% if (userJobTitles.length > 0) { %>
-              <a class="w-100">
-                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="tech-job-titles" data-id="undefined" data-name="Role" onclick="clearSelectedFilters('tech-job-titles');">Role</button>
-              </a>
-              <% } %>
-              <% techJobTitles.forEach(title => { %>
-              <a class="w-100">
-                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="tech-job-titles" data-id="<%= title %>" data-name="<%= title %>" onclick="toggleSelectedFilter(event)" <% if(userJobTitles.includes(title)) { %>class="selected" <% } %>><%= title %></button>
-              </a>
-              <% }); %>
-
             </div>
           </div>
 

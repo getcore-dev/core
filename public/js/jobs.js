@@ -417,32 +417,6 @@ async function fetchRecentCompanies() {
 [{"id":1,"name":"Waymo","location":"Mountain View, California","description":"Waymo is an autonomous driving technology company that develops self-driving cars and associated software. It originated from Google's self-driving car project and focuses on making transportation safer and more accessible through automation.","logo":null,"logo_url":null,"new_id":"DCE0D462-4078-47ED-9432-D5DF39098F67","industry":"Automotive, Technology, Transportation","founded":"2016-01-01T00:00:00.000Z","size":"1000-
 */ 
 
-function renderCompaniesDropdown(companies) {
-  const companiesDropdownContent = document.querySelector('.companies-dropdown-content');
-
-  // Sort companies by name
-  companies.sort((a, b) => a.name.localeCompare(b.name));
-
-  companies.forEach((company) => {
-    const companyElement = document.createElement('a');
-    companyElement.className = 'w-100';
-    companyElement.innerHTML = `
-      <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="companies" data-id="${company.id}" data-name="${company.name}" onclick="toggleSelectedFilter(event)">${company.name}</button>
-    `;
-    companiesDropdownContent.appendChild(companyElement);
-  });
-}
-
-async function fetchTotalCompanies() {
-  try {
-    const response = await fetch('/api/companies');
-    const companies = await response.json();
-    renderCompaniesDropdown(companies);
-  } catch (error) {
-    console.error('Error fetching recent companies count:', error);
-  }
-}
-
 /*
               <a class="w-100">
                 <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="companies" data-id="<%= company %>" data-name="<%= company %>" onclick="toggleSelectedFilter(event)"><%= company %></button>
@@ -686,30 +660,92 @@ function saveStateToLocalStorage() {
       companies: Array.from(state.filters.companies),
     },
     hasMoreData: state.hasMoreData,
+    lastUpdated: Date.now(), // Add timestamp
   };
   localStorage.setItem('jobSearchState', JSON.stringify(stateToSave));
 }
+
 
 function loadStateFromLocalStorage() {
   const savedState = localStorage.getItem('jobSearchState');
   if (savedState) {
     const parsedState = JSON.parse(savedState);
-    state.jobPostings = parsedState.jobPostings;
-    state.currentPage = parsedState.currentPage;
-    state.filters = {
-      experiencelevels: Array.isArray(parsedState.filters.experiencelevels) ? new Set(parsedState.filters.experiencelevels) : new Set(),
-      locations: new Set(parsedState.filters.locations),
-      titles: new Set(parsedState.filters.titles),
-      salary: parsedState.filters.salary,
-      skills: new Set(parsedState.filters.skills),
-      companies: new Set(parsedState.filters.companies),
-    };
-    state.hasMoreData = true;
+    const now = Date.now();
+    const tenMinutes = 10 * 60 * 1000; // 10 minutes in milliseconds
+    if (parsedState.lastUpdated && (now - parsedState.lastUpdated < tenMinutes)) {
+      // Load state if it's less than 10 minutes old
+      state.jobPostings = parsedState.jobPostings;
+      state.currentPage = parsedState.currentPage;
+      state.filters = {
+        experiencelevels: new Set(parsedState.filters.experiencelevels),
+        locations: new Set(parsedState.filters.locations),
+        titles: new Set(parsedState.filters.titles),
+        salary: parsedState.filters.salary,
+        skills: new Set(parsedState.filters.skills),
+        companies: new Set(parsedState.filters.companies),
+      };
+      state.hasMoreData = true;
 
-    // Restore the UI state
-    restoreUIState();
+      const sentence = createActiveFilterElement(state.filters);
+      const activeFiltersSentenceElement = document.getElementById('active-filters-sentence');
+      if (activeFiltersSentenceElement) {
+        activeFiltersSentenceElement.textContent = sentence;
+      }
+
+      // Restore the UI state
+      restoreUIState();
+    } else {
+      // Discard old state and fetch new job postings
+      localStorage.removeItem('jobSearchState');
+      fetchJobPostings();
+    }
+  } else {
+    // No saved state, fetch job postings
+    fetchJobPostings();
   }
 }
+
+
+function createActiveFilterElement(filters) {
+  let sentenceParts = [];
+
+  if (filters.experiencelevels && filters.experiencelevels.size > 0) {
+    sentenceParts.push(Array.from(filters.experiencelevels).join('/'));
+
+    // if no titles then add 'jobs' after the experience level
+    if (filters.titles && filters.titles.size === 0) {
+      sentenceParts[sentenceParts.length - 1] += ' jobs';
+    }
+  }
+
+  if (filters.titles && filters.titles.size > 0) {
+    sentenceParts.push(Array.from(filters.titles).join('/'));
+
+    // add jobs after the titles
+    if (filters.titles) {
+      sentenceParts[sentenceParts.length - 1] += ' jobs';
+    }
+  }
+
+  if (filters.companies && filters.companies.size > 0) {
+    sentenceParts.push('at ' + Array.from(filters.companies).join('/'));
+  }
+
+  if (filters.locations && filters.locations.size > 0) {
+    sentenceParts.push('in ' + Array.from(filters.locations).join('/'));
+    
+  }
+
+  if (filters.salary && filters.salary > 0) {
+    sentenceParts.push('with salary above ' + filters.salary);
+  }
+
+  const sentence = sentenceParts.join(' ');
+
+  console.log(sentence);
+  return sentence;
+}
+
 
 function restoreUIState() {
   // Clear existing job listings
@@ -724,6 +760,7 @@ function restoreUIState() {
   selectedFiltersContainer.innerHTML = ''; // Clear existing filters
 
   for (let [type, filterSet] of Object.entries(state.filters)) {
+    if (type === 'skills') continue;
     if (type === 'titles') type = 'tech-job-titles';
     if (type === 'locations') type = 'job-locations';
     if (type === 'experiencelevels') type = 'job-levels';
@@ -743,12 +780,6 @@ function restoreUIState() {
           const button = document.querySelector(`button[data-type="job-locations"][data-name="${filter}"]`);
           button.className = 'quick-option-btn clickable no-bg no-border w-100 mini-text';
           const dropdown = document.querySelector('.location-dropdown');
-          dropdown.classList.add('active');
-          dropdown.innerHTML = filter + '<span class="arrow">&#9662;</span>';
-        } else if (type == 'tech-job-titles') {
-          const button = document.querySelector(`button[data-type="tech-job-titles"][data-name="${filter}"]`);
-          button.className = 'quick-option-btn clickable no-bg no-border w-100 mini-text';
-          const dropdown = document.querySelector('.job-title-button');
           dropdown.classList.add('active');
           dropdown.innerHTML = filter + '<span class="arrow">&#9662;</span>';
         } else if (type == 'companies') {
@@ -785,8 +816,10 @@ document.addEventListener('DOMContentLoaded', () => {
 function createJobElement(job) {
   const jobElement = document.createElement('div');
   jobElement.classList.add('job');
-  jobElement.classList.add('px-4');
+  jobElement.classList.add('px-2');
   jobElement.classList.add('py-4');
+  jobElement.classList.add('adaptive-border-bottom');
+
 
 
   jobElement.onclick = () => (window.location.href = `/jobs/${job.id}`);
@@ -849,12 +882,13 @@ jobElement.innerHTML = `
         <a href="/jobs/${job.id}"><h3 class="job-title main-text">${job.title}</h3></a>
       </div>
       </div>
-      <div class="location-badge">
-        📍 ${formatLocation(job.location).trim().substring(0, 25)}
-      </div>
     </div>
     ${tagsHTML ? `<div class="job-tags margin-06-bottom">${tagsHTML}</div>` : ''}
     <div class="job-details mini-text">
+          <span class="text-tag bold flex flex-row v-center">
+          📍
+        ${formatLocation(job.location).trim().substring(0, 25)}
+      </span>
           ${job.salary || job.salary_max ? `
         <span class="text-tag bold flex flex-row v-center salary">
           <svg class="icon" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
@@ -863,7 +897,7 @@ jobElement.innerHTML = `
       ` : ``}
       <span class="text-tag flex flex-row v-center applicants">
         <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-        ${job.applicants ? `${job.applicants} applicants` : 'First applicant'}
+        ${job.applicants ? `${job.applicants} applicants` : '0'}
       </span>
       <span class="text-tag flex flex-row v-center post-date">
         <svg class="icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
@@ -905,7 +939,7 @@ state.jobSearchInput.addEventListener('input',
     if (state.jobSearchInput.value.length < 2) return;
 
     const searchTerm = state.jobSearchInput.value;
-    const routes = ['companies', 'skills', 'tech-job-titles', 'job-locations', 'job-levels'];
+    const routes = ['companies', 'tech-job-titles', 'job-locations', 'job-levels'];
 
     Promise.all(routes.map(route => 
       fetch(`/autocomplete/${route}?term=${searchTerm}`, {
@@ -954,9 +988,15 @@ function displaySearchResults(results) {
     resultItem.dataset.type = result.type;
     resultItem.dataset.id = result.id;
     resultItem.dataset.name = result.name;
+    const filterMappings = {
+      'companies': 'Companies',
+      'tech-job-titles': 'Job Titles',
+      'job-locations': 'Locations',
+      'job-levels': 'Experience Levels'
+    };
     if (result.logo) resultItem.dataset.logo = result.logo;
     
-    let content = `<p class="sub-text link">${result.name}</p> <p class="mini-text secondary-text">in <strong>${result.type}</strong> - ${result.jobCount} jobs</p>`;
+    let content = `<p class="sub-text link">${result.name}</p> <p class="mini-text secondary-text">in <strong>${filterMappings[result.type]}</strong> - ${result.jobCount} jobs</p>`;
     
     if (result.type === 'companies' && result.logo) {
       const logo = document.createElement('img');
@@ -1079,15 +1119,11 @@ function updateDropdownAfterRemoval(type, name) {
     'job-levels': 'experience-dropdown',
     'job-locations': 'location-dropdown',
     'tech-job-titles': 'job-title-dropdown',
-    'skills': 'skills-dropdown', // Add if applicable
-    'companies': 'companies-dropdown', // Add if applicable
   };
   const dropdownDefaultTextMap = {
     'job-levels': 'Experience Level',
     'job-locations': 'Location',
     'tech-job-titles': 'Job Title',
-    'skills': 'Skills', // Add if applicable
-    'companies': 'Companies', // Add if applicable
   };
 
   const dropdownClass = dropdownClassMap[type];
@@ -1124,15 +1160,11 @@ function toggleSelectedFilter(event) {
     'job-levels': 'experience-dropdown',
     'job-locations': 'location-dropdown',
     'tech-job-titles': 'job-title-dropdown',
-    'skills': 'skills-dropdown', // Add if applicable
-    'companies': 'companies-dropdown', // Add if applicable
   };
   const dropdownDefaultTextMap = {
     'job-levels': 'Experience Level',
     'job-locations': 'Location',
     'tech-job-titles': 'Job Title',
-    'skills': 'Skills', // Add if applicable
-    'companies': 'Companies', // Add if applicable
   };
 
   const dropdownClass = dropdownClassMap[type];
@@ -1173,9 +1205,6 @@ function clearSelectedFilters(type) {
     case 'job-locations':
       filterSet = state.filters.locations;
       break;
-    case 'skills':
-      filterSet = state.filters.skills;
-      break;
     case 'companies':
       filterSet = state.filters.companies;
       break;
@@ -1195,9 +1224,6 @@ function isFilterSelected(type, id, name) {
       break;
     case 'job-locations':
       filterSet = state.filters.locations;
-      break;
-    case 'skills':
-      filterSet = state.filters.skills;
       break;
     case 'companies':
       filterSet = state.filters.companies;
@@ -1264,9 +1290,6 @@ function updateState(type, id, name, logo, isRemoval = false) {
     case 'job-locations':
       filterSet = state.filters.locations;
       break;
-    case 'skills':
-      filterSet = state.filters.skills;
-      break;
     case 'companies':
       filterSet = state.filters.companies;
       break;
@@ -1311,6 +1334,12 @@ function updateState(type, id, name, logo, isRemoval = false) {
     } else {
       filterSet.add(name);
     }
+  }
+
+  const sentence = createActiveFilterElement(state.filters);
+  const activeFiltersSentenceElement = document.getElementById('active-filters-sentence');
+  if (activeFiltersSentenceElement) {
+    activeFiltersSentenceElement.textContent = sentence;
   }
 
   saveStateToLocalStorage(); // Save state after updating filters

@@ -385,7 +385,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
             <p class="third-text mini-text">
             <a class="secondary-text bold link sub-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
             </p>
-          <h3 class="company-name main-text margin-03-bottom">
+          <h3 class="company-name header-text margin-03-bottom">
         ${job.title}
       </h3>
       <p class="mini-text third-text"> 

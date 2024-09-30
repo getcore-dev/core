@@ -141,7 +141,6 @@ div.job-filters {
 .company-info {
   display: flex;
   flex-direction: row;
-  align-items: center;
   padding-top: 0px;
   width: 100%;
 }
@@ -273,7 +272,7 @@ select:hover,
 
 div.jobs-container>div.job-list>.job {
   border-radius: 6px;
-  margin-bottom: 1.4rem;
+  margin-bottom: 0;
   cursor: pointer;
 }
 
@@ -1080,8 +1079,9 @@ div .material-symbols-outlined:not(:only-child) {
 
   .jobs-header {
     margin: 0 1rem;
+    margin-bottom: .8rem;
     margin-top: 1.4rem;
-    gap: .5rem;
+    gap: 1.2rem;
   }
 
   #personalized-job-list {
@@ -1101,9 +1101,10 @@ div .material-symbols-outlined:not(:only-child) {
     overflow-y: none;
     margin: 0;
     width: 100%;
-    margin-bottom: .9rem !important;
-    border: 1px solid var(--border-color);
-    border-radius: 6px !important;
+    margin-bottom: .5 !important;
+    border: 0;
+    border-radius: 0 !important;
+    box-shadow: none;
     box-sizing: border-box;
   }
 

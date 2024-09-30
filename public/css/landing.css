@@ -38,10 +38,6 @@ h4 {
     margin-bottom: 1rem;
 }
 
-p {
-    margin-bottom: 1rem;
-}
-
 a {
     color: var(--primary-color);
     text-decoration: none;
@@ -70,11 +66,11 @@ a:hover {
 
 /* Hero Section */
 .hero-section {
-    background: linear-gradient(180deg, rgba(99, 102, 241, 0.8), rgba(79, 70, 229, 0.8)), url('/img/hero-background.jpg') center center/cover no-repeat;
-    color: white;
+    background: linear-gradient(180deg, rgb(175 175 175 / 80%), rgba(255, 255, 255, 0.8)), url(/img/hero-background.jpg) center center / cover no-repeat;
     text-align: center;
     padding: 120px 20px;
 }
+
 
 .hero-section h1 {
     font-size: 3.5rem;
@@ -109,7 +105,6 @@ a:hover {
     margin-right: auto;
 }
 
-/* Features Section */
 .features {
     background-color: var(--light-mode-secondary-color);
 }
@@ -289,5 +284,5 @@ footer {
     .feature-grid {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     }
-    
+
 }

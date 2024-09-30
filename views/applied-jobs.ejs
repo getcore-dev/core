@@ -9,12 +9,103 @@
   <link rel="stylesheet" href="/css/jobs.css" />
   <link rel="stylesheet" href="/css/applied-jobs.css" />
 
-
   <link rel="shortcut icon" href="/img/core.png" />
 </head>
 <style>
-  .job {
-    justify-content: flex-start !important;
+  /* Table Styles */
+  .job-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 30px;
+    border-style: hidden;
+    box-shadow: 0 0 0 1px var(--border-color);
+    border-collapse: collapse;
+  }
+
+  .job-table th,
+  .job-table tr {
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .job-table {
+    border-radius: 10px;
+  }
+
+  .job-table th {
+    background-color: transparent;
+    text-align: left;
+  }
+
+  .job-table td {
+    padding: 6px;
+  }
+
+  .job-table th {
+    padding: 16px 8px;
+  }
+
+  .job-table tr:hover {
+    background-color: var(--light-mode-hover-color);
+  }
+
+  /* Dropdown Styles */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+
+  .dropdown .arrow {
+    margin-left: 5px;
+  }
+
+
+  .dropdown-content .select-option {
+    color: black;
+    padding: 8px 12px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+
+  .dropdown-content .select-option:hover {
+    background-color: #f1f1f1;
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  .color-circle {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+    border-radius: 50%;
+    vertical-align: middle;
+  }
+
+  .color-circle.pending {
+    background-color: gray;
+  }
+
+  .color-circle.responded {
+    background-color: green;
+  }
+
+  .color-circle.expired {
+    background-color: red;
+  }
+
+  .color-circle.remove {
+    background-color: black;
   }
 </style>
 
@@ -24,20 +115,63 @@
     <div class="main-container">
       <div class="header flex sb v-center margin-1-bottom">
         <div class="header-title flex flex-col">
-          <p class="sub-text bold">Applied Jobs</p>
+          <p class="header-text bold">Applied Jobs</p>
           <a class="back-button link mini-text" href="/jobs">Back</a>
         </div>
         <a href="#" class="link mini-text">+ Add Job</a>
       </div>
-      <div id="data-container" class="job-list">
+      <div class="flex w-100 gap-1 margin-1-bottom">
+        <input type="text" placeholder="Search">
+
+        <div class="flex flex-row gap-06">
+          <button class="bordered-button-normal">
+            <span class="material-symbols-outlined">filter_list</span>
+            Filter
+          </button>
+          <button class="bordered-button-normal">
+            <span class="material-symbols-outlined">sort</span>
+            Sort
+          </button>
+        </div>
+      </div>
+      <div class="job-table-container">
+        <table class="job-table">
+          <thead>
+            <tr>
+              <th class="mini-text third-text" style="padding: 10px;"><input type="checkbox" name="select-all" id="select-all"></th>
+              <th class="mini-text third-text">Company
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="ml-2 h-4 w-4">
+                  <path d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
+                </svg>
+              </th>
+              <th class="mini-text third-text">
+                Title
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="ml-2 h-4 w-4">
+                  <path d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
+                </svg>
+              </th>
+              <th class="mini-text third-text">
+                Status
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="ml-2 h-4 w-4">
+                  <path d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
+                </svg>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="job-table-body">
+            <!-- Job rows will be inserted here -->
+          </tbody>
+        </table>
       </div>
     </div>
-
   </main>
+
   <script>
     function createCustomSelect(job) {
       const jobId = job.id;
-      const userChoice = job.job_status ? job.job_status.charAt(0).toUpperCase() + job.job_status.slice(1) : 'Pending';
+      const userChoice = job.job_status ?
+        job.job_status.charAt(0).toUpperCase() + job.job_status.slice(1) :
+        'Pending';
       const options = [{
           value: 'pending',
           label: 'Pending'
@@ -53,310 +187,141 @@
         {
           value: 'remove',
           label: 'Remove'
-        }
+        },
       ];
 
       return `
-        <div class="dropdown" tabindex="0" data-job-id="${jobId}" onclick="event.stopPropagation()">
-          <button class="dropdown-button px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+        <div class="dropdown" data-job-id="${jobId}">
+          <button class="dropdown-button mini-text secondary-text">
             ${userChoice}
             <span class="arrow">&#9662;</span>
           </button>
           <div class="dropdown-content">
-            ${options.map(option => `
-              <a href="#" class="select-option mini-text ${userChoice.toLowerCase() === option.value ? 'selected' : ''}" data-value="${option.value}" onclick="updateJobStatus(event, '${jobId}', '${option.value}')">
+            ${options
+              .map(
+                (option) => `
+              <a href="#" class="select-option mini-text ${
+                userChoice.toLowerCase() === option.value ? 'selected' : ''
+              }" data-value="${option.value}" onclick="updateJobStatus(event, '${jobId}', '${option.value}', this)">
                 <span class="color-circle ${option.value}"></span> ${option.label}
               </a>
-            `).join('')}
+            `
+              )
+              .join('')}
           </div>
         </div>
       `;
     }
 
-    function updateJobStatus(event, jobId, status) {
+    function updateJobStatus(event, jobId, status, element) {
       event.preventDefault();
-      // Implement the logic to update the job status here
-      console.log(`Job ID: ${jobId}, New Status: ${status}`);
+      event.stopPropagation();
+      // Update UI
+      const dropdown = element.closest('.dropdown');
+      const button = dropdown.querySelector('.dropdown-button');
+      button.innerHTML = `${
+        status.charAt(0).toUpperCase() + status.slice(1)
+      } <span class="arrow">&#9662;</span>`;
+
+      // Update job status via fetch
+      fetch('/jobs/update-job-status', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            jobId,
+            status,
+          }),
+        })
+        .then((response) => {
+          if (response.ok) {
+            console.log('Job status updated');
+            if (status === 'remove') {
+              // Remove the job row from the table
+              const jobRow = dropdown.closest('tr');
+              jobRow.remove();
+            }
+          } else {
+            console.error('Error updating job status');
+          }
+        })
+        .catch((error) => {
+          console.error('Error updating job status:', error);
+        });
     }
 
     const appliedJobsData = <%- JSON.stringify(appliedJobs) %>;
 
-    function formatSalary(salary) {
-      if (!salary) return "";
-      return salary >= 1000 ? (salary / 1000).toFixed(0) + "k" : salary.toString();
-    }
-
-    function getFormattedSalary(salary, salaryMax) {
-      if (salary && salaryMax) {
-        const average = Math.round((salary + salaryMax) / 2);
-        return `${formatSalary(average)}`;
-      } else if (salary) {
-        return formatSalary(salary);
-      }
-      return "";
-    }
-
-    function formatDateColor(dateString) {
-      const now = new Date();
-      const postedDate = new Date(dateString);
-      // if within 2 weeks, green, if within 2 months, yellow, if older, red
-      const diffTime = Math.abs(now - postedDate);
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-      if (diffDays <= 14) {
-        return 'green';
-      } else if (diffDays <= 60) {
-        return 'yellow';
-      } else {
-        return 'red';
-      }
-    }
-
-    function formatRelativeDate(dateString) {
-      const now = new Date();
-      const postedDate = new Date(dateString);
-      const diffTime = Math.abs(now - postedDate);
-      const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-      const diffMonths = Math.floor(diffDays / 30);
-      const diffYears = Math.floor(diffDays / 365);
-
-      if (diffYears > 0) {
-        return `${diffYears}y`;
-      } else if (diffMonths > 0) {
-        return `${diffMonths}m`;
-      } else if (diffDays > 0) {
-        return `${diffDays}d`;
-      } else if (diffHours > 0) {
-        return `${diffHours}h`;
-      } else {
-        return 'Just now';
-      }
-    }
-
     function renderJobPostings(jobPostings) {
-      const jobListContainer = document.querySelector(".job-list");
-      jobListContainer.innerHTML = ''; // Clear existing job postings
+      const jobTableBody = document.getElementById('job-table-body');
+      jobTableBody.innerHTML = ''; // Clear existing job postings
 
       if (jobPostings.length === 0) {
-        // render no jobs message and link to jobs page
-        const noJobsMessage = document.createElement("div");
-        noJobsMessage.classList.add("no-jobs-message");
-        noJobsMessage.innerHTML = `
-        <h2 class="sub-text">You haven't applied to any jobs yet.</h2>
-        <a href="/jobs" class="link">Browse Jobs</a>
+        // Render no jobs message and link to jobs page
+        const noJobsMessage = document.createElement('tr');
+        const noJobsTd = document.createElement('td');
+        noJobsTd.colSpan = 4;
+        noJobsTd.innerHTML = `
+          <div class="no-jobs-message">
+            <h2 class="sub-text">You haven't applied to any jobs yet.</h2>
+            <a href="/jobs" class="link">Browse Jobs</a>
+          </div>
         `;
-        jobListContainer.appendChild(noJobsMessage);
+        noJobsMessage.appendChild(noJobsTd);
+        jobTableBody.appendChild(noJobsMessage);
         return;
       }
 
       jobPostings.forEach((job) => {
-        const jobElement = document.createElement("div");
-        jobElement.classList.add("job");
-        jobElement.onclick = () => {
-          window.location.href = `/jobs/${job.id}`;
-        };
-        jobElement.innerHTML = `
-        <a href="/jobs/${job.id}">
-        <div class="job-preview-image">
-                ${
-                job.company_logo
-                    ? `<img style="height: 36px;width:36px;" class="thumbnail thumbnail-regular thumbnail-tiny" onerror="this.onerror=null;this.src='/img/glyph.png';" src="${job.company_logo}" alt="" />`
-                    : ''
-                }
-        </div>
-        <div class="job-preview">
-            <div class="job-info">
-            <div class="company-info">
-                <div class="job-posting-company-info">
-                <a class="company-name third-text mini-text bold" href="/jobs/company/${job.company_name}">${job.company_name}</a>
-                </div>
-            </div>
-            <span class="job-text"><h3 class="job-title sub-text">${job.title}</h3></span>
-            
-            <div class="job-title-location third-text mini-text">
-                <div class="job-post-date ${formatDateColor(job.postedDate)} mini-text">
-                <time>${formatRelativeDate(job.postedDate)}</time>
-                </div>
-                <span style="font-size:.7rem;">•</span>
-                <div class="experience-level sub-text">${
-                job.experienceLevel === 'Mid Level'
-                    ? 'L3/L4'
-                    : job.experienceLevel === 'Entry Level'
-                    ? 'L1/L2'
-                    : job.experienceLevel === 'Senior'
-                        ? 'L5/L6'
-                        : job.experienceLevel
-                }</div>
-                ${job.salary || job.salary_max ? `
-                <span style="font-size:.7rem;">•</span><div class="job-salary mini-text">
-                    <span class="material-symbols-outlined">attach_money</span>
-                    ${getFormattedSalary(job.salary, job.salary_max)}/yr
-                </div>
-                ` : ``}
-                <span style="font-size:.7rem;">•</span><div class="location mini-text">
-                <span class="material-symbols-outlined">location_on</span>
-                ${formatLocation(job.location).trim()}
-                </div>
-                <span style="font-size:.7rem;">•</span><div class="views mini-text">
-                <span class="material-symbols-outlined">visibility</span>
-                ${job.views ? job.views : '0'}
-                </div>
-            </div>
-            </div>
-        </div>
-      ${createCustomSelect(job)}
-        </a>
-        `;
+        const jobRow = document.createElement('tr');
+        jobRow.classname = 'flex'
 
-        jobListContainer.appendChild(jobElement);
-      });
-    }
+        // Select cell
+        const selectCell = document.createElement('td');
+        selectCell.style.padding = '10px';
+        const selectCheckbox = document.createElement('input');
+        selectCheckbox.type = 'checkbox';
+        selectCheckbox.name = 'select-job';
+        selectCheckbox.value = job.id;
+        selectCell.appendChild(selectCheckbox);
 
-    // event listener so clicks when option is open will not trigger opening a job
-    document.addEventListener('click', (event) => {
-      const customSelects = document.querySelectorAll('.custom-select');
-      customSelects.forEach((customSelect) => {
-        if (customSelect.classList.contains('open')) {
-          event.preventDefault();
-          event.stopPropagation();
+        // Company Name cell
+        const companyNameCell = document.createElement('td');
+        const companyLink = document.createElement('a');
+        companyLink.href = `/jobs/company/${job.company_name}`;
+        companyLink.className = 'company-name third-text mini-text bold';
+        companyLink.textContent = job.company_name;
+        companyNameCell.appendChild(companyLink);
+
+        // Title cell
+        const titleCell = document.createElement('td');
+        const titleLink = document.createElement('a');
+        titleLink.href = `/jobs/${job.id}`;
+        titleLink.className = 'job-title sub-text';
+        if (job.experienceLevel) {
+          titleLink.innerHTML = `<span class="text-tag">${job.experienceLevel}</span> ${job.title}`;
+        } else {
+          titleLink.innerHTML = job.title;
+
         }
-      });
-    });
+        titleCell.appendChild(titleLink);
 
-    function setupCustomSelects() {
-      const customSelects = document.querySelectorAll('.custom-select');
-      console.log('Number of custom selects found:', customSelects.length);
+        // Status cell
+        const statusCell = document.createElement('td');
+        statusCell.innerHTML = createCustomSelect(job);
 
-      customSelects.forEach((customSelect, index) => {
-        const trigger = customSelect.querySelector('.select-trigger');
-        const options = customSelect.querySelector('.select-options');
-        const selectedText = trigger.querySelector('.selected-text');
+        jobRow.appendChild(selectCell);
+        jobRow.appendChild(companyNameCell);
+        jobRow.appendChild(titleCell);
+        jobRow.appendChild(statusCell);
 
-        console.log(`Setting up custom select ${index + 1}`);
-
-        // Prevent job link click when interacting with custom select
-        customSelect.addEventListener('click', (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-        });
-
-        // Toggle the custom select options when the trigger is clicked
-        trigger.addEventListener('click', (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          console.log(`Custom select ${index + 1} clicked`);
-          customSelect.classList.toggle('open');
-        });
-
-        // Handle option selection
-        options.addEventListener('click', (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          if (event.target.classList.contains('select-option')) {
-            const selectedText = customSelect.querySelector('.selected-text');
-            const colorCircle = customSelect.querySelector('.color-circle');
-            const newStatus = event.target.dataset.value;
-            const jobElement = customSelect.closest('.job');
-
-            if (newStatus === 'remove') {
-              jobElement.remove();
-            }
-
-            selectedText.textContent = event.target.textContent.trim();
-            customSelect.classList.remove('open');
-            console.log(`Select ${index + 1} changed to:`, selectedText.textContent);
-
-            // Update the color of the dot
-            colorCircle.className = `color-circle ${newStatus}`;
-
-            // Make PUT request to update job status
-            updateJobStatus(customSelect.dataset.jobId, newStatus);
-          }
-        });
-      });
-
-      function updateJobStatus(jobId, status) {
-        fetch('/jobs/update-job-status', {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              jobId,
-              status
-            }),
-          })
-          .then((response) => {
-            if (response.ok) {
-              console.log('Job status updated');
-            } else {
-              console.error('Error updating job status');
-            }
-          })
-          .catch((error) => {
-            console.error('Error updating job status:', error);
-          });
-      }
-
-      // Close all custom selects when clicking outside
-      document.addEventListener('click', (event) => {
-        customSelects.forEach((customSelect) => {
-          if (!customSelect.contains(event.target)) {
-            customSelect.classList.remove('open');
-          }
-        });
+        jobTableBody.appendChild(jobRow);
       });
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      console.log('DOM fully loaded');
       renderJobPostings(appliedJobsData);
-      console.log('Job postings rendered');
-      setTimeout(() => {
-        console.log('Setting up custom selects');
-        setupCustomSelects();
-      }, 100);
-    });
-
-    document.querySelectorAll('.select-option').forEach(option => {
-      option.addEventListener('click', (event) => {
-        // Stop the event from bubbling up to the parent job element
-        event.stopPropagation();
-
-        const customSelect = event.target.closest('.custom-select');
-        const selectedText = customSelect.querySelector('.selected-text');
-        const colorCircle = customSelect.querySelector('.color-circle');
-        const newStatus = event.target.dataset.value;
-
-        selectedText.textContent = event.target.textContent;
-        customSelect.classList.remove('open');
-        console.log(`Select changed to:`, selectedText.textContent);
-
-        // Update the color of the dot
-        colorCircle.className = `color-circle ${newStatus}`;
-
-        // Make PUT request to update job status
-        fetch('/jobs/update-job-status', {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              jobId: customSelect.dataset.jobId,
-              status: newStatus,
-            }),
-          })
-          .then((response) => {
-            if (response.ok) {
-              console.log('Job status updated');
-            } else {
-              console.error('Error updating job status');
-            }
-          })
-          .catch((error) => {
-            console.error('Error updating job status:', error);
-          });
-      });
     });
   </script>
 </body>

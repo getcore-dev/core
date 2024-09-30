@@ -100,14 +100,14 @@
             <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" aria-label="Upload Resume">
             <small>Accepted file types: .pdf, .doc, .docx. Max file size: 5 MB</small>
           </div>
-          <button type="button" id="upload-resume-button" class="regular-button" style="border-color: <%= edit_user.profile_border_color%>;">
+          <button type="button" id="upload-resume-button" class="main-button">
             <span class="material-symbols-outlined">
               upload_file
             </span>
             Upload Resume
           </button>
           <a href="/edit-education-experience">
-            <button type="button" class="regular-button" style="border-color: <%= edit_user.profile_border_color%>;">
+            <button type="button" class="main-button">
               <span class="material-symbols-outlined">
                 school
               </span>
@@ -116,7 +116,7 @@
           </a>
 
           <a href="/edit-experience">
-            <button type="button" class="regular-button" style="border-color: <%= edit_user.profile_border_color%>;">
+            <button type="button" class="main-button">
               <span class="material-symbols-outlined">
                 work
               </span>
@@ -126,7 +126,7 @@
 
           <!-- Settings Button -->
           <a href="/settings">
-            <button type="button" class="special-button" style="border-color: <%= edit_user.profile_border_color%>;">
+            <button type="button" class="bordered-button">
               <span class="material-symbols-outlined">
                 settings
               </span>

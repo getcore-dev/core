@@ -267,7 +267,7 @@ function createJobElement(job) {
   jobElement.innerHTML = `
   <div class="job-preview">
     <div class="job-info">
-      <div class="flex flex-row  gap-03">
+      <div class="flex flex-row space-between w-100 gap-03">
       <div class="flex flex-row gap-06">
         ${
   job.company_logo

@@ -85,11 +85,10 @@
 
           <div class="flex flex-col w-100">
             <div class="flex flex-col">
-              <h4 class="mini-text third-text margin-06-bottom">Account</h4>
-              <div class="flex flex-row v-center w-100 gap-06 adaptive-border px-2 py-2 margin-03-bottom">
-                <img src="<%= user.avatar %>" alt="Avatar" class="thumbnail thumbnail-regular thumbnail-tiny">
+              <div class="flex flex-row v-center w-100 gap-06 adaptive-border px-2 py-1 margin-1-bottom">
+                <img src="<%= user.avatar %>" alt="Avatar" class="thumbnail thumbnail-regular thumbnail-micro">
                 <div class="flex flex-col">
-                  <p class="sub-text bold"><%= user.firstname %> <%= user.lastname %></p>
+                  <p class="mini-text bold"><%= user.firstname %> <%= user.lastname %></p>
                   <p class="mini-text secondary-text"><%= user.username %></p>
                 </div>
                 <div class="ml-auto px-2 py-2 clickable">
@@ -102,26 +101,34 @@
           </div>
 
           <div class="flex flex-col margin-06-bottom">
-            <a class="<%= isActive('/notifications') ? 'active' : '' %>" href="/notifications">
-              <div class="menu-item main-text primary-text relative px-4">
+            <a class="<%= isActive('/notifications') ? 'active primary-text' : 'secondary-text' %>" href="/notifications">
+              <div class="menu-item mini-text relative px-2 py-1half">
                 <span class="material-symbols-outlined" id="menu-community-icon">
                   notifications
                 </span>
                 Notifications
-                <span id="unreadCount" class="count-bubble"></span>
+                <span id="unreadCount" class="counter ml-auto"></span>
 
               </div>
             </a>
-            <a class="<%= isActive('/favorites') ? 'active' : '' %>" href="/favorites">
-              <div class="menu-item main-text primary-text px-4">
+            <a class="<%= isActive('/favorites') ? 'active primary-text' : 'secondary-text' %>" href="/favorites">
+              <div class="menu-item mini-text px-2 py-1half">
                 <span class="material-symbols-outlined" id="menu-community-icon">
                   star
                 </span>
                 Favorites
               </div>
             </a>
+            <a href="/settings" class="<%= isActive('/settings') ? 'active primary-text' : 'secondary-text' %>">
+              <div class="menu-item mini-text px-2 py-1half">
+                <span class="material-symbols-outlined" id="menu-community-icon">
+                  settings
+                </span>
+                Settings
+              </div>
+            </a>
             <a href="#" onclick="document.getElementById('logoutForm').submit()">
-              <div class="menu-item main-text primary-text cancel-button-text px-4">
+              <div class="menu-item mini-text primary-text cancel-button-text px-2 py-1half">
                 <span class="material-symbols-outlined cancel-button-text" id="menu-community-icon">
                   logout
                 </span>
@@ -139,8 +146,8 @@
             </div>
           </div>
 
-          <a href="/" class="<%= isActive('/') ? 'active' : '' %>">
-            <div class="menu-item main-text primary-text px-4">
+          <a href="/" class="<%= isActive('/') ? 'active primary-text' : 'secondary-text' %>">
+            <div class="menu-item mini-text px-2 py-1half">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 home
               </span>
@@ -148,8 +155,8 @@
             </div>
           </a>
 
-          <a href="/jobs" class="<%= isActive('/jobs') ? 'active' : '' %>">
-            <div class="menu-item main-text primary-text px-4">
+          <a href="/jobs" class="<%= isActive('/jobs') ? 'active primary-text' : 'secondary-text' %>">
+            <div class="menu-item mini-text px-2 py-1half">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 work
               </span>
@@ -158,9 +165,9 @@
           </a>
           <details>
             <summary>
-              <a class="<%= isActive('/networks') ? 'active' : '' %>">
+              <a class="<%= isActive('/networks') ? 'active primary-text' : 'secondary-text' %>">
 
-                <div class="menu-item main-text primary-text px-4">
+                <div class="menu-item mini-text px-2 py-1half">
                   <span class="material-symbols-outlined" id="menu-community-icon">
                     workspaces
                   </span>
@@ -173,8 +180,8 @@
             <div class="mobile-communities-container">
             </div>
           </details>
-          <a href="/updates" class="<%= isActive('/updates') ? 'active' : '' %>">
-            <div class="menu-item main-text primary-text px-4">
+          <a href="/updates" class="<%= isActive('/updates') ? 'active primary-text' : 'secondary-text' %>">
+            <div class="menu-item mini-text px-2 py-1half">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 update
               </span>
@@ -186,8 +193,8 @@
 
           <% if (user) { %>
           <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
-          <a href="/feedback" class="<%= isActive('/feedback') ? 'active' : '' %>">
-            <div class="menu-item main-text primary-text px-4">
+          <a href="/feedback" class="<%= isActive('/feedback') ? 'active primary-text' : 'secondary-text' %>">
+            <div class="menu-item mini-text px-2 py-1half">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 feedback
               </span>
@@ -196,8 +203,8 @@
             </div>
           </a>
           <% } %>
-          <a href="/about" class="<%= isActive('/about') ? 'active' : '' %>">
-            <div class="menu-item main-text primary-text px-4">
+          <a href="/about" class="<%= isActive('/about') ? 'active primary-text' : 'secondary-text' %>">
+            <div class="menu-item mini-text px-2 py-1half">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 info
               </span>
@@ -226,7 +233,8 @@
               </span>
             </button>
           </li>
-          <li>
+
+          <li class="navigation-avatar">
             <% if (user && user.avatar) { %>
             <div class="nav-avatar">
               <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar" onclick="window.location.href='/user/<%= user.username %>'" />

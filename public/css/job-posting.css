@@ -130,7 +130,6 @@ main {
 .company-info {
   display: flex;
   gap: .9rem;
-  align-items: center;
   box-sizing: border-box;
 }
 

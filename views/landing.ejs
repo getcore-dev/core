@@ -56,15 +56,20 @@
   </script>
 </head>
 
-
 <body>
-  <%- include('partials/navbar', { pagePath: '', user: user}) %>
+  <%- include('partials/navbar', { pagePath: '', user: user }) %>
 
   <!-- Hero Section -->
   <header class="hero-section">
-    <h1>Welcome to CORE</h1>
-    <p>Your AI-powered partner in finding and securing your next career opportunity.</p>
-    <a href="/signup" class="btn-primary">Get Started</a>
+    <div class="hero-content">
+      <img src="/img/core.png" alt="CORE Logo" class="hero-logo">
+      <p>Your AI-powered partner in finding and securing your next career opportunity.</p>
+      <a href="/register">
+        <button class="main-button centered-button">
+          Get Started
+        </button>
+      </a>
+    </div>
   </header>
 
   <!-- Main Content -->
@@ -79,22 +84,22 @@
     <section class="features">
       <h2>Our Features</h2>
       <div class="feature-grid">
-        <div class="feature-item">
+        <div class="feature-card">
           <span class="material-symbols-outlined">work</span>
           <h3>Global Job Search</h3>
           <p>Access thousands of job listings from over 400 websites worldwide, updated within 24 hours.</p>
         </div>
-        <div class="feature-item">
+        <div class="feature-card">
           <span class="material-symbols-outlined">description</span>
           <h3>AI-Powered Resumes</h3>
           <p>Create tailored resumes and cover letters using our advanced AI tools to stand out to employers.</p>
         </div>
-        <div class="feature-item">
+        <div class="feature-card">
           <span class="material-symbols-outlined">notifications</span>
           <h3>Real-Time Job Alerts</h3>
           <p>Receive instant notifications when new jobs that match your criteria are posted.</p>
         </div>
-        <div class="feature-item">
+        <div class="feature-card">
           <span class="material-symbols-outlined">insights</span>
           <h3>Personalized Job Overviews</h3>
           <p>Get AI-generated overviews and insights on job positions to make informed career decisions.</p>
@@ -125,31 +130,38 @@
       </div>
     </section>
 
-    <!-- Testimonials Section -->
+    <!-- 
     <section class="testimonials">
       <h2>What Our Users Say</h2>
       <div class="testimonial-grid">
-        <div class="testimonial-item">
+        <div class="testimonial-card">
           <p>"CORE made my job search effortless. The AI-generated resume stood out to employers, and I landed my dream job in just a few weeks!"</p>
           <h4>Jane Doe, Software Engineer</h4>
         </div>
-        <div class="testimonial-item">
+        <div class="testimonial-card">
           <p>"The real-time job alerts kept me informed about the latest opportunities. Highly recommend CORE to anyone looking to advance their career."</p>
           <h4>John Smith, Data Analyst</h4>
         </div>
       </div>
     </section>
 
+     -->
+
     <!-- Call to Action Section -->
     <section class="cta-section">
       <h2>Ready to Take the Next Step?</h2>
-      <a href="/signup" class="btn-primary">Join CORE Today</a>
+      <a href="/register">
+        <button class="main-button centered-button">
+          Join CORE Today
+        </button>
+      </a>
     </section>
   </main>
 
   <!-- Footer -->
   <footer>
-    <p>&copy; 2023 CORE. All rights reserved.</p>
+    <p>&copy; 2024 core</p>
+    <p>All rights reserved.</p>
     <div class="footer-links">
       <a href="/about">About Us</a>
       <a href="/contact">Contact</a>
