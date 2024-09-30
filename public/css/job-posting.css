@@ -42,6 +42,10 @@ main {
   margin-top: .4rem;
 }
 
+.job-posting-description a {
+  color: var(--active-indicator-color); 
+}
+
 
 .card {
   background-color: white;

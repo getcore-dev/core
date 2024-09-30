@@ -316,61 +316,207 @@ class JobProcessor extends EventEmitter {
     return null;
   }
 
-  async makeRequest(url) {
-    try {
-      if (url.includes('myworkdayjobs.com')) return await this.grabWorkDayLinks(url);
-      if (url.includes('uber.com')) return await this.usePuppeteerFallback(url);    
-      const response = await http.get(url, {
-        timeout: 10000, // 10 seconds timeout
-        headers: {
-          'User-Agent': 'core/1.0 (support@getcore.dev)',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-          'Accept-Language': 'en-US,en;q=0.5',
-          'Accept-Encoding': 'gzip, deflate, br',
-          'DNT': '1',
-          'Connection': 'keep-alive',
-          'Upgrade-Insecure-Requests': '1'
-        },
-        validateStatus: function (status) {
-          return status >= 200 && status < 300;
-        },
-      });
   
-      if (response.status !== 200) {
-        throw new Error(`HTTP request failed with status ${response.status}`);
-      }
-  
-      // Check if the response is too short (e.g., less than 1000 characters)
-      if (response.data.length < 1000) {
-        console.log('Response too short. Falling back to Puppeteer.');
-        return await this.usePuppeteerFallback(url);
-      }
-  
-      return response;
-    } catch (error) {
-      console.error('HTTP request failed. Falling back to Puppeteer.');
-      const puppeteerResponse = await this.usePuppeteerFallback(url);
-      
-      // Check if the response is job data or HTML content
-      if (puppeteerResponse.data && typeof puppeteerResponse.data === 'object' && puppeteerResponse.intercepted) {
-        console.log('Returning job data from Puppeteer fallback');
-        return puppeteerResponse;
-      } else {
-        console.log('Returning HTML content from Puppeteer fallback');
-        return {
-          data: puppeteerResponse.data,
-          status: puppeteerResponse.status,
-        };
+
+  async fetchLinkedInPageContent(url, maxRetries = 3, retryDelay = 5000) {
+    let browser;
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        browser = await puppeteer.launch({ 
+          headless: 'new',
+          defaultViewport: null,
+          args: ['--start-maximized']
+        });
+        const page = await browser.newPage();
+
+        // Set a more realistic user agent
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+
+        // Navigate to the LinkedIn page with a realistic delay
+        await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+        await this.randomDelay(1000, 1500);
+
+        if (page.url() !== url) {
+          await page.goto('https://www.linkedin.com/login', { waitUntil: 'networkidle2', timeout: 60000 });
+        }
+
+        await this.randomDelay(500, 1200);
+
+        // Check if we're on the login page
+        const isLoginPage = await page.evaluate(() => {
+          return window.location.href.includes('login') || window.location.href.includes('authwall') || window.location.href.includes('signin');
+        });
+
+        await this.randomDelay(900, 1300);
+
+        if (isLoginPage) {
+          console.log('Login required. Attempting to log in...');
+          
+          // Fill in the login form with realistic typing
+          const emailSelector = await page.waitForSelector('input[name="session_key"]');
+          await this.typeWithVariation(page, emailSelector, process.env.LINKEDIN_EMAIL);
+
+          const passwordSelector = await page.waitForSelector('input[name="session_password"]');
+          await this.typeWithVariation(page, passwordSelector, process.env.LINKEDIN_PASSWORD);
+
+          await this.randomDelay(400, 700);
+
+          // Click the login button and wait for navigation
+          await Promise.all([
+            page.click('button[type="submit"]'),
+            page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 60000 })
+          ]);
+
+          // After login, navigate back to the original URL with a delay
+          await this.randomDelay(1000, 1400);
+          await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+        }
+
+        // Wait for the content to load with a realistic delay
+        await this.randomDelay(100, 400);
+        await page.waitForSelector('body', { timeout: 60000 });
+
+        // Get the page content
+        const content = await page.content();
+
+        return content;
+
+      } catch (error) {
+        console.error(`Error fetching LinkedIn page ${url} (Attempt ${attempt}/${maxRetries}):`, error);
+        
+        if (attempt === maxRetries) {
+          throw error;
+        } else {
+          console.log(`Retrying in ${retryDelay / 1000} seconds...`);
+          await this.randomDelay(retryDelay, retryDelay + 2000);
+        }
+      } finally {
+        if (browser) {
+          await browser.close();
+        }
       }
     }
   }
+
+  async randomDelay(min, max) {
+    const delay = Math.floor(Math.random() * (max - min + 1) + min);
+    await new Promise(resolve => setTimeout(resolve, delay));
+  }
+
+  async typeWithVariation(page, element, text) {
+    for (const char of text) {
+      await element.type(char, { delay: Math.random() * 100 + 50 });
+    }
+  }
+
+  async simulateScrolling(page) {
+    await page.evaluate(async () => {
+      await new Promise((resolve) => {
+        let totalHeight = 0;
+        const distance = Math.floor(Math.random() * (350 - 150 + 1)) + 150;
+        const timer = setInterval(() => {
+          const scrollHeight = document.body.scrollHeight;
+          window.scrollBy(0, distance);
+          totalHeight += distance;
+
+          if (totalHeight >= scrollHeight) {
+            clearInterval(timer);
+            resolve();
+          }
+        }, 100);
+      });
+    });
+  }
+
+  /**
+   * Makes an HTTP request to fetch job data or page content.
+   * @param {string} url - The URL to fetch data from.
+   * @returns {Promise<Object>} - The response object containing the fetched data.
+   */
+  async makeRequest(url, retries = 1, delay = 1000) {
+    // Handle special cases for specific job board platforms
+    if (url.includes('linkedin.com')) return {data: await this.fetchLinkedInPageContent(url), status: 200};
+    if (url.includes('myworkdayjobs.com')) return await this.grabWorkDayLinks(url);
+    if (url.includes('uber.com')) return await this.usePuppeteerFallback(url); 
+
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        // Attempt to make a regular HTTP request
+        const response = await http.get(url, {
+          timeout: 10000, // 10 seconds timeout
+          headers: {
+            'User-Agent': 'core/1.0 (support@getcore.dev)',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1'
+          },
+          validateStatus: function (status) {
+            return status >= 200 && status < 300;
+          },
+        });
+    
+        if (response.status !== 200) {
+          throw new Error(`HTTP request failed with status ${response.status}`);
+        }
+    
+        // Check if the response is too short (possibly indicating a non-rendered page)
+        if (response.data.length < 1000) {
+          console.log('Response too short. Falling back to Puppeteer.');
+          return await this.usePuppeteerFallback(url);
+        }
+    
+        return response;
+      } catch (error) {
+        console.error(`Attempt ${attempt} failed:`, error.message);
+        if (attempt === retries) {
+          console.error('All attempts failed. Falling back to Puppeteer.');
+          const puppeteerResponse = await this.usePuppeteerFallback(url);
+          
+          // Check if the response is job data or HTML content
+          if (puppeteerResponse.data && typeof puppeteerResponse.data === 'object' && puppeteerResponse.intercepted) {
+            console.log('Returning job data from Puppeteer fallback');
+            return puppeteerResponse;
+          } else {
+            console.log('Returning HTML content from Puppeteer fallback');
+            return {
+              data: puppeteerResponse.data,
+              status: puppeteerResponse.status,
+            };
+          }
+        } else {
+          // Wait before next retry
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
+    }
+  }
+
+  getRandomUserAgent() {
+    const userAgents = [
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.59',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36 OPR/78.0.4093.184'
+    ];
+
+    const randomIndex = Math.floor(Math.random() * userAgents.length);
+
+    return userAgents[randomIndex];
+  }
+
+
 
   async usePuppeteerFallback(url) {
     let browser;
     try {
       browser = await puppeteer.launch({ headless: 'new' });
       const page = await browser.newPage();
-      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+      await page.setUserAgent(this.getRandomUserAgent());
       
       console.log('Loaded the browser');
   
@@ -690,10 +836,19 @@ class JobProcessor extends EventEmitter {
     try {
       const parsedUrl = new URL(jobBoardUrl);;
       const jobBoardDomain = parsedUrl.hostname;
-      console.log('parsedUrl:', jobBoardDomain);
   
-      const links = await this.extractJobLinksFromPage(jobBoardUrl);
-      console.log(links);
+      let links = await this.extractJobLinksFromPage(jobBoardUrl);
+      // console.log(links);
+      if (jobBoardDomain.includes('linkedin.com')) {
+        const newLinks = [];
+        for (const link of links) {
+          if (this.isTechJob(link.title)) {
+            newLinks.push(link);
+          }
+        }
+        links = newLinks;
+
+      }
   
   
       console.log(`Collected a total of ${links.size} job links from ${jobBoardUrl}`);
@@ -729,15 +884,21 @@ class JobProcessor extends EventEmitter {
         const links = await this.grabWorkDayLinks(jobBoardUrl);
         return { companyId: company.id, links };
       } else {
-        const firstPageResponse = await this.makeRequest(jobBoardUrl);
-        const $firstPage = cheerio.load(firstPageResponse.data);
+        let $firstPage;
+        try {
+          const firstPageResponse = await this.makeRequest(jobBoardUrl);
+          $firstPage = cheerio.load(firstPageResponse.data);
         
-        if (jobBoardUrl.includes('linkedin.com')) {
-          const paginationText = $firstPage('.jobs-search-pagination__page-state').text().trim();
-          const match = paginationText.match(/Page \d+ of (\d+)/);
-          if (match) {
-            maxPages = 1;
+          if (jobBoardUrl.includes('linkedin.com')) {
+            const paginationText = $firstPage('.jobs-search-pagination__page-state').text().trim();
+            const match = paginationText.match(/Page \d+ of (\d+)/);
+            if (match) {
+              maxPages = 1;
+            }
           }
+        } catch (error) {
+          console.error(`Error making request for ${jobBoardUrl}:`, error);
+          return { companyId: company.id, links: [] };
         }
 
 
@@ -848,13 +1009,14 @@ class JobProcessor extends EventEmitter {
       console.log(`Processing page ${currentPage}: ${pageUrl}`);
 
       const response = await this.makeRequest(pageUrl);
+      console.log('response', response);
       if (response.intercepted) {
         console.log('Request intercepted');
         return response.data;
       }
 
-      const result = await this.fullExtractJobLinksFromPage(response.data, pageUrl, new URL(jobBoardUrl).hostname);
-      
+      const result = await this.fullExtractJobLinksFromPage(response, pageUrl, new URL(jobBoardUrl).hostname);
+      console.log('result', result);  
       allLinks = allLinks.concat(result.links);
       isLastPage = result.pagination.isLastPage;
 
@@ -866,8 +1028,14 @@ class JobProcessor extends EventEmitter {
     return allLinks;
   }
 
-  async fullExtractJobLinksFromPage(content, pageUrl, jobBoardDomain) {
-    const $ = cheerio.load(content);
+  async fullExtractJobLinksFromPage(response, pageUrl, jobBoardDomain) {
+    console.log('response', response);
+    let $;
+    if (response.data) {
+      $ = cheerio.load(response.data); 
+    } else {
+      $ = cheerio.load(response);
+    }
     const links = [];
     const paginationInfo = {
       isFirstPage: true,
@@ -919,183 +1087,6 @@ class JobProcessor extends EventEmitter {
       links,
       pagination: paginationInfo
     };
-  }
-
-  async fullExtractJobLinks($, baseUrl, jobBoardDomain) {
-    const links = new ObjectSet();
-    const baseUrlObj = new URL(baseUrl);
-  
-    if (baseUrlObj.hostname.includes('linkedin.com')) {
-      let currentUrl = baseUrl;
-      let hasMore = true;
-      let start = 0;
-      let maxPages = this.getMaxPages($, currentUrl) || 1;
-  
-      while (hasMore && start < maxPages * 25) {
-        const url = new URL(currentUrl);
-        url.searchParams.set('start', start.toString());
-        console.log(`Scraping page: ${url.toString()}`);
-  
-        const response = await this.makeRequest(url.toString());
-        const $page = cheerio.load(response.data);
-  
-        $page('.base-card').each((index, element) => {
-          const linkElement = $page(element).find('a.base-card__full-link');
-          const link = linkElement.attr('href');
-          const title = $page(element).find('.base-search-card__title').text().trim();
-          const company = $page(element).find('.base-search-card__subtitle').text().trim();
-          const location = $page(element).find('.job-search-card__location').text().trim();
-  
-          if (this.isTechJob(title)) {
-            const jobUrl = new URL(link, baseUrl).href;
-            if (new URL(jobUrl).hostname === jobBoardDomain) {
-              links.add({ url: jobUrl, title, company, location });
-            }
-          }
-          console.log(links);
-        });
-  
-        hasMore = false;
-  
-        console.log(`Collected ${links.size} links so far`);
-  
-        // Add a delay to avoid rate limiting
-        await new Promise(resolve => setTimeout(resolve, 10000));
-      }
-    } else if (baseUrlObj.hostname.includes('myworkdayjobs.com')) {
-      // Workday job board handling
-      const companyName = baseUrlObj.hostname.split('.')[0];
-      const apiUrl = `https://${companyName}.wd1.myworkdayjobs.com/wday/cxs/${companyName}/External/jobs`;
-  
-      try {
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            appliedFacets: {},
-            limit: 20,
-            offset: 0,
-            searchText: ''
-          })
-        });
-  
-        const data = await response.json();
-  
-        if (data.jobPostings && Array.isArray(data.jobPostings)) {
-          data.jobPostings.forEach(job => {
-            const jobUrl = new URL(job.externalPath, baseUrl).href;
-            links.add({
-              url: jobUrl,
-              title: job.title,
-              location: job.locationsText,
-              postedOn: job.postedOn,
-              timeType: job.timeType
-            });
-          });
-        }
-  
-        console.log(`Collected ${links.size} links from Workday job board`);
-      } catch (error) {
-        console.error('Error fetching Workday jobs:', error);
-      }
-
-    } else if (baseUrlObj.hostname.includes('ashbyhq.com')) {
-      // Ashby HQ handling (unchanged)
-      const companyName = baseUrlObj.pathname.split('/').pop();
-      const apiUrl = 'https://jobs.ashbyhq.com/api/non-user-graphql?op=ApiJobBoardWithTeams';
-      
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          operationName: 'ApiJobBoardWithTeams',
-          variables: {
-            organizationHostedJobsPageName: companyName
-          },
-          query: `query ApiJobBoardWithTeams($organizationHostedJobsPageName: String!) {
-            jobBoard: jobBoardWithTeams(
-              organizationHostedJobsPageName: $organizationHostedJobsPageName
-            ) {
-              teams {
-                id
-                name
-                parentTeamId
-                __typename
-              }
-              jobPostings {
-                id
-                title
-                teamId
-                locationId
-                locationName
-                employmentType
-                secondaryLocations {
-                  ...JobPostingSecondaryLocationParts
-                  __typename
-                }
-                compensationTierSummary
-                __typename
-              }
-              __typename
-            }
-          }
-          
-          fragment JobPostingSecondaryLocationParts on JobPostingSecondaryLocation {
-            locationId
-            locationName
-            __typename
-          }`
-        })
-      });
-  
-      const data = await response.json();
-      if (data.data && data.data.jobBoard && data.data.jobBoard.jobPostings) {
-        data.data.jobBoard.jobPostings.forEach(job => {
-          const jobUrl = `${baseUrl}/${job.id}`;
-          links.add({ url: jobUrl, title: job.title, location: job.locationName });
-        });
-      }
-    } else if (baseUrlObj.hostname.includes('microsoft.com')) {
-      console.log('microsoft job detected');
-      const apiUrl = new URL(baseUrl);
-      apiUrl.hostname = 'gcsservices.careers.microsoft.com';
-      apiUrl.pathname = '/search/api/v1/search';
-      apiUrl.searchParams.append('flt', 'true');
-  
-      try {
-        const response = await fetch(apiUrl.toString());
-        const data = await response.json();
-        console.log(data);
-      
-        if (data.operationResult && data.operationResult.result && Array.isArray(data.operationResult.result.jobs)) {
-          data.operationResult.result.jobs.forEach(job => {
-            const jobUrl = `https://jobs.careers.microsoft.com/global/en/job/${job.jobId}`;
-            links.add({ url: jobUrl, title: job.title, location: job.location });
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching Microsoft jobs:', error);
-      }
-    } else {
-      // Generic job board handling (unchanged)
-      $('a[href*="job"], a[href*="career"], a[href*="position"]').each((index, element) => {
-        const link = $(element).attr('href');
-        const fullUrl = new URL(link, baseUrl).href;
-        
-        if (new URL(fullUrl).hostname === jobBoardDomain) {
-          const title = $(element).find('p').map((i, el) => $(el).text().trim()).get().join(' ') || $(element).text().trim();
-          if (this.isTechJob(title)) {
-            links.add({ url: fullUrl, title });
-          }
-        }
-      });
-    }
-  
-    return Array.from(links);
   }
 
   async checkLinkedInApplyType(jobUrl) {
@@ -1274,66 +1265,6 @@ class JobProcessor extends EventEmitter {
     return links.filter(link => this.isTechJob(link.title));
   }
   
-  async checkNextPage(nextPageUrl) {
-    console.log(`Checking next page: ${nextPageUrl}`);
-  
-    try {
-      const browser = await puppeteer.launch();
-      const page = await browser.newPage();
-  
-      // Set up request interception
-      await page.setRequestInterception(true);
-  
-      const apiResponses = [];
-      page.on('request', request => {
-        if (request.resourceType() === 'xhr' || request.resourceType() === 'fetch') {
-          request.continue();
-        } else {
-          request.continue();
-        }
-      });
-  
-      page.on('response', async response => {
-        if (response.request().resourceType() === 'xhr' || response.request().resourceType() === 'fetch') {
-          try {
-            const responseBody = await response.json();
-            apiResponses.push(responseBody);
-          } catch (e) {
-            // Not JSON, ignore
-          }
-        }
-      });
-  
-      // Navigate to the page
-      await page.goto(nextPageUrl, { waitUntil: 'networkidle0' });
-  
-      const pageContent = await page.content();
-      const $ = cheerio.load(pageContent);
-  
-      const parsedUrl = new URL(nextPageUrl);
-      const jobBoardDomain = parsedUrl.hostname;
-  
-      const pageLinks = await this.fullExtractJobLinks($, nextPageUrl, jobBoardDomain);
-  
-      // Process API responses
-      for (const apiResponse of apiResponses) {
-        const apiLinks = this.extractJobLinksFromAPI(apiResponse);
-        pageLinks.push(...apiLinks);
-      }
-  
-      await browser.close();
-  
-      if (pageLinks.length > 0) {
-        console.log(`Found ${pageLinks.length} jobs on next page. Continuing...`);
-        return true;
-      }
-    } catch (error) {
-      console.error(`Error checking next page ${nextPageUrl}:`, error);
-    }
-  
-    console.log('No jobs found on next page. Stopping pagination.');
-    return false;
-  }
 
   async searchLinkedInJobs(allLinks, searchTerm) {
     const encodedTerm = encodeURIComponent(searchTerm);
@@ -1769,6 +1700,10 @@ class JobProcessor extends EventEmitter {
       return jobData;
     } else if (url && url.includes('myworkdayjobs.com')) {
       const jobData = await this.processWorkDayJobLink(url);
+      return jobData;
+    } else if (url && url.includes('linkedin.com')) {
+      const response = await this.makeRequest(url);
+      const jobData = await this.processLinkedInJob(response.data);
       return jobData;
     } else {
       console.error('Unsupported job board:', url);
@@ -2285,7 +2220,7 @@ class JobProcessor extends EventEmitter {
 
   async searchTechJobOnLinkedIn(jobTitle, location='United States') {
     const linkedInSearchUrl = `https://www.linkedin.com/jobs/search?keywords=${jobTitle.split(' ').join('%20')}&location=${location.split(' ').join('%20')}&geoId=&trk=public_jobs_jobs-search-bar_search-submit&original_referer=`;
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
@@ -2467,114 +2402,6 @@ class JobProcessor extends EventEmitter {
     }
   }
 
-  async crawlLinkedIn() {
-    const jobTitles = [
-      'Software Engineer', 'Data Analyst', 'Web Developer', 'System Architect',
-      'Network Security Specialist', 'Database Administrator', 'Mobile App Developer',
-      'Project Manager', 'QA Engineer', 'Java Developer', 'Python Developer',
-      'JavaScript Developer', 'Game Developer', 'Blockchain Developer',
-      'DevOps Engineer', 'Cloud Architect', 'UI/UX Designer', 'Machine Learning Engineer',
-      'Full Stack Developer', 'Frontend Developer', 'Backend Developer'
-    ];
-  
-    const stateMappings = {
-      'United States': 'US', 'California': 'US-CA', 'New York': 'US-NY', 'Texas': 'US-TX',
-      'Florida': 'US-FL', 'Illinois': 'US-IL', 'Pennsylvania': 'US-PA', 'Ohio': 'US-OH',
-    };
-  
-    const getRandomElement = (array) => array[Math.floor(Math.random() * array.length)];
-  
-    let allJobLinks = [];
-    const batchSize = 250;
-    const createdJobs = [];
-
-    this.updateProgress({ currentAction: 'Collecting job links' });
-  
-    // Step 1: Collect job links
-    while (allJobLinks.length < batchSize) {
-      const randomJobTitle = getRandomElement(jobTitles);
-      const randomLocation = getRandomElement(Object.keys(stateMappings));
-  
-      console.log(`Searching for: ${randomJobTitle} in ${randomLocation}`);
-      try {
-        const jobs = await this.searchTechJobOnLinkedIn(randomJobTitle, randomLocation);
-        allJobLinks = allJobLinks.concat(jobs.map(job => job.link));
-        console.log(`Found ${jobs.length} jobs for ${randomJobTitle} in ${randomLocation}`);
-        this.updateProgress({ totalJobs: allJobLinks.length });
-  
-        const randomTimeout = Math.floor(Math.random() * 4000) + 1000;
-        await new Promise(resolve => setTimeout(resolve, randomTimeout));
-      } catch (error) {
-        console.error(`Error searching for ${randomJobTitle} in ${randomLocation}:`, error);
-      }
-    }
-
-    this.updateProgress({ currentAction: 'Processing job links' });
-  
-    console.log(`Total job links collected: ${allJobLinks.length}`);
-  
-    // Step 2: Scrape job details and create job postings
-    for (const link of allJobLinks) {
-      try {
-        this.updateProgress({ currentAction: 'Processing job details' });
-        console.log(`Scraping job details from: ${link}`);
-        const jobInfo = await this.getJobInfoFromLinkedIn(link);
-        const applicationLink = jobInfo.applicationLink ? jobInfo.applicationLink : link;
-        
-        const cleanedJobInfo = await this.useChatGPTAPI(applicationLink, JSON.stringify(jobInfo));
-        this.updateProgress({ currentAction: 'Validating and cleaning job data' });
-        
-        if (cleanedJobInfo.skipped) {
-          this.updateProgress({ currentAction: 'Skipped job' });
-          console.log(`Skipping non-tech job: ${cleanedJobInfo.title}`);
-          continue;
-        }
-        
-        const validatedJobData = this.validateAndCleanJobData(cleanedJobInfo);
-        
-        // Get or create company
-        this.updateProgress({ currentAction: 'Getting or creating company object' });
-        const companyId = await this.getOrCreateCompany(
-          validatedJobData.company_name || jobInfo.company,
-          validatedJobData.company_description || jobInfo.company,
-          validatedJobData.company_location || jobInfo.location,
-          validatedJobData.company_job_board_url || '',
-          validatedJobData.company_industry || '',
-          validatedJobData.company_size || '',
-          validatedJobData.company_stock_symbol || '',
-          validatedJobData.company_logo || '',
-          validatedJobData.company_founded || null
-        );
-        
-        // Create job posting
-        this.updateProgress({ currentAction: 'Creating job posting' });
-        await this.createJobPosting(validatedJobData, companyId, applicationLink);
-        
-        createdJobs.push(validatedJobData);
-        console.log(`Created job posting: ${validatedJobData.title}`);
-  
-        // Add similar jobs and "people also viewed" jobs to the list for scraping
-        const additionalLinks = [
-          ...jobInfo.similarJobs.map(job => job.link),
-          ...jobInfo.peopleAlsoViewed.map(job => job.link)
-        ];
-  
-        allJobLinks = [...new Set([...allJobLinks, ...additionalLinks])];
-      } catch (error) {
-        this.updateProgress({ currentAction: 'Error processing job' });
-        console.error(`Error processing job from ${link}:`, error);
-      }
-  
-      if (createdJobs.length >= batchSize) {
-        break;  // Stop processing if we have created enough job postings
-      }
-    }
-  
-    console.log(`Total job postings created: ${createdJobs.length}`);
-  
-    return createdJobs;
-  }
-
   async getOrCreateCompany(companyName, companyDescription, companyLocation, companyJobBoardUrl, companyIndustry, companySize, companyStockSymbol, companyLogo, companyFounded) {
     try {
       // First, try to get the company by name
@@ -2705,61 +2532,34 @@ class JobProcessor extends EventEmitter {
   
 
   async processLinkedInJob(jobData) {
-    if (this.processedLinks.has(jobData.url)) {
-      console.log('LinkedIn job already processed:', jobData.url);
-      return { skipped: true, title: jobData.title, reason: 'Already processed' };
-    }
-  
     try {
-      console.log('Processing LinkedIn job:', jobData.url);
-      const response = await this.makeRequest(jobData.url);
-      const $ = cheerio.load(response.data);
+      const $ = cheerio.load(jobData);
   
-      const extractedData = {
-        title: $('.job-details-jobs-unified-top-card__job-title').text().trim(),
-        company_name: $('.job-details-jobs-unified-top-card__company-name').text().trim(),
-        location: $('.job-details-jobs-unified-top-card__bullet').first().text().trim(),
-        job_type: $('.job-details-jobs-unified-top-card__job-insight:contains("Internship")').text().trim(),
-        salary_range: $('.job-details-jobs-unified-top-card__job-insight:contains("$")').text().trim(),
-        description: $('.jobs-description__content').text().trim(),
-        skills: $('.job-details-how-you-match-card__skills-item-subtitle').map((i, el) => $(el).text().trim()).get().join(', '),
-        company_details: {
-          size: $('.job-details-jobs-unified-top-card__job-insight:contains("employees")').text().trim(),
-          industry: $('div.t-14:contains("Technology, Information and Internet")').first().text().trim()
-        },
-        application_info: {
-          total_applicants: $('.job-details-jobs-unified-top-card__applicant-count').text().trim(),
-          post_date: $('time').attr('datetime')
-        },
-        benefits: $('.jobs-description__content ul li').map((i, el) => $(el).text().trim()).get().join(', ')
+      let extractedData = {
+        title: $('.job-details-jobs-unified-top-card__job-title').text().trim() || $('.top-card-layout__title').text().trim() || $('h1').text().trim(),
+        company_name: $('.job-details-jobs-unified-top-card__company-name').text().trim() || $('.topcard__org-name-link').text().trim() || $('.topcard__flavor--black-link').text().trim(),
+        location: $('span.topcard__flavor.topcard__flavor--bullet').text().trim(),
+        job_type: $('.description__job-criteria-text description__job-criteria-text--criteria').text().trim(),
+        salary_range: $('.job-details-jobs-unified-top-card__job-insight:contains("$")').text().trim() || $('.compensation__salary').text().trim() || $('.salary').text().trim(),
+        description: $('.show-more-less-html__markup').text().trim(),
+        additional_information: $('.description__job-criteria-text.description__job-criteria-text--criteria').text().trim()
       };
-  
-      // Extract qualifications
-      $('.jobs-description__content h3').each((i, el) => {
-        const header = $(el).text().trim().toLowerCase();
-        const content = $(el).next('ul').find('li').map((i, li) => $(li).text().trim()).get().join('; ');
-        
-        if (header.includes('qualifications')) {
-          extractedData.qualifications = content;
-        } else if (header.includes('responsibilities')) {
-          extractedData.responsibilities = content;
+
+      // convert salary range to salary and salary_max '$110,000.00/yr - $120,000.00/yr', to 110000, 120000
+      if (extractedData.salary_range) {
+        const [min, max] = extractedData.salary_range.split(' - ');
+        extractedData.salary = min.replace('$', '').replace(',', '');
+        extractedData.salary_max = max.replace('$', '').replace(',', '');
+
+        if (extractedData.additional_information) {
+          extractedData.additional_information += extractedData.salary_range;
         }
-      });
+      }
   
       // Check if it's a tech job
-      if (this.isTechJob(extractedData.title)) {
-        const processedData = this.useGemini ? 
-          await this.useGeminiAPI(jobData.url, JSON.stringify(extractedData)) :
-          await this.useChatGPTAPI(jobData.url, JSON.stringify(extractedData));
-  
-        await this.saveProcessedLink(jobData.url);
-        return this.validateAndCleanJobData(processedData);
-      } else {
-        console.log(`Skipping non-tech job: ${extractedData.title}`);
-        return { skipped: true, title: extractedData.title, reason: 'Non-tech job' };
-      }
+      return extractedData;
     } catch (error) {
-      console.error(`Error processing LinkedIn job ${jobData.url}:`, error);
+      console.error(`Error processing LinkedIn job ${jobData.link}:`, error);
       throw error;
     }
   }
@@ -2769,7 +2569,7 @@ class JobProcessor extends EventEmitter {
     const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(companyName + ' careers')}`;
 
     try {
-      const response = await this.makeRequest(searchUrl);
+      const response = await this.makeRequest(searchUrl, 0, 1000);
       const $ = cheerio.load(response.data);
 
       $('a').each((index, element) => {
@@ -2807,10 +2607,9 @@ class JobProcessor extends EventEmitter {
       totalCompanies: companies.length
     });
     
-
+    const existingJobPostings = await jobQueries.getAllCompanyJobLinks();
     // Phase 1: Process regular job boards and search for additional career pages
     for (const [index, company] of companies.entries()) {
-      const existingJobPostings = await jobQueries.getAllCompanyJobLinks();
       this.updateProgress({ 
         company: company.name, 
         processedCompanies: index + 1,
@@ -2818,13 +2617,81 @@ class JobProcessor extends EventEmitter {
       });
 
       try {
+        let result;
         if (company.job_board_url) {
-          const result = await this.collectJobLinks(company);
-          // filter out existing job postings
+          result = await this.collectJobLinks(company);
+        } else {
+          // Attempt to find job board URL by trying common platforms
+          const platformPatterns = [
+            {
+              platform: 'greenhouse.io',
+              patterns: [
+                'https://boards.greenhouse.io/{companyName}',
+                'https://jobs.greenhouse.io/{companyName}',
+                'https://{companyName}.greenhouse.io',
+              ],
+            },
+            {
+              platform: 'lever.co',
+              patterns: [
+                'https://jobs.lever.co/{companyName}',
+                'https://{companyName}.lever.co',
+              ],
+            },
+            {
+              platform: 'icims.com',
+              patterns: [
+                'https://{companyName}.icims.com',
+                'https://jobs.{companyName}.icims.com',
+                'https://{companyName}.careers.icims.com',
+                'https://careers.{companyName}.icims.com',
+                'https://{companyName}-jobs.icims.com',
+              ],
+            },
+            {
+              platform: 'workdayjobs.com',
+              patterns: [
+                'https://{companyName}.wd1.myworkdayjobs.com',
+                'https://{companyName}.wd2.myworkdayjobs.com',
+                'https://{companyName}.wd3.myworkdayjobs.com',
+                'https://{companyName}.wd4.myworkdayjobs.com',
+                'https://{companyName}.wd5.myworkdayjobs.com',
+                'https://{companyName}.wd10.myworkdayjobs.com',
+              ],
+            },
+            {
+              platform: 'avature.net',
+              patterns: [
+                'https://{companyName}.avature.net',
+                'https://careers.{companyName}.avature.net',
+              ],
+            },
+            // Additional platforms can be added here
+          ];
+          for (const platform of platformPatterns) {
+            for (const pattern of platform.patterns) {
+              const testUrl = pattern.replace('{companyName}', company.name);
+              try {
+                const result = await this.collectJobLinks({ ...company, job_board_url: testUrl });
+                if (result && result.links && result.links.length > 0) {
+                  // Update company with found job board URL
+                  await jobQueries.updateCompany(company.id, { job_board_url: testUrl });
+                  console.log(`Found job board for ${company.name}: ${testUrl}`);
+                  return; // Exit the function once the job board is found
+                }
+              } catch (e) {
+                console.log(`No job board found at ${testUrl}`);
+              }
+            }
+          }
+        }
+
+        if (result && result.links) {
+          // Filter out existing job postings
           const newJobPostings = [...result.links].filter(link => 
             !existingJobPostings.some(job => job.link === link.url)
           );
-          console.log(`New jobs for ${company.name} (${company.job_board_url}):`, newJobPostings);
+          console.log(`New jobs for ${company.name} (${company.job_board_url || 'No URL'}):`, newJobPostings);
           this.updateProgress({ 
             totalJobs: newJobPostings.length,
             currentAction: 'Processing job links'
@@ -2832,6 +2699,8 @@ class JobProcessor extends EventEmitter {
 
           console.log('Processing job links:', newJobPostings);
           await this.processJobLinks(newJobPostings, company.id);
+        } else {
+          console.log(`No job links found for ${company.name}`);
         }
       } catch (error) {
         console.error(`Error processing job links for ${company.name}:`, error);
@@ -2839,65 +2708,114 @@ class JobProcessor extends EventEmitter {
     }
   }
 
+  async crawl(startUrl) {
+    const unprocessedLinks = new Set();
+    const processedLinks = new Set();
+
+    // Collect initial job links
+    const response = await this.collectJobLinksFromLink(startUrl);
+    if (response && response.links) {
+      for (const link of response.links) {
+        if (!processedLinks.has(link.url)) {
+          unprocessedLinks.add(link.url);
+        }
+      }
+    }
+
+    // Process all collected links
+    while (unprocessedLinks.size > 0) {
+      const link = unprocessedLinks.values().next().value;
+      unprocessedLinks.delete(link);
+      processedLinks.add(link);
+
+      // Process the link for job data
+      const jobData = await this.processJobLink(link);
+      if (jobData) {
+        if (jobData.title && jobData.company_name && jobData.description) {
+          const companyId = await this.getOrCreateCompany(
+            jobData.company_name,
+            jobData.company_description || '',
+            jobData.company_location || '',
+            jobData.company_job_board_url || '',
+            jobData.company_industry || '',
+            jobData.company_size || '',
+            jobData.company_stock_symbol || '',
+            jobData.company_logo || '',
+            jobData.company_founded || null
+          );
+          await this.createJobPosting(jobData, companyId, link);
+        }
+      }
+
+      // Collect more links from the current page
+      const newLinks = await this.collectJobLinksFromLink(link);
+      if (newLinks && newLinks.links) {
+        for (const newLink of newLinks.links) {
+          if (!processedLinks.has(newLink) && !unprocessedLinks.has(newLink)) {
+            unprocessedLinks.add(newLink);
+          }
+        }
+      }
+    }
+  }
+
+  async crawLinkedIn() {
+    const jobTitles = [
+      'Software Engineer', 'Data Analyst', 'Web Developer', 'System Architect',
+      'Network Security Specialist', 'Database Administrator', 'Mobile App Developer',
+      'Project Manager', 'QA Engineer', 'Java Developer', 'Python Developer',
+      'JavaScript Developer', 'Game Developer', 'Blockchain Developer',
+      'DevOps Engineer', 'Cloud Architect', 'UI/UX Designer', 'Machine Learning Engineer',
+      'Full Stack Developer', 'Frontend Developer', 'Backend Developer'
+    ];
+  
+    const cities = [
+      'New York, NY', 'San Francisco, CA', 'Chicago, IL', 'Austin, TX',
+      'Seattle, WA', 'Boston, MA', 'Los Angeles, CA', 'Atlanta, GA'
+    ];
+
+    const randomJobTitle = jobTitles[Math.floor(Math.random() * jobTitles.length)];
+    const randomCity = cities[Math.floor(Math.random() * cities.length)];
+
+    const encodedJobTitle = encodeURIComponent(randomJobTitle);
+    const encodedCity = encodeURIComponent(randomCity);
+
+    const searchUrl = `https://www.linkedin.com/jobs/search?keywords=${encodedJobTitle}&location=${encodedCity}`;
+
+    await this.crawl(searchUrl);
+  }
+
   async start() {
 
     await this.init();
 
-
-    await this.updateJobPostings();
-    /*
-    await this.collectJobLinksFromSimplify();
-
-    await this.verifyAndUpdateCompanyData();
-
-    const companies = await jobQueries.getCompanies();
-
-    this.updateProgress({ 
-      phase: 'Processing job boards', 
-      totalCompanies: companies.length
-    });
-    
-
-    // Phase 1: Process regular job boards and search for additional career pages
-    for (const [index, company] of companies.entries()) {
-      this.updateProgress({ 
-        company: company.name, 
-        processedCompanies: index + 1,
-        currentAction: 'Collecting job links'
-      });
-
-      if (company.job_board_url) {
-        const result = await this.collectJobLinks(company);
-        this.updateProgress({ 
-          totalJobs: result.links.length,
-          currentAction: 'Processing job links'
-        });
-        await this.processJobLinks(result.links, company.id);
-      }
+    try {
+      await this.updateJobPostings();
+    } catch (error) {
+      console.error('Error in updateJobPostings:', error);
+    }
+    try {
+      await this.collectJobLinksFromSimplify();
+    } catch (error) {
+      console.error('Error in collectJobLinksFromSimplify:', error);
+    }
+    try {
+      await this.verifyAndUpdateCompanyData();
+    } catch (error) {
+      console.error('Error in verifyAndUpdateCompanyData:', error);
     }
 
-    this.updateProgress({ 
-      phase: 'LinkedIn Crawler',
-      company: '',
-      processedCompanies: 0,
-      totalJobs: 0,
-      processedJobs: 0
-    });
-    
-    // Phase 2: Process LinkedIn jobs
-    let linkedInJobs = [];
-    while (linkedInJobs.length < 5000) {
-      const linkedInAddedJobs = await this.crawlLinkedIn();
-      linkedInJobs = linkedInJobs.concat(linkedInAddedJobs);
-    }
-
-    await this.closeBrowser();
     this.updateProgress({ phase: 'Cleaning job postings' });
     await this.removeDuplicateJobs();
 
+    try { 
+      await this.crawLinkedIn();
+    } catch (error) {
+      console.error('Error in crawLinkedIn:', error);
+    }
 
     this.updateProgress({ phase: 'Completed' });
-    */
+
   }
 }
 

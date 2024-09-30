@@ -78,8 +78,8 @@ function getQueryParams() {
 function setupInfiniteScroll() {
   const options = {
     root: null,
-    rootMargin: '0px',
-    threshold: 0.1,
+    rootMargin: '500px', // Increased from '0px' to '200px'
+    threshold: 0.1, // Decreased from 0.5 to 0.1
   };
 
   const observer = new IntersectionObserver((entries) => {
@@ -1316,4 +1316,5 @@ function updateState(type, id, name, logo, isRemoval = false) {
   saveStateToLocalStorage(); // Save state after updating filters
   triggerJobSearch();
 }
+
 

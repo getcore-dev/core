@@ -610,6 +610,7 @@ router.get('/jobs', cacheMiddleware(2400), async (req, res) => {
         pageSize
       );
     } else if (isEmptySearch) {
+      console.log('isEmptySearch'); 
       allJobPostings = await jobQueries.getRecentJobs(page, pageSize);
     } else {
       let companyIds;
@@ -635,7 +636,7 @@ router.get('/jobs', cacheMiddleware(2400), async (req, res) => {
       currentPage: page,
     });
   } catch (err) {
-    console.error('Error fetching job postings:', err);
+    console.error('Error fetching job postings:');
     res.status(500).send('Error fetching job postings');
   }
 });

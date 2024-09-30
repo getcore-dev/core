@@ -669,11 +669,21 @@ const jobQueries = {
         });
       }
   
+      // New logic for experience levels and intern titles
       if (experienceLevels.length > 0) {
-        conditions.push(`js.experienceLevel IN (${experienceLevels.map((_, i) => `@experienceLevel${i}`).join(', ')})`);
+        if (experienceLevels.includes('Internship')) {
+          titles.push('intern', 'internship');
+        }
+        conditions.push(`(
+          js.experienceLevel IN (${experienceLevels.map((_, i) => `@experienceLevel${i}`).join(', ')})
+          ${ experienceLevels.includes('Internship') ? 'OR js.title LIKE \'%intern%\' OR js.title LIKE \'%internship%\' OR js.title LIKE \'%co-op%\'' : ''}
+        )`);
         experienceLevels.forEach((level, i) => {
           queryParams[`experienceLevel${i}`] = level;
         });
+      } else {
+        // If no experience levels are specified, include all jobs
+        conditions.push('(1=1)');
       }
   
       if (salary > 0) {
@@ -781,16 +791,16 @@ const jobQueries = {
 
   updateCompany: async (
     id,
-    name,
-    location,
-    description,
-    logo,
-    logo_url,
-    industry,
-    founded,
-    size,
-    stock_symbol,
-    job_board_url
+    name = undefined,
+    location = undefined,
+    description = undefined,
+    logo = undefined,
+    logo_url = undefined,
+    industry = undefined,
+    founded = undefined,
+    size = undefined,
+    stock_symbol = undefined,
+    job_board_url = undefined
   ) => {
     // Construct the SET clause dynamically
     const fields = [];
@@ -1728,13 +1738,16 @@ ORDER BY jp.postedDate DESC
           'oracle developer', 'erp consultant', 'crm consultant', 'help desk technician',
           'desktop support technician', 'it technician', '3d artist', 'vr developer', 'ar developer',
           'qa tester', 'quality assurance tester', 'network technician', 'it director', 'cto',
-          'chief technology officer', 'cio', 'chief information officer', 'ciso',
+          'chief technology officer', 'cio', 'chief information officer', 'ciso', 'analyst', 'data analyst', 'data scientist', 'data engineer', 'data architect', 'data security analyst', 'chief information security officer', 'coordinator', 
           'chief information security officer', 'coordinator', 'director', 'manager', 'supervisor', 'associate', 'customer experience', 'customer service', 'technical writer', 'technical support', 'it analyst', 'it specialist', 'it manager', 'information security analyst', 'information security manager', 'security analyst', 'security manager', 'security specialist', 'security engineer', 'security architect', 'security consultant', 'security director', 'security officer', 'security supervisor', 'security technician', 'security analyst', 'security manager', 'security specialist', 'security engineer', 'security architect', 'security consultant', 'security director', 'security officer', 'security supervisor', 'security technician',
-          'people manager', 'hr'
+          'people manager', 'hr', 'account executive', 'social media manager', 'biostatistician', 'financial analyst', 'statistical programmer', 'programmer', 'trading intern', 'trading analyst', 'trading assistant', 'trading manager', 'trading specialist', 'trading engineer', 'trading architect', 'trading consultant', 'trading director', 'trading officer', 'trading supervisor', 'trading technician', 'trading analyst', 'trading assistant', 'trading manager', 'trading specialist', 'trading engineer', 'trading architect', 'trading consultant', 'trading director', 'trading officer', 'trading supervisor', 'trading technician', 'quantitative researcher', 'quantitative analyst', 'quantitative manager', 'quantitative specialist', 'quantitative engineer', 'quantitative architect', 'quantitative consultant', 'quantitative director', 'quantitative officer', 'quantitative supervisor', 'quantitative technician',
+          'risk strategist', 'head of revenue', 'head of kyc', 'vp of design', 'security engineer', 'project manager', 'product manager', 'product designer', 'computer science intern', 'business development', 'growth lead', 'code sme', 'head of growth,', 'sales developmet', 'head of recruiting',
+          'customer service', 'editor', 'content editor', 'content writer', 'content strategist', 'content manager', 'content director', 'content officer', 'content supervisor', 'content technician', 'content analyst', 'content specialist', 'content engineer', 'content architect', 'content consultant', 'content director', 'content officer', 'content supervisor', 'content technician', 'content analyst', 'content specialist', 'content engineer', 'content architect', 'content consultant', 'content director', 'content officer', 'content supervisor', 'content technician', 'content analyst', 'content specialist', 'content engineer', 'content architect', 'content consultant',
+          'customer support representative', 'salesforce'
         ];
 
         const noInclude = [
-          'cashier', 'cook', 'waitress', 'waiter', 'bartender', 'janitor', 'security guard', 'sales'
+          'cashier', 'cook', 'waitress', 'waiter', 'bartender', 'janitor', 'security guard',
         ];
 
         // Function to create regex patterns for exact matches and keywords
@@ -1767,7 +1780,7 @@ ORDER BY jp.postedDate DESC
           'microcontroller', 'fpga', 'simulation', 'cloud computing', 'docker', 'kubernetes',
           'container', 'microservices', 'serverless', 'distributed systems', 'e-commerce', 'ecommerce',
           'internet', 'digital transformation', 'iot', 'internet of things', 'opensource', 'open source',
-          'technical', 'computing', 'computational', 'scientist'
+          'technical', 'computing', 'computational', 'scientist', 'quantitative', 'researcher', 'analyst', 'coder',
         ];
 
         const techKeywordsPattern = createPattern(techKeywords);
@@ -2220,10 +2233,10 @@ ORDER BY jp.postedDate DESC
       const result = await sql.query(`
         SELECT id, title, company_id, salary
         FROM JobPostings
-        WHERE (title, company_id, salary) IN (
-          SELECT title, company_id, salary
+        WHERE (title, company_id, salary, location) IN (
+          SELECT title, company_id, salary, location
           FROM JobPostings
-          GROUP BY title, company_id, salary
+          GROUP BY title, company_id, salary, location
           HAVING COUNT(*) > 1
         )
         ORDER BY title, company_id, salary, postedDate DESC
@@ -2231,7 +2244,7 @@ ORDER BY jp.postedDate DESC
       
       // Group the results
       const groupedResults = result.recordset.reduce((acc, job) => {
-        const key = `${job.title}-${job.company_id}-${job.salary}`;
+        const key = `${job.title}-${job.company_id}-${job.salary}-${job.location}`;
         if (!acc[key]) {
           acc[key] = [];
         }

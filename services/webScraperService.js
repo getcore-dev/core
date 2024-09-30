@@ -29,7 +29,7 @@ class WebScraper {
     }
   }
 
-  async makeRequest(url, retries = 3, useJavaScript = false) {
+  async makeRequest(url, retries = 1, useJavaScript = false) {
     for (let i = 0; i < retries; i++) {
       try {
         if (useJavaScript) {

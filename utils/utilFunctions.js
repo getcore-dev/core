@@ -853,7 +853,7 @@ GROUP BY
   checkForDuplicates: async (jobDetails) => {
     try {
       const {
-        link
+        link,
       } = jobDetails;
 
       const potentialDuplicates = await sql.query`

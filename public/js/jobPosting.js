@@ -388,7 +388,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
           <h3 class="company-name main-text margin-03-bottom">
         ${job.title}
       </h3>
-      <p class="mini-text"> 
+      <p class="mini-text third-text"> 
 ${
   job.location
     .split(',')
@@ -554,7 +554,7 @@ ${
 
             ${ !job.isProcessed ? `
             <div class="job-posting-description sub-text">
-              <h4 >Company Description</h4>
+              <h4>Job Description</h4>
               <p class="sub-text">${job.description}</p>
             </div>
             ` : ''}

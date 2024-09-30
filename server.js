@@ -1,3 +1,5 @@
+const cluster = require('cluster');
+const numCPUs = require('os').cpus().length;
 const app = require('./app');
 const environment = require('./config/environment');
 const JobProcessor = require('./services/jobBoardService');
@@ -50,15 +52,29 @@ app.get('/api/job-processing-progress', (req, res) => {
   res.json(currentProgress);
 });
 
-// Start the server
-app.listen(environment.port, () => {
-  console.log(`Server running on http://localhost:${environment.port}`);
+if (cluster.isMaster) {
+  console.log(`Master ${process.pid} is running`);
 
-  if (process.env.NODE_ENV !== 'development') {
-    setTimeout(() => {
-      runJobBoardService();
-    }, 5000); 
+  // Fork workers.
+  for (let i = 0; i < numCPUs; i++) {
+    console.log(`Forking worker ${i}`);
+    cluster.fork();
   }
 
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died`);
+    cluster.fork(); // Replace the dead worker
+  });
 
-});
+  if (process.env.NODE_ENV !== 'production') {
+    setTimeout(() => {
+      runJobBoardService();
+    }, 5000);
+  }
+} else {
+  // Workers can share any TCP connection
+  // In this case it is an HTTP server
+  app.listen(environment.port, () => {
+    console.log(`Worker ${process.pid} started and running on http://localhost:${environment.port}`);
+  });
+}
