@@ -3,7 +3,6 @@ const path = require('path');
 const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
-const FileStore = require('session-file-store')(session);
 const methodOverride = require('method-override');
 const sql = require('mssql');
 const rateLimit = require('express-rate-limit');
@@ -68,10 +67,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('trust proxy', 1);
+const store = new MSSQLStore(dbConfig);
 
 app.use(
   session({
-    store: new MSSQLStore(dbConfig),
+    store: store,
     secret: environment.sessionSecret,
     resave: false,
     saveUninitialized: false,

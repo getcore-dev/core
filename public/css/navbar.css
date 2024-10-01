@@ -492,7 +492,7 @@ ul li {
 }
 
 .latest-commit-banner {
-  position: relative;
+  position: fixed;
   background-color: #bb4242;
   width: 100%;
   color: white;

@@ -71,13 +71,29 @@ class JobProcessor extends EventEmitter {
     this.browser = null;
     this.maxConcurrentPages = 5;
     this.currentPages = 0;
-    this.paginationSelectors = {
-      next: 'button.pagination__btn.pagination__next',
-      prev: 'button.pagination__btn.pagination__previous',
-      active: 'button.pagination__link--active',
-      nextInactive: 'button.pagination__btn.pagination__next.pagination__next--inactive',
-      prevInactive: 'button.pagination__btn.pagination__previous.pagination__previous--inactive'
-    };  
+    this.paginationSelectorsMap = {
+      'default': {
+        next: 'button.pagination__btn.pagination__next',
+        prev: 'button.pagination__btn.pagination__previous',
+        active: 'button.pagination__link--active',
+        nextInactive: 'button.pagination__btn.pagination__next.pagination__next--inactive',
+        prevInactive: 'button.pagination__btn.pagination__previous.pagination__previous--inactive'
+      },
+      'greenhouse.io': {
+        next: 'button.pagination__btn.pagination__next',
+        prev: 'button.pagination__btn.pagination__previous',
+        active: 'button.pagination__link--active',
+        nextInactive: 'button.pagination__btn.pagination__next.pagination__next--inactive',
+        prevInactive: 'button.pagination__btn.pagination__previous.pagination__previous--inactive'
+      },
+      'workday.com': {
+        next: 'button[data-uxi-element-id="next"]',
+        prev: 'button[data-uxi-element-id="prev"]',
+        active: '.WGDC-pagination-current',
+        nextInactive: '.WGDC-pagination-next[disabled]',
+        prevInactive: '.WGDC-pagination-previous[disabled]'
+      },
+    };
 
     this.paginationPreferences = {
       'greenhouse.io': '?page='
@@ -436,7 +452,6 @@ class JobProcessor extends EventEmitter {
   async makeRequest(url, retries = 1, delay = 1000) {
     // Handle special cases for specific job board platforms
     if (url.includes('linkedin.com')) return {data: await this.fetchLinkedInPageContent(url), status: 200};
-    if (url.includes('myworkdayjobs.com')) return await this.grabWorkDayLinks(url);
     if (url.includes('uber.com')) return await this.usePuppeteerFallback(url); 
 
     for (let attempt = 1; attempt <= retries; attempt++) {
@@ -973,6 +988,7 @@ class JobProcessor extends EventEmitter {
   }
 
   async extractJobLinksFromPage(jobBoardUrl) {
+    if (jobBoardUrl.includes('myworkdayjobs.com')) return await this.grabWorkDayLinks(jobBoardUrl);
     console.log(`Extracting job links from ${jobBoardUrl}`);
     let currentPage = 1;
     let allLinks = [];
@@ -1036,12 +1052,15 @@ class JobProcessor extends EventEmitter {
       }
     });
 
+    // Get the appropriate pagination selectors for the current domain
+    const paginationSelectors = this.paginationSelectorsMap[jobBoardDomain] || this.paginationSelectorsMap['default'];
+
     // Check pagination
-    const nextButton = $(this.paginationSelectors.next);
-    const prevButton = $(this.paginationSelectors.prev);
-    const activeButton = $(this.paginationSelectors.active);
-    const nextInactiveButton = $(this.paginationSelectors.nextInactive);
-    const prevInactiveButton = $(this.paginationSelectors.prevInactive);
+    const nextButton = $(paginationSelectors.next);
+    const prevButton = $(paginationSelectors.prev);
+    const activeButton = $(paginationSelectors.active);
+    const nextInactiveButton = $(paginationSelectors.nextInactive);
+    const prevInactiveButton = $(paginationSelectors.prevInactive);
 
     if (nextButton.length > 0 && !nextInactiveButton.length) {
       paginationInfo.isLastPage = false;
@@ -1286,8 +1305,6 @@ class JobProcessor extends EventEmitter {
   }
 
   async processGreenhouseJobLink (url) {
-    // grab div.job__title and div.job__description from the page
-
     // get the company part of the url
     // https://job-boards.greenhouse.io/flexport/jobs/6035440?gh_jid=6035440 you should grab 'flexport'
     const company = url.split('/')[3];
@@ -1415,6 +1432,7 @@ class JobProcessor extends EventEmitter {
     }
   }
   
+  
   async grabWorkDayLinks(url) {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -1424,9 +1442,11 @@ class JobProcessor extends EventEmitter {
   
     let allJobs = [];
     let interceptedData = null;
+    let postData = null;
   
     page.on('request', request => {
       if (request.url().includes('/jobs') && request.method() === 'POST') {
+        postData = request.postData();
         request.continue();
       } else {
         request.continue();
@@ -1435,10 +1455,13 @@ class JobProcessor extends EventEmitter {
   
     page.on('response', async response => {
       if (response.url().includes('/jobs') && response.request().method() === 'POST') {
+        const requestUrl = response.request().url();
+        console.log(requestUrl);
         try {
           const data = await response.json();
           if (data && data.jobPostings) {
             interceptedData = data;
+            interceptedData.url = requestUrl;
           }
         } catch (error) {
           console.error('Error parsing response:', error);
@@ -1456,7 +1479,7 @@ class JobProcessor extends EventEmitter {
       }
   
       // Process the intercepted data
-      const total = interceptedData.total;
+      let total = interceptedData.total;
       allJobs = interceptedData.jobPostings.map(job => ({
         ...job,
         externalPath: `${url.replace('/jobs', '')}${job.externalPath}`
@@ -1464,10 +1487,33 @@ class JobProcessor extends EventEmitter {
   
       console.log(`Fetched ${allJobs.length} out of ${total} jobs`);
   
-      // If there are more jobs to fetch, you may need to implement pagination here
-      // This would involve clicking a "Load More" button or handling infinite scroll
+      // Continue fetching if there are more jobs
+      while (allJobs.length < total) {
+        const offset = allJobs.length;
+        const limit = Math.min(20, total - allJobs.length); // Assuming 20 is the default limit
   
-      console.log('All job data fetched successfully:', allJobs);
+        // Update the postData with new offset and limit
+        const updatedPostData = JSON.parse(postData);
+        updatedPostData.offset = offset;
+        updatedPostData.limit = limit;
+  
+        // Make a new POST request
+        const response = await axios.post(interceptedData.url, updatedPostData, {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+  
+        const newData = response.data;
+        const newJobs = newData.jobPostings.map(job => ({
+          ...job,
+          externalPath: `${url.replace('/jobs', '')}${job.externalPath}`
+        }));
+  
+        allJobs = allJobs.concat(newJobs);
+        console.log(`Fetched ${allJobs.length} out of ${total} jobs`);
+      }
+  
       return allJobs;
     } catch (error) {
       console.error('Error fetching job data:', error.message);
@@ -1476,6 +1522,7 @@ class JobProcessor extends EventEmitter {
       await browser.close();
     }
   }
+
 
   async processC3AILink(url) {
     let browser;
@@ -1556,61 +1603,58 @@ class JobProcessor extends EventEmitter {
 
 
   async processWorkDayJobLink(url) {
-    // make a get request to the url it will reply with something in the format:
-    /*
-    {
-  "jobPostingInfo": {
-    "id": "79d7e6973b75100165f39588d4bf0001",
-    "title": "PGIM Investments - IBD Regional Director, North Carolina",
-    "jobDescription": "\u003Cp\u003EJob Classification:\u003C/p\u003ESales - Sales\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cb\u003E\u003Cspan\u003EWhat you will do\u003C/span\u003E\u003C/b\u003E\u003C/p\u003E\u003Cp\u003EThe External Wholesaler is responsible for representing PGIM through retail investment vehicles (mutual funds, separate accounts &amp; 401(k) platforms) to investment professionals and partner firm product coordinators.\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003EThe External Wholesaler will engage advisors/teams in several relationship building activities. These activities include: providing technical information on the products they represent, demonstrating a strong knowledge of the competitive landscape, financial markets and industry related topics. The External Wholesaler would also act as a consultant in the areas of practice management and portfolio construction.\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cb\u003EIn field responsibilities are to drive Prudential Investments separate account and mutual fund sales and improve retention of PGIM assets under management including\u003C/b\u003E\u003C/p\u003E\u003Cul\u003E\u003Cli\u003ERepresenting Prudential Investments mutual funds and separate accounts to advisors knowledgeably and effectively so that advisors can clearly identify the benefits of the products relative to its competitors.\u003C/li\u003E\u003C/ul\u003E\u003Cul\u003E\u003Cli\u003ESharing business building ideas and strategies with financial advisors.\u003C/li\u003E\u003Cli\u003EProviding expert perspective in client meetings.\u003C/li\u003E\u003Cli\u003EProviding technical information to advisors\u003C/li\u003E\u003Cli\u003EOffering and coordinating client marketing assistance to advisors (i.e., client and prospect seminars).\u003C/li\u003E\u003Cli\u003EWorking closely with other business partners to align activities and plans for the given region and its advisors\u003C/li\u003E\u003Cli\u003EDevelop collaborative quarterly business plans for their region around meeting each of the above objectives.\u003C/li\u003E\u003C/ul\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cb\u003E\u003Cspan\u003EWhat you will bring\u003C/span\u003E\u003C/b\u003E\u003C/p\u003E\u003Cul\u003E\u003Cli\u003EThe candidate must be motivated with strong territory management and selling skills, and the ability to drive to his/her objectives relatively autonomously.\u003C/li\u003E\u003Cli\u003EThe candidate should have 5-7 years of experience in the Investments industry, and 3-5 years of wholesaling experience.\u003C/li\u003E\u003Cli\u003EThe candidate will be required to travel extensively in the field, approximately 90% of the time.\u003C/li\u003E\u003Cli\u003ERequired licenses: Series 7 and Series 63 or 65.\u003C/li\u003E\u003C/ul\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cb\u003E\u003Cspan\u003EWhat we offer you \u003C/span\u003E\u003C/b\u003E\u003C/p\u003E\u003Cul\u003E\u003Cli\u003EMedical, dental, vision, life insurance and PTO (Paid Time Off)\u003C/li\u003E\u003Cli\u003ERetirement plans:401(k) plan with generous company match (up to 4%) and Company-funded pension plan\u003C/li\u003E\u003Cli\u003EWellness Programs to help you achieve your wellbeing goals, including up to $1,600 a year for reimbursement of items purchased to support personal wellbeing needs\u003C/li\u003E\u003Cli\u003EWork/Life Resources to help support topics such as parenting, housing, senior care, finances, pets, legal matters, education, emotional health, and career development.\u003C/li\u003E\u003Cli\u003ETuition Assistance to help finance traditional college enrollment, approved degrees, many accredited certificate programs, and industry designations.\u003C/li\u003E\u003C/ul\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cb\u003EAbout PGIM Investments\u003C/b\u003E\u003C/p\u003E\u003Cp\u003EPGIM Investments is a diversified distributor of asset management capabilities, with over 100 actively managed funds globally. We are dedicated to helping clients tackle their toughest investment challenges and base the foundation of our investment strategy around collaboration and innovation. Our leadership team welcomes new ideas and challenging the status-quo and are committed to developing talent for long-term success. \u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cb\u003EA GLOBAL FIRM WITH A DIVERSE &amp; INCLUSIVE CULTURE\u003C/b\u003E\u003C/p\u003E\u003Cp\u003EAs the Global Asset Management business of Prudential, we’re always looking for ways to improve financial services. We’re passionate about making a meaningful impact - touching the lives of millions and solving financial challenges in an ever-changing world. We also believe talent is key to achieving our vision and are intentional about building a culture on respect and collaboration. When you join PGIM, you’ll unlock a motivating and impactful career – all while growing your skills and advancing your profession at one of the world’s leading global asset managers! If you’re not afraid to think differently and challenge the status quo, come and be a part of a dedicated team that’s investing in your future by shaping tomorrow today.\u003C/p\u003E\u003Cp\u003EAt PGIM, You Can!\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cdiv\u003E\u003Cp\u003E\u003Cspan\u003EPrudential Financial, Inc. of the United States is not affiliated with Prudential plc. which is headquartered in the United Kingdom.\u003C/span\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cspan\u003EPrudential is a multinational financial services leader with operations in the United States, Asia, Europe, and Latin America. Leveraging its heritage of life insurance and asset management expertise, Prudential is focused on helping individual and institutional customers grow and protect their wealth. The company&#39;s well-known Rock symbol is an icon of strength, stability, expertise and innovation that has stood the test of time. Prudential&#39;s businesses offer a variety of products and services, including life insurance, annuities, retirement-related services, mutual funds, asset management, and real estate services.\u003C/span\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cspan\u003EWe recognize that our strength and success are directly linked to the quality and skills of our diverse associates. We are proud to be a place where talented people who want to make a difference can grow as professionals, leaders, and as individuals. Visit \u003Ca href=\"http://www.prudential.com/\" target=\"_blank\"\u003Ewww.prudential.com\u003C/a\u003E to learn more about our values, our history and our brand.\u003C/span\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cspan\u003EPrudential is an equal opportunity employer. All qualified applicants will receive consideration for employment without regard to race, color, religion, national origin, ancestry, sex, sexual orientation, gender identity, national origin, genetics, disability, marital status, age, veteran status, domestic partner status , medical condition or any other characteristic protected by law. \u003C/span\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cspan\u003EThe Prudential Insurance Company of America, Newark, NJ and its affiliates.\u003C/span\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cspan\u003ENote that this posting is intended for individual applicants. Search firms or agencies should email Staffing at \u003Ca href=\"mailto:staffingagencies&#64;prudential.com\" target=\"_blank\"\u003E\u003Cu\u003E\u003Cspan\u003Estaffingagencies&#64;prudential.com\u003C/span\u003E\u003C/u\u003E\u003C/a\u003E for more information about doing business with Prudential.\u003C/span\u003E\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cspan\u003EPEOPLE WITH DISABILITIES:\u003Cbr /\u003EIf you need an accommodation to complete the application process, which may include an assessment, please email \u003C/span\u003E\u003Ca href=\"mailto:accommodations.hw&#64;prudential.com\" target=\"_blank\"\u003Eaccommodations.hw&#64;prudential.com\u003C/a\u003E.\u003C/p\u003E\u003Cp\u003E\u003C/p\u003E\u003Cp\u003E\u003Cspan\u003EPlease note that the above email is solely for individuals with disabilities requesting an accommodation.  If you are experiencing a technical issue with your application or an assessment, please email \u003C/span\u003E \u003Cspan\u003E\u003Ca href=\"mailto:careers.technicalsupport&#64;prudential.com\" target=\"_blank\"\u003E\u003Cspan\u003Ecareers.technicalsupport&#64;prudential.com\u003C/span\u003E\u003C/a\u003E\u003C/span\u003E \u003Cspan\u003E to request assistance.\u003C/span\u003E\u003C/p\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E\u003C/div\u003E",
-    "location": "NC-Virtual Office",
-    "postedOn": "Posted 16 Days Ago",
-    "startDate": "2024-09-11",
-    "timeType": "Full time",
-    "jobReqId": "R-118647",
-    "jobPostingId": "PGIM-Investments---IBD-Regional-Director--North-Carolina_R-118647-1",
-    "jobPostingSiteId": "Careers",
-    "country": {
-      "descriptor": "United States of America",
-      "id": "bc33aa3152ec42d4995f4791a106ed09"
-    },
-    "canApply": true,
-    "posted": true,
-    "includeResumeParsing": true,
-    "jobRequisitionLocation": {
-      "descriptor": "NC-Virtual Office",
-      "country": {
-        "descriptor": "United States of America",
-        "id": "bc33aa3152ec42d4995f4791a106ed09",
-        "alpha2Code": "US"
-      }
-    },
-    "externalUrl": "https://pru.wd5.myworkdayjobs.com/Careers/job/NC-Virtual-Office/PGIM-Investments---IBD-Regional-Director--North-Carolina_R-118647-1",
-    "questionnaireId": "095bc6d2e6db0101b58b3f616e600000",
-    "secondaryQuestionnaireId": "666020109e0710019c47e39b43130000",
-    "supplementaryQuestionnaireId": "72f882abbfd11001b1e02fc8cc580000"
-  },
-  "hiringOrganization": {
-    "name": "072 PGIM Investments,LLC",
-    "url": ""
-  },
-  "similarJobs": [],
-  "userAuthenticated": false
-}
-  */
+    try {
+      // Convert the original URL to the API URL
+      const apiInfo = this.convertToWorkdayApiUrl(url);
+      const apiUrl = apiInfo.link;
+      const company = apiInfo.company;
+      const tenant = apiInfo.tenant;
+      
+      // Make the request to the Workday API
+      const response = await axios.get(apiUrl);
+      const data = response.data;
+      console.log('Workday API data:', data);
+  
+      // Extract relevant information
+      const jobPostingInfo = data.jobPostingInfo;
+      const title = jobPostingInfo.title;
+      const location = jobPostingInfo.location;
+      const postedDate = jobPostingInfo.postedOn;
+      const startDate = jobPostingInfo.startDate;
+      const descriptionHtml = jobPostingInfo.jobDescription;
+      // const hiringOrganization = data.hiringOrganization;
+  
+      const companyId = await this.getOrCreateCompany(company, '', '', '', '', '', '', '', '');
+      // Convert HTML description to Markdown
+      const turndownService = new TurndownService();
+      const descriptionMarkdown = turndownService.turndown(descriptionHtml);
+  
+      // Construct the job data object
+      const jobData = {
+        title,
+        companyId,
+        company,
+        location,
+        description: descriptionMarkdown,
+        url: jobPostingInfo.externalUrl || url,
+      };
+  
+      return jobData;
+    } catch (error) {
+      console.error('Error processing Workday job link:', error);
+      throw error;
+    }
+  }
+  
+  // Helper function to convert the original URL to the API URL
+  convertToWorkdayApiUrl(originalUrl) {
+    const url = new URL(originalUrl);
+    const pathParts = url.pathname.split('/').filter(Boolean);
+    const company = url.hostname.split('.')[0];
+    const tenant = pathParts[1];
 
-    const response = await axios.get(url);
-    const data = response.data;
-    console.log(data);
-    const jobPostingInfo = data.jobPostingInfo;
-    const title = jobPostingInfo.title;
-    const location = jobPostingInfo.location;
-    const date = jobPostingInfo.startDate;
-    const descriptionHtml = jobPostingInfo.jobDescription;
-
-    const hiringOrganization = data.hiringOrganization;
-
-
+    const response = {company, tenant, link: `https://${company}.wd5.myworkdayjobs.com/wday/cxs/${company}/${tenant}/job/${pathParts.slice(3).join('/')}`};
+    return response;
   }
 
 
@@ -1642,6 +1686,17 @@ class JobProcessor extends EventEmitter {
     const descriptionMarkdown = turndownService.turndown(descriptionHtml).trim();
     
     return { url, companyId, title, description: descriptionMarkdown, location };
+  }
+
+  async processSmartRecruiterJobLink(url) {
+    // grab div.job__title and div.job__description from the page
+
+    // get the company part of the url
+    // https://jobs.smartrecruiters.com/NBCUniversal3/744000017508457-product-owner you should grab 'NBCUNIVERSAL3'
+
+    const company = url.split('/')[3];
+    const companyId = await this.getOrCreateCompany(company, '', '', '', '', '', '', '', '');
+    console.log(companyId);
   }
 
   async processJobLink(link) {
@@ -1679,7 +1734,11 @@ class JobProcessor extends EventEmitter {
       const response = await this.makeRequest(url);
       const jobData = await this.processLinkedInJob(response.data);
       return jobData;
-    } else {
+    } else if (url && url.includes('smartrecruiters.com')) {
+      const response = await this.makeRequest(url);
+      const jobData = await this.processSmartRecruiterJobLink(response.data);
+      return jobData;
+    }else {
       console.error('Unsupported job board:', url);
       return { error: 'Unsupported job board' };
     }

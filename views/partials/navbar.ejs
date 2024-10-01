@@ -102,7 +102,7 @@
 
           <div class="flex flex-col margin-06-bottom">
             <a class="<%= isActive('/notifications') ? 'active primary-text' : 'secondary-text' %>" href="/notifications">
-              <div class="menu-item mini-text relative px-2 py-1half">
+              <div class="menu-item mini-text relative px-2 py-3">
                 <span class="material-symbols-outlined" id="menu-community-icon">
                   notifications
                 </span>
@@ -112,7 +112,7 @@
               </div>
             </a>
             <a class="<%= isActive('/favorites') ? 'active primary-text' : 'secondary-text' %>" href="/favorites">
-              <div class="menu-item mini-text px-2 py-1half">
+              <div class="menu-item mini-text px-2 py-3">
                 <span class="material-symbols-outlined" id="menu-community-icon">
                   star
                 </span>
@@ -120,7 +120,7 @@
               </div>
             </a>
             <a href="/settings" class="<%= isActive('/settings') ? 'active primary-text' : 'secondary-text' %>">
-              <div class="menu-item mini-text px-2 py-1half">
+              <div class="menu-item mini-text px-2 py-3">
                 <span class="material-symbols-outlined" id="menu-community-icon">
                   settings
                 </span>
@@ -128,7 +128,7 @@
               </div>
             </a>
             <a href="#" onclick="document.getElementById('logoutForm').submit()">
-              <div class="menu-item mini-text primary-text cancel-button-text px-2 py-1half">
+              <div class="menu-item mini-text primary-text cancel-button-text px-2 py-3">
                 <span class="material-symbols-outlined cancel-button-text" id="menu-community-icon">
                   logout
                 </span>
@@ -147,7 +147,7 @@
           </div>
 
           <a href="/" class="<%= isActive('/') ? 'active primary-text' : 'secondary-text' %>">
-            <div class="menu-item mini-text px-2 py-1half">
+            <div class="menu-item mini-text px-2 py-3">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 home
               </span>
@@ -156,7 +156,7 @@
           </a>
 
           <a href="/jobs" class="<%= isActive('/jobs') ? 'active primary-text' : 'secondary-text' %>">
-            <div class="menu-item mini-text px-2 py-1half">
+            <div class="menu-item mini-text px-2 py-3">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 work
               </span>
@@ -167,7 +167,7 @@
             <summary>
               <a class="<%= isActive('/networks') ? 'active primary-text' : 'secondary-text' %>">
 
-                <div class="menu-item mini-text px-2 py-1half">
+                <div class="menu-item mini-text px-2 py-3">
                   <span class="material-symbols-outlined" id="menu-community-icon">
                     workspaces
                   </span>
@@ -181,7 +181,7 @@
             </div>
           </details>
           <a href="/updates" class="<%= isActive('/updates') ? 'active primary-text' : 'secondary-text' %>">
-            <div class="menu-item mini-text px-2 py-1half">
+            <div class="menu-item mini-text px-2 py-3">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 update
               </span>
@@ -194,7 +194,7 @@
           <% if (user) { %>
           <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
           <a href="/feedback" class="<%= isActive('/feedback') ? 'active primary-text' : 'secondary-text' %>">
-            <div class="menu-item mini-text px-2 py-1half">
+            <div class="menu-item mini-text px-2 py-3">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 feedback
               </span>
@@ -204,7 +204,7 @@
           </a>
           <% } %>
           <a href="/about" class="<%= isActive('/about') ? 'active primary-text' : 'secondary-text' %>">
-            <div class="menu-item mini-text px-2 py-1half">
+            <div class="menu-item mini-text px-2 py-3">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 info
               </span>
@@ -374,18 +374,17 @@
       </ul>
     </div>
   </div>
-
-  <div class="latest-commit-banner" id="latestCommitBanner" style="display: none;">
-    <div class="latest-commit-info">
-      <div class="latest-commit-main">
-        <span class="latest-commit-message"></span>
-      </div>
-      <button id="closeCommitBanner">
-        <span class="material-symbols-outlined">close</span>
-      </button>
-    </div>
-  </div>
 </nav>
+<div class="latest-commit-banner" id="latestCommitBanner" style="display: none;">
+  <div class="latest-commit-info">
+    <div class="latest-commit-main">
+      <span class="latest-commit-message"></span>
+    </div>
+    <button id="closeCommitBanner">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+</div>
 <div class="search-bar adaptive-main adaptive-border-bottom" id="search-bar-div">
   <div class="search-bar-container">
     <form action="/search" method="GET" id="search-form">

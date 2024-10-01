@@ -18,15 +18,16 @@ const cacheMiddleware = require('../middleware/cache');
 const NodeCache = require('node-cache');
 const cache = new NodeCache({ stdTTL: 1200 }); // TTL is 20 minutes
 const utilFunctions = require('../utils/utilFunctions');
+const jobExtractionQueue = require('../utils/queue');
+
 const storage = multer.diskStorage({
   destination: './public/uploads/',
-  filename: function (req, file, cb) {
-    cb(null, 'profile-' + Date.now() + '.jpg');
-  },
   filename: function (req, file, cb) {
     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
   }
 });
+
+const queue = require('../utils/queue');
 const upload = require('../utils/upload');
 const marked = require('marked');
 const postQueries = require('../queries/postQueries');
@@ -1053,6 +1054,61 @@ router.post('/extract-job-details', checkAuthenticated, async (req, res) => {
   }
 });
 
+
+router.post('/bot-extract-job-details', checkAuthenticated, async (req, res) => {
+  try {
+    const { links } = req.body;
+
+    if (!links || !Array.isArray(links) || links.length === 0) {
+      return res.status(400).json({ error: 'Invalid job links' });
+    }
+
+    const jobs = await Promise.all(links.map(link => jobExtractionQueue.addJob({ link })));
+    const jobIds = jobs.map(job => job.id);
+
+    res.json({ 
+      message: 'Job extraction started',
+      jobIds,
+      totalJobs: links.length
+    });
+
+  } catch (error) {
+    console.error('Error starting job extraction:', error);
+    res.status(500).json({ error: 'An error occurred while starting job extraction' });
+  }
+});
+
+router.get('/job-extraction-progress', checkAuthenticated, async (req, res) => {
+  try {
+    const { jobIds } = req.query;
+
+    if (!jobIds) {
+      return res.status(400).json({ error: 'No job IDs provided' });
+    }
+
+    const jobIdArray = jobIds.split(',');
+    const jobs = await jobExtractionQueue.getJobs(jobIdArray);
+
+    const progress = jobs.map(job => ({
+      id: job.id,
+      status: job.getState(),
+      progress: job.progress,
+      result: job.returnvalue
+    }));
+
+    const completedJobs = progress.filter(job => job.status === 'completed').length;
+
+    res.json({
+      progress,
+      completedJobs,
+      totalJobs: jobIdArray.length
+    });
+
+  } catch (error) {
+    console.error('Error fetching job extraction progress:', error);
+    res.status(500).json({ error: 'An error occurred while fetching job extraction progress' });
+  }
+});
 
 router.get('/skills/jobs/:skill', async (req, res) => {
   try {

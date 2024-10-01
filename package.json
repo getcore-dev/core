@@ -20,6 +20,7 @@
     "axios-rate-limit": "^1.4.0",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
+    "bull": "^4.16.3",
     "chatgpt": "^5.2.5",
     "cheerio": "^1.0.0-rc.12",
     "cluster": "^0.7.7",
