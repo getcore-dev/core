@@ -130,6 +130,7 @@ main {
 .company-info {
   display: flex;
   gap: .9rem;
+  align-items: flex-start;
   box-sizing: border-box;
 }
 
@@ -174,12 +175,6 @@ ul.locations {
   line-height: 1.5;
 }
 
-.job-benefits ul li,
-.locations li {
-  border-left: 3px solid var(--active-indicator-color);
-  padding-left: .8rem;
-  margin-bottom: .6rem;
-}
 
 .label {
   font-weight: bold;
@@ -364,7 +359,7 @@ ul.locations {
 }
 
 .job-details ul li::before {
-  content: "•";
+  content: "|";
   color: var(--light-mode-bold-text-color);
   font-size: 1.2rem;
   margin-right: .5rem;

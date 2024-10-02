@@ -152,8 +152,9 @@ class JobProcessor extends EventEmitter {
       const jobLinks = await this.extractJobLinksFromPage(url);
       
       for (const link of jobLinks) {
-        if (this.isJobLink(link.link)) {
-          await this.addToJobProcessingQueue(link.link);
+        const jobUrl = link.link || link.url || link.externalPath;
+        if (jobUrl && this.isJobLink(jobUrl)) {
+          await this.addToJobProcessingQueue(jobUrl);
         }
       }
     } catch (error) {
@@ -1472,7 +1473,7 @@ class JobProcessor extends EventEmitter {
 
 
     console.log({ url, companyId, title, company, description: descriptionMarkdown, location });
-    return { url, companyId, title, company, description: descriptionMarkdown, location };
+    return { url, companyId, title, company_name: company, company, description: descriptionMarkdown, location };
   }
 
   async processJobViteLink (url) {
@@ -1513,7 +1514,7 @@ class JobProcessor extends EventEmitter {
     }
 
     console.log({ url, companyId, title, company, description: descriptionMarkdown, location });
-    return { url, companyId, title, company, description: descriptionMarkdown, location };
+    return { url, companyId, title, company, company_name: company, description: descriptionMarkdown, location };
   }
 
   async processLeverJobLink(url) {
@@ -1594,8 +1595,8 @@ class JobProcessor extends EventEmitter {
     const descriptionMarkdown = turndownService.turndown(descriptionHtml).trim();
     
 
-    console.log({ url, companyId, title, description: descriptionMarkdown, location });
-    return { url, companyId, title, description: descriptionMarkdown, location };
+    console.log({ url, companyId, title, company_name: company, description: descriptionMarkdown, location });
+    return { url, companyId, title, company_name: company, description: descriptionMarkdown, location };
   }
 
   convertWorkdayLink(url) {
@@ -1864,6 +1865,7 @@ class JobProcessor extends EventEmitter {
         title,
         companyId,
         company,
+        company_name: company,
         location,
         description: descriptionMarkdown,
         url: jobPostingInfo.externalUrl || url,
@@ -1916,7 +1918,7 @@ class JobProcessor extends EventEmitter {
 
     const descriptionMarkdown = turndownService.turndown(descriptionHtml).trim();
     
-    return { url, companyId, title, description: descriptionMarkdown, location };
+    return { url, companyId, title, company_name: company, description: descriptionMarkdown, location };
   }
 
   async processSmartRecruiterJob (url) {
@@ -2836,6 +2838,7 @@ class JobProcessor extends EventEmitter {
       let extractedData = {
         title: $('.job-details-jobs-unified-top-card__job-title').text().trim() || $('.top-card-layout__title').text().trim() || $('h1').text().trim(),
         company_name: $('.job-details-jobs-unified-top-card__company-name').text().trim() || $('.topcard__org-name-link').text().trim() || $('.topcard__flavor--black-link').text().trim(),
+        company: $('.job-details-jobs-unified-top-card__company-name').text().trim() || $('.topcard__org-name-link').text().trim() || $('.topcard__flavor--black-link').text().trim(),
         location: $('span.topcard__flavor.topcard__flavor--bullet').text().trim(),
         job_type: $('.description__job-criteria-text description__job-criteria-text--criteria').text().trim(),
         salary_range: $('.job-details-jobs-unified-top-card__job-insight:contains("$")').text().trim() || $('.compensation__salary').text().trim() || $('.salary').text().trim(),
