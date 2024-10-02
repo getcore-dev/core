@@ -181,7 +181,13 @@ router.get('/recruiter', checkNotAuthenticated, async (req, res) => {
 });
 
 router.get('/register', checkNotAuthenticated, async (req, res) => {
-  res.render('register.ejs', { user: req.user, errorMessages: req.flash('error'), successMessages: req.flash('success') });
+  const email = req.query.email || '';
+  res.render('register.ejs', { 
+    user: req.user, 
+    email: email,
+    errorMessages: req.flash('error'), 
+    successMessages: req.flash('success') 
+  });
 });
 
 router.post(

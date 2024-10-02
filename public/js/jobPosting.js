@@ -143,6 +143,8 @@ function formatRelativeDate(dateString) {
 function createJobElement(job) {
   const jobElement = document.createElement('div');
   jobElement.classList.add('job');
+  jobElement.classList.add('no-padding');
+
   jobElement.onclick = () => (window.location.href = `/jobs/${job.id}`);
 
   const tagsArray = job.skills ?
@@ -175,38 +177,43 @@ function createJobElement(job) {
   jobElement.innerHTML = `
   <div class="job-preview">
     <div class="job-info">
-      <div class="flex flex-row w-100 margin-1-bottom space-between v-center gap-03 margin-06-bottom">
+      <div class="flex flex-row w-100 space-between v-center gap-03 margin-1-bottom">
       <div class="flex flex-row gap-06">
         ${
   job.company_logo
     ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="${job.company_name}" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
     : ''
 }
-    <div class="flex flex-col">
-          <p class="company-name">${job.company_name}</p>
-
-      <a href="/jobs/${job.id}"><h3 class="job-title sub-text">${job.title}</h3></a>
-    </div>
-    </div>
-    <div class="location-badge">
-      📍 ${formatLocation(job.location).trim().substring(0, 20)}
-          </div>
-  </div>
-  <div class="job-tags margin-06-bottom">
-    ${tagsHTML}
-  </div>
-  <div class="flex flex-row gap-06 wrap w-100 mini-text third-text v-center">
-    <span class="job-posting-detail applicants flex v-center">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-      ${job.applicants ? `${job.applicants} applicants` : '0 applicants'}
-    </span>
-    <span class="job-posting-detail post-date flex v-center">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-      <time>${formatRelativeDate(job.postedDate)}</time>
-    </span>
-    <span class="job-posting-detail flex v-center experience-level">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
-      ${
+        <div class="flex flex-col margin-06-bottom">
+                <p class="company-name bold secondary-text sub-text">${job.company_name}</p>
+          <a href="/jobs/${job.id}"><h3 class="job-title main-text">${job.title}</h3></a>
+        </div>
+        </div>
+      </div>
+      ${tagsHTML ? `<div class="job-tags margin-06-bottom">${tagsHTML}</div>` : ''}
+      <div class="flex flex-row gap-03 mini-text wrap">
+            <span class="text-tag bold flex flex-row v-center">
+            📍
+          ${formatLocation(job.location).trim().substring(0, 25)}
+        </span>
+            ${job.salary || job.salary_max ? `
+          <span class="text-tag bold flex flex-row v-center salary">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+            ~${formatSalary(job.salary)}/yr
+          </span>
+        ` : ''}
+        <span class="text-tag flex flex-row v-center applicants">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          ${job.applicants ? `${job.applicants} applicants` : '0'}
+        </span>
+        <span class="text-tag flex flex-row v-center post-date">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+          <time>${formatRelativeDate(job.postedDate)}</time>
+        </span>
+        ${job.experienceLevel ? `
+        <span class="text-tag flex flex-row v-center experience-level">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+          ${
   job.experienceLevel === 'Mid Level'
     ? 'L3/L4'
     : job.experienceLevel === 'Entry Level'
@@ -215,17 +222,12 @@ function createJobElement(job) {
         ? 'L5/L6'
         : job.experienceLevel
 }
-    </span>
-    ${job.salary || job.salary_max ? `
-      <span class="job-posting-detail flex v-center salary">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-        ${formatSalary(job.salary)} - ${formatSalary(job.salary_max)}/yr
-      </span>
-  ` : ''}
-        </div>
+        </span>
+        ` : ''}
       </div>
     </div>
-    `;
+  </div>
+  `;
   return jobElement;
 }
 async function getSimilarJobsByCompany(jobId) {
@@ -389,7 +391,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         ${job.title}
       </h3>
       <p class="mini-text third-text"> 
-${
+          ${
   job.location
     .split(',')
     .map(loc => loc.trim().toLowerCase())
@@ -527,10 +529,9 @@ ${
 </div>
             <div class="job-details primary-text company-profile-section">
             <div class="job-posting-recruiter sub-text">
-            <h4 class="mini-text bold" style="margin-bottom: 0.8rem;"></h4>  
-                    <h4  style="margin-top:0;">Recruiter Information</h4>
+                    <h4 style="margin-top:0;">Recruiter Information</h4>
 
-<div class="card px-4 py-2">
+<div>
         <div class="job-recruiter-container">
             <div class="job-recruiter-info">
             <div class="recruiter-info flex flex-row gap-06">
@@ -550,14 +551,14 @@ ${
 </div>
             ${job.company_description ? `
             <div class="company-description sub-text">
-              <h4>Company Description</h4>
+              <h4 class="sub-text bold">Company Description</h4>
               <p class="sub-text">${job.company_description}</p>
             </div>
             ` : ''}
 
             ${ !job.isProcessed ? `
             <div class="job-posting-description sub-text">
-              <h4>Job Description</h4>
+              <h4 class="sub-text bold">Job Description</h4>
               <p class="sub-text">${job.description}</p>
             </div>
             ` : ''}

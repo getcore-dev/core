@@ -78,7 +78,7 @@ main {
 
 
 .username-date a {
-  color: #1877F2;
+  color: var(--active-indicator-color);
   text-decoration: none;
 }
 
@@ -163,6 +163,7 @@ img.company-logo {
 .company-information {
   display: flex;
   flex-direction: column;
+  gap: .125rem;
 }
 
 .job-benefits ul,
@@ -193,6 +194,7 @@ div.similar-jobs-list {
   display: flex;
   flex-wrap: nowrap;
   padding: 0 1rem;
+  gap: .8rem;
   flex-direction: column;
 
   -webkit-scrollbar {
@@ -630,6 +632,7 @@ ul.locations {
   .job-listing-menu {
     margin: 0;
     border: 0;
+    margin-bottom: 2rem;
     display: flex;
     border-radius: 0;
     gap: 1.8rem;

@@ -43,13 +43,14 @@
             <input type="text" id="lastname" name="lastname" placeholder="Last Name" required />
           </div>
           <div class="input-container">
-            <input type="email" id="email" name="email" placeholder="Email" required />
+            <input type="email" id="email" name="email" placeholder="Email" required value="<%= email %>" />
             <span class="sub-text third-text" id="email-validity">Empty</span>
           </div>
 
           <div class="input-container">
             <input type="text" id="username" name="username" placeholder="Username" required minlength="5" maxlength="30" />
             <span class="sub-text third-text" id="username-char-count">0/30</span>
+            <span class="sub-text third-text" id="username-validity">adsad</span>
           </div>
 
           <div class="input-container">
@@ -88,6 +89,8 @@
       var username = document.getElementById("username");
       const usernameInput = document.getElementById('username');
       const charCount = document.getElementById('username-char-count');
+      const usernameValidity = document.getElementById('username-validity');
+
       const emailInput = document.getElementById('email');
       const emailValidity = document.getElementById('email-validity');
 
@@ -95,6 +98,48 @@
         const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
       }
+
+      function updateUsernameValidity() {
+        const username = usernameInput.value;
+        const invalidCharacters = /[^a-zA-Z0-9_]/;
+
+        if (username.length === 0) {
+          usernameValidity.textContent = 'Empty';
+          usernameValidity.className = 'sub-text third-text';
+        } else if (username.length < 5 || username.length > 30 || invalidCharacters.test(username)) {
+          usernameValidity.textContent = `'${username}' is invalid`;
+          usernameValidity.className = 'invalid sub-text';
+        } else {
+          usernameValidity.textContent = 'Checking availability...';
+          usernameValidity.className = 'sub-text third-text';
+        }
+      }
+
+      function checkUsernameAvailability() {
+        const username = usernameInput.value;
+        fetch("/api/available-username/" + encodeURIComponent(username))
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.available) {
+              usernameValidity.textContent = `'${username}' is valid`;
+              usernameValidity.className = 'valid sub-text';
+            } else {
+              usernameValidity.textContent = `'${username}' is taken`;
+              usernameValidity.className = 'invalid sub-text';
+            }
+          });
+      }
+
+      const debouncedCheckAvailability = debounce(checkUsernameAvailability, 300);
+
+      usernameInput.addEventListener('input', function () {
+        updateCharCount();
+        updateUsernameValidity();
+        debouncedCheckAvailability();
+      });
+
+      updateCharCount();
+      updateUsernameValidity();
 
       function updateEmailValidity() {
         if (emailInput.value.length === 0) {
@@ -110,6 +155,7 @@
       }
 
       emailInput.addEventListener('input', updateEmailValidity);
+      updateEmailValidity(); // Run immediately to check prefilled text
 
       function updateCharCount() {
         const currentLength = usernameInput.value.length;

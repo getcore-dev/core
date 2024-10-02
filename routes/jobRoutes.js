@@ -407,11 +407,10 @@ router.get('/delete/:id', checkAuthenticated, async (req, res) => {
     }
     const jobId = req.params.id;
     await jobQueries.deleteJob(jobId);
-    const companies = await jobQueries.getCompanies();
-    res.render('jobs.ejs', { user: req.user, companies, errorMessages: req.flash('error'), successMessages: ['Job deleted successfully'] });
+    res.redirect('/jobs?success=Job deleted successfully');
   } catch (err) {
     console.error('Error deleting job:', err);
-    res.status(500).send('Error deleting job');
+    res.redirect('/jobs?error=Error deleting job');
   }
 });
 

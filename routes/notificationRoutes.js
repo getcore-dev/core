@@ -47,6 +47,8 @@ router.get('/read/:userId', async (req, res) => {
 router.get('/', checkAuthenticated, async (req, res) => {
   try {
     res.render('notifications.ejs', { user: req.user });
+    // read all notifications
+    await notificationQueries.markAllAsRead(req.user.id);
   } catch (err) {
     res.status(500).send(err.message);
   }

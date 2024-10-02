@@ -62,13 +62,37 @@
   <!-- Hero Section -->
   <header class="hero-section">
     <div class="hero-content">
-      <img src="/img/core.png" alt="CORE Logo" class="hero-logo">
-      <p>Your AI-powered partner in finding and securing your next career opportunity.</p>
-      <a href="/register">
-        <button class="main-button centered-button">
-          Get Started
-        </button>
-      </a>
+      <div class="flex w-100 h-center">
+        <img src="/img/core.png" alt="CORE Logo" class="hero-logo">
+      </div>
+      <h1>🚀 Revolutionize Your Job Search with AI-Powered Insights</h1>
+      <p>CORE is your ultimate career partner, leveraging cutting-edge AI to connect you with the perfect opportunities and empower your job search journey.</p>
+      <ul class="feature-list">
+        <li>🔍 Access jobs from countless websites, updated within 24 hours</li>
+        <li>📄 Use AI to revamp your resume for maximum impact</li>
+        <li>💡 Get powerful insights into job postings before applying</li>
+        <li>🏢 Help companies gain better insights into candidates</li>
+      </ul>
+      <div class="get-started-options adaptive-background round2 px-4 w-100 py-4">
+        <form action="/email-register" method="GET" class="email-form flex flex-col gap-1">
+          <input type="email" name="email" class="margin-06-bottom" placeholder="Enter your email" required>
+          <button type="submit" class="regular-button h-center">
+            Get Started
+            <span class="material-symbols-outlined">
+              arrow_forward
+            </span>
+          </button>
+        </form>
+        <div class="or-divider">
+          <span>or</span>
+        </div>
+        <a href="/auth/github" class="github-button">
+          <button class="bordered-button h-center">
+            <img src="/src/github.png" alt="GitHub Logo" class="github-logo" style="background:white;border-radius:9999px;">
+            Sign Up with GitHub
+          </button>
+        </a>
+      </div>
     </div>
   </header>
 
@@ -76,33 +100,33 @@
   <main>
     <!-- About Us Section -->
     <section class="about-us">
-      <h2>About CORE</h2>
+      <h2 class="primary-text">About CORE</h2>
       <p>CORE is a leading platform that connects professionals with top tech employers worldwide. Our mission is to streamline your job search, enhance your applications, and keep you informed with the latest opportunities.</p>
     </section>
 
     <!-- Features Section -->
-    <section class="features">
-      <h2>Our Features</h2>
+    <section class="features adaptive-background">
+      <h2 class="primary-text">Our Features</h2>
       <div class="feature-grid">
         <div class="feature-card">
           <span class="material-symbols-outlined">work</span>
-          <h3>Global Job Search</h3>
-          <p>Access thousands of job listings from over 400 websites worldwide, updated within 24 hours.</p>
+          <h3 class="primary-text">Global Job Search</h3>
+          <p class="secondary-text">Access thousands of job listings from over 400 websites worldwide, updated within 24 hours.</p>
         </div>
         <div class="feature-card">
           <span class="material-symbols-outlined">description</span>
-          <h3>AI-Powered Resumes</h3>
-          <p>Create tailored resumes and cover letters using our advanced AI tools to stand out to employers.</p>
+          <h3 class="primary-text">AI-Powered Resumes</h3>
+          <p class="secondary-text">Create tailored resumes and cover letters using our advanced AI tools to stand out to employers.</p>
         </div>
         <div class="feature-card">
           <span class="material-symbols-outlined">notifications</span>
-          <h3>Real-Time Job Alerts</h3>
-          <p>Receive instant notifications when new jobs that match your criteria are posted.</p>
+          <h3 class="primary-text">Real-Time Job Alerts</h3>
+          <p class="secondary-text">Receive instant notifications when new jobs that match your criteria are posted.</p>
         </div>
         <div class="feature-card">
           <span class="material-symbols-outlined">insights</span>
-          <h3>Personalized Job Overviews</h3>
-          <p>Get AI-generated overviews and insights on job positions to make informed career decisions.</p>
+          <h3 class="primary-text">Personalized Job Overviews</h3>
+          <p class="secondary-text">Get AI-generated overviews and insights on job positions to make informed career decisions.</p>
         </div>
       </div>
     </section>
@@ -111,21 +135,21 @@
     <section class="how-it-works">
       <h2>How CORE Works</h2>
       <div class="steps">
-        <div class="step">
-          <h3>1. Sign Up</h3>
-          <p>Create your account and set up your profile to get started.</p>
+        <div class="step adaptive-border adaptive-background">
+          <h3 class="primary-text">1. Sign Up</h3>
+          <p class="secondary-text">Create your account and set up your profile to get started.</p>
         </div>
-        <div class="step">
-          <h3>2. Customize Your Resume</h3>
-          <p>Use our AI tools to build a professional resume tailored to your desired roles.</p>
+        <div class="step adaptive-border adaptive-background">
+          <h3 class="primary-text">2. Customize Your Resume</h3>
+          <p class="secondary-text">Use our AI tools to build a professional resume tailored to your desired roles.</p>
         </div>
-        <div class="step">
-          <h3>3. Search and Apply</h3>
-          <p>Find jobs globally, receive real-time alerts, and apply directly through CORE.</p>
+        <div class="step adaptive-border adaptive-background">
+          <h3 class="primary-text">3. Search and Apply</h3>
+          <p class="secondary-text">Find jobs globally, receive real-time alerts, and apply directly through CORE.</p>
         </div>
-        <div class="step">
-          <h3>4. Get Notified</h3>
-          <p>Stay updated with instant notifications for new job postings that match your profile.</p>
+        <div class="step adaptive-border adaptive-background">
+          <h3 class="primary-text">4. Get Notified</h3>
+          <p class="secondary-text">Stay updated with instant notifications for new job postings that match your profile.</p>
         </div>
       </div>
     </section>
@@ -158,16 +182,8 @@
     </section>
   </main>
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2024 core</p>
-    <p>All rights reserved.</p>
-    <div class="footer-links">
-      <a href="/about">About Us</a>
-      <a href="/contact">Contact</a>
-      <a href="/privacy">Privacy Policy</a>
-    </div>
-  </footer>
+  <%- include('partials/footer') %>
+
 </body>
 
 </html>

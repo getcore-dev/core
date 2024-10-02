@@ -151,6 +151,14 @@ label {
   transition: cubic-bezier(1, 0, 0, 1) 0.3s;
 }
 
+.round {
+  border-radius: 6px;
+}
+
+.round2 {
+  border-radius: 12px;
+}
+
 .number-display {
   height: 15px;
   min-width: 10px;
@@ -789,7 +797,8 @@ li.dropdown a.active {
 }
 
 .hero-logo {
-  height: 90px;
+  height: 70px;
+  padding-bottom: 40px;
 }
 
 .centered-button {
@@ -893,12 +902,12 @@ li.dropdown a.active {
 .menu-button {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   width: 16px;
   align-items: flex-end;
   padding: 0;
   z-index: 100;
-  height: 20px;
+  height: 22px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -1487,7 +1496,7 @@ a>.menu-item {
   }
 
   #nb-icon {
-    font-size: 23px;
+    font-size: 30px;
     padding: 7px !important;
   }
 
@@ -1585,7 +1594,7 @@ a>.menu-item {
 
 
   #user-avatar {
-    height: 26px;
+    height: 30px;
     padding-top: 0px;
     margin-top: 0px;
   }
@@ -1989,6 +1998,10 @@ div .material-symbols-outlined:not(:only-child) {
 .small-icon {
   font-size: .95rem !important;
   vertical-align: -2px;
+}
+
+.adaptive-background {
+  background: var(--light-mode-main-color);
 }
 
 .link {
@@ -2689,7 +2702,8 @@ details[open] {
     border-color: var(--dark-mode-border-color);
   }
 
-  .core-header-img {
+  .core-header-img,
+  .hero-logo {
     content: url('/img/core-dark.png');
   }
 
@@ -2744,6 +2758,10 @@ details[open] {
 
 
   div.buttons .null-button-normal {
+    background: var(--dark-mode-main-color);
+  }
+
+  .adaptive-background {
     background: var(--dark-mode-main-color);
   }
 
@@ -3061,7 +3079,7 @@ input::placeholder {
 
   .menu-content {
     background-color: var(--dark-mode-body-color);
-    border-right: 1px solid var(--dark-mode-border-color);
+    border-color: var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
 

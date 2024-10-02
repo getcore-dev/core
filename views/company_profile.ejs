@@ -48,22 +48,23 @@
           </div>
           <div class="company-posting-info">
             <span class="main-text bold"><%= company.name %></span>
-          </div>
-          <% if (user && user.isAdmin) { %>
-          <a style="margin-left:auto;" href="/jobs/company/<%= encodeURIComponent(company.name) %>/edit">
-            <button class="regular-button-normal">
+            <% if (user && user.isAdmin) { %>
+            <a style="margin-left:auto;" href="/jobs/company/<%= encodeURIComponent(company.name) %>/edit">
               <span class="material-symbols-outlined">
                 edit
               </span>
-              Edit
-            </button>
-          </a>
-          <% } %>
+            </a>
+            <% } %>
+          </div>
         </div>
+        <% if (company.description) { %>
         <div class="company-description secondary-text sub-text margin-06-bottom">
           <p class="description-text secondary-text" id="companyDescription"><%= company.description %></p>
           <button id="toggleButton" style="display: none;">Show more</button>
         </div>
+        <% } %>
+
+        <% if (company.twitter_username || company.company_website) { %>
         <div class="external-links flex flex-row gap-06 margin-06-bottom wrap">
           <% if (company.twitter_username) { %>
           <span class="company-flair-item flair-bordered">
@@ -85,6 +86,8 @@
           </span>
           <% } %>
         </div>
+        <% } %>
+        <% if (company.job_board_url || company.location || company.industry || company.stock_symbol || company.size || (company.founded && company.founded.getFullYear() !== 1899) || company.company_stage) { %>
         <div class="company-flair sub-text margin-03-bottom">
           <% if (company.job_board_url) { %>
           <span class="company-flair-item">
@@ -94,11 +97,12 @@
             Active Job Board
           </span>
           <% } %>
-
+          <% if (company.location) { %>
           <span class="company-flair-item">
             <span class="material-symbols-outlined">location_on</span>
             <span class="company-location"><%= company.location %></span>
           </span>
+          <% } %>
 
           <% if (company.industry) { %>
           <span class="company-flair-item">
@@ -124,7 +128,7 @@
           </span>
           <% } %>
 
-          <% if (company.founded) { %>
+          <% if (company.founded && company.founded.getFullYear() !== 1899) { %>
           <span class="company-flair-item">
             <span class="material-symbols-outlined">event</span>
             <span class="company-founded">Founded: <%= company.founded.getFullYear() %></span>
@@ -138,7 +142,9 @@
           </span>
           <% } %>
         </div>
+        <% } %>
 
+        <% if (company.company_recent_news_sentiment || company.company_issues || company.company_sentiment || company.company_engineer_choice) { %>
         <div class="ai-generated-info px-4 py-2">
           <h3 class="main-text">AI-Generated Insights</h3>
           <div class="ai-warning sub-text">
@@ -173,6 +179,7 @@
           </span>
           <% } %>
         </div>
+        <% } %>
         <!--
         <div class="company-buttons margin-1-bottom">
           <button class="special-button-normal" id="follow-company-button"><span class="material-symbols-outlined">
