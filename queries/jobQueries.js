@@ -20,6 +20,13 @@ CREATE TABLE company_comments (
 );
 */
 
+const jobTitleCategories = {
+  'Software Engineer': ['Software Developer', 'Python Developer', 'Java Developer', 'Full Stack Developer', 'Backend Developer', 'Frontend Developer', 'iOS Developer', 'Android Developer', 'Web Developer', 'DevOps Engineer', 'Cloud Engineer'],
+  'Data Scientist': ['Data Analyst', 'Machine Learning Engineer', 'AI Engineer', 'Business Intelligence Analyst', 'Data Engineer', 'Statistician'],
+  'Product Manager': ['Product Owner', 'Program Manager', 'Project Manager', 'Scrum Master', 'Agile Coach'],
+  // Add more categories as needed
+};
+
 const jobQueries = {
 
   createResume: async (data) => {
@@ -437,35 +444,36 @@ const jobQueries = {
     try {
       const offset = (page - 1) * pageSize;
       const result = await sql.query`
-        WITH RecentJobs AS (
-          SELECT TOP (${page * pageSize + pageSize}) 
-            j.*,
-            c.name AS company_name,
-            c.logo AS company_logo,
-            c.location AS company_location,
-            c.description AS company_description
-          FROM JobPostings j
-          LEFT JOIN companies c ON j.company_id = c.id
-          ORDER BY j.postedDate DESC
-        )
         SELECT 
-          r.*,
-          t.tags,
-          s.skills
-        FROM RecentJobs r
-        CROSS APPLY (
-          SELECT STRING_AGG(jt.tagName, ', ') WITHIN GROUP (ORDER BY jt.tagName) AS tags
-          FROM JobPostingsTags jpt
-          JOIN JobTags jt ON jpt.tagId = jt.id
-          WHERE jpt.jobId = r.id
-        ) t
-        CROSS APPLY (
-          SELECT STRING_AGG(s.name, ', ') WITHIN GROUP (ORDER BY s.name) AS skills
-          FROM job_skills js
-          JOIN skills s ON js.skill_id = s.id
-          WHERE js.job_id = r.id
-        ) s
-        ORDER BY r.postedDate DESC
+          j.id,
+          j.title,
+          j.description,
+          j.postedDate,
+          j.experienceLevel,
+          j.salary,
+          j.location,
+          j.link,
+          c.name AS company_name,
+          c.logo AS company_logo,
+          c.location AS company_location,
+          c.description AS company_description,
+          -- Aggregating tags using a correlated subquery
+          (
+            SELECT STRING_AGG(jt.tagName, ', ') 
+            FROM JobPostingsTags jpt
+            JOIN JobTags jt ON jpt.tagId = jt.id
+            WHERE jpt.jobId = j.id
+          ) AS tags,
+          -- Aggregating skills using a correlated subquery
+          (
+            SELECT STRING_AGG(s.name, ', ') 
+            FROM job_skills js
+            JOIN skills s ON js.skill_id = s.id
+            WHERE js.job_id = j.id
+          ) AS skills
+        FROM JobPostings j
+        LEFT JOIN companies c ON j.company_id = c.id
+        ORDER BY j.postedDate DESC
         OFFSET ${offset} ROWS
         FETCH NEXT ${pageSize} ROWS ONLY
       `;
@@ -475,6 +483,7 @@ const jobQueries = {
       throw err;
     }
   },
+  
   
 
   getJobCountByCompany: async (companyName) => {
@@ -610,6 +619,7 @@ const jobQueries = {
   
   searchAllJobsFromLast30Days: async (filters, page, pageSize) => {
     try {
+      console.log('Searching for jobs with filters:', filters);
       const {
         titles = [],
         locations = [],
@@ -619,119 +629,146 @@ const jobQueries = {
         companies = []
       } = filters;
   
-      console.log(filters);
       const offset = (page - 1) * pageSize;
   
-      let query = `
-      WITH JobScores AS (
-        SELECT 
-          j.*,
-          (
-            SELECT STRING_AGG(jt.tagName, ',') WITHIN GROUP (ORDER BY jt.tagName)
-            FROM JobPostingsTags jpt
-            JOIN JobTags jt ON jpt.tagId = jt.id
-            WHERE jpt.jobId = j.id AND jt.tagName IS NOT NULL
-          ) AS job_tags,
-          (
-            SELECT STRING_AGG(s.name, ',') WITHIN GROUP (ORDER BY s.name)
-            FROM job_skills js
+      // Initialize conditions and query parameters
+      const conditions = [];
+      const queryParams = {};
+  
+      // Handle experience levels and internships
+      if (experienceLevels.length > 0) {
+        const experienceLevelConditions = [];
+  
+        // Handle 'Internship' special case
+        if (experienceLevels.includes('Internship')) {
+          const internshipTitles = ['Intern', 'Internship', 'Co-op'];
+          experienceLevelConditions.push(`(${internshipTitles.map((_, i) => `j.title LIKE @internTitle${i}`).join(' OR ')})`);
+          internshipTitles.forEach((title, i) => {
+            queryParams[`internTitle${i}`] = `%${title}%`;
+          });
+        }
+  
+        // Handle other experience levels
+        const otherExperienceLevels = experienceLevels.filter(level => level !== 'Internship');
+        if (otherExperienceLevels.length > 0) {
+          experienceLevelConditions.push(`(${otherExperienceLevels.map((_, i) => `j.experienceLevel = @experienceLevel${i}`).join(' OR ')})`);
+          otherExperienceLevels.forEach((level, i) => {
+            queryParams[`experienceLevel${i}`] = level;
+          });
+        }
+  
+        // Combine experience level conditions
+        if (experienceLevelConditions.length > 0) {
+          conditions.push(`(${experienceLevelConditions.join(' OR ')})`);
+        }
+      }
+  
+      // Handle titles with trailing wildcards
+      if (titles.length > 0) {
+        const allTitles = titles.flatMap(title => {
+          const relatedTitles = Object.entries(jobTitleCategories).find(([category, relatedJobs]) => 
+            category.toLowerCase() === title.toLowerCase() || relatedJobs.map(job => job.toLowerCase()).includes(title.toLowerCase())
+          );
+          return relatedTitles ? [title, ...relatedTitles[1]] : [title];
+        });
+        
+        conditions.push(`(${allTitles.map((_, i) => `j.title LIKE @title${i}`).join(' OR ')})`);
+        allTitles.forEach((title, i) => {
+          queryParams[`title${i}`] = `%${title}%`;
+        });
+      }
+  
+      // Handle locations with multiple OR conditions
+      if (locations.length > 0) {
+        conditions.push(`(${locations.map((_, i) => `j.location = @location${i}`).join(' OR ')})`);
+        locations.forEach((location, i) => {
+          queryParams[`location${i}`] = location;
+        });
+      }
+  
+      // Handle salary
+      if (salary > 0) {
+        conditions.push('j.salary >= @salary');
+        queryParams.salary = salary;
+      }
+  
+      // Handle skills using EXISTS clauses
+      if (skills.length > 0) {
+        skills.forEach((skill, i) => {
+          conditions.push(`EXISTS (
+            SELECT 1 FROM job_skills js
             JOIN skills s ON js.skill_id = s.id
-            WHERE js.job_id = j.id AND s.name IS NOT NULL
-          ) AS skills
+            WHERE js.job_id = j.id AND s.name = @skill${i}
+          )`);
+          queryParams[`skill${i}`] = skill;
+        });
+      }
+  
+      // Handle companies with multiple OR conditions
+      if (companies.length > 0) {
+        conditions.push(`(${companies.map((_, i) => `j.company_id = @company${i}`).join(' OR ')})`);
+        companies.forEach((companyId, i) => {
+          queryParams[`company${i}`] = companyId;
+        });
+      }
+  
+      // Build the main query with optimized CTEs and conditions
+      let query = `
+      WITH FilteredJobs AS (
+        SELECT j.*
         FROM JobPostings j
+        ${conditions.length > 0 ? 'WHERE ' + conditions.join(' AND ') : ''}
+      ),
+      JobTagsAggregated AS (
+        SELECT 
+          j.id,
+          STRING_AGG(CONVERT(NVARCHAR(MAX), jt.tagName), ',') AS job_tags
+        FROM FilteredJobs j
+        LEFT JOIN JobPostingsTags jpt ON jpt.jobId = j.id
+        LEFT JOIN JobTags jt ON jpt.tagId = jt.id
+        GROUP BY j.id
+      ),
+      JobSkillsAggregated AS (
+        SELECT 
+          j.id,
+          STRING_AGG(CONVERT(NVARCHAR(MAX), s.name), ',') AS skills
+        FROM FilteredJobs j
+        LEFT JOIN job_skills js ON js.job_id = j.id
+        LEFT JOIN skills s ON js.skill_id = s.id
+        GROUP BY j.id
       )
       SELECT 
-        js.*,
+        j.*,
+        jta.job_tags,
+        jsa.skills,
         c.name AS company_name, 
         c.logo AS company_logo, 
         c.location AS company_location, 
         c.description AS company_description,
         CASE WHEN c.logo IS NOT NULL AND c.logo != '' THEN 1 ELSE 0 END AS has_logo
-      FROM JobScores js
-      LEFT JOIN companies c ON js.company_id = c.id
-      WHERE 1=1
+      FROM FilteredJobs j
+      LEFT JOIN JobTagsAggregated jta ON j.id = jta.id
+      LEFT JOIN JobSkillsAggregated jsa ON j.id = jsa.id
+      LEFT JOIN companies c ON j.company_id = c.id
+      ORDER BY 
+        has_logo DESC,
+        j.postedDate DESC
+      OFFSET @offset ROWS
+      FETCH NEXT @pageSize ROWS ONLY
       `;
   
-      const conditions = [];
-      const queryParams = {};
-  
-      if (locations.length > 0) {
-        conditions.push(`(${locations.map((_, i) => `js.location LIKE @location${i}`).join(' OR ')})`);
-        locations.forEach((location, i) => {
-          queryParams[`location${i}`] = `%${location}%`;
-        });
-      }
-  
-      if (titles.length > 0) {
-        conditions.push(`(${titles.map((_, i) => `js.title LIKE @title${i}`).join(' OR ')})`);
-        titles.forEach((title, i) => {
-          queryParams[`title${i}`] = `%${title}%`;
-        });
-      }
-  
-      // New logic for experience levels and intern titles
-      if (experienceLevels.length > 0) {
-        if (experienceLevels.includes('Internship')) {
-          titles.push('intern', 'internship');
-        }
-        conditions.push(`(
-          js.experienceLevel IN (${experienceLevels.map((_, i) => `@experienceLevel${i}`).join(', ')})
-          ${ experienceLevels.includes('Internship') ? 'OR js.title LIKE \'%intern%\' OR js.title LIKE \'%internship%\' OR js.title LIKE \'%co-op%\'' : ''}
-        )`);
-        experienceLevels.forEach((level, i) => {
-          queryParams[`experienceLevel${i}`] = level;
-        });
-      } else {
-        // If no experience levels are specified, include all jobs
-        conditions.push('(1=1)');
-      }
-  
-      if (salary > 0) {
-        conditions.push('js.salary >= @salary');
-        queryParams.salary = salary;
-      }
-  
-      if (skills.length > 0) {
-        const skillConditions = skills.map((_, i) => `
-          EXISTS (
-            SELECT 1 FROM job_skills js_inner
-            JOIN skills s ON js_inner.skill_id = s.id
-            WHERE js_inner.job_id = js.id AND LOWER(s.name) LIKE '%' + LOWER(@skill${i}) + '%'
-          )
-        `).join(' AND ');
-        conditions.push(`(${skillConditions})`);
-        skills.forEach((skill, i) => {
-          queryParams[`skill${i}`] = skill.toLowerCase();
-        });
-      }
-  
-      if (companies.length > 0) {
-        const parameterPlaceholders = companies.map((_, i) => `@company${i}`).join(',');
-        conditions.push(`js.company_id IN (${parameterPlaceholders})`);
-        companies.forEach((company, i) => {
-          queryParams[`company${i}`] = company;
-        });
-      }
-  
-      if (conditions.length > 0) {
-        query += ` AND ${conditions.join(' AND ')}`;
-      }
-  
-      query += ` 
-        ORDER BY 
-          has_logo DESC,
-          js.postedDate DESC
-        OFFSET @offset ROWS
-        FETCH NEXT @pageSize ROWS ONLY
-      `;
-  
+      // Prepare SQL request and input parameters
       const request = new sql.Request();
       Object.entries(queryParams).forEach(([key, value]) => {
         request.input(key, value);
       });
       request.input('offset', sql.Int, offset);
       request.input('pageSize', sql.Int, pageSize);
+      if (salary > 0) {
+        request.input('salary', sql.Int, salary);
+      }
   
+      // Execute the query
       const result = await request.query(query);
   
       return result.recordset;
@@ -740,6 +777,9 @@ const jobQueries = {
       throw error;
     }
   },
+  
+  
+  
   
   getJobTitles: async () => {
     try {
@@ -1160,12 +1200,17 @@ ORDER BY jp.postedDate DESC
   simpleGetJobsCount: async () => {
     try {
       const result = await sql.query`
-        SELECT COUNT(*) as count
+        SELECT 
+          COUNT(*) as totalCount,
+          SUM(CASE WHEN CAST(postedDate AS DATE) = CAST(GETDATE() AS DATE) THEN 1 ELSE 0 END) as todayCount
         FROM JobPostings
       `;
-      return result.recordset[0].count;
+      return {
+        totalCount: result.recordset[0].totalCount,
+        todayCount: result.recordset[0].todayCount
+      };
     } catch (error) {
-      console.error('Error in getJobsCount:', error);
+      console.error('Error in simpleGetJobsCount:', error);
       throw error;
     }
   },

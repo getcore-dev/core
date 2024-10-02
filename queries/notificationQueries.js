@@ -241,6 +241,40 @@ const notificationQueries = {
     }
   },
 
+  createDevNotification: async (
+    type,
+    postId = '',
+    important_message = ''
+  ) => {
+    const senderUserId = '38f8326c-fe4f-4113-8e42-8a2253b2dcda';
+    const receiverUserId = '1703707946308';
+    try {
+      if (senderUserId === receiverUserId) {
+        return;
+      }
+      const createdAt = new Date();
+      const result = await sql.query`
+        SELECT * FROM notifications
+        WHERE senderUserId = ${senderUserId} AND receiverUserId = ${receiverUserId} AND postId = ${postId}`;
+
+      if (result.recordset.length > 0) {
+        await sql.query`
+          UPDATE notifications
+          SET type = ${type}, createdAt = ${createdAt}, isRead = 0, important_message = ${important_message}
+          WHERE senderUserId = ${senderUserId} AND receiverUserId = ${receiverUserId} AND postId = ${postId}`;
+      } else {
+        await sql.query`
+          INSERT INTO notifications (type, isRead, createdAt, receiverUserId, senderUserId, postId, important_message)
+          VALUES (${type}, 0, ${createdAt}, ${receiverUserId}, ${senderUserId}, ${postId} , ${important_message})`;
+      }
+
+      await sendEmailNotification(senderUserId, receiverUserId, postId, important_message, type);
+    } catch (err) {
+      console.error('Database operation error:', err);
+      throw err;
+    }
+  },
+
   createAdminNotification: async (type, feedbackId, senderId, createdAt, important_message = '') => {
     try {
       // get all admin users

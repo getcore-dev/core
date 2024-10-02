@@ -101,7 +101,7 @@ async function updateJobCount() {
       throw new Error('Network response was not ok');
     }
     const jobCount = await response.json();
-    document.getElementById('recent-jobs-count').textContent = jobCount + ' postings in the last 60 days';
+    document.getElementById('recent-jobs-count').innerHTML = `<p class="primary-text tiny-text">${jobCount.totalCount} jobs</p><p class="micro-text green">+${jobCount.todayCount} today</p>`;
   } catch (error) {
     console.error('Error fetching job count:', error);
   }
@@ -439,6 +439,7 @@ function clearAllFilters() {
   // Clear UI
   elements.jobList.innerHTML = '';
   elements.recentJobList.innerHTML = '';
+  document.querySelector('.jobs-selected-filters').style.display = 'none';
   document.querySelector('.jobs-selected-filters').innerHTML = '';
 
   saveStateToLocalStorage();
@@ -474,6 +475,7 @@ function resetState() {
   // Clear UI
   elements.jobList.innerHTML = '';
   elements.recentJobList.innerHTML = '';
+  document.querySelector('.jobs-selected-filters').style.display = 'none';
   document.querySelector('.jobs-selected-filters').innerHTML = '';
   document.querySelectorAll('.dropdown-button').forEach((button) => {
     if (button.getAttribute('aria-label') === 'Reset Filters') return;
@@ -503,6 +505,7 @@ function flushState() {
   // Clear UI
   elements.jobList.innerHTML = '';
   elements.recentJobList.innerHTML = '';
+  document.querySelector('.jobs-selected-filters').style.display = 'none';
   document.querySelector('.jobs-selected-filters').innerHTML = '';
 }
 
@@ -757,7 +760,8 @@ function restoreUIState() {
 
   // Restore selected filters
   const selectedFiltersContainer = document.querySelector('.jobs-selected-filters');
-  selectedFiltersContainer.innerHTML = ''; // Clear existing filters
+  selectedFiltersContainer.innerHTML = ''; 
+  selectedFiltersContainer.style.display = 'none';
 
   for (let [type, filterSet] of Object.entries(state.filters)) {
     if (type === 'skills') continue;
@@ -870,7 +874,7 @@ if (remainingSkillsCount > 0) {
 jobElement.innerHTML = `
 <div class="job-preview">
   <div class="job-info">
-    <div class="flex flex-row w-100 space-between v-center gap-03">
+    <div class="flex flex-row w-100 space-between v-center gap-03 margin-1-bottom">
     <div class="flex flex-row gap-06">
       ${
     job.company_logo
@@ -878,7 +882,7 @@ jobElement.innerHTML = `
       : ''
   }
       <div class="flex flex-col margin-06-bottom">
-              <a class="company-name secondary-text sub-text" href="/jobs/company/${job.company_name}">${job.company_name}</a>
+              <p class="company-name bold secondary-text sub-text">${job.company_name}</p>
         <a href="/jobs/${job.id}"><h3 class="job-title main-text">${job.title}</h3></a>
       </div>
       </div>
@@ -1053,7 +1057,7 @@ function handleResultClick(event) {
 function addToSelectedFilters(type, id, name, logo) {
   console.log(id);
   const selectedFiltersContainer = document.querySelector('.jobs-selected-filters');
-  
+  selectedFiltersContainer.style.display = 'block';
   let typeSection = selectedFiltersContainer.querySelector(`.selected-${type.toLowerCase().replace(' ', '-')}`);
   if (!typeSection) {
     typeSection = document.createElement('div');

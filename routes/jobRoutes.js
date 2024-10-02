@@ -69,6 +69,15 @@ router.get('/create-company', async (req, res) => {
   }
 });
 
+router.get('/create-company-queue', async (req, res) => {
+  try {
+    res.render('create-company-link-queue.ejs', { user: req.user });
+  } catch (err) {
+    console.error('Error fetching job postings:', err);
+    res.status(500).send('Error fetching job postings');
+  }
+});
+
 router.put('/update-job-status', checkAuthenticated, async (req, res) => {
   try {
     const userId = req.user.id;

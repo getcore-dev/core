@@ -7,6 +7,7 @@ const { z } = require('zod');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
+const notificationQueries = require('../queries/notificationQueries');
 const EventEmitter = require('events');
 const path = require('path');
 const puppeteer = require('puppeteer-extra');
@@ -18,6 +19,7 @@ const rateLimit = require('axios-rate-limit');
 const http = rateLimit(axios.create(), { maxRequests: 10, perMilliseconds: 1000 }); // 10 requests per second
 const WebScraper = require('./webScraperService');
 const { link } = require('fs');
+const Queue = require('bull');
 const { set } = require('../app');
 const web = new WebScraper();
 const TurndownService = require('turndown');
@@ -43,6 +45,11 @@ class JobProcessor extends EventEmitter {
     const geminiKey = process.env.GEMINI_API_KEY;
     const openaiKey = process.env.OPENAI_API_KEY;
     this.genAI = new GoogleGenerativeAI(geminiKey);
+    this.jobQueue = [];
+    this.companyLinkQueue = [];
+    this.isProcessing = false;
+    this.isProcessingCompanyLinks = false;
+
     this.openai = new OpenAI({ apiKey: openaiKey });
     this.useGemini = false;
     this.lastRequestTime = 0;
@@ -98,6 +105,117 @@ class JobProcessor extends EventEmitter {
     this.paginationPreferences = {
       'greenhouse.io': '?page='
     };
+  }
+
+  async addToCompanyLinkQueue(link) {
+    this.companyLinkQueue.push(link);
+    console.log(`Added company link to queue: ${link}`);
+    if (!this.isProcessingCompanyLinks) {
+      this.processCompanyLinkQueue();
+    }
+  }
+
+  async processCompanyLinkQueue() {
+    if (this.isProcessingCompanyLinks || this.companyLinkQueue.length === 0) {
+      return;
+    }
+
+    this.isProcessingCompanyLinks = true;
+
+    while (this.companyLinkQueue.length > 0) {
+      const link = this.companyLinkQueue.shift();
+      await this.processQueuedCompanyLink(link);
+    }
+
+    this.isProcessingCompanyLinks = false;
+  }
+
+  async processQueuedCompanyLink(link) {
+    console.log(`Processing queued company link: ${link}`);
+    this.updateProgress({
+      phase: 'Processing company links',
+      totalCompanies: this.companyLinkQueue.length,
+      processedCompanies: this.processedLinks.size,
+      currentAction: `Processing company link ${this.processedLinks.size + 1} of ${this.companyLinkQueue.length}`
+    });
+      
+    try {
+      await this.processAllLinksOnPage(link);
+    } catch (error) {
+      console.error(`Error processing queued company link ${link}:`, error);
+    }
+  }
+
+  async processAllLinksOnPage(url) {
+    try {
+      console.log(`Processing all links on page ${url}`);
+      const jobLinks = await this.extractJobLinksFromPage(url);
+      
+      for (const link of jobLinks) {
+        if (this.isJobLink(link.link)) {
+          await this.addToJobProcessingQueue(link.link);
+        }
+      }
+    } catch (error) {
+      console.error(`Error processing links on page ${url}:`, error);
+    }
+  }
+
+  isJobLink(url) {
+    // Implement logic to determine if a URL is a job link
+    // This might involve checking for keywords in the URL or other criteria
+    return url.includes('/job') || url.includes('/career') || url.includes('/position');
+  }
+  
+
+  async addToJobProcessingQueue(link) {
+    this.jobQueue.push(link);
+    console.log(`Added job link to queue: ${link}`);
+    if (!this.isProcessing) {
+      this.processQueue();
+    }
+  }
+
+
+  async processQueue() {
+    if (this.isProcessing || this.jobQueue.length === 0) {
+      return;
+    }
+
+    this.isProcessing = true;
+
+    while (this.jobQueue.length > 0) {
+      const link = this.jobQueue.shift();
+      await this.processQueuedJob(link);
+    }
+
+    this.isProcessing = false;
+  }
+
+  async processQueuedJob(link) {
+    console.log(`Processing queued job: ${link}`);
+    try {
+      const jobInfo = await this.processJobLinkWithRetry(link);
+      if (jobInfo && !jobInfo.error && !jobInfo.skipped) {
+        const companyId = await this.getOrCreateCompany(
+          jobInfo.company_name,
+          jobInfo.company_description || '',
+          jobInfo.company_location || '',
+          jobInfo.company_job_board_url || '',
+          jobInfo.company_industry || '',
+          jobInfo.company_size || '',
+          jobInfo.company_stock_symbol || '',
+          jobInfo.company_logo || '',
+          jobInfo.company_founded || null
+        );
+        await this.createJobPosting(jobInfo, companyId, link);
+        console.log(`Processed and created job posting for: ${link}`);
+      } else {
+        console.log(`Skipped job posting for: ${link}`);
+      }
+    } catch (error) {
+      console.error(`Error processing queued job ${link}:`, error);
+    }
   }
 
 
@@ -775,7 +893,7 @@ class JobProcessor extends EventEmitter {
               jobData.experience_level ? jobData.experience_level : '',
               jobData.location ? jobData.location : '',
               new Date(),
-              jobData.company_id,
+              jobData.company_id ? jobData.company_id : (jobData.companyId ? jobData.companyId : null),
               jobLink.applyLink ? jobLink.applyLink : '',
               null,
               jobData.tags ? jobData.tags.split(',') : [],
@@ -797,7 +915,7 @@ class JobProcessor extends EventEmitter {
               jobData.EqualOpportunityEmployerInfo ? jobData.EqualOpportunityEmployerInfo : '',
               jobData.Relocation ? jobData.Relocation : 0
             );
-            console.log(`Added job posting for ${jobData.company_name} - ${jobData.title} with ID ${jobData.company_id}`);
+            console.log(`Added job posting for ${jobData.company_name} - ${jobData.title} with ID ${jobData.company_id ? jobData.company_id : (jobData.companyId ? jobData.companyId : null)}`);
           } else {
           // Log the reason for skipping the job posting
             console.log(`Skipped job posting for ${jobLink.companyName} - ${jobData.reason}`);
@@ -989,30 +1107,48 @@ class JobProcessor extends EventEmitter {
 
   async extractJobLinksFromPage(jobBoardUrl) {
     if (jobBoardUrl.includes('myworkdayjobs.com')) return await this.grabWorkDayLinks(jobBoardUrl);
+    if (jobBoardUrl.includes('smartrecruiters.com')) return await this.grabSmartRecruiterLinks(jobBoardUrl);
+
     console.log(`Extracting job links from ${jobBoardUrl}`);
-    let currentPage = 1;
     let allLinks = [];
-    let isLastPage = false;
 
-    while (!isLastPage) {
-      const pageUrl = this.getPageUrl(jobBoardUrl, currentPage);
-      console.log(`Processing page ${currentPage}: ${pageUrl}`);
-
-      const response = await this.makeRequest(pageUrl);
-      console.log('response', response);
+    try {
+      // First, try to fetch the main page
+      const response = await this.makeRequest(jobBoardUrl);
       if (response.intercepted) {
         console.log('Request intercepted');
         return response.data;
       }
 
-      const result = await this.fullExtractJobLinksFromPage(response, pageUrl, new URL(jobBoardUrl).hostname);
-      console.log('result', result);  
-      allLinks = allLinks.concat(result.links);
-      isLastPage = result.pagination.isLastPage;
+      const result = await this.fullExtractJobLinksFromPage(response, jobBoardUrl, new URL(jobBoardUrl).hostname);
+      allLinks = result.links;
 
-      if (!isLastPage) {
-        currentPage++;
+      // Check if there are more pages
+      if (!result.pagination.isLastPage) {
+        let currentPage = 2;
+        let isLastPage = false;
+
+        while (!isLastPage) {
+          const pageUrl = this.getPageUrl(jobBoardUrl, currentPage);
+          console.log(`Processing page ${currentPage}: ${pageUrl}`);
+
+          const pageResponse = await this.makeRequest(pageUrl);
+          if (pageResponse.intercepted) {
+            console.log('Request intercepted');
+            return [...allLinks, ...pageResponse.data];
+          }
+
+          const pageResult = await this.fullExtractJobLinksFromPage(pageResponse, pageUrl, new URL(jobBoardUrl).hostname);
+          allLinks = allLinks.concat(pageResult.links);
+          isLastPage = pageResult.pagination.isLastPage;
+
+          if (!isLastPage) {
+            currentPage++;
+          }
+        }
       }
+    } catch (error) {
+      console.error(`Error extracting job links from ${jobBoardUrl}:`, error);
     }
 
     return allLinks;
@@ -1309,7 +1445,7 @@ class JobProcessor extends EventEmitter {
     // https://job-boards.greenhouse.io/flexport/jobs/6035440?gh_jid=6035440 you should grab 'flexport'
     const company = url.split('/')[3];
     const companyUrl = `https://job-boards.greenhouse.io/${company}`;
-    const companyId = this.getOrCreateCompany(company, '', '', companyUrl, '', '', '', '', '');
+    const companyId = await this.getOrCreateCompany(company, '', '', companyUrl, '', '', '', '', '');
     console.log(companyId);
 
     // return an object with title and description
@@ -1339,31 +1475,27 @@ class JobProcessor extends EventEmitter {
     return { url, companyId, title, company, description: descriptionMarkdown, location };
   }
 
-  async processLeverJobLink (url) {
-    // ensure there is no /apply after the url like https://jobs.lever.co/immuta/6f50874d-64c9-4fb2-b87a-d6a8c18a7db6/apply
-    url = url.split('/apply')[0];
-    // grab div.job__title and div.job__description from the page
+  async processJobViteLink (url) {
+    // Extract the company name from the URL
+    const urlParts = url.split('/');
+    let company = urlParts[3];
+    
+    // Remove 'careers' or 'jobs' from the company name
+    company = company.replace(/-careers|-jobs/g, '');
+    
+    // Remove any trailing hyphens
+    company = company.replace(/-+$/, '');
 
-    // get the company part of the url
-    // https://jobs.lever.co/immuta/6f50874d-64c9-4fb2-b87a-d6a8c18a7db6, should grab 'immuta'
-    const company = url.split('/')[3];
-    const companyUrl = `https://jobs.lever.co/${company}`;
-    // check if it exists in the db, if not create it
+    const companyUrl = `https://jobs.jobvite.com/${company}`;
     const companyId = await this.getOrCreateCompany(company, '', '', companyUrl, '', '', '', '', '');
+    console.log(companyId);
 
     // return an object with title and description
     const response = await axios.get(url);
     const $ = cheerio.load(response.data);
-
-    /*
-    <div class="posting-headline"><h2>Product Engineering Internship (Summer 2025)</h2><div class="posting-categories"><div href="#" class="sort-by-time posting-category medium-category-label width-full capitalize-labels location">College Park, MD</div><div href="#" class="sort-by-team posting-category medium-category-label capitalize-labels department">Internships – Internships /</div><div href="#" class="sort-by-commitment posting-category medium-category-label capitalize-labels commitment">Intern /</div><div href="#" class="sort-by-time posting-category medium-category-label capitalize-labels workplaceTypes">Hybrid</div></div></div>
-    */
-    // get the h2 element within posting-headline div
-    const title = $('.posting-headline h2').text().trim();
-    const location = $('.location').text().trim();
-    const experience_level = $('.commitment').text().replace('Intern', 'Internship').replace('/', '').trim();
-    const employmentType = $('.workplaceTypes').text().trim();
-    const descriptionHtml = $('div[data-qa="job-description"]').html() + $('div[data-qa="closing-description"]').html();
+    const title = $('h2.jv-header').text().trim();
+    const location = $('.jv-job-detail-meta').text().trim() || $('h3.jv-sub-header').text().trim();
+    const descriptionHtml = $('div.jv-job-detail-description').html();
 
     const turndownService = new TurndownService({
       headingStyle: 'atx', // Use ATX-style headings (e.g., # Heading)
@@ -1373,12 +1505,66 @@ class JobProcessor extends EventEmitter {
       strongDelimiter: '**', // Use double asterisks for strong emphasis
     });
 
-    const descriptionMarkdown = turndownService.turndown(descriptionHtml).trim();
-    
+    let descriptionMarkdown;
+    if (descriptionHtml) {
+      descriptionMarkdown = turndownService.turndown(descriptionHtml).trim();
+    } else {
+      descriptionMarkdown = 'No description provided';
+    }
 
-    // return company name capitalize properly
+    console.log({ url, companyId, title, company, description: descriptionMarkdown, location });
+    return { url, companyId, title, company, description: descriptionMarkdown, location };
+  }
+
+  async processLeverJobLink(url) {
+    // Remove '/apply' and any query parameters if present at the end of the URL
+    url = url.split('/apply')[0].split('?')[0];
+
+    // Ensure the URL is in the correct format
+    const urlPattern = /^https:\/\/jobs\.lever\.co\/[^\/]+\/[a-f0-9-]+$/;
+    if (!urlPattern.test(url)) {
+      console.error('Invalid Lever job URL format:', url);
+      return { error: 'Invalid Lever job URL format' };
+    }
+
+    // Extract the company name from the URL
+    const company = url.split('/')[3];
+    const companyUrl = `https://jobs.lever.co/${company}`;
+    
+    // Check if the company exists in the db, if not create it
+    const companyId = await this.getOrCreateCompany(company, '', '', companyUrl, '', '', '', '', '');
+
+    // Fetch job details
+    const response = await axios.get(url);
+    const $ = cheerio.load(response.data);
+
+    const title = $('.posting-headline h2').text().trim();
+    const location = $('.location').text().trim();
+    const experience_level = $('.commitment').text().replace('Intern', 'Internship').replace('/', '').trim();
+    const employmentType = $('.workplaceTypes').text().trim();
+    const descriptionHtml = $('div[data-qa="job-description"]').html() + $('div[data-qa="closing-description"]').html();
+
+    const turndownService = new TurndownService({
+      headingStyle: 'atx',
+      bulletListMarker: '-',
+      codeBlockStyle: 'fenced',
+      emDelimiter: '*',
+      strongDelimiter: '**',
+    });
+
+    const descriptionMarkdown = turndownService.turndown(descriptionHtml).trim();
+
     console.log({ url, companyId, title, experience_level, employmentType, description: descriptionMarkdown, location });
-    return { url, companyId, company_name: company, title, experience_level, employmentType, description: descriptionMarkdown, location };
+    return { 
+      url, 
+      company: company.charAt(0).toUpperCase() + company.slice(1), // Capitalize company name
+      company_name: company.charAt(0).toUpperCase() + company.slice(1), // Capitalize company name
+      title, 
+      experience_level, 
+      employmentType, 
+      description: descriptionMarkdown, 
+      location 
+    };
   }
 
   async processBoFALink (url) {
@@ -1432,6 +1618,50 @@ class JobProcessor extends EventEmitter {
     }
   }
   
+  async grabSmartRecruiterLinks(url) {
+    console.log(`Grabbing SmartRecruiters links for ${url}`);
+    const companyMatch = url.match(/https:\/\/careers\.smartrecruiters\.com\/([^/]+)/);
+    if (!companyMatch) {
+      console.error('Invalid SmartRecruiters URL:', url);
+      return [];
+    }
+  
+    const company = companyMatch[1];
+    const baseApiUrl = `https://careers.smartrecruiters.com/${company}/api/more`;
+    let page = 1;
+    let allJobs = [];
+    let hasMorePages = true;
+  
+    while (hasMorePages) {
+      try {
+        const response = await axios.get(`${baseApiUrl}?page=${page}`);
+        const data = response.data;
+        const $ = cheerio.load(data);
+  
+        if (data.length === 0) {
+          hasMorePages = false;
+        } else {
+          $('a').each((index, element) => {
+            const href = $(element).attr('href');
+            if (href && href.includes('job')) {
+              const fullUrl = new URL(href, url).href;
+              const title = $(element).find('h4').text().trim();
+              allJobs.push({link: fullUrl, title: title});
+            }
+          });
+          page++;
+        }
+      } catch (error) {
+        console.error(`Error fetching SmartRecruiters jobs for page ${page}:`, error);
+        hasMorePages = false;
+      }
+    }
+  
+    console.log(allJobs);
+    console.log(`Collected ${allJobs.length} jobs from SmartRecruiters for ${company}`);
+    return allJobs;
+  }
+
   
   async grabWorkDayLinks(url) {
     const browser = await puppeteer.launch();
@@ -1651,9 +1881,10 @@ class JobProcessor extends EventEmitter {
     const url = new URL(originalUrl);
     const pathParts = url.pathname.split('/').filter(Boolean);
     const company = url.hostname.split('.')[0];
+    const wdNumber = url.hostname.split('.')[1].replace('wd', '');
     const tenant = pathParts[1];
 
-    const response = {company, tenant, link: `https://${company}.wd5.myworkdayjobs.com/wday/cxs/${company}/${tenant}/job/${pathParts.slice(3).join('/')}`};
+    const response = {company, tenant, link: `https://${company}.wd${wdNumber}.myworkdayjobs.com/wday/cxs/${company}/${tenant}/job/${pathParts.slice(3).join('/')}`};
     return response;
   }
 
@@ -1688,15 +1919,38 @@ class JobProcessor extends EventEmitter {
     return { url, companyId, title, description: descriptionMarkdown, location };
   }
 
-  async processSmartRecruiterJobLink(url) {
-    // grab div.job__title and div.job__description from the page
+  async processSmartRecruiterJob (url) {
+    const response = await this.makeRequest(url);
+    const data = response.data;
+    const $ = cheerio.load(data);
 
-    // get the company part of the url
-    // https://jobs.smartrecruiters.com/NBCUniversal3/744000017508457-product-owner you should grab 'NBCUNIVERSAL3'
+    const company = $('meta[property="og:site_name"]').attr('content') || url.split('/')[3];
+    const companyUrl = `https://jobs.smartrecruiters.com/${company}`;
+    const companyId = await this.getOrCreateCompany(company, '', '', companyUrl, '', '', '', '', '');
 
-    const company = url.split('/')[3];
-    const companyId = await this.getOrCreateCompany(company, '', '', '', '', '', '', '', '');
-    console.log(companyId);
+    
+    const title = $('h1.job-title').text().trim() || $('.app-title').text().trim();
+    const location = $('meta[name="twitter:data1"]').attr('value') || $('li[itemprop="jobLocation"]').text().trim();
+    const descriptionHtml = $('div[itemprop="description"]').html() || $('div.job__description').html() || $('div#content').html();
+
+    const turndownService = new TurndownService({
+      headingStyle: 'atx', // Use ATX-style headings (e.g., # Heading)
+      bulletListMarker: '-', // Use dashes for bullet lists
+      codeBlockStyle: 'fenced', // Use fenced code blocks
+      emDelimiter: '*', // Use asterisks for emphasis
+      strongDelimiter: '**', // Use double asterisks for strong emphasis
+    });
+
+    let descriptionMarkdown;
+    if (descriptionHtml) {
+      descriptionMarkdown = turndownService.turndown(descriptionHtml).trim();
+    } else {
+      descriptionMarkdown = 'No description provided';
+    }
+
+
+    console.log({ url, companyId,  title, company, company_name: company, description: descriptionMarkdown, location });
+    return { url, companyId, title, company, company_name: company, description: descriptionMarkdown, location };
   }
 
   async processJobLink(link) {
@@ -1727,6 +1981,9 @@ class JobProcessor extends EventEmitter {
     } else if (url && url.includes('lever.co')) {
       const jobData = await this.processLeverJobLink(url);
       return jobData;
+    } else if (url && url.includes('jobvite.com')) {
+      const jobData = await this.processJobViteLink(url);
+      return jobData;
     } else if (url && url.includes('myworkdayjobs.com')) {
       const jobData = await this.processWorkDayJobLink(url);
       return jobData;
@@ -1735,8 +1992,7 @@ class JobProcessor extends EventEmitter {
       const jobData = await this.processLinkedInJob(response.data);
       return jobData;
     } else if (url && url.includes('smartrecruiters.com')) {
-      const response = await this.makeRequest(url);
-      const jobData = await this.processSmartRecruiterJobLink(response.data);
+      const jobData = await this.processSmartRecruiterJob(url);
       return jobData;
     }else {
       console.error('Unsupported job board:', url);
@@ -2834,18 +3090,22 @@ class JobProcessor extends EventEmitter {
     await this.init();
 
     try {
-      await this.updateJobPostings();
-    } catch (error) {
-      console.error('Error in updateJobPostings:', error);
-    }
-    try {
       await this.collectJobLinksFromSimplify();
     } catch (error) {
+      await notificationQueries.createDevNotification('error', '', 'Error in collectJobLinksFromSimplify:', error);
       console.error('Error in collectJobLinksFromSimplify:', error);
+    }
+
+    try {
+      await this.updateJobPostings();
+    } catch (error) {
+      await notificationQueries.createDevNotification('error', '', 'Error in updateJobPostings:', error);
+      console.error('Error in updateJobPostings:', error);
     }
     try {
       await this.verifyAndUpdateCompanyData();
     } catch (error) {
+      await notificationQueries.createDevNotification('error', '', 'Error in verifyAndUpdateCompanyData:', error);
       console.error('Error in verifyAndUpdateCompanyData:', error);
     }
 
@@ -2855,6 +3115,7 @@ class JobProcessor extends EventEmitter {
     try { 
       await this.crawLinkedIn();
     } catch (error) {
+      await notificationQueries.createDevNotification('error', '', 'Error in crawLinkedIn:', error);
       console.error('Error in crawLinkedIn:', error);
     }
 

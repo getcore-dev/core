@@ -1081,7 +1081,7 @@ div .material-symbols-outlined:not(:only-child) {
     margin: 0 1rem;
     margin-bottom: .8rem;
     margin-top: 1.4rem;
-    gap: 1.2rem;
+    gap: .7rem;
   }
 
   #personalized-job-list {

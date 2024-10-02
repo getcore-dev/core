@@ -1471,6 +1471,14 @@ a>.menu-item {
     font-size: 14px !important;
   }
 
+  .tiny-text {
+    font-size: 12px !important;
+  }
+
+  .micro-text {
+    font-size: 10px !important;
+  }
+
   .user-links {
     display: flex;
     align-items: center;
@@ -1591,10 +1599,6 @@ a>.menu-item {
 
   .avatar-dropdown-item #nb-icon {
     font-size: 22px;
-  }
-
-  .navigation-avatar {
-    display: none;
   }
 
   .condensed {
@@ -1992,6 +1996,10 @@ div .material-symbols-outlined:not(:only-child) {
   font-weight: 500;
   cursor: pointer;
   text-decoration: none;
+}
+
+.green {
+  color: #22c55e;
 }
 
 .clickable {
@@ -3541,7 +3549,7 @@ input::placeholder {
   input[type='password'],
   input[type='search'] {
     border-radius: 8px;
-    padding: .25rem .75rem;
+    padding: .45rem .75rem;
   }
 
   input[type='text'],

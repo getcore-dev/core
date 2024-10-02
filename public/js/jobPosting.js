@@ -446,17 +446,16 @@ ${
 }
         </div>
             ` : ''}
-        <div class="job-posting-description ${job.recruiter_username === 'autojob' ? 'ai-generated-content' : ''}">
   ${job.isProcessed ? `
+            <div class="job-posting-description ${job.recruiter_username === 'autojob' ? 'ai-generated-content' : ''}">
+
       <h4 class="sub-text bold" style="margin-top:0;">AI-Generated Overview</h4>
     <p class="sub-text readable">
     ${job.description}
     </p>
-    ` : `                <div class="autojob-warning">
-                    <span class="warning-icon">⚠️</span>
-                    <span class="warning-text">This post is scraped from the internet and may contain errors.</span>
-                </div>`}
-</div>
+    </div>
+
+    ` : ''}
       
 <div class="flex flex-col gap-06">
       <div class="interact-buttons flex space-between v-center">
@@ -471,54 +470,58 @@ ${
                   </div>`
     : ''
 } 
-      ${
-  userIsLoggedIn
-    ? `<div class="favorite-button-
-                      <div id="favorite-form-${job.id}" class="flex">
-                        <button class="special-button-normal favorite-action-button" onclick="favorite('job', ${job.id});" class="margin-h-auto">
-                          <span class="material-symbols-outlined no-margin no-padding">star</span>
-                        </button>
-                      </div
-                    `
-    : ''
-}
         <div class="second-buttons-container">
+                  <div class="dropdown" tabindex="0">
+            <button aria-label="Dropdown" class="dropdown-button location-dropdown px-2 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+              <span class="material-symbols-outlined no-padding no-margin">more_horiz</span>
+            </button>
 
-      ${
-  userIsLoggedIn && userIsAdmin
-    ? `
-            <div class="delete-button-container">
-              <button class="bordered-button-normal" onclick="window.location.href='/jobs/delete/${job.id}'">
-                <span class="material-symbols-outlined no-margin no-padding">delete</span>
-              </button>
-            </div>
-          `
-    : ''
-}
-        <button class="bordered-button-normal" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');">
-          <span class="material-symbols-outlined no-margin no-padding">share</span>
+            <div class="dropdown-content">
+            <a class="grow-button margin-h-auto">
+
+            <button class="no-margin no-padding no-bg no-border" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');">
+          <span class="material-symbols-outlined">share</span>
+          <span class="sub-text">Share</span>
         </button>
-    </div>
-         ${
+        </a>
+            ${
+  userIsLoggedIn
+    ? `                                    
+                <a class="grow-button margin-h-auto cancel-button-text">
+                  <div id="favorite-form-${job.id}" class="flex">
+                    <button class="no-margin no-padding no-bg no-border" onclick="favorite('job', ${job.id});" class="margin-h-auto">
+                      <span class="material-symbols-outlined">star</span>
+                        <span class="sub-text">Favorite</span>
+                    </button>
+                  </div>
+                </a>` : '' }
+                       ${
   userIsLoggedIn && userIsAdmin
     ? `
-      <div class="flex flex-row w-100 gap-06">
-        <div class="resume-button w-100">
-          <a href="/api/create-resume/${job.id}" class="grow-button main-button-normal margin-h-auto">
-            <span class="material-symbols-outlined">description</span>
-            <span class="sub-text">Resume</span>
-          </a>
-        </div>
-        <div class="cover-letter-button w-100">
-          <a href="/api/create-cover-letter/${job.id}" class="grow-button main-button-normal margin-h-auto">
-            <span class="material-symbols-outlined">description</span>
-            <span class="sub-text">Cover Letter</span>
-          </a>
-        </div>
+      <div class="resume-button w-100">
+        <a href="/api/create-resume/${job.id}" class="grow-button margin-h-auto">
+          <span class="material-symbols-outlined">description</span>
+          <span class="sub-text">Resume</span>
+        </a>
       </div>
-        `
-    : ''
-}
+      <div class="cover-letter-button w-100">
+        <a href="/api/create-cover-letter/${job.id}" class="grow-button margin-h-auto">
+          <span class="material-symbols-outlined">description</span>
+          <span class="sub-text">Cover Letter</span>
+        </a>
+      </div>
+      <div class="delete-button-container">
+              <a class="grow-button margin-h-auto cancel-button-text" href="/jobs/delete/${job.id}">
+          <span class="material-symbols-outlined">delete</span>
+          <span class="sub-text">Delete</span>
+        </a>
+      </div> `
+    : ''}
+</div>
+</div>
+            </div>
+          </div>
+    </div>
 </div>
   </div>
 </div>
@@ -663,6 +666,13 @@ ${
   <h4 >Relocation</h4>
   <p>${job.relocation ? 'Yes' : 'No'}</p>
 </div>
+
+<div class="flex">
+<div class="autojob-warning px-4 py-2">
+                    <span class="warning-icon">⚠️</span>
+                    <span class="warning-text">This post is scraped from the internet and may contain errors.</span>
+                </div>
+                </div>
 
 
 </div>

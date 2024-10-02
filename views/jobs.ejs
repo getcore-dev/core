@@ -34,6 +34,12 @@
     <div class="jobs-container">
       <div class="jobs-header">
 
+        <div class="jobs-search-container flex flex-col gap-03">
+          <input type="text" id="job-search-input" class="job-posting-search-input" placeholder="Search jobs & companies" />
+          <div class="flex flex-col active-filters-container">
+            <p id="active-filters-sentence" class="active-filters-sentence mini-text"></p>
+          </div>
+        </div>
         <div class="jobs-buttons v-center">
           <span class="recent-jobs-count-container">
             <div class="radar-pulse">
@@ -41,8 +47,10 @@
               <div class="pulse"></div>
               <div class="pulse"></div>
             </div>
-            <p class="recent-jobs-count mini-text third-text" id="recent-jobs-count">
-            </p>
+            <span class="flex flex-col">
+              <p class="recent-jobs-count mini-text primary-text" id="recent-jobs-count">
+              </p>
+            </span>
           </span>
           <% if (user) { %>
           <a class="link mini-text" id="applied-jobs-link" href="/jobs/applied">
@@ -61,21 +69,14 @@
             <a class="link mini-text" href="/jobs/create-company">
               + Company
             </a>
+            <a class="link mini-text" href="/jobs/create-company-queue">
+              + Company (Queue)
+            </a>
           </div>
           <% } %>
-          <a class="link mini-text" href="/profile/jobs">
-            Jobs Profile
-          </a>
         </div>
 
         <% } %>
-
-        <div class="jobs-search-container flex flex-col gap-03">
-          <input type="text" id="job-search-input" class="job-posting-search-input" placeholder="Search jobs & companies" />
-          <div class="flex flex-col active-filters-container">
-            <p id="active-filters-sentence" class="active-filters-sentence mini-text"></p>
-          </div>
-        </div>
 
         <ul class="flex flex-row w-100 gap-06 wrap no-margin">
           <div class="dropdown" tabindex="0">

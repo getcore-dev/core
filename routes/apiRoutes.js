@@ -92,6 +92,26 @@ router.post('/company-link', async (req, res) => {
 
 });
 
+router.post('/queue-company-link', async (req, res) => {
+  try {
+    const link = req.body.link;
+
+    if (!link) {
+      return res.status(400).json({ error: 'Invalid job link' });
+    }
+
+    await jobProcessor.addToCompanyLinkQueue(link);
+    res.json({ message: 'Job link queued successfully' });
+
+  } catch (error) {
+    console.error('Error extracting job postings:', error);
+    res
+      .status(500)
+      .json({ error: 'An error occurred while extracting job postings' });
+  }
+
+});
+
 
 router.get('/getUsername/:id', async (req, res) => {
   const id = req.params.id;
@@ -690,6 +710,16 @@ router.post('/jobs/:jobId/remove-apply', async (req, res) => {
     console.error('Error removing job application:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
+});
+
+router.get('/simplify-jobs', async (req, res) => {
+  const simplifyJobs = await jobProcessor.collectJobLinksFromSimplify();
+  res.json(simplifyJobs);
+});
+
+router.get('/test', async (req, res) => {
+  const simplifyJobs = await jobProcessor.processJobViteLink('https://jobs.jobvite.com/splunk-careers/job/oTXtufwx?nl=1&nl=1&fr=false&utm_source=Simplify&ref=Simplify');
+  res.json(simplifyJobs);
 });
 
 router.get('/jobs-count', cacheMiddleware(2400), async (req, res) => {
