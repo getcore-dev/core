@@ -188,7 +188,6 @@ const LOCATIONS = [
 // DOM elements
 const elements = {
   jobList: document.querySelector('.job-list'),
-  recentJobList: document.querySelector('.recent-job-list'),
   topTags: document.querySelector('.top-tags'),
   topSkills: document.querySelector('.top-tags'),
   loadMoreButton: document.getElementById('load-more-btn'),
@@ -386,7 +385,6 @@ function resetJobListings() {
   state.jobPostings = [];
   state.renderedJobIds.clear();
   elements.jobList.innerHTML = '';
-  elements.recentJobList.innerHTML = '';
   fetchJobPostings();
 }
 
@@ -438,7 +436,6 @@ function clearAllFilters() {
               
   // Clear UI
   elements.jobList.innerHTML = '';
-  elements.recentJobList.innerHTML = '';
   document.querySelector('.jobs-selected-filters').style.display = 'none';
   document.querySelector('.jobs-selected-filters').innerHTML = '';
               
@@ -455,7 +452,6 @@ function triggerJobSearch() {
   state.jobPostings = [];
   state.renderedJobIds.clear();
   elements.jobList.innerHTML = '';
-  elements.recentJobList.innerHTML = '';
 
   saveStateToLocalStorage(); // Save the cleared state
   fetchJobPostings();
@@ -478,7 +474,6 @@ function resetState() {
 
   // Clear UI
   elements.jobList.innerHTML = '';
-  elements.recentJobList.innerHTML = '';
   document.querySelectorAll('.quick-option-btn').forEach((button) => {
     button.classList.remove('clickable');
   });
@@ -515,7 +510,6 @@ function flushState() {
 
   // Clear UI
   elements.jobList.innerHTML = '';
-  elements.recentJobList.innerHTML = '';
   document.querySelector('.jobs-selected-filters').style.display = 'none';
   document.querySelector('.jobs-selected-filters').innerHTML = '';
 }
@@ -769,7 +763,6 @@ function createActiveFilterElement(filters) {
 function restoreUIState() {
   // Clear existing job listings
   elements.jobList.innerHTML = '';
-  elements.recentJobList.innerHTML = '';
 
   // Render saved job postings
   renderJobPostings(state.jobPostings);

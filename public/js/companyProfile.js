@@ -247,19 +247,19 @@ function formatLocation(location) {
       const countryAbbr = getCountryAbbr(country);
       if (countryAbbr.toLowerCase() === 'usa' || country.toLowerCase() === 'united states' || country.toLowerCase() === 'us') {
         if (isRemote) {
-          return Remote, USA;
+          return 'Remote, USA';
         } else {
-          return ${city !== 'N/A' ? city + ', ' : ''}${state !== 'N/A' ? getStateAbbr(state) : 'USA'};
+          return `${city !== 'N/A' ? city + ', ' : ''}${state !== 'N/A' ? getStateAbbr(state) : 'USA'}`;
         }
       } else {
         if (isRemote) {
-          return Remote, ${countryAbbr};
+          return 'Remote, ' + countryAbbr;
         } else {
-          return ${city !== 'N/A' ? city : ''}${state !== 'N/A' && state !== city ? '/' + getStateAbbr(state) : ''}, ${countryAbbr};
+          return `${city !== 'N/A' ? city : ''}${state !== 'N/A' && state !== city ? '/' + getStateAbbr(state) : ''}, ${countryAbbr}`;
         }
       }
     } else if (state && state !== 'N/A') {
-      return ${isRemote ? 'Remote, ' : ''}${isUSState(state) ? getStateAbbr(state) : state};
+      return `${isRemote ? 'Remote, ' : ''}${isUSState(state) ? getStateAbbr(state) : state}`;
     } else if (city && city !== 'N/A') {
       return city;
     } else {
@@ -274,7 +274,11 @@ function formatLocation(location) {
     const state = parts[i + 1] || '';
     const country = parts[i + 2] || '';
 
-    locations.push(formatSingleLocation(city, state, country));
+    try { 
+      locations.push(formatSingleLocation(city, state, country));
+    } catch (error) {
+      console.error('Error formatting location:', error);
+    }
   }
 
   return locations.join('; ');

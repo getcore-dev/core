@@ -3308,40 +3308,44 @@ class JobProcessor extends EventEmitter {
 
   async start() {
 
-    await this.init();
-
     try {
-      await this.collectJobLinksFromSimplify();
+      await this.init();
+
+      try {
+        await this.updateJobPostings();
+      } catch (error) {
+        await notificationQueries.createDevNotification('error', '', 'Error in updateJobPostings:', error);
+        console.error('Error in updateJobPostings:', error);
+      }
+
+      try {
+        await this.collectJobLinksFromSimplify();
+      } catch (error) {
+        await notificationQueries.createDevNotification('error', '', 'Error in collectJobLinksFromSimplify:', error);
+        console.error('Error in collectJobLinksFromSimplify:', error);
+      }
+
+      this.updateProgress({ phase: 'Cleaning job postings' });
+      try {
+        await this.removeDuplicateJobs();
+      } catch (error) {
+        await notificationQueries.createDevNotification('error', '', 'Error in removeDuplicateJobs:', error);
+        console.error('Error in removeDuplicateJobs:', error);
+      }
+
+      try { 
+        await this.crawLinkedIn();
+      } catch (error) {
+        await notificationQueries.createDevNotification('error', '', 'Error in crawLinkedIn:', error);
+        console.error('Error in crawLinkedIn:', error);
+      }
+
+      this.updateProgress({ phase: 'Completed' });
+
     } catch (error) {
-      await notificationQueries.createDevNotification('error', '', 'Error in collectJobLinksFromSimplify:', error);
-      console.error('Error in collectJobLinksFromSimplify:', error);
+      await notificationQueries.createDevNotification('error', '', 'Error in start:', error);
+      console.error('Error in start:', error);
     }
-
-    try {
-      await this.updateJobPostings();
-    } catch (error) {
-      await notificationQueries.createDevNotification('error', '', 'Error in updateJobPostings:', error);
-      console.error('Error in updateJobPostings:', error);
-    }
-    try {
-      await this.verifyAndUpdateCompanyData();
-    } catch (error) {
-      await notificationQueries.createDevNotification('error', '', 'Error in verifyAndUpdateCompanyData:', error);
-      console.error('Error in verifyAndUpdateCompanyData:', error);
-    }
-
-    this.updateProgress({ phase: 'Cleaning job postings' });
-    await this.removeDuplicateJobs();
-
-    try { 
-      await this.crawLinkedIn();
-    } catch (error) {
-      await notificationQueries.createDevNotification('error', '', 'Error in crawLinkedIn:', error);
-      console.error('Error in crawLinkedIn:', error);
-    }
-
-    this.updateProgress({ phase: 'Completed' });
-
   }
 }
 

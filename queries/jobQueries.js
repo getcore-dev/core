@@ -698,7 +698,7 @@ const jobQueries = {
           const internshipTitles = ['Intern', 'Internship', 'Co-op'];
           experienceLevelConditions.push(`(${internshipTitles.map((_, i) => `j.title LIKE @internTitle${i}`).join(' OR ')})`);
           internshipTitles.forEach((title, i) => {
-            queryParams[`internTitle${i}`] = `%${title}%`;
+            queryParams[`internTitle${i}`] = `%${title} %`;
           });
         }
   
@@ -706,16 +706,39 @@ const jobQueries = {
         const otherExperienceLevels = experienceLevels.filter(level => level !== 'Internship');
         if (otherExperienceLevels.length > 0) {
           otherExperienceLevels.forEach((level, index) => {
+            const paramName = `experienceLevel${index}`;
             if (level.toLowerCase() === 'senior') {
-              queryParams['seniorTitle'] = '%Senior%';
-              experienceLevelConditions.push('j.title LIKE @seniorTitle');
+              queryParams[paramName] = '%Senior%';
+              experienceLevelConditions.push(`(j.title LIKE @${paramName} OR j.title LIKE '%Sr.%' OR j.title LIKE '%Staff%' OR j.title LIKE '%Engineer IV%' OR j.title LIKE '%L4%' OR j.title LIKE '%L5%' OR j.title LIKE ' %IV% ' OR j.title LIKE ' %V% ')`);
+            } else if (level.toLowerCase() === 'lead') {
+              queryParams[paramName] = '%Lead%';
+              experienceLevelConditions.push(`(j.title LIKE @${paramName} OR j.title LIKE '%Team Lead%' OR j.title LIKE '%Lead Engineer%' OR j.title LIKE '%Manager%' OR j.title LIKE '%L6 %' OR j.title LIKE '% VI %')`);
+            } else if (level.toLowerCase() === 'entry level') {
+              queryParams[paramName] = '%Entry Level%';
+              experienceLevelConditions.push(`(j.experienceLevel LIKE @${paramName} OR j.title LIKE '%Entry Level%' OR j.title LIKE '%Graduate%' OR j.title LIKE '%New Grad%' OR j.title LIKE '%Fresher%')`);
+            } else if (level.toLowerCase() === 'internship' || level.toLowerCase() === 'intern') {
+              queryParams[paramName] = '%Intern%';
+              experienceLevelConditions.push(`(j.experienceLevel LIKE @${paramName} OR j.title LIKE '%Intern%' OR j.title LIKE '%Internship%')`);
+            } else if (level.toLowerCase() === 'junior') {
+              queryParams[paramName] = '%Junior%';
+              experienceLevelConditions.push(`(j.title LIKE @${paramName} OR j.title LIKE '%Associate%' OR j.title LIKE '%Jr.%' OR j.title LIKE '%Engineer II%' OR j.title LIKE '%L3 %' OR j.title LIKE '% III %')`);
+            } else if (level.toLowerCase() === 'mid-level') {
+              queryParams[paramName] = '%Mid%';
+              experienceLevelConditions.push(`(j.title LIKE @${paramName} OR j.title LIKE '%Intermediate%' OR j.title LIKE '%Engineer III%' OR j.title LIKE '%L3%' OR j.title LIKE '%L4% ' OR j.title LIKE '% III %' OR j.title LIKE '% IV %')`);
+            } else if (level.toLowerCase() === 'staff') {
+              queryParams[paramName] = '%Staff%';
+              experienceLevelConditions.push(`(j.title LIKE @${paramName} OR j.title LIKE '%Engineer V%' OR j.title LIKE '%L5%' OR j.title LIKE '%V%')`);
+            } else if (level.toLowerCase() === 'principal') {
+              queryParams[paramName] = '%Principal%';
+              experienceLevelConditions.push(`(j.title LIKE @${paramName} OR j.title LIKE '%Engineer VI%' OR j.title LIKE '%L6%' OR j.title LIKE '%VI%')`);
             } else {
-              const paramName = `experienceLevel${index}`;
-              experienceLevelConditions.push(`j.experienceLevel = @${paramName}`);
-              queryParams[paramName] = level;
+              queryParams[paramName] = `%${level}%`;
+              experienceLevelConditions.push(`j.experienceLevel LIKE @${paramName}`);
             }
           });
         }
+        
+
   
         // Combine experience level conditions
         if (experienceLevelConditions.length > 0) {
