@@ -1558,6 +1558,7 @@ class JobProcessor extends EventEmitter {
     console.log({ url, companyId, title, experience_level, employmentType, description: descriptionMarkdown, location });
     return { 
       url, 
+      companyId,
       company: company.charAt(0).toUpperCase() + company.slice(1), // Capitalize company name
       company_name: company.charAt(0).toUpperCase() + company.slice(1), // Capitalize company name
       title, 

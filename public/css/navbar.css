@@ -1410,6 +1410,25 @@ a>.menu-item {
   margin: 0;
 }
 
+.message {
+  background-color: #cde0ff;
+  border: 1px solid #cde0ff;
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  width: 100%;
+  margin: 6px 0;
+  box-sizing: border-box;
+}
+
+.message-text {
+  color: #214889;
+  line-height: 1.4;
+}
+
+
 @media (max-width: 768px) {
 
   label {
@@ -1705,7 +1724,7 @@ input[type='search'] {
   line-height: 1em;
   background: transparent !important;
   border: 1px solid var(--border-color) !important;
-  padding: .25rem .75rem;
+  padding: .4rem .75rem;
   font-family: var(--font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif);
   margin: 0;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;

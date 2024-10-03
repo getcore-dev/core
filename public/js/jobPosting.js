@@ -374,7 +374,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     : ''
 }
 
-      <div class="company-info">
+      <div class="company-info w-100">
         ${
   job.company_logo
     ? `
@@ -457,6 +457,21 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     </p>
     </div>
 
+    ` : ''}
+
+    ${!userIsLoggedIn ? `
+      <p class="message flex flex-col gap-06">
+        <span class="message-text">
+          <i class="fas fa-info-circle"></i>
+            Sign up or login to view job matches personalized to your resume! Build your resume, cover letter, and profile to get started.
+            </span>
+            <a href="/login" class="link">
+            <button class="regular-button w-100 h-center">
+              <span class="sub-text">Sign up</span>
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+            </a>
+      </p>
     ` : ''}
       
 <div class="flex flex-col gap-06">
