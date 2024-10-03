@@ -6,7 +6,7 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const AZURE_STORAGE_CONNECTION_STRING =
   process.env.AZURE_STORAGE_CONNECTION_STRING;
-
+const marked = require('marked');
 const {
   checkAuthenticated,
   checkNotAuthenticated,
@@ -427,6 +427,11 @@ router.get('/:jobId', viewLimiter, async (req, res) => {
     if (!job) {
       console.log(`No job found with ID: ${jobId}`);
       return res.redirect('/jobs');
+    }
+
+    if (job.description) {
+      console.log(job.description);
+      job.description = marked.parse(job.description);
     }
 
     res.render('job-posting.ejs', {

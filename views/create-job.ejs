@@ -53,9 +53,14 @@
           <input type="text" id="title" name="title" placeholder="Job Title" required />
         </div>
         <div class="form-group">
-          <label for="description">Job Description:</label>
+          <label for="sourcePostingDate">Original Posting Date</label>
+          <input type="text" id="sourcePostingDate" name="sourcePostingDate" placeholder="Original Posting Date" />
+        </div>
+        <div class="form-group">
+          <label for="description">Job Description</label>
           <textarea id="description" name="description" placeholder="Job Description" required></textarea>
         </div>
+
         <div class="form-group">
           <label for="preferred-qualifications">Preferred Qualifications:</label>
           <textarea id="preferred-qualifications" name="preferred-qualifications" placeholder="Preferred Qualifications"></textarea>
@@ -217,6 +222,8 @@
             $('#is-remote').val(response.IsRemote ? 'true' : 'false');
             $('#equal-opportunity-employer-info').val(response.EqualOpportunityEmployerInfo);
             $('#relocation').val(response.relocation ? 'true' : 'false');
+            $('#sourcePostingDate').val(response.sourcePostingDate);
+
 
             // Show the edit form and hide the extract form
             $('#jobPostForm').hide();

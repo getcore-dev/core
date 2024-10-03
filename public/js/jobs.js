@@ -32,7 +32,7 @@ function updateStateFromQuery() {
     state.filters.skills = new Set();
     if (Array.isArray(query.skill)) {
       query.skill.forEach(skill =>  {
-        state.filters.skills.add(skill.trim())
+        state.filters.skills.add(skill.trim());
       });
     } else {
       state.filters.skills.add(query.skill.trim());
@@ -209,9 +209,9 @@ document.addEventListener('DOMContentLoaded', initialize);
 
 function initialize() {
   try {
-  loadStateFromLocalStorage();
-  updateStateFromQuery();
-  setupInfiniteScroll();
+    loadStateFromLocalStorage();
+    updateStateFromQuery();
+    setupInfiniteScroll();
   } catch (error) {
     console.error('Error loading state from local storage:', error);
     fetchJobPostings();
@@ -435,16 +435,20 @@ function clearAllFilters() {
   state.jobPostings = [];
   state.renderedJobIds.clear();
   state.hasMoreData = true;
-
+              
   // Clear UI
   elements.jobList.innerHTML = '';
   elements.recentJobList.innerHTML = '';
   document.querySelector('.jobs-selected-filters').style.display = 'none';
   document.querySelector('.jobs-selected-filters').innerHTML = '';
-
+              
+  // Update filter sentence display
+  createActiveFilterElement(state.filters);
+              
   saveStateToLocalStorage();
   fetchJobPostings();
 }
+              
 
 function triggerJobSearch() {
   state.currentPage = 1;
@@ -475,17 +479,24 @@ function resetState() {
   // Clear UI
   elements.jobList.innerHTML = '';
   elements.recentJobList.innerHTML = '';
+  document.querySelectorAll('.quick-option-btn').forEach((button) => {
+    button.classList.remove('clickable');
+  });
   document.querySelector('.jobs-selected-filters').style.display = 'none';
   document.querySelector('.jobs-selected-filters').innerHTML = '';
   document.querySelectorAll('.dropdown-button').forEach((button) => {
     if (button.getAttribute('aria-label') === 'Reset Filters') return;
     button.innerHTML = button.getAttribute('aria-label') + '<span class="arrow">&#9662;</span>';
     button.classList.remove('active');
-  }); 
+  });
+
+  // Update filter sentence display
+  createActiveFilterElement(state.filters);
 
   saveStateToLocalStorage();
   fetchJobPostings();
 }
+
 
 function flushState() {
   state.filters = {
@@ -562,7 +573,7 @@ async function fetchJobPostings() {
     experiencelevels: JSON.stringify(Array.from(state.filters.experiencelevels)),
     salary: state.filters.salary || '0',
     skills: JSON.stringify(Array.from(state.filters.skills)),
-    companies: JSON.stringify(Array.from(state.filters.companies)) || '[]', // Default to empty array
+    companies: JSON.stringify(Array.from(state.filters.companies)),
   });
 
   try {
@@ -712,40 +723,45 @@ function loadStateFromLocalStorage() {
 function createActiveFilterElement(filters) {
   let sentenceParts = [];
 
+  // Experience Level Filter
   if (filters.experiencelevels && filters.experiencelevels.size > 0) {
-    sentenceParts.push(Array.from(filters.experiencelevels).join('/'));
-
-    // if no titles then add 'jobs' after the experience level
-    if (filters.titles && filters.titles.size === 0) {
-      sentenceParts[sentenceParts.length - 1] += ' jobs';
-    }
+    sentenceParts.push(`Experience Level: ${Array.from(filters.experiencelevels).join(', ')}`);
   }
 
+  // Job Title Filter
   if (filters.titles && filters.titles.size > 0) {
-    sentenceParts.push(Array.from(filters.titles).join('/'));
-
-    // add jobs after the titles
-    if (filters.titles) {
-      sentenceParts[sentenceParts.length - 1] += ' jobs';
-    }
+    sentenceParts.push(`Titles: ${Array.from(filters.titles).join(', ')}`);
   }
 
+  // Company Filter
   if (filters.companies && filters.companies.size > 0) {
-    sentenceParts.push('at ' + Array.from(filters.companies).join('/'));
+    sentenceParts.push(`Companies: ${Array.from(filters.companies).join(', ')}`);
   }
 
+  // Location Filter
   if (filters.locations && filters.locations.size > 0) {
-    sentenceParts.push('in ' + Array.from(filters.locations).join('/'));
-    
+    sentenceParts.push(`Locations: ${Array.from(filters.locations).join(', ')}`);
   }
 
+  // Salary Filter
   if (filters.salary && filters.salary > 0) {
-    sentenceParts.push('with salary above ' + filters.salary);
+    sentenceParts.push(`Salary: Above ${filters.salary}`);
   }
 
-  const sentence = sentenceParts.join(' ');
+  // Skills Filter
+  if (filters.skills && filters.skills.size > 0) {
+    sentenceParts.push(`Skills: ${Array.from(filters.skills).join(', ')}`);
+  }
 
-  console.log(sentence);
+  const sentence = sentenceParts.join(' | ');
+
+  // Update the DOM element that shows the active filters
+  const activeFiltersSentenceElement = document.getElementById('active-filters-sentence');
+  if (activeFiltersSentenceElement) {
+    activeFiltersSentenceElement.textContent = sentence;
+    activeFiltersSentenceElement.style.display = sentence.length > 0 ? 'block' : 'none';
+  }
+
   return sentence;
 }
 
@@ -796,7 +812,8 @@ function restoreUIState() {
 
   // Restore salary filter
   if (state.filters.salary) {
-    document.getElementById('min-salary').value = state.filters.salary;
+    const salaryDropdown = document.querySelector('.salary-dropdown');
+    salaryDropdown.innerHTML = `Salary: Above ${state.filters.salary}`;
   }
 }
 
@@ -829,58 +846,58 @@ function createJobElement(job) {
   jobElement.onclick = () => (window.location.href = `/jobs/${job.id}`);
 
   const tagsArray = job.skills
-  ? job.skills.split(',').map(skill => skill.trim().toLowerCase())
-  : [];
+    ? job.skills.split(',').map(skill => skill.trim().toLowerCase())
+    : [];
 
-const sortedTags = tagsArray.sort((a, b) => {
-  if (state.filters.skills.has(a.toLowerCase()) && !state.filters.skills.has(b.toLowerCase())) return -1;
-  if (!state.filters.skills.has(a.toLowerCase()) && state.filters.skills.has(b.toLowerCase())) return 1;
-  return a.localeCompare(b, undefined, { sensitivity: 'base' });
-});
-const displayedTags = sortedTags.slice(0, 3);
+  const sortedTags = tagsArray.sort((a, b) => {
+    if (state.filters.skills.has(a.toLowerCase()) && !state.filters.skills.has(b.toLowerCase())) return -1;
+    if (!state.filters.skills.has(a.toLowerCase()) && state.filters.skills.has(b.toLowerCase())) return 1;
+    return a.localeCompare(b, undefined, { sensitivity: 'base' });
+  });
+  const displayedTags = sortedTags.slice(0, 3);
 
-const skillsArray = Array.from(state.filters.skills).map(skill => skill.trim().toLowerCase());
+  const skillsArray = Array.from(state.filters.skills).map(skill => skill.trim().toLowerCase());
 
-const filteredSkills = displayedTags.filter(skill => skillsArray.includes(skill.toLowerCase()));
-const otherSkills = displayedTags.filter(skill => !skillsArray.includes(skill.toLowerCase()));
+  const filteredSkills = displayedTags.filter(skill => skillsArray.includes(skill.toLowerCase()));
+  const otherSkills = displayedTags.filter(skill => !skillsArray.includes(skill.toLowerCase()));
 
-const sortedSkills = [...filteredSkills, ...otherSkills];
-let tagsHTML = sortedSkills
-  .sort((a, b) => {
-    const aExists = state.filters.skills.has(a.toLowerCase());
-    const bExists = state.filters.skills.has(b.toLowerCase());
-    return bExists - aExists || a.localeCompare(b, undefined, { sensitivity: 'base' });
-  })
-  .map((skill) => {
-    const skillLower = skill.toLowerCase();
-    const skillExists = Array.from(state.filters.skills).some(s => s.toLowerCase() === skillLower);
-        return `
+  const sortedSkills = [...filteredSkills, ...otherSkills];
+  let tagsHTML = sortedSkills
+    .sort((a, b) => {
+      const aExists = state.filters.skills.has(a.toLowerCase());
+      const bExists = state.filters.skills.has(b.toLowerCase());
+      return bExists - aExists || a.localeCompare(b, undefined, { sensitivity: 'base' });
+    })
+    .map((skill) => {
+      const skillLower = skill.toLowerCase();
+      const skillExists = Array.from(state.filters.skills).some(s => s.toLowerCase() === skillLower);
+      return `
       <span data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="mini-text bold text-tag ${
-        skillExists ? 'green-text-tag' : ''
-      }">${skill}</span>`;
-  })
-  .join('');
+  skillExists ? 'green-text-tag' : ''
+}">${skill}</span>`;
+    })
+    .join('');
 
-const remainingSkillsCount = sortedTags.length - 3;
-if (remainingSkillsCount > 0) {
-  tagsHTML += `
+  const remainingSkillsCount = sortedTags.length - 3;
+  if (remainingSkillsCount > 0) {
+    tagsHTML += `
     <span class="remaining-tags mini-text" style="cursor: pointer;" onclick="toggleHiddenTags()">
       +${remainingSkillsCount} more
     </span>
   `;
-}
+  }
   
 
-jobElement.innerHTML = `
+  jobElement.innerHTML = `
 <div class="job-preview">
   <div class="job-info">
     <div class="flex flex-row w-100 space-between v-center gap-03 margin-1-bottom">
     <div class="flex flex-row gap-06">
       ${
-    job.company_logo
-      ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="${job.company_name}" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
-      : ''
-  }
+  job.company_logo
+    ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="${job.company_name}" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
+    : ''
+}
       <div class="flex flex-col margin-06-bottom">
               <p class="company-name bold secondary-text sub-text">${job.company_name}</p>
         <a href="/jobs/${job.id}"><h3 class="job-title main-text">${job.title}</h3></a>
@@ -889,8 +906,7 @@ jobElement.innerHTML = `
     </div>
     ${tagsHTML ? `<div class="job-tags margin-06-bottom">${tagsHTML}</div>` : ''}
     <div class="job-details mini-text">
-          <span class="text-tag bold flex flex-row v-center">
-          📍
+      <span class="text-tag bold flex flex-row v-center">
         ${formatLocation(job.location).trim().substring(0, 25)}
       </span>
           ${job.salary || job.salary_max ? `
@@ -898,7 +914,7 @@ jobElement.innerHTML = `
           <svg class="icon" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
           ~${formatSalary(job.salary)}/yr
         </span>
-      ` : ``}
+      ` : ''}
       <span class="text-tag flex flex-row v-center applicants">
         <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
         ${job.applicants ? `${job.applicants} applicants` : '0'}
@@ -911,14 +927,14 @@ jobElement.innerHTML = `
       <span class="text-tag flex flex-row v-center experience-level">
         <svg class="icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
         ${
-          job.experienceLevel === 'Mid Level'
-            ? 'L3/L4'
-            : job.experienceLevel === 'Entry Level'
-              ? 'L1/L2'
-              : job.experienceLevel === 'Senior'
-                ? 'L5/L6'
-                : job.experienceLevel
-        }
+  job.experienceLevel === 'Mid Level'
+    ? 'L3/L4'
+    : job.experienceLevel === 'Entry Level'
+      ? 'L1/L2'
+      : job.experienceLevel === 'Senior'
+        ? 'L5/L6'
+        : job.experienceLevel
+}
       </span>
       ` : ''}
     </div>
@@ -953,32 +969,32 @@ state.jobSearchInput.addEventListener('input',
         },
       }).then(response => response.json())
     ))
-    .then(results => {
-      if (results.every(result => result.length === 0)) {
-        clearSearchResults();
-        return;
-      }
-      // Normalize and combine all results
-      const combinedResults = results.flatMap((routeResults, index) => {
-        const type = routes[index];
-        return routeResults.map(item => ({
-          id: item.id,
-          name: item.name || item.title || item.location || item.level,
-          jobCount: item.jobCount || 0,
-          type: type,
-          logo: item.logo // Only for companies
-        }));
+      .then(results => {
+        if (results.every(result => result.length === 0)) {
+          clearSearchResults();
+          return;
+        }
+        // Normalize and combine all results
+        const combinedResults = results.flatMap((routeResults, index) => {
+          const type = routes[index];
+          return routeResults.map(item => ({
+            id: item.id,
+            name: item.name || item.title || item.location || item.level,
+            jobCount: item.jobCount || 0,
+            type: type,
+            logo: item.logo // Only for companies
+          }));
+        });
+
+        // Sort by job count in descending order
+        const sortedResults = combinedResults.sort((a, b) => b.jobCount - a.jobCount);
+
+        // Display results
+        displaySearchResults(sortedResults);
+      })
+      .catch(error => {
+        console.error('Error fetching search results:', error);
       });
-
-      // Sort by job count in descending order
-      const sortedResults = combinedResults.sort((a, b) => b.jobCount - a.jobCount);
-
-      // Display results
-      displaySearchResults(sortedResults);
-    })
-    .catch(error => {
-      console.error('Error fetching search results:', error);
-    });
   }, DEBOUNCE_DELAY)
 );
 
@@ -1028,17 +1044,22 @@ function displaySearchResults(results) {
 }
 
 function handleResultClick(event) {
+  console.log('handleResultClick');
   const result = event.currentTarget;
+  console.log(result);
   const type = result.dataset.type;
   const id = result.dataset.id;
   const name = result.dataset.name;
   const logo = result.dataset.logo;
-  console.log(result);
+  console.log(type, id, name, logo);
 
   if (type === 'job-locations' || type === 'tech-job-titles') {
     updateState(type, name, name, logo);
-  } else if (type == 'companies') {
+  } else if (type === 'companies') {
     updateState(type, id, name, logo);
+  } else if (type === 'job-salary') {
+    const salaryValue = parseInt(name.replace(/\D/g, ''));
+    updateState(type, salaryValue, name, logo);
   } else {
     updateState(type, id, name, logo);
   }
@@ -1047,8 +1068,8 @@ function handleResultClick(event) {
   clearSearchResults();
   state.jobSearchInput.value = '';
   
-  // Hide skill results if company, title, or location is selected
-  if (type === 'companies' || type === 'tech-job-titles' || type === 'job-locations' || type === 'skills') {
+  // Hide skill results if company, title, location, or salary is selected
+  if (type === 'companies' || type === 'tech-job-titles' || type === 'job-locations' || type === 'skills' || type === 'job-salary') {
     const skillResults = document.querySelectorAll('.search-result-item[data-type="skills"]');
     skillResults.forEach(item => item.style.display = 'none');
   }
@@ -1123,11 +1144,13 @@ function updateDropdownAfterRemoval(type, name) {
     'job-levels': 'experience-dropdown',
     'job-locations': 'location-dropdown',
     'tech-job-titles': 'job-title-dropdown',
+    'job-salary': 'salary-dropdown',
   };
   const dropdownDefaultTextMap = {
     'job-levels': 'Experience Level',
     'job-locations': 'Location',
     'tech-job-titles': 'Job Title',
+    'job-salary': 'Salary',
   };
 
   const dropdownClass = dropdownClassMap[type];
@@ -1164,11 +1187,13 @@ function toggleSelectedFilter(event) {
     'job-levels': 'experience-dropdown',
     'job-locations': 'location-dropdown',
     'tech-job-titles': 'job-title-dropdown',
+    'job-salary': 'salary-dropdown',
   };
   const dropdownDefaultTextMap = {
     'job-levels': 'Experience Level',
     'job-locations': 'Location',
     'tech-job-titles': 'Job Title',
+    'job-salary': 'Salary',
   };
 
   const dropdownClass = dropdownClassMap[type];
@@ -1203,18 +1228,21 @@ function toggleSelectedFilter(event) {
 function clearSelectedFilters(type) {
   let filterSet;
   switch(type) {
-    case 'tech-job-titles':
-      filterSet = state.filters.titles;
-      break;
-    case 'job-locations':
-      filterSet = state.filters.locations;
-      break;
-    case 'companies':
-      filterSet = state.filters.companies;
-      break;
-    case 'job-levels':
-      filterSet = state.filters.experiencelevels;
-      break;
+  case 'tech-job-titles':
+    filterSet = state.filters.titles;
+    break;
+  case 'job-locations':
+    filterSet = state.filters.locations;
+    break;
+  case 'companies':
+    return filterSet.delete(id);
+  case 'job-levels':
+    filterSet = state.filters.experiencelevels;
+    break;
+  case 'job-salary':
+    state.filters.salary = 0;
+    return true;
+    break;
   }
 
   filterSet.clear();
@@ -1223,18 +1251,19 @@ function clearSelectedFilters(type) {
 function isFilterSelected(type, id, name) {
   let filterSet;
   switch(type) {
-    case 'tech-job-titles':
-      filterSet = state.filters.titles;
-      break;
-    case 'job-locations':
-      filterSet = state.filters.locations;
-      break;
-    case 'companies':
-      filterSet = state.filters.companies;
-      break;
-    case 'job-levels':
-      filterSet = state.filters.experiencelevels;
-      break;
+  case 'tech-job-titles':
+    filterSet = state.filters.titles;
+    break;
+  case 'job-locations':
+    filterSet = state.filters.locations;
+    break;
+  case 'companies':
+    return state.filters.companies.has(id);
+  case 'job-levels':
+    filterSet = state.filters.experiencelevels;
+    break;
+  case 'job-salary':
+    return state.filters.salary === parseInt(name.replace(/\D/g, ''));
   }
 
   if (type === 'companies') {
@@ -1245,11 +1274,6 @@ function isFilterSelected(type, id, name) {
   }
 }
 
-
-function applySalaryFilter() {
-  state.filters.salary = parseInt(document.getElementById('min-salary').value) || 0;
-  triggerJobSearch();
-}
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -1283,36 +1307,43 @@ style.textContent = `
 document.head.appendChild(style);
 
 function updateState(type, id, name, logo, isRemoval = false) {
+  console.log('updateState');
+  console.log(type, id, name, logo, isRemoval);
   state.hasMoreData = true;
   let filterSet;
 
   switch(type) {
-    case 'tech-job-titles':
-    case 'titles':
-      filterSet = state.filters.titles;
-      break;
-    case 'job-locations':
-      filterSet = state.filters.locations;
-      break;
-    case 'companies':
-      filterSet = state.filters.companies;
-      break;
-    case 'experiencelevels':
-    case 'job-levels':
-      filterSet = state.filters.experiencelevels;
-      break;
-    default:
-      console.error(`Unknown filter type: ${type}`);
-      return; // Exit the function if we don't recognize the type
+  case 'tech-job-titles':
+  case 'titles':
+    filterSet = state.filters.titles;
+    break;
+  case 'job-locations':
+    filterSet = state.filters.locations;
+    break;
+  case 'companies':
+    filterSet = state.filters.companies;
+    break;
+  case 'experiencelevels':
+  case 'job-levels':
+    filterSet = state.filters.experiencelevels;
+    break;
+  case 'job-salary':
+    state.filters.salary = parseInt(name.replace(/\D/g, ''));
+    break;
+  default:
+    console.error(`Unknown filter type: ${type}`);
+    return; // Exit the function if we don't recognize the type
   }
 
   if (!filterSet) {
     console.error(`Filter set is undefined for type: ${type}`);
     return; // Exit the function if filterSet is undefined
+  } else if (type === 'job-salary') {
+    return;
   }
 
   if (isRemoval) {
-    console.log(type, id, name)
+    console.log(type, id, name);
     console.log('Before removal:', filterSet);
     if (type === 'companies') {
       console.log(item);
@@ -1332,8 +1363,10 @@ function updateState(type, id, name, logo, isRemoval = false) {
     console.log('After removal:', filterSet);
   } else {
     if (type === 'companies') {
+      console.log('Adding company:', id);
       filterSet.add(id);
     } else if (type === 'tech-job-titles') {
+      console.log('Adding job title:', id);
       filterSet.add(id);
     } else {
       filterSet.add(name);
@@ -1345,8 +1378,8 @@ function updateState(type, id, name, logo, isRemoval = false) {
   if (activeFiltersSentenceElement) {
     activeFiltersSentenceElement.textContent = sentence;
   }
-
-  saveStateToLocalStorage(); // Save state after updating filters
+  
+  saveStateToLocalStorage(); 
   triggerJobSearch();
 }
 

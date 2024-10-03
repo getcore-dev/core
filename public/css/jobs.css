@@ -1045,6 +1045,7 @@ div .material-symbols-outlined:not(:only-child) {
 
   .jobs-container {
     height: 100%;
+    overflow-x: hidden;
   }
 
   .job-list {

@@ -93,6 +93,13 @@ class JobProcessor extends EventEmitter {
         nextInactive: 'button.pagination__btn.pagination__next.pagination__next--inactive',
         prevInactive: 'button.pagination__btn.pagination__previous.pagination__previous--inactive'
       },
+      'apple.com': {
+        next: 'span.next',
+        prev: 'span.prev',
+        active: 'input#page-number',
+        nextInactive: 'span.next.disabled',
+        prevInactive: 'span.prev.disabled'
+      },
       'workday.com': {
         next: 'button[data-uxi-element-id="next"]',
         prev: 'button[data-uxi-element-id="prev"]',
@@ -1106,8 +1113,65 @@ class JobProcessor extends EventEmitter {
     }
   }
 
+  async grabMicrosoftLinks(jobBoardUrl) {
+    try {
+      // Extract the base URL and query parameters
+      const url = new URL(jobBoardUrl);
+      const baseApiUrl = 'https://gcsservices.careers.microsoft.com/search/api/v1/search';
+      
+      // Preserve original query parameters
+      const params = new URLSearchParams(url.search);
+      params.delete('pg'); // Remove page parameter if exists
+      params.delete('pgSz'); // Remove page size parameter if exists
+  
+      let allJobs = [];
+      let currentPage = 1;
+      const jobsPerPage = 100;
+  
+      while (true) {
+        // Construct the API URL with original params and pagination
+        params.set('pg', currentPage);
+        params.set('pgSz', jobsPerPage);
+        const apiUrl = `${baseApiUrl}?${params.toString()}`;
+        
+        console.log('Fetching:', apiUrl);
+        const response = await axios.get(apiUrl);
+        const jobData = response.data.operationResult.result;
+  
+        if (!jobData.jobs || jobData.jobs.length === 0) {
+          break; // No more jobs to fetch
+        }
+  
+        const jobs = jobData.jobs.map(job => ({
+          title: job.title,
+          link: `https://jobs.careers.microsoft.com/global/en/job/${job.jobId}`,
+          location: job.properties.primaryLocation || 'Unknown',
+          date: job.postingDate
+        }));
+
+        console.log('jobs', jobs);
+  
+        allJobs = allJobs.concat(jobs);
+        console.log(`Fetched ${jobs.length} jobs from page ${currentPage}. Total: ${allJobs.length}`);
+  
+        currentPage++;
+  
+        if (allJobs.length >= jobData.totalJobs) {
+          break; // We've fetched all available jobs
+        }
+      }
+  
+      console.log(`Found a total of ${allJobs.length} Microsoft jobs`);
+      return allJobs;
+    } catch (error) {
+      console.error('Error fetching Microsoft jobs:', error);
+      return [];
+    }
+  }
+
   async extractJobLinksFromPage(jobBoardUrl) {
     if (jobBoardUrl.includes('myworkdayjobs.com')) return await this.grabWorkDayLinks(jobBoardUrl);
+    if (jobBoardUrl.includes('microsoft.com')) return await this.grabMicrosoftLinks(jobBoardUrl);
     if (jobBoardUrl.includes('smartrecruiters.com')) return await this.grabSmartRecruiterLinks(jobBoardUrl);
 
     console.log(`Extracting job links from ${jobBoardUrl}`);
@@ -1180,11 +1244,17 @@ class JobProcessor extends EventEmitter {
         const fullUrl = new URL(href, pageUrl).href;
 
         if (new URL(fullUrl).hostname === jobBoardDomain) {
-          links.push({
-            url: fullUrl,
-            title: title,
-            applyType: 'external' // You might want to determine this based on the link
-          });
+          // check if the fullUrl is already in the links array too
+          if (links.some(link => link.url === fullUrl)) {
+            return;
+          }
+          if (title.includes('Apply') || this.isTechJob(title)) {
+            links.push({
+              url: fullUrl,
+              title: title,
+              applyType: 'external' 
+            });
+          }
         }
       }
     });
@@ -1209,6 +1279,28 @@ class JobProcessor extends EventEmitter {
       paginationInfo.isFirstPage = false;
       paginationInfo.isOnlyPage = false;
       paginationInfo.prevPageUrl = new URL(prevButton.attr('href'), pageUrl).href;
+    }
+
+    // Special handling for Apple job board
+    if (pageUrl.includes('apple.com')) {
+      const pageNumberInput = $('input#page-number');
+      const maxPageSpan = $('span.pageNumber').filter((index, element) => !$(element).text().includes('of')).last();
+      
+      if (pageNumberInput.length > 0 && maxPageSpan.length > 0) {
+        const currentPage = parseInt(pageNumberInput.val());
+        const maxPage = parseInt(maxPageSpan.text());
+        
+        paginationInfo.isFirstPage = currentPage === 1;
+        paginationInfo.isLastPage = currentPage >= maxPage;
+        paginationInfo.isOnlyPage = maxPage === 1;
+        
+        if (!paginationInfo.isLastPage) {
+          paginationInfo.nextPageUrl = new URL(`${pageUrl.split('&page=')[0]}&page=${currentPage + 1}`, pageUrl).href;
+        }
+        if (!paginationInfo.isFirstPage) {
+          paginationInfo.prevPageUrl = new URL(`${pageUrl.split('&page=')[0]}&page=${currentPage - 1}`, pageUrl).href;
+        }
+      }
     }
 
     console.log('Pagination Info:', paginationInfo);
@@ -1956,6 +2048,123 @@ class JobProcessor extends EventEmitter {
     return { url, companyId, title, company, company_name: company, description: descriptionMarkdown, location };
   }
 
+  async processMicrosoftJob(url) {
+    try {
+      // Extract job ID from the URL
+      const jobIdMatch = url.match(/\/job\/(\d+)/);
+      if (!jobIdMatch) {
+        console.error('Could not extract job ID from URL:', url);
+        return null;
+      }
+      const jobId = jobIdMatch[1];
+  
+      // Construct the API URL
+      const apiUrl = `https://gcsservices.careers.microsoft.com/search/api/v1/job/${jobId}?lang=en_us`;
+  
+      // Make the request to the Microsoft API
+      const response = await axios.get(apiUrl);
+      const jobData = response.data.operationResult.result;
+  
+      // Extract relevant information from the API response
+      const extractedData = {
+        title: jobData.title,
+        company_name: 'Microsoft',
+        company: 'Microsoft',
+        location: this.formatLocation(jobData.primaryWorkLocation) + '; ' + jobData.workLocations.map(loc => this.formatLocation(loc)).join('; '),
+        description: this.stripHtmlTags(jobData.description),
+        PreferredQualifications: this.stripHtmlTags(jobData.qualifications),
+        Responsibilities: this.stripHtmlTags(jobData.responsibilities),
+        skills: jobData.skills ? jobData.skills.join(', ') : '',
+        experience_level: this.determineExperienceLevel(jobData.title),
+        employmentType: jobData.employmentType,
+        category: jobData.category,
+        subcategory: jobData.subcategory,
+        roleType: jobData.roleType,
+        travelPercentage: jobData.travelPercentage,
+        postedDate: jobData.posted.external,
+        workSiteFlexibility: jobData.workSiteFlexibility,
+        jobStatus: jobData.jobStatus,
+        additionalLocations: jobData.workLocations.map(loc => this.formatLocation(loc)).join('; '),
+        url: url
+      };
+  
+      // Get or create company
+      const companyId = await this.getOrCreateCompany('Microsoft', '', '', 'https://careers.microsoft.com', 'Technology', '10,000+', 'MSFT', '/src/microsoftlogo.png', '1975-04-04');
+  
+      return { ...extractedData, companyId };
+    } catch (error) {
+      console.error('Error processing Microsoft job:', error);
+      return null;
+    }
+  }
+  
+  // Helper function to determine experience level based on job title
+  determineExperienceLevel(title) {
+    const lowerTitle = title.toLowerCase();
+    if (lowerTitle.includes('senior') || lowerTitle.includes('sr.')) {
+      return 'Senior';
+    } else if (lowerTitle.includes('junior') || lowerTitle.includes('jr.')) {
+      return 'Junior';
+    } else if (lowerTitle.includes('lead') || lowerTitle.includes('manager')) {
+      return 'Lead';
+    } else if (lowerTitle.includes('intern')) {
+      return 'Internship';
+    } else {
+      return 'Mid Level';
+    }
+  }
+  
+  // Helper function to format location
+  formatLocation(location) {
+    return `${location.city}, ${location.state}, ${location.country}`.trim();
+  }
+  
+  // Helper function to strip HTML tags
+  stripHtmlTags(html) {
+    return html.replace(/<[^>]*>/g, '').trim();
+  }
+
+  async processAppleJob(url) {
+    const response = await this.makeRequest(url);
+    const data = response.data;
+    const $ = cheerio.load(data);
+
+    // title #jdPostingTitle
+    // description #jd-job-summary and #jd-description and #jd-posting-supplement-footer-0 
+    // location #job-location-name
+    // PreferredQualifications #jd-preferred-qualifications
+    // EqualOpportunityEmployerInfo #jd-eeo-statement
+    // MinimumQualifications #jd-education-experience
+    // HoursPerWeek #jobWeeklyHours
+
+    const title = $('#jdPostingTitle').text().trim().replace('US-', '').replace('CA-', '');
+    const description = $('#jd-job-summary').text().trim() + $('#jd-description').text().trim() + $('#jd-posting-supplement-footer-0').text().trim() + $('#jd-key-qualifications').text().trim() + $('#jd-education-experience').text().trim();
+    const location = $('#job-location-name').text().trim();
+    const preferredQualifications = $('#jd-preferred-qualifications').text().trim();
+    const equalOpportunityEmployerInfo = $('#jd-eeo-statement').text().trim();
+    const hoursPerWeek = $('#jobWeeklyHours').text().trim();
+    let sourcePostingDate = $('#jobPostDate').text().trim(); // e.g., "Aug 15, 2024"
+    const date = new Date(sourcePostingDate);
+    
+    if (isNaN(date)) {
+      console.error('Invalid date format:', sourcePostingDate);
+    } else {
+      console.log('Parsed Date:', date);
+    }
+    
+    const company = 'Apple';
+    const companyId = await this.getOrCreateCompany(company, '', '', 'https://jobs.apple.com', 'Technology', '10,000+', 'AAPL', '/src/applelogo.png', '1976-04-01');
+
+    return { url, companyId, title, company, company_name: company, description, location, preferredQualifications, equalOpportunityEmployerInfo, hoursPerWeek, sourcePostingDate };
+
+
+
+    // const company = 'Apple';
+    // const companyId = await this.getOrCreateCompany(company, '', '', 'https://jobs.apple.com', 'Technology', '10,000+', 'AAPL', '/src/applelogo.png', '1976-04-01');
+    
+  }
+
+
   async processJobLink(link) {
     const url = typeof link === 'object' && link.url ? link.url : link;
 
@@ -1997,7 +2206,13 @@ class JobProcessor extends EventEmitter {
     } else if (url && url.includes('smartrecruiters.com')) {
       const jobData = await this.processSmartRecruiterJob(url);
       return jobData;
-    }else {
+    } else  if (url && url.includes('microsoft.com')) {
+      const jobData = await this.processMicrosoftJob(url);
+      return jobData;
+    } else  if (url && url.includes('apple.com')) {
+      const jobData = await this.processAppleJob(url);
+      return jobData;
+    } else {
       console.error('Unsupported job board:', url);
       return { error: 'Unsupported job board' };
     }
@@ -2754,7 +2969,8 @@ class JobProcessor extends EventEmitter {
       jobData.IsRemote,
       jobData.EqualOpportunityEmployerInfo,
       jobData.Relocation,
-      jobData.employmentType
+      jobData.employmentType,
+      jobData.sourcePostingDate
     ];
 
     const sanitizeField = (field) => {
@@ -2799,7 +3015,8 @@ class JobProcessor extends EventEmitter {
       jobData.EqualOpportunityEmployerInfo || '',
       jobData.Relocation || 0,
       isProcessed,
-      jobData.employmentType || ''
+      jobData.employmentType || '',
+      jobData.sourcePostingDate || ''
     );
   
     this.updateProgress({ processedJobs: this.progress.processedJobs + 1 });

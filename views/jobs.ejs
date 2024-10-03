@@ -33,13 +33,6 @@
 
     <div class="jobs-container">
       <div class="jobs-header">
-
-        <div class="jobs-search-container flex flex-col gap-03">
-          <input type="text" id="job-search-input" class="job-posting-search-input" placeholder="Search jobs & companies" />
-          <div class="flex flex-col active-filters-container">
-            <p id="active-filters-sentence" class="active-filters-sentence mini-text"></p>
-          </div>
-        </div>
         <div class="jobs-buttons v-center">
           <span class="recent-jobs-count-container">
             <div class="radar-pulse">
@@ -58,6 +51,13 @@
           </a>
           <% } %>
         </div>
+        <div class="jobs-search-container flex flex-col gap-03">
+          <input type="text" id="job-search-input" class="job-posting-search-input" placeholder="Search jobs & companies" />
+          <div class="flex flex-col active-filters-container">
+            <p id="active-filters-sentence" class="active-filters-sentence mini-text"></p>
+          </div>
+        </div>
+
         <% if (user) { %>
 
         <div class="jobs-buttons admin-job-buttons">
@@ -112,6 +112,22 @@
             </div>
           </div>
 
+          <div class="dropdown" tabindex="0">
+            <button aria-label="Salary" class="dropdown-button salary-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+              Salary
+              <span class="arrow">&#9662;</span>
+            </button>
+
+            <div class="dropdown-content">
+              <% const salaryRanges = ["10,000+", "25,000+", "50,000+", "100,000+", "200,000+"]; %>
+              <% salaryRanges.forEach(range => { %>
+              <a class="w-100">
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-salary" data-id="undefined" data-name="<%= range %>" onclick="toggleSelectedFilter(event)"><%= range %></button>
+              </a>
+              <% }); %>
+            </div>
+          </div>
+
           <button aria-label="Reset Filters" class="dropdown-button no-bg no-border link clear-button px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false" type="button" onclick="resetState()">
             Reset Filters
           </button>
@@ -139,9 +155,6 @@
           <% }); %>
         </div>
         <% } %>
-      </div>
-
-      <div id="recent-job-list" class="recent-job-list">
       </div>
       <div id="personalized-job-list" class="job-list">
       </div>

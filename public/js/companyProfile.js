@@ -79,18 +79,18 @@ async function loadCompanyJobs(companyName) {
   try {
 
     if (isLoading) {
-    const loadingSpinner = document.querySelector('#loading-indicator');
-    if (loadingSpinner) {
-      loadingSpinner.style.display = 'block';
-      const jobListContainer = document.querySelector('.job-list');
-      jobListContainer.appendChild(loadingSpinner);
+      const loadingSpinner = document.querySelector('#loading-indicator');
+      if (loadingSpinner) {
+        loadingSpinner.style.display = 'block';
+        const jobListContainer = document.querySelector('.job-list');
+        jobListContainer.appendChild(loadingSpinner);
+      }
+    } else {
+      const loadingSpinner = document.querySelector('#loading-indicator');
+      if (loadingSpinner) {
+        loadingSpinner.style.display = 'none';
+      }
     }
-  } else {
-    const loadingSpinner = document.querySelector('#loading-indicator');
-    if (loadingSpinner) {
-      loadingSpinner.style.display = 'none';
-    }
-  }
 
     const response = await fetch(`/api/jobs/company/${encodeURIComponent(companyName)}?page=${currentPage}&pageSize=${pageSize}`);
     const jobs = await response.json();
@@ -140,24 +140,31 @@ function formatDateColor(dateString) {
 }
 
 function formatRelativeDate(dateString) {
+  const date = new Date(dateString);
   const now = new Date();
-  const postedDate = new Date(dateString);
-  const diffTime = Math.abs(now - postedDate);
-  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  const diffMonths = Math.floor(diffDays / 30);
-  const diffYears = Math.floor(diffDays / 365);
+  const diffInSeconds = Math.floor((now - date) / 1000);
 
-  if (diffYears > 0) {
-    return `${diffYears}y`;
-  } else if (diffMonths > 0) {
-    return `${diffMonths}m`;
-  } else if (diffDays > 0) {
-    return `${diffDays}d`;
-  } else if (diffHours > 0) {
-    return `${diffHours}h`;
-  } else {
+  if (diffInSeconds < 60) {
     return 'Just now';
+  } else if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60);
+    return `${minutes}m ago`;
+  } else if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600);
+    return `${hours}h ago`;
+  } else if (diffInSeconds < 172800) {
+    return '1d ago';
+  } else {
+    const month = date.toLocaleString('default', { month: 'short' });
+    const day = String(date.getDate());
+    const year = date.getFullYear();
+    const currentYear = now.getFullYear();
+
+    if (year === currentYear) {
+      return `${month} ${day}`;
+    } else {
+      return `${month} ${day}, ${year}`;
+    }
   }
 }
 
@@ -169,28 +176,6 @@ function getTintFromName(name) {
   const color = (hash & 0x00ffffff).toString(16).toUpperCase();
   const tintColor = `#${color}`;
   return tintColor;
-}
-
-function formatRelativeDate(dateString) {
-  const now = new Date();
-  const postedDate = new Date(dateString);
-  const diffTime = Math.abs(now - postedDate);
-  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  const diffMonths = Math.floor(diffDays / 30);
-  const diffYears = Math.floor(diffDays / 365);
-
-  if (diffYears > 0) {
-    return `${diffYears}y`;
-  } else if (diffMonths > 0) {
-    return `${diffMonths}m`;
-  } else if (diffDays > 0) {
-    return `${diffDays}d`;
-  } else if (diffHours > 0) {
-    return `${diffHours}h`;
-  } else {
-    return 'Just now';
-  }
 }
 
 
@@ -232,6 +217,69 @@ function updateStockMovement(element, changePercent) {
   }
 }
 
+function formatLocation(location) {
+  if (location === 'N/A') {
+    return 'Remote';
+  }
+
+  const parts = location.split(',').map(part => part.trim());
+
+  // Helper function to check if a string is a US state
+  const isUSState = (str) => Object.keys(stateMappings).includes(str) || Object.values(stateMappings).includes(str);
+
+  // Helper function to get state abbreviation
+  const getStateAbbr = (state) => {
+    const fullName = Object.keys(stateMappings).find(key => key.toLowerCase() === state.toLowerCase());
+    return fullName ? stateMappings[fullName] : state;
+  };
+
+  // Helper function to get country abbreviation
+  const getCountryAbbr = (country) => {
+    const fullName = Object.keys(countryMappings).find(key => key.toLowerCase() === country.toLowerCase());
+    return fullName ? countryMappings[fullName] : country;
+  };
+
+  // Helper function to format a single location
+  const formatSingleLocation = (city, state, country) => {
+    const isRemote = (city.toLowerCase() === 'remote' || city.toLowerCase() === 'n/a');
+
+    if (country && country !== 'N/A') {
+      const countryAbbr = getCountryAbbr(country);
+      if (countryAbbr.toLowerCase() === 'usa' || country.toLowerCase() === 'united states' || country.toLowerCase() === 'us') {
+        if (isRemote) {
+          return Remote, USA;
+        } else {
+          return ${city !== 'N/A' ? city + ', ' : ''}${state !== 'N/A' ? getStateAbbr(state) : 'USA'};
+        }
+      } else {
+        if (isRemote) {
+          return Remote, ${countryAbbr};
+        } else {
+          return ${city !== 'N/A' ? city : ''}${state !== 'N/A' && state !== city ? '/' + getStateAbbr(state) : ''}, ${countryAbbr};
+        }
+      }
+    } else if (state && state !== 'N/A') {
+      return ${isRemote ? 'Remote, ' : ''}${isUSState(state) ? getStateAbbr(state) : state};
+    } else if (city && city !== 'N/A') {
+      return city;
+    } else {
+      return 'Remote';
+    }
+  };
+
+  // Process multiple locations
+  const locations = [];
+  for (let i = 0; i < parts.length; i += 3) {
+    const city = parts[i];
+    const state = parts[i + 1] || '';
+    const country = parts[i + 2] || '';
+
+    locations.push(formatSingleLocation(city, state, country));
+  }
+
+  return locations.join('; ');
+}
+
 function createJobElement(job) {
   const jobElement = document.createElement('div');
   jobElement.classList.add('job');
@@ -271,33 +319,40 @@ function createJobElement(job) {
       <div class="flex flex-row gap-06">
         ${
   job.company_logo
-    ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="${job.company_name}" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
+    ? `<img class="thumbnail thumbnail-regular thumbnail-micro" src="${job.company_logo}" alt="${job.company_name}" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
     : ''
 }
     <div class="flex flex-col">
-      <a href="/jobs/${job.id}"><h3 class="job-title sub-text">${job.title}</h3></a>
-      <p class="company-name">${job.company_name}</p>
+      <a href="/jobs/${job.id}"><h3 class="job-title header-text">${job.title}</h3></a>
     </div>
-    </div>
-    <div class="location-badge">
-      📍 ${formatLocation(job.location).trim()}
     </div>
   </div>
   <div class="job-tags margin-06-bottom">
     ${tagsHTML}
   </div>
-  <div class="flex flex-row gap-03 wrap w-100 mini-text third-text v-center">
-    <span class="job-posting-detail applicants">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-      ${job.applicants ? `${job.applicants} applicants` : '0 applicants'}
-    </span>
-    <span class="job-posting-detail post-date">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-      <time>${formatRelativeDate(job.postedDate)}</time>
-    </span>
-    <span class="job-posting-detail flex v-center experience-level">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
-      ${
+  <div class="job-details mini-text">
+          <span class="text-tag bold flex flex-row v-center">
+          📍
+        ${formatLocation(job.location).trim().substring(0, 25)}
+      </span>
+          ${job.salary || job.salary_max ? `
+        <span class="text-tag bold flex flex-row v-center salary">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+          ~${formatSalary(job.salary)}/yr
+        </span>
+      ` : ''}
+      <span class="text-tag flex flex-row v-center applicants">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        ${job.applicants ? `${job.applicants} applicants` : '0'}
+      </span>
+      <span class="text-tag flex flex-row v-center post-date">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+        <time>${formatRelativeDate(job.postedDate)}</time>
+      </span>
+      ${job.experienceLevel ? `
+      <span class="text-tag flex flex-row v-center experience-level">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+        ${
   job.experienceLevel === 'Mid Level'
     ? 'L3/L4'
     : job.experienceLevel === 'Entry Level'
@@ -306,14 +361,9 @@ function createJobElement(job) {
         ? 'L5/L6'
         : job.experienceLevel
 }
-    </span>
-    ${job.salary || job.salary_max ? `
-      <span class="job-posting-detail flex v-center salary">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-        ${formatSalary(job.salary)} - ${formatSalary(job.salary_max)}/yr
       </span>
-  ` : ''}
-        </div>
+      ` : ''}
+    </div>
       </div>
     </div>
     `;
@@ -326,7 +376,7 @@ function renderJobPostings(jobPostings) {
   if (loadingSpinner) {
     loadingSpinner.style.display = 'none';
   }
-  const jobListContainer = document.querySelector(".job-list");
+  const jobListContainer = document.querySelector('.job-list');
 
   jobPostings.forEach((job) => {
     const jobElement = createJobElement(job);

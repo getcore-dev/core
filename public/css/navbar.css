@@ -1411,8 +1411,8 @@ a>.menu-item {
 }
 
 .message {
-  background-color: #cde0ff;
-  border: 1px solid #cde0ff;
+  background-color: transparent;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 8px 12px;
   display: flex;
@@ -1424,7 +1424,6 @@ a>.menu-item {
 }
 
 .message-text {
-  color: #214889;
   line-height: 1.4;
 }
 
@@ -2342,6 +2341,11 @@ hr {
   background: #007bff36;
   border: 1px solid #007bff36;
   color: #1463b7;
+}
+
+.regular-button .material-symbols-outlined,
+.regular-button-normal .material-symbols-outlined {
+  color: #1463b7 !important;
 }
 
 .bold {
@@ -3746,6 +3750,10 @@ input::placeholder {
   transition: background-color 0.3s ease;
 }
 
+.dropdown:focus-within {
+  z-index: 1001;
+}
+
 /* Hover Effect for Dropdown Links */
 .dropdown-content a:hover {
   background-color: #f1f1f1;
@@ -3753,34 +3761,6 @@ input::placeholder {
 
 /* Responsive Adjustments (Optional) */
 @media screen and (max-width: 600px) {
-  .dropdown-content {
-    position: fixed;
-    box-sizing: border-box;
-    height: 60vh;
-    text-wrap: nowrap;
-    overflow-x: hidden;
-    box-sizing: border-box;
-    overflow-y: auto;
-    z-index: 1000;
-    background-color: var(--light-mode-main-color);
-    border: 1px solid var(--border-color);
-    display: flex;
-    width: 100vw;
-    left: 0;
-    flex-direction: column;
-    gap: .5rem;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    z-index: 1000;
-    right: 0;
-    bottom: 0;
-    margin-top: 5px;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    opacity: 0;
-    visibility: hidden;
-  }
 
   .dropdown-button {
     justify-content: center;
@@ -3814,7 +3794,7 @@ input::placeholder {
     border-radius: 4px;
     border-color: var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
-    z-index: 1;
+    z-index: 1000;
     margin-top: 5px;
     transition: opacity 0.3s ease, visibility 0.3s ease;
     opacity: 0;

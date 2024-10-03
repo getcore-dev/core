@@ -119,25 +119,95 @@ async function getSimilarJobs(jobId) {
 }
 
 function formatRelativeDate(dateString) {
+  const date = new Date(dateString);
   const now = new Date();
-  const postedDate = new Date(dateString);
-  const diffTime = Math.abs(now - postedDate);
-  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  const diffMonths = Math.floor(diffDays / 30);
-  const diffYears = Math.floor(diffDays / 365);
+  const diffInSeconds = Math.floor((now - date) / 1000);
 
-  if (diffYears > 0) {
-    return `${diffYears}y`;
-  } else if (diffMonths > 0) {
-    return `${diffMonths}m`;
-  } else if (diffDays > 0) {
-    return `${diffDays}d`;
-  } else if (diffHours > 0) {
-    return `${diffHours}h`;
-  } else {
+  if (diffInSeconds < 60) {
     return 'Just now';
+  } else if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60);
+    return `${minutes}m ago`;
+  } else if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600);
+    return `${hours}h ago`;
+  } else if (diffInSeconds < 172800) {
+    return '1d ago';
+  } else {
+    const month = date.toLocaleString('default', { month: 'short' });
+    const day = String(date.getDate());
+    const year = date.getFullYear();
+    const currentYear = now.getFullYear();
+
+    if (year === currentYear) {
+      return `${month} ${day}`;
+    } else {
+      return `${month} ${day}, ${year}`;
+    }
   }
+}
+
+function formatLocation(location) {
+  if (location.includes('N/A') || location.includes('remote') || location.includes('Remote')) {
+    return 'Remote';
+  }
+
+  const parts = location.split(',').map(part => part.trim());
+
+  // Helper function to check if a string is a US state
+  const isUSState = (str) => Object.keys(stateMappings).includes(str) || Object.values(stateMappings).includes(str);
+
+  // Helper function to get state abbreviation
+  const getStateAbbr = (state) => {
+    const fullName = Object.keys(stateMappings).find(key => key.toLowerCase() === state.toLowerCase());
+    return fullName ? stateMappings[fullName] : state;
+  };
+
+  // Helper function to get country abbreviation
+  const getCountryAbbr = (country) => {
+    const fullName = Object.keys(countryMappings).find(key => key.toLowerCase() === country.toLowerCase());
+    return fullName ? countryMappings[fullName] : country;
+  };
+
+  // Helper function to format a single location
+  const formatSingleLocation = (city, state, country) => {
+    const isRemote = (city.toLowerCase() === 'remote' || city.toLowerCase() === 'n/a');
+
+    if (country && country !== 'N/A') {
+      const countryAbbr = getCountryAbbr(country);
+      if (countryAbbr.toLowerCase() === 'usa' || country.toLowerCase() === 'united states' || country.toLowerCase() === 'us') {
+        if (isRemote) {
+          return 'Remote, USA';
+        } else {
+          return `${city !== 'N/A' ? city + ', ' : ''}${state !== 'N/A' ? getStateAbbr(state) : 'USA'}`;
+        }
+      } else {
+        if (isRemote) {
+          return `Remote, ${countryAbbr}`;
+        } else {
+          return `${city !== 'N/A' ? city : ''}${state !== 'N/A' && state !== city ? '/' + getStateAbbr(state) : ''}, ${countryAbbr}`;
+        }
+      }
+    } else if (state && state !== 'N/A') {
+      return `${isRemote ? 'Remote, ' : ''}${isUSState(state) ? getStateAbbr(state) : state}`;
+    } else if (city && city !== 'N/A') {
+      return city;
+    } else {
+      return 'Remote';
+    }
+  };
+
+  // Process multiple locations
+  const locations = [];
+  for (let i = 0; i < parts.length; i += 3) {
+    const city = parts[i];
+    const state = parts[i + 1] || '';
+    const country = parts[i + 2] || '';
+
+    locations.push(formatSingleLocation(city, state, country));
+  }
+
+  return locations.join('; ');
 }
 
 function createJobElement(job) {
@@ -303,7 +373,7 @@ function applyForJob(event, jobId, jobLink) {
 
 async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   fetch(`/api/jobs/${jobId}`)
-    .then((response) => response.json())
+    .then((response) => response.json()) 
     .then((job) => {
       const jobDetailsContainer = document.querySelector(
         '.job-details-container'
@@ -378,7 +448,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         ${
   job.company_logo
     ? `
-          <img src="${job.company_logo}" style="width: auto;" alt="${job.company_name} logo" onerror="this.onerror=null;this.src='/img/glyph.png';" class="thumbnail thumbnail-small thumbnail-regular" />
+          <img src="${job.company_logo}" style="width: auto;" alt="${job.company_name} logo" onerror="this.onerror=null;this.src='/img/glyph.png';" class="thumbnail thumbnail-medium thumbnail-regular" />
         `
     : ''
 }
@@ -453,31 +523,17 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 
       <h4 class="sub-text bold" style="margin-top:0;">AI-Generated Overview</h4>
     <p class="sub-text readable">
-    ${job.description}
+    ${job.description.replace('??', '')}
     </p>
     </div>
 
     ` : ''}
 
-    ${!userIsLoggedIn ? `
-      <p class="message flex flex-col gap-06">
-        <span class="message-text">
-          <i class="fas fa-info-circle"></i>
-            Sign up or login to view job matches personalized to your resume! Build your resume, cover letter, and profile to get started.
-            </span>
-            <a href="/login" class="link">
-            <button class="regular-button w-100 h-center">
-              <span class="sub-text">Sign up</span>
-              <span class="material-symbols-outlined">arrow_forward</span>
-            </button>
-            </a>
-      </p>
-    ` : ''}
       
 <div class="flex flex-col gap-06">
       <div class="interact-buttons flex space-between v-center">
         ${
-  !isOlderThan30Days(job)
+  (job)
     ? `<div class="apply-button-container flex">
                 <button class="main-button-normal margin-h-auto grow-button" onclick="applyForJob(event, '${job.id}', '${job.link}')">
                   <span class="material-symbols-outlined">work</span><span class="sub-text">Apply </span><span class="number-display">
@@ -538,6 +594,20 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 </div>
             </div>
           </div>
+              ${!userIsLoggedIn ? `
+      <p class="message flex flex-col gap-06">
+        <span class="message-text sub-text">
+          <i class="fas fa-info-circle"></i>
+            Sign up or login to view job matches personalized to your resume! Build your resume, cover letter, and profile to get started.
+            </span>
+            <a href="/login" class="link">
+            <button class="regular-button w-100 h-center">
+              <span class="sub-text">Sign up</span>
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+            </a>
+      </p>
+    ` : ''}
     </div>
 </div>
   </div>

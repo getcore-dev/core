@@ -132,6 +132,7 @@ main {
   gap: .9rem;
   align-items: flex-start;
   box-sizing: border-box;
+  align-items: center;
 }
 
 .job-details>* {

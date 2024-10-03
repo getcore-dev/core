@@ -634,10 +634,6 @@ router.get('/jobs', cacheMiddleware(2400), async (req, res) => {
       console.log('isEmptySearch'); 
       allJobPostings = await jobQueries.getRecentJobs(page, pageSize);
     } else {
-      let companyIds;
-      if (parsedCompanies.length !== 0) {
-        companyIds = parsedCompanies.map((company) => JSON.parse(company).id);
-      }
       allJobPostings = await jobQueries.searchAllJobsFromLast30Days(
         {
           titles: parsedTitles,
@@ -645,7 +641,7 @@ router.get('/jobs', cacheMiddleware(2400), async (req, res) => {
           experienceLevels: parsedExperienceLevels,
           salary: parsedSalary,
           skills: parsedSkills,
-          companies: companyIds || [],
+          companies: parsedCompanies
         },
         page,
         pageSize
@@ -978,6 +974,8 @@ router.post('/job-postings', checkAuthenticated, async (req, res) => {
       isRemote,
       equalOpportunityEmployerInfo,
       relocation,
+      employmentType,
+      sourcePostingDate
     } = req.body;
     //console.log(req.body);
 
@@ -1004,7 +1002,10 @@ router.post('/job-postings', checkAuthenticated, async (req, res) => {
       h1bVisaSponsorship,
       isRemote,
       equalOpportunityEmployerInfo,
-      relocation});
+      relocation,
+      employmentType,
+      sourcePostingDate
+    });
       
     let companyObject = await jobQueries.getCompanyIdByName(company);
     let companyId = companyObject ? companyObject.id : null;
@@ -1040,7 +1041,10 @@ router.post('/job-postings', checkAuthenticated, async (req, res) => {
       h1bVisaSponsorship,
       isRemote,
       equalOpportunityEmployerInfo,
-      relocation
+      relocation,
+      0,
+      employmentType,
+      sourcePostingDate
     );
 
     if (!jobPostingId) {
@@ -1072,8 +1076,16 @@ router.post('/extract-job-details', checkAuthenticated, async (req, res) => {
     }
 
     console.log(link);
-    const extractedData = await jobProcessor.processJobLink(link);
+    let extractedData = await jobProcessor.processJobLink(link);
     console.log(extractedData);
+
+    if (extractedData.company && !extractedData.company_name) {
+      extractedData.company_name = extractedData.company;
+    } else if (extractedData.company_name && !extractedData.company) {
+      extractedData.company = extractedData.company_name;
+    } else if (!extractedData.company && !extractedData.company_name) {
+      return res.status(400).json({ error: 'Company information not found' });
+    }
 
     res.json(extractedData);
   } catch (error) {

@@ -37,7 +37,7 @@
   }
 
   .job-table td {
-    padding: 6px;
+    padding: 6px 4px;
   }
 
   .job-table th {
@@ -45,6 +45,14 @@
   }
 
   .job-table tr:hover {
+    background-color: var(--light-mode-hover-color);
+  }
+
+  .job-table thead tr:hover {
+    background-color: transparent;
+  }
+
+  .job-table thead tr th:hover {
     background-color: var(--light-mode-hover-color);
   }
 
@@ -77,10 +85,6 @@
 
   .dropdown-content .select-option:hover {
     background-color: #f1f1f1;
-  }
-
-  .dropdown:hover .dropdown-content {
-    display: block;
   }
 
   .color-circle {
@@ -118,43 +122,22 @@
           <p class="header-text bold">Applied Jobs</p>
           <a class="back-button link mini-text" href="/jobs">Back</a>
         </div>
-        <a href="#" class="link mini-text">+ Add Job</a>
       </div>
       <div class="flex w-100 gap-1 margin-1-bottom">
-        <input type="text" placeholder="Search">
+        <input type="text" id="search-input" placeholder="Search">
 
-        <div class="flex flex-row gap-06">
-          <button class="bordered-button-normal">
-            <span class="material-symbols-outlined">filter_list</span>
-            Filter
-          </button>
-          <button class="bordered-button-normal">
-            <span class="material-symbols-outlined">sort</span>
-            Sort
-          </button>
-        </div>
       </div>
       <div class="job-table-container">
         <table class="job-table">
           <thead>
             <tr>
               <th class="mini-text third-text" style="padding: 10px;"><input type="checkbox" name="select-all" id="select-all"></th>
-              <th class="mini-text third-text">Company
-                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="ml-2 h-4 w-4">
-                  <path d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
-                </svg>
+              <th class="mini-text third-text" data-column="company_name" style="padding: 10px;">Company
               </th>
-              <th class="mini-text third-text">
-                Title
-                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="ml-2 h-4 w-4">
-                  <path d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
-                </svg>
+              <th class="mini-text third-text" data-column="title">Title
               </th>
-              <th class="mini-text third-text">
-                Status
-                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="ml-2 h-4 w-4">
-                  <path d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
-                </svg>
+              <th class="mini-text third-text" data-column="job_status">Status
+
               </th>
             </tr>
           </thead>
@@ -167,11 +150,30 @@
   </main>
 
   <script>
+    document.getElementById('search-input').addEventListener('input', function () {
+      const query = this.value.toLowerCase();
+      const jobTableBody = document.getElementById('job-table-body');
+      const jobRows = jobTableBody.querySelectorAll('tr');
+
+      jobRows.forEach(row => {
+        const companyName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+        const title = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+
+
+        if (companyName.includes(query) || title.includes(query)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    });
+
+
     function createCustomSelect(job) {
       const jobId = job.id;
       const userChoice = job.job_status ?
-        job.job_status.charAt(0).toUpperCase() + job.job_status.slice(1) :
-        'Pending';
+        `<span class = "color-circle ${job.job_status}"></span> ${job.job_status.charAt(0).toUpperCase() + job.job_status.slice(1)}` :
+        `<span class = "color-circle pending"></span> Pending`;
       const options = [{
           value: 'pending',
           label: 'Pending'
@@ -194,7 +196,6 @@
         <div class="dropdown" data-job-id="${jobId}">
           <button class="dropdown-button mini-text secondary-text">
             ${userChoice}
-            <span class="arrow">&#9662;</span>
           </button>
           <div class="dropdown-content">
             ${options
@@ -299,12 +300,8 @@
         const titleLink = document.createElement('a');
         titleLink.href = `/jobs/${job.id}`;
         titleLink.className = 'job-title sub-text';
-        if (job.experienceLevel) {
-          titleLink.innerHTML = `<span class="text-tag">${job.experienceLevel}</span> ${job.title}`;
-        } else {
-          titleLink.innerHTML = job.title;
+        titleLink.innerHTML = job.title;
 
-        }
         titleCell.appendChild(titleLink);
 
         // Status cell
@@ -323,6 +320,65 @@
     document.addEventListener('DOMContentLoaded', function () {
       renderJobPostings(appliedJobsData);
     });
+
+    let currentSortColumn = null;
+    let currentSortDirection = 'asc';
+
+    document.querySelectorAll('th[data-column]').forEach(th => {
+      th.addEventListener('click', function () {
+        const column = this.getAttribute('data-column');
+        sortTable(column);
+      });
+    });
+
+    function sortTable(column) {
+      if (currentSortColumn === column) {
+        // Toggle sort direction
+        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        // New column, set sort direction to ascending
+        currentSortColumn = column;
+        currentSortDirection = 'asc';
+      }
+
+      // Get the current data (filtered data if search is active)
+      const query = document.getElementById('search-input').value.toLowerCase();
+      let jobsToRender = appliedJobsData;
+
+      if (query) {
+        jobsToRender = appliedJobsData.filter(job =>
+          job.company_name.toLowerCase().includes(query) ||
+          job.title.toLowerCase().includes(query)
+        );
+      }
+
+      // Sort the data
+      jobsToRender.sort((a, b) => {
+        let valA = a[column] || '';
+        let valB = b[column] || '';
+
+        // For status, default to 'pending' if undefined
+        if (column === 'job_status') {
+          valA = valA || 'pending';
+          valB = valB || 'pending';
+        }
+
+        // Compare strings case-insensitively
+        valA = valA.toString().toLowerCase();
+        valB = valB.toString().toLowerCase();
+
+        if (valA < valB) {
+          return currentSortDirection === 'asc' ? -1 : 1;
+        }
+        if (valA > valB) {
+          return currentSortDirection === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+
+      // Re-render the table
+      renderJobPostings(jobsToRender);
+    }
   </script>
 </body>
 

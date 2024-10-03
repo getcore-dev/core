@@ -43,11 +43,11 @@
         <div class="company-header margin-06-bottom">
           <div class="company-image">
             <% if (company.logo) { %>
-            <img class="thumbnail thumbnail-tiny thumbnail-regular" src="<%= company.logo %>" alt="" />
+            <img class="thumbnail-medium thumbnail-regular" src="<%= company.logo %>" alt="" />
             <% } %>
           </div>
           <div class="company-posting-info">
-            <span class="main-text bold"><%= company.name %></span>
+            <span class="header-text bold"><%= company.name %></span>
             <% if (user && user.isAdmin) { %>
             <a style="margin-left:auto;" href="/jobs/company/<%= encodeURIComponent(company.name) %>/edit">
               <span class="material-symbols-outlined">
@@ -55,14 +55,14 @@
               </span>
             </a>
             <% } %>
+            <% if (company.description) { %>
+            <div class="company-description sub-text margin-06-bottom">
+              <p class="description-text" id="companyDescription"><%= company.description %></p>
+              <button id="toggleButton" style="display: none;">Show more</button>
+            </div>
+            <% } %>
           </div>
         </div>
-        <% if (company.description) { %>
-        <div class="company-description secondary-text sub-text margin-06-bottom">
-          <p class="description-text secondary-text" id="companyDescription"><%= company.description %></p>
-          <button id="toggleButton" style="display: none;">Show more</button>
-        </div>
-        <% } %>
 
         <% if (company.twitter_username || company.company_website) { %>
         <div class="external-links flex flex-row gap-06 margin-06-bottom wrap">
@@ -143,7 +143,7 @@
           <% } %>
         </div>
         <% } %>
-
+        <% if (user) { %>
         <% if (company.company_recent_news_sentiment || company.company_issues || company.company_sentiment || company.company_engineer_choice) { %>
         <div class="ai-generated-info px-4 py-2">
           <h3 class="main-text">AI-Generated Insights</h3>
@@ -179,6 +179,20 @@
           </span>
           <% } %>
         </div>
+        <% } %>
+        <% } else { %>
+        <p class="message flex flex-col gap-06">
+          <span class="message-text">
+            <i class="fas fa-info-circle"></i>
+            Sign up or login to view AI generated insights about <strong><%= company.name %></strong> and job matches personalized to your resume!
+          </span>
+          <a href="/login" class="link">
+            <button class="regular-button w-100 h-center">
+              <span class="sub-text">Sign up</span>
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+          </a>
+        </p>
         <% } %>
         <!--
         <div class="company-buttons margin-1-bottom">
@@ -244,10 +258,16 @@
             <input type="text" class="filter-input" placeholder="Search for a job" />
           </div>
           <div class="job-list">
-            <div id="loading-indicator">
-              <div class="spinner-container">
-                <div class="spinner"></div>
-              </div>
+            <div class="load-more" id="loading-indicator">
+              <button class="load-more-btn flex flex-row gap-06 main-button" id="load-more-btn">
+                <div>
+                  <div class="spinner-container">
+                    <div class="spinner"></div>
+                  </div>
+                </div>
+                <p class="sub-text">Load More</p>
+              </button>
+
             </div>
           </div>
           <%- include('partials/footer') %>
