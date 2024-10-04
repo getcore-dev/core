@@ -658,6 +658,24 @@ router.get('/jobs', cacheMiddleware(2400), async (req, res) => {
   }
 });
 
+router.get('/job-suggestions', async (req, res) => {
+  try {
+    const userPreferences = {
+      jobPreferredTitle: 'Software Engineer',
+      jobPreferredLocation: 'New York',
+      jobExperienceLevel: 'Internship',
+      jobPreferredSalary: 100000,
+      jobPreferredSkills: [] // Assuming these are skill IDs
+    };
+    
+    const topSuggestions = await jobQueries.getTopJobSuggestions(userPreferences);
+    res.json(topSuggestions);
+  } catch (err) {
+    console.error('Error fetching job suggestions:', err);
+    res.status(500).send('Error fetching job suggestions');
+  }
+});
+
 
 router.get('/job-experience/:userId', async (req, res) => {
   try {

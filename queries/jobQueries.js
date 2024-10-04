@@ -44,6 +44,114 @@ const jobQueries = {
     }
   },
 
+  getTopJobSuggestions: async (userPreferences, limit = 10) => {
+    try {
+      const request = new sql.Request();
+      let query = `
+        SELECT TOP ${limit}
+          j.id,
+          j.title,
+          j.description,
+          j.postedDate,
+          j.experienceLevel,
+          j.salary,
+          j.applicants,
+          j.location,
+          j.link,
+          c.name AS company_name,
+          c.logo AS company_logo,
+          c.location AS company_location,
+          c.description AS company_description,
+          (
+            SELECT STRING_AGG(jt.tagName, ', ')
+            FROM JobPostingsTags jpt
+            JOIN JobTags jt ON jpt.tagId = jt.id
+            WHERE jpt.jobId = j.id
+          ) AS tags,
+          (
+            SELECT STRING_AGG(s.name, ', ')
+            FROM job_skills js
+            JOIN skills s ON js.skill_id = s.id
+            WHERE js.job_id = j.id
+          ) AS skills,
+          (
+            CASE
+              WHEN j.title LIKE '%' + @preferredTitle + '%' THEN 10
+              ELSE 0
+            END +
+            CASE
+              WHEN j.location LIKE '%' + @preferredLocation + '%' THEN 5
+              ELSE 0
+            END +
+            CASE
+              WHEN j.experienceLevel = @experienceLevel THEN 5
+              ELSE 0
+            END +
+            CASE
+              WHEN j.salary >= @preferredSalary THEN 5
+              ELSE 0
+            END
+          ) AS relevance_score
+        FROM JobPostings j
+        LEFT JOIN companies c ON j.company_id = c.id
+        WHERE 1=1
+      `;
+  
+      const conditions = [];
+      
+      if (userPreferences.jobPreferredTitle) {
+        conditions.push('j.title LIKE @preferredTitle');
+        request.input('preferredTitle', sql.NVarChar, `%${userPreferences.jobPreferredTitle}%`);
+      }
+  
+      if (userPreferences.jobPreferredLocation) {
+        conditions.push('j.location LIKE @preferredLocation');
+        request.input('preferredLocation', sql.NVarChar, `%${userPreferences.jobPreferredLocation}%`);
+      }
+  
+      if (userPreferences.jobExperienceLevel) {
+        conditions.push('j.experienceLevel = @experienceLevel');
+        request.input('experienceLevel', sql.NVarChar, userPreferences.jobExperienceLevel);
+      }
+  
+      if (userPreferences.jobPreferredSalary && userPreferences.jobPreferredSalary > 0) {
+        conditions.push('j.salary >= @preferredSalary');
+        request.input('preferredSalary', sql.Int, userPreferences.jobPreferredSalary);
+      }
+  
+  
+      if (userPreferences.jobPreferredSkills && userPreferences.jobPreferredSkills.length > 0) {
+        const skillConditions = [];
+        userPreferences.jobPreferredSkills.forEach((skill, index) => {
+          if (skill) {
+            const paramName = `skill${index}`;
+            request.input(paramName, sql.UniqueIdentifier, skill);
+            skillConditions.push(`EXISTS (SELECT 1 FROM job_skills WHERE job_id = j.id AND skill_id = @${paramName})`);
+          }
+        });
+        
+        if (skillConditions.length > 0) {
+          conditions.push(`(${skillConditions.join(' OR ')})`);
+        }
+      }
+      
+  
+      if (conditions.length > 0) {
+        query += ' AND ' + conditions.join(' AND ');
+      }
+  
+      query += `
+        ORDER BY relevance_score DESC, j.postedDate DESC
+      `;
+  
+      const result = await request.query(query);
+      return result.recordset;
+    } catch (error) {
+      console.error('Error in getTopJobSuggestions:', error);
+      throw error;
+    }
+  },
+
   getAllCompanies: async () => {
     try {
       const result = await sql.query`

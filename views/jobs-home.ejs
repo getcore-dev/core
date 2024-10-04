@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CORE/Jobs</title>
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
+
+  <link rel="shortcut icon" href="/img/core.png" />
+</head>
+<style>
+</style>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'updates' }) %>
+  <main>
+    <div class="flex flex-col h-center v-center">
+
+
+      <div class="flex flex-col p-4 pt-2">
+        <h2 class="text-lg font-semibold pb-2">Explore</h2>
+        <!--
+        <div class="flex flex-row gap-4 mb-4">
+          <div class="rounded-xl w-full bg-muted p-4 text-card-foreground ">
+            test test
+          </div>
+          <div class="rounded-xl w-full bg-muted p-4 text-card-foreground ">
+            test test 2
+          </div>
+        </div>
+        -->
+        <div class="flex flex-row w-full pb-4">
+          <input type="text" placeholder="Search for a job (disabled temporarily)" class="shadow w-full p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div class="flex flex-row">
+          <div class="flex flex-col">
+            <div class="flex flex-col" id="topJobSuggestions">
+            </div>
+            <a class="w-full" href="/jobs">
+              <button class="inline-flex w-100 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">Other Jobs</button>
+            </a>
+          </div>
+
+
+
+        </div>
+      </div>
+    </div>
+    </div>
+  </main>
+
+  <script src="/js/jobs-home.js"></script>
+</body>
+
+</html>

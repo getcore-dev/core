@@ -22,6 +22,22 @@ const viewController = {
     }
   },
 
+  renderJobHomePage: async (req, res) => {
+    try {
+      // Send basic post data to the client
+      res.render('jobs-home.ejs', {
+        user: req.user,
+        errorMessages: req.flash('error'),
+        successMessages: req.flash('success'),
+      });
+    } catch (err) {
+      res.render('error.ejs', {
+        user: req.user,
+        error: { message: err.message },
+      });
+    }
+  },
+
   renderLandingPage: async (req, res) => {
     res.render('landing.ejs', { user: req.user });
   },

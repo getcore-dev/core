@@ -3,6 +3,7 @@ const router = express.Router();
 const sql = require('mssql');
 const {
   checkAuthenticated,
+  checkNotAuthenticated,
 } = require('../middleware/authMiddleware');
 const viewController = require('../controllers/viewController');
 const userQueries = require('../queries/userQueries');
@@ -18,7 +19,13 @@ const AZURE_STORAGE_CONNECTION_STRING =
   process.env.AZURE_STORAGE_CONNECTION_STRING; // Ensure this is set in your environment variables
 
 // Home page
-router.get('/', viewController.renderLandingPage);;
+router.get('/', (req, res) => {
+  if (req.user) {
+    viewController.renderJobHomePage(req, res);
+  } else {
+    viewController.renderLandingPage(req, res);
+  }
+});
 
 router.get('/about', viewController.renderAboutPage);
 
