@@ -52,7 +52,7 @@ app.get('/api/job-processing-progress', (req, res) => {
   res.json(currentProgress);
 });
 
-if (cluster.isMaster) {
+if (cluster.isMaster && process.env.NODE_ENV !== 'development') {
   console.log(`Master ${process.pid} is running`);
 
   // Fork workers.

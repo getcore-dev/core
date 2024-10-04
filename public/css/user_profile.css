@@ -123,6 +123,15 @@ main {
   background: none;
 }
 
+.job-tags {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 8px 0;
+  gap: .4rem;
+}
+
 .current-job-header .material-symbols-outlined,
 .current-education-header .material-symbols-outlined {
   vertical-align: -2px;

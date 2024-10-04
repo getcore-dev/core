@@ -130,9 +130,8 @@ main {
 .company-info {
   display: flex;
   gap: .9rem;
-  align-items: flex-start;
   box-sizing: border-box;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .job-details>* {
@@ -189,7 +188,7 @@ ul.locations {
 div.similar-jobs-list {
   display: flex;
   flex-wrap: nowrap;
-  padding: 0 1rem;
+  padding: 0;
   gap: .8rem;
   flex-direction: column;
 
@@ -628,6 +627,8 @@ ul.locations {
   .job-listing-menu {
     margin: 0;
     border: 0;
+    padding: 0;
+    padding-top: 1rem;
     margin-bottom: 2rem;
     display: flex;
     border-radius: 0;

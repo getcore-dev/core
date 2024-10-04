@@ -739,518 +739,74 @@ const jobQueries = {
   
       const offset = (page - 1) * pageSize;
   
-      // Initialize conditions and query parameters
-      const conditions = [];
+      // Prepare the base query and parameter container
+      let baseQuery = `
+        WITH FilteredJobs AS (
+          SELECT j.*, c.logo AS company_logo, c.name AS company_name
+          FROM JobPostings j
+          JOIN Companies c ON j.company_id = c.id
+          WHERE 1=1
+      `;
       const queryParams = {};
   
-      // State mappings for abbreviations
-      const stateMappings = {
-        Alabama: 'AL',
-        Alaska: 'AK',
-        Arizona: 'AZ',
-        Arkansas: 'AR',
-        California: 'CA',
-        Colorado: 'CO',
-        Connecticut: 'CT',
-        Delaware: 'DE',
-        Florida: 'FL',
-        Georgia: 'GA',
-        Hawaii: 'HI',
-        Idaho: 'ID',
-        Illinois: 'IL',
-        Indiana: 'IN',
-        Iowa: 'IA',
-        Kansas: 'KS',
-        Kentucky: 'KY',
-        Louisiana: 'LA',
-        Maine: 'ME',
-        Maryland: 'MD',
-        Massachusetts: 'MA',
-        Michigan: 'MI',
-        Minnesota: 'MN',
-        Mississippi: 'MS',
-        Missouri: 'MO',
-        Montana: 'MT',
-        Nebraska: 'NE',
-        Nevada: 'NV',
-        'New Hampshire': 'NH',
-        'New Jersey': 'NJ',
-        'New Mexico': 'NM',
-        'New York': 'NY',
-        'North Carolina': 'NC',
-        'North Dakota': 'ND',
-        Ohio: 'OH',
-        Oklahoma: 'OK',
-        Oregon: 'OR',
-        Pennsylvania: 'PA',
-        'Rhode Island': 'RI',
-        'South Carolina': 'SC',
-        'South Dakota': 'SD',
-        Tennessee: 'TN',
-        Texas: 'TX',
-        Utah: 'UT',
-        Vermont: 'VT',
-        Virginia: 'VA',
-        Washington: 'WA',
-        'West Virginia': 'WV',
-        Wisconsin: 'WI',
-        Wyoming: 'WY',
-        'United States': 'US',
-      };
+      // Optimize and combine filter conditions
+      if (experienceLevels.length) {
+        const levelsCondition = experienceLevels
+          .map((level, i) => {
+            queryParams[`expLevel${i}`] = `%${level}%`;
+            return `j.title LIKE @expLevel${i}`;
+          })
+          .join(' OR ');
   
-      if (experienceLevels.length > 0) {
-        const experienceLevelConditions = [];
-  
-        // Handle 'Internship' special case
-        if (experienceLevels.includes('Internship')) {
-          const internshipTitles = ['Intern', 'Internship', 'Co-op'];
-          experienceLevelConditions.push(`(${internshipTitles.map((_, i) => `j.title LIKE @internTitle${i}`).join(' OR ')})`);
-          internshipTitles.forEach((title, i) => {
-            queryParams[`internTitle${i}`] = `%${title} %`;
-          });
-        }
-  
-        // Handle other experience levels
-        const otherExperienceLevels = experienceLevels.filter(level => level !== 'Internship');
-        if (otherExperienceLevels.length > 0) {
-          otherExperienceLevels.forEach((level, index) => {
-            const paramName = `experienceLevel${index}`;
-            if (level.toLowerCase() === 'senior') {
-              queryParams[paramName] = '%Senior%';
-              experienceLevelConditions.push(`(j.title LIKE @${paramName} OR j.title LIKE '%Sr.%' OR j.title LIKE '%Staff%' OR j.title LIKE '%Engineer IV%' OR j.title LIKE '%L4%' OR j.title LIKE '%L5%' OR j.title LIKE ' %IV% ' OR j.title LIKE ' %V% ')`);
-            } else if (level.toLowerCase() === 'lead') {
-              queryParams[paramName] = '%Lead%';
-              experienceLevelConditions.push(`(j.title LIKE @${paramName} OR j.title LIKE '%Team Lead%' OR j.title LIKE '%Lead Engineer%' OR j.title LIKE '%Manager%' OR j.title LIKE '%L6 %' OR j.title LIKE '% VI %')`);
-            } else if (level.toLowerCase() === 'entry level') {
-              queryParams[paramName] = '%Entry Level%';
-              experienceLevelConditions.push(`(j.experienceLevel LIKE @${paramName} OR j.title LIKE '%Entry Level%' OR j.title LIKE '%Graduate%' OR j.title LIKE '%New Grad%' OR j.title LIKE '%Fresher%')`);
-            } else if (level.toLowerCase() === 'internship' || level.toLowerCase() === 'intern') {
-              queryParams[paramName] = '%Intern%';
-              experienceLevelConditions.push(`(j.experienceLevel LIKE @${paramName} OR j.title LIKE '%Intern%' OR j.title LIKE '%Internship%')`);
-            } else if (level.toLowerCase() === 'junior') {
-              queryParams[paramName] = '%Junior%';
-              experienceLevelConditions.push(`(j.title LIKE @${paramName} OR j.title LIKE '%Associate%' OR j.title LIKE '%Jr.%' OR j.title LIKE '%Engineer II%' OR j.title LIKE '%L3 %' OR j.title LIKE '% III %')`);
-            } else if (level.toLowerCase() === 'mid-level') {
-              queryParams[paramName] = '%Mid%';
-              experienceLevelConditions.push(`(j.title LIKE @${paramName} OR j.title LIKE '%Intermediate%' OR j.title LIKE '%Engineer III%' OR j.title LIKE '%L3%' OR j.title LIKE '%L4% ' OR j.title LIKE '% III %' OR j.title LIKE '% IV %')`);
-            } else if (level.toLowerCase() === 'staff') {
-              queryParams[paramName] = '%Staff%';
-              experienceLevelConditions.push(`(j.title LIKE @${paramName} OR j.title LIKE '%Engineer V%' OR j.title LIKE '%L5%' OR j.title LIKE '%V%')`);
-            } else if (level.toLowerCase() === 'principal') {
-              queryParams[paramName] = '%Principal%';
-              experienceLevelConditions.push(`(j.title LIKE @${paramName} OR j.title LIKE '%Engineer VI%' OR j.title LIKE '%L6%' OR j.title LIKE '%VI%')`);
-            } else {
-              queryParams[paramName] = `%${level}%`;
-              experienceLevelConditions.push(`j.experienceLevel LIKE @${paramName}`);
-            }
-          });
-        }
-        
-
-  
-        // Combine experience level conditions
-        if (experienceLevelConditions.length > 0) {
-          conditions.push(`(${experienceLevelConditions.join(' OR ')})`);
-        }
+        baseQuery += ` AND (${levelsCondition})`;
       }
   
-      // Handle titles with trailing wildcards and related job titles
-      if (titles.length > 0) {
-        const jobTitleCategories = {
-          'Software Engineer': [
-            'Developer',
-            'Programmer',
-            'Backend Engineer',
-            'Frontend Engineer',
-            'Full Stack Developer',
-            'Python Developer',
-            'Java Developer',
-            'C++ Developer',
-            'Software Developer',
-            'Mobile Developer',
-            'Application Developer'
-          ],
-          'Data Scientist': [
-            'Data Analyst',
-            'Machine Learning Engineer',
-            'AI Specialist',
-            'Data Engineer',
-            'Statistician',
-            'Quantitative Analyst',
-            'Research Scientist'
-          ],
-          'Product Manager': [
-            'Project Manager',
-            'Product Owner',
-            'Program Manager',
-            'Scrum Master',
-            'Product Coordinator'
-          ],
-          'UX Designer': [
-            'User Experience Designer',
-            'UI/UX Designer',
-            'Interaction Designer',
-            'Product Designer',
-            'UI Designer',
-            'Visual Designer'
-          ],
-          'DevOps Engineer': [
-            'Site Reliability Engineer',
-            'Systems Engineer',
-            'Infrastructure Engineer',
-            'Build Engineer',
-            'Release Engineer',
-            'Platform Engineer'
-          ],
-          'Quality Assurance': [
-            'QA Engineer',
-            'Test Engineer',
-            'Quality Engineer',
-            'Software Tester',
-            'QA Analyst',
-            'Automation Tester'
-          ],
-          'Business Analyst': [
-            'BA',
-            'Systems Analyst',
-            'Functional Analyst',
-            'Business Systems Analyst',
-            'Requirements Analyst'
-          ],
-          'Marketing Manager': [
-            'Digital Marketing Manager',
-            'Marketing Specialist',
-            'Brand Manager',
-            'Marketing Coordinator',
-            'Marketing Director',
-            'SEO Specialist'
-          ],
-          'Sales Representative': [
-            'Account Executive',
-            'Sales Associate',
-            'Sales Consultant',
-            'Sales Manager',
-            'Business Development Manager',
-            'Account Manager'
-          ],
-          'Human Resources': [
-            'HR Manager',
-            'Talent Acquisition Specialist',
-            'Recruiter',
-            'HR Generalist',
-            'HR Coordinator',
-            'HR Business Partner'
-          ],
-          'Financial Analyst': [
-            'Investment Analyst',
-            'Equity Analyst',
-            'Research Analyst',
-            'Portfolio Analyst',
-            'Financial Consultant',
-            'Credit Analyst'
-          ],
-          'Customer Support': [
-            'Customer Service Representative',
-            'Technical Support',
-            'Support Specialist',
-            'Help Desk Technician',
-            'Client Services',
-            'Customer Success Manager'
-          ],
-          'Network Engineer': [
-            'Network Administrator',
-            'Network Architect',
-            'Network Specialist',
-            'Network Technician',
-            'Network Analyst'
-          ],
-          'Database Administrator': [
-            'DBA',
-            'Database Engineer',
-            'Data Architect',
-            'Database Analyst',
-            'SQL Developer'
-          ],
-          'Content Writer': [
-            'Copywriter',
-            'Technical Writer',
-            'Editor',
-            'Content Strategist',
-            'Content Creator',
-            'Blogger'
-          ],
-          'Graphic Designer': [
-            'Visual Designer',
-            'Creative Designer',
-            'Multimedia Designer',
-            'Digital Designer',
-            'Art Director',
-            'Illustrator'
-          ],
-          'Accountant': [
-            'CPA',
-            'Financial Accountant',
-            'Staff Accountant',
-            'Auditor',
-            'Tax Accountant',
-            'Accounting Manager'
-          ],
-          'Operations Manager': [
-            'Operations Director',
-            'Business Operations Manager',
-            'Operations Coordinator',
-            'Chief Operating Officer',
-            'Operations Analyst'
-          ],
-          'Executive Assistant': [
-            'Personal Assistant',
-            'Administrative Assistant',
-            'Office Manager',
-            'Secretary',
-            'Office Administrator',
-            'Executive Secretary'
-          ],
-          'Legal Counsel': [
-            'Attorney',
-            'Lawyer',
-            'Corporate Counsel',
-            'Legal Advisor',
-            'In-house Counsel',
-            'Compliance Officer'
-          ],
-          'Mechanical Engineer': [
-            'Mechanical Designer',
-            'AutoCAD Engineer',
-            'HVAC Engineer',
-            'Manufacturing Engineer',
-            'Process Engineer'
-          ],
-          'Electrical Engineer': [
-            'Electronics Engineer',
-            'Circuit Design Engineer',
-            'Control Systems Engineer',
-            'Power Engineer',
-            'Instrumentation Engineer'
-          ],
-          'Civil Engineer': [
-            'Structural Engineer',
-            'Construction Engineer',
-            'Geotechnical Engineer',
-            'Transportation Engineer',
-            'Environmental Engineer'
-          ],
-          'Chemist': [
-            'Analytical Chemist',
-            'Organic Chemist',
-            'Research Scientist',
-            'Lab Technician',
-            'Chemical Engineer'
-          ],
-          'Teacher': [
-            'Educator',
-            'Instructor',
-            'Professor',
-            'Lecturer',
-            'Tutor'
-          ],
-          'Nurse': [
-            'Registered Nurse',
-            'RN',
-            'Staff Nurse',
-            'Clinical Nurse',
-            'Nurse Practitioner'
-          ],
-          'Doctor': [
-            'Physician',
-            'Medical Doctor',
-            'General Practitioner',
-            'Surgeon',
-            'Clinician'
-          ],
-          'Pharmacist': [
-            'Clinical Pharmacist',
-            'Retail Pharmacist',
-            'Hospital Pharmacist',
-            'Pharmacy Manager',
-            'Dispensary Pharmacist'
-          ],
-          'Architect': [
-            'Design Architect',
-            'Project Architect',
-            'Interior Designer',
-            'Landscape Architect',
-            'Urban Planner'
-          ],
-          'Logistics Manager': [
-            'Supply Chain Manager',
-            'Transportation Manager',
-            'Warehouse Manager',
-            'Distribution Manager',
-            'Inventory Manager'
-          ],
-          'Security Officer': [
-            'Security Guard',
-            'Security Specialist',
-            'Loss Prevention Officer',
-            'Surveillance Officer',
-            'Security Manager'
-          ],
-          'Web Developer': [
-            'Frontend Developer',
-            'Backend Developer',
-            'Full Stack Developer',
-            'Web Designer',
-            'JavaScript Developer'
-          ],
-          'Data Entry Clerk': [
-            'Data Processor',
-            'Administrative Assistant',
-            'Office Assistant',
-            'Clerical Worker',
-            'Records Clerk'
-          ],
-          'Software Architect': [
-            'Application Architect',
-            'Systems Architect',
-            'Technical Lead',
-            'Solutions Architect',
-            'Enterprise Architect'
-          ],
-          'System Administrator': [
-            'SysAdmin',
-            'IT Administrator',
-            'Network Administrator',
-            'Systems Engineer',
-            'IT Support Specialist'
-          ],
-          'HR Specialist': [
-            'Human Resources Specialist',
-            'HR Coordinator',
-            'Recruitment Specialist',
-            'Talent Acquisition',
-            'HR Advisor'
-          ],
-          'Digital Marketer': [
-            'SEO Specialist',
-            'Social Media Manager',
-            'Content Marketer',
-            'PPC Specialist',
-            'Email Marketer'
-          ],
-          'Project Coordinator': [
-            'Project Assistant',
-            'Project Scheduler',
-            'Project Support',
-            'Program Coordinator',
-            'Project Administrator'
-          ]
-        };
-        
+      if (titles.length) {
+        const titleCondition = titles
+          .map((title, i) => {
+            queryParams[`title${i}`] = `%${title}%`;
+            return `j.title LIKE @title${i}`;
+          })
+          .join(' OR ');
   
-        const allTitles = titles.flatMap(title => {
-          const relatedTitles = Object.entries(jobTitleCategories).find(([category, relatedJobs]) =>
-            category.toLowerCase() === title.toLowerCase() || relatedJobs.map(job => job.toLowerCase()).includes(title.toLowerCase())
-          );
-          return relatedTitles ? [title, ...relatedTitles[1]] : [title];
-        });
-  
-        conditions.push(`(${allTitles.map((_, i) => `j.title LIKE @title${i}`).join(' OR ')})`);
-        allTitles.forEach((title, i) => {
-          queryParams[`title${i}`] = `%${title}%`;
-        });
+        baseQuery += ` AND (${titleCondition})`;
       }
   
-      // Handle locations with multiple OR conditions
-      if (locations.length > 0) {
-        const allLocations = locations.flatMap(location => {
-          const abbreviation = stateMappings[location] || Object.keys(stateMappings).find(key => stateMappings[key] === location) || location;
-          return abbreviation !== location ? [location, abbreviation] : [location];
-        });
-  
-        const locationConditions = allLocations.map((location, i) => {
-          if (Object.keys(stateMappings).includes(location)) {
+      if (locations.length) {
+        const locationCondition = locations
+          .map((location, i) => {
+            queryParams[`location${i}`] = `%${location}%`;
             return `j.location LIKE @location${i}`;
-          } else {
-            return `j.location = @location${i}`;
-          }
-        });
+          })
+          .join(' OR ');
   
-        conditions.push(`(${locationConditions.join(' OR ')})`);
-        allLocations.forEach((location, i) => {
-          queryParams[`location${i}`] = `%${location}%`;
-        });
+        baseQuery += ` AND (${locationCondition})`;
       }
   
-      // Handle salary
       if (salary > 0) {
-        conditions.push('j.salary >= @salary');
+        baseQuery += ' AND j.salary >= @salary';
         queryParams.salary = salary;
       }
   
-      // Handle skills using EXISTS clauses
-      if (skills.length > 0) {
-        skills.forEach((skill, i) => {
-          conditions.push(`EXISTS (
-            SELECT 1 FROM job_skills js
-            JOIN skills s ON js.skill_id = s.id
-            WHERE js.job_id = j.id AND s.name = @skill${i}
-          )`);
-          queryParams[`skill${i}`] = skill;
-        });
+      if (companies.length) {
+        const companiesCondition = companies
+          .map((companyId, i) => {
+            queryParams[`company${i}`] = companyId;
+            return `j.company_id = @company${i}`;
+          })
+          .join(' OR ');
+  
+        baseQuery += ` AND (${companiesCondition})`;
       }
   
-      // Handle companies with multiple OR conditions
-      if (companies.length > 0) {
-        conditions.push(`(${companies.map((_, i) => `j.company_id = @company${i}`).join(' OR ')})`);
-        companies.forEach((companyId, i) => {
-          queryParams[`company${i}`] = companyId;
-        });
-      }
-  
-      // Build the main query with optimized CTEs and conditions
-      let query =
-      `WITH FilteredJobs AS (
+      baseQuery += `
+        )
         SELECT j.*
-        FROM JobPostings j
-        ${conditions.length > 0 ? 'WHERE ' + conditions.join(' AND ') : ''}
-      ),
-      JobTagsAggregated AS (
-        SELECT
-          j.id,
-          STRING_AGG(CONVERT(NVARCHAR(MAX), jt.tagName), ',') AS job_tags
         FROM FilteredJobs j
-        LEFT JOIN JobPostingsTags jpt ON jpt.jobId = j.id
-        LEFT JOIN JobTags jt ON jpt.tagId = jt.id
-        GROUP BY j.id
-      ),
-      JobSkillsAggregated AS (
-        SELECT
-          j.id,
-          STRING_AGG(CONVERT(NVARCHAR(MAX), s.name), ',') AS skills
-        FROM FilteredJobs j
-        LEFT JOIN job_skills js ON js.job_id = j.id
-        LEFT JOIN skills s ON js.skill_id = s.id
-        GROUP BY j.id
-      )
-      SELECT
-        j.*,
-        jta.job_tags,
-        jsa.skills,
-        c.name AS company_name,
-        c.logo AS company_logo,
-        c.location AS company_location,
-        c.description AS company_description,
-        CASE WHEN c.logo IS NOT NULL AND c.logo != '' THEN 1 ELSE 0 END AS has_logo
-      FROM FilteredJobs j
-      LEFT JOIN JobTagsAggregated jta ON j.id = jta.id
-      LEFT JOIN JobSkillsAggregated jsa ON j.id = jsa.id
-      LEFT JOIN companies c ON j.company_id = c.id
-      ORDER BY
-        has_logo DESC,
-        j.postedDate DESC
-      OFFSET @offset ROWS
-      FETCH NEXT @pageSize ROWS ONLY
-      ;`;
+        ORDER BY j.postedDate DESC
+        OFFSET @offset ROWS
+        FETCH NEXT @pageSize ROWS ONLY;
+      `;
   
       // Prepare SQL request and input parameters
       const request = new sql.Request();
@@ -1259,12 +815,9 @@ const jobQueries = {
       });
       request.input('offset', sql.Int, offset);
       request.input('pageSize', sql.Int, pageSize);
-      if (salary > 0) {
-        request.input('salary', sql.Int, salary);
-      }
   
       // Execute the query
-      const result = await request.query(query);
+      const result = await request.query(baseQuery);
   
       return result.recordset;
     } catch (error) {
@@ -1272,6 +825,7 @@ const jobQueries = {
       throw error;
     }
   },
+  
   
   
   
@@ -2313,8 +1867,8 @@ ORDER BY jp.postedDate DESC
           'administrator', 'analyst', 'architect', 'consultant', 'specialist', 'support', 'coder',
           'tester', 'manager', 'devops', 'cloud', 'data', 'ai', 'artificial intelligence',
           'machine learning', 'ml', 'blockchain', 'crypto', 'cybersecurity', 'security', 'database',
-          'web', 'mobile', 'ios', 'android', 'ux', 'ui', 'qa', 'quality assurance', 'sre',
-          'automation', 'product', 'agile', 'scrum', 'network', 'system', 'systems', 'it',
+          'web', 'mobile', 'ios', 'android', 'quality assurance', 'sre',
+          'automation', 'product', 'agile', 'scrum', 'network', 'system', 'systems',
           'information technology', 'digital', 'full stack', 'front end', 'backend', 'back end',
           'saas', 'paas', 'big data', 'data science', 'devsecops', 'nlp', 'natural language processing',
           'vr', 'ar', 'virtual reality', 'augmented reality', 'robotics', 'embedded', 'firmware',
@@ -2774,17 +2328,22 @@ ORDER BY jp.postedDate DESC
   getDuplicateJobPostings: async () => {
     try {
       const result = await sql.query(`
-        SELECT id, title, company_id, salary
-        FROM JobPostings
-        WHERE (title, company_id, salary, location) IN (
-          SELECT title, company_id, salary, location
+        WITH DuplicateJobPostings AS (
+          SELECT title, company_id, salary, location, COUNT(*) AS duplicate_count
           FROM JobPostings
           GROUP BY title, company_id, salary, location
           HAVING COUNT(*) > 1
         )
-        ORDER BY title, company_id, salary, postedDate DESC
+        SELECT jp.id, jp.title, jp.company_id, jp.salary, jp.location, jp.postedDate
+        FROM JobPostings jp
+        JOIN DuplicateJobPostings d
+        ON jp.title = d.title
+        AND jp.company_id = d.company_id
+        AND jp.salary = d.salary
+        AND jp.location = d.location
+        ORDER BY jp.title, jp.company_id, jp.salary, jp.location, jp.postedDate DESC
       `);
-      
+  
       // Group the results
       const groupedResults = result.recordset.reduce((acc, job) => {
         const key = `${job.title}-${job.company_id}-${job.salary}-${job.location}`;
@@ -2801,6 +2360,22 @@ ORDER BY jp.postedDate DESC
       throw err;
     }
   },
+
+  getDuplicateCompanies: async () => {
+    try {
+      const result = await sql.query(`
+        SELECT name, COUNT(*) AS duplicate_count
+        FROM companies
+        GROUP BY name
+        HAVING COUNT(*) > 1
+      `);
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+  
 
   // return list of ids of jobs that are older than 60 days
   getOldJobs: async () => {

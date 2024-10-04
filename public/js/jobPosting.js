@@ -108,7 +108,27 @@ async function getSimilarJobs(jobId) {
     similarJobsList.className = 'similar-jobs-list';
 
     jobs.forEach((job) => {
-      const jobElement = createJobElement(job);
+      let tags = [];
+
+      const postedDate = new Date(job.postedDate.replace(' ', 'T'));
+      const now = new Date();
+      const diffTime = Math.abs(now - postedDate);
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays <= 2) {
+        tags.push({text: 'New', class: 'bg-destructive'});
+      }
+
+      if (job.location) {
+        tags.push({text: formatLocation(job.location), class: 'location'});
+      }
+      if (job.salary) {
+        tags.push({text: job.salary, class: 'salary'});
+      }
+      if (job.experienceLevel) {
+        tags.push({text: job.experienceLevel, class: 'experienceLevel'});
+      }
+
+      const jobElement = createCard(job.company_name, formatRelativeDate(job.postedDate), job.title, job.description, true, `/jobs/${job.id}`, job.company_logo, tags);
       similarJobsList.appendChild(jobElement);
     });
 
@@ -211,93 +231,26 @@ function formatLocation(location) {
 }
 
 function createJobElement(job) {
-  const jobElement = document.createElement('div');
-  jobElement.classList.add('job');
-  jobElement.classList.add('no-padding');
-
-  jobElement.onclick = () => (window.location.href = `/jobs/${job.id}`);
-
-  const tagsArray = job.skills ?
-    job.skills.split(',').map(skill => skill.trim().toLowerCase()) : [];
-
-  const sortedTags = tagsArray.sort((a, b) => {
-    return a.localeCompare(b, undefined, {
-      sensitivity: 'base'
-    });
-  });
-  const displayedTags = sortedTags.slice(0, 3);
-
-  let tagsHTML = displayedTags
-    .map((skill) => {
-      return `
-            <span data-name="${skill}" data-type="skills" data-id="${skill}" data-index="${sortedTags.indexOf(skill)}" class="mini-text bold text-tag">${skill}</span>`;
-    })
-    .join('');
-
-  const remainingTagsCount = sortedTags.length - 3;
-  if (remainingTagsCount > 0) {
-    tagsHTML += `
-          <span class="remaining-tags mini-text" style="cursor: pointer;" onclick="toggleHiddenTags()">
-            +${remainingTagsCount} more
-          </span>
-        `;
+  const postedDate = new Date(job.postedDate.replace(' ', 'T'));
+  const now = new Date();
+  let tags = [];
+  const diffTime = Math.abs(now - postedDate);
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  if (diffDays <= 2) {
+    tags.push({text: 'New', class: 'bg-destructive'});
   }
 
+  if (job.location) {
+    tags.push({text: formatLocation(job.location), class: 'location'});
+  }
+  if (job.salary) {
+    tags.push({text: `$${job.salary}`, class: 'salary'});
+  }
+  if (job.experienceLevel) {
+    tags.push({text: job.experienceLevel, class: 'experienceLevel'});
+  }
 
-  jobElement.innerHTML = `
-  <div class="job-preview">
-    <div class="job-info">
-      <div class="flex flex-row w-100 space-between v-center gap-03 margin-1-bottom">
-      <div class="flex flex-row gap-06">
-        ${
-  job.company_logo
-    ? `<img class="thumbnail thumbnail-regular thumbnail-tiny" src="${job.company_logo}" alt="${job.company_name}" onerror="this.onerror=null;this.src='/img/glyph.png';" />`
-    : ''
-}
-        <div class="flex flex-col margin-06-bottom">
-                <p class="company-name bold secondary-text sub-text">${job.company_name}</p>
-          <a href="/jobs/${job.id}"><h3 class="job-title main-text">${job.title}</h3></a>
-        </div>
-        </div>
-      </div>
-      ${tagsHTML ? `<div class="job-tags margin-06-bottom">${tagsHTML}</div>` : ''}
-      <div class="flex flex-row gap-03 mini-text wrap">
-            <span class="text-tag bold flex flex-row v-center">
-            📍
-          ${formatLocation(job.location).trim().substring(0, 25)}
-        </span>
-            ${job.salary || job.salary_max ? `
-          <span class="text-tag bold flex flex-row v-center salary">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
-            ~${formatSalary(job.salary)}/yr
-          </span>
-        ` : ''}
-        <span class="text-tag flex flex-row v-center applicants">
-          <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-          ${job.applicants ? `${job.applicants} applicants` : '0'}
-        </span>
-        <span class="text-tag flex flex-row v-center post-date">
-          <svg class="icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-          <time>${formatRelativeDate(job.postedDate)}</time>
-        </span>
-        ${job.experienceLevel ? `
-        <span class="text-tag flex flex-row v-center experience-level">
-          <svg class="icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
-          ${
-  job.experienceLevel === 'Mid Level'
-    ? 'L3/L4'
-    : job.experienceLevel === 'Entry Level'
-      ? 'L1/L2'
-      : job.experienceLevel === 'Senior'
-        ? 'L5/L6'
-        : job.experienceLevel
-}
-        </span>
-        ` : ''}
-      </div>
-    </div>
-  </div>
-  `;
+  const jobElement = createCard(job.company_name, formatRelativeDate(job.postedDate), job.title, job.description, true, `/jobs/${job.id}`, job.company_logo, tags);
   return jobElement;
 }
 async function getSimilarJobsByCompany(jobId) {
@@ -443,12 +396,20 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     ? `<div class="caution-messages">This job was posted more than 30 days ago. Apply anyway <a class="link" href="${job.link}">here</a></div>`
     : ''
 }
-
+<nav class="breadcrumbs">
+<ol class="flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5">
+<a href="/jobs" class="transition-colors hover:text-foreground">Jobs</a>
+<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+<a class="transition-colors hover:text-foreground" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
+<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+${job.title}
+</ol>
+</nav>
       <div class="company-info w-100">
         ${
   job.company_logo
     ? `
-          <img src="${job.company_logo}" style="width: auto;" alt="${job.company_name} logo" onerror="this.onerror=null;this.src='/img/glyph.png';" class="thumbnail thumbnail-medium thumbnail-regular" />
+          <img src="${job.company_logo}" style="width: auto;" alt="${job.company_name} logo" onerror="this.onerror=null;this.src='/img/glyph.png';" class="thumbnail-micro thumbnail-regular" />
         `
     : ''
 }
@@ -457,7 +418,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
             <p class="third-text mini-text">
             <a class="secondary-text bold link sub-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
             </p>
-          <h3 class="company-name header-text margin-03-bottom">
+          <h3 class="company-name main-text margin-03-bottom">
         ${job.title}
       </h3>
       <p class="mini-text third-text"> 
@@ -528,8 +489,16 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     </div>
 
     ` : ''}
+<!--
+      <div class="border rounded">
 
-      
+      <div class="sub-text p-4 flex items-center">
+        <span class="material-symbols-outlined animate-spin mr-2" style="color: #6366f1;">auto_awesome</span>
+        <span>Please wait a moment while we improve this job posting!</span>
+      </div>
+      </div>
+      -->
+
 <div class="flex flex-col gap-06">
       <div class="interact-buttons flex space-between v-center">
         ${
@@ -795,6 +764,50 @@ ${
       console.error('Error fetching job details:', error);
     });
 
+}
+
+function createCard(name, timestamp, title, description, clickable=false, link=null, image=null, tags=null) {
+  console.log(tags);
+  const card = document.createElement('div');
+
+  let tagsHtml = '';
+  if (tags) {
+    tagsHtml = tags.map(tag => `
+      <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 ${tag.class}">
+        ${tag.text}
+      </div>
+    `).join('');
+  }
+
+  const cardContent = `
+<div class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left mb-4 text-sm transition-all hover:bg-accent" ${clickable ? `onclick="window.location.href='${link}'"` : ''}>
+  <div class="flex w-full flex-col gap-1">
+    <div class="flex items-center">
+      <div class="flex items-center gap-2">
+
+      ${image ? `
+              <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
+    <img class="aspect-square h-full w-full" src="${image}" />
+      </span>
+      ` : ''
+}
+        <div class="font-semibold">${name}</div>
+      </div>
+      <div class="ml-auto text-xs text-foreground">${timestamp}</div>
+    </div>
+    <div class="text-xs font-medium">${title}</div>
+  </div>
+  <div class="line-clamp-2 text-xs text-muted-foreground w-full">
+    ${description}
+  </div>
+  <div class="flex items-center gap-2">
+    ${tagsHtml}
+  </div>
+</div>
+    `;
+
+  card.innerHTML = cardContent;
+  return card;
 }
 
 function bindSelectorButtons() {

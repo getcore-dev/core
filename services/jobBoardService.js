@@ -286,7 +286,9 @@ class JobProcessor extends EventEmitter {
   async removeDuplicateJobs() {
     try {
       const duplicateJobGroups = await jobQueries.getDuplicateJobPostings();
+      console.log(duplicateJobGroups);
       const totalJobs = duplicateJobGroups.reduce((sum, group) => sum + group.length - 1, 0);
+      console.log(totalJobs);
   
       this.updateProgress({
         phase: 'Merging duplicate jobs',
@@ -296,7 +298,7 @@ class JobProcessor extends EventEmitter {
       });
   
       for (const group of duplicateJobGroups) {
-        await this.mergeDuplicateJobGroup(group);
+        // await this.mergeDuplicateJobGroup(group);
         this.updateProgress({ processedJobs: this.updateProgress.processedJobs + group.length - 1 });
       }
   
@@ -356,20 +358,17 @@ class JobProcessor extends EventEmitter {
       'oracle developer', 'erp consultant', 'crm consultant', 'help desk technician',
       'desktop support technician', 'it technician', '3d artist', 'vr developer', 'ar developer',
       'qa tester', 'quality assurance tester', 'network technician', 'it director', 'cto',
-      'chief technology officer', 'cio', 'chief information officer', 'ciso',
-      'chief information security officer'
+      'chief technology officer', 'cio', 'chief information officer', 'ciso', 'analyst', 'data analyst', 'data scientist', 'data engineer', 'data architect', 'data security analyst', 'chief information security officer', 'coordinator', 
+      'chief information security officer', 'coordinator', 'director', 'manager', 'supervisor', 'associate', 'customer experience', 'customer service', 'technical writer', 'technical support', 'it analyst', 'it specialist', 'it manager', 'information security analyst', 'information security manager', 'security analyst', 'security manager', 'security specialist', 'security engineer', 'security architect', 'security consultant', 'security director', 'security officer', 'security supervisor', 'security technician', 'security analyst', 'security manager', 'security specialist', 'security engineer', 'security architect', 'security consultant', 'security director', 'security officer', 'security supervisor', 'security technician',
+      'people manager', 'hr', 'account executive', 'social media manager', 'biostatistician', 'financial analyst', 'statistical programmer', 'programmer', 'trading intern', 'trading analyst', 'trading assistant', 'trading manager', 'trading specialist', 'trading engineer', 'trading architect', 'trading consultant', 'trading director', 'trading officer', 'trading supervisor', 'trading technician', 'trading analyst', 'trading assistant', 'trading manager', 'trading specialist', 'trading engineer', 'trading architect', 'trading consultant', 'trading director', 'trading officer', 'trading supervisor', 'trading technician', 'quantitative researcher', 'quantitative analyst', 'quantitative manager', 'quantitative specialist', 'quantitative engineer', 'quantitative architect', 'quantitative consultant', 'quantitative director', 'quantitative officer', 'quantitative supervisor', 'quantitative technician',
+      'risk strategist', 'head of revenue', 'head of kyc', 'vp of design', 'security engineer', 'project manager', 'product manager', 'product designer', 'computer science intern', 'business development', 'growth lead', 'code sme', 'head of growth,', 'sales developmet', 'head of recruiting',
+      'customer service', 'editor', 'content editor', 'content writer', 'content strategist', 'content manager', 'content director', 'content officer', 'content supervisor', 'content technician', 'content analyst', 'content specialist', 'content engineer', 'content architect', 'content consultant', 'content director', 'content officer', 'content supervisor', 'content technician', 'content analyst', 'content specialist', 'content engineer', 'content architect', 'content consultant', 'content director', 'content officer', 'content supervisor', 'content technician', 'content analyst', 'content specialist', 'content engineer', 'content architect', 'content consultant',
+      'customer support representative', 'salesforce'
     ];
   
     // Non-tech engineering roles to exclude
     const nonTechEngineering = [
-      'civil engineer', 'mechanical engineer', 'chemical engineer', 'aeronautical engineer',
-      'structural engineer', 'environmental engineer', 'biomedical engineer', 'agricultural engineer',
-      'nuclear engineer', 'petroleum engineer', 'geological engineer', 'industrial engineer',
-      'materials engineer', 'construction engineer', 'metallurgical engineer', 'mining engineer',
-      'transportation engineer', 'textile engineer', 'automotive engineer', 'marine engineer',
-      'naval engineer', 'sound engineer', 'production engineer', 'architect', 'draftsman',
-      'fashion designer', 'interior designer', 'graphic artist', 'chemist', 'physicist',
-      'lab technician', 'laboratory technician', 'field technician'
+      'cashier', 'cook', 'waitress', 'waiter', 'bartender', 'janitor', 'security guard',
     ];
   
     // Function to create regex patterns for exact matches and keywords
@@ -390,19 +389,19 @@ class JobProcessor extends EventEmitter {
   
     // List of generic tech-related keywords
     const techKeywords = [
-      'developer', 'programmer', 'engineer', 'software', 'hardware', 'technology', 'technician',
+      'developer', 'designer', 'analytics', 'engineering', 'programmer', 'engineer', 'software', 'hardware', 'technology', 'technician',
       'administrator', 'analyst', 'architect', 'consultant', 'specialist', 'support', 'coder',
       'tester', 'manager', 'devops', 'cloud', 'data', 'ai', 'artificial intelligence',
       'machine learning', 'ml', 'blockchain', 'crypto', 'cybersecurity', 'security', 'database',
-      'web', 'mobile', 'ios', 'android', 'ux', 'ui', 'qa', 'quality assurance', 'sre',
-      'automation', 'product', 'agile', 'scrum', 'network', 'system', 'systems', 'it',
+      'web', 'mobile', 'ios', 'android', 'quality assurance', 'sre',
+      'automation', 'product', 'agile', 'scrum', 'network', 'system', 'systems',
       'information technology', 'digital', 'full stack', 'front end', 'backend', 'back end',
       'saas', 'paas', 'big data', 'data science', 'devsecops', 'nlp', 'natural language processing',
       'vr', 'ar', 'virtual reality', 'augmented reality', 'robotics', 'embedded', 'firmware',
       'microcontroller', 'fpga', 'simulation', 'cloud computing', 'docker', 'kubernetes',
       'container', 'microservices', 'serverless', 'distributed systems', 'e-commerce', 'ecommerce',
       'internet', 'digital transformation', 'iot', 'internet of things', 'opensource', 'open source',
-      'technical', 'computing', 'computational', 'scientist'
+      'technical', 'computing', 'computational', 'scientist', 'quantitative', 'researcher', 'analyst', 'coder', 'biology', 'lab', 'immunology', 'chemistry', 'analytical', 'development', 'supply chain'
     ];
   
     const techKeywordsPattern = createPattern(techKeywords);
@@ -582,22 +581,7 @@ class JobProcessor extends EventEmitter {
 
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
-        // Attempt to make a regular HTTP request
-        const response = await http.get(url, {
-          timeout: 10000, // 10 seconds timeout
-          headers: {
-            'User-Agent': 'core/1.0 (support@getcore.dev)',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'DNT': '1',
-            'Connection': 'keep-alive',
-            'Upgrade-Insecure-Requests': '1'
-          },
-          validateStatus: function (status) {
-            return status >= 200 && status < 300;
-          },
-        });
+        const response = await axios.get(url);
     
         if (response.status !== 200) {
           throw new Error(`HTTP request failed with status ${response.status}`);
@@ -1185,7 +1169,7 @@ class JobProcessor extends EventEmitter {
         return response.data;
       }
 
-      const result = await this.fullExtractJobLinksFromPage(response, jobBoardUrl, new URL(jobBoardUrl).hostname);
+      const result = await this.fullExtractJobLinksFromPage(response.data, jobBoardUrl, new URL(jobBoardUrl).hostname);
       allLinks = result.links;
 
       // Check if there are more pages
@@ -1248,13 +1232,11 @@ class JobProcessor extends EventEmitter {
           if (links.some(link => link.url === fullUrl)) {
             return;
           }
-          if (title.includes('Apply') || this.isTechJob(title)) {
-            links.push({
-              url: fullUrl,
-              title: title,
-              applyType: 'external' 
-            });
-          }
+          links.push({
+            url: fullUrl,
+            title: title,
+            applyType: 'external' 
+          });
         }
       }
     });
@@ -1662,10 +1644,6 @@ class JobProcessor extends EventEmitter {
   }
 
   async processBoFALink (url) {
-    // grab div.job__title and div.job__description from the page
-
-    // get the company part of the url
-    // https://job-boards.greenhouse.io/flexport/jobs/6035440?gh_jid=6035440 you should grab 'flexport'
     const company = 'Bank of America';
     const companyId = await this.getOrCreateCompany(company, '', '', '', '', '', '', '', '');
     console.log(companyId);
@@ -1986,10 +1964,6 @@ class JobProcessor extends EventEmitter {
 
 
   async processAbbVieLink (url) {
-    // grab div.job__title and div.job__description from the page
-
-    // get the company part of the url
-    // https://job-boards.greenhouse.io/flexport/jobs/6035440?gh_jid=6035440 you should grab 'flexport'
     const company = 'AbbVie';
     const companyId = await this.getOrCreateCompany(company, '', '', '', '', '', '', '', '');
     console.log(companyId);

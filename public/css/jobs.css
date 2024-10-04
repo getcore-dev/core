@@ -417,12 +417,6 @@ div.job-title-location .sub-text {
   margin-top: 2rem;
 }
 
-.company-name {
-  font-size: 0.875rem;
-  color: #6b7280;
-  text-decoration: none;
-}
-
 .location-badge {
   font-size: 0.75rem;
   font-weight: 500;
@@ -446,10 +440,6 @@ div.job-title-location .sub-text {
   font-size: 0.75rem;
   color: #6b7280;
   cursor: pointer;
-}
-
-.salary {
-  color: #119f11 !important;
 }
 
 .job-details {
@@ -790,15 +780,6 @@ select {
   gap: 5px;
 }
 
-
-.dropdown-button {
-  background: none;
-  border: none;
-  color: var(--light-mode-text-color);
-  cursor: pointer;
-  font-size: 1rem;
-  padding: 6px;
-}
 
 .dropdown-button .material-symbols-outlined {
   font-size: 1.3rem;

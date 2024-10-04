@@ -387,23 +387,23 @@
                   </a>
                   <p class="readable sub-text short-text"><%= post.content %></p>
                   <div class="post-info">
-                    <span class="job-tag">
+                    <span class="text-tag">
                       <p>
                         <%= formatDate(post.created_at) %>
                       </p>
                     </span>
-                    <span class="job-tag">
+                    <span class="text-tag">
                       <p>
                         <%= post.views%> views
                       </p>
-                    </span class="job-tag">
+                    </span class="text-tag">
 
-                    <span class="job-tag">
+                    <span class="text-tag">
                       <p>
                         <%= post.comment_count %> comments
                       </p>
                     </span>
-                    <span class="job-tag">
+                    <span class="text-tag">
                       <p>
                         <%= post.reaction_count %> reactions
                       </p>
@@ -627,10 +627,10 @@
               <% } else { %>
               <p class="sub-text primary-text short-text">${experience.description}</p>
               <% } %>
-              <p>${ experience.tags ? experience.tags.split(',').slice(0, 3).map(tag => {
+              <div class="job-tags">${ experience.tags ? experience.tags.split(',').slice(0, 3).map(tag => {
                 const trimmedTag = tag.trim();
-                return `<span class="job-tag" onclick="window.location.href='/tags/${encodeURIComponent(trimmedTag)}'">${trimmedTag}</span>`;
-              }).join('') : ''}</p>
+                return `<span class="text-tag" onclick="window.location.href='/tags/${encodeURIComponent(trimmedTag)}'">${trimmedTag}</span>`;
+              }).join('') : ''}</div>
             </div>
           `;
           currentJobContainer.appendChild(jobElement);

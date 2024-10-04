@@ -92,6 +92,20 @@ router.post('/company-link', async (req, res) => {
 
 });
 
+router.get('/duplicate-companies', async (req, res) => {
+  try {
+    let companies = await jobQueries.getDuplicateCompanies();
+    res.json({ companies: companies });
+
+  } catch (error) {
+    console.error('Error extracting job postings:', error);
+    res
+      .status(500)
+      .json({ error: 'An error occurred while extracting job postings' });
+  }
+
+});
+
 router.post('/queue-company-link', async (req, res) => {
   try {
     const link = req.body.link;
@@ -632,7 +646,7 @@ router.get('/jobs', cacheMiddleware(2400), async (req, res) => {
       );
     } else if (isEmptySearch) {
       console.log('isEmptySearch'); 
-      allJobPostings = await jobQueries.getRecentJobs(page, pageSize);
+      allJobPostings = await jobQueries.searchAllJobsFromLast30Days({}, page, pageSize);
     } else {
       allJobPostings = await jobQueries.searchAllJobsFromLast30Days(
         {

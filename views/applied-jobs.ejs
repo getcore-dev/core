@@ -111,6 +111,26 @@
   .color-circle.remove {
     background-color: black;
   }
+
+  @media (prefers-color-scheme: dark) {
+
+    .job-table th,
+    .job-table tr {
+      border-color: var(--dark-mode-border-color);
+    }
+
+    .job-table {
+      box-shadow: 0 0 0 1px var(--dark-mode-border-color);
+    }
+
+    .job-table thead tr th:hover {
+      background-color: var(--dark-mode-hover-color);
+    }
+
+    .job-table tr:hover {
+      background-color: var(--dark-mode-hover-color);
+    }
+  }
 </style>
 
 <body>
@@ -131,12 +151,12 @@
         <table class="job-table">
           <thead>
             <tr>
-              <th class="mini-text third-text" style="padding: 10px;"><input type="checkbox" name="select-all" id="select-all"></th>
-              <th class="mini-text third-text" data-column="company_name" style="padding: 10px;">Company
+              <th class="mini-text" style="padding: 10px;"><input type="checkbox" name="select-all" id="select-all"></th>
+              <th class="mini-text" data-column="company_name" style="padding: 10px;">Company
               </th>
-              <th class="mini-text third-text" data-column="title">Title
+              <th class="mini-text" data-column="title">Title
               </th>
-              <th class="mini-text third-text" data-column="job_status">Status
+              <th class="mini-text" data-column="job_status">Status
 
               </th>
             </tr>
@@ -291,7 +311,7 @@
         const companyNameCell = document.createElement('td');
         const companyLink = document.createElement('a');
         companyLink.href = `/jobs/company/${job.company_name}`;
-        companyLink.className = 'company-name third-text mini-text bold';
+        companyLink.className = 'company-name mini-text bold';
         companyLink.textContent = job.company_name;
         companyNameCell.appendChild(companyLink);
 
