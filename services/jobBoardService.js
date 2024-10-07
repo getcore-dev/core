@@ -1,6 +1,6 @@
 const sanitizeHtml = require('sanitize-html'); // Import the sanitization library
 const url = require('url');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { GoogleGenerativeAI, SchemaType } = require('@google/generative-ai');
 const OpenAI = require('openai');
 const { zodResponseFormat } = require('openai/helpers/zod');
 const { z } = require('zod');
@@ -457,71 +457,120 @@ class JobProcessor extends EventEmitter {
     return null;
   }
 
+
+  calculateUrlSimilarity(url1, url2) {
+    // Remove protocol (http:// or https://) and www. from both URLs
+    const cleanUrl1 = url1.replace(/^(https?:\/\/)?(www\.)?/, '');
+    const cleanUrl2 = url2.replace(/^(https?:\/\/)?(www\.)?/, '');
+  
+    // Split URLs into parts
+    const parts1 = cleanUrl1.split('/');
+    const parts2 = cleanUrl2.split('/');
+  
+    // Compare domain and first level of path
+    if (parts1[0] !== parts2[0] || parts1[1] !== parts2[1]) {
+      return 0; // URLs are completely different
+    }
+  
+    // Count matching parts
+    let matchingParts = 2; // Domain and first level already matched
+    for (let i = 2; i < Math.min(parts1.length, parts2.length); i++) {
+      if (parts1[i] === parts2[i]) {
+        matchingParts++;
+      } else {
+        break; // Stop at first difference
+      }
+    }
+  
+    // Calculate similarity as a percentage
+    return matchingParts / Math.max(parts1.length, parts2.length);
+  }
   
 
   async fetchLinkedInPageContent(url, maxRetries = 3, retryDelay = 5000) {
     let browser;
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        browser = await puppeteer.launch({ 
-          headless: 'new',
+        // Only proceed if the URL is a LinkedIn job or company link
+        if (!url.includes('linkedin.com/jobs') && !url.includes('linkedin.com/company')) {
+          throw new Error('The provided URL is not a LinkedIn job or company link.');
+        }
+  
+        browser = await puppeteer.launch({
+          headless: false,
           defaultViewport: null,
           args: ['--start-maximized']
         });
         const page = await browser.newPage();
-
+  
         // Set a more realistic user agent
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
-
-        // Navigate to the LinkedIn page with a realistic delay
-        await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
-        await this.randomDelay(1000, 1500);
-
-        if (page.url() !== url) {
-          await page.goto('https://www.linkedin.com/login', { waitUntil: 'networkidle2', timeout: 60000 });
+  
+        // Navigate to the LinkedIn page with a realistic delay and error handling
+        try {
+          await page.goto(url);
+          await this.randomDelay(1000, 1500);
+        } catch (navError) {
+          console.error(`Navigation error: ${navError.message}. Retrying...`);
+          continue;
         }
-
+  
+        const currentUrl = page.url();
+        const similarity = this.calculateUrlSimilarity(currentUrl, url);
+  
+        if (similarity < 0.7) {
+          console.log(`Current URL (${currentUrl}) differs significantly from intended URL (${url}). Navigating to login page...`);
+          await page.goto('https://www.linkedin.com/login');
+        } else {
+          console.log(`Current URL (${currentUrl}) is sufficiently similar to intended URL (${url}). Proceeding...`);
+        }
+  
         await this.randomDelay(500, 1200);
-
+  
         // Check if we're on the login page
-        const isLoginPage = await page.evaluate(() => {
-          return window.location.href.includes('login') || window.location.href.includes('authwall') || window.location.href.includes('signin');
-        });
-
+        const isLoginPage = page.url().includes('login') || page.url().includes('authwall') || page.url().includes('signin');
+  
         await this.randomDelay(900, 1300);
-
+  
         if (isLoginPage) {
           console.log('Login required. Attempting to log in...');
           
-          // Fill in the login form with realistic typing
-          const emailSelector = await page.waitForSelector('input[name="session_key"]');
-          await this.typeWithVariation(page, emailSelector, process.env.LINKEDIN_EMAIL);
-
-          const passwordSelector = await page.waitForSelector('input[name="session_password"]');
-          await this.typeWithVariation(page, passwordSelector, process.env.LINKEDIN_PASSWORD);
-
-          await this.randomDelay(400, 700);
-
-          // Click the login button and wait for navigation
-          await Promise.all([
-            page.click('button[type="submit"]'),
-            page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 60000 })
-          ]);
-
-          // After login, navigate back to the original URL with a delay
-          await this.randomDelay(1000, 1400);
-          await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+          try {
+            // Fill in the login form with realistic typing
+            const emailSelector = await page.waitForSelector('input[name="session_key"]', { timeout: 10000 });
+            await this.typeWithVariation(page, emailSelector, process.env.LINKEDIN_EMAIL);
+  
+            const passwordSelector = await page.waitForSelector('input[name="session_password"]', { timeout: 10000 });
+            await this.typeWithVariation(page, passwordSelector, process.env.LINKEDIN_PASSWORD);
+  
+            await this.randomDelay(400, 700);
+  
+            // Click the login button
+            await page.click('button[type="submit"]');
+  
+            // Wait for navigation
+            await page.waitForNavigation({ waitUntil: 'networkidle2' });
+  
+            // Add delay to allow page to stabilize after login
+            await this.randomDelay(2000, 3000);
+  
+            // After login, navigate back to the original URL with a delay
+            await page.goto(url);
+          } catch (loginError) {
+            console.error(`Login failed: ${loginError.message}. Retrying...`);
+            continue;
+          }
         }
-
+  
         // Wait for the content to load with a realistic delay
         await this.randomDelay(100, 400);
-        await page.waitForSelector('body', { timeout: 60000 });
-
+        await page.waitForSelector('body');
+  
         // Get the page content
         const content = await page.content();
-
+  
         return content;
-
+  
       } catch (error) {
         console.error(`Error fetching LinkedIn page ${url} (Attempt ${attempt}/${maxRetries}):`, error);
         
@@ -574,32 +623,42 @@ class JobProcessor extends EventEmitter {
    * @param {string} url - The URL to fetch data from.
    * @returns {Promise<Object>} - The response object containing the fetched data.
    */
-  async makeRequest(url, retries = 1, delay = 1000) {
+  async makeRequest(url, retries = 3, initialDelay = 1000) {
     // Handle special cases for specific job board platforms
-    if (url.includes('linkedin.com')) return {data: await this.fetchLinkedInPageContent(url), status: 200};
-    if (url.includes('uber.com')) return await this.usePuppeteerFallback(url); 
-
+    if (url.includes('uber.com')) return await this.usePuppeteerFallback(url);
+  
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
         const response = await axios.get(url);
-    
+  
         if (response.status !== 200) {
           throw new Error(`HTTP request failed with status ${response.status}`);
         }
-    
+  
         // Check if the response is too short (possibly indicating a non-rendered page)
         if (response.data.length < 1000) {
           console.log('Response too short. Falling back to Puppeteer.');
           return await this.usePuppeteerFallback(url);
         }
-    
+  
         return response;
       } catch (error) {
-        console.error(`Attempt ${attempt} failed:`, error.message);
+        if (error.response && error.response.status === 429) {
+          console.error(`Attempt ${attempt} failed due to rate limit (429):`, error.message);
+  
+          // If rate limit reset information is available, use it
+          const retryAfter = error.response.headers['retry-after'];
+          if (retryAfter) {
+            await new Promise(resolve => setTimeout(resolve, parseInt(retryAfter) * 1000));
+          }
+        } else {
+          console.error(`Attempt ${attempt} failed:`, error.message);
+        }
+  
         if (attempt === retries) {
           console.error('All attempts failed. Falling back to Puppeteer.');
           const puppeteerResponse = await this.usePuppeteerFallback(url);
-          
+  
           // Check if the response is job data or HTML content
           if (puppeteerResponse.data && typeof puppeteerResponse.data === 'object' && puppeteerResponse.intercepted) {
             console.log('Returning job data from Puppeteer fallback');
@@ -612,12 +671,15 @@ class JobProcessor extends EventEmitter {
             };
           }
         } else {
-          // Wait before next retry
+          // Wait before next retry using exponential backoff with jitter
+          const delay = initialDelay * Math.pow(2, attempt - 1) + Math.random() * 1000;
+          console.log(`Retrying after ${delay}ms...`);
           await new Promise(resolve => setTimeout(resolve, delay));
         }
       }
     }
   }
+  
 
   getRandomUserAgent() {
     const userAgents = [
@@ -661,6 +723,7 @@ class JobProcessor extends EventEmitter {
         if (contentType && contentType.includes('application/json')) {
           try {
             const responseData = await response.json();
+            console.log('responseData', responseData);
             if (responseData && responseData.departments) {
               // iterate over each department and get the .jobs [Array]
               jobData = [];
@@ -1845,7 +1908,7 @@ class JobProcessor extends EventEmitter {
 
       // Navigate to the URL and wait until the network is idle
       console.log(`Navigating to ${url}...`);
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+      await page.goto(url);
 
       // Introduce an explicit delay of 3 seconds to allow dynamic content to load
       console.log('Waiting for 3 seconds to ensure dynamic content loads...');
@@ -2138,6 +2201,11 @@ class JobProcessor extends EventEmitter {
     
   }
 
+  async processGenericJob(data) {
+  // use gemini to extract the data
+
+  }
+
 
   async processJobLink(link) {
     const url = typeof link === 'object' && link.url ? link.url : link;
@@ -2187,8 +2255,9 @@ class JobProcessor extends EventEmitter {
       const jobData = await this.processAppleJob(url);
       return jobData;
     } else {
-      console.error('Unsupported job board:', url);
-      return { error: 'Unsupported job board' };
+      const response = await this.makeRequest(url);
+      const jobData = await this.useGeminiAPI(url, response.data);
+      return jobData;
     }
 
     /*
@@ -2345,13 +2414,19 @@ class JobProcessor extends EventEmitter {
   }
 
   async useGeminiAPI(link, textContent) {
-    const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash-8b' });
     const prompt = this.generatePrompt(link, textContent);
     const result = await model.generateContent(prompt);
     let response = await result.response;
     response = response.text();
-    const cleanedResponse = response.replace(/`+/g, '').match(/\{.*\}/s)?.[0] || '';
-    return JSON.parse(cleanedResponse);
+    response = response.replace(/```json\n/, '').replace(/\n```/g, '');
+    try {
+      const jsonResponse = JSON.parse(response);
+      return jsonResponse;
+    } catch (error) {
+      console.error('Error parsing JSON:', error);
+      return response;
+    }
   }
 
   async useChatGPTAPI_CompanyInfo(link, textContent) {
@@ -2610,41 +2685,51 @@ class JobProcessor extends EventEmitter {
 
   generatePrompt(link, textContent) {
     this.updateProgress({ currentAction: 'Generating prompt' });
-    return `
-    IF THE JOB POSTING DATA IS NOT A JOB RELATED TO A COMPUTER SCIENCE, MATHEMATICS, OR ENGINEERING FIELD, PLEASE SKIP THIS JOB POSTING.
-      Please extract the following information from this job posting data: ${textContent}
-      - title (e.g., Software Engineer, Data Analyst, include if there is a specific team or project in the title like :'Software Engineer, Frontend'. if the title is not something related to computer science or software engineering, please DO NOT include it)
-      - company_name NVARCHAR(50) (as simple as possible and you can tell the company name from the job posting link: ${link})
-      - company_description (blank)
-      - company_location (blank)
-      - company_job_board_url (the url of the job careers page if you can get it, for example: 'https://careers.micron.com/careers?pid=25250316&domain=micron.com&sort_by=relevance' -> 'https://careers.micron.com/careers')
-      - company_industry (blank)
-      - company_size (blank)
-      - company_stock_symbol (blank)
-      - company_logo (blank)
-      - company_founded (blank)
-      - location (City, State(full name), Country(full name), if remote N/A)
-      - salary (integer only, ALWAYS ATTEMPT TO CONVERT TO USD USING A CURRENT CONVERSION RATE no currency symbol, no matter what format the salary in (hourly, monthly, weekly) convert to yearly salary, if none present 0)
-      - salary_max (integer only, ALWAYS ATTEMPT TO CONVERT TO USD USING A CURRENT CONVERSION RATE, no currency symbol, no matter what format the salary in (hourly, monthly, weekly) convert to yearly salary, if none present 0)
-      - experience_level ("Internship", "Entry Level", "Junior", "Mid Level", "Senior", "Lead" or "Manager" only)
-      - skills (6-10 skills, required skills for the job that would be listed in the job posting, as a comma-separated list)
-      - tags (at least 10, these should be different from skills and are things commonly searched related to the job. e.g., "remote", "healthcare", "startup" as a comma-separated list)
-      - description (write this in the format of "<company name> is looking for a" try to take up to 3 paragraphs from the original source)
-      - benefits (as a comma-separated list) 
-      - additional_information (blank if nothing detected in the job posting, otherwise provide any additional information that you think is relevant to the job posting)
-      - PreferredQualifications (if available)
-      - MinimumQualifications (if available)
-      - Responsibilities (responsibilities of the job)
-      - Requirements (requirements of the job)
-      - NiceToHave (nice to have skills or experience)
-      - Schedule (assume monday to friday, 9am to 5pm, if not specified, default to this)
-      - HoursPerWeek (integer only, this can be defaulted to 40 for full-time, and 20 for part-time. If not specified, default to 40)
-      - H1BVisaSponsorship BIT (assume no if not specified)
-      - IsRemote BIT (if the job location is remote or n/a then assume yes)
-      - EqualOpportunityEmployerInfo NVARCHAR(MAX) (if available, attempt to give the companie's equal opportunity employer information)
-      - Relocation BIT
+  
+    const prompt = `
+      IF ANY OF THE INFORMATION IS NOT AVAILABLE, PLEASE RETURN NULL FOR THAT INFORMATION.
+      DO NOT TRIM ANY INFORMATION JUST RETURN THE ENTIRE INFORMATION GATHERED FOR EACH FIELD. DONT JUST SAY ITS IN THE HTML.
+      ${textContent}
+      Please extract the following information from this job posting data using the following JSON schema:
+      JobPosting = {
+        title: string,
+        company_name: string,
+        company_description: string,
+        company_location: string,
+        company_job_board_url: string,
+        company_industry: string,
+        company_size: string,
+        company_stock_symbol: string,
+        company_logo: string,
+        company_founded: string,
+        location: string,
+        salary: number,
+        salary_max: number,
+        experience_level: string,
+        skills: string[],
+        tags: string[],
+        description: string,
+        benefits: string[],
+        additional_information: string,
+        PreferredQualifications: string,
+        MinimumQualifications: string,
+        Responsibilities: string,
+        Requirements: string,
+        NiceToHave: string,
+        Schedule: string,
+        HoursPerWeek: number,
+        H1BVisaSponsorship: boolean,
+        IsRemote: boolean,
+        EqualOpportunityEmployerInfo: string,
+        Relocation: boolean
+      }
       Provide the extracted information in JSON format.
+      Job posting link: ${link}
+
+      Return: <JobPosting>
     `;
+
+    return prompt;
   }
 
   validateAndCleanJobData(data) {
@@ -3268,6 +3353,7 @@ class JobProcessor extends EventEmitter {
       'New York, NY', 'San Francisco, CA', 'Chicago, IL', 'Austin, TX',
       'Seattle, WA', 'Boston, MA', 'Los Angeles, CA', 'Atlanta, GA'
     ];
+    console.log('Starting LinkedIn job search');
 
     const randomJobTitle = jobTitles[Math.floor(Math.random() * jobTitles.length)];
     const randomCity = cities[Math.floor(Math.random() * cities.length)];
@@ -3285,17 +3371,24 @@ class JobProcessor extends EventEmitter {
     try {
       await this.init();
 
+      try { 
+        await this.crawLinkedIn();
+      } catch (error) {
+        // await notificationQueries.createDevNotification('error', '', 'Error in crawLinkedIn:', error);
+        console.error('Error in crawLinkedIn:', error);
+      }
+
       try {
         await this.updateJobPostings();
       } catch (error) {
-        await notificationQueries.createDevNotification('error', '', 'Error in updateJobPostings:', error);
+        // await notificationQueries.createDevNotification('error', '', 'Error in updateJobPostings:', error);
         console.error('Error in updateJobPostings:', error);
       }
 
       try {
         await this.collectJobLinksFromSimplify();
       } catch (error) {
-        await notificationQueries.createDevNotification('error', '', 'Error in collectJobLinksFromSimplify:', error);
+        // await notificationQueries.createDevNotification('error', '', 'Error in collectJobLinksFromSimplify:', error);
         console.error('Error in collectJobLinksFromSimplify:', error);
       }
 
@@ -3303,21 +3396,14 @@ class JobProcessor extends EventEmitter {
       try {
         await this.removeDuplicateJobs();
       } catch (error) {
-        await notificationQueries.createDevNotification('error', '', 'Error in removeDuplicateJobs:', error);
+        // await notificationQueries.createDevNotification('error', '', 'Error in removeDuplicateJobs:', error);
         console.error('Error in removeDuplicateJobs:', error);
-      }
-
-      try { 
-        await this.crawLinkedIn();
-      } catch (error) {
-        await notificationQueries.createDevNotification('error', '', 'Error in crawLinkedIn:', error);
-        console.error('Error in crawLinkedIn:', error);
       }
 
       this.updateProgress({ phase: 'Completed' });
 
     } catch (error) {
-      await notificationQueries.createDevNotification('error', '', 'Error in start:', error);
+      // await notificationQueries.createDevNotification('error', '', 'Error in start:', error);
       console.error('Error in start:', error);
     }
   }

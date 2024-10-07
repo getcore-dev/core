@@ -41,6 +41,7 @@
 
     <div class="company-info-container" data-company="<%= company.name %>">
       <div class="company-menu">
+        <!--
         <nav class="breadcrumbs">
           <ol class="flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5">
             <a href="/jobs" class="transition-colors hover:text-foreground">Jobs</a>
@@ -50,10 +51,11 @@
             <p><%= company.name %></p>
           </ol>
         </nav>
+        -->
         <div class="company-header margin-06-bottom">
           <div class="company-image">
             <% if (company.logo) { %>
-            <img class="thumbnail-small  thumbnail-regular" src="<%= company.logo %>" alt="" />
+            <img class="thumbnail-small thumbnail  thumbnail-regular" src="<%= company.logo %>" alt="" />
             <% } %>
           </div>
           <div class="company-posting-info">

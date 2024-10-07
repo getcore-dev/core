@@ -396,6 +396,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     ? `<div class="caution-messages">This job was posted more than 30 days ago. Apply anyway <a class="link" href="${job.link}">here</a></div>`
     : ''
 }
+<!-- 
 <nav class="breadcrumbs">
 <ol class="flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5">
 <a href="/jobs" class="transition-colors hover:text-foreground">Jobs</a>
@@ -405,18 +406,21 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 ${job.title}
 </ol>
 </nav>
+-->
       <div class="company-info w-100">
-        ${
+        <div class="company-details">
+      <div class="company-information">
+            <p class="third-text mini-text">
+            <div class="flex flex-row gap-06 v-center">
+                    ${
   job.company_logo
     ? `
           <img src="${job.company_logo}" style="width: auto;" alt="${job.company_name} logo" onerror="this.onerror=null;this.src='/img/glyph.png';" class="thumbnail-micro thumbnail-regular" />
         `
     : ''
 }
-        <div class="company-details">
-      <div class="company-information">
-            <p class="third-text mini-text">
             <a class="secondary-text bold link sub-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
+            </div>
             </p>
           <h3 class="company-name main-text margin-03-bottom">
         ${job.title}

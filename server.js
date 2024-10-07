@@ -74,7 +74,11 @@ if (cluster.isMaster && process.env.NODE_ENV !== 'development') {
 } else {
   // Workers can share any TCP connection
   // In this case it is an HTTP server
+  
   app.listen(environment.port, () => {
     console.log(`Worker ${process.pid} started and running on http://localhost:${environment.port}`);
+    setTimeout(() => {
+      runJobBoardService();
+    }, 5000);
   });
 }
