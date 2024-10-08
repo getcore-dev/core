@@ -103,10 +103,11 @@ const jobQueries = {
       }
   
       // Always declare @preferredSalary, even if it's not provided in userPreferences
-      request.input('preferredSalary', sql.Int, userPreferences.jobPreferredSalary || 0);
+      request.input('preferredSalary', sql.Decimal(10, 2), userPreferences.jobPreferredSalary || 0);
       if (userPreferences.jobPreferredSalary && userPreferences.jobPreferredSalary > 0) {
         conditions.push('j.salary >= @preferredSalary');
       }
+      
   
       if (userPreferences.jobPreferredSkills && userPreferences.jobPreferredSkills.length > 0) {
         const skillConditions = [];
@@ -892,6 +893,7 @@ const jobQueries = {
     founded = undefined,
     size = undefined,
     stock_symbol = undefined,
+    alternate_names = undefined,
     job_board_url = undefined
   ) => {
     // Construct the SET clause dynamically
@@ -900,43 +902,47 @@ const jobQueries = {
 
     if (name !== undefined) {
       fields.push('name = @name');
-      values.name = { value: name, type: sql.NVarChar };
+      values.name = { value: name || null, type: sql.NVarChar };
     }
     if (location !== undefined) {
       fields.push('location = @location');
-      values.location = { value: location, type: sql.NVarChar };
+      values.location = { value: location || null, type: sql.NVarChar };
     }
     if (description !== undefined) {
       fields.push('description = @description');
-      values.description = { value: description, type: sql.NVarChar };
+      values.description = { value: description || null, type: sql.NVarChar };
     }
     if (logo !== undefined) {
       fields.push('logo = @logo');
-      values.logo = { value: logo, type: sql.VarChar };
+      values.logo = { value: logo || null, type: sql.VarChar };
     }
     if (logo_url !== undefined) {
       fields.push('logo_url = @logo_url');
-      values.logo_url = { value: logo_url, type: sql.VarChar };
+      values.logo_url = { value: logo_url || null, type: sql.VarChar };
     }
     if (industry !== undefined) {
       fields.push('industry = @industry');
-      values.industry = { value: industry, type: sql.VarChar };
+      values.industry = { value: industry || null, type: sql.VarChar };
+    }
+    if (alternate_names !== undefined) {
+      fields.push('alternate_names = @alternate_names');
+      values.alternate_names = { value: alternate_names || null, type: sql.VarChar };
     }
     if (founded !== undefined) {
       fields.push('founded = @founded');
-      values.founded = { value: founded, type: sql.DateTime };
+      values.founded = { value: founded || null, type: sql.DateTime };
     }
     if (size !== undefined) {
       fields.push('size = @size');
-      values.size = { value: size, type: sql.VarChar };
+      values.size = { value: size || null, type: sql.VarChar };
     }
     if (stock_symbol !== undefined) {
       fields.push('stock_symbol = @stock_symbol');
-      values.stock_symbol = { value: stock_symbol, type: sql.VarChar };
+      values.stock_symbol = { value: stock_symbol || null, type: sql.VarChar };
     }
     if (job_board_url !== undefined) {
       fields.push('job_board_url = @job_board_url');
-      values.job_board_url = { value: job_board_url, type: sql.VarChar };
+      values.job_board_url = { value: job_board_url || null, type: sql.VarChar };
     }
 
     if (fields.length === 0) {
@@ -2387,13 +2393,22 @@ ORDER BY jp.postedDate DESC
     }
   },
 
-  getDuplicateCompanies: async () => {
+  getDirectDuplicateCompanies: async () => {
     try {
       const result = await sql.query(`
-        SELECT name, COUNT(*) AS duplicate_count
-        FROM companies
-        GROUP BY name
-        HAVING COUNT(*) > 1
+        WITH DuplicateCompanies AS (
+          SELECT name
+          FROM companies
+          GROUP BY name
+          HAVING COUNT(*) > 1
+        )
+        SELECT MIN(c.id) AS id, c.name, 
+               COUNT(*) AS duplicate_count,
+               STRING_AGG(CAST(c.id AS NVARCHAR(MAX)), ',') WITHIN GROUP (ORDER BY c.id) AS duplicate_ids
+        FROM companies c
+        JOIN DuplicateCompanies dc ON c.name = dc.name
+        GROUP BY c.name
+        ORDER BY c.name
       `);
       return result.recordset;
     } catch (err) {
@@ -2401,6 +2416,41 @@ ORDER BY jp.postedDate DESC
       throw err;
     }
   },
+
+  combineDuplicateCompaniesAndJobs: async (companyId, duplicateCompanyId) => {
+    try {
+      await sql.query(`
+        UPDATE JobPostings
+        SET company_id = ${companyId}
+        WHERE company_id = ${duplicateCompanyId}
+      `);
+
+      await sql.query(` 
+        DELETE FROM companies WHERE id = ${duplicateCompanyId}
+      `);
+
+      return { error: false, message: 'Duplicate companies combined successfully' };
+    } catch (err) {
+      return { error: true, message: 'Error combining duplicate companies' };
+    }
+  },
+  
+
+  getDuplicateCompanies: async () => {
+    try {
+      const result = await sql.query(`
+        SELECT job_board_url, COUNT(*) AS duplicate_count
+        FROM companies
+        GROUP BY job_board_url
+        HAVING COUNT(*) > 1
+      `); 
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+  
   
 
   // return list of ids of jobs that are older than 60 days

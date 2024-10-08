@@ -338,9 +338,9 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
       </div>
       <div class="ml-auto text-xs text-foreground">${timestamp}</div>
     </div>
-    <div class="text-xs font-medium">${title}</div>
+    <div class="text-base font-medium">${title}</div>
   </div>
-  <div class="line-clamp-2 text-xs text-muted-foreground w-full">
+  <div class="line-clamp-2 text-sm text-muted-foreground w-full">
     ${description}
   </div>
   <div class="flex items-center gap-2">

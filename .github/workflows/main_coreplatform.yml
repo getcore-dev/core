@@ -1,4 +1,7 @@
-name: Build, Test, and Deploy Node.js app to Azure Web App - coreplatform
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy Node.js app to Azure Web App - coreplatform
 
 on:
   push:
@@ -11,90 +14,48 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout the repository
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # 2. Cache Node.js modules to speed up builds
-      - name: Cache Node.js modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      # 3. Set up Node.js
-      - name: Set up Node.js
+      - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: "20.x"
+          node-version: '20.x'
 
-      # 4. Install dependencies
-      - name: Install Dependencies
+      - name: npm install, build, and test
         run: |
-          echo "Installing dependencies..."
-          npm ci --verbose
+          npm install
+          npm run build --if-present
+          npm run test --if-present
+      - name: Zip artifact for deployment
+        run: zip release.zip ./* -r
 
-      # 6. (Optional) Run tests
-      # If you have tests, uncomment the following step
-      # - name: Run Tests
-      #   run: |
-      #     echo "Running tests..."
-      #     npm test
-
-      # 7. (Optional) Prune devDependencies
-      - name: Prune devDependencies
-        run: |
-          echo "Pruning devDependencies..."
-          npm prune --production
-
-      # 8. Upload artifact for deployment job
-      - name: Upload Artifact for Deployment
+      - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: |
-            .
-            !node_modules/**
-          if-no-files-found: error
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: "Production"
+      name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      # 1. Download artifact from build job
-      - name: Download Artifact from Build
+      - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
           name: node-app
 
-      - name: Install Dependencies
-        run: npm ci --only=production
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
 
-      # 2. Deploy to Azure Web App
-      - name: Deploy to Azure Web App
+      - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: "coreplatform"  # Replace with your Azure Web App name
-          slot-name: "Production"
+          app-name: 'coreplatform'
+          slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_65666B72FDCA4DBF84A90C4E2F6F7D4F }}
-          package: .  # Deploy the entire repository
-
-      # 3. Post Deployment Check
-      - name: Post Deployment Check
-        run: |
-          echo "Checking deployment status..."
-          response=$(curl -s -o /dev/null -w "%{http_code}" https://coreplatform.azurewebsites.net)
-          echo "HTTP response code: $response"
-          if [ "$response" = "200" ]; then
-            echo "Deployment successful, site is up"
-          else
-            echo "Site is not responding with 200 OK, got $response"
-            exit 1
-          fi
+          package: .

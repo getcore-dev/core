@@ -101,11 +101,6 @@ router.get('/user/:username/followers', viewController.renderFollowers);
 
 router.get('/user/:username/following', viewController.renderFollowing);
 
-router.get('/profile/jobs', checkAuthenticated, async (req, res) => {
-  const userId = req.user.id;
-  res.render('edit-jobs-profile.ejs', { user: req.user });
-});
-
 router.post('/profile/jobs', checkAuthenticated, async (req, res) => {
   const userId = req.user.id;
   const updates = req.body;

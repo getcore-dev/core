@@ -85,15 +85,22 @@
 
           <div class="flex flex-col w-100">
             <div class="flex flex-col">
-              <div class="flex flex-row v-center w-100 gap-06 adaptive-border px-2 py-1 margin-1-bottom">
+              <div class="flex flex-row v-center w-100 gap-06 adaptive-border px-3 py-3 margin-1-bottom">
                 <img src="<%= user.avatar %>" alt="Avatar" class="thumbnail thumbnail-regular thumbnail-micro">
                 <div class="flex flex-col">
                   <p class="mini-text bold"><%= user.firstname %> <%= user.lastname %></p>
                   <p class="mini-text secondary-text"><%= user.username %></p>
                 </div>
-                <div class="ml-auto px-2 py-2 clickable">
+                <div class="ml-auto flex flex-row gap-06 v-center">
+                  <a href="#" onclick="document.getElementById('logoutForm').submit()">
+                    <div class="menu-item sub-text primary-text cancel-button-text px-2 py-3">
+                      Logout
+                    </div>
+                  </a>
                   <a class="clickable mini-text bold" href="/user/<%= user.username %>">
-                    Profile
+                    <button class="regular-button-normal mini-button mini-text">
+                      Profile
+                    </button>
                   </a>
                 </div>
               </div>
@@ -101,8 +108,8 @@
           </div>
 
           <div class="flex flex-col margin-06-bottom">
-            <a class="<%= isActive('/notifications') ? 'active primary-text' : 'secondary-text' %>" href="/notifications">
-              <div class="menu-item mini-text relative px-2 py-3">
+            <a href="/notifications">
+              <div class="menu-item sub-text relative px-2 py-3">
                 <span class="material-symbols-outlined" id="menu-community-icon">
                   notifications
                 </span>
@@ -111,28 +118,20 @@
 
               </div>
             </a>
-            <a class="<%= isActive('/favorites') ? 'active primary-text' : 'secondary-text' %>" href="/favorites">
-              <div class="menu-item mini-text px-2 py-3">
+            <a href="/favorites">
+              <div class="menu-item sub-text px-2 py-3">
                 <span class="material-symbols-outlined" id="menu-community-icon">
                   star
                 </span>
                 Favorites
               </div>
             </a>
-            <a href="/settings" class="<%= isActive('/settings') ? 'active primary-text' : 'secondary-text' %>">
-              <div class="menu-item mini-text px-2 py-3">
+            <a href="/settings">
+              <div class="menu-item sub-text px-2 py-3">
                 <span class="material-symbols-outlined" id="menu-community-icon">
                   settings
                 </span>
                 Settings
-              </div>
-            </a>
-            <a href="#" onclick="document.getElementById('logoutForm').submit()">
-              <div class="menu-item mini-text primary-text cancel-button-text px-2 py-3">
-                <span class="material-symbols-outlined cancel-button-text" id="menu-community-icon">
-                  logout
-                </span>
-                Logout
               </div>
             </a>
           </div>
@@ -142,12 +141,12 @@
 
           <div class="flex">
             <div class="mobile-menu-header sub-text">
-              <h4 class="mini-text third-text margin-06-bottom">Navigation</h4>
+              <h4 class="main-text bold margin-06-bottom">Navigation</h4>
             </div>
           </div>
 
-          <a href="/" class="<%= isActive('/') ? 'active primary-text' : 'secondary-text' %>">
-            <div class="menu-item mini-text px-2 py-3">
+          <a href="/" class="<%= isActive('/') ? 'active' : '' %>">
+            <div class="menu-item sub-text px-2 py-3">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 home
               </span>
@@ -155,8 +154,8 @@
             </div>
           </a>
 
-          <a href="/jobs" class="<%= isActive('/jobs') ? 'active primary-text' : 'secondary-text' %>">
-            <div class="menu-item mini-text px-2 py-3">
+          <a href="/jobs" class="<%= isActive('/jobs') ? 'active' : '' %>">
+            <div class="menu-item sub-text px-2 py-3">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 work
               </span>
@@ -165,9 +164,9 @@
           </a>
           <details>
             <summary>
-              <a class="<%= isActive('/networks') ? 'active primary-text' : 'secondary-text' %>">
+              <a href="/networks" class="<%= isActive('/networks') ? 'active' : '' %>">
 
-                <div class="menu-item mini-text px-2 py-3">
+                <div class="menu-item sub-text px-2 py-3">
                   <span class="material-symbols-outlined" id="menu-community-icon">
                     workspaces
                   </span>
@@ -180,8 +179,8 @@
             <div class="mobile-communities-container">
             </div>
           </details>
-          <a href="/updates" class="<%= isActive('/updates') ? 'active primary-text' : 'secondary-text' %>">
-            <div class="menu-item mini-text px-2 py-3">
+          <a href="/updates" class="<%= isActive('/updates') ? 'active' : '' %>">
+            <div class="menu-item sub-text px-2 py-3">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 update
               </span>
@@ -193,8 +192,8 @@
 
           <% if (user) { %>
           <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
-          <a href="/feedback" class="<%= isActive('/feedback') ? 'active primary-text' : 'secondary-text' %>">
-            <div class="menu-item mini-text px-2 py-3">
+          <a href="/feedback" class="<%= isActive('/feedback') ? 'active' : '' %>">
+            <div class="menu-item sub-text px-2 py-3">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 feedback
               </span>
@@ -203,8 +202,8 @@
             </div>
           </a>
           <% } %>
-          <a href="/about" class="<%= isActive('/about') ? 'active primary-text' : 'secondary-text' %>">
-            <div class="menu-item mini-text px-2 py-3">
+          <a href="/about" class="<%= isActive('/about') ? 'active' : '' %>">
+            <div class="menu-item sub-text px-2 py-3">
               <span class="material-symbols-outlined" id="menu-community-icon">
                 info
               </span>
@@ -214,7 +213,7 @@
           </a>
 
           <div class="mobile-menu-header sub-text">
-            <h4 class="mini-text third-text margin-06-bottom">Trending Posts</h4>
+            <h4 class="main-text bold margin-06-bottom">Trending Posts</h4>
           </div>
           <div class="mobile-trending-posts">
           </div>
@@ -723,16 +722,13 @@
           postElement.innerHTML = `
                 <div class="trending-post-content">
 
-                  <div class="trending-post-user-info third-text">
-                    <p class="mini-text third-text"><strong>${(trending_post.firstname && trending_post.lastname) ? `${trending_post.firstname.charAt(0).toUpperCase() + trending_post.firstname.slice(1).toLowerCase()} ${trending_post.lastname.charAt(0).toUpperCase() + trending_post.lastname.slice(1).toLowerCase()}` : `@${trending_post.username}`}</strong></p>
-                    </div>
-                    <div class="main-text bold"><p>${trending_post.title} </p> </div>
-                    <div class="flex flex-row gap-03">
-                    <span class="mini-text" style="color:${trending_post.community_color}">/${trending_post.community_name}</span>
-                    <p class="mini-text third-text">${trending_post.views} views</p>
-                    </div>
-                </div>
-
+<div class="flex flex-row gap-03 v-center">
+<img src="${trending_post.avatar || '/img/glyph.png'}" alt="Avatar" class="thumbnail thumbnail-regular thumbnail-micro" />
+<p class="mini-text">${trending_post.firstname.charAt(0).toUpperCase() + trending_post.firstname.slice(1).toLowerCase()} ${trending_post.lastname.charAt(0).toUpperCase() + trending_post.lastname.slice(1).toLowerCase()}</p>
+</div>
+<div class="flex flex-col">
+<p>${trending_post.title} </p>
+</div>
             `;
 
           trendingPostsContainer.appendChild(postElement);

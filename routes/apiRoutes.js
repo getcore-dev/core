@@ -94,7 +94,7 @@ router.post('/company-link', async (req, res) => {
 
 router.get('/duplicate-companies', async (req, res) => {
   try {
-    let companies = await jobQueries.getDuplicateCompanies();
+    let companies = await jobQueries.getDirectDuplicateCompanies();
     res.json({ companies: companies });
 
   } catch (error) {
@@ -678,14 +678,15 @@ router.get('/job-suggestions', async (req, res) => {
     let userPreferences = {};
     if (user) {
       userPreferences = {
-        jobPreferredTitle: user.jobPreferredTitle ? user.jobPreferredTitle : '',
-        jobPreferredLocation: user.jobPreferredLocation ? user.jobPreferredLocation : '',
-        jobExperienceLevel: user.jobExperienceLevel ? user.jobExperienceLevel : '',
-        jobPreferredSalary: user.jobPreferredSalary ? user.jobPreferredSalary : 0,
-        jobPreferredSkills: []
+        titles: user.jobPreferredTitle ? (Array.isArray(user.jobPreferredTitle) ? user.jobPreferredTitle : [user.jobPreferredTitle]) : [],
+        locations: user.desired_location ? (Array.isArray(user.desired_location) ? user.desired_location : [user.desired_location]) : [],
+        experienceLevels: user.jobExperienceLevel ? (Array.isArray(user.jobExperienceLevel) ? user.jobExperienceLevel : [user.jobExperienceLevel]) : [],
+        salary: user.jobPreferredSalary ? user.jobPreferredSalary : 0,
+        skills: [],
+        companies: []
       };
     }
-    const topSuggestions = await jobQueries.getTopJobSuggestions(userPreferences);
+    const topSuggestions = await jobQueries.searchAllJobsFromLast30Days(userPreferences, 1, 10);
     res.json(topSuggestions);
   } catch (err) {
     console.error('Error fetching job suggestions:', err);
@@ -812,6 +813,20 @@ router.get('/duplicate-jobs', async (req, res) => {
   } catch (err) {
     console.error('Error fetching duplicate jobs:', err);
     res.status(500).send('Error fetching duplicate jobs');
+  }
+});
+
+router.post('/combine-duplicate-companies', async (req, res) => {
+  try {
+    const { companyId, duplicateCompanyId } = req.body;
+    const result = await jobQueries.combineDuplicateCompaniesAndJobs(companyId, duplicateCompanyId);
+    if (result.error) {
+      return res.status(500).json({ error: result.message });
+    }
+    res.json({ message: 'Duplicate companies combined successfully' });
+  } catch (err) {
+    console.error('Error combining duplicate companies:', err);
+    res.status(500).send('Error combining duplicate companies');
   }
 });
 

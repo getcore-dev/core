@@ -510,7 +510,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     </div>
 
     ` : ''}
-<!--
+
       <div class="border rounded">
 
       <div class="sub-text p-4 flex items-center">
@@ -518,7 +518,6 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         <span>Please wait a moment while we improve this job posting!</span>
       </div>
       </div>
-      -->
 <div class="flex flex-col gap-06">
       <div class="interact-buttons flex flex-row gap-4 v-center">
         ${
@@ -757,7 +756,7 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
   let tagsHtml = '';
   if (tags) {
     tagsHtml = tags.map(tag => `
-      <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 ${tag.class}">
+      <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground ${tag.class}">
         ${tag.text}
       </div>
     `).join('');
@@ -779,9 +778,9 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
       </div>
       <div class="ml-auto text-xs text-foreground">${timestamp}</div>
     </div>
-    <div class="text-xs font-medium">${title}</div>
+    <div class="text-base font-medium">${title}</div>
   </div>
-  <div class="line-clamp-2 text-xs text-muted-foreground w-full">
+  <div class="line-clamp-2 text-sm text-muted-foreground w-full">
     ${description}
   </div>
   <div class="flex items-center gap-2">

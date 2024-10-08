@@ -4,46 +4,76 @@ const jobSuggestions = document.getElementById('topJobSuggestions');
 function createCard(name, timestamp, title, description, clickable=false, link=null, image=null, tags=null) {
   console.log(tags);
   const card = document.createElement('div');
-
+  
   let tagsHtml = '';
   if (tags) {
     tagsHtml = tags.map(tag => `
-      <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground ${tag.class}">
-        ${tag.text}
-      </div>
-    `).join('');
+        <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground ${tag.class}">
+          ${tag.text}
+        </div>
+      `).join('');
   }
-
+  
   const cardContent = `
-<div class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left mb-4 text-sm transition-all hover:bg-accent" ${clickable ? `onclick="window.location.href='${link}'"` : ''}>
-  <div class="flex w-full flex-col gap-1">
-    <div class="flex items-center">
-      <div class="flex items-center gap-2">
-
-      ${image ? `
-              <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
-    <img class="aspect-square h-full w-full" src="${image}" />
-      </span>
-      ` : ''
+  <div class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left mb-4 text-sm transition-all hover:bg-accent" ${clickable ? `onclick="window.location.href='${link}'"` : ''}>
+    <div class="flex w-full flex-col gap-1">
+      <div class="flex items-center">
+        <div class="flex items-center gap-2">
+  
+        ${image ? `
+                <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
+      <img class="aspect-square h-full w-full" src="${image}" />
+        </span>
+        ` : ''
 }
-        <div class="font-semibold">${name}</div>
+          <div class="font-semibold">${name}</div>
+        </div>
+        <div class="ml-auto text-xs text-foreground">${timestamp}</div>
       </div>
-      <div class="ml-auto text-xs text-foreground">${timestamp}</div>
+      <div class="text-base font-medium">${title}</div>
     </div>
-    <div class="text-xs font-medium">${title}</div>
+    <div class="line-clamp-2 text-sm text-muted-foreground w-full">
+      ${description}
+    </div>
+    <div class="flex items-center gap-2">
+      ${tagsHtml}
+    </div>
   </div>
-  <div class="line-clamp-2 text-xs text-muted-foreground">
-    ${description}
-  </div>
-  <div class="flex items-center gap-2">
-    ${tagsHtml}
-  </div>
-</div>
-    `;
-
+      `;
+  
   card.innerHTML = cardContent;
   return card;
 }
+
+async function updateJobCount() {
+  try {
+    const response = await fetch('/api/jobs-count');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const jobCount = await response.json();
+    document.getElementById('recent-jobs-count').textContent = jobCount.totalCount;
+    document.getElementById('today-jobs-count').textContent = jobCount.todayCount;
+  } catch (error) {
+    console.error('Error fetching job count:', error);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateJobCount();
+  const appliedJobsLink = document.getElementById('applied-jobs-count');
+  if (appliedJobsLink) {
+    fetch('/api/applied-jobs-count')
+      .then(response => response.json())
+      .then(data => {
+        appliedJobsLink.textContent = `${data}`;
+      })
+      .catch(error => {
+        console.error('Error fetching applied jobs count:', error);
+        appliedJobsLink.textContent = 'Applied Jobs';
+      });
+  }
+});
 
 function formatRelativeDate(dateString) {
   const date = new Date(dateString);

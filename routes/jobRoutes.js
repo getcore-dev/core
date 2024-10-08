@@ -29,6 +29,10 @@ const viewLimiter = rateLimit({
   },
 });
 
+router.get('/profile', checkAuthenticated, async (req, res) => {
+  res.render('edit-jobs-profile.ejs', { user: req.user });
+});
+
 router.get('/', async (req, res) => {
   const companies = await jobQueries.getCompanies();
   res.render('jobs.ejs', { user: req.user, 
@@ -141,6 +145,7 @@ router.post('/company/:name/edit',
         founded,
         size,
         stock_symbol,
+        alternate_names,
         job_board_url,
       } = req.body;
       let pictureUrl;
@@ -169,6 +174,7 @@ router.post('/company/:name/edit',
         founded || undefined,
         size || undefined,
         stock_symbol || undefined,
+        alternate_names || undefined,
         job_board_url || undefined
       );
 

@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>CORE/Settings</title>
   <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
   <link rel="stylesheet" href="/css/settings.css" />
   <link rel="shortcut icon" href="/img/core.png" />
 </head>
@@ -34,34 +35,43 @@
     </div>
 
     <% if (user.isAdmin) { %>
-    <div class="admin-progress">
+    <div class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left mb-4 ml-4 mr-4 shadow text-sm transition-all">
       <h4 class="margin-06-bottom">Job Processing Progress</h4>
       <div class="progress-item">
         <div id="phase-indicator" class="progress-indicator pending"></div>
         <span class="progress-label">Phase:</span>
         <span id="progress-phase" class="progress-value">Initializing</span>
       </div>
-      <div class="progress-item">
+      <div class="progress-item w-full">
         <div id="company-indicator" class="progress-indicator pending"></div>
         <span class="progress-label">Company:</span>
         <span id="progress-company" class="progress-value">-</span>
       </div>
-      <div class="progress-item">
+      <div class="progress-item w-full">
         <div id="companies-indicator" class="progress-indicator pending"></div>
         <span class="progress-label">Companies:</span>
         <span id="progress-companies" class="progress-value">0 / 0</span>
       </div>
-      <div class="progress-item">
+      <div class="progress-item w-full">
         <div id="jobs-indicator" class="progress-indicator pending"></div>
         <span class="progress-label">Jobs:</span>
         <span id="progress-jobs" class="progress-value">0 / 0</span>
       </div>
-      <div class="progress-item action-item">
+      <div class="progress-item w-full action-item">
         <div class="progress-header margin-06-bottom">
           <div id="action-indicator" class="progress-indicator pending"></div>
           <span class="progress-label">Action:</span>
         </div>
         <span id="progress-action" class="progress-value server-output">-</span>
+      </div>
+    </div>
+
+    <div class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left mb-4 ml-4 mr-4 shadow text-sm transition-all">
+      <div class="flex flex-row justify-between w-full">
+        <h4 class="margin-06-bottom" id="duplicate-companies-header">Duplicate Companies</h4>
+        <button class="button-normal" id="search-duplicate-companies">Search</button>
+      </div>
+      <div id="duplicate-companies-container" class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left bg-accent w-full text-sm transition-all">
       </div>
     </div>
     <% } %>
@@ -72,6 +82,14 @@
       document.addEventListener('DOMContentLoaded', (event) => {
         const isPrivateJobNames = <%= user.settings_PrivateJobNames ? 'true' : 'false' %>;
         const isPrivateSchoolNames = <%= user.settings_PrivateSchoolNames ? 'true' : 'false' %>;
+        const searchDuplicateCompaniesButton = document.getElementById('search-duplicate-companies');
+        const duplicateCompaniesHeader = document.getElementById('duplicate-companies-header');
+
+        searchDuplicateCompaniesButton.addEventListener('click', () => {
+          duplicateCompaniesHeader.textContent = 'Searching for duplicate companies...';
+          searchDuplicateCompanies();
+          searchDuplicateCompaniesButton.disabled = true;
+        });
 
         if (isPrivateJobNames) {
           document.getElementById("settings_PrivateJobNames").checked = true;
@@ -82,6 +100,65 @@
         }
 
       });
+
+
+      function searchDuplicateCompanies() {
+        fetch('/api/duplicate-companies')
+          .then(response => response.json())
+          .then(data => {
+            displayDuplicateCompanies(data.companies);
+          })
+          .catch(error => console.error('Error searching for duplicate companies:', error));
+      }
+
+      function combineDuplicateCompanies(companyId, duplicateCompanyIds) {
+        // iterate through duplicateCompanyIds (string of ids separated by commas) and combine them with companyId
+        const duplicateCompanyIdArray = duplicateCompanyIds.split(',');
+        duplicateCompanyIdArray.forEach(duplicateCompanyId => {
+          fetch(`/api/combine-duplicate-companies`, {
+              method: 'POST',
+              body: JSON.stringify({
+                companyId,
+                duplicateCompanyId
+              }),
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.error) {
+                showBannerNotification(data.message);
+              } else {
+                showBannerNotification('Duplicate companies combined successfully');
+              }
+            })
+            .catch(error => console.error('Error combining duplicate companies:', error));
+        });
+      }
+
+      function displayDuplicateCompanies(companies) {
+        const duplicateCompaniesContainer = document.getElementById('duplicate-companies-container');
+        const duplicateCompaniesHeader = document.getElementById('duplicate-companies-header');
+        duplicateCompaniesHeader.textContent = `Found ${companies.length} duplicate companies`;
+        duplicateCompaniesContainer.innerHTML = '';
+
+        companies.forEach(company => {
+          const companyElement = document.createElement('div');
+          companyElement.className = 'flex flex-row space-between w-full v-center';
+          companyElement.innerHTML = `
+            <div class="flex flex-row space-between w-full v-center gap-4">
+            <div class="flex flex-col">
+              <h4>${company.name}</h4>
+              <p>${company.duplicate_count} duplicates</p>
+              <p class="text-xs break-words" style="word-break: break-all;">${company.duplicate_ids}</p>
+            </div>
+              <button class="regular-button-normal" onclick="combineDuplicateCompanies(${company.id}, '${company.duplicate_ids}')">Combine</button>
+            </div>
+          `;
+          duplicateCompaniesContainer.appendChild(companyElement);
+        });
+      }
 
       function saveSettings() {
         const PrivateJobNames = document.getElementById("settings_PrivateJobNames").checked;

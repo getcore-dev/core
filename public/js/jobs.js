@@ -627,6 +627,7 @@ function renderJobPostings(jobs) {
       if (job.experienceLevel) {
         tags.push({text: job.experienceLevel, class: 'experienceLevel'});
       }
+      tags.push({text: `${job.applicants} applicants`, class: 'applicants'});
 
       const jobElement = createCard(job.company_name, formatRelativeDate(job.postedDate), job.title, job.description, true, `/jobs/${job.id}`, job.company_logo, tags);
       fragment.appendChild(jobElement);
@@ -880,9 +881,9 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
       </div>
       <div class="ml-auto text-xs text-foreground">${timestamp}</div>
     </div>
-    <div class="text-xs font-medium">${title}</div>
+    <div class="text-base font-medium">${title}</div>
   </div>
-  <div class="line-clamp-2 text-xs text-muted-foreground w-full">
+  <div class="line-clamp-2 text-sm text-muted-foreground w-full">
     ${description}
   </div>
   <div class="flex items-center gap-2">
