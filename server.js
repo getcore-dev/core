@@ -77,8 +77,5 @@ if (cluster.isMaster && process.env.NODE_ENV !== 'development') {
   
   app.listen(environment.port, () => {
     console.log(`Worker ${process.pid} started and running on http://localhost:${environment.port}`);
-    setTimeout(() => {
-      runJobBoardService();
-    }, 5000);
   });
 }

@@ -497,7 +497,7 @@ class JobProcessor extends EventEmitter {
         }
   
         browser = await puppeteer.launch({
-          headless: false,
+          headless: true,
           defaultViewport: null,
           args: ['--start-maximized']
         });
@@ -623,42 +623,39 @@ class JobProcessor extends EventEmitter {
    * @param {string} url - The URL to fetch data from.
    * @returns {Promise<Object>} - The response object containing the fetched data.
    */
-  async makeRequest(url, retries = 3, initialDelay = 1000) {
+  async makeRequest(url, retries = 1, delay = 1000) {
     // Handle special cases for specific job board platforms
-    if (url.includes('uber.com')) return await this.usePuppeteerFallback(url);
-  
+    if (url.includes('linkedin.com')) return await this.usePuppeteerFallback(url);
+    if (url.includes('uber.com')) return await this.usePuppeteerFallback(url); 
+    if (url.includes('ashbyhq.com')) return await this.usePuppeteerFallback(url); 
+
+
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
-        const response = await axios.get(url);
-  
+        const response = await axios.get(url, {
+          maxRedirects: 5, // Allow up to 5 redirects
+          validateStatus: function (status) {
+            return status >= 200 && status < 300; // Resolve only if status is 2xx
+          },
+        });
+    
         if (response.status !== 200) {
           throw new Error(`HTTP request failed with status ${response.status}`);
         }
-  
+    
         // Check if the response is too short (possibly indicating a non-rendered page)
         if (response.data.length < 1000) {
           console.log('Response too short. Falling back to Puppeteer.');
           return await this.usePuppeteerFallback(url);
         }
-  
+    
         return response;
       } catch (error) {
-        if (error.response && error.response.status === 429) {
-          console.error(`Attempt ${attempt} failed due to rate limit (429):`, error.message);
-  
-          // If rate limit reset information is available, use it
-          const retryAfter = error.response.headers['retry-after'];
-          if (retryAfter) {
-            await new Promise(resolve => setTimeout(resolve, parseInt(retryAfter) * 1000));
-          }
-        } else {
-          console.error(`Attempt ${attempt} failed:`, error.message);
-        }
-  
+        console.error(`Attempt ${attempt} failed:`, error.message);
         if (attempt === retries) {
           console.error('All attempts failed. Falling back to Puppeteer.');
           const puppeteerResponse = await this.usePuppeteerFallback(url);
-  
+          
           // Check if the response is job data or HTML content
           if (puppeteerResponse.data && typeof puppeteerResponse.data === 'object' && puppeteerResponse.intercepted) {
             console.log('Returning job data from Puppeteer fallback');
@@ -671,15 +668,12 @@ class JobProcessor extends EventEmitter {
             };
           }
         } else {
-          // Wait before next retry using exponential backoff with jitter
-          const delay = initialDelay * Math.pow(2, attempt - 1) + Math.random() * 1000;
-          console.log(`Retrying after ${delay}ms...`);
+          // Wait before next retry
           await new Promise(resolve => setTimeout(resolve, delay));
         }
       }
     }
   }
-  
 
   getRandomUserAgent() {
     const userAgents = [
@@ -717,13 +711,16 @@ class JobProcessor extends EventEmitter {
       });
   
       page.on('response', async response => {
+        // dont try on linkedin.com
+        if (response.url().includes('linkedin.com')) {
+          return;
+        }
         const url = response.url();
         const contentType = response.headers()['content-type'];
         
         if (contentType && contentType.includes('application/json')) {
           try {
             const responseData = await response.json();
-            console.log('responseData', responseData);
             if (responseData && responseData.departments) {
               // iterate over each department and get the .jobs [Array]
               jobData = [];
@@ -749,8 +746,8 @@ class JobProcessor extends EventEmitter {
         timeout: 30000 // Increase timeout to 30 seconds
       });
   
+      await this.randomDelay(1000, 2000);
       console.log('Page loaded');
-  
       const content = await page.content();
   
       // If job data was found in an intercepted request, return it
@@ -1001,17 +998,7 @@ class JobProcessor extends EventEmitter {
       const jobBoardDomain = parsedUrl.hostname;
   
       let links = await this.extractJobLinksFromPage(jobBoardUrl);
-      // console.log(links);
-      if (jobBoardDomain.includes('linkedin.com')) {
-        const newLinks = [];
-        for (const link of links) {
-          if (this.isTechJob(link.title)) {
-            newLinks.push(link);
-          }
-        }
-        links = newLinks;
-
-      }
+      console.log('links:',  links);
   
   
       console.log(`Collected a total of ${links.size} job links from ${jobBoardUrl}`);
@@ -1267,7 +1254,6 @@ class JobProcessor extends EventEmitter {
   }
 
   async fullExtractJobLinksFromPage(response, pageUrl, jobBoardDomain) {
-    console.log('response', response);
     let $;
     if (response.data) {
       $ = cheerio.load(response.data); 
@@ -1290,11 +1276,12 @@ class JobProcessor extends EventEmitter {
         const title = $(element).text().trim();
         const fullUrl = new URL(href, pageUrl).href;
 
-        if (new URL(fullUrl).hostname === jobBoardDomain) {
-          // check if the fullUrl is already in the links array too
-          if (links.some(link => link.url === fullUrl)) {
-            return;
-          }
+        //if (new URL(fullUrl).hostname === jobBoardDomain) {
+        // check if the fullUrl is already in the links array too
+        if (links.some(link => link.url === fullUrl)) {
+          return;
+        }
+        if (this.isTechJob(title) || /\b(apply|join|career|job)\b/i.test(title)) {
           links.push({
             url: fullUrl,
             title: title,
@@ -1802,6 +1789,12 @@ class JobProcessor extends EventEmitter {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
   
+    this.updateProgress({
+      phase: 'Grabbing Workday links',
+      totalJobs: 0,
+      processedJobs: 0,
+      currentAction: 'Grabbing Workday links'
+    });
     // Enable request interception
     await page.setRequestInterception(true);
   
@@ -1849,9 +1842,24 @@ class JobProcessor extends EventEmitter {
         ...job,
         externalPath: `${url.replace('/jobs', '')}${job.externalPath}`
       }));
+
+      this.updateProgress({
+        phase: 'Grabbing Workday links',
+        totalJobs: total,
+        processedJobs: allJobs.length,
+        currentAction: 'Grabbing Workday links'
+      });
+
   
       console.log(`Fetched ${allJobs.length} out of ${total} jobs`);
   
+      this.updateProgress({
+        phase: 'Grabbing Workday links',
+        totalJobs: total,
+        processedJobs: allJobs.length,
+        currentAction: 'Grabbing Workday links'
+      });
+
       // Continue fetching if there are more jobs
       while (allJobs.length < total) {
         const offset = allJobs.length;
@@ -1861,6 +1869,17 @@ class JobProcessor extends EventEmitter {
         const updatedPostData = JSON.parse(postData);
         updatedPostData.offset = offset;
         updatedPostData.limit = limit;
+  
+        // Add a random delay between 2 to 5 seconds
+        const delay = Math.floor(Math.random() * (5000 - 2000 + 1)) + 2000;
+        await new Promise(resolve => setTimeout(resolve, delay));
+
+        this.updateProgress({
+          phase: 'Grabbing Workday links',
+          totalJobs: total,
+          processedJobs: allJobs.length,
+          currentAction: 'Grabbing Workday links'
+        });
   
         // Make a new POST request
         const response = await axios.post(interceptedData.url, updatedPostData, {
@@ -1877,6 +1896,13 @@ class JobProcessor extends EventEmitter {
   
         allJobs = allJobs.concat(newJobs);
         console.log(`Fetched ${allJobs.length} out of ${total} jobs`);
+
+        this.updateProgress({
+          phase: 'Grabbing Workday links',
+          totalJobs: total,
+          processedJobs: allJobs.length,
+          currentAction: 'Grabbing Workday links'
+        });
       }
   
       return allJobs;
@@ -1885,6 +1911,13 @@ class JobProcessor extends EventEmitter {
       return null;
     } finally {
       await browser.close();
+
+      this.updateProgress({
+        phase: 'Grabbing Workday links',
+        totalJobs: 0,
+        processedJobs: 0,
+        currentAction: 'Grabbing Workday links'
+      });
     }
   }
 
@@ -2693,40 +2726,44 @@ class JobProcessor extends EventEmitter {
       Please extract the following information from this job posting data using the following JSON schema:
       JobPosting = {
         title: string,
+        url: string,
         company_name: string,
-        company_description: string,
-        company_location: string,
-        company_job_board_url: string,
-        company_industry: string,
-        company_size: string,
-        company_stock_symbol: string,
-        company_logo: string,
-        company_founded: string,
         location: string,
-        salary: number,
-        salary_max: number,
-        experience_level: string,
-        skills: string[],
-        tags: string[],
         description: string,
-        benefits: string[],
-        additional_information: string,
-        PreferredQualifications: string,
-        MinimumQualifications: string,
-        Responsibilities: string,
-        Requirements: string,
-        NiceToHave: string,
-        Schedule: string,
-        HoursPerWeek: number,
-        H1BVisaSponsorship: boolean,
         IsRemote: boolean,
-        EqualOpportunityEmployerInfo: string,
-        Relocation: boolean
       }
       Provide the extracted information in JSON format.
       Job posting link: ${link}
 
       Return: <JobPosting>
+    `;
+
+    return prompt;
+  }
+
+  generatePrompt2(link, textContent) {
+    this.updateProgress({ currentAction: 'Generating prompt' });
+  
+    const prompt = `
+      Analyze the HTML structure of the job posting page and provide Cheerio selectors for extracting the following information:
+      
+      JobPosting = {
+        title: string,
+        url: string,
+        company_name: string,
+        location: string,
+        description: string,
+        IsRemote: boolean,
+      }
+
+      If a selector is not found or information is not available, return null for that field.
+      
+      HTML Content:
+      ${textContent}
+      
+      Job posting link: ${link}
+
+      Return the selectors and instructions in JSON format.
     `;
 
     return prompt;
@@ -2790,7 +2827,7 @@ class JobProcessor extends EventEmitter {
 
   async searchTechJobOnLinkedIn(jobTitle, location='United States') {
     const linkedInSearchUrl = `https://www.linkedin.com/jobs/search?keywords=${jobTitle.split(' ').join('%20')}&location=${location.split(' ').join('%20')}&geoId=&trk=public_jobs_jobs-search-bar_search-submit&original_referer=`;
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
@@ -3123,6 +3160,8 @@ class JobProcessor extends EventEmitter {
         additional_information: $('.description__job-criteria-text.description__job-criteria-text--criteria').text().trim()
       };
 
+      console.log(extractedData);
+
       // convert salary range to salary and salary_max '$110,000.00/yr - $120,000.00/yr', to 110000, 120000
       if (extractedData.salary_range) {
         const [min, max] = extractedData.salary_range.split(' - ');
@@ -3371,6 +3410,7 @@ class JobProcessor extends EventEmitter {
     try {
       await this.init();
 
+      
       try { 
         await this.crawLinkedIn();
       } catch (error) {

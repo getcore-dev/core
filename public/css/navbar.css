@@ -3258,6 +3258,7 @@ input::placeholder {
   flex-direction: column;
   overflow-x: hidden;
   padding-left: 2.4rem;
+  margin-left: auto;
   scrollbar-width: none;
   overflow-y: auto;
   height: calc(100dvh - 95px);
@@ -3357,6 +3358,33 @@ input::placeholder {
   height: auto;
 }
 
+.dropdown-content {
+  position: absolute;
+  box-sizing: border-box;
+  max-height: 400px;
+  text-wrap: nowrap;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  overflow-y: auto;
+  z-index: 1000;
+  background-color: var(--light-mode-main-color);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  z-index: 1000;
+  right: 0;
+  left: 0;
+  margin-top: 5px;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+}
+
+
 #com-btn-container::-webkit-scrollbar,
 #job-btn-container::-webkit-scrollbar {
   display: none;
@@ -3381,12 +3409,9 @@ input::placeholder {
   width: 20%;
   max-width: 225px;
   flex: none;
-  /* This will prevent the container from growing */
   display: flex;
-  margin-right: auto;
   flex-direction: column;
 
-  /* align-items: center; */
   -webkit-scrollbar {
     display: none;
   }
@@ -3394,11 +3419,6 @@ input::placeholder {
   -ms-overflow-style: none;
   scrollbar-width: none;
   -ms-autohiding-scrollbar: none;
-}
-
-
-.job-details-container {
-  border-left: 1px solid var(--border-color);
 }
 
 #com-btn-container a {
@@ -3566,6 +3586,13 @@ input::placeholder {
     pointer-events: all;
   }
 
+  .dropdown-content {
+    box-sizing: border-box;
+    min-width: fit-content;
+    width: max-content;
+    padding: 0.1rem;
+  }
+
   #submit-button-normal,
   #cancel-button-normal,
   #regular-button-normal,
@@ -3663,8 +3690,7 @@ input::placeholder {
 .dropdown-button {
   background-color: var(--light-mode-body-color);
   text-wrap: nowrap;
-  color: #333;
-  /* Button text color */
+  color: var(--light-mode-text-color);
   font-size: 16px;
   border: 1px solid var(--border-color);
   z-index: 1;
@@ -3692,33 +3718,6 @@ input::placeholder {
   margin-left: 10px;
   font-size: 12px;
   transition: transform 0.3s ease;
-}
-
-/* Dropdown Content (Hidden by Default) */
-.dropdown-content {
-  position: absolute;
-  box-sizing: border-box;
-  max-height: 400px;
-  text-wrap: nowrap;
-  overflow-x: hidden;
-  box-sizing: border-box;
-  overflow-y: auto;
-  z-index: 1000;
-  background-color: var(--light-mode-main-color);
-  border: 1px solid var(--border-color);
-  min-width: 160px;
-  display: flex;
-  flex-direction: column;
-  gap: .5rem;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-  z-index: 1000;
-  right: 0;
-  left: 0;
-  margin-top: 5px;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-  opacity: 0;
-  visibility: hidden;
 }
 
 .ml-auto {

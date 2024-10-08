@@ -188,7 +188,7 @@ ul.locations {
 div.similar-jobs-list {
   display: flex;
   flex-wrap: nowrap;
-  padding: 0;
+  padding: 0 1rem;
   gap: .8rem;
   flex-direction: column;
 
@@ -255,10 +255,6 @@ div.similar-job {
   display: inline-block;
 }
 
-div.apply-button-container {
-  width: 100%;
-}
-
 div.job-info-flairs span.material-symbols-outlined {
   color: var(--light-mode-third-text-color);
   font-size: .95rem;
@@ -273,11 +269,6 @@ div.job-info-flairs span.material-symbols-outlined {
 }
 
 
-.interact-buttons .material-symbols-outlined {
-  font-size: 1.25rem;
-  vertical-align: -2px;
-  padding-right: .6rem;
-}
 
 .second-buttons-container .material-symbols-outlined {
   padding: 0;
@@ -352,7 +343,7 @@ div.similar-job h4 {
 .job-details ul,
 ul.locations {
   word-wrap: break-word;
-  line-height: 1.5;
+  line-height: 1.8;
   font-weight: 400;
   margin: 0;
   margin-bottom: 0;
@@ -396,7 +387,6 @@ ul.locations {
   max-width: 100%;
   gap: .8rem 1rem;
   box-sizing: border-box;
-  justify-content: space-between;
 }
 
 .job-details {
@@ -434,10 +424,6 @@ ul.locations {
   font-size: 0.8em;
   color: #ff9800;
   margin-left: 5px;
-}
-
-.job-listing-menu {
-  padding-bottom: 0;
 }
 
 .job-listing-menu .second-nav-links {
@@ -603,7 +589,7 @@ ul.locations {
 
   .job-details>* {
     width: 100%;
-    padding: 0 .7rem;
+    padding: 0 1rem;
     box-sizing: border-box;
     overflow-wrap: break-word;
     word-wrap: break-word;
@@ -627,12 +613,11 @@ ul.locations {
   .job-listing-menu {
     margin: 0;
     border: 0;
-    padding: 0;
-    padding-top: 1rem;
-    margin-bottom: 2rem;
+    padding: 1rem;
+    margin-bottom: 0;
     display: flex;
     border-radius: 0;
-    gap: 1.8rem;
+    gap: .8rem;
     flex-direction: column;
   }
 
@@ -645,7 +630,7 @@ ul.locations {
     .similar-jobs h4,
     .similar-company-jobs h4 {
       margin: .8rem 0;
-      margin-top: 1.35rem;
+      margin-top: 0;
     }
 
     div.similar-job {

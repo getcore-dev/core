@@ -332,18 +332,18 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         '.job-details-container'
       );
 
-      let benefitsArray, tagsArray, skillsArray;
+      let benefitsArray, skillsArray;
       try {
-        tagsArray = job.skills && job.skills ? job.skills.split(', ') : [];
+        // Extract skills from job description using keyword search
+        const keywords = ['JavaScript', 'Python', 'Java', 'C++', 'React', 'Node.js', 'SQL', 'AWS', 'Docker', 'Kubernetes', 'CRM', 'Salesforce', 'IT', 'Node.js', 'cybersecurity'];
+        skillsArray = keywords.filter(keyword => job.description.toLowerCase().includes(keyword.toLowerCase()));
+        
+        // If no skills found in description, fallback to existing skills
+        if (skillsArray.length === 0 && job.skills) {
+          skillsArray = job.skills.split(', ');
+        }
       } catch (error) {
-        console.error('Error splitting tags:', error);
-        tagsArray = [];
-      }
-      try {
-        skillsArray =
-          job.skills && job.skills ? job.skills.split(', ') : [];
-      } catch (error) {
-        console.error('Error splitting skills:', error);
+        console.error('Error extracting skills:', error);
         skillsArray = [];
       }
 
@@ -358,26 +358,17 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         .map((benefit) => `<li>${benefit.replace(/'/g, '')}</li>`)
         .join('');
 
-      const maxTags = 6;
       const maxSkills = 10;
-      const displayedTags = tagsArray.slice(0, maxTags);
       const displayedSkills = skillsArray.slice(0, maxSkills);
 
-      const tagsHTML = displayedTags
-        .map(
-          (tag) =>
-            `<a class="mini-text bold text-tag" href="/skills/${encodeURIComponent(tag.trim())}">${tag}</a>`
-        )
-        .join('');
       const skillsHTML = displayedSkills
         .map(
           (skill) =>
-            `<a class="mini-text bold text-tag" href="/jobs?skill=${encodeURIComponent(skill.trim())}">${skill}</a>`
+            `<a class="mini-text bold" href="/jobs?skill=${encodeURIComponent(skill.trim())}">${skill}</a>`
         )
-        .join('');
+        .join(', ');
       
 
-      const remainingTags = tagsArray.length - maxTags;
       const remainingSkills = skillsArray.length - maxSkills;
 
       const isOlderThan30Days = (job) => {
@@ -396,36 +387,24 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     ? `<div class="caution-messages">This job was posted more than 30 days ago. Apply anyway <a class="link" href="${job.link}">here</a></div>`
     : ''
 }
-<!-- 
 <nav class="breadcrumbs">
 <ol class="flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5">
 <a href="/jobs" class="transition-colors hover:text-foreground">Jobs</a>
 <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+<img src="${job.company_logo}" style="width: auto;" alt="${job.company_name} logo" onerror="this.onerror=null;this.src='/img/glyph.png';" class="thumbnail-micro thumbnail-regular" />
 <a class="transition-colors hover:text-foreground" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
-<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
-${job.title}
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
+            </svg>
 </ol>
 </nav>
--->
       <div class="company-info w-100">
         <div class="company-details">
       <div class="company-information">
-            <p class="third-text mini-text">
-            <div class="flex flex-row gap-06 v-center">
-                    ${
-  job.company_logo
-    ? `
-          <img src="${job.company_logo}" style="width: auto;" alt="${job.company_name} logo" onerror="this.onerror=null;this.src='/img/glyph.png';" class="thumbnail-micro thumbnail-regular" />
-        `
-    : ''
-}
-            <a class="secondary-text bold link sub-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
-            </div>
-            </p>
-          <h3 class="company-name main-text margin-03-bottom">
+          <h3 class="company-name header-text margin-03-bottom">
         ${job.title}
       </h3>
-      <p class="mini-text third-text"> 
+      <p class="sub-text third-text"> 
           ${
   job.location
     .split(',')
@@ -440,14 +419,39 @@ ${job.title}
           .split(' ')
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
           .join(' ');
-        return `<a class="mini-text third-text" href="/jobs?locations=${encodeURIComponent(loc)}">${country}</a>`;
+        return `<a class="sub-text third-text" href="/jobs?locations=${encodeURIComponent(loc)}">${country}</a>`;
       }
     })
     .join(', ')
 }
 
+<span class="sub-text">•</span>
+<span class="sub-text">
+                  ${job.applicants ? job.applicants : 0} applicants
+</span>
+      <span class="sub-text">•</span>
+      <time class="sub-text primary-text">${formatDateJob(job.postedDate)}</time>
+
+      </p>
+      <p class="sub-text">
+        Skills: ${skillsHTML}
       </p>
 
+      <div class="job-recruiter-container">
+            <div class="job-recruiter-info">
+            <div class="recruiter-info flex flex-row gap-06">
+            <a href="/user/${job.recruiter_username}" class="recruiter-image">
+                <img class="thumbnail thumbnail-micro thumbnail-regular" src="${job.recruiter_image}" alt="${job.company_name} logo" />
+            </a>
+            <div class="recruiter-details flex flex-row gap-2">
+                <p class="sub-text">
+                Posted by
+                    @<a href="/user/${job.recruiter_username}" class="mini-text">${job.recruiter_username}</a>
+                    </p>
+                </div>
+                </div>
+            </div>
+        </div>
       </div>
       
         </div>
@@ -461,7 +465,7 @@ ${job.title}
       ${ job.salary || job.salary_max ? `
         <div class="job-info-flairs sub-text">
       ${job.salary !== 0 ? `
-        <p class="text-tag bold salary sub-text">
+        <p class="bold salary sub-text">
       USD $${formatSalary(job.salary)}
       ${job.salary_max !== 0 ? `- $${formatSalary(job.salary_max)}` : ''}
       ${!job.location.toLowerCase().includes('us') && 
@@ -502,16 +506,16 @@ ${job.title}
       </div>
       </div>
       -->
-
 <div class="flex flex-col gap-06">
-      <div class="interact-buttons flex space-between v-center">
+      <div class="interact-buttons flex v-center">
         ${
   (job)
-    ? `<div class="apply-button-container flex">
-                <button class="main-button-normal margin-h-auto grow-button" onclick="applyForJob(event, '${job.id}', '${job.link}')">
-                  <span class="material-symbols-outlined">work</span><span class="sub-text">Apply </span><span class="number-display">
-                  ${job.applicants ? job.applicants : 0}
-                  </span>
+    ? `<div class="apply-button-container flex gap-4">
+                <button class="main-button-normal" onclick="applyForJob(event, '${job.id}', '${job.link}')">
+                  <span class="sub-text">Apply</span><span class="material-symbols-outlined no-padding">arrow_outward</span>
+                </button>
+                <button class="bordered-button-normal" onclick="favorite('job', ${job.id});">
+                  <span class="sub-text">Save</span>
                 </button>
                   </div>`
     : ''
@@ -586,37 +590,22 @@ ${job.title}
   </div>
 </div>
             <div class="job-details primary-text company-profile-section">
-            <div class="job-posting-recruiter sub-text">
-                    <h4 style="margin-top:0;">Recruiter Information</h4>
+            <div class="job-posting-recruiter main-text">
+                    <h4 class="main-text bold" style="margin-top:0;">Recruiter Information</h4>
 
 <div>
-        <div class="job-recruiter-container">
-            <div class="job-recruiter-info">
-            <div class="recruiter-info flex flex-row gap-06">
-            <a href="/user/${job.recruiter_username}" class="recruiter-image">
-                <img class="thumbnail thumbnail-tiny thumbnail-regular" src="${job.recruiter_image}" alt="${job.company_name} logo" />
-            </a>
-            <div class="recruiter-details flex flex-col">
-                <div class="job-recruiter-name sub-text">${job.recruiter_firstname} ${job.recruiter_lastname}</div>
-                <div class="username-date">
-                    <a href="/user/${job.recruiter_username}" class="mini-text">${job.recruiter_username}</a> • <time class="mini-text secondary-text">${formatDateJob(job.postedDate)}</time>
-                </div>
-                </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
             ${job.company_description ? `
             <div class="company-description sub-text">
-              <h4 class="sub-text bold">Company Description</h4>
+              <h4 class="main-text bold">Company Description</h4>
               <p class="sub-text">${job.company_description}</p>
             </div>
             ` : ''}
 
             ${ !job.isProcessed ? `
             <div class="job-posting-description sub-text">
-              <h4 class="sub-text bold">Job Description</h4>
+              <h4 class="main-text bold">Job Description</h4>
               <p class="sub-text">${job.description}</p>
             </div>
             ` : ''}
@@ -624,8 +613,8 @@ ${job.title}
   job.Requirements
     ? `
             <div class="job-requirements">
-              <h4 >Requirements</h4>
-              <p>${job.Requirements}</p>
+              <h4 class="main-text bold">Requirements</h4>
+              <p class="sub-text">${job.Requirements}</p>
             </div>
             `
     : ''
@@ -635,8 +624,8 @@ ${job.title}
   job.Responsibilities
     ? `
             <div class="job-responsibilities">
-              <h4 >Responsibilities</h4>
-              <p>${job.Responsibilities}</p>
+              <h4 class="main-text bold">Responsibilities</h4>
+              <p class="sub-text">${job.Responsibilities}</p>
             </div>
             `
     : ''
@@ -646,8 +635,8 @@ ${job.title}
   job.MinimumQualifications
     ? `
 <div class="minimum-qualifications">
-  <h4 >Minimum Qualifications</h4>
-  <p>${job.MinimumQualifications}</p>
+  <h4 class="main-text bold">Minimum Qualifications</h4>
+  <p class="sub-text">${job.MinimumQualifications}</p>
 </div>
 `
     : ''
@@ -657,8 +646,8 @@ ${
   job.PreferredQualifications
     ? `
 <div class="preferred-qualifications">
-  <h4 >Preferred Qualifications</h4>
-  <p>${job.PreferredQualifications}</p>
+  <h4 class="main-text bold">Preferred Qualifications</h4>
+  <p class="sub-text">${job.PreferredQualifications}</p>
 </div>
 `
     : ''
@@ -668,7 +657,7 @@ ${
   formattedBenefits
     ? `
 <div class="job-benefits">
-  <h4 class="main-text">Job Benefits</h4>
+  <h4 class="main-text bold">Job Benefits</h4>
   <ul class="sub-text">
     ${formattedBenefits}
   </ul>
@@ -681,8 +670,8 @@ ${
   job.NiceToHave
     ? `
 <div class="job-nice-to-have">
-  <h4 >Nice to Have</h4>
-  <p>${job.NiceToHave}</p>
+  <h4 class="main-text bold">Nice to Have</h4>
+  <p class="sub-text">${job.NiceToHave}</p>
 </div>
 `
     : ''
@@ -692,8 +681,8 @@ ${
   job.schedule
     ? `
 <div class="job-schedule">
-  <h4 >Schedule</h4>
-  <p>${job.schedule}</p>
+  <h4 class="main-text bold">Schedule</h4>
+  <p class="sub-text">${job.schedule}</p>
 </div>
 `
     : ''
@@ -703,8 +692,8 @@ ${
   job.hoursPerWeek
     ? `
 <div class="job-hours-per-week">
-  <h4 >Hours per Week</h4>
-  <p>${job.hoursPerWeek}</p>
+  <h4 class="main-text bold">Hours per Week</h4>
+  <p class="sub-text">${job.hoursPerWeek}</p>
 </div>
 `
     : ''
@@ -714,16 +703,16 @@ ${
   job.equalOpportunityEmployerInfo
     ? `
 <div class="job-equal-opportunity-employer-info">
-  <h4 >Equal Opportunity Employer Info</h4>
-  <p>${job.equalOpportunityEmployerInfo}</p>
+  <h4 class="main-text bold">Equal Opportunity Employer Info</h4>
+  <p class="sub-text">${job.equalOpportunityEmployerInfo}</p>
 </div>
 `
     : ''
 }
 
 <div class="job-relocation">
-  <h4 >Relocation</h4>
-  <p>${job.relocation ? 'Yes' : 'No'}</p>
+  <h4 class="main-text bold">Relocation</h4>
+  <p class="sub-text">${job.relocation ? 'Yes' : 'No'}</p>
 </div>
 
 <div class="flex">

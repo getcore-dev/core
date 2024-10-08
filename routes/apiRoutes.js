@@ -483,7 +483,7 @@ router.get('/community/:communityId/jobs', async (req, res) => {
 router.get('/jobs/company/:companyName', async (req, res) => {
   try {
     const companyName = req.params.companyName;
-    const company = await jobQueries.getCompanyIdByName(companyName);
+    const company = await jobQueries.getCompanyByName(companyName);
     const companyId = company ? company.id : null;
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
@@ -1044,7 +1044,8 @@ router.post('/job-postings', checkAuthenticated, async (req, res) => {
     const user = req.user;
 
     if (!companyId) {
-      companyId = await jobQueries.createCompany(company, null, location, null, null, null, null, null);
+      companyObject = await jobQueries.createCompany(company, null, location, null, null, null, null, null);
+      companyId = companyObject.id;
     }
 
     const jobPostingId = await jobQueries.createJobPosting(

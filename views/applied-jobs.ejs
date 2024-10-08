@@ -56,37 +56,6 @@
     background-color: var(--light-mode-hover-color);
   }
 
-  /* Dropdown Styles */
-  .dropdown {
-    position: relative;
-    display: inline-block;
-  }
-
-  .dropdown-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-  }
-
-  .dropdown .arrow {
-    margin-left: 5px;
-  }
-
-
-  .dropdown-content .select-option {
-    color: black;
-    padding: 8px 12px;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-  }
-
-  .dropdown-content .select-option:hover {
-    background-color: #f1f1f1;
-  }
-
   .color-circle {
     display: inline-block;
     width: 10px;
@@ -98,6 +67,11 @@
 
   .color-circle.pending {
     background-color: gray;
+  }
+
+  td>* {
+    word-break: break-all;
+    overflow-wrap: break-word;
   }
 
   .color-circle.responded {
@@ -214,7 +188,7 @@
 
       return `
         <div class="dropdown" data-job-id="${jobId}">
-          <button class="dropdown-button mini-text secondary-text">
+          <button class="dropdown-button mini-text px-4 py-2 secondary-text">
             ${userChoice}
           </button>
           <div class="dropdown-content">
@@ -240,9 +214,12 @@
       // Update UI
       const dropdown = element.closest('.dropdown');
       const button = dropdown.querySelector('.dropdown-button');
-      button.innerHTML = `${
-        status.charAt(0).toUpperCase() + status.slice(1)
-      } <span class="arrow">&#9662;</span>`;
+      button.innerHTML = `
+        <span class="color-circle ${status}"></span>
+        ${
+          status.charAt(0).toUpperCase() + status.slice(1)
+        } <span class="arrow">&#9662;</span>
+      `;
 
       // Update job status via fetch
       fetch('/jobs/update-job-status', {
@@ -319,7 +296,7 @@
         const titleCell = document.createElement('td');
         const titleLink = document.createElement('a');
         titleLink.href = `/jobs/${job.id}`;
-        titleLink.className = 'job-title sub-text';
+        titleLink.className = 'job-title sub-text link';
         titleLink.innerHTML = job.title;
 
         titleCell.appendChild(titleLink);

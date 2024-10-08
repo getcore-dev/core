@@ -57,7 +57,7 @@ a {
 
 b,
 strong {
-    font-weight: bolder
+    font-weight: 500;
 }
 
 code,
@@ -305,7 +305,6 @@ html {
 }
 
 body {
-    background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility
@@ -411,20 +410,6 @@ body {
     --tw-backdrop-opacity: ;
     --tw-backdrop-saturate: ;
     --tw-backdrop-sepia:
-}
-
-.container {
-    width: 100%;
-    margin-right: auto;
-    margin-left: auto;
-    padding-right: 2rem;
-    padding-left: 2rem
-}
-
-@media (min-width: 1400px) {
-    .container {
-        max-width: 1400px
-    }
 }
 
 .sr-only {
@@ -3688,12 +3673,7 @@ body {
     counter-reset: step
 }
 
-@media (max-width: 640px) {
-    .container {
-        padding-left: 1rem;
-        padding-right: 1rem
-    }
-}
+
 
 .file\:border-0::file-selector-button {
     border-width: 0

@@ -498,6 +498,10 @@ div.jobs-company-header {
     height: 100%;
   }
 
+  .company-info-container {
+    overflow-x: hidden;
+  }
+
   .company-menu {
     margin: 0;
     display: flex;
@@ -512,6 +516,7 @@ div.jobs-company-header {
   .job-flairs {
     padding-bottom: 5px;
   }
+
 
 
 }
