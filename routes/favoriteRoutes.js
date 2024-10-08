@@ -190,7 +190,6 @@ router.get('/isFavorite/job/:jobId', async (req, res) => {
     const isFavorite = !!job;
     res.json({
       isFavorite: isFavorite,
-      buttonText: isFavorite ? '<span class="material-symbols-outlined no-margin no-padding">star</span>' : '<span class="material-symbols-outlined no-margin no-padding">star</span>',
     });
   } catch (err) {
     console.error('Error checking if job is favorite:', err);

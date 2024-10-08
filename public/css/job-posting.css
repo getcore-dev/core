@@ -161,12 +161,6 @@ img.company-logo {
   max-height: 55px !important;
 }
 
-.company-information {
-  display: flex;
-  flex-direction: column;
-  gap: .125rem;
-}
-
 .job-benefits ul,
 ul.locations {
   padding: 0 14px;
@@ -349,10 +343,15 @@ ul.locations {
   margin-bottom: 0;
 }
 
+.job-details ul {
+  margin: 0 .6rem;
+}
+
 .job-details ul li::before {
   content: "|";
   color: var(--light-mode-bold-text-color);
   font-size: 1.2rem;
+  float: left;
   margin-right: .5rem;
   margin-left: -1rem;
 }
@@ -378,15 +377,6 @@ ul.locations {
   background-color: var(--light-mode-body-color);
   padding: 5px 10px;
   border-radius: 7px;
-}
-
-.interact-buttons {
-  display: flex;
-  flex-direction: row;
-  overflow: hidden;
-  max-width: 100%;
-  gap: .8rem 1rem;
-  box-sizing: border-box;
 }
 
 .job-details {
@@ -537,6 +527,10 @@ ul.locations {
   .autojob-warning {
     background-color: #221e06;
     border-color: #221e06;
+  }
+
+  .job-details ul li::before {
+    color: var(--dark-mode-text-color);
   }
 
   .container {

@@ -674,14 +674,17 @@ router.get('/jobs', cacheMiddleware(2400), async (req, res) => {
 
 router.get('/job-suggestions', async (req, res) => {
   try {
-    const userPreferences = {
-      jobPreferredTitle: 'Software Engineer',
-      jobPreferredLocation: 'New York',
-      jobExperienceLevel: 'Internship',
-      jobPreferredSalary: 100000,
-      jobPreferredSkills: [] // Assuming these are skill IDs
-    };
-    
+    const user = req.user;
+    let userPreferences = {};
+    if (user) {
+      userPreferences = {
+        jobPreferredTitle: user.jobPreferredTitle ? user.jobPreferredTitle : '',
+        jobPreferredLocation: user.jobPreferredLocation ? user.jobPreferredLocation : '',
+        jobExperienceLevel: user.jobExperienceLevel ? user.jobExperienceLevel : '',
+        jobPreferredSalary: user.jobPreferredSalary ? user.jobPreferredSalary : 0,
+        jobPreferredSkills: []
+      };
+    }
     const topSuggestions = await jobQueries.getTopJobSuggestions(userPreferences);
     res.json(topSuggestions);
   } catch (err) {

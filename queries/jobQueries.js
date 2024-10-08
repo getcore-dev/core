@@ -63,18 +63,6 @@ const jobQueries = {
           c.location AS company_location,
           c.description AS company_description,
           (
-            SELECT STRING_AGG(jt.tagName, ', ')
-            FROM JobPostingsTags jpt
-            JOIN JobTags jt ON jpt.tagId = jt.id
-            WHERE jpt.jobId = j.id
-          ) AS tags,
-          (
-            SELECT STRING_AGG(s.name, ', ')
-            FROM job_skills js
-            JOIN skills s ON js.skill_id = s.id
-            WHERE js.job_id = j.id
-          ) AS skills,
-          (
             CASE
               WHEN j.title LIKE '%' + @preferredTitle + '%' THEN 10
               ELSE 0
@@ -114,11 +102,11 @@ const jobQueries = {
         request.input('experienceLevel', sql.NVarChar, userPreferences.jobExperienceLevel);
       }
   
+      // Always declare @preferredSalary, even if it's not provided in userPreferences
+      request.input('preferredSalary', sql.Int, userPreferences.jobPreferredSalary || 0);
       if (userPreferences.jobPreferredSalary && userPreferences.jobPreferredSalary > 0) {
         conditions.push('j.salary >= @preferredSalary');
-        request.input('preferredSalary', sql.Int, userPreferences.jobPreferredSalary);
       }
-  
   
       if (userPreferences.jobPreferredSkills && userPreferences.jobPreferredSkills.length > 0) {
         const skillConditions = [];
@@ -135,7 +123,6 @@ const jobQueries = {
         }
       }
       
-  
       if (conditions.length > 0) {
         query += ' AND ' + conditions.join(' AND ');
       }
@@ -742,7 +729,18 @@ const jobQueries = {
       // Prepare the base query and parameter container
       let baseQuery = `
         WITH FilteredJobs AS (
-          SELECT j.*, c.logo AS company_logo, c.name AS company_name
+          SELECT 
+            j.*, 
+            c.logo AS company_logo,
+            c.name AS company_name,
+            CASE
+              WHEN LOWER(j.title) LIKE '%internship%' OR LOWER(j.experienceLevel) LIKE '%internship%' THEN 'Internship'
+              WHEN LOWER(j.title) LIKE '%junior%' OR LOWER(j.experienceLevel) LIKE '%junior%' THEN 'Junior'
+              WHEN LOWER(j.title) LIKE '%senior%' OR LOWER(j.experienceLevel) LIKE '%senior%' THEN 'Senior'
+              WHEN LOWER(j.title) LIKE '%lead%' OR LOWER(j.experienceLevel) LIKE '%lead%' THEN 'Lead'
+              WHEN LOWER(j.title) LIKE '%manager%' OR LOWER(j.experienceLevel) LIKE '%manager%' THEN 'Manager'
+              ELSE j.experienceLevel
+            END AS cleaned_experience_level
           FROM JobPostings j
           JOIN Companies c ON j.company_id = c.id
           WHERE 1=1
@@ -750,17 +748,6 @@ const jobQueries = {
       const queryParams = {};
   
       // Optimize and combine filter conditions
-      if (experienceLevels.length) {
-        const levelsCondition = experienceLevels
-          .map((level, i) => {
-            queryParams[`expLevel${i}`] = `%${level}%`;
-            return `j.title LIKE @expLevel${i}`;
-          })
-          .join(' OR ');
-  
-        baseQuery += ` AND (${levelsCondition})`;
-      }
-  
       if (titles.length) {
         const titleCondition = titles
           .map((title, i) => {
@@ -803,6 +790,22 @@ const jobQueries = {
         )
         SELECT j.*
         FROM FilteredJobs j
+        WHERE 1=1
+      `;
+  
+      // Add experience level filter after defining the CTE
+      if (experienceLevels.length) {
+        const levelsCondition = experienceLevels
+          .map((level, i) => {
+            queryParams[`expLevel${i}`] = `%${level}%`;
+            return `j.cleaned_experience_level LIKE @expLevel${i}`;
+          })
+          .join(' OR ');
+  
+        baseQuery += ` AND (${levelsCondition})`;
+      }
+  
+      baseQuery += `
         ORDER BY j.postedDate DESC
         OFFSET @offset ROWS
         FETCH NEXT @pageSize ROWS ONLY;
@@ -1722,6 +1725,29 @@ ORDER BY jp.postedDate DESC
       const result = await sql.query`SELECT * FROM skills`;
       const skills = result.recordset;
       return skills;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  findPreviewById: async (id) => {
+    try {
+      const result = await sql.query`
+        SELECT 
+          JobPostings.*,
+          companies.name AS company_name,
+          companies.logo AS company_logo,
+          companies.location AS company_location,
+          companies.description AS company_description,
+          companies.industry AS company_industry,
+          companies.size AS company_size,
+        FROM JobPostings
+        LEFT JOIN companies ON JobPostings.company_id = companies.id
+        WHERE JobPostings.id = ${id}
+      `;
+      const job = result.recordset[0];
+      return job;
     } catch (err) {
       console.error('Database query error:', err);
       throw err;

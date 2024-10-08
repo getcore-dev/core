@@ -19,18 +19,24 @@
     <div class="flex flex-col h-center v-center">
 
 
-      <div class="flex flex-col p-4 pt-4">
+      <div class="flex flex-col p-4 pt-4 w-full">
         <h2 class="text-md font-semibold pb-4">Explore</h2>
-        <!--
         <div class="flex flex-row gap-4 mb-4">
-          <div class="rounded-xl w-full bg-muted p-4 text-card-foreground ">
-            test test
+          <div class="rounded-xl w-full bg-muted p-4 text-card-foreground">
+            <h3 class="text-md font-semibold mb-2">Jobs Profile</h3>
+            <div class="flex flex-col gap-1">
+              <p class="text-sm"><strong>Title:</strong> <%= user.jobPreferredTitle || 'Not specified' %></p>
+              <p class="text-sm"><strong>Location:</strong> <%= user.desired_location || 'Not specified' %></p>
+              <p class="text-sm"><strong>Experience:</strong> <%= user.jobExperienceLevel || 'Not specified' %></p>
+              <p class="text-sm"><strong>Salary:</strong> <%= user.jobPreferredSalary ? '$' + user.jobPreferredSalary.toLocaleString() : 'Not specified' %></p>
+            </div>
           </div>
+
           <div class="rounded-xl w-full bg-muted p-4 text-card-foreground ">
             test test 2
           </div>
         </div>
-        -->
+
         <div class="flex flex-row w-full pb-4">
           <input type="text" placeholder="Search for a job (disabled temporarily)" class="shadow w-full p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
         </div>

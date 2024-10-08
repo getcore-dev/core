@@ -1465,9 +1465,10 @@ a>.menu-item {
 
   .menu-content {
     padding-top: calc(var(--mobile-navbar-height) + 6px);
-    padding-left: .4rem;
-    padding-right: .4rem;
-    height: calc(100dvh - 58px);
+    padding-left: .7rem;
+    width: 78%;
+    padding-right: .7rem;
+    height: calc(100dvh);
   }
 
   .nav-text-container {
@@ -1941,7 +1942,7 @@ button:hover {
   width: auto;
   font-weight: 500;
   margin: 0;
-  border-radius: calc(var(--radius) - 2px);
+  border-radius: calc(var(--radius));
   background: #4da068;
   color: #deffe9;
   cursor: pointer;
@@ -3605,10 +3606,10 @@ input::placeholder {
   #null-button-normal,
   .main-button-normal,
   .bordered-button-normal {
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: calc(var(--radius));
     font-size: .875rem;
     line-height: 1.25rem;
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 1rem;
   }
 
   input[type='text'],

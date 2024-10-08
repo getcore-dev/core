@@ -1,15 +1,6 @@
 
 const jobSuggestions = document.getElementById('topJobSuggestions');
 
-const jobs = [
-  {
-    name: 'Apple',
-    timestamp: '1 day ago',
-    title: 'Software Engineer',
-    description: 'Imagine what you could do here! At Apple, new ideas have a way of becoming extraordinary products, services, and customer experiences very quickly. Do you bring passion and dedication to your job? Are you looking for a challenge? Join Apple and help us leave the world better than we found it.'
-  }
-];
-
 function createCard(name, timestamp, title, description, clickable=false, link=null, image=null, tags=null) {
   console.log(tags);
   const card = document.createElement('div');

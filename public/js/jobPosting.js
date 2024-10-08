@@ -115,7 +115,7 @@ async function getSimilarJobs(jobId) {
       const diffTime = Math.abs(now - postedDate);
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
       if (diffDays <= 2) {
-        tags.push({text: 'New', class: 'bg-destructive'});
+        tags.push({text: 'New', class: 'bg-amber-50'});
       }
 
       if (job.location) {
@@ -237,7 +237,7 @@ function createJobElement(job) {
   const diffTime = Math.abs(now - postedDate);
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
   if (diffDays <= 2) {
-    tags.push({text: 'New', class: 'bg-destructive'});
+    tags.push({text: 'New', class: 'bg-amber-50'});
   }
 
   if (job.location) {
@@ -335,8 +335,11 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       let benefitsArray, skillsArray;
       try {
         // Extract skills from job description using keyword search
-        const keywords = ['JavaScript', 'Python', 'Java', 'C++', 'React', 'Node.js', 'SQL', 'AWS', 'Docker', 'Kubernetes', 'CRM', 'Salesforce', 'IT', 'Node.js', 'cybersecurity'];
-        skillsArray = keywords.filter(keyword => job.description.toLowerCase().includes(keyword.toLowerCase()));
+        const keywords = ['JavaScript', 'Python', 'Java', 'C++', 'React', 'Node.js', 'SQL', 'AWS', 'Docker', 'Kubernetes', 'CRM', 'Salesforce', 'Node.js', 'cybersecurity', 'Power BI', 'Excel', 'Data Visualization', 'Statistics', 'Finance'];
+        skillsArray = keywords.filter(keyword => 
+          job.description.toLowerCase().includes(keyword.toLowerCase()) || 
+          (job.Requirements && job.Requirements.toLowerCase().includes(keyword.toLowerCase()))
+        );
         
         // If no skills found in description, fallback to existing skills
         if (skillsArray.length === 0 && job.skills) {
@@ -400,10 +403,15 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 </nav>
       <div class="company-info w-100">
         <div class="company-details">
-      <div class="company-information">
-          <h3 class="company-name header-text margin-03-bottom">
+      <div class="flex flex-col gap-2">
+          <h3 class="company-name header-text margin-03-bottom bold">
         ${job.title}
       </h3>
+              ${job.experienceLevel ? `
+          <p class="mini-text bold secondary-text">
+        ${job.experienceLevel}
+        </p>  
+        ` : ''}
       <p class="sub-text third-text"> 
           ${
   job.location
@@ -448,18 +456,23 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
                 Posted by
                     @<a href="/user/${job.recruiter_username}" class="mini-text">${job.recruiter_username}</a>
                     </p>
-                </div>
-                </div>
             </div>
+          </div>
         </div>
-      </div>
+    </div>
+    <div class="flex flex-row gap-4 v-center">
+            <div class="flex flex-row gap-06 v-center">
+              <span class="material-symbols-outlined">house</span>
+              <p class="sub-text">${job.relocation ? 'Relocation offered' : 'No relocation'}</p>
+            </div>
+            <div class="flex flex-row gap-06 v-center">
+              <span class="material-symbols-outlined">apartment</span>
+              <p class="sub-text">${job.isRemote ? 'Remote work available' : 'On-site only'}</p>
+            </div>
+          </div>
+    </div>
       
         </div>
-        ${job.experienceLevel ? `
-          <p class="job-detail mini-text bold secondary-text" style="margin-left:auto;white-space: nowrap;">
-        ${job.experienceLevel}
-        </p>  
-        ` : ''}
       </div>
 
       ${ job.salary || job.salary_max ? `
@@ -507,14 +520,14 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       </div>
       -->
 <div class="flex flex-col gap-06">
-      <div class="interact-buttons flex v-center">
+      <div class="interact-buttons flex flex-row gap-4 v-center">
         ${
   (job)
     ? `<div class="apply-button-container flex gap-4">
                 <button class="main-button-normal" onclick="applyForJob(event, '${job.id}', '${job.link}')">
                   <span class="sub-text">Apply</span><span class="material-symbols-outlined no-padding">arrow_outward</span>
                 </button>
-                <button class="bordered-button-normal" onclick="favorite('job', ${job.id});">
+                <button class="bordered-button-normal" id="favorite-button" onclick="favorite('job', ${job.id});">
                   <span class="sub-text">Save</span>
                 </button>
                   </div>`
@@ -522,7 +535,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 } 
         <div class="second-buttons-container">
                   <div class="dropdown" tabindex="0">
-            <button aria-label="Dropdown" class="dropdown-button location-dropdown px-2 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+            <button aria-label="Dropdown" class="dropdown-button location-dropdown px-2 mini-text secondary-text" style="padding-top: .4rem; padding-bottom: .4rem;" aria-haspopup="true" aria-expanded="false">
               <span class="material-symbols-outlined no-padding no-margin">more_horiz</span>
             </button>
 
@@ -534,17 +547,6 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
           <span class="sub-text">Share</span>
         </button>
         </a>
-            ${
-  userIsLoggedIn
-    ? `                                    
-                <a class="grow-button margin-h-auto cancel-button-text">
-                  <div id="favorite-form-${job.id}" class="flex">
-                    <button class="no-margin no-padding no-bg no-border" onclick="favorite('job', ${job.id});" class="margin-h-auto">
-                      <span class="material-symbols-outlined">star</span>
-                        <span class="sub-text">Favorite</span>
-                    </button>
-                  </div>
-                </a>` : '' }
                        ${
   userIsLoggedIn && userIsAdmin
     ? `
@@ -590,13 +592,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   </div>
 </div>
             <div class="job-details primary-text company-profile-section">
-            <div class="job-posting-recruiter main-text">
-                    <h4 class="main-text bold" style="margin-top:0;">Recruiter Information</h4>
-
-<div>
-    </div>
-</div>
-            ${job.company_description ? `
+            ${job.company_description && job.company_description.length > 10 ? `
             <div class="company-description sub-text">
               <h4 class="main-text bold">Company Description</h4>
               <p class="sub-text">${job.company_description}</p>
@@ -709,11 +705,6 @@ ${
 `
     : ''
 }
-
-<div class="job-relocation">
-  <h4 class="main-text bold">Relocation</h4>
-  <p class="sub-text">${job.relocation ? 'Yes' : 'No'}</p>
-</div>
 
 <div class="flex">
 <div class="autojob-warning px-4 py-2">
@@ -833,15 +824,13 @@ function checkFavorite(jobId) {
   fetch(`/favorites/isFavorite/job/${jobId}`)
     .then((response) => response.json())
     .then((data) => {
-      const favoriteButton = document.querySelector(
-        '.favorite-action-button'
-      );
+      const favoriteButton = document.getElementById('favorite-button');
       if (data.isFavorite) {
-        favoriteButton.id = 'cancel-button-normal';
-        favoriteButton.innerHTML = data.buttonText;
+        favoriteButton.className = 'cancel-button-normal';
+        favoriteButton.innerHTML = '<span class="sub-text">Unsave</span>';
       } else {
-        favoriteButton.id = 'bordered-button-normal';
-        favoriteButton.innerHTML = data.buttonText;
+        favoriteButton.className = 'bordered-button-normal';
+        favoriteButton.innerHTML = '<span class="sub-text">Save</span>';
       }
     })
     .catch((error) => {
@@ -864,7 +853,7 @@ function favorite(favoriteType, TypeId) {
 
   let favoriteButton;
   if (favoriteType === 'job') {
-    favoriteButton = document.querySelector('.favorite-action-button');
+    favoriteButton = document.getElementById('favorite-button');
     toggleFavoriteButton(favoriteButton);
   }
 
@@ -905,11 +894,11 @@ function favorite(favoriteType, TypeId) {
 }
 
 function toggleFavoriteButton(button) {
-  if (button.innerHTML === '<span class="material-symbols-outlined no-margin no-padding">star</span>') {
-    button.id = 'submit-button-normal';
-    button.innerHTML = '<span class="material-symbols-outlined no-margin no-padding">star</span>';
+  if (button.innerHTML === '<span class="sub-text">Unsave</span>') {
+    button.className = 'bordered-button-normal';
+    button.innerHTML = '<span class="sub-text">Save</span>';
   } else {
-    button.id = 'cancel-button-normal';
-    button.innerHTML = '<span class="material-symbols-outlined no-margin no-padding">star</span>';
+    button.className = 'cancel-button-normal';
+    button.innerHTML = '<span class="sub-text">Unsave</span>';
   }
 }

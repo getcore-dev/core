@@ -1665,7 +1665,7 @@ class JobProcessor extends EventEmitter {
 
     const title = $('.posting-headline h2').text().trim();
     const location = $('.location').text().trim();
-    const experience_level = $('.commitment').text().replace('Intern', 'Internship').replace('/', '').trim();
+    const experience_level = $('.commitment').text().replace('Internship/Co-Op', 'Internship').replace('/', '').trim();
     const employmentType = $('.workplaceTypes').text().trim();
     const descriptionHtml = $('div[data-qa="job-description"]').html() + $('div[data-qa="closing-description"]').html();
 
