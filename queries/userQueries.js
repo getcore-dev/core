@@ -15,8 +15,30 @@ const userQueries = {
           SELECT COUNT(*) 
           FROM user_relationships 
           WHERE follower_id = u.id
-        ) AS followingCount
+        ) AS followingCount,
+         CASE 
+            WHEN je.title IS NOT NULL THEN je.title
+            ELSE 
+              CASE
+                WHEN u.settings_PrivateSchoolNames = 1 THEN 'Student'
+                ELSE ee.institutionName
+              END
+          END AS experience_title,
+          CASE 
+            WHEN je.companyName IS NOT NULL THEN 
+              CASE 
+                WHEN u.settings_PrivateJobNames = 1 THEN 'Company'
+                ELSE je.companyName 
+              END
+            ELSE 
+              CASE 
+                WHEN u.settings_PrivateSchoolNames = 1 THEN 'Institution'
+                ELSE ee.institutionName
+              END
+          END AS experience_place
       FROM users u
+      LEFT JOIN education_experiences ee ON u.id = ee.userId
+      LEFT JOIN job_experiences je ON u.id = je.userId
       WHERE u.username = ${username}`;
 
       const user = result.recordset[0];

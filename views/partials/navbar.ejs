@@ -713,7 +713,7 @@
 
         posts.forEach(trending_post => {
           const postElement = document.createElement('div');
-          postElement.className = 'trending-post';
+          postElement.className = 'trending-post px-2';
           postElement.onclick = () => {
             window.location.href = `/posts/${trending_post.id}`;
           };
@@ -722,7 +722,7 @@
           postElement.innerHTML = `
                 <div class="trending-post-content">
 
-<div class="flex flex-row gap-03 v-center">
+<div class="flex flex-row gap-2 v-center">
 <img src="${trending_post.avatar || '/img/glyph.png'}" alt="Avatar" class="thumbnail thumbnail-regular thumbnail-micro" />
 <p class="mini-text">${trending_post.firstname.charAt(0).toUpperCase() + trending_post.firstname.slice(1).toLowerCase()} ${trending_post.lastname.charAt(0).toUpperCase() + trending_post.lastname.slice(1).toLowerCase()}</p>
 </div>

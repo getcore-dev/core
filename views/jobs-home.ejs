@@ -22,7 +22,7 @@
       <div class="flex flex-col p-4 pt-4 w-full">
         <h2 class="text-md font-semibold pb-4">Explore</h2>
         <div class="flex flex-row gap-4 mb-4">
-          <div class="rounded-xl w-full bg-muted p-4 text-card-foreground hover:bg-muted/80 transition-colors cursor-pointer">
+          <div class="rounded-xl w-full bg-muted px-4 py-3 text-card-foreground hover:bg-muted/80 transition-colors cursor-pointer">
             <a href="/jobs/profile">
               <h3 class="text-md font-semibold mb-2">Jobs Profile</h3>
               <div class="flex flex-col gap-1">
@@ -33,7 +33,7 @@
               </div>
             </a>
           </div>
-          <div class="rounded-xl w-full bg-muted p-4 text-card-foreground hover:bg-muted/80 transition-colors cursor-pointer">
+          <div class="rounded-xl w-full bg-muted px-4 py-3 text-card-foreground hover:bg-muted/80 transition-colors cursor-pointer">
             <a href="/jobs/applied">
               <div>
                 <h3 class="text-md font-semibold mb-2">Your Search</h3>
@@ -52,16 +52,15 @@
           </a>
         </div>
         <div class="flex flex-row">
-          <div class="flex flex-col">
-            <div class="flex flex-col" id="topJobSuggestions">
+          <div class="flex flex-col w-full">
+            <h3 class="text-md font-semibold mb-2">Your Job Recommendations</h3>
+            <div class="flex flex-col mb-4" id="topJobSuggestions">
+              <!-- Job suggestions will be dynamically inserted here -->
             </div>
             <a class="w-full" href="/jobs">
-              <button class="inline-flex w-100 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">Other Jobs</button>
+              <button class="inline-flex w-full items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">Explore More Personalized Jobs</button>
             </a>
           </div>
-
-
-
         </div>
       </div>
     </div>

@@ -186,15 +186,6 @@ main {
   color: var(--primary-text-color);
 }
 
-/* Profile Picture Styles */
-.profile-picture {
-  margin-right: auto;
-  margin-left: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-}
 
 
 .user-activity-buttons {
@@ -532,12 +523,6 @@ td {
     overflow-y: auto;
   }
 
-  .profile-info .profile-details {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
 
   #profile {
     padding: 0 1rem;

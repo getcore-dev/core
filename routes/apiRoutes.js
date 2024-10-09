@@ -686,7 +686,7 @@ router.get('/job-suggestions', async (req, res) => {
         companies: []
       };
     }
-    const topSuggestions = await jobQueries.searchAllJobsFromLast30Days(userPreferences, 1, 10);
+    const topSuggestions = await jobQueries.getTopJobSuggestions(userPreferences, 1, 50);
     res.json(topSuggestions);
   } catch (err) {
     console.error('Error fetching job suggestions:', err);

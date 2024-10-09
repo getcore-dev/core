@@ -172,35 +172,6 @@ body {
     margin-bottom: 20px;
 }
 
-.form-group input,
-.form-group textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 14px;
-    color: #374151;
-}
-
-.form-group input[type="checkbox"] {
-    width: auto;
-    margin-right: 10px;
-}
-
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-    color: #9ca3af;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-    border-color: #6366f1;
-    outline: none;
-}
-
-.form-group textarea {
-    resize: vertical;
-}
 
 /* Settings Button Styling */
 .settings-button-container {
@@ -248,34 +219,6 @@ body {
 }
 
 
-.container select {
-    padding: 10px;
-    width: 100%;
-    margin: 5px;
-    font-size: 16px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    box-sizing: border-box;
-}
-
-.container input[type="file"] {
-    padding: 10px;
-    margin: 0;
-    width: 100%;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    box-sizing: border-box;
-}
-
-.container input[type="color"] {
-    padding: 0px;
-    width: 100%;
-    margin: 0;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    box-sizing: border-box;
-}
-
 .container img {
     width: 100px;
     height: 100px;
@@ -306,12 +249,6 @@ body {
         color: var(--dark-mode-text-color);
         border-color: var(--dark-mode-border-color);
         width: 100%;
-    }
-
-    .container select {
-        background: var(--dark-mode-body-color);
-        color: var(--dark-mode-text-color);
-        border-color: var(--dark-mode-border-color);
     }
 
     .container input[type="file"] {

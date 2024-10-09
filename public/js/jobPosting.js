@@ -115,7 +115,7 @@ async function getSimilarJobs(jobId) {
       const diffTime = Math.abs(now - postedDate);
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
       if (diffDays <= 2) {
-        tags.push({text: 'New', class: 'bg-amber-50'});
+        tags.push({text: 'New', class: 'link'});
       }
 
       if (job.location) {
@@ -237,7 +237,7 @@ function createJobElement(job) {
   const diffTime = Math.abs(now - postedDate);
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
   if (diffDays <= 2) {
-    tags.push({text: 'New', class: 'bg-amber-50'});
+    tags.push({text: 'New', class: 'link'});
   }
 
   if (job.location) {

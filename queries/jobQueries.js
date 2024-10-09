@@ -44,102 +44,6 @@ const jobQueries = {
     }
   },
 
-  getTopJobSuggestions: async (userPreferences, limit = 10) => {
-    try {
-      const request = new sql.Request();
-      let query = `
-        SELECT TOP ${limit}
-          j.id,
-          j.title,
-          j.description,
-          j.postedDate,
-          j.experienceLevel,
-          j.salary,
-          j.applicants,
-          j.location,
-          j.link,
-          c.name AS company_name,
-          c.logo AS company_logo,
-          c.location AS company_location,
-          c.description AS company_description,
-          (
-            CASE
-              WHEN j.title LIKE '%' + @preferredTitle + '%' THEN 10
-              ELSE 0
-            END +
-            CASE
-              WHEN j.location LIKE '%' + @preferredLocation + '%' THEN 5
-              ELSE 0
-            END +
-            CASE
-              WHEN j.experienceLevel = @experienceLevel THEN 5
-              ELSE 0
-            END +
-            CASE
-              WHEN j.salary >= @preferredSalary THEN 5
-              ELSE 0
-            END
-          ) AS relevance_score
-        FROM JobPostings j
-        LEFT JOIN companies c ON j.company_id = c.id
-        WHERE 1=1
-      `;
-  
-      const conditions = [];
-      
-      if (userPreferences.jobPreferredTitle) {
-        conditions.push('j.title LIKE @preferredTitle');
-        request.input('preferredTitle', sql.NVarChar, `%${userPreferences.jobPreferredTitle}%`);
-      }
-  
-      if (userPreferences.jobPreferredLocation) {
-        conditions.push('j.location LIKE @preferredLocation');
-        request.input('preferredLocation', sql.NVarChar, `%${userPreferences.jobPreferredLocation}%`);
-      }
-  
-      if (userPreferences.jobExperienceLevel) {
-        conditions.push('j.experienceLevel = @experienceLevel');
-        request.input('experienceLevel', sql.NVarChar, userPreferences.jobExperienceLevel);
-      }
-  
-      // Always declare @preferredSalary, even if it's not provided in userPreferences
-      request.input('preferredSalary', sql.Decimal(10, 2), userPreferences.jobPreferredSalary || 0);
-      if (userPreferences.jobPreferredSalary && userPreferences.jobPreferredSalary > 0) {
-        conditions.push('j.salary >= @preferredSalary');
-      }
-      
-  
-      if (userPreferences.jobPreferredSkills && userPreferences.jobPreferredSkills.length > 0) {
-        const skillConditions = [];
-        userPreferences.jobPreferredSkills.forEach((skill, index) => {
-          if (skill) {
-            const paramName = `skill${index}`;
-            request.input(paramName, sql.UniqueIdentifier, skill);
-            skillConditions.push(`EXISTS (SELECT 1 FROM job_skills WHERE job_id = j.id AND skill_id = @${paramName})`);
-          }
-        });
-        
-        if (skillConditions.length > 0) {
-          conditions.push(`(${skillConditions.join(' OR ')})`);
-        }
-      }
-      
-      if (conditions.length > 0) {
-        query += ' AND ' + conditions.join(' AND ');
-      }
-  
-      query += `
-        ORDER BY relevance_score DESC, j.postedDate DESC
-      `;
-  
-      const result = await request.query(query);
-      return result.recordset;
-    } catch (error) {
-      console.error('Error in getTopJobSuggestions:', error);
-      throw error;
-    }
-  },
-
   getAllCompanies: async () => {
     try {
       const result = await sql.query`
@@ -830,6 +734,107 @@ const jobQueries = {
     }
   },
   
+
+  getTopJobSuggestions: async (filters, page, pageSize) => {
+    try {
+      console.log('Searching for jobs with filters:', filters);
+      const {
+        titles = [],
+        locations = [],
+        experienceLevels = [],
+        salary = 0,
+        skills = [],
+        companies = []
+      } = filters;
+  
+      const offset = (page - 1) * pageSize;
+  
+      // Prepare the base query and parameter container
+      let baseQuery = `
+        WITH FilteredJobs AS (
+          SELECT 
+            j.*, 
+            c.logo AS company_logo,
+            c.name AS company_name,
+            CASE
+              WHEN LOWER(j.title) LIKE '%internship%' OR LOWER(j.experienceLevel) LIKE '%internship%' THEN 'Internship'
+              WHEN LOWER(j.title) LIKE '%junior%' OR LOWER(j.experienceLevel) LIKE '%junior%' THEN 'Junior'
+              WHEN LOWER(j.title) LIKE '%senior%' OR LOWER(j.experienceLevel) LIKE '%senior%' THEN 'Senior'
+              WHEN LOWER(j.title) LIKE '%lead%' OR LOWER(j.experienceLevel) LIKE '%lead%' THEN 'Lead'
+              WHEN LOWER(j.title) LIKE '%manager%' OR LOWER(j.experienceLevel) LIKE '%manager%' THEN 'Manager'
+              ELSE j.experienceLevel
+            END AS cleaned_experience_level
+          FROM JobPostings j
+          JOIN Companies c ON j.company_id = c.id
+          WHERE 1=1
+      `;
+      const queryParams = {};
+  
+      // Optimize and combine filter conditions
+      if (titles.length) {
+        const titleCondition = titles
+          .map((title, i) => {
+            queryParams[`title${i}`] = `%${title}%`;
+            return `j.title LIKE @title${i}`;
+          })
+          .join(' OR ');
+  
+        baseQuery += ` AND (${titleCondition})`;
+      }
+  
+      if (locations.length) {
+        const locationCondition = locations
+          .map((location, i) => {
+            queryParams[`location${i}`] = `%${location}%`;
+            return `j.location LIKE @location${i}`;
+          })
+          .join(' OR ');
+  
+        baseQuery += ` AND (${locationCondition})`;
+      }
+  
+      baseQuery += `
+        )
+        SELECT j.*
+        FROM FilteredJobs j
+        WHERE 1=1
+      `;
+  
+      // Add experience level filter after defining the CTE
+      if (experienceLevels.length) {
+        const levelsCondition = experienceLevels
+          .map((level, i) => {
+            queryParams[`expLevel${i}`] = `%${level}%`;
+            return `j.cleaned_experience_level LIKE @expLevel${i}`;
+          })
+          .join(' OR ');
+  
+        baseQuery += ` AND (${levelsCondition})`;
+      }
+  
+      baseQuery += `
+        ORDER BY j.postedDate DESC
+        OFFSET @offset ROWS
+        FETCH NEXT @pageSize ROWS ONLY;
+      `;
+  
+      // Prepare SQL request and input parameters
+      const request = new sql.Request();
+      Object.entries(queryParams).forEach(([key, value]) => {
+        request.input(key, value);
+      });
+      request.input('offset', sql.Int, offset);
+      request.input('pageSize', sql.Int, pageSize);
+  
+      // Execute the query
+      const result = await request.query(baseQuery);
+  
+      return result.recordset;
+    } catch (error) {
+      console.error('Error in searchAllJobsFromLast30Days:', error);
+      throw error;
+    }
+  },
   
   
   
