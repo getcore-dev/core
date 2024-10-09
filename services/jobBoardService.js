@@ -2840,14 +2840,16 @@ class JobProcessor extends EventEmitter {
 
   async processJobInfo(jobInfo) {
     // function to prompt gpt using the data gathered from linkedin posting
-    const prompt = this.generatePrompt2(jobInfo);
+    const prompt = this.generatePrompt2(JSON.stringify(jobInfo));
     const response = await this.useChatGPTAPI_JobInfo(jobInfo.link, prompt);
     return response;
   }
 
   async processJobPosting(jobId) {
-    const jobPosting = await jobQueries.getJobById(jobId);
+    const jobPosting = await jobQueries.findById(jobId);
+    console.log(jobPosting);
     const improvedJobPostings = await this.processJobInfo(jobPosting);
+
 
     await jobQueries.setJobRawDescription(jobId);
     await jobQueries.updateJob(jobId, improvedJobPostings);

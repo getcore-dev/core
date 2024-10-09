@@ -58,6 +58,7 @@ router.get('/', cacheMiddleware(2400), async (req, res) => {
 router.get('/process/:jobId', checkAuthenticated, async (req, res) => {
   const jobProcessor = new jobBoardService();
   const jobId = req.params.jobId;
+  console.log('processing job', jobId);
   const improvedJobPostings = await jobProcessor.processJobPosting(jobId);
   res.json(improvedJobPostings);
 });

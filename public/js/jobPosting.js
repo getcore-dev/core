@@ -472,7 +472,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
                 <div class="adaptive-border rounded">
       <div class="sub-text p-4 flex items-center">
         <span class="material-symbols-outlined animate-spin mr-2" style="color: #6366f1;">auto_awesome</span>
-        <span>Please wait a moment while we improve this job posting!</span>
+        <span class='please-wait-button'>Please wait a moment while we improve this job posting!</span>
       </div>
       </div>
       ` : ''}
@@ -771,7 +771,12 @@ function processJobPosting(jobId) {
   fetch(`/jobs/process/${jobId}`)
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
+      // change please wait button to say 'done processing click here to reload'
+      const pleaseWaitButton = document.querySelector('.please-wait-button');
+      pleaseWaitButton.innerHTML = '<span class="sub-text">Done processing! Click here to reload</span>';
+      pleaseWaitButton.onclick = () => {
+        window.location.reload();
+      };
     })
     .catch((error) => {
       console.error('Error processing job posting:', error);
