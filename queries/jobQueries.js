@@ -1690,6 +1690,34 @@ ORDER BY jp.postedDate DESC
     }
   },
 
+  getAllJobLinks: async () => {
+    try {
+      const pool = await sql.connect();
+      const result = await pool.request().query(`
+        SELECT link from JobPostings
+      `);
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  getCompaniesWithJobBoard: async () => {
+    try {
+      const pool = await sql.connect();
+      const result = await pool.request().query(`
+        SELECT companies.id, companies.name, companies.job_board_url FROM companies
+        WHERE companies.job_board_url IS NOT NULL AND companies.job_board_url != ''
+        ORDER BY name
+      `);
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   // function to get the 10 recent job companies 
   // get the most recent 40 job postings
   // and then look at their companies and get the 10 most recent companies
@@ -1982,70 +2010,77 @@ ORDER BY jp.postedDate DESC
       let jobPostingId;
       try {
         // Insert the job posting into the JobPostings table
+        // Define a table variable to hold the inserted IDs
         const result = await sql.query`
-          INSERT INTO JobPostings (
-            title,
-            salary,
-            experienceLevel,
-            location,
-            postedDate,
-            company_id,
-            link,
-            expiration_date,
-            description,
-            salary_max,
-            recruiter_id,
-            additional_information,
-            benefits,
-            preferredQualifications,
-            minimumQualifications,
-            responsibilities,
-            requirements,
-            niceToHave,
-            schedule,
-            hoursPerWeek,
-            h1bVisaSponsorship,
-            isRemote,
-            equalOpportunityEmployerInfo,
-            relocation,
-            applicants,
-            isProcessed,
-            employmentType,
-            sourcePostingDate
-          )
-          OUTPUT INSERTED.id
-          VALUES (
-            ${title},
-            ${salary},
-            ${experienceLevel},
-            ${location},
-            ${postedDate},
-            ${company_id},
-            ${link},
-            ${expiration_date},
-            ${description},
-            ${salary_max},
-            ${recruiter_id},
-            ${additional_information},
-            ${formattedBenefits},
-            ${preferredQualifications},
-            ${minimumQualifications},
-            ${responsibilities},
-            ${requirements},
-            ${niceToHave},
-            ${schedule},
-            ${hoursPerWeek},
-            ${h1bVisaSponsorship},
-            ${isRemote},
-            ${equalOpportunityEmployerInfo},
-            ${relocation},
-            0,
-            ${isProcessed},
-            ${employmentType},
-            ${sourcePostingDate}
-          )
-        `;
+  DECLARE @InsertedJobPostings TABLE (id INT);
+
+  INSERT INTO JobPostings (
+    title,
+    salary,
+    experienceLevel,
+    location,
+    postedDate,
+    company_id,
+    link,
+    expiration_date,
+    description,
+    salary_max,
+    recruiter_id,
+    additional_information,
+    benefits,
+    preferredQualifications,
+    minimumQualifications,
+    responsibilities,
+    requirements,
+    niceToHave,
+    schedule,
+    hoursPerWeek,
+    h1bVisaSponsorship,
+    isRemote,
+    equalOpportunityEmployerInfo,
+    relocation,
+    applicants,
+    isProcessed,
+    employmentType,
+    sourcePostingDate
+  )
+  OUTPUT INSERTED.id INTO @InsertedJobPostings
+  VALUES (
+    ${title},
+    ${salary},
+    ${experienceLevel},
+    ${location},
+    ${postedDate},
+    ${company_id},
+    ${link},
+    ${expiration_date},
+    ${description},
+    ${salary_max},
+    ${recruiter_id},
+    ${additional_information},
+    ${formattedBenefits},
+    ${preferredQualifications},
+    ${minimumQualifications},
+    ${responsibilities},
+    ${requirements},
+    ${niceToHave},
+    ${schedule},
+    ${hoursPerWeek},
+    ${h1bVisaSponsorship},
+    ${isRemote},
+    ${equalOpportunityEmployerInfo},
+    ${relocation},
+    0,
+    ${isProcessed},
+    ${employmentType},
+    ${sourcePostingDate}
+  );
+
+  SELECT id FROM @InsertedJobPostings;
+`;
+
         jobPostingId = result.recordset[0].id;
+
       } catch (err) {
         console.error(`Error inserting job posting: ${err.message}`);
         throw err;
@@ -2114,7 +2149,34 @@ ORDER BY jp.postedDate DESC
       return jobPostingId;
     } catch (err) {
       console.log(
-        `Error creating job posting with information: ${title}, ${salary}, ${experienceLevel}, ${location}, ${postedDate}, ${company_id}, ${link}, ${expiration_date}, ${tags}, ${description}, ${salary_max}, ${recruiter_id}, ${skills}, ${benefits}, ${additional_information}, ${preferredQualifications}, ${minimumQualifications}, ${responsibilities}, ${requirements}, ${niceToHave}, ${schedule}, ${hoursPerWeek}, ${h1bVisaSponsorship}, ${isRemote}, ${equalOpportunityEmployerInfo}, ${relocation}`
+        `Error creating job posting with information: 
+        
+        title: ${title}, 
+        salary: ${salary}, 
+        experienceLevel: ${experienceLevel}, 
+        location: ${location}, 
+        postedDate: ${postedDate}, 
+        company_id: ${company_id}, 
+        link: ${link}, 
+        expiration_date: ${expiration_date}, 
+        tags: ${tags}, 
+        description: ${description}, 
+        salary_max: ${salary_max}, 
+        recruiter_id: ${recruiter_id}, 
+        skills: ${skills}, 
+        benefits: ${benefits}, 
+        additional_information: ${additional_information}, 
+        preferredQualifications: ${preferredQualifications}, 
+        minimumQualifications: ${minimumQualifications}, 
+        responsibilities: ${responsibilities}, 
+        requirements: ${requirements}, 
+        niceToHave: ${niceToHave}, 
+        schedule: ${schedule}, 
+        hoursPerWeek: ${hoursPerWeek}, 
+        h1bVisaSponsorship: ${h1bVisaSponsorship}, 
+        isRemote: ${isRemote}, 
+        equalOpportunityEmployerInfo: ${equalOpportunityEmployerInfo}, 
+        relocation: ${relocation}`
       );
       console.error(
         `Database insert error: ${err.message} in createJobPosting`
