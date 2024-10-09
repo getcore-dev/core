@@ -76,11 +76,15 @@ function getQueryParams() {
 }
 
 function setupInfiniteScroll() {
+  const loadMoreBtn = document.querySelector('.load-more-btn');
+
   const options = {
     root: null,
-    rootMargin: '500px', // Increased from '0px' to '200px'
-    threshold: 0.1, // Decreased from 0.5 to 0.1
+    rootMargin: '500px', 
+    threshold: 0.1, 
   };
+
+  loadMoreBtn.style.display = 'flex';
 
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting && !state.isLoading && state.hasMoreData) {
@@ -88,7 +92,6 @@ function setupInfiniteScroll() {
     }
   }, options);
 
-  const loadMoreBtn = document.querySelector('.load-more-btn');
   if (loadMoreBtn) {
     observer.observe(loadMoreBtn);
   }
@@ -206,13 +209,30 @@ const debounce = (func, delay) => {
 
 document.addEventListener('DOMContentLoaded', initialize);
 
+function updateStateFromServerFilters() {
+  const serverFilters = JSON.parse(document.getElementById('server-filters').textContent);
+  if (serverFilters) {
+    if (serverFilters.skills) state.filters.skills = new Set(serverFilters.skills);
+    if (serverFilters.locations) state.filters.locations = new Set(serverFilters.locations);
+    if (serverFilters.titles) state.filters.titles = new Set(serverFilters.titles);
+    if (serverFilters.companies) state.filters.companies = new Set(serverFilters.companies);
+    if (serverFilters.experienceLevels) state.filters.experiencelevels = new Set(serverFilters.experienceLevels);
+    if (serverFilters.salary) state.filters.salary = serverFilters.salary;
+    
+    // Update UI to reflect these filters
+    triggerJobSearch();
+    setupInfiniteScroll();
+    restoreUIState();
+  }
+}
+
 function initialize() {
   try {
     loadStateFromLocalStorage();
-    updateStateFromQuery();
+    updateStateFromServerFilters();
     setupInfiniteScroll();
   } catch (error) {
-    console.error('Error loading state from local storage:', error);
+    console.error('Error initializing state:', error);
     fetchJobPostings();
   }
   if (state.jobPostings.length === 0) {
@@ -220,6 +240,7 @@ function initialize() {
   }
   updateJobCount();
 }
+
 
 
 
@@ -648,6 +669,7 @@ function renderJobPostings(jobs) {
     }
   }
 
+  setupInfiniteScroll();
 }
 
 function formatRelativeDate(dateString) {
@@ -727,6 +749,7 @@ function loadStateFromLocalStorage() {
 
       // Restore the UI state
       restoreUIState();
+      setupInfiniteScroll();
     } else {
       // Discard old state and fetch new job postings
       localStorage.removeItem('jobSearchState');

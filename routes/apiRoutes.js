@@ -589,7 +589,7 @@ router.get('/company/:name/comments', async (req, res) => {
 
 
 
-router.get('/jobs', cacheMiddleware(2400), async (req, res) => {
+router.get('/jobs', cacheMiddleware(120), async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 20;
@@ -754,7 +754,7 @@ router.get('/test', async (req, res) => {
   res.json(simplifyJobs);
 });
 
-router.get('/jobs-count', cacheMiddleware(2400), async (req, res) => {
+router.get('/jobs-count', cacheMiddleware(120), async (req, res) => {
   try {
     const jobCount = await jobQueries.simpleGetJobsCount();
     res.json(jobCount);

@@ -177,6 +177,10 @@ label {
   font-size: var(--default-font-size);
 }
 
+.salary {
+  color: #16a34a;
+}
+
 .invalid {
   color: rgb(174, 68, 68);
 }
@@ -1418,7 +1422,6 @@ a>.menu-item {
 
 .message {
   background-color: transparent;
-  border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 8px 12px;
   display: flex;

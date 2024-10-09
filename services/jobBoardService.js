@@ -2584,6 +2584,62 @@ class JobProcessor extends EventEmitter {
   }
 
 
+  async useChatGPTAPI_JobInfo(link, textContent) {
+    const jobResponse = z.object({
+      title: z.string(),
+      location: z.string(),
+      salary: z.number(),
+      salary_max: z.number(),
+      experienceLevel: z.string(),
+      description: z.string(),
+      benefits: z.string(),
+      additional_information: z.string(),
+      PreferredQualifications: z.string(),
+      MinimumQualifications: z.string(),
+      Responsibilities: z.string(),
+      Requirements: z.string(),
+      NiceToHave: z.string(),
+      Schedule: z.string(),
+      HoursPerWeek: z.number(),
+      H1BVisaSponsorship: z.boolean(),
+      IsRemote: z.boolean(),
+      EqualOpportunityEmployerInfo: z.string(),
+      Relocation: z.boolean()
+    });
+
+    const maxCharacters = 200000;
+    const truncatedTextContent = textContent.length > maxCharacters ? textContent.slice(0, maxCharacters) : textContent;
+    
+    const prompt = this.generatePrompt(link, truncatedTextContent);
+    
+    try {
+      const completion = await this.openai.beta.chat.completions.parse({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a helpful assistant that extracts job information from text.',
+          },
+          { role: 'user', content: prompt },
+        ],
+        response_format: zodResponseFormat(jobResponse, 'jobResponse')
+      });
+
+      const message = completion.choices[0]?.message;
+      const jobPosting = message.parsed;
+
+      if (this.isTechJob(jobPosting.title)) {
+        return jobPosting;
+      } else {
+        console.log(`Skipping non-tech job: ${jobPosting.title}`);
+        return { skipped: true, title: jobPosting.title, reason: 'Non-tech job' };
+      }
+    } catch (error) {
+      console.error('OpenAI API Error:', error.message);
+      throw error;
+    }
+  }
+
   async useChatGPTAPI(link, textContent) {
     const jobResponse = z.object({
       title: z.string(),
@@ -2599,7 +2655,7 @@ class JobProcessor extends EventEmitter {
       location: z.string(),
       salary: z.number(),
       salary_max: z.number(),
-      experience_level: z.string(),
+      experience_evel: z.string(),
       skills: z.string(),
       tags: z.string(),
       description: z.string(),
@@ -2742,32 +2798,61 @@ class JobProcessor extends EventEmitter {
     return prompt;
   }
 
-  generatePrompt2(link, textContent) {
+  generatePrompt2(textContent) {
     this.updateProgress({ currentAction: 'Generating prompt' });
   
     const prompt = `
-      Analyze the HTML structure of the job posting page and provide Cheerio selectors for extracting the following information:
-      
+      Analyze the information for the job posting given and sort the data such that you can extract the information:
+      ${textContent}
       JobPosting = {
-        title: string,
+        title: string, 
         url: string,
-        company_name: string,
+        experienceLevel: string, // internship, junior, senior, lead, manager, vp, director only 
+        salary: decimal, // yearly salary, if given in hourly or anything else, convert to yearly
+        salary_max: int, // yearly salary, if given in hourly or anything else, convert to yearly
+        additional_information: string,
+        benefits: string, // separate each benefit with a comma like 'Healthcare: Yes, Dental: Yes, Vision: Yes, etc'
+        PreferredQualifications: string, // what the company has said that they want for this job
+        MinimumQualifications: string, // the type of degree required and any certifications or qualifications absolutely required, like security clearance
+        Responsibilities: string,
+        Requirements: string, // write like a list of requirements and the years of experience needed
+        NiceToHave: string, // write like a list of nice to have skills and the years of experience needed
+        Schedule: string, // write like a list of schedule options
+        HoursPerWeek: int, // assume 40 hours a week if not given, 20 for part time
+        H1BVisaSponsorship: boolean,
+        IsRemote: boolean,
+        EqualOpportunityEmployerInfo: string,
+        Relocation: boolean,
         location: string,
-        description: string,
+        description: string, // write about what the company wants, and the ideal candidate for the job
         IsRemote: boolean,
       }
 
-      If a selector is not found or information is not available, return null for that field.
-      
-      HTML Content:
-      ${textContent}
-      
-      Job posting link: ${link}
-
-      Return the selectors and instructions in JSON format.
+      Return the sorted information in JSON format.
     `;
 
     return prompt;
+  }
+
+  async updateJob(jobId, jobInfo) {
+    await jobQueries.updateJob(jobId, jobInfo);
+  }
+
+  async processJobInfo(jobInfo) {
+    // function to prompt gpt using the data gathered from linkedin posting
+    const prompt = this.generatePrompt2(jobInfo);
+    const response = await this.useChatGPTAPI_JobInfo(jobInfo.link, prompt);
+    return response;
+  }
+
+  async processJobPosting(jobId) {
+    const jobPosting = await jobQueries.getJobById(jobId);
+    const improvedJobPostings = await this.processJobInfo(jobPosting);
+
+    await jobQueries.setJobRawDescription(jobId);
+    await jobQueries.updateJob(jobId, improvedJobPostings);
+    await jobQueries.setJobAsProcessed(jobId);
+    return improvedJobPostings;
   }
 
   validateAndCleanJobData(data) {

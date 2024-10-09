@@ -328,6 +328,9 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
   fetch(`/api/jobs/${jobId}`)
     .then((response) => response.json()) 
     .then((job) => {
+      if (!job.isProcessed) {
+        processJobPosting(jobId);
+      }
       const jobDetailsContainer = document.querySelector(
         '.job-details-container'
       );
@@ -385,11 +388,6 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       jobDetailsContainer.innerHTML = `
         <div class="job-listing">
         <div class="job-listing-menu">
-      ${
-  isOlderThan30Days(job)
-    ? `<div class="caution-messages">This job was posted more than 30 days ago. Apply anyway <a class="link" href="${job.link}">here</a></div>`
-    : ''
-}
 <nav class="breadcrumbs">
 <ol class="flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5">
 <a href="/jobs" class="transition-colors hover:text-foreground">Jobs</a>
@@ -470,9 +468,20 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
               <p class="sub-text">${job.isRemote ? 'Remote work available' : 'On-site only'}</p>
             </div>
           </div>
+          ${!job.isProcessed ? `
+                <div class="adaptive-border rounded">
+      <div class="sub-text p-4 flex items-center">
+        <span class="material-symbols-outlined animate-spin mr-2" style="color: #6366f1;">auto_awesome</span>
+        <span>Please wait a moment while we improve this job posting!</span>
+      </div>
+      </div>
+      ` : ''}
+
+      <!-- end of the top menu -->
     </div>
       
         </div>
+        
       </div>
 
       ${ job.salary || job.salary_max ? `
@@ -482,42 +491,33 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       USD $${formatSalary(job.salary)}
       ${job.salary_max !== 0 ? `- $${formatSalary(job.salary_max)}` : ''}
       ${!job.location.toLowerCase().includes('us') && 
-        !job.location.toLowerCase().includes('united states') 
+        !job.location.toLowerCase().includes('united states') &&
+        !(/\b(AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|remote|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming)\b/i.test(job.location))
     ? '<span class="currency-warning"> (currency may not be in USD)</span>' 
     : ''}
         </p>
       ` : ''}
+      
         </div>
         ` : ''}
         ${job.isProcessed ? `
         <div class="job-skills-display">
 
           ${skillsHTML}
-          ${
-  remainingTags > 0
-    ? `<span class="see-more" id="secondary-text">+${remainingTags} more</span>`
-    : ''
-}
+    
         </div>
             ` : ''}
   ${job.isProcessed ? `
             <div class="job-posting-description ${job.recruiter_username === 'autojob' ? 'ai-generated-content' : ''}">
 
       <h4 class="sub-text bold" style="margin-top:0;">AI-Generated Overview</h4>
-    <p class="sub-text readable">
+    <p class="sub-text">
     ${job.description.replace('??', '')}
     </p>
     </div>
 
     ` : ''}
 
-      <div class="border rounded">
-
-      <div class="sub-text p-4 flex items-center">
-        <span class="material-symbols-outlined animate-spin mr-2" style="color: #6366f1;">auto_awesome</span>
-        <span>Please wait a moment while we improve this job posting!</span>
-      </div>
-      </div>
 <div class="flex flex-col gap-06">
       <div class="interact-buttons flex flex-row gap-4 v-center">
         ${
@@ -569,11 +569,18 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       </div> `
     : ''}
 </div>
+
 </div>
             </div>
+            
           </div>
+                ${
+  isOlderThan30Days(job)
+    ? '<div class="caution-messages">This job was posted more than 30 days ago.</div>'
+    : ''
+}
               ${!userIsLoggedIn ? `
-      <p class="message flex flex-col gap-06">
+      <p class="message flex flex-col gap-06 adaptive-border">
         <span class="message-text sub-text">
           <i class="fas fa-info-circle"></i>
             Sign up or login to view job matches personalized to your resume! Build your resume, cover letter, and profile to get started.
@@ -705,6 +712,17 @@ ${
     : ''
 }
 
+${
+  job.raw_description_no_format
+    ? `
+<div class="raw-description-no-format">
+  <h4 class="main-text bold">Job Description (from the company)</h4>
+  <p class="sub-text">${job.raw_description_no_format}</p>
+</div>
+`
+    : ''
+}
+
 <div class="flex">
 <div class="autojob-warning px-4 py-2">
                     <span class="warning-icon">⚠️</span>
@@ -734,19 +752,30 @@ ${
         </div>
 </div>
       `;
-      console.log('done loading job, loading companies');
-      bindSelectorButtons();
-      getSimilarJobs(jobId);
-      getSimilarJobsByCompany(jobId, job.company_name);
-      if (userIsLoggedIn) {
-        checkFavorite(jobId);
-      }
-      
     })
     .catch((error) => {
       console.error('Error fetching job details:', error);
+    })
+    .finally(() => {
+      console.log('done loading job, loading companies');
+      bindSelectorButtons();
+      getSimilarJobs(jobId);
+      getSimilarJobsByCompany(jobId);
+      if (userIsLoggedIn) {
+        checkFavorite(jobId);
+      }
     });
+}
 
+function processJobPosting(jobId) {
+  fetch(`/jobs/process/${jobId}`)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error('Error processing job posting:', error);
+    });
 }
 
 function createCard(name, timestamp, title, description, clickable=false, link=null, image=null, tags=null) {

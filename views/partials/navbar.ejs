@@ -85,7 +85,7 @@
 
           <div class="flex flex-col w-100">
             <div class="flex flex-col">
-              <div class="flex flex-row v-center w-100 gap-06 adaptive-border px-3 py-3 margin-1-bottom">
+              <div class="flex flex-row v-center w-100 gap-06 adaptive-border px-3 py-2">
                 <img src="<%= user.avatar %>" alt="Avatar" class="thumbnail thumbnail-regular thumbnail-micro">
                 <div class="flex flex-col">
                   <p class="mini-text bold"><%= user.firstname %> <%= user.lastname %></p>
@@ -233,21 +233,8 @@
             </button>
           </li>
 
+          <% if (!user) { %>
           <li class="navigation-avatar">
-            <% if (user && user.avatar) { %>
-            <div class="nav-avatar">
-              <img src="<%= user.avatar %>" alt="Avatar" class="user-avatar" id="user-avatar" onclick="window.location.href='/user/<%= user.username %>'" />
-              <div class="avatar-online-status" style="background: <% if (user.profile_border_color) { %>#5fb968<% } else { %>#5fb968<% } %>;height: 7px;width: 7px;z-index: 10;border-radius: 6px;position: absolute;bottom: 0;right: 0;"> </div>
-            </div>
-            <% } else if (user && !user.avatar) { %>
-            <div class="nav-avatar">
-              <a href="/user/<%= user.username %>" class="inbox-button">
-                <span class="material-symbols-outlined" id="nb-icon">
-                  account_circle
-                </span>
-              </a>
-            </div>
-            <% } else if (!user) { %>
             <div class="nav-avatar">
               <a href="/login">
                 <button class="regular-button-normal mini-button mini-text flex flex-row v-center px-4">
@@ -255,9 +242,9 @@
                 </button>
               </a>
             </div>
-            <% } %>
-            </a>
           </li>
+
+          <% } %>
         </ul>
       </div>
     </div>
@@ -1271,7 +1258,7 @@
 
   document.addEventListener('DOMContentLoaded', async () => {
     var menuButton = document.getElementById("menu-button");
-    if (menuButton) {
+    if (menuButton && menuButton.classList.contains('active') && menuButton.offsetParent !== null) {
       getTrendingPosts();
     }
     <% if (user) { %>

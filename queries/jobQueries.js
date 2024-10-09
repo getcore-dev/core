@@ -34,6 +34,51 @@ const jobQueries = {
     console.log('Resume created');
   },
 
+
+  setJobAsProcessed: async (jobId) => {
+    await sql.query`
+      UPDATE JobPostings
+      SET isProcessed = 1
+      WHERE id = ${jobId}
+    `;
+  },
+
+  setJobRawDescription: async (jobId) => {
+    await sql.query`
+      UPDATE JobPostings
+      SET raw_description_no_format = description
+      WHERE id = ${jobId}
+    `;
+  },
+
+  updateJob: async (jobId, jobInfo) => {
+    try {
+      
+      let updateQuery = 'UPDATE JobPostings SET ';
+      const updateValues = [];
+      
+      for (const [key, value] of Object.entries(jobInfo)) {
+        updateQuery += `${key} = @${key}, `;
+        updateValues.push({ name: `@${key}`, value: value });
+      }
+      
+      updateQuery = updateQuery.slice(0, -2); // Remove the last comma and space
+      updateQuery += ' WHERE id = @jobId';
+      
+      const request = new sql.Request();
+      request.input('jobId', sql.Int, jobId);
+      updateValues.forEach(param => {
+        request.input(param.name.slice(1), param.value);
+      });
+
+      
+      await request.query(updateQuery);
+    } catch (error) {
+      console.error('Error updating job:', error);
+      throw error;
+    }
+  },
+
   readResume: async (filePath) => {
     try {
       const data = await resumeFunctions.processResume(filePath);
@@ -1810,7 +1855,6 @@ ORDER BY jp.postedDate DESC
           users.lastname AS recruiter_lastname,
           users.avatar AS recruiter_image,
           users.username AS recruiter_username,
-
           (
             SELECT STRING_AGG(JobTags.tagName, ', ') 
             FROM JobPostingsTags 
@@ -1826,6 +1870,25 @@ ORDER BY jp.postedDate DESC
         FROM JobPostings
         LEFT JOIN companies ON JobPostings.company_id = companies.id
         LEFT JOIN users ON users.recruiter_id = JobPostings.recruiter_id
+        WHERE JobPostings.id = ${id}
+      `;
+      const job = result.recordset[0];
+      return job;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  simpleFindById: async (id) => {
+    try {
+      const result = await sql.query`
+        SELECT 
+          JobPostings.*,
+          companies.name AS company_name,
+          companies.logo AS company_logo
+        FROM JobPostings
+        LEFT JOIN companies ON JobPostings.company_id = companies.id
         WHERE JobPostings.id = ${id}
       `;
       const job = result.recordset[0];
@@ -2208,8 +2271,17 @@ ORDER BY jp.postedDate DESC
 
   getCompanyByName: async (name) => {
     try {
+      const nameWithoutSpaces = name.replace(/[\s']/g, '');
       const result = await sql.query`
-        SELECT TOP 1 * FROM companies WHERE name = ${name}
+        SELECT TOP 1 * FROM companies 
+        WHERE name = ${name}
+        OR CHARINDEX(${name}, alternate_names) > 0
+        OR ${name} IN (
+          SELECT value 
+          FROM STRING_SPLIT(alternate_names, ',')
+        )
+        OR REPLACE(REPLACE(name, ' ', ''), '''', '') = ${nameWithoutSpaces}
+        OR CHARINDEX(${nameWithoutSpaces}, REPLACE(REPLACE(alternate_names, ' ', ''), '''', '')) > 0
       `;
       return result.recordset[0];
     } catch (err) {

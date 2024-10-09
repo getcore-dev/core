@@ -4,6 +4,7 @@ const router = express.Router();
 const jobQueries = require('../queries/jobQueries');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
+const jobBoardService = require('../services/jobBoardService');
 const AZURE_STORAGE_CONNECTION_STRING =
   process.env.AZURE_STORAGE_CONNECTION_STRING;
 const marked = require('marked');
@@ -33,12 +34,43 @@ router.get('/profile', checkAuthenticated, async (req, res) => {
   res.render('edit-jobs-profile.ejs', { user: req.user });
 });
 
-router.get('/', async (req, res) => {
-  const companies = await jobQueries.getCompanies();
-  res.render('jobs.ejs', { user: req.user, 
-    companies,       
+function parseFilters(query) {
+  const filters = {};
+  if (query.skill) filters.skills = Array.isArray(query.skill) ? query.skill : [query.skill];
+  if (query.location) filters.locations = Array.isArray(query.location) ? query.location : [query.location];
+  if (query.title) filters.titles = Array.isArray(query.title) ? query.title : [query.title];
+  if (query.company) filters.companies = Array.isArray(query.company) ? query.company : [query.company];
+  if (query.experienceLevel) filters.experienceLevels = Array.isArray(query.experienceLevel) ? query.experienceLevel : [query.experienceLevel];
+  if (query.salary) filters.salary = parseInt(query.salary);
+  return filters;
+}
+
+router.get('/', cacheMiddleware(2400), async (req, res) => {
+  const filters = parseFilters(req.query);
+  res.render('jobs.ejs', { 
+    user: req.user, 
+    filters: filters,
     errorMessages: req.flash('error'),
-    successMessages: req.flash('success'),});
+    successMessages: req.flash('success'),
+  });
+});
+
+router.get('/process/:jobId', checkAuthenticated, async (req, res) => {
+  const jobProcessor = new jobBoardService();
+  const jobId = req.params.jobId;
+  const improvedJobPostings = await jobProcessor.processJobPosting(jobId);
+  res.json(improvedJobPostings);
+});
+
+router.get('/internships', cacheMiddleware(2400), async (req, res) => {
+  const filters = parseFilters(req.query);
+  filters.experienceLevels = ['Internship'];
+  res.render('jobs.ejs', { 
+    user: req.user, 
+    filters: filters,
+    errorMessages: req.flash('error'),
+    successMessages: req.flash('success'),
+  });
 });
 
 router.get('/applied', checkAuthenticated, async (req, res) => {
@@ -428,7 +460,7 @@ router.get('/:jobId', viewLimiter, async (req, res) => {
       await jobQueries.incrementJobViewCount(jobId);
     }
 
-    let job = await jobQueries.findById(jobId);
+    let job = await jobQueries.simpleFindById(jobId);
 
     if (!job) {
       console.log(`No job found with ID: ${jobId}`);

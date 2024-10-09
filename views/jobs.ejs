@@ -179,7 +179,9 @@
     </div>
 
   </main>
-
+  <script id="server-filters" type="application/json">
+    <%- JSON.stringify(filters || {}) %>
+  </script>
   <script src="/js/jobs.js"></script>
 </body>
 

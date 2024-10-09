@@ -819,14 +819,6 @@ div.job-skills {
   overflow-x: auto;
 }
 
-.job-skills-display {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 0.55rem;
-  align-items: center;
-}
-
 .job-skills-display .see-more {
   margin: 0;
 }
