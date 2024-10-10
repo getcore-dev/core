@@ -330,11 +330,12 @@ function applyForJob(event, jobId, jobLink) {
     );
 }
 
-async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
+async function lazyLoadJobDetails(user, jobId) {
+  console.log(user);
   fetch(`/api/jobs/${jobId}`)
     .then((response) => response.json()) 
     .then((job) => {
-      if (!job.isProcessed) {
+      if (!job.isProcessed && user.isPremium) {
         processJobPosting(jobId);
       }
       const jobDetailsContainer = document.querySelector(
@@ -408,7 +409,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
 </ol>
 </nav>
       <div class="company-info w-100">
-        <div class="company-details">
+        <div class="company-details w-full">
       <div class="flex flex-col gap-2">
           <h3 class="company-name header-text margin-03-bottom bold">
         ${job.title}
@@ -487,7 +488,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
               <p class="sub-text">${job.isRemote ? 'Remote work available' : 'On-site only'}</p>
             </div>
           </div>
-          ${!job.isProcessed ? `
+          ${!job.isProcessed && user.isPremium ? `
                 <div class="adaptive-border rounded">
       <div class="sub-text p-4 flex items-center">
         <span class="material-symbols-outlined animate-spin mr-2" style="color: #6366f1;">auto_awesome</span>
@@ -495,6 +496,16 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       </div>
       </div>
       ` : ''}
+      <!--
+          ${!job.isProcessed && user && !user.isPremium ? `
+                <div class="adaptive-border rounded">
+      <div class="sub-text p-4 flex items-center">
+        <span class="material-symbols-outlined mr-2" style="color: #6366f1;">star</span>
+        <span>Sign up for premium to generate better overviews of these job postings</span>
+      </div>
+      </div>
+      ` : ''}
+      -->
 
       ${ job.salary || job.salary_max ? `
         <div class="job-info-flairs sub-text">
@@ -551,7 +562,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         </button>
         </a>
                        ${
-  userIsLoggedIn && userIsAdmin
+  user && user.isPremium
     ? `
       <div class="resume-button w-100">
         <a href="/api/create-resume/${job.id}" class="grow-button margin-h-auto">
@@ -583,7 +594,7 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     ? '<div class="caution-messages">This job was posted more than 30 days ago.</div>'
     : ''
 }
-              ${!userIsLoggedIn ? `
+              ${!user ? `
       <p class="message flex flex-col gap-06 adaptive-border">
         <span class="message-text sub-text">
           <i class="fas fa-info-circle"></i>
@@ -776,7 +787,7 @@ ${
       bindSelectorButtons();
       getSimilarJobs(jobId);
       getSimilarJobsByCompany(jobId);
-      if (userIsLoggedIn) {
+      if (user) {
         checkFavorite(jobId);
       }
     });

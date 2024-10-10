@@ -267,34 +267,6 @@ video {
     --chart-5: 27 87% 67%
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: 240 10% 3.9%;
-        --foreground: 0 0% 98%;
-        --card: 240 10% 3.9%;
-        --card-foreground: 0 0% 98%;
-        --popover: 240 10% 3.9%;
-        --popover-foreground: 0 0% 98%;
-        --primary: 0 0% 98%;
-        --primary-foreground: 240 5.9% 10%;
-        --secondary: 240 3.7% 15.9%;
-        --secondary-foreground: 0 0% 98%;
-        --muted: 240 3.7% 15.9%;
-        --muted-foreground: 240 5% 64.9%;
-        --accent: 240 3.7% 15.9%;
-        --accent-foreground: 0 0% 98%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 0 85.7% 97.3%;
-        --border: 240 3.7% 15.9%;
-        --input: 240 3.7% 15.9%;
-        --ring: 240 4.9% 83.9%;
-        --chart-1: 220 70% 50%;
-        --chart-2: 160 60% 45%;
-        --chart-3: 30 80% 55%;
-        --chart-4: 280 65% 60%;
-        --chart-5: 340 75% 55%
-    }
-}
 
 * {
     border-color: hsl(var(--border))
@@ -6632,4 +6604,37 @@ body {
 
 [data-sidebar=closed] .\[\[data-sidebar\=closed\]_\&\]\:left-\[calc\(var\(--sidebar-width\)\*-1\)\] {
     left: calc(var(--sidebar-width) * -1)
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: 240 10% 3.9% !important;
+        --foreground: 0 0% 98% !important;
+        --card: 240 10% 3.9% !important;
+        --card-foreground: 0 0% 98% !important;
+        --popover: 240 10% 3.9% !important;
+        --popover-foreground: 0 0% 98% !important;
+        --primary: 0 0% 98% !important;
+        --primary-foreground: 240 5.9% 10% !important;
+        --secondary: 240 3.7% 15.9% !important;
+        --secondary-foreground: 0 0% 98% !important;
+        --muted: 240 3.7% 15.9% !important;
+        --muted-foreground: 240 5% 64.9% !important;
+        --accent: 240 3.7% 15.9% !important;
+        --accent-foreground: 0 0% 98% !important;
+        --destructive: 0 62.8% 30.6% !important;
+        --destructive-foreground: 0 85.7% 97.3% !important;
+        --border: 240 3.7% 15.9% !important;
+        --input: 240 3.7% 15.9% !important;
+        --ring: 240 4.9% 83.9% !important;
+        --chart-1: 220 70% 50% !important;
+        --chart-2: 160 60% 45% !important;
+        --chart-3: 30 80% 55% !important;
+        --chart-4: 280 65% 60% !important;
+        --chart-5: 340 75% 55% !important
+    }
+
+    * {
+        border-color: hsl(var(--border))
+    }
 }

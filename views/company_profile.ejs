@@ -80,9 +80,9 @@
         </div>
 
         <% if (company.twitter_username || company.company_website) { %>
-        <div class="external-links flex flex-row gap-06 margin-06-bottom wrap">
+        <div class="external-links flex flex-row gap-06 wrap">
           <% if (company.twitter_username) { %>
-          <span class="company-flair-item flair-bordered">
+          <span class="company-flair-item adaptive-border">
             <span style="margin-right: .5rem;font-weight:600;" class="symbol">&Xopf;</span>
             <a href="https://twitter.com/<%= company.twitter_username %>" target="_blank" class="company-twitter_username"><%= company.twitter_username.replace('@', '') %></a>
             <span style="padding:0;margin-left:.4rem;" class="material-symbols-outlined">
@@ -92,7 +92,7 @@
           <% } %>
 
           <% if (company.company_website) { %>
-          <span class="company-flair-item flair-bordered">
+          <span class="company-flair-item adaptive-border">
             <span class="material-symbols-outlined">language</span>
             <a href="<%= company.company_website %>" target="_blank" class="company-company_website"><%= company.company_website %></a>
             <span style="padding:0;margin-left:.4rem;" class="material-symbols-outlined">
@@ -153,7 +153,7 @@
         </div>
         <% } %>
         <% if (user) { %>
-        <% if (company.company_recent_news_sentiment || company.company_issues || company.company_sentiment || company.company_engineer_choice) { %>
+        <% if (user.isPremium && (company.company_recent_news_sentiment || company.company_issues || company.company_sentiment || company.company_engineer_choice)) { %>
         <div class="ai-generated-info px-4 py-2">
           <h3 class="main-text">AI-Generated Insights</h3>
           <div class="ai-warning sub-text">

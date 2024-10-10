@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="/css/navbar.css" />
-  <link rel="stylesheet" href="/css/favorites.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
   <link rel="stylesheet" href="/css/user_profile.css" />
   <link rel="shortcut icon" href="/img/core.png" />
 </head>
@@ -81,27 +81,6 @@
 
   .favorites-header {
     margin: 13px 10px;
-  }
-
-  .favorites-type-button {
-    cursor: pointer;
-    background-color: var(--light-mode-body-color);
-    border: 1px solid var(--light-mode-body-color);
-    border-radius: 10px;
-    padding: 8px 10px;
-    text-align: left;
-    font-weight: bold;
-    font-size: .9em;
-    color: var(--light-mode-text-color);
-    display: flex;
-    flex-direction: row;
-    gap: 4px;
-  }
-
-  .favorites-type-button.active {
-    background-color: #7199d2;
-    border: 1px solid #436698;
-    color: white;
   }
 
   .favorites-type-button .material-symbols-outlined {
@@ -190,20 +169,6 @@
     align-items: center;
   }
 
-  div.favorites-type-selector {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 11px;
-    overflow-x: auto;
-
-    -webkit-scrollbar {
-      display: none;
-    }
-
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
 
   div.favorites-type-selector::-webkit-scrollbar {
     display: none;
@@ -217,18 +182,6 @@
     .favorite {
       background-color: var(--dark-mode-body-color);
       border-color: var(--dark-mode-border-color);
-    }
-
-    .favorites-type-button {
-      background-color: var(--dark-mode-lighter-color);
-      border: 1px solid var(--dark-mode-border-color);
-      color: var(--dark-mode-text-color);
-    }
-
-    .favorites-type-button.active {
-      background-color: var(--dark-mode-main-color);
-      border: 1px solid var(--dark-mode-border-color);
-      color: var(--dark-mode-text-color);
     }
 
     .favorite:hover {
@@ -247,41 +200,51 @@
   <%- include('partials/navbar', { pagePath: 'favorites' }) %>
   <main>
     <div class="favorites-container">
-      <div class="page-header">
+      <div class="page-header flex flex-col items-start space-y-2">
         <div class="header secondary-text">
-          <h5>Favorites</h5>
-        </div>
-        <div class="favorites-type-selector">
-          <button class="favorites-type-button" onclick="getFavorites('all')">
-            <span class="material-symbols-outlined">
-              favorite
-            </span>
-            <p>All</p>
-          </button>
-          <button class="favorites-type-button" onclick="getFavorites('posts')">
-            <span class="material-symbols-outlined">
-              article
-            </span>
-            <p>Posts</p>
-          </button>
-          <button class="favorites-type-button" onclick="getFavorites('jobs')">
-            <span class="material-symbols-outlined">
-              work
-            </span>
-            <p>Jobs</p>
-          </button>
-          <button class="favorites-type-button" onclick="getFavorites('comments')">
-            <span class="material-symbols-outlined">
-              comment
-            </span>
-            <p>Comments</p>
-          </button>
+          <h5 class="text-2xl font-semibold text-gray-800 dark:text-gray-200">Saved</h5>
         </div>
       </div>
-      <div class="favorites" id="favoritesContainer">
+      <!-- Favorites Type Selector -->
+      <!--
+      <div class="favorites-type-selector">
+        <button class="favorites-type-button" onclick="getFavorites('all')">
+          <span class="material-symbols-outlined">
+            star
+          </span>
+          <p>All</p>
+        </button>
+        <button class="favorites-type-button bg-slate-800 text-background border-slate-700" onclick="getFavorites('posts')">
+          <span class="material-symbols-outlined">
+            article
+          </span>
+          <p>Posts</p>
+        </button>
+        <button class="favorites-type-button" onclick="getFavorites('jobs')">
+          <span class="material-symbols-outlined">
+            work
+          </span>
+          <p>Jobs</p>
+        </button>
+        <button class="favorites-type-button" onclick="getFavorites('comments')">
+          <span class="material-symbols-outlined">
+            comment
+          </span>
+          <p>Comments</p>
+        </button>
+      </div>
+      -->
+    </div>
+    <div class="favorites p-3" id="favoritesJobContainer">
 
-      </div>
-      <%- include('partials/footer') %>
+    </div>
+    <div class="favorites p-3" id="favoritesPostContainer">
+
+    </div>
+    <div class="favorites p-3" id="favoritesCommentContainer">
+
+    </div>
+    <%- include('partials/footer') %>
     </div>
 
   </main>
@@ -291,6 +254,7 @@
     let activeButton = null; // Track the currently active button
 
     // Function to set the active button
+    /*
     function setActiveButton(button) {
       if (activeButton) {
         activeButton.classList.remove('active');
@@ -305,9 +269,11 @@
         setActiveButton(button);
       });
     });
+     
 
     const allButton = document.querySelector('.favorites-type-button:nth-child(1)');
     setActiveButton(allButton);
+    */
 
     async function getFavorites(type = '') {
       try {
@@ -321,8 +287,6 @@
     }
 
     function renderFavorites(favorites, type) {
-      const favoritesContainer = document.getElementById('favoritesContainer');
-      favoritesContainer.innerHTML = '';
 
       if (type === 'all') {
         renderFavoritePosts(favorites.posts);
@@ -338,13 +302,20 @@
     }
 
     function renderFavoritePosts(posts) {
-      const favoritesContainer = document.getElementById('favoritesContainer');
+      const favoritesContainer = document.getElementById('favoritesPostContainer');
 
       const favoritesHeaderContainer = document.createElement('div');
-      favoritesHeaderContainer.classList.add('page-header');
+      favoritesHeaderContainer.classList.add('flex', 'items-center', 'justify-between', 'mb-4', 'px-4', 'py-2', 'bg-gray-100', 'dark:bg-gray-800', 'rounded-lg');
+
       const favoriteHeader = document.createElement('h5');
-      favoriteHeader.classList.add('secondary-text');
+      favoriteHeader.classList.add('text-lg', 'font-semibold', 'text-gray-800', 'dark:text-gray-200');
       favoriteHeader.textContent = 'Posts';
+
+      const headerIcon = document.createElement('span');
+      headerIcon.classList.add('material-symbols-outlined', 'text-blue-500');
+      headerIcon.textContent = 'article';
+
+      favoritesHeaderContainer.appendChild(headerIcon);
       favoritesHeaderContainer.appendChild(favoriteHeader);
       favoritesContainer.appendChild(favoritesHeaderContainer);
 
@@ -360,72 +331,30 @@
 
 
       posts.forEach((post) => {
-        const favoriteElement = document.createElement('div');
-        favoriteElement.classList.add('favorite');
+        const favoriteElement = createCard(post.username, formatDate(post.created_at), post.title, post.content, true, `/posts/${post.post_id}`, post.image, post.tags);
         favoriteElement.onclick = () => {
           window.location.href = `/posts/${post.post_id}`;
         };
-
-
-        favoriteElement.innerHTML = `
-      <div class="favorite-header">
-        <div class="favorite-title">
-          <h5>
-          <a href="/posts/${post.post_id}">${post.title}</a>
-          </h5>
-        </div>
-        <div class="dropdown">
-          <button class="dropbtn" onclick="toggleDropdown(event)">
-            <span class="material-symbols-outlined">
-              more_horiz
-            </span>
-          </button>
-          <div class="dropdown-content">
-            <form action="/favorites/post/${post.post_id}?_method=DELETE" method="POST">
-              <input type="hidden" name="_method" value="DELETE">
-              <button type="submit">Delete</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="favorites-content">
-        <div>
-          <p class="favorites-text">${post.content
-                  .replace(/(?:\r\n|\r|\n)/g, ' ')
-                  .replace(/\*\*(.*?)\*\*/g, '$1')
-                  .replace(/\*(.*?)\*/g, '$1')
-                  .replace(/__(.*?)__/g, '$1')
-                  .replace(/_(.*?)_/g, '$1')
-                  .replace(/!\[.*?\]\(.*?\)/g, '')
-                  .replace(/\[.*?\]\(.*?\)/g, '$1')}</p>
-        </div>
-          </div>
-                  <div class="favorites-footer">
-        <p>
-          <strong style="color: ${post.profile_border_color}ff;">
-           ${post.username}
-          </strong> 
-          in 
-          <strong style="color: ${post.community_color}95;">
-            /${post.community_name}
-          </strong>
-        </p>
-        <p id="secondary-text">${formatDate(post.created_at[1])}</p>
-        </div>
-      `;
 
         favoritesContainer.appendChild(favoriteElement);
       });
     }
 
     function renderFavoriteComments(comments) {
-      const favoritesContainer = document.getElementById('favoritesContainer');
+      const favoritesContainer = document.getElementById('favoritesCommentContainer');
 
       const favoritesHeaderContainer = document.createElement('div');
-      favoritesHeaderContainer.classList.add('page-header');
+      favoritesHeaderContainer.classList.add('flex', 'items-center', 'justify-between', 'mb-4', 'px-4', 'py-2', 'bg-gray-100', 'dark:bg-gray-800', 'rounded-lg');
+
       const favoriteHeader = document.createElement('h5');
-      favoriteHeader.classList.add('secondary-text');
+      favoriteHeader.classList.add('text-lg', 'font-semibold', 'text-gray-800', 'dark:text-gray-200');
       favoriteHeader.textContent = 'Comments';
+
+      const headerIcon = document.createElement('span');
+      headerIcon.classList.add('material-symbols-outlined', 'text-blue-500');
+      headerIcon.textContent = 'comment';
+
+      favoritesHeaderContainer.appendChild(headerIcon);
       favoritesHeaderContainer.appendChild(favoriteHeader);
       favoritesContainer.appendChild(favoritesHeaderContainer);
 
@@ -439,53 +368,81 @@
         return;
       }
 
+
       comments.forEach((comment) => {
-        const favoriteElement = document.createElement('div');
-        favoriteElement.classList.add('favorite');
+        console.log(comment);
+        const favoriteElement = createCard(comment.username, formatDate(comment.created_at), comment.comment, comment.post_title, true, `/posts/${comment.post_id[1]}#${comment.comment_id}`, null, comment.tags);
         favoriteElement.onclick = () => {
           window.location.href = `/posts/${comment.post_id[1]}#${comment.comment_id}`;
         };
 
-        favoriteElement.innerHTML = `
-      <div class="favorite-header">
-        <div class="favorite-title">
-        
-        <h5>
-        <a href="/posts/${comment.post_id[1]}#${comment.comment_id}">${comment.comment}</a></h5>
-        </div>
-        <div class="dropdown">
-          <button class="dropbtn" onclick="toggleDropdown(event)">
-            <span class="material-symbols-outlined">
-              more_horiz
-            </span>
-          </button>
-          <div class="dropdown-content">
-            <form action="/favorites/comment/${comment.post_id[1]}/${comment.comment_id}?_method=DELETE" method="POST">
-              <input type="hidden" name="_method" value="DELETE">
-              <button type="submit">Delete</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="favorites-footer">
-        <p>${formatDate(comment.created_at[1])}</p>
-      </div>
-      `;
 
         favoritesContainer.appendChild(favoriteElement);
       });
     }
 
+    function createCard(name, timestamp, title, description, clickable = false, link = null, image = null, tags = null) {
+      console.log(tags);
+      const card = document.createElement('div');
+
+      let tagsHtml = '';
+      if (tags) {
+        tagsHtml = tags.map(tag => `
+        <div class="inline-flex items-center rounded-md adaptive-border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground ${tag.class}">
+          ${tag.text}
+        </div>
+      `).join('');
+      }
+
+      const cardContent = `
+  <div class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left mb-4 text-sm transition-all hover:bg-accent" ${clickable ? `onclick="window.location.href='${link}'"` : ''}>
+    <div class="flex w-full flex-col gap-1">
+      <div class="flex items-center">
+        <div class="flex items-center gap-2 wrap">
+  
+        ${image ? `
+                <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
+      <img class="aspect-square h-full w-full" src="${image}" />
+        </span>
+        ` : ''
+}
+          <div class="font-semibold">${name}</div>
+        </div>
+        <div class="ml-auto text-xs text-foreground">${timestamp}</div>
+      </div>
+      <div class="text-base font-medium">${title}</div>
+    </div>
+    <div class="line-clamp-2 text-sm text-muted-foreground w-full">
+      ${description}
+    </div>
+    <div class="flex items-center gap-2 wrap">
+      ${tagsHtml}
+    </div>
+  </div>
+      `;
+
+      card.innerHTML = cardContent;
+      return card;
+    }
+
     function renderFavoriteJobs(jobs) {
-      const favoritesContainer = document.getElementById('favoritesContainer');
+      const favoritesJobContainer = document.getElementById('favoritesJobContainer');
 
       const favoritesHeaderContainer = document.createElement('div');
-      favoritesHeaderContainer.classList.add('page-header');
+      favoritesHeaderContainer.classList.add('flex', 'items-center', 'justify-between', 'mb-4', 'px-4', 'py-2', 'bg-gray-100', 'dark:bg-gray-800', 'rounded-lg');
+
       const favoriteHeader = document.createElement('h5');
-      favoriteHeader.classList.add('secondary-text');
+      favoriteHeader.classList.add('text-lg', 'font-semibold', 'text-gray-800', 'dark:text-gray-200');
       favoriteHeader.textContent = 'Jobs';
+
+      const headerIcon = document.createElement('span');
+      headerIcon.classList.add('material-symbols-outlined', 'text-blue-500');
+      headerIcon.textContent = 'work';
+
+      favoritesHeaderContainer.appendChild(headerIcon);
       favoritesHeaderContainer.appendChild(favoriteHeader);
-      favoritesContainer.appendChild(favoritesHeaderContainer);
+      favoritesJobContainer.appendChild(favoritesHeaderContainer);
+
 
       if (jobs.length === 0) {
         const noFavoritesElement = document.createElement('div');
@@ -493,50 +450,17 @@
         noFavoritesElement.innerHTML = `
         <h5>No favorite jobs found.</h5>
       `;
-        favoritesContainer.appendChild(noFavoritesElement);
+        favoritesJobContainer.appendChild(noFavoritesElement);
         return;
       }
 
       jobs.forEach((job) => {
-        const favoriteElement = document.createElement('div');
-        favoriteElement.classList.add('favorite');
+        const favoriteElement = createCard(job.company_name, formatDate(job.created_at), job.title, job.description, true, `/jobs/${job.job_id}`, job.company_logo, job.tags);
         favoriteElement.onclick = () => {
           window.location.href = `/jobs/${job.job_id}`;
         };
 
-        favoriteElement.innerHTML = `
-      <div class="favorite-header">
-        <div class="favorite-title">
-
-          <img src="${job.company_logo}" alt="${job.company_name}" style="width: 30px; height: 30px; border-radius: 50%;">
-          <div>
-          <h5>
-          <a class="secondary-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a></h5>
-          <h5>
-          <a href="/jobs/${job.job_id}">${job.title}</a></h5></h5>
-          </div>
-        </div>
-        <div class="dropdown">
-          <button class="dropbtn" onclick="toggleDropdown(event)">
-            <span class="material-symbols-outlined">
-              more_horiz
-            </span>
-          </button>
-          <div class="dropdown-content">
-            <form action="/favorites/jobs/${job.job_id}?_method=DELETE" method="POST">
-              <input type="hidden" name="_method" value="DELETE">
-              <button type="submit">Delete</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="favorites-footer">
-        <p><strong style="color:#26704a;">$${job.salary} ${job.salary_max ? `- $${job.salary_max}` : ''}</strong></p>
-                <p>${formatDate(job.created_at)}</p>
-      </div>
-    `;
-
-        favoritesContainer.appendChild(favoriteElement);
+        favoritesJobContainer.appendChild(favoriteElement);
       });
     }
 
@@ -546,12 +470,30 @@
       dropdownContent.classList.toggle('show');
     }
 
-    function formatDate(dateString) {
-      const date = new Date(dateString);
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      const year = date.getFullYear();
-      return `${month}/${day}/${year}`;
+    function formatDate(date) {
+      let postDate = new Date(date);
+      let today = new Date();
+      let formattedDate;
+
+      let diff = today - postDate;
+
+      // Convert time difference to different units
+      let minutes = Math.floor(diff / 60000); // 60,000 milliseconds in a minute
+      let hours = Math.floor(diff / 3600000); // 3,600,000 milliseconds in an hour
+      let days = Math.floor(diff / 86400000); // 86,400,000 milliseconds in a day
+      let years = Math.floor(diff / 31536000000); // 31,536,000,000 milliseconds in a year
+
+      // Decide the format based on the time difference
+      if (minutes < 60) {
+        formattedDate = minutes + 'm';
+      } else if (hours < 24) {
+        formattedDate = hours + 'h';
+      } else if (days < 365) {
+        formattedDate = days + 'd';
+      } else {
+        formattedDate = years + 'y';
+      }
+      return formattedDate;
     }
 
     document.addEventListener('click', function (event) {

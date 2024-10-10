@@ -104,9 +104,8 @@
 
     document.addEventListener('DOMContentLoaded', function () {
       const jobId = extractJobIdFromUrl();
-      const userIsAdmin = "<%= user && user.isAdmin %>" === "true";
-      const userIsLoggedIn = "<%= user %>" !== "";
-      lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn);
+      const user = <%- JSON.stringify(user || null) %>;
+      lazyLoadJobDetails(user, jobId);
     });
 
     document.addEventListener('DOMContentLoaded', function () {

@@ -29,9 +29,11 @@
 <body>
   <%- include('partials/navbar', { pagePath: 'jobs' }) %>
   <main>
+    <script>
+      const user = <%- JSON.stringify(user || null) %>;
+    </script>
 
     <%- include('partials/com-btn-container', { }) %>
-
     <div class="jobs-container">
       <div class="jobs-header">
         <div class="jobs-buttons v-center">

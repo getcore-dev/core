@@ -648,7 +648,7 @@ function renderJobPostings(jobs) {
         tags.push({text: `$${job.salary}`, class: 'salary'});
       } else {
         // try to extract salary from description
-        const salaryMatch = job.description.match(/\$(\d+,?\d*)/);
+        const salaryMatch = job.description.match(/\$(\d+(?:,?\d*)?(?:k|K)?)/);
         if (salaryMatch) {
           tags.push({text: `$${salaryMatch[1]}`, class: 'salary'});
         }
@@ -905,7 +905,8 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
 }
         <div class="font-semibold">${name}</div>
       </div>
-      <div class="ml-auto text-xs text-foreground">${timestamp}</div>
+      <div class="ml-auto text-xs text-foreground flex flex-row gap-06 v-center">${timestamp}
+      </div>
     </div>
     <div class="text-base font-medium">${title}</div>
   </div>
