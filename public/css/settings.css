@@ -76,13 +76,6 @@
     }
 }
 
-.settings-body {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-
 .server-output {
     font-family: "IBM Plex Mono", monospace;
     background-color: #fafafa;

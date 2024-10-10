@@ -60,17 +60,6 @@ li.notification-item.unread {
 }
 
 
-
-.notification-header {
-    font-size: 1rem;
-    margin: 0 1rem;
-    margin-top: 1.2rem;
-    display: flex;
-    margin-bottom: .7rem;
-    align-items: center;
-    justify-content: space-between;
-}
-
 .notification-text {
     padding-top: 5px;
     padding-bottom: 2px;
