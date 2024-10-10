@@ -63,7 +63,7 @@ router.get('/process/:jobId', checkAuthenticated, async (req, res) => {
   res.json(improvedJobPostings);
 });
 
-router.get('/internships', cacheMiddleware(2400), async (req, res) => {
+router.get('/internships', async (req, res) => {
   const filters = parseFilters(req.query);
   filters.experienceLevels = ['Internship'];
   res.render('jobs.ejs', { 

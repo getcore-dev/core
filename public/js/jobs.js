@@ -226,19 +226,26 @@ function updateStateFromServerFilters() {
   }
 }
 
-function initialize() {
+async function initialize() {
   try {
-    loadStateFromLocalStorage();
-    updateStateFromServerFilters();
+    const serverFilters = JSON.parse(document.getElementById('server-filters').textContent);
+    if (serverFilters) {  
+      await updateStateFromServerFilters(serverFilters);
+    }
+    
+    await loadStateFromLocalStorage();
+    
+    if (state.jobPostings.length === 0) {
+      await fetchJobPostings();
+    }
+    
+    updateJobCount();
     setupInfiniteScroll();
   } catch (error) {
     console.error('Error initializing state:', error);
-    fetchJobPostings();
+    await fetchJobPostings();
+    updateJobCount();
   }
-  if (state.jobPostings.length === 0) {
-    fetchJobPostings();
-  }
-  updateJobCount();
 }
 
 
@@ -766,45 +773,36 @@ function loadStateFromLocalStorage() {
 
 
 function createActiveFilterElement(filters) {
-  let sentenceParts = [];
+  const filterCategories = [
+    { key: 'experiencelevels', label: 'Experience Level' },
+    { key: 'titles', label: 'Job Titles' },
+    { key: 'companies', label: 'Companies' },
+    { key: 'locations', label: 'Locations' },
+    { key: 'skills', label: 'Skills' }
+  ];
 
-  // Experience Level Filter
-  if (filters.experiencelevels && filters.experiencelevels.size > 0) {
-    sentenceParts.push(`Experience Level: ${Array.from(filters.experiencelevels).join(', ')}`);
-  }
+  let sentence = "Showing jobs";
+  const activeFilters = [];
 
-  // Job Title Filter
-  if (filters.titles && filters.titles.size > 0) {
-    sentenceParts.push(`Titles: ${Array.from(filters.titles).join(', ')}`);
-  }
+  filterCategories.forEach(category => {
+    if (filters[category.key] && filters[category.key].size > 0) {
+      const values = Array.from(filters[category.key]).join(', ');
+      activeFilters.push(`with ${category.label.toLowerCase()} ${values}`);
+    }
+  });
 
-  // Company Filter
-  if (filters.companies && filters.companies.size > 0) {
-    sentenceParts.push(`Companies: ${Array.from(filters.companies).join(', ')}`);
-  }
-
-  // Location Filter
-  if (filters.locations && filters.locations.size > 0) {
-    sentenceParts.push(`Locations: ${Array.from(filters.locations).join(', ')}`);
-  }
-
-  // Salary Filter
   if (filters.salary && filters.salary > 0) {
-    sentenceParts.push(`Salary: Above ${filters.salary}`);
+    activeFilters.push(`with salary above ${filters.salary}`);
   }
 
-  // Skills Filter
-  if (filters.skills && filters.skills.size > 0) {
-    sentenceParts.push(`Skills: ${Array.from(filters.skills).join(', ')}`);
+  if (activeFilters.length > 0) {
+    sentence += " " + activeFilters.join(", ");
   }
 
-  const sentence = sentenceParts.join(' | ');
-
-  // Update the DOM element that shows the active filters
   const activeFiltersSentenceElement = document.getElementById('active-filters-sentence');
   if (activeFiltersSentenceElement) {
     activeFiltersSentenceElement.textContent = sentence;
-    activeFiltersSentenceElement.style.display = sentence.length > 0 ? 'block' : 'none';
+    activeFiltersSentenceElement.style.display = activeFilters.length > 0 ? 'block' : 'none';
   }
 
   return sentence;
