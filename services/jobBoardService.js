@@ -2610,7 +2610,7 @@ class JobProcessor extends EventEmitter {
     const maxCharacters = 200000;
     const truncatedTextContent = textContent.length > maxCharacters ? textContent.slice(0, maxCharacters) : textContent;
     
-    const prompt = this.generatePrompt(link, truncatedTextContent);
+    const prompt = this.generatePrompt2(link, truncatedTextContent);
     
     try {
       const completion = await this.openai.beta.chat.completions.parse({
@@ -2807,6 +2807,7 @@ class JobProcessor extends EventEmitter {
       JobPosting = {
         title: string, 
         url: string,
+                description: string, // write about what the company wants, and the ideal candidate for the job
         experienceLevel: string, // internship, junior, senior, lead, manager, vp, director only 
         salary: decimal, // yearly salary, if given in hourly or anything else, convert to yearly
         salary_max: int, // yearly salary, if given in hourly or anything else, convert to yearly
@@ -2824,7 +2825,6 @@ class JobProcessor extends EventEmitter {
         EqualOpportunityEmployerInfo: string,
         Relocation: boolean,
         location: string,
-        description: string, // write about what the company wants, and the ideal candidate for the job
         IsRemote: boolean,
       }
 
@@ -2840,8 +2840,7 @@ class JobProcessor extends EventEmitter {
 
   async processJobInfo(jobInfo) {
     // function to prompt gpt using the data gathered from linkedin posting
-    const prompt = this.generatePrompt2(JSON.stringify(jobInfo));
-    const response = await this.useChatGPTAPI_JobInfo(jobInfo.link, prompt);
+    const response = await this.useChatGPTAPI_JobInfo(jobInfo.link, JSON.stringify(jobInfo));
     return response;
   }
 
