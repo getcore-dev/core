@@ -606,6 +606,7 @@ async function fetchJobPostings() {
       renderJobPostings(newJobs);
       state.currentPage++;
       saveStateToLocalStorage();
+      setupInfiniteScroll();
     } else {
       const noJobsMessage = document.createElement('div');
       noJobsMessage.classList =  'no-jobs-message flex h-center py-4 secondary-text mini-text';
