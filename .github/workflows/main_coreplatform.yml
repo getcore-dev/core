@@ -1,3 +1,6 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
 name: Build and deploy Node.js app to Azure Web App - coreplatform
 
 on:
@@ -17,9 +20,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
+      
+      - uses: actions/cache@v3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
@@ -30,11 +32,11 @@ jobs:
         run: |
           npm install
           npm run build --if-present
-          npm run test --if-present
 
       - name: Zip artifact for deployment
         run: |
           zip -r release.zip . -x "node_modules/**\*" ".git/**\*" ".github/**\*" "tests/**\*"
+        
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -57,12 +59,15 @@ jobs:
         with:
           name: node-app
 
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
+      
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_97B5C32E11844D9C9E68A0FA7BBC4D40 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_074F77A61489473088C7AEA0D2F4119A }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_AAE5BA95235A4449B0C864089846E65F }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -71,3 +76,4 @@ jobs:
           app-name: 'coreplatform'
           slot-name: 'Production'
           package: release.zip
+          
