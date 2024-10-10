@@ -2804,8 +2804,8 @@ class JobProcessor extends EventEmitter {
         url: string,
         description: string, // write about what the company wants, and the ideal candidate for the job
         experienceLevel: string, // internship, junior, senior, lead, manager, vp, director only 
-        salary: decimal, // yearly salary, if given in hourly or anything else, convert to yearly
-        salary_max: int, // yearly salary, if given in hourly or anything else, convert to yearly
+        salary: decimal, // yearly salary, if given in hourly or anything else, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY
+        salary_max: int, // if given a range this is max yearly salary, if given in hourly or anything else, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY
         additional_information: string,
         benefits: string, // separate each benefit with a comma like 'Healthcare: Yes, Dental: Yes, Vision: Yes, etc'
         PreferredQualifications: string, // what the company has said that they want for this job
@@ -2813,7 +2813,7 @@ class JobProcessor extends EventEmitter {
         Responsibilities: string,
         Requirements: string, // write like a list of requirements and the years of experience needed
         NiceToHave: string, // write like a list of nice to have skills and the years of experience needed
-        Schedule: string, // write like a list of schedule options
+        Schedule: string, // NULL IF NOTHING
         HoursPerWeek: int, // assume 40 hours a week if not given, 20 for part time
         H1BVisaSponsorship: boolean,
         IsRemote: boolean,
@@ -2834,7 +2834,7 @@ class JobProcessor extends EventEmitter {
   }
 
   async processJobInfo(jobInfo) {
-    const response = await this.useChatGPTAPI_JobInfo(jobInfo.link, JSON.stringify(Object.values(jobInfo)));
+    const response = await this.useChatGPTAPI_JobInfo(jobInfo.link, JSON.stringify(jobInfo));
     return response;
   }
 
