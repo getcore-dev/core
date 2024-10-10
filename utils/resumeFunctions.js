@@ -224,7 +224,7 @@ const resumeFunctions = {
       professionalSummary: z.string().optional(),
       desired_job_title: z.string().optional(),
       preferred_industries: z.string().optional(),
-      desired_location: z.string().optional(),
+      jobPreferredLocation: z.string().optional(),
       employment_type: z.enum(employmentTypeEnum).optional(),
       languages: z.string().optional(),
       awards: z.string().nullable().optional(),
@@ -278,7 +278,7 @@ const resumeFunctions = {
             certifications: { type: 'string', description: 'Certifications obtained' },
             desired_job_title: { type: 'string', description: 'Desired job title' },
             preferred_industries: { type: 'string', description: 'Preferred industries' },
-            desired_location: { type: 'string', description: 'Desired work location' },
+            jobPreferredLocation: { type: 'string', description: 'Desired work location' },
             employment_type: {
               type: 'string',
               enum: employmentTypeEnum,
@@ -358,7 +358,7 @@ const resumeFunctions = {
             certifications: { type: 'string', description: 'Certifications obtained' },
             desired_job_title: { type: 'string', description: 'Desired job title' },
             preferred_industries: { type: 'string', description: 'Preferred industries' },
-            desired_location: { type: 'string', description: 'Desired work location' },
+            jobPreferredLocation: { type: 'string', description: 'Desired work location' },
             employment_type: { type: 'string', description: 'Desired employment type' },
             experience: {
               type: 'array',

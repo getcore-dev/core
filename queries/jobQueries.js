@@ -2666,7 +2666,7 @@ ORDER BY jp.postedDate DESC
   getUserJobExperience: async (userId) => {
     try {
       const result = await sql.query`
-        SELECT 
+        SELECT
           je.id,
           je.userId,
           je.title,
@@ -2678,24 +2678,30 @@ ORDER BY jp.postedDate DESC
           je.description,
           je.employmentType,
           je.companyName AS userEnteredCompanyName,
-          CASE 
-            WHEN c.name IS NULL THEN je.companyName
-            ELSE c.name
-          END AS companyName,
+          COALESCE(c.name, je.companyName) AS companyName,
           c.logo AS companyLogo
         FROM job_experiences je
-        LEFT JOIN companies c ON 
-          LOWER(TRIM(je.companyName)) = LOWER(TRIM(c.name))
-          OR (
-            LEN(je.companyName) > 3 
-            AND (
-              LOWER(TRIM(je.companyName)) LIKE LOWER(TRIM(c.name)) + ' %'
-              OR LOWER(TRIM(c.name)) LIKE LOWER(TRIM(je.companyName)) + ' %'
-              OR LOWER(TRIM(je.companyName)) LIKE '% ' + LOWER(TRIM(c.name))
-              OR LOWER(TRIM(c.name)) LIKE '% ' + LOWER(TRIM(je.companyName))
-            )
-          )
+        OUTER APPLY (
+          SELECT TOP 1 name, logo
+          FROM companies
+          WHERE LOWER(TRIM(companies.name)) = LOWER(TRIM(je.companyName))
+             OR (
+               LEN(je.companyName) > 3 
+               AND (
+                 LOWER(TRIM(je.companyName)) LIKE LOWER(TRIM(companies.name)) + ' %'
+                 OR LOWER(TRIM(companies.name)) LIKE LOWER(TRIM(je.companyName)) + ' %'
+                 OR LOWER(TRIM(je.companyName)) LIKE '% ' + LOWER(TRIM(companies.name))
+                 OR LOWER(TRIM(companies.name)) LIKE '% ' + LOWER(TRIM(je.companyName))
+               )
+             )
+          ORDER BY 
+            CASE 
+              WHEN LOWER(TRIM(companies.name)) = LOWER(TRIM(je.companyName)) THEN 1
+              ELSE 2
+            END
+        ) c
         WHERE je.userId = ${userId}
+        ORDER BY je.startDate DESC
       `;
   
       return result.recordset;

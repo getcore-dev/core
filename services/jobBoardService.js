@@ -642,9 +642,12 @@ class JobProcessor extends EventEmitter {
    * @param {string} url - The URL to fetch data from.
    * @returns {Promise<Object>} - The response object containing the fetched data.
    */
-  async makeRequest(url, retries = 1, delay = 1000, usePuppeteer = false) {
+  async makeRequest(url, usePuppeteer = false) {
     // Handle special cases for specific job board platforms
     if (url.includes('linkedin.com')) return await this.usePuppeteerFallback(url);
+    if (url.includes('nba.com')) return await this.usePuppeteerFallback(url);
+    if (url.includes('icims.com')) return await this.usePuppeteerFallback(url);
+    if (url.includes('avature.com')) return await this.usePuppeteerFallback(url);
     if (url.includes('nintendo.com')) return await this.usePuppeteerFallback(url);
     if (url.includes('uber.com')) return await this.usePuppeteerFallback(url); 
     if (url.includes('ashbyhq.com')) return await this.usePuppeteerFallback(url); 
@@ -654,29 +657,33 @@ class JobProcessor extends EventEmitter {
     }
 
 
-    for (let attempt = 1; attempt <= retries; attempt++) {
-      try {
-        const response = await axios.get(url, {
-          maxRedirects: 5, // Allow up to 5 redirects
-          validateStatus: function (status) {
-            return status >= 200 && status < 300; // Resolve only if status is 2xx
-          },
-        });
+    try {
+      const response = await axios.get(url, {
+        maxRedirects: 5, // Allow up to 5 redirects
+        validateStatus: function (status) {
+          return status >= 200 && status < 300; // Resolve only if status is 2xx
+        },
+      });
     
-        if (response.status !== 200) {
-          throw new Error(`HTTP request failed with status ${response.status}`);
-        }
-    
-        // Check if the response is too short (possibly indicating a non-rendered page)
-        if (response.data.length < 1000) {
-          console.log('Response too short. Falling back to Puppeteer.');
-          return await this.usePuppeteerFallback(url);
-        }
-    
-        return response;
-      } catch (error) {
-        console.error(`Attempt ${attempt} failed:`, error.message);
+      if (response.status !== 200) {
+        throw new Error(`HTTP request failed with status ${response.status}`);
       }
+    
+      // Check if the response is too short (possibly indicating a non-rendered page)
+      if (response.data.length < 1000) {
+        console.log('Response too short. Falling back to Puppeteer.');
+        return await this.usePuppeteerFallback(url);
+      }
+
+      const $ = cheerio.load(response.data);
+      if ($('iframe').length > 0) {
+        console.log('Iframes detected, using Puppeteer');
+        return await this.usePuppeteerFallback(url);
+      }
+    
+      return response;
+    } catch (error) {
+      console.error('Error making request:', error);
     }
   }
 
@@ -1000,7 +1007,7 @@ class JobProcessor extends EventEmitter {
       console.log('links:',  links);
   
   
-      console.log(`Collected a total of ${links.size} job links from ${jobBoardUrl}`);
+      console.log(`Collected a total of ${links.length} job links from ${jobBoardUrl}`);
       return { links };
     } catch (error) {
       console.error(`Error collecting job links from ${jobBoardUrl}:`, error);
@@ -1212,12 +1219,13 @@ class JobProcessor extends EventEmitter {
 
     try {
       // First, try to fetch the main page
-      const response = await this.makeRequest(jobBoardUrl);
+      let response = await this.makeRequest(jobBoardUrl);
       console.log('response', response);
       if (response.intercepted) {
         console.log('Request intercepted');
         return response.data;
       }
+
 
       const result = await this.fullExtractJobLinksFromPage(response.data, jobBoardUrl, new URL(jobBoardUrl).hostname);
       allLinks = result.links;
@@ -1273,15 +1281,20 @@ class JobProcessor extends EventEmitter {
     $('a').each((index, element) => {
       const href = $(element).attr('href');
       if (href) {
-        const title = $(element).text().trim();
+        const title = $(element).text().trim().toLowerCase();
         const fullUrl = new URL(href, pageUrl).href;
 
-        //if (new URL(fullUrl).hostname === jobBoardDomain) {
-        // check if the fullUrl is already in the links array too
+        // Check if the fullUrl is already in the links array
         if (links.some(link => link.url === fullUrl)) {
           return;
         }
-        if (this.isTechJob(title) || /\b(apply|join|career|job)\b/i.test(title)) {
+
+        // Check if it's a tech job or contains relevant keywords
+        const isTechJob = this.isTechJob(title);
+        const hasRelevantKeyword = /apply|go|job|career/.test(title);
+        const hasRelevantUrlParam = /jobid=|jid=|jobs|careers/.test(fullUrl.toLowerCase());
+
+        if (isTechJob || hasRelevantKeyword || hasRelevantUrlParam) {
           links.push({
             url: fullUrl,
             title: title,
@@ -2464,10 +2477,55 @@ class JobProcessor extends EventEmitter {
   }
 
   async useChatGPTAPI_CompanyInfo(link, textContent) {
+
+    const industriesEnum = [
+      'Agriculture',
+      'Automotive',
+      'Aviation',
+      'Biotechnology',
+      'Chemicals',
+      'Construction',
+      'Consulting',
+      'Education',
+      'Energy',
+      'Entertainment',
+      'Finance',
+      'Food and Beverage',
+      'Healthcare',
+      'Hospitality and Tourism',
+      'Information Technology',
+      'Insurance',
+      'Legal',
+      'Manufacturing',
+      'Media and Communications',
+      'Nonprofit',
+      'Pharmaceuticals',
+      'Real Estate',
+      'Retail',
+      'Telecommunications',
+      'Transportation and Logistics',
+      'Utilities',
+      'Veterinary Sciences',
+      'Mining',
+      'Environmental Services',
+      'Public Sector',
+      'Defense',
+      'Fashion',
+      'Gaming',
+      'Healthcare Technology',
+      'Renewable Energy',
+      'E-commerce',
+      'Cybersecurity',
+      'Data Analytics',
+      'Artificial Intelligence',
+      'Other'
+    ];
+
+    
     const companyResponse = z.object({
       name: z.string(),
       description: z.string(),
-      industry: z.string(),
+      industry: z.string(z.enum(industriesEnum)),
       location: z.string(),
       size: z.string().nullable(),
       stock_symbol: z.string().nullable(),
@@ -2479,16 +2537,6 @@ class JobProcessor extends EventEmitter {
     const truncatedTextContent = textContent.length > maxCharacters ? textContent.slice(0, maxCharacters) : textContent;
     
     const prompt = `
-        From the job posting data at ${link}, please extract or provide the following information about the company:
-          - name
-          - description
-          - industry
-          - location (where the city is based out of: city, state)
-          - size (estimated number of employees)
-          - stock_symbol (nullable)
-          - logo (usually default to the format of /src/<company-name>logo.png, do not include space in the company logo)
-          - full date company was founded (datetime format, string)
-          Provide the extracted information in JSON format.
           ${truncatedTextContent}
           `;
     try {
@@ -2497,7 +2545,17 @@ class JobProcessor extends EventEmitter {
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant that extracts company information from text.',
+            content: `
+            From the job posting data at ${link}, please extract or provide the following information about the company:
+            - name
+            - description
+            - industry
+          - location (where the city is based out of: city, state)
+          - size (estimated number of employees)
+          - stock_symbol (nullable)
+          - logo (usually default to the format of /src/<company-name>logo.png, do not include space in the company logo)
+          - full date company was founded (datetime format, string)
+          Provide the extracted information in JSON format.`,
           },
           { role: 'user', content: prompt },
         ],
@@ -2583,34 +2641,307 @@ class JobProcessor extends EventEmitter {
     return requiredFields.filter(field => !company[field]);
   }
 
+  generateJobSystemPrompt() {
+    return `Analyze the information for the job posting given and sort the data such that you can extract the information:
+      JobPosting = {
+        title: string, 
+        url: string,
+        location: string, // write it as city, state unless its outside the us or remote
+        description: string, // write about what the company wants, and the ideal candidate for the job
+        experienceLevel: string, // internship, junior, senior, lead, manager, vp, director only 
+        salary: decimal, // yearly salary, if given in hourly or anything else, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY if only one number is given fill for both min and max
+        salary_max: int, // if given a range this is max yearly salary, if given in hourly or anything else, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY
+        additional_information: string,
+        skills_string: string, // write like a list of skills that are required for the job, separate each skill with a comma
+        benefits: string, // separate each benefit with a comma and format them like 'Healthcare: Yes, Dental: Yes, Vision: Yes, etc'
+        PreferredQualifications: string, // what the company has said that they want for this job
+        MinimumQualifications: string, // the type of degree required and any certifications or qualifications absolutely required, like security clearance
+        Responsibilities: string,
+        accepted_college_majors: string, // write like a list of college majors that are accepted for this job / internship, if nothing given just add the majors typically assumed for the job title DO NOT WRITE 'related fields' OUTPUT ALL POSSIBLE FIELDS 
+        Requirements: string, // write like a list of requirements and the years of experience needed
+        NiceToHave: string, // write like a list of nice to have skills and the years of experience needed
+        Schedule: string, // NULL IF NOTHING
+        HoursPerWeek: int, // assume 40 hours a week if not given, 20 for part time
+        H1BVisaSponsorship: boolean,
+        IsRemote: boolean,
+        EqualOpportunityEmployerInfo: string,
+        Relocation: boolean,
+        location: string,
+        IsRemote: boolean,
+      }
+
+      Return the sorted information in JSON format.`;
+  } 
 
   async useChatGPTAPI_JobInfo(link, textContent) {
+
+    const experienceLevelEnum = [
+      'Internship', 'Entry Level', 'Junior', 'Senior', 'Lead', 'Manager', 'Director', 'VP', 'Other'
+    ];
+
+    const collegeMajorsEnum = [
+      // Computer and Information Technology
+      'Computer Science',
+      'Software Engineering',
+      'Information Systems',
+      'Computer Engineering',
+      'Data Science',
+      'Artificial Intelligence',
+      'Cybersecurity',
+      'Networking',
+      'Web Development',
+      'Mobile Development',
+      'Game Development',
+      'Database Management',
+      'DevOps',
+      'Information Technology',
+    
+      // Business and Management
+      'Business Administration',
+      'Finance',
+      'Marketing',
+      'Accounting',
+      'International Business',
+      'Entrepreneurship',
+      'Human Resources',
+      'Supply Chain Management',
+      'Management Information Systems',
+      'Business Analytics',
+      'Economics',
+    
+      // Engineering
+      'Mechanical Engineering',
+      'Electrical Engineering',
+      'Civil Engineering',
+      'Chemical Engineering',
+      'Aerospace Engineering',
+      'Biomedical Engineering',
+      'Industrial Engineering',
+      'Materials Engineering',
+      'Environmental Engineering',
+      'Software Engineering',
+
+      // STEM
+      'Robotics',
+      'Nanotechnology',
+      'Bioinformatics',
+      'Quantum Computing',
+      'Marine Biology',
+      'Meteorology',
+      'Neuroscience',
+      'Biotechnology',
+      'Astrophysics',
+
+      // Health Sciences
+      'Medical Laboratory Science',
+      'Radiologic Technology',
+      'Speech-Language Pathology',
+      'Audiology',
+      'Optometry',
+      'Kinesiology',
+      'Health Informatics',
+
+      // Business and Management
+      'Actuarial Science',
+      'Real Estate',
+      'Logistics',
+      'Nonprofit Management',
+      'Sports Management',
+
+      // Social Sciences and Humanities
+      'Linguistics',
+      'Archaeology',
+      'Gender Studies',
+      'Ethnic Studies',
+      'Folklore',
+      'Museum Studies',
+
+      // Arts and Design
+      'Digital Media',
+      'Animation',
+      'Game Design',
+      'User Experience (UX) Design',
+      'Landscape Architecture',
+
+      // Education
+      'TESOL (Teaching English to Speakers of Other Languages)',
+      'Educational Technology',
+      'Adult Education',
+
+      // Environment and Sustainability
+      'Renewable Energy',
+      'Climate Science',
+      'Sustainable Agriculture',
+      'Conservation Biology',
+
+      // Law and Policy
+      'Pre-Law',
+      'Paralegal Studies',
+      'Environmental Law',
+      'Human Rights',
+
+      // Interdisciplinary Fields
+      'Cognitive Science',
+      'Data Analytics',
+      'Digital Humanities',
+      'Peace and Conflict Studies',
+      'Global Health',
+
+      // Emerging Fields
+      'Blockchain Technology',
+      'Drone Technology',
+      'Virtual Reality',
+      'Augmented Reality',
+      'Internet of Things (IoT)',
+
+      // Specialized Areas
+      'Aviation',
+      'Nuclear Engineering',
+      'Petroleum Engineering',
+      'Textile Engineering',
+      'Food Science and Technology',
+      'Viticulture and Enology (Wine Studies)',
+    
+      // Natural Sciences
+      'Biology',
+      'Chemistry',
+      'Physics',
+      'Geology',
+      'Environmental Science',
+      'Astronomy',
+      'Mathematics',
+      'Statistics',
+      'Biochemistry',
+    
+      // Social Sciences
+      'Psychology',
+      'Sociology',
+      'Anthropology',
+      'Political Science',
+      'International Relations',
+      'Economics',
+      'Geography',
+      'Criminology',
+      'Communication Studies',
+      'Public Administration',
+    
+      // Humanities and Liberal Arts
+      'English Literature',
+      'History',
+      'Philosophy',
+      'Fine Arts',
+      'Music',
+      'Theater Arts',
+      'Art History',
+      'Languages (e.g., Spanish, French, German)',
+      'Religious Studies',
+      'Liberal Arts',
+      'Interdisciplinary Studies',
+    
+      // Health Sciences
+      'Nursing',
+      'Public Health',
+      'Pharmacy',
+      'Health Administration',
+      'Nutrition',
+      'Physical Therapy',
+      'Occupational Therapy',
+      'Dental Hygiene',
+      'Biomedical Sciences',
+    
+      // Education
+      'Elementary Education',
+      'Secondary Education',
+      'Special Education',
+      'Educational Leadership',
+      'Curriculum and Instruction',
+      'Early Childhood Education',
+    
+      // Communications and Media
+      'Journalism',
+      'Public Relations',
+      'Media Studies',
+      'Advertising',
+      'Film Studies',
+      'Broadcasting',
+      'Other Communications Major',
+    
+      // Architecture and Design
+      'Architecture',
+      'Urban Planning',
+      'Interior Design',
+      'Graphic Design',
+      'Industrial Design',
+      'Fashion Design',
+    
+      // Criminal Justice
+      'Criminal Justice',
+      'Forensic Science',
+      'Law Enforcement',
+      'Legal Studies',
+    
+      // Agriculture and Environmental Studies
+      'Agriculture',
+      'Forestry',
+      'Environmental Policy',
+      'Sustainable Development',
+    
+      // Veterinary and Animal Sciences
+      'Veterinary Medicine',
+      'Animal Science',
+      'Zoology',
+      'Wildlife Biology',
+    
+      // Library and Information Science
+      'Library Science',
+      'Information Management',
+    
+      // Theology and Religious Studies
+      'Theology',
+      'Religious Studies',
+      'Divinity',
+    
+      // Hospitality and Tourism
+      'Hospitality Management',
+      'Tourism Management',
+      'Culinary Arts',
+      'Event Management',
+    
+      // Miscellaneous
+      'Military Science',
+      'Public Policy',
+      'Speech Communication',
+    ];
+
     const jobResponse = z.object({
       title: z.string(),
       location: z.string(),
       salary: z.number(),
-      salary_max: z.number(),
-      experienceLevel: z.string(),
+      salary_max: z.number().optional(),
+      experienceLevel: z.enum(experienceLevelEnum).optional(),
       description: z.string(),
-      benefits: z.string(),
-      additional_information: z.string(),
-      PreferredQualifications: z.string(),
-      MinimumQualifications: z.string(),
-      Responsibilities: z.string(),
-      Requirements: z.string(),
-      NiceToHave: z.string(),
-      Schedule: z.string(),
-      HoursPerWeek: z.number(),
-      H1BVisaSponsorship: z.boolean(),
-      IsRemote: z.boolean(),
-      EqualOpportunityEmployerInfo: z.string(),
-      Relocation: z.boolean()
+      benefits: z.string().optional(),
+      additional_information: z.string().optional(),
+      accepted_college_majors: z.string(z.array(z.enum(collegeMajorsEnum))).optional(),
+      PreferredQualifications: z.string().optional(),
+      MinimumQualifications: z.string().optional(),
+      Responsibilities: z.string().optional(),
+      Requirements: z.string().optional(),
+      NiceToHave: z.string().optional(),
+      skills_string: z.string().optional(),
+      Schedule: z.string().optional(),
+      HoursPerWeek: z.number().optional(),
+      H1BVisaSponsorship: z.boolean().optional(),
+      IsRemote: z.boolean().optional(),
+      EqualOpportunityEmployerInfo: z.string().optional(),
+      Relocation: z.boolean().optional()
     });
 
     const maxCharacters = 200000;
     const truncatedTextContent = textContent.length > maxCharacters ? textContent.slice(0, maxCharacters) : textContent;
     
     const prompt = this.generatePrompt2(truncatedTextContent);
+    const systemPrompt = this.generateJobSystemPrompt();
     
     try {
       const completion = await this.openai.beta.chat.completions.parse({
@@ -2618,7 +2949,7 @@ class JobProcessor extends EventEmitter {
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant that extracts job information from text.',
+            content: systemPrompt,
           },
           { role: 'user', content: prompt },
         ],
@@ -2701,53 +3032,6 @@ class JobProcessor extends EventEmitter {
       throw error;
     }
   }
-
-  async useChatGPTAPI_CompanyInfo2(name, textContent) {
-    const companyResponse = z.object({
-      name: z.string(),
-      description: z.string(),
-      industry: z.string(),
-      location: z.string(),
-      size: z.string().nullable(),
-      stock_symbol: z.string().nullable(),
-      founded: z.string().nullable(),
-      company_stage: z.string().nullable(),
-      company_recent_news_sentiment: z.string().nullable(),
-      company_sentiment: z.string().nullable(),
-      company_issues: z.string().nullable(),
-      company_engineer_choice: z.string().nullable(),
-      company_website: z.string().nullable(),
-      twitter_username: z.string().nullable(),
-      company_linkedin_page: z.string().nullable()
-    });
-  
-    const maxCharacters = 200000;
-    const truncatedTextContent = textContent.length > maxCharacters ? textContent.slice(0, maxCharacters) : textContent;
-    
-    const prompt = this.generateCompanyPrompt({ name: name });
-  
-  
-    try {
-      const completion = await this.openai.beta.chat.completions.parse({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a helpful assistant that extracts company information from text.',
-          },
-          { role: 'user', content: prompt },
-        ],
-        response_format: zodResponseFormat(companyResponse, 'companyResponse')
-      });
-  
-      const message = completion.choices[0]?.message;
-      return message.parsed;
-    } catch (error) {
-      console.error('OpenAI API Error:', error.message);
-      throw error;
-    }
-  }
-
   generateCompanyPrompt(companyContext) {
     return `
      Currently for the company ${companyContext.name}, please given all current information known on the company give the following information:
@@ -2796,34 +3080,7 @@ class JobProcessor extends EventEmitter {
   generatePrompt2(textContent) {
     this.updateProgress({ currentAction: 'Generating prompt' });
   
-    const prompt = `
-      Analyze the information for the job posting given and sort the data such that you can extract the information:
-      ${textContent}
-      JobPosting = {
-        title: string, 
-        url: string,
-        description: string, // write about what the company wants, and the ideal candidate for the job
-        experienceLevel: string, // internship, junior, senior, lead, manager, vp, director only 
-        salary: decimal, // yearly salary, if given in hourly or anything else, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY
-        salary_max: int, // if given a range this is max yearly salary, if given in hourly or anything else, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY
-        additional_information: string,
-        benefits: string, // separate each benefit with a comma like 'Healthcare: Yes, Dental: Yes, Vision: Yes, etc'
-        PreferredQualifications: string, // what the company has said that they want for this job
-        MinimumQualifications: string, // the type of degree required and any certifications or qualifications absolutely required, like security clearance
-        Responsibilities: string,
-        Requirements: string, // write like a list of requirements and the years of experience needed
-        NiceToHave: string, // write like a list of nice to have skills and the years of experience needed
-        Schedule: string, // NULL IF NOTHING
-        HoursPerWeek: int, // assume 40 hours a week if not given, 20 for part time
-        H1BVisaSponsorship: boolean,
-        IsRemote: boolean,
-        EqualOpportunityEmployerInfo: string,
-        Relocation: boolean,
-        location: string,
-        IsRemote: boolean,
-      }
-
-      Return the sorted information in JSON format.
+    const prompt = `${textContent}
     `;
 
     return prompt;
@@ -2840,7 +3097,6 @@ class JobProcessor extends EventEmitter {
 
   async processJobPosting(jobId) {
     const jobPosting = await jobQueries.findById(jobId);
-    console.log(jobPosting);
     const improvedJobPostings = await this.processJobInfo(jobPosting);
 
 
@@ -3267,7 +3523,7 @@ class JobProcessor extends EventEmitter {
     const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(companyName + ' careers')}`;
 
     try {
-      const response = await this.makeRequest(searchUrl, 0, 1000);
+      const response = await this.makeRequest(searchUrl);
       const $ = cheerio.load(response.data);
 
       $('a').each((index, element) => {

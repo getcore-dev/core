@@ -409,10 +409,6 @@ main {
   flex-direction: row;
 }
 
-.job-experience-header {
-  display: flex;
-  justify-content: space-between;
-}
 
 #currentJobContainer>div {
   display: flex;
@@ -588,6 +584,12 @@ td {
 .current-job button,
 .current-education button {
   color: var(--active-indicator-color);
+}
+
+.company-group {
+  display: flex;
+  flex-direction: column !important;
+  gap: 10px;
 }
 
 .github-commit-repos {

@@ -27,7 +27,7 @@
               <h3 class="text-md font-semibold mb-2">Jobs Profile</h3>
               <div class="flex flex-col gap-1">
                 <p class="text-sm"><strong>Title:</strong> <%= user.jobPreferredTitle || 'Not specified' %></p>
-                <p class="text-sm"><strong>Location:</strong> <%= user.desired_location || 'Not specified' %></p>
+                <p class="text-sm"><strong>Location:</strong> <%= user.jobPreferredLocation || 'Not specified' %></p>
                 <p class="text-sm"><strong>Experience:</strong> <%= user.jobExperienceLevel || 'Not specified' %></p>
                 <p class="text-sm"><strong>Salary:</strong> <%= user.jobPreferredSalary ? '$' + user.jobPreferredSalary.toLocaleString() : 'Not specified' %></p>
               </div>

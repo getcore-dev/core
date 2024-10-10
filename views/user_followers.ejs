@@ -73,7 +73,7 @@
         </span>
         Back</a>
       <div class="flex flex-row gap-06 v-center">
-        <p class="main-text bold">Following</p>
+        <p class="mini-text bold">Followers</p>
         <div class="counter">
           <%= followersCount %>
         </div>
@@ -82,15 +82,21 @@
     <div class="followers">
       <% followers.forEach((follower) => { %>
       <div class="follower px-4 py-2 gap-06" onclick="window.location.href='/user/<%= follower.username %>'">
-        <img class="thumbnail thumbnail-tiny thumbnail-regular" src="<%= follower.avatar %>" alt="<%= follower.username %>" />
+        <img class="thumbnail thumbnail-micro thumbnail-regular" src="<%= follower.avatar %>" alt="<%= follower.username %>" />
         <div class="follower-info px-2 py-2">
-          <a class="main-text link">
+          <% if (follower.firstname && follower.lastname) { %>
+          <a class="sub-text link">
             <%= follower.firstname %>
             <%= follower.lastname %>
           </a>
-          <p class="sub-text secondary-text">
+          <p class="mini-text secondary-text">
             @<%= follower.username.toLowerCase() %>
           </p>
+          <% } else { %>
+          <a class="sub-text link">
+            @<%= follower.username.toLowerCase() %>
+          </a>
+          <% } %>
         </div>
       </div>
       <% }) %>

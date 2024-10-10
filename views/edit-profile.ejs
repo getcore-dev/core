@@ -160,7 +160,7 @@
           </select>
         </div>
         <div class="form-group">
-          <input type="text" id="desired_location" name="desired_location" value="<%= edit_user.desired_location %>" placeholder="Desired Location (City, State, or Remote)" required aria-label="Desired Location">
+          <input type="text" id="jobPreferredLocation" name="jobPreferredLocation" value="<%= edit_user.is%>" placeholder="Desired Location (City, State, or Remote)" required aria-label="Desired Location">
         </div>
         <div class="form-group">
           <label for="willing_to_relocate" class="flex flex-row v-center">
@@ -579,7 +579,7 @@
       function populateFormFields() {
         if (!resumeData) return;
 
-        const fields = ['firstname', 'lastname', 'email', 'bio', 'zipcode', 'linkedin_url', 'leetcode_url', 'link', 'link2', 'github_url', 'phone_number', 'desired_job_title', 'desired_location', 'desired_salary_min', 'desired_salary_max', 'employment_type', 'availability_date', 'technical_skills', 'languages', 'certifications', 'preferred_industries', 'preferred_companies', 'profile_border_color', 'professionalSummary', 'soft_skills', 'other_skills', 'preferred_companies', 'willing_to_relocate'];
+        const fields = ['firstname', 'lastname', 'email', 'bio', 'zipcode', 'linkedin_url', 'leetcode_url', 'link', 'link2', 'github_url', 'phone_number', 'desired_job_title', 'jobPreferredLocation', 'desired_salary_min', 'desired_salary_max', 'employment_type', 'availability_date', 'technical_skills', 'languages', 'certifications', 'preferred_industries', 'preferred_companies', 'profile_border_color', 'professionalSummary', 'soft_skills', 'other_skills', 'preferred_companies', 'willing_to_relocate'];
 
         fields.forEach(field => {
           if (resumeData[field]) {

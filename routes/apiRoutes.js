@@ -679,7 +679,7 @@ router.get('/job-suggestions', async (req, res) => {
     if (user) {
       userPreferences = {
         titles: user.jobPreferredTitle ? (Array.isArray(user.jobPreferredTitle) ? user.jobPreferredTitle : [user.jobPreferredTitle]) : [],
-        locations: user.desired_location ? (Array.isArray(user.desired_location) ? user.desired_location : [user.desired_location]) : [],
+        locations: user.jobPreferredLocation ? (Array.isArray(user.jobPreferredLocation) ? user.jobPreferredLocation : [user.jobPreferredLocation]) : [],
         experienceLevels: user.jobExperienceLevel ? (Array.isArray(user.jobExperienceLevel) ? user.jobExperienceLevel : [user.jobExperienceLevel]) : [],
         salary: user.jobPreferredSalary ? user.jobPreferredSalary : 0,
         skills: [],
@@ -699,6 +699,7 @@ router.get('/job-experience/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
     const jobExperience = await jobQueries.getUserJobExperience(userId);
+    console.log(jobExperience);
     res.json(jobExperience);
   } catch (err) {
     console.error('Error fetching job experience:', err);

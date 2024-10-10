@@ -35,10 +35,12 @@ const userQueries = {
                 WHEN u.settings_PrivateSchoolNames = 1 THEN 'Institution'
                 ELSE ee.institutionName
               END
-          END AS experience_place
+          END AS experience_place,
+          c.logo AS company_logo
       FROM users u
       LEFT JOIN education_experiences ee ON u.id = ee.userId
       LEFT JOIN job_experiences je ON u.id = je.userId
+      LEFT JOIN companies c ON je.companyName = c.name
       WHERE u.username = ${username}`;
 
       const user = result.recordset[0];
@@ -403,7 +405,7 @@ const userQueries = {
         'jobPreferredSalary',
         'desired_job_title',
         'employment_type',
-        'desired_location',
+        'jobPreferredLocation',
         'willing_to_relocate',
         'desired_salary_min',
         'professionalSummary',

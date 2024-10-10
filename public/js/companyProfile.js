@@ -300,6 +300,12 @@ function createJobElement(job) {
   }
   if (job.salary) {
     tags.push({text: `$${job.salary}`, class: 'salary'});
+  } else {
+    // try to extract salary from description
+    const salaryMatch = job.description.match(/\$(\d+,?\d*)/);
+    if (salaryMatch) {
+      tags.push({text: `$${salaryMatch[1]}`, class: 'salary'});
+    }
   }
   if (job.experienceLevel) {
     tags.push({text: job.experienceLevel, class: 'experienceLevel'});
@@ -326,7 +332,7 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
 <div class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left mb-4 text-sm transition-all hover:bg-accent" ${clickable ? `onclick="window.location.href='${link}'"` : ''}>
   <div class="flex w-full flex-col gap-1">
     <div class="flex items-center">
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 wrap">
 
       ${image ? `
               <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
@@ -343,7 +349,7 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
   <div class="line-clamp-2 text-sm text-muted-foreground w-full">
     ${description}
   </div>
-  <div class="flex items-center gap-2">
+  <div class="flex items-center gap-2 wrap">
     ${tagsHtml}
   </div>
 </div>

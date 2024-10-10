@@ -91,6 +91,12 @@ div#educationExperienceContainer {
     background: var(--dark-mode-main-color);
   }
 
+  div.jobExperience,
+  div.educationExperience {
+    border: 1px solid var(--dark-mode-border-color);
+    background: var(--dark-mode-main-color);
+  }
+
   #jobExperienceContainer input,
   #jobExperienceContainer textarea,
   #educationExperienceContainer input,

@@ -245,6 +245,12 @@ function createJobElement(job) {
   }
   if (job.salary) {
     tags.push({text: `$${job.salary}`, class: 'salary'});
+  } else {
+    // try to extract salary from description
+    const salaryMatch = job.description.match(/\$(\d+)/);
+    if (salaryMatch) {
+      tags.push({text: `$${salaryMatch[1]}`, class: 'salary'});
+    }
   }
   if (job.experienceLevel) {
     tags.push({text: job.experienceLevel, class: 'experienceLevel'});
@@ -341,6 +347,8 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
         const keywords = ['JavaScript', 'Python', 'Java', 'C++', 'React', 'Node.js', 'SQL', 'AWS', 'Docker', 'Kubernetes', 'CRM', 'Salesforce', 'Node.js', 'cybersecurity', 'Power BI', 'Excel', 'Data Visualization', 'Statistics', 'Finance'];
         skillsArray = keywords.filter(keyword => 
           job.description.toLowerCase().includes(keyword.toLowerCase()) || 
+          job.raw_description_no_format.toLowerCase().includes(keyword.toLowerCase()) ||
+          job.Requirements.toLowerCase().includes(keyword.toLowerCase()) ||
           (job.Requirements && job.Requirements.toLowerCase().includes(keyword.toLowerCase()))
         );
         
@@ -405,12 +413,14 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
           <h3 class="company-name header-text margin-03-bottom bold">
         ${job.title}
       </h3>
-              ${job.experienceLevel ? `
-          <p class="mini-text bold secondary-text">
-        ${job.experienceLevel}
-        </p>  
-        ` : ''}
       <p class="sub-text third-text"> 
+                    ${job.experienceLevel ? `
+          <span class="sub-text bold third-text">
+        ${job.experienceLevel}
+        </span>  
+                <span class="sub-text">•</span>
+
+        ` : ''}
           ${
   job.location
     .split(',')
@@ -431,7 +441,9 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
     .join(', ')
 }
 
+
 <span class="sub-text">•</span>
+
 <span class="sub-text">
                   ${job.applicants ? job.applicants : 0} applicants
 </span>
@@ -439,25 +451,32 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       <time class="sub-text primary-text">${formatDateJob(job.postedDate)}</time>
 
       </p>
-      <p class="sub-text">
-        Skills: ${skillsHTML}
-      </p>
-
       <div class="job-recruiter-container">
-            <div class="job-recruiter-info">
-            <div class="recruiter-info flex flex-row gap-06">
+        <div class="job-recruiter-info">
+          <div class="recruiter-info flex flex-row gap-06">
             <a href="/user/${job.recruiter_username}" class="recruiter-image">
                 <img class="thumbnail thumbnail-micro thumbnail-regular" src="${job.recruiter_image}" alt="${job.company_name} logo" />
             </a>
             <div class="recruiter-details flex flex-row gap-2">
-                <p class="sub-text">
+              <p class="sub-text">
                 Posted by
                     @<a href="/user/${job.recruiter_username}" class="mini-text">${job.recruiter_username}</a>
-                    </p>
+              </p>
             </div>
           </div>
         </div>
-    </div>
+      </div>
+      ${job.skills_string ? `
+      <p class="sub-text">
+        Skills: ${job.skills_string}
+      </p>
+      ` : ''}
+
+      ${job.accepted_college_majors ? `
+      <p class="sub-text">
+        Majors: ${job.accepted_college_majors}
+      </p>
+      ` : ''}
     <div class="flex flex-row gap-4 v-center">
             <div class="flex flex-row gap-06 v-center">
               <span class="material-symbols-outlined">house</span>
@@ -477,13 +496,6 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       </div>
       ` : ''}
 
-      <!-- end of the top menu -->
-    </div>
-      
-        </div>
-        
-      </div>
-
       ${ job.salary || job.salary_max ? `
         <div class="job-info-flairs sub-text">
       ${job.salary !== 0 ? `
@@ -500,23 +512,15 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
       
         </div>
         ` : ''}
-        ${job.isProcessed ? `
-        <div class="job-skills-display">
+      
 
-          ${skillsHTML}
-    
-        </div>
-            ` : ''}
-  ${job.isProcessed ? `
-            <div class="job-posting-description ${job.recruiter_username === 'autojob' ? 'ai-generated-content' : ''}">
-
-      <h4 class="sub-text bold" style="margin-top:0;">AI-Generated Overview</h4>
-    <p class="sub-text">
-    ${job.description.replace('??', '')}
-    </p>
+      <!-- end of the top menu -->
     </div>
+      
+        </div>
+        
+      </div>
 
-    ` : ''}
 
 <div class="flex flex-col gap-06">
       <div class="interact-buttons flex flex-row gap-4 v-center">
@@ -611,6 +615,17 @@ async function lazyLoadJobDetails(userIsAdmin, jobId, userIsLoggedIn) {
               <p class="sub-text">${job.description}</p>
             </div>
             ` : ''}
+
+              ${job.isProcessed ? `
+            <div class="job-posting-description ${job.recruiter_username === 'autojob' ? 'ai-generated-content' : ''}">
+
+      <h4 class="sub-text bold" style="margin-top:0;"><span class="material-symbols-outlined" style="color: #6366f1;">auto_awesome</span> AI-Generated Overview</h4>
+    <p class="sub-text">
+    ${job.description.replace('??', '')}
+    </p>
+    </div>
+
+    ` : ''}
             ${
   job.Requirements
     ? `
@@ -800,7 +815,7 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
 <div class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left mb-4 text-sm transition-all hover:bg-accent" ${clickable ? `onclick="window.location.href='${link}'"` : ''}>
   <div class="flex w-full flex-col gap-1">
     <div class="flex items-center">
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 wrap">
 
       ${image ? `
               <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
@@ -817,7 +832,7 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
   <div class="line-clamp-2 text-sm text-muted-foreground w-full">
     ${description}
   </div>
-  <div class="flex items-center gap-2">
+  <div class="flex items-center gap-2 wrap">
     ${tagsHtml}
   </div>
 </div>
