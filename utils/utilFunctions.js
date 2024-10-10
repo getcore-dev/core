@@ -3,7 +3,6 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const NodeCache = require('node-cache');
 const cache = new NodeCache({ stdTTL: 1200 }); // TTL is 20 minutes
-const sharp = require('sharp');
 const config = require('../config/dbConfig');
 
 const utilFunctions = {
@@ -301,46 +300,6 @@ OUTER APPLY (
     }
   },
 
-  getDominantColor: async (imageUrl) => {
-    try {
-      const cacheKey = `dominantColor:${imageUrl}`;
-      const cachedColor = cache.get(cacheKey);
-      if (cachedColor) {
-        return cachedColor;
-      }
-
-      function rgbToHex(rgb) {
-        let hex = Number(rgb).toString(16);
-        if (hex.length < 2) {
-          hex = '0' + hex;
-        }
-        return hex;
-      }
-
-      const response = await axios.get(imageUrl, {
-        responseType: 'arraybuffer',
-      });
-      const buffer = Buffer.from(response.data, 'binary');
-      const { data, info } = await sharp(buffer).resize(1, 1).raw().toBuffer({
-        resolveWithObject: true,
-      });
-
-      const color = {
-        r: data[0],
-        g: data[1],
-        b: data[2],
-      };
-
-      const hexColor = `#${rgbToHex(color.r)}${rgbToHex(color.g)}${rgbToHex(
-        color.b
-      )}`;
-      cache.set(cacheKey, hexColor);
-      return hexColor;
-    } catch (error) {
-      console.error('Error getting dominant color:', error);
-      return '#000000';
-    }
-  },
 
   getAllTags: async () => {
     try {

@@ -6,7 +6,8 @@
   "scripts": {
     "dev-start": "nodemon server.js",
     "start": "pm2 start server.js --no-daemon",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build": ""
   },
   "keywords": [],
   "author": "",
@@ -21,7 +22,6 @@
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "bull": "^4.16.3",
-    "chatgpt": "^5.2.5",
     "cheerio": "^1.0.0-rc.12",
     "cluster": "^0.7.7",
     "compression": "^1.7.4",
@@ -44,14 +44,11 @@
     "highlight.js": "^11.9.0",
     "is-base64": "^1.1.0",
     "jsonwebtoken": "^9.0.2",
-    "lusca": "^1.7.0",
     "marked": "^11.2.0",
     "method-override": "^3.0.0",
     "mssql": "^11.0.0",
     "mssql-session-store": "^1.0.0",
     "multer": "^1.4.5-lts.1",
-    "mysql": "^2.18.1",
-    "mysql2": "^3.6.3",
     "node-cache": "^5.1.2",
     "nodemailer": "^6.9.13",
     "octokit": "^4.0.2",
@@ -65,25 +62,15 @@
     "puppeteer": "^23.3.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
-    "redis": "^4.6.15",
     "request": "^2.88.2",
     "sanitize-html": "^2.13.0",
-    "sequelize": "^6.35.1",
     "session-file-store": "^1.5.0",
-    "sharp": "^0.33.3",
     "turndown": "^7.2.0",
     "uuid": "^9.0.1",
-    "ws": "^8.16.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@eslint/js": "^9.6.0",
-    "chai": "^4.4.1",
-    "eslint": "^9.6.0",
     "globals": "^15.8.0",
-    "mocha": "^10.6.0",
-    "nodemon": "^3.0.1",
-    "sinon": "^18.0.0",
-    "supertest": "^6.3.4"
+    "nodemon": "^3.0.1"
   }
 }
