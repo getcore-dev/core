@@ -105,7 +105,7 @@ async function getSimilarJobs(jobId) {
 
     similarJobsContainer.innerHTML = '<h4 class="secondary-text">Related Jobs</h4>';
     const similarJobsList = document.createElement('div');
-    similarJobsList.className = 'similar-jobs-list';
+    similarJobsList.className = 'flex flex-row gap-2 pl-2 horizontal-scroll';
 
     jobs.forEach((job) => {
       let tags = [];
@@ -266,16 +266,16 @@ async function getSimilarJobsByCompany(jobId) {
 
     const similarJobsContainer = document.querySelector('.similar-company-jobs');
 
-    if (jobs.length === 0) {
+    if (jobs.similarJobs.length === 0) {
       similarJobsContainer.innerHTML = '<div class="empty-text">No similar jobs found.</div>';
       return;
     }
 
-    similarJobsContainer.innerHTML = '<h4 class="secondary-text">Related Jobs at the Same Company</h4>';
+    similarJobsContainer.innerHTML = `<h4 class="secondary-text">More at ${jobs.companyName}</h4>`;
     const similarJobsList = document.createElement('div');
-    similarJobsList.className = 'similar-jobs-list';
+    similarJobsList.className = 'flex flex-row gap-2 pl-2 horizontal-scroll';
 
-    jobs.forEach((job) => {
+    jobs.similarJobs.forEach((job) => {
       const jobElement = createJobElement(job);
       similarJobsList.appendChild(jobElement);
     });
@@ -812,7 +812,7 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
   }
 
   const cardContent = `
-<div class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left mb-4 text-sm transition-all hover:bg-accent" ${clickable ? `onclick="window.location.href='${link}'"` : ''}>
+<div class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent w-[250px] h-[250px]" ${clickable ? `onclick="window.location.href='${link}'"` : ''}>
   <div class="flex w-full flex-col gap-1">
     <div class="flex items-center">
       <div class="flex items-center gap-2 wrap">

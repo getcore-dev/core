@@ -1572,7 +1572,7 @@ ORDER BY jp.postedDate DESC
     try {
       const result = await sql.query(`
         WITH OriginalJob AS (
-          SELECT id, title FROM JobPostings WHERE id = ${jobId}
+          SELECT id, title, experienceLevel FROM JobPostings WHERE id = ${jobId}
         ),
         JobWords AS (
           SELECT DISTINCT value AS word
@@ -1596,18 +1596,6 @@ ORDER BY jp.postedDate DESC
             c.location AS company_location, 
             c.description AS company_description,
             (
-              SELECT STRING_AGG(jt.tagName, ', ') 
-              FROM JobPostingsTags jpt
-              INNER JOIN JobTags jt ON jpt.tagId = jt.id
-              WHERE jpt.jobId = jp.id
-            ) AS tags,
-            (
-              SELECT STRING_AGG(s.name, ', ')
-              FROM job_skills js
-              INNER JOIN skills s ON js.skill_id = s.id
-              WHERE js.job_id = jp.id
-            ) AS skills,
-            (
               SELECT COUNT(*)
               FROM JobWords
               WHERE CHARINDEX(word, LOWER(jp.title)) > 0
@@ -1620,7 +1608,7 @@ ORDER BY jp.postedDate DESC
           FROM JobPostings jp
           LEFT JOIN companies c ON jp.company_id = c.id
           CROSS JOIN OriginalJob oj
-          WHERE jp.id != oj.id
+          WHERE jp.id != oj.id AND jp.experienceLevel = oj.experienceLevel
         )
         SELECT TOP 15 *
         FROM ScoredJobs
@@ -1662,17 +1650,7 @@ ORDER BY jp.postedDate DESC
     LEFT JOIN companies ON JobPostings.company_id = companies.id
     WHERE JobPostings.company_id = ${companyId}
       AND JobPostings.id != ${jobId}
-      AND JobPostings.id IN (
-        SELECT jobId
-        FROM JobPostingsTags
-        WHERE tagId IN (
-          SELECT tagId
-          FROM JobPostingsTags
-          WHERE jobId = ${jobId}
-        )
-      )
-    ORDER BY JobPostings.postedDate DESC
-    
+    ORDER BY NEWID()
     `);
 
       const jobs = result.recordset;
@@ -1693,19 +1671,7 @@ ORDER BY jp.postedDate DESC
           companies.name AS company_name,
           companies.logo AS company_logo,
           companies.location AS company_location,
-          companies.description AS company_description,
-          (
-            SELECT STRING_AGG(JobTags.tagName, ', ') 
-            FROM JobPostingsTags 
-            INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
-            WHERE JobPostingsTags.jobId = JobPostings.id
-          ) AS tags,
-          (
-            SELECT STRING_AGG(skills.name, ', ')
-            FROM job_skills
-            INNER JOIN skills ON job_skills.skill_id = skills.id
-            WHERE job_skills.job_id = JobPostings.id
-          ) AS skills
+          companies.description AS company_description
         FROM JobPostings
         LEFT JOIN companies ON JobPostings.company_id = companies.id
         WHERE JobPostings.company_id = ${companyId}

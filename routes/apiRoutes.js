@@ -992,7 +992,7 @@ router.get('/jobs/:id/similar-company', cacheMiddleware(2400), async (req, res) 
       jobPosting.company_id,
       jobPosting.id
     );
-    res.json(similarJobs);
+    res.json({similarJobs, companyName: jobPosting.company_name});
   } catch (err) {
     console.error('Error fetching similar jobs:', err);
     res.status(500).send('Error fetching similar jobs');
