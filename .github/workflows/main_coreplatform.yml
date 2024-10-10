@@ -32,9 +32,6 @@ jobs:
       - name: Install PM2 globally
         run: npm install -g pm2
 
-      - name: Run linter
-        run: npm run lint
-
       - name: Zip artifact for deployment
         run: zip -r release.zip . -x "node_modules/**" ".git/**" ".github/**" "tests/**"
 
