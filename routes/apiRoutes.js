@@ -597,6 +597,7 @@ router.get('/jobs', cacheMiddleware(120), async (req, res) => {
       titles,
       locations,
       experiencelevels,
+      majors,
       salary,
       skills,
       companies
@@ -606,6 +607,7 @@ router.get('/jobs', cacheMiddleware(120), async (req, res) => {
     const parsedTitles = titles ? JSON.parse(titles) : [];
     const parsedLocations = locations ? JSON.parse(locations) : [];
     const parsedExperienceLevels = experiencelevels ? JSON.parse(experiencelevels) : [];
+    const parsedMajors = majors ? JSON.parse(majors) : [];
     const parsedSalary = parseInt(salary) || 0;
     const parsedSkills = skills ? JSON.parse(skills) : [];
     const parsedCompanies = companies ? JSON.parse(companies) : [];
@@ -632,6 +634,7 @@ router.get('/jobs', cacheMiddleware(120), async (req, res) => {
       parsedTitles.length === 0 &&
       parsedLocations.length === 0 &&
       parsedExperienceLevels.length === 0 &&
+      parsedMajors.length === 0 &&
       parsedSalary === 0 &&
       parsedSkills.length === 0 &&
       parsedCompanies.length === 0;
@@ -653,6 +656,7 @@ router.get('/jobs', cacheMiddleware(120), async (req, res) => {
           titles: parsedTitles,
           locations: parsedLocations,
           experienceLevels: parsedExperienceLevels,
+          accepted_college_majors: parsedMajors,
           salary: parsedSalary,
           skills: parsedSkills,
           companies: parsedCompanies
@@ -681,6 +685,7 @@ router.get('/job-suggestions', async (req, res) => {
         titles: user.jobPreferredTitle ? (Array.isArray(user.jobPreferredTitle) ? user.jobPreferredTitle : [user.jobPreferredTitle]) : [],
         locations: user.jobPreferredLocation ? (Array.isArray(user.jobPreferredLocation) ? user.jobPreferredLocation : [user.jobPreferredLocation]) : [],
         experienceLevels: user.jobExperienceLevel ? (Array.isArray(user.jobExperienceLevel) ? user.jobExperienceLevel : [user.jobExperienceLevel]) : [],
+        majors: user.jobPreferredMajor ? (Array.isArray(user.jobPreferredMajor) ? user.jobPreferredMajor : [user.jobPreferredMajor]) : [],
         salary: user.jobPreferredSalary ? user.jobPreferredSalary : 0,
         skills: [],
         companies: []

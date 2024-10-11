@@ -79,6 +79,7 @@ class JobProcessor extends EventEmitter {
     this.browser = null;
     this.maxConcurrentPages = 5;
     this.currentPages = 0;
+
     this.paginationSelectorsMap = {
       'default': {
         next: 'button.pagination__btn.pagination__next',
@@ -86,6 +87,27 @@ class JobProcessor extends EventEmitter {
         active: 'button.pagination__link--active',
         nextInactive: 'button.pagination__btn.pagination__next.pagination__next--inactive',
         prevInactive: 'button.pagination__btn.pagination__previous.pagination__previous--inactive'
+      },
+      'epicgames.com': {
+        next: 'a.pagination-btn.arrow:has(i.icon-chevron-right)',
+        prev: 'a.pagination-btn.arrow:has(i.icon-chevron-left)',
+        active: 'a.pagination-btn.active',
+        nextInactive: '',
+        prevInactive: ''
+      },
+      'careers.tiktok.com': {
+        next: '.atsx-pagination-next',
+        prev: '.atsx-pagination-prev',
+        active: '.atsx-pagination-item-active',
+        nextInactive: '',
+        prevInactive: ''
+      },
+      'stripe.com': {
+        next: 'a.JobsPagination__link:not(.JobsPagination__link--isCurrent):contains("Next")',
+        prev: 'a.JobsPagination__link:not(.JobsPagination__link--isCurrent):contains("Previous")',
+        active: 'a.JobsPagination__link--isCurrent',
+        nextInactive: '',
+        prevInactive: ''
       },
       'greenhouse.io': {
         next: 'button.pagination__btn.pagination__next',
@@ -110,8 +132,27 @@ class JobProcessor extends EventEmitter {
       },
     };
 
+    this.urlExclusionRules = {
+      'stripe': {
+        include: 'listing',
+        exclude: ''
+      },
+      'epicgames': {
+        include: 'jobs',
+        exclude: ''
+      },
+      'tiktok': {
+        include: 'position',
+        exclude: ''
+      },
+      // Add more rules for other companies as needed
+    };
+
     this.paginationPreferences = {
-      'greenhouse.io': '?page='
+      'greenhouse.io': '?page=',
+      'stripe.com': '?skip=',
+      'epicgames.com': '?page=',
+      'tiktok.com': '?current='
     };
   }
 
@@ -651,6 +692,9 @@ class JobProcessor extends EventEmitter {
     if (url.includes('nintendo.com')) return await this.usePuppeteerFallback(url);
     if (url.includes('uber.com')) return await this.usePuppeteerFallback(url); 
     if (url.includes('ashbyhq.com')) return await this.usePuppeteerFallback(url); 
+    if (url.includes('epicgames.com')) return await this.usePuppeteerFallback(url); 
+    if (url.includes('eightfold.ai')) return await this.usePuppeteerFallback(url); 
+    if (url.includes('tiktok.com')) return await this.usePuppeteerFallback(url); 
 
     if (usePuppeteer) {
       return await this.usePuppeteerFallback(url);
@@ -723,8 +767,9 @@ class JobProcessor extends EventEmitter {
       });
   
       page.on('response', async response => {
-        // dont try on linkedin.com
-        if (response.url().includes('linkedin.com')) {
+        // dont try on linkedin.com and epicgames.com
+        if (response.url().includes('linkedin.com') || response.url().includes('epicgames.com') || response.url().includes('tiktok')) {
+          // console.log('Skipping response from linkedin.com, epicgames.com, or tiktok.com');
           return;
         }
         const url = response.url();
@@ -733,7 +778,7 @@ class JobProcessor extends EventEmitter {
         if (contentType && (contentType.includes('application/json'))) {
           try {
             const responseData = await response.json();
-            if (responseData && responseData.departments) {
+            if (responseData && (responseData.departments)) {
               // iterate over each department and get the .jobs [Array]
               jobData = [];
               for (const department of responseData.departments) {
@@ -743,6 +788,20 @@ class JobProcessor extends EventEmitter {
                   }
                 }
               }
+              
+              console.log('Found job data in intercepted request');
+            }
+
+            if (responseData && responseData.positions) {
+              // iterate over each position in the positions array
+              jobData = responseData.positions.map(position => ({
+                link: `https://aexp.eightfold.ai/careers/job/${position.id}`,
+                title: position.name,
+                location: position.location,
+                department: position.department,
+                business_unit: position.business_unit,
+                work_location_option: position.work_location_option
+              }));
               
               console.log('Found job data in intercepted request');
             }
@@ -758,7 +817,7 @@ class JobProcessor extends EventEmitter {
         timeout: 30000 // Increase timeout to 30 seconds
       });
   
-      await this.randomDelay(1000, 2000);
+      await this.randomDelay(500, 1000);
       console.log('Page loaded');
       const content = await page.content();
   
@@ -1082,7 +1141,14 @@ class JobProcessor extends EventEmitter {
     const paginationPrefix = this.paginationPreferences[hostname] || '?page=';
     
     if (pageNumber > 1) {
-      url.searchParams.set('page', pageNumber.toString());
+      if (paginationPrefix.includes('=')) {
+        // For prefixes like '?page=' or '?skip='
+        const [key, value] = paginationPrefix.split('=');
+        url.searchParams.set(key.replace('?', ''), pageNumber.toString());
+      } else {
+        // For custom pagination formats
+        return `${baseUrl}${paginationPrefix}${pageNumber}`;
+      }
     }
     
     return url.toString();
@@ -1236,7 +1302,12 @@ class JobProcessor extends EventEmitter {
         let isLastPage = false;
 
         while (!isLastPage) {
-          const pageUrl = this.getPageUrl(jobBoardUrl, currentPage);
+          let pageUrl;
+          if (jobBoardUrl.includes('stripe.com') || jobBoardUrl.includes('epicgames.com')) {
+            pageUrl = result.pagination.nextPageUrl;
+          } else {
+            pageUrl = this.getPageUrl(jobBoardUrl, currentPage);
+          }
           console.log(`Processing page ${currentPage}: ${pageUrl}`);
 
           const pageResponse = await this.makeRequest(pageUrl);
@@ -1251,6 +1322,9 @@ class JobProcessor extends EventEmitter {
 
           if (!isLastPage) {
             currentPage++;
+            if (jobBoardUrl.includes('stripe.com') || jobBoardUrl.includes('epicgames.com')) {
+              result.pagination.nextPageUrl = pageResult.pagination.nextPageUrl;
+            }
           }
         }
       }
@@ -1289,6 +1363,17 @@ class JobProcessor extends EventEmitter {
           return;
         }
 
+        for (const [company, rules] of Object.entries(this.urlExclusionRules)) {
+          if (fullUrl.includes(company)) {
+            if (rules.include && !fullUrl.includes(rules.include)) {
+              return;
+            }
+            if (rules.exclude && fullUrl.includes(rules.exclude)) {
+              return;
+            }
+          }
+        }
+
         // Check if it's a tech job or contains relevant keywords
         const isTechJob = this.isTechJob(title);
         const hasRelevantKeyword = /apply|go|job|career/.test(title);
@@ -1305,49 +1390,30 @@ class JobProcessor extends EventEmitter {
     });
 
     // Get the appropriate pagination selectors for the current domain
-    const paginationSelectors = this.paginationSelectorsMap[jobBoardDomain] || this.paginationSelectorsMap['default'];
+    const domain = jobBoardDomain.replace(/^www\./, '');
+    const paginationSelectors = this.paginationSelectorsMap[domain] || this.paginationSelectorsMap['default'];
 
-    // Check pagination
-    const nextButton = $(paginationSelectors.next);
-    const prevButton = $(paginationSelectors.prev);
-    const activeButton = $(paginationSelectors.active);
-    const nextInactiveButton = $(paginationSelectors.nextInactive);
-    const prevInactiveButton = $(paginationSelectors.prevInactive);
+    console.log('jobBoardDomain', jobBoardDomain);
+    console.log('paginationSelectors', paginationSelectors);
 
-    if (nextButton.length > 0 && !nextInactiveButton.length) {
+    // Check pagination using actual link hrefs instead of manually constructing URLs
+    const nextAnchor = $(paginationSelectors.next);
+    const prevAnchor = $(paginationSelectors.prev);
+
+    if (nextAnchor.length > 0) {
       paginationInfo.isLastPage = false;
       paginationInfo.isOnlyPage = false;
-      paginationInfo.nextPageUrl = new URL(nextButton.attr('href'), pageUrl).href;
+      paginationInfo.nextPageUrl = new URL(nextAnchor.attr('href'), pageUrl).href;
     }
 
-    if (prevButton.length > 0 && !prevInactiveButton.length) {
+    if (prevAnchor.length > 0) {
       paginationInfo.isFirstPage = false;
       paginationInfo.isOnlyPage = false;
-      paginationInfo.prevPageUrl = new URL(prevButton.attr('href'), pageUrl).href;
+      paginationInfo.prevPageUrl = new URL(prevAnchor.attr('href'), pageUrl).href;
     }
 
-    // Special handling for Apple job board
-    if (pageUrl.includes('apple.com')) {
-      const pageNumberInput = $('input#page-number');
-      const maxPageSpan = $('span.pageNumber').filter((index, element) => !$(element).text().includes('of')).last();
-      
-      if (pageNumberInput.length > 0 && maxPageSpan.length > 0) {
-        const currentPage = parseInt(pageNumberInput.val());
-        const maxPage = parseInt(maxPageSpan.text());
-        
-        paginationInfo.isFirstPage = currentPage === 1;
-        paginationInfo.isLastPage = currentPage >= maxPage;
-        paginationInfo.isOnlyPage = maxPage === 1;
-        
-        if (!paginationInfo.isLastPage) {
-          paginationInfo.nextPageUrl = new URL(`${pageUrl.split('&page=')[0]}&page=${currentPage + 1}`, pageUrl).href;
-        }
-        if (!paginationInfo.isFirstPage) {
-          paginationInfo.prevPageUrl = new URL(`${pageUrl.split('&page=')[0]}&page=${currentPage - 1}`, pageUrl).href;
-        }
-      }
-    }
-
+    // Remove unnecessary special handling for Apple
+    
     console.log('Pagination Info:', paginationInfo);
 
     return {
@@ -2020,6 +2086,7 @@ class JobProcessor extends EventEmitter {
       const apiUrl = apiInfo.link;
       const company = apiInfo.company;
       const tenant = apiInfo.tenant;
+      const jobBoardUrl = `${company}.wd${apiInfo.wdNumber}.myworkdayjobs.com/${tenant}`;
       
       // Make the request to the Workday API
       const response = await axios.get(apiUrl);
@@ -2035,7 +2102,7 @@ class JobProcessor extends EventEmitter {
       const descriptionHtml = jobPostingInfo.jobDescription;
       // const hiringOrganization = data.hiringOrganization;
   
-      const companyId = await this.getOrCreateCompany(company, '', '', '', '', '', '', '', '');
+      const companyId = await this.getOrCreateCompany(company, '', '', jobBoardUrl, '', '', '', '', '');
       // Convert HTML description to Markdown
       const turndownService = new TurndownService();
       const descriptionMarkdown = turndownService.turndown(descriptionHtml);
@@ -2252,172 +2319,123 @@ class JobProcessor extends EventEmitter {
 
   }
 
+  async processStripeLink(url) {
+    const response = await this.makeRequest(url);
+    const data = response.data;
+
+    const $ = cheerio.load(data);
+    const title = $('.JobsDetail__header h1.Copy__title').text().trim();
+    const location = $('.JobDetailCardProperty:contains("Office locations") p:last-child').text().trim();
+    const description = $('.RowLayout').html();
+    const additional_information = $('div.JobsDetailCard').html();  
+
+    const company = 'Stripe';
+    const companyId = await this.getOrCreateCompany(company, '', '', 'https://stripe.com/jobs/search?skip=0', '', '', '', '', '');
+
+    return { url, companyId, title, company, description, location, company_name: company, additional_information };
+  }
+
+  async processEpicGamesJob(url) {
+    const response = await this.makeRequest(url);
+    const data = response.data;
+    const $ = cheerio.load(data);
+
+    const title = $('h1.heading').text().trim();
+    const location = $('div[class*="sc-"] span[class*="sc-"] strong:contains("Location") + p').text().trim();
+    const description = $('.copy-wrapper .raw-copy').html();
+
+    const company = 'Epic Games';
+    const companyId = await this.getOrCreateCompany(company, '', '', 'https://www.epicgames.com/site/en-US/careers/jobs', '', '', '', '', '');
+
+    return { url, companyId, title, company, description, location, company_name: company };
+  }
+
+  async processTiktokJobLink(url) {
+    const response = await this.makeRequest(url);
+    const data = response.data;
+    const $ = cheerio.load(data);
+    const title = $('span[data-test="jobTitle"]').text().trim();
+    const location = $('.infoText__EbiXW:first').text().trim();
+    const type = $('.infoText__EbiXW:eq(1)').text().trim();
+    const department = $('.infoText-category__bhDhu').text().trim();
+    const description = $('.block-content').html();
+    const additional_information = `${type} ${department}`;
+
+    const company = 'TikTok';
+    const companyId = await this.getOrCreateCompany(company, '', '', 'https://careers.tiktok.com/search', '', '', '', '', '');
+
+    return { url, companyId, title, company, description, location, company_name: company, additional_information };
+  }
+
+
+  async processAshByHqLink(url) {
+    const company = url.split('/')[3];
+    const companyId = await this.getOrCreateCompany(company, '', '', `https://jobs.ashbyhq.com/${company}`, '', '', '', '', '');
+    const cleanedUrl = url.replace('/application', '');
+    const response = await this.makeRequest(cleanedUrl);
+    const data = response.data;
+    const $ = cheerio.load(data);
+
+    const title = $('h1.ashby-job-posting-heading').text().trim();
+    const location = $('div._section_101oc_37:contains("Location") p').text().trim();
+    const type = $('div._section_101oc_37:contains("Type") p').text().trim();
+    const department = $('div._section_101oc_37:contains("Department") p').text().trim();
+    const compensation = $('div._section_101oc_37:contains("Compensation") div p').text().trim();
+    const description = $('#overview>div').html();
+    const additional_information = type + ' ' + department + ' ' + compensation;
+
+    return { url, companyId, title, company, description, location, company_name: company, additional_information };
+  }
 
   async processJobLink(link) {
+    if (typeof link !== 'object' && typeof link !== 'string') {
+      console.error('Invalid link type:', typeof link);
+      return { error: 'Invalid link type' };
+    }
+  
     const url = typeof link === 'object' && link.url ? link.url : link;
-
+  
+    if (this.processedLinks.has(url)) {
+      return { skipped: true, reason: 'Already processed' };
+    }
+  
     if (typeof url !== 'string' || !url.startsWith('http')) {
       console.error('Invalid URL:', url);
       return { error: 'Invalid URL' };
     }
+  
+    const jobProcessors = [
+      { keyword: 'greenhouse.io', processor: this.processGreenhouseJobLink.bind(this) },
+      { keyword: 'bankofamerica.com', processor: this.processBoFALink.bind(this) },
+      { keyword: 'ashbyhq.com', processor: this.processAshByHqLink.bind(this) },
+      { keyword: 'stripe.com', processor: this.processStripeLink.bind(this) },
+      { keyword: 'abbvie.com', processor: this.processAbbVieLink.bind(this) },
+      { keyword: 'c3.ai', processor: this.processC3AILink.bind(this) },
+      { keyword: 'lever.co', processor: this.processLeverJobLink.bind(this) },
+      { keyword: 'jobvite.com', processor: this.processJobViteLink.bind(this) },
+      { keyword: 'careers.tiktok.com', processor: this.processTiktokJobLink.bind(this) },
 
-    if (this.processedLinks.has(url)) {
-      return { skipped: true, reason: 'Already processed' };
-    }
-
-    // check if link contains greenhouse.io
-    if (url && url.includes('greenhouse.io')) {
-      const jobData = await this.processGreenhouseJobLink(url);
-      return jobData;
-    } else if (url && url.includes('bankofamerica.com')) {
-      const jobData = await this.processBoFALink(url);
-      return jobData;
-    } else if (url && url.includes('abbvie.com')) {
-      const jobData = await this.processAbbVieLink(url);
-      return jobData;
-    } else if (url && url.includes('c3.ai')) {
-      const jobData = await this.processC3AILink(url);
-      return jobData;
-    } else if (url && url.includes('lever.co')) {
-      const jobData = await this.processLeverJobLink(url);
-      return jobData;
-    } else if (url && url.includes('jobvite.com')) {
-      const jobData = await this.processJobViteLink(url);
-      return jobData;
-    } else if (url && url.includes('myworkdayjobs.com')) {
-      const jobData = await this.processWorkDayJobLink(url);
-      return jobData;
-    } else if (url && url.includes('linkedin.com')) {
-      const response = await this.makeRequest(url);
-      const jobData = await this.processLinkedInJob(response.data);
-      return jobData;
-    } else if (url && url.includes('smartrecruiters.com')) {
-      const jobData = await this.processSmartRecruiterJob(url);
-      return jobData;
-    } else  if (url && url.includes('microsoft.com')) {
-      const jobData = await this.processMicrosoftJob(url);
-      return jobData;
-    } else  if (url && url.includes('apple.com')) {
-      const jobData = await this.processAppleJob(url);
-      return jobData;
-    } else {
-      const response = await this.makeRequest(url);
-      console.log(response.data);
-      const jobData = await this.useGeminiAPI(url, response.data);
-      return jobData;
-    }
-
-    /*
-    try {
-      console.log('Processing job link:', url);
-
-      // Attempt to fetch page content with axios
-      let response;
-      try {
-        response = await axios.get(url, {
-          timeout: 10000, // 10 seconds timeout
-          headers: {
-            'User-Agent': 'Mozilla/5.0',
-          },
-        });
-      } catch (axiosError) {
-        console.log('Axios fetch failed, falling back to Puppeteer:', axiosError.message);
-        response = null;
-      }
-
-      let textContent = '';
-      if (response && response.status === 200) {
-        // Parse HTML with Cheerio
-        const $ = cheerio.load(response.data);
-        textContent = $('body').text().replace(/\s\s+/g, ' ').trim();
-
-        // Check if the content is sufficient
-        if (textContent.length < 500) {
-          console.log('Content too short, possibly requires JavaScript rendering.');
-          textContent = null;
+      { keyword: 'myworkdayjobs.com', processor: this.processWorkDayJobLink.bind(this) },
+      { keyword: 'linkedin.com', processor: async (url) => {
+          const response = await this.makeRequest(url);
+          return this.processLinkedInJob(response.data);
         }
+      },
+      { keyword: 'smartrecruiters.com', processor: this.processSmartRecruiterJob.bind(this) },
+      { keyword: 'microsoft.com', processor: this.processMicrosoftJob.bind(this) },
+      { keyword: 'apple.com', processor: this.processAppleJob.bind(this) },
+      { keyword: 'epicgames.com', processor: this.processEpicGamesJob.bind(this) }
+    ];
+  
+    for (const { keyword, processor } of jobProcessors) {
+      if (url.includes(keyword)) {
+        return await processor(url);
       }
-
-      // If content is empty or insufficient, use Puppeteer
-      if (!textContent) {
-        // Attempt to fetch with a pre-rendering service before Puppeteer
-        try {
-          console.log('Attempting to fetch with rendertron...');
-          const renderedHtml = await this.fetchWithRender(url);
-          const $ = cheerio.load(renderedHtml);
-          textContent = $('body').text().replace(/\s\s+/g, ' ').trim();
-
-          if (textContent.length < 500) {
-            console.log('Content still insufficient after rendertron, falling back to Puppeteer.');
-            textContent = null;
-          }
-        } catch (renderError) {
-          console.error('Rendertron fetch failed:', renderError.message);
-          textContent = null;
-        }
-      }
-
-      if (!textContent) {
-        this.updateProgress({ currentAction: 'Launching browser' });
-        const browser = await this.getBrowserInstance();
-        const page = await browser.newPage();
-
-        this.updateProgress({ currentAction: 'Loading page with Puppeteer' });
-        await page.goto(url, { waitUntil: 'networkidle0' });
-
-        this.updateProgress({ currentAction: 'Extracting content with Puppeteer' });
-        textContent = await page.evaluate(() => {
-          // Remove scripts and styles
-          const scripts = document.getElementsByTagName('script');
-          const styles = document.getElementsByTagName('style');
-          for (const element of [...scripts, ...styles]) {
-            element.remove();
-          }
-          return document.body.innerText.replace(/\s\s+/g, ' ').trim();
-        });
-
-        await page.close();
-      }
-
-      let extractedData;
-
-      if (this.useGemini) {
-        this.updateProgress({ currentAction: 'Using Gemini API' });
-        extractedData = await this.useGeminiAPI(link, textContent);
-        extractedData = this.validateAndCleanJobData(extractedData);
-      } else {
-        this.updateProgress({ currentAction: 'Using ChatGPT API' });
-        extractedData = await this.useChatGPTAPI(link, textContent);
-      }
-
-      const companyId = await this.getOrCreateCompany(
-        extractedData.company_name || '',
-        extractedData.company_description || '',
-        extractedData.company_location || '',
-        extractedData.company_job_board_url || '',
-        extractedData.company_industry || '',
-        extractedData.company_size || '',
-        extractedData.company_stock_symbol || '',
-        extractedData.company_logo || '',
-        extractedData.company_founded || null
-      );
-      extractedData.company_id = companyId;
-
-
-      this.updateProgress({ currentAction: 'Saving processed link' });
-      await this.saveProcessedLink(url);
-
-      if (extractedData.skipped) {
-        this.updateProgress({ currentAction: 'Skipped job' });
-        return { skipped: true, title: extractedData.title, reason: extractedData.reason };
-      }
-
-      return extractedData;
-    } catch (error) {
-      console.error(`Error processing job link ${url}:`, error);
-      throw error;
     }
-      */
+  
+    const response = await this.makeRequest(url);
+    console.log(response.data);
+    return await this.useGeminiAPI(url, response.data);
   }
 
   async getBrowserInstance() {
@@ -2647,7 +2665,7 @@ class JobProcessor extends EventEmitter {
         title: string, 
         url: string,
         location: string, // write it as city, state unless its outside the us or remote
-        description: string, // write about what the company wants, and the ideal candidate for the job
+        description: string, // write about what the ideal candidate for the job posting is like? who's the person they're looking for?
         experienceLevel: string, // internship, junior, senior, lead, manager, vp, director only 
         salary: decimal, // yearly salary, if given in hourly or anything else, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY if only one number is given fill for both min and max
         salary_max: int, // if given a range this is max yearly salary, if given in hourly or anything else, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY

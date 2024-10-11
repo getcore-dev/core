@@ -6,6 +6,7 @@ const state = {
   renderedJobIds: new Set(),
   filters: {
     experiencelevels: new Set(),
+    majors: new Set(),
     locations: new Set(),
     titles: new Set(),
     salary: 0,
@@ -217,6 +218,7 @@ function updateStateFromServerFilters() {
     if (serverFilters.titles) state.filters.titles = new Set(serverFilters.titles);
     if (serverFilters.companies) state.filters.companies = new Set(serverFilters.companies);
     if (serverFilters.experienceLevels) state.filters.experiencelevels = new Set(serverFilters.experienceLevels);
+    if (serverFilters.majors) state.filters.majors = new Set(serverFilters.majors);
     if (serverFilters.salary) state.filters.salary = serverFilters.salary;
     
     // Update UI to reflect these filters
@@ -451,6 +453,7 @@ async function fetchRecentCompanies() {
 function clearAllFilters() {
   state.filters = {
     experiencelevels: new Set(),
+    majors: new Set(),
     locations: new Set(),
     titles: new Set(),
     salary: 0,
@@ -488,6 +491,7 @@ function triggerJobSearch() {
 function resetState() {
   state.filters = {
     experiencelevels: new Set(),
+    majors: new Set(),
     locations: new Set(),
     titles: new Set(),
     salary: 0,
@@ -524,6 +528,7 @@ function resetState() {
 function flushState() {
   state.filters = {
     experiencelevels: new Set(),
+    majors: new Set(),
     locations: new Set(),
     titles: new Set(),
     salary: 0,
@@ -594,6 +599,7 @@ async function fetchJobPostings() {
     titles: JSON.stringify(Array.from(state.filters.titles)),
     locations: JSON.stringify(Array.from(state.filters.locations)),
     experiencelevels: JSON.stringify(Array.from(state.filters.experiencelevels)),
+    majors: JSON.stringify(Array.from(state.filters.majors)),
     salary: state.filters.salary || '0',
     skills: JSON.stringify(Array.from(state.filters.skills)),
     companies: JSON.stringify(Array.from(state.filters.companies)),
@@ -720,6 +726,7 @@ function saveStateToLocalStorage() {
       experiencelevels: Array.from(state.filters.experiencelevels),
       locations: Array.from(state.filters.locations),
       titles: Array.from(state.filters.titles),
+      majors: Array.from(state.filters.majors),
       salary: state.filters.salary,
       skills: Array.from(state.filters.skills),
       companies: Array.from(state.filters.companies),
@@ -745,6 +752,7 @@ function loadStateFromLocalStorage() {
         experiencelevels: new Set(parsedState.filters.experiencelevels),
         locations: new Set(parsedState.filters.locations),
         titles: new Set(parsedState.filters.titles),
+        majors: new Set(parsedState.filters.majors),
         salary: parsedState.filters.salary,
         skills: new Set(parsedState.filters.skills),
         companies: new Set(parsedState.filters.companies),
@@ -775,6 +783,7 @@ function loadStateFromLocalStorage() {
 function createActiveFilterElement(filters) {
   const filterCategories = [
     { key: 'experiencelevels', label: 'Experience Level' },
+    { key: 'majors', label: 'Majors' },
     { key: 'titles', label: 'Job Titles' },
     { key: 'companies', label: 'Companies' },
     { key: 'locations', label: 'Locations' },
@@ -825,6 +834,7 @@ function restoreUIState() {
     if (type === 'skills') continue;
     if (type === 'titles') type = 'tech-job-titles';
     if (type === 'locations') type = 'job-locations';
+    if (type === 'majors') type = 'majors';
     if (type === 'experiencelevels') type = 'job-levels';
     console.log(type);
 
@@ -1275,11 +1285,13 @@ function toggleSelectedFilter(event) {
     'job-locations': 'location-dropdown',
     'tech-job-titles': 'job-title-dropdown',
     'job-salary': 'salary-dropdown',
+    'majors': 'major-dropdown',
   };
   const dropdownDefaultTextMap = {
     'job-levels': 'Experience Level',
     'job-locations': 'Location',
     'tech-job-titles': 'Job Title',
+    'majors': 'Major',
     'job-salary': 'Salary',
   };
 
@@ -1326,6 +1338,9 @@ function clearSelectedFilters(type) {
   case 'job-levels':
     filterSet = state.filters.experiencelevels;
     break;
+  case 'majors':
+    filterSet = state.filters.majors;
+    break;
   case 'job-salary':
     state.filters.salary = 0;
     return true;
@@ -1348,6 +1363,9 @@ function isFilterSelected(type, id, name) {
     return state.filters.companies.has(id);
   case 'job-levels':
     filterSet = state.filters.experiencelevels;
+    break;
+  case 'majors':
+    filterSet = state.filters.majors;
     break;
   case 'job-salary':
     return state.filters.salary === parseInt(name.replace(/\D/g, ''));
@@ -1413,6 +1431,9 @@ function updateState(type, id, name, logo, isRemoval = false) {
   case 'experiencelevels':
   case 'job-levels':
     filterSet = state.filters.experiencelevels;
+    break;
+  case 'majors':
+    filterSet = state.filters.majors;
     break;
   case 'job-salary':
     state.filters.salary = parseInt(name.replace(/\D/g, ''));

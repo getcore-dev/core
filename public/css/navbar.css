@@ -2405,6 +2405,11 @@ hr {
   font-weight: 500;
 }
 
+.quick-option-btn {
+  overflow-wrap: break-word;
+  word-break: break-all;
+  box-sizing: border-box;
+}
 
 .page-header {
   padding: 19px 13px !important;
@@ -3370,11 +3375,9 @@ input::placeholder {
 
 .dropdown-content {
   position: absolute;
-  box-sizing: border-box;
   max-height: 400px;
   text-wrap: nowrap;
   overflow-x: hidden;
-  box-sizing: border-box;
   overflow-y: auto;
   z-index: 1000;
   background-color: var(--light-mode-main-color);
@@ -3386,7 +3389,6 @@ input::placeholder {
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   z-index: 1000;
-  right: 0;
   left: 0;
   margin-top: 5px;
   transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -3597,7 +3599,6 @@ input::placeholder {
   }
 
   .dropdown-content {
-    box-sizing: border-box;
     min-width: fit-content;
     width: max-content;
     padding: 0.1rem;

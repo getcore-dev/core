@@ -41,6 +41,7 @@ function parseFilters(query) {
   if (query.title) filters.titles = Array.isArray(query.title) ? query.title : [query.title];
   if (query.company) filters.companies = Array.isArray(query.company) ? query.company : [query.company];
   if (query.experienceLevel) filters.experienceLevels = Array.isArray(query.experienceLevel) ? query.experienceLevel : [query.experienceLevel];
+  if (query.major) filters.majors = Array.isArray(query.major) ? query.major : [query.major];
   if (query.salary) filters.salary = parseInt(query.salary);
   return filters;
 }

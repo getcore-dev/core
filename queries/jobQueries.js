@@ -669,6 +669,7 @@ const jobQueries = {
         titles = [],
         locations = [],
         experienceLevels = [],
+        accepted_college_majors = [],
         salary = 0,
         skills = [],
         companies = []
@@ -754,6 +755,18 @@ const jobQueries = {
   
         baseQuery += ` AND (${levelsCondition})`;
       }
+
+      if (accepted_college_majors.length) {
+        const majorsList = accepted_college_majors.join(',').split(',').map(major => major.trim());
+        const majorsCondition = majorsList
+          .map((major, i) => {
+            queryParams[`accepted_college_major${i}`] = `%${major}%`;
+            return `j.accepted_college_majors LIKE @accepted_college_major${i}`;
+          })
+          .join(' OR ');
+  
+        baseQuery += ` AND (${majorsCondition})`;
+      }
   
       baseQuery += `
         ORDER BY j.postedDate DESC
@@ -787,6 +800,7 @@ const jobQueries = {
         titles = [],
         locations = [],
         experienceLevels = [],
+        majors = [],
         salary = 0,
         skills = [],
         companies = []
@@ -855,6 +869,17 @@ const jobQueries = {
           .join(' OR ');
   
         baseQuery += ` AND (${levelsCondition})`;
+      }
+
+      if (majors.length) {
+        const majorsCondition = majors
+          .map((major, i) => {
+            queryParams[`major${i}`] = `%${major}%`;
+            return `j.major LIKE @major${i}`;
+          })
+          .join(' OR ');
+  
+        baseQuery += ` AND (${majorsCondition})`;
       }
   
       baseQuery += `
@@ -1898,89 +1923,90 @@ ORDER BY jp.postedDate DESC
   ) => {
     try {
       const isTechJob = (title) => {
-        // Convert title to lowercase for case-insensitive matching
-        const lowercaseTitle = title.toLowerCase();
-  
-        // Highly specific tech roles
-        const exactMatches = [
-          'software engineer', 'data scientist', 'full stack developer', 'machine learning engineer',
-          'devops engineer', 'systems architect', 'systems engineer', 'network engineer', 'data analyst',
-          'backend developer', 'frontend developer', 'web developer', 'mobile developer', 'cloud architect',
-          'cloud engineer', 'security engineer', 'cybersecurity analyst', 'technical lead', 'tech lead',
-          'database administrator', 'qa engineer', 'quality assurance engineer', 'ux designer', 'ui designer',
-          'product manager', 'scrum master', 'agile coach', 'site reliability engineer', 'automation engineer',
-          'blockchain developer', 'game developer', 'game designer', 'graphic designer', 'systems administrator',
-          'it support', 'it specialist', 'it manager', 'technical support', 'technical writer',
-          'ai engineer', 'artificial intelligence engineer', 'deep learning engineer', 'data engineer',
-          'big data engineer', 'data architect', 'information security analyst', 'robotics engineer',
-          'network administrator', 'embedded systems engineer', 'firmware engineer', 'test engineer',
-          'software tester', 'business analyst', 'it analyst', 'solution architect', 'enterprise architect',
-          'devsecops engineer', 'cloud specialist', 'systems analyst', 'applications engineer',
-          'platform engineer', 'release engineer', 'build engineer', 'hardware engineer',
-          'electrical engineer', 'electronics engineer', 'microcontroller engineer', 'ios developer',
-          'android developer', 'webmaster', 'security analyst', 'information technology specialist',
-          'technical consultant', 'pre-sales engineer', 'post-sales engineer', 'technical account manager',
-          'computer vision engineer', 'natural language processing engineer', 'nlp engineer',
-          'database developer', 'data warehouse engineer', 'etl developer', 'bi developer',
-          'business intelligence developer', 'data visualization engineer', 'cloud consultant',
-          'solutions engineer', 'integration engineer', 'salesforce developer', 'sap consultant',
-          'oracle developer', 'erp consultant', 'crm consultant', 'help desk technician',
-          'desktop support technician', 'it technician', '3d artist', 'vr developer', 'ar developer',
-          'qa tester', 'quality assurance tester', 'network technician', 'it director', 'cto',
-          'chief technology officer', 'cio', 'chief information officer', 'ciso', 'analyst', 'data analyst', 'data scientist', 'data engineer', 'data architect', 'data security analyst', 'chief information security officer', 'coordinator', 
-          'chief information security officer', 'coordinator', 'director', 'manager', 'supervisor', 'associate', 'customer experience', 'customer service', 'technical writer', 'technical support', 'it analyst', 'it specialist', 'it manager', 'information security analyst', 'information security manager', 'security analyst', 'security manager', 'security specialist', 'security engineer', 'security architect', 'security consultant', 'security director', 'security officer', 'security supervisor', 'security technician', 'security analyst', 'security manager', 'security specialist', 'security engineer', 'security architect', 'security consultant', 'security director', 'security officer', 'security supervisor', 'security technician',
-          'people manager', 'hr', 'account executive', 'social media manager', 'biostatistician', 'financial analyst', 'statistical programmer', 'programmer', 'trading intern', 'trading analyst', 'trading assistant', 'trading manager', 'trading specialist', 'trading engineer', 'trading architect', 'trading consultant', 'trading director', 'trading officer', 'trading supervisor', 'trading technician', 'trading analyst', 'trading assistant', 'trading manager', 'trading specialist', 'trading engineer', 'trading architect', 'trading consultant', 'trading director', 'trading officer', 'trading supervisor', 'trading technician', 'quantitative researcher', 'quantitative analyst', 'quantitative manager', 'quantitative specialist', 'quantitative engineer', 'quantitative architect', 'quantitative consultant', 'quantitative director', 'quantitative officer', 'quantitative supervisor', 'quantitative technician',
-          'risk strategist', 'head of revenue', 'head of kyc', 'vp of design', 'security engineer', 'project manager', 'product manager', 'product designer', 'computer science intern', 'business development', 'growth lead', 'code sme', 'head of growth,', 'sales developmet', 'head of recruiting',
-          'customer service', 'editor', 'content editor', 'content writer', 'content strategist', 'content manager', 'content director', 'content officer', 'content supervisor', 'content technician', 'content analyst', 'content specialist', 'content engineer', 'content architect', 'content consultant', 'content director', 'content officer', 'content supervisor', 'content technician', 'content analyst', 'content specialist', 'content engineer', 'content architect', 'content consultant', 'content director', 'content officer', 'content supervisor', 'content technician', 'content analyst', 'content specialist', 'content engineer', 'content architect', 'content consultant',
-          'customer support representative', 'salesforce'
-        ];
-
-        const noInclude = [
-          'cashier', 'cook', 'waitress', 'waiter', 'bartender', 'janitor', 'security guard',
-        ];
-
-        // Function to create regex patterns for exact matches and keywords
-        const createPattern = (words) => new RegExp(`\\b(${words.join('|')})\\b`, 'i');
-
-        const techPattern = createPattern(exactMatches);
-        const nonTechPattern = createPattern(noInclude);
-
-        // If title matches a non-tech engineering role, return false
-        if (nonTechPattern.test(lowercaseTitle)) {
+          // Convert title to lowercase for case-insensitive matching
+          const lowercaseTitle = title.toLowerCase();
+        
+          // Highly specific tech roles
+          const exactMatches = [
+            'software engineer', 'data scientist', 'full stack developer', 'machine learning engineer',
+            'devops engineer', 'systems architect', 'systems engineer', 'network engineer', 'data analyst',
+            'backend developer', 'frontend developer', 'web developer', 'mobile developer', 'cloud architect',
+            'cloud engineer', 'security engineer', 'cybersecurity analyst', 'technical lead', 'tech lead',
+            'database administrator', 'qa engineer', 'quality assurance engineer', 'ux designer', 'ui designer',
+            'product manager', 'scrum master', 'agile coach', 'site reliability engineer', 'automation engineer',
+            'blockchain developer', 'game developer', 'game designer', 'graphic designer', 'systems administrator',
+            'it support', 'it specialist', 'it manager', 'technical support', 'technical writer',
+            'ai engineer', 'artificial intelligence engineer', 'deep learning engineer', 'data engineer',
+            'big data engineer', 'data architect', 'information security analyst', 'robotics engineer',
+            'network administrator', 'embedded systems engineer', 'firmware engineer', 'test engineer',
+            'software tester', 'business analyst', 'it analyst', 'solution architect', 'enterprise architect',
+            'devsecops engineer', 'cloud specialist', 'systems analyst', 'applications engineer',
+            'platform engineer', 'release engineer', 'build engineer', 'hardware engineer',
+            'electrical engineer', 'electronics engineer', 'microcontroller engineer', 'ios developer',
+            'android developer', 'webmaster', 'security analyst', 'information technology specialist',
+            'technical consultant', 'pre-sales engineer', 'post-sales engineer', 'technical account manager',
+            'computer vision engineer', 'natural language processing engineer', 'nlp engineer',
+            'database developer', 'data warehouse engineer', 'etl developer', 'bi developer',
+            'business intelligence developer', 'data visualization engineer', 'cloud consultant',
+            'solutions engineer', 'integration engineer', 'salesforce developer', 'sap consultant',
+            'oracle developer', 'erp consultant', 'crm consultant', 'help desk technician',
+            'desktop support technician', 'it technician', '3d artist', 'vr developer', 'ar developer',
+            'qa tester', 'quality assurance tester', 'network technician', 'it director', 'cto',
+            'chief technology officer', 'cio', 'chief information officer', 'ciso', 'analyst', 'data analyst', 'data scientist', 'data engineer', 'data architect', 'data security analyst', 'chief information security officer', 'coordinator', 
+            'chief information security officer', 'coordinator', 'director', 'manager', 'supervisor', 'associate', 'customer experience', 'customer service', 'technical writer', 'technical support', 'it analyst', 'it specialist', 'it manager', 'information security analyst', 'information security manager', 'security analyst', 'security manager', 'security specialist', 'security engineer', 'security architect', 'security consultant', 'security director', 'security officer', 'security supervisor', 'security technician', 'security analyst', 'security manager', 'security specialist', 'security engineer', 'security architect', 'security consultant', 'security director', 'security officer', 'security supervisor', 'security technician',
+            'people manager', 'hr', 'account executive', 'social media manager', 'biostatistician', 'financial analyst', 'statistical programmer', 'programmer', 'trading intern', 'trading analyst', 'trading assistant', 'trading manager', 'trading specialist', 'trading engineer', 'trading architect', 'trading consultant', 'trading director', 'trading officer', 'trading supervisor', 'trading technician', 'trading analyst', 'trading assistant', 'trading manager', 'trading specialist', 'trading engineer', 'trading architect', 'trading consultant', 'trading director', 'trading officer', 'trading supervisor', 'trading technician', 'quantitative researcher', 'quantitative analyst', 'quantitative manager', 'quantitative specialist', 'quantitative engineer', 'quantitative architect', 'quantitative consultant', 'quantitative director', 'quantitative officer', 'quantitative supervisor', 'quantitative technician',
+            'risk strategist', 'head of revenue', 'head of kyc', 'vp of design', 'security engineer', 'project manager', 'product manager', 'product designer', 'computer science intern', 'business development', 'growth lead', 'code sme', 'head of growth,', 'sales developmet', 'head of recruiting',
+            'customer service', 'editor', 'content editor', 'content writer', 'content strategist', 'content manager', 'content director', 'content officer', 'content supervisor', 'content technician', 'content analyst', 'content specialist', 'content engineer', 'content architect', 'content consultant', 'content director', 'content officer', 'content supervisor', 'content technician', 'content analyst', 'content specialist', 'content engineer', 'content architect', 'content consultant', 'content director', 'content officer', 'content supervisor', 'content technician', 'content analyst', 'content specialist', 'content engineer', 'content architect', 'content consultant',
+            'customer support representative', 'salesforce'
+          ];
+        
+          // Non-tech engineering roles to exclude
+          const nonTechEngineering = [
+            'cashier', 'cook', 'waitress', 'waiter', 'bartender', 'janitor', 'security guard',
+          ];
+        
+          // Function to create regex patterns for exact matches and keywords
+          const createPattern = (words) => new RegExp(`\\b(${words.join('|')})\\b`, 'i');
+        
+          const techPattern = createPattern(exactMatches);
+          const nonTechPattern = createPattern(nonTechEngineering);
+        
+          // If title matches a non-tech engineering role, return false
+          if (nonTechPattern.test(lowercaseTitle)) {
+            return false;
+          }
+        
+          // If title matches a tech role, return true
+          if (techPattern.test(lowercaseTitle)) {
+            return true;
+          }
+        
+          // List of generic tech-related keywords
+          const techKeywords = [
+            'developer', 'designer', 'analytics', 'engineering', 'programmer', 'engineer', 'software', 'hardware', 'technology', 'technician',
+            'administrator', 'analyst', 'architect', 'consultant', 'specialist', 'support', 'coder',
+            'tester', 'manager', 'devops', 'cloud', 'data', 'ai', 'artificial intelligence',
+            'machine learning', 'ml', 'blockchain', 'crypto', 'cybersecurity', 'security', 'database',
+            'web', 'mobile', 'ios', 'android', 'quality assurance', 'sre',
+            'automation', 'product', 'agile', 'scrum', 'network', 'system', 'systems',
+            'information technology', 'digital', 'full stack', 'front end', 'backend', 'back end',
+            'saas', 'paas', 'big data', 'data science', 'devsecops', 'nlp', 'natural language processing',
+            'vr', 'ar', 'virtual reality', 'augmented reality', 'robotics', 'embedded', 'firmware',
+            'microcontroller', 'fpga', 'simulation', 'cloud computing', 'docker', 'kubernetes', 'operations',
+            'container', 'microservices', 'serverless', 'distributed systems', 'e-commerce', 'ecommerce',
+            'internet', 'digital transformation', 'iot', 'internet of things', 'opensource', 'open source',
+            'technical', 'computing', 'computational', 'scientist', 'quantitative', 'researcher', 'analyst', 'coder', 'biology', 'lab', 'immunology', 'chemistry', 'analytical', 'development', 'supply chain'
+          ];
+        
+          const techKeywordsPattern = createPattern(techKeywords);
+        
+          // If title contains any tech keywords, return true
+          if (techKeywordsPattern.test(lowercaseTitle)) {
+            return true;
+          }
+        
+          // If none of the above conditions are met, it's likely not a tech job
           return false;
-        }
-
-        // If title matches a tech role, return true
-        if (techPattern.test(lowercaseTitle)) {
-          return true;
-        }
-
-        // List of generic tech-related keywords
-        const techKeywords = [
-          'developer', 'designer', 'analytics', 'engineering', 'programmer', 'engineer', 'software', 'hardware', 'technology', 'technician',
-          'administrator', 'analyst', 'architect', 'consultant', 'specialist', 'support', 'coder',
-          'tester', 'manager', 'devops', 'cloud', 'data', 'ai', 'artificial intelligence',
-          'machine learning', 'ml', 'blockchain', 'crypto', 'cybersecurity', 'security', 'database',
-          'web', 'mobile', 'ios', 'android', 'quality assurance', 'sre',
-          'automation', 'product', 'agile', 'scrum', 'network', 'system', 'systems',
-          'information technology', 'digital', 'full stack', 'front end', 'backend', 'back end',
-          'saas', 'paas', 'big data', 'data science', 'devsecops', 'nlp', 'natural language processing',
-          'vr', 'ar', 'virtual reality', 'augmented reality', 'robotics', 'embedded', 'firmware',
-          'microcontroller', 'fpga', 'simulation', 'cloud computing', 'docker', 'kubernetes',
-          'container', 'microservices', 'serverless', 'distributed systems', 'e-commerce', 'ecommerce',
-          'internet', 'digital transformation', 'iot', 'internet of things', 'opensource', 'open source',
-          'technical', 'computing', 'computational', 'scientist', 'quantitative', 'researcher', 'analyst', 'coder',
-        ];
-
-        const techKeywordsPattern = createPattern(techKeywords);
-
-        // If title contains any tech keywords, return true
-        if (techKeywordsPattern.test(lowercaseTitle)) {
-          return true;
-        }
-
-        // If none of the above conditions are met, it's likely not a tech job
-        return false;
       };  
 
       if (typeof link !== 'string') {
