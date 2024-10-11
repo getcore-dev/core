@@ -36,7 +36,7 @@
     <%- include('partials/com-btn-container', { }) %>
     <div class="jobs-container">
       <div class="page-header flex flex-col gap-2 mb-4">
-        <div class="jobs-buttons v-center">
+        <div class="jobs-buttons mb-4 v-center">
           <span class="recent-jobs-count-container gap-2">
             <h5 class="text-2xl font-semibold text-gray-800 dark:text-gray-200">
               Jobs
@@ -51,12 +51,6 @@
             Applied Jobs
           </a>
           <% } %>
-        </div>
-        <div class="jobs-search-container flex flex-col gap-03">
-          <input type="text" id="job-search-input" class="job-posting-search-input" placeholder="Search jobs & companies" />
-          <div class="flex flex-col active-filters-container">
-            <p id="active-filters-sentence" class="active-filters-sentence mini-text"></p>
-          </div>
         </div>
 
         <% if (user) { %>
@@ -78,6 +72,12 @@
         </div>
 
         <% } %>
+        <div class="jobs-search-container flex flex-col gap-03">
+          <input type="text" id="job-search-input" class="job-posting-search-input" placeholder="Search jobs & companies" />
+          <div class="flex flex-col active-filters-container">
+            <p id="active-filters-sentence" class="active-filters-sentence mini-text"></p>
+          </div>
+        </div>
 
         <ul class="flex flex-row w-100 gap-06 wrap no-padding no-margin">
           <div class="dropdown" tabindex="0">

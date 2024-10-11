@@ -669,8 +669,9 @@ GROUP BY
           c.id = cm.community_id 
           AND cm.user_id = @userId
         WHERE 
-          ${user && user.isAdmin ? '1=1' : 'c.PrivacySetting = \'Public\' OR (c.PrivacySetting != \'Public\' AND cm.user_id IS NOT NULL)'}
+          ${user && user.isAdmin ? '1=1' : '(c.PrivacySetting = \'Public\' OR cm.user_id IS NOT NULL)'}
         ORDER BY 
+          CASE WHEN cm.user_id IS NOT NULL THEN 0 ELSE 1 END,
           MemberCount DESC
       `;
   

@@ -7,13 +7,6 @@ span.material-symbols-outlined {
   font-size: 14px;
 }
 
-#updates-header {
-  padding: .75rem 1.15rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 #updates-title {
   margin-bottom: 18px;
 }

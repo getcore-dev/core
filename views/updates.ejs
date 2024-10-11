@@ -15,8 +15,8 @@
 <body>
   <%- include('partials/navbar', { pagePath: 'updates' }) %>
   <main>
-    <div id="updates-header">
-      <h4 id="updates-header-text">Loading...</h4>
+    <div id="updates-header" class="page-header flex items-center justify-between mb-4">
+      <h5 class="text-2xl font-semibold text-gray-800 dark:text-gray-200" id="updates-header-text">Loading...</h5>
       <% if (typeof user !== 'undefined') { %>
       <% if (user.isAdmin) { %>
       <a href="/updates/new">
