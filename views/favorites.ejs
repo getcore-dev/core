@@ -56,18 +56,6 @@
     font-size: 1.2rem;
   }
 
-  .favorite {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    background: none;
-    border-bottom: 1px solid var(--border-color);
-    width: 100%;
-    padding: 10px 17px;
-    box-sizing: border-box;
-  }
-
   .favorites {
     /* padding: 0px 14px; */
     display: flex;
@@ -179,10 +167,6 @@
       background-color: var(--dark-mode-body-color);
     }
 
-    .favorite {
-      background-color: var(--dark-mode-body-color);
-      border-color: var(--dark-mode-border-color);
-    }
 
     .favorite:hover {
       background-color: var(--dark-mode-hover-background-color);
@@ -448,7 +432,7 @@
         const noFavoritesElement = document.createElement('div');
         noFavoritesElement.classList.add('favorite');
         noFavoritesElement.innerHTML = `
-        <h5>No favorite jobs found.</h5>
+        <h5 class="pl-4 pr-4">No favorite jobs found.</h5>
       `;
         favoritesJobContainer.appendChild(noFavoritesElement);
         return;

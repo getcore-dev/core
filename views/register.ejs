@@ -44,13 +44,13 @@
           </div>
           <div class="input-container">
             <input type="email" id="email" name="email" placeholder="Email" required value="<%= email %>" />
-            <span class="sub-text third-text" id="email-validity">Empty</span>
+            <span class="sub-text text-muted-foreground" id="email-validity">Empty</span>
           </div>
 
           <div class="input-container">
             <input type="text" id="username" name="username" placeholder="Username" required minlength="5" maxlength="30" />
-            <span class="sub-text third-text" id="username-char-count">0/30</span>
-            <span class="sub-text third-text" id="username-validity">adsad</span>
+            <span class="sub-text text-muted-foreground" id="username-char-count">0/30</span>
+            <span class="sub-text text-muted-foreground" id="username-validity">adsad</span>
           </div>
 
           <div class="input-container">
@@ -105,13 +105,13 @@
 
         if (username.length === 0) {
           usernameValidity.textContent = 'Empty';
-          usernameValidity.className = 'sub-text third-text';
+          usernameValidity.className = 'sub-text text-muted-foreground';
         } else if (username.length < 5 || username.length > 30 || invalidCharacters.test(username)) {
           usernameValidity.textContent = `'${username}' is invalid`;
           usernameValidity.className = 'invalid sub-text';
         } else {
           usernameValidity.textContent = 'Checking availability...';
-          usernameValidity.className = 'sub-text third-text';
+          usernameValidity.className = 'sub-text text-muted-foreground';
         }
       }
 
@@ -144,7 +144,7 @@
       function updateEmailValidity() {
         if (emailInput.value.length === 0) {
           emailValidity.textContent = 'Empty';
-          emailValidity.className = 'sub-text third-text';
+          emailValidity.className = 'sub-text text-muted-foreground';
         } else if (validateEmail(emailInput.value)) {
           emailValidity.textContent = 'Valid';
           emailValidity.className = 'valid sub-text';

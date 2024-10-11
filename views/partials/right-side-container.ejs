@@ -94,7 +94,7 @@
                   `}
                 </div>
                 </div>
-                <div class="job-title-location mini-text third-text">
+                <div class="job-title-location mini-text text-muted-foreground">
                 ${job.salary || job.salary_max ? `
                   <span class="job-salary mini-text">
                     ${getFormattedSalary(job.salary, job.salary_max)}
@@ -168,7 +168,7 @@
                     </div>
                                                               <div class="job-title mini-text bold"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
 
-                    <div class="job-title-location third-text">
+                    <div class="job-title-location text-muted-foreground">
                 ${job.salary || job.salary_max ? `
                   <span class="job-salary mini-text">
                     ${getFormattedSalary(job.salary, job.salary_max)}

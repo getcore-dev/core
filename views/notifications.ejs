@@ -192,7 +192,7 @@
         break;
 
       case 'ADMIN_DELETED_COMMENT':
-        notificationText.innerHTML = `Your comment has been deleted by <strong class="admin-text">${notification.senderUsername}</strong><br> <span class="third-text">"${notification.important_message}"</span>`;
+        notificationText.innerHTML = `Your comment has been deleted by <strong class="admin-text">${notification.senderUsername}</strong><br> <span class="text-muted-foreground">"${notification.important_message}"</span>`;
         break;
       case 'LIKE':
       case 'LOVE':
@@ -242,7 +242,7 @@
 
       const notificationTime = document.createElement('span');
       notificationTime.classList.add('time-flair');
-      notificationTime.classList.add('third-text');
+      notificationTime.classList.add('text-muted-foreground');
       notificationTime.classList.add('sub-text');
 
 

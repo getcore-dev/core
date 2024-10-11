@@ -76,7 +76,7 @@
 
               updateBody.innerHTML = `<h4>${update.title}</h4>`;
               updateBody.innerHTML += `<p class="sub-text secondary-text">${update.content}</p>`;
-              updateBody.innerHTML += `<p class="mini-text third-text"><span style="margin-right: 0.6rem;"><a class="link" href="${update.pull_request_url}">${update.pull_request_url.split('/').slice(-2).join('/')}<span class="material-symbols-outlined">open_in_new</span></a></span><span>${update.comment_count} comment${update.comment_count !== 1 ? 's' : ''}</span></p>`;
+              updateBody.innerHTML += `<p class="mini-text text-muted-foreground"><span style="margin-right: 0.6rem;"><a class="link" href="${update.pull_request_url}">${update.pull_request_url.split('/').slice(-2).join('/')}<span class="material-symbols-outlined">open_in_new</span></a></span><span>${update.comment_count} comment${update.comment_count !== 1 ? 's' : ''}</span></p>`;
 
 
               updateContent.appendChild(updateHeader);

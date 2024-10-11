@@ -106,7 +106,7 @@ async function loadCompanyJobs(companyName) {
       const jobListContainer = document.querySelector('.job-list');
       const endOfListMessage = document.createElement('div');
       endOfListMessage.classList.add('end-of-list-message');
-      endOfListMessage.classList.add('third-text');
+      endOfListMessage.classList.add('text-muted-foreground');
       endOfListMessage.classList.add('mini-text');
       endOfListMessage.classList.add('flex');
       endOfListMessage.classList.add('h-center');

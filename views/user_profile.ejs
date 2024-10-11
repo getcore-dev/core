@@ -95,7 +95,7 @@
 
               </div>
               <div class="flex flex-col gap-03 w-full h-center">
-                <h2 class="bold">
+                <h2 class="text-2xl font-semibold">
                   <% if (otheruser.firstname && otheruser.lastname) { %>
                   <%= otheruser.firstname %> <%= otheruser.lastname %>
                   <% } else { %>
@@ -201,7 +201,7 @@
 
           <% if (otheruser.bio) { %>
           <div class="flex flex-col gap-06">
-            <h4>Bio</h4>
+            <h4 class="text-lg font-semibold">Bio</h4>
             <div class="user-bio sub-text" style="background: 0 !important; padding-top: 0;">
               <p>
                 <%= otheruser.bio %>
@@ -210,6 +210,7 @@
           </div>
           <% } %>
           <% if (otheruser.username != "core") { %>
+          <!--
           <% if (otheruser.topCommunities && otheruser.topCommunities.length > 0) { %>
           <div class="space-y-4">
             <h4 class="text-lg font-semibold">Communities</h4>
@@ -222,6 +223,7 @@
             </div>
           </div>
           <% } %>
+          -->
           <div class="space-y-4">
             <% if (otheruser && (otheruser.link || otheruser.link2 || otheruser.github_url || otheruser.linkedin_url || otheruser.leetcode_url)) { %>
             <h4 class="text-lg font-semibold">Links</h4>
@@ -268,26 +270,26 @@
 
           <div class="current-education" style="background:none !important; padding: 0;">
             <div class="current-job-header">
-              <h4>Education</h4>
+              <h4 class="text-lg font-semibold">Education</h4>
             </div>
             <div id="currentEducationContainer"></div>
           </div>
           <div class="current-job" style="background:none !important; padding: 0;">
             <div class="current-job-header">
-              <h4>Experience</h4>
+              <h4 class="text-lg font-semibold">Experience</h4>
             </div>
             <div id="currentJobContainer"></div>
           </div>
           <div class="projecs" style="background:none !important; padding: 0;">
             <div class="projects-header">
-              <h4>Projects</h4>
+              <h4 class="text-lg font-semibold">Projects</h4>
             </div>
             <div id="projectContainer">
               <p>No projects available.</p>
             </div>
           </div>
           <div class="github-commit-repos">
-            <h4>GitHub Activity</h4>
+            <h4 class="text-lg font-semibold">GitHub Activity</h4>
             <!-- Commit Graph -->
             <div class="commit-activity-container" id="commit-activity-container"></div>
             <!-- Repository List -->
@@ -300,7 +302,7 @@
           <div class="user-activity">
             <div class="user-activity-header">
               <div class="user-activity-title">
-                <h4><%=otheruser.username%>'s activity</h4>
+                <h4 class="text-lg font-semibold"><%=otheruser.username%>'s activity</h4>
               </div>
               <div class="user-activity-buttons">
                 <button class="sort-option posts-button active" onclick="showSection('posts')">Posts</button>

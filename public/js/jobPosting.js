@@ -414,9 +414,9 @@ async function lazyLoadJobDetails(user, jobId) {
           <h3 class="company-name header-text margin-03-bottom bold">
         ${job.title}
       </h3>
-      <p class="sub-text third-text"> 
+      <p class="sub-text text-muted-foreground"> 
                     ${job.experienceLevel ? `
-          <span class="sub-text bold third-text">
+          <span class="sub-text bold text-muted-foreground">
         ${job.experienceLevel}
         </span>  
                 <span class="sub-text">•</span>
@@ -436,7 +436,7 @@ async function lazyLoadJobDetails(user, jobId) {
           .split(' ')
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
           .join(' ');
-        return `<a class="sub-text third-text" href="/jobs?locations=${encodeURIComponent(loc)}">${country}</a>`;
+        return `<a class="sub-text text-muted-foreground" href="/jobs?locations=${encodeURIComponent(loc)}">${country}</a>`;
       }
     })
     .join(', ')

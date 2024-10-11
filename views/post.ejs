@@ -136,7 +136,7 @@
                     <%= post.title %>
                   </h2>
                 </div>
-                <span class="post-time mini-text third-text">
+                <span class="post-time mini-text text-muted-foreground">
                   <% postDate = new Date(post.created_at); %>
                   <%
                         function formatRelativeDate(dateString) {
@@ -312,11 +312,11 @@
                       formattedDate = years + 'y';
                     }
                     %>
-                <span class="third-text mini-text">Edited: <%= formattedDate %></span>
+                <span class="text-muted-foreground mini-text">Edited: <%= formattedDate %></span>
               </p>
               <% } %>
 
-              <div class="post-info-container post third-text mini-text">
+              <div class="post-info-container post text-muted-foreground mini-text">
                 <div class="post-views-container">
                   <span class="material-symbols-outlined">visibility</span>
                   <span class="post-views"><%= post.views %> views</span>
@@ -538,7 +538,7 @@
                 } else {
                   timeSinceComment = 'Just now';
                 }
-                %><span class="comment-timestamp sub-text third-text"><time><%= timeSinceComment %></time></span>
+                %><span class="comment-timestamp sub-text text-muted-foreground"><time><%= timeSinceComment %></time></span>
                         </div>
                         <!-- commentors experience -->
                         <p class="mini-text">
@@ -663,7 +663,7 @@
 
                 <div class="replies">
 
-                  <a href="#" class="third-text reply-button" id="reply-button-<%= comment.id %>" onclick="<% if (user) { %>showReplyForm('<%= comment.id %>', event)<% } else { %>window.location.href = '/login';<% } %>">
+                  <a href="#" class="text-muted-foreground reply-button" id="reply-button-<%= comment.id %>" onclick="<% if (user) { %>showReplyForm('<%= comment.id %>', event)<% } else { %>window.location.href = '/login';<% } %>">
                     Reply
                   </a>
 
@@ -810,7 +810,7 @@
               <a class="link main-text">
                 <%= post.title %>
               </a>
-              <a class="third-text mini-text" href="/user/<%= post.username %>">
+              <a class="text-muted-foreground mini-text" href="/user/<%= post.username %>">
                 <%= post.firstname && post.lastname ? `${post.firstname} ${post.lastname}` : post.username %>
               </a>
             </div>
@@ -915,7 +915,7 @@
             </div>
             <div class="flex flex-row gap-03 v-center margin-06-bottom wrap w-100">
               <p class="sub-text">${post.title}</p>
-                            <span class="third-text mini-text"">
+                            <span class="text-muted-foreground mini-text"">
                 ${formatDate(post.created_at)}
               </span>
               </div>

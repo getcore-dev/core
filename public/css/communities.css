@@ -1266,8 +1266,7 @@ button.see-more {
     border: 0;
     border-radius: 0;
     margin: 0;
-    border-bottom: 1px solid var(--border-color);
-    padding: .65rem 1rem;
+    padding: 0;
     box-sizing: border-box;
     padding-bottom: 0;
     background-color: var(--light-mode-main-color);
@@ -1687,9 +1686,9 @@ button.see-more {
   div.join-community,
   div.join-website {
     background-color: var(--dark-mode-main-color);
-  }c
+  }
 
-  #filterMenu button {
+  c #filterMenu button {
     color: var(--btn-text-dark);
   }
 
