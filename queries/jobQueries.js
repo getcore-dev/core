@@ -560,99 +560,26 @@ const jobQueries = {
 
   getAllJobsFromLast30Days: async (userPreferences, page, pageSize) => {
     try {
+      const offset = (page - 1) * pageSize;
       let query = `
         SELECT 
           j.*,
           c.name AS company_name, 
           c.logo AS company_logo, 
           c.location AS company_location, 
-          c.description AS company_description,
-          (
-            SELECT STRING_AGG(jt.tagName, ', ')
-            FROM JobPostingsTags jpt
-            JOIN JobTags jt ON jpt.tagId = jt.id
-            WHERE jpt.jobId = j.id
-          ) AS tags,
-          (
-            SELECT STRING_AGG(s.name, ', ')
-            FROM job_skills js
-            JOIN skills s ON js.skill_id = s.id
-            WHERE js.job_id = j.id
-          ) AS skills
+          c.description AS company_description
         FROM JobPostings j
         LEFT JOIN companies c ON j.company_id = c.id
+        WHERE j.postedDate >= DATEADD(day, -30, GETDATE())
+        ORDER BY j.postedDate DESC
+        OFFSET @offset ROWS
+        FETCH NEXT @pageSize ROWS ONLY
       `;
 
-      const conditions = [];
-      const queryParams = {};
-
-      if (userPreferences.jobPreferredTitle) {
-        conditions.push('j.title LIKE @title');
-        queryParams.title = `%${userPreferences.jobPreferredTitle}%`;
-      }
-
-      if (userPreferences.jobPreferredLocation) {
-        conditions.push(
-          '(j.location LIKE @location OR j.location LIKE @stateAbbr)'
-        );
-        queryParams.location = `%${userPreferences.jobPreferredLocation}%`;
-        queryParams.stateAbbr = `% ${userPreferences.jobPreferredLocation.substring(
-          0,
-          2
-        )},%`;
-      }
-
-      if (userPreferences.jobExperienceLevel) {
-        conditions.push('j.experienceLevel = @experienceLevel');
-        queryParams.experienceLevel = userPreferences.jobExperienceLevel;
-      }
-
-      if (
-        userPreferences.jobPreferredSalary &&
-        userPreferences.jobPreferredSalary > 0
-      ) {
-        conditions.push('j.salary >= @salary');
-        queryParams.salary = userPreferences.jobPreferredSalary;
-      }
-
-      if (userPreferences.jobPreferredIndustry) {
-        conditions.push('c.industry = @industry');
-        queryParams.industry = userPreferences.jobPreferredIndustry;
-      }
-
-      if (
-        userPreferences.jobPreferredSkills &&
-        userPreferences.jobPreferredSkills.length > 0
-      ) {
-        const validSkills = userPreferences.jobPreferredSkills.filter(
-          (skill) => !isNaN(skill)
-        );
-        if (validSkills.length > 0) {
-          conditions.push(`
-            EXISTS (
-              SELECT 1 FROM job_skills js
-              WHERE js.job_id = j.id AND js.skill_id IN (${validSkills
-    .map((_, i) => `@skill${i}`)
-    .join(', ')})
-            )
-          `);
-          validSkills.forEach((skill, i) => {
-            queryParams[`skill${i}`] = skill;
-          });
-        }
-      }
-
-      if (conditions.length > 0) {
-        query += ` AND ${conditions.join(' AND ')}`;
-      }
-
-      query += ' ORDER BY j.postedDate DESC';
-
       const request = new sql.Request();
-      Object.entries(queryParams).forEach(([key, value]) => {
-        request.input(key, value);
-      });
-
+      request.input('offset', sql.Int, offset);
+      request.input('pageSize', sql.Int, pageSize);
+      
       const result = await request.query(query);
       return result.recordset;
     } catch (error) {
@@ -685,11 +612,11 @@ const jobQueries = {
             c.logo AS company_logo,
             c.name AS company_name,
             CASE
-              WHEN LOWER(j.title) LIKE '%internship%' OR LOWER(j.experienceLevel) LIKE '%internship%' THEN 'Internship'
-              WHEN LOWER(j.title) LIKE '%junior%' OR LOWER(j.experienceLevel) LIKE '%junior%' THEN 'Junior'
-              WHEN LOWER(j.title) LIKE '%senior%' OR LOWER(j.experienceLevel) LIKE '%senior%' THEN 'Senior'
-              WHEN LOWER(j.title) LIKE '%lead%' OR LOWER(j.experienceLevel) LIKE '%lead%' THEN 'Lead'
-              WHEN LOWER(j.title) LIKE '%manager%' OR LOWER(j.experienceLevel) LIKE '%manager%' THEN 'Manager'
+              WHEN j.title LIKE '%internship%' OR j.experienceLevel LIKE '%internship%' THEN 'Internship'
+              WHEN j.title LIKE '%junior%' OR j.experienceLevel LIKE '%junior%' THEN 'Junior'
+              WHEN j.title LIKE '%senior%' OR j.experienceLevel LIKE '%senior%' THEN 'Senior'
+              WHEN j.title LIKE '%lead%' OR j.experienceLevel LIKE '%lead%' THEN 'Lead'
+              WHEN j.title LIKE '%manager%' OR j.experienceLevel LIKE '%manager%' THEN 'Manager'
               ELSE j.experienceLevel
             END AS cleaned_experience_level
           FROM JobPostings j
@@ -700,6 +627,7 @@ const jobQueries = {
   
       // Optimize and combine filter conditions
       if (titles.length) {
+        console.log(titles);
         const titleCondition = titles
           .map((title, i) => {
             queryParams[`title${i}`] = `%${title}%`;
@@ -755,9 +683,9 @@ const jobQueries = {
   
         baseQuery += ` AND (${levelsCondition})`;
       }
-
+  
       if (accepted_college_majors.length) {
-        const majorsList = accepted_college_majors.join(',').split(',').map(major => major.trim());
+        const majorsList = accepted_college_majors.flatMap(major => major.split(',').map(m => m.trim()));
         const majorsCondition = majorsList
           .map((major, i) => {
             queryParams[`accepted_college_major${i}`] = `%${major}%`;
@@ -791,6 +719,158 @@ const jobQueries = {
       throw error;
     }
   },
+
+  searchUserPreferredJobs: async (userPreferences, page, pageSize) => {
+    try {
+      console.log('Searching for jobs with user preferences:', userPreferences);
+      const {
+        titles = '',
+        locations = '',
+        experienceLevel = '',
+        majors = [],
+        salary = 0,
+        skills = [],
+        companies = []
+      } = userPreferences;
+  
+      const offset = (page - 1) * pageSize;
+  
+      // Initialize the parameter container
+      const queryParams = {};
+  
+      // Prepare parameters for titles
+      if (titles) {
+        const titleKeywords = titles.split(/[,\s]+/);
+        titleKeywords.forEach((keyword, i) => {
+          queryParams[`title${i}`] = `%${keyword}%`;
+        });
+      }
+  
+      // Prepare parameters for locations
+      if (locations) {
+        const locationKeywords = locations.split(/[,\s]+/);
+        locationKeywords.forEach((location, i) => {
+          queryParams[`location${i}`] = `%${location}%`;
+        });
+      }
+  
+      // Prepare parameter for experience level
+      if (experienceLevel) {
+        queryParams.experienceLevel = `%${experienceLevel}%`;
+      } else {
+        queryParams.experienceLevel = null;
+      }
+  
+      // Prepare parameters for majors
+      if (majors.length) {
+        majors.forEach((major, i) => {
+          queryParams[`major${i}`] = `%${major}%`;
+        });
+      }
+  
+      // Prepare parameter for salary
+      queryParams.salary = salary;
+  
+      // Prepare parameters for companies
+      if (companies.length) {
+        companies.forEach((companyId, i) => {
+          queryParams[`company${i}`] = companyId;
+        });
+      }
+  
+      // Prepare parameters for skills
+      if (skills.length) {
+        skills.forEach((skill, i) => {
+          queryParams[`skill${i}`] = skill;
+        });
+      }
+  
+      // Build the SQL query
+      let baseQuery = `
+        WITH CleanedJobs AS (
+          SELECT 
+            j.*, 
+            c.logo AS company_logo,
+            c.name AS company_name,
+            CASE
+              WHEN j.title LIKE '%internship%' OR j.experienceLevel LIKE '%internship%' THEN 'Internship'
+              WHEN j.title LIKE '%junior%' OR j.experienceLevel LIKE '%junior%' THEN 'Junior'
+              WHEN j.title LIKE '%senior%' OR j.experienceLevel LIKE '%senior%' THEN 'Senior'
+              WHEN j.title LIKE '%lead%' OR j.experienceLevel LIKE '%lead%' THEN 'Lead'
+              WHEN j.title LIKE '%manager%' OR j.experienceLevel LIKE '%manager%' THEN 'Manager'
+              ELSE j.experienceLevel
+            END AS cleaned_experience_level
+          FROM JobPostings j
+          JOIN Companies c ON j.company_id = c.id
+        ),
+        ScoredJobs AS (
+          SELECT
+            cj.*,
+            (
+              -- Initialize score to 0
+              0
+              -- Add points for title matches
+              + CASE WHEN ${titles ? '(' + titles.split(/[,\s]+/).map((_, i) => `cj.title LIKE @title${i}`).join(' OR ') + ')' : '0=1'} THEN 1 ELSE 0 END
+              -- Add points for location matches
+              + CASE WHEN ${locations ? '(' + locations.split(/[,\s]+/).map((_, i) => `cj.location LIKE @location${i}`).join(' OR ') + ')' : '0=1'} THEN 1 ELSE 0 END
+              -- Add points for experience level matches
+              + CASE WHEN @experienceLevel IS NOT NULL AND cj.cleaned_experience_level LIKE @experienceLevel THEN 1 ELSE 0 END
+              -- Add points for majors matches
+              + CASE WHEN ${majors.length ? '(' + majors.map((_, i) => `cj.accepted_college_majors LIKE @major${i}`).join(' OR ') + ')' : '0=1'} THEN 1 ELSE 0 END
+              -- Add points for salary match
+              + CASE WHEN cj.salary >= @salary THEN 1 ELSE 0 END
+              -- Add points for company matches
+              + CASE WHEN ${companies.length ? '(' + companies.map((_, i) => `cj.company_id = @company${i}`).join(' OR ') : '0=1'} THEN 1 ELSE 0 END
+              -- Add points for skills matches
+              + (
+                SELECT COUNT(*)
+                FROM job_skills js
+                JOIN skills s ON js.skill_id = s.id
+                WHERE js.job_id = cj.id
+                AND s.name IN (${skills.length ? skills.map((_, i) => `@skill${i}`).join(', ') : 'NULL'})
+              )
+            ) AS likeness_score
+          FROM CleanedJobs cj
+        )
+        SELECT sj.*,
+          (
+            SELECT STRING_AGG(jt.tagName, ', ')
+            FROM JobPostingsTags jpt
+            JOIN JobTags jt ON jpt.tagId = jt.id
+            WHERE jpt.jobId = sj.id
+          ) AS tags,
+          (
+            SELECT STRING_AGG(s.name, ', ')
+            FROM job_skills js
+            JOIN skills s ON js.skill_id = s.id
+            WHERE js.job_id = sj.id
+          ) AS skills
+        FROM ScoredJobs sj
+        WHERE sj.likeness_score > 0
+        ORDER BY sj.likeness_score DESC, sj.postedDate DESC
+        OFFSET @offset ROWS
+        FETCH NEXT @pageSize ROWS ONLY;
+      `;
+  
+      // Prepare SQL request and input parameters
+      const request = new sql.Request();
+      Object.entries(queryParams).forEach(([key, value]) => {
+        request.input(key, value);
+      });
+      request.input('offset', sql.Int, offset);
+      request.input('pageSize', sql.Int, pageSize);
+  
+      // Execute the query
+      const result = await request.query(baseQuery);
+  
+      return result.recordset;
+    } catch (error) {
+      console.error('Error in searchUserPreferredJobs:', error);
+      throw error;
+    }
+  },
+  
+  
   
 
   getTopJobSuggestions: async (filters, page, pageSize) => {

@@ -593,6 +593,8 @@ router.get('/jobs', cacheMiddleware(120), async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 20;
+    const searchType = req.query.searchType || 'regular'; // New flag: 'userPreferences', 'blank', or 'regular'
+
     const {
       titles,
       locations,
@@ -600,7 +602,7 @@ router.get('/jobs', cacheMiddleware(120), async (req, res) => {
       majors,
       salary,
       skills,
-      companies
+      companies,
     } = req.query;
 
     // Parse the query parameters
@@ -615,42 +617,41 @@ router.get('/jobs', cacheMiddleware(120), async (req, res) => {
     const user = req.user;
     let userPreferences = {};
 
-    /*
     if (user) {
       userPreferences = {
-        jobPreferredTitle: user.jobPreferredTitle,
-        jobPreferredSkills: user.jobPreferredSkills
-          ? user.jobPreferredSkills.split(',').map(String)
-          : [],
-        jobPreferredLocation: user.jobPreferredLocation,
-        jobExperienceLevel: user.jobExperienceLevel,
-        jobPreferredIndustry: user.jobPreferredIndustry,
-        jobPreferredSalary: user.jobPreferredSalary,
+        titles: user.jobPreferredTitle,
+        skills: [], // You can populate this if needed
+        locations: user.jobPreferredLocation,
+        experienceLevel: user.jobExperienceLevel,
+        majors: [], // You can populate this if needed
+        salary: user.jobPreferredSalary,
+        companies: [], // You can populate this if needed
       };
     }
-      */
 
-    const isEmptySearch =
-      parsedTitles.length === 0 &&
-      parsedLocations.length === 0 &&
-      parsedExperienceLevels.length === 0 &&
-      parsedMajors.length === 0 &&
-      parsedSalary === 0 &&
-      parsedSkills.length === 0 &&
-      parsedCompanies.length === 0;
+    // Check if user preferences are not empty
+    const userPreferencesNotEmpty = Object.values(userPreferences).some(
+      (value) =>
+        value !== null &&
+        value !== undefined &&
+        value !== '' &&
+        (Array.isArray(value) ? value.length > 0 : true)
+    );
 
     let allJobPostings;
 
-    if (isEmptySearch && user && Object.keys(userPreferences).length > 0) {
-      allJobPostings = await jobQueries.searchAllJobsFromLast30Days(
+    if (searchType === 'userPreferences' && user && userPreferencesNotEmpty) {
+      console.log('User preference search');
+      allJobPostings = await jobQueries.searchUserPreferredJobs(
         userPreferences,
         page,
         pageSize
       );
-    } else if (isEmptySearch) {
-      console.log('isEmptySearch'); 
-      allJobPostings = await jobQueries.searchAllJobsFromLast30Days({}, page, pageSize);
+    } else if (searchType === 'blank') {
+      console.log('Blank search');
+      allJobPostings = await jobQueries.getAllJobsFromLast30Days({}, page, pageSize);
     } else {
+      console.log('Regular search');
       allJobPostings = await jobQueries.searchAllJobsFromLast30Days(
         {
           titles: parsedTitles,
@@ -659,7 +660,7 @@ router.get('/jobs', cacheMiddleware(120), async (req, res) => {
           accepted_college_majors: parsedMajors,
           salary: parsedSalary,
           skills: parsedSkills,
-          companies: parsedCompanies
+          companies: parsedCompanies,
         },
         page,
         pageSize
@@ -671,10 +672,11 @@ router.get('/jobs', cacheMiddleware(120), async (req, res) => {
       currentPage: page,
     });
   } catch (err) {
-    console.error('Error fetching job postings:');
+    console.error('Error fetching job postings:', err);
     res.status(500).send('Error fetching job postings');
   }
 });
+
 
 router.get('/job-suggestions', async (req, res) => {
   try {
@@ -682,16 +684,16 @@ router.get('/job-suggestions', async (req, res) => {
     let userPreferences = {};
     if (user) {
       userPreferences = {
-        titles: user.jobPreferredTitle ? (Array.isArray(user.jobPreferredTitle) ? user.jobPreferredTitle : [user.jobPreferredTitle]) : [],
-        locations: user.jobPreferredLocation ? (Array.isArray(user.jobPreferredLocation) ? user.jobPreferredLocation : [user.jobPreferredLocation]) : [],
-        experienceLevels: user.jobExperienceLevel ? (Array.isArray(user.jobExperienceLevel) ? user.jobExperienceLevel : [user.jobExperienceLevel]) : [],
-        majors: user.jobPreferredMajor ? (Array.isArray(user.jobPreferredMajor) ? user.jobPreferredMajor : [user.jobPreferredMajor]) : [],
+        titles: user.jobPreferredTitle ? (Array.isArray(user.jobPreferredTitle) ? user.jobPreferredTitle : user.jobPreferredTitle) : [],
+        locations: user.jobPreferredLocation ? (Array.isArray(user.jobPreferredLocation) ? user.jobPreferredLocation : user.jobPreferredLocation) : [],
+        experienceLevels: user.jobExperienceLevel ? (Array.isArray(user.jobExperienceLevel) ? user.jobExperienceLevel : user.jobExperienceLevel) : [],
+        majors: user.jobPreferredMajor ? (Array.isArray(user.jobPreferredMajor) ? user.jobPreferredMajor : user.jobPreferredMajor) : [],
         salary: user.jobPreferredSalary ? user.jobPreferredSalary : 0,
         skills: [],
         companies: []
       };
     }
-    const topSuggestions = await jobQueries.getTopJobSuggestions(userPreferences, 1, 50);
+    const topSuggestions = await jobQueries.searchUserPreferredJobs(userPreferences, 1, 50);
     res.json(topSuggestions);
   } catch (err) {
     console.error('Error fetching job suggestions:', err);

@@ -347,10 +347,7 @@ async function lazyLoadJobDetails(user, jobId) {
         // Extract skills from job description using keyword search
         const keywords = ['JavaScript', 'Python', 'Java', 'C++', 'React', 'Node.js', 'SQL', 'AWS', 'Docker', 'Kubernetes', 'CRM', 'Salesforce', 'Node.js', 'cybersecurity', 'Power BI', 'Excel', 'Data Visualization', 'Statistics', 'Finance'];
         skillsArray = keywords.filter(keyword => 
-          job.description.toLowerCase().includes(keyword.toLowerCase()) || 
-          job.raw_description_no_format.toLowerCase().includes(keyword.toLowerCase()) ||
-          job.Requirements.toLowerCase().includes(keyword.toLowerCase()) ||
-          (job.Requirements && job.Requirements.toLowerCase().includes(keyword.toLowerCase()))
+          job.description.toLowerCase().includes(keyword.toLowerCase())
         );
         
         // If no skills found in description, fallback to existing skills

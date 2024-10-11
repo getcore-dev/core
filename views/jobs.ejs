@@ -80,6 +80,24 @@
         </div>
 
         <ul class="flex flex-row w-100 gap-06 wrap no-padding no-margin">
+
+          <div class="dropdown" tabindex="0">
+            <button aria-label="Search Type" class="dropdown-button search-type-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+              Search Type
+              <span class="arrow">&#9662;</span>
+            </button>
+            <div class="dropdown-content">
+              <a class="w-100">
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-search-type="regular" onclick="setSearchType('regular')">Regular</button>
+              </a>
+              <a class="w-100">
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-search-type="userPreferences" onclick="setSearchType('userPreferences')">For You</button>
+              </a>
+              <a class="w-100">
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-search-type="blank" onclick="setSearchType('blank')">New</button>
+              </a>
+            </div>
+          </div>
           <div class="dropdown" tabindex="0">
             <button aria-label="Experience Level" class="dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
               Experience Level
