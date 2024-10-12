@@ -686,6 +686,7 @@ class JobProcessor extends EventEmitter {
   async makeRequest(url, usePuppeteer = false) {
     // Handle special cases for specific job board platforms
     if (url.includes('linkedin.com')) return await this.usePuppeteerFallback(url);
+    if (url.includes('wiz.io')) return await this.usePuppeteerFallback(url);
     if (url.includes('nba.com')) return await this.usePuppeteerFallback(url);
     if (url.includes('icims.com')) return await this.usePuppeteerFallback(url);
     if (url.includes('avature.com')) return await this.usePuppeteerFallback(url);
@@ -2319,72 +2320,119 @@ class JobProcessor extends EventEmitter {
 
   }
 
-  async processStripeLink(url) {
+  // Define a dictionary of job processing rules for different websites
+  jobProcessingRules = {
+    'stripe.com': {
+      selectors: {
+        title: '.JobsDetail__header h1.Copy__title',
+        location: '.JobDetailCardProperty:contains("Office locations") p:last-child',
+        description: '.RowLayout',
+        additional_information: 'div.JobsDetailCard'
+      },
+      company: {
+        name: 'Stripe',
+        jobBoardUrl: 'https://stripe.com/jobs/search?skip=0'
+      }
+    },
+
+    'epicgames.com': {
+      selectors: {
+        title: 'h1.heading',
+        location: 'div[class*="sc-"] span[class*="sc-"] strong:contains("Location") + p',
+        description: '.copy-wrapper .raw-copy'
+      },
+      company: {
+        name: 'Epic Games',
+        jobBoardUrl: 'https://www.epicgames.com/site/en-US/careers/jobs'
+      }
+    },
+    'wiz.io': {
+      selectors: {
+        title: 'div h1.text-4xl',
+        location: 'div h3.mt-4',
+        description: 'article.prose'
+      },
+      company: {
+        name: 'Wiz',
+        jobBoardUrl: 'https://wiz.io/careers'
+      }
+    },
+    'careers.tiktok.com': {
+      selectors: {
+        title: 'span[data-test="jobTitle"]',
+        location: '.infoText__EbiXW:first',
+        type: '.infoText__EbiXW:eq(1)',
+        department: '.infoText-category__bhDhu',
+        description: '.block-content'
+      },
+      company: {
+        name: 'TikTok',
+        jobBoardUrl: 'https://careers.tiktok.com/search'
+      }
+    },
+    'ashbyhq.com': {
+      selectors: {
+        title: 'h1.ashby-job-posting-heading',
+        location: 'div._section_101oc_37:contains("Location") p',
+        type: 'div._section_101oc_37:contains("Type") p',
+        department: 'div._section_101oc_37:contains("Department") p',
+        compensation: 'div._section_101oc_37:contains("Compensation") div p',
+        description: '#overview>div'
+      },
+      company: {
+        name: (url) => url.split('/')[3],
+        jobBoardUrl: (company) => `https://jobs.ashbyhq.com/${company}`
+      }
+    }
+  }
+
+  async processJobWithRules(url, rules) {
     const response = await this.makeRequest(url);
     const data = response.data;
-
     const $ = cheerio.load(data);
-    const title = $('.JobsDetail__header h1.Copy__title').text().trim();
-    const location = $('.JobDetailCardProperty:contains("Office locations") p:last-child').text().trim();
-    const description = $('.RowLayout').html();
-    const additional_information = $('div.JobsDetailCard').html();  
 
-    const company = 'Stripe';
-    const companyId = await this.getOrCreateCompany(company, '', '', 'https://stripe.com/jobs/search?skip=0', '', '', '', '', '');
+    const result = {};
+    for (const [key, selector] of Object.entries(rules.selectors)) {
+      result[key] = $(selector).text().trim();
+      if (key === 'description' || key === 'additional_information') {
+        result[key] = $(selector).html();
+      }
+    }
 
-    return { url, companyId, title, company, description, location, company_name: company, additional_information };
+    const company = typeof rules.company.name === 'function' ? rules.company.name(url) : rules.company.name;
+    const jobBoardUrl = typeof rules.company.jobBoardUrl === 'function' ? rules.company.jobBoardUrl(company) : rules.company.jobBoardUrl;
+    
+    const companyId = await this.getOrCreateCompany(company, '', '', jobBoardUrl, '', '', '', '', '');
+
+    return { 
+      url, 
+      companyId, 
+      company, 
+      company_name: company, 
+      ...result,
+      additional_information: result.additional_information || 
+        `${result.type || ''} ${result.department || ''} ${result.compensation || ''}`.trim()
+    };
+  }
+
+  async processStripeLink(url) {
+    return this.processJobWithRules(url, this.jobProcessingRules['stripe.com']);
   }
 
   async processEpicGamesJob(url) {
-    const response = await this.makeRequest(url);
-    const data = response.data;
-    const $ = cheerio.load(data);
-
-    const title = $('h1.heading').text().trim();
-    const location = $('div[class*="sc-"] span[class*="sc-"] strong:contains("Location") + p').text().trim();
-    const description = $('.copy-wrapper .raw-copy').html();
-
-    const company = 'Epic Games';
-    const companyId = await this.getOrCreateCompany(company, '', '', 'https://www.epicgames.com/site/en-US/careers/jobs', '', '', '', '', '');
-
-    return { url, companyId, title, company, description, location, company_name: company };
+    return this.processJobWithRules(url, this.jobProcessingRules['epicgames.com']);
   }
 
   async processTiktokJobLink(url) {
-    const response = await this.makeRequest(url);
-    const data = response.data;
-    const $ = cheerio.load(data);
-    const title = $('span[data-test="jobTitle"]').text().trim();
-    const location = $('.infoText__EbiXW:first').text().trim();
-    const type = $('.infoText__EbiXW:eq(1)').text().trim();
-    const department = $('.infoText-category__bhDhu').text().trim();
-    const description = $('.block-content').html();
-    const additional_information = `${type} ${department}`;
-
-    const company = 'TikTok';
-    const companyId = await this.getOrCreateCompany(company, '', '', 'https://careers.tiktok.com/search', '', '', '', '', '');
-
-    return { url, companyId, title, company, description, location, company_name: company, additional_information };
+    return this.processJobWithRules(url, this.jobProcessingRules['careers.tiktok.com']);
   }
 
+  async processWizJobLink(url) {
+    return this.processJobWithRules(url, this.jobProcessingRules['wiz.io']);
+  }
 
   async processAshByHqLink(url) {
-    const company = url.split('/')[3];
-    const companyId = await this.getOrCreateCompany(company, '', '', `https://jobs.ashbyhq.com/${company}`, '', '', '', '', '');
-    const cleanedUrl = url.replace('/application', '');
-    const response = await this.makeRequest(cleanedUrl);
-    const data = response.data;
-    const $ = cheerio.load(data);
-
-    const title = $('h1.ashby-job-posting-heading').text().trim();
-    const location = $('div._section_101oc_37:contains("Location") p').text().trim();
-    const type = $('div._section_101oc_37:contains("Type") p').text().trim();
-    const department = $('div._section_101oc_37:contains("Department") p').text().trim();
-    const compensation = $('div._section_101oc_37:contains("Compensation") div p').text().trim();
-    const description = $('#overview>div').html();
-    const additional_information = type + ' ' + department + ' ' + compensation;
-
-    return { url, companyId, title, company, description, location, company_name: company, additional_information };
+    return this.processJobWithRules(url, this.jobProcessingRules['ashbyhq.com']);
   }
 
   async processJobLink(link) {
@@ -2411,6 +2459,7 @@ class JobProcessor extends EventEmitter {
       { keyword: 'stripe.com', processor: this.processStripeLink.bind(this) },
       { keyword: 'abbvie.com', processor: this.processAbbVieLink.bind(this) },
       { keyword: 'c3.ai', processor: this.processC3AILink.bind(this) },
+      { keyword: 'wiz.io', processor: this.processWizJobLink.bind(this) },
       { keyword: 'lever.co', processor: this.processLeverJobLink.bind(this) },
       { keyword: 'jobvite.com', processor: this.processJobViteLink.bind(this) },
       { keyword: 'careers.tiktok.com', processor: this.processTiktokJobLink.bind(this) },

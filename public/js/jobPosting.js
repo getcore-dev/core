@@ -331,11 +331,10 @@ function applyForJob(event, jobId, jobLink) {
 }
 
 async function lazyLoadJobDetails(user, jobId) {
-  console.log(user);
   fetch(`/api/jobs/${jobId}`)
     .then((response) => response.json()) 
     .then((job) => {
-      if (!job.isProcessed && user.isPremium) {
+      if (user && !job.isProcessed && user.isPremium === true) {
         processJobPosting(jobId);
       }
       const jobDetailsContainer = document.querySelector(
@@ -485,7 +484,7 @@ async function lazyLoadJobDetails(user, jobId) {
               <p class="sub-text">${job.isRemote ? 'Remote work available' : 'On-site only'}</p>
             </div>
           </div>
-          ${!job.isProcessed && user.isPremium ? `
+          ${!job.isProcessed && user && user.isPremium ? `
                 <div class="adaptive-border rounded">
       <div class="sub-text p-4 flex items-center">
         <span class="material-symbols-outlined animate-spin mr-2" style="color: #6366f1;">auto_awesome</span>
