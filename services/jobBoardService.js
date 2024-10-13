@@ -116,6 +116,13 @@ class JobProcessor extends EventEmitter {
         nextInactive: 'button.pagination__btn.pagination__next.pagination__next--inactive',
         prevInactive: 'button.pagination__btn.pagination__previous.pagination__previous--inactive'
       },
+      'job-boards.greenhouse.io': {
+        next: 'button.pagination__btn.pagination__next',
+        prev: 'button.pagination__btn.pagination__previous',
+        active: 'button.pagination__link--active',
+        nextInactive: 'button.pagination__btn.pagination__next.pagination__next--inactive',
+        prevInactive: 'button.pagination__btn.pagination__previous.pagination__previous--inactive'
+      },
       'apple.com': {
         next: 'span.next',
         prev: 'span.prev',
@@ -150,6 +157,7 @@ class JobProcessor extends EventEmitter {
 
     this.paginationPreferences = {
       'greenhouse.io': '?page=',
+      'job-boards.greenhouse.io': '?page=',
       'stripe.com': '?skip=',
       'epicgames.com': '?page=',
       'tiktok.com': '?current='
@@ -1280,59 +1288,47 @@ class JobProcessor extends EventEmitter {
     if (jobBoardUrl.includes('myworkdayjobs.com')) return await this.grabWorkDayLinks(jobBoardUrl);
     if (jobBoardUrl.includes('microsoft.com')) return await this.grabMicrosoftLinks(jobBoardUrl);
     if (jobBoardUrl.includes('smartrecruiters.com')) return await this.grabSmartRecruiterLinks(jobBoardUrl);
-
+  
     console.log(`Extracting job links from ${jobBoardUrl}`);
     let allLinks = [];
-
+  
     try {
-      // First, try to fetch the main page
-      let response = await this.makeRequest(jobBoardUrl);
-      console.log('response', response);
-      if (response.intercepted) {
-        console.log('Request intercepted');
-        return response.data;
-      }
-
-
-      const result = await this.fullExtractJobLinksFromPage(response.data, jobBoardUrl, new URL(jobBoardUrl).hostname);
-      allLinks = result.links;
-
-      // Check if there are more pages
-      if (!result.pagination.isLastPage) {
-        let currentPage = 2;
-        let isLastPage = false;
-
-        while (!isLastPage) {
-          let pageUrl;
-          if (jobBoardUrl.includes('stripe.com') || jobBoardUrl.includes('epicgames.com')) {
-            pageUrl = result.pagination.nextPageUrl;
-          } else {
-            pageUrl = this.getPageUrl(jobBoardUrl, currentPage);
-          }
-          console.log(`Processing page ${currentPage}: ${pageUrl}`);
-
-          const pageResponse = await this.makeRequest(pageUrl);
-          if (pageResponse.intercepted) {
-            console.log('Request intercepted');
-            return [...allLinks, ...pageResponse.data];
-          }
-
-          const pageResult = await this.fullExtractJobLinksFromPage(pageResponse, pageUrl, new URL(jobBoardUrl).hostname);
-          allLinks = allLinks.concat(pageResult.links);
-          isLastPage = pageResult.pagination.isLastPage;
-
-          if (!isLastPage) {
-            currentPage++;
-            if (jobBoardUrl.includes('stripe.com') || jobBoardUrl.includes('epicgames.com')) {
-              result.pagination.nextPageUrl = pageResult.pagination.nextPageUrl;
-            }
-          }
+      let currentUrl = jobBoardUrl;
+      let isLastPage = false;
+      let processedUrls = new Set();
+  
+      while (!isLastPage) {
+        if (processedUrls.has(currentUrl)) {
+          console.log('Detected repeating page URL. Stopping pagination.');
+          break;
+        }
+        processedUrls.add(currentUrl);
+  
+        console.log(`Processing page: ${currentUrl}`);
+        const response = await this.makeRequest(currentUrl);
+        if (response.intercepted) {
+          console.log('Request intercepted');
+          return [...allLinks, ...response.data];
+        }
+  
+        const result = await this.fullExtractJobLinksFromPage(response.data, currentUrl, new URL(currentUrl).hostname);
+        allLinks = allLinks.concat(result.links);
+  
+        if (result.pagination.isLastPage || !result.pagination.nextPageUrl) {
+          isLastPage = true;
+        } else {
+          currentUrl = result.pagination.nextPageUrl;
+        }
+  
+        if (processedUrls.size >= 100) {
+          console.log('Reached maximum page limit. Stopping pagination.');
+          break;
         }
       }
     } catch (error) {
       console.error(`Error extracting job links from ${jobBoardUrl}:`, error);
     }
-
+  
     return allLinks;
   }
 
@@ -1351,19 +1347,19 @@ class JobProcessor extends EventEmitter {
       nextPageUrl: null,
       prevPageUrl: null
     };
-
+  
     // Extract job links
     $('a').each((index, element) => {
       const href = $(element).attr('href');
       if (href) {
         const title = $(element).text().trim().toLowerCase();
         const fullUrl = new URL(href, pageUrl).href;
-
+  
         // Check if the fullUrl is already in the links array
         if (links.some(link => link.url === fullUrl)) {
           return;
         }
-
+  
         for (const [company, rules] of Object.entries(this.urlExclusionRules)) {
           if (fullUrl.includes(company)) {
             if (rules.include && !fullUrl.includes(rules.include)) {
@@ -1374,12 +1370,12 @@ class JobProcessor extends EventEmitter {
             }
           }
         }
-
+  
         // Check if it's a tech job or contains relevant keywords
         const isTechJob = this.isTechJob(title);
         const hasRelevantKeyword = /apply|go|job|career/.test(title);
         const hasRelevantUrlParam = /jobid=|jid=|jobs|careers/.test(fullUrl.toLowerCase());
-
+  
         if (isTechJob || hasRelevantKeyword || hasRelevantUrlParam) {
           links.push({
             url: fullUrl,
@@ -1389,39 +1385,44 @@ class JobProcessor extends EventEmitter {
         }
       }
     });
-
-    // Get the appropriate pagination selectors for the current domain
+  
     const domain = jobBoardDomain.replace(/^www\./, '');
-    const paginationSelectors = this.paginationSelectorsMap[domain] || this.paginationSelectorsMap['default'];
+  const paginationSelectors = this.paginationSelectorsMap[domain] || this.paginationSelectorsMap['default'];
 
-    console.log('jobBoardDomain', jobBoardDomain);
-    console.log('paginationSelectors', paginationSelectors);
+  console.log('jobBoardDomain', jobBoardDomain);
+  console.log('paginationSelectors', paginationSelectors);
 
-    // Check pagination using actual link hrefs instead of manually constructing URLs
-    const nextAnchor = $(paginationSelectors.next);
-    const prevAnchor = $(paginationSelectors.prev);
+  // Check pagination
+  const nextElement = $(paginationSelectors.next);
+  const prevElement = $(paginationSelectors.prev);
 
-    if (nextAnchor.length > 0) {
-      paginationInfo.isLastPage = false;
-      paginationInfo.isOnlyPage = false;
-      paginationInfo.nextPageUrl = new URL(nextAnchor.attr('href'), pageUrl).href;
+  if (nextElement.length > 0 && !nextElement.is(paginationSelectors.nextInactive)) {
+    paginationInfo.isLastPage = false;
+    paginationInfo.isOnlyPage = false;
+    if (nextElement.is('a')) {
+      paginationInfo.nextPageUrl = new URL(nextElement.attr('href'), pageUrl).href;
+    } else {
+      const currentPage = new URL(pageUrl).searchParams.get('page') || '1';
+      const nextPage = parseInt(currentPage) + 1;
+      paginationInfo.nextPageUrl = new URL(`?page=${nextPage}`, pageUrl).href;
     }
-
-    if (prevAnchor.length > 0) {
-      paginationInfo.isFirstPage = false;
-      paginationInfo.isOnlyPage = false;
-      paginationInfo.prevPageUrl = new URL(prevAnchor.attr('href'), pageUrl).href;
-    }
-
-    // Remove unnecessary special handling for Apple
-    
-    console.log('Pagination Info:', paginationInfo);
-
-    return {
-      links,
-      pagination: paginationInfo
-    };
   }
+
+  if (prevElement.length > 0 && !prevElement.is(paginationSelectors.prevInactive)) {
+    paginationInfo.isFirstPage = false;
+    paginationInfo.isOnlyPage = false;
+    if (prevElement.is('a')) {
+      paginationInfo.prevPageUrl = new URL(prevElement.attr('href'), pageUrl).href;
+    }
+  }
+
+  console.log('Pagination Info:', paginationInfo);
+
+  return {
+    links,
+    pagination: paginationInfo
+  };
+}
 
   async checkLinkedInApplyType(jobUrl) {
     try {

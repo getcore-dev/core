@@ -1,6 +1,6 @@
 /* General Styles */
 body {
-    background-color: var(--light-mode-body-color);
+    background-color: black;
     line-height: 1.3;
 }
 
@@ -232,10 +232,6 @@ h4 {
 
 /* dark mode */
 @media (prefers-color-scheme: dark) {
-
-    body {
-        color: #FFFFFF;
-    }
 
     .how-it-works h2,
     .cta-section h2 {
