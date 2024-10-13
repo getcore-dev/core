@@ -56,7 +56,7 @@
           </div>
           <% } %>
           <div class="company-posting-info">
-            <span class="header-text bold"><%= company.name %></span>
+            <span class="font-semibold tracking-tight text-2xl"><%= company.name %></span>
             <% if (user && user.isAdmin) { %>
             <a style="margin-left:auto;" href="/jobs/company/<%= encodeURIComponent(company.name) %>/edit">
               <span class="material-symbols-outlined">
@@ -71,7 +71,7 @@
             </div>
             <% } %>
             <% if (company.description && company.description.length > 100) { %>
-            <div class="company-description sub-text margin-06-bottom">
+            <div class="company-description text-sm text-muted-foreground">
               <p class="description-text" id="companyDescription"><%= company.description %></p>
               <button id="toggleButton" style="display: none;">Show more</button>
             </div>
@@ -82,7 +82,7 @@
         <% if (company.twitter_username || company.company_website) { %>
         <div class="external-links flex flex-row gap-06 wrap">
           <% if (company.twitter_username) { %>
-          <span class="company-flair-item adaptive-border">
+          <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
             <span style="margin-right: .5rem;font-weight:600;" class="symbol">&Xopf;</span>
             <a href="https://twitter.com/<%= company.twitter_username %>" target="_blank" class="company-twitter_username"><%= company.twitter_username.replace('@', '') %></a>
             <span style="padding:0;margin-left:.4rem;" class="material-symbols-outlined">
@@ -92,7 +92,7 @@
           <% } %>
 
           <% if (company.company_website) { %>
-          <span class="company-flair-item adaptive-border">
+          <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
             <span class="material-symbols-outlined">language</span>
             <a href="<%= company.company_website %>" target="_blank" class="company-company_website"><%= company.company_website %></a>
             <span style="padding:0;margin-left:.4rem;" class="material-symbols-outlined">
@@ -105,7 +105,7 @@
         <% if (company.job_board_url|| company.industry || company.stock_symbol || company.size || (company.founded && company.founded.getFullYear() !== 1899) || company.company_stage) { %>
         <div class="company-flair sub-text margin-03-bottom">
           <% if (company.job_board_url) { %>
-          <span class="company-flair-item">
+          <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
             <div class="radar-pulse">
               <div class="pulse"></div>
             </div>
@@ -114,14 +114,14 @@
           <% } %>
 
           <% if (company.industry) { %>
-          <span class="company-flair-item">
+          <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
             <span class="material-symbols-outlined">factory</span>
             <span class="company-industry"><%= company.industry %></span>
           </span>
           <% } %>
 
           <% if (company.stock_symbol) { %>
-          <span class="company-flair-item">
+          <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
             <span class="material-symbols-outlined">show_chart</span>
             <a class="company-stock_symbol" href="https://finance.yahoo.com/chart/<%= company.stock_symbol %>" target="_blank" data-symbol="<%= company.stock_symbol %>">
               $<%= company.stock_symbol %>
@@ -131,21 +131,21 @@
           <% } %>
 
           <% if (company.size) { %>
-          <span class="company-flair-item">
+          <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
             <span class="material-symbols-outlined">group</span>
             <span class="company-size"><%= company.size %></span>
           </span>
           <% } %>
 
           <% if (company.founded && company.founded.getFullYear() !== 1899) { %>
-          <span class="company-flair-item">
+          <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
             <span class="material-symbols-outlined">event</span>
             <span class="company-founded">Founded: <%= company.founded.getFullYear() %></span>
           </span>
           <% } %>
 
           <% if (company.company_stage) { %>
-          <span class="company-flair-item">
+          <span class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
             <span class="material-symbols-outlined">trending_up</span>
             <span class="company-company_stage">Stage: <%= company.company_stage %></span>
           </span>

@@ -62,10 +62,7 @@
   <!-- Hero Section -->
   <header class="hero-section">
     <div class="hero-content">
-      <div class="flex w-100 h-center">
-        <img src="/img/core.png" alt="CORE Logo" class="hero-logo">
-      </div>
-      <h1>🚀 Revolutionize Your Job Search with AI-Powered Insights</h1>
+      <h1 class="text-2xl font-semibold tracking-tight">🚀 Revolutionize Your Job Search with AI-Powered Insights</h1>
       <p>CORE is your ultimate career partner, leveraging cutting-edge AI to connect you with the perfect opportunities and empower your job search journey.</p>
       <ul class="feature-list">
         <li>🔍 Access jobs from countless websites, updated within 24 hours</li>
@@ -73,23 +70,27 @@
         <li>💡 Get powerful insights into job postings before applying</li>
         <li>🏢 Help companies gain better insights into candidates</li>
       </ul>
-      <div class="get-started-options adaptive-background round2 px-4 w-100 py-4">
+      <div class="get-started-options border round2 px-4 w-100 py-4">
+        <h3 class="text-xl font-semibold mb-4">Join the CORE Community</h3>
         <form action="/email-register" method="GET" class="email-form flex flex-col gap-1">
-          <input type="email" name="email" class="margin-06-bottom" placeholder="Enter your email" required>
-          <button type="submit" class="regular-button h-center">
-            Get Started
-            <span class="material-symbols-outlined">
+          <label for="email" class="font-medium mb-2">Enter your email to get started:</label>
+          <input type="email" id="email" name="email" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 mb-4" placeholder="your@email.com" required>
+          <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
+            Sign Me Up
+            <span class="material-symbols-outlined ml-1">
               arrow_forward
             </span>
           </button>
         </form>
-        <div class="or-divider">
-          <span>or</span>
+        <div class="or-divider flex items-center my-4">
+          <div class="flex-grow h-px bg-gray-300"></div>
+          <span class="bg-background px-2 text-muted-foreground">Or continue with</span>
+          <div class="flex-grow h-px bg-gray-300"></div>
         </div>
         <a href="/auth/github" class="github-button">
-          <button class="bordered-button h-center">
-            <img src="/src/github.png" alt="GitHub Logo" class="github-logo" style="background:white;border-radius:9999px;">
-            Sign Up with GitHub
+          <button class="w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+            <img src="/src/github.png" alt="GitHub Logo" class="github-logo h-6 w-6 mr-2">
+            Continue with GitHub
           </button>
         </a>
       </div>
@@ -175,7 +176,7 @@
     <section class="cta-section">
       <h2>Ready to Take the Next Step?</h2>
       <a href="/register">
-        <button class="regular-button centered-button">
+        <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
           Join CORE
           <span class="material-symbols-outlined">
             arrow_forward

@@ -407,10 +407,10 @@ async function lazyLoadJobDetails(user, jobId) {
       <div class="company-info w-100">
         <div class="company-details w-full">
       <div class="flex flex-col gap-2">
-          <h3 class="company-name header-text margin-03-bottom bold">
+          <h3 class="font-semibold tracking-tight text-2xl">
         ${job.title}
       </h3>
-      <p class="sub-text text-muted-foreground"> 
+      <p class="text-sm text-muted-foreground"> 
                     ${job.experienceLevel ? `
           <span class="sub-text bold text-muted-foreground">
         ${job.experienceLevel}
@@ -455,7 +455,7 @@ async function lazyLoadJobDetails(user, jobId) {
                 <img class="thumbnail thumbnail-micro thumbnail-regular" src="${job.recruiter_image}" alt="${job.company_name} logo" />
             </a>
             <div class="recruiter-details flex flex-row gap-2">
-              <p class="sub-text">
+              <p class="text-sm text-balance max-w-lg leading-relaxed">
                 Posted by
                     @<a href="/user/${job.recruiter_username}" class="mini-text">${job.recruiter_username}</a>
               </p>
@@ -464,13 +464,13 @@ async function lazyLoadJobDetails(user, jobId) {
         </div>
       </div>
       ${job.skills_string ? `
-      <p class="sub-text">
+      <p class="text-sm text-balance max-w-lg leading-relaxed">
         Skills: ${job.skills_string}
       </p>
       ` : ''}
 
       ${job.accepted_college_majors ? `
-      <p class="sub-text">
+      <p class="text-sm text-balance max-w-lg leading-relaxed">
         Majors: ${job.accepted_college_majors}
       </p>
       ` : ''}
@@ -534,10 +534,10 @@ async function lazyLoadJobDetails(user, jobId) {
         ${
   (job)
     ? `<div class="apply-button-container flex gap-4">
-                <button class="main-button-normal" onclick="applyForJob(event, '${job.id}', '${job.link}')">
-                  <span class="sub-text">Apply</span><span class="material-symbols-outlined no-padding">arrow_outward</span>
+                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 px-4 py-2" onclick="applyForJob(event, '${job.id}', '${job.link}')">
+                  <span class="material-symbols-outlined no-padding mr-2 h-4 w-4">arrow_outward</span><span class="sub-text">Apply</span>
                 </button>
-                <button class="bordered-button-normal" id="favorite-button" onclick="favorite('job', ${job.id});">
+                <button class="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-md px-3 text-xs h-8 gap-1" id="favorite-button" onclick="favorite('job', ${job.id});">
                   <span class="sub-text">Save</span>
                 </button>
                   </div>`
@@ -545,7 +545,7 @@ async function lazyLoadJobDetails(user, jobId) {
 } 
         <div class="second-buttons-container">
                   <div class="dropdown" tabindex="0">
-            <button aria-label="Dropdown" class="dropdown-button location-dropdown px-2 mini-text secondary-text" style="padding-top: .4rem; padding-bottom: .4rem;" aria-haspopup="true" aria-expanded="false">
+            <button aria-label="Dropdown" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8" style="padding-top: .4rem; padding-bottom: .4rem;" aria-haspopup="true" aria-expanded="false">
               <span class="material-symbols-outlined no-padding no-margin">more_horiz</span>
             </button>
 
@@ -591,15 +591,14 @@ async function lazyLoadJobDetails(user, jobId) {
     : ''
 }
               ${!user ? `
-      <p class="message flex flex-col gap-06 adaptive-border">
-        <span class="message-text sub-text">
+      <p class="grid gap-6 rounded-lg border p-4 flex flex-col gap-06 adaptive-border">
+        <span class="text-sm text-balance max-w-lg leading-relaxed">
           <i class="fas fa-info-circle"></i>
             Sign up or login to view job matches personalized to your resume! Build your resume, cover letter, and profile to get started.
             </span>
-            <a href="/login" class="link">
-            <button class="regular-button w-100 h-center">
+            <a href="/login">
+            <button class="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 rounded-md px-3 text-xs w-full">
               <span class="sub-text">Sign up</span>
-              <span class="material-symbols-outlined">arrow_forward</span>
             </button>
             </a>
       </p>
@@ -611,23 +610,23 @@ async function lazyLoadJobDetails(user, jobId) {
             <div class="job-details primary-text company-profile-section">
             ${job.company_description && job.company_description.length > 10 ? `
             <div class="company-description sub-text">
-              <h4 class="main-text bold">Company Description</h4>
-              <p class="sub-text">${job.company_description}</p>
+              <h4 class="font-semibold leading-none tracking-tight">Company Description</h4>
+              <p class="text-sm text-balance max-w-lg leading-relaxed">${job.company_description}</p>
             </div>
             ` : ''}
 
             ${ !job.isProcessed ? `
             <div class="job-posting-description sub-text">
-              <h4 class="main-text bold">Job Description</h4>
-              <p class="sub-text">${job.description}</p>
+              <h4 class="font-semibold leading-none tracking-tight">Job Description</h4>
+              <span class="text-sm text-balance max-w-lg leading-relaxed">${job.description}</span>
             </div>
             ` : ''}
 
               ${job.isProcessed ? `
             <div class="job-posting-description ${job.recruiter_username === 'autojob' ? 'ai-generated-content' : ''}">
 
-      <h4 class="sub-text bold" style="margin-top:0;"><span class="material-symbols-outlined" style="color: #6366f1;">auto_awesome</span> AI-Generated Overview</h4>
-    <p class="sub-text">
+      <h4 class="font-semibold leading-none tracking-tight" style="margin-top:0;"><span class="material-symbols-outlined" style="color: #6366f1;">auto_awesome</span> AI-Generated Overview</h4>
+    <p class="text-sm text-balance max-w-lg leading-relaxed">
     ${job.description.replace('??', '')}
     </p>
     </div>
@@ -636,9 +635,9 @@ async function lazyLoadJobDetails(user, jobId) {
             ${
   job.Requirements
     ? `
-            <div class="job-requirements">
-              <h4 class="main-text bold">Requirements</h4>
-              <p class="sub-text">${job.Requirements}</p>
+            <div class="font-semibold leading-none tracking-tight">
+              <h4 class="font-semibold leading-none tracking-tight">Requirements</h4>
+              <p class="text-sm text-balance max-w-lg leading-relaxed">${job.Requirements}</p>
             </div>
             `
     : ''
@@ -648,8 +647,8 @@ async function lazyLoadJobDetails(user, jobId) {
   job.Responsibilities
     ? `
             <div class="job-responsibilities">
-              <h4 class="main-text bold">Responsibilities</h4>
-              <p class="sub-text">${job.Responsibilities}</p>
+              <h4 class="font-semibold leading-none tracking-tight">Responsibilities</h4>
+              <p class="text-sm text-balance max-w-lg leading-relaxed">${job.Responsibilities}</p>
             </div>
             `
     : ''
@@ -659,8 +658,8 @@ async function lazyLoadJobDetails(user, jobId) {
   job.MinimumQualifications
     ? `
 <div class="minimum-qualifications">
-  <h4 class="main-text bold">Minimum Qualifications</h4>
-  <p class="sub-text">${job.MinimumQualifications}</p>
+  <h4 class="font-semibold leading-none tracking-tight">Minimum Qualifications</h4>
+  <p class="text-sm text-balance max-w-lg leading-relaxed">${job.MinimumQualifications}</p>
 </div>
 `
     : ''
@@ -670,8 +669,8 @@ ${
   job.PreferredQualifications
     ? `
 <div class="preferred-qualifications">
-  <h4 class="main-text bold">Preferred Qualifications</h4>
-  <p class="sub-text">${job.PreferredQualifications}</p>
+  <h4 class="font-semibold leading-none tracking-tight">Preferred Qualifications</h4>
+  <p class="text-sm text-balance max-w-lg leading-relaxed">${job.PreferredQualifications}</p>
 </div>
 `
     : ''
@@ -681,8 +680,8 @@ ${
   formattedBenefits
     ? `
 <div class="job-benefits">
-  <h4 class="main-text bold">Job Benefits</h4>
-  <ul class="sub-text">
+  <h4 class="font-semibold leading-none tracking-tight">Job Benefits</h4>
+  <ul class="text-sm text-balance max-w-lg leading-relaxed">
     ${formattedBenefits}
   </ul>
 </div>
@@ -694,8 +693,8 @@ ${
   job.NiceToHave
     ? `
 <div class="job-nice-to-have">
-  <h4 class="main-text bold">Nice to Have</h4>
-  <p class="sub-text">${job.NiceToHave}</p>
+  <h4 class="font-semibold leading-none tracking-tight">Nice to Have</h4>
+  <p class="text-sm text-balance max-w-lg leading-relaxed">${job.NiceToHave}</p>
 </div>
 `
     : ''
@@ -705,8 +704,8 @@ ${
   job.schedule
     ? `
 <div class="job-schedule">
-  <h4 class="main-text bold">Schedule</h4>
-  <p class="sub-text">${job.schedule}</p>
+  <h4 class="font-semibold leading-none tracking-tight">Schedule</h4>
+  <p class="text-sm text-balance max-w-lg leading-relaxed">${job.schedule}</p>
 </div>
 `
     : ''
@@ -716,8 +715,8 @@ ${
   job.hoursPerWeek
     ? `
 <div class="job-hours-per-week">
-  <h4 class="main-text bold">Hours per Week</h4>
-  <p class="sub-text">${job.hoursPerWeek}</p>
+  <h4 class="font-semibold leading-none tracking-tight">Hours per Week</h4>
+  <p class="text-sm text-balance max-w-lg leading-relaxed">${job.hoursPerWeek}</p>
 </div>
 `
     : ''
@@ -727,8 +726,8 @@ ${
   job.equalOpportunityEmployerInfo
     ? `
 <div class="job-equal-opportunity-employer-info">
-  <h4 class="main-text bold">Equal Opportunity Employer Info</h4>
-  <p class="sub-text">${job.equalOpportunityEmployerInfo}</p>
+  <h4 class="font-semibold leading-none tracking-tight">Equal Opportunity Employer Info</h4>
+  <p class="text-sm text-balance max-w-lg leading-relaxed">${job.equalOpportunityEmployerInfo}</p>
 </div>
 `
     : ''
@@ -738,8 +737,8 @@ ${
   job.raw_description_no_format
     ? `
 <div class="raw-description-no-format">
-  <h4 class="main-text bold">Job Description (from the company)</h4>
-  <p class="sub-text">${job.raw_description_no_format}</p>
+  <h4 class="font-semibold leading-none tracking-tight">Job Description (from the company)</h4>
+  <p class="text-sm text-balance max-w-lg leading-relaxed">${job.raw_description_no_format}</p>
 </div>
 `
     : ''
@@ -812,7 +811,7 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
   let tagsHtml = '';
   if (tags) {
     tagsHtml = tags.map(tag => `
-      <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground ${tag.class}">
+      <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 ${tag.class}">
         ${tag.text}
       </div>
     `).join('');
@@ -881,10 +880,10 @@ function checkFavorite(jobId) {
     .then((data) => {
       const favoriteButton = document.getElementById('favorite-button');
       if (data.isFavorite) {
-        favoriteButton.className = 'cancel-button-normal';
+        
         favoriteButton.innerHTML = '<span class="sub-text">Unsave</span>';
       } else {
-        favoriteButton.className = 'bordered-button-normal';
+
         favoriteButton.innerHTML = '<span class="sub-text">Save</span>';
       }
     })
@@ -950,10 +949,8 @@ function favorite(favoriteType, TypeId) {
 
 function toggleFavoriteButton(button) {
   if (button.innerHTML === '<span class="sub-text">Unsave</span>') {
-    button.className = 'bordered-button-normal';
     button.innerHTML = '<span class="sub-text">Save</span>';
   } else {
-    button.className = 'cancel-button-normal';
     button.innerHTML = '<span class="sub-text">Unsave</span>';
   }
 }

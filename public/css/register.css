@@ -110,7 +110,6 @@ nav {
   width: 100%;
   max-width: 500px;
   box-sizing: border-box;
-  text-align: center;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -197,10 +196,11 @@ input:focus {
   transition: border-color 0.3s;
 }
 
-
-#login a {
-  text-decoration: none;
-  color: var(--active-indicator-color);
+.login-buttons {
+  display: flex;
+  margin-bottom: 1.2rem;
+  align-items: center;
+  gap: 20px;
 }
 
 

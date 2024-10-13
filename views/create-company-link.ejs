@@ -49,9 +49,9 @@
     <div class="main-container">
       <form id="jobPostForm">
         <div class="form-group">
-          <input type="text" id="job-link" name="link" />
+          <input type="text" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" id="job-link" name="link" />
         </div>
-        <button id="submit-button" type="submit">Extract Job Details</button>
+        <button class="inline-flex items-center justify-center whitespace-nowrap w-full font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 rounded-md px-3 text-xs ml-auto gap-1.5" type="submit">Extract Job Details</button>
       </form>
       <div id="jobLinksContainer"></div>
       <form id="selectedJobsForm" style="display: none;">

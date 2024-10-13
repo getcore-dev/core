@@ -24,11 +24,15 @@
             <div class="pulse"></div>
             <div class="pulse"></div>
           </div>
-          <span class="current-user-count sub-text">0</span>
+          <span class="current-user-count text-sm text-muted-foreground">0</span>
         </div>
 
         <div class="user-res main-text">
-          Not a member? <a href="/register">Register here</a>
+          <h3 class="font-semibold tracking-tight text-2xl">Login</h3>
+
+          <p class="text-sm text-muted-foreground">
+            Not a member? <a href="/register">Register here</a>
+          </p>
         </div>
       </div>
 
@@ -48,36 +52,35 @@
           <% }); %>
         </div>
         <% } %>
-
+        <div class="login-buttons">
+          <a href="https://github.com/login/oauth/authorize?client_id=b37718dbac10df16ec0c&redirect_uri=https%3A%2F%2Fgetcore.dev%2Fauth%2Fgithub%2Fcallback" class="inline-flex gap-2 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+            <img src="/src/github.png" alt="GitHub Logo" style="height:16px;width:16px;background: white; border-radius: 100%;">
+            <p class="sub-text">
+              GitHub Login
+            </p>
+          </a>
+        </div>
+        <div class="relative flex justify-center text-xs uppercase"><span class="bg-card px-2 text-muted-foreground">Or continue with</span></div>
         <form action="/login" method="POST">
-          <div class="input-container">
-            <label for="username">Username</label>
-            <input type="text" name="username" id="username" placeholder="Username" required>
+          <div class="input-container mb-4 relative">
+            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="username">Username</label>
+            <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 flex-1" type="text" name="username" id="username" placeholder="Username" required>
           </div>
 
-          <div class="input-container">
-            <label for="password">Password</label>
+          <div class="input-container mb-4 relative">
+            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="password">Password</label>
             <button type="button" class="toggle-password link flex flex-row gap-03 sub-text" onclick="togglePasswordVisibility()">
               <span class="material-symbols-outlined link">visibility</span> Show
             </button>
-            <input type="password" name="password" id="password" placeholder="Password" required>
+            <input type="password" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 flex-1" name="password" id="password" placeholder="Password" required>
 
           </div>
 
-          <button type="submit" id="submit-button" class="margin-1-bottom main-text">
-            <span class="material-symbols-outlined">login</span>
-            <p class="sub-text" id="login-text">Login</p>
+          <button type="submit" class="inline-flex mb-4 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 w-full">
+            Login
           </button>
-          <p class="margin-1-bottom sub-text">Forgot your password? Reset it <a class="link" href="/forgot-password"> here</a></p>
+          <p class="flex-1 text-sm text-muted-foreground">Forgot your password? Reset it <a class="link" href="/forgot-password"> here</a></p>
 
-          <div class="login-buttons">
-            <a href="https://github.com/login/oauth/authorize?client_id=b37718dbac10df16ec0c&redirect_uri=https%3A%2F%2Fgetcore.dev%2Fauth%2Fgithub%2Fcallback" id="regular-button" class="github-login-btn">
-              <img src="/src/github.png" alt="GitHub Logo" style="background: white; border-radius: 100%;">
-              <p class="sub-text">
-                GitHub Login
-              </p>
-            </a>
-          </div>
         </form>
       </div>
     </div>

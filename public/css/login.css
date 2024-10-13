@@ -126,11 +126,6 @@ main {
   cursor: pointer;
 }
 
-.input-container {
-  position: relative;
-  margin-bottom: 20px;
-}
-
 .floating-label {
   display: none;
   font-size: .625rem;
@@ -209,10 +204,6 @@ input:focus {
 }
 
 
-
-.input-container {
-  margin-bottom: 10px;
-}
 
 #login h1 {
   text-align: center;

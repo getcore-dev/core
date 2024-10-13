@@ -8,7 +8,7 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
   let tagsHtml = '';
   if (tags) {
     tagsHtml = tags.map(tag => `
-        <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground ${tag.class}">
+        <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 ${tag.class}">
           ${tag.text}
         </div>
       `).join('');

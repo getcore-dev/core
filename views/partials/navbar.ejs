@@ -86,7 +86,7 @@
 
           <div class="flex flex-col w-100">
             <div class="flex flex-col">
-              <div class="flex flex-row v-center w-100 gap-06 adaptive-border px-3 py-2">
+              <div class="flex flex-row v-center w-100 gap-06 rounded-xl border bg-card text-card-foreground shadow px-3 py-2">
                 <img src="<%= user.avatar %>" alt="Avatar" class="thumbnail thumbnail-regular thumbnail-tiny">
                 <div class="flex flex-col">
                   <p class="mini-text bold"><%= user.firstname %> <%= user.lastname %></p>
@@ -94,12 +94,12 @@
                 </div>
                 <div class="ml-auto flex flex-row gap-06 v-center">
                   <a href="#" onclick="document.getElementById('logoutForm').submit()">
-                    <div class="menu-item sub-text primary-text cancel-button-text px-2 py-3">
+                    <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent hover:bg-secondary/80 bg-transparent cancel-button-text px-2 py-3">
                       Logout
                     </div>
                   </a>
                   <a class="clickable mini-text bold" href="/user/<%= user.username %>">
-                    <button class="regular-button-normal mini-button mini-text">
+                    <button class="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 rounded-md px-3 text-xs">
                       Profile
                     </button>
                   </a>
@@ -110,12 +110,12 @@
 
           <div class="flex flex-row margin-06-bottom gap-06 mt-2">
             <a href="/notifications">
-              <div class="menu-item bg-muted text-muted-foreground border-muted-foreground border rounded-md flex flex-col v-center sub-text relative px-2 py-3">
+              <div class="flex flex-col v-center px-2 py-3 rounded-xl border bg-card text-card-foreground shadow">
                 <span class="flex flex-row v-center">
                   <span class="material-symbols-outlined" id="menu-community-icon">
                     notifications
                   </span>
-                  <span id="unreadCount" class="counter ml-auto"></span>
+                  <span id="unreadCount" class="border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80 ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full ml-auto"></span>
 
                 </span>
                 Notifications
@@ -123,7 +123,7 @@
               </div>
             </a>
             <a href="/favorites">
-              <div class="menu-item bg-muted text-muted-foreground border-muted-foreground border rounded-md flex flex-col v-center sub-text px-2 py-3">
+              <div class="flex flex-col v-center px-2 py-3 rounded-xl border bg-card text-card-foreground shadow">
                 <span class="material-symbols-outlined" id="menu-community-icon">
                   star
                 </span>
@@ -131,7 +131,7 @@
               </div>
             </a>
             <a href="/settings">
-              <div class="menu-item bg-muted text-muted-foreground border-muted-foreground border rounded-md flex flex-col v-center sub-text px-2 py-3">
+              <div class="flex flex-col v-center px-2 py-3 rounded-xl border bg-card text-card-foreground shadow">
                 <span class="material-symbols-outlined" id="menu-community-icon">
                   settings
                 </span>
@@ -149,8 +149,8 @@
             </div>
           </div>
 
-          <a href="/" class="<%= isActive('/') ? 'active' : '' %>">
-            <div class="menu-item flex flex-row v-center gap-4 sub-text px-2 py-3">
+          <a href="/">
+            <div class="<%= isActive('/') ? 'bg-muted text-primary' : 'text-muted-foreground' %> flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
               <span class="material-symbols-outlined ml-2" id="menu-community-icon">
                 home
               </span>
@@ -158,8 +158,8 @@
             </div>
           </a>
 
-          <a href="/jobs" class="<%= isActive('/jobs') ? 'active' : '' %>">
-            <div class="menu-item flex flex-row v-center gap-4 sub-text px-2 py-3">
+          <a href="/jobs">
+            <div class="<%= isActive('/jobs') ? 'bg-muted text-primary' : 'text-muted-foreground' %> flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
               <span class="material-symbols-outlined ml-2" id="menu-community-icon">
                 work
               </span>
@@ -168,9 +168,9 @@
           </a>
           <details>
             <summary>
-              <a href="/networks" class="<%= isActive('/networks') ? 'active' : '' %>">
+              <a href="/networks">
 
-                <div class="menu-item flex flex-row v-center gap-4 sub-text px-2 py-3">
+                <div class="<%= isActive('/networks') ? 'bg-muted text-primary' : 'text-muted-foreground' %> flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
                   <span class="material-symbols-outlined ml-2" id="menu-community-icon">
                     workspaces
                   </span>
@@ -183,8 +183,8 @@
             <div class="mobile-communities-container">
             </div>
           </details>
-          <a href="/updates" class="<%= isActive('/updates') ? 'active' : '' %>">
-            <div class="menu-item flex flex-row v-center gap-4 sub-text px-2 py-3">
+          <a href="/updates">
+            <div class="<%= isActive('/updates') ? 'bg-muted text-primary' : 'text-muted-foreground' %> flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
               <span class="material-symbols-outlined ml-2" id="menu-community-icon">
                 update
               </span>
@@ -196,8 +196,8 @@
 
           <% if (user) { %>
           <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
-          <a href="/feedback" class="<%= isActive('/feedback') ? 'active' : '' %>">
-            <div class="menu-item flex flex-row v-center gap-4 sub-text px-2 py-3">
+          <a href="/feedback">
+            <div class="<%= isActive('/feedback') ? 'bg-muted text-primary' : 'text-muted-foreground' %> flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
               <span class="material-symbols-outlined ml-2" id="menu-community-icon">
                 feedback
               </span>
@@ -206,8 +206,8 @@
             </div>
           </a>
           <% } %>
-          <a href="/about" class="<%= isActive('/about') ? 'active' : '' %>">
-            <div class="menu-item flex flex-row v-center gap-4 sub-text px-2 py-3">
+          <a href="/about">
+            <div class="flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary <%= isActive('/about') ? 'bg-muted text-primary' : 'text-muted-foreground' %>">
               <span class="material-symbols-outlined ml-2" id="menu-community-icon">
                 info
               </span>
@@ -231,8 +231,11 @@
         <ul class="user-links flex-row  gap-06">
           <li id="search-toggle-button" style="width: auto">
             <button type="button" class="no-bg no-border no-padding">
-              <span id="nb-icon" class="material-symbols-outlined primary-text">
-                search
+              <span id="nb-icon" class="primary-text">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search h-6 w-6 text-muted-foreground">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.3-4.3"></path>
+                </svg>
               </span>
             </button>
           </li>
@@ -241,7 +244,7 @@
           <li class="navigation-avatar">
             <div class="nav-avatar">
               <a href="/login">
-                <button class="regular-button-normal mini-button mini-text flex flex-row v-center px-4">
+                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 px-4 py-2">
                   Sign in
                 </button>
               </a>

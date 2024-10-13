@@ -1825,7 +1825,6 @@ ORDER BY jp.postedDate DESC
       const result = await pool.request().query(`
         SELECT companies.id, companies.name, companies.job_board_url FROM companies
         WHERE companies.job_board_url IS NOT NULL AND companies.job_board_url != ''
-        ORDER BY name
       `);
       return result.recordset;
     } catch (err) {

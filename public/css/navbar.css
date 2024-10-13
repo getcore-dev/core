@@ -262,7 +262,7 @@ ul li {
 
 #horizontal-scroll,
 .horizontal-scroll {
-  overflow-x: auto; 
+  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   position: relative;
@@ -1731,7 +1731,6 @@ input[type='search'] {
   line-height: 1em;
   background: transparent !important;
   border: 1px solid var(--border-color) !important;
-  padding: .4rem .75rem;
   font-family: var(--font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif);
   margin: 0;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
@@ -2413,6 +2412,7 @@ hr {
   padding: 19px 13px !important;
   padding-bottom: 5px !important;
   width: 100%;
+  max-width: 800px;
   box-sizing: border-box;
 }
 
@@ -3628,7 +3628,6 @@ input::placeholder {
   input[type='password'],
   input[type='search'] {
     border-radius: 8px;
-    padding: .45rem .75rem;
   }
 
   input[type='text'],

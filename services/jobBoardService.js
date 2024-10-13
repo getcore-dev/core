@@ -236,8 +236,11 @@ class JobProcessor extends EventEmitter {
     if (this.processedLinks.has(link)) {
       return;
     }
-    this.jobQueue.push(link);
-    console.log(`Added job link to queue: ${link}`);
+
+    if (!this.jobLinks.has(link)) {
+      this.jobLinks.add(link);
+      console.log(`Added job link to queue: ${link}`);
+    }
     if (!this.isProcessing) {
       this.processQueue();
     }
@@ -737,6 +740,7 @@ class JobProcessor extends EventEmitter {
       return response;
     } catch (error) {
       console.error('Error making request:', error);
+      throw error;
     }
   }
 
@@ -776,46 +780,53 @@ class JobProcessor extends EventEmitter {
       });
   
       page.on('response', async response => {
-        // dont try on linkedin.com and epicgames.com
-        if (response.url().includes('linkedin.com') || response.url().includes('epicgames.com') || response.url().includes('tiktok')) {
-          // console.log('Skipping response from linkedin.com, epicgames.com, or tiktok.com');
+        // Check for excluded domains
+        const excludedDomains = ['linkedin.com', 'epicgames.com', 'tiktok.com'];
+        if (excludedDomains.some(domain => response.url().includes(domain))) {
           return;
         }
-        const url = response.url();
+  
         const contentType = response.headers()['content-type'];
         
-        if (contentType && (contentType.includes('application/json'))) {
+        if (contentType && contentType.includes('application/json')) {
           try {
-            const responseData = await response.json();
-            if (responseData && (responseData.departments)) {
-              // iterate over each department and get the .jobs [Array]
+            const responseText = await response.text();
+            const responseData = JSON.parse(responseText);
+  
+            if (responseData && Array.isArray(responseData.departments)) {
               jobData = [];
               for (const department of responseData.departments) {
-                if (department.jobs) {
+                if (Array.isArray(department.jobs)) {
                   for (const job of department.jobs) {
-                    jobData.push({link: job.absolute_url, title: job.title});
+                    if (job.absolute_url && job.title) {
+                      jobData.push({link: job.absolute_url, title: job.title});
+                    }
                   }
                 }
               }
-              
-              console.log('Found job data in intercepted request');
+              if (jobData.length > 0) {
+                console.log('Found job data in departments');
+              }
             }
-
-            if (responseData && responseData.positions) {
-              // iterate over each position in the positions array
+  
+            if (responseData && Array.isArray(responseData.positions)) {
               jobData = responseData.positions.map(position => ({
-                link: `https://aexp.eightfold.ai/careers/job/${position.id}`,
+                link: position.id ? `https://aexp.eightfold.ai/careers/job/${position.id}` : null,
                 title: position.name,
                 location: position.location,
                 department: position.department,
                 business_unit: position.business_unit,
                 work_location_option: position.work_location_option
-              }));
-              
-              console.log('Found job data in intercepted request');
+              })).filter(job => job.link && job.title); // Filter out jobs without link or title
+  
+              if (jobData.length > 0) {
+                console.log('Found job data in positions');
+              }
             }
           } catch (error) {
-            console.error('Error parsing JSON response:', error);
+            console.error('Error parsing JSON response:', error.message);
+            // Optionally, log the response text for debugging
+            // console.error('Response text:', await response.text());
           }
         }
       });
@@ -823,7 +834,7 @@ class JobProcessor extends EventEmitter {
       // Navigate to the page and wait for network to be idle
       await page.goto(url, { 
         waitUntil: 'networkidle0',
-        timeout: 30000 // Increase timeout to 30 seconds
+        timeout: 30000 // 30 seconds timeout
       });
   
       await this.randomDelay(500, 1000);
@@ -831,7 +842,7 @@ class JobProcessor extends EventEmitter {
       const content = await page.content();
   
       // If job data was found in an intercepted request, return it
-      if (jobData) {
+      if (jobData && jobData.length > 0) {
         return {
           data: jobData,
           status: 200,
@@ -845,8 +856,12 @@ class JobProcessor extends EventEmitter {
         status: 200,
       };
     } catch (error) {
-      console.error('Puppeteer fallback failed:', error);
-      throw error;
+      console.error('Puppeteer fallback failed:', error.message);
+      return {
+        data: null,
+        status: 500,
+        error: error.message
+      };
     } finally {
       if (browser) {
         await browser.close();
@@ -2441,6 +2456,10 @@ class JobProcessor extends EventEmitter {
       console.error('Invalid link type:', typeof link);
       return { error: 'Invalid link type' };
     }
+
+    if (this.jobLinks.has(link)) {
+      return { skipped: true, reason: 'Already processed' };
+    }
   
     const url = typeof link === 'object' && link.url ? link.url : link;
   
@@ -3624,27 +3643,6 @@ class JobProcessor extends EventEmitter {
   async updateJobPostings() {
     const companies = await jobQueries.getCompaniesWithJobBoard();
 
-    /*
-    [
-      {
-    id: 1345,
-    name: 'CERN',
-    job_board_url: 'https://jobs.smartrecruiters.com/CERN'
-  },
-  {
-    id: 868,
-    name: 'CesiumAstro',
-    job_board_url: 'https://jobs.lever.co/CesiumAstro'
-  },
-  {
-    id: 751,
-    name: 'CGS Federal',
-    job_board_url: 'https://jobs.lever.co/cgsfederal'
-  },
-  ... 479 more items
-]
-  */
-
     for (const company of companies) {
       const jobBoardUrl = company.job_board_url;
       await this.addToCompanyLinkQueue(jobBoardUrl);
@@ -3747,12 +3745,14 @@ class JobProcessor extends EventEmitter {
         console.error('Error in updateJobPostings:', error);
       }
 
+      /*
       try {
         const links = await this.collectJobLinksFromSimplify();
       } catch (error) {
         // await notificationQueries.createDevNotification('error', '', 'Error in collectJobLinksFromSimplify:', error);
         console.error('Error in collectJobLinksFromSimplify:', error);
       }
+        */
 
       this.updateProgress({ phase: 'Cleaning job postings' });
       try {
