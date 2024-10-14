@@ -1006,6 +1006,16 @@ router.get('/jobs/:id/similar-company', cacheMiddleware(2400), async (req, res) 
   }
 });
 
+router.get('/unverified-users', async (req, res) => {
+  try {
+    const unverifiedUsers = await userQueries.getUnverifiedUsers();
+    res.json(unverifiedUsers);
+  } catch (err) {
+    console.error('Error fetching unverified users:', err);
+    res.status(500).send('Error fetching unverified users');
+  }
+});
+
 router.post('/job-postings', checkAuthenticated, async (req, res) => {
   try {
     const {

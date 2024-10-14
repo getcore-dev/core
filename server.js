@@ -3,7 +3,9 @@ const numCPUs = require('os').cpus().length;
 const app = require('./app');
 const environment = require('./config/environment');
 const JobProcessor = require('./services/jobBoardService');
+const UserProcessor = require('./services/userService');
 const jobProcessor = new JobProcessor();
+const userProcessor = new UserProcessor();
 const MS_PER_HOUR = 3600000;
 
 let currentProgress = {};
@@ -19,6 +21,17 @@ async function runJobBoardService() {
     console.log('Job board service completed successfully');
   } catch (error) {
     console.error('Error running job board service:', error);
+  }
+  scheduleNextRun();
+}
+
+async function runUserService() {
+  console.log('user service started');
+  try {
+    await userProcessor.start();
+    console.log('user service completed successfully');
+  } catch (error) {
+    console.error('Error running user service:', error);
   }
   scheduleNextRun();
 }
@@ -68,13 +81,11 @@ if (cluster.isMaster && process.env.NODE_ENV !== 'development') {
 
   if (process.env.NODE_ENV !== 'development') {
     setTimeout(() => {
+      runUserService();
       runJobBoardService();
     }, 5000);
   }
 } else {
-  // Workers can share any TCP connection
-  // In this case it is an HTTP server
-  
   app.listen(environment.port, () => {
     console.log(`Worker ${process.pid} started and running on http://localhost:${environment.port}`);
   });

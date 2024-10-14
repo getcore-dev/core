@@ -56,6 +56,28 @@ const userQueries = {
     }
   },
 
+  getUnverifiedUsers: async () => {
+    // find users where verifiedAccount is null or false and verification_token is not null
+    try {
+      const result = await sql.query`
+        SELECT username, id, email, created_at, lastLogin FROM users WHERE verified = 0 AND verification_token IS NOT NULL`;
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  deleteUser: async (userId) => {
+    try {
+      await sql.query`DELETE FROM users WHERE id = ${userId}`;
+    } catch (err) {
+      console.error('Database delete error:', err);
+      throw err;
+    }
+  },
+
+
   searchUsers: async (searchTerm) => {
     try {
       const result = await sql.query`
