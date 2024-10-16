@@ -49,18 +49,18 @@
         <div class="basic-info">
           <div class="avatar-wrapper gap-3">
             <img src="<%= edit_user.avatar %>" alt="avatar" id="avatar-preview" class="avatar-image" />
-            <input type="file" id="avatar" name="avatar" accept="image/*" aria-label="Upload Avatar">
+            <input type="file" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="avatar" name="avatar" accept="image/*" aria-label="Upload Avatar">
           </div>
           <div class="flex flex-col">
             <div class="name-fields">
               <div class="form-group">
                 <small class="text-[0.8rem] text-muted-foreground">First Name</small>
-                <input type="text" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" id="firstname" name="firstname" value="<%= edit_user.firstname %>" placeholder="First Name" required aria-label="First Name">
+                <input type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="firstname" name="firstname" value="<%= edit_user.firstname %>" placeholder="First Name" required aria-label="First Name">
 
               </div>
               <div class="form-group">
                 <small class="text-[0.8rem] text-muted-foreground">Last Name</small>
-                <input type="text" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" id="lastname" name="lastname" value="<%= edit_user.lastname %>" placeholder="Last Name" required aria-label="Last Name">
+                <input type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="lastname" name="lastname" value="<%= edit_user.lastname %>" placeholder="Last Name" required aria-label="Last Name">
               </div>
             </div>
           </div>
@@ -72,7 +72,7 @@
         <div class="flex flex-col gap-06">
           <div>
             <small class="text-[0.8rem] text-muted-foreground">Resume Upload</small>
-            <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" aria-label="Upload Resume">
+            <input type="file" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="resume" name="resume" accept=".pdf,.doc,.docx" aria-label="Upload Resume">
             <small class="text-[0.8rem] text-muted-foreground">Accepted file types: .pdf, .doc, .docx. Max file size: 5 MB</small>
           </div>
           <div class="flex flex-row wrap gap-1">
@@ -132,19 +132,19 @@
         <h2 class="section-title">Personal Info</h2>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Email</small>
-          <input type="email" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" id="email" name="email" value="<%= edit_user.email %>" placeholder="Email" required aria-label="Email">
+          <input type="email" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="email" name="email" value="<%= edit_user.email %>" placeholder="Email" required aria-label="Email">
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Phone Number</small>
-          <input type="tel" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" id="phone_number" name="phone_number" value="<%= edit_user.phone_number %>" placeholder="Phone Number" aria-label="Phone Number">
+          <input type="tel" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="phone_number" name="phone_number" value="<%= edit_user.phone_number %>" placeholder="Phone Number" aria-label="Phone Number">
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Bio</small>
-          <textarea id="bio" class="flex min-h-[60px] w-full rounded-md border border-input bg-transparent text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 p-4" name="bio" rows="4" placeholder="Bio" aria-label="Bio"><%= edit_user.bio %></textarea>
+          <textarea id="bio" class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" name="bio" rows="4" placeholder="Bio" aria-label="Bio"><%= edit_user.bio %></textarea>
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Zipcode</small>
-          <input type="text" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" id="zipcode" name="zipcode" value="<%= edit_user.zipcode %>" placeholder="Current Location" aria-label="Current Location">
+          <input type="text" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="zipcode" name="zipcode" value="<%= edit_user.zipcode %>" placeholder="Current Location" aria-label="Current Location">
         </div>
       </section>
 
@@ -154,15 +154,15 @@
         <h2 class="section-title">Job Preferences</h2>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Professional Summary</small>
-          <textarea id="professionalSummary" class="flex min-h-[60px] w-full rounded-md border border-input bg-transparent text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 p-4" name="professionalSummary" rows="4" placeholder="Professional Summary" aria-label="Bio"><%= edit_user.professionalSummary %></textarea>
+          <textarea id="professionalSummary" class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" name="professionalSummary" rows="4" placeholder="Professional Summary" aria-label="Bio"><%= edit_user.professionalSummary %></textarea>
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Desired Job Title</small>
-          <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" type="text" id="desired_job_title" name="desired_job_title" value="<%= edit_user.desired_job_title %>" placeholder="Desired Job Title" aria-label="Desired Job Title">
+          <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" type="text" id="desired_job_title" name="desired_job_title" value="<%= edit_user.desired_job_title %>" placeholder="Desired Job Title" aria-label="Desired Job Title">
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Desired Employment Type</small>
-          <select class="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1" id="employment_type" name="employment_type" aria-label="Desired Employment Type">
+          <select class="flex h-10 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 w-[180px]" id="employment_type" name="employment_type" aria-label="Desired Employment Type">
             <option value="" disabled selected>Select Employment Type</option>
             <option value="full_time" <% if((edit_user.employment_type?.toLowerCase() ?? '') == 'full_time') { %>selected<% } %>>Full-time</option>
             <option value="part_time" <% if((edit_user.employment_type?.toLowerCase() ?? '') == 'part_time') { %>selected<% } %>>Part-time</option>
@@ -173,63 +173,63 @@
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Desired Location</small>
-          <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" type="text" id="jobPreferredLocation" name="jobPreferredLocation" value="<%= edit_user.is%>" placeholder="Desired Location (City, State, or Remote)" aria-label="Desired Location">
+          <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" type="text" id="jobPreferredLocation" name="jobPreferredLocation" value="<%= edit_user.is%>" placeholder="Desired Location (City, State, or Remote)" aria-label="Desired Location">
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Salary Minimum</small>
-          <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" type="number" id="desired_salary_min" name="desired_salary_min" value="<%= edit_user.desired_salary_min | 0 %>" placeholder="Minimum Desired Salary" aria-label="Minimum Desired Salary">
+          <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" type="number" id="desired_salary_min" name="desired_salary_min" value="<%= edit_user.desired_salary_min | 0 %>" placeholder="Minimum Desired Salary" aria-label="Minimum Desired Salary">
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Technical Skills</small>
-          <textarea class="flex min-h-[60px] w-full rounded-md border border-input bg-transparent text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 p-4" id="technical_skills" name="technical_skills" rows="4" placeholder="List your technical skills separated by commas" aria-label="Technical Skills"><%= edit_user.technical_skills %></textarea>
+          <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="technical_skills" name="technical_skills" rows="4" placeholder="List your technical skills separated by commas" aria-label="Technical Skills"><%= edit_user.technical_skills %></textarea>
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Soft Skills</small>
-          <textarea class="flex min-h-[60px] w-full rounded-md border border-input bg-transparent text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 p-4" id="soft_skills" name="soft_skills" rows="4" placeholder="List your soft skills separated by commas" aria-label="Soft Skills"><%= edit_user.soft_skills %></textarea>
+          <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="soft_skills" name="soft_skills" rows="4" placeholder="List your soft skills separated by commas" aria-label="Soft Skills"><%= edit_user.soft_skills %></textarea>
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Other Skills</small>
-          <textarea class="flex min-h-[60px] w-full rounded-md border border-input bg-transparent text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 p-4" id="other_skills" name="other_skills" rows="4" placeholder="List your other skills separated by commas" aria-label="Other Skills"><%= edit_user.other_skills %></textarea>
+          <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="other_skills" name="other_skills" rows="4" placeholder="List your other skills separated by commas" aria-label="Other Skills"><%= edit_user.other_skills %></textarea>
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Languages</small>
-          <textarea class="flex min-h-[60px] w-full rounded-md border border-input bg-transparent text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 p-4" id="languages" name="languages" rows="4" placeholder="List the languages you speak" aria-label="Languages"><%= edit_user.languages %></textarea>
+          <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="languages" name="languages" rows="4" placeholder="List the languages you speak" aria-label="Languages"><%= edit_user.languages %></textarea>
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Certifications</small>
-          <textarea class="flex min-h-[60px] w-full rounded-md border border-input bg-transparent text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 p-4" id="certifications" name="certifications" rows="4" placeholder="List your certifications" aria-label="Certifications"><%= edit_user.certifications %></textarea>
+          <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="certifications" name="certifications" rows="4" placeholder="List your certifications" aria-label="Certifications"><%= edit_user.certifications %></textarea>
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Preferred Industries</small>
-          <textarea class="flex min-h-[60px] w-full rounded-md border border-input bg-transparent text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 p-4" id="preferred_industries" name="preferred_industries" rows="4" placeholder="List your preferred industries" aria-label="Preferred Industries"><%= edit_user.preferred_industries %></textarea>
+          <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="preferred_industries" name="preferred_industries" rows="4" placeholder="List your preferred industries" aria-label="Preferred Industries"><%= edit_user.preferred_industries %></textarea>
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Preferred Companies</small>
-          <textarea class="flex min-h-[60px] w-full rounded-md border border-input bg-transparent text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 p-4" id="preferred_companies" name="preferred_companies" rows="4" placeholder="List your preferred companies" aria-label="Preferred Companies"><%= edit_user.preferred_companies %></textarea>
+          <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="preferred_companies" name="preferred_companies" rows="4" placeholder="List your preferred companies" aria-label="Preferred Companies"><%= edit_user.preferred_companies %></textarea>
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Socials</small>
-          <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" type="text" id="github_url" name="github_url" value="<%= edit_user.github_url %>" placeholder="GitHub URL" aria-label="GitHub URL">
+          <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" type="text" id="github_url" name="github_url" value="<%= edit_user.github_url %>" placeholder="GitHub URL" aria-label="GitHub URL">
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">LinkedIn</small>
-          <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" type="text" id="linkedin_url" name="linkedin_url" value="<%= edit_user.linkedin_url %>" placeholder="LinkedIn" aria-label="LinkedIn">
+          <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" type="text" id="linkedin_url" name="linkedin_url" value="<%= edit_user.linkedin_url %>" placeholder="LinkedIn" aria-label="LinkedIn">
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">LeetCode</small>
-          <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" type="text" id="leetcode_url" name="leetcode_url" value="<%= edit_user.leetcode_url %>" placeholder="LeetCode Username" aria-label="LeetCode Username">
+          <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" type="text" id="leetcode_url" name="leetcode_url" value="<%= edit_user.leetcode_url %>" placeholder="LeetCode Username" aria-label="LeetCode Username">
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Twitter</small>
-          <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" type="text" id="twitter" name="twitter" value="<%= edit_user.twitter %>" placeholder="Twitter Username" aria-label="Twitter Username">
+          <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" type="text" id="twitter" name="twitter" value="<%= edit_user.twitter %>" placeholder="Twitter Username" aria-label="Twitter Username">
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Link</small>
-          <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" type="text" id="link" name="link" value="<%= edit_user.link %>" placeholder="Link" aria-label="Link">
+          <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" type="text" id="link" name="link" value="<%= edit_user.link %>" placeholder="Link" aria-label="Link">
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Link 2</small>
-          <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" type="text" id="link2" name="link2" value="<%= edit_user.link2 %>" placeholder="Link 2" aria-label="Link 2">
+          <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" type="text" id="link2" name="link2" value="<%= edit_user.link2 %>" placeholder="Link 2" aria-label="Link 2">
         </div>
         <!--
         <div class="form-group">
@@ -245,7 +245,7 @@
       <section class="section">
         <h2 class="section-title">Salary Preferences</h2>
         <div class="form-group">
-          <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" type="number" id="desired_salary_max" name="desired_salary_max" value="<%= edit_user.desired_salary_max | 0 %>" placeholder="Maximum Desired Salary"  aria-label="Maximum Desired Salary">
+          <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" type="number" id="desired_salary_max" name="desired_salary_max" value="<%= edit_user.desired_salary_max | 0 %>" placeholder="Maximum Desired Salary"  aria-label="Maximum Desired Salary">
         </div>
 
       </section>

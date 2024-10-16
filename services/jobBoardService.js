@@ -3800,12 +3800,14 @@ class JobProcessor extends EventEmitter {
         console.error('Error in collectJobLinksFromSimplify:', error);
       }
 
+      /*
       this.updateProgress({ phase: 'Cleaning job postings' });
       try {
         await this.removeDuplicateJobs();
       } catch (error) {
         console.error('Error in removeDuplicateJobs:', error);
       }
+        */
       
       try {
         await this.crawlYCombinator();

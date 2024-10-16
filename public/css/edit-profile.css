@@ -34,14 +34,6 @@ body {
     margin: 0;
 }
 
-.container input {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    box-sizing: border-box;
-}
-
 .custom-file-upload {
     display: inline-block;
     padding: 6px 12px;

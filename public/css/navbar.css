@@ -1863,8 +1863,6 @@ select {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   box-sizing: border-box;
   border-radius: 6px;
-  background-color: transparent !important;
-  border: 1.5px solid var(--border-color) !important;
   font-size: 16px;
   --tw-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
   --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
@@ -2992,12 +2990,6 @@ input::placeholder {
     color: var(--dark-mode-text-color);
   }
 
-  select {
-    background-color: var(--dark-mode-main-color) !important;
-    border: 1.5px solid var(--dark-mode-border-color) !important;
-    color: var(--dark-mode-text-color);
-  }
-
   .search-icon {
     color: var(--dark-mode-secondary-text-color);
   }
@@ -3757,7 +3749,7 @@ input::placeholder {
 /* Dropdown Links */
 .dropdown-content a {
   color: #333;
-  padding: .3rem .6rem;
+  padding: .5rem .6rem;
   border-radius: var(--radius);
   box-sizing: border-box;
   text-decoration: none;

@@ -1,4 +1,5 @@
 const sql = require('mssql');
+const { pool } = require('../db'); // Adjust the path as necessary
 
 exports.findPosts = async (searchTerm) => {
   const query = `
@@ -19,7 +20,6 @@ exports.findPosts = async (searchTerm) => {
     JOIN communities ON posts.communities_id = communities.id
     WHERE posts.title LIKE @searchTerm AND posts.deleted = 0;
   `;
-  const pool = await sql.connect(); // Connect using your global or existing connection settings
   const results = await pool
     .request()
     .input('searchTerm', sql.VarChar, `%${searchTerm}%`) // Use parameterized input
@@ -31,7 +31,6 @@ exports.findUsers = async (searchTerm) => {
         SELECT * FROM users
         WHERE username LIKE @searchTerm OR (firstname + ' ' + lastname) LIKE @searchTerm;
     `;
-  const pool = await sql.connect(); // Assume global or persistent connection
   const results = await pool
     .request()
     .input('searchTerm', sql.VarChar, `%${searchTerm}%`) // Safe parameterized input
@@ -63,7 +62,6 @@ exports.findJobs = async (searchTerm) => {
     JOIN companies ON JobPostings.company_id = companies.id
     WHERE JobPostings.title LIKE @searchTerm OR JobPostings.description LIKE @searchTerm;
   `;
-  const pool = await sql.connect(); // Assume global or persistent connection
   const results = await pool
     .request()
     .input('searchTerm', sql.VarChar, `%${searchTerm}%`) // Safe parameterized input

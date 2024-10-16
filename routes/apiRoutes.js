@@ -1344,6 +1344,16 @@ router.get('/companies', async (req, res) => {
   }
 });
 
+router.get('/company-names', async (req, res) => {
+  try {
+    const companies = await jobQueries.getCompanyNames();
+    res.json(companies);
+  } catch (err) {
+    console.error('Error fetching company names:', err);
+    res.status(500).send('Error fetching companies');
+  }
+});
+
 router.get('/communities/:communityId/posts', async (req, res) => {
   try {
     const communityId = req.params.communityId;

@@ -15,6 +15,7 @@ const state = {
   },
   hasMoreData: true,
   allTags: [],
+  companyNames : [],
   isTagsExpanded: false,
   isSkillsExpanded: false,
   jobSearchInput: document.getElementById('job-search-input'),
@@ -228,6 +229,16 @@ function updateStateFromServerFilters() {
   }
 }
 
+async function fetchCompanyNames() {
+  try {
+    const response = await fetch('/api/company-names');
+    const companies = await response.json();
+    return companies;
+  } catch (error) {
+    console.error('Error fetching company names:', error);
+  }
+}
+
 async function initialize() {
   try {
     const serverFilters = JSON.parse(document.getElementById('server-filters').textContent);
@@ -239,6 +250,11 @@ async function initialize() {
     
     if (state.jobPostings.length === 0) {
       await fetchJobPostings();
+    }
+
+    if (state.companyNames.length === 0) {
+      state.companyNames = await fetchCompanyNames();
+      console.log(state.companyNames);
     }
     
     updateJobCount();
@@ -1060,98 +1076,75 @@ function removeInfiniteScroll() {
     loadMoreBtn.style.display = 'none';
   }
 }
-state.jobSearchInput.addEventListener('input', 
-  debounce(() => {
-    if (!state.jobSearchInput.value) {
-      clearSearchResults();
-      return;
-    }
-    if (state.jobSearchInput.value.length < 2) return;
 
-    const searchTerm = state.jobSearchInput.value;
-    const routes = ['companies', 'tech-job-titles', 'job-locations', 'job-levels'];
-
-    Promise.all(routes.map(route => 
-      fetch(`/autocomplete/${route}?term=${searchTerm}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }).then(response => response.json())
-    ))
-      .then(results => {
-        if (results.every(result => result.length === 0)) {
-          clearSearchResults();
-          return;
-        }
-        // Normalize and combine all results
-        const combinedResults = results.flatMap((routeResults, index) => {
-          const type = routes[index];
-          return routeResults.map(item => ({
-            id: item.id,
-            name: item.name || item.title || item.location || item.level,
-            jobCount: item.jobCount || 0,
-            type: type,
-            logo: item.logo // Only for companies
-          }));
-        });
-
-        // Sort by job count in descending order
-        const sortedResults = combinedResults.sort((a, b) => b.jobCount - a.jobCount);
-
-        // Display results
-        displaySearchResults(sortedResults);
-      })
-      .catch(error => {
-        console.error('Error fetching search results:', error);
-      });
-  }, DEBOUNCE_DELAY)
-);
-
-function displaySearchResults(results) {
-  const resultsContainer = document.createElement('div');
-  resultsContainer.className = 'job-search-results';
-
-  results.forEach(result => {
-    const resultItem = document.createElement('div');
-    resultItem.className = 'search-result-item';
-    resultItem.dataset.type = result.type;
-    resultItem.dataset.id = result.id;
-    resultItem.dataset.name = result.name;
-    const filterMappings = {
-      'companies': 'Companies',
-      'tech-job-titles': 'Job Titles',
-      'job-locations': 'Locations',
-      'job-levels': 'Experience Levels'
-    };
-    if (result.logo) resultItem.dataset.logo = result.logo;
-    
-    let content = `<p class="sub-text link">${result.name}</p> <p class="mini-text secondary-text">in <strong>${filterMappings[result.type]}</strong> - ${result.jobCount} jobs</p>`;
-    
-    if (result.type === 'companies' && result.logo) {
-      const logo = document.createElement('img');
-      logo.src = result.logo;
-      logo.alt = `${result.name} logo`;
-      logo.className = 'thumbnail-micro thumnbnail thumbnail-regular';
-      resultItem.appendChild(logo);
-    }
-    
-    resultDiv = document.createElement('div');
-    resultDiv.innerHTML = content;
-    resultItem.appendChild(resultDiv);
-    resultItem.addEventListener('click', handleResultClick);
-    resultsContainer.appendChild(resultItem);
-  });
-
-  clearSearchResults();
-  state.jobSearchInput.parentNode.insertBefore(resultsContainer, state.jobSearchInput.nextSibling);
-
-  // Hide skill results if any company, title, or location is already selected
-  if (state.filters.companies.size > 0 || state.filters.titles.size > 0 || state.filters.locations.size > 0) {
-    const skillResults = resultsContainer.querySelectorAll('.search-result-item[data-type="skills"]');
-    skillResults.forEach(item => item.style.display = 'none');
-  }
+// Clear the search results and reset the state then trigger search
+function clearSearchResults() {
+  state.jobPostings = [];
+  state.currentPage = 1;
+  state.hasMoreData = true;
+  state.renderedJobIds.clear();
+  elements.jobList.innerHTML = '';
+  clearAllFilters();
+  saveStateToLocalStorage();
+  fetchJobPostings();
 }
+
+// Modify the search functionality to let users filter by job titles or company names.
+function handleSearchInput() {
+  const searchTerm = state.jobSearchInput.value.trim().toLowerCase();
+
+  if (searchTerm.length < 2) {
+    clearSearchResults();
+    return;
+  }
+
+  // Clear existing filters
+  state.filters.titles.clear();
+  state.filters.companies.clear();
+
+  // Filter companies based on the search term
+  const matchingCompanies = state.companyNames.filter(company =>
+    company.name.toLowerCase().includes(searchTerm)
+  );
+
+  if (matchingCompanies.length > 0) {
+    // Determine the best match among the matching companies
+    const bestMatchCompany = getBestMatch(searchTerm, matchingCompanies);
+
+    if (bestMatchCompany) {
+      // Add only the ID of the best matching company to the filters
+      state.filters.companies.add(bestMatchCompany.id);
+    }
+  } else {
+    // If no companies match, treat the search term as a job title
+    state.filters.titles.add(searchTerm);
+  }
+
+  // Trigger the job search with updated filters
+  triggerJobSearch();
+}
+
+/**
+ * Helper function to determine the best matching company.
+ * This example uses the longest matching name as the best match.
+ * You can customize this logic based on your specific criteria.
+ *
+ * @param {string} searchTerm - The search term entered by the user.
+ * @param {Array} companies - Array of matching company objects.
+ * @returns {Object|null} - The best matching company object or null if none found.
+ */
+function getBestMatch(searchTerm, companies) {
+  // Example criteria: longest name that includes the search term
+  return companies.reduce((best, current) => {
+    const bestMatchLength = best.name.toLowerCase().split(searchTerm).join('').length;
+    const currentMatchLength = current.name.toLowerCase().split(searchTerm).join('').length;
+    return currentMatchLength < bestMatchLength ? current : best;
+  }, companies[0]) || null;
+}
+
+
+// Attach event listener to the search input element
+state.jobSearchInput.addEventListener('input', debounce(handleSearchInput, DEBOUNCE_DELAY));
 
 function handleResultClick(event) {
   console.log('handleResultClick');
@@ -1174,8 +1167,6 @@ function handleResultClick(event) {
     updateState(type, id, name, logo);
   }
   
-  // Clear search results
-  clearSearchResults();
   state.jobSearchInput.value = '';
   
   // Hide skill results if company, title, location, or salary is selected
@@ -1395,13 +1386,6 @@ function isFilterSelected(type, id, name) {
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-function clearSearchResults() {
-  const existingResults = document.querySelector('.job-search-results');
-  if (existingResults) {
-    existingResults.remove();
-  }
 }
 
 // Add some basic styles

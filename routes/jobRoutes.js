@@ -472,7 +472,10 @@ router.get('/:jobId', viewLimiter, async (req, res) => {
 
     if (req.user) {
       console.log('adding to recent jobs');
-      await userRecentQueries.addViewedJob(req.user.id, job.id, job.company_id);
+      const recentExists = await userRecentQueries.isJobInRecentViews(req.user.id, job.id);
+      if (!recentExists) {
+        await userRecentQueries.addViewedJob(req.user.id, job.id);
+      }
     }
 
     res.render('job-posting.ejs', {

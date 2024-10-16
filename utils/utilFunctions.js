@@ -1248,15 +1248,7 @@ GROUP BY
   },
 
   upsertGitHubData: async (userData, reposData) => {
-    const pool = new sql.ConnectionPool(config); // Ensure 'config' is your SQL Server configuration
-    await pool.connect();
-
     try {
-      const transaction = pool.transaction();
-      await transaction.begin();
-
-      let request = transaction.request(); // Use the request from the transaction
-
       // Upsert user data
       let userUpsertQuery = `
         MERGE INTO GitHubUserData AS target
@@ -1282,7 +1274,7 @@ GROUP BY
   '\'\''
 )}', GETDATE(), '${JSON.stringify(userData).replace(/'/g, '\'\'')}');
       `;
-      await request.query(userUpsertQuery);
+      await pool.request().query(userUpsertQuery);
 
       // Upsert repos data
       for (const repo of reposData) {
@@ -1310,21 +1302,11 @@ GROUP BY
   repo.stargazers_count
 }, GETDATE(), '${JSON.stringify(repo).replace(/'/g, '\'\'')}');
         `;
-        await request.query(repoUpsertQuery);
+        await pool.request().query(repoUpsertQuery);
       }
-
-      // Commit transaction
-      await transaction.commit();
     } catch (error) {
       console.error('Error updating GitHub data:', error);
-      if (pool.connected) {
-        await pool.close();
-      }
       throw error; // Rethrow the error for further handling
-    }
-
-    if (pool.connected) {
-      await pool.close();
     }
   },
 

@@ -20,50 +20,53 @@
     <div class="edit-company-header">
       <h5>Edit <%= company.name %> company profile</h5>
     </div>
+    <div class="edit-company-logo">
+      <img class="h-16 w-16 rounded-xl ml-auto mr-auto" src="<%= company.logo %>" alt="<%= company.name %> logo" />
+    </div>
     <form action="/jobs/company/<%= encodeURIComponent(company.name) %>/edit" method="POST" enctype="multipart/form-data">
       <input type="hidden" name="id" value="<%= company.id %>">
       <div>
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" value="<%= company.name %>" required>
+        <input type="text" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" id="name" name="name" value="<%= company.name %>" required>
       </div>
       <div>
         <label for="location">Location:</label>
-        <input type="text" id="location" name="location" value="<%= company.location %>">
+        <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" type="text" id="location" name="location" value="<%= company.location %>">
       </div>
       <div>
         <label for="description">Description:</label>
-        <textarea class="auto-grow-textarea" id="description" name="description"><%= company.description %></textarea>
+        <textarea class="auto-grow-textarea flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="description" name="description"><%= company.description %></textarea>
       </div>
       <div>
         <label for="logo">Logo:</label>
-        <input type="file" id="logo" name="logo" class="upload-logo" accept="image/*">
+        <input type="file" id="logo" name="logo" class="upload-logo flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" accept="image/*">
         <input type="hidden" id="logo-data" name="logo-data">
       </div>
       <div>
         <label for="industry">Industry:</label>
-        <input type="text" id="industry" name="industry" value="<%= company.industry %>">
+        <input type="text" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" id="industry" name="industry" value="<%= company.industry %>">
       </div>
       <div>
         <label for="founded">Founded:</label>
-        <input type="datetime-local" id="founded" name="founded" value="<%= company.founded ? company.founded.toISOString().substring(0, 16) : '' %>">
+        <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" type="datetime-local" id="founded" name="founded" value="<%= company.founded ? company.founded.toISOString().substring(0, 16) : '' %>">
       </div>
       <div>
         <label for="size">Size:</label>
-        <input type="text" id="size" name="size" value="<%= company.size %>">
+        <input type="text" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" id="size" name="size" value="<%= company.size %>">
       </div>
       <div>
         <label for="stock_symbol">Stock Symbol:</label>
-        <input type="text" id="stock_symbol" name="stock_symbol" value="<%= company.stock_symbol %>">
+        <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" type="text" id="stock_symbol" name="stock_symbol" value="<%= company.stock_symbol %>">
       </div>
       <div>
         <label for="alternate_names">Alternate Names:</label>
-        <input type="text" id="alternate_names" name="alternate_names" value="<%= company.alternate_names %>">
+        <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" type="text" id="alternate_names" name="alternate_names" value="<%= company.alternate_names %>">
       </div>
       <div>
         <label for="job_board_url">Job Board URL</label>
-        <input type="text" id="job_board_url" name="job_board_url" value="<%= company.job_board_url %>">
+        <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" type="text" id="job_board_url" name="job_board_url" value="<%= company.job_board_url %>">
       </div>
-      <button class="submit-button" type="submit">Update Company</button>
+      <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2" type="submit">Update Company</button>
     </form>
   </main>
   <script>

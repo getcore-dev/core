@@ -229,7 +229,6 @@ const jobQueries = {
       // Create a string of @p1, @p2, etc. for each companyId
       const parameterPlaceholders = companyIds.map((_, index) => `@p${index + 1}`).join(',');
   
-      const request = new sql.Request();
   
       // Add parameters for each companyId
       companyIds.forEach((id, index) => {
@@ -263,7 +262,7 @@ const jobQueries = {
         FETCH NEXT @pageSize ROWS ONLY
       `;
   
-      const result = await request.query(query);
+      const result = await pool.request().query(query);
       const jobs = result.recordset;
       return jobs;
     }
@@ -450,7 +449,6 @@ const jobQueries = {
   
   async getJobsBatch(offset, batchSize) {
     try {
-      await sql.connect(config);
       const result = await pool.request().query`
         SELECT id, title, description
         FROM JobPostings
@@ -469,7 +467,6 @@ const jobQueries = {
 
   async flagJobForReview(jobId) {
     try {
-      await sql.connect(config);
       await pool.request().query`
         UPDATE JobPostings
         SET needs_review = 1
@@ -479,7 +476,6 @@ const jobQueries = {
       console.error(`SQL error in flagJobForReview for job ${jobId}:`, err);
       throw err;
     } finally {
-      await sql.close();
     }
   },
 
@@ -587,7 +583,7 @@ const jobQueries = {
         FETCH NEXT @pageSize ROWS ONLY
       `;
 
-      const request = new sql.Request();
+      const request = pool.request();
       request.input('offset', sql.Int, offset);
       request.input('pageSize', sql.Int, pageSize);
       
@@ -1043,13 +1039,13 @@ const jobQueries = {
       `;
   
       // Prepare SQL request and input parameters
-      const request = new sql.Request();
+      const request = pool.request();
       Object.entries(queryParams).forEach(([key, value]) => {
         request.input(key, value);
       });
       request.input('offset', sql.Int, offset);
       request.input('pageSize', sql.Int, pageSize);
-  
+      
       // Execute the query
       const result = await request.query(baseQuery);
   
@@ -1184,7 +1180,7 @@ const jobQueries = {
         WHERE id = @id
       `;
 
-    const request = new sql.Request();
+    const request = pool.request();
     request.input('id', sql.Int, id);
     Object.entries(values).forEach(([key, { value, type }]) => {
       request.input(key, type, value);
@@ -1236,12 +1232,12 @@ const jobQueries = {
       WHERE id = @id
     `;
   
-    const request = new sql.Request();
+    const request = pool.request();
     request.input('id', sql.Int, id);
     Object.entries(values).forEach(([key, { value, type }]) => {
       request.input(key, type, value);
     });
-  
+    
     await request.query(query);
   },
 
@@ -1424,7 +1420,7 @@ ORDER BY jp.postedDate DESC
         queryParams.limit = limit;
       }
 
-      const request = new sql.Request();
+      const request = pool.request();
       Object.entries(queryParams).forEach(([key, value]) => {
         request.input(key, value);
       });
@@ -1471,11 +1467,11 @@ ORDER BY jp.postedDate DESC
         });
       }
 
-      const request = new sql.Request();
+      const request = pool.request();
       Object.entries(queryParams).forEach(([key, value]) => {
         request.input(key, value);
       });
-
+      
       const result = await request.query(query);
       return result.recordset[0].count;
     } catch (error) {
@@ -1667,7 +1663,6 @@ ORDER BY jp.postedDate DESC
   },
   getTagId: async (tagName) => {
     try {
-      const pool = await sql.connect();
 
       const jobTagResult = await pool
         .request()
@@ -1870,6 +1865,19 @@ ORDER BY jp.postedDate DESC
     try {
       const result = await pool.request().query(`
         SELECT * FROM companies
+        ORDER BY name
+      `);
+      return result.recordset;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  getCompanyNames: async () => {
+    try {
+      const result = await pool.request().query(`
+        SELECT id, name FROM companies
         ORDER BY name
       `);
       return result.recordset;
