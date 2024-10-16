@@ -16,6 +16,14 @@ main {
   margin: 0;
 }
 
+#profile>div.profile-info {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  gap: 2.4rem;
+}
+
+
 .followers-info {
   display: flex;
   flex-direction: row;
@@ -521,10 +529,12 @@ td {
 
 
   #profile {
-    padding: 0 1rem;
+    padding: 0;
     padding-top: 0;
     gap: 1.5rem;
     grid-template-columns: repeat(1, 1fr);
+    max-width: 100vw;
+    width: auto;
     /* Two columns of equal size */
     grid-template-areas:
       "info1 info1"
@@ -536,6 +546,11 @@ td {
       "user-activity user-activity";
   }
 
+  #profile>div.profile-info {
+    padding: 1rem !important;
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
 
 
 }
@@ -614,13 +629,6 @@ td {
 
 .comments {
   grid-area: comments;
-}
-
-#profile>div.profile-info {
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  gap: 2.4rem;
 }
 
 .profile-info {

@@ -81,9 +81,8 @@ if (cluster.isMaster && process.env.NODE_ENV !== 'development') {
 
   if (process.env.NODE_ENV !== 'development') {
     setTimeout(() => {
-      runUserService();
       runJobBoardService();
-    }, 5000);
+    }, 1000);
   }
 } else {
   app.listen(environment.port, () => {

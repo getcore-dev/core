@@ -639,6 +639,7 @@ const jobQueries = {
       }
   
       if (locations.length) {
+        console.log(locations); 
         const locationCondition = locations
           .map((location, i) => {
             queryParams[`location${i}`] = `%${location}%`;

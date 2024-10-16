@@ -92,29 +92,27 @@
       li.classList.add('notification-item');
       li.classList.add('px-4');
       li.classList.add('py-2');
-
-
       li.classList.add(notification.isRead ? 'read' : 'unread');
 
       const notificationDiv = document.createElement('div');
       const notificationIsReadIndicator = createReadIndicator(notification);
       const notificationReplyButtonDiv = document.createElement('div');
-      notificationReplyButtonDiv.classList.add('notification-reply-button-div');
+      notificationReplyButtonDiv.classList = 'flex flex-row';
       notificationDiv.appendChild(notificationIsReadIndicator);
 
       const notificationReplyButton = document.createElement('button');
       if (notification.isRead) {
-        notificationReplyButton.classList.add('bordered-button-normal');
+        notificationReplyButton.classList = 'inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-md px-3 text-xs h-7 border-dashed border-accent max-w-[150px] max-h-[30px]';
       } else {
         notificationReplyButton.classList.add('main-button-normal');
       }
-      notificationReplyButton.classList.add('mini-button');
-
-      notificationReplyButton.classList.add('ml-auto');
 
       notificationReplyButton.textContent = 'Open';
       notificationReplyButton.onclick = () => handleNotificationClick(notification, li, notificationIsReadIndicator);
 
+      const clearBtn = createClearButton(notification, li);
+      notificationReplyButtonDiv.appendChild(notificationReplyButton);
+      notificationReplyButtonDiv.appendChild(clearBtn);
 
       const notificationAvatarDiv = document.createElement('div');
       notificationAvatarDiv.classList.add('notification-avatar-div');
@@ -127,22 +125,14 @@
       notificationSenderAvatar.classList.add('thumbnail-regular');
       notificationSenderAvatar.classList.add('thumbnail-tiny');
 
-
-
       notificationAvatarDiv.appendChild(notificationSenderAvatar);
-
       notificationDiv.appendChild(notificationAvatarDiv);
 
       const notificationTextDiv = createNotificationText(notification);
       notificationDiv.appendChild(notificationTextDiv);
-      notificationDiv.appendChild(notificationReplyButton);
-
-      const clearBtn = createClearButton(notification, li);
-      notificationDiv.appendChild(clearBtn);
+      notificationTextDiv.appendChild(notificationReplyButtonDiv);
 
       li.appendChild(notificationDiv);
-      notificationTextDiv.appendChild(notificationReplyButtonDiv);
-      notificationReplyButton.onclick = () => handleNotificationClick(notification, li, notificationIsReadIndicator);
       return li;
     }
 
@@ -156,32 +146,14 @@
       return notificationIsReadIndicator;
     }
 
-    const reactionTypes = [{
-        type: "LOVE",
-        icon: "❤️"
-      },
-      {
-        type: "LIKE",
-        icon: "👍"
-      },
-      {
-        type: "CURIOUS",
-        icon: "🤔"
-      },
-      {
-        type: "DISLIKE",
-        icon: "👎"
-      }
-    ];
-
     function createNotificationText(notification) {
       const notificationTextDiv = document.createElement('div');
       notificationTextDiv.dataset.notificationId = notification.id;
       notificationTextDiv.dataset.notificationType = notification.type;
-      notificationTextDiv.classList.add('notification-text-div');
+      notificationTextDiv.classList = 'notification-text-div w-full flex flex-col gap-2';
 
       const notificationText = document.createElement('span');
-      notificationText.classList.add('notification-text');
+      notificationText.classList = 'notification-text flex flex-row justify-between ';
 
       switch (notification.type) {
       case 'NEW_COMMENT':
@@ -237,28 +209,39 @@
 
       notificationTextDiv.appendChild(notificationText);
 
-      const flairs = document.createElement('span');
-
-
-      const notificationTime = document.createElement('span');
-      notificationTime.classList.add('time-flair');
-      notificationTime.classList.add('text-muted-foreground');
-      notificationTime.classList.add('sub-text');
+      const notificationTime = document.createElement('div');
+      notificationTime.classList = 'time-flair text-muted-foreground sub-text ml-auto';
 
 
       notificationTime.textContent = formatDate(notification.createdAt);
-      flairs.appendChild(notificationTime);
+      notificationText.appendChild(notificationTime);
 
-      notificationTextDiv.appendChild(flairs);
 
       return notificationTextDiv;
     }
 
+    function createClearButton(notification, li) {
+      const clearBtn = document.createElement('button');
+      clearBtn.classList = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-7 px-4 py-2";
+      const clearIcon = document.createElement('span');
+      clearIcon.textContent = 'Delete';
+      clearBtn.appendChild(clearIcon);
+
+      clearBtn.onclick = async function (event) {
+        event.stopPropagation();
+        await fetch(`/notifications/${notification.id}`, {
+          method: 'DELETE'
+        });
+        li.remove();
+      };
+
+      return clearBtn;
+    }
+
+
     function createClearAllButton() {
       const clearAllBtn = document.createElement('button');
-      clearAllBtn.classList.add('clear-all-btn');
-      clearAllBtn.classList.add('cancel-button-normal');
-      clearAllBtn.classList.add('mini-button');
+      clearAllBtn.classList = 'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2';
 
       clearAllBtn.innerHTML = '<span class="material-symbols-outlined">close</span> Clear';
 
@@ -275,24 +258,26 @@
       return clearAllBtn;
     }
 
-    function createClearButton(notification, li) {
-      const clearBtn = document.createElement('button');
-      clearBtn.classList.add('clear-btn');
-      const clearIcon = document.createElement('span');
-      clearIcon.classList.add('material-symbols-outlined');
-      clearIcon.textContent = 'clear';
-      clearBtn.appendChild(clearIcon);
+    const reactionTypes = [{
+        type: "LOVE",
+        icon: "❤️"
+      },
+      {
+        type: "LIKE",
+        icon: "👍"
+      },
+      {
+        type: "CURIOUS",
+        icon: "🤔"
+      },
+      {
+        type: "DISLIKE",
+        icon: "👎"
+      }
+    ];
 
-      clearBtn.onclick = async function (event) {
-        event.stopPropagation();
-        await fetch(`/notifications/${notification.id}`, {
-          method: 'DELETE'
-        });
-        li.remove();
-      };
 
-      return clearBtn;
-    }
+
 
     async function handleNotificationClick(notification, li, notificationIsReadIndicator) {
       await fetch(`/notifications/markAsRead/${notification.id}`, {

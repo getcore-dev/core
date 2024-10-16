@@ -42,6 +42,24 @@ class ObjectSet extends Set {
 class JobProcessor extends EventEmitter {
   constructor() {
     super();
+    this.companyJobUrls = {
+      'linkedin.com': ['view', 'jobs'],
+      'greenhouse.io': ['jid='],
+      'bankofamerica.com': ['job-detail'],
+      'ashbyhq.com': ['job/'],
+      'stripe.com': ['jobs/'],
+      'abbvie.com': ['careers/'],
+      'c3.ai': ['careers/'],
+      'wiz.io': ['careers/'],
+      'lever.co': ['jobs/'],
+      'jobvite.com': ['job/'],
+      'careers.tiktok.com': ['job/'],
+      'myworkdayjobs.com': ['job/'],
+      'smartrecruiters.com': ['job/'],
+      'microsoft.com': ['job/'],
+      'apple.com': ['jobs/'],
+      'epicgames.com': ['job/']
+    };
     const geminiKey = process.env.GEMINI_API_KEY;
     const openaiKey = process.env.OPENAI_API_KEY;
     this.genAI = new GoogleGenerativeAI(geminiKey);
@@ -224,16 +242,14 @@ class JobProcessor extends EventEmitter {
       console.error(`Error processing links on page ${url}:`, error);
     }
   }
-
-  isJobLink(url) {
-    // Implement logic to determine if a URL is a job link
-    // This might involve checking for keywords in the URL or other criteria
-    return url.includes('/job') || url.includes('/career') || url.includes('/position');
-  }
   
 
   async addToJobProcessingQueue(link) {
     if (this.processedLinks.has(link)) {
+      return;
+    }
+
+    if (!this.isJobLink(link)) {
       return;
     }
 
@@ -697,6 +713,7 @@ class JobProcessor extends EventEmitter {
   async makeRequest(url, usePuppeteer = false) {
     // Handle special cases for specific job board platforms
     if (url.includes('linkedin.com')) return await this.usePuppeteerFallback(url);
+    if (url.includes('ycombinator')) return await this.usePuppeteerFallback(url);
     if (url.includes('wiz.io')) return await this.usePuppeteerFallback(url);
     if (url.includes('nba.com')) return await this.usePuppeteerFallback(url);
     if (url.includes('icims.com')) return await this.usePuppeteerFallback(url);
@@ -2451,6 +2468,17 @@ class JobProcessor extends EventEmitter {
     return this.processJobWithRules(url, this.jobProcessingRules['ashbyhq.com']);
   }
 
+  isJobLink(url) {
+    for (const [company, patterns] of Object.entries(this.companyJobUrls)) {
+      if (url.includes(company)) {
+        return patterns.some(pattern => url.includes(pattern));
+      }
+    }
+
+    console.log('No patterns found for:', url);
+    return false;
+  }
+
   async processJobLink(link) {
     if (typeof link !== 'object' && typeof link !== 'string') {
       console.error('Invalid link type:', typeof link);
@@ -2472,6 +2500,11 @@ class JobProcessor extends EventEmitter {
       return { error: 'Invalid URL' };
     }
   
+    const isJobLink = this.isJobLink(url);
+    if (!isJobLink) {
+      return { skipped: true, reason: 'Not a job link' };
+    }
+
     const jobProcessors = [
       { keyword: 'greenhouse.io', processor: this.processGreenhouseJobLink.bind(this) },
       { keyword: 'bankofamerica.com', processor: this.processBoFALink.bind(this) },
@@ -2483,7 +2516,6 @@ class JobProcessor extends EventEmitter {
       { keyword: 'lever.co', processor: this.processLeverJobLink.bind(this) },
       { keyword: 'jobvite.com', processor: this.processJobViteLink.bind(this) },
       { keyword: 'careers.tiktok.com', processor: this.processTiktokJobLink.bind(this) },
-
       { keyword: 'myworkdayjobs.com', processor: this.processWorkDayJobLink.bind(this) },
       { keyword: 'linkedin.com', processor: async (url) => {
           const response = await this.makeRequest(url);
@@ -3654,58 +3686,66 @@ class JobProcessor extends EventEmitter {
     });
 
   }
-
   async crawl(startUrl) {
-    const unprocessedLinks = new Set();
+    const unprocessedLinks = new Set([startUrl]);
     const processedLinks = new Set();
-
-    // Collect initial job links
-    const response = await this.collectJobLinksFromLink(startUrl);
-    if (response && response.links) {
-      for (const link of response.links) {
-        if (!processedLinks.has(link.url)) {
-          unprocessedLinks.add(link.url);
+    const maxRetries = 3;
+    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    const startTime = Date.now();
+    const timeLimit = 60 * 60 * 1000; // 1 hour in milliseconds
+  
+    try {
+      while (unprocessedLinks.size > 0) {
+        if (Date.now() - startTime > timeLimit) {
+          console.log('Time limit reached. Stopping the crawl process.');
+          break;
         }
-      }
-    }
-
-    // Process all collected links
-    while (unprocessedLinks.size > 0) {
-      const link = unprocessedLinks.values().next().value;
-      unprocessedLinks.delete(link);
-      processedLinks.add(link);
-
-      // Process the link for job data
-      const jobData = await this.processJobLink(link);
-      if (jobData) {
-        if (jobData.title && jobData.company_name && jobData.description) {
-          const companyId = await this.getOrCreateCompany(
-            jobData.company_name,
-            jobData.company_description || '',
-            jobData.company_location || '',
-            jobData.company_job_board_url || '',
-            jobData.company_industry || '',
-            jobData.company_size || '',
-            jobData.company_stock_symbol || '',
-            jobData.company_logo || '',
-            jobData.company_founded || null
-          );
-          await this.createJobPosting(jobData, companyId, link);
-        }
-      }
-
-      // Collect more links from the current page
-      const newLinks = await this.collectJobLinksFromLink(link);
-      if (newLinks && newLinks.links) {
-        for (const newLink of newLinks.links) {
-          if (!processedLinks.has(newLink) && !unprocessedLinks.has(newLink)) {
-            unprocessedLinks.add(newLink);
+  
+        const link = unprocessedLinks.values().next().value;
+        unprocessedLinks.delete(link);
+        processedLinks.add(link);
+  
+        let retries = 0;
+        while (retries < maxRetries) {
+          try {
+            // Collect job links
+            const response = await this.collectJobLinksFromLink(link);
+            if (response && response.links) {
+              for (const newLink of response.links) {
+                if (!processedLinks.has(newLink.url) && !unprocessedLinks.has(newLink.url)) {
+                  unprocessedLinks.add(newLink.url);
+                }
+              }
+            }
+  
+            // add to job link queue
+            if (response && response.jobLinks) {
+              for (const jobLink of response.jobLinks) {
+                await this.addToJobLinkQueue(jobLink);
+              }
+            }
+  
+            break; // Success, exit retry loop
+          } catch (error) {
+            console.error(`Error processing ${link}: ${error.message}`);
+            retries++;
+            if (retries >= maxRetries) {
+              console.error(`Max retries reached for ${link}. Moving to next link.`);
+            } else {
+              await delay(1000 * retries); // Exponential backoff
+            }
           }
         }
+  
+        // Implement rate limiting
+        await delay(1000); // Wait 1 second between requests
       }
+    } catch (error) {
+      console.error(`Crawl process terminated due to error: ${error.message}`);
+    } finally {
+      console.log(`Crawl complete. Processed ${processedLinks.size} links in ${(Date.now() - startTime) / 1000} seconds.`);
     }
   }
-
   async crawLinkedIn() {
     const jobTitles = [
       'Software Engineer', 'Data Analyst', 'Web Developer', 'System Architect',
@@ -3733,6 +3773,11 @@ class JobProcessor extends EventEmitter {
     await this.crawl(searchUrl);
   }
 
+  async crawlYCombinator() {
+    const ycLink = 'https://www.ycombinator.com/jobs';
+    await this.crawl(ycLink);
+  }
+
   async start() {
 
     try {
@@ -3741,25 +3786,26 @@ class JobProcessor extends EventEmitter {
       try {
         await this.updateJobPostings();
       } catch (error) {
-        // await notificationQueries.createDevNotification('error', '', 'Error in updateJobPostings:', error);
         console.error('Error in updateJobPostings:', error);
       }
 
-      /*
       try {
-        const links = await this.collectJobLinksFromSimplify();
+        await this.collectJobLinksFromSimplify();
       } catch (error) {
-        // await notificationQueries.createDevNotification('error', '', 'Error in collectJobLinksFromSimplify:', error);
         console.error('Error in collectJobLinksFromSimplify:', error);
       }
-        */
 
       this.updateProgress({ phase: 'Cleaning job postings' });
       try {
         await this.removeDuplicateJobs();
       } catch (error) {
-        // await notificationQueries.createDevNotification('error', '', 'Error in removeDuplicateJobs:', error);
         console.error('Error in removeDuplicateJobs:', error);
+      }
+      
+      try {
+        await this.crawlYCombinator();
+      } catch (error) {
+        console.error('Error in crawlYCombinator:', error);
       }
 
       this.updateProgress({ phase: 'Completed' });
