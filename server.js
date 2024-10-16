@@ -82,12 +82,15 @@ if (cluster.isMaster && process.env.NODE_ENV !== 'development') {
     console.log(`worker ${worker.process.pid} died`);
     cluster.fork(); // Replace the dead worker
   });
+  /*
 
   if (process.env.NODE_ENV !== 'development') {
     setTimeout(() => {
       runJobBoardService();
     }, 60000);
   }
+    */
+   
 } else {
   const PORT = process.env.PORT || environment.port;
   app.listen(PORT, () => {
