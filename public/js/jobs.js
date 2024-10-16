@@ -1091,7 +1091,7 @@ function handleSearchInput() {
 
   // Filter companies based on the search term
   const matchingCompanies = state.companyNames.filter(company =>
-    company.name.toLowerCase().includes(searchTerm)
+    company && company.name && company.name.toLowerCase().includes(searchTerm)
   );
 
   if (matchingCompanies.length > 0) {

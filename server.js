@@ -1,6 +1,6 @@
 const cluster = require('cluster');
 const numCPUs = require('os').cpus().length;
-const setupApp = require('./app');
+const app = require('./app');
 const environment = require('./config/environment');
 const JobProcessor = require('./services/jobBoardService');
 const UserProcessor = require('./services/userService');
@@ -43,56 +43,27 @@ function scheduleNextRun() {
   setTimeout(runJobBoardService, delayMs);
 }
 
-async function startServer() {
-  try {
-    app = await setupApp();
-
-    // Add routes that depend on app
-    app.get('/job-processing-progress', (req, res) => {
-      if (!req.user) {
-        return res.redirect('/login');
-      }
-      if (!req.user.isAdmin) {
-        return res.status(403).redirect('/');
-      }
-      res.render('progress', { progress: currentProgress });
-    });
-
-    app.get('/api/job-processing-progress', (req, res) => {
-      if (!req.user) {
-        return res.redirect('/login');
-      }
-      if (!req.user.isAdmin) {
-        return res.status(403).redirect('/');
-      }
-      res.json(currentProgress);
-    });
-
-    const PORT = process.env.PORT || 8080;
-    app.listen(PORT, () => {
-      console.log(`Server started on port ${PORT}`);
-    }).on('error', (err) => {
-      console.error('Failed to start server:', err);
-    });
-
-    if (process.env.NODE_ENV !== 'development') {
-      setTimeout(() => {
-        runJobBoardService();
-      }, 60000);
-    }
-  } catch (err) {
-    console.error('Failed to set up application:', err);
-    process.exit(1);
+// Add a new route to view the progress
+app.get('/job-processing-progress', (req, res) => {
+  if (!req.user) {
+    return res.redirect('/login');
   }
-}
-
-process.on('uncaughtException', (err) => {
-  console.error('Uncaught Exception:', err);
+  if (!req.user.isAdmin) {
+    return res.status(403).redirect('/');
+  }
+  res.render('progress', { progress: currentProgress });
 });
 
-console.log('Starting server...');
-console.log('Environment:', process.env.NODE_ENV);
-console.log('Port:', environment.port);
+// Add a new route to get the progress as JSON (for AJAX requests)
+app.get('/api/job-processing-progress', (req, res) => {
+  if (!req.user) {
+    return res.redirect('/login');
+  }
+  if (!req.user.isAdmin) {
+    return res.status(403).redirect('/');
+  }
+  res.json(currentProgress);
+});
 
 if (cluster.isMaster && process.env.NODE_ENV !== 'development') {
   console.log(`Master ${process.pid} is running`);
@@ -107,6 +78,14 @@ if (cluster.isMaster && process.env.NODE_ENV !== 'development') {
     console.log(`worker ${worker.process.pid} died`);
     cluster.fork(); // Replace the dead worker
   });
+
+  if (process.env.NODE_ENV !== 'development') {
+    setTimeout(() => {
+      runJobBoardService();
+    }, 1000);
+  }
 } else {
-  startServer();
+  app.listen(environment.port, () => {
+    console.log(`Worker ${process.pid} started and running on http://localhost:${environment.port}`);
+  });
 }

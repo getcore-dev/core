@@ -1273,7 +1273,7 @@ GROUP BY
   '\'\''
 )}', GETDATE(), '${JSON.stringify(userData).replace(/'/g, '\'\'')}');
       `;
-      await pool.request().query(userUpsertQuery);
+      await sql.query(userUpsertQuery);
 
       // Upsert repos data
       for (const repo of reposData) {
@@ -1301,7 +1301,7 @@ GROUP BY
   repo.stargazers_count
 }, GETDATE(), '${JSON.stringify(repo).replace(/'/g, '\'\'')}');
         `;
-        await pool.request().query(repoUpsertQuery);
+        await sql.query(repoUpsertQuery);
       }
     } catch (error) {
       console.error('Error updating GitHub data:', error);

@@ -477,8 +477,6 @@ router.get('/:jobId', viewLimiter, async (req, res) => {
       }
     }
 
-=======
->>>>>>> parent of e36fca5 (large visual update and db refactoring)
     res.render('job-posting.ejs', {
       job_id: jobId,
       user: req.user,
