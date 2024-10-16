@@ -1868,7 +1868,6 @@ ORDER BY jp.postedDate DESC
 
   getCompanies: async () => {
     try {
-      const pool = await sql.connect();
       const result = await pool.request().query(`
         SELECT * FROM companies
         ORDER BY name
@@ -1882,7 +1881,6 @@ ORDER BY jp.postedDate DESC
 
   getAllJobLinks: async () => {
     try {
-      const pool = await sql.connect();
       const result = await pool.request().query(`
         SELECT link from JobPostings
       `);
@@ -1895,7 +1893,6 @@ ORDER BY jp.postedDate DESC
 
   getCompaniesWithJobBoard: async () => {
     try {
-      const pool = await sql.connect();
       const result = await pool.request().query(`
         SELECT companies.id, companies.name, companies.job_board_url FROM companies
         WHERE companies.job_board_url IS NOT NULL AND companies.job_board_url != ''
