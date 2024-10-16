@@ -449,6 +449,10 @@ const jobQueries = {
   
   async getJobsBatch(offset, batchSize) {
     try {
+<<<<<<< HEAD
+=======
+      await sql.connect(config);
+>>>>>>> e36fca5 (large visual update and db refactoring)
       const result = await pool.request().query`
         SELECT id, title, description
         FROM JobPostings
@@ -467,6 +471,10 @@ const jobQueries = {
 
   async flagJobForReview(jobId) {
     try {
+<<<<<<< HEAD
+=======
+      await sql.connect(config);
+>>>>>>> e36fca5 (large visual update and db refactoring)
       await pool.request().query`
         UPDATE JobPostings
         SET needs_review = 1

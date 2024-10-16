@@ -90,8 +90,13 @@
               <div class="flex flex-row v-center w-100 gap-06 rounded-xl bg-card border bg-card text-card-foreground shadow px-3 py-2">
                 <img src="<%= user.avatar %>" alt="Avatar" class="h-8 rounded-xl">
                 <div class="flex flex-col">
+<<<<<<< HEAD
                   <p class="text-sm font-semibold"><%= user.firstname %> <%= user.lastname %></p>
                   <p class="text-xs secondary-text"><%= user.username %></p>
+=======
+                  <p class="mini-text font-semibold"><%= user.firstname %> <%= user.lastname %></p>
+                  <p class="mini-text secondary-text"><%= user.username %></p>
+>>>>>>> e36fca5 (large visual update and db refactoring)
                 </div>
                 <div class="ml-auto flex flex-row gap-06 v-center">
                   <a class="mini-text bold" href="/user/<%= user.username %>">
@@ -800,10 +805,17 @@
 
             <div class="flex flex-row gap-06 v-center">
             <img src="${recentJob.company_logo || '/img/glyph.png'}" alt="logo" class="aspect-square h-6 w-6 rounded-xl" />
+<<<<<<< HEAD
             <p class="text-xs text-muted-foreground">${recentJob.company_name}</p>
             </div>
             <div class="flex flex-col">
             <p class="text-sm text-foreground w-full">${recentJob.title} </p>
+=======
+            <p class="mini-text">${recentJob.title}</p>
+            </div>
+            <div class="flex flex-col">
+            <p class="line-clamp-1 text-sm text-muted-foreground w-full">${recentJob.description} </p>
+>>>>>>> e36fca5 (large visual update and db refactoring)
             </div>
             `;
 

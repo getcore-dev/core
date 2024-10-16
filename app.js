@@ -25,6 +25,7 @@ const generalRoutes = require('./routes/generalRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const rateLimit = require('express-rate-limit');
 const communityRoutes = require('./routes/communityRoutes');
+<<<<<<< HEAD
 const userQueries = require('./queries/userQueries');
 const viewLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
@@ -43,11 +44,47 @@ const viewLimiter = rateLimit({
     const eightHoursAgo = Date.now() - 8 * 60 * 60 * 1000;
     return req.rateLimit.resetTime < eightHoursAgo;
   },
+=======
+const jobBoardService = require('./services/jobBoardService');
+const { pool, poolConnect } = require('./db'); // Adjust the path as necessary
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5000,
+  message: 'bro please azure costs are so high',
+>>>>>>> e36fca5 (large visual update and db refactoring)
 });
 
 const app = express();
 
+<<<<<<< HEAD
 // Set up view engine
+=======
+poolConnect.then(() => {
+  console.log('Connected to SQL Server successfully.');
+}).catch(err => {
+  console.error('Failed to connect to SQL Server:', err);
+  process.exit(1); // Exit the application if the pool connection fails
+});
+
+// Passport configuration
+passportConfig.initialize(
+  passport,
+  userQueries.findByEmail,
+  userQueries.findById,
+  userQueries.findByUsername,
+  userQueries.findByGitHubUsername,
+  userQueries.findByGithubId,
+  userQueries.updateGitHubId,
+  userQueries.updateUserGitHubAccessToken,
+  userQueries.updateGitHubUsername,
+  userQueries.createUserFromGitHubProfile,
+  userQueries.findByGoogleId,
+  userQueries.createUserFromGoogleProfile
+);
+
+
+>>>>>>> e36fca5 (large visual update and db refactoring)
 app.engine('ejs', ejsAsync.renderFile);
 app.set('view-engine', 'ejs');
 
