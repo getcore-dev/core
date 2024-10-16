@@ -1,10 +1,12 @@
 const sql = require('mssql');
 const postQueries = require('./postQueries');
+const { pool } = require('../db'); // Adjust the path as necessary
+
 
 const tagQueries = {
   getTags: async () => {
     try {
-      const result = await sql.query`SELECT * FROM tags`;
+      const result = await pool.request().query`SELECT * FROM tags`;
       return result.recordset;
     } catch (err) {
       console.error('Database query error:', err);
@@ -15,7 +17,7 @@ const tagQueries = {
   createTag: async (tagName) => {
     try {
       const result =
-        await sql.query`INSERT INTO tags (name) OUTPUT INSERTED.* VALUES (${tagName})`; // Make sure the column name is correct
+        await pool.request().query`INSERT INTO tags (name) OUTPUT INSERTED.* VALUES (${tagName})`; // Make sure the column name is correct
       return result.recordset[0];
     } catch (err) {
       console.error('Database insert error:', err);
@@ -25,7 +27,7 @@ const tagQueries = {
 
   findByTagId: async (tagId) => {
     try {
-      const result = await sql.query`SELECT * FROM tags WHERE id = ${tagId}`;
+      const result = await pool.request().query`SELECT * FROM tags WHERE id = ${tagId}`;
       return result.recordset[0];
     } catch (err) {
       console.error('Database query error:', err);
@@ -36,7 +38,7 @@ const tagQueries = {
   getTagsForPost: async (postId) => {
     try {
       const result =
-        await sql.query`SELECT * FROM post_tags WHERE post_id = ${postId}`;
+        await pool.request().query`SELECT * FROM post_tags WHERE post_id = ${postId}`;
       return result.recordset;
     } catch (err) {
       console.error('Database query error:', err);
@@ -47,7 +49,7 @@ const tagQueries = {
   getPostsForTag: async (tagId) => {
     try {
       const result =
-        await sql.query`SELECT * FROM post_tags WHERE tag_id = ${tagId}`;
+        await pool.request().query`SELECT * FROM post_tags WHERE tag_id = ${tagId}`;
       const posts = [];
       for (let i = 0; i < result.recordset.length; i++) {
         const post = await postQueries.findByPostId(
@@ -63,7 +65,7 @@ const tagQueries = {
   },
   findTagByName: async (tag) => {
     try {
-      const result = await sql.query`SELECT * FROM tags WHERE name = ${tag}`;
+      const result = await pool.request().query`SELECT * FROM tags WHERE name = ${tag}`;
       return result.recordset[0];
     } catch (err) {
       console.error('Database query error:', err);

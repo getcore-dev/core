@@ -27,6 +27,7 @@ const generalRoutes = require('./routes/generalRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const communityRoutes = require('./routes/communityRoutes');
 const jobBoardService = require('./services/jobBoardService');
+const { pool, poolConnect } = require('./db'); // Adjust the path as necessary
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -35,13 +36,12 @@ const limiter = rateLimit({
 });
 const app = express();
 
-// Database connection
-sql
-  .connect(dbConfig)
-  .then(() => {
-    console.log('Connected to the database');
-  })
-  .catch((err) => console.error('Error connecting to the database'));
+poolConnect.then(() => {
+  console.log('Connected to SQL Server successfully.');
+}).catch(err => {
+  console.error('Failed to connect to SQL Server:', err);
+  process.exit(1); // Exit the application if the pool connection fails
+});
 
 // Passport configuration
 passportConfig.initialize(

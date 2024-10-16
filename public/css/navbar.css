@@ -177,9 +177,6 @@ label {
   font-size: var(--default-font-size);
 }
 
-.salary {
-  color: #16a34a;
-}
 
 .invalid {
   color: rgb(174, 68, 68);
@@ -3400,6 +3397,7 @@ input::placeholder {
   scrollbar-width: none;
 }
 
+
 .dropdown-content::-webkit-scrollbar {
   display: none;
 }
@@ -3607,7 +3605,7 @@ input::placeholder {
 
   .dropdown-content {
     min-width: fit-content;
-    width: max-content;
+    width: 100%;
     padding: 0.1rem;
   }
 
@@ -3763,7 +3761,7 @@ input::placeholder {
   border-radius: var(--radius);
   box-sizing: border-box;
   text-decoration: none;
-  display: block;
+  display: flex;
   font-size: 14px;
   transition: background-color 0.3s ease;
 }
@@ -3807,7 +3805,7 @@ input::placeholder {
   }
 
   .dropdown-content {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-body-color);
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     border-color: var(--dark-mode-border-color);

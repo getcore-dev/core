@@ -10,7 +10,6 @@ const userQueries = require('../queries/userQueries');
 const marked = require('marked');
 const DOMpurify = require('dompurify');
 const rateLimit = require('express-rate-limit');
-const PostController = require('../controllers/postController');
 const notificationQueries = require('../queries/notificationQueries');
 const viewLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
@@ -395,10 +394,13 @@ router.get('/posts/:postId/edit', checkAuthenticated, async (req, res) => {
     res.status(500).send('Error fetching post');
   }
 });
-
+/*
+create another post controller if u wanna do this.
 router.put('/posts/:postId/edit', checkAuthenticated, async (req, res) => {
   PostController.updatePost(req, res);
 });
+
+*/
 
 // Route for deleting a post
 router.delete('/post/:postId', checkAuthenticated, async (req, res) => {

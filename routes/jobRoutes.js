@@ -2,6 +2,7 @@ const { BlobServiceClient } = require('@azure/storage-blob');
 const express = require('express');
 const router = express.Router();
 const jobQueries = require('../queries/jobQueries');
+const userRecentQueries = require('../queries/userRecentQueries');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const jobBoardService = require('../services/jobBoardService');
@@ -467,6 +468,11 @@ router.get('/:jobId', viewLimiter, async (req, res) => {
     if (!job) {
       console.log(`No job found with ID: ${jobId}`);
       return res.redirect('/jobs');
+    }
+
+    if (req.user) {
+      console.log('adding to recent jobs');
+      await userRecentQueries.addViewedJob(req.user.id, job.id, job.company_id);
     }
 
     res.render('job-posting.ejs', {

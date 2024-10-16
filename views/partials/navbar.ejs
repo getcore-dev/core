@@ -74,9 +74,10 @@
 
         <div class="menu-wrapper">
           <button id="menu-button" class="menu-button">
-            <div class="menu-bar top-bar flex"></div>
-            <div class="menu-bar middle-bar"></div>
-            <div class="menu-bar bottom-bar"></div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-panel-right">
+              <rect width="18" height="18" x="3" y="3" rx="2" />
+              <path d="M15 3v18" />
+            </svg>
           </button>
         </div>
         <button id="expandSearch" class="search-button">
@@ -86,21 +87,19 @@
 
           <div class="flex flex-col w-100">
             <div class="flex flex-col">
-              <div class="flex flex-row v-center w-100 gap-06 rounded-xl border bg-card text-card-foreground shadow px-3 py-2">
-                <img src="<%= user.avatar %>" alt="Avatar" class="thumbnail thumbnail-regular thumbnail-tiny">
+              <div class="flex flex-row v-center w-100 gap-06 rounded-xl bg-card border bg-card text-card-foreground shadow px-3 py-2">
+                <img src="<%= user.avatar %>" alt="Avatar" class="h-8 rounded-xl">
                 <div class="flex flex-col">
-                  <p class="mini-text bold"><%= user.firstname %> <%= user.lastname %></p>
+                  <p class="mini-text font-semibold"><%= user.firstname %> <%= user.lastname %></p>
                   <p class="mini-text secondary-text"><%= user.username %></p>
                 </div>
                 <div class="ml-auto flex flex-row gap-06 v-center">
-                  <a href="#" onclick="document.getElementById('logoutForm').submit()">
-                    <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent hover:bg-secondary/80 bg-transparent cancel-button-text px-2 py-3">
-                      Logout
-                    </div>
-                  </a>
-                  <a class="clickable mini-text bold" href="/user/<%= user.username %>">
-                    <button class="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 rounded-md px-3 text-xs">
-                      Profile
+                  <a class="mini-text bold" href="/user/<%= user.username %>">
+                    <button class="bg-none">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
                     </button>
                   </a>
                 </div>
@@ -112,30 +111,37 @@
             <a href="/notifications">
               <div class="flex flex-col v-center px-2 py-3 rounded-xl border bg-card text-card-foreground shadow">
                 <span class="flex flex-row v-center">
-                  <span class="material-symbols-outlined" id="menu-community-icon">
-                    notifications
-                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell">
+                    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                  </svg>
                   <span id="unreadCount" class="border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80 ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full ml-auto"></span>
 
                 </span>
-                Notifications
-
               </div>
             </a>
             <a href="/favorites">
               <div class="flex flex-col v-center px-2 py-3 rounded-xl border bg-card text-card-foreground shadow">
-                <span class="material-symbols-outlined" id="menu-community-icon">
-                  star
-                </span>
-                Saved
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
               </div>
             </a>
             <a href="/settings">
               <div class="flex flex-col v-center px-2 py-3 rounded-xl border bg-card text-card-foreground shadow">
-                <span class="material-symbols-outlined" id="menu-community-icon">
-                  settings
-                </span>
-                Settings
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings">
+                  <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </div>
+            </a>
+            <a href="#" onclick="document.getElementById('logoutForm').submit()">
+              <div class="flex flex-col v-center px-2 py-3 rounded-xl border bg-card text-card-foreground cancel-button-text shadow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" x2="9" y1="12" y2="12" />
+                </svg>
               </div>
             </a>
           </div>
@@ -145,24 +151,26 @@
 
           <div class="flex">
             <div class="mobile-menu-header sub-text">
-              <h4 class="main-text bold margin-06-bottom">Navigation</h4>
+              <h4 class="text-sm text-muted-foreground margin-06-bottom">Navigation</h4>
             </div>
           </div>
 
           <a href="/">
             <div class="<%= isActive('/') ? 'bg-muted text-primary' : 'text-muted-foreground' %> flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
-              <span class="material-symbols-outlined ml-2" id="menu-community-icon">
-                home
-              </span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house">
+                <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
+                <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              </svg>
               Home
             </div>
           </a>
 
           <a href="/jobs">
             <div class="<%= isActive('/jobs') ? 'bg-muted text-primary' : 'text-muted-foreground' %> flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
-              <span class="material-symbols-outlined ml-2" id="menu-community-icon">
-                work
-              </span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase">
+                <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                <rect width="20" height="14" x="2" y="6" rx="2" />
+              </svg>
               Openings
             </div>
           </a>
@@ -171,9 +179,12 @@
               <a href="/networks">
 
                 <div class="<%= isActive('/networks') ? 'bg-muted text-primary' : 'text-muted-foreground' %> flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
-                  <span class="material-symbols-outlined ml-2" id="menu-community-icon">
-                    workspaces
-                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
                   Networks
 
                 </div>
@@ -185,9 +196,12 @@
           </details>
           <a href="/updates">
             <div class="<%= isActive('/updates') ? 'bg-muted text-primary' : 'text-muted-foreground' %> flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
-              <span class="material-symbols-outlined ml-2" id="menu-community-icon">
-                update
-              </span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package">
+                <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" />
+                <path d="M12 22V12" />
+                <path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7" />
+                <path d="m7.5 4.27 9 5.15" />
+              </svg>
               Updates
 
             </div>
@@ -198,9 +212,10 @@
           <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
           <a href="/feedback">
             <div class="<%= isActive('/feedback') ? 'bg-muted text-primary' : 'text-muted-foreground' %> flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
-              <span class="material-symbols-outlined ml-2" id="menu-community-icon">
-                feedback
-              </span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle-heart">
+                <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                <path d="M15.8 9.2a2.5 2.5 0 0 0-3.5 0l-.3.4-.35-.3a2.42 2.42 0 1 0-3.2 3.6l3.6 3.5 3.6-3.5c1.2-1.2 1.1-2.7.2-3.7" />
+              </svg>
               Feedback
 
             </div>
@@ -208,19 +223,32 @@
           <% } %>
           <a href="/about">
             <div class="flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary <%= isActive('/about') ? 'bg-muted text-primary' : 'text-muted-foreground' %>">
-              <span class="material-symbols-outlined ml-2" id="menu-community-icon">
-                info
-              </span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-contact">
+                <path d="M16 2v2" />
+                <path d="M7 22v-2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2" />
+                <path d="M8 2v2" />
+                <circle cx="12" cy="11" r="3" />
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+              </svg>
               About
 
             </div>
           </a>
 
+          <% if (user) { %>
+          <div class="mobile-menu-header mt-3 sub-text">
+            <h4 class="text-sm text-muted-foreground margin-06-bottom">Recent Jobs</h4>
+          </div>
+          <div class="mobile-recent-jobs flex flex-col gap-3">
+          </div>
+          <% } %>
+
           <div class="mobile-menu-header sub-text">
-            <h4 class="main-text bold margin-06-bottom">Trending Posts</h4>
+            <h4 class="text-sm text-muted-foreground mb-4 mt-3">Trending Posts</h4>
           </div>
-          <div class="mobile-trending-posts">
+          <div class="mobile-trending-posts flex flex-col gap-3 mb-4">
           </div>
+
         </div>
 
         <div id="overlay"></div>
@@ -232,7 +260,7 @@
           <li id="search-toggle-button" style="width: auto">
             <button type="button" class="no-bg no-border no-padding">
               <span id="nb-icon" class="primary-text">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search h-6 w-6 text-muted-foreground">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search h-6 w-6 text-foreground">
                   <circle cx="11" cy="11" r="8"></circle>
                   <path d="m21 21-4.3-4.3"></path>
                 </svg>
@@ -244,7 +272,7 @@
           <li class="navigation-avatar">
             <div class="nav-avatar">
               <a href="/login">
-                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 px-4 py-2">
+                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-7 px-3 py-2">
                   Sign in
                 </button>
               </a>
@@ -489,7 +517,7 @@
         let id = category === 'users' ? item.username : item.id;
         resultsHtml += `
         <div data-id="${id}" data-category="${category}" class="search-result-item">
-        <img src="${item.avatar || item.logo || '/img/glyph.png'}" alt="Avatar" class="thumbnail thumbnail-regular thumbnail-micro" />
+        <img src="${item.avatar || item.logo || '/img/glyph.png'}" alt="Avatar" class="aspect-square h-6 w-6 rounded-xl" />
         ${name}
         </div>`;
       });
@@ -716,16 +744,70 @@
           postElement.innerHTML = `
                 <div class="trending-post-content">
 
-<div class="flex flex-row gap-06 v-center">
-<img src="${trending_post.avatar || '/img/glyph.png'}" alt="Avatar" class="thumbnail thumbnail-regular thumbnail-micro" />
-<p class="mini-text">${trending_post.firstname.charAt(0).toUpperCase() + trending_post.firstname.slice(1).toLowerCase()} ${trending_post.lastname.charAt(0).toUpperCase() + trending_post.lastname.slice(1).toLowerCase()}</p>
-</div>
-<div class="flex flex-col">
-<p>${trending_post.title} </p>
-</div>
+            <div class="flex flex-row gap-06 v-center">
+            <img src="${trending_post.avatar || '/img/glyph.png'}" alt="Avatar" class="aspect-square h-6 w-6 rounded-xl" />
+            <p class="mini-text">${trending_post.firstname.charAt(0).toUpperCase() + trending_post.firstname.slice(1).toLowerCase()} ${trending_post.lastname.charAt(0).toUpperCase() + trending_post.lastname.slice(1).toLowerCase()}</p>
+            </div>
+            <div class="flex flex-col">
+            <p>${trending_post.title} </p>
+            </div>
             `;
 
           trendingPostsContainer.appendChild(postElement);
+        });
+      })
+      .catch(error => console.error('Error fetching trending posts:', error));
+  }
+
+  function getRecentJobs() {
+
+    const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
+    let recentPostsContainer;
+    if (!isMobile) {
+      recentPostsContainer = document.querySelector('.desktop-recent-jobs');
+    } else {
+      recentPostsContainer = document.querySelector('.mobile-recent-jobs');
+    }
+
+    // Check if the container already has content
+    if (recentPostsContainer.children.length > 0) {
+      return;
+    }
+
+
+
+    fetch('/api/recent-jobs') // Adjust this to your server's endpoint
+      .then(response => response.json())
+      .then(jobs => {
+        const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
+        let recentPostsContainer;
+        if (!isMobile) {
+          recentPostsContainer = document.querySelector('.desktop-recent-jobs');
+        } else {
+          recentPostsContainer = document.querySelector('.mobile-recent-jobs');
+        }
+        recentPostsContainer.innerHTML = ''; // Clear existing posts
+
+        jobs.forEach(recentJob => {
+          const jobElement = document.createElement('div');
+          jobElement.className = 'recentJob px-2';
+          jobElement.onclick = () => {
+            window.location.href = `/jobs/${recentJob.id}`;
+          };
+
+          jobElement.innerHTML = `
+                <div class="flex flex-col gap-1">
+
+            <div class="flex flex-row gap-06 v-center">
+            <img src="${recentJob.company_logo || '/img/glyph.png'}" alt="logo" class="aspect-square h-6 w-6 rounded-xl" />
+            <p class="mini-text">${recentJob.title}</p>
+            </div>
+            <div class="flex flex-col">
+            <p class="line-clamp-1 text-sm text-muted-foreground w-full">${recentJob.description} </p>
+            </div>
+            `;
+
+          recentPostsContainer.appendChild(jobElement);
         });
       })
       .catch(error => console.error('Error fetching trending posts:', error));
@@ -1183,6 +1265,7 @@
 
     getAllCommunities();
     getTrendingPosts();
+    getRecentJobs();
 
     function createHashFromString(string) {
       var hash = 0,
@@ -1267,6 +1350,7 @@
     var menuButton = document.getElementById("menu-button");
     if (menuButton && menuButton.classList.contains('active') && menuButton.offsetParent !== null) {
       getTrendingPosts();
+      getRecentJobs();
     }
     <% if (user) { %>
     const userId = '<%- user.id %>';

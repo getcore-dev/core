@@ -20,9 +20,12 @@
       <% if (typeof user !== 'undefined') { %>
       <% if (user.isAdmin) { %>
       <a href="/updates/new">
-        <button class="main-button-normal mini-button"><span class="material-symbols-outlined">
-            add
-          </span> Update
+        <button class="main-button-normal mini-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus">
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+          Update
         </button>
       </a>
       <% } %>

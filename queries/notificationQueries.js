@@ -1,5 +1,7 @@
 const sql = require('mssql');
 const nodemailer = require('nodemailer');
+const { pool } = require('../db'); // Adjust the path as necessary
+
 
 // Set up nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -16,13 +18,13 @@ const transporter = nodemailer.createTransport({
 const sendEmailNotification = async (senderUserId, receiverUserId, postId = null, important_message = '', type) => {
   try {
     // Fetch the receiver's email and username
-    const result = await sql.query`
+    const result = await pool.request().query`
       SELECT email, username 
       FROM users 
       WHERE id = ${receiverUserId}`;
     const user = result.recordset[0];
 
-    const sender = await sql.query`
+    const sender = await pool.request().query`
       SELECT username
       FROM users
       WHERE id = ${senderUserId}`;
@@ -127,7 +129,7 @@ const notificationQueries = {
   // Fetch all unread notifications for a specific user
   getUnreadNotifications: async (userId) => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT notifications.*, sender.username as senderUsername, receiver.username as receiverUsername, sender.avatar as senderProfilePicture, sender.profile_border_color as senderProfileColor
         FROM notifications 
         INNER JOIN users as sender ON notifications.senderUserId = sender.id
@@ -143,7 +145,7 @@ const notificationQueries = {
 
   deleteAllNotifications: async (userId) => {
     try {
-      await sql.query`
+      await pool.request().query`
         DELETE FROM notifications
         WHERE receiverUserId = ${userId}`;
     } catch (err) {
@@ -155,7 +157,7 @@ const notificationQueries = {
 
   deleteDuplicateNotifications: async (userId, type, postId) => {
     try {
-      await sql.query`
+      await pool.request().query`
         DELETE FROM notifications
         WHERE receiverUserId = ${userId} AND type = ${type} AND postId = ${postId}`;
     } catch (err) {
@@ -166,7 +168,7 @@ const notificationQueries = {
 
   getUnreadNotificationCount: async (userId) => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT COUNT(*) as count
         FROM notifications
         WHERE receiverUserId = ${userId} AND isRead = 0`;
@@ -179,7 +181,7 @@ const notificationQueries = {
 
   getReadNotifications: async (userId) => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT notifications.*, sender.username as senderUsername, receiver.username as receiverUsername, sender.avatar as senderProfilePicture, sender.profile_border_color as senderProfileColor
         FROM notifications 
         INNER JOIN users as sender ON notifications.senderUserId = sender.id
@@ -196,7 +198,7 @@ const notificationQueries = {
   // Mark a specific notification as read
   markAsRead: async (notificationId) => {
     try {
-      await sql.query`
+      await pool.request().query`
         UPDATE notifications 
         SET isRead = 1 
         WHERE id = ${notificationId}`;
@@ -219,17 +221,17 @@ const notificationQueries = {
         return;
       }
       const createdAt = new Date();
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT * FROM notifications
         WHERE senderUserId = ${senderUserId} AND receiverUserId = ${receiverUserId} AND postId = ${postId}`;
 
       if (result.recordset.length > 0) {
-        await sql.query`
+        await pool.request().query`
           UPDATE notifications
           SET type = ${type}, createdAt = ${createdAt}, isRead = 0, important_message = ${important_message}
           WHERE senderUserId = ${senderUserId} AND receiverUserId = ${receiverUserId} AND postId = ${postId}`;
       } else {
-        await sql.query`
+        await pool.request().query`
           INSERT INTO notifications (type, isRead, createdAt, receiverUserId, senderUserId, postId, important_message)
           VALUES (${type}, 0, ${createdAt}, ${receiverUserId}, ${senderUserId}, ${postId} , ${important_message})`;
       }
@@ -253,17 +255,17 @@ const notificationQueries = {
         return;
       }
       const createdAt = new Date();
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT * FROM notifications
         WHERE senderUserId = ${senderUserId} AND receiverUserId = ${receiverUserId} AND postId = ${postId}`;
 
       if (result.recordset.length > 0) {
-        await sql.query`
+        await pool.request().query`
           UPDATE notifications
           SET type = ${type}, createdAt = ${createdAt}, isRead = 0, important_message = ${important_message}
           WHERE senderUserId = ${senderUserId} AND receiverUserId = ${receiverUserId} AND postId = ${postId}`;
       } else {
-        await sql.query`
+        await pool.request().query`
           INSERT INTO notifications (type, isRead, createdAt, receiverUserId, senderUserId, postId, important_message)
           VALUES (${type}, 0, ${createdAt}, ${receiverUserId}, ${senderUserId}, ${postId} , ${important_message})`;
       }
@@ -278,13 +280,13 @@ const notificationQueries = {
   createAdminNotification: async (type, feedbackId, senderId, createdAt, important_message = '') => {
     try {
       // get all admin users
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT id FROM users WHERE isAdmin = 1`;
       const adminUsers = result.recordset;
 
       // create a notification for each admin user
       adminUsers.forEach(async (admin) => {
-        await sql.query`
+        await pool.request().query`
           INSERT INTO notifications (type, isRead, createdAt, receiverUserId, senderUserId, postId, important_message) 
           VALUES (${type}, 0, ${createdAt}, ${admin.id}, ${senderId}, ${feedbackId}, '${important_message}')`;
       });
@@ -297,7 +299,7 @@ const notificationQueries = {
   // delete notification if it is unread and action is undone
   deleteNotification: async (notificationId) => {
     try {
-      await sql.query`
+      await pool.request().query`
         DELETE FROM notifications 
         WHERE id = ${notificationId}`;
     } catch (err) {
@@ -309,13 +311,13 @@ const notificationQueries = {
   createGlobalNotification: async (type, important_message = '') => {
     try {
       const createdAt = new Date();
-      const allUsers = await sql.query`
+      const allUsers = await pool.request().query`
         SELECT id FROM users`;
       const users = allUsers.recordset;
 
       users.forEach(async (user) => {
         try {
-          await sql.query`
+          await pool.request().query`
             INSERT INTO notifications (type, isRead, createdAt, receiverUserId, senderUserId, postId, important_message)
             VALUES (${type}, 0, ${createdAt}, ${user.id}, 0, '0', ${important_message})`;
         } catch (err) {
@@ -332,7 +334,7 @@ const notificationQueries = {
   // Fetch all notifications for a specific user
   getAllNotifications: async (userId) => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
       SELECT notifications.*, sender.username as senderUsername, receiver.username as receiverUsername, sender.avatar as senderProfilePicture, sender.profile_border_color as senderProfileColor
       FROM notifications 
       INNER JOIN users as sender ON notifications.senderUserId = sender.id
@@ -350,7 +352,7 @@ const notificationQueries = {
   // Mark all notifications as read for a specific user
   markAllAsRead: async (userId) => {
     try {
-      await sql.query`
+      await pool.request().query`
         UPDATE notifications 
         SET isRead = 1 
         WHERE receiverUserId = ${userId}`;

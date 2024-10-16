@@ -222,10 +222,8 @@
 
     function createClearButton(notification, li) {
       const clearBtn = document.createElement('button');
-      clearBtn.classList = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-7 px-4 py-2";
-      const clearIcon = document.createElement('span');
-      clearIcon.textContent = 'Delete';
-      clearBtn.appendChild(clearIcon);
+      clearBtn.classList = "inline-flex items-center text-xs justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-7 px-4 py-2";
+      clearBtn.textContent = 'Delete';
 
       clearBtn.onclick = async function (event) {
         event.stopPropagation();
@@ -243,7 +241,7 @@
       const clearAllBtn = document.createElement('button');
       clearAllBtn.classList = 'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2';
 
-      clearAllBtn.innerHTML = '<span class="material-symbols-outlined">close</span> Clear';
+      clearAllBtn.innerHTML = '<svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell-minus"><path d="M18.4 12c.8 3.8 2.6 5 2.6 5H3s3-2 3-9c0-3.3 2.7-6 6-6 1.8 0 3.4.8 4.5 2"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="M15 8h6"/></svg> Clear';
 
       clearAllBtn.onclick = async function () {
         const response = await fetch(`/notifications/deleteAll/<%= user.id %>`, {

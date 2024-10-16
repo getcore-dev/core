@@ -2,6 +2,7 @@ const sql = require('mssql');
 const crypto = require('crypto');
 const tagQueries = require('./tagsQueries');
 const notificationQueries = require('./notificationQueries');
+const { pool } = require('../db'); // Adjust the path as necessary
 
 const generateUniqueId = () => {
   // Use the last 4 characters of the current timestamp in base 36
@@ -17,7 +18,7 @@ const generateUniqueId = () => {
 const postQueries = {
   searchPosts: async (searchTerm) => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT * 
         FROM posts 
         WHERE title LIKE '%${searchTerm}%' AND deleted = 0`;
@@ -31,7 +32,7 @@ const postQueries = {
 
   getPosts: async () => {
     try {
-      const result = await sql.query(
+      const result = await pool.request().query(
         'SELECT * FROM posts WHERE deleted = 0 AND communities_id != 9 ORDER BY created_at DESC'
       );
       const posts = result.recordset;
@@ -46,7 +47,7 @@ const postQueries = {
 
   deleteCommentById: async (commentId) => {
     try {
-      await sql.query`UPDATE comments SET deleted = 1 WHERE id = ${commentId}`;
+      await pool.request().query`UPDATE comments SET deleted = 1 WHERE id = ${commentId}`;
     } catch (err) {
       console.error('Database delete error:', err);
       throw err; // Rethrow the error for the caller to handle
@@ -55,7 +56,7 @@ const postQueries = {
   
   getCommentById: async (commentId) => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT * 
         FROM comments 
         WHERE id = ${commentId}`;
@@ -70,7 +71,7 @@ const postQueries = {
 
   getFavoritePostByPostIdAndUserId: async (postId, userId) => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT * FROM favorites
         WHERE user_id = ${userId} AND post_id = ${postId}`;
 
@@ -83,7 +84,7 @@ const postQueries = {
 
   toggleLockPost: async (postId) => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT isLocked FROM posts WHERE id = ${postId}`;
       if (result.recordset.length === 0) {
         throw new Error('Post not found');
@@ -91,7 +92,7 @@ const postQueries = {
 
       const isLocked = !result.recordset[0].isLocked;
 
-      await sql.query`
+      await pool.request().query`
         UPDATE posts SET isLocked = ${isLocked} WHERE id = ${postId}`;
 
       return { message: 'Post locked/unlocked', isLocked };
@@ -103,7 +104,7 @@ const postQueries = {
 
   getPostsByTag: async (tagId) => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT p.*, u.username, u.avatar,
         (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
         (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount
@@ -121,7 +122,7 @@ const postQueries = {
 
   getTagId: async (tagName) => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT id FROM tags WHERE name = ${tagName}`;
       if (result.recordset.length === 0) {
         return null;
@@ -136,7 +137,7 @@ const postQueries = {
   viewPost: async (postId) => {
     try {
       // Check the current value of views for the post
-      const checkResult = await sql.query`
+      const checkResult = await pool.request().query`
         SELECT COALESCE(views, 0) as views FROM posts WHERE id = ${postId}
       `;
 
@@ -149,14 +150,14 @@ const postQueries = {
       let updateQuery;
       if (currentViews === null || isNaN(currentViews) || currentViews < 0) {
         // If views is null, NaN, or negative, set it to 1
-        updateQuery = sql.query`
+        updateQuery = pool.request().query`
           UPDATE posts 
           SET views = 1
           WHERE id = ${postId}
         `;
       } else {
         // Otherwise, increment views by 1
-        updateQuery = sql.query`
+        updateQuery = pool.request().query`
           UPDATE posts 
           SET views = views + 1
           WHERE id = ${postId}
@@ -237,7 +238,7 @@ const postQueries = {
       ORDER BY tagMatchCount DESC, p.created_at DESC
       OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY;
     `;
-    const resultWithMatchingTags = await sql.query(queryWithMatchingTags);
+    const resultWithMatchingTags = await pool.request().query(queryWithMatchingTags);
   
     // If less than 5 posts with matching tags are found, fill up with random posts from any non-private community
     let finalResults = resultWithMatchingTags.recordset;
@@ -299,7 +300,7 @@ const postQueries = {
           ${excludePostIds}
         ORDER BY NEWID();
       `;
-      const resultWithRandomPosts = await sql.query(queryWithRandomPosts);
+      const resultWithRandomPosts = await pool.request().query(queryWithRandomPosts);
       finalResults = finalResults.concat(resultWithRandomPosts.recordset);
     }
   
@@ -308,7 +309,7 @@ const postQueries = {
   
   fetchPostsByCommunity: async (communityId) => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT p.*, u.username, u.avatar, 
         (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
         (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount
@@ -328,7 +329,7 @@ const postQueries = {
   acceptAnswer: async (postId, commentId, userId) => {
     try {
       // Check if the post exists
-      const postResult = await sql.query`
+      const postResult = await pool.request().query`
         SELECT * FROM posts WHERE id = ${postId} AND deleted = 0`;
       if (postResult.recordset.length === 0) {
         throw new Error('Post not found');
@@ -345,18 +346,18 @@ const postQueries = {
       }
 
       // check if comment exists
-      const commentResult = await sql.query`
+      const commentResult = await pool.request().query`
         SELECT * FROM comments WHERE id = ${commentId}`;
       if (commentResult.recordset.length === 0) {
         throw new Error('Comment not found');
       }
 
       // check if there is already an answer to the question
-      const answerResult = await sql.query`
+      const answerResult = await pool.request().query`
         SELECT * FROM QuestionSolutions WHERE OriginalPostID = ${postId}`;
       if (answerResult.recordset.length > 0) {
         // replace the accepted answer
-        const result = await sql.query`
+        const result = await pool.request().query`
           UPDATE QuestionSolutions SET CommentID = ${commentId}, SolutionTimestamp = GETDATE() WHERE OriginalPostID = ${postId}`;
         if (result.rowsAffected[0] === 0) {
           throw new Error('Failed to accept the answer');
@@ -364,7 +365,7 @@ const postQueries = {
         return true;
       }
 
-      const result = await sql.query`
+      const result = await pool.request().query`
         INSERT INTO QuestionSolutions (OriginalPostID, CommentID, SolutionTimestamp) VALUES (${postId}, ${commentId}, GETDATE())`;
 
       if (result.rowsAffected[0] === 0) {
@@ -380,11 +381,11 @@ const postQueries = {
 
   getAcceptedAnswer: async (postId) => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT * FROM QuestionSolutions WHERE OriginalPostID = ${postId}`;
 
       // return the actual comment
-      const comment = await sql.query`
+      const comment = await pool.request().query`
         SELECT * FROM comments WHERE id = ${result.recordset[0].CommentID}`;
 
       return comment.recordset[0];
@@ -442,7 +443,7 @@ const postQueries = {
   getPostById: async (postId) => {
     try {
       const result =
-        await sql.query`SELECT * FROM posts WHERE id = ${postId} AND deleted = 0`;
+        await pool.request().query`SELECT * FROM posts WHERE id = ${postId} AND deleted = 0`;
       return result.recordset[0];
     } catch (err) {
       console.error('Database query error:', err);
@@ -453,7 +454,7 @@ const postQueries = {
   getParentAuthorUsernameByCommentId: async (commentId) => {
     try {
       // Query to check if the comment has a parent_comment_id and get the parent comment's author username or post's author username accordingly
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT 
           COALESCE(parentComment.user_id, post.user_id) as author_id
         FROM 
@@ -470,7 +471,7 @@ const postQueries = {
       const authorId = result.recordset[0].author_id;
 
       // Now fetch the username using the authorId
-      const userResult = await sql.query`
+      const userResult = await pool.request().query`
         SELECT username
         FROM users
         WHERE id = ${authorId}`;
@@ -488,7 +489,7 @@ const postQueries = {
 
   getCommentsByPostId: async (postId) => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT * 
         FROM replies 
         WHERE post_id = ${postId} AND deleted = 0`;
@@ -522,29 +523,29 @@ const postQueries = {
       const uniqueId = generateUniqueId();
 
       // Insert into the posts table
-      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id, post_type, views) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${community_id}, ${post_type}, 1)`;
+      await pool.request().query`INSERT INTO posts (id, user_id, title, content, link, communities_id, post_type, views) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${community_id}, ${post_type}, 1)`;
 
       if (tags && tags.length > 0) {
         for (const tag of tags) {
           // Find or create the tag and get its id
           let tagId;
           const tagRecord =
-            await sql.query`SELECT id FROM tags WHERE name = ${tag}`;
+            await pool.request().query`SELECT id FROM tags WHERE name = ${tag}`;
           if (tagRecord.recordset.length > 0) {
             tagId = tagRecord.recordset[0].id;
           } else {
             // If tag does not exist, create it
             const newTag =
-              await sql.query`INSERT INTO tags (name) OUTPUT INSERTED.id VALUES (${tag})`;
+              await pool.request().query`INSERT INTO tags (name) OUTPUT INSERTED.id VALUES (${tag})`;
             tagId = newTag.recordset[0].id;
           }
           // Associate the tag with the post
-          await sql.query`INSERT INTO post_tags (post_id, tag_id) VALUES (${uniqueId}, ${tagId})`;
+          await pool.request().query`INSERT INTO post_tags (post_id, tag_id) VALUES (${uniqueId}, ${tagId})`;
         }
       }
 
       // Record user's upvote and set boosts and detracts
-      await sql.query`INSERT INTO UserPostActions (post_id, user_id, action_type) VALUES (${uniqueId}, ${userId}, 'LIKE')`;
+      await pool.request().query`INSERT INTO UserPostActions (post_id, user_id, action_type) VALUES (${uniqueId}, ${userId}, 'LIKE')`;
 
       return uniqueId;
     } catch (err) {
@@ -560,7 +561,7 @@ const postQueries = {
       await notificationQueries.createAdminNotification('NEW_FEEDBACK', uniqueId, userId, new Date());
 
       // Insert into the posts table
-      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id, post_type, views) VALUES (${uniqueId}, ${userId}, ${title}, ${body}, ${attachmentUrl}, 9, 'discussion', 1)`;
+      await pool.request().query`INSERT INTO posts (id, user_id, title, content, link, communities_id, post_type, views) VALUES (${uniqueId}, ${userId}, ${title}, ${body}, ${attachmentUrl}, 9, 'discussion', 1)`;
 
       return uniqueId;
     } catch (err) {
@@ -571,7 +572,7 @@ const postQueries = {
 
   getTagsByPostId: async (postId) => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT t.name
         FROM tags t
         JOIN post_tags pt ON t.id = pt.tag_id
@@ -586,7 +587,7 @@ const postQueries = {
 
   getAllTags: async () => {
     try {
-      const result = await sql.query`SELECT * FROM tags`;
+      const result = await pool.request().query`SELECT * FROM tags`;
       return result.recordset;
     } catch (err) {
       return JSON.stringify(err);
@@ -595,7 +596,7 @@ const postQueries = {
 
   deletePostById: async (postId) => {
     try {
-      await sql.query`UPDATE posts SET deleted = 1 WHERE id = ${postId}`;
+      await pool.request().query`UPDATE posts SET deleted = 1 WHERE id = ${postId}`;
     } catch (err) {
       console.error('Database delete error:', err);
       throw err; // Rethrow the error for the caller to handle
@@ -613,7 +614,7 @@ const postQueries = {
       let dbActionType = actionType === 'BOOST' ? 'B' : actionType;
 
       // Check if the user has already interacted with the post
-      const userAction = await sql.query`
+      const userAction = await pool.request().query`
         SELECT action_type 
         FROM userPostActions 
         WHERE user_id = ${userId} AND post_id = ${postId}`;
@@ -622,28 +623,28 @@ const postQueries = {
 
       if (userAction.recordset.length === 0) {
         // If no previous interaction, insert new action
-        await sql.query`
+        await pool.request().query`
           INSERT INTO userPostActions (user_id, post_id, action_type) 
           VALUES (${userId}, ${postId}, ${dbActionType})`;
 
         userReaction = actionType;
       } else if (userAction.recordset[0].action_type !== dbActionType) {
         // If existing interaction is different, update action
-        await sql.query`
+        await pool.request().query`
           UPDATE userPostActions 
           SET action_type = ${dbActionType}
           WHERE user_id = ${userId} AND post_id = ${postId}`;
         userReaction = actionType;
       } else {
         // If user is repeating the same action, remove the action
-        await sql.query`
+        await pool.request().query`
           DELETE FROM userPostActions 
           WHERE user_id = ${userId} AND post_id = ${postId}`;
         userReaction = null;
       }
 
       // Get total reaction count for each type
-      const reactionCounts = await sql.query`
+      const reactionCounts = await pool.request().query`
         SELECT action_type, COUNT(*) as count 
         FROM userPostActions 
         WHERE post_id = ${postId}
@@ -708,7 +709,7 @@ const postQueries = {
 
   removeDuplicateActions: async () => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
         WITH cte AS (
           SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id, post_id, action_type ORDER BY action_timestamp DESC) AS rn
           FROM userPostActions
@@ -721,7 +722,7 @@ const postQueries = {
   },
   getUserInteractions: async (postId, userId) => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
     SELECT action_type 
     FROM userPostActions 
       WHERE user_id = ${userId} AND post_id = ${postId}`;
@@ -744,13 +745,13 @@ const postQueries = {
   removeDetract: async (postId, userId) => {
     try {
       // Update the detract count in posts table
-      await sql.query`
+      await pool.request().query`
         UPDATE posts 
         SET detracts = detracts - 1 
         WHERE id = ${postId}`;
 
       // Delete the record in userPostActions to indicate this user has removed the detract
-      await sql.query`
+      await pool.request().query`
         DELETE FROM userPostActions 
         WHERE user_id = ${userId} AND post_id = ${postId}`;
 
@@ -766,7 +767,7 @@ const postQueries = {
   },
   getCommunityById: async (communityId) => {
     try {
-      const result = await sql.query`
+      const result = await pool.request().query`
         SELECT * 
         FROM communities 
         WHERE id = ${communityId}`;

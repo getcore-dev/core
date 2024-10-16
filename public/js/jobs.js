@@ -651,25 +651,37 @@ function renderJobPostings(jobs) {
       const diffTime = Math.abs(now - postedDate);
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
       if (diffDays <= 2) {
-        tags.push({text: 'New', class: 'new'});
+        tags.push({text: 'New', class: 'text-sky-300'});
+      }
+
+      if (job.description) {
+        job.description = job.description.replace(/[*#]/g, '').replace(/-{3,}/g, '');
       }
 
       if (job.location) {
-        tags.push({text: formatLocation(job.location), class: 'location'});
+        tags.push({text: formatLocation(job.location), icon: '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>', class: 'truncate location'});
       }
       if (job.salary) {
-        tags.push({text: `$${job.salary}`, class: 'salary'});
+        tags.push({
+          text: `$${job.salary}`,
+          icon: '<svg width="13" height="13" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="mr-1 h-3 w-3 fill-sky-400 text-sky-400"><path d="M0.877075 7.49991C0.877075 3.84222 3.84222 0.877075 7.49991 0.877075C11.1576 0.877075 14.1227 3.84222 14.1227 7.49991C14.1227 11.1576 11.1576 14.1227 7.49991 14.1227C3.84222 14.1227 0.877075 11.1576 0.877075 7.49991ZM7.49991 1.82708C4.36689 1.82708 1.82708 4.36689 1.82708 7.49991C1.82708 10.6329 4.36689 13.1727 7.49991 13.1727C10.6329 13.1727 13.1727 10.6329 13.1727 7.49991C13.1727 4.36689 10.6329 1.82708 7.49991 1.82708Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>',
+          class: 'salary'
+        });
       } else {
         // try to extract salary from description
-        const salaryMatch = job.description.match(/\$(\d+(?:,?\d*)?(?:k|K)?)/);
+        const salaryMatch = job.description.match(/\$(\d{1,3}(?:,\d{3})*(?:\.\d{2})?(?:k|K)?)/);
+        
         if (salaryMatch) {
-          tags.push({text: `$${salaryMatch[1]}`, class: 'salary'});
+          tags.push({
+            text: `$${salaryMatch[1]}`,
+            class: 'salary'
+          });
         }
       }
       if (job.experienceLevel) {
-        tags.push({text: job.experienceLevel, class: 'experienceLevel'});
+        tags.push({text: job.experienceLevel, icon:'<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>', class: 'experienceLevel'});
       }
-      tags.push({text: `${job.applicants} applicants`, class: 'applicants'});
+      tags.push({text: `${job.applicants} applicants`, icon:'<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>', class: 'applicants'});
 
       const jobElement = createCard(job.company_name, formatRelativeDate(job.postedDate), job.title, job.description, true, `/jobs/${job.id}`, job.company_logo, tags);
       fragment.appendChild(jobElement);
@@ -893,8 +905,9 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
   let tagsHtml = '';
   if (tags) {
     tagsHtml = tags.map(tag => `
-      <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 ${tag.class}">
-        ${tag.text}
+      <div class="flex items-center ${tag.class}">
+            ${tag.icon ? `<span class="mr-1">${tag.icon}</span>` : ''}
+      ${tag.text}
       </div>
     `).join('');
   }
@@ -921,7 +934,7 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
   <div class="line-clamp-2 text-sm text-muted-foreground w-full">
     ${description}
   </div>
-  <div class="flex items-center gap-2 wrap">
+  <div class="flex gap-2 text-sm text-muted-foreground wrap">
     ${tagsHtml}
   </div>
 </div>
