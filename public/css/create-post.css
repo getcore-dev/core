@@ -260,6 +260,11 @@ i.fa {
         border-color: var(--dark-mode-border-color);
     }
 
+
+    .main-container button:hover {
+        background-color: #004400;
+    }
+
     .main-container .post,
     .main-container .comment {
         border-bottom-color: var(--dark-mode-border-color);

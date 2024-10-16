@@ -410,7 +410,7 @@ async function lazyLoadJobDetails(user, jobId) {
           <h3 class="font-semibold tracking-tight text-2xl">
         ${job.title}
       </h3>
-      <div class="text-sm text-muted-foreground"> 
+      <p class="text-sm text-muted-foreground"> 
                     ${job.experienceLevel ? `
           <span class="sub-text bold text-muted-foreground">
         ${job.experienceLevel}
@@ -447,7 +447,7 @@ async function lazyLoadJobDetails(user, jobId) {
       <span class="sub-text">•</span>
       <time class="sub-text primary-text">${formatDateJob(job.postedDate)}</time>
 
-      </div>
+      </p>
       <div class="job-recruiter-container">
         <div class="job-recruiter-info">
           <div class="recruiter-info flex flex-row gap-06">
@@ -476,11 +476,11 @@ async function lazyLoadJobDetails(user, jobId) {
       ` : ''}
     <div class="flex flex-row gap-4 v-center">
             <div class="flex flex-row gap-06 v-center">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plane"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
+              <span class="material-symbols-outlined">house</span>
               <p class="sub-text">${job.relocation ? 'Relocation offered' : 'No relocation'}</p>
             </div>
             <div class="flex flex-row gap-06 v-center">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-laptop"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"/></svg>
+              <span class="material-symbols-outlined">apartment</span>
               <p class="sub-text">${job.isRemote ? 'Remote work available' : 'On-site only'}</p>
             </div>
           </div>
@@ -503,29 +503,22 @@ async function lazyLoadJobDetails(user, jobId) {
       ` : ''}
       -->
 
-      ${(() => {
-        let salaryText = '';
-        if (job.salary || job.salary_max) {
-          if (job.salary !== 0) {
-            salaryText = formatSalary(job.salary);
-            if (job.salary_max !== 0) {
-              salaryText += ` - $${formatSalary(job.salary_max)}`;
-            }
-          }
-        } else {
-          const salaryMatch = job.description.match(/\$(\d{1,3}(?:,\d{3})*(?:\.\d{2})?(?:k|K)?)/);
-          if (salaryMatch) {
-            salaryText = salaryMatch[1];
-          }
-        }
+      ${ job.salary || job.salary_max ? `
+        <div class="job-info-flairs sub-text">
+      ${job.salary !== 0 ? `
+        <p class="bold salary sub-text">
+      USD $${formatSalary(job.salary)}
+      ${job.salary_max !== 0 ? `- $${formatSalary(job.salary_max)}` : ''}
+      ${!job.location.toLowerCase().includes('us') && 
+        !job.location.toLowerCase().includes('united states') &&
+        !(/\b(AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|remote|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming)\b/i.test(job.location))
+    ? '<span class="currency-warning"> (currency may not be in USD)</span>' 
+    : ''}
+        </p>
+      ` : ''}
       
-        return salaryText ? `
-          <div class="job-info-flairs text-sm text-balance max-w-lg leading-relaxed flex flex-row gap-06 v-center">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>
-            <p class="salary">$${salaryText}</p>
-          </div>
-        ` : '';
-      })()}
+        </div>
+        ` : ''}
       
 
       <!-- end of the top menu -->
@@ -541,12 +534,10 @@ async function lazyLoadJobDetails(user, jobId) {
         ${
   (job)
     ? `<div class="apply-button-container flex gap-4">
-                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 px-4 py-2" onclick="applyForJob(event, '${job.id}', '${job.link}')">
-<svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>
-                  
-                  <span class="sub-text">Apply</span>
+                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 px-4 py-2" onclick="applyForJob(event, '${job.id}', '${job.link}')">
+                  <span class="material-symbols-outlined no-padding mr-2 h-4 w-4">arrow_outward</span><span class="sub-text">Apply</span>
                 </button>
-                <button class="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-lg px-3 text-xs h-8 gap-1" id="favorite-button" onclick="favorite('job', ${job.id});">
+                <button class="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-md px-3 text-xs h-8 gap-1" id="favorite-button" onclick="favorite('job', ${job.id});">
                   <span class="sub-text">Save</span>
                 </button>
                   </div>`
@@ -555,14 +546,14 @@ async function lazyLoadJobDetails(user, jobId) {
         <div class="second-buttons-container">
                   <div class="dropdown" tabindex="0">
             <button aria-label="Dropdown" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8" style="padding-top: .4rem; padding-bottom: .4rem;" aria-haspopup="true" aria-expanded="false">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis-vertical"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+              <span class="material-symbols-outlined no-padding no-margin">more_horiz</span>
             </button>
 
             <div class="dropdown-content">
             <a class="grow-button margin-h-auto">
 
-            <button class="no-margin no-padding no-bg no-border flex flex-row gap-2 v-center w-full" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+            <button class="no-margin no-padding no-bg no-border" onclick="share('${job.title}', '', 'https://getcore.dev/jobs/${job.id}', 'job', '${job.id}');">
+          <span class="material-symbols-outlined">share</span>
           <span class="sub-text">Share</span>
         </button>
         </a>
@@ -570,20 +561,20 @@ async function lazyLoadJobDetails(user, jobId) {
   user && user.isPremium
     ? `
       <div class="resume-button w-100">
-        <a href="/api/create-resume/${job.id}" class="grow-button margin-h-auto flex flex-row gap-2 v-center w-full">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-user"><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M15 18a3 3 0 1 0-6 0"/><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><circle cx="12" cy="13" r="2"/></svg>
+        <a href="/api/create-resume/${job.id}" class="grow-button margin-h-auto">
+          <span class="material-symbols-outlined">description</span>
           <span class="sub-text">Resume</span>
         </a>
       </div>
       <div class="cover-letter-button w-100">
-        <a href="/api/create-cover-letter/${job.id}" class="grow-button margin-h-auto flex flex-row gap-2 v-center w-full">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-letter-text"><path d="M15 12h6"/><path d="M15 6h6"/><path d="m3 13 3.553-7.724a.5.5 0 0 1 .894 0L11 13"/><path d="M3 18h18"/><path d="M4 11h6"/></svg>
+        <a href="/api/create-cover-letter/${job.id}" class="grow-button margin-h-auto">
+          <span class="material-symbols-outlined">description</span>
           <span class="sub-text">Cover Letter</span>
         </a>
       </div>
       <div class="delete-button-container">
-              <a class="grow-button margin-h-auto cancel-button-text flex flex-row gap-2 v-center w-full" href="/jobs/delete/${job.id}">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+              <a class="grow-button margin-h-auto cancel-button-text" href="/jobs/delete/${job.id}">
+          <span class="material-symbols-outlined">delete</span>
           <span class="sub-text">Delete</span>
         </a>
       </div> `
@@ -634,9 +625,7 @@ async function lazyLoadJobDetails(user, jobId) {
               ${job.isProcessed ? `
             <div class="job-posting-description ${job.recruiter_username === 'autojob' ? 'ai-generated-content' : ''}">
 
-      <h4 class="font-semibold leading-none tracking-tight flex flex-row gap-2" style="margin-top:0;">
-      <span style="color: #6366f1;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-brain"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M19.938 10.5a4 4 0 0 1 .585.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/></svg></span>
-       AI-Generated Overview</h4>
+      <h4 class="font-semibold leading-none tracking-tight" style="margin-top:0;"><span class="material-symbols-outlined" style="color: #6366f1;">auto_awesome</span> AI-Generated Overview</h4>
     <p class="text-sm text-balance max-w-lg leading-relaxed">
     ${job.description.replace('??', '')}
     </p>
@@ -823,8 +812,7 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
   if (tags) {
     tagsHtml = tags.map(tag => `
       <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 ${tag.class}">
-            ${tag.icon ? `<span class="mr-1">${tag.icon}</span>` : ''}
-      ${tag.text}
+        ${tag.text}
       </div>
     `).join('');
   }

@@ -25,33 +25,12 @@ const generalRoutes = require('./routes/generalRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const rateLimit = require('express-rate-limit');
 const communityRoutes = require('./routes/communityRoutes');
-<<<<<<< HEAD
-const userQueries = require('./queries/userQueries');
-const viewLimiter = rateLimit({
-  windowMs: 24 * 60 * 60 * 1000,
-  max: 3,
-  handler: (req, res, next) => {
-    req.rateLimit = {
-      exceeded: true,
-    };
-    next();
-  },
-  keyGenerator: (req) => `${req.ip}_${req.params.jobId}`,
-  skip: (req) => {
-    if (!req.rateLimit || !req.rateLimit.resetTime) {
-      return false; // Don't skip if rateLimit or resetTime is not set
-    }
-    const eightHoursAgo = Date.now() - 8 * 60 * 60 * 1000;
-    return req.rateLimit.resetTime < eightHoursAgo;
-  },
-=======
 const jobBoardService = require('./services/jobBoardService');
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5000,
   message: 'bro please azure costs are so high',
->>>>>>> e36fca5 (large visual update and db refactoring)
 });
 
 const app = express();

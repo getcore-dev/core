@@ -284,6 +284,9 @@ div.job-title-location .sub-text {
   display: inline-block;
 }
 
+.applicants {
+  color: #3b72e6;
+}
 
 .job-title-location {
   display: flex;
