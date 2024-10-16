@@ -64,6 +64,7 @@ app.use((req, res, next) => {
   next();
 });
 
+
 // Export a function that sets up the app with a connected database
 module.exports = async function setupApp() {
   try {
@@ -133,4 +134,5 @@ module.exports = async function setupApp() {
     console.error('Failed to connect to SQL Server:', err);
     throw err;
   }
+  
 };
