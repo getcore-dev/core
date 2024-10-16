@@ -68,17 +68,6 @@ app.get('/api/job-processing-progress', (req, res) => {
 if (cluster.isMaster && process.env.NODE_ENV !== 'development') {
   console.log(`Master ${process.pid} is running`);
 
-  // Fork workers.
-  for (let i = 0; i < numCPUs; i++) {
-    console.log(`Forking worker ${i}`);
-    cluster.fork();
-  }
-
-  cluster.on('exit', (worker, code, signal) => {
-    console.log(`worker ${worker.process.pid} died`);
-    cluster.fork(); // Replace the dead worker
-  });
-
   if (process.env.NODE_ENV !== 'development') {
     setTimeout(() => {
       runJobBoardService();
