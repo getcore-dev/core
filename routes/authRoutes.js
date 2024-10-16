@@ -12,7 +12,6 @@ const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer');
 const userQueries = require('../queries/userQueries');
 const notificationQueries = require('../queries/notificationQueries');
-const { pool } = require('../db'); // Adjust the path as necessary
 
 // Set up nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -45,7 +44,7 @@ router.post('/reset-password', async (req, res) => {
   const { email } = req.body;
 
   try {
-    const result = await pool.request().query`SELECT * FROM users WHERE email = ${email}`;
+    const result = await sql.query`SELECT * FROM users WHERE email = ${email}`;
     const user = result.recordset[0];
 
     if (!user) {
@@ -56,7 +55,7 @@ router.post('/reset-password', async (req, res) => {
     const resetToken = uuidv4();
     const resetTokenExpires = new Date(Date.now() + 3600000); // Token expires in 1 hour
 
-    await pool.request().query`UPDATE users SET reset_password_token = ${resetToken}, reset_password_expires = ${resetTokenExpires} WHERE id = ${user.id}`;
+    await sql.query`UPDATE users SET reset_password_token = ${resetToken}, reset_password_expires = ${resetTokenExpires} WHERE id = ${user.id}`;
 
     // Send reset email
     const resetUrl = `http://${req.headers.host}/reset-password/${resetToken}`;
@@ -89,7 +88,7 @@ router.get('/reset-password/:token', async (req, res) => {
 
   try {
     const result =
-      await pool.request().query`SELECT * FROM users WHERE reset_password_token = ${token} AND reset_password_expires > ${new Date()}`;
+      await sql.query`SELECT * FROM users WHERE reset_password_token = ${token} AND reset_password_expires > ${new Date()}`;
     const user = result.recordset[0];
 
     if (!user) {
@@ -119,7 +118,7 @@ router.post('/reset-password/:token', async (req, res) => {
 
   try {
     const result =
-      await pool.request().query`SELECT * FROM users WHERE reset_password_token = ${token} AND reset_password_expires > ${new Date()}`;
+      await sql.query`SELECT * FROM users WHERE reset_password_token = ${token} AND reset_password_expires > ${new Date()}`;
     const user = result.recordset[0];
 
     if (!user) {
@@ -128,7 +127,7 @@ router.post('/reset-password/:token', async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    await pool.request().query`UPDATE users SET password = ${hashedPassword}, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ${user.id}`;
+    await sql.query`UPDATE users SET password = ${hashedPassword}, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ${user.id}`;
 
     req.flash('success', 'Password reset successful. You can now log in.');
     res.redirect('/login');
@@ -158,7 +157,7 @@ router.get('/reset-password/:token', async (req, res) => {
 
   try {
     const result =
-      await pool.request().query`SELECT * FROM users WHERE reset_password_token = ${token} AND reset_password_expires > ${new Date()}`;
+      await sql.query`SELECT * FROM users WHERE reset_password_token = ${token} AND reset_password_expires > ${new Date()}`;
     const user = result.recordset[0];
 
     if (!user) {
@@ -206,7 +205,7 @@ router.post(
       .isLength({ max: 255 })
       .withMessage('Invalid email address')
       .custom(async (value) => {
-        const result = await pool.request().query`SELECT * FROM users WHERE email = ${value}`;
+        const result = await sql.query`SELECT * FROM users WHERE email = ${value}`;
         if (result.recordset.length > 0) {
           return Promise.reject('Email address is already in use');
         }
@@ -232,7 +231,7 @@ router.post(
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const verificationToken = uuidv4();
 
-      await pool.request().query`INSERT INTO users (
+      await sql.query`INSERT INTO users (
         id,
         username,
         email,
@@ -310,13 +309,13 @@ router.get('/verify-email', async (req, res) => {
   const token = req.query.token;
   try {
     const result =
-      await pool.request().query`SELECT * FROM users WHERE verification_token = ${token}`;
+      await sql.query`SELECT * FROM users WHERE verification_token = ${token}`;
     const user = result.recordset[0];
     if (!user) {
       return res.status(400).send('Invalid token.');
     }
 
-    await pool.request().query`UPDATE users SET verifiedAccount = 1, verification_token = NULL WHERE id = ${user.id}`;
+    await sql.query`UPDATE users SET verifiedAccount = 1, verification_token = NULL WHERE id = ${user.id}`;
     res.send('Email verified successfully. You can now log in.');
   } catch (error) {
     res.status(500).send('An error occurred. Please try again later.');
@@ -349,7 +348,7 @@ router.post('/login', checkNotAuthenticated, async (req, res, next) => {
       const verificationToken = uuidv4();
 
       try {
-        await pool.request().query`
+        await sql.query`
           UPDATE users 
           SET verification_token = ${verificationToken} 
           WHERE id = ${user.id}`;

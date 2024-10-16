@@ -1,5 +1,4 @@
 const sql = require('mssql');
-const { pool } = require('../db'); // Adjust the path as necessary
 
 /*
 CREATE TABLE update_post_comments (
@@ -18,7 +17,7 @@ CREATE TABLE update_post_comments (
 const updateQueries = {
   getUpdates: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
       SELECT 
           up.*,
           u.username AS user_name,
@@ -50,7 +49,7 @@ const updateQueries = {
   
   getUpdateById: async (id) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT 
           update_posts.*, 
           users.username as user_name
@@ -67,7 +66,7 @@ const updateQueries = {
   
   getUpdateComments: async (id) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT 
           update_post_comments.*, 
           users.username as user_name, users.avatar as user_avatar
@@ -85,7 +84,7 @@ const updateQueries = {
 
   createUpdatePost: async (userId, title, additional_information, content) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         INSERT INTO update_posts (user_id, title, additional_info, content, post_date, pull_request_url)
         VALUES (${userId}, ${title}, ${additional_information}, ${content}, GETDATE(), '')
       `;
@@ -99,7 +98,7 @@ const updateQueries = {
   createUpdateComment: async (comment) => {
     try {
       console.log(comment);
-      const result = await pool.request().query`
+      const result = await sql.query`
         INSERT INTO update_post_comments (update_id, user_id, content, parent_comment_id)
         VALUES (${comment.update_id}, ${comment.user_id}, ${comment.body_text}, ${comment.parent_comment_id})
       `;

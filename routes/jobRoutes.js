@@ -2,7 +2,6 @@ const { BlobServiceClient } = require('@azure/storage-blob');
 const express = require('express');
 const router = express.Router();
 const jobQueries = require('../queries/jobQueries');
-const userRecentQueries = require('../queries/userRecentQueries');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const jobBoardService = require('../services/jobBoardService');
@@ -482,6 +481,8 @@ router.get('/:jobId', viewLimiter, async (req, res) => {
 >>>>>>> e36fca5 (large visual update and db refactoring)
     }
 
+=======
+>>>>>>> parent of e36fca5 (large visual update and db refactoring)
     res.render('job-posting.ejs', {
       job_id: jobId,
       user: req.user,

@@ -3,7 +3,6 @@ const utilFunctions = require('../utils/utilFunctions');
 const resumeFunctions = require('../utils/resumeFunctions');
 const config = require('../config/dbConfig');
 const fs = require('fs');
-const { pool } = require('../db'); // Adjust the path as necessary
 const path = require('path');
 
 /*
@@ -19,18 +18,6 @@ CREATE TABLE company_comments (
     FOREIGN KEY (company_id) REFERENCES dbo.companies(id),
     FOREIGN KEY (parent_comment_id) REFERENCES dbo.company_comments(id)
 );
-
-CREATE TABLE user_recent_viewed_jobs (
-    user_id NVARCHAR(255) NOT NULL,
-    jobPostings_id INT NOT NULL,
-    company_id INT NOT NULL,
-    viewed_at TIMESTAMP NOT NULL,
-    PRIMARY KEY (user_id, jobPostings_id, viewed_at),
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (jobPostings_id) REFERENCES jobPostings(id),
-    FOREIGN KEY (company_id) REFERENCES companies(id)
-);
-
 */
 
 const jobTitleCategories = {
@@ -49,7 +36,7 @@ const jobQueries = {
 
 
   setJobAsProcessed: async (jobId) => {
-    await pool.request().query`
+    await sql.query`
       UPDATE JobPostings
       SET isProcessed = 1
       WHERE id = ${jobId}
@@ -57,7 +44,7 @@ const jobQueries = {
   },
 
   setJobRawDescription: async (jobId) => {
-    await pool.request().query`
+    await sql.query`
       UPDATE JobPostings
       SET raw_description_no_format = description
       WHERE id = ${jobId}
@@ -66,6 +53,7 @@ const jobQueries = {
 
   updateJob: async (jobId, jobInfo) => {
     try {
+      
       let updateQuery = 'UPDATE JobPostings SET ';
       const updateValues = [];
       
@@ -77,12 +65,13 @@ const jobQueries = {
       updateQuery = updateQuery.slice(0, -2); // Remove the last comma and space
       updateQuery += ' WHERE id = @jobId';
       
-      const request = pool.request();
+      const request = new sql.Request();
       request.input('jobId', sql.Int, jobId);
       updateValues.forEach(param => {
         request.input(param.name.slice(1), param.value);
       });
 
+      
       await request.query(updateQuery);
     } catch (error) {
       console.error('Error updating job:', error);
@@ -102,7 +91,7 @@ const jobQueries = {
 
   getAllCompanies: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM companies
       `;
       return result.recordset;
@@ -114,7 +103,7 @@ const jobQueries = {
 
   updateJobBoardUrl: async (companyId, jobBoardUrl) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         UPDATE companies
         SET job_board_url = ${jobBoardUrl}
         WHERE id = ${companyId}
@@ -128,7 +117,7 @@ const jobQueries = {
 
   getAllCompanyJobBoards: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT id, job_board_url FROM companies
         WHERE job_board_url IS NOT NULL
       `;
@@ -141,7 +130,7 @@ const jobQueries = {
 
   getCompanyJobLinks: async (companyId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT id, title, link FROM JobPostings WHERE company_id = ${companyId}
       `;
       return result.recordset;
@@ -153,7 +142,7 @@ const jobQueries = {
 
   getAllCompanyJobLinks: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT id, title, link, company_id FROM JobPostings
       `;
       return result.recordset;
@@ -165,7 +154,7 @@ const jobQueries = {
 
   getCompanyJobs: async (companyId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT id, title, link, company_id FROM JobPostings WHERE company_id = ${companyId}
       `;
       return result.recordset;
@@ -181,7 +170,7 @@ const jobQueries = {
         throw new Error('jobId is required');
       }
 
-      await pool.request().query`
+      await sql.query`
         UPDATE JobPostings
         SET applicants = COALESCE(applicants, 0) + 1
         WHERE id = ${jobId}`;
@@ -197,7 +186,7 @@ const jobQueries = {
         throw new Error('jobId is required');
       }
 
-      await pool.request().query`
+      await sql.query`
         UPDATE JobPostings
         SET applicants = COALESCE(applicants, 0) - 1
         WHERE id = ${jobId}`;
@@ -277,7 +266,7 @@ const jobQueries = {
   searchJobLevels: async (searchTerm) => {
     try {
       searchTerm = searchTerm.toLowerCase();
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT experienceLevel, COUNT(*) as jobCount
         FROM JobPostings
         WHERE experienceLevel LIKE ${'%' + searchTerm + '%'}
@@ -293,7 +282,7 @@ const jobQueries = {
 
   searchJobLocations: async (searchTerm) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT location, COUNT(*) as jobCount 
         FROM JobPostings 
         WHERE location LIKE ${'%' + searchTerm + '%'}
@@ -309,7 +298,7 @@ const jobQueries = {
 
   updateCompanyJobBoards: async (companyId, jobBoardUrl) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         UPDATE companies
         SET job_board_url = ${jobBoardUrl}
         WHERE id = ${companyId}
@@ -323,7 +312,7 @@ const jobQueries = {
 
   searchCompanies: async (searchTerm) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT TOP 5 c.id, c.name, c.logo, COUNT(jp.id) AS job_count
         FROM companies c
         LEFT JOIN JobPostings jp ON c.id = jp.company_id
@@ -346,7 +335,7 @@ const jobQueries = {
 
   searchJobs: async (searchTerm) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
           SELECT * FROM jobPostings WHERE title LIKE ${'%' + searchTerm + '%'}`;
 
       return result.recordset;
@@ -358,7 +347,7 @@ const jobQueries = {
 
   getCompaniesCount: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT COUNT(*) as count FROM companies
       `;
       return result.recordset[0].count;
@@ -370,7 +359,7 @@ const jobQueries = {
 
   getJobs: async (limit, offset) => {
     try {
-      const result = await pool.request().query(`
+      const result = await sql.query(`
         SELECT JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
         (
           SELECT STRING_AGG(JobTags.tagName, ', ')
@@ -395,7 +384,7 @@ const jobQueries = {
   getCompanyComments: async (companyId) => {
     // get company comments and join in user data
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT cc.*, u.username as user_name, u.id as user_id, u.avatar as user_avatar
         FROM company_comments cc
         JOIN users u ON cc.user_id = u.id
@@ -410,7 +399,7 @@ const jobQueries = {
 
   addCompanyComment: async (comment) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         INSERT INTO company_comments (company_id, user_id, content, parent_comment_id)
         VALUES (${comment.company_id}, ${comment.user_id}, ${comment.content}, ${comment.parent_comment_id})
       `;
@@ -423,7 +412,7 @@ const jobQueries = {
 
   deleteCompanyComment: async (commentId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         UPDATE company_comments
         SET deleted = 1
         WHERE id = ${commentId}
@@ -437,7 +426,7 @@ const jobQueries = {
 
   getSkill: async (skillName) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM skills WHERE name = ${skillName}
       `;
       return result.recordset[0];
@@ -452,8 +441,7 @@ const jobQueries = {
 <<<<<<< HEAD
 =======
       await sql.connect(config);
->>>>>>> e36fca5 (large visual update and db refactoring)
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT id, title, description
         FROM JobPostings
         ORDER BY id
@@ -474,8 +462,7 @@ const jobQueries = {
 <<<<<<< HEAD
 =======
       await sql.connect(config);
->>>>>>> e36fca5 (large visual update and db refactoring)
-      await pool.request().query`
+      await sql.query`
         UPDATE JobPostings
         SET needs_review = 1
         WHERE id = ${jobId}
@@ -489,7 +476,7 @@ const jobQueries = {
 
   getAllJobs: async () => {
     try {
-      const result = await pool.request().query(`
+      const result = await sql.query(`
         select * from JobPostings
       `);
       const jobs = result.recordset;
@@ -503,7 +490,7 @@ const jobQueries = {
   getRecentJobs: async (page = 1, pageSize = 20) => {
     try {
       const offset = (page - 1) * pageSize;
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT 
           j.id,
           j.title,
@@ -548,7 +535,7 @@ const jobQueries = {
 
   getJobCountByCompany: async (companyName) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT COUNT(*) as count
         FROM JobPostings jp
         INNER JOIN companies c ON jp.company_id = c.id
@@ -563,7 +550,7 @@ const jobQueries = {
 
   deleteJobsOlderThan2Months: async () => {
     try {
-      await pool.request().query`
+      await sql.query`
         DELETE FROM JobPostings
         WHERE postedDate < DATEADD(month, -2, GETDATE())
       `;
@@ -719,18 +706,17 @@ const jobQueries = {
       `;
   
       // Prepare SQL request and input parameters
-      const result = await pool.request()
-        .input('offset', sql.Int, offset)
-        .input('pageSize', sql.Int, pageSize);
-
+      const request = new sql.Request();
       Object.entries(queryParams).forEach(([key, value]) => {
-        result.input(key, value);
+        request.input(key, value);
       });
-
-      // Execute the query
-      const queryResult = await result.query(baseQuery);
+      request.input('offset', sql.Int, offset);
+      request.input('pageSize', sql.Int, pageSize);
   
-      return queryResult.recordset;
+      // Execute the query
+      const result = await request.query(baseQuery);
+  
+      return result.recordset;
     } catch (error) {
       console.error('Error in searchAllJobsFromLast30Days:', error);
       throw error;
@@ -756,57 +742,47 @@ const jobQueries = {
       const queryParams = {};
   
       // Prepare parameters for titles
-      if (titles && typeof titles === 'string') {
-        const titleKeywords = titles.split(/[,\s]+/).filter(keyword => keyword);
+      if (titles) {
+        const titleKeywords = titles.split(/[,\s]+/);
         titleKeywords.forEach((keyword, i) => {
           queryParams[`title${i}`] = `%${keyword}%`;
         });
       }
   
       // Prepare parameters for locations
-      if (Array.isArray(locations) && locations.length > 0) {
-        console.log('Locations:', locations);
-        const locationKeywords = locations.join(', ').split(/[,\s]+/).filter(keyword => keyword);
-        locationKeywords.forEach((location, i) => {
-          queryParams[`location${i}`] = `%${location}%`;
-        });
-      } else if (typeof locations === 'string' && locations.trim() !== '') {
-        const locationKeywords = locations.split(/[,\s]+/).filter(keyword => keyword);
+      if (locations) {
+        const locationKeywords = locations.split(/[,\s]+/);
         locationKeywords.forEach((location, i) => {
           queryParams[`location${i}`] = `%${location}%`;
         });
       }
   
       // Prepare parameter for experience level
-      if (experienceLevel && typeof experienceLevel === 'string') {
+      if (experienceLevel) {
         queryParams.experienceLevel = `%${experienceLevel}%`;
       } else {
         queryParams.experienceLevel = null;
       }
   
       // Prepare parameters for majors
-      if (Array.isArray(majors) && majors.length > 0) {
+      if (majors.length) {
         majors.forEach((major, i) => {
           queryParams[`major${i}`] = `%${major}%`;
         });
       }
   
       // Prepare parameter for salary
-      if (typeof salary === 'number') {
-        queryParams.salary = salary;
-      } else {
-        queryParams.salary = 0;
-      }
+      queryParams.salary = salary;
   
       // Prepare parameters for companies
-      if (Array.isArray(companies) && companies.length > 0) {
+      if (companies.length) {
         companies.forEach((companyId, i) => {
           queryParams[`company${i}`] = companyId;
         });
       }
   
       // Prepare parameters for skills
-      if (Array.isArray(skills) && skills.length > 0) {
+      if (skills.length) {
         skills.forEach((skill, i) => {
           queryParams[`skill${i}`] = skill;
         });
@@ -837,24 +813,24 @@ const jobQueries = {
               -- Initialize score to 0
               0
               -- Add points for title matches
-              + CASE WHEN ${titles && titles.trim() !== '' ? '(' + titles.split(/[,\s]+/).filter(k => k).map((_, i) => `cj.title LIKE @title${i}`).join(' OR ') + ')' : '0=1'} THEN 1 ELSE 0 END
+              + CASE WHEN ${titles ? '(' + titles.split(/[,\s]+/).map((_, i) => `cj.title LIKE @title${i}`).join(' OR ') + ')' : '0=1'} THEN 1 ELSE 0 END
               -- Add points for location matches
-              + CASE WHEN ${ (Array.isArray(locations) && locations.length > 0) || (typeof locations === 'string' && locations.trim() !== '') ? '(' + (Array.isArray(locations) ? locations.join(', ').split(/[,\s]+/).filter(k => k) : locations.split(/[,\s]+/).filter(k => k)).map((_, i) => `cj.location LIKE @location${i}`).join(' OR ') + ')' : '0=1'} THEN 1 ELSE 0 END
+              + CASE WHEN ${locations ? '(' + locations.split(/[,\s]+/).map((_, i) => `cj.location LIKE @location${i}`).join(' OR ') + ')' : '0=1'} THEN 1 ELSE 0 END
               -- Add points for experience level matches
               + CASE WHEN @experienceLevel IS NOT NULL AND cj.cleaned_experience_level LIKE @experienceLevel THEN 1 ELSE 0 END
               -- Add points for majors matches
-              + CASE WHEN ${Array.isArray(majors) && majors.length > 0 ? '(' + majors.map((_, i) => `cj.accepted_college_majors LIKE @major${i}`).join(' OR ') + ')' : '0=1'} THEN 1 ELSE 0 END
+              + CASE WHEN ${majors.length ? '(' + majors.map((_, i) => `cj.accepted_college_majors LIKE @major${i}`).join(' OR ') + ')' : '0=1'} THEN 1 ELSE 0 END
               -- Add points for salary match
               + CASE WHEN cj.salary >= @salary THEN 1 ELSE 0 END
               -- Add points for company matches
-              + CASE WHEN ${Array.isArray(companies) && companies.length > 0 ? '(' + companies.map((_, i) => `cj.company_id = @company${i}`).join(' OR ') + ')' : '0=1'} THEN 1 ELSE 0 END
+              + CASE WHEN ${companies.length ? '(' + companies.map((_, i) => `cj.company_id = @company${i}`).join(' OR ') : '0=1'} THEN 1 ELSE 0 END
               -- Add points for skills matches
               + (
                 SELECT COUNT(*)
                 FROM job_skills js
                 JOIN skills s ON js.skill_id = s.id
                 WHERE js.job_id = cj.id
-                AND s.name IN (${Array.isArray(skills) && skills.length > 0 ? skills.map((_, i) => `@skill${i}`).join(', ') : 'NULL'})
+                AND s.name IN (${skills.length ? skills.map((_, i) => `@skill${i}`).join(', ') : 'NULL'})
               )
             ) AS likeness_score
           FROM CleanedJobs cj
@@ -879,74 +855,23 @@ const jobQueries = {
         FETCH NEXT @pageSize ROWS ONLY;
       `;
   
-      // Prepare SQL request and input parameters using the existing pool
-      const request = pool.request();
-      for (var key in queryParams) {
-        if (queryParams.hasOwnProperty(key)) {
-          var value = queryParams[key];
-          if (key.startsWith('title') || key.startsWith('location') || key.startsWith('major') || key.startsWith('skill') || key === 'experienceLevel') {
-            request.input(key, sql.VarChar, value);
-          } else if (key.startsWith('company')) {
-            request.input(key, sql.Int, value);
-          } else if (key === 'salary') {
-            request.input(key, sql.Decimal(18, 2), value); // Adjust precision as needed
-          }
-        }
-      }
+      // Prepare SQL request and input parameters
+      const request = new sql.Request();
+      Object.entries(queryParams).forEach(([key, value]) => {
+        request.input(key, value);
+      });
       request.input('offset', sql.Int, offset);
       request.input('pageSize', sql.Int, pageSize);
   
       // Execute the query
-      var result = await request.query(baseQuery);
+      const result = await request.query(baseQuery);
   
-      console.log(`Found ${result.recordset.length} job(s) matching the criteria.`);
       return result.recordset;
     } catch (error) {
-      // Enhanced error logging
-      if (error instanceof TypeError) {
-        console.error('Type Error in searchUserPreferredJobs:', error.message);
-      } else if (error.name === 'RequestError') {
-        console.error('SQL Request Error in searchUserPreferredJobs:', error.message);
-      } else {
-        console.error('Unexpected Error in searchUserPreferredJobs:', error);
-      }
-      // Optionally, you can throw a custom error or handle it as needed
-      throw new Error('Failed to search for user preferred jobs. Please try again later.');
+      console.error('Error in searchUserPreferredJobs:', error);
+      throw error;
     }
   },
-
-  getRecentJobs: async (page = 1, pageSize = 20) => {
-
-    try {
-      const offset = (page - 1) * pageSize;
-      const result = await pool.request().query`
-        SELECT
-          j.id,
-          j.title,
-          j.description,
-          j.postedDate,
-          j.experienceLevel,
-          j.salary,
-          j.location,
-          j.link,
-          c.name AS company_name,
-          c.logo AS company_logo,
-          c.location AS company_location,
-          c.description AS company_description
-        FROM JobPostings j
-        LEFT JOIN companies c ON j.company_id = c.id
-        ORDER BY j.postedDate DESC
-        OFFSET @offset ROWS
-        FETCH NEXT @pageSize ROWS ONLY
-      `;
-
-      return result.recordset;
-    } catch (err) {
-      console.error('Database query error:', err);
-      throw err;
-    }
-  },
-  
   
   
   
@@ -1069,7 +994,7 @@ const jobQueries = {
   
   getJobTitles: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT DISTINCT title FROM JobPostings
       `;
       const seenTitles = new Set();
@@ -1093,7 +1018,7 @@ const jobQueries = {
         throw new Error('postId is required');
       }
 
-      await pool.request().query`
+      await sql.query`
         UPDATE JobPostings
         SET views = COALESCE(views, 0) + 1
         WHERE id = ${postId}`;
@@ -1105,7 +1030,7 @@ const jobQueries = {
 
   getJobById: async (id) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM JobPostings WHERE id = ${id}
       `;
       return result.recordset[0];
@@ -1251,7 +1176,7 @@ const jobQueries = {
 
   getUserJobPreferences: async (userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT jobPreferredTitle, jobPreferredSkills, jobPreferredLocation, jobExperienceLevel, jobPreferredIndustry, jobPreferredSalary FROM users WHERE id = ${userId}
       `;
       return result.recordset[0];
@@ -1263,7 +1188,7 @@ const jobQueries = {
 
   getRandomJobs: async (limit) => {
     try {
-      const result = await pool.request().query(`
+      const result = await sql.query(`
 SELECT TOP ${limit} 
   jp.*,
   c.name AS company_name, 
@@ -1292,7 +1217,7 @@ ORDER BY jp.postedDate DESC
 
   getRecent10Jobs: async () => {
     try {
-      const result = await pool.request().query(`
+      const result = await sql.query(`
         WITH RecentJobs AS (
           SELECT TOP 100 
             JobPostings.*,
@@ -1490,7 +1415,7 @@ ORDER BY jp.postedDate DESC
 
   simpleGetJobsCount: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT 
           COUNT(*) as totalCount,
           SUM(CASE WHEN CAST(postedDate AS DATE) = CAST(GETDATE() AS DATE) THEN 1 ELSE 0 END) as todayCount
@@ -1508,7 +1433,7 @@ ORDER BY jp.postedDate DESC
 
   applyForJob: async (userId, jobId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         INSERT INTO user_jobs (user_id, job_id)
         VALUES (${userId}, ${jobId})
       `;
@@ -1530,7 +1455,7 @@ ORDER BY jp.postedDate DESC
         return null;
       }
 
-      const result = await pool.request().query`
+      const result = await sql.query`
         UPDATE user_jobs
         SET job_status = ${status}
         WHERE user_id = ${userId} AND job_id = ${jobId}
@@ -1544,7 +1469,7 @@ ORDER BY jp.postedDate DESC
 
   removeJobApplication: async (userId, jobId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         DELETE FROM user_jobs
         WHERE user_id = ${userId} AND job_id = ${jobId}
       `;
@@ -1557,7 +1482,7 @@ ORDER BY jp.postedDate DESC
 
   getUserAppliedJobs: async (userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT 
           j.*,
           uj.applied_at,
@@ -1598,7 +1523,7 @@ ORDER BY jp.postedDate DESC
 
   getUserAppliedJobsCount: async (userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT COUNT(*) as count
         FROM user_jobs
         WHERE user_id = ${userId}
@@ -1613,7 +1538,7 @@ ORDER BY jp.postedDate DESC
 
   getRecentJobCount: async () => {
     try {
-      const result = await pool.request().query(`
+      const result = await sql.query(`
         SELECT COUNT(*) AS jobCount
         FROM JobPostings
       `);
@@ -1653,7 +1578,7 @@ ORDER BY jp.postedDate DESC
         FETCH NEXT @pageSize ROWS ONLY
       `;
   
-      const result = await pool.request().query({
+      const result = await sql.query({
         text: query,
         parameters: [
           { name: 'tagId', type: sql.Int, value: tagId },
@@ -1695,7 +1620,7 @@ ORDER BY jp.postedDate DESC
         .map((tag) => `'${tag.replace(/'/g, '\'\'')}'`)
         .join(',');
 
-      const result = await pool.request().query(`
+      const result = await sql.query(`
         SELECT JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
         (
           SELECT STRING_AGG(JobTags.tagName, ', ')
@@ -1726,14 +1651,14 @@ ORDER BY jp.postedDate DESC
     try {
       const tagIds = await Promise.all(
         tags.map(async (tag) => {
-          const result = await pool.request().query`
+          const result = await sql.query`
             SELECT id FROM JobTags WHERE tagName = ${tag}
           `;
           return result.recordset[0].id;
         })
       );
 
-      const result = await pool.request().query(`
+      const result = await sql.query(`
         SELECT COUNT(*) AS count
         FROM JobPostings
         WHERE id IN (
@@ -1752,7 +1677,7 @@ ORDER BY jp.postedDate DESC
   // get jobs with similar tags/skills
   getSimilarJobs: async (jobId) => {
     try {
-      const result = await pool.request().query(`
+      const result = await sql.query(`
         WITH OriginalJob AS (
           SELECT id, title, experienceLevel FROM JobPostings WHERE id = ${jobId}
         ),
@@ -1809,7 +1734,7 @@ ORDER BY jp.postedDate DESC
   // get jobs with similar tags/skills by the same company
   getSimilarJobsByCompany: async (companyId, jobId) => {
     try {
-      const result = await pool.request().query(`
+      const result = await sql.query(`
       SELECT TOP 15
       JobPostings.*,
       companies.name AS company_name,
@@ -1847,7 +1772,7 @@ ORDER BY jp.postedDate DESC
   getJobsByCompany: async (companyId, page, pageSize) => {
     try {
       const offset = (page - 1) * pageSize;
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT
           JobPostings.*,
           companies.name AS company_name,
@@ -1925,7 +1850,7 @@ ORDER BY jp.postedDate DESC
   // and then look at their companies and get the 10 most recent companies
   getRecentCompanies: async () => {
     try {
-      const result = await pool.request().query(`
+      const result = await sql.query(`
         WITH RecentCompanies AS (
           SELECT TOP 100
             company_id
@@ -1963,7 +1888,7 @@ ORDER BY jp.postedDate DESC
 
   getSkills: async () => {
     try {
-      const result = await pool.request().query`SELECT * FROM skills`;
+      const result = await sql.query`SELECT * FROM skills`;
       const skills = result.recordset;
       return skills;
     } catch (err) {
@@ -1974,7 +1899,7 @@ ORDER BY jp.postedDate DESC
 
   findPreviewById: async (id) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT 
           JobPostings.*,
           companies.name AS company_name,
@@ -1997,7 +1922,7 @@ ORDER BY jp.postedDate DESC
 
   findById: async (id) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT 
           JobPostings.*,
           companies.name AS company_name,
@@ -2039,7 +1964,7 @@ ORDER BY jp.postedDate DESC
 
   simpleFindById: async (id) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT 
           JobPostings.*,
           companies.name AS company_name,
@@ -2232,7 +2157,7 @@ ORDER BY jp.postedDate DESC
       try {
         // Insert the job posting into the JobPostings table
         // Define a table variable to hold the inserted IDs
-        const result = await pool.request().query`
+        const result = await sql.query`
   DECLARE @InsertedJobPostings TABLE (id INT);
 
   INSERT INTO JobPostings (
@@ -2311,13 +2236,13 @@ ORDER BY jp.postedDate DESC
         for (const skill of skills) {
           try {
             let skillId;
-            const skillRecord = await pool.request().query`
+            const skillRecord = await sql.query`
               SELECT id FROM skills WHERE name = ${skill}
             `;
             if (skillRecord.recordset.length > 0) {
               skillId = skillRecord.recordset[0].id;
             } else {
-              const newSkill = await pool.request().query`
+              const newSkill = await sql.query`
                 INSERT INTO skills (name)
                 OUTPUT INSERTED.id
                 VALUES (${skill})
@@ -2326,7 +2251,7 @@ ORDER BY jp.postedDate DESC
             }
 
             // Associate the skill with the job posting
-            await pool.request().query`
+            await sql.query`
               INSERT INTO job_skills (job_id, skill_id)
               VALUES (${jobPostingId}, ${skillId})
             `;
@@ -2341,13 +2266,13 @@ ORDER BY jp.postedDate DESC
         for (const tag of tags) {
           try {
             let tagId;
-            const tagRecord = await pool.request().query`
+            const tagRecord = await sql.query`
               SELECT id FROM JobTags WHERE tagName = ${tag}
             `;
             if (tagRecord.recordset.length > 0) {
               tagId = tagRecord.recordset[0].id;
             } else {
-              const newTag = await pool.request().query`
+              const newTag = await sql.query`
                 INSERT INTO JobTags (tagName)
                 OUTPUT INSERTED.id
                 VALUES (${tag})
@@ -2356,7 +2281,7 @@ ORDER BY jp.postedDate DESC
             }
 
             // Associate the tag with the job posting
-            await pool.request().query`
+            await sql.query`
               INSERT INTO JobPostingsTags (jobId, tagId)
               VALUES (${jobPostingId}, ${tagId})
             `;
@@ -2408,7 +2333,7 @@ ORDER BY jp.postedDate DESC
 
   searchSkills: async (searchTerm) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT TOP 5 s.name, s.id, COUNT(js.job_id) AS job_count
         FROM skills s
         LEFT JOIN job_skills js ON s.id = js.skill_id
@@ -2430,7 +2355,7 @@ ORDER BY jp.postedDate DESC
   getCompanyByName: async (name) => {
     try {
       const nameWithoutSpaces = name.replace(/[\s']/g, '');
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT TOP 1 * FROM companies 
         WHERE name = ${name}
         OR CHARINDEX(${name}, alternate_names) > 0
@@ -2450,7 +2375,7 @@ ORDER BY jp.postedDate DESC
 
   getCompanyById: async (id) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM companies WHERE id = ${id}
       `;
       return result.recordset[0];
@@ -2468,7 +2393,7 @@ ORDER BY jp.postedDate DESC
       const MIN_PARTIAL_LENGTH = 3;
   
       // First, try to find an exact match
-      const exactMatchResult = await pool.request().query`
+      const exactMatchResult = await sql.query`
         SELECT TOP 1 
           c.id, 
           c.name, 
@@ -2499,7 +2424,7 @@ ORDER BY jp.postedDate DESC
       }
   
       // If no exact match, try partial matches with stricter conditions
-      const partialMatchResult = await pool.request().query`
+      const partialMatchResult = await sql.query`
         SELECT TOP 5 
           c.id, 
           c.name, 
@@ -2576,7 +2501,7 @@ ORDER BY jp.postedDate DESC
     founded
   ) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         INSERT INTO companies (name, logo, location, description, job_board_url, industry, size, stock_symbol, founded)
         OUTPUT INSERTED.id
         VALUES (${name}, ${logo_url}, ${location}, ${description}, ${job_board_url}, ${industry}, ${size}, ${stock_symbol}, ${founded})
@@ -2590,16 +2515,16 @@ ORDER BY jp.postedDate DESC
   },
   deleteJob: async (jobId) => {
     try {
-      await pool.request().query`
+      await sql.query`
         DELETE FROM JobPostingsTags WHERE jobId = ${jobId}
       `;
-      await pool.request().query`
+      await sql.query`
       DELETE FROM user_jobs WHERE job_id = ${jobId}
     `;
-      await pool.request().query`
+      await sql.query`
         DELETE FROM job_skills WHERE job_id = ${jobId}
       `;
-      await pool.request().query`
+      await sql.query`
       DELETE FROM JobPostings WHERE id = ${jobId}
     `;
     } catch (err) {
@@ -2612,13 +2537,13 @@ ORDER BY jp.postedDate DESC
 
   automatedDeleteJob: async (jobId) => {
     try {
-      await pool.request().query`
+      await sql.query`
         DELETE FROM JobPostingsTags WHERE jobId = ${jobId}
       `;
-      await pool.request().query`
+      await sql.query`
         DELETE FROM job_skills WHERE job_id = ${jobId}
       `;
-      await pool.request().query`
+      await sql.query`
       DELETE FROM JobPostings WHERE id = ${jobId}
     `;
     
@@ -2634,14 +2559,14 @@ ORDER BY jp.postedDate DESC
     try {
 
       // Update applied jobs
-      await pool.request().query`
+      await sql.query`
           UPDATE user_jobs
           SET job_id = ${primaryJobId}
           WHERE job_id = ${duplicateJobId}
         `;
       
       // Delete the duplicate job from related tables
-      await pool.request().query`
+      await sql.query`
           DELETE FROM JobPostingsTags WHERE jobId = ${duplicateJobId}
           DELETE FROM job_skills WHERE job_id = ${duplicateJobId}
           DELETE FROM JobPostings WHERE id = ${duplicateJobId}
@@ -2656,7 +2581,7 @@ ORDER BY jp.postedDate DESC
 
   getDuplicateJobPostings: async () => {
     try {
-      const result = await pool.request().query(`
+      const result = await sql.query(`
         WITH DuplicateJobPostings AS (
           SELECT title, company_id, salary, location, COUNT(*) AS duplicate_count
           FROM JobPostings
@@ -2692,7 +2617,7 @@ ORDER BY jp.postedDate DESC
 
   getDirectDuplicateCompanies: async () => {
     try {
-      const result = await pool.request().query(`
+      const result = await sql.query(`
         WITH DuplicateCompanies AS (
           SELECT name
           FROM companies
@@ -2716,13 +2641,13 @@ ORDER BY jp.postedDate DESC
 
   combineDuplicateCompaniesAndJobs: async (companyId, duplicateCompanyId) => {
     try {
-      await pool.request().query(`
+      await sql.query(`
         UPDATE JobPostings
         SET company_id = ${companyId}
         WHERE company_id = ${duplicateCompanyId}
       `);
 
-      await pool.request().query(` 
+      await sql.query(` 
         DELETE FROM companies WHERE id = ${duplicateCompanyId}
       `);
 
@@ -2735,7 +2660,7 @@ ORDER BY jp.postedDate DESC
 
   getDuplicateCompanies: async () => {
     try {
-      const result = await pool.request().query(`
+      const result = await sql.query(`
         SELECT job_board_url, COUNT(*) AS duplicate_count
         FROM companies
         GROUP BY job_board_url
@@ -2753,7 +2678,7 @@ ORDER BY jp.postedDate DESC
   // return list of ids of jobs that are older than 60 days
   getOldJobs: async () => {
     try {
-      const result = await pool.request().query(`
+      const result = await sql.query(`
         SELECT id
         FROM JobPostings
         WHERE postedDate < DATEADD(day, -60, GETDATE())
@@ -2767,7 +2692,7 @@ ORDER BY jp.postedDate DESC
 
   getCountOfTopJobTags: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT TOP 30 tagName, COUNT(tagId) AS count
         FROM JobPostingsTags
         INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
@@ -2783,7 +2708,7 @@ ORDER BY jp.postedDate DESC
 
   getCountOfTopJobSkills: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT TOP 30 skills.name, COUNT(skill_id) AS count, skills.id
         FROM job_skills
         INNER JOIN skills ON job_skills.skill_id = skills.id
@@ -2800,7 +2725,7 @@ ORDER BY jp.postedDate DESC
 
   getCountOfTopJobTagsByCompany: async (companyId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT TOP 30 tagName, COUNT(tagId) AS count
         FROM JobPostingsTags
         INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
@@ -2823,7 +2748,7 @@ ORDER BY jp.postedDate DESC
 
   getUserJobExperience: async (userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT
           je.id,
           je.userId,
@@ -2871,7 +2796,7 @@ ORDER BY jp.postedDate DESC
 
   getUserEducationExperience: async (userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM education_experiences WHERE userId = ${userId}
       `;
 
@@ -2884,7 +2809,7 @@ ORDER BY jp.postedDate DESC
 
   clearUserJobExperience: async (userId) => {
     try {
-      await pool.request().query`
+      await sql.query`
         DELETE FROM job_experiences WHERE userId = ${userId}
       `;
     } catch (err) {
@@ -2895,7 +2820,7 @@ ORDER BY jp.postedDate DESC
 
   clearUserEducationExperience: async (userId) => {
     try {
-      await pool.request().query`
+      await sql.query`
         DELETE FROM education_experiences WHERE userId = ${userId}
       `;
     } catch (err) {
@@ -2906,7 +2831,7 @@ ORDER BY jp.postedDate DESC
 
   clearUserJobExperienceTags: async (userId) => {
     try {
-      await pool.request().query`
+      await sql.query`
         DELETE FROM job_experiences_tags WHERE experienceId IN (
           SELECT id FROM job_experiences WHERE userId = ${userId}
         )
@@ -2930,7 +2855,7 @@ ORDER BY jp.postedDate DESC
     tags
   ) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         INSERT INTO job_experiences (userId, title, employmentType, companyName, isCurrent, location, startDate, endDate, description, tags)
         OUTPUT INSERTED.id
         VALUES (${userId}, ${title}, ${employmentType}, ${companyName}, ${isCurrent}, ${location}, ${startDate}, ${endDate}, ${description}, ${tags})
@@ -2973,7 +2898,7 @@ ORDER BY jp.postedDate DESC
     activities
   ) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         INSERT INTO education_experiences (userId, institutionName, degree, fieldOfStudy, startDate, endDate, isCurrent, grade, activities, description)
         OUTPUT INSERTED.id
         VALUES (${userId}, ${institutionName}, ${degree}, ${fieldOfStudy}, ${startDate}, ${endDate}, ${isCurrent}, ${grade}, ${activities}, ${description})
@@ -2989,7 +2914,7 @@ ORDER BY jp.postedDate DESC
 
   getAllCompaniesAndJobCount: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
       SELECT companies.id, companies.name, companies.logo, companies.location, companies.description, companies.industry, companies.size, companies.stock_symbol, companies.founded, COUNT(JobPostings.id) AS jobCount
       FROM companies
       LEFT JOIN JobPostings ON companies.id = JobPostings.company_id AND JobPostings.deleted = 0
@@ -3084,7 +3009,7 @@ ORDER BY jp.postedDate DESC
 
       console.log('SQL Query: ', query);
 
-      const result = await pool.request().query(query);
+      const result = await sql.query(query);
 
       const jobs = result.recordset;
       return jobs;
@@ -3096,7 +3021,7 @@ ORDER BY jp.postedDate DESC
 
   getSkillsId: async (skillName) => {
     try {
-      const jobTagResult = await pool.request().query`
+      const jobTagResult = await sql.query`
         SELECT id FROM skills WHERE name LIKE '%' + ${skillName} + '%'
       `;
 
@@ -3113,7 +3038,7 @@ ORDER BY jp.postedDate DESC
 
   getSimilarSkills: async (skillId) => {
     try {
-      const result = await pool.request().query(`
+      const result = await sql.query(`
         SELECT TOP 9 s.name, COUNT(*) as skill_count
         FROM job_skills js
         JOIN skills s ON js.skill_id = s.id
@@ -3137,7 +3062,7 @@ ORDER BY jp.postedDate DESC
   getJobsBySkills: async (skillId, page = 1, pageSize = 15) => {
     try {
       const offset = (page - 1) * pageSize;
-      const result = await pool.request().query(`
+      const result = await sql.query(`
         SELECT JobPostings.*, companies.name AS company_name, companies.logo AS company_logo, companies.location AS company_location, companies.description AS company_description,
 (
   SELECT STRING_AGG(skills.name, ', ') WITHIN GROUP (ORDER BY skills.name)

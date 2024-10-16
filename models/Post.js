@@ -1,107 +1,85 @@
 const sql = require('mssql');
 const crypto = require('crypto');
-const tagQueries = require('./tagsQueries');
-const notificationQueries = require('./notificationQueries');
+const tagQueries = require('../queries/tagsQueries');
 
-const generateUniqueId = () => {
-  // Use the last 4 characters of the current timestamp in base 36
-  const timestampPart = Date.now().toString(36).slice(-4);
+class Post {
+  constructor(data) {
+    this.id = data.id;
+    this.userId = data.user_id;
+    this.title = data.title;
+    this.content = data.content;
+    this.link = data.link;
+    this.communityId = data.communities_id;
+    this.postType = data.post_type;
+    this.views = data.views;
+    this.createdAt = data.created_at;
+    this.updatedAt = data.updated_at;
+    this.deleted = data.deleted;
+    this.isLocked = data.isLocked;
+  }
 
-  // Generate a random 4-character string in base 36
-  const randomPart = crypto.randomBytes(2).toString('hex').slice(0, 4);
+  static generateUniqueId() {
+    const timestampPart = Date.now().toString(36).slice(-4);
+    const randomPart = crypto.randomBytes(2).toString('hex').slice(0, 4);
+    return `${timestampPart}${randomPart}`;
+  }
 
-  // Combine both parts to form an 8-character ID
-  return `${timestampPart}${randomPart}`;
-};
-
-const postQueries = {
-  searchPosts: async (searchTerm) => {
-    try {
-      const result = await sql.query`
-        SELECT * 
-        FROM posts 
-        WHERE title LIKE '%${searchTerm}%' AND deleted = 0`;
-
-      return result.recordset;
-    } catch (err) {
-      console.error('Database query error:', err);
-      throw err;
-    }
-  },
-
-  getPosts: async () => {
+  static async getAll() {
     try {
       const result = await sql.query(
         'SELECT * FROM posts WHERE deleted = 0 AND communities_id != 9 ORDER BY created_at DESC'
       );
-      const posts = result.recordset;
-
-      // Cache the result for future requests
-      return posts;
+      return result.recordset.map((post) => new Post(post));
     } catch (err) {
       console.error('Database query error:', err);
       throw err;
     }
-  },
+  }
 
-  deleteCommentById: async (commentId) => {
+  static async getById(postId) {
     try {
-      await sql.query`UPDATE comments SET deleted = 1 WHERE id = ${commentId}`;
-    } catch (err) {
-      console.error('Database delete error:', err);
-      throw err; // Rethrow the error for the caller to handle
-    }
-  },
-  
-  getCommentById: async (commentId) => {
-    try {
-      const result = await sql.query`
-        SELECT * 
-        FROM comments 
-        WHERE id = ${commentId}`;
-
-      return result.recordset[0];
+      const result =
+        await sql.query`SELECT * FROM posts WHERE id = ${postId} AND deleted = 0`;
+      return result.recordset[0] ? new Post(result.recordset[0]) : null;
     } catch (err) {
       console.error('Database query error:', err);
       throw err;
     }
-  },
+  }
 
-
-  getFavoritePostByPostIdAndUserId: async (postId, userId) => {
+  static async getFavoriteByPostIdAndUserId(postId, userId) {
     try {
       const result = await sql.query`
         SELECT * FROM favorites
         WHERE user_id = ${userId} AND post_id = ${postId}`;
-
       return result.recordset[0];
     } catch (err) {
       console.error('Database query error:', err);
       throw err;
     }
-  },
+  }
 
-  toggleLockPost: async (postId) => {
+  async toggleLock() {
     try {
       const result = await sql.query`
-        SELECT isLocked FROM posts WHERE id = ${postId}`;
+        SELECT isLocked FROM posts WHERE id = ${this.id}`;
       if (result.recordset.length === 0) {
         throw new Error('Post not found');
       }
 
-      const isLocked = !result.recordset[0].isLocked;
+      this.isLocked = !result.recordset[0].isLocked;
 
       await sql.query`
-        UPDATE posts SET isLocked = ${isLocked} WHERE id = ${postId}`;
+        UPDATE posts SET isLocked = ${this.isLocked} WHERE id = ${this.id}`;
 
-      return { message: 'Post locked/unlocked', isLocked };
+      return { message: 'Post locked/unlocked', isLocked: this.isLocked };
     } catch (err) {
       console.error('Database update error:', err);
       throw err;
     }
-  },
+  }
 
-  getPostsByTag: async (tagId) => {
+  static async getByTag(tagId) {
     try {
       const result = await sql.query`
         SELECT p.*, u.username, u.avatar,
@@ -111,34 +89,28 @@ const postQueries = {
         JOIN users u ON p.user_id = u.id
         JOIN post_tags pt ON p.id = pt.post_id
         WHERE pt.tag_id = ${tagId}`;
-
-      return result.recordset;
+      return result.recordset.map((post) => new Post(post));
     } catch (err) {
       console.error('Database query error:', err);
       throw err;
     }
-  },
+  }
 
-  getTagId: async (tagName) => {
+  static async getTagId(tagName) {
     try {
       const result = await sql.query`
         SELECT id FROM tags WHERE name = ${tagName}`;
-      if (result.recordset.length === 0) {
-        return null;
-      }
-      return result.recordset[0].id;
+      return result.recordset.length > 0 ? result.recordset[0].id : null;
     } catch (err) {
       console.error('Database query error:', err);
       throw err;
     }
-  },
+  }
 
-  viewPost: async (postId) => {
+  async incrementViews() {
     try {
-      // Check the current value of views for the post
       const checkResult = await sql.query`
-        SELECT COALESCE(views, 0) as views FROM posts WHERE id = ${postId}
-      `;
+        SELECT COALESCE(views, 0) as views FROM posts WHERE id = ${this.id}`;
 
       if (checkResult.recordset.length === 0) {
         throw new Error('Post not found.');
@@ -148,19 +120,15 @@ const postQueries = {
 
       let updateQuery;
       if (currentViews === null || isNaN(currentViews) || currentViews < 0) {
-        // If views is null, NaN, or negative, set it to 1
         updateQuery = sql.query`
           UPDATE posts 
           SET views = 1
-          WHERE id = ${postId}
-        `;
+          WHERE id = ${this.id}`;
       } else {
-        // Otherwise, increment views by 1
         updateQuery = sql.query`
           UPDATE posts 
           SET views = views + 1
-          WHERE id = ${postId}
-        `;
+          WHERE id = ${this.id}`;
       }
 
       const result = await updateQuery;
@@ -169,9 +137,40 @@ const postQueries = {
       console.error('Database update error:', err);
       throw err;
     }
-  },
+  }
+  static async incrementViews(postId) {
+    try {
+      const checkResult = await sql.query`
+        SELECT COALESCE(views, 0) as views FROM posts WHERE id = ${postId}`;
 
-  fetchSimilarPosts: async (user, postId, communityId, tags, title) => {
+      if (checkResult.recordset.length === 0) {
+        throw new Error('Post not found.');
+      }
+
+      const currentViews = checkResult.recordset[0].views;
+
+      let updateQuery;
+      if (currentViews === null || isNaN(currentViews) || currentViews < 0) {
+        updateQuery = sql.query`
+          UPDATE posts 
+          SET views = 1
+          WHERE id = ${postId}`;
+      } else {
+        updateQuery = sql.query`
+          UPDATE posts 
+          SET views = views + 1
+          WHERE id = ${postId}`;
+      }
+
+      const result = await updateQuery;
+      return result.rowsAffected[0] > 0;
+    } catch (err) {
+      console.error('Database update error:', err);
+      throw err;
+    }
+  }
+
+  static async fetchSimilarPosts(user, postId, communityId, tags, title) {
     const tagsCondition =
       tags && tags.length > 0
         ? `t.name IN (${tags.map((tag) => `'${tag}'`).join(',')})`
@@ -180,66 +179,32 @@ const postQueries = {
     if (user) {
       userReactionSubquery = `, ( SELECT TOP 1 upa.action_type FROM userPostActions upa WHERE upa.post_id = p.id AND upa.user_id = '${user.id}' ) AS userReaction`;
     }
-  
-    // Step 1: Find posts with matching tags, excluding private communities
+
+    // Step 1: Find posts with matching tags, regardless of community
     let queryWithMatchingTags = `
-      SELECT
-        p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
-        u.username, u.avatar, u.settings_PrivateJobNames, u.settings_PrivateSchoolNames,
-        c.name AS community_name, c.community_color as community_color, c.shortname as community_shortname,
-        p.post_type, p.views,
-        (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
-        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount,
-        COUNT(t.name) AS tagMatchCount,
-        CASE 
-          WHEN je.title IS NOT NULL THEN je.title
-          ELSE 
-            CASE
-              WHEN u.settings_PrivateSchoolNames = 1 THEN 'Student'
-              ELSE ee.institutionName
-            END
-        END AS experience_title,
-        CASE 
-          WHEN je.companyName IS NOT NULL THEN 
-            CASE 
-              WHEN u.settings_PrivateJobNames = 1 THEN 'Company'
-              ELSE je.companyName 
-            END
-          ELSE 
-            CASE 
-              WHEN u.settings_PrivateSchoolNames = 1 THEN 'Institution'
-              ELSE ee.institutionName
-            END
-        END AS experience_place
-        ${userReactionSubquery}
-      FROM posts p
-      JOIN users u ON p.user_id = u.id
-      JOIN communities c ON p.communities_id = c.id
-      LEFT JOIN post_tags pt ON p.id = pt.post_id
-      LEFT JOIN tags t ON pt.tag_id = t.id
-      OUTER APPLY (
-        SELECT TOP 1 title, companyName
-        FROM job_experiences
-        WHERE userId = u.id
-        ORDER BY startDate DESC
-      ) je
-      OUTER APPLY (
-        SELECT TOP 1 institutionName
-        FROM education_experiences
-        WHERE userId = u.id
-        ORDER BY startDate DESC
-      ) ee
-      WHERE p.id != '${postId}' AND p.deleted = 0 AND ${tagsCondition} AND p.communities_id != 9
-        AND c.PrivacySetting != 'private'
-      GROUP BY p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
-               u.username, u.avatar, c.name, p.post_type, p.views, c.community_color, c.shortname,
-               je.title, je.companyName, ee.institutionName, u.settings_PrivateJobNames, u.settings_PrivateSchoolNames
-      ORDER BY tagMatchCount DESC, p.created_at DESC
-      OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY;
-    `;
+    SELECT
+      p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
+      u.username, u.avatar,
+      c.name AS community_name, c.community_color as community_color, c.shortname as community_shortname,
+      p.post_type, p.views,
+      (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
+      (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount,
+      COUNT(t.name) AS tagMatchCount
+      ${userReactionSubquery}
+    FROM posts p
+    JOIN users u ON p.user_id = u.id
+    JOIN communities c ON p.communities_id = c.id
+    LEFT JOIN post_tags pt ON p.id = pt.post_id
+    LEFT JOIN tags t ON pt.tag_id = t.id
+    WHERE p.id != '${postId}' AND p.deleted = 0 AND ${tagsCondition} AND p.communities_id != 9
+    GROUP BY p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
+             u.username, u.avatar, c.name, p.post_type, p.views, c.community_color, c.shortname
+    ORDER BY tagMatchCount DESC, p.created_at DESC
+    OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY;
+  `;
     const resultWithMatchingTags = await sql.query(queryWithMatchingTags);
-  
-    // If less than 5 posts with matching tags are found, fill up with random posts from any non-private community
+
+    // If less than 5 posts with matching tags are found, fill up with random posts from any community
     let finalResults = resultWithMatchingTags.recordset;
     if (finalResults.length < 5) {
       const additionalPostsNeeded = 5 - finalResults.length;
@@ -249,64 +214,31 @@ const postQueries = {
             .map((post) => `'${post.id}'`)
             .join(',')})`
           : '';
-  
+
       let queryWithRandomPosts = `
-        SELECT TOP ${additionalPostsNeeded}
-          p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
-          u.username, u.avatar, u.settings_PrivateJobNames, u.settings_PrivateSchoolNames,
-          c.name AS community_name, c.community_color as community_color, c.shortname as community_shortname,
-          p.post_type, p.views,
-          (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
-          (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount,
-          CASE 
-            WHEN je.title IS NOT NULL THEN je.title
-            ELSE 
-              CASE
-                WHEN u.settings_PrivateSchoolNames = 1 THEN 'Student'
-                ELSE ee.institutionName
-              END
-          END AS experience_title,
-          CASE 
-            WHEN je.companyName IS NOT NULL THEN 
-              CASE 
-                WHEN u.settings_PrivateJobNames = 1 THEN 'Company'
-                ELSE je.companyName 
-              END
-            ELSE 
-              CASE 
-                WHEN u.settings_PrivateSchoolNames = 1 THEN 'Institution'
-                ELSE ee.institutionName
-              END
-          END AS experience_place
-          ${userReactionSubquery}
-        FROM posts p
-        JOIN users u ON p.user_id = u.id
-        JOIN communities c ON p.communities_id = c.id
-        OUTER APPLY (
-          SELECT TOP 1 title, companyName
-          FROM job_experiences
-          WHERE userId = u.id
-          ORDER BY startDate DESC
-        ) je
-        OUTER APPLY (
-          SELECT TOP 1 institutionName
-          FROM education_experiences
-          WHERE userId = u.id
-          ORDER BY startDate DESC
-        ) ee
-        WHERE p.id != '${postId}' AND p.deleted = 0 AND p.communities_id != 9
-          AND c.PrivacySetting != 'private'
-          ${excludePostIds}
-        ORDER BY NEWID();
-      `;
+      SELECT TOP ${additionalPostsNeeded}
+        p.id, p.title, p.content, p.link, p.created_at, p.communities_id,
+        u.username, u.avatar, 
+        c.name AS community_name, c.community_color as community_color, c.shortname as community_shortname,
+        p.post_type, p.views,
+        (SELECT COUNT(*) FROM userPostActions upa WHERE upa.post_id = p.id) AS totalReactionCount,
+        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount
+        ${userReactionSubquery}
+      FROM posts p
+      JOIN users u ON p.user_id = u.id
+      JOIN communities c ON p.communities_id = c.id
+    WHERE p.id != '${postId}' AND p.deleted = 0 AND p.communities_id != 9
+        ${excludePostIds}
+      ORDER BY NEWID();
+    `;
       const resultWithRandomPosts = await sql.query(queryWithRandomPosts);
       finalResults = finalResults.concat(resultWithRandomPosts.recordset);
     }
-  
+
     return finalResults;
-  },
-  
-  fetchPostsByCommunity: async (communityId) => {
+  }
+
+  static async fetchPostsByCommunity(communityId) {
     try {
       const result = await sql.query`
         SELECT p.*, u.username, u.avatar, 
@@ -314,18 +246,16 @@ const postQueries = {
         (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS commentCount
         FROM posts p
         JOIN users u ON p.user_id = u.id
-        JOIN communities c ON p.communities_id = c.id
-        WHERE p.communities_id = ${communityId} AND p.deleted = 0 AND c.PrivacySetting != 'private'
+        WHERE p.communities_id = ${communityId} AND p.deleted = 0
         ORDER BY p.created_at DESC`;
-  
-      return result.recordset;
+      return result.recordset.map((post) => new Post(post));
     } catch (err) {
       console.error('Database query error:', err);
       throw err;
     }
-  },
+  }
 
-  acceptAnswer: async (postId, commentId, userId) => {
+  static async acceptAnswer(postId, commentId, userId) {
     try {
       // Check if the post exists
       const postResult = await sql.query`
@@ -376,9 +306,9 @@ const postQueries = {
       console.error('Database update error:', err);
       throw err;
     }
-  },
+  }
 
-  getAcceptedAnswer: async (postId) => {
+  static async getAcceptedAnswer(postId) {
     try {
       const result = await sql.query`
         SELECT * FROM QuestionSolutions WHERE OriginalPostID = ${postId}`;
@@ -392,9 +322,9 @@ const postQueries = {
       console.error('Database query error:', err);
       throw err;
     }
-  },
+  }
 
-  editPost: async (postId, postData) => {
+  static async edit(postId, postData) {
     const transaction = new sql.Transaction(/* [connection] */);
     try {
       await transaction.begin();
@@ -437,20 +367,9 @@ const postQueries = {
     } catch (err) {
       return false;
     }
-  },
+  }
 
-  getPostById: async (postId) => {
-    try {
-      const result =
-        await sql.query`SELECT * FROM posts WHERE id = ${postId} AND deleted = 0`;
-      return result.recordset[0];
-    } catch (err) {
-      console.error('Database query error:', err);
-      throw err; // Rethrow the error for the caller to handle
-    }
-  },
-
-  getParentAuthorUsernameByCommentId: async (commentId) => {
+  static async getParentAuthorUsernameByCommentId(commentId) {
     try {
       // Query to check if the comment has a parent_comment_id and get the parent comment's author username or post's author username accordingly
       const result = await sql.query`
@@ -484,9 +403,9 @@ const postQueries = {
       console.error('Database query error:', err);
       throw err;
     }
-  },
+  }
 
-  getCommentsByPostId: async (postId) => {
+  static async getCommentsByPostId(postId) {
     try {
       const result = await sql.query`
         SELECT * 
@@ -498,17 +417,17 @@ const postQueries = {
       console.error('Database query error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
-  },
+  }
 
-  createPost: async (
+  static async create(
     userId,
     title,
     content,
     link = '',
-    community_id,
+    communityId,
     tags,
-    post_type
-  ) => {
+    postType
+  ) {
     if (typeof link !== 'string') {
       throw new Error('Link must be a string');
     }
@@ -519,10 +438,10 @@ const postQueries = {
 
     try {
       // Insert the post into the posts table
-      const uniqueId = generateUniqueId();
+      const uniqueId = Post.generateUniqueId();
 
       // Insert into the posts table
-      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id, post_type, views) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${community_id}, ${post_type}, 1)`;
+      await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id, post_type, views) VALUES (${uniqueId}, ${userId}, ${title}, ${content}, ${link}, ${communityId}, ${postType}, 1)`;
 
       if (tags && tags.length > 0) {
         for (const tag of tags) {
@@ -551,13 +470,11 @@ const postQueries = {
       console.error('Database insert error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
-  },
+  }
 
-  createFeedback: async (userId, title, attachmentUrl, body) => {
+  static async createFeedback(userId, title, attachmentUrl, body) {
     try {
-      const uniqueId = generateUniqueId();
-
-      await notificationQueries.createAdminNotification('NEW_FEEDBACK', uniqueId, userId, new Date());
+      const uniqueId = Post.generateUniqueId();
 
       // Insert into the posts table
       await sql.query`INSERT INTO posts (id, user_id, title, content, link, communities_id, post_type, views) VALUES (${uniqueId}, ${userId}, ${title}, ${body}, ${attachmentUrl}, 9, 'discussion', 1)`;
@@ -567,48 +484,52 @@ const postQueries = {
       console.error('Database insert error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
-  },
+  }
 
-  getTagsByPostId: async (postId) => {
+  async getTags() {
     try {
       const result = await sql.query`
         SELECT t.name
         FROM tags t
         JOIN post_tags pt ON t.id = pt.tag_id
-        WHERE pt.post_id = ${postId}`;
-
+        WHERE pt.post_id = ${this.id}`;
       return result.recordset.map((record) => record.name);
     } catch (err) {
       console.error('Database query error:', err);
       throw err;
     }
-  },
+  }
 
-  getAllTags: async () => {
+  static async getAllTags() {
     try {
       const result = await sql.query`SELECT * FROM tags`;
       return result.recordset;
     } catch (err) {
       return JSON.stringify(err);
     }
-  },
+  }
 
-  deletePostById: async (postId) => {
+  async delete() {
     try {
-      await sql.query`UPDATE posts SET deleted = 1 WHERE id = ${postId}`;
+      await sql.query`UPDATE posts SET deleted = 1 WHERE id = ${this.id}`;
+      this.deleted = true;
     } catch (err) {
       console.error('Database delete error:', err);
-      throw err; // Rethrow the error for the caller to handle
+      throw err;
     }
-  },
+  }
 
-  interactWithPost: async (postId, userId, actionType) => {
+  static async interact(postId, userId, actionType) {
     try {
-      const validActions = ['LOVE', 'LIKE', 'CURIOUS', 'DISLIKE'];
+      const validActions = [
+        'LOVE',
+        'LIKE',
+        'CURIOUS',
+        'DISLIKE',
+      ];
       if (!validActions.includes(actionType)) {
         throw new Error('Invalid action type');
       }
-      const postObject = await postQueries.getPostById(postId);
 
       let dbActionType = actionType === 'BOOST' ? 'B' : actionType;
 
@@ -625,7 +546,6 @@ const postQueries = {
         await sql.query`
           INSERT INTO userPostActions (user_id, post_id, action_type) 
           VALUES (${userId}, ${postId}, ${dbActionType})`;
-
         userReaction = actionType;
       } else if (userAction.recordset[0].action_type !== dbActionType) {
         // If existing interaction is different, update action
@@ -648,34 +568,6 @@ const postQueries = {
         FROM userPostActions 
         WHERE post_id = ${postId}
         GROUP BY action_type`;
-
-      // send notification if the user reaches 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000 reactions
-      const totalReactions = reactionCounts.recordset.reduce((acc, row) => {
-        acc[row.action_type] = row.count;
-        return acc;
-      }, {});
-
-      const totalReactionCount = Object.values(totalReactions).reduce(
-        (acc, count) => acc + count,
-        0
-      );
-
-      const reactionThresholds = [
-        5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000,
-        100000,
-      ];
-
-      for (const threshold of reactionThresholds) {
-        if (totalReactionCount === threshold) {
-          await notificationQueries.createNotification(
-            '38f8326c-fe4f-4113-8e42-8a2253b2dcda', // core modereator user id, this is not a hard coded credential.
-            userId,
-            'NEW_POST_MILESTONE',
-            postId,
-            threshold
-          );
-        }
-      }
 
       // Convert the result to a map of reaction names to their counts
       const reactionsMap = reactionCounts.recordset.reduce((acc, row) => {
@@ -704,9 +596,9 @@ const postQueries = {
       console.error('Database update error:', err);
       throw err;
     }
-  },
+  }
 
-  removeDuplicateActions: async () => {
+  static async removeDuplicateActions() {
     try {
       const result = await sql.query`
         WITH cte AS (
@@ -718,8 +610,9 @@ const postQueries = {
       console.error('Database delete error:', err);
       throw err; // Rethrow the error for the caller to handle
     }
-  },
-  getUserInteractions: async (postId, userId) => {
+  }
+
+  static async getUserInteractions(postId, userId) {
     try {
       const result = await sql.query`
     SELECT action_type 
@@ -739,32 +632,9 @@ const postQueries = {
       console.error('Database query error:', err);
       throw err;
     }
-  },
+  }
 
-  removeDetract: async (postId, userId) => {
-    try {
-      // Update the detract count in posts table
-      await sql.query`
-        UPDATE posts 
-        SET detracts = detracts - 1 
-        WHERE id = ${postId}`;
-
-      // Delete the record in userPostActions to indicate this user has removed the detract
-      await sql.query`
-        DELETE FROM userPostActions 
-        WHERE user_id = ${userId} AND post_id = ${postId}`;
-
-      const newScore =
-        (await postQueries.getBoostCount(postId)) -
-        (await postQueries.getDetractCount(postId));
-
-      return newScore;
-    } catch (err) {
-      console.error('Database update error:', err);
-      throw err; // Rethrow the error for the caller to handle
-    }
-  },
-  getCommunityById: async (communityId) => {
+  static async getCommunityById(communityId) {
     try {
       const result = await sql.query`
         SELECT * 
@@ -776,7 +646,7 @@ const postQueries = {
       console.error('Database query error:', err);
       throw err;
     }
-  },
-};
+  }
+}
 
-module.exports = postQueries;
+module.exports = Post;

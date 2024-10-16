@@ -2,24 +2,45 @@ const express = require('express');
 const router = express.Router();
 const userQueries = require('../queries/userQueries');
 const updateQueries = require('../queries/updateQueries');
-const userRecentQueries = require('../queries/userRecentQueries');
 const multer = require('multer');
 const { checkAuthenticated } = require('../middleware/authMiddleware');
 const fs = require('fs');
 const path = require('path');
+const User = require('../models/User.js');
 const JobProcessor = require('../services/jobBoardService');
 const jobProcessor = new JobProcessor();
+const environment = require('../config/environment');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const genAI = new GoogleGenerativeAI(environment.geminiKey);
+const cheerio = require('cheerio');
 const githubService = require('../services/githubService');
 const cacheMiddleware = require('../middleware/cache');
+const NodeCache = require('node-cache');
+const cache = new NodeCache({ stdTTL: 1200 }); // TTL is 20 minutes
 const utilFunctions = require('../utils/utilFunctions');
 const jobExtractionQueue = require('../utils/queue');
+
+const storage = multer.diskStorage({
+  destination: './public/uploads/',
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
+
+const queue = require('../utils/queue');
 const upload = require('../utils/upload');
 const marked = require('marked');
 const postQueries = require('../queries/postQueries');
 const jobQueries = require('../queries/jobQueries');
+const sql = require('mssql');
 const axios = require('axios');
 const communityQueries = require('../queries/communityQueries');
+const linkFunctions = require('../utils/linkFunctions');
+const commentQueries = require('../queries/commentQueries');
 const { default: rateLimit } = require('express-rate-limit');
+const notificationQueries = require('../queries/notificationQueries.js');
+const { check } = require('express-validator');
+const { user } = require('../config/dbConfig.js');
 const resumeFunctions = require('../utils/resumeFunctions.js');
 const jobLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
@@ -656,16 +677,6 @@ router.get('/jobs', cacheMiddleware(120), async (req, res) => {
   }
 });
 
-router.get('/recent-posted-jobs', async (req, res) => {
-  try {
-    const recentPostedJobs = await jobQueries.getRecentJobs();
-    res.json(recentPostedJobs);
-  }
-  catch (err) {
-    console.error('Error fetching recent posted jobs:', err);
-    res.status(500).send('Error fetching recent posted jobs');
-  }
-});
 
 router.get('/job-suggestions', async (req, res) => {
   try {
@@ -1307,20 +1318,6 @@ router.get('/communities', cacheMiddleware(2400), async (req, res) => {
   } catch (err) {
     console.error('Error fetching communities:', err);
     res.status(500).send('Error fetching communities');
-  }
-});
-
-router.get('/recent-jobs', checkAuthenticated, async (req, res) => {
-  const user = req.user;
-  if (!user) {
-    return res.status(401).send('User not authenticated');
-  }
-  try {
-    const recentJobs = await userRecentQueries.getRecentViewedJobs(user.id);
-    res.json(recentJobs);
-  } catch (err) {
-    console.error('Error fetching recent jobs:', err);
-    res.status(500).send('Error fetching recent jobs');
   }
 });
 

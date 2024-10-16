@@ -1,12 +1,10 @@
 const sql = require('mssql');
 const { addComment } = require('./commentQueries');
-const { pool } = require('../db'); // Adjust the path as necessary
-
 
 const favoritesQueries = {
   addToFavorites: async (userId, postId) => {
     try {
-      const checkExistence = await pool.request().query`
+      const checkExistence = await sql.query`
                 SELECT * FROM favorites 
                 WHERE user_id = ${userId} AND post_id = ${postId}`;
 
@@ -15,7 +13,7 @@ const favoritesQueries = {
       }
 
       // Add post to user's favorites
-      await pool.request().query`
+      await sql.query`
                 INSERT INTO favorites (user_id, post_id, created_at)
                 VALUES (${userId}, ${postId}, GETDATE())`;
     } catch (err) {
@@ -26,7 +24,7 @@ const favoritesQueries = {
 
   getFavoriteJobByJobIdAndUserId: async (jobId, userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
                 SELECT * FROM favorites_jobs
                 WHERE user_id = ${userId} AND job_posting_id = ${jobId}`;
 
@@ -39,7 +37,7 @@ const favoritesQueries = {
 
   getFavoritePostByPostIdAndUserId: async (postId, userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
                 SELECT * FROM favorites
                 WHERE user_id = ${userId} AND post_id = ${postId}`;
 
@@ -53,7 +51,7 @@ const favoritesQueries = {
   addCommentToFavorites: async (userId, postId, commentId) => {
     try {
       // Check if the post exists
-      const postCheck = await pool.request().query`
+      const postCheck = await sql.query`
         SELECT * FROM posts WHERE id = ${postId}`;
 
       if (postCheck.recordset.length === 0) {
@@ -61,7 +59,7 @@ const favoritesQueries = {
       }
 
       // Check if the comment exists and is related to the post
-      const commentCheck = await pool.request().query`
+      const commentCheck = await sql.query`
         SELECT * FROM comments WHERE id = ${commentId} AND post_id = ${postId}`;
 
       if (commentCheck.recordset.length === 0) {
@@ -71,7 +69,7 @@ const favoritesQueries = {
       }
 
       // Check if the comment is already favorited by the user
-      const checkExistence = await pool.request().query`
+      const checkExistence = await sql.query`
         SELECT * FROM favorites_comments
         WHERE user_id = ${userId} AND post_id = ${postId} AND comment_id = ${commentId}`;
 
@@ -80,7 +78,7 @@ const favoritesQueries = {
       }
 
       // Add comment to user's favorites
-      await pool.request().query`
+      await sql.query`
         INSERT INTO favorites_comments (user_id, post_id, comment_id, created_at)
         VALUES (${userId}, ${postId}, ${commentId}, GETDATE())`;
 
@@ -93,14 +91,14 @@ const favoritesQueries = {
 
   addJobToFavorites: async (userId, jobId) => {
     try {
-      const checkExistence = await pool.request().query`
+      const checkExistence = await sql.query`
                 SELECT * FROM favorites_jobs
                 WHERE user_id = ${userId} AND job_posting_id = ${jobId}`;
 
       if (checkExistence.recordset.length > 0) {
         throw new Error('Job is already in user\'s favorites.');
       }
-      await pool.request().query`
+      await sql.query`
                 INSERT INTO favorites_jobs (user_id, job_posting_id, created_at)
                 VALUES (${userId}, ${jobId}, GETDATE())`;
     } catch (err) {
@@ -111,7 +109,7 @@ const favoritesQueries = {
 
   removeJobFromFavorites: async (userId, jobId) => {
     try {
-      const checkExistence = await pool.request().query`
+      const checkExistence = await sql.query`
                 SELECT * FROM favorites_jobs
                 WHERE user_id = ${userId} AND job_posting_id = ${jobId}`;
 
@@ -120,7 +118,7 @@ const favoritesQueries = {
       }
 
       // Remove job from user's favorites
-      await pool.request().query`
+      await sql.query`
                 DELETE FROM favorites_jobs
                 WHERE user_id = ${userId} AND job_posting_id = ${jobId}`;
     } catch (err) {
@@ -132,7 +130,7 @@ const favoritesQueries = {
   removeCommentFromFavorites: async (userId, postId, commentId) => {
     try {
       // check if comment exists in user's favorites
-      const checkExistence = await pool.request().query`
+      const checkExistence = await sql.query`
                 SELECT * FROM favorites_comments
                 WHERE user_id = ${userId} AND post_id = ${postId} AND comment_id = ${commentId}`;
 
@@ -141,7 +139,7 @@ const favoritesQueries = {
       }
 
       // Remove comment from user's favorites
-      await pool.request().query`
+      await sql.query`
                 DELETE FROM favorites_comments
                 WHERE user_id = ${userId} AND post_id = ${postId} AND comment_id = ${commentId}`;
 
@@ -155,7 +153,7 @@ const favoritesQueries = {
   removeFromFavorites: async (userId, postId) => {
     try {
       // check if post exists in user's favorites
-      const checkExistence = await pool.request().query`
+      const checkExistence = await sql.query`
                 SELECT * FROM favorites 
                 WHERE user_id = ${userId} AND post_id = ${postId}`;
 
@@ -164,7 +162,7 @@ const favoritesQueries = {
       }
 
       // Remove post from user's favorites
-      await pool.request().query`
+      await sql.query`
                 DELETE FROM favorites 
                 WHERE user_id = ${userId} AND post_id = ${postId}`;
 
@@ -177,7 +175,7 @@ const favoritesQueries = {
 
   getFavorites: async (userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
                 SELECT f.*,
                 p.title, p.content, p.user_id, p.created_at, p.updated_at,
                 u.username, u.avatar 
@@ -195,7 +193,7 @@ const favoritesQueries = {
 
   getFavoriteJobs: async (userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT f.*, j.title, j.id as job_id, j.description, j.company_id, j.location, j.link, j.postedDate, j.salary, j.salary_max, j.experienceLevel, j.industry, j.size, j.stock_symbol, c.name as company_name, c.logo as company_logo
         FROM favorites_jobs f
         INNER JOIN dbo.JobPostings j ON f.job_posting_id = j.id
@@ -211,7 +209,7 @@ const favoritesQueries = {
 
   getFavoritePosts: async (userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT f.*, p.title, p.content, p.user_id, p.created_at, p.updated_at, p.communities_id, u.username, u.avatar, u.profile_border_color, c.shortname as community_name, c.community_color AS community_color, c.mini_icon AS community_icon
         FROM favorites f
         INNER JOIN posts p ON f.post_id = p.id
@@ -228,7 +226,7 @@ const favoritesQueries = {
 
   getFavoriteComments: async (userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT f.*, c.id, c.post_id, c.parent_comment_id, c.user_id, c.comment, c.created_at, c.deleted, c.boosts, c.detracts, c.react_like, c.react_love, c.react_curious, c.react_interesting, c.react_celebrate
         FROM favorites_comments f
         INNER JOIN dbo.comments c ON f.comment_id = c.id

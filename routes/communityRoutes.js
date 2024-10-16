@@ -10,7 +10,7 @@ router.get('/:communityName', async (req, res) => {
 
   try {
     const community =
-      await pool.request().query`SELECT * FROM communities WHERE shortname = ${communityName}`;
+      await sql.query`SELECT * FROM communities WHERE shortname = ${communityName}`;
 
     if (!community.recordset[0]) {
       res.redirect('/c');
@@ -111,7 +111,7 @@ router.get('/:communityName/isMember', checkAuthenticated, async (req, res) => {
 
   try {
     const community =
-      await pool.request().query`SELECT id FROM communities WHERE shortname = ${communityName}`;
+      await sql.query`SELECT id FROM communities WHERE shortname = ${communityName}`;
     if (!community.recordset[0]) {
       return res.status(404).send('Community not found');
     }
@@ -139,7 +139,7 @@ router.post('/:communityName/join', checkAuthenticated, async (req, res) => {
 
   try {
     const community =
-      await pool.request().query`SELECT id FROM communities WHERE shortname = ${communityName}`;
+      await sql.query`SELECT id FROM communities WHERE shortname = ${communityName}`;
     if (!community.recordset[0]) {
       return res.status(404).send('Community not found');
     }
@@ -158,7 +158,7 @@ router.get('/:communityName/members', async (req, res) => {
 
   try {
     const community =
-      await pool.request().query`SELECT id FROM communities WHERE shortname = ${communityName}`;
+      await sql.query`SELECT id FROM communities WHERE shortname = ${communityName}`;
     if (!community.recordset[0]) {
       return res.status(404).send('Community not found');
     }
@@ -186,7 +186,7 @@ router.get('/:communityName/admin', checkAuthenticated, async (req, res) => {
 
   try {
     const community =
-      await pool.request().query`SELECT * FROM communities WHERE shortname = ${communityName}`;
+      await sql.query`SELECT * FROM communities WHERE shortname = ${communityName}`;
     if (!community.recordset[0]) {
       return res.status(404).send('Community not found');
     }
@@ -217,7 +217,7 @@ router.post('/:communityName/leave', checkAuthenticated, async (req, res) => {
 
   try {
     const community =
-      await pool.request().query`SELECT id FROM communities WHERE shortname = ${communityName}`;
+      await sql.query`SELECT id FROM communities WHERE shortname = ${communityName}`;
     if (!community.recordset[0]) {
       return res.status(404).send('Community not found');
     }

@@ -1,12 +1,11 @@
 // communityQueries.js
 const sql = require('mssql');
-const { pool } = require('../db'); // Adjust the path as necessary
-
+// Assuming you have a users table and a communities table already set up
 
 const communityQueries = {
   getCommunity: async (communityId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM communities WHERE id = ${communityId}`;
 
       return result.recordset[0];
@@ -18,7 +17,7 @@ const communityQueries = {
 
   searchCommunities: async (searchTerm) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM communities 
         WHERE name LIKE ${'%' + searchTerm + '%'}
         OR shortname LIKE ${'%' + searchTerm + '%'}`;
@@ -31,7 +30,7 @@ const communityQueries = {
 
   getUserMemberships: async (userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT community_id, is_moderator 
         FROM dbo.community_memberships 
         WHERE user_id = ${userId}
@@ -49,7 +48,7 @@ const communityQueries = {
 
     console.log('Updating community info:', updateData);
     try {
-      const community = await pool.request().query`
+      const community = await sql.query`
           SELECT * FROM communities WHERE id = ${communityId}`;
 
       if (!community.recordset[0]) {
@@ -62,7 +61,7 @@ const communityQueries = {
         description !== undefined &&
         description !== community.recordset[0].description
       ) {
-        await pool.request().query`
+        await sql.query`
           UPDATE communities 
           SET description = ${description}
           WHERE id = ${communityId}`;
@@ -72,7 +71,7 @@ const communityQueries = {
         PrivacySetting !== undefined &&
         PrivacySetting !== community.recordset[0].PrivacySetting
       ) {
-        await pool.request().query`
+        await sql.query`
           UPDATE communities 
           SET PrivacySetting = ${PrivacySetting}
           WHERE id = ${communityId}`;
@@ -85,7 +84,7 @@ const communityQueries = {
         jobsEnabledBoolean !== undefined &&
         jobsEnabledBoolean !== community.recordset[0].JobsEnabled
       ) {
-        await pool.request().query`
+        await sql.query`
           UPDATE communities 
           SET JobsEnabled = ${jobsEnabledBoolean}
           WHERE id = ${communityId}`;
@@ -97,7 +96,7 @@ const communityQueries = {
         const newBanList = parseCommaSeparatedIds(banList);
 
         if (newBanList !== currentBanList) {
-          await pool.request().query`
+          await sql.query`
             UPDATE communities  
             SET banList = ${newBanList}
             WHERE id = ${communityId}`;
@@ -123,7 +122,7 @@ const communityQueries = {
         }
       
         if (newModeratorIDs.join(',') !== currentModeratorIDs.join(',')) {
-          await pool.request().query`
+          await sql.query`
             UPDATE communities 
             SET ModeratorIDs = ${newModeratorIDs.join(',')}
             WHERE id = ${communityId}`;
@@ -134,21 +133,21 @@ const communityQueries = {
         community_color !== undefined &&
         community_color !== community.recordset[0].community_color
       ) {
-        await pool.request().query`
+        await sql.query`
           UPDATE communities
           SET community_color = ${community_color}
           WHERE id = ${communityId}`;
       }
 
       if (rules !== undefined && rules !== community.recordset[0].rules) {
-        await pool.request().query`
+        await sql.query`
           UPDATE communities 
           SET rules = ${rules}
           WHERE id = ${communityId}`;
       }
 
       if (Tags !== undefined && Tags !== community.recordset[0].Tags) {
-        await pool.request().query`
+        await sql.query`
           UPDATE communities 
           SET Tags = ${Tags}
           WHERE id = ${communityId}`;
@@ -158,7 +157,7 @@ const communityQueries = {
         mini_icon !== undefined &&
         mini_icon !== community.recordset[0].mini_icon
       ) {
-        await pool.request().query`
+        await sql.query`
           UPDATE communities 
           SET mini_icon = ${mini_icon}
           WHERE id = ${communityId}`;
@@ -172,7 +171,7 @@ const communityQueries = {
 
   promoteModerator: async (userId) => {
     try {
-      await pool.request().query`
+      await sql.query`
         UPDATE community_memberships
         SET is_moderator = 1
         WHERE user_id = ${userId}`;
@@ -184,7 +183,7 @@ const communityQueries = {
 
   removeModerator: async (userId) => {
     try {
-      await pool.request().query`
+      await sql.query`
         UPDATE community_memberships
         SET is_moderator = 0
         WHERE user_id = ${userId}`;
@@ -196,7 +195,7 @@ const communityQueries = {
 
   getCommunityIdByShortName: async (shortname) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT id FROM communities WHERE shortname = ${shortname}`;
 
       return result.recordset[0].id;
@@ -215,7 +214,7 @@ const communityQueries = {
         communityId
       );
 
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM community_memberships
         WHERE user_id = ${userId} AND community_id = ${communityId} AND is_moderator = 1`;
 
@@ -228,7 +227,7 @@ const communityQueries = {
 
   getCommunities: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT c.*,
         (SELECT COUNT(DISTINCT user_id) FROM community_memberships WHERE community_id = c.id) AS CommunityMemberCount,
         (SELECT COUNT(*) FROM posts WHERE communities_id = c.id AND deleted = 0) AS PostCount
@@ -244,7 +243,7 @@ const communityQueries = {
 
   getAdminCommunities: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT c.*,
         (SELECT COUNT(DISTINCT user_id) FROM community_memberships WHERE community_id = c.id) AS CommunityMemberCount,
         (SELECT COUNT(*) FROM posts WHERE communities_id = c.id AND deleted = 0) AS PostCount
@@ -261,7 +260,7 @@ const communityQueries = {
   joinCommunity: async (userId, communityId) => {
     try {
       // Ensure the user is not already a member
-      const checkExistence = await pool.request().query`
+      const checkExistence = await sql.query`
         SELECT * FROM community_memberships 
         WHERE user_id = ${userId} AND community_id = ${communityId}
       `;
@@ -270,13 +269,13 @@ const communityQueries = {
       }
 
       // Add user to the community
-      await pool.request().query`
+      await sql.query`
         INSERT INTO community_memberships (user_id, community_id)
         VALUES (${userId}, ${communityId})
       `;
 
       // Get count of distinct members in the community and set it to the MemberCount column
-      await pool.request().query`
+      await sql.query`
         UPDATE communities 
         SET MemberCount = (
           SELECT COUNT(DISTINCT user_id) 
@@ -295,7 +294,7 @@ const communityQueries = {
 
   getCommunityPostCount: async (communityId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT COUNT(*) FROM posts 
         WHERE communities_id = ${communityId} AND deleted = 0`;
 
@@ -309,11 +308,11 @@ const communityQueries = {
   leaveCommunity: async (userId, communityId) => {
     try {
       // Remove user from the community
-      await pool.request().query`
+      await sql.query`
         DELETE FROM community_memberships 
         WHERE user_id = ${userId} AND community_id = ${communityId}`;
 
-      await pool.request().query`
+      await sql.query`
         UPDATE communities 
         SET MemberCount = (
           SELECT COUNT(DISTINCT user_id) 
@@ -331,7 +330,7 @@ const communityQueries = {
 
   checkMembership: async (userId, communityId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM community_memberships 
         WHERE user_id = ${userId} AND community_id = ${communityId}`;
 
@@ -344,7 +343,7 @@ const communityQueries = {
 
   listCommunityMembers: async (communityId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT u.id, u.username, cm.is_moderator, cm.joined_at 
         FROM community_memberships cm
         JOIN users u ON cm.user_id = u.id

@@ -1,10 +1,9 @@
 const sql = require('mssql');
-const { pool } = require('../db'); // Adjust the path as necessary
 
 const userQueries = {
   findByUsername: async (username) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
       SELECT 
         u.*, 
         (
@@ -60,7 +59,7 @@ const userQueries = {
   getUnverifiedUsers: async () => {
     // find users where verifiedAccount is null or false and verification_token is not null
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT username, id, email, created_at, lastLogin FROM users WHERE verified = 0 AND verification_token IS NOT NULL`;
       return result.recordset;
     } catch (err) {
@@ -71,7 +70,7 @@ const userQueries = {
 
   deleteUser: async (userId) => {
     try {
-      await pool.request().query`DELETE FROM users WHERE id = ${userId}`;
+      await sql.query`DELETE FROM users WHERE id = ${userId}`;
     } catch (err) {
       console.error('Database delete error:', err);
       throw err;
@@ -81,7 +80,7 @@ const userQueries = {
 
   searchUsers: async (searchTerm) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM users 
         WHERE username LIKE ${'%' + searchTerm + '%'}
         OR firstname LIKE ${'%' + searchTerm + '%'}
@@ -95,7 +94,7 @@ const userQueries = {
 
   updateLastLogin: async (userId) => {
     try {
-      await pool.request().query`
+      await sql.query`
         UPDATE users
         SET lastLogin = GETDATE()
         WHERE id = ${userId}`;
@@ -107,7 +106,7 @@ const userQueries = {
 
   findByGoogleId: async (googleId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM users WHERE google_id = ${googleId}`;
       return result.recordset[0];
     } catch (err) {
@@ -118,7 +117,7 @@ const userQueries = {
 
   createUserFromGoogleProfile: async (profile) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         INSERT INTO users (username, email, avatar, google_id, created_at, isAdmin, bio, points, verified)
         OUTPUT INSERTED.*
         VALUES (${profile.username.toLowerCase()}, ${
@@ -134,7 +133,7 @@ const userQueries = {
 
   toggleAdmin: async (userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         UPDATE users
         SET isAdmin = CASE WHEN isAdmin = 1 THEN 0 ELSE 1 END
         WHERE id = ${userId};
@@ -164,7 +163,7 @@ const userQueries = {
 
   toggleBan: async (userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         UPDATE users
         SET isBanned = CASE WHEN isBanned = 1 THEN 0 ELSE 1 END
         WHERE id = ${userId};
@@ -194,7 +193,7 @@ const userQueries = {
 
   toggleVerified: async (userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         UPDATE users
         SET verified = CASE WHEN verified = 1 THEN 0 ELSE 1 END
         WHERE id = ${userId};
@@ -224,7 +223,7 @@ const userQueries = {
 
   getTopCommunities: async (userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
       SELECT
         c.id,
         c.name,
@@ -254,7 +253,7 @@ const userQueries = {
 
   getPostsByUserId: async (userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
       SELECT * FROM posts WHERE user_id = ${userId} AND deleted = 0 ORDER BY created_at DESC`;
       return result.recordset;
     } catch (err) {
@@ -264,7 +263,7 @@ const userQueries = {
   },
   getPostsByUserIdUserProfile: async (userId, currentUserId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
       SELECT 
         p.*,
         c.PrivacySetting,
@@ -295,7 +294,7 @@ const userQueries = {
 
   getCommentAuthorByCommentId: async (commentId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM users WHERE id = (SELECT user_id FROM comments WHERE id = ${commentId})`;
       return result.recordset[0];
     } catch (err) {
@@ -306,7 +305,7 @@ const userQueries = {
 
   getCommentsByUserId: async (userId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM comments WHERE user_id = ${userId} AND deleted = 0 ORDER BY created_at DESC`;
       const comments = result.recordset;
 
@@ -335,7 +334,7 @@ const userQueries = {
 
   getCommentsByUserIdUserProfile: async (userId, currentUserId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT 
           comments.*, 
           posts.title,
@@ -381,7 +380,7 @@ const userQueries = {
 
   findById: async (id) => {
     try {
-      const result = await pool.request().query`SELECT * FROM users WHERE id = ${id}`;
+      const result = await sql.query`SELECT * FROM users WHERE id = ${id}`;
       return result.recordset[0];
     } catch (err) {
       console.error('Database query error:', err);
@@ -392,7 +391,7 @@ const userQueries = {
   findByEmail: async (email) => {
     try {
       const result =
-        await pool.request().query`SELECT * FROM users WHERE email = ${email}`;
+        await sql.query`SELECT * FROM users WHERE email = ${email}`;
       return result.recordset[0];
     } catch (err) {
       console.error('Database query error:', err);
@@ -412,7 +411,6 @@ const userQueries = {
         'github_url',
         'recruiter_id',
         'leetcode_url',
-        'twitter',
         'linkedin_url',
         'zipcode',
         'password',
@@ -550,7 +548,7 @@ const userQueries = {
 
   getUserCount: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT COUNT(*) AS count FROM users`;
       return result.recordset[0].count;
     } catch (err) {
@@ -562,21 +560,21 @@ const userQueries = {
   followUser: async (followerId, followedId) => {
     try {
       // Check if the follow relationship already exists
-      const existingRelationship = await pool.request().query`
+      const existingRelationship = await sql.query`
         SELECT * 
         FROM user_relationships
         WHERE follower_id = ${followerId} AND followed_id = ${followedId}`;
 
       if (existingRelationship.recordset.length > 0) {
         // unfollow user
-        await pool.request().query`
+        await sql.query`
           DELETE FROM user_relationships
           WHERE follower_id = ${followerId} AND followed_id = ${followedId}`;
         return false;
       }
 
       // Insert the new follow relationship
-      await pool.request().query`
+      await sql.query`
         INSERT INTO user_relationships (follower_id, followed_id, created_at)
         VALUES (${followerId}, ${followedId}, GETDATE())`;
 
@@ -588,7 +586,7 @@ const userQueries = {
   },
   unfollowUser: async (followerId, followedId) => {
     try {
-      const existingRelationship = await pool.request().query`
+      const existingRelationship = await sql.query`
         SELECT *
         FROM user_relationships
         WHERE follower_id = ${followerId} AND followed_id = ${followedId}`;
@@ -599,7 +597,7 @@ const userQueries = {
 
       if (existingRelationship.recordset.length > 0) {
         // unfollow user
-        await pool.request().query`
+        await sql.query`
           DELETE FROM user_relationships
           WHERE follower_id = ${followerId} AND followed_id = ${followedId}`;
         return false;
@@ -612,7 +610,7 @@ const userQueries = {
     }
   },
   updateGitHubId: async (userId, githubId) => {
-    await pool.request().query`
+    await sql.query`
       UPDATE users
       SET github_id = ${githubId}
       WHERE id = ${userId}
@@ -620,7 +618,7 @@ const userQueries = {
   },
 
   updateGitHubUsername: async (userId, githubUsername) => {
-    await pool.request().query`
+    await sql.query`
       UPDATE users
       SET github_url = ${githubUsername}
       WHERE id = ${userId}
@@ -629,7 +627,7 @@ const userQueries = {
 
   findByGitHubUsername: async (githubUsername) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM users WHERE github_url = ${githubUsername}`;
       return result.recordset[0];
     } catch (err) {
@@ -640,7 +638,7 @@ const userQueries = {
 
   findByGithubId: async (githubId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM users WHERE github_id = ${githubId}`;
       return result.recordset[0];
     } catch (err) {
@@ -651,7 +649,7 @@ const userQueries = {
 
   updateUserGitHubAccessToken: async (userId, accessToken) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         UPDATE users
         SET githubAccessToken = ${accessToken}
         WHERE id = ${userId}`;
@@ -674,7 +672,7 @@ const userQueries = {
 
   createUserFromGitHubProfile: async (profile) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         INSERT INTO users (github_url, username, avatar, email, github_id, created_at, isAdmin, bio, verified)
         OUTPUT INSERTED.*
         VALUES (${profile.username.toLowerCase()}, ${profile.username}, ${
@@ -690,7 +688,7 @@ const userQueries = {
 
   removeUserRelationshipsWithDeadAccounts: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         DELETE FROM user_relationships
         WHERE followed_id NOT IN (SELECT id FROM users) OR follower_id NOT IN (SELECT id FROM users)`;
 
@@ -703,7 +701,7 @@ const userQueries = {
 
   removeDuplicateFollows: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         WITH cte AS (
           SELECT
             *,
@@ -725,7 +723,7 @@ const userQueries = {
   isFollowing: async (followerId, followedId) => {
     try {
       await userQueries.removeDuplicateFollows();
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT COUNT(*) AS count
         FROM user_relationships
         WHERE follower_id = ${followerId} AND followed_id = ${followedId}`;
@@ -739,7 +737,7 @@ const userQueries = {
   getFollowerCount: async (userId) => {
     try {
       await userQueries.removeDuplicateFollows();
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT COUNT(*) AS count 
         FROM user_relationships
         WHERE followed_id = ${userId}`;
@@ -754,7 +752,7 @@ const userQueries = {
   getFollowing: async (userId) => {
     try {
       await userQueries.removeDuplicateFollows();
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT u.id, u.username, u.avatar, u.firstname, u.lastname
         FROM users u
         JOIN user_relationships r ON u.id = r.followed_id
@@ -769,7 +767,7 @@ const userQueries = {
   getFollowers: async (userId) => {
     try {
       await userQueries.removeDuplicateFollows();
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT u.id, u.username, u.avatar, u.firstname, u.lastname
         FROM users u
         JOIN user_relationships r ON u.id = r.follower_id
@@ -785,7 +783,7 @@ const userQueries = {
 
   updateProfilePicture: async (userId, profilePicturePath) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         UPDATE users 
         SET avatar = ${profilePicturePath}
         WHERE id = ${userId}`;

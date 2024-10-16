@@ -3,7 +3,6 @@ const crypto = require('crypto');
 const notificationQueries = require('./notificationQueries');
 const utilFunctions = require('../utils/utilFunctions');
 const { findById } = require('./userQueries');
-const { pool } = require('../db'); // Adjust the path as necessary
 
 function GETDATE() {
   return new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -24,7 +23,7 @@ const debounce = (func, delay) => {
 const commentQueries = {
   removeDuplicateActions: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         WITH cte AS (
           SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id, comment_id, action_type ORDER BY action_timestamp DESC) AS rn
           FROM userCommentActions
@@ -40,14 +39,14 @@ const commentQueries = {
     try {
       // Fetch the current pinned status of the comment
       const result =
-        await pool.request().query`SELECT isPinned FROM comments WHERE id = ${commentId}`;
+        await sql.query`SELECT isPinned FROM comments WHERE id = ${commentId}`;
       if (result.recordset.length === 0) {
         throw new Error(`Comment with id ${commentId} does not exist`);
       }
 
       // Toggle the pinned status
       const newPinnedStatus = !result.recordset[0].isPinned;
-      await pool.request().query`
+      await sql.query`
         UPDATE comments 
         SET isPinned = ${newPinnedStatus} 
         WHERE id = ${commentId}`;
@@ -63,11 +62,11 @@ const commentQueries = {
       const commentId = `${Date.now().toString(36)}-${crypto
         .randomBytes(3)
         .toString('hex')}`;
-      await pool.request().query`INSERT INTO comments (id, post_id, user_id, comment) VALUES (${commentId}, ${postId}, ${userId}, ${commentText})`;
+      await sql.query`INSERT INTO comments (id, post_id, user_id, comment) VALUES (${commentId}, ${postId}, ${userId}, ${commentText})`;
 
       // Fetch the user ID of the original post's author
       const result =
-        await pool.request().query`SELECT user_id FROM posts WHERE id = ${postId}`;
+        await sql.query`SELECT user_id FROM posts WHERE id = ${postId}`;
       if (result.recordset.length > 0) {
         const originalPostAuthorId = result.recordset[0].user_id;
 
@@ -108,7 +107,7 @@ const commentQueries = {
       }
 
       // Check if the user has already interacted with the comment
-      const userAction = await pool.request().query`
+      const userAction = await sql.query`
         SELECT action_type 
         FROM userCommentActions 
         WHERE user_id = ${userId} AND comment_id = ${commentId}`;
@@ -117,9 +116,9 @@ const commentQueries = {
 
       if (userAction.recordset.length === 0) {
         // Check if comments and user exist
-        const commentExists = await pool.request().query`
+        const commentExists = await sql.query`
           SELECT * FROM comments WHERE id = ${commentId} AND post_id = ${postId}`;
-        const userExists = await pool.request().query`
+        const userExists = await sql.query`
           SELECT * FROM users WHERE id = ${userId}`;
 
         if (commentExists.recordset.length === 0) {
@@ -133,7 +132,7 @@ const commentQueries = {
         }
 
         // If no existing interaction, insert new action
-        await pool.request().query`
+        await sql.query`
           INSERT INTO userCommentActions (user_id, comment_id, action_type, action_timestamp) 
           VALUES (${userId}, ${commentId}, ${actionType}, GETDATE())`;
         await notificationQueries.createNotification(
@@ -144,7 +143,7 @@ const commentQueries = {
         );
       } else if (userAction.recordset[0].action_type !== actionType) {
         // check if the comment exists
-        const commentExists = await pool.request().query`
+        const commentExists = await sql.query`
           SELECT * FROM comments WHERE id = ${commentId} AND post_id = ${postId}`;
         if (commentExists.recordset.length === 0) {
           throw new Error(
@@ -152,7 +151,7 @@ const commentQueries = {
           );
         }
         // If existing interaction is different, update action
-        await pool.request().query`
+        await sql.query`
           UPDATE userCommentActions 
           SET action_type = ${actionType}
           WHERE user_id = ${userId} AND comment_id = ${commentId}`;
@@ -163,14 +162,14 @@ const commentQueries = {
           postId);
       } else {
         // If user is repeating the same action, remove the action
-        await pool.request().query`
+        await sql.query`
           DELETE FROM userCommentActions 
           WHERE user_id = ${userId} AND comment_id = ${commentId}`;
         actionType = null;
       }
 
       // Recalculate and update the reactions count for the comment
-      const reactionCounts = await pool.request().query`
+      const reactionCounts = await sql.query`
         SELECT action_type, COUNT(*) as count 
         FROM userCommentActions 
         WHERE comment_id = ${commentId}
@@ -209,7 +208,7 @@ const commentQueries = {
   getCommentsByPostId: async (postId) => {
     try {
       const result =
-        await pool.request().query`SELECT * FROM comments WHERE post_id = ${postId}`;
+        await sql.query`SELECT * FROM comments WHERE post_id = ${postId}`;
       return result.recordset;
     } catch (err) {
       console.error('Database query error:', err);
@@ -220,12 +219,12 @@ const commentQueries = {
   deleteCommentById: async (commentId) => {
     try {
       // check if comments exist where parent_comment_id = commentId
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM comments WHERE parent_comment_id = ${commentId}`;
 
       if (result.recordset.length > 0) {
         // If there are replies, set comment to deleted and user id to 0
-        await pool.request().query`
+        await sql.query`
           UPDATE comments 
           SET comment = '[deleted]',
               deleted=1,
@@ -233,8 +232,8 @@ const commentQueries = {
           WHERE id = ${commentId}`;
       } else {
         // If there are no replies, delete the comment
-        await pool.request().query`DELETE FROM userCommentActions WHERE comment_id = ${commentId}`;
-        await pool.request().query`DELETE FROM comments WHERE id = ${commentId}`;
+        await sql.query`DELETE FROM userCommentActions WHERE comment_id = ${commentId}`;
+        await sql.query`DELETE FROM comments WHERE id = ${commentId}`;
       }
 
     } catch (err) {
@@ -246,7 +245,7 @@ const commentQueries = {
   getCommentById: async (commentId) => {
     try {
       const result =
-        await pool.request().query`SELECT * FROM comments WHERE id = ${commentId}`;
+        await sql.query`SELECT * FROM comments WHERE id = ${commentId}`;
       return result.recordset[0];
     } catch (err) {
       console.error('Database query error:', err);
@@ -257,7 +256,7 @@ const commentQueries = {
   addReply: async (commentId, userId, replyText) => {
     try {
       // check if post is locked
-      const postResult = await pool.request().query`
+      const postResult = await sql.query`
         SELECT * FROM posts WHERE id = (SELECT post_id FROM comments WHERE id = ${commentId})`;
       if (postResult.recordset.length > 0) {
         if (postResult.recordset[0].isLocked) {
@@ -266,7 +265,7 @@ const commentQueries = {
       }
 
       // check if comment replying to is deleted
-      const commentResult = await pool.request().query`
+      const commentResult = await sql.query`
         SELECT * FROM comments WHERE id = ${commentId}`;
       if (commentResult.recordset.length > 0) {
         if (commentResult.recordset[0].deleted) {
@@ -275,7 +274,7 @@ const commentQueries = {
       }
 
       // get the user's most recent comment
-      const userComments = await pool.request().query`
+      const userComments = await sql.query`
         SELECT * FROM comments WHERE user_id = ${userId} ORDER BY created_at DESC`;
 
       // if the user has commented before and the comment is not deleted and its within last 5 minutes
@@ -295,11 +294,11 @@ const commentQueries = {
       const replyId = `${Date.now().toString(36)}-${crypto
         .randomBytes(3)
         .toString('hex')}`;
-      await pool.request().query`INSERT INTO comments (id, post_id, parent_comment_id, user_id, comment) VALUES (${replyId}, (SELECT post_id FROM comments WHERE id = ${commentId}), ${commentId}, ${userId}, ${replyText})`;
+      await sql.query`INSERT INTO comments (id, post_id, parent_comment_id, user_id, comment) VALUES (${replyId}, (SELECT post_id FROM comments WHERE id = ${commentId}), ${commentId}, ${userId}, ${replyText})`;
 
       // Fetch the user ID of the original comment author
       const result =
-        await pool.request().query`SELECT * FROM comments WHERE id = ${commentId}`;
+        await sql.query`SELECT * FROM comments WHERE id = ${commentId}`;
       if (result.recordset.length > 0) {
         const originalCommentAuthorId = result.recordset[0].user_id;
         const postId = result.recordset[0].post_id;

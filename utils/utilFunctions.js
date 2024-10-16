@@ -4,7 +4,6 @@ const cheerio = require('cheerio');
 const NodeCache = require('node-cache');
 const cache = new NodeCache({ stdTTL: 1200 }); // TTL is 20 minutes
 const config = require('../config/dbConfig');
-const { pool } = require('../db'); // Adjust the path as necessary
 
 const utilFunctions = {
   uuid: () => {
@@ -20,7 +19,7 @@ const utilFunctions = {
 
   sharePost: async (postId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         UPDATE posts
         SET share_count = COALESCE(share_count, 0) + 1
         WHERE id = ${postId}
@@ -34,7 +33,7 @@ const utilFunctions = {
 
   applyJob: async (jobId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         UPDATE JobPostings
         SET applicants = COALESCE(applicants, 0) + 1
         WHERE id = ${jobId}
@@ -48,7 +47,7 @@ const utilFunctions = {
 
   checkForDuplicateLink: async (link) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT id FROM JobPostings WHERE link = ${link}
       `;
       return result.recordset.length > 0;
@@ -61,7 +60,7 @@ const utilFunctions = {
 
   shareJob: async (jobId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         UPDATE JobPostings
         SET share_count = COALESCE(share_count, 0) + 1
         WHERE id = ${jobId}
@@ -81,7 +80,7 @@ const utilFunctions = {
     offset
   ) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
       WITH CTE AS (
         SELECT 
           p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, 
@@ -167,7 +166,7 @@ OUTER APPLY (
       }
 
 
-      const countResult = await pool.request().query`
+      const countResult = await sql.query`
         SELECT COUNT(*) AS totalCount
         FROM posts p
         WHERE p.deleted = 0
@@ -273,7 +272,7 @@ OUTER APPLY (
 
   getTagById: async (tagId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM tags WHERE id = ${tagId}
       `;
       return result.recordset[0];
@@ -286,12 +285,12 @@ OUTER APPLY (
   getCommunityName: async (communityId, getFullName) => {
     try {
       if (getFullName) {
-        const result = await pool.request().query`
+        const result = await sql.query`
         SELECT name FROM communities WHERE id = ${communityId}
       `;
         return result.recordset[0].name;
       }
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT shortname FROM communities WHERE id = ${communityId}
       `;
       return result.recordset[0].shortname;
@@ -304,7 +303,7 @@ OUTER APPLY (
 
   getAllTags: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM tags
       `;
       return result.recordset;
@@ -323,7 +322,7 @@ OUTER APPLY (
     offset
   ) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, p.react_like, p.react_love, p.react_curious, p.react_interesting, p.react_celebrate, p.post_type, p.views, u.username, u.avatar, p.share_count,
         c.name AS community_name, c.shortname AS community_shortname, c.community_color AS community_color, c.mini_icon as community_icon,
               SUM(CASE WHEN upa.action_type = 'LOVE' THEN 1 ELSE 0 END) as loveCount,
@@ -343,7 +342,7 @@ OUTER APPLY (
         OFFSET ${offset} ROWS
         FETCH NEXT ${limit} ROWS ONLY
       `;
-      const countResult = await pool.request().query`
+      const countResult = await sql.query`
       SELECT COUNT(*) AS totalCount
       FROM posts p
       WHERE p.deleted = 0 AND p.communities_id = ${communityID}
@@ -460,7 +459,7 @@ OUTER APPLY (
 
   getTrendingPosts: async () => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
       SELECT TOP 7 *
       FROM (
           SELECT p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id,
@@ -524,7 +523,7 @@ OUTER APPLY (
       ORDER BY c1.created_at DESC, c2.created_at ASC;
     `;
   
-    const result = await pool.request().query(query, { postId });
+    const result = await sql.query(query, { postId });
   
     const commentMap = new Map();
     const rootComments = [];
@@ -583,7 +582,7 @@ OUTER APPLY (
         userId = null;
       }
 
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT 
   p.id, p.created_at, p.deleted, p.title, p.content, p.subtitle, p.link, p.communities_id, p.share_count,
   p.link_description, p.link_image, p.link_title, p.react_like, p.react_love, 
@@ -676,9 +675,9 @@ GROUP BY
           MemberCount DESC
       `;
   
-      const request = pool.request();
+      const request = new sql.Request();
       request.input('userId', sql.NVarChar, user ? user.id : null);
-      
+  
       const result = await request.query(query);
       return result.recordset;
     } catch (err) {
@@ -689,7 +688,7 @@ GROUP BY
 
   getCommunities: async (communityId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM communities WHERE id = ${communityId}
       `;
       return result.recordset[0];
@@ -701,7 +700,7 @@ GROUP BY
 
   getRepliesForComment: async (commentId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM comments WHERE parent_comment_id = ${commentId}
       `;
       const commentList = result.recordset;
@@ -713,7 +712,7 @@ GROUP BY
   },
   getComments: async (postId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT c.*, u.username, u.avatar, u.isAdmin
         FROM comments c
         JOIN users u ON c.user_id = u.id
@@ -766,7 +765,7 @@ GROUP BY
   },
   getTags: async (postId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT t.* FROM tags t
         INNER JOIN post_tags pt ON t.id = pt.tag_id
         WHERE pt.post_id = ${postId}
@@ -781,7 +780,7 @@ GROUP BY
   getUserDetails: async (userId) => {
     try {
       const userResult =
-        await pool.request().query`SELECT * FROM users WHERE id = ${userId}`;
+        await sql.query`SELECT * FROM users WHERE id = ${userId}`;
       if (userResult.recordset.length > 0) {
         return userResult.recordset[0];
       } else {
@@ -798,7 +797,7 @@ GROUP BY
   getUserDetailsFromGithub: async (githubUsername) => {
     try {
       const query = `SELECT * FROM users WHERE github_url = '${githubUsername}'`;
-      const result = await pool.request().query(query);
+      const result = await sql.query(query);
 
       if (result.recordset.length > 0) {
         return result.recordset[0];
@@ -817,7 +816,7 @@ GROUP BY
         link,
       } = jobDetails;
 
-      const potentialDuplicates = await pool.request().query`
+      const potentialDuplicates = await sql.query`
         SELECT link
         FROM JobPostings
         WHERE company_id = ${company_id}
@@ -933,7 +932,7 @@ GROUP BY
   checkMissingFields: async (userId) => {
     let missingFields = [];
 
-    const result = await pool.request().query`
+    const result = await sql.query`
       SELECT firstname, lastname FROM users WHERE id = ${userId}
     `;
 
@@ -1047,7 +1046,7 @@ GROUP BY
 
       // Check if the URL exists in the LinkPreviewData table
       const linkPreviewDataQuery = `SELECT * FROM LinkPreviewData WHERE link = '${url}'`;
-      const linkPreviewDataResult = await pool.request().query(linkPreviewDataQuery);
+      const linkPreviewDataResult = await sql.query(linkPreviewDataQuery);
       if (linkPreviewDataResult.recordset.length > 0) {
         const linkPreviewData = linkPreviewDataResult.recordset[0];
         return {
@@ -1093,7 +1092,7 @@ GROUP BY
             INSERT INTO LinkPreviewData (link, image_url, description, title, favicon)
             VALUES ('${preview.url}', '${preview.image}', '${preview.description}', '${preview.title}', '${preview.favicon}')
           `;
-          await pool.request().query(insertLinkPreviewDataQuery);
+          await sql.query(insertLinkPreviewDataQuery);
 
           // console.log(preview);
           return preview;
@@ -1138,7 +1137,7 @@ GROUP BY
           INSERT INTO LinkPreviewData (link, image_url, description, title, favicon)
           VALUES ('${preview.url}', '${preview.image}', '${preview.description}', '${preview.title}', '${preview.favicon}')
         `;
-        await pool.request().query(insertLinkPreviewDataQuery);
+        await sql.query(insertLinkPreviewDataQuery);
 
         return preview;
       }
@@ -1389,7 +1388,7 @@ GROUP BY
         FROM GitHubRepoData
         WHERE repo_url = '${url}'
       `;
-      const existingDataResult = await pool.request().query(existingDataQuery);
+      const existingDataResult = await sql.query(existingDataQuery);
   
       let repoData, commitsData;
   
@@ -1428,7 +1427,7 @@ GROUP BY
               time_fetched = GETDATE()
           WHERE repo_url = '${url}'
         `;
-        await pool.request().query(updateQuery);
+        await sql.query(updateQuery);
       } else if (!existingDataResult.recordset.length) {
         // No existing data, insert new data into GitHubRepoData table
         const insertQuery = `
@@ -1439,7 +1438,7 @@ GROUP BY
             '${rawCommitsJson.replace(/'/g, '\'\'')}',
             GETDATE())
         `;
-        await pool.request().query(insertQuery);
+        await sql.query(insertQuery);
       }
   
       return {
@@ -1522,7 +1521,7 @@ GROUP BY
 
   getPostScore: async (postId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT boosts, detracts FROM posts WHERE id = ${postId}
       `;
       const boosts = result.recordset[0].boosts;
@@ -1567,7 +1566,7 @@ GROUP BY
 
   getCommunityDetails: async (communityId) => {
     try {
-      const result = await pool.request().query`
+      const result = await sql.query`
         SELECT * FROM communities WHERE id = ${communityId}
       `;
       return result.recordset[0];

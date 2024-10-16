@@ -268,11 +268,11 @@
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Twitter</small>
-          <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" type="text" id="twitter" name="twitter" value="<%= edit_user.twitter %>" placeholder="Twitter Username" aria-label="Twitter Username">
+          <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" type="text" id="leetcode_url" name="leetcode_url" value="<%= edit_user.leetcode_url %>" placeholder="LeetCode Username" required aria-label="LeetCode Username">
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Link</small>
-          <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" type="text" id="link" name="link" value="<%= edit_user.link %>" placeholder="Link" aria-label="Link">
+          <input class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" type="text" id="link" name="link" value="<%= edit_user.link %>" placeholder="Link" required aria-label="Link">
         </div>
         <div class="form-group">
           <small class="text-[0.8rem] text-muted-foreground">Link 2</small>
@@ -649,9 +649,6 @@
         // Special handling for fields that might need formatting or additional logic
         if (resumeData.github) {
           $('#leetcode_url').after('<span class="update-button">Update to GitHub: ' + resumeData.github + '</span>');
-        }
-        if (resumeData.twitter) {
-          $('#twitter').after('<span class="update-button">Update to Twitter: ' + resumeData.twitter + '</span>');
         }
 
         if (resumeData.linkedin) {

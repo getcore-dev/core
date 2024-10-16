@@ -46,7 +46,6 @@ const viewLimiter = rateLimit({
   },
 =======
 const jobBoardService = require('./services/jobBoardService');
-const { pool, poolConnect } = require('./db'); // Adjust the path as necessary
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -57,15 +56,13 @@ const limiter = rateLimit({
 
 const app = express();
 
-<<<<<<< HEAD
-// Set up view engine
-=======
-poolConnect.then(() => {
-  console.log('Connected to SQL Server successfully.');
-}).catch(err => {
-  console.error('Failed to connect to SQL Server:', err);
-  process.exit(1); // Exit the application if the pool connection fails
-});
+// Database connection
+sql
+  .connect(dbConfig)
+  .then(() => {
+    console.log('Connected to the database');
+  })
+  .catch((err) => console.error('Error connecting to the database'));
 
 // Passport configuration
 passportConfig.initialize(

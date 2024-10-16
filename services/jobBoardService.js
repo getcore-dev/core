@@ -2475,11 +2475,6 @@ class JobProcessor extends EventEmitter {
       }
     }
 
-    // If no patterns found, check if 'jobs', 'careers', 'jid', or 'j_id' is in the URL
-    if (url.includes('jobs') || url.includes('career') || url.includes('jid') || url.includes('j_id')) {
-      return true;
-    }
-
     console.log('No patterns found for:', url);
     return false;
   }
