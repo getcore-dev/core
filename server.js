@@ -65,6 +65,10 @@ app.get('/api/job-processing-progress', (req, res) => {
   res.json(currentProgress);
 });
 
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
+
 console.log('Starting server...');
 console.log('Environment:', process.env.NODE_ENV);
 console.log('Port:', environment.port);
@@ -92,7 +96,7 @@ if (cluster.isMaster && process.env.NODE_ENV !== 'development') {
     */
    
 } else {
-  const PORT = process.env.PORT || environment.port;
+  const PORT = process.env.PORT || 8080;
   app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
   }).on('error', (err) => {
