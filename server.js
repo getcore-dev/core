@@ -1,6 +1,6 @@
 const cluster = require('cluster');
 const numCPUs = require('os').cpus().length;
-const app = require('./app');
+const setupApp = require('./app');
 const environment = require('./config/environment');
 const JobProcessor = require('./services/jobBoardService');
 const UserProcessor = require('./services/userService');
@@ -43,27 +43,48 @@ function scheduleNextRun() {
   setTimeout(runJobBoardService, delayMs);
 }
 
-// Add a new route to view the progress
-app.get('/job-processing-progress', (req, res) => {
-  if (!req.user) {
-    return res.redirect('/login');
-  }
-  if (!req.user.isAdmin) {
-    return res.status(403).redirect('/');
-  }
-  res.render('progress', { progress: currentProgress });
-});
+async function startServer() {
+  try {
+    app = await setupApp();
 
-// Add a new route to get the progress as JSON (for AJAX requests)
-app.get('/api/job-processing-progress', (req, res) => {
-  if (!req.user) {
-    return res.redirect('/login');
+    // Add routes that depend on app
+    app.get('/job-processing-progress', (req, res) => {
+      if (!req.user) {
+        return res.redirect('/login');
+      }
+      if (!req.user.isAdmin) {
+        return res.status(403).redirect('/');
+      }
+      res.render('progress', { progress: currentProgress });
+    });
+
+    app.get('/api/job-processing-progress', (req, res) => {
+      if (!req.user) {
+        return res.redirect('/login');
+      }
+      if (!req.user.isAdmin) {
+        return res.status(403).redirect('/');
+      }
+      res.json(currentProgress);
+    });
+
+    const PORT = process.env.PORT || 8080;
+    app.listen(PORT, () => {
+      console.log(`Server started on port ${PORT}`);
+    }).on('error', (err) => {
+      console.error('Failed to start server:', err);
+    });
+
+    if (process.env.NODE_ENV !== 'development') {
+      setTimeout(() => {
+        runJobBoardService();
+      }, 60000);
+    }
+  } catch (err) {
+    console.error('Failed to set up application:', err);
+    process.exit(1);
   }
-  if (!req.user.isAdmin) {
-    return res.status(403).redirect('/');
-  }
-  res.json(currentProgress);
-});
+}
 
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);
@@ -86,20 +107,6 @@ if (cluster.isMaster && process.env.NODE_ENV !== 'development') {
     console.log(`worker ${worker.process.pid} died`);
     cluster.fork(); // Replace the dead worker
   });
-  /*
-
-  if (process.env.NODE_ENV !== 'development') {
-    setTimeout(() => {
-      runJobBoardService();
-    }, 60000);
-  }
-    */
-   
 } else {
-  const PORT = process.env.PORT || 8080;
-  app.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`);
-  }).on('error', (err) => {
-    console.error('Failed to start server:', err);
-  });
+  startServer();
 }
