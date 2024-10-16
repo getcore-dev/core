@@ -65,21 +65,34 @@ app.get('/api/job-processing-progress', (req, res) => {
   res.json(currentProgress);
 });
 
-app.get('/health', (req, res) => {
-  res.status(200).send('OK');
-});
+console.log('Starting server...');
+console.log('Environment:', process.env.NODE_ENV);
+console.log('Port:', environment.port);
 
 if (cluster.isMaster && process.env.NODE_ENV !== 'development') {
   console.log(`Master ${process.pid} is running`);
 
+  // Fork workers.
+  for (let i = 0; i < numCPUs; i++) {
+    console.log(`Forking worker ${i}`);
+    cluster.fork();
+  }
+
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died`);
+    cluster.fork(); // Replace the dead worker
+  });
+
   if (process.env.NODE_ENV !== 'development') {
     setTimeout(() => {
-      // runJobBoardService();
+      runJobBoardService();
     }, 60000);
   }
 } else {
-  const port = process.env.PORT || environment.port || 8080;
-  app.listen(port, () => {
-    console.log(`Worker ${process.pid} started and running on http://localhost:${environment.port}`);
+  const PORT = process.env.PORT || environment.port;
+  app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
+  }).on('error', (err) => {
+    console.error('Failed to start server:', err);
   });
 }

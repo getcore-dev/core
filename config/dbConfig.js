@@ -5,6 +5,7 @@ const dbConfig = {
   password: environment.dbPassword,
   database: environment.dbName,
   server: environment.dbServer,
+  connectTimeout: 30000, 
   pool: {
     max: 10,
     min: 0,
@@ -12,7 +13,7 @@ const dbConfig = {
   },
   options: {
     encrypt: true,
-    trustServerCertificate: true,
+    trustServerCertificate: false,
   },
 };
 
