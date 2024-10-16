@@ -65,16 +65,21 @@ app.get('/api/job-processing-progress', (req, res) => {
   res.json(currentProgress);
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 if (cluster.isMaster && process.env.NODE_ENV !== 'development') {
   console.log(`Master ${process.pid} is running`);
 
   if (process.env.NODE_ENV !== 'development') {
     setTimeout(() => {
-      runJobBoardService();
-    }, 6000);
+      // runJobBoardService();
+    }, 60000);
   }
 } else {
-  app.listen(environment.port, () => {
+  const port = process.env.PORT || environment.port || 8080;
+  app.listen(port, () => {
     console.log(`Worker ${process.pid} started and running on http://localhost:${environment.port}`);
   });
 }
