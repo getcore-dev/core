@@ -48,7 +48,7 @@
           </div>
         </div>
 
-<div class="jobs-search-container flex flex-col gap-03 relative ml-3 mr-3">
+        <div class="jobs-search-container flex flex-col gap-03 relative ml-3 mr-3">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search absolute left-2 top-2.5 h-4 w-4 text-foreground">
             <circle cx="11" cy="11" r="8"></circle>
             <path d="m21 21-4.3-4.3"></path>
@@ -64,19 +64,16 @@
           <div class="flex flex-col w-full">
             <h3 class="text-md font-semibold mb-2 p-3">Recently Viewed Jobs</h3>
             <div class="flex flex-row gap-2 pl-3 pr-4 horizontal-scroll" id="recentViewedJobs">
-                            <div id="loading-indicator">
+              <div id="loading-indicator">
                 <div class="spinner-container">
-<svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                  <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                  </svg>
                 </div>
               </div>
             </div>
             <h3 class="text-md font-semibold mb-2 p-3">Your Job Recommendations</h3>
             <div class="flex flex-col mb-4 p-3 pt-0" id="topJobSuggestions">
-              <div id="loading-indicator">
-                <div class="spinner-container">
-<svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-                </div>
-              </div>
               <!-- Job suggestions will be dynamically inserted here -->
             </div>
             <a class="w-full p-4 pt-0" href="/jobs">

@@ -23,11 +23,11 @@
                 hash = name.charCodeAt(i) + ((hash << 18) - hash);
               }
               const color = (hash & 0x00FFFFFF).toString(16).toUpperCase();
-              const tintColor = `#${color}95`; 
+              const tintColor = `#${color}95`;
               return tintColor;
             }
             let navText = '‎ ';
-            let user = locals.user; 
+            let user = locals.user;
             let communityId = locals.communityId;
             let postUser = locals.post && locals.post.user && locals.post.user.username ? locals.post.user.username : null;
             let otherUser = locals.otheruser;
@@ -289,7 +289,7 @@
     <div class="second-nav-btns">
       <ul class="second-nav-links">
         <li class="dropdown">
-          <% 
+          <%
     const pathTitles = {
       '/': 'Home',
       '/jobs': 'Openings',
@@ -411,7 +411,7 @@
   <div class="search-bar-container">
     <form action="/search" method="GET" id="search-form">
       <button id="search-back-button" class="search-back-button" type="button">
-        <span class="adaptive-text material-symbols-outlined">arrow_back</span>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
       </button>
       <input type="text" name="searchTerm" id="search-bar" placeholder="Search" autocomplete="off" />
     </form>

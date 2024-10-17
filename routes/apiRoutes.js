@@ -693,7 +693,7 @@ router.get("/jobs", cacheMiddleware(3600), async (req, res) => {
       allJobPostings = await jobQueries.getAllJobsFromLast30Days(
         {},
         page,
-        pageSize,
+        pageSize,j
       );
     } else {
       console.log("Regular search");
