@@ -3817,7 +3817,7 @@ input::placeholder {
   }
 
   .dropdown-button {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-body-color);
     color: var(--dark-mode-text-color);
     border: 1px solid var(--dark-mode-border-color);
   }

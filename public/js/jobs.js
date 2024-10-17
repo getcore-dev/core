@@ -114,7 +114,7 @@ async function updateJobCount() {
 
 
 const ITEMS_PER_PAGE = 20;
-const DEBOUNCE_DELAY = 300;
+const DEBOUNCE_DELAY = 700;
 
 // Constants
 const JOB_TITLES = [
@@ -1068,6 +1068,8 @@ function removeInfiniteScroll() {
 function clearSearchResults() {
   state.jobPostings = [];
   state.currentPage = 1;
+  state.filters.titles.clear();
+  state.filters.companies.clear();
   state.hasMoreData = true;
   state.renderedJobIds.clear();
   elements.jobList.innerHTML = '';
@@ -1076,41 +1078,49 @@ function clearSearchResults() {
   fetchJobPostings();
 }
 
-// Modify the search functionality to let users filter by job titles or company names.
 function handleSearchInput() {
   const searchTerm = state.jobSearchInput.value.trim().toLowerCase();
+  console.log('Search Term:', searchTerm);
 
   if (searchTerm.length < 2) {
     clearSearchResults();
+    console.log('Search term too short, clearing results.');
     return;
   }
 
   // Clear existing filters
   state.filters.titles.clear();
   state.filters.companies.clear();
+  console.log('Filters cleared.');
 
   // Filter companies based on the search term
   const matchingCompanies = state.companyNames.filter(company =>
     company && company.name && company.name.toLowerCase().includes(searchTerm)
   );
+  console.log('Matching Companies:', matchingCompanies);
 
   if (matchingCompanies.length > 0) {
     // Determine the best match among the matching companies
     const bestMatchCompany = getBestMatch(searchTerm, matchingCompanies);
+    console.log('Best Match Company:', bestMatchCompany);
 
     if (bestMatchCompany) {
       // Add only the ID of the best matching company to the filters
       state.filters.companies.add(bestMatchCompany.id);
+      console.log('Added company ID to filters:', bestMatchCompany.id);
     }
   } else {
     // If no companies match, treat the search term as a job title
     state.filters.titles.add(searchTerm);
+    console.log('Added search term to title filters:', searchTerm);
   }
 
   // Trigger the job search with updated filters
   triggerJobSearch();
+  console.log('Job search triggered.');
 }
 
+state.jobSearchInput.addEventListener('input', debounce(handleSearchInput, DEBOUNCE_DELAY));
 /**
  * Helper function to determine the best matching company.
  * This example uses the longest matching name as the best match.
@@ -1131,7 +1141,6 @@ function getBestMatch(searchTerm, companies) {
 
 
 // Attach event listener to the search input element
-state.jobSearchInput.addEventListener('input', debounce(handleSearchInput, DEBOUNCE_DELAY));
 
 function handleResultClick(event) {
   console.log('handleResultClick');
