@@ -115,18 +115,26 @@ async function getSimilarJobs(jobId) {
       const diffTime = Math.abs(now - postedDate);
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
       if (diffDays <= 2) {
-        tags.push({text: 'New', class: 'link'});
+        tags.push({text: 'New', class: 'new'});
       }
 
       if (job.location) {
-        tags.push({text: formatLocation(job.location), class: 'location'});
+        tags.push({text: formatLocation(job.location), class: 'location', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>'});
       }
       if (job.salary) {
-        tags.push({text: job.salary, class: 'salary'});
+        tags.push({text: `$${job.salary}`, class: 'salary', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>'});
+      } else {
+        // try to extract salary from description
+        const salaryMatch = job.description.match(/\$(\d+(?:,?\d*)?(?:k|K)?)/);
+        if (salaryMatch) {
+          tags.push({text: `$${salaryMatch[1]}`, class: 'salary'});
+        }
       }
       if (job.experienceLevel) {
-        tags.push({text: job.experienceLevel, class: 'experienceLevel'});
+        tags.push({text: job.experienceLevel, class: 'experienceLevel', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-graduation-cap"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>'});
       }
+      tags.push({text: `${job.applicants} applicants`, class: 'applicants', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'});
+
 
       const jobElement = createCard(job.company_name, formatRelativeDate(job.postedDate), job.title, job.description, true, `/jobs/${job.id}`, job.company_logo, tags);
       similarJobsList.appendChild(jobElement);
@@ -237,24 +245,26 @@ function createJobElement(job) {
   const diffTime = Math.abs(now - postedDate);
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
   if (diffDays <= 2) {
-    tags.push({text: 'New', class: 'link'});
+    tags.push({text: 'New', class: 'new'});
   }
 
   if (job.location) {
-    tags.push({text: formatLocation(job.location), class: 'location'});
+    tags.push({text: formatLocation(job.location), class: 'location', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>'});
   }
   if (job.salary) {
-    tags.push({text: `$${job.salary}`, class: 'salary'});
+    tags.push({text: `$${job.salary}`, class: 'salary', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>'});
   } else {
     // try to extract salary from description
-    const salaryMatch = job.description.match(/\$(\d+)/);
+    const salaryMatch = job.description.match(/\$(\d+(?:,?\d*)?(?:k|K)?)/);
     if (salaryMatch) {
       tags.push({text: `$${salaryMatch[1]}`, class: 'salary'});
     }
   }
   if (job.experienceLevel) {
-    tags.push({text: job.experienceLevel, class: 'experienceLevel'});
+    tags.push({text: job.experienceLevel, class: 'experienceLevel', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-graduation-cap"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>'});
   }
+  tags.push({text: `${job.applicants} applicants`, class: 'applicants', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'});
+
 
   const jobElement = createCard(job.company_name, formatRelativeDate(job.postedDate), job.title, job.description, true, `/jobs/${job.id}`, job.company_logo, tags);
   return jobElement;
@@ -476,12 +486,12 @@ async function lazyLoadJobDetails(user, jobId) {
       ` : ''}
     <div class="flex flex-row gap-4 v-center">
             <div class="flex flex-row gap-06 v-center">
-              <span class="material-symbols-outlined">house</span>
-              <p class="sub-text">${job.relocation ? 'Relocation offered' : 'No relocation'}</p>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              <p class="text-sm text-balance max-w-lg leading-relaxed">${job.relocation ? 'Relocation offered' : 'No relocation'}</p>
             </div>
             <div class="flex flex-row gap-06 v-center">
-              <span class="material-symbols-outlined">apartment</span>
-              <p class="sub-text">${job.isRemote ? 'Remote work available' : 'On-site only'}</p>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-laptop"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"/></svg>
+              <p class="text-sm text-balance max-w-lg leading-relaxed">${job.isRemote ? 'Remote work available' : 'On-site only'}</p>
             </div>
           </div>
           ${!job.isProcessed && user && user.isPremium ? `
@@ -504,9 +514,10 @@ async function lazyLoadJobDetails(user, jobId) {
       -->
 
       ${ job.salary || job.salary_max ? `
-        <div class="job-info-flairs sub-text">
+        <div class="job-info-flairs text-sm text-balance max-w-lg leading-relaxed">
       ${job.salary !== 0 ? `
-        <p class="bold salary sub-text">
+        <span class="salary flex flex-row gap-2">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>
       USD $${formatSalary(job.salary)}
       ${job.salary_max !== 0 ? `- $${formatSalary(job.salary_max)}` : ''}
       ${!job.location.toLowerCase().includes('us') && 
@@ -514,7 +525,7 @@ async function lazyLoadJobDetails(user, jobId) {
         !(/\b(AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|remote|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming)\b/i.test(job.location))
     ? '<span class="currency-warning"> (currency may not be in USD)</span>' 
     : ''}
-        </p>
+        </span>
       ` : ''}
       
         </div>
@@ -548,7 +559,7 @@ async function lazyLoadJobDetails(user, jobId) {
         <div class="second-buttons-container">
                   <div class="dropdown" tabindex="0">
             <button aria-label="Dropdown" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8" style="padding-top: .4rem; padding-bottom: .4rem;" aria-haspopup="true" aria-expanded="false">
-              <span class="material-symbols-outlined no-padding no-margin">more_horiz</span>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
             </button>
 
             <div class="dropdown-content">
@@ -813,7 +824,8 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
   let tagsHtml = '';
   if (tags) {
     tagsHtml = tags.map(tag => `
-      <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 ${tag.class}">
+      <div class="${tag.class} flex flex-row gap-2 v-center">
+      ${tag.icon ? tag.icon : ''}
         ${tag.text}
       </div>
     `).join('');
