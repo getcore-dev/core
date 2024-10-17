@@ -760,12 +760,13 @@ const jobQueries = {
       }
   
       // Prepare parameters for locations
+      /*
       if (locations) {
         const locationKeywords = locations.split(/[,\s]+/);
         locationKeywords.forEach((location, i) => {
           queryParams[`location${i}`] = `%${location}%`;
         });
-      }
+      }*/
   
       // Prepare parameter for experience level
       if (experienceLevel) {

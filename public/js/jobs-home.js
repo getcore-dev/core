@@ -1,5 +1,52 @@
 
 const jobSuggestions = document.getElementById('topJobSuggestions');
+const recentJobs = document.getElementById('recentViewedJobs');
+
+
+function createCardSquare(name, timestamp, title, description, clickable=false, link=null, image=null, tags=null) {
+  console.log(tags);
+  const card = document.createElement('div');
+  
+  let tagsHtml = '';
+  if (tags) {
+    tagsHtml = tags.map(tag => `
+        <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 ${tag.class}">
+            ${tag.icon ? `<span class="mr-1">${tag.icon}</span>` : ''}
+      ${tag.text}
+        </div>
+      `).join('');
+  }
+  
+  const cardContent = `
+  <div class="lex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent w-[250px] h-[200px]" ${clickable ? `onclick="window.location.href='${link}'"` : ''}>
+    <div class="flex w-full flex-col gap-1">
+      <div class="flex items-center">
+        <div class="flex items-center gap-2 wrap">
+  
+        ${image ? `
+                <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
+      <img class="aspect-square h-full w-full" src="${image}" />
+        </span>
+        ` : ''
+}
+          <div class="font-semibold">${name}</div>
+        </div>
+        <div class="ml-auto text-xs text-foreground">${timestamp}</div>
+      </div>
+      <div class="text-base font-medium">${title}</div>
+    </div>
+    <div class="line-clamp-2 text-sm text-muted-foreground w-full">
+      ${description}
+    </div>
+    <div class="flex items-center gap-2 wrap">
+      ${tagsHtml}
+    </div>
+  </div>
+      `;
+  
+  card.innerHTML = cardContent;
+  return card;
+}
 
 function createCard(name, timestamp, title, description, clickable=false, link=null, image=null, tags=null) {
   console.log(tags);
@@ -9,7 +56,8 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
   if (tags) {
     tagsHtml = tags.map(tag => `
         <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 ${tag.class}">
-          ${tag.text}
+            ${tag.icon ? `<span class="mr-1">${tag.icon}</span>` : ''}
+      ${tag.text}
         </div>
       `).join('');
   }
@@ -108,10 +156,19 @@ function formatRelativeDate(dateString) {
 fetch('/api/job-suggestions')
   .then(response => response.json())
   .then(data => {
+    jobSuggestions.innerHTML = '';
     data.forEach(job => {
       jobSuggestions.appendChild(createCard(job.company_name, formatRelativeDate(job.postedDate), job.title, job.description, true, '/jobs/' + job.id, job.company_logo, [{ class: 'applicants', text: `${job.applicants} applicants`},{ class: 'salary', text: `$${job.salary}`}]));
     });
   })
   .catch(error => console.error('Error fetching job suggestions:', error));
 
-
+fetch('/api/recent-viewed-jobs')
+  .then(response => response.json())
+  .then(data => {
+    recentJobs.innerHTML = '';
+    data.forEach(job => {
+      recentJobs.appendChild(createCardSquare(job.company_name, formatRelativeDate(job.postedDate), job.title, job.description, true, '/jobs/' + job.job_id, job.company_logo, [{ class: 'applicants', text: `${job.applicants} applicants`},{ class: 'salary', text: `$${job.salary}`}]));
+    });
+  })
+  .catch(error => console.error('Error fetching recent jobs:', error));
