@@ -90,11 +90,11 @@
           <div class="profile-content">
             <div class="profile-details flex flex-row gap-4 w-100">
               <div class="profile-picture" data-hue-rotate="0">
-                <img class="thumbnail thumbnail-large" src="<%= otheruser.avatar || '/img/default-avatar.png' %>" alt="Profile Picture" />
+                <img class="w-24 aspect-square rounded-md" src="<%= otheruser.avatar || '/img/default-avatar.png' %>" alt="Profile Picture" />
 
               </div>
               <div class="flex flex-col gap-03 w-full h-center">
-                <h2 class="text-2xl font-semibold">
+                <h2 class="text-2xl font-semibold wrap">
                   <% if (otheruser.firstname && otheruser.lastname) { %>
                   <%= otheruser.firstname %> <%= otheruser.lastname %>
                   <% } else { %>
@@ -147,7 +147,7 @@
             <div class="flex flex-col gap-06">
               <div class="edit-controls-and-follow-button">
                 <% if (user) { %>
-                <% if (otheruser.username === user.username) { %> 
+                <% if (otheruser.username === user.username) { %>
                 <% } else { %>
                 <button class="<%= isFollowing ? 'cancel-button-normal' : 'main-button-normal' %>" id="followButton">
                   <%- isFollowing ? '<span class="material-symbols-outlined">person_remove</span> Unfollow' : '<span class="material-symbols-outlined">person_add</span> Follow' %>

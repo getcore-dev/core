@@ -3656,8 +3656,9 @@ input::placeholder {
 
   .dropdown-content {
     min-width: fit-content;
-    width: max-content;
-    padding: 0.1rem;
+    width: 100%;
+    position: fixed;
+    box-sizing: border-box;
   }
 
   #submit-button-normal,

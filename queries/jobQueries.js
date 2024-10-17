@@ -623,95 +623,96 @@ const jobQueries = {
         skills = [],
         companies = [],
       } = filters;
-
+  
       const offset = (page - 1) * pageSize;
-
+  
       // Prepare the base query and parameter container
       let baseQuery = `
         SELECT
           j.*,
           c.logo AS company_logo,
           c.name AS company_name,
-          CASE
-            WHEN j.title LIKE '%internship%' OR j.experienceLevel LIKE '%internship%' THEN 'Internship'
-            WHEN j.title LIKE '%junior%' OR j.experienceLevel LIKE '%junior%' THEN 'Junior'
-            WHEN j.title LIKE '%senior%' OR j.experienceLevel LIKE '%senior%' THEN 'Senior'
-            WHEN j.title LIKE '%lead%' OR j.experienceLevel LIKE '%lead%' THEN 'Lead'
-            WHEN j.title LIKE '%manager%' OR j.experienceLevel LIKE '%manager%' THEN 'Manager'
-            ELSE j.experienceLevel
-          END AS cleaned_experience_level
+          j.experienceLevel AS cleaned_experience_level
         FROM JobPostings j
         JOIN Companies c ON j.company_id = c.id
         WHERE j.postedDate >= DATEADD(day, -30, GETDATE())
       `;
       const queryParams = [];
       const conditions = [];
-
+  
       // Optimize and combine filter conditions
       if (titles.length) {
-        conditions.push(
-          `j.title LIKE ANY (SELECT CONCAT('%', value, '%') FROM STRING_SPLIT(@titles, ','))`,
-        );
+        conditions.push(`
+          EXISTS (
+            SELECT 1
+            FROM STRING_SPLIT(@titles, ',') s
+            WHERE j.title LIKE '%' + s.value + '%'
+          )
+        `);
         queryParams.push({ name: "titles", value: titles.join(",") });
       }
-
+  
       if (locations.length) {
-        conditions.push(
-          `j.location LIKE ANY (SELECT CONCAT('%', value, '%') FROM STRING_SPLIT(@locations, ','))`,
-        );
+        conditions.push(`
+          EXISTS (
+            SELECT 1
+            FROM STRING_SPLIT(@locations, ',') s
+            WHERE j.location LIKE '%' + s.value + '%'
+          )
+        `);
         queryParams.push({ name: "locations", value: locations.join(",") });
       }
-
+  
       if (salary > 0) {
         conditions.push("j.salary >= @salary");
         queryParams.push({ name: "salary", value: salary });
       }
-
+  
       if (companies.length) {
         conditions.push(
-          "j.company_id IN (SELECT value FROM STRING_SPLIT(@companies, ",
-          "))",
+          "j.company_id IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@companies, ','))"
         );
         queryParams.push({ name: "companies", value: companies.join(",") });
       }
-
+  
       if (experienceLevels.length) {
         conditions.push(`
-          CASE
-            WHEN j.title LIKE '%internship%' OR j.experienceLevel LIKE '%internship%' THEN 'Internship'
-            WHEN j.title LIKE '%junior%' OR j.experienceLevel LIKE '%junior%' THEN 'Junior'
-            WHEN j.title LIKE '%senior%' OR j.experienceLevel LIKE '%senior%' THEN 'Senior'
-            WHEN j.title LIKE '%lead%' OR j.experienceLevel LIKE '%lead%' THEN 'Lead'
-            WHEN j.title LIKE '%manager%' OR j.experienceLevel LIKE '%manager%' THEN 'Manager'
-            ELSE j.experienceLevel
-          END LIKE ANY (SELECT CONCAT('%', value, '%') FROM STRING_SPLIT(@experienceLevels, ','))
+          EXISTS (
+            SELECT 1
+            FROM STRING_SPLIT(@experienceLevels, ',') s
+            WHERE j.experienceLevel LIKE '%' + s.value + '%'
+          )
         `);
         queryParams.push({
           name: "experienceLevels",
           value: experienceLevels.join(","),
         });
       }
-
+  
       if (accepted_college_majors.length) {
-        conditions.push(
-          `j.accepted_college_majors LIKE ANY (SELECT CONCAT('%', value, '%') FROM STRING_SPLIT(@accepted_college_majors, ','))`,
-        );
+        conditions.push(`
+          EXISTS (
+            SELECT 1
+            FROM STRING_SPLIT(@accepted_college_majors, ',') s
+            WHERE j.accepted_college_majors LIKE '%' + s.value + '%'
+          )
+        `);
         queryParams.push({
           name: "accepted_college_majors",
           value: accepted_college_majors.join(","),
         });
       }
-
+  
       if (conditions.length) {
         baseQuery += " AND " + conditions.join(" AND ");
       }
-
+  
       baseQuery += `
         ORDER BY j.postedDate DESC
         OFFSET @offset ROWS
         FETCH NEXT @pageSize ROWS ONLY;
       `;
-
+  
       // Prepare SQL request and input parameters
       const request = new sql.Request();
       queryParams.forEach((param) => {
@@ -719,16 +720,17 @@ const jobQueries = {
       });
       request.input("offset", sql.Int, offset);
       request.input("pageSize", sql.Int, pageSize);
-
+  
       // Execute the query
       const result = await request.query(baseQuery);
-
+  
       return result.recordset;
     } catch (error) {
       console.error("Error in searchAllJobsFromLast30Days:", error);
       throw error;
     }
   },
+  
 
   searchUserPreferredJobs: async (userPreferences, page, pageSize) => {
     try {
@@ -1746,48 +1748,27 @@ ORDER BY jp.postedDate DESC
     try {
       const result = await sql.query(`
         WITH OriginalJob AS (
-          SELECT id, title, experienceLevel FROM JobPostings WHERE id = ${jobId}
-        ),
-        JobWords AS (
-          SELECT DISTINCT value AS word
-          FROM OriginalJob
-          CROSS APPLY STRING_SPLIT(LOWER(title), ' ')
-          WHERE LEN(value) > 2
-        ),
-        ScoredJobs AS (
-          SELECT
-            jp.id,
-            jp.title,
-            jp.description,
-            jp.salary,
-            jp.experienceLevel,
-            jp.salary_max,
-            jp.postedDate,
-            jp.location,
-            jp.company_id,
-            c.name AS company_name,
-            c.logo AS company_logo,
-            c.location AS company_location,
-            c.description AS company_description,
-            (
-              SELECT COUNT(*)
-              FROM JobWords
-              WHERE CHARINDEX(word, LOWER(jp.title)) > 0
-            ) AS word_match_count,
-            CASE
-              WHEN jp.title = oj.title THEN 100
-              WHEN CHARINDEX(oj.title, jp.title) > 0 OR CHARINDEX(jp.title, oj.title) > 0 THEN 75
-              ELSE 0
-            END AS exact_match_score
-          FROM JobPostings jp
-          LEFT JOIN companies c ON jp.company_id = c.id
-          CROSS JOIN OriginalJob oj
-          WHERE jp.id != oj.id AND jp.experienceLevel = oj.experienceLevel
+          SELECT id, title, location FROM JobPostings WHERE id = ${jobId}
         )
-        SELECT TOP 15 *
-        FROM ScoredJobs
-        WHERE word_match_count > 0 OR exact_match_score > 0
-        ORDER BY (word_match_count + exact_match_score) DESC, postedDate DESC
+        SELECT TOP 15
+          jp.id,
+          jp.title,
+          jp.description,
+          jp.salary,
+          jp.experienceLevel,
+          jp.salary_max,
+          jp.postedDate,
+          jp.location,
+          jp.company_id,
+          c.name AS company_name,
+          c.logo AS company_logo,
+          c.location AS company_location,
+          c.description AS company_description
+        FROM JobPostings jp
+        LEFT JOIN companies c ON jp.company_id = c.id
+        WHERE jp.id != (SELECT id FROM OriginalJob) 
+          AND (jp.location = (SELECT location FROM OriginalJob) OR jp.title LIKE '%' + (SELECT title FROM OriginalJob) + '%')
+        ORDER BY jp.postedDate DESC
       `);
 
       const jobs = result.recordset;
@@ -1807,19 +1788,7 @@ ORDER BY jp.postedDate DESC
       companies.name AS company_name,
       companies.logo AS company_logo,
       companies.location AS company_location,
-      companies.description AS company_description,
-      (
-        SELECT STRING_AGG(JobTags.tagName, ', ')
-        FROM JobPostingsTags
-        INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
-        WHERE JobPostingsTags.jobId = JobPostings.id
-      ) AS tags,
-      (
-        SELECT STRING_AGG(skills.name, ', ')
-        FROM job_skills
-        INNER JOIN skills ON job_skills.skill_id = skills.id
-        WHERE job_skills.job_id = JobPostings.id
-      ) AS skills
+      companies.description AS company_description
     FROM JobPostings
     LEFT JOIN companies ON JobPostings.company_id = companies.id
     WHERE JobPostings.company_id = ${companyId}
@@ -2475,11 +2444,6 @@ ORDER BY jp.postedDate DESC
 
       if (typeof title !== "string") {
         throw new Error("Title must be a string");
-      }
-
-      if (!isTechJob(title)) {
-        console.log("Not a tech job, not inserting.");
-        return null;
       }
 
       skills = Array.isArray(skills)
