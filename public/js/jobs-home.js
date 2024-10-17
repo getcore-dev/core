@@ -168,7 +168,7 @@ fetch('/api/recent-viewed-jobs')
   .then(data => {
     recentJobs.innerHTML = '';
     data.forEach(job => {
-      recentJobs.appendChild(createCardSquare(job.company_name, formatRelativeDate(job.postedDate), job.title, job.description, true, '/jobs/' + job.id, job.company_logo, [{ class: 'applicants', text: `${job.applicants} applicants`},{ class: 'salary', text: `$${job.salary}`}]));
+      recentJobs.appendChild(createCardSquare(job.company_name, formatRelativeDate(job.postedDate), job.title, job.description, true, '/jobs/' + job.job_id, job.company_logo, [{ class: 'applicants', text: `${job.applicants} applicants`},{ class: 'salary', text: `$${job.salary}`}]));
     });
   })
   .catch(error => console.error('Error fetching recent jobs:', error));

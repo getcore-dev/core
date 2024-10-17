@@ -793,7 +793,7 @@
           const jobElement = document.createElement('div');
           jobElement.className = 'recentJob px-2';
           jobElement.onclick = () => {
-            window.location.href = `/jobs/${recentJob.id}`;
+            window.location.href = `/jobs/${recentJob.job_id}`;
           };
 
           jobElement.innerHTML = `

@@ -16,7 +16,7 @@ const userRecentQueries = {
     getRecentViews: async (userId) => {
         try {
             const result = await sql.query`
-                SELECT urvj.* , jp.title, jp.description, jp.salary, jp.location, jp.postedDate, jp.applicants,
+                SELECT urvj.* , jp.id as job_id, jp.title, jp.description, jp.salary, jp.location, jp.postedDate, jp.applicants,
                 c.name as company_name, 
                 c.logo as company_logo
                 FROM user_recent_viewed_jobs urvj
@@ -34,7 +34,7 @@ const userRecentQueries = {
     addViewedJob: async (jobId, companyId, userId) => {
         try {
             await sql.query`
-                INSERT INTO user_recent_viewed_jobs (jobPostings_id, company_id, user_id, created_at)
+                INSERT INTO user_recent_viewed_jobs (jobPostings_id, company_id, user_id, viewed_at)
                 VALUES (${jobId}, ${companyId}, ${userId}, GETDATE())`;
         } catch (err) {
             console.error('Database query error:', err);
