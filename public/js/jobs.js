@@ -671,10 +671,10 @@ function renderJobPostings(jobs) {
       }
 
       if (job.location) {
-        tags.push({text: formatLocation(job.location), class: 'location'});
+        tags.push({text: formatLocation(job.location), class: 'location', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>'});
       }
       if (job.salary) {
-        tags.push({text: `$${job.salary}`, class: 'salary'});
+        tags.push({text: `$${job.salary}`, class: 'salary', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>'});
       } else {
         // try to extract salary from description
         const salaryMatch = job.description.match(/\$(\d+(?:,?\d*)?(?:k|K)?)/);
@@ -683,9 +683,9 @@ function renderJobPostings(jobs) {
         }
       }
       if (job.experienceLevel) {
-        tags.push({text: job.experienceLevel, class: 'experienceLevel'});
+        tags.push({text: job.experienceLevel, class: 'experienceLevel', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-graduation-cap"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>'});
       }
-      tags.push({text: `${job.applicants} applicants`, class: 'applicants'});
+      tags.push({text: `${job.applicants} applicants`, class: 'applicants', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'});
 
       const jobElement = createCard(job.company_name, formatRelativeDate(job.postedDate), job.title, job.description, true, `/jobs/${job.id}`, job.company_logo, tags);
       fragment.appendChild(jobElement);
@@ -909,7 +909,8 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
   let tagsHtml = '';
   if (tags) {
     tagsHtml = tags.map(tag => `
-      <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 ${tag.class}">
+      <div class="${tag.class} gap-2 inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
+      ${tag.icon ? tag.icon : ''}
         ${tag.text}
       </div>
     `).join('');
