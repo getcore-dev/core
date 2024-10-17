@@ -228,6 +228,8 @@ class JobProcessor extends EventEmitter {
     } catch (error) {
       console.error(`Error processing queued company link ${link}:`, error);
     }
+
+    await this.delay(500);
   }
 
   async processAllLinksOnPage(url) {
