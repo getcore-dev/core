@@ -1476,3 +1476,12 @@ function updateState(type, id, name, logo, isRemoval = false) {
 }
 
 
+document.addEventListener('DOMContentLoaded', function() {
+  const clearButton = document.querySelector('.jobs-search-container button');
+  const searchInput = document.getElementById('job-search-input');
+
+  clearButton.addEventListener('click', function() {
+    searchInput.value = '';
+    clearSearchResults();
+  });
+});

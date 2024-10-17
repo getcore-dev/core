@@ -13,6 +13,15 @@
     --tw-content: ""
 }
 
+input::placeholder,
+textarea::placeholder {
+    opacity: 1 !important;
+    color: #9ca3af !important;
+    font-weight: 300 !important;
+    font-size: .9rem !important;
+    line-height: 1.25rem !important;
+}
+
 html {
     line-height: 1.5;
     -webkit-text-size-adjust: 100%;
@@ -515,6 +524,10 @@ body {
 }
 
 .right-0 {
+    right: 0
+}
+
+.right {
     right: 0
 }
 

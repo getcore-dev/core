@@ -6,19 +6,13 @@ const multer = require('multer');
 const { checkAuthenticated } = require('../middleware/authMiddleware');
 const fs = require('fs');
 const path = require('path');
-const User = require('../models/User.js');
 const JobProcessor = require('../services/jobBoardService');
 const jobProcessor = new JobProcessor();
-const environment = require('../config/environment');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-const genAI = new GoogleGenerativeAI(environment.geminiKey);
-const cheerio = require('cheerio');
 const githubService = require('../services/githubService');
 const cacheMiddleware = require('../middleware/cache');
-const NodeCache = require('node-cache');
-const cache = new NodeCache({ stdTTL: 1200 }); // TTL is 20 minutes
 const utilFunctions = require('../utils/utilFunctions');
 const jobExtractionQueue = require('../utils/queue');
+const userRecentQueries = require('../queries/userRecentQueries');
 
 const storage = multer.diskStorage({
   destination: './public/uploads/',
@@ -35,12 +29,7 @@ const jobQueries = require('../queries/jobQueries');
 const sql = require('mssql');
 const axios = require('axios');
 const communityQueries = require('../queries/communityQueries');
-const linkFunctions = require('../utils/linkFunctions');
-const commentQueries = require('../queries/commentQueries');
 const { default: rateLimit } = require('express-rate-limit');
-const notificationQueries = require('../queries/notificationQueries.js');
-const { check } = require('express-validator');
-const { user } = require('../config/dbConfig.js');
 const resumeFunctions = require('../utils/resumeFunctions.js');
 const jobLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
@@ -90,6 +79,28 @@ router.post('/company-link', async (req, res) => {
       .json({ error: 'An error occurred while extracting job postings' });
   }
 
+});
+
+router.get('/recent-jobs', async (req, res) => {
+  try {
+    const recentJobs = await jobQueries.getRecentJobs(1, 5);
+    res.json(recentJobs);
+  } catch (err) {
+    console.error('Error fetching recent jobs:', err);
+    res.status(500).send('Error fetching recent jobs');
+  }
+});
+
+
+router.get('/recent-viewed-jobs', checkAuthenticated, async (req, res) => {
+  try {
+    const user = req.user;
+    const recentJobs = await userRecentQueries.getRecentViews(user.id);
+    res.json(recentJobs);
+  } catch (err) {
+    console.error('Error fetching recent jobs:', err);
+    res.status(500).send('Error fetching recent jobs');
+  }
 });
 
 router.get('/duplicate-companies', async (req, res) => {

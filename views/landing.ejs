@@ -32,7 +32,6 @@
   <link rel="canonical" href="https://getcore.dev/">
 
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="/css/navbar.css">
   <link rel="stylesheet" href="/css/landing.css">
 
   <!-- Fonts -->
@@ -56,40 +55,47 @@
   </script>
 </head>
 
-<body>
+<body class="font-sans dark:bg-gray-900 dark:text-white">
   <%- include('partials/navbar', { pagePath: '', user: user }) %>
 
   <!-- Hero Section -->
-  <header class="hero-section">
-    <div class="hero-content">
-      <h1 class="text-2xl font-semibold tracking-tight">🚀 Revolutionize Your Job Search with AI-Powered Insights</h1>
-      <p>CORE is your ultimate career partner, leveraging cutting-edge AI to connect you with the perfect opportunities and empower your job search journey.</p>
-      <ul class="feature-list">
+  <header class="py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-4xl font-semibold mb-4">🚀 Discover Your Dream Job with AI-Powered Insights</h1>
+      <p class="mb-6">CORE is your ultimate career partner, leveraging cutting-edge AI to connect you with the perfect opportunities and empower your job search journey. Visit our <a href="/jobs" class="text-blue-500 underline">jobs page</a> to explore the latest job listings.</p>
+      <ul class="list-disc pl-5 mb-6">
         <li>🔍 Access jobs from countless websites, updated within 24 hours</li>
         <li>📄 Use AI to revamp your resume for maximum impact</li>
         <li>💡 Get powerful insights into job postings before applying</li>
         <li>🏢 Help companies gain better insights into candidates</li>
       </ul>
-      <div class="get-started-options border round2 px-4 w-100 py-4">
-        <h3 class="text-xl font-semibold mb-4">Join the CORE Community</h3>
-        <form action="/email-register" method="GET" class="email-form flex flex-col gap-1">
-          <label for="email" class="font-medium mb-2">Enter your email to get started:</label>
-          <input type="email" id="email" name="email" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 mb-4" placeholder="your@email.com" required>
-          <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
+      <a href="/jobs" class="inline-flex bg-blue-500 text-white py-2 px-4 rounded w-full justify-center">
+        <button class="flex items-center">
+          View Over 20,000 Jobs
+        </button>
+      </a>
+
+      <!-- Join the CORE Community Section -->
+      <div class="mt-8 border rounded-lg p-6">
+        <h3 class="text-2xl font-semibold mb-4">Join the CORE Community</h3>
+        <form action="/email-register" method="GET" class="space-y-4">
+          <div>
+            <label for="email" class="block font-medium mb-2">Enter your email to get started:</label>
+            <input type="email" id="email" name="email" class="w-full px-3 py-2 border rounded" placeholder="your@email.com" required>
+          </div>
+          <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded flex items-center justify-center">
             Sign Me Up
-            <span class="material-symbols-outlined ml-1">
-              arrow_forward
-            </span>
+            <span class="material-symbols-outlined ml-1">arrow_forward</span>
           </button>
         </form>
-        <div class="or-divider flex items-center my-4">
+        <div class="flex items-center my-4">
           <div class="flex-grow h-px bg-gray-300"></div>
-          <span class="bg-background px-2 text-muted-foreground">Or continue with</span>
+          <span class="px-4 text-gray-500">Or continue with</span>
           <div class="flex-grow h-px bg-gray-300"></div>
         </div>
-        <a href="/auth/github" class="github-button">
-          <button class="w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
-            <img src="/src/github.png" alt="GitHub Logo" class="github-logo h-6 w-6 mr-2">
+        <a href="/auth/github" class="block">
+          <button class="w-full border py-2 px-4 rounded flex items-center justify-center">
+            <img src="/src/github.png" alt="GitHub Logo" class="h-6 w-6 mr-2">
             Continue with GitHub
           </button>
         </a>
@@ -98,96 +104,74 @@
   </header>
 
   <!-- Main Content -->
-  <main>
+  <main class="max-w-4xl mx-auto px-4">
     <!-- About Us Section -->
-    <section class="about-us">
-      <h2 class="primary-text">About CORE</h2>
+    <section class="my-12">
+      <h2 class="text-3xl font-semibold mb-4">About CORE</h2>
       <p>CORE is a leading platform that connects professionals with top tech employers worldwide. Our mission is to streamline your job search, enhance your applications, and keep you informed with the latest opportunities.</p>
     </section>
 
     <!-- Features Section -->
-    <section class="features adaptive-background">
-      <h2 class="primary-text">Our Features</h2>
-      <div class="feature-grid">
-        <div class="feature-card">
-          <span class="material-symbols-outlined">work</span>
-          <h3 class="primary-text">Global Job Search</h3>
-          <p class="secondary-text">Access thousands of job listings from over 400 websites worldwide, updated within 24 hours.</p>
+    <section class="my-12">
+      <h2 class="text-3xl font-semibold mb-6">Our Features</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="border rounded-lg p-4">
+          <span class="material-symbols-outlined text-3xl mb-2">work</span>
+          <h3 class="text-xl font-semibold mb-2">Global Job Search</h3>
+          <p>Access thousands of job listings from over 400 websites worldwide, updated within 24 hours.</p>
         </div>
-        <div class="feature-card">
-          <span class="material-symbols-outlined">description</span>
-          <h3 class="primary-text">AI-Powered Resumes</h3>
-          <p class="secondary-text">Create tailored resumes and cover letters using our advanced AI tools to stand out to employers.</p>
+        <div class="border rounded-lg p-4">
+          <span class="material-symbols-outlined text-3xl mb-2">description</span>
+          <h3 class="text-xl font-semibold mb-2">AI-Powered Resumes</h3>
+          <p>Create tailored resumes and cover letters using our advanced AI tools to stand out to employers.</p>
         </div>
-        <div class="feature-card">
-          <span class="material-symbols-outlined">notifications</span>
-          <h3 class="primary-text">Real-Time Job Alerts</h3>
-          <p class="secondary-text">Receive instant notifications when new jobs that match your criteria are posted.</p>
+        <div class="border rounded-lg p-4">
+          <span class="material-symbols-outlined text-3xl mb-2">notifications</span>
+          <h3 class="text-xl font-semibold mb-2">Real-Time Job Alerts</h3>
+          <p>Receive instant notifications when new jobs that match your criteria are posted.</p>
         </div>
-        <div class="feature-card">
-          <span class="material-symbols-outlined">insights</span>
-          <h3 class="primary-text">Personalized Job Overviews</h3>
-          <p class="secondary-text">Get AI-generated overviews and insights on job positions to make informed career decisions.</p>
+        <div class="border rounded-lg p-4">
+          <span class="material-symbols-outlined text-3xl mb-2">insights</span>
+          <h3 class="text-xl font-semibold mb-2">Personalized Job Overviews</h3>
+          <p>Get AI-generated overviews and insights on job positions to make informed career decisions.</p>
         </div>
       </div>
     </section>
 
     <!-- How It Works Section -->
-    <section class="how-it-works">
-      <h2>How CORE Works</h2>
-      <div class="steps">
-        <div class="step adaptive-border adaptive-background">
-          <h3 class="primary-text">1. Sign Up</h3>
-          <p class="secondary-text">Create your account and set up your profile to get started.</p>
+    <section class="my-12">
+      <h2 class="text-3xl font-semibold mb-6">How CORE Works</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="border rounded-lg p-4">
+          <h3 class="text-xl font-semibold mb-2">1. Sign Up</h3>
+          <p>Create your account and set up your profile to get started.</p>
         </div>
-        <div class="step adaptive-border adaptive-background">
-          <h3 class="primary-text">2. Customize Your Resume</h3>
-          <p class="secondary-text">Use our AI tools to build a professional resume tailored to your desired roles.</p>
+        <div class="border rounded-lg p-4">
+          <h3 class="text-xl font-semibold mb-2">2. Customize Your Resume</h3>
+          <p>Use our AI tools to build a professional resume tailored to your desired roles.</p>
         </div>
-        <div class="step adaptive-border adaptive-background">
-          <h3 class="primary-text">3. Search and Apply</h3>
-          <p class="secondary-text">Find jobs globally, receive real-time alerts, and apply directly through CORE.</p>
+        <div class="border rounded-lg p-4">
+          <h3 class="text-xl font-semibold mb-2">3. Search and Apply</h3>
+          <p>Find jobs globally, receive real-time alerts, and apply directly through CORE.</p>
         </div>
-        <div class="step adaptive-border adaptive-background">
-          <h3 class="primary-text">4. Get Notified</h3>
-          <p class="secondary-text">Stay updated with instant notifications for new job postings that match your profile.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 
-    <section class="testimonials">
-      <h2>What Our Users Say</h2>
-      <div class="testimonial-grid">
-        <div class="testimonial-card">
-          <p>"CORE made my job search effortless. The AI-generated resume stood out to employers, and I landed my dream job in just a few weeks!"</p>
-          <h4>Jane Doe, Software Engineer</h4>
-        </div>
-        <div class="testimonial-card">
-          <p>"The real-time job alerts kept me informed about the latest opportunities. Highly recommend CORE to anyone looking to advance their career."</p>
-          <h4>John Smith, Data Analyst</h4>
+        <div class="border rounded-lg p-4">
+          <h3 class="text-xl font-semibold mb-2">4. Get Notified</h3>
+          <p>Stay updated with instant notifications for new job postings that match your profile.</p>
         </div>
       </div>
     </section>
-
-     -->
 
     <!-- Call to Action Section -->
-    <section class="cta-section">
-      <h2>Ready to Take the Next Step?</h2>
-      <a href="/register">
-        <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
-          Join CORE
-          <span class="material-symbols-outlined">
-            arrow_forward
-          </span>
-        </button>
+    <section class="my-12 text-center">
+      <h2 class="text-3xl font-semibold mb-4">Ready to Take the Next Step?</h2>
+      <a href="/register" class="inline-block bg-blue-500 text-white py-2 px-4 rounded">
+        Join CORE
+        <span class="material-symbols-outlined align-middle ml-1">arrow_forward</span>
       </a>
     </section>
   </main>
 
   <%- include('partials/footer') %>
-
 </body>
 
 </html>

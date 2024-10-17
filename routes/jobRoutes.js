@@ -12,6 +12,7 @@ const {
   checkAuthenticated,
   checkNotAuthenticated,
 } = require('../middleware/authMiddleware');
+const userRecentQueries = require('../queries/userRecentQueries');
 const cacheMiddleware = require('../middleware/cache');
 const rateLimit = require('express-rate-limit');
 const viewLimiter = rateLimit({
@@ -471,11 +472,13 @@ router.get('/:jobId', viewLimiter, async (req, res) => {
 
     if (req.user) {
       console.log('adding to recent jobs');
-      const recentExists = await userRecentQueries.isJobInRecentViews(req.user.id, job.id);
+      const recentExists = await userRecentQueries.isJobInRecentViews(job.id,req. user.id);
       if (!recentExists) {
-        await userRecentQueries.addViewedJob(req.user.id, job.id);
+        await userRecentQueries.addViewedJob(job.id, job.company_id, req.user.id);
       }
     }
+
+
 
     res.render('job-posting.ejs', {
       job_id: jobId,
