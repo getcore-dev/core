@@ -44,21 +44,25 @@ class JobProcessor extends EventEmitter {
     super();
     this.companyJobUrls = {
       "linkedin.com": ["view", "jobs"],
-      "greenhouse.io": ["jid=", "job"],
+      "greenhouse": ["jid=", "job"],
       "bankofamerica.com": ["/"],
-      "ashbyhq.com": ["/"],
-      "stripe.com": ["jobs/"],
-      "abbvie.com": ["careers/"],
+      "ashbyhq": ["/"],
+      "stripe": ["jobs/"],
+      "abbvie": ["careers/"],
       "c3.ai": ["careers/"],
       "wiz.io": ["careers/"],
       "lever.co": ["/"],
       "jobvite.com": ["job/"],
-      "careers.tiktok.com": ["job/"],
-      "myworkdayjobs.com": ["job/", "wd", "en-US"],
-      "smartrecruiters.com": ["job/"],
-      "microsoft.com": ["job/"],
-      "apple.com": ["jobs/"],
-      "epicgames.com": ["job/"],
+      "tiktok": ["job/"],
+      "myworkday": ["job/", "wd", "en-US"],
+      "smartrecruiters": ["job/"],
+      "microsoft": ["job/"],
+      "apple": ["jobs/"],
+      "epicgames": ["job/"],
+      "okta": ["careers/"],
+      "ycombinator": ["companies"],
+      "datadog": ["/"],
+      "amazon.jobs": ["/job"]
     };
     const geminiKey = process.env.GEMINI_API_KEY;
     const openaiKey = process.env.OPENAI_API_KEY;
@@ -1113,7 +1117,7 @@ class JobProcessor extends EventEmitter {
   async usePuppeteerFallback(url) {
     let browser;
     try {
-      browser = await puppeteer.launch({ headless: "new" });
+      browser = await puppeteer.launch({ headless: true });
       const page = await browser.newPage();
       await page.setUserAgent(this.getRandomUserAgent());
 
@@ -3173,6 +3177,11 @@ class JobProcessor extends EventEmitter {
   }
 
   async processJobLink(link) {
+    if (this.jobLinks.has(link)) {
+      return {skipped: true, reason: "Already processed"};
+    
+    }
+
     if (typeof link !== "object" && typeof link !== "string") {
       console.error("Invalid link type:", typeof link);
       return { error: "Invalid link type" };
@@ -4238,7 +4247,7 @@ class JobProcessor extends EventEmitter {
 
   async getRedirectedUrl(url) {
     const browser = await puppeteer.launch({
-      headless: "true",
+      headless: true,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
