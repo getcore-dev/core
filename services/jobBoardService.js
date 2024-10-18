@@ -69,6 +69,7 @@ class JobProcessor extends EventEmitter {
     this.genAI = new GoogleGenerativeAI(geminiKey);
     this.jobQueue = [];
     this.companyLinkQueue = [];
+    this.currentJobLinks = new Set();
     this.jobLinks = new Set();
     this.isProcessing = false;
     this.isProcessingCompanyLinks = false;
@@ -402,7 +403,7 @@ class JobProcessor extends EventEmitter {
   async loadJobLinks() {
     const jobLinks = await jobQueries.getAllJobLinks();
     for (const link of jobLinks) {
-      this.jobLinks.add(link.link);
+      this.currentJobLinks.add(link.link);
     }
   }
 
@@ -3177,7 +3178,7 @@ class JobProcessor extends EventEmitter {
   }
 
   async processJobLink(link) {
-    if (this.jobLinks.has(link)) {
+    if (this.currentJobLinks.has(link)) {
       return {skipped: true, reason: "Already processed"};
     
     }

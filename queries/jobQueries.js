@@ -634,8 +634,7 @@ const jobQueries = {
           c.name AS company_name,
           j.experienceLevel AS cleaned_experience_level
         FROM JobPostings j
-        JOIN Companies c ON j.company_id = c.id
-        WHERE j.postedDate >= DATEADD(day, -30, GETDATE())
+        JOIN Companies c ON j.company_id = c.id 
       `;
       const queryParams = [];
       const conditions = [];
