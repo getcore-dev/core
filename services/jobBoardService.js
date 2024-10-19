@@ -3411,7 +3411,7 @@ class JobProcessor extends EventEmitter {
   }
 
   async verifyAndUpdateCompanyData() {
-    const companies = await jobQueries.getCompanies();
+    const companies = await jobQueries.getCompaniesWithJobPostings(5);
 
     this.updateProgress({
       phase: "Verifying and updating company data",
@@ -4688,15 +4688,18 @@ class JobProcessor extends EventEmitter {
         console.error("Error in collectJobLinksFromSimplify:", error);
       }
 
-      /*
       this.updateProgress({ phase: 'Cleaning job postings' });
       try {
         await this.removeDuplicateJobs();
       } catch (error) {
         console.error('Error in removeDuplicateJobs:', error);
       }
-        */
-
+      
+      try {
+      await this.verifyAndUpdateCompanyData();
+      } catch (error) {
+        console.error('error attempting to verify company data');
+        }
       try {
         await this.crawlYCombinator();
       } catch (error) {
