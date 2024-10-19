@@ -632,7 +632,6 @@ router.get("/jobs", cacheMiddleware(3600), async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 20;
-    const searchType = req.query.searchType || "regular"; // New flag: 'userPreferences', 'blank', or 'regular'
 
     const {
       titles,
@@ -654,6 +653,16 @@ router.get("/jobs", cacheMiddleware(3600), async (req, res) => {
     const parsedSalary = parseInt(salary) || 0;
     const parsedSkills = skills ? JSON.parse(skills) : [];
     const parsedCompanies = companies ? JSON.parse(companies) : [];
+    const searchType = "";
+
+    const areAllDefaults = 
+      parsedTitles.length === 0 &&
+      parsedLocations.length === 0 &&
+      parsedExperienceLevels.length === 0 &&
+      parsedMajors.length === 0 &&
+      parsedSalary === 0 &&
+      parsedSkills.length === 0 &&
+      parsedCompanies.length === 0;
 
     const user = req.user;
     let userPreferences = {};
@@ -688,12 +697,11 @@ router.get("/jobs", cacheMiddleware(3600), async (req, res) => {
         page,
         pageSize,
       );
-    } else if (searchType === "blank") {
+    } else if (areAllDefaults) {
       console.log("Blank search");
-      allJobPostings = await jobQueries.getAllJobsFromLast30Days(
-        {},
+      allJobPostings = await jobQueries.searchRecentJobs(
         page,
-        pageSize,j
+        pageSize
       );
     } else {
       console.log("Regular search");
@@ -728,32 +736,17 @@ router.get("/job-suggestions", async (req, res) => {
     let userPreferences = {};
     if (user) {
       userPreferences = {
-        titles: user.jobPreferredTitle
-          ? Array.isArray(user.jobPreferredTitle)
-            ? user.jobPreferredTitle
-            : user.jobPreferredTitle
-          : [],
-        locations: user.jobPreferredLocation
-          ? Array.isArray(user.jobPreferredLocation)
-            ? user.jobPreferredLocation
-            : user.jobPreferredLocation
-          : [],
-        experienceLevels: user.jobExperienceLevel
-          ? Array.isArray(user.jobExperienceLevel)
-            ? user.jobExperienceLevel
-            : user.jobExperienceLevel
-          : [],
-        majors: user.jobPreferredMajor
-          ? Array.isArray(user.jobPreferredMajor)
-            ? user.jobPreferredMajor
-            : user.jobPreferredMajor
-          : [],
-        salary: user.jobPreferredSalary ? user.jobPreferredSalary : 0,
+        titles: Array.isArray(user.jobPreferredTitle) ? user.jobPreferredTitle.flatMap(title => title.split(',')).flat() : [user.jobPreferredTitle].flatMap(title => title.split(',')),
+        locations: Array.isArray(user.jobPreferredLocation) ? user.jobPreferredLocation : [user.jobPreferredLocation],
+        experienceLevels: Array.isArray(user.jobExperienceLevel) ? user.jobExperienceLevel : [user.jobExperienceLevel],
+        majors: Array.isArray(user.jobPreferredMajor) ? user.jobPreferredMajor : [user.jobPreferredMajor],
         skills: [],
         companies: [],
       };
     }
-    const topSuggestions = await jobQueries.searchUserPreferredJobs(
+
+    console.log(userPreferences);
+    const topSuggestions = await jobQueries.searchAllJobsFromLast30Days(
       userPreferences,
       1,
       50,

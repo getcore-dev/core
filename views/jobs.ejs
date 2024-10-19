@@ -418,10 +418,9 @@
             </button>
 
             <div class="dropdown-content">
-              <input type="text" id="location-search-input" class="max-w-[150px] w-100 location-search-input" placeholder="Search locations" />
               <% const states = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"]; %>
               <% states.forEach(state => { %>
-              <a class="w-100 max-w-[150px]">
+              <a class="w-100">
                 <button class="quick-option-btn max-w-[150px] w-100 mini-text" data-type="job-locations" data-id="undefined" data-name="<%= state %>" onclick="toggleSelectedFilter(event)"><%= state %></button>
               </a>
               <% }); %>

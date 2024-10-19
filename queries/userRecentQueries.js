@@ -16,14 +16,16 @@ const userRecentQueries = {
     getRecentViews: async (userId) => {
         try {
             const result = await sql.query`
-                SELECT urvj.* , jp.id as job_id, jp.title, jp.description, jp.salary, jp.location, jp.postedDate, jp.applicants,
+                SELECT urvj.*, jp.id as job_id, jp.title, jp.description, jp.salary, jp.location, jp.postedDate, jp.applicants,
                 c.name as company_name, 
                 c.logo as company_logo
                 FROM user_recent_viewed_jobs urvj
                 JOIN companies c ON urvj.company_id = c.id
                 JOIN jobPostings jp ON urvj.jobPostings_id = jp.id
                 WHERE urvj.user_id = ${userId}
-                ORDER BY urvj.viewed_at DESC`;
+                ORDER BY urvj.viewed_at DESC
+                OFFSET 0 ROWS
+                FETCH NEXT 6 ROWS ONLY`;
             return result.recordset;
         } catch (err) {
             console.error('Database query error:', err);
