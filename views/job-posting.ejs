@@ -39,9 +39,8 @@
       "@type": "JobPosting",
       "title": "<%= job.title %>",
       "description": "<%= job.description %>",
-      "datePosted": "<%= job.datePosted %>",
-      "validThrough": "<%= job.validThrough %>",
-      "employmentType": "<%= job.employmentType %>",
+      "datePosted": "<%= job.postedDate %>",
+      "experienceLevel": "<%= job.experienceLevel %>",
       "hiringOrganization": {
         "@type": "Organization",
         "name": "<%= job.company_name %>",
@@ -53,7 +52,6 @@
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "<%= job.location %>",
-          "addressCountry": "<%= job.country %>"
         }
       },
       "baseSalary": {
@@ -61,8 +59,8 @@
         "currency": "USD",
         "value": {
           "@type": "QuantitativeValue",
-          "minValue": <%= job.salaryMin %>,
-          "maxValue": <%= job.salaryMax %>,
+          "minValue": <%= job.salary %>,
+          "maxValue": <%= job.salary_max %>,
           "unitText": "YEAR"
         }
       }
