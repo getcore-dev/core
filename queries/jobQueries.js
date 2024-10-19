@@ -69,6 +69,40 @@ const jobQueries = {
       throw err;
     }
   },
+  
+ getCompaniesWithJobPostings: async (minimumPostings) => {
+  try {
+    const result = await 
+      sql.query(`
+        SELECT 
+          c.id,
+          c.name,
+          c.logo,
+          c.location,
+          c.description,
+          c.industry,
+          c.size,
+          c.stock_symbol,
+          c.founded,
+          COUNT(jp.id) AS job_count
+        FROM 
+          companies c
+        LEFT JOIN 
+          jobPostings jp ON c.id = jp.company_id
+        GROUP BY 
+          c.id, c.name, c.logo, c.location, c.description, c.industry, c.size, c.stock_symbol, c.founded
+        HAVING 
+          COUNT(jp.id) >= ${minimumPostings}
+        ORDER BY 
+          job_count DESC, c.name ASC
+      `);
+
+    return result.recordset;
+  } catch (err) {
+    console.error('Database query error in getCompaniesWithJobPostings:', err);
+    throw err;
+  }
+},
 
   setJobAsProcessed: async (jobId) => {
     await sql.query`
