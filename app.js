@@ -15,6 +15,7 @@ const userQueries = require('./queries/userQueries');
 const passportConfig = require('./config/passportConfig');
 const errorHandler = require('./middleware/errorHandling');
 const authRoutes = require('./routes/authRoutes');
+const healthCheckRoutes = require('./routes/healthCheckRoutes');
 const autocompleteRoutes = require('./routes/autocompleteRoutes');
 const jobRoutes = require('./routes/jobRoutes');
 const adminRoutes = require('./routes/adminRoutes');
@@ -91,6 +92,7 @@ app.use((req, res, next) => {
 app.use(authRoutes);
 app.use(postRoutes);
 app.use(commentRoutes);
+app.use('/', healthCheckRoutes);
 app.use('/admin', adminRoutes);
 app.use('/autocomplete', autocompleteRoutes);
 

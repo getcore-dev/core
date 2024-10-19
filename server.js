@@ -37,7 +37,7 @@ async function runUserService() {
 }
 
 function scheduleNextRun() {
-  const delayHours = 2 + Math.random() * 4; // Random delay between 2 and 4 hours
+  const delayHours = 12 + Math.random() * 4; // Random delay between 2 and 4 hours
   const delayMs = delayHours * MS_PER_HOUR;
   console.log(`Next job board service run scheduled in ${delayHours.toFixed(2)} hours`);
   setTimeout(runJobBoardService, delayMs);
