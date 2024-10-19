@@ -629,37 +629,41 @@ const jobQueries = {
       // Prepare the base query and parameter container
       let baseQuery = `
         SELECT
-          j.*,
+          j.id,
+          j.title,
+          j.location,
+          j.salary,
+          j.postedDate,
+          j.description,
+          j.salary_max,
+          j.experienceLevel AS cleaned_experience_level,
           c.logo AS company_logo,
-          c.name AS company_name,
-          j.experienceLevel AS cleaned_experience_level
+          c.name AS company_name
         FROM JobPostings j
-        JOIN Companies c ON j.company_id = c.id 
+        JOIN Companies c ON j.company_id = c.id
+        WHERE 1 = 1
       `;
       const queryParams = [];
       const conditions = [];
   
       // Optimize and combine filter conditions
       if (titles.length) {
-        conditions.push(`
-          EXISTS (
-            SELECT 1
-            FROM STRING_SPLIT(@titles, ',') s
-            WHERE j.title LIKE '%' + s.value + '%'
-          )
-        `);
-        queryParams.push({ name: "titles", value: titles.join(",") });
+        // Build full-text search conditions for titles
+        const titleConditions = titles.map((title, index) => {
+          const paramName = `title${index}`;
+          queryParams.push({ name: paramName, value: `"*${title}*"` });
+          return `CONTAINS(j.title, @${paramName})`;
+        });
+        conditions.push(`(${titleConditions.join(' OR ')})`);
       }
   
       if (locations.length) {
-        conditions.push(`
-          EXISTS (
-            SELECT 1
-            FROM STRING_SPLIT(@locations, ',') s
-            WHERE j.location LIKE '%' + s.value + '%'
-          )
-        `);
-        queryParams.push({ name: "locations", value: locations.join(",") });
+        const locationConditions = locations.map((location, index) => {
+          const paramName = `location${index}`;
+          queryParams.push({ name: paramName, value: `"*${location}*"` });
+          return `CONTAINS(j.location, @${paramName})`;
+        });
+        conditions.push(`(${locationConditions.join(' OR ')})`);
       }
   
       if (salary > 0) {
@@ -668,38 +672,30 @@ const jobQueries = {
       }
   
       if (companies.length) {
-        conditions.push(
-          "j.company_id IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@companies, ','))"
-        );
-        queryParams.push({ name: "companies", value: companies.join(",") });
+        const companyParams = companies.map((companyId, index) => {
+          const paramName = `company${index}`;
+          queryParams.push({ name: paramName, value: companyId });
+          return `@${paramName}`;
+        });
+        conditions.push(`j.company_id IN (${companyParams.join(', ')})`);
       }
   
       if (experienceLevels.length) {
-        conditions.push(`
-          EXISTS (
-            SELECT 1
-            FROM STRING_SPLIT(@experienceLevels, ',') s
-            WHERE j.experienceLevel LIKE '%' + s.value + '%'
-          )
-        `);
-        queryParams.push({
-          name: "experienceLevels",
-          value: experienceLevels.join(","),
+        const expLevelConditions = experienceLevels.map((level, index) => {
+          const paramName = `experienceLevel${index}`;
+          queryParams.push({ name: paramName, value: `"*${level}*"` });
+          return `CONTAINS(j.experienceLevel, @${paramName})`;
         });
+        conditions.push(`(${expLevelConditions.join(' OR ')})`);
       }
   
       if (accepted_college_majors.length) {
-        conditions.push(`
-          EXISTS (
-            SELECT 1
-            FROM STRING_SPLIT(@accepted_college_majors, ',') s
-            WHERE j.accepted_college_majors LIKE '%' + s.value + '%'
-          )
-        `);
-        queryParams.push({
-          name: "accepted_college_majors",
-          value: accepted_college_majors.join(","),
+        const majorConditions = accepted_college_majors.map((major, index) => {
+          const paramName = `major${index}`;
+          queryParams.push({ name: paramName, value: `"*${major}*"` });
+          return `CONTAINS(j.accepted_college_majors, @${paramName})`;
         });
+        conditions.push(`(${majorConditions.join(' OR ')})`);
       }
   
       if (conditions.length) {
@@ -715,8 +711,9 @@ const jobQueries = {
       // Prepare SQL request and input parameters
       const request = new sql.Request();
       queryParams.forEach((param) => {
-        request.input(param.name, param.value);
+        request.input(param.name, sql.NVarChar, param.value);
       });
+      request.input("salary", sql.Decimal(18, 2), salary);
       request.input("offset", sql.Int, offset);
       request.input("pageSize", sql.Int, pageSize);
   
@@ -729,6 +726,37 @@ const jobQueries = {
       throw error;
     }
   },
+  
+
+  searchRecentJobs: async (page, pageSize) => {
+    try {
+      const offset = (page - 1) * pageSize;
+  
+      const query = `
+        SELECT
+          j.*,
+          c.logo AS company_logo,
+          c.name AS company_name,
+          j.experienceLevel AS cleaned_experience_level
+        FROM JobPostings j
+        JOIN Companies c ON j.company_id = c.id
+        ORDER BY j.postedDate DESC
+        OFFSET @offset ROWS
+        FETCH NEXT @pageSize ROWS ONLY;
+      `;
+  
+      const request = new sql.Request();
+      request.input("offset", sql.Int, offset);
+      request.input("pageSize", sql.Int, pageSize);
+  
+      const result = await request.query(query);
+      return result.recordset;
+    } catch (error) {
+      console.error("Error in getRecentJobs:", error);
+      throw error;
+    }
+  },
+  
   
 
   searchUserPreferredJobs: async (userPreferences, page, pageSize) => {
