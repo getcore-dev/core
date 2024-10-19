@@ -100,7 +100,7 @@ router.get('/vp', async (req, res) => {
 
 router.get('/junior', async (req, res) => {
   const filters = parseFilters(req.query);
-  filters.experienceLevels = ['Junior];
+  filters.experienceLevels = ['Junior'];
   res.render('jobs.ejs', { 
     user: req.user, 
     filters: filters,
