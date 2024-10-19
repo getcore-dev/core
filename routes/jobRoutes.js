@@ -76,6 +76,72 @@ router.get('/internships', async (req, res) => {
   });
 });
 
+router.get('/grad', async (req, res) => {
+  const filters = parseFilters(req.query);
+  filters.experienceLevels = ['Entry Level'];
+  res.render('jobs.ejs', { 
+    user: req.user, 
+    filters: filters,
+    errorMessages: req.flash('error'),
+    successMessages: req.flash('success'),
+  });
+});
+
+router.get('/vp', async (req, res) => {
+  const filters = parseFilters(req.query);
+  filters.experienceLevels = ['VP'];
+  res.render('jobs.ejs', { 
+    user: req.user, 
+    filters: filters,
+    errorMessages: req.flash('error'),
+    successMessages: req.flash('success'),
+  });
+});
+
+router.get('/junior', async (req, res) => {
+  const filters = parseFilters(req.query);
+  filters.experienceLevels = ['Junior];
+  res.render('jobs.ejs', { 
+    user: req.user, 
+    filters: filters,
+    errorMessages: req.flash('error'),
+    successMessages: req.flash('success'),
+  });
+});
+
+router.get('/senior', async (req, res) => {
+  const filters = parseFilters(req.query);
+  filters.experienceLevels = ['Senior'];
+  res.render('jobs.ejs', { 
+    user: req.user, 
+    filters: filters,
+    errorMessages: req.flash('error'),
+    successMessages: req.flash('success'),
+  });
+});
+
+router.get('/swe', async (req, res) => {
+  const filters = parseFilters(req.query);
+  filters.titles = ['Software Engineer'];
+  res.render('jobs.ejs', { 
+    user: req.user, 
+    filters: filters,
+    errorMessages: req.flash('error'),
+    successMessages: req.flash('success'),
+  });
+});
+
+router.get('/swe2', async (req, res) => {
+  const filters = parseFilters(req.query);
+  filters.titles = ['Software Engineer', 'Python', 'C++', 'Developer'];
+  res.render('jobs.ejs', { 
+    user: req.user, 
+    filters: filters,
+    errorMessages: req.flash('error'),
+    successMessages: req.flash('success'),
+  });
+});
+
 router.get('/applied', checkAuthenticated, async (req, res) => {
   try {
     const userId = req.user.id;
