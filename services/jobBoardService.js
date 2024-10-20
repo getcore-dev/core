@@ -26,6 +26,7 @@ const Queue = require("bull");
 const { set } = require("../app");
 const web = new WebScraper();
 const TurndownService = require("turndown");
+const { count } = require("console");
 
 class ObjectSet extends Set {
   add(obj) {
@@ -49,6 +50,7 @@ class JobProcessor extends EventEmitter {
       "ashbyhq": ["/"],
       "stripe": ["jobs/"],
       "abbvie": ["careers/"],
+      "eightfold": ["/job/"],
       "c3.ai": ["careers/"],
       "wiz.io": ["careers/"],
       "lever.co": ["/"],
@@ -1116,102 +1118,142 @@ class JobProcessor extends EventEmitter {
   }
 
   async usePuppeteerFallback(url) {
+      let browser;
+      try {
+        browser = await puppeteer.launch({ headless: true });
+        const page = await browser.newPage();
+        await page.setUserAgent(this.getRandomUserAgent());
+
+        console.log("Loaded the browser");
+
+        // Enable request interception
+        await page.setRequestInterception(true);
+
+        let jobData = null;
+
+        page.on("request", (request) => {
+          request.continue();
+        });
+
+        page.on("response", async (response) => {
+          // Check for excluded domains
+          const excludedDomains = ["linkedin.com", "epicgames.com", "tiktok.com"];
+          if (excludedDomains.some((domain) => response.url().includes(domain))) {
+            return;
+          }
+
+          const contentType = response.headers()["content-type"];
+
+          if (contentType && contentType.includes("application/json")) {
+            try {
+              const responseText = await response.text();
+              const responseData = JSON.parse(responseText);
+
+              if (responseData && Array.isArray(responseData.departments)) {
+                jobData = [];
+                for (const department of responseData.departments) {
+                  if (Array.isArray(department.jobs)) {
+                    for (const job of department.jobs) {
+                      if (job.absolute_url && job.title) {
+                        jobData.push({
+                          link: job.absolute_url,
+                          title: job.title,
+                        });
+                      }
+                    }
+                  }
+                }
+                if (jobData.length > 0) {
+                  console.log("Found job data in departments");
+                }
+              }
+
+              let count = 0;
+
+              if (responseData && Array.isArray(responseData.positions)) {
+                if (responseData.count) {
+                  count = responseData.count;
+                }
+                jobData = responseData.positions
+                  .map((position) => ({
+                    link: position.id
+                      ? `https://aexp.eightfold.ai/careers/job/${position.id}`
+                      : null,
+                    title: position.name,
+                    location: position.location,
+                    department: position.department,
+                    business_unit: position.business_unit,
+                    work_location_option: position.work_location_option,
+                  }))
+                  .filter((job) => job.link && job.title); // Filter out jobs without link or title
+
+                if (jobData.length > 0) {
+                  console.log("Found job data in positions");
+                }
+              }
+            } catch (error) {
+              console.error("Error parsing JSON response:", error.message);
+            }
+          }
+        });
+
+        // Navigate to the page and wait for network to be idle
+        await page.goto(url, {
+          waitUntil: "networkidle0",
+          timeout: 30000, // 30 seconds timeout
+        });
+
+        await this.randomDelay(500, 1000);
+        console.log("Page loaded");
+        const content = await page.content();
+
+        // If job data was found in an intercepted request, return it
+        if (jobData && jobData.length > 0) {
+          return {
+            data: jobData,
+            status: 200,
+            intercepted: true,
+            count: jobData.length,
+          };
+        }
+
+        // Otherwise, return the page content as before
+        return {
+          data: content,
+          status: 200,
+        };
+      } catch (error) {
+        console.error("Puppeteer fallback failed:", error.message);
+        return {
+          data: null,
+          status: 500,
+          error: error.message,
+        };
+      } finally {
+        if (browser) {
+          await browser.close();
+        }
+      }
+  }
+
+  async usePuppeteerFallbackNoIntercept(url) {
     let browser;
     try {
       browser = await puppeteer.launch({ headless: true });
       const page = await browser.newPage();
       await page.setUserAgent(this.getRandomUserAgent());
 
-      console.log("Loaded the browser");
+      console.log("Loaded the browser no intercept lol");
 
-      // Enable request interception
-      await page.setRequestInterception(true);
-
-      let jobData = null;
-
-      page.on("request", (request) => {
-        request.continue();
-      });
-
-      page.on("response", async (response) => {
-        // Check for excluded domains
-        const excludedDomains = ["linkedin.com", "epicgames.com", "tiktok.com"];
-        if (excludedDomains.some((domain) => response.url().includes(domain))) {
-          return;
-        }
-
-        const contentType = response.headers()["content-type"];
-
-        if (contentType && contentType.includes("application/json")) {
-          try {
-            const responseText = await response.text();
-            const responseData = JSON.parse(responseText);
-
-            if (responseData && Array.isArray(responseData.departments)) {
-              jobData = [];
-              for (const department of responseData.departments) {
-                if (Array.isArray(department.jobs)) {
-                  for (const job of department.jobs) {
-                    if (job.absolute_url && job.title) {
-                      jobData.push({
-                        link: job.absolute_url,
-                        title: job.title,
-                      });
-                    }
-                  }
-                }
-              }
-              if (jobData.length > 0) {
-                console.log("Found job data in departments");
-              }
-            }
-
-            if (responseData && Array.isArray(responseData.positions)) {
-              jobData = responseData.positions
-                .map((position) => ({
-                  link: position.id
-                    ? `https://aexp.eightfold.ai/careers/job/${position.id}`
-                    : null,
-                  title: position.name,
-                  location: position.location,
-                  department: position.department,
-                  business_unit: position.business_unit,
-                  work_location_option: position.work_location_option,
-                }))
-                .filter((job) => job.link && job.title); // Filter out jobs without link or title
-
-              if (jobData.length > 0) {
-                console.log("Found job data in positions");
-              }
-            }
-          } catch (error) {
-            console.error("Error parsing JSON response:", error.message);
-            // Optionally, log the response text for debugging
-            // console.error('Response text:', await response.text());
-          }
-        }
-      });
-
-      // Navigate to the page and wait for network to be idle
       await page.goto(url, {
         waitUntil: "networkidle0",
-        timeout: 30000, // 30 seconds timeout
+        timeout: 30000, 
       });
 
       await this.randomDelay(500, 1000);
       console.log("Page loaded");
       const content = await page.content();
 
-      // If job data was found in an intercepted request, return it
-      if (jobData && jobData.length > 0) {
-        return {
-          data: jobData,
-          status: 200,
-          intercepted: true,
-        };
-      }
-
-      // Otherwise, return the page content as before
       return {
         data: content,
         status: 200,
@@ -1228,7 +1270,7 @@ class JobProcessor extends EventEmitter {
         await browser.close();
       }
     }
-  }
+}
 
   async autoScroll(page) {
     await page.evaluate(async () => {
@@ -3177,6 +3219,39 @@ class JobProcessor extends EventEmitter {
     return false;
   }
 
+  async processEightFoldLink(url) {
+    const response = await this.usePuppeteerFallbackNoIntercept(url);
+    const data = response.data;
+    const $ = cheerio.load(data);
+
+    const title = $("h1.position-title").text().trim();
+    const location = $(".col-md-12 p.position-location").text().trim();
+    const descriptionHtml = $(".col-md-12 .position-job-description").html();
+    
+    const company_name = url.split('/')[2].split('.')[0];
+
+    const turndownService = new TurndownService({
+      headingStyle: "atx", // Use ATX-style headings (e.g., # Heading)
+      bulletListMarker: "-", // Use dashes for bullet lists
+      codeBlockStyle: "fenced", // Use fenced code blocks
+      emDelimiter: "*", // Use asterisks for emphasis
+      strongDelimiter: "**", // Use double asterisks for strong emphasis
+    });
+
+    const descriptionMarkdown = turndownService
+      .turndown(descriptionHtml)
+      .trim();
+
+    return {
+      url,
+      title,
+      company: company_name,
+      location,
+      description: descriptionMarkdown,
+    };
+  }
+
+
   async processJobLink(link) {
     if (this.currentJobLinks.has(link)) {
       return {skipped: true, reason: "Already processed"};
@@ -3213,6 +3288,7 @@ class JobProcessor extends EventEmitter {
       { keyword: "stripe.com", processor: this.processStripeLink.bind(this) },
       { keyword: "abbvie.com", processor: this.processAbbVieLink.bind(this) },
       { keyword: "c3.ai", processor: this.processC3AILink.bind(this) },
+      { keyword: "eightfold", processor: this.processEightFoldLink.bind(this) },
       { keyword: "wiz.io", processor: this.processWizJobLink.bind(this) },
       { keyword: "lever.co", processor: this.processLeverJobLink.bind(this) },
       { keyword: "jobvite.com", processor: this.processJobViteLink.bind(this) },
@@ -3509,24 +3585,23 @@ class JobProcessor extends EventEmitter {
       JobPosting = {
         title: string,
         url: string,
-        location: string, // write it as city, state unless its outside the us or remote
+        location: string, // in the format of '{city, state, country} | {city, state country}'
         description: string, // write about what the ideal candidate for the job posting is like? who's the person they're looking for?
         experienceLevel: string, // internship, junior, senior, lead, manager, vp, director only
         salary: decimal, // yearly salary, if given in hourly or anything else, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY if only one number is given fill for both min and max
         salary_max: int, // if given a range this is max yearly salary, if given in hourly or anything else, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY
         additional_information: string,
-        skills_string: string, // write like a list of skills that are required for the job, separate each skill with a comma
+        skills_string: string, // write a full comprehensive list of required skills for the job of skills that would be required based on the job title, separate each skill with a comma
         benefits: string, // separate each benefit with a comma and format them like 'Healthcare: Yes, Dental: Yes, Vision: Yes, etc'
         PreferredQualifications: string, // what the company has said that they want for this job
         MinimumQualifications: string, // the type of degree required and any certifications or qualifications absolutely required, like security clearance
         Responsibilities: string,
-        accepted_college_majors: string, // write like a list of college majors that are accepted for this job / internship, if nothing given just add the majors typically assumed for the job title DO NOT WRITE 'related fields' OUTPUT ALL POSSIBLE FIELDS
+        accepted_college_majors: string, // write a list of college majors that would be accepted for this job, separate each major with a comma, if not given, write the ones that might be accepted for this job
         Requirements: string, // write like a list of requirements and the years of experience needed
         NiceToHave: string, // write like a list of nice to have skills and the years of experience needed
         Schedule: string, // NULL IF NOTHING
         HoursPerWeek: int, // assume 40 hours a week if not given, 20 for part time
         H1BVisaSponsorship: boolean,
-        IsRemote: boolean,
         EqualOpportunityEmployerInfo: string,
         Relocation: boolean,
         location: string,
@@ -3617,62 +3692,44 @@ class JobProcessor extends EventEmitter {
       "Logistics",
       "Nonprofit Management",
       "Sports Management",
-
-      // Social Sciences and Humanities
       "Linguistics",
       "Archaeology",
       "Gender Studies",
       "Ethnic Studies",
       "Folklore",
       "Museum Studies",
-
-      // Arts and Design
       "Digital Media",
       "Animation",
       "Game Design",
       "User Experience (UX) Design",
       "Landscape Architecture",
-
-      // Education
       "TESOL (Teaching English to Speakers of Other Languages)",
       "Educational Technology",
       "Adult Education",
-
-      // Environment and Sustainability
       "Renewable Energy",
       "Climate Science",
       "Sustainable Agriculture",
       "Conservation Biology",
-
-      // Law and Policy
       "Pre-Law",
       "Paralegal Studies",
       "Environmental Law",
       "Human Rights",
-
-      // Interdisciplinary Fields
       "Cognitive Science",
       "Data Analytics",
       "Digital Humanities",
       "Peace and Conflict Studies",
       "Global Health",
-
-      // Emerging Fields
       "Blockchain Technology",
       "Drone Technology",
       "Virtual Reality",
       "Augmented Reality",
       "Internet of Things (IoT)",
-
-      // Specialized Areas
       "Aviation",
       "Nuclear Engineering",
       "Petroleum Engineering",
       "Textile Engineering",
       "Food Science and Technology",
       "Viticulture and Enology (Wine Studies)",
-
-      // Natural Sciences
       "Biology",
       "Chemistry",
       "Physics",
@@ -3682,8 +3739,6 @@ class JobProcessor extends EventEmitter {
       "Mathematics",
       "Statistics",
       "Biochemistry",
-
-      // Social Sciences
       "Psychology",
       "Sociology",
       "Anthropology",
@@ -3694,8 +3749,6 @@ class JobProcessor extends EventEmitter {
       "Criminology",
       "Communication Studies",
       "Public Administration",
-
-      // Humanities and Liberal Arts
       "English Literature",
       "History",
       "Philosophy",
@@ -3707,8 +3760,6 @@ class JobProcessor extends EventEmitter {
       "Religious Studies",
       "Liberal Arts",
       "Interdisciplinary Studies",
-
-      // Health Sciences
       "Nursing",
       "Public Health",
       "Pharmacy",
@@ -3718,16 +3769,12 @@ class JobProcessor extends EventEmitter {
       "Occupational Therapy",
       "Dental Hygiene",
       "Biomedical Sciences",
-
-      // Education
       "Elementary Education",
       "Secondary Education",
       "Special Education",
       "Educational Leadership",
       "Curriculum and Instruction",
       "Early Childhood Education",
-
-      // Communications and Media
       "Journalism",
       "Public Relations",
       "Media Studies",
@@ -3735,49 +3782,33 @@ class JobProcessor extends EventEmitter {
       "Film Studies",
       "Broadcasting",
       "Other Communications Major",
-
-      // Architecture and Design
       "Architecture",
       "Urban Planning",
       "Interior Design",
       "Graphic Design",
       "Industrial Design",
       "Fashion Design",
-
-      // Criminal Justice
       "Criminal Justice",
       "Forensic Science",
       "Law Enforcement",
       "Legal Studies",
-
-      // Agriculture and Environmental Studies
       "Agriculture",
       "Forestry",
       "Environmental Policy",
       "Sustainable Development",
-
-      // Veterinary and Animal Sciences
       "Veterinary Medicine",
       "Animal Science",
       "Zoology",
       "Wildlife Biology",
-
-      // Library and Information Science
       "Library Science",
       "Information Management",
-
-      // Theology and Religious Studies
       "Theology",
       "Religious Studies",
       "Divinity",
-
-      // Hospitality and Tourism
       "Hospitality Management",
       "Tourism Management",
       "Culinary Arts",
       "Event Management",
-
-      // Miscellaneous
       "Military Science",
       "Public Policy",
       "Speech Communication",
@@ -3963,7 +3994,9 @@ class JobProcessor extends EventEmitter {
   generatePrompt2(textContent) {
     this.updateProgress({ currentAction: "Generating prompt" });
 
-    const prompt = `${textContent}
+    const prompt = `
+    Please extract the following information from this job posting data, ensure you extract as much information thats factual and relevant to the job posting so that it can be searched properly.
+    ${textContent}
     `;
 
     return prompt;

@@ -20,7 +20,7 @@
   --light-mode-third-text-color: rgb(60, 66, 87);
   --hover-background-color: #ddd;
   --active-indicator-color: #5083ca;
-  --dark-mode-main-color: #0c0e15;
+  --dark-mode-main-color: hsl(240 5.9% 10%);
   --dark-mode-input-color: #1c1c1c;
   --dark-mode-body-color: #000;
   --dark-mode-input-border-color: #272f33;
@@ -974,7 +974,6 @@ li.dropdown a.active {
   padding: 0;
   z-index: 100;
   height: 22px;
-  background: transparent;
   border: none;
   cursor: pointer;
 }
@@ -1531,7 +1530,7 @@ a>.menu-item {
   .menu-content {
     padding-top: calc(var(--mobile-navbar-height) + 6px);
     padding-left: .7rem;
-    width: 78%;
+    width: 58%;
     padding-right: .7rem;
     height: calc(100dvh);
   }
@@ -3166,7 +3165,7 @@ input::placeholder {
 
 
   .menu-content {
-    background-color: var(--dark-mode-body-color);
+    background-color: var(--dark-mode-main-color);
     border-color: var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }

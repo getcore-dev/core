@@ -263,12 +263,10 @@ async function initialize() {
       console.log(state.companyNames);
     }
 
-    updateJobCount();
     setupInfiniteScroll();
   } catch (error) {
     console.error("Error initializing state:", error);
     await fetchJobPostings();
-    updateJobCount();
   }
 }
 
@@ -486,7 +484,7 @@ function clearAllFilters() {
   document.querySelector(".jobs-selected-filters").innerHTML = "";
 
   // Update filter sentence display
-  createActiveFilterElement(state.filters);
+  updateJobHeader(state.filters);
 
   saveStateToLocalStorage();
   fetchJobPostings();
@@ -534,7 +532,7 @@ function resetState() {
   });
 
   // Update filter sentence display
-  createActiveFilterElement(state.filters);
+  updateJobHeader(state.filters);
 
   saveStateToLocalStorage();
   fetchJobPostings();
@@ -802,7 +800,7 @@ function loadStateFromLocalStorage() {
       };
       state.hasMoreData = true;
 
-      const sentence = createActiveFilterElement(state.filters);
+      const sentence = updateJobHeader(state.filters);
       const activeFiltersSentenceElement = document.getElementById(
         "active-filters-sentence",
       );
@@ -824,45 +822,76 @@ function loadStateFromLocalStorage() {
   }
 }
 
-function createActiveFilterElement(filters) {
-  const filterCategories = [
-    { key: "experiencelevels", label: "Experience Level" },
-    { key: "majors", label: "Majors" },
-    { key: "titles", label: "Job Titles" },
-    { key: "companies", label: "Companies" },
-    { key: "locations", label: "Locations" },
-    { key: "skills", label: "Skills" },
-  ];
+function updateJobHeader(filters) {
+  const jobHeaderElement = document.getElementById("jobHeader");
+  const jobSubHeaderElement = document.getElementById("jobSubHeader");
 
-  let sentence = "Showing jobs";
-  const activeFilters = [];
+  let title = "";
+  let experienceLevel = "";
+  let location = "";
+  let skills = "";
+  let majors = "";
 
-  filterCategories.forEach((category) => {
-    if (filters[category.key] && filters[category.key].size > 0) {
-      const values = Array.from(filters[category.key]).join(", ");
-      activeFilters.push(`with ${category.label.toLowerCase()} ${values}`);
+  if (filters.titles && filters.titles.size > 0) {
+    title = filters.titles.values().next().value;
+  }
+
+  if (filters.skills && filters.skills.size > 0) {
+    skills = [...filters.skills].join(", ");
+  }
+
+  if (filters.experiencelevels && filters.experiencelevels.size > 0) {
+    experienceLevel = filters.experiencelevels.values().next().value;
+  }
+
+  if (filters.locations && filters.locations.size > 0) {
+    location = Array.from(filters.locations).join(", ");
+  }
+
+  if (filters.majors && filters.majors.size > 0) {
+    majors = Array.from(filters.majors).join(", ");
+  }
+
+  // Function to generate job header text
+  function generateJobHeaderText(title, experienceLevel, skills) {
+    if (title && experienceLevel && skills) {
+      return `${title} ${experienceLevel} - Skills: ${skills}`;
+    } else if (title && experienceLevel) {
+      return `${title} ${experienceLevel}`;
+    } else if (title && skills) {
+      return `${title} - Skills: ${skills}`;
+    } else if (experienceLevel && skills) {
+      return `${experienceLevel} jobs - Skills: ${skills}`;
+    } else if (title) {
+      return `${title} jobs`;
+    } else if (experienceLevel) {
+      return `${experienceLevel} jobs`;
+    } else if (skills) {
+      return `Jobs for ${skills}`;
+    } else {
+      return "Jobs";
     }
-  });
-
-  if (filters.salary && filters.salary > 0) {
-    activeFilters.push(`with salary above ${filters.salary}`);
   }
 
-  if (activeFilters.length > 0) {
-    sentence += " " + activeFilters.join(", ");
+  // Update h1 element based on rules
+  if (jobHeaderElement) {
+    jobHeaderElement.textContent = generateJobHeaderText(title, experienceLevel, skills);
   }
 
-  const activeFiltersSentenceElement = document.getElementById(
-    "active-filters-sentence",
-  );
-  if (activeFiltersSentenceElement) {
-    activeFiltersSentenceElement.textContent = sentence;
-    activeFiltersSentenceElement.style.display =
-      activeFilters.length > 0 ? "block" : "none";
+  // Update h5 element with location or majors if available
+  if (jobSubHeaderElement) {
+    const subHeaderParts = [];
+    if (location) {
+      subHeaderParts.push(`Location: ${location}`);
+    }
+    if (majors) {
+      subHeaderParts.push(`Majors: ${majors}`);
+    }
+    jobSubHeaderElement.textContent = subHeaderParts.join(", ") || "Explore job openings at CORE";
   }
-
-  return sentence;
 }
+
+
 
 function restoreUIState() {
   // Clear existing job listings
@@ -956,7 +985,6 @@ function createCard(
   image = null,
   tags = null,
 ) {
-  console.log(tags);
   const card = document.createElement("div");
 
   let tagsHtml = "";
@@ -1165,7 +1193,6 @@ function clearSearchResults() {
 
 function handleSearchInput() {
   const searchTerm = state.jobSearchInput.value.trim().toLowerCase();
-  console.log("Search Term:", searchTerm);
 
   if (searchTerm.length < 2) {
     clearSearchResults();
@@ -1176,6 +1203,8 @@ function handleSearchInput() {
   // Clear existing filters
   state.filters.titles.clear();
   state.filters.companies.clear();
+  state.hasMoreData = true;
+  state.isLoading = false;
   console.log("Filters cleared.");
 
   // Filter companies based on the search term
@@ -1205,6 +1234,7 @@ function handleSearchInput() {
 
   // Trigger the job search with updated filters
   triggerJobSearch();
+  updateJobHeader(state.filters);
   console.log("Job search triggered.");
 }
 
@@ -1589,7 +1619,7 @@ function updateState(type, id, name, logo, isRemoval = false) {
     }
   }
 
-  const sentence = createActiveFilterElement(state.filters);
+  const sentence = updateJobHeader(state.filters);
   const activeFiltersSentenceElement = document.getElementById(
     "active-filters-sentence",
   );

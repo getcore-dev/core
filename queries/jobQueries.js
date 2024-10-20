@@ -634,8 +634,10 @@ const jobQueries = {
           j.location,
           j.salary,
           j.postedDate,
+          j.applicants,
           j.description,
           j.salary_max,
+          j.skills_string,
           j.experienceLevel AS cleaned_experience_level,
           c.logo AS company_logo,
           c.name AS company_name
@@ -656,7 +658,17 @@ const jobQueries = {
         });
         conditions.push(`(${titleConditions.join(' OR ')})`);
       }
-  
+
+      if (skills.length) {
+        // Build full-text search conditions for skills
+        const skillConditions = skills.map((skill, index) => {
+          const paramName = `skill${index}`;
+          queryParams.push({ name: paramName, value: `"*${skill}*"` });
+          return `CONTAINS(j.skills_string, @${paramName}) OR CONTAINS(j.description, @${paramName}) OR CONTAINS(j.raw_description_no_format, @${paramName})`;
+        });
+        conditions.push(`(${skillConditions.join(' OR ')})`);
+      }
+
       if (locations.length) {
         const locationConditions = locations.map((location, index) => {
           const paramName = `location${index}`;
@@ -684,7 +696,8 @@ const jobQueries = {
         const expLevelConditions = experienceLevels.map((level, index) => {
           const paramName = `experienceLevel${index}`;
           queryParams.push({ name: paramName, value: `"*${level}*"` });
-          return `CONTAINS(j.experienceLevel, @${paramName})`;
+          const isInternship = level.toLowerCase() === 'internship';
+          return `CONTAINS(j.experienceLevel, @${paramName}) OR CONTAINS(j.title, @${paramName})` + (isInternship ? ` OR j.experienceLevel = 'Internship'` : '');
         });
         conditions.push(`(${expLevelConditions.join(' OR ')})`);
       }
@@ -1988,19 +2001,7 @@ ORDER BY jp.postedDate DESC
           users.firstname AS recruiter_firstname,
           users.lastname AS recruiter_lastname,
           users.avatar AS recruiter_image,
-          users.username AS recruiter_username,
-          (
-            SELECT STRING_AGG(JobTags.tagName, ', ')
-            FROM JobPostingsTags
-            INNER JOIN JobTags ON JobPostingsTags.tagId = JobTags.id
-            WHERE JobPostingsTags.jobId = JobPostings.id
-          ) AS tags,
-          (
-            SELECT STRING_AGG(skills.name, ', ')
-            FROM job_skills
-            INNER JOIN skills ON job_skills.skill_id = skills.id
-            WHERE job_skills.job_id = JobPostings.id
-          ) AS skills
+          users.username AS recruiter_username
         FROM JobPostings
         LEFT JOIN companies ON JobPostings.company_id = companies.id
         LEFT JOIN users ON users.recruiter_id = JobPostings.recruiter_id
@@ -2065,397 +2066,15 @@ ORDER BY jp.postedDate DESC
     sourcePostingDate = "",
   ) => {
     try {
-      const isTechJob = (title) => {
-        // Convert title to lowercase for case-insensitive matching
-        const lowercaseTitle = title.toLowerCase();
-
-        // Highly specific tech roles
-        const exactMatches = [
-          "software engineer",
-          "data scientist",
-          "full stack developer",
-          "machine learning engineer",
-          "devops engineer",
-          "systems architect",
-          "systems engineer",
-          "network engineer",
-          "data analyst",
-          "backend developer",
-          "frontend developer",
-          "web developer",
-          "mobile developer",
-          "cloud architect",
-          "cloud engineer",
-          "security engineer",
-          "cybersecurity analyst",
-          "technical lead",
-          "tech lead",
-          "database administrator",
-          "qa engineer",
-          "quality assurance engineer",
-          "ux designer",
-          "ui designer",
-          "product manager",
-          "scrum master",
-          "agile coach",
-          "site reliability engineer",
-          "automation engineer",
-          "blockchain developer",
-          "game developer",
-          "game designer",
-          "graphic designer",
-          "systems administrator",
-          "it support",
-          "it specialist",
-          "it manager",
-          "technical support",
-          "technical writer",
-          "ai engineer",
-          "artificial intelligence engineer",
-          "deep learning engineer",
-          "data engineer",
-          "big data engineer",
-          "data architect",
-          "information security analyst",
-          "robotics engineer",
-          "network administrator",
-          "embedded systems engineer",
-          "firmware engineer",
-          "test engineer",
-          "software tester",
-          "business analyst",
-          "it analyst",
-          "solution architect",
-          "enterprise architect",
-          "devsecops engineer",
-          "cloud specialist",
-          "systems analyst",
-          "applications engineer",
-          "platform engineer",
-          "release engineer",
-          "build engineer",
-          "hardware engineer",
-          "electrical engineer",
-          "electronics engineer",
-          "microcontroller engineer",
-          "ios developer",
-          "android developer",
-          "webmaster",
-          "security analyst",
-          "information technology specialist",
-          "technical consultant",
-          "pre-sales engineer",
-          "post-sales engineer",
-          "technical account manager",
-          "computer vision engineer",
-          "natural language processing engineer",
-          "nlp engineer",
-          "database developer",
-          "data warehouse engineer",
-          "etl developer",
-          "bi developer",
-          "business intelligence developer",
-          "data visualization engineer",
-          "cloud consultant",
-          "solutions engineer",
-          "integration engineer",
-          "salesforce developer",
-          "sap consultant",
-          "oracle developer",
-          "erp consultant",
-          "crm consultant",
-          "help desk technician",
-          "desktop support technician",
-          "it technician",
-          "3d artist",
-          "vr developer",
-          "ar developer",
-          "qa tester",
-          "quality assurance tester",
-          "network technician",
-          "it director",
-          "cto",
-          "chief technology officer",
-          "cio",
-          "chief information officer",
-          "ciso",
-          "analyst",
-          "data analyst",
-          "data scientist",
-          "data engineer",
-          "data architect",
-          "data security analyst",
-          "chief information security officer",
-          "coordinator",
-          "chief information security officer",
-          "coordinator",
-          "director",
-          "manager",
-          "supervisor",
-          "associate",
-          "customer experience",
-          "customer service",
-          "technical writer",
-          "technical support",
-          "it analyst",
-          "it specialist",
-          "it manager",
-          "information security analyst",
-          "information security manager",
-          "security analyst",
-          "security manager",
-          "security specialist",
-          "security engineer",
-          "security architect",
-          "security consultant",
-          "security director",
-          "security officer",
-          "security supervisor",
-          "security technician",
-          "security analyst",
-          "security manager",
-          "security specialist",
-          "security engineer",
-          "security architect",
-          "security consultant",
-          "security director",
-          "security officer",
-          "security supervisor",
-          "security technician",
-          "people manager",
-          "hr",
-          "account executive",
-          "social media manager",
-          "biostatistician",
-          "financial analyst",
-          "statistical programmer",
-          "programmer",
-          "trading intern",
-          "trading analyst",
-          "trading assistant",
-          "trading manager",
-          "trading specialist",
-          "trading engineer",
-          "trading architect",
-          "trading consultant",
-          "trading director",
-          "trading officer",
-          "trading supervisor",
-          "trading technician",
-          "trading analyst",
-          "trading assistant",
-          "trading manager",
-          "trading specialist",
-          "trading engineer",
-          "trading architect",
-          "trading consultant",
-          "trading director",
-          "trading officer",
-          "trading supervisor",
-          "trading technician",
-          "quantitative researcher",
-          "quantitative analyst",
-          "quantitative manager",
-          "quantitative specialist",
-          "quantitative engineer",
-          "quantitative architect",
-          "quantitative consultant",
-          "quantitative director",
-          "quantitative officer",
-          "quantitative supervisor",
-          "quantitative technician",
-          "risk strategist",
-          "head of revenue",
-          "head of kyc",
-          "vp of design",
-          "security engineer",
-          "project manager",
-          "product manager",
-          "product designer",
-          "computer science intern",
-          "business development",
-          "growth lead",
-          "code sme",
-          "head of growth,",
-          "sales developmet",
-          "head of recruiting",
-          "customer service",
-          "editor",
-          "content editor",
-          "content writer",
-          "content strategist",
-          "content manager",
-          "content director",
-          "content officer",
-          "content supervisor",
-          "content technician",
-          "content analyst",
-          "content specialist",
-          "content engineer",
-          "content architect",
-          "content consultant",
-          "content director",
-          "content officer",
-          "content supervisor",
-          "content technician",
-          "content analyst",
-          "content specialist",
-          "content engineer",
-          "content architect",
-          "content consultant",
-          "content director",
-          "content officer",
-          "content supervisor",
-          "content technician",
-          "content analyst",
-          "content specialist",
-          "content engineer",
-          "content architect",
-          "content consultant",
-          "customer support representative",
-          "salesforce",
-        ];
-
-        // Non-tech engineering roles to exclude
-        const nonTechEngineering = [
-          "cashier",
-          "cook",
-          "waitress",
-          "waiter",
-          "bartender",
-          "janitor",
-          "security guard",
-        ];
-
-        // Function to create regex patterns for exact matches and keywords
-        const createPattern = (words) =>
-          new RegExp(`\\b(${words.join("|")})\\b`, "i");
-
-        const techPattern = createPattern(exactMatches);
-        const nonTechPattern = createPattern(nonTechEngineering);
-
-        // If title matches a non-tech engineering role, return false
-        if (nonTechPattern.test(lowercaseTitle)) {
-          return false;
-        }
-
-        // If title matches a tech role, return true
-        if (techPattern.test(lowercaseTitle)) {
-          return true;
-        }
-
-        // List of generic tech-related keywords
-        const techKeywords = [
-          "developer",
-          "designer",
-          "analytics",
-          "engineering",
-          "programmer",
-          "engineer",
-          "software",
-          "hardware",
-          "technology",
-          "technician",
-          "administrator",
-          "analyst",
-          "architect",
-          "consultant",
-          "specialist",
-          "support",
-          "coder",
-          "tester",
-          "manager",
-          "devops",
-          "cloud",
-          "data",
-          "ai",
-          "artificial intelligence",
-          "machine learning",
-          "ml",
-          "blockchain",
-          "crypto",
-          "cybersecurity",
-          "security",
-          "database",
-          "web",
-          "mobile",
-          "ios",
-          "android",
-          "quality assurance",
-          "sre",
-          "automation",
-          "product",
-          "agile",
-          "scrum",
-          "network",
-          "system",
-          "systems",
-          "information technology",
-          "digital",
-          "full stack",
-          "front end",
-          "backend",
-          "back end",
-          "saas",
-          "paas",
-          "big data",
-          "data science",
-          "devsecops",
-          "nlp",
-          "natural language processing",
-          "vr",
-          "ar",
-          "virtual reality",
-          "augmented reality",
-          "robotics",
-          "embedded",
-          "firmware",
-          "microcontroller",
-          "fpga",
-          "simulation",
-          "cloud computing",
-          "docker",
-          "kubernetes",
-          "operations",
-          "container",
-          "microservices",
-          "serverless",
-          "distributed systems",
-          "e-commerce",
-          "ecommerce",
-          "internet",
-          "digital transformation",
-          "iot",
-          "internet of things",
-          "opensource",
-          "open source",
-          "technical",
-          "computing",
-          "computational",
-          "scientist",
-          "quantitative",
-          "researcher",
-          "analyst",
-          "coder",
-          "biology",
-          "lab",
-          "immunology",
-          "chemistry",
-          "analytical",
-          "development",
-          "supply chain",
-        ];
-
-        const techKeywordsPattern = createPattern(techKeywords);
-
-        // If title contains any tech keywords, return true
-        if (techKeywordsPattern.test(lowercaseTitle)) {
-          return true;
-        }
-
-        // If none of the above conditions are met, it's likely not a tech job
-        return false;
+      
+      const checkForQuestionMarks = (text) => {
+        const questionMarkCount = (text.match(/\?/g) || []).length;
+        return questionMarkCount > (text.length * 0.5); // Adjust threshold as needed
       };
+
+      if (checkForQuestionMarks(title) || checkForQuestionMarks(description)) {
+        throw new Error("Title or description contains too many question marks.");
+      }
 
       if (typeof link !== "string") {
         throw new Error("Link must be a string");

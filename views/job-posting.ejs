@@ -28,8 +28,8 @@
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://getcore.dev/openings/<%= job_id %>">
-  <meta name="twitter:title" content="<%= job.title %> at <%= job.company_name %> | CORE Job Listings">
-  <meta name="twitter:description" content="<%= job.title %> position at <%= job.company_name %>. <%= job.short_description %>. Apply now and join our team at CORE.">
+  <meta name="twitter:title" content="\core\ <%= job.title %> at <%= job.company_name %>">
+  <meta name="twitter:description" content="<%= job.title %> position at <%= job.company_name %> Apply now and join our team at CORE.">
   <meta name="twitter:image" content="<%= job.company_logo %>">
 
   <!-- JSON-LD for Job Posting -->
@@ -77,11 +77,407 @@
     <%- include('partials/com-btn-container', { }) %>
     <div class="container">
       <div class="job-details-container">
-        <!-- Job details will be dynamically loaded here -->
+        <% 
+    // Define helper functions
+    function formatDateJob(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
 
+    function formatSalary(salary) {
+      return salary.toLocaleString('en-US', { minimumFractionDigits: 0 });
+    }
+
+    function isOlderThan30Days(job) {
+      const postedDate = new Date(job.postedDate);
+      const currentDate = new Date();
+      const daysDifference =
+        (currentDate - postedDate) / (1000 * 60 * 60 * 24);
+      return daysDifference > 30;
+    }
+
+    // Extract skills and benefits
+    let benefitsArray = [];
+    let skillsArray = [];
+    try {
+      const keywords = ['JavaScript', 'Python', 'Java', 'C++', 'React', 'Node.js', 'SQL', 'AWS', 'Docker', 'Kubernetes', 'CRM', 'Salesforce', 'Node.js', 'cybersecurity', 'Power BI', 'Excel', 'Data Visualization', 'Statistics', 'Finance'];
+      skillsArray = keywords.filter(keyword => 
+        job.description.toLowerCase().includes(keyword.toLowerCase())
+      );
+      if (skillsArray.length === 0 && job.skills) {
+        skillsArray = job.skills.split(', ');
+      }
+    } catch (error) {
+      console.error('Error extracting skills:', error);
+      skillsArray = [];
+    }
+
+    try {
+      benefitsArray = job.benefits ? job.benefits.split(',') : [];
+    } catch (error) {
+      console.error('Error splitting benefits:', error);
+      benefitsArray = [];
+    }
+
+    const formattedBenefits = benefitsArray
+      .map((benefit) => `<li>${benefit.replace(/'/g, '')}</li>`)
+      .join('');
+
+    const maxSkills = 10;
+    const displayedSkills = skillsArray.slice(0, maxSkills);
+
+    const skillsHTML = displayedSkills
+      .map(
+        (skill) =>
+          `<a class="mini-text bold" href="/jobs?skill=${encodeURIComponent(skill.trim())}">${skill}</a>`
+      )
+      .join(', ');
+
+    const remainingSkills = skillsArray.length - maxSkills;
+    %>
+
+        <div class="job-listing">
+          <div class="job-listing-menu">
+            <nav class="breadcrumbs">
+              <ol class="flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5">
+                <a href="/jobs" class="transition-colors hover:text-foreground">Jobs</a>
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
+                </svg>
+                <img src="<%= job.company_logo %>" style="width: auto;" alt="<%= job.company_name %> logo" onerror="this.onerror=null;this.src='/img/glyph.png';" class="thumbnail-micro thumbnail-regular" />
+                <a class="transition-colors hover:text-foreground" href="/jobs/company/<%= encodeURIComponent(job.company_name) %>"><%= job.company_name %></a>
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
+                </svg>
+              </ol>
+            </nav>
+            <div class="company-info w-100">
+              <div class="company-details w-full">
+                <div class="flex flex-col gap-2">
+                  <h3 class="font-semibold tracking-tight text-2xl">
+                    <%= job.title %>
+                  </h3>
+                  <p class="text-sm text-muted-foreground">
+                    <% if (job.experienceLevel) { %>
+                    <a href="/jobs?experienceLevel=<%= encodeURIComponent(job.experienceLevel) %>" class="sub-text bold text-muted-foreground">
+                      <%= job.experienceLevel %>
+                    </a>
+                    <span class="sub-text">•</span>
+                    <% } %>
+                    <%
+                  const locations = job.location
+                    .split(',')
+                    .map(loc => loc.trim().toLowerCase())
+                    .filter(loc => !loc.toLowerCase().includes('n/a'));
+                  const locationLinks = locations.map(loc => {
+                    if (loc.toLowerCase().includes('remote')) {
+                      return '<a class="mini-text" href="/jobs?locations=Remote">Remote</a>';
+                    } else {
+                      const country = loc
+                        .split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                      return `<a class="sub-text text-muted-foreground" href="/jobs?locations=${encodeURIComponent(loc)}">${country}</a>`;
+                    }
+                  }).join(', ');
+                %>
+                    <%- locationLinks %>
+                    <span class="sub-text">•</span>
+                    <span class="sub-text">
+                      <%= job.applicants ? job.applicants : 0 %> applicants
+                    </span>
+                    <span class="sub-text">•</span>
+                    <time class="sub-text primary-text"><%= formatDateJob(job.postedDate) %></time>
+                  </p>
+                  <% if (job.skills_string) { %>
+                  <p class="text-sm text-balance max-w-lg leading-relaxed">
+                    <% 
+                      const skills = job.skills_string.split(',').map(skill => skill.trim());
+                      const skillLinks = skills.map(skill => `<a href="/jobs?skill=${encodeURIComponent(skill)}" class="skill-link">${skill}</a>`).join(', ');
+                    %>
+                    <%- skillLinks %>
+                  </p>
+                  <% } %>
+                  <% if (job.accepted_college_majors) { %>
+                  <span class="flex flex-row gap-2 v-center text-sm text-balance max-w-lg leading-relaxed">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-school">
+                      <path d="M14 22v-4a2 2 0 1 0-4 0v4" />
+                      <path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2" />
+                      <path d="M18 5v17" />
+                      <path d="m4 6 8-4 8 4" />
+                      <path d="M6 5v17" />
+                      <circle cx="12" cy="9" r="2" />
+                    </svg> <%= job.accepted_college_majors %>
+                  </span>
+                  <% } %>
+                  <div class="flex flex-row gap-4 v-center">
+                    <div class="flex flex-row gap-06 v-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house">
+                        <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
+                        <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                      </svg>
+                      <p class="text-sm text-balance max-w-lg leading-relaxed"><%= job.relocation ? 'Relocation offered' : 'No relocation' %></p>
+                    </div>
+                    <div class="flex flex-row gap-06 v-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-laptop">
+                        <path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16" />
+                      </svg>
+                      <p class="text-sm text-balance max-w-lg leading-relaxed"><%= job.isRemote ? 'Remote work available' : 'On-site only' %></p>
+                    </div>
+                    <% if (user && user.isPremium) { %>
+                    <div class="flex flex-row gap-06 v-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye">
+                        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                      <p class="text-sm text-balance max-w-lg leading-relaxed"><%= job.views %> views</p>
+                    </div>
+                    <% } %>
+                  </div>
+                  <div class="job-recruiter-container">
+                    <div class="job-recruiter-info">
+                      <div class="recruiter-info flex flex-row gap-06">
+                        <a href="/user/<%= job.recruiter_username %>" class="recruiter-image">
+                          <img class="thumbnail thumbnail-micro thumbnail-regular" src="<%= job.recruiter_image %>" alt="<%= job.company_name %> logo" />
+                        </a>
+                        <div class="recruiter-details flex flex-row gap-2">
+                          <p class="text-sm text-balance max-w-lg leading-relaxed">
+                            Posted by
+                            @<a href="/user/<%= job.recruiter_username %>" class="mini-text"><%= job.recruiter_username %></a>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <% if (!job.isProcessed && user && user.isPremium) { %>
+                  <div class="adaptive-border rounded">
+                    <div class="sub-text p-4 flex items-center">
+                      <span class="material-symbols-outlined animate-spin mr-2" style="color: #6366f1;">auto_awesome</span>
+                      <span class='please-wait-button'>Please wait a moment while we improve this job posting!</span>
+                    </div>
+                  </div>
+                  <% } %>
+                  <!--
+              <% if (!job.isProcessed && user && !user.isPremium) { %>
+                <div class="adaptive-border rounded">
+                  <div class="sub-text p-4 flex items-center">
+                    <span class="material-symbols-outlined mr-2" style="color: #6366f1;">star</span>
+                    <span>Sign up for premium to generate better overviews of these job postings</span>
+                  </div>
+                </div>
+              <% } %>
+              -->
+                  <% if (job.salary || job.salary_max) { %>
+                  <div class="job-info-flairs text-sm text-balance max-w-lg leading-relaxed">
+                    <% if (job.salary !== 0) { %>
+                    <span class="salary flex flex-row gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins">
+                        <circle cx="8" cy="8" r="6" />
+                        <path d="M18.09 10.37A6 6 0 1 1 10.34 18" />
+                        <path d="M7 6h1v4" />
+                        <path d="m16.71 13.88.7.71-2.82 2.82" />
+                      </svg>
+                      USD $<%= formatSalary(job.salary) %>
+                      <% if (job.salary_max !== 0) { %>
+                      - $<%= formatSalary(job.salary_max) %>
+                      <% } %>
+                      <% if (!job.location.toLowerCase().includes('us') && 
+                        !job.location.toLowerCase().includes('united states') &&
+                        !(/\b(AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|remote|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming)\b/i.test(job.location))
+                      ) { %>
+                      <span class="currency-warning"> (currency may not be in USD)</span>
+                      <% } %>
+                    </span>
+                    <% } %>
+                  </div>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col gap-06">
+              <div class="interact-buttons flex flex-row gap-4 v-center">
+                <% if (job) { %>
+                <div class="apply-button-container flex gap-4">
+                  <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 px-4 py-2" onclick="applyForJob(event, '<%= job.id %>', '<%= job.link %>')">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase">
+                      <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                      <rect width="20" height="14" x="2" y="6" rx="2" />
+                    </svg>
+                    <span class="sub-text">Apply</span>
+                  </button>
+                  <button class="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-md px-3 text-xs h-8 gap-1" id="favorite-button" onclick="favorite('job', <%= job.id %>);">
+                    <span class="sub-text">Save</span>
+                  </button>
+                </div>
+                <% } %>
+                <div class="second-buttons-container">
+                  <div class="dropdown relative" tabindex="0">
+                    <button aria-label="Dropdown" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8" style="padding-top: .4rem; padding-bottom: .4rem;" aria-haspopup="true" aria-expanded="false">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis">
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="19" cy="12" r="1" />
+                        <circle cx="5" cy="12" r="1" />
+                      </svg>
+                    </button>
+                    <div class="dropdown-content">
+                      <a class="grow-button margin-h-auto">
+                        <button class="no-margin no-padding no-bg no-border" onclick="share('<%= job.title %>', '', 'https://getcore.dev/jobs/<%= job.id %>', 'job', '<%= job.id %>');">
+                          <span class="material-symbols-outlined">share</span>
+                          <span class="sub-text">Share</span>
+                        </button>
+                      </a>
+                      <% if (user && user.isPremium) { %>
+                      <div class="resume-button w-100">
+                        <a href="/api/create-resume/<%= job.id %>" class="grow-button margin-h-auto">
+                          <span class="material-symbols-outlined">description</span>
+                          <span class="sub-text">Resume</span>
+                        </a>
+                      </div>
+                      <div class="cover-letter-button w-100">
+                        <a href="/api/create-cover-letter/<%= job.id %>" class="grow-button margin-h-auto">
+                          <span class="material-symbols-outlined">description</span>
+                          <span class="sub-text">Cover Letter</span>
+                        </a>
+                      </div>
+                      <div class="delete-button-container">
+                        <a class="grow-button margin-h-auto cancel-button-text" href="/jobs/delete/<%= job.id %>">
+                          <span class="material-symbols-outlined">delete</span>
+                          <span class="sub-text">Delete</span>
+                        </a>
+                      </div>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% if (isOlderThan30Days(job)) { %>
+              <div class="caution-messages">This job was posted more than 30 days ago.</div>
+              <% } %>
+              <% if (!user) { %>
+              <p class="grid gap-6 rounded-lg border p-4 flex flex-col gap-06 adaptive-border">
+                <span class="text-sm text-balance max-w-lg leading-relaxed">
+                  <i class="fas fa-info-circle"></i>
+                  Sign up or login to view job matches personalized to your resume! Build your resume, cover letter, and profile to get started.
+                </span>
+                <a href="/login">
+                  <button class="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 rounded-md px-3 text-xs w-full">
+                    <span class="sub-text">Sign up</span>
+                  </button>
+                </a>
+              </p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <div class="job-details primary-text company-profile-section">
+          <% if (job.company_description && job.company_description.length > 10) { %>
+          <div class="company-description sub-text">
+            <h4 class="font-semibold leading-none tracking-tight">Company Description</h4>
+            <p class="text-sm text-balance max-w-lg leading-relaxed"><%= job.company_description %></p>
+          </div>
+          <% } %>
+          <% if (!job.isProcessed) { %>
+          <div class="job-posting-description sub-text">
+            <h4 class="font-semibold leading-none tracking-tight">Job Description</h4>
+            <span class="text-sm text-balance max-w-lg leading-relaxed"><%- job.description %></span>
+          </div>
+          <% } %>
+          <% if (job.isProcessed) { %>
+          <div class="job-posting-description <% if (job.recruiter_username === 'autojob') { %>ai-generated-content<% } %>">
+            <h4 class="font-semibold leading-none tracking-tight" style="margin-top:0;"><span class="material-symbols-outlined" style="color: #6366f1;">auto_awesome</span> AI-Generated Overview</h4>
+            <p class="text-sm text-balance max-w-lg leading-relaxed">
+              <%- job.description.replace('??', '') %>
+            </p>
+          </div>
+          <% } %>
+          <% if (job.Requirements) { %>
+          <div class="font-semibold leading-none tracking-tight">
+            <h4 class="font-semibold leading-none tracking-tight">Requirements</h4>
+            <p class="text-sm text-balance max-w-lg leading-relaxed"><%= job.Requirements %></p>
+          </div>
+          <% } %>
+          <% if (job.Responsibilities) { %>
+          <div class="job-responsibilities">
+            <h4 class="font-semibold leading-none tracking-tight">Responsibilities</h4>
+            <p class="text-sm text-balance max-w-lg leading-relaxed"><%= job.Responsibilities %></p>
+          </div>
+          <% } %>
+          <% if (job.MinimumQualifications) { %>
+          <div class="minimum-qualifications">
+            <h4 class="font-semibold leading-none tracking-tight">Minimum Qualifications</h4>
+            <p class="text-sm text-balance max-w-lg leading-relaxed"><%= job.MinimumQualifications %></p>
+          </div>
+          <% } %>
+          <% if (job.PreferredQualifications) { %>
+          <div class="preferred-qualifications">
+            <h4 class="font-semibold leading-none tracking-tight">Preferred Qualifications</h4>
+            <p class="text-sm text-balance max-w-lg leading-relaxed"><%= job.PreferredQualifications %></p>
+          </div>
+          <% } %>
+          <% if (formattedBenefits) { %>
+          <div class="job-benefits">
+            <h4 class="font-semibold leading-none tracking-tight">Job Benefits</h4>
+            <ul class="text-sm text-balance max-w-lg leading-relaxed">
+              <%- formattedBenefits %>
+            </ul>
+          </div>
+          <% } %>
+          <% if (job.NiceToHave) { %>
+          <div class="job-nice-to-have">
+            <h4 class="font-semibold leading-none tracking-tight">Nice to Have</h4>
+            <p class="text-sm text-balance max-w-lg leading-relaxed"><%= job.NiceToHave %></p>
+          </div>
+          <% } %>
+          <% if (job.schedule) { %>
+          <div class="job-schedule">
+            <h4 class="font-semibold leading-none tracking-tight">Schedule</h4>
+            <p class="text-sm text-balance max-w-lg leading-relaxed"><%= job.schedule %></p>
+          </div>
+          <% } %>
+          <% if (job.hoursPerWeek) { %>
+          <div class="job-hours-per-week">
+            <h4 class="font-semibold leading-none tracking-tight">Hours per Week</h4>
+            <p class="text-sm text-balance max-w-lg leading-relaxed"><%= job.hoursPerWeek %></p>
+          </div>
+          <% } %>
+          <% if (job.equalOpportunityEmployerInfo) { %>
+          <div class="job-equal-opportunity-employer-info">
+            <h4 class="font-semibold leading-none tracking-tight">Equal Opportunity Employer Info</h4>
+            <p class="text-sm text-balance max-w-lg leading-relaxed"><%= job.equalOpportunityEmployerInfo %></p>
+          </div>
+          <% } %>
+          <% if (job.raw_description_no_format) { %>
+          <div class="raw-description-no-format">
+            <h4 class="font-semibold leading-none tracking-tight">Job Description (from the company)</h4>
+            <p class="text-sm text-balance max-w-lg leading-relaxed"><%- job.raw_description_no_format %></p>
+          </div>
+          <% } %>
+          <div class="flex">
+            <div class="autojob-warning px-4 py-2">
+              <span class="warning-icon">⚠️</span>
+              <span class="warning-text">This post is scraped from the internet and may contain errors.</span>
+            </div>
+          </div>
+        </div>
+        <div class="similar-jobs company-profile-section">
+          <div id="loading-indicator">
+            <div class="spinner-container">
+              <div class="spinner"></div>
+            </div>
+          </div>
+        </div>
+        <div class="similar-company-jobs company-profile-section">
+          <div id="loading-indicator">
+            <div class="spinner-container">
+              <div class="spinner">
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <%- include('partials/footer') %>
     </div>
+
     <%- include('partials/right-side-container', { }) %>
   </main>
 
@@ -102,13 +498,18 @@
       return `${month}/${day}/${year}`;
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-      const jobId = extractJobIdFromUrl();
-      const user = <%- JSON.stringify(user || null) %>;
-      lazyLoadJobDetails(user, jobId);
-    });
 
     document.addEventListener('DOMContentLoaded', function () {
+
+      getSimilarJobs(<%= job.id %>);
+      getSimilarJobsByCompany(<%= job.id %>);
+      if ('<%= user %>') {
+        const userIsPremium = '<%= user.isPremium %>';
+        if (userIsPremium && !<%= job.isProcessed %>) {
+          processJobPosting(<%= job.id %>);
+        }
+        checkFavorite(<%= job.id %>);
+      }
 
       const companyProfileButtons = document.querySelectorAll('.company-navbar-button');
       console.log(companyProfileButtons);

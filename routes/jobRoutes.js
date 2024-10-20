@@ -38,12 +38,13 @@ router.get('/profile', checkAuthenticated, async (req, res) => {
 function parseFilters(query) {
   const filters = {};
   if (query.skill) filters.skills = Array.isArray(query.skill) ? query.skill : [query.skill];
-  if (query.location) filters.locations = Array.isArray(query.location) ? query.location : [query.location];
-  if (query.title) filters.titles = Array.isArray(query.title) ? query.title : [query.title];
+  if (query.locations) filters.locations = Array.isArray(query.locations) ? query.locations : [query.locations];
+  if (query.titles) filters.titles = Array.isArray(query.titles) ? query.titles : [query.titles];
   if (query.company) filters.companies = Array.isArray(query.company) ? query.company : [query.company];
   if (query.experienceLevel) filters.experienceLevels = Array.isArray(query.experienceLevel) ? query.experienceLevel : [query.experienceLevel];
   if (query.major) filters.majors = Array.isArray(query.major) ? query.major : [query.major];
   if (query.salary) filters.salary = parseInt(query.salary);
+  console.log('Filters:', filters);
   return filters;
 }
 
@@ -463,7 +464,7 @@ router.get('/:jobId', viewLimiter, async (req, res) => {
       await jobQueries.incrementJobViewCount(jobId);
     }
 
-    let job = await jobQueries.simpleFindById(jobId);
+    let job = await jobQueries.findById(jobId);
 
     if (!job) {
       console.log(`No job found with ID: ${jobId}`);
@@ -471,7 +472,6 @@ router.get('/:jobId', viewLimiter, async (req, res) => {
     }
 
     if (req.user) {
-      console.log('adding to recent jobs');
       const recentExists = await userRecentQueries.isJobInRecentViews(job.id,req. user.id);
       if (!recentExists) {
         await userRecentQueries.addViewedJob(job.id, job.company_id, req.user.id);

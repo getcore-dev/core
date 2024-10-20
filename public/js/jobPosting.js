@@ -458,7 +458,33 @@ async function lazyLoadJobDetails(user, jobId) {
       <time class="sub-text primary-text">${formatDateJob(job.postedDate)}</time>
 
       </p>
-      <div class="job-recruiter-container">
+      ${job.skills_string ? `
+      <p class="text-sm text-balance max-w-lg leading-relaxed">
+         ${job.skills_string}
+      </p>
+      ` : ''}
+
+      ${job.accepted_college_majors ? `
+      <span class="flex flex-row gap-2 v-center text-sm text-balance max-w-lg leading-relaxed">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-school"><path d="M14 22v-4a2 2 0 1 0-4 0v4"/><path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2"/><path d="M18 5v17"/><path d="m4 6 8-4 8 4"/><path d="M6 5v17"/><circle cx="12" cy="9" r="2"/></svg> ${job.accepted_college_majors}
+      </span>
+      ` : ''}
+    <div class="flex flex-row gap-4 v-center">
+            <div class="flex flex-row gap-06 v-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              <p class="text-sm text-balance max-w-lg leading-relaxed">${job.relocation ? 'Relocation offered' : 'No relocation'}</p>
+            </div>
+            <div class="flex flex-row gap-06 v-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-laptop"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"/></svg>
+              <p class="text-sm text-balance max-w-lg leading-relaxed">${job.isRemote ? 'Remote work available' : 'On-site only'}</p>
+            </div>
+            ${user && user.isPremium ? `
+                        <div class="flex flex-row gap-06 v-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>              <p class="text-sm text-balance max-w-lg leading-relaxed">${job.views} views</p>
+            </div>
+            ` : ''}
+          </div>
+          <div class="job-recruiter-container">
         <div class="job-recruiter-info">
           <div class="recruiter-info flex flex-row gap-06">
             <a href="/user/${job.recruiter_username}" class="recruiter-image">
@@ -473,27 +499,6 @@ async function lazyLoadJobDetails(user, jobId) {
           </div>
         </div>
       </div>
-      ${job.skills_string ? `
-      <p class="text-sm text-balance max-w-lg leading-relaxed">
-        Skills: ${job.skills_string}
-      </p>
-      ` : ''}
-
-      ${job.accepted_college_majors ? `
-      <p class="text-sm text-balance max-w-lg leading-relaxed">
-        Majors: ${job.accepted_college_majors}
-      </p>
-      ` : ''}
-    <div class="flex flex-row gap-4 v-center">
-            <div class="flex flex-row gap-06 v-center">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-              <p class="text-sm text-balance max-w-lg leading-relaxed">${job.relocation ? 'Relocation offered' : 'No relocation'}</p>
-            </div>
-            <div class="flex flex-row gap-06 v-center">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-laptop"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"/></svg>
-              <p class="text-sm text-balance max-w-lg leading-relaxed">${job.isRemote ? 'Remote work available' : 'On-site only'}</p>
-            </div>
-          </div>
           ${!job.isProcessed && user && user.isPremium ? `
                 <div class="adaptive-border rounded">
       <div class="sub-text p-4 flex items-center">
@@ -790,15 +795,6 @@ ${
     .catch((error) => {
       console.error('Error fetching job details:', error);
     })
-    .finally(() => {
-      console.log('done loading job, loading companies');
-      bindSelectorButtons();
-      getSimilarJobs(jobId);
-      getSimilarJobsByCompany(jobId);
-      if (user) {
-        checkFavorite(jobId);
-      }
-    });
 }
 
 function processJobPosting(jobId) {
