@@ -777,6 +777,17 @@ select {
   gap: 5px;
 }
 
+#filters-container {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  max-height: 500px;
+  opacity: 1;
+}
+
+#filters-container.hidden {
+  max-height: 0;
+  opacity: 0;
+}
+
 
 .dropdown-button .material-symbols-outlined {
   font-size: 1.3rem;

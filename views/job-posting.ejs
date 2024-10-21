@@ -195,20 +195,23 @@
                       const skills = job.skills_string.split(',').map(skill => skill.trim());
                       const skillLinks = skills.map(skill => `<a href="/jobs?skill=${encodeURIComponent(skill)}" class="skill-link">${skill}</a>`).join(', ');
                     %>
-                    <%- skillLinks %>
+                    Skills: <%- skillLinks %>
                   </p>
                   <% } %>
                   <% if (job.accepted_college_majors) { %>
-                  <span class="flex flex-row gap-2 v-center text-sm text-balance max-w-lg leading-relaxed">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-school">
-                      <path d="M14 22v-4a2 2 0 1 0-4 0v4" />
-                      <path d="m18 10 4 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8l4-2" />
-                      <path d="M18 5v17" />
-                      <path d="m4 6 8-4 8 4" />
-                      <path d="M6 5v17" />
-                      <circle cx="12" cy="9" r="2" />
-                    </svg> <%= job.accepted_college_majors %>
-                  </span>
+                  <p class="v-center text-sm text-balance wrap max-w-lg leading-relaxed">
+                    Majors:
+                    <% 
+                      const majors = job.accepted_college_majors.split(',').map(major => major.trim());
+                      const majorLinks = majors.map(major => {
+                        if (major.toLowerCase().includes('related fields') || major.toLowerCase() === 'related') {
+                          return major; // Do not create a link for these majors
+                        }
+                        return `<a href="/jobs?major=${encodeURIComponent(major)}" class="major-link">${major}</a>`;
+                      }).join(', ');
+                    %>
+                    <%- majorLinks %>
+                  </p>
                   <% } %>
                   <div class="flex flex-row gap-4 v-center">
                     <div class="flex flex-row gap-06 v-center">
@@ -458,6 +461,62 @@
               <span class="warning-text">This post is scraped from the internet and may contain errors.</span>
             </div>
           </div>
+          <div class="job-links">
+            <% let linkCount = 0; %>
+            <% if (job.experienceLevel && linkCount < 6) { %>
+            <p>
+              <a href="/jobs?experienceLevel=<%= encodeURIComponent(job.experienceLevel) %>" class="underline text-muted-foreground hover:text-foreground transition-colors">
+                View more <%= job.experienceLevel %> jobs
+              </a>
+            </p>
+            <% linkCount++; %>
+            <% } %>
+            <% if (job.title && job.location && linkCount < 6) { %>
+            <p>
+              <a href="/jobs?titles=<%= encodeURIComponent(job.title) %>&locations=<%= encodeURIComponent(job.location) %>" class="underline text-muted-foreground hover:text-foreground transition-colors">
+                View <%= job.title %> jobs in <%= job.location %>
+              </a>
+            </p>
+            <% linkCount++; %>
+            <% } %>
+            <% if (job.skills_string && linkCount < 6) { %>
+            <p>
+              <% const skills = job.skills_string.split(',').map(skill => skill.trim()); %>
+              <% skills.forEach(skill => { %>
+              <% if (linkCount < 6) { %>
+              <a href="/jobs?skill=<%= encodeURIComponent(skill) %>" class="underline text-muted-foreground hover:text-foreground transition-colors">
+                View jobs requiring <%= skill %>
+              </a><br />
+              <% linkCount++; %>
+              <% } %>
+              <% }); %>
+            </p>
+            <% } %>
+            <% if (job.accepted_college_majors && linkCount < 6) { %>
+            <p>
+              <% const majors = job.accepted_college_majors.split(',').map(major => major.trim()); %>
+              <% majors.forEach(major => { %>
+              <% if (linkCount < 6) { %>
+              <a href="/jobs?majors=<%= encodeURIComponent(major) %>" class="underline text-muted-foreground hover:text-foreground transition-colors">
+                View jobs for <%= major %> majors
+              </a><br />
+              <% linkCount++; %>
+              <% } %>
+              <% }); %>
+            </p>
+            <% } %>
+            <% if (job.location && linkCount < 6) { %>
+            <p>
+              <a href="/jobs?locations=<%= encodeURIComponent(job.location) %>" class="underline text-muted-foreground hover:text-foreground transition-colors">
+                View jobs in <%= job.location %>
+              </a>
+            </p>
+            <% linkCount++; %>
+            <% } %>
+          </div>
+
+
+
         </div>
         <div class="similar-jobs company-profile-section">
           <div id="loading-indicator">

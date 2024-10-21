@@ -36,13 +36,13 @@
     <%- include('partials/com-btn-container', { }) %>
     <div class="jobs-container">
       <div class="page-header flex flex-col gap-2 mb-4">
-        <div class="jobs-buttons mb-4 v-center">
+        <div class="jobs-buttons mb-4 v-center wrap">
           <div class="flex flex-col start">
             <h1 id="jobHeader" class="text-2xl font-semibold text-gray-800 dark:text-gray-200 text-left">
               Jobs
             </h1>
             <h5 id="jobSubHeader" class="text-sm font-semibold text-muted-foreground dark:text-gray-200 text-left">
-              Explore job openings at CORE
+              Explore
             </h5>
             <!--
             <span class="flex flex-col">
@@ -58,9 +58,10 @@
           <% } %>
         </div>
 
-        <% if (user) { %>
 
         <div class="jobs-buttons admin-job-buttons">
+          <% if (user) { %>
+
           <% if (user.isAdmin) { %>
           <div class="flex flex-row gap-06 v-center">
             <a href="/jobs/create">
@@ -110,9 +111,14 @@
             </a>
           </div>
           <% } %>
+
+          <button class="ml-auto inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground [&_svg]-h-3.5 h-7 px-3 rounded-[6px] [&_svg]:w-3.5" onclick="document.getElementById('filters-container').classList.toggle('hidden');">
+            Filter
+          </button>
+          <% } %>
+
         </div>
 
-        <% } %>
         <div class="jobs-search-container flex flex-col gap-03 relative">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search absolute left-2 top-2.5 h-4 w-4 text-foreground">
             <circle cx="11" cy="11" r="8"></circle>
@@ -129,7 +135,7 @@
           <p id="active-filters-sentence" class="active-filters-sentence mini-text"></p>
         </div>
 
-        <ul class="flex flex-row w-100 gap-06 wrap no-padding no-margin">
+        <ul id="filters-container" class="hidden flex flex-row w-100 gap-06 wrap no-padding no-margin">
 
           <!--
           <div class="dropdown" tabindex="0">
