@@ -113,7 +113,7 @@ function createCardSquare(
           image
             ? `
                 <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
-      <img class="aspect-square h-full w-full" src="${image}" />
+        <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.onerror=null; this.src='/img/glyph.png';" />
         </span>
         `
             : ""
@@ -174,7 +174,7 @@ function createCard(
           image
             ? `
                 <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
-      <img class="aspect-square h-full w-full" src="${image}" />
+        <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.onerror=null; this.src='/img/glyph.png';" />
         </span>
         `
             : ""

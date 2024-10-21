@@ -29,42 +29,18 @@
           <input type="checkbox" class="peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" id="settings_PrivateSchoolNames" name="settings_PrivateSchoolNames"> University names are private
         </label>
         <div>
-          <button class="main-button mb-4" onclick="saveSettings()">Save</button>
+          <button class="main-button mb-4" onclick="saveSettings()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save">
+              <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+              <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+              <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+            </svg>
+            Save</button>
         </div>
       </div>
     </div>
 
     <% if (user.isAdmin) { %>
-    <div class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left mb-4 ml-4 mr-4 shadow text-sm transition-all">
-      <h4 class="margin-06-bottom">Job Processing Progress</h4>
-      <div class="progress-item">
-        <div id="phase-indicator" class="progress-indicator pending"></div>
-        <span class="progress-label">Phase:</span>
-        <span id="progress-phase" class="progress-value">Initializing</span>
-      </div>
-      <div class="progress-item w-full">
-        <div id="company-indicator" class="progress-indicator pending"></div>
-        <span class="progress-label">Company:</span>
-        <span id="progress-company" class="progress-value">-</span>
-      </div>
-      <div class="progress-item w-full">
-        <div id="companies-indicator" class="progress-indicator pending"></div>
-        <span class="progress-label">Companies:</span>
-        <span id="progress-companies" class="progress-value">0 / 0</span>
-      </div>
-      <div class="progress-item w-full">
-        <div id="jobs-indicator" class="progress-indicator pending"></div>
-        <span class="progress-label">Jobs:</span>
-        <span id="progress-jobs" class="progress-value">0 / 0</span>
-      </div>
-      <div class="progress-item w-full action-item">
-        <div class="progress-header margin-06-bottom">
-          <div id="action-indicator" class="progress-indicator pending"></div>
-          <span class="progress-label">Action:</span>
-        </div>
-        <span id="progress-action" class="progress-value server-output">-</span>
-      </div>
-    </div>
 
     <div class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left mb-4 ml-4 mr-4 shadow text-sm transition-all">
       <div class="flex flex-row justify-between w-full">
@@ -72,6 +48,43 @@
         <button class="button-normal" id="search-duplicate-companies">Search</button>
       </div>
       <div id="duplicate-companies-container" class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left bg-accent w-full text-sm transition-all">
+      </div>
+    </div>
+
+    <div class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left mb-4 ml-4 mr-4 shadow text-sm transition-all">
+      <div class="flex flex-row justify-between w-full">
+        <h4 class="margin-06-bottom" id="server-info-header">Server Information</h4>
+      </div>
+      <div id="duplicate-companies-container" class="flex flex-col items-start gap-2  p-3 text-left w-full text-sm transition-all">
+        <p>Server Time: <%= new Date().toLocaleString() %></p>
+        <span class="w-full"><strong>Active Users:</strong> <span id="active-users"></span></span>
+        <script>
+          fetch('/api/get-current-user-count')
+            .then(response => response.json())
+            .then(data => {
+              document.getElementById('active-users').textContent = data;
+            })
+            .catch(error => console.error('Error fetching active users:', error));
+        </script>
+        <span><strong>Active Jobs:</strong> <span id="active-jobs"></span></span>
+        <script>
+          fetch('/api/recentJobsCount')
+            .then(response => response.json())
+            .then(data => {
+              document.getElementById('active-jobs').textContent = data;
+            })
+            .catch(error => console.error('Error fetching active jobs:', error));
+        </script>
+        <span><strong>Active Companies:</strong> <span id="active-companies"></span></span>
+        <script>
+          fetch('/api/totalCompaniesCount')
+            .then(response => response.json())
+            .then(data => {
+              document.getElementById('active-companies').textContent = data;
+            })
+            .catch(error => console.error('Error fetching active companies:', error));
+        </script>
+
       </div>
     </div>
     <% } %>
@@ -186,41 +199,6 @@
             console.error('An error occurred while saving settings:', error);
           });
       }
-
-      <% if (user.isAdmin) { %>
-
-      function fetchProgress() {
-        fetch('/api/job-processing-progress')
-          .then(response => response.json())
-          .then(data => {
-            updateProgressItem('phase', data.phase);
-            updateProgressItem('company', data.company);
-            updateProgressItem('companies', `${data.processedCompanies || 0} / ${data.totalCompanies || 0}`);
-            updateProgressItem('jobs', `${data.processedJobs || 0} / ${data.totalJobs || 0}`);
-            updateProgressItem('action', data.currentAction);
-          })
-          .catch(error => console.error('Error fetching progress:', error));
-      }
-
-      function updateProgressItem(id, value) {
-        const element = document.getElementById(`progress-${id}`);
-        const indicator = document.getElementById(`${id}-indicator`);
-
-        if (element.textContent !== value) {
-          // Content is changing, show as in-progress
-          indicator.className = 'progress-indicator in-progress';
-          setTimeout(() => {
-            element.textContent = value || '-';
-            // After a delay, mark as completed
-            setTimeout(() => {
-              indicator.className = 'progress-indicator completed';
-            }, 500);
-          }, 500);
-        }
-      }
-      fetchProgress();
-      setInterval(fetchProgress, 5000); // Update every 5 seconds
-      <% } %>
     </script>
   </main>
 </body>

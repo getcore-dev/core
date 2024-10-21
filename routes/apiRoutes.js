@@ -1368,7 +1368,7 @@ router.get("/posts/:postId/comments", async (req, res) => {
 
 router.get(
   "/get-current-user-count",
-  cacheMiddleware(600),
+  cacheMiddleware(120),
   async (req, res) => {
     try {
       const userCount = await userQueries.getUserCount();
