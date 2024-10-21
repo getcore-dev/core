@@ -502,7 +502,7 @@
       getSimilarJobs(<%= job.id %>);
       getSimilarJobsByCompany(<%= job.id %>);
       if ('<%= user %>') {
-        const userIsPremium = '<%= user.isPremium %>';
+        const userIsPremium = '<%= user ? user.isPremium : false %>';
         if (userIsPremium && !<%= job.isProcessed %>) {
           processJobPosting(<%= job.id %>);
         }
