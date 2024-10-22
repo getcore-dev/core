@@ -1631,6 +1631,18 @@ router.get("/recentJobsCount", cacheMiddleware(2400), async (req, res) => {
   }
 });
 
+
+router.get("/topCompaniesLogos", async (req, res) => {
+  try {
+    const logos = await jobQueries.getTopCompaniesLogos();
+    res.json(logos);
+  } catch (err) {
+    console.error("Error fetching top companies logos:", err);
+    res.status(500).json({ error: "An error occurred while fetching top companies logos" });
+  }
+});
+
+
 router.get("/totalCompaniesCount", cacheMiddleware(2400), async (req, res) => {
   try {
     const count = await jobQueries.getCompaniesCount();

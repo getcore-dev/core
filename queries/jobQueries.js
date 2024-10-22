@@ -645,6 +645,28 @@ const jobQueries = {
     }
   },
 
+  getTopCompaniesLogos: async () => {
+    try {
+      const query = `
+        SELECT TOP 15
+          c.logo,
+          c.name,
+          COUNT(j.id) AS job_count
+        FROM Companies c
+        JOIN JobPostings j ON c.id = j.company_id
+        WHERE c.logo IS NOT NULL
+        GROUP BY c.logo, c.name
+        ORDER BY job_count DESC
+      `;
+
+      const result = await sql.query(query);
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   searchAllJobsFromLast30Days: async (filters, page, pageSize) => {
     try {
       console.log("Searching for jobs with filters:", filters);
