@@ -969,7 +969,6 @@ li.dropdown a.active {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 16px;
   align-items: flex-end;
   padding: 0;
   z-index: 100;
@@ -1641,7 +1640,7 @@ a>.menu-item {
 
   .user-btns {
     position: absolute;
-    right: 3.3rem;
+    right: 3.5rem;
     top: 0;
     z-index: 500;
   }

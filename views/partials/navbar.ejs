@@ -276,7 +276,7 @@
           <li class="navigation-avatar">
             <div class="nav-avatar">
               <a href="/login">
-                <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-7 px-3 py-2">
+                <button class="flex flex-row justify-between v-center w-full bg-primary text-background text-sm py-2 h-7 px-4 rounded-md text-center hover:bg-accent hover:text-accent-foreground">
                   Sign in
                 </button>
               </a>
@@ -1272,7 +1272,9 @@
 
     getAllCommunities();
     getTrendingPosts();
+    <% if (user) { %>
     getRecentJobs();
+    <% } %>
 
     function createHashFromString(string) {
       var hash = 0,
@@ -1357,7 +1359,9 @@
     var menuButton = document.getElementById("menu-button");
     if (menuButton && menuButton.classList.contains('active') && menuButton.offsetParent !== null) {
       getTrendingPosts();
+      <% if (user) { %>
       getRecentJobs();
+      <% } %>
     }
     <% if (user) { %>
     const userId = '<%- user.id %>';

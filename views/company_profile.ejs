@@ -245,16 +245,20 @@
         </div>
         <% } %>
         <% } else { %>
-        <div class="max-w-md bg-white shadow-lg rounded-lg overflow-hidden">
-          <div class="px-6 py-4">
-            <h2 class="text-xl font-bold mb-4">Company max-w-md bg-white shadow-lg rounded-lg overflow-hiddenInsights</h2>
-            <p class="text-gray-700 mb-4">
-              <i class="material-icons align-middle mr-2">info</i>
+        <div class="max-w-md bg-background border shadow-lg rounded-lg overflow-hidden">
+          <div class="px-4 py-4">
+            <h2 class="text-md font-bold mb-2">Company Insights</h2>
+            <p class="text-sm mb-4 text-muted-foreground text-balance max-w-lg leading-relaxed">
               Sign up or login to view AI generated insights about <strong><%= company.name %></strong> and job matches personalized to your resume!
             </p>
-            <a href="/login" class="block w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-center">
-              Sign up
-              <i class="material-icons align-middle ml-2">arrow_forward</i>
+            <a href="/login">
+              <button class="flex flex-row justify-between v-center w-full bg-primary text-background text-sm py-2 px-4 rounded text-center hover:bg-accent hover:text-accent-foreground">
+                Sign up
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-key-round">
+                  <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" />
+                  <circle cx="16.5" cy="7.5" r=".5" fill="currentColor" />
+                </svg>
+              </button>
             </a>
           </div>
         </div>

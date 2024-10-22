@@ -45,11 +45,8 @@
       "@type": "Organization",
       "name": "CORE",
       "url": "https://getcore.dev",
-      "logo": "https://getcore.dev/img/core-logo.png",
       "sameAs": [
-        "https://twitter.com/core_platform",
-        "https://www.linkedin.com/company/core-platform",
-        "https://github.com/core-platform"
+        "https://twitter.com/getcore_dev",
       ]
     }
   </script>
@@ -59,8 +56,45 @@
   <%- include('partials/navbar', { pagePath: '', user: user }) %>
 
   <!-- Hero Section -->
-  <header class="py-12 px-4">
+  <header class="py-4 px-4">
     <div class="max-w-4xl mx-auto">
+      <div class="overflow-hidden">
+        <div id="logo-marquee" class="overflow-hidden">
+          <marquee behavior="scroll" direction="left" scrollamount="5" id="logo-marquee-content"></marquee>
+        </div>
+        <script>
+          async function loadLogos() {
+            try {
+              const response = await fetch('/api/topCompaniesLogos');
+              const logos = await response.json();
+              const marqueeContent = document.getElementById('logo-marquee-content');
+              marqueeContent.style.whiteSpace = 'nowrap'; // Ensure logos are in a single row
+              logos.forEach(logo => {
+                console.log(logo);
+                const img = document.createElement('img');
+                img.src = logo.logo; // Assuming the logo object has a 'url' property
+                img.alt = logo.name; // Assuming the logo object has a 'name' property
+                img.className = 'h-5 rounded-md w-5 inline-block mx-2'; // Updated size
+                img.onerror = () => img.style.display = 'none'; // Hide image on error
+
+                const text = document.createElement('span');
+                text.className = 'font-sm inline-block mx-2'; // Text styling
+                text.textContent = logo.name; // Set the company name
+
+                const container = document.createElement('span'); // Change to span for inline display
+                container.className = 'inline-flex items-center'; // Inline flex container for logo and text
+                container.appendChild(img);
+                container.appendChild(text);
+
+                marqueeContent.appendChild(container);
+              });
+            } catch (error) {
+              console.error('Error loading logos:', error);
+            }
+          }
+          loadLogos();
+        </script>
+      </div>
       <h1 class="text-4xl font-semibold mb-4">🚀 Discover Your Dream Job with AI-Powered Insights</h1>
       <p class="mb-6">CORE is your ultimate career partner, leveraging cutting-edge AI to connect you with the perfect opportunities and empower your job search journey. Visit our <a href="/jobs" class="text-blue-500 underline">jobs page</a> to explore the latest job listings.</p>
       <ul class="list-disc pl-5 mb-6">
