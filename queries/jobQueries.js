@@ -752,11 +752,19 @@ const jobQueries = {
         const expLevelConditions = experienceLevels.map((level, index) => {
           const paramName = `experienceLevel${index}`;
           queryParams.push({ name: paramName, value: `"*${level}*"` });
-          const isInternship = level.toLowerCase() === 'internship';
-          return `CONTAINS(j.experienceLevel, @${paramName}) OR CONTAINS(j.title, @${paramName})` + (isInternship ? ` OR j.experienceLevel = 'Internship'` : '');
+          const isInternship = level.toLowerCase() === 'internship' || level.toLowerCase() === 'intern';
+          const isEntryLevel = level.toLowerCase() === 'entry level';
+          if (isInternship) {
+            return `j.experienceLevel = 'Internship' OR j.title = 'Intern'`;
+          }
+          if (isEntryLevel) {
+            return `j.experienceLevel = 'Entry Level' OR j.title LIKE '%entry level%' OR j.title LIKE '%associate%' OR j.title LIKE '%assistant%' OR j.title LIKE '%grad%' OR j.title LIKE '%junior%' OR j.title LIKE '%trainee%' OR j.title LIKE '%fellow%' OR j.title LIKE '%engineer I' OR j.title LIKE '%manager I' OR j.description LIKE '%entry level%' OR j.description LIKE '%associate%' OR j.description LIKE '%assistant%' OR j.description LIKE '%grad%' OR j.description LIKE '%junior%' OR j.description LIKE '%trainee%' OR j.description LIKE '%fellow%' OR j.description LIKE '%engineer I' OR j.description LIKE '%manager I'`;
+          }
+          return `CONTAINS(j.experienceLevel, @${paramName}) OR CONTAINS(j.title, @${paramName})`;
         });
         conditions.push(`(${expLevelConditions.join(' OR ')})`);
       }
+      
   
       if (accepted_college_majors.length) {
         const majorConditions = accepted_college_majors.map((major, index) => {

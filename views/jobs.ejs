@@ -112,7 +112,11 @@
           </div>
           <% } %>
           <% } %>
-          <button class="ml-auto inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground [&_svg]-h-3.5 h-7 px-3 rounded-[6px] [&_svg]:w-3.5" onclick="document.getElementById('filters-container').classList.toggle('hidden');">
+          <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground [&_svg]-h-3.5 h-7 px-3 rounded-[6px] [&_svg]:w-3.5" onclick="document.getElementById('filters-container').classList.toggle('hidden');">
+
+            <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-filter">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+            </svg>
             Filter
           </button>
 
@@ -129,9 +133,6 @@
               <path d="m15 9-6 6"></path>
               <path d="m9 9 6 6"></path>
             </svg></button>
-        </div>
-        <div class="flex flex-col active-filters-container">
-          <p id="active-filters-sentence" class="active-filters-sentence mini-text"></p>
         </div>
 
         <ul id="filters-container" class="hidden flex flex-row w-100 gap-06 wrap no-padding no-margin">

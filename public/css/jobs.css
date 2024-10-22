@@ -784,6 +784,7 @@ select {
 }
 
 #filters-container.hidden {
+  display: none;  
   max-height: 0;
   opacity: 0;
 }
