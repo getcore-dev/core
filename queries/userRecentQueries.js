@@ -36,8 +36,15 @@ const userRecentQueries = {
     addViewedJob: async (jobId, companyId, userId) => {
         try {
             await sql.query`
-                INSERT INTO user_recent_viewed_jobs (jobPostings_id, company_id, user_id, viewed_at)
-                VALUES (${jobId}, ${companyId}, ${userId}, GETDATE())`;
+            MERGE user_recent_viewed_jobs AS target
+            USING (VALUES (${jobId}, ${companyId}, ${userId})) 
+                AS source (jobPostings_id, company_id, user_id)
+            ON target.jobPostings_id = source.jobPostings_id 
+                AND target.user_id = source.user_id
+            WHEN NOT MATCHED THEN
+                INSERT (jobPostings_id, company_id, user_id, viewed_at)
+                VALUES (source.jobPostings_id, source.company_id, source.user_id, GETDATE());
+        `;
         } catch (err) {
             console.error('Database query error:', err);
             throw err;

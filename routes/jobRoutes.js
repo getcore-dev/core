@@ -538,10 +538,7 @@ router.get('/:jobId', viewLimiter, async (req, res) => {
     }
 
     if (req.user) {
-      const recentExists = await userRecentQueries.isJobInRecentViews(job.id,req. user.id);
-      if (!recentExists) {
         await userRecentQueries.addViewedJob(job.id, job.company_id, req.user.id);
-      }
     }
 
 

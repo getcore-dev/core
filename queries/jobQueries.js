@@ -796,6 +796,18 @@ const jobQueries = {
   
       // Execute the query
       const result = await request.query(baseQuery);
+
+      if (result.recordset.length) {
+        // Filter out jobs with descriptions that are mostly '?'
+        result.recordset = result.recordset.filter(job => {
+          const description = job.description || "";
+          const questionMarkCount = (description.match(/\?/g) || []).length;
+          const totalLength = description.length;
+
+          // Check if the description is mostly '?'
+          return totalLength === 0 || (questionMarkCount / totalLength) < 0.5;
+        });
+      }
   
       return result.recordset;
     } catch (error) {
@@ -827,6 +839,26 @@ const jobQueries = {
       request.input("pageSize", sql.Int, pageSize);
   
       const result = await request.query(query);
+
+      if (result.recordset.length) {
+        // Filter out jobs with descriptions that are mostly empty or contain excessive question marks
+        result.recordset = result.recordset.filter(job => {
+          const description = job.description || "";
+          const questionMarkCount = (description.match(/\?/g) || []).length;
+          const totalLength = description.replace(/[^a-zA-Z0-9]/g, '').length; // Remove non-markdown characters
+
+          // Check if the description is mostly '?'
+          return totalLength === 0 || (questionMarkCount / totalLength) < 0.5;
+        });
+
+      result.recordset = result.recordset.map(job => {
+        job.description = job.description ? job.description.replace(/[\*\#]/g, '') : "";
+        return job;
+      });
+      }
+
+      
+      
       return result.recordset;
     } catch (error) {
       console.error("Error in getRecentJobs:", error);

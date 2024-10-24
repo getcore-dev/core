@@ -844,7 +844,7 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
       </div>
       <div class="ml-auto text-xs text-foreground">${timestamp}</div>
     </div>
-    <div class="text-base font-medium">${title}</div>
+    <div class="text-base font-medium text-balance max-w-lg leading-relaxed">${title}</div>
   </div>
   <div class="line-clamp-2 text-sm text-muted-foreground w-full">
     ${description}
@@ -958,6 +958,39 @@ function favorite(favoriteType, TypeId) {
     });
 }
 
+function report(reportType, TypeId) {
+  const endpoints = {
+    job: `/report/job/${TypeId}`,
+    post: `/report/post/${TypeId}`,
+  };
+
+  const endpoint = endpoints[reportType];
+  if (!endpoint) {
+    console.error('Invalid report type');
+    return;
+  }
+
+  fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      showBannerNotification(data.message);
+    })
+    .catch((error) => {
+      console.error('Error reporting:', error);
+      showBannerNotification('An error occurred. Please try again.');
+    });
+}
 function toggleFavoriteButton(button) {
   if (button.innerHTML === '<span class="sub-text">Unsave</span>') {
     button.innerHTML = '<span class="sub-text">Save</span>';

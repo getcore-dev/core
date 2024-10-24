@@ -309,6 +309,9 @@
                   <button class="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-md px-3 text-xs h-8 gap-1" id="favorite-button" onclick="favorite('job', <%= job.id %>);">
                     <span class="sub-text">Save</span>
                   </button>
+                  <button class="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-md px-3 text-xs h-8 gap-1" id="favorite-button" onclick="showReportModal('job', <%= job.id %>);">
+                    <span class="sub-text">Report</span>
+                  </button>
                 </div>
                 <% } %>
                 <div class="second-buttons-container">
@@ -543,11 +546,65 @@
 
     <%- include('partials/right-side-container', { }) %>
   </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
   <script src="/js/jobPosting.js"></script>
   <script>
+    let currentJobId = null;
+
+    function showReportModal(type, id) {
+      currentJobId = id;
+      const modal = document.getElementById('reportModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+
+    function hideReportModal() {
+      const modal = document.getElementById('reportModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = 'auto';
+    }
+
+    async function handleReportSubmit(event) {
+      event.preventDefault();
+
+      const form = event.target;
+      const formData = new FormData(form);
+
+      // Get all checked issues
+      const checkedIssues = Array.from(form.querySelectorAll('input[name="issue"]:checked'))
+        .map(checkbox => checkbox.value);
+
+      // Get other reason if provided
+      const otherReason = formData.get('other');
+
+      try {
+        const response = await fetch('/api/report', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            jobId: currentJobId,
+            issues: checkedIssues,
+            otherReason: otherReason
+          })
+        });
+
+        if (response.ok) {
+          alert('Thank you for your report. We will review it shortly.');
+          hideReportModal();
+          form.reset();
+        } else {
+          alert('There was an error submitting your report. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error submitting report:', error);
+        alert('There was an error submitting your report. Please try again.');
+      }
+    }
+
     function extractJobIdFromUrl() {
       const urlParts = window.location.pathname.split("/");
       return urlParts[urlParts.length - 1];
@@ -600,7 +657,75 @@
       });
     });
   </script>
+  <div id="reportModal" class="fixed inset-0 bg-black/80 bg-opacity-80 hidden items-center justify-center z-50">
+    <div id="reportModalWindow" class="bg-background border rounded-lg p-6 max-w-md w-full mx-4">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold">Report an Issue</h2>
+        <button onclick="hideReportModal()" class="text-gray-500 hover:text-gray-700">
+          ✕
+        </button>
+      </div>
 
+      <form id="reportForm" onsubmit="handleReportSubmit(event)">
+        <div class="space-y-3">
+          <label class="flex items-center">
+            <input type="checkbox" name="issue" value="incorrect" class="mr-2">
+            Incorrect Information
+          </label>
+          <label class="flex items-center">
+            <input type="checkbox" name="issue" value="no-longer-available" class="mr-2">
+            Job No Longer Available
+          </label>
+          <label class="flex items-center">
+            <input type="checkbox" name="issue" value="spam" class="mr-2">
+            Spam or Duplicate Postings
+          </label>
+          <label class="flex items-center">
+            <input type="checkbox" name="issue" value="scam" class="mr-2">
+            Scam or Fraudulent Posting
+          </label>
+          <label class="flex items-center">
+            <input type="checkbox" name="issue" value="offensive" class="mr-2">
+            Offensive or Inappropriate Content
+          </label>
+          <label class="flex items-center">
+            <input type="checkbox" name="issue" value="wrong-category" class="mr-2">
+            Wrong Job Category/Industry
+          </label>
+          <label class="flex items-center">
+            <input type="checkbox" name="issue" value="misleading" class="mr-2">
+            Misleading or Vague Description
+          </label>
+          <label class="flex items-center">
+            <input type="checkbox" name="issue" value="location" class="mr-2">
+            Location Issues
+          </label>
+          <label class="flex items-center">
+            <input type="checkbox" name="issue" value="outdated" class="mr-2">
+            Outdated Information
+          </label>
+          <label class="flex items-center">
+            <input type="checkbox" name="issue" value="pay" class="mr-2">
+            Pay Transparency Issues
+          </label>
+
+          <div class="mt-4">
+            <label class="block mb-2">Other (please specify):</label>
+            <textarea name="other" class="w-full p-2 border rounded-md" placeholder="Enter your reason here..." rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-end gap-3">
+          <button type="button" onclick="hideReportModal()" class="px-4 h-8 text-foreground border rounded-md hover:bg-gray-50">
+            Cancel
+          </button>
+          <button type="submit" class="px-4 bg-foreground h-8 text-background rounded-md hover:bg-gray-800">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </body>
 
 

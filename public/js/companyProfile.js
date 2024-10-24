@@ -358,7 +358,7 @@ function createCard(
     tagsHtml = tags
       .map(
         (tag) => `
-      <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 ${tag.class}">
+      <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 text-balance ${tag.class}">
         ${tag.text}
       </div>
     `,
@@ -385,7 +385,7 @@ function createCard(
       </div>
       <div class="ml-auto text-xs text-foreground">${timestamp}</div>
     </div>
-    <div class="text-base font-medium">${title}</div>
+    <div class="text-base font-medium text-balance max-w-lg leading-relaxed">${title}</div>
   </div>
   <div class="line-clamp-2 text-sm text-muted-foreground w-full text-balance max-w-lg leading-relaxed">
     ${description}

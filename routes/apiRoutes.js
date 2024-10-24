@@ -13,6 +13,7 @@ const cacheMiddleware = require("../middleware/cache");
 const utilFunctions = require("../utils/utilFunctions");
 const jobExtractionQueue = require("../utils/queue");
 const userRecentQueries = require("../queries/userRecentQueries");
+const reportQueries = require("../queries/reportQueries");
 
 const storage = multer.diskStorage({
   destination: "./public/uploads/",
@@ -729,6 +730,40 @@ router.get("/jobs", cacheMiddleware(3600), async (req, res) => {
     res.status(500).send("Error fetching job postings");
   }
 });
+
+router.post("/report", async (req, res) => {
+  try {
+    const { jobId, issues, otherReason } = req.body;
+
+    if (typeof jobId !== 'number') {
+      return res.status(400).json({ message: "Invalid Job ID." });
+    }
+    
+    if (!Array.isArray(issues) || issues.length === 0) {
+      return res.status(400).json({ message: "At least one issue must be provided." });
+    }
+    
+    if (otherReason && typeof otherReason !== 'string') {
+      return res.status(400).json({ message: "Other reason must be a string." });
+    }
+
+    // Validate input
+    if (!jobId || !issues || issues.length === 0) {
+      return res.status(400).json({ message: "Job ID and at least one issue must be provided." });
+    }
+
+    // Process the report (this is a placeholder for actual reporting logic)
+    console.log(`Reporting job ID: ${jobId} for issues: ${issues.join(", ")}. Other reason: ${otherReason || "N/A"}`);
+
+    await reportQueries.saveReport({ jobId, issues, otherReason });
+
+    res.status(200).json({ message: "Thank you for your report. We will review it shortly." });
+  } catch (err) {
+    console.error("Error processing report:", err);
+    res.status(500).json({ message: "Error processing report" });
+  }
+});
+
 
 router.get("/job-suggestions", async (req, res) => {
   try {
