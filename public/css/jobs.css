@@ -485,16 +485,6 @@ div.job-title-location .sub-text {
   border-radius: 4px;
 }
 
-.job-search-icon {
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translateY(-50%);
-  width: 16px;
-  height: 20px;
-  pointer-events: none;
-}
-
 .quick-options {
   gap: .5rem;
 }
@@ -784,7 +774,7 @@ select {
 }
 
 #filters-container.hidden {
-  display: none;  
+  display: none;
   max-height: 0;
   opacity: 0;
 }

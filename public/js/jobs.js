@@ -13,12 +13,56 @@ const state = {
     skills: new Set(),
     companies: new Set(),
   },
+  searchType: 'recent', 
   hasMoreData: true,
   allTags: [],
   companyNames: [],
   isTagsExpanded: false,
   isSkillsExpanded: false,
   jobSearchInput: document.getElementById("job-search-input"),
+};
+
+function toggleJobView() {
+  const toggleText = document.getElementById('toggle-text');
+  const toggleIcon = document.querySelector('#toggle-button svg');
+  
+  // Check if the user can toggle to 'preference'
+  if (state.searchType === 'trending') {
+    state.searchType = 'recent';
+    toggleText.textContent = 'Recent';
+    toggleIcon.innerHTML = `
+      <line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/>
+    `;
+  } else if (state.searchType === 'recent') {
+    state.searchType = 'preference';
+    toggleText.textContent = 'Preference';
+    toggleIcon.innerHTML = `
+      <path d="M12 2L15 8H21L16 12L18 18L12 14L6 18L8 12L3 8H9L12 2Z" />
+    `;
+  } else {
+    state.searchType = 'trending';
+    toggleText.textContent = 'Trending';
+    toggleIcon.innerHTML = `
+                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                <polyline points="16 7 22 7 22 13" />
+    `;
+  }
+
+  // Reset the job list and fetch with new search type
+  state.currentPage = 1;
+  state.jobPostings = [];
+  state.renderedJobIds.clear();
+  elements.jobList.innerHTML = "";
+  saveStateToLocalStorage();
+  fetchJobPostings();
+}
+
+const debounce = (func, delay) => {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func(...args), delay);
+  };
 };
 
 function updateStateFromQuery() {
@@ -73,6 +117,23 @@ function getQueryParams() {
   }
   return query;
 }
+
+const debounceUpdateLocation = debounce(function(event) {
+  const locationInput = event.target.value.trim();
+  if (locationInput) {
+    // Update the state with the new location
+    state.filters.locations = new Set([locationInput]);
+    // Trigger job search with the updated location
+    triggerJobSearch();
+  } else {
+    // Clear the location filter if the input is empty
+    state.filters.locations.clear();
+    triggerJobSearch();
+  }
+}, 600); // Adjust the debounce delay as needed
+
+// Attach the debounced function to the input event
+document.querySelector('.location-input-field').addEventListener('input', debounceUpdateLocation);
 
 function setupInfiniteScroll() {
   const loadMoreBtn = document.querySelector(".load-more-btn");
@@ -194,15 +255,6 @@ const elements = {
   topSkills: document.querySelector(".top-tags"),
   loadMoreButton: document.getElementById("load-more-btn"),
   loadingIndicator: document.getElementById("loading-indicator"),
-};
-
-// Utility functions
-const debounce = (func, delay) => {
-  let timeoutId;
-  return (...args) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => func(...args), delay);
-  };
 };
 
 document.addEventListener("DOMContentLoaded", initialize);
@@ -491,6 +543,7 @@ function clearAllFilters() {
 }
 
 function triggerJobSearch() {
+  const searchIcon = document.getElementById('jobs-search-icon');
   state.currentPage = 1;
   state.jobPostings = [];
   state.renderedJobIds.clear();
@@ -617,6 +670,7 @@ async function fetchJobPostings() {
     salary: state.filters.salary || "0",
     skills: JSON.stringify(Array.from(state.filters.skills)),
     companies: JSON.stringify(Array.from(state.filters.companies)),
+    searchType: state.searchType,
   });
 
   try {
@@ -1205,6 +1259,14 @@ function clearSearchResults() {
 
 function handleSearchInput() {
   const searchTerm = state.jobSearchInput.value.trim().toLowerCase();
+  const searchIcon = document.getElementById('jobs-search-icon');
+  if (searchTerm.length > 0) {
+    searchIcon.innerHTML = `
+    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+    `;
+    searchIcon.classList.add('animate-spin'); // Add spin animation when there is a search term
+  }
+    
 
   if (searchTerm.length < 2) {
     clearSearchResults();
@@ -1247,7 +1309,6 @@ function handleSearchInput() {
   // Trigger the job search with updated filters
   triggerJobSearch();
   updateJobHeader(state.filters);
-  console.log("Job search triggered.");
 }
 
 state.jobSearchInput.addEventListener(

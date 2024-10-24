@@ -642,6 +642,7 @@ router.get("/jobs", cacheMiddleware(3600), async (req, res) => {
       salary,
       skills,
       companies,
+      searchType,
     } = req.query;
 
     // Parse the query parameters
@@ -654,7 +655,6 @@ router.get("/jobs", cacheMiddleware(3600), async (req, res) => {
     const parsedSalary = parseInt(salary) || 0;
     const parsedSkills = skills ? JSON.parse(skills) : [];
     const parsedCompanies = companies ? JSON.parse(companies) : [];
-    const searchType = "";
 
     const areAllDefaults = 
       parsedTitles.length === 0 &&
@@ -676,7 +676,7 @@ router.get("/jobs", cacheMiddleware(3600), async (req, res) => {
         experienceLevel: user.jobExperienceLevel,
         majors: [], // You can populate this if needed
         salary: user.jobPreferredSalary,
-        companies: [], // You can populate this if needed
+        companies: [],
       };
     }
 
@@ -691,13 +691,24 @@ router.get("/jobs", cacheMiddleware(3600), async (req, res) => {
 
     let allJobPostings;
 
-    if (searchType === "userPreferences" && user && userPreferencesNotEmpty) {
+    console.log("Search type:", searchType);
+    if (searchType === "preference" && areAllDefaults) {
       console.log("User preference search");
-      allJobPostings = await jobQueries.searchUserPreferredJobs(
-        userPreferences,
+      allJobPostings = await jobQueries.searchRankedJobsFromLast30Days(
+        {
+          titles: Array.isArray(userPreferences.titles) ? userPreferences.titles : [userPreferences.titles],
+          locations: userPreferences.locations,
+          experienceLevels: Array.isArray(userPreferences.experienceLevel) ? userPreferences.experienceLevel : [userPreferences.experienceLevel],
+          accepted_college_majors: userPreferences.majors,
+          salary: userPreferences.salary,
+          skills: userPreferences.skills,
+          companies: userPreferences.companies,
+        },
         page,
         pageSize,
       );
+    } else if (searchType === "trending" && areAllDefaults) {
+      allJobPostings = await jobQueries.getTrendingJobsPaginated(page, pageSize);
     } else if (areAllDefaults) {
       console.log("Blank search");
       allJobPostings = await jobQueries.searchRecentJobs(
@@ -1602,6 +1613,15 @@ router.get("/trending-posts", cacheMiddleware(2400), async (req, res) => {
   }
 });
 
+router.get("/trending-jobs", cacheMiddleware(2400), async (req, res) => {
+  try {
+    const jobs = await jobQueries.getTrendingJobs();
+    res.json(jobs);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
 router.get("/user-details/:userId", async (req, res) => {
   try {
     const userDetails = await utilFunctions.getUserDetails(req.params.userId);
@@ -1692,6 +1712,7 @@ router.get("/profile/jobs", checkAuthenticated, async (req, res) => {
   try {
     const userId = req.query.userId || req.user.userId;
     const preferences = await jobQueries.getUserJobPreferences(userId);
+    console.log(preferences);
     res.json(preferences);
   } catch (err) {
     console.error("Error fetching user jobs:", err);

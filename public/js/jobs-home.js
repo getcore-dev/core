@@ -2,6 +2,17 @@ const jobSuggestions = document.getElementById("topJobSuggestions");
 const recentJobs = document.getElementById("recentViewedJobs");
 const searchInput = document.getElementById("job-search-input");
 
+const searchContainer = document.querySelector('.jobs-search-container');
+const searchIcon = document.getElementById('jobs-search-icon');
+
+// Add a loading spinner right after the search icon
+const loadingSpinner = document.createElement('svg');
+loadingSpinner.innerHTML = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-2 absolute left-2 top-2.5 h-4 w-4 text-foreground animate-spin hidden">
+    <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+  </svg>
+`;
+searchIcon.insertAdjacentElement('afterend', loadingSpinner.firstElementChild);
 
 const searchResultsContainer = document.createElement("div");
 searchResultsContainer.className = "flex flex-col w-full";
@@ -13,13 +24,21 @@ searchResultsContainer.innerHTML = `
 document.querySelector('.jobs-search-container').insertAdjacentElement('afterend', searchResultsContainer);
 
 async function searchJobs(query) {
+  // Get both icons
+  const searchIcon = document.getElementById('jobs-search-icon');
+  const loadingIcon = document.querySelector('.lucide-loader-2');
+  
   try {
+    // Show loading state
+    searchIcon.classList.add('hidden');
+    loadingIcon.classList.remove('hidden');
+    
     // Construct the URL with query parameters
     const url = new URL('/api/jobs', window.location.origin);
     const params = {
       page: 1,
       pageSize: 20,
-      titles: JSON.stringify([query]), // Search by title
+      titles: JSON.stringify([query]),
     };
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
 
@@ -94,10 +113,13 @@ async function searchJobs(query) {
     console.error("Error searching jobs:", error);
     const searchResults = document.getElementById("searchResults");
     searchResults.innerHTML = "<p class='p-3'>An error occurred while searching for jobs.</p>";
+  } finally {
+    // Reset icons state regardless of success or failure
+    searchIcon.classList.remove('hidden');
+    loadingIcon.classList.add('hidden');
   }
 }
 
-// Update the search input event listener
 searchInput.addEventListener(
   "input",
   debounce(function (event) {
@@ -113,6 +135,12 @@ searchInput.addEventListener(
     }
   }, 300)
 );
+
+searchInput.addEventListener("input", function (event) {
+  const query = event.target.value.trim();
+  const clearButton = document.getElementById('clear-input-button');
+  clearButton.style.display = query.length === 0 ? 'none' : 'block';
+});
 
 // Add CSS for horizontal scrolling
 const style = document.createElement('style');
@@ -374,7 +402,8 @@ function loadJobSuggestions(page = 1) {
   const loadingIndicator = document.createElement("div");
   loadingIndicator.innerHTML = `
     <div class="spinner-container">
-      <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+      <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle">
+      <path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
     </div>
   `;
   jobSuggestions.appendChild(loadingIndicator);

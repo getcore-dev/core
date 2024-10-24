@@ -2729,11 +2729,6 @@ details[open] {
     color: var(--active-indicator-color);
   }
 
-  .menu-content {
-    background-color: var(--dark-mode-main-color);
-    border-color: var(--dark-mode-border-color);
-  }
-
   .selected-text-tag {
     border-color: #fff !important;
     color: #fff !important;
@@ -3164,7 +3159,7 @@ input::placeholder {
 
 
   .menu-content {
-    background-color: var(--dark-mode-main-color);
+    background-color: var(--dark-mode-body-color);
     border-color: var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }

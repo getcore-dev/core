@@ -59,12 +59,12 @@
         </div>
 
 
-        <div class="jobs-buttons admin-job-buttons">
+        <div class="jobs-buttons admin-job-buttons v-center">
           <% if (user) { %>
 
           <% if (user.isAdmin) { %>
           <div class="flex flex-row gap-06 v-center">
-            <a href="/jobs/create">
+            <a class="h-7" href="/jobs/create">
               <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground [&_svg]-h-3.5 h-7 w-7 rounded-[6px] [&_svg]:w-3.5">
 
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase">
@@ -73,7 +73,7 @@
                 </svg>
               </button>
             </a>
-            <a href="/jobs/create-company">
+            <a class="h-7" href="/jobs/create-company">
               <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground [&_svg]-h-3.5 h-7 w-7 rounded-[6px] [&_svg]:w-3.5">
 
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building-2">
@@ -87,7 +87,7 @@
                 </svg>
               </button>
             </a>
-            <a href="/jobs/create-company-queue">
+            <a class="h-7" href="/jobs/create-company-queue">
               <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground [&_svg]-h-3.5 h-7 w-7 rounded-[6px] [&_svg]:w-3.5">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building-2">
                   <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
@@ -100,7 +100,7 @@
                 </svg>
               </button>
             </a>
-            <a id="applied-jobs-link" href="/jobs/applied">
+            <a class="h-7" id="applied-jobs-link" href="/jobs/applied">
               <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground [&_svg]-h-3.5 h-7 w-7 rounded-[6px] [&_svg]:w-3.5">
 
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase">
@@ -112,23 +112,35 @@
           </div>
           <% } %>
           <% } %>
-          <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground [&_svg]-h-3.5 h-7 px-3 rounded-[6px] [&_svg]:w-3.5" onclick="document.getElementById('filters-container').classList.toggle('hidden');">
+          <div class="flex flex-row gap-2 v-center">
+            <div class="flex items-center" id="view-toggle">
+              <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-7 px-3 rounded-[6px]" onclick="toggleJobView(<%= user ? 'true' : 'false' %>)" id="toggle-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                  <line x1="10" x2="14" y1="2" y2="2" />
+                  <line x1="12" x2="15" y1="14" y2="11" />
+                  <circle cx="12" cy="14" r="8" />
+                </svg>
+                <span id="toggle-text">Recent</span>
+              </button>
+            </div>
+            <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground [&_svg]-h-3.5 h-7 px-3 rounded-[6px] [&_svg]:w-3.5" onclick="document.getElementById('filters-container').classList.toggle('hidden');">
 
-            <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-filter">
-              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-            </svg>
-            Filter
-          </button>
+              <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-filter">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+              </svg>
+              Filter
+            </button>
+          </div>
 
         </div>
 
         <div class="jobs-search-container flex flex-col gap-03 relative">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search absolute left-2 top-2.5 h-4 w-4 text-foreground">
+          <svg id="jobs-search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search absolute left-2 top-2.5 h-4 w-4 text-foreground">
             <circle cx="11" cy="11" r="8"></circle>
             <path d="m21 21-4.3-4.3"></path>
           </svg>
           <input type="text" id="job-search-input" class="job-posting-search-input pr-9 lex h-9 w-full rounded-md border border-input bg-transparent pr-8 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" placeholder="Search jobs & companies" oninput="this.nextElementSibling.style.display = this.value ? 'flex' : 'none';" />
-          <button class="absolute inset-y-px right flex h-full w-9 items-center justify-center rounded-r-lg border border-transparent text-muted-foreground/80 ring-offset-background transition-shadow animate-in fade-in zoom-in-75 hover:text-foreground focus-visible:border-ring focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50" aria-label="Clear input" style="display: none;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-x" aria-hidden="true" role="presentation">
+          <button id="job-search-icon" class="absolute inset-y-px right flex h-full w-9 items-center justify-center rounded-r-lg border border-transparent text-muted-foreground/80 ring-offset-background transition-shadow animate-in fade-in zoom-in-75 hover:text-foreground focus-visible:border-ring focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50" aria-label="Clear input" style="display: none;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-x" aria-hidden="true" role="presentation">
               <circle cx="12" cy="12" r="10"></circle>
               <path d="m15 9-6 6"></path>
               <path d="m9 9 6 6"></path>
@@ -430,7 +442,7 @@
           </div>
 
           <div class="location-input">
-            <input type="text" aria-label="Location" class="location-input-field inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-4 py-2 mini-text secondary-text" placeholder="Type your location" oninput="updateLocation(event)">
+            <input type="text" aria-label="Location" class="location-input-field inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-4 py-2 mini-text secondary-text" placeholder="Type your location">
           </div>
 
           <!--

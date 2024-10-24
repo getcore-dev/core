@@ -758,7 +758,7 @@ const jobQueries = {
             return `j.experienceLevel = 'Internship' OR j.title = 'Intern'`;
           }
           if (isEntryLevel) {
-            return `j.experienceLevel = 'Entry Level' OR j.title LIKE '%entry level%' OR j.title LIKE '%associate%' OR j.title LIKE '%assistant%' OR j.title LIKE '%grad%' OR j.title LIKE '%junior%' OR j.title LIKE '%trainee%' OR j.title LIKE '%fellow%' OR j.title LIKE '%engineer I' OR j.title LIKE '%manager I' OR j.description LIKE '%entry level%' OR j.description LIKE '%associate%' OR j.description LIKE '%assistant%' OR j.description LIKE '%grad%' OR j.description LIKE '%junior%' OR j.description LIKE '%trainee%' OR j.description LIKE '%fellow%' OR j.description LIKE '%engineer I' OR j.description LIKE '%manager I'`;
+            return `j.experienceLevel = 'Entry Level' OR j.title LIKE '%entry level%' OR j.title LIKE '%grad%' OR j.title LIKE '%trainee%' OR j.title LIKE '%fellow%' OR j.title LIKE '%engineer I' OR j.title LIKE '%manager I' OR j.description LIKE '%entry level%' OR j.description LIKE '%associate%' OR j.description LIKE '%assistant%' OR j.description LIKE '%grad%' OR j.description LIKE '%junior%' OR j.description LIKE '%trainee%' OR j.description LIKE '%fellow%' OR j.description LIKE '%engineer I' OR j.description LIKE '%manager I'`;
           }
           return `CONTAINS(j.experienceLevel, @${paramName}) OR CONTAINS(j.title, @${paramName})`;
         });
@@ -815,7 +815,395 @@ const jobQueries = {
       throw error;
     }
   },
+
+  searchRankedJobsFromLast30Days: async (filters, page, pageSize) => {
+    try {
+      console.log("Searching for ranked jobs with filters:", filters);
+      const {
+        titles = [],
+        locations = [],
+        experienceLevels = [],
+        accepted_college_majors = [],
+        salary = 0,
+        skills = [],
+        companies = [],
+      } = filters;
   
+      const offset = (page - 1) * pageSize;
+  
+      // Prepare the base query with scoring
+      let baseQuery = `
+        WITH ScoredJobs AS (
+          SELECT
+            j.id,
+            j.title,
+            j.location,
+            j.salary,
+            j.postedDate,
+            j.applicants,
+            j.description,
+            j.salary_max,
+            j.skills_string,
+            j.experienceLevel AS cleaned_experience_level,
+            c.logo AS company_logo,
+            c.name AS company_name,
+            (
+              CASE
+                -- Base score starts at 0
+                WHEN 1=1 THEN 0
+                ELSE 0
+              END
+              -- Add title match scores
+              ${titles.map((_, index) => `
+                + CASE WHEN CONTAINS(j.title, @title${index}) 
+                  THEN 100  -- Direct title match
+                  WHEN CONTAINS(j.description, @title${index}) 
+                  THEN 20   -- Description match
+                  ELSE 0 
+                END
+              `).join('\n')}
+              -- Add experience level scores
+              ${experienceLevels.map((level, index) => `
+                + CASE 
+                  WHEN j.experienceLevel = @experienceLevel${index} THEN 50
+                  WHEN CONTAINS(j.title, @experienceLevel${index}) THEN 30
+                  WHEN CONTAINS(j.description, @experienceLevel${index}) THEN 10
+                  ELSE 0 
+                END
+              `).join('\n')}
+              -- Add location match scores
+              ${locations.map((_, index) => `
+                + CASE WHEN CONTAINS(j.location, @location${index}) THEN 40 ELSE 0 END
+              `).join('\n')}
+              -- Add skills match scores
+              ${skills.map((_, index) => `
+                + CASE 
+                  WHEN CONTAINS(j.skills_string, @skill${index}) THEN 30
+                  WHEN CONTAINS(j.description, @skill${index}) THEN 15
+                  ELSE 0 
+                END
+              `).join('\n')}
+            ) as relevance_score
+          FROM JobPostings j
+          JOIN Companies c ON j.company_id = c.id
+          WHERE 1 = 1
+      `;
+  
+      const queryParams = [];
+      const conditions = [];
+  
+      // Add filter conditions similar to the original function
+      if (titles.length) {
+        const titleConditions = titles.map((title, index) => {
+          const paramName = `title${index}`;
+          queryParams.push({ name: paramName, value: `"*${title}*"` });
+          return `CONTAINS(j.title, @${paramName}) OR CONTAINS(j.description, @${paramName})`;
+        });
+        conditions.push(`(${titleConditions.join(' OR ')})`);
+      }
+  
+      if (skills.length) {
+        const skillConditions = skills.map((skill, index) => {
+          const paramName = `skill${index}`;
+          queryParams.push({ name: paramName, value: `"*${skill}*"` });
+          return `CONTAINS(j.skills_string, @${paramName}) OR CONTAINS(j.description, @${paramName}) OR CONTAINS(j.raw_description_no_format, @${paramName})`;
+        });
+        conditions.push(`(${skillConditions.join(' OR ')})`);
+      }
+  
+      if (locations.length) {
+        const locationConditions = locations.map((location, index) => {
+          const paramName = `location${index}`;
+          queryParams.push({ name: paramName, value: `"*${location}*"` });
+          return `CONTAINS(j.location, @${paramName})`;
+        });
+        conditions.push(`(${locationConditions.join(' OR ')})`);
+      }
+  
+      if (salary > 0) {
+        conditions.push("j.salary >= @minSalary"); // Changed parameter name to minSalary
+      }
+  
+      if (companies.length) {
+        const companyParams = companies.map((companyId, index) => {
+          const paramName = `company${index}`;
+          queryParams.push({ name: paramName, value: companyId });
+          return `@${paramName}`;
+        });
+        conditions.push(`j.company_id IN (${companyParams.join(', ')})`);
+      }
+  
+      if (experienceLevels.length) {
+        const expLevelConditions = experienceLevels.map((level, index) => {
+          const paramName = `experienceLevel${index}`;
+          queryParams.push({ name: paramName, value: `"*${level}*"` });
+          const isInternship = level.toLowerCase() === 'internship' || level.toLowerCase() === 'intern';
+          const isEntryLevel = level.toLowerCase() === 'entry level';
+          if (isInternship) {
+            return `j.experienceLevel = 'Internship' OR j.title LIKE '%intern%'`;
+          }
+          if (isEntryLevel) {
+            return `j.experienceLevel = 'Entry Level' OR j.title LIKE '%entry level%' OR j.title LIKE '%grad%' OR j.title LIKE '%trainee%' OR j.title LIKE '%fellow%' OR j.title LIKE '%engineer I' OR j.title LIKE '%manager I' OR j.description LIKE '%entry level%' OR j.description LIKE '%associate%' OR j.description LIKE '%assistant%' OR j.description LIKE '%grad%' OR j.description LIKE '%junior%' OR j.description LIKE '%trainee%' OR j.description LIKE '%fellow%' OR j.description LIKE '%engineer I' OR j.description LIKE '%manager I'`;
+          }
+          return `CONTAINS(j.experienceLevel, @${paramName}) OR CONTAINS(j.title, @${paramName})`;
+        });
+        conditions.push(`(${expLevelConditions.join(' OR ')})`);
+      }
+  
+      if (accepted_college_majors.length) {
+        const majorConditions = accepted_college_majors.map((major, index) => {
+          const paramName = `major${index}`;
+          queryParams.push({ name: paramName, value: `"*${major}*"` });
+          return `CONTAINS(j.accepted_college_majors, @${paramName})`;
+        });
+        conditions.push(`(${majorConditions.join(' OR ')})`);
+      }
+  
+      if (conditions.length) {
+        baseQuery += " AND " + conditions.join(" AND ");
+      }
+  
+      baseQuery += `
+        )
+        SELECT *
+        FROM ScoredJobs
+        WHERE relevance_score > 0
+        ORDER BY relevance_score DESC, postedDate DESC
+        OFFSET @offset ROWS
+        FETCH NEXT @pageSize ROWS ONLY;
+      `;
+  
+      // Prepare SQL request and input parameters
+      const request = new sql.Request();
+      queryParams.forEach((param) => {
+        request.input(param.name, sql.NVarChar, param.value);
+      });
+      
+      // Add these parameters separately since they're different types
+      request.input("minSalary", sql.Decimal(18, 2), salary); // Changed parameter name to minSalary
+      request.input("offset", sql.Int, offset);
+      request.input("pageSize", sql.Int, pageSize);
+  
+      // Execute the query
+      const result = await request.query(baseQuery);
+  
+      if (result.recordset.length) {
+        // Filter out jobs with descriptions that are mostly '?'
+        result.recordset = result.recordset.filter(job => {
+          const description = job.description || "";
+          const questionMarkCount = (description.match(/\?/g) || []).length;
+          const totalLength = description.length;
+          return totalLength === 0 || (questionMarkCount / totalLength) < 0.5;
+        });
+      }
+  
+      return result.recordset;
+    } catch (error) {
+      console.error("Error in searchRankedJobsFromLast30Days:", error);
+      throw error;
+    }
+  },
+
+  getTrendingJobs: async (limit = 10) => {
+    try {
+      const result = await sql.query(`
+        WITH ScoredJobs AS (
+          SELECT 
+            j.*,
+            c.name AS company_name,
+            c.logo AS company_logo,
+            c.location AS company_location,
+            c.description AS company_description,
+            CAST(
+              EXP(-DATEDIFF(day, j.postedDate, GETDATE()) * 0.1) AS FLOAT
+            ) AS age_factor,
+            CAST(
+              COALESCE(j.applicants, 0) AS FLOAT
+            ) / NULLIF(
+              (SELECT MAX(COALESCE(applicants, 0)) FROM JobPostings), 0
+            ) AS normalized_applicants,
+            CAST(
+              COALESCE(j.views, 0) AS FLOAT
+            ) / NULLIF(
+              (SELECT MAX(COALESCE(views, 0)) FROM JobPostings), 0
+            ) AS normalized_views
+          FROM JobPostings j
+          LEFT JOIN companies c ON j.company_id = c.id
+          WHERE 
+            j.postedDate >= DATEADD(day, -30, GETDATE()) 
+            AND j.deleted = 0
+        )
+        SELECT 
+          id,
+          title,
+          salary,
+          salary_max,
+          experienceLevel,
+          location,
+          postedDate,
+          link,
+          description,
+          company_id,
+          applicants,
+          views,
+          company_name,
+          company_logo,
+          company_location,
+          company_description,
+          (
+            (normalized_applicants * 0.6) + 
+            (normalized_views * 0.4)        
+          ) * age_factor AS trending_score
+        FROM ScoredJobs
+        WHERE 
+          -- Ensure we have either applicants or views
+          (COALESCE(applicants, 0) > 0 OR COALESCE(views, 0) > 0)
+        ORDER BY trending_score DESC
+        OFFSET 0 ROWS
+        FETCH NEXT ${limit} ROWS ONLY
+      `);
+  
+      if (result.recordset.length) {
+        // Filter out jobs with descriptions that are mostly '?'
+        result.recordset = result.recordset.filter(job => {
+          const description = job.description || "";
+          const questionMarkCount = (description.match(/\?/g) || []).length;
+          const totalLength = description.length;
+          
+          return totalLength === 0 || (questionMarkCount / totalLength) < 0.5;
+        });
+  
+        // Clean up markdown from descriptions
+        result.recordset = result.recordset.map(job => {
+          job.description = job.description ? job.description.replace(/[\*\#]/g, '') : "";
+          return job;
+        });
+      }
+  
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error in getTrendingJobs:", err);
+      throw err;
+    }
+  },
+
+  getTrendingJobsPaginated: async (page = 1, pageSize = 10) => {
+    try {
+      // Calculate offset from page number
+      const offset = (page - 1) * pageSize;
+      
+      // First query to get total count
+      const countResult = await sql.query(`
+        WITH ScoredJobs AS (
+          SELECT 
+            j.*,
+            CAST(
+              EXP(-DATEDIFF(day, j.postedDate, GETDATE()) * 0.1) AS FLOAT
+            ) AS age_factor,
+            CAST(
+              COALESCE(j.applicants, 0) AS FLOAT
+            ) / NULLIF(
+              (SELECT MAX(COALESCE(applicants, 0)) FROM JobPostings), 0
+            ) AS normalized_applicants,
+            CAST(
+              COALESCE(j.views, 0) AS FLOAT
+            ) / NULLIF(
+              (SELECT MAX(COALESCE(views, 0)) FROM JobPostings), 0
+            ) AS normalized_views
+          FROM JobPostings j
+          WHERE 
+            j.postedDate >= DATEADD(day, -30, GETDATE())
+            AND j.deleted = 0
+        )
+        SELECT COUNT(*) as total
+        FROM ScoredJobs
+        WHERE (COALESCE(applicants, 0) > 0 OR COALESCE(views, 0) > 0)
+      `);
+  
+      const total = countResult.recordset[0].total;
+      const totalPages = Math.ceil(total / pageSize);
+  
+      // Main query with pagination
+      const result = await sql.query(`
+        WITH ScoredJobs AS (
+          SELECT 
+            j.*,
+            c.name AS company_name,
+            c.logo AS company_logo,
+            c.location AS company_location,
+            c.description AS company_description,
+            CAST(
+              EXP(-DATEDIFF(day, j.postedDate, GETDATE()) * 0.1) AS FLOAT
+            ) AS age_factor,
+            CAST(
+              COALESCE(j.applicants, 0) AS FLOAT
+            ) / NULLIF(
+              (SELECT MAX(COALESCE(applicants, 0)) FROM JobPostings), 0
+            ) AS normalized_applicants,
+            CAST(
+              COALESCE(j.views, 0) AS FLOAT
+            ) / NULLIF(
+              (SELECT MAX(COALESCE(views, 0)) FROM JobPostings), 0
+            ) AS normalized_views
+          FROM JobPostings j
+          LEFT JOIN companies c ON j.company_id = c.id
+          WHERE 
+            j.postedDate >= DATEADD(day, -30, GETDATE())
+            AND j.deleted = 0
+        )
+        SELECT 
+          id,
+          title,
+          salary,
+          salary_max,
+          experienceLevel,
+          location,
+          postedDate,
+          link,
+          description,
+          company_id,
+          applicants,
+          views,
+          company_name,
+          company_logo,
+          company_location,
+          company_description,
+          (
+            (normalized_applicants * 0.6) + 
+            (normalized_views * 0.4)        
+          ) * age_factor AS trending_score
+        FROM ScoredJobs
+        WHERE 
+          (COALESCE(applicants, 0) > 0 OR COALESCE(views, 0) > 0)
+        ORDER BY trending_score DESC
+        OFFSET ${offset} ROWS
+        FETCH NEXT ${pageSize} ROWS ONLY
+      `);
+  
+      if (result.recordset.length) {
+        // Filter out jobs with descriptions that are mostly '?'
+        result.recordset = result.recordset.filter(job => {
+          const description = job.description || "";
+          const questionMarkCount = (description.match(/\?/g) || []).length;
+          const totalLength = description.length;
+          
+          return totalLength === 0 || (questionMarkCount / totalLength) < 0.5;
+        });
+  
+        // Clean up markdown from descriptions
+        result.recordset = result.recordset.map(job => {
+          job.description = job.description ? job.description.replace(/[\*\#]/g, '') : "";
+          return job;
+        });
+      }
+  
+      // Return pagination metadata along with the results
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error in getTrendingJobsPaginated:", err);
+      throw err;
+    }
+  },
 
   searchRecentJobs: async (page, pageSize) => {
     try {

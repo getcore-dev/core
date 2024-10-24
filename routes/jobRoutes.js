@@ -532,6 +532,9 @@ router.get('/:jobId', viewLimiter, async (req, res) => {
 
     let job = await jobQueries.findById(jobId);
 
+    job.description = marked.parse(job.description);
+    job.raw_description_no_format = marked.parse(job.raw_description_no_format);
+
     if (!job) {
       console.log(`No job found with ID: ${jobId}`);
       return res.redirect('/jobs');
