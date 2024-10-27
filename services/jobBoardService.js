@@ -3584,14 +3584,13 @@ class JobProcessor extends EventEmitter {
     return `Analyze the information for the job posting given and sort the data such that you can extract the information:
       JobPosting = {
         title: string,
-        url: string,
-        location: string, // in the format of '{city, state, country} | {city, state country}'
+        location: string, // if there are multiple locations, separate them with a | character, format each date as 'City, State', max of 200 characters
         description: string, // write about what the ideal candidate for the job posting is like? who's the person they're looking for?
-        experienceLevel: string, // internship, junior, senior, lead, manager, vp, director only
-        salary: decimal, // yearly salary, if given in hourly or anything else, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY if only one number is given fill for both min and max
+        experienceLevel: string, // internship, junior, senior, lead, manager, vp, director only, ensure that the experience level is correct based on the title
+        salary: decimal, // yearly salary, if not given in yearly, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY
         salary_max: int, // if given a range this is max yearly salary, if given in hourly or anything else, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY
         additional_information: string,
-        skills_string: string, // write a full comprehensive list of required skills for the job of skills that would be required based on the job title, separate each skill with a comma
+        skills_string: string, // write the technicals, soft skills, and tools that are required for this job, separate each skill with a comma, max 200 characters
         benefits: string, // separate each benefit with a comma and format them like 'Healthcare: Yes, Dental: Yes, Vision: Yes, etc'
         PreferredQualifications: string, // what the company has said that they want for this job
         MinimumQualifications: string, // the type of degree required and any certifications or qualifications absolutely required, like security clearance
@@ -3607,6 +3606,8 @@ class JobProcessor extends EventEmitter {
         location: string,
         IsRemote: boolean,
       }
+
+      DO NOT RETURN TEXT LONGER THAN 255 CHARACTERS FOR ALL FIELDS BESIDES DESCRIPTION.
 
       Return the sorted information in JSON format.`;
   }
@@ -3625,193 +3626,43 @@ class JobProcessor extends EventEmitter {
     ];
 
     const collegeMajorsEnum = [
-      // Computer and Information Technology
-      "Computer Science",
-      "Software Engineering",
-      "Information Systems",
-      "Computer Engineering",
-      "Data Science",
-      "Artificial Intelligence",
-      "Cybersecurity",
-      "Networking",
-      "Web Development",
-      "Mobile Development",
-      "Game Development",
-      "Database Management",
-      "DevOps",
-      "Information Technology",
-
-      // Business and Management
+      // Arts & Sciences
+      "Biology",
+      "Chemistry",
+      "Physics",
+      "Mathematics",
+      "Psychology",
+      "English",
+      "History",
+      "Political Science",
+      "Sociology",
+      "Economics",
+      "Communications",
+      "Philosophy",
+      "Art",
+      "Music",
+      "Theater",
+      "Geography",
+      "Anthropology",
       "Business Administration",
       "Finance",
       "Marketing",
       "Accounting",
-      "International Business",
-      "Entrepreneurship",
-      "Human Resources",
-      "Supply Chain Management",
-      "Management Information Systems",
-      "Business Analytics",
-      "Economics",
-
-      // Engineering
+      "Management",
       "Mechanical Engineering",
       "Electrical Engineering",
       "Civil Engineering",
       "Chemical Engineering",
-      "Aerospace Engineering",
-      "Biomedical Engineering",
-      "Industrial Engineering",
-      "Materials Engineering",
-      "Environmental Engineering",
-      "Software Engineering",
-
-      // STEM
-      "Robotics",
-      "Nanotechnology",
-      "Bioinformatics",
-      "Quantum Computing",
-      "Marine Biology",
-      "Meteorology",
-      "Neuroscience",
-      "Biotechnology",
-      "Astrophysics",
-
-      // Health Sciences
-      "Medical Laboratory Science",
-      "Radiologic Technology",
-      "Speech-Language Pathology",
-      "Audiology",
-      "Optometry",
-      "Kinesiology",
-      "Health Informatics",
-
-      // Business and Management
-      "Actuarial Science",
-      "Real Estate",
-      "Logistics",
-      "Nonprofit Management",
-      "Sports Management",
-      "Linguistics",
-      "Archaeology",
-      "Gender Studies",
-      "Ethnic Studies",
-      "Folklore",
-      "Museum Studies",
-      "Digital Media",
-      "Animation",
-      "Game Design",
-      "User Experience (UX) Design",
-      "Landscape Architecture",
-      "TESOL (Teaching English to Speakers of Other Languages)",
-      "Educational Technology",
-      "Adult Education",
-      "Renewable Energy",
-      "Climate Science",
-      "Sustainable Agriculture",
-      "Conservation Biology",
-      "Pre-Law",
-      "Paralegal Studies",
-      "Environmental Law",
-      "Human Rights",
-      "Cognitive Science",
-      "Data Analytics",
-      "Digital Humanities",
-      "Peace and Conflict Studies",
-      "Global Health",
-      "Blockchain Technology",
-      "Drone Technology",
-      "Virtual Reality",
-      "Augmented Reality",
-      "Internet of Things (IoT)",
-      "Aviation",
-      "Nuclear Engineering",
-      "Petroleum Engineering",
-      "Textile Engineering",
-      "Food Science and Technology",
-      "Viticulture and Enology (Wine Studies)",
-      "Biology",
-      "Chemistry",
-      "Physics",
-      "Geology",
-      "Environmental Science",
-      "Astronomy",
-      "Mathematics",
-      "Statistics",
-      "Biochemistry",
-      "Psychology",
-      "Sociology",
-      "Anthropology",
-      "Political Science",
-      "International Relations",
-      "Economics",
-      "Geography",
-      "Criminology",
-      "Communication Studies",
-      "Public Administration",
-      "English Literature",
-      "History",
-      "Philosophy",
-      "Fine Arts",
-      "Music",
-      "Theater Arts",
-      "Art History",
-      "Languages (e.g., Spanish, French, German)",
-      "Religious Studies",
-      "Liberal Arts",
-      "Interdisciplinary Studies",
-      "Nursing",
-      "Public Health",
-      "Pharmacy",
-      "Health Administration",
-      "Nutrition",
-      "Physical Therapy",
-      "Occupational Therapy",
-      "Dental Hygiene",
-      "Biomedical Sciences",
       "Elementary Education",
       "Secondary Education",
-      "Special Education",
-      "Educational Leadership",
-      "Curriculum and Instruction",
-      "Early Childhood Education",
-      "Journalism",
-      "Public Relations",
-      "Media Studies",
-      "Advertising",
-      "Film Studies",
-      "Broadcasting",
-      "Other Communications Major",
-      "Architecture",
-      "Urban Planning",
-      "Interior Design",
-      "Graphic Design",
-      "Industrial Design",
-      "Fashion Design",
+      "Nursing",
+      "Public Health",
+      "Pre-Medicine",
+      "Computer Science",
+      "Information Technology",
       "Criminal Justice",
-      "Forensic Science",
-      "Law Enforcement",
-      "Legal Studies",
-      "Agriculture",
-      "Forestry",
-      "Environmental Policy",
-      "Sustainable Development",
-      "Veterinary Medicine",
-      "Animal Science",
-      "Zoology",
-      "Wildlife Biology",
-      "Library Science",
-      "Information Management",
-      "Theology",
-      "Religious Studies",
-      "Divinity",
-      "Hospitality Management",
-      "Tourism Management",
-      "Culinary Arts",
-      "Event Management",
-      "Military Science",
-      "Public Policy",
-      "Speech Communication",
+      "Architecture",
+      "Journalism"
     ];
 
     const jobResponse = z.object({
@@ -3995,7 +3846,7 @@ class JobProcessor extends EventEmitter {
     this.updateProgress({ currentAction: "Generating prompt" });
 
     const prompt = `
-    Please extract the following information from this job posting data, ensure you extract as much information thats factual and relevant to the job posting so that it can be searched properly.
+    Please extract the the information from the job posting and verify the data is correct and complete.
     ${textContent}
     `;
 

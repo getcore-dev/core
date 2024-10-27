@@ -113,16 +113,6 @@
           <% } %>
           <% } %>
           <div class="flex flex-row gap-2 v-center">
-            <div class="flex items-center" id="view-toggle">
-              <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-7 px-3 rounded-[6px]" onclick="toggleJobView(<%= user ? 'true' : 'false' %>)" id="toggle-button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
-                  <line x1="10" x2="14" y1="2" y2="2" />
-                  <line x1="12" x2="15" y1="14" y2="11" />
-                  <circle cx="12" cy="14" r="8" />
-                </svg>
-                <span id="toggle-text">Recent</span>
-              </button>
-            </div>
             <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground [&_svg]-h-3.5 h-7 px-3 rounded-[6px] [&_svg]:w-3.5" onclick="document.getElementById('filters-container').classList.toggle('hidden');">
 
               <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-filter">
@@ -149,27 +139,31 @@
 
         <ul id="filters-container" class="hidden flex flex-row w-100 gap-06 wrap no-padding no-margin">
 
-          <!--
           <div class="dropdown" tabindex="0">
-            <button aria-label="Search Type" class="dropdown-button inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-7 px-4 py-2 justify-between text-muted-foreground search-type-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
-              Search Type
+            <button id="toggle-button" aria-label="Search Type" class="dropdown-button inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-4 py-2 justify-between text-muted-foreground search-type-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+              <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+              <span id="toggle-text">
+                Search Type
+              </span>
               <span class="arrow"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-50" aria-hidden="true">
                   <path d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
                 </svg></span>
             </button>
             <div class="dropdown-content">
               <a class="w-100">
-                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-search-type="regular" onclick="setSearchType('regular')">Regular</button>
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-search-type="recent" onclick="setSearchType('recent')">Recent</button>
               </a>
               <a class="w-100">
-                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-search-type="userPreferences" onclick="setSearchType('userPreferences')">For You</button>
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-search-type="preference" onclick="setSearchType('preference')">Preference</button>
               </a>
               <a class="w-100">
-                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-search-type="blank" onclick="setSearchType('blank')">New</button>
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-search-type="trending" onclick="setSearchType('trending')">Trending</button>
               </a>
             </div>
           </div>
-          -->
           <div class="dropdown" tabindex="0">
             <button aria-label="Experience Level" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-accent shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-4 py-2 justify-between text-muted-foreground dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
               Experience Level

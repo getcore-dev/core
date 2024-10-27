@@ -921,7 +921,12 @@ const jobQueries = {
       }
   
       if (salary > 0) {
-        conditions.push("j.salary >= @minSalary"); // Changed parameter name to minSalary
+        conditions.push(`(
+          j.salary IS NULL OR 
+          j.salary = 0 OR
+          j.salary >= @minSalary - 15000 OR 
+          (j.salary_max IS NOT NULL AND j.salary_max >= @minSalary)
+        )`);
       }
   
       if (companies.length) {
@@ -937,10 +942,10 @@ const jobQueries = {
         const expLevelConditions = experienceLevels.map((level, index) => {
           const paramName = `experienceLevel${index}`;
           queryParams.push({ name: paramName, value: `"*${level}*"` });
-          const isInternship = level.toLowerCase() === 'internship' || level.toLowerCase() === 'intern';
+          const isInternship = level.toLowerCase() === 'internship' || level.toLowerCase() === 'intern ';
           const isEntryLevel = level.toLowerCase() === 'entry level';
           if (isInternship) {
-            return `j.experienceLevel = 'Internship' OR j.title LIKE '%intern%'`;
+            return `j.experienceLevel = 'Internship'`;
           }
           if (isEntryLevel) {
             return `j.experienceLevel = 'Entry Level' OR j.title LIKE '%entry level%' OR j.title LIKE '%grad%' OR j.title LIKE '%trainee%' OR j.title LIKE '%fellow%' OR j.title LIKE '%engineer I' OR j.title LIKE '%manager I' OR j.description LIKE '%entry level%' OR j.description LIKE '%associate%' OR j.description LIKE '%assistant%' OR j.description LIKE '%grad%' OR j.description LIKE '%junior%' OR j.description LIKE '%trainee%' OR j.description LIKE '%fellow%' OR j.description LIKE '%engineer I' OR j.description LIKE '%manager I'`;
@@ -980,7 +985,7 @@ const jobQueries = {
       });
       
       // Add these parameters separately since they're different types
-      request.input("minSalary", sql.Decimal(18, 2), salary); // Changed parameter name to minSalary
+      request.input("minSalary", sql.Decimal(18, 2), salary);
       request.input("offset", sql.Int, offset);
       request.input("pageSize", sql.Int, pageSize);
   

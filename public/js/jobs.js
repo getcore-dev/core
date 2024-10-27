@@ -22,30 +22,38 @@ const state = {
   jobSearchInput: document.getElementById("job-search-input"),
 };
 
-function toggleJobView() {
+const SearchType = {
+  RECENT: 'recent',
+  PREFERENCE: 'preference',
+  TRENDING: 'trending',
+};
+
+function setSearchType(newSearchType) {
   const toggleText = document.getElementById('toggle-text');
   const toggleIcon = document.querySelector('#toggle-button svg');
-  
-  // Check if the user can toggle to 'preference'
-  if (state.searchType === 'trending') {
-    state.searchType = 'recent';
+
+  if (newSearchType === SearchType.RECENT) {
+    state.searchType = SearchType.RECENT;
     toggleText.textContent = 'Recent';
     toggleIcon.innerHTML = `
       <line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/>
     `;
-  } else if (state.searchType === 'recent') {
-    state.searchType = 'preference';
+  } else if (newSearchType === SearchType.PREFERENCE) {
+    state.searchType = SearchType.PREFERENCE;
     toggleText.textContent = 'Preference';
     toggleIcon.innerHTML = `
       <path d="M12 2L15 8H21L16 12L18 18L12 14L6 18L8 12L3 8H9L12 2Z" />
     `;
-  } else {
-    state.searchType = 'trending';
+  } else if (newSearchType === SearchType.TRENDING) {
+    state.searchType = SearchType.TRENDING;
     toggleText.textContent = 'Trending';
     toggleIcon.innerHTML = `
                 <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
                 <polyline points="16 7 22 7 22 13" />
     `;
+  } else {
+    console.warn('Invalid search type. No changes made.');
+    return;
   }
 
   // Reset the job list and fetch with new search type
