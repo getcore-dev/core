@@ -157,10 +157,10 @@
                   </h3>
                   <p class="text-sm text-muted-foreground">
                     <% if (job.experienceLevel) { %>
-                    <a href="/jobs?experienceLevel=<%= encodeURIComponent(job.experienceLevel) %>" class="sub-text bold text-muted-foreground">
+                    <a href="/jobs?experienceLevel=<%= encodeURIComponent(job.experienceLevel) %>" class="text-sm bold text-muted-foreground">
                       <%= job.experienceLevel %>
                     </a>
-                    <span class="sub-text">•</span>
+                    <span class="text-sm">•</span>
                     <% } %>
                     <%
                   const locations = job.location
@@ -175,17 +175,17 @@
                         .split(' ')
                         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
                         .join(' ');
-                      return `<a class="sub-text text-muted-foreground" href="/jobs?locations=${encodeURIComponent(loc)}">${country}</a>`;
+                      return `<a class="text-sm text-muted-foreground" href="/jobs?locations=${encodeURIComponent(loc)}">${country}</a>`;
                     }
                   }).join(', ');
                 %>
                     <%- locationLinks %>
-                    <span class="sub-text">•</span>
-                    <span class="sub-text">
+                    <span class="text-sm">•</span>
+                    <span class="text-sm">
                       <%= job.applicants ? job.applicants : 0 %> applicants
                     </span>
-                    <span class="sub-text">•</span>
-                    <time class="sub-text primary-text"><%= formatDateJob(job.postedDate) %></time>
+                    <span class="text-sm">•</span>
+                    <time class="text-sm primary-text"><%= formatDateJob(job.postedDate) %></time>
                   </p>
                   <% if (job.skills_string) { %>
                   <p class="text-sm text-balance max-w-lg leading-relaxed">
@@ -252,7 +252,7 @@
                   </div>
                   <% if (!job.isProcessed && user && user.isPremium) { %>
                   <div class="adaptive-border rounded">
-                    <div class="sub-text p-4 flex items-center">
+                    <div class="text-sm p-4 flex items-center">
                       <span class="material-symbols-outlined animate-spin mr-2" style="color: #6366f1;">auto_awesome</span>
                       <span class='please-wait-button'>Please wait a moment while we improve this job posting!</span>
                     </div>
@@ -261,7 +261,7 @@
                   <!--
               <% if (!job.isProcessed && user && !user.isPremium) { %>
                 <div class="adaptive-border rounded">
-                  <div class="sub-text p-4 flex items-center">
+                  <div class="text-sm p-4 flex items-center">
                     <span class="material-symbols-outlined mr-2" style="color: #6366f1;">star</span>
                     <span>Sign up for premium to generate better overviews of these job postings</span>
                   </div>
@@ -304,13 +304,13 @@
                       <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                       <rect width="20" height="14" x="2" y="6" rx="2" />
                     </svg>
-                    <span class="sub-text">Apply</span>
+                    <span class="text-sm">Apply</span>
                   </button>
                   <button class="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-md px-3 text-xs h-8 gap-1" id="favorite-button" onclick="favorite('job', <%= job.id %>);">
-                    <span class="sub-text">Save</span>
+                    <span class="text-sm">Save</span>
                   </button>
                   <button class="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-md px-3 text-xs h-8 gap-1" id="favorite-button" onclick="showReportModal('job', <%= job.id %>);">
-                    <span class="sub-text">Report</span>
+                    <span class="text-sm">Report</span>
                   </button>
                 </div>
                 <% } %>
@@ -327,26 +327,26 @@
                       <a class="grow-button margin-h-auto">
                         <button class="no-margin no-padding no-bg no-border" onclick="share('<%= job.title %>', '', 'https://getcore.dev/jobs/<%= job.id %>', 'job', '<%= job.id %>');">
                           <span class="material-symbols-outlined">share</span>
-                          <span class="sub-text">Share</span>
+                          <span class="text-sm">Share</span>
                         </button>
                       </a>
                       <% if (user && user.isPremium) { %>
                       <div class="resume-button w-100">
                         <a href="/api/create-resume/<%= job.id %>" class="grow-button margin-h-auto">
                           <span class="material-symbols-outlined">description</span>
-                          <span class="sub-text">Resume</span>
+                          <span class="text-sm">Resume</span>
                         </a>
                       </div>
                       <div class="cover-letter-button w-100">
                         <a href="/api/create-cover-letter/<%= job.id %>" class="grow-button margin-h-auto">
                           <span class="material-symbols-outlined">description</span>
-                          <span class="sub-text">Cover Letter</span>
+                          <span class="text-sm">Cover Letter</span>
                         </a>
                       </div>
                       <div class="delete-button-container">
                         <a class="grow-button margin-h-auto cancel-button-text" href="/jobs/delete/<%= job.id %>">
                           <span class="material-symbols-outlined">delete</span>
-                          <span class="sub-text">Delete</span>
+                          <span class="text-sm">Delete</span>
                         </a>
                       </div>
                       <% } %>
@@ -358,22 +358,30 @@
               <div class="caution-messages">This job was posted more than 30 days ago.</div>
               <% } %>
               <% if (!user) { %>
-              <div class="px-4 py-4 pt-2 flex flex-col max-w-md bg-background border shadow-lg rounded-lg overflow-hidden">
-                <h2 class="text-md font-bold mb-2">Company Insights</h2>
+              <div id="alert-box" role="alert" class="relative w-full rounded-lg border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground bg-background text-foreground">
+                <!-- Info Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info h-4 w-4">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="16" x2="12" y2="12" />
+                  <line x1="12" y1="8" x2="12.01" y2="8" />
+                </svg>
 
-                <span class="text-sm mb-4 text-muted-foreground text-balance max-w-lg leading-relaxed">
-                  <i class="fas fa-info-circle"></i>
-                  Sign up or login to view job matches personalized to your resume! Build your resume, cover letter, and profile to get started.
-                </span>
-                <a href="/login">
-                  <button class="flex flex-row justify-between v-center w-full bg-primary text-background text-sm py-2 px-4 rounded text-center hover:bg-accent hover:text-accent-foreground">
-                    Sign up
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-key-round">
-                      <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z" />
-                      <circle cx="16.5" cy="7.5" r=".5" fill="currentColor" />
-                    </svg>
-                  </button>
-                </a>
+                <!-- Close Button -->
+                <button onclick="document.getElementById('alert-box').remove()" class="absolute top-2 right-2 p-1 hover:bg-gray-100 rounded-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                    <path d="M18 6 6 18"></path>
+                    <path d="m6 6 12 12"></path>
+                  </svg>
+                </button>
+
+                <h5 class="mb-1 font-medium leading-none tracking-tight">Company Insights</h5>
+                <div class="text-sm">
+                  <p class="text-foreground">
+                    Sign up or login to view job matches personalized to your resume! Please
+                    <a href="/login" class="underline">sign up to get started</a>
+                    and build your resume, cover letter, and profile.
+                  </p>
+                </div>
               </div>
               <% } %>
             </div>
@@ -381,13 +389,13 @@
         </div>
         <div class="job-details primary-text company-profile-section">
           <% if (job.company_description && job.company_description.length > 10) { %>
-          <div class="company-description sub-text">
+          <div class="company-description text-sm">
             <h4 class="font-semibold leading-none tracking-tight">Company Description</h4>
             <p class="text-sm text-balance max-w-lg leading-relaxed"><%= job.company_description %></p>
           </div>
           <% } %>
           <% if (!job.isProcessed) { %>
-          <div class="job-posting-description sub-text">
+          <div class="job-posting-description text-sm">
             <h4 class="font-semibold leading-none tracking-tight">Job Description</h4>
             <span class="text-sm text-balance max-w-lg leading-relaxed"><%- job.description %></span>
           </div>

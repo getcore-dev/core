@@ -477,10 +477,10 @@ router.get('/all', cacheMiddleware(600), async (req, res) => {
   const searchTerm = req.query.term;
 
   try {
-    const posts = await postQueries.searchPosts(searchTerm);
+    const posts = [];
     const users = await userQueries.searchUsers(searchTerm);
-    const jobs = await jobQueries.searchJobs(searchTerm);
-    const communities = await communityQueries.searchCommunities(searchTerm);
+    const jobs = [];
+    const communities = [];
     const companies = await jobQueries.searchCompanies(searchTerm);
 
     res.json({ users, posts, jobs, communities, companies });

@@ -376,7 +376,8 @@ const jobQueries = {
         SELECT TOP 5 c.id, c.name, c.logo, COUNT(jp.id) AS job_count
         FROM companies c
         LEFT JOIN JobPostings jp ON c.id = jp.company_id
-        WHERE c.name LIKE ${"%" + searchTerm + "%"}
+        WHERE CONTAINS((c.name, c.description, c.company_stage, c.alternate_names, c.industry), ${searchTerm})
+        OR FREETEXT((c.name, c.description, c.company_stage, c.alternate_names, c.industry), ${searchTerm})
         GROUP BY c.id, c.name, c.logo
         ORDER BY job_count DESC, c.name
       `;
@@ -392,7 +393,6 @@ const jobQueries = {
       throw err;
     }
   },
-
   searchJobs: async (searchTerm) => {
     try {
       const result = await sql.query`
