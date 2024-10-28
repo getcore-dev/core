@@ -52,6 +52,165 @@ const jobTitleCategories = {
   // Add more categories as needed
 };
 
+// Define experience level adjacency mapping
+function expandExperienceLevels(experienceLevels) {
+  const experienceLevelAdjacency = {
+    'Internship': ['Entry Level'],
+    'Entry Level': ['Internship', 'Associate'],
+    'Associate': ['Entry Level', 'Mid Level'],
+    'Mid Level': ['Associate', 'Senior Level'],
+    'Senior Level': ['Mid Level', 'Lead'],
+    'Lead': ['Senior Level', 'Manager'],
+    'Manager': ['Lead', 'Director'],
+    'Director': ['Manager', 'Executive'],
+    'Executive': ['Director']
+  };
+
+  const expandedLevels = new Set();
+
+  experienceLevels.forEach(level => {
+    expandedLevels.add(level);
+    const adjacents = experienceLevelAdjacency[level] || [];
+    adjacents.forEach(adj => expandedLevels.add(adj));
+  });
+
+  return Array.from(expandedLevels);
+}
+
+
+function expandTitles(titles) {
+  const titleSynonyms = {
+    'software engineer': [
+      'software developer',
+      'programmer',
+      'developer',
+      'software architect',
+      'full-stack developer',
+      'backend developer',
+      'frontend developer',
+      'python developer',
+      'java developer',
+      'web developer',
+      'application developer',
+      'systems engineer',
+      'devops engineer'
+    ],
+    'data scientist': [
+      'data analyst',
+      'machine learning engineer',
+      'data engineer',
+      'analytics engineer',
+      'business intelligence analyst',
+      'quantitative analyst',
+      'research scientist',
+      'ai engineer'
+    ],
+    'project manager': [
+      'program manager',
+      'product owner',
+      'scrum master',
+      'project coordinator',
+      'technical project manager',
+      'delivery manager',
+      'agile project manager',
+      'it project manager'
+    ],
+    'product manager': [
+      'product owner',
+      'product specialist',
+      'product lead',
+      'product strategist',
+      'technical product manager',
+      'digital product manager'
+    ],
+    'ux designer': [
+      'ui designer',
+      'user experience designer',
+      'interaction designer',
+      'user interface designer',
+      'product designer',
+      'web designer',
+      'ux/ui designer',
+      'digital designer'
+    ],
+    'marketing manager': [
+      'marketing specialist',
+      'digital marketing manager',
+      'marketing coordinator',
+      'brand manager',
+      'marketing director',
+      'content marketing manager',
+      'growth marketer'
+    ],
+    'sales representative': [
+      'sales executive',
+      'account executive',
+      'sales consultant',
+      'business development representative',
+      'sales associate',
+      'account manager',
+      'sales manager'
+    ],
+    'human resources manager': [
+      'hr manager',
+      'hr specialist',
+      'hr generalist',
+      'talent acquisition manager',
+      'recruiting manager',
+      'people operations manager',
+      'hr business partner'
+    ],
+    'financial analyst': [
+      'finance analyst',
+      'business analyst',
+      'financial advisor',
+      'investment analyst',
+      'corporate finance analyst',
+      'financial consultant',
+      'budget analyst'
+    ],
+    'operations manager': [
+      'operations director',
+      'operations coordinator',
+      'business operations manager',
+      'operations specialist',
+      'facilities manager',
+      'production manager',
+      'operations supervisor'
+    ]
+  };
+
+  // Helper function to normalize strings for comparison
+  const normalizeString = (str) => str.toLowerCase().trim();
+
+  const expandedTitles = [];
+  titles.forEach(title => {
+    const normalizedTitle = normalizeString(title);
+    
+    // Add the original title
+    expandedTitles.push({ 
+      term: title, 
+      isExact: true,
+      originalTitle: title
+    });
+
+    // Find matching synonyms
+    Object.entries(titleSynonyms).forEach(([mainTitle, synonyms]) => {
+      if (normalizedTitle === normalizeString(mainTitle)) {
+        synonyms.forEach(synonym => {
+          expandedTitles.push({ 
+            term: synonym, 
+            isExact: false,
+            originalTitle: title
+          });
+        });
+      }
+    });
+  });
+
+  return expandedTitles;
+}
+
 const jobQueries = {
   createResume: async (data) => {
     resumeFunctions.createResume(data);
@@ -828,6 +987,13 @@ const jobQueries = {
         skills = [],
         companies = [],
       } = filters;
+
+      // Expand titles using the provided expandTitles function
+      const expandedTitles = expandTitles(titles);
+      const expandedExperienceLevels = expandExperienceLevels(experienceLevels);
+
+      console.log("Expanded titles:", expandedTitles);
+      console.log("Expanded experience levels:", expandedExperienceLevels);
   
       const offset = (page - 1) * pageSize;
   
@@ -854,32 +1020,29 @@ const jobQueries = {
                 ELSE 0
               END
               -- Add title match scores
-              ${titles.map((_, index) => `
-                + CASE WHEN CONTAINS(j.title, @title${index}) 
-                  THEN 100  -- Direct title match
-                  WHEN CONTAINS(j.description, @title${index}) 
-                  THEN 20   -- Description match
-                  ELSE 0 
+              ${expandedTitles.map(({ term, isExact }, index) => `
+                + CASE WHEN j.title LIKE '%${term}%' THEN ${isExact ? 100 : 60}
+                  WHEN j.description LIKE '%${term}%' THEN ${isExact ? 20 : 10}
+                  ELSE 0
                 END
               `).join('\n')}
-              -- Add experience level scores
-              ${experienceLevels.map((level, index) => `
+              ${expandedExperienceLevels.map((level, index) => `
                 + CASE 
-                  WHEN j.experienceLevel = @experienceLevel${index} THEN 50
-                  WHEN CONTAINS(j.title, @experienceLevel${index}) THEN 30
-                  WHEN CONTAINS(j.description, @experienceLevel${index}) THEN 10
+                  WHEN j.experienceLevel LIKE '%${level}%' THEN 50
+                  WHEN j.title LIKE '%${level}%' THEN 30
+                  WHEN j.description LIKE '%${level}%' THEN 10
                   ELSE 0 
                 END
               `).join('\n')}
               -- Add location match scores
-              ${locations.map((_, index) => `
-                + CASE WHEN CONTAINS(j.location, @location${index}) THEN 40 ELSE 0 END
+              ${locations.map((location, index) => `
+                + CASE WHEN j.location LIKE '%${location}%' THEN 40 ELSE 0 END
               `).join('\n')}
               -- Add skills match scores
-              ${skills.map((_, index) => `
+              ${skills.map((skill, index) => `
                 + CASE 
-                  WHEN CONTAINS(j.skills_string, @skill${index}) THEN 30
-                  WHEN CONTAINS(j.description, @skill${index}) THEN 15
+                  WHEN j.skills_string LIKE '%${skill}%' THEN 30
+                  WHEN j.description LIKE '%${skill}%' THEN 15
                   ELSE 0 
                 END
               `).join('\n')}
@@ -893,11 +1056,11 @@ const jobQueries = {
       const conditions = [];
   
       // Add filter conditions similar to the original function
-      if (titles.length) {
-        const titleConditions = titles.map((title, index) => {
+      if (expandedTitles.length) {
+        const titleConditions = expandedTitles.map(({ term }, index) => {
           const paramName = `title${index}`;
-          queryParams.push({ name: paramName, value: `"*${title}*"` });
-          return `CONTAINS(j.title, @${paramName}) OR CONTAINS(j.description, @${paramName})`;
+          queryParams.push({ name: paramName, value: `%${term}%` });
+          return `j.title LIKE @${paramName} OR j.description LIKE @${paramName}`;
         });
         conditions.push(`(${titleConditions.join(' OR ')})`);
       }
@@ -905,8 +1068,8 @@ const jobQueries = {
       if (skills.length) {
         const skillConditions = skills.map((skill, index) => {
           const paramName = `skill${index}`;
-          queryParams.push({ name: paramName, value: `"*${skill}*"` });
-          return `CONTAINS(j.skills_string, @${paramName}) OR CONTAINS(j.description, @${paramName}) OR CONTAINS(j.raw_description_no_format, @${paramName})`;
+          queryParams.push({ name: paramName, value: `%${skill}%` });
+          return `j.skills_string LIKE @${paramName} OR j.description LIKE @${paramName} OR j.raw_description_no_format LIKE @${paramName}`;
         });
         conditions.push(`(${skillConditions.join(' OR ')})`);
       }
@@ -914,8 +1077,8 @@ const jobQueries = {
       if (locations.length) {
         const locationConditions = locations.map((location, index) => {
           const paramName = `location${index}`;
-          queryParams.push({ name: paramName, value: `"*${location}*"` });
-          return `CONTAINS(j.location, @${paramName})`;
+          queryParams.push({ name: paramName, value: `%${location}%` });
+          return `j.location LIKE @${paramName}`;
         });
         conditions.push(`(${locationConditions.join(' OR ')})`);
       }
@@ -938,19 +1101,11 @@ const jobQueries = {
         conditions.push(`j.company_id IN (${companyParams.join(', ')})`);
       }
   
-      if (experienceLevels.length) {
-        const expLevelConditions = experienceLevels.map((level, index) => {
+      if (expandedExperienceLevels.length) {
+        const expLevelConditions = expandedExperienceLevels.map((level, index) => {
           const paramName = `experienceLevel${index}`;
-          queryParams.push({ name: paramName, value: `"*${level}*"` });
-          const isInternship = level.toLowerCase() === 'internship' || level.toLowerCase() === 'intern ';
-          const isEntryLevel = level.toLowerCase() === 'entry level';
-          if (isInternship) {
-            return `j.experienceLevel = 'Internship'`;
-          }
-          if (isEntryLevel) {
-            return `j.experienceLevel = 'Entry Level' OR j.title LIKE '%entry level%' OR j.title LIKE '%grad%' OR j.title LIKE '%trainee%' OR j.title LIKE '%fellow%' OR j.title LIKE '%engineer I' OR j.title LIKE '%manager I' OR j.description LIKE '%entry level%' OR j.description LIKE '%associate%' OR j.description LIKE '%assistant%' OR j.description LIKE '%grad%' OR j.description LIKE '%junior%' OR j.description LIKE '%trainee%' OR j.description LIKE '%fellow%' OR j.description LIKE '%engineer I' OR j.description LIKE '%manager I'`;
-          }
-          return `CONTAINS(j.experienceLevel, @${paramName}) OR CONTAINS(j.title, @${paramName})`;
+          queryParams.push({ name: paramName, value: `%${level}%` });
+          return `j.experienceLevel LIKE @${paramName} OR j.title LIKE @${paramName}`;
         });
         conditions.push(`(${expLevelConditions.join(' OR ')})`);
       }
@@ -958,8 +1113,8 @@ const jobQueries = {
       if (accepted_college_majors.length) {
         const majorConditions = accepted_college_majors.map((major, index) => {
           const paramName = `major${index}`;
-          queryParams.push({ name: paramName, value: `"*${major}*"` });
-          return `CONTAINS(j.accepted_college_majors, @${paramName})`;
+          queryParams.push({ name: paramName, value: `%${major}%` });
+          return `j.accepted_college_majors LIKE @${paramName}`;
         });
         conditions.push(`(${majorConditions.join(' OR ')})`);
       }
