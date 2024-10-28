@@ -2314,7 +2314,8 @@ class JobProcessor extends EventEmitter {
     const employmentType = $(".workplaceTypes").text().trim();
     const descriptionHtml =
       $('div[data-qa="job-description"]').html() +
-      $('div[data-qa="closing-description"]').html();
+      $('div[data-qa="closing-description"]').html() +
+      $('div[data-qa="salary-range"]').html();
 
     const turndownService = new TurndownService({
       headingStyle: "atx",
@@ -3586,8 +3587,8 @@ class JobProcessor extends EventEmitter {
         title: string,
         location: string, // if there are multiple locations, separate them with a | character, format each date as 'City, State', max of 200 characters
         description: string, // write about what the ideal candidate for the job posting is like? who's the person they're looking for?
-        experienceLevel: string, // internship, junior, senior, lead, manager, vp, director only, ensure that the experience level is correct based on the title
-        salary: decimal, // yearly salary, if not given in yearly, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY
+        experienceLevel: enum, // 'internship', 'junior', 'senior', 'lead', 'manager', 'vp', 'director' only, ensure that the experience level is correct based on the title
+        salary: int, // yearly salary, if not given in yearly, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY
         salary_max: int, // if given a range this is max yearly salary, if given in hourly or anything else, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY
         additional_information: string,
         skills_string: string, // write the technicals, soft skills, and tools that are required for this job, separate each skill with a comma, max 200 characters
@@ -3596,19 +3597,23 @@ class JobProcessor extends EventEmitter {
         MinimumQualifications: string, // the type of degree required and any certifications or qualifications absolutely required, like security clearance
         Responsibilities: string,
         accepted_college_majors: string, // write a list of college majors that would be accepted for this job, separate each major with a comma, if not given, write the ones that might be accepted for this job
-        Requirements: string, // write like a list of requirements and the years of experience needed
-        NiceToHave: string, // write like a list of nice to have skills and the years of experience needed
+        Requirements: string, // Each requirement formatted as "X years experience in Y" or "Certification/Degree Z required"
+        NiceToHave: string, // Each nice-to-have formatted as "X years experience in Y" or "Knowledge of Z"
         Schedule: string, // NULL IF NOTHING
         HoursPerWeek: int, // assume 40 hours a week if not given, 20 for part time
         H1BVisaSponsorship: boolean,
         EqualOpportunityEmployerInfo: string,
         Relocation: boolean,
-        location: string,
         IsRemote: boolean,
       }
-
-      DO NOT RETURN TEXT LONGER THAN 255 CHARACTERS FOR ALL FIELDS BESIDES DESCRIPTION.
-
+  
+      For Requirements and NiceToHave fields:
+      - Always specify years of experience when mentioned (e.g., "2 years experience in React")
+      - Include specific certifications or degrees (e.g., "Bachelor's in Computer Science required")
+      - Convert all time periods to years (e.g., "18 months Python experience" becomes "1.5 years Python experience")
+      - Include level of expertise if specified (e.g., "Expert level knowledge in AWS")
+      - List each requirement as a separate array item
+  
       Return the sorted information in JSON format.`;
   }
 

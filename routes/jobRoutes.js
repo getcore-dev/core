@@ -515,7 +515,8 @@ router.get('/delete/:id', checkAuthenticated, async (req, res) => {
     }
     const jobId = req.params.id;
     await jobQueries.deleteJob(jobId);
-    res.redirect('/jobs?success=Job deleted successfully');
+    req.flash('success', 'Application submitted successfully!');
+    res.redirect('/jobs');
   } catch (err) {
     console.error('Error deleting job:', err);
     res.redirect('/jobs?error=Error deleting job');

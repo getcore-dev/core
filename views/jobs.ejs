@@ -85,6 +85,44 @@
         </div>
         <% } %>
 
+        <% if (successMessages.length > 0 || errorMessages.length > 0) { %>
+        <div id="alert-box" role="alert" class="relative w-full rounded-lg border p-4 bg-background text-foreground [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4">
+
+          <!-- Icon for Success/Error -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 lucide <%= successMessages.length > 0 ? 'lucide-check-circle' : 'lucide-alert-circle' %>">
+            <% if (successMessages.length > 0) { %>
+            <path d="M9 12l2 2 4-4"></path>
+            <circle cx="12" cy="12" r="10"></circle>
+            <% } else { %>
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            <% } %>
+          </svg>
+
+          <!-- Close Button -->
+          <button onclick="document.getElementById('alert-box').remove()" class="absolute top-2 right-2 p-1 hover:bg-gray-100 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+              <path d="M18 6 6 18"></path>
+              <path d="m6 6 12 12"></path>
+            </svg>
+          </button>
+
+          <!-- Message Content -->
+          <h5 class="mb-1 font-medium leading-none tracking-tight">
+            <%= successMessages.length > 0 ? 'Success!' : 'Oops! Something went wrong.' %>
+          </h5>
+
+          <div class="text-sm">
+            <ul>
+              <% (successMessages.length > 0 ? successMessages : errorMessages).forEach(function(message) { %>
+              <li><%= message %></li>
+              <% }) %>
+            </ul>
+          </div>
+        </div>
+        <% } %>
+
 
         <div class="jobs-buttons admin-job-buttons v-center">
           <% if (user) { %>
@@ -167,7 +205,7 @@
         <ul id="filters-container" class="hidden flex flex-row w-100 gap-06 wrap no-padding no-margin">
 
           <div class="dropdown" tabindex="0">
-            <button id="toggle-button" aria-label="Search Type" class="dropdown-button inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-4 py-2 justify-between text-muted-foreground search-type-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+            <button id="toggle-button" aria-label="Search Type" class="dropdown-button inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-7 px-4 py-2 justify-between text-muted-foreground search-type-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
               <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search">
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.3-4.3" />
@@ -192,7 +230,7 @@
             </div>
           </div>
           <div class="dropdown" tabindex="0">
-            <button aria-label="Experience Level" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-accent shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-4 py-2 justify-between text-muted-foreground dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+            <button aria-label="Experience Level" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-accent shadow-sm hover:bg-accent hover:text-accent-foreground h-7 px-4 py-2 justify-between text-muted-foreground dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
               Experience Level
               <span class="arrow"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-50" aria-hidden="true">
                   <path d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
@@ -210,7 +248,7 @@
           </div>
 
           <div class="dropdown" tabindex="0">
-            <button aria-label="Majors" class="dropdown-button inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-4 py-2 justify-between text-muted-foreground major-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+            <button aria-label="Majors" class="dropdown-button inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-7 px-4 py-2 justify-between text-muted-foreground major-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
               Majors
               <span class="arrow"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-50" aria-hidden="true">
                   <path d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
@@ -463,12 +501,12 @@
           </div>
 
           <div class="location-input">
-            <input type="text" aria-label="Location" class="location-input-field inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-4 py-2 mini-text secondary-text" placeholder="Type your location">
+            <input type="text" aria-label="Location" class="location-input-field inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-7 px-4 py-2 mini-text secondary-text" placeholder="Type your location">
           </div>
 
           <!--
           <div class="dropdown" tabindex="0">
-            <button aria-label="Salary" class="dropdown-button inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 px-4 py-2 justify-between text-muted-foreground salary-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+            <button aria-label="Salary" class="dropdown-button inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-7 px-4 py-2 justify-between text-muted-foreground salary-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
               Salary
               <span class="arrow">
                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-50" aria-hidden="true">
