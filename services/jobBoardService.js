@@ -1045,61 +1045,46 @@ class JobProcessor extends EventEmitter {
    * @param {string} url - The URL to fetch data from.
    * @returns {Promise<Object>} - The response object containing the fetched data.
    */
-  async makeRequest(url, usePuppeteer = false) {
-    // Handle special cases for specific job board platforms
-    if (url.includes("linkedin.com"))
-      return await this.usePuppeteerFallback(url);
-    if (url.includes("ycombinator"))
-      return await this.usePuppeteerFallback(url);
-    if (url.includes("wiz.io")) return await this.usePuppeteerFallback(url);
-    if (url.includes("nba.com")) return await this.usePuppeteerFallback(url);
-    if (url.includes("icims.com")) return await this.usePuppeteerFallback(url);
-    if (url.includes("avature.com"))
-      return await this.usePuppeteerFallback(url);
-    if (url.includes("nintendo.com"))
-      return await this.usePuppeteerFallback(url);
-    if (url.includes("uber.com")) return await this.usePuppeteerFallback(url);
-    if (url.includes("ashbyhq.com"))
-      return await this.usePuppeteerFallback(url);
-    if (url.includes("epicgames.com"))
-      return await this.usePuppeteerFallback(url);
-    if (url.includes("eightfold.ai"))
-      return await this.usePuppeteerFallback(url);
-    if (url.includes("tiktok.com")) return await this.usePuppeteerFallback(url);
-
-    if (usePuppeteer) {
-      return await this.usePuppeteerFallback(url);
-    }
-
-    try {
-      const response = await axios.get(url, {
-        maxRedirects: 5, // Allow up to 5 redirects
-        validateStatus: function (status) {
-          return status >= 200 && status < 300; // Resolve only if status is 2xx
-        },
-      });
-
-      if (response.status !== 200) {
-        throw new Error(`HTTP request failed with status ${response.status}`);
-      }
-
-      // Check if the response is too short (possibly indicating a non-rendered page)
-      if (response.data.length < 1000) {
-        console.log("Response too short. Falling back to Puppeteer.");
+  async makeRequest(url, useAxios = false) {
+    // List of domains known to work well with axios
+    const axiosCompatibleDomains = [
+      'github.com',
+      'stackoverflow.com',
+      'medium.com',
+      'greenhouse.io'
+    ];
+  
+    // Check if the URL is from a domain known to work with axios
+    const shouldUseAxios = useAxios || axiosCompatibleDomains.some(domain => url.includes(domain));
+  
+    if (shouldUseAxios) {
+      try {
+        const response = await axios.get(url, {
+          maxRedirects: 5,
+          validateStatus: function (status) {
+            return status >= 200 && status < 300;
+          },
+        });
+  
+        if (response.status !== 200) {
+          throw new Error(`HTTP request failed with status ${response.status}`);
+        }
+  
+        // Additional checks for axios response quality
+        if (response.data.length < 1000) {
+          console.log("Response too short. Falling back to Puppeteer.");
+          return await this.usePuppeteerFallback(url);
+        }
+  
+        return response;
+      } catch (error) {
+        console.log(`Axios request failed for ${url}, falling back to Puppeteer:`, error.message);
         return await this.usePuppeteerFallback(url);
       }
-
-      const $ = cheerio.load(response.data);
-      if ($("iframe").length > 0) {
-        console.log("Iframes detected, using Puppeteer");
-        return await this.usePuppeteerFallback(url);
-      }
-
-      return response;
-    } catch (error) {
-      console.error("Error making request:", error);
-      throw error;
     }
+  
+    // Default to Puppeteer for all other cases
+    return await this.usePuppeteerFallback(url);
   }
 
   getRandomUserAgent() {
@@ -1118,44 +1103,44 @@ class JobProcessor extends EventEmitter {
   }
 
   async usePuppeteerFallback(url) {
-      let browser;
-      try {
-        browser = await puppeteer.launch({ headless: true });
-        const page = await browser.newPage();
-        await page.setUserAgent(this.getRandomUserAgent());
-
-        console.log("Loaded the browser");
-
-        // Enable request interception
-        await page.setRequestInterception(true);
-
-        let jobData = null;
-
+    let browser;
+    try {
+      browser = await puppeteer.launch({ headless: true });
+      const page = await browser.newPage();
+      await page.setUserAgent(this.getRandomUserAgent());
+  
+      console.log("Loaded the browser");
+  
+      // Enable request interception
+      await page.setRequestInterception(true);
+  
+      // Create a promise that will resolve when we find job data
+      const jobDataPromise = new Promise((resolve) => {
         page.on("request", (request) => {
           request.continue();
         });
-
+  
         page.on("response", async (response) => {
           // Check for excluded domains
           const excludedDomains = ["linkedin.com", "epicgames.com", "tiktok.com"];
           if (excludedDomains.some((domain) => response.url().includes(domain))) {
             return;
           }
-
+  
           const contentType = response.headers()["content-type"];
-
+  
           if (contentType && contentType.includes("application/json")) {
             try {
               const responseText = await response.text();
               const responseData = JSON.parse(responseText);
-
+  
               if (responseData && Array.isArray(responseData.departments)) {
-                jobData = [];
+                const departmentJobs = [];
                 for (const department of responseData.departments) {
                   if (Array.isArray(department.jobs)) {
                     for (const job of department.jobs) {
                       if (job.absolute_url && job.title) {
-                        jobData.push({
+                        departmentJobs.push({
                           link: job.absolute_url,
                           title: job.title,
                         });
@@ -1163,18 +1148,21 @@ class JobProcessor extends EventEmitter {
                     }
                   }
                 }
-                if (jobData.length > 0) {
+                if (departmentJobs.length > 0) {
                   console.log("Found job data in departments");
+                  resolve({
+                    data: departmentJobs,
+                    status: 200,
+                    intercepted: true,
+                    count: departmentJobs.length,
+                  });
+                  return;
                 }
               }
-
-              let count = 0;
-
+  
               if (responseData && Array.isArray(responseData.positions)) {
-                if (responseData.count) {
-                  count = responseData.count;
-                }
-                jobData = responseData.positions
+                const count = responseData.count || 0;
+                const positionJobs = responseData.positions
                   .map((position) => ({
                     link: position.id
                       ? `https://aexp.eightfold.ai/careers/job/${position.id}`
@@ -1185,10 +1173,17 @@ class JobProcessor extends EventEmitter {
                     business_unit: position.business_unit,
                     work_location_option: position.work_location_option,
                   }))
-                  .filter((job) => job.link && job.title); // Filter out jobs without link or title
-
-                if (jobData.length > 0) {
+                  .filter((job) => job.link && job.title);
+  
+                if (positionJobs.length > 0) {
                   console.log("Found job data in positions");
+                  resolve({
+                    data: positionJobs,
+                    status: 200,
+                    intercepted: true,
+                    count: positionJobs.length,
+                  });
+                  return;
                 }
               }
             } catch (error) {
@@ -1196,44 +1191,52 @@ class JobProcessor extends EventEmitter {
             }
           }
         });
-
-        // Navigate to the page and wait for network to be idle
-        await page.goto(url, {
-          waitUntil: "networkidle0",
-          timeout: 30000, // 30 seconds timeout
-        });
-
-        await this.randomDelay(500, 1000);
-        console.log("Page loaded");
-        const content = await page.content();
-
-        // If job data was found in an intercepted request, return it
-        if (jobData && jobData.length > 0) {
+      });
+  
+      // Create a promise for page navigation
+      const navigationPromise = page.goto(url, {
+        waitUntil: "networkidle0",
+        timeout: 30000, // 30 seconds timeout
+      });
+  
+      // Race between finding job data and page navigation completion
+      const result = await Promise.race([
+        jobDataPromise,
+        navigationPromise.then(async () => {
+          await this.randomDelay(500, 1000);
+          console.log("Page loaded");
+          const content = await page.evaluate(() => {
+            // Remove all script and style elements
+            const scripts = document.querySelectorAll('script');
+            const styles = document.querySelectorAll('style, link[rel="stylesheet"]');
+            
+            scripts.forEach(script => script.remove());
+            styles.forEach(style => style.remove());
+            
+            return document.documentElement.outerHTML;
+          });
+          
           return {
-            data: jobData,
+            data: content,
             status: 200,
-            intercepted: true,
-            count: jobData.length,
           };
-        }
-
-        // Otherwise, return the page content as before
-        return {
-          data: content,
-          status: 200,
-        };
-      } catch (error) {
-        console.error("Puppeteer fallback failed:", error.message);
-        return {
-          data: null,
-          status: 500,
-          error: error.message,
-        };
-      } finally {
-        if (browser) {
-          await browser.close();
-        }
+        }),
+      ]);
+  
+      return result;
+  
+    } catch (error) {
+      console.error("Puppeteer fallback failed:", error.message);
+      return {
+        data: null,
+        status: 500,
+        error: error.message,
+      };
+    } finally {
+      if (browser) {
+        await browser.close();
       }
+    }
   }
 
   async usePuppeteerFallbackNoIntercept(url) {
@@ -2287,19 +2290,6 @@ class JobProcessor extends EventEmitter {
     const company = url.split("/")[3];
     const companyUrl = `https://jobs.lever.co/${company}`;
 
-    // Check if the company exists in the db, if not create it
-    const companyId = await this.getOrCreateCompany(
-      company,
-      "",
-      "",
-      companyUrl,
-      "",
-      "",
-      "",
-      "",
-      "",
-    );
-
     // Fetch job details
     const response = await axios.get(url);
     const $ = cheerio.load(response.data);
@@ -2312,10 +2302,23 @@ class JobProcessor extends EventEmitter {
       .replace("/", "")
       .trim();
     const employmentType = $(".workplaceTypes").text().trim();
+    const logoSrc = $(".main-header-logo img").attr("src");
+    const companyId = await this.getOrCreateCompany(
+      company,
+      "",
+      "",
+      companyUrl,
+      "",
+      "",
+      "",
+    logoSrc,
+      "",
+    );
+
     const descriptionHtml =
-      $('div[data-qa="job-description"]').html() +
-      $('div[data-qa="closing-description"]').html() +
-      $('div[data-qa="salary-range"]').html();
+      $('div.section.page-centered').not('.posting-header').map(function() {
+        return $(this).html();
+      }).get().join('');
 
     const turndownService = new TurndownService({
       headingStyle: "atx",
@@ -2341,8 +2344,8 @@ class JobProcessor extends EventEmitter {
     return {
       url,
       companyId,
-      company: company.charAt(0).toUpperCase() + company.slice(1), // Capitalize company name
-      company_name: company.charAt(0).toUpperCase() + company.slice(1), // Capitalize company name
+      company: company.charAt(0).toUpperCase() + company.slice(1),
+      company_name: company.charAt(0).toUpperCase() + company.slice(1),
       title,
       experience_level,
       employmentType,
@@ -3214,6 +3217,14 @@ class JobProcessor extends EventEmitter {
       if (url.includes(company)) {
         return patterns.some((pattern) => url.includes(pattern));
       }
+    }
+
+    // Check if the URL contains 'job', 'jid', or 'career'
+    const keywords = ['job', 'jid', 'career', 'apply', 'vacancy', 'position', 'employment', 'work'];
+    const containsKeyword = keywords.some(keyword => url.includes(keyword));
+    
+    if (containsKeyword) {
+      return true;
     }
 
     console.log("No patterns found for:", url);
