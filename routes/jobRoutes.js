@@ -507,6 +507,7 @@ router.get('/getRecentJobs', cacheMiddleware(3600), async (req, res) => {
   }
 });
 
+
 router.get('/delete/:id', checkAuthenticated, async (req, res) => {
   try {
     const user = req.user;
