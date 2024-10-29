@@ -164,7 +164,7 @@
                     <% } %>
                     <%
                   const locations = job.location
-                    .split(',')
+                    .split('|')
                     .map(loc => loc.trim().toLowerCase())
                     .filter(loc => !loc.toLowerCase().includes('n/a'));
                   const locationLinks = locations.map(loc => {
@@ -177,7 +177,7 @@
                         .join(' ');
                       return `<a class="text-sm text-muted-foreground" href="/jobs?locations=${encodeURIComponent(loc)}">${country}</a>`;
                     }
-                  }).join(', ');
+                  }).join('- ');
                 %>
                     <%- locationLinks %>
                     <span class="text-sm">•</span>

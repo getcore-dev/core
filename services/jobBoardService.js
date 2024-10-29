@@ -27,6 +27,7 @@ const { set } = require("../app");
 const web = new WebScraper();
 const TurndownService = require("turndown");
 const { count } = require("console");
+const { name } = require("ejs-async");
 
 class ObjectSet extends Set {
   add(obj) {
@@ -1122,18 +1123,47 @@ class JobProcessor extends EventEmitter {
   
         page.on("response", async (response) => {
           // Check for excluded domains
-          const excludedDomains = ["linkedin.com", "epicgames.com", "tiktok.com"];
+          const excludedDomains = ["linkedin.com", "epicgames.com", "tiktok.com", "googleapis.com"];
           if (excludedDomains.some((domain) => response.url().includes(domain))) {
             return;
           }
-  
+        
           const contentType = response.headers()["content-type"];
-  
+        
           if (contentType && contentType.includes("application/json")) {
             try {
               const responseText = await response.text();
               const responseData = JSON.parse(responseText);
-  
+              console.log("JSON response data:", responseData);
+        
+              // Handle Careerpuck response format
+              if (responseData && responseData.jobBoard && responseData.jobBoard.atsSourcePlatform === "greenhouse") {
+                const jobData = {
+                  link: responseData.publicUrl || responseData.applyUrl,
+                  title: responseData.title,
+                  location: responseData.location,
+                  description: responseData.content,
+                  department: responseData.departments?.[0]?.name || null,
+                  office: responseData.offices?.[0]?.name || null,
+                  workType: responseData.workType || null,
+                  workplaceType: responseData.workplaceType || null,
+                  postedAt: responseData.postedAt
+                };
+        
+                if (jobData.link && jobData.title) {
+                  console.log(jobData);
+                  console.log("Found Careerpuck job data");
+                  resolve({
+                    data: [jobData],
+                    status: 200,
+                    intercepted: true,
+                    count: 1
+                  });
+                  return;
+                }
+              }
+        
+              // Handle departments format
               if (responseData && Array.isArray(responseData.departments)) {
                 const departmentJobs = [];
                 for (const department of responseData.departments) {
@@ -1159,7 +1189,8 @@ class JobProcessor extends EventEmitter {
                   return;
                 }
               }
-  
+        
+              // Handle positions format
               if (responseData && Array.isArray(responseData.positions)) {
                 const count = responseData.count || 0;
                 const positionJobs = responseData.positions
@@ -1174,7 +1205,7 @@ class JobProcessor extends EventEmitter {
                     work_location_option: position.work_location_option,
                   }))
                   .filter((job) => job.link && job.title);
-  
+        
                 if (positionJobs.length > 0) {
                   console.log("Found job data in positions");
                   resolve({
@@ -2150,18 +2181,6 @@ class JobProcessor extends EventEmitter {
     // https://job-boards.greenhouse.io/flexport/jobs/6035440?gh_jid=6035440 you should grab 'flexport'
     const company = url.split("/")[3];
     const companyUrl = `https://job-boards.greenhouse.io/${company}`;
-    const companyId = await this.getOrCreateCompany(
-      company,
-      "",
-      "",
-      companyUrl,
-      "",
-      "",
-      "",
-      "",
-      "",
-    );
-    console.log(companyId);
 
     // return an object with title and description
     const response = await axios.get(url);
@@ -2172,6 +2191,22 @@ class JobProcessor extends EventEmitter {
       $(".body--metadata").text().trim() || $("div.location").text().trim();
     const descriptionHtml =
       $("div.job__description").html() || $("div#content").html();
+    const logoSrc = $("img.logo").attr("src") || '';
+
+
+      const companyId = await this.getOrCreateCompany(
+        company,
+        "",
+        "",
+        companyUrl,
+        "",
+        "",
+        "",
+        logoSrc,
+        "",
+      );
+
+      console.log(companyId);
 
     const turndownService = new TurndownService({
       headingStyle: "atx", // Use ATX-style headings (e.g., # Heading)
@@ -2477,148 +2512,6 @@ class JobProcessor extends EventEmitter {
     return allJobs;
   }
 
-  async grabWorkDayLinks(url) {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    this.updateProgress({
-      phase: "Grabbing Workday links",
-      totalJobs: 0,
-      processedJobs: 0,
-      currentAction: "Grabbing Workday links",
-    });
-    // Enable request interception
-    await page.setRequestInterception(true);
-
-    let allJobs = [];
-    let interceptedData = null;
-    let postData = null;
-
-    page.on("request", (request) => {
-      if (request.url().includes("/jobs") && request.method() === "POST") {
-        postData = request.postData();
-        request.continue();
-      } else {
-        request.continue();
-      }
-    });
-
-    page.on("response", async (response) => {
-      if (
-        response.url().includes("/jobs") &&
-        response.request().method() === "POST"
-      ) {
-        const requestUrl = response.request().url();
-        console.log(requestUrl);
-        try {
-          const data = await response.json();
-          if (data && data.jobPostings) {
-            interceptedData = data;
-            interceptedData.url = requestUrl;
-          }
-        } catch (error) {
-          console.error("Error parsing response:", error);
-        }
-      }
-    });
-
-    try {
-      // Navigate to the page
-      await page.goto(url, { waitUntil: "networkidle0" });
-
-      // Wait for the job postings data to be intercepted
-      while (!interceptedData) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-
-      // Process the intercepted data
-      let total = interceptedData.total;
-      allJobs = interceptedData.jobPostings.map((job) => ({
-        ...job,
-        externalPath: `${url.replace("/jobs", "")}${job.externalPath}`,
-      }));
-
-      this.updateProgress({
-        phase: "Grabbing Workday links",
-        totalJobs: total,
-        processedJobs: allJobs.length,
-        currentAction: "Grabbing Workday links",
-      });
-
-      console.log(`Fetched ${allJobs.length} out of ${total} jobs`);
-
-      this.updateProgress({
-        phase: "Grabbing Workday links",
-        totalJobs: total,
-        processedJobs: allJobs.length,
-        currentAction: "Grabbing Workday links",
-      });
-
-      // Continue fetching if there are more jobs
-      while (allJobs.length < total) {
-        const offset = allJobs.length;
-        const limit = Math.min(20, total - allJobs.length); // Assuming 20 is the default limit
-
-        // Update the postData with new offset and limit
-        const updatedPostData = JSON.parse(postData);
-        updatedPostData.offset = offset;
-        updatedPostData.limit = limit;
-
-        // Add a random delay between 2 to 5 seconds
-        const delay = Math.floor(Math.random() * (5000 - 2000 + 1)) + 2000;
-        await new Promise((resolve) => setTimeout(resolve, delay));
-
-        this.updateProgress({
-          phase: "Grabbing Workday links",
-          totalJobs: total,
-          processedJobs: allJobs.length,
-          currentAction: "Grabbing Workday links",
-        });
-
-        // Make a new POST request
-        const response = await axios.post(
-          interceptedData.url,
-          updatedPostData,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
-        );
-
-        const newData = response.data;
-        const newJobs = newData.jobPostings.map((job) => ({
-          ...job,
-          externalPath: `${url.replace("/jobs", "")}${job.externalPath}`,
-        }));
-
-        allJobs = allJobs.concat(newJobs);
-        console.log(`Fetched ${allJobs.length} out of ${total} jobs`);
-
-        this.updateProgress({
-          phase: "Grabbing Workday links",
-          totalJobs: total,
-          processedJobs: allJobs.length,
-          currentAction: "Grabbing Workday links",
-        });
-      }
-
-      return allJobs;
-    } catch (error) {
-      console.error("Error fetching job data:", error.message);
-      return null;
-    } finally {
-      await browser.close();
-
-      this.updateProgress({
-        phase: "Grabbing Workday links",
-        totalJobs: 0,
-        processedJobs: 0,
-        currentAction: "Grabbing Workday links",
-      });
-    }
-  }
-
   async processC3AILink(url) {
     let browser;
     try {
@@ -2773,22 +2666,6 @@ class JobProcessor extends EventEmitter {
       console.error("Error processing Workday job link:", error);
       throw error;
     }
-  }
-
-  // Helper function to convert the original URL to the API URL
-  convertToWorkdayApiUrl(originalUrl) {
-    const url = new URL(originalUrl);
-    const pathParts = url.pathname.split("/").filter(Boolean);
-    const company = url.hostname.split(".")[0];
-    const wdNumber = url.hostname.split(".")[1].replace("wd", "");
-    const tenant = pathParts[1];
-
-    const response = {
-      company,
-      tenant,
-      link: `https://${company}.wd${wdNumber}.myworkdayjobs.com/wday/cxs/${company}/${tenant}/job/${pathParts.slice(3).join("/")}`,
-    };
-    return response;
   }
 
   async processAbbVieLink(url) {
@@ -2969,32 +2846,6 @@ class JobProcessor extends EventEmitter {
     }
   }
 
-  // Helper function to determine experience level based on job title
-  determineExperienceLevel(title) {
-    const lowerTitle = title.toLowerCase();
-    if (lowerTitle.includes("senior") || lowerTitle.includes("sr.")) {
-      return "Senior";
-    } else if (lowerTitle.includes("junior") || lowerTitle.includes("jr.")) {
-      return "Junior";
-    } else if (lowerTitle.includes("lead") || lowerTitle.includes("manager")) {
-      return "Lead";
-    } else if (lowerTitle.includes("intern")) {
-      return "Internship";
-    } else {
-      return "Mid Level";
-    }
-  }
-
-  // Helper function to format location
-  formatLocation(location) {
-    return `${location.city}, ${location.state}, ${location.country}`.trim();
-  }
-
-  // Helper function to strip HTML tags
-  stripHtmlTags(html) {
-    return html.replace(/<[^>]*>/g, "").trim();
-  }
-
   async processAppleJob(url) {
     const response = await this.makeRequest(url);
     const data = response.data;
@@ -3065,12 +2916,223 @@ class JobProcessor extends EventEmitter {
     // const companyId = await this.getOrCreateCompany(company, '', '', 'https://jobs.apple.com', 'Technology', '10,000+', 'AAPL', '/src/applelogo.png', '1976-04-01');
   }
 
+  async grabWorkDayLinks(url) {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    this.updateProgress({
+      phase: "Grabbing Workday links",
+      totalJobs: 0,
+      processedJobs: 0,
+      currentAction: "Grabbing Workday links",
+    });
+    // Enable request interception
+    await page.setRequestInterception(true);
+
+    let allJobs = [];
+    let interceptedData = null;
+    let postData = null;
+
+    page.on("request", (request) => {
+      if (request.url().includes("/jobs") && request.method() === "POST") {
+        postData = request.postData();
+        request.continue();
+      } else {
+        request.continue();
+      }
+    });
+
+    page.on("response", async (response) => {
+      if (
+        response.url().includes("/jobs") &&
+        response.request().method() === "POST"
+      ) {
+        const requestUrl = response.request().url();
+        console.log(requestUrl);
+        try {
+          const data = await response.json();
+          if (data && data.jobPostings) {
+            interceptedData = data;
+            interceptedData.url = requestUrl;
+          }
+        } catch (error) {
+          console.error("Error parsing response:", error);
+        }
+      }
+    });
+
+    try {
+      // Navigate to the page
+      await page.goto(url, { waitUntil: "networkidle0" });
+
+      // Wait for the job postings data to be intercepted
+      while (!interceptedData) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+
+      // Process the intercepted data
+      let total = interceptedData.total;
+      allJobs = interceptedData.jobPostings.map((job) => ({
+        ...job,
+        externalPath: `${url.replace("/jobs", "")}${job.externalPath}`,
+      }));
+
+      this.updateProgress({
+        phase: "Grabbing Workday links",
+        totalJobs: total,
+        processedJobs: allJobs.length,
+        currentAction: "Grabbing Workday links",
+      });
+
+      console.log(`Fetched ${allJobs.length} out of ${total} jobs`);
+
+      this.updateProgress({
+        phase: "Grabbing Workday links",
+        totalJobs: total,
+        processedJobs: allJobs.length,
+        currentAction: "Grabbing Workday links",
+      });
+
+      // Continue fetching if there are more jobs
+      while (allJobs.length < total) {
+        const offset = allJobs.length;
+        const limit = Math.min(20, total - allJobs.length); // Assuming 20 is the default limit
+
+        // Update the postData with new offset and limit
+        const updatedPostData = JSON.parse(postData);
+        updatedPostData.offset = offset;
+        updatedPostData.limit = limit;
+
+        // Add a random delay between 2 to 5 seconds
+        const delay = Math.floor(Math.random() * (5000 - 2000 + 1)) + 2000;
+        await new Promise((resolve) => setTimeout(resolve, delay));
+
+        this.updateProgress({
+          phase: "Grabbing Workday links",
+          totalJobs: total,
+          processedJobs: allJobs.length,
+          currentAction: "Grabbing Workday links",
+        });
+
+        // Make a new POST request
+        const response = await axios.post(
+          interceptedData.url,
+          updatedPostData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        const newData = response.data;
+        const newJobs = newData.jobPostings.map((job) => ({
+          ...job,
+          externalPath: `${url.replace("/jobs", "")}${job.externalPath}`,
+        }));
+
+        allJobs = allJobs.concat(newJobs);
+        console.log(`Fetched ${allJobs.length} out of ${total} jobs`);
+
+        this.updateProgress({
+          phase: "Grabbing Workday links",
+          totalJobs: total,
+          processedJobs: allJobs.length,
+          currentAction: "Grabbing Workday links",
+        });
+      }
+
+      return allJobs;
+    } catch (error) {
+      console.error("Error fetching job data:", error.message);
+      return null;
+    } finally {
+      await browser.close();
+
+      this.updateProgress({
+        phase: "Grabbing Workday links",
+        totalJobs: 0,
+        processedJobs: 0,
+        currentAction: "Grabbing Workday links",
+      });
+    }
+  }
+
+  // Helper function to convert the original URL to the API URL
+  convertToWorkdayApiUrl(originalUrl) {
+    const url = new URL(originalUrl);
+    const pathParts = url.pathname.split("/").filter(Boolean);
+    const company = url.hostname.split(".")[0];
+    const wdNumber = url.hostname.split(".")[1].replace("wd", "");
+    const tenant = pathParts[1];
+
+    const response = {
+      company,
+      tenant,
+      link: `https://${company}.wd${wdNumber}.myworkdayjobs.com/wday/cxs/${company}/${tenant}/job/${pathParts.slice(3).join("/")}`,
+    };
+    return response;
+  }
+
+  // Helper function to determine experience level based on job title
+  determineExperienceLevel(title) {
+    const lowerTitle = title.toLowerCase();
+    if (lowerTitle.includes("senior") || lowerTitle.includes("sr.")) {
+      return "Senior";
+    } else if (lowerTitle.includes("junior") || lowerTitle.includes("jr.")) {
+      return "Junior";
+    } else if (lowerTitle.includes("lead") || lowerTitle.includes("manager")) {
+      return "Lead";
+    } else if (lowerTitle.includes("intern")) {
+      return "Internship";
+    } else {
+      return "Mid Level";
+    }
+  }
+
+  // Helper function to format location
+  formatLocation(location) {
+    return `${location.city}, ${location.state}, ${location.country}`.trim();
+  }
+
+  // Helper function to strip HTML tags
+  stripHtmlTags(html) {
+    return html.replace(/<[^>]*>/g, "").trim();
+  }
+
   async processGenericJob(data) {
     // use gemini to extract the data
   }
 
   // Define a dictionary of job processing rules for different websites
   jobProcessingRules = {
+    "pfizer.com": {
+
+      selectors: {
+        title: "h1.posting-title",
+        location: "div.locations",
+        description: "div.posting-description",
+        additional_information: "div.locations",
+      },
+      company: {
+        name: "Pfizer",
+        jobBoardUrl: "https://www.pfizer.com/about/careers/search-results?region%5B0%5D=United%20States%20of%20America"
+      },
+    },
+
+    "careerpuck.com": {
+      selectors: {
+        title: "h1 > .role",
+        description: ".job-description",
+        location: '[data-testing="job-title-header"] > .JobPagePublic__Location'
+      }, 
+      company: {
+        name: (url) => decodeURIComponent(url.split("/")[4]),
+        jobBoardUrl: (company) => `https://app.careerpuck.com/job-board/${encodeURIComponent(company)}`,
+      },
+    },
+
+
     "stripe.com": {
       selectors: {
         title: ".JobsDetail__header h1.Copy__title",
@@ -3131,8 +3193,8 @@ class JobProcessor extends EventEmitter {
         description: "#overview>div",
       },
       company: {
-        name: (url) => url.split("/")[3],
-        jobBoardUrl: (company) => `https://jobs.ashbyhq.com/${company}`,
+        name: (url) => decodeURIComponent(url.split("/")[3]),
+        jobBoardUrl: (company) => `https://jobs.ashbyhq.com/${encodeURIComponent(company)}`,
       },
     },
   };
@@ -3145,8 +3207,11 @@ class JobProcessor extends EventEmitter {
     const result = {};
     for (const [key, selector] of Object.entries(rules.selectors)) {
       result[key] = $(selector).text().trim();
+      if (key === "location" && result[key].length > 200) {
+        result[key] = result[key].substring(0, 200);
+      }
       if (key === "description" || key === "additional_information") {
-        result[key] = $(selector).html();
+        result[key] = $(selector).text().trim();
       }
     }
 
@@ -3187,10 +3252,23 @@ class JobProcessor extends EventEmitter {
     return this.processJobWithRules(url, this.jobProcessingRules["stripe.com"]);
   }
 
+  async processPfizerLink(url) {
+    if (url.includes("about/careers/job/")) {
+      return this.processJobWithRules(url, this.jobProcessingRules["pfizer.com"]);
+    }
+  }
+
   async processEpicGamesJob(url) {
     return this.processJobWithRules(
       url,
       this.jobProcessingRules["epicgames.com"],
+    );
+  }
+
+  async processCareerPuckJob(url) {
+    return this.processJobWithRules(
+      url,
+      this.jobProcessingRules["careerpuck.com"],
     );
   }
 
@@ -3298,6 +3376,7 @@ class JobProcessor extends EventEmitter {
       },
       { keyword: "ashbyhq.com", processor: this.processAshByHqLink.bind(this) },
       { keyword: "stripe.com", processor: this.processStripeLink.bind(this) },
+      { keyword: "pfizer.com", processor: this.processPfizerLink.bind(this) },
       { keyword: "abbvie.com", processor: this.processAbbVieLink.bind(this) },
       { keyword: "c3.ai", processor: this.processC3AILink.bind(this) },
       { keyword: "eightfold", processor: this.processEightFoldLink.bind(this) },
@@ -3331,6 +3410,10 @@ class JobProcessor extends EventEmitter {
       {
         keyword: "epicgames.com",
         processor: this.processEpicGamesJob.bind(this),
+      },
+      {
+        keyword: "careerpuck.com",
+        processor: this.processCareerPuckJob.bind(this),
       },
     ];
 
