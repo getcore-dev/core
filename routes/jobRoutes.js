@@ -31,6 +31,56 @@ const viewLimiter = rateLimit({
   },
 });
 
+const experienceLevelRoutes = {
+  '/internships': {
+    level: 'Internship',
+    mainFilter: 'Internships',
+    needsJobCount: true
+  },
+  '/grad': {
+    level: 'Entry Level',
+    mainFilter: 'Entry Level Positions',
+    needsJobCount: true
+  },
+  '/vp': {
+    level: 'VP',
+    mainFilter: 'VP Positions',
+    needsJobCount: true
+  },
+  '/junior': {
+    level: 'Junior',
+    mainFilter: 'Junior Positions',
+    needsJobCount: true
+  },
+  '/senior': {
+    level: 'Senior',
+    mainFilter: 'Senior Positions',
+    needsJobCount: true
+  }
+};
+
+// Set up routes dynamically
+Object.entries(experienceLevelRoutes).forEach(([path, config]) => {
+  router.get(path, async (req, res) => {
+    const filters = parseFilters(req.query);
+    filters.experienceLevels = [config.level];
+
+    // Only fetch job count for internships (or modify as needed)
+    const jobCount = config.needsJobCount 
+      ? await jobQueries.getJobCountByExperienceLevel(config.level)
+      : undefined;
+
+    res.render('specific-jobs.ejs', {
+      user: req.user,
+      mainFilter: config.mainFilter,
+      filters: filters,
+      jobCount,
+      errorMessages: req.flash('error'),
+      successMessages: req.flash('success')
+    });
+  });
+});
+
 router.get('/profile', checkAuthenticated, async (req, res) => {
   res.render('edit-jobs-profile.ejs', { user: req.user });
 });
@@ -66,65 +116,10 @@ router.get('/process/:jobId', checkAuthenticated, async (req, res) => {
   res.json(improvedJobPostings);
 });
 
-router.get('/internships', async (req, res) => {
-  const filters = parseFilters(req.query);
-  filters.experienceLevels = ['Internship'];
-  res.render('jobs.ejs', { 
-    user: req.user, 
-    filters: filters,
-    errorMessages: req.flash('error'),
-    successMessages: req.flash('success'),
-  });
-});
-
-router.get('/grad', async (req, res) => {
-  const filters = parseFilters(req.query);
-  filters.experienceLevels = ['Entry Level'];
-  res.render('jobs.ejs', { 
-    user: req.user, 
-    filters: filters,
-    errorMessages: req.flash('error'),
-    successMessages: req.flash('success'),
-  });
-});
-
-router.get('/vp', async (req, res) => {
-  const filters = parseFilters(req.query);
-  filters.experienceLevels = ['VP'];
-  res.render('jobs.ejs', { 
-    user: req.user, 
-    filters: filters,
-    errorMessages: req.flash('error'),
-    successMessages: req.flash('success'),
-  });
-});
-
-router.get('/junior', async (req, res) => {
-  const filters = parseFilters(req.query);
-  filters.experienceLevels = ['Junior'];
-  res.render('jobs.ejs', { 
-    user: req.user, 
-    filters: filters,
-    errorMessages: req.flash('error'),
-    successMessages: req.flash('success'),
-  });
-});
-
-router.get('/senior', async (req, res) => {
-  const filters = parseFilters(req.query);
-  filters.experienceLevels = ['Senior'];
-  res.render('jobs.ejs', { 
-    user: req.user, 
-    filters: filters,
-    errorMessages: req.flash('error'),
-    successMessages: req.flash('success'),
-  });
-});
-
 router.get('/swe', async (req, res) => {
   const filters = parseFilters(req.query);
   filters.titles = ['Software Engineer'];
-  res.render('jobs.ejs', { 
+  res.render('specific-jobs.ejs', { 
     user: req.user, 
     filters: filters,
     errorMessages: req.flash('error'),

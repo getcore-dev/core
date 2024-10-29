@@ -217,6 +217,21 @@ const jobQueries = {
     console.log("Resume created");
   },
 
+  getJobCountByExperienceLevel: async (experienceLevel) => {
+    try {
+      const result = await sql.query`
+        SELECT COUNT(*) as count
+        FROM JobPostings
+        WHERE experienceLevel = ${experienceLevel}
+      `;
+      return result.recordset[0].count;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+
   updateCompanyLogo: async (companyId, logo) => {
     try {
       const result = await sql.query`

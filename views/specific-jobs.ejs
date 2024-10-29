@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>\core\ Jobs</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="/css/jobs.css" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/com-btn-container.css" />
+  <link rel="shortcut icon" href="/img/core.png" />
+
+  <meta name="description" content="Explore job openings at CORE. Find your next career opportunity and join our team to make a difference.">
+  <meta name="keywords" content="CORE job openings, career opportunities, job listings, join CORE, employment, job search">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="CORE Job Openings">
+  <meta property="og:description" content="Explore job openings at CORE. Find your next career opportunity and join our team to make a difference.">
+  <meta property="og:image" content="/img/core.png">
+  <meta property="og:url" content="https://getcore.dev/jobs">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CORE Job Openings">
+  <meta name="twitter:description" content="Explore job openings at CORE. Find your next career opportunity and join our team to make a difference.">
+  <meta name="twitter:image" content="/img/core.png">
+</head>
+
+<body>
+  <%- include('partials/navbar', { pagePath: 'jobs' }) %>
+  <main>
+    <script>
+      const user = <%- JSON.stringify(user || null) %>;
+    </script>
+
+    <%- include('partials/com-btn-container', { }) %>
+    <div class="jobs-container">
+      <div class="page-header flex flex-col gap-2 mb-4">
+        <div class="jobs-buttons mb-4 v-center wrap">
+          <div class="flex flex-col start">
+            <h1 id="jobHeader" class="text-2xl font-semibold text-gray-800 dark:text-gray-200 text-left">
+              <%= mainFilter %> <% if (typeof jobCount !== 'undefined') { %>
+              <span class="text-lg text-muted-foreground">(<%= jobCount %>)</span>
+              <% } %>
+            </h1>
+            <h5 id="jobSubHeader" class="text-sm font-semibold text-muted-foreground dark:text-gray-200 text-left">
+              Explore
+            </h5>
+            <!--
+            <span class="flex flex-col">
+              <p class="recent-jobs-count mini-text primary-text" id="recent-jobs-count">
+              </p>
+            </span>
+            -->
+          </div>
+          <% if (user) { %>
+          <a class="link mini-text" id="applied-jobs-link" href="/jobs/applied">
+            Applied Jobs
+          </a>
+          <% } %>
+        </div>
+
+        <% if (!user) { %>
+        <div id="alert-box" role="alert" class="relative w-full rounded-lg border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground bg-background text-foreground">
+          <!-- Terminal Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user h-4 w-4">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+
+          <!-- Close Button -->
+          <button onclick="document.getElementById('alert-box').remove()" class="absolute top-2 right-2 p-1 hover:bg-gray-100 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+              <path d="M18 6 6 18"></path>
+              <path d="m6 6 12 12"></path>
+            </svg>
+          </button>
+
+          <h5 class="mb-1 font-medium leading-none tracking-tight">Create an account!</h5>
+          <div class="text-sm">
+            <p>
+              You are not logged in. Please
+              <a href="/login" class="underline">log in to track your job progress</a>
+              and access more features.
+            </p>
+          </div>
+        </div>
+        <% } %>
+
+        <% if (successMessages.length > 0 || errorMessages.length > 0) { %>
+        <div id="alert-box" role="alert" class="relative w-full rounded-lg border p-4 bg-background text-foreground [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4">
+
+          <!-- Icon for Success/Error -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 lucide <%= successMessages.length > 0 ? 'lucide-check-circle' : 'lucide-alert-circle' %>">
+            <% if (successMessages.length > 0) { %>
+            <path d="M9 12l2 2 4-4"></path>
+            <circle cx="12" cy="12" r="10"></circle>
+            <% } else { %>
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            <% } %>
+          </svg>
+
+          <!-- Close Button -->
+          <button onclick="document.getElementById('alert-box').remove()" class="absolute top-2 right-2 p-1 hover:bg-gray-100 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+              <path d="M18 6 6 18"></path>
+              <path d="m6 6 12 12"></path>
+            </svg>
+          </button>
+
+          <!-- Message Content -->
+          <h5 class="mb-1 font-medium leading-none tracking-tight">
+            <%= successMessages.length > 0 ? 'Success!' : 'Oops! Something went wrong.' %>
+          </h5>
+
+          <div class="text-sm">
+            <ul>
+              <% (successMessages.length > 0 ? successMessages : errorMessages).forEach(function(message) { %>
+              <li><%= message %></li>
+              <% }) %>
+            </ul>
+          </div>
+        </div>
+        <% } %>
+
+
+        <div class="jobs-buttons admin-job-buttons v-center">
+          <% if (user) { %>
+
+          <% if (user.isAdmin) { %>
+          <div class="flex flex-row gap-06 v-center">
+            <a class="h-7" href="/jobs/create">
+              <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground [&_svg]-h-3.5 h-7 w-7 rounded-[6px] [&_svg]:w-3.5">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase">
+                  <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  <rect width="20" height="14" x="2" y="6" rx="2" />
+                </svg>
+              </button>
+            </a>
+            <a class="h-7" href="/jobs/create-company">
+              <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground [&_svg]-h-3.5 h-7 w-7 rounded-[6px] [&_svg]:w-3.5">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building-2">
+                  <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
+                  <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+                  <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
+                  <path d="M10 6h4" />
+                  <path d="M10 10h4" />
+                  <path d="M10 14h4" />
+                  <path d="M10 18h4" />
+                </svg>
+              </button>
+            </a>
+            <a class="h-7" href="/jobs/create-company-queue">
+              <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground [&_svg]-h-3.5 h-7 w-7 rounded-[6px] [&_svg]:w-3.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building-2">
+                  <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
+                  <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+                  <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
+                  <path d="M10 6h4" />
+                  <path d="M10 10h4" />
+                  <path d="M10 14h4" />
+                  <path d="M10 18h4" />
+                </svg>
+              </button>
+            </a>
+            <a class="h-7" id="applied-jobs-link" href="/jobs/applied">
+              <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground [&_svg]-h-3.5 h-7 w-7 rounded-[6px] [&_svg]:w-3.5">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase">
+                  <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  <rect width="20" height="14" x="2" y="6" rx="2" />
+                </svg>
+              </button>
+            </a>
+          </div>
+          <% } %>
+          <% } %>
+          <div class="flex flex-row gap-2 v-center">
+            <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground [&_svg]-h-3.5 h-7 px-3 rounded-[6px] [&_svg]:w-3.5" onclick="document.getElementById('filters-container').classList.toggle('hidden');">
+
+              <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-filter">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+              </svg>
+              Filter
+            </button>
+          </div>
+
+        </div>
+
+        <div class="jobs-search-container flex flex-col gap-03 relative">
+          <svg id="jobs-search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search absolute left-2 top-2.5 h-4 w-4 text-foreground">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+          <input type="text" id="job-search-input" class="job-posting-search-input pr-9 lex h-9 w-full rounded-md border border-input bg-transparent pr-8 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" placeholder="Search jobs & companies" oninput="this.nextElementSibling.style.display = this.value ? 'flex' : 'none';" />
+          <button id="job-search-icon" class="absolute inset-y-px right flex h-full w-9 items-center justify-center rounded-r-lg border border-transparent text-muted-foreground/80 ring-offset-background transition-shadow animate-in fade-in zoom-in-75 hover:text-foreground focus-visible:border-ring focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50" aria-label="Clear input" style="display: none;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-x" aria-hidden="true" role="presentation">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="m15 9-6 6"></path>
+              <path d="m9 9 6 6"></path>
+            </svg></button>
+        </div>
+
+        <ul id="filters-container" class="hidden flex flex-row w-100 gap-06 wrap no-padding no-margin">
+
+          <div class="dropdown" tabindex="0">
+            <button id="toggle-button" aria-label="Search Type" class="dropdown-button inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-7 px-4 py-2 justify-between text-muted-foreground search-type-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+              <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+              <span id="toggle-text">
+                Search Type
+              </span>
+              <span class="arrow"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-50" aria-hidden="true">
+                  <path d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
+                </svg></span>
+            </button>
+            <div class="dropdown-content">
+              <a class="w-100">
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-search-type="recent" onclick="setSearchType('recent')">Recent</button>
+              </a>
+              <a class="w-100">
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-search-type="preference" onclick="setSearchType('preference')">Preference</button>
+              </a>
+              <a class="w-100">
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-search-type="trending" onclick="setSearchType('trending')">Trending</button>
+              </a>
+            </div>
+          </div>
+          <div class="dropdown" tabindex="0">
+            <button aria-label="Experience Level" class="inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-accent shadow-sm hover:bg-accent hover:text-accent-foreground h-7 px-4 py-2 justify-between text-muted-foreground dropdown-button experience-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+              Experience Level
+              <span class="arrow"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-50" aria-hidden="true">
+                  <path d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
+                </svg></span>
+            </button>
+
+            <div class="dropdown-content">
+              <% const experienceLevels = ["Internship", "Entry Level", "Junior", "Senior", "Lead", "Manager", "Director", "VP"]; %>
+              <% experienceLevels.forEach(level => { %>
+              <a class="w-100">
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-levels" data-id="undefined" data-name="<%= level %>" onclick="toggleSelectedFilter(event)"><%= level %></button>
+              </a>
+              <% }); %>
+            </div>
+          </div>
+
+          <div class="dropdown" tabindex="0">
+            <button aria-label="Majors" class="dropdown-button inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-7 px-4 py-2 justify-between text-muted-foreground major-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+              Majors
+              <span class="arrow"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-50" aria-hidden="true">
+                  <path d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
+                </svg></span>
+            </button>
+
+            <div class="dropdown-content">
+              <%
+                  const collegeMajorsEnum = [
+              // Computer and Information Technology
+              'Computer Science',
+              'Software Engineering',
+              'Information Systems',
+              'Computer Engineering',
+              'Data Science',
+              'Artificial Intelligence',
+              'Cybersecurity',
+              'Networking',
+              'Web Development',
+              'Mobile Development',
+              'Game Development',
+              'Database Management',
+              'DevOps',
+              'Information Technology',
+            
+              // Business and Management
+              'Business Administration',
+              'Finance',
+              'Marketing',
+              'Accounting',
+              'International Business',
+              'Entrepreneurship',
+              'Human Resources',
+              'Supply Chain Management',
+              'Management Information Systems',
+              'Business Analytics',
+              'Economics',
+            
+              // Engineering
+              'Mechanical Engineering',
+              'Electrical Engineering',
+              'Civil Engineering',
+              'Chemical Engineering',
+              'Aerospace Engineering',
+              'Biomedical Engineering',
+              'Industrial Engineering',
+              'Materials Engineering',
+              'Environmental Engineering',
+              'Software Engineering',
+
+              // STEM
+              'Robotics',
+              'Nanotechnology',
+              'Bioinformatics',
+              'Quantum Computing',
+              'Marine Biology',
+              'Meteorology',
+              'Neuroscience',
+              'Biotechnology',
+              'Astrophysics',
+
+              // Health Sciences
+              'Medical Laboratory Science',
+              'Radiologic Technology',
+              'Speech-Language Pathology',
+              'Audiology',
+              'Optometry',
+              'Kinesiology',
+              'Health Informatics',
+
+              // Business and Management
+              'Actuarial Science',
+              'Real Estate',
+              'Logistics',
+              'Nonprofit Management',
+              'Sports Management',
+
+              // Social Sciences and Humanities
+              'Linguistics',
+              'Archaeology',
+              'Gender Studies',
+              'Ethnic Studies',
+              'Folklore',
+              'Museum Studies',
+
+              // Arts and Design
+              'Digital Media',
+              'Animation',
+              'Game Design',
+              'User Experience (UX) Design',
+              'Landscape Architecture',
+
+              // Education
+              'TESOL (Teaching English to Speakers of Other Languages)',
+              'Educational Technology',
+              'Adult Education',
+
+              // Environment and Sustainability
+              'Renewable Energy',
+              'Climate Science',
+              'Sustainable Agriculture',
+              'Conservation Biology',
+
+              // Law and Policy
+              'Pre-Law',
+              'Paralegal Studies',
+              'Environmental Law',
+              'Human Rights',
+
+              // Interdisciplinary Fields
+              'Cognitive Science',
+              'Data Analytics',
+              'Digital Humanities',
+              'Peace and Conflict Studies',
+              'Global Health',
+
+              // Emerging Fields
+              'Blockchain Technology',
+              'Drone Technology',
+              'Virtual Reality',
+              'Augmented Reality',
+              'Internet of Things (IoT)',
+
+              // Specialized Areas
+              'Aviation',
+              'Nuclear Engineering',
+              'Petroleum Engineering',
+              'Textile Engineering',
+              'Food Science and Technology',
+              'Viticulture and Enology (Wine Studies)',
+            
+              // Natural Sciences
+              'Biology',
+              'Chemistry',
+              'Physics',
+              'Geology',
+              'Environmental Science',
+              'Astronomy',
+              'Mathematics',
+              'Statistics',
+              'Biochemistry',
+            
+              // Social Sciences
+              'Psychology',
+              'Sociology',
+              'Anthropology',
+              'Political Science',
+              'International Relations',
+              'Economics',
+              'Geography',
+              'Criminology',
+              'Communication Studies',
+              'Public Administration',
+            
+              // Humanities and Liberal Arts
+              'English Literature',
+              'History',
+              'Philosophy',
+              'Fine Arts',
+              'Music',
+              'Theater Arts',
+              'Art History',
+              'Languages (e.g., Spanish, French, German)',
+              'Religious Studies',
+              'Liberal Arts',
+              'Interdisciplinary Studies',
+            
+              // Health Sciences
+              'Nursing',
+              'Public Health',
+              'Pharmacy',
+              'Health Administration',
+              'Nutrition',
+              'Physical Therapy',
+              'Occupational Therapy',
+              'Dental Hygiene',
+              'Biomedical Sciences',
+            
+              // Education
+              'Elementary Education',
+              'Secondary Education',
+              'Special Education',
+              'Educational Leadership',
+              'Curriculum and Instruction',
+              'Early Childhood Education',
+            
+              // Communications and Media
+              'Journalism',
+              'Public Relations',
+              'Media Studies',
+              'Advertising',
+              'Film Studies',
+              'Broadcasting',
+              'Other Communications Major',
+            
+              // Architecture and Design
+              'Architecture',
+              'Urban Planning',
+              'Interior Design',
+              'Graphic Design',
+              'Industrial Design',
+              'Fashion Design',
+            
+              // Criminal Justice
+              'Criminal Justice',
+              'Forensic Science',
+              'Law Enforcement',
+              'Legal Studies',
+            
+              // Agriculture and Environmental Studies
+              'Agriculture',
+              'Forestry',
+              'Environmental Policy',
+              'Sustainable Development',
+            
+              // Veterinary and Animal Sciences
+              'Veterinary Medicine',
+              'Animal Science',
+              'Zoology',
+              'Wildlife Biology',
+            
+              // Library and Information Science
+              'Library Science',
+              'Information Management',
+            
+              // Theology and Religious Studies
+              'Theology',
+              'Religious Studies',
+              'Divinity',
+            
+              // Hospitality and Tourism
+              'Hospitality Management',
+              'Tourism Management',
+              'Culinary Arts',
+              'Event Management',
+            
+              // Miscellaneous
+              'Military Science',
+              'Public Policy',
+                      'Speech Communication',
+            ];%>
+              <% collegeMajorsEnum.forEach(major => { %>
+              <a class="w-100 max-w-200">
+                <button class="quick-option-btn no-bg no-border max-w-[150px] w-100 mini-text break-words" data-type="majors" data-id="undefined" data-name="<%= major %>" onclick="toggleSelectedFilter(event)">
+                  <p class="break-words"><%= major %></p>
+                </button>
+              </a>
+              <% }); %>
+            </div>
+          </div>
+
+          <div class="location-input">
+            <input type="text" aria-label="Location" class="location-input-field inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-7 px-4 py-2 mini-text secondary-text" placeholder="Type your location">
+          </div>
+
+          <!--
+          <div class="dropdown" tabindex="0">
+            <button aria-label="Salary" class="dropdown-button inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-7 px-4 py-2 justify-between text-muted-foreground salary-dropdown px-4 py-2 mini-text secondary-text" aria-haspopup="true" aria-expanded="false">
+              Salary
+              <span class="arrow">
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-50" aria-hidden="true">
+                  <path d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path>
+                </svg>
+              </span>
+            </button>
+
+            <div class="dropdown-content">
+              <% const salaryRanges = ["10,000+", "25,000+", "50,000+", "100,000+", "200,000+"]; %>
+              <% salaryRanges.forEach(range => { %>
+              <a class="w-100">
+                <button class="quick-option-btn no-bg no-border w-100 mini-text" data-type="job-salary" data-id="undefined" data-name="<%= range %>" onclick="toggleSelectedFilter(event)"><%= range %></button>
+              </a>
+              <% }); %>
+            </div>
+          </div>
+          -->
+
+          <button aria-label="Reset Filters" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-8 px-2 py-2" aria-haspopup="true" aria-expanded="false" type="button" onclick="resetState()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-filter-x">
+              <path d="M13.013 3H2l8 9.46V19l4 2v-8.54l.9-1.055" />
+              <path d="m22 3-5 5" />
+              <path d="m17 3 5 5" />
+            </svg>
+          </button>
+        </ul>
+        <div class="jobs-selected-filters">
+        </div>
+        <% if (errorMessages && errorMessages.length > 0) { %>
+        <div class="error-messages">
+          <div class="error-message-glyph">
+            <span class="material-symbols-outlined">
+              warning
+            </span>
+          </div>
+          <div class="error-message-text">
+            <% errorMessages.forEach(function(msg) { %>
+            <p class="error-message"><%= msg %></p>
+            <% }); %>
+          </div>
+        </div>
+        <% } %>
+        <% if (successMessages && successMessages.length > 0) { %>
+        <div class="success-messages">
+          <% successMessages.forEach(function(msg) { %>
+          <p class="success-message"><%= msg %></p>
+          <% }); %>
+        </div>
+        <% } %>
+      </div>
+      <div id="personalized-job-list" class="job-list flex flex-col gap-4">
+      </div>
+      <div class="load-more">
+        <button class="load-more-btn inline-flex items-center justify-center whitespace-nowrap w-full font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 rounded-md px-3 text-xs ml-auto gap-1.5" id="load-more-btn">
+          <div id="loading-indicator">
+            <div class="spinner-container">
+              <div class="spinner"></div>
+            </div>
+          </div>
+          <p class="sub-text">Load More</p>
+        </button>
+
+      </div>
+      <%- include('partials/footer') %>
+
+    </div>
+    <%- include('partials/right-side-container') %>
+
+
+    </div>
+
+  </main>
+  <script id="server-filters" type="application/json">
+    <%- JSON.stringify(filters || {}) %>
+  </script>
+  <script>
+    // Initialize state variables
+    let currentPage = 1;
+    let isLoading = false;
+    let hasMore = true;
+    const filters = <%- JSON.stringify(filters || {}) %>;
+
+    // Function to check if we've scrolled near the bottom
+    function isNearBottom() {
+      const scrollPosition = window.innerHeight + window.pageYOffset;
+      const pageHeight = document.documentElement.scrollHeight;
+      return pageHeight - scrollPosition < 1000; // Load more when within 1000px of bottom
+    }
+
+    // Function to load more jobs
+    async function loadMoreJobs() {
+      if (isLoading || !hasMore) return;
+
+      isLoading = true;
+      const loadingIndicator = document.getElementById('loading-indicator');
+      if (loadingIndicator) loadingIndicator.style.display = 'block';
+
+      try {
+        const queryParams = new URLSearchParams({
+          page: currentPage,
+          pageSize: 50,
+          titles: JSON.stringify(filters.titles || []),
+          locations: JSON.stringify(filters.locations || []),
+          experiencelevels: JSON.stringify(filters.experienceLevels || []),
+          majors: JSON.stringify(filters.majors || []),
+          salary: filters.salary || 0,
+          skills: JSON.stringify(filters.skills || []),
+          companies: JSON.stringify(filters.companies || []),
+          searchType: filters.searchType || 'recent'
+        });
+
+        const response = await fetch(`/api/jobs?${queryParams.toString()}`);
+        const data = await response.json();
+
+        if (data.jobPostings.length > 0) {
+          const jobList = document.getElementById('personalized-job-list');
+
+          data.jobPostings.forEach(job => {
+            let tags = [];
+            if (job.salary) {
+              tags.push({
+                text: `$${job.salary}`,
+                class: "salary",
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>',
+              });
+            } else {
+              // try to extract salary from description
+              const salaryMatch = job.description.match(/\$(\d+(?:,?\d*)?(?:k|K)?(?:\s*-\s*\$?\d+(?:,?\d*)?(?:k|K)?)?(?:\s*\/?\s*(?:hr|hour|mo|month|yr|year))?)/i);
+              if (salaryMatch) {
+                tags.push({
+                  text: `$${salaryMatch[1]}`,
+                  class: "salary",
+                  icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>',
+                });
+              }
+            }
+
+            const jobElement = createCard(
+              job.company_name,
+              formatDateJob(job.postedDate),
+              job.title,
+              '',
+              true,
+              `/jobs/${job.id}`,
+              job.company_logo,
+              tags
+            );
+            jobList.appendChild(jobElement);
+          });
+
+          currentPage++;
+
+          // If we received fewer items than expected, there are no more items to load
+          if (data.jobPostings.length < 20) {
+            hasMore = false;
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+          }
+        } else {
+          hasMore = false;
+          const loadMoreBtn = document.getElementById('load-more-btn');
+          if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Error loading more jobs:', error);
+      } finally {
+        isLoading = false;
+        const loadingIndicator = document.getElementById('loading-indicator');
+        if (loadingIndicator) loadingIndicator.style.display = 'none';
+      }
+    }
+
+    // Throttle function to prevent too many scroll events
+    function throttle(func, limit) {
+      let inThrottle;
+      return function () {
+        const args = arguments;
+        const context = this;
+        if (!inThrottle) {
+          func.apply(context, args);
+          inThrottle = true;
+          setTimeout(() => inThrottle = false, limit);
+        }
+      }
+    }
+
+    // add search listener so as you type it adds to filters.titles and then calls loadMoreJobs
+    const searchInput = document.getElementById('job-search-input');
+    if (searchInput) {
+      let debounceTimeout;
+      searchInput.addEventListener('input', () => {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+          filters.titles = searchInput.value.split(' ').filter(Boolean);
+          currentPage = 1;
+          hasMore = true;
+          clearJobs();
+          loadMoreJobs();
+        }, 300); // Adjust the debounce delay as needed
+      });
+    }
+
+    clearJobs = () => {
+      const jobList = document.getElementById('personalized-job-list');
+      jobList.innerHTML = '';
+    }
+
+    // Initialize the infinite scroll
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load initial jobs
+      loadMoreJobs();
+
+      // Add scroll event listener with throttling
+      window.addEventListener('scroll', throttle(() => {
+        if (isNearBottom()) {
+          loadMoreJobs();
+        }
+      }, 250));
+    });
+
+    // Remove the click event listener from the load more button
+    // but keep it as a loading indicator
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    if (loadMoreBtn) {
+      loadMoreBtn.style.cursor = 'default';
+      loadMoreBtn.style.pointerEvents = 'none';
+    }
+  </script>
+  <script src="/js/utils.js"></script>
+</body>
+
+</html>
