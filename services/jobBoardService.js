@@ -3422,10 +3422,11 @@ class JobProcessor extends EventEmitter {
         return await processor(url);
       }
     }
-
+/*
     const response = await this.makeRequest(url);
     console.log(response.data);
     return await this.useGeminiAPI(url, response.data);
+    */
   }
 
   async getBrowserInstance() {

@@ -13,17 +13,18 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
     }
   
     const cardContent = `
-    <div class="flex flex-col items-start gap-2 rounded-lg border w-full p-3 text-left text-sm transition-all hover:bg-accent max-h-[250px]" ${clickable ? `onclick="window.location.href='${link}'"` : ''}>
+    <div class="flex flex-col items-start gap-2 rounded-lg w-full p-3 text-left text-sm transition-all hover:bg-accent max-h-[250px]" ${clickable ? `onclick="window.location.href='${link}'"` : ''}>
+    <div class="flex flex-row gap-4 items-center w-full">
     ${image ? `
-          <span class="relative flex shrink-0 overflow-hidden rounded-md mr-2 h-15 w-15">
-        <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.onerror=null; this.src='/img/glyph.png';" />
+          <span class="relative flex shrink-0 overflow-hidden rounded-md mr-2">
+        <img class="aspect-square h-10 w-10" src="${image || '/img/glyph.png'}" onerror="this.onerror=null; this.src='/img/glyph.png';" />
       </span>
-      ` : ''
+      ` : `        <img class="aspect-square h-10 w-10" src="/img/glyph.png" onerror="this.onerror=null; this.src='/img/glyph.png';" />`
     }
     <div class="flex w-full flex-col gap-1">
       <div class="flex items-center">
       <div class="flex items-center gap-2 wrap">
-        <div class="font-semibold">${name}</div>
+        <div class="font-semibold text-md">${name}</div>
       </div>
       <div class="ml-auto text-xs text-foreground">${timestamp}</div>
       </div>
@@ -34,6 +35,7 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
       ${description}
     </div>
     ` : ''}
+    </div>
     <div class="flex items-center gap-2 wrap">
       ${tagsHtml}
     </div>
