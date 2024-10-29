@@ -14,11 +14,11 @@ core - platform for cs majors to find jobs and connect
 </div>
 
 <div align="center">
-  
-<img width="90" alt="Screenshot 2024-08-18 at 6 25 36 AM" src="https://github.com/user-attachments/assets/c47cce3f-007f-4954-a048-18b8be1f65d9">
-<img width="90" alt="Screenshot 2024-08-18 at 6 25 44 AM" src="https://github.com/user-attachments/assets/c7664aa1-1159-4c29-a68f-110d966653aa">
-<img width="90" alt="Screenshot 2024-08-18 at 6 27 54 AM" src="https://github.com/user-attachments/assets/bf9c8c69-92d8-46a7-8395-ff85a8300b3d">
-<img width="90" alt="Screenshot 2024-08-18 at 6 23 26 AM" src="https://github.com/user-attachments/assets/3170c847-9ea4-463e-a9e0-3a33baa0ad33">
+
+<img width="150" alt="Screenshot 2024-08-18 at 6 25 36 AM" src="https://github.com/user-attachments/assets/f03d8d0c-cd87-4a33-be1f-92e2c2d3f92d">
+<img width="150" alt="Screenshot 2024-08-18 at 6 25 44 AM" src="https://github.com/user-attachments/assets/67fd86ba-5653-48d9-bb6a-34b78baa8e93">
+<img width="150" alt="Screenshot 2024-08-18 at 6 27 54 AM" src="https://github.com/user-attachments/assets/7b4af016-1198-4e88-b177-fdc17e6857fe">
+<img width="150" alt="Screenshot 2024-08-18 at 6 23 26 AM" src="https://github.com/user-attachments/assets/e653a0a4-84e3-4910-8076-4fb23cd90077">
 </div>
 
 #### Help Us
