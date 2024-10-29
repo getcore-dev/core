@@ -217,6 +217,20 @@ const jobQueries = {
     console.log("Resume created");
   },
 
+  updateCompanyLogo: async (companyId, logo) => {
+    try {
+      const result = await sql.query`
+        UPDATE companies
+        SET logo = ${logo}
+        WHERE id = ${companyId}
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getCompanyNames: async () => {
     try {
       const result = await sql.query`

@@ -58,7 +58,7 @@ class JobProcessor extends EventEmitter {
       "jobvite.com": ["job/"],
       "tiktok": ["job/"],
       "myworkday": ["job/", "wd", "en-US"],
-      "smartrecruiters": ["job/"],
+      "smartrecruiters": ["/"],
       "microsoft": ["job/"],
       "apple": ["jobs/"],
       "epicgames": ["job/"],
@@ -3925,11 +3925,11 @@ class JobProcessor extends EventEmitter {
       ${textContent}
       Please extract the following information from this job posting data using the following JSON schema:
       JobPosting = {
-        title: string,
-        url: string,
-        company_name: string,
-        location: string,
-        description: string,
+        title: string, // the title of the job posting
+        url: string, // the url of the job posting
+        company_name: string, // name of the company
+        location: string, // location of the job posting 
+        description: string, // description of the job posting
         IsRemote: boolean,
       }
       Provide the extracted information in JSON format.
@@ -4285,9 +4285,16 @@ class JobProcessor extends EventEmitter {
     try {
       // First, try to get the company by name
       let company = await jobQueries.getCompanyByName(companyName);
-
+  
       if (company) {
         console.log(`Found existing company: ${companyName}`);
+        
+        // Check if we need to update the logo
+        if (companyLogo && (!company.logo || await this.isLogoInvalid(company.logo))) {
+          console.log(`Updating logo for company: ${companyName}`);
+          company = await jobQueries.updateCompanyLogo(company.id, companyLogo);
+        }
+        
         return company.id;
       } else {
         console.log(`Company not found. Creating new company: ${companyName}`);
@@ -4303,11 +4310,35 @@ class JobProcessor extends EventEmitter {
           companyStockSymbol,
           companyFounded,
         );
-
+  
         return newCompany.id;
       }
     } catch (error) {
       console.error(`Error in getOrCreateCompany for ${companyName}:`, error);
+      throw error;
+    }
+  }
+  
+  // Helper method to check if a logo URL is invalid
+  async isLogoInvalid(logoUrl) {
+    if (!logoUrl) return true;
+    
+    try {
+      const response = await fetch(logoUrl, { method: 'HEAD' });
+      return !response.ok;
+    } catch (error) {
+      console.warn(`Error checking logo URL ${logoUrl}:`, error);
+      return true;
+    }
+  }
+  
+  // Add this method to your jobQueries object
+  async updateCompanyLogo(companyId, newLogo) {
+    try {
+      const result = await jobQueries.updateCompanyLogo(companyId, newLogo);
+      return result.rows[0];
+    } catch (error) {
+      console.error(`Error updating company logo for ID ${companyId}:`, error);
       throw error;
     }
   }

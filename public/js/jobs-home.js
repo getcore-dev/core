@@ -204,10 +204,10 @@ function createCardSquare(
   }
 
   const cardContent = `
-  <div class="lex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent w-[250px] h-[200px]" ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
+  <div class="lex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent w-[250px] max-h-[200px]" ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
     <div class="flex w-full flex-col gap-1">
-      <div class="flex items-center">
-        <div class="flex items-center gap-2 wrap">
+      <div class="flex flex-row gap-2">
+        <div class="flex items-center gap-2">
 
         ${
           image
@@ -489,6 +489,7 @@ fetch("/api/recent-viewed-jobs")
       const diffTime = Math.abs(now - postedDate);
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
       tags = [];
+      /*
       if (diffDays <= 2) {
         tags.push({ text: "New", class: "new" });
       }
@@ -525,6 +526,7 @@ fetch("/api/recent-viewed-jobs")
         class: "applicants",
         icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
       });
+      */
 
       recentJobs.appendChild(
         createCardSquare(

@@ -131,12 +131,15 @@
                   </a>
 
                 </div>
-                <% if (otheruser.experience_title && otheruser.experience_place && otheruser.experience_title.trim() !== '' && otheruser.experience_place.trim() !== '') { %>
+                <% if (otheruser.experience_title && otheruser.experience_title.trim() !== '') { %>
                 <span class="flex flex-row v-center gap-2 secondary-text sub-text">
                   <% if (otheruser.company_logo) { %>
                   <img src="<%= otheruser.company_logo %>" alt="<%= otheruser.experience_place %>" style="width: 16px; height: 16px; margin-right: 5px;">
                   <% } %>
-                  <%= otheruser.experience_title %> at <%= otheruser.experience_place %>
+                  <%= otheruser.experience_title %>
+                  <% if (otheruser.experience_place && otheruser.experience_place.trim() !== '') { %>
+                  at <%= otheruser.experience_place %>
+                  <% } %>
                 </span>
                 <% } %>
 
