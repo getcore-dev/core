@@ -14,21 +14,20 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
   
     const cardContent = `
     <div class="flex flex-col items-start gap-2 rounded-lg border w-full p-3 text-left text-sm transition-all hover:bg-accent max-h-[250px]" ${clickable ? `onclick="window.location.href='${link}'"` : ''}>
-    <div class="flex w-full flex-col gap-1">
-      <div class="flex items-center">
-      <div class="flex items-center gap-2 wrap">
-    
-      ${image ? `
-          <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
+    ${image ? `
+          <span class="relative flex shrink-0 overflow-hidden rounded-md mr-2 h-15 w-15">
         <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.onerror=null; this.src='/img/glyph.png';" />
       </span>
       ` : ''
     }
+    <div class="flex w-full flex-col gap-1">
+      <div class="flex items-center">
+      <div class="flex items-center gap-2 wrap">
         <div class="font-semibold">${name}</div>
       </div>
       <div class="ml-auto text-xs text-foreground">${timestamp}</div>
       </div>
-      <div class="text-base font-medium text-balance max-w-lg leading-relaxed">${title}</div>
+      <div class="text-lg text-balance max-w-lg leading-relaxed">${title}</div>
     </div>
     ${description ? `
     <div class="line-clamp-2 text-sm text-muted-foreground w-full">
