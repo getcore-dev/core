@@ -70,11 +70,15 @@ Object.entries(experienceLevelRoutes).forEach(([path, config]) => {
       ? await jobQueries.getJobCountByExperienceLevel(config.level)
       : undefined;
 
+    const userViewedJobs = req.user ? await userRecentQueries.getViewedJobs(req.user.id) : [];
+    console.log('User viewed jobs:', userViewedJobs);
+
     res.render('specific-jobs.ejs', {
       user: req.user,
       mainFilter: config.mainFilter,
       filters: filters,
       jobCount,
+      userViewedJobs,
       errorMessages: req.flash('error'),
       successMessages: req.flash('success')
     });
@@ -100,9 +104,11 @@ function parseFilters(query) {
 
 router.get('/', cacheMiddleware(2400), async (req, res) => {
   const filters = parseFilters(req.query);
+  const userViewedJobs = req.user ? await userRecentQueries.getViewedJobs(req.user.id) : [];
   res.render('jobs.ejs', { 
     user: req.user, 
     filters: filters,
+    userViewedJobs,
     errorMessages: req.flash('error'),
     successMessages: req.flash('success'),
   });

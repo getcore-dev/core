@@ -222,6 +222,10 @@ label {
   border-radius: 12px;
 }
 
+nav li {
+  list-style: none;
+}
+
 .number-display {
   height: 15px;
   min-width: 10px;
@@ -1180,9 +1184,7 @@ button.clear-btn {
   overflow-x: hidden;
   transition: transform 0.15s cubic-bezier(0.4, 0, 1, 1);
   padding: 0 1rem;
-  border-left: 1px solid var(--border-color);
   padding-top: 65px;
-  background-color: var(--light-mode-main-color);
   z-index: 2;
   width: 60%;
   overflow-y: auto;
@@ -3157,8 +3159,6 @@ input::placeholder {
 
 
   .menu-content {
-    background-color: var(--dark-mode-body-color);
-    border-color: var(--dark-mode-border-color);
     color: var(--dark-mode-text-color);
   }
 

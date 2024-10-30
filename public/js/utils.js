@@ -1,34 +1,42 @@
-function createCard(name, timestamp, title, description, clickable=false, link=null, image=null, tags=null) {
-    console.log(tags);
+function createCard(name, timestamp, title, location, description, clickable=false, link=null, image=null, tags=null) {
     const card = document.createElement('span');
   
     let tagsHtml = '';
     if (tags) {
       tagsHtml = tags.map(tag => `
-        <div class="${tag.class} flex flex-row gap-2 v-center">
-        ${tag.icon ? tag.icon : ''}
-          ${tag.text}
+        <div class="${tag.class ? tag.class : 'inline-flex items-center rounded-md border h-6 px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80'}">
+        <span class="mr-2">${tag.icon ? tag.icon : ''}</span>
+          <span class="text-xs">${tag.text}</span>
         </div>
       `).join('');
     }
   
     const cardContent = `
     <div class="flex flex-col items-start gap-2 rounded-lg w-full p-3 text-left text-sm transition-all hover:bg-accent max-h-[250px]" ${clickable ? `onclick="window.location.href='${link}'"` : ''}>
-    <div class="flex flex-row gap-4 items-center w-full">
+    <div class="flex flex-row gap-2 items-center w-full">
     ${image ? `
           <span class="relative flex shrink-0 overflow-hidden rounded-md mr-2">
-        <img class="aspect-square h-10 w-10" src="${image || '/img/glyph.png'}" onerror="this.onerror=null; this.src='/img/glyph.png';" />
+        <img class="aspect-square h-8 w-8" src="${image || '/img/glyph.png'}" onerror="this.onerror=null; this.src='/img/glyph.png';" />
       </span>
-      ` : `        <img class="aspect-square h-10 w-10" src="/img/glyph.png" onerror="this.onerror=null; this.src='/img/glyph.png';" />`
+      ` : `       
+      <span class="relative flex shrink-0 overflow-hidden rounded-md mr-2">
+      <img class="aspect-square h-8 w-8" src="/img/glyph.png" onerror="this.onerror=null; this.src='/img/glyph.png';" />
+      </span>
+      `
     }
     <div class="flex w-full flex-col gap-1">
       <div class="flex items-center">
       <div class="flex items-center gap-2 wrap">
-        <div class="font-semibold text-md">${name}</div>
+        <div class="text-sm font-medium leading-none">${name}</div>
       </div>
       <div class="ml-auto text-xs text-foreground">${timestamp}</div>
       </div>
-      <div class="text-lg text-balance max-w-lg leading-relaxed">${title}</div>
+      <div class="text-sm text-muted-foreground">${title}</div>
+      <span class="flex flex-row gap-2 items-center w-full">
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+            <p class="text-xs text-muted-foreground">${location}</p>
+            </span>
+
     </div>
     ${description ? `
     <div class="line-clamp-2 text-sm text-muted-foreground w-full">
@@ -36,7 +44,7 @@ function createCard(name, timestamp, title, description, clickable=false, link=n
     </div>
     ` : ''}
     </div>
-    <div class="flex items-center gap-2 wrap">
+    <div class="flex gap-2 text-sm text-muted-foreground wrap">
       ${tagsHtml}
     </div>
     </div>

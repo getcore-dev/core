@@ -33,6 +33,20 @@ const userRecentQueries = {
         }
     },
 
+    getViewedJobs: async (userId) => {
+        try {
+            const result = await sql.query`
+                SELECT STRING_AGG(urvj.jobPostings_id, ',') AS viewed_job_ids
+                FROM user_recent_viewed_jobs urvj
+                WHERE urvj.user_id = ${userId}`;
+            const ids = result.recordset[0]?.viewed_job_ids || '';
+            return ids ? ids.split(',').map(Number) : [];
+        } catch (err) {
+            console.error('Database query error:', err);
+            throw err;
+        }
+    },
+
     addViewedJob: async (jobId, companyId, userId) => {
         try {
             await sql.query`

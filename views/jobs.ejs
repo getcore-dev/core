@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="/css/jobs.css" />
   <link rel="stylesheet" href="/css/navbar.css" />
-  <link rel="stylesheet" href="/css/styles.css" />
   <link rel="stylesheet" href="/css/com-btn-container.css" />
   <link rel="shortcut icon" href="/img/core.png" />
 
@@ -582,6 +581,9 @@
   </main>
   <script id="server-filters" type="application/json">
     <%- JSON.stringify(filters || {}) %>
+  </script>
+  <script>
+    const viewedJobs = <%- JSON.stringify(userViewedJobs || []) %>;
   </script>
   <script src="/js/jobs.js"></script>
 </body>
