@@ -3,6 +3,7 @@ const url = require("url");
 const { GoogleGenerativeAI, SchemaType } = require("@google/generative-ai");
 const OpenAI = require("openai");
 const { zodResponseFormat } = require("openai/helpers/zod");
+const { executablePath } = require('puppeteer');
 const { z } = require("zod");
 const axios = require("axios");
 const cheerio = require("cheerio");
@@ -895,7 +896,7 @@ class JobProcessor extends EventEmitter {
         }
         const browserOptions = {
           headless: true,
-          executablePath: '/usr/bin/google-chrome',
+          executablePath: executablePath(),
           args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -1117,7 +1118,7 @@ class JobProcessor extends EventEmitter {
     try {
       const browserOptions = {
         headless: true,
-        executablePath: '/usr/bin/google-chrome',
+        executablePath: executablePath(),
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -1297,7 +1298,7 @@ class JobProcessor extends EventEmitter {
     try {
       const browserOptions = {
         headless: true,
-        executablePath: '/usr/bin/google-chrome',
+        executablePath: executablePath(),
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -2568,7 +2569,7 @@ class JobProcessor extends EventEmitter {
       // Launch Puppeteer
       const browserOptions = {
         headless: true,
-        executablePath: '/usr/bin/google-chrome',
+        executablePath: executablePath(),
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -2967,7 +2968,7 @@ class JobProcessor extends EventEmitter {
   async grabWorkDayLinks(url) {
     const browserOptions = {
       headless: true,
-      executablePath: '/usr/bin/google-chrome',
+      executablePath: executablePath(),
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -3498,7 +3499,7 @@ class JobProcessor extends EventEmitter {
     if (!this.browser) {
       const browserOptions = {
         headless: true,
-        executablePath: '/usr/bin/google-chrome',
+        executablePath: executablePath(),
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -4114,7 +4115,7 @@ class JobProcessor extends EventEmitter {
   async searchTechJobOnLinkedIn(jobTitle, location = "United States") {
     const browserOptions = {
       headless: true,
-      executablePath: '/usr/bin/google-chrome',
+      executablePath: executablePath(),
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -4189,7 +4190,7 @@ class JobProcessor extends EventEmitter {
   async getJobInfoFromLinkedIn(linkedInUrl) {
     const browserOptions = {
       headless: true,
-      executablePath: '/usr/bin/google-chrome',
+      executablePath: executablePath(),
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -4336,7 +4337,7 @@ class JobProcessor extends EventEmitter {
   async getRedirectedUrl(url) {
     const browserOptions = {
       headless: true,
-      executablePath: '/usr/bin/google-chrome',
+      executablePath: executablePath(),
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
