@@ -124,20 +124,6 @@ router.post('/profile/jobs', checkAuthenticated, async (req, res) => {
   }
 });
 
-router.get('/redirect/*', async (req, res) => {
-  const link = req.params[0];
-
-  if (!link) {
-    return res.status(404).send('Link not found');
-  }
-
-  if (!link.startsWith('http')) {
-    return res.status(400).send('Invalid link');
-  }
-
-  res.render('link-redirect.ejs', { user: req.user, link });
-});
-
 router.get('/learning', checkAuthenticated, (req, res) => {
   res.render('learning.ejs', { user: req.user });
 });
