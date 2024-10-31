@@ -2917,7 +2917,19 @@ class JobProcessor extends EventEmitter {
   }
 
   async grabWorkDayLinks(url) {
-    const browser = await puppeteer.launch();
+    const browserOptions = {
+      headless: true,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process'
+      ]
+    };
+    const browser = await puppeteer.launch(browserOptions);
     const page = await browser.newPage();
 
     this.updateProgress({
@@ -2934,7 +2946,9 @@ class JobProcessor extends EventEmitter {
     let postData = null;
 
     page.on("request", (request) => {
-      if (request.url().includes("/jobs") && request.method() === "POST") {
+      if (request.resourceType() === 'image' || request.resourceType() === 'stylesheet' || request.resourceType() === 'font') {
+        request.abort();
+      } else if (request.url().includes("/jobs") && request.method() === "POST") {
         postData = request.postData();
         request.continue();
       } else {
@@ -3021,8 +3035,10 @@ class JobProcessor extends EventEmitter {
           {
             headers: {
               "Content-Type": "application/json",
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
             },
-          },
+            timeout: 30000
+          }
         );
 
         const newData = response.data;
@@ -4692,6 +4708,7 @@ class JobProcessor extends EventEmitter {
     try {
       await this.init();
 
+      /*
       try {
         await this.updateJobPostings();
       } catch (error) {
@@ -4721,6 +4738,7 @@ class JobProcessor extends EventEmitter {
       } catch (error) {
         console.error("Error in crawlYCombinator:", error);
       }
+        */
 
       this.updateProgress({ phase: "Completed" });
     } catch (error) {
