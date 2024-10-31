@@ -11,8 +11,6 @@ const notificationQueries = require("../queries/notificationQueries");
 const EventEmitter = require("events");
 const path = require("path");
 const puppeteer = require("puppeteer");
-const StealthPlugin = require("puppeteer-extra-plugin-stealth");
-puppeteer.use(StealthPlugin());
 const jobQueries = require("../queries/jobQueries");
 const { title } = require("process");
 const rateLimit = require("axios-rate-limit");
