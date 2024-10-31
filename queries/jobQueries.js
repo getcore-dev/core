@@ -405,6 +405,33 @@ const jobQueries = {
   },
 
 
+  addToRecentJobs: async (userId, jobLink) => {
+    try {
+      const result = await sql.query`
+        INSERT INTO dbo.job_links (user_id, job_link)
+        VALUES (${userId}, ${jobLink})
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+  getRecentlyAddedJobs: async () => {
+    try {
+      const result = await sql.query`
+        SELECT TOP 10 job_link, added_at FROM dbo.job_links
+        ORDER BY id DESC
+      `;
+      return result.recordset;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
+
   updateCompanyLogo: async (companyId, logo) => {
     try {
       const result = await sql.query`

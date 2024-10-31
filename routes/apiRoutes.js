@@ -128,7 +128,7 @@ router.get("/recent-viewed-jobs", checkAuthenticated, async (req, res) => {
   }
 });
 
-router.get("/duplicate-companies", async (req, res) => {
+router.get("/duplicate-companies", checkAuthenticated, async (req, res) => {
   try {
     let companies = await jobQueries.getDirectDuplicateCompanies();
     res.json({ companies: companies });
@@ -140,14 +140,27 @@ router.get("/duplicate-companies", async (req, res) => {
   }
 });
 
-router.post("/queue-company-link", async (req, res) => {
+
+router.get("/recent-added-job-links", async (req, res) => {
+  try {
+    const jobLinks = await jobQueries.getRecentlyAddedJobs();
+    res.json(jobLinks);
+  } catch (err) {
+    console.error("Error fetching recent job links:", err);
+    res.status(500).send("Error fetching recent job links");
+  }
+});
+
+router.post("/queue-company-link", checkAuthenticated, async (req, res) => {
   try {
     const link = req.body.link;
+    const user = req.user;
 
     if (!link) {
       return res.status(400).json({ error: "Invalid job link" });
     }
 
+    await jobQueries.addToRecentJobs(user.id, link);
     await jobProcessor.addToCompanyLinkQueue(link);
     res.json({ message: "Job link queued successfully" });
   } catch (error) {

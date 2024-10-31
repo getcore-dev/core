@@ -893,12 +893,21 @@ class JobProcessor extends EventEmitter {
             "The provided URL is not a LinkedIn job or company link.",
           );
         }
-
-        browser = await puppeteer.launch({
+        const browserOptions = {
           headless: true,
-          defaultViewport: null,
-          args: ["--start-maximized"],
-        });
+          executablePath: '/usr/bin/google-chrome',
+          args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
+            '--no-first-run',
+            '--no-zygote',
+            '--single-process'
+          ],
+          
+        };
+        browser = await puppeteer.launch(browserOptions);
         const page = await browser.newPage();
 
         // Set a more realistic user agent
@@ -1106,7 +1115,20 @@ class JobProcessor extends EventEmitter {
   async usePuppeteerFallback(url) {
     let browser;
     try {
-      browser = await puppeteer.launch({ headless: true });
+      const browserOptions = {
+        headless: true,
+        executablePath: '/usr/bin/google-chrome',
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-gpu',
+          '--no-first-run',
+          '--no-zygote',
+          '--single-process'
+        ]
+      };
+      browser = await puppeteer.launch(browserOptions);
       const page = await browser.newPage();
       await page.setUserAgent(this.getRandomUserAgent());
   
@@ -1273,7 +1295,20 @@ class JobProcessor extends EventEmitter {
   async usePuppeteerFallbackNoIntercept(url) {
     let browser;
     try {
-      browser = await puppeteer.launch({ headless: true });
+      const browserOptions = {
+        headless: true,
+        executablePath: '/usr/bin/google-chrome',
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-gpu',
+          '--no-first-run',
+          '--no-zygote',
+          '--single-process'
+        ]
+      };
+      browser = await puppeteer.launch(browserOptions);
       const page = await browser.newPage();
       await page.setUserAgent(this.getRandomUserAgent());
 
@@ -2531,7 +2566,20 @@ class JobProcessor extends EventEmitter {
       console.log(`Company ID: ${companyId}`);
 
       // Launch Puppeteer
-      browser = await puppeteer.launch({ headless: true });
+      const browserOptions = {
+        headless: true,
+        executablePath: '/usr/bin/google-chrome',
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-gpu',
+          '--no-first-run',
+          '--no-zygote',
+          '--single-process'
+        ]
+      };
+      browser = await puppeteer.launch(browserOptions);
       const page = await browser.newPage();
 
       // Optional: Set a user-agent to mimic a real browser
@@ -2919,6 +2967,7 @@ class JobProcessor extends EventEmitter {
   async grabWorkDayLinks(url) {
     const browserOptions = {
       headless: true,
+      executablePath: '/usr/bin/google-chrome',
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -3447,9 +3496,20 @@ class JobProcessor extends EventEmitter {
 
   async getBrowserInstance() {
     if (!this.browser) {
-      this.browser = await puppeteer.launch({
-        args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      });
+      const browserOptions = {
+        headless: true,
+        executablePath: '/usr/bin/google-chrome',
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-gpu',
+          '--no-first-run',
+          '--no-zygote',
+          '--single-process'
+        ]
+      };
+      this.browser = await puppeteer.launch(browserOptions);
     }
     return this.browser;
   }
@@ -4052,8 +4112,21 @@ class JobProcessor extends EventEmitter {
   }
 
   async searchTechJobOnLinkedIn(jobTitle, location = "United States") {
+    const browserOptions = {
+      headless: true,
+      executablePath: '/usr/bin/google-chrome',
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process'
+      ]
+    };
     const linkedInSearchUrl = `https://www.linkedin.com/jobs/search?keywords=${jobTitle.split(" ").join("%20")}&location=${location.split(" ").join("%20")}&geoId=&trk=public_jobs_jobs-search-bar_search-submit&original_referer=`;
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch(browserOptions);
     const page = await browser.newPage();
 
     await page.setUserAgent(
@@ -4114,7 +4187,20 @@ class JobProcessor extends EventEmitter {
   }
 
   async getJobInfoFromLinkedIn(linkedInUrl) {
-    const browser = await puppeteer.launch({ headless: true });
+    const browserOptions = {
+      headless: true,
+      executablePath: '/usr/bin/google-chrome',
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process'
+      ]
+    };
+    const browser = await puppeteer.launch(browserOptions);
     const page = await browser.newPage();
 
     await page.setUserAgent(
@@ -4248,10 +4334,20 @@ class JobProcessor extends EventEmitter {
   }
 
   async getRedirectedUrl(url) {
-    const browser = await puppeteer.launch({
+    const browserOptions = {
       headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
+      executablePath: '/usr/bin/google-chrome',
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process'
+      ]
+    };
+    const browser = await puppeteer.launch(browserOptions);
 
     try {
       const page = await browser.newPage();
