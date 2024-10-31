@@ -3,7 +3,6 @@ const url = require("url");
 const { GoogleGenerativeAI, SchemaType } = require("@google/generative-ai");
 const OpenAI = require("openai");
 const { zodResponseFormat } = require("openai/helpers/zod");
-const { executablePath } = require('puppeteer');
 const { z } = require("zod");
 const axios = require("axios");
 const cheerio = require("cheerio");
@@ -11,7 +10,7 @@ const fs = require("fs").promises;
 const notificationQueries = require("../queries/notificationQueries");
 const EventEmitter = require("events");
 const path = require("path");
-const puppeteer = require("puppeteer-extra");
+const puppeteer = require("puppeteer");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 puppeteer.use(StealthPlugin());
 const jobQueries = require("../queries/jobQueries");
@@ -896,7 +895,6 @@ class JobProcessor extends EventEmitter {
         }
         const browserOptions = {
           headless: true,
-          executablePath: executablePath(),
           args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -1118,7 +1116,6 @@ class JobProcessor extends EventEmitter {
     try {
       const browserOptions = {
         headless: true,
-        executablePath: executablePath(),
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -1298,7 +1295,6 @@ class JobProcessor extends EventEmitter {
     try {
       const browserOptions = {
         headless: true,
-        executablePath: executablePath(),
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -2569,7 +2565,6 @@ class JobProcessor extends EventEmitter {
       // Launch Puppeteer
       const browserOptions = {
         headless: true,
-        executablePath: executablePath(),
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -2968,7 +2963,6 @@ class JobProcessor extends EventEmitter {
   async grabWorkDayLinks(url) {
     const browserOptions = {
       headless: true,
-      executablePath: executablePath(),
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -3499,7 +3493,6 @@ class JobProcessor extends EventEmitter {
     if (!this.browser) {
       const browserOptions = {
         headless: true,
-        executablePath: executablePath(),
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -4115,7 +4108,6 @@ class JobProcessor extends EventEmitter {
   async searchTechJobOnLinkedIn(jobTitle, location = "United States") {
     const browserOptions = {
       headless: true,
-      executablePath: executablePath(),
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -4190,7 +4182,6 @@ class JobProcessor extends EventEmitter {
   async getJobInfoFromLinkedIn(linkedInUrl) {
     const browserOptions = {
       headless: true,
-      executablePath: executablePath(),
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -4337,7 +4328,6 @@ class JobProcessor extends EventEmitter {
   async getRedirectedUrl(url) {
     const browserOptions = {
       headless: true,
-      executablePath: executablePath(),
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
