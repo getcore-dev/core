@@ -431,6 +431,20 @@
             </svg>
           </button>
         </div>
+        <div class="quick-buttons flex gap-2 flex-row wrap">
+          <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground hover:bg-accent" onclick="document.getElementById('job-search-input').value = 'Software Engineer'; filters.titles = ['Software Engineer']; currentPage = 1; hasMore = true; clearJobs(); loadMoreJobs();">
+            Software Engineer
+          </div>
+          <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground hover:bg-accent" onclick="document.getElementById('job-search-input').value = 'Project Manager'; filters.titles = ['Project Manager']; currentPage = 1; hasMore = true; clearJobs(); loadMoreJobs();">
+            Project Manager
+          </div>
+          <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground hover:bg-accent" onclick="document.getElementById('job-search-input').value = 'Data Scientist'; filters.titles = ['Data Scientist']; currentPage = 1; hasMore = true; clearJobs(); loadMoreJobs();">
+            Data Scientist
+          </div>
+          <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground hover:bg-accent" onclick="document.getElementById('job-search-input').value = 'Quantitative Analyst'; filters.titles = ['Quantitative Analyst']; currentPage = 1; hasMore = true; clearJobs(); loadMoreJobs();">
+            Quantitative Analyst
+          </div>
+        </div>
         <div class="jobs-selected-filters">
         </div>
         <% if (errorMessages && errorMessages.length > 0) { %>
@@ -555,26 +569,30 @@
             if (viewedJobs.includes(job.id)) {
               tags.push({
                 text: 'Viewed',
-                class: 'inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-gray-500 text-white shadow hover:bg-gray-600 h-6',
-                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
+                class: 'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground',
+                icon: '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 fill-green-300 text-green-300"><path d="M0.877075 7.49991C0.877075 3.84222 3.84222 0.877075 7.49991 0.877075C11.1576 0.877075 14.1227 3.84222 14.1227 7.49991C14.1227 11.1576 11.1576 14.1227 7.49991 14.1227C3.84222 14.1227 0.877075 11.1576 0.877075 7.49991ZM7.49991 1.82708C4.36689 1.82708 1.82708 4.36689 1.82708 7.49991C1.82708 10.6329 4.36689 13.1727 7.49991 13.1727C10.6329 13.1727 13.1727 10.6329 13.1727 7.49991C13.1727 4.36689 10.6329 1.82708 7.49991 1.82708Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>'
               });
             }
 
             if (job.salary) {
               tags.push({
                 text: `$${job.salary}`,
+                class: 'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground',
+
                 icon: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>',
               });
-            } else {
-              // try to extract salary from description
-              const salaryMatch = job.description.match(/\$(\d+(?:,?\d*)?(?:k|K)?(?:\s*-\s*\$?\d+(?:,?\d*)?(?:k|K)?)?(?:\s*\/?\s*(?:hr|hour|mo|month|yr|year))?)/i);
-              if (salaryMatch) {
-                tags.push({
-                  text: `$${salaryMatch[1]}`,
-                  icon: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>',
-                });
-              }
             }
+
+            if (job.views) {
+              tags.push({
+                text: `${job.views} views`,
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>',
+              });
+            }
+            tags.push({
+              text: `${job.applicants} applicants`,
+              icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+            });
 
             const jobElement = createCard(
               job.company_name,
@@ -633,7 +651,7 @@
       searchInput.addEventListener('input', () => {
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(() => {
-          filters.titles = searchInput.value.split(' ').filter(Boolean);
+          filters.titles = searchInput.value.split(', ').filter(Boolean);
           currentPage = 1;
           hasMore = true;
           clearJobs();

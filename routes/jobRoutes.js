@@ -37,6 +37,12 @@ const experienceLevelRoutes = {
     mainFilter: 'Internships',
     needsJobCount: true
   },
+  '/pm': {
+    level: 'Entry Level',
+    title: 'Project Manager',
+    mainFilter: 'Project Manager Positions',
+    needsJobCount: true
+  },
   '/grad': {
     level: 'Entry Level',
     mainFilter: 'Entry Level Positions',
@@ -64,6 +70,10 @@ Object.entries(experienceLevelRoutes).forEach(([path, config]) => {
   router.get(path, async (req, res) => {
     const filters = parseFilters(req.query);
     filters.experienceLevels = [config.level];
+    if (config.title) {
+      filters.titles = [config.title];
+    }
+
 
     // Only fetch job count for internships (or modify as needed)
     const jobCount = config.needsJobCount 

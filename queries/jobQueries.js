@@ -93,7 +93,19 @@ function expandTitles(titles) {
       'web developer',
       'application developer',
       'systems engineer',
-      'devops engineer'
+      'devops engineer',
+      "Software Developer",
+      "Python Developer",
+      "Java Developer",
+      "Full Stack Developer",
+      "Backend Developer",
+      "Frontend Developer",
+      "iOS Developer",
+      "Android Developer",
+      "Web Developer",
+      "DevOps Engineer",
+      "Cloud Engineer",
+      "reliability engineer",
     ],
     'data scientist': [
       'data analyst',
@@ -177,7 +189,18 @@ function expandTitles(titles) {
       'facilities manager',
       'production manager',
       'operations supervisor'
-    ]
+    ],
+    'quantitative analyst': [
+      'quant',
+      'quantitative developer',
+      'quantitative trader',
+      'quantitative research',
+      'quantitative software',
+      'quantitative modeler',
+      'quantitative strategist',
+      'quantitative consultant',
+      'quantitative risk analyst'
+    ],
   };
 
   // Helper function to normalize strings for comparison
@@ -209,6 +232,156 @@ function expandTitles(titles) {
   });
 
   return expandedTitles;
+}
+const titleMappings = {
+  // Software Engineering roles
+  'software engineer': [
+    'software developer',
+    'programmer',
+    'developer',
+    'swe',
+    'software development engineer',
+    'application developer',
+    'full stack developer',
+    'full stack engineer',
+    'backend developer',
+    'backend engineer',
+    'frontend developer',
+    'frontend engineer'
+  ],
+
+  // Product/Program Management roles
+  'product manager': [
+    'program manager',
+    'product owner',
+    'technical product manager',
+    'product management',
+    'pm',
+    'program management'
+  ],
+
+  // Data Science roles
+  'data scientist': [
+    'data analyst',
+    'data engineer',
+    'machine learning engineer',
+    'ml engineer',
+    'analytics engineer',
+    'data science'
+  ],
+
+  // Design roles
+  'product designer': [
+    'ui designer',
+    'ux designer',
+    'ui/ux designer',
+    'web designer',
+    'interaction designer',
+    'visual designer'
+  ],
+
+  // DevOps roles
+  'devops engineer': [
+    'site reliability engineer',
+    'platform engineer',
+    'infrastructure engineer',
+    'cloud engineer',
+    'systems engineer',
+    'sre'
+  ],
+
+  'financial analyst': [
+    'finance analyst',
+    'business analyst',
+    'financial advisor',
+    'investment analyst',
+    'corporate finance analyst',
+    'financial consultant',
+    'budget analyst'
+  ],
+  'operations manager': [
+    'operations director',
+    'operations coordinator',
+    'business operations manager',
+    'operations specialist',
+    'facilities manager',
+    'production manager',
+    'operations supervisor'
+  ],
+  'quantitative analyst': [
+    'quant',
+    'quantitative developer',
+    'quantitative trader',
+    'quantitative research',
+    'quantitative software',
+    'quantitative modeler',
+    'quantitative strategist',
+    'quantitative consultant',
+    'quantitative risk analyst'
+  ],
+
+  'project manager': [
+    'program manager',
+    'project coordinator',
+    'project management',
+    'pm',
+    'program management'
+  ],
+};
+
+function buildTitleConditions(titles, queryParams) {
+  if (!titles.length) return [];
+  
+  const allTitles = new Set();
+  
+  // Collect all related titles
+  titles.forEach(searchTitle => {
+    const normalizedSearch = searchTitle.toLowerCase().trim();
+    
+    // Add the original search term
+    allTitles.add(normalizedSearch);
+    
+    // Add mapped titles
+    Object.entries(titleMappings).forEach(([main, variations]) => {
+      // If the search term matches main title or any variation
+      if (main.includes(normalizedSearch) || 
+          variations.some(v => v.includes(normalizedSearch))) {
+        // Add main title and all variations
+        allTitles.add(main);
+        variations.forEach(v => allTitles.add(v));
+      }
+    });
+  });
+
+  // Build the SQL conditions
+  const titleConditions = Array.from(allTitles).map((title, index) => {
+    const paramName = `title${index}`;
+    queryParams.push({ name: paramName, value: `"*${title}*"` });
+    return `CONTAINS(j.title, @${paramName})`;
+  });
+
+  return titleConditions;
+}
+
+function addTitleMapping(mainTitle, variations) {
+  titleMappings[mainTitle.toLowerCase().trim()] = 
+    variations.map(v => v.toLowerCase().trim());
+}
+
+// Function to get all related titles for a given title
+function getRelatedTitles(searchTitle) {
+  const normalizedSearch = searchTitle.toLowerCase().trim();
+  const related = new Set([normalizedSearch]);
+  
+  Object.entries(titleMappings).forEach(([main, variations]) => {
+    if (main.includes(normalizedSearch) || 
+        variations.some(v => v.includes(normalizedSearch))) {
+      related.add(main);
+      variations.forEach(v => related.add(v));
+    }
+  });
+  
+  return Array.from(related);
 }
 
 const jobQueries = {
@@ -888,18 +1061,14 @@ const jobQueries = {
         FROM JobPostings j
         JOIN Companies c ON j.company_id = c.id
         WHERE 1 = 1
+                AND LEN(ISNULL(j.description, '')) > 5
       `;
       const queryParams = [];
       const conditions = [];
   
       // Optimize and combine filter conditions
       if (titles.length) {
-        // Build full-text search conditions for titles
-        const titleConditions = titles.map((title, index) => {
-          const paramName = `title${index}`;
-          queryParams.push({ name: paramName, value: `"*${title}*"` });
-          return `CONTAINS(j.title, @${paramName})`;
-        });
+        const titleConditions = buildTitleConditions(titles, queryParams);
         conditions.push(`(${titleConditions.join(' OR ')})`);
       }
 
@@ -945,9 +1114,9 @@ const jobQueries = {
           if (isInternship) {
             return `j.experienceLevel = 'Internship' OR j.title = 'Intern'`;
           }
-          if (isEntryLevel) {
-            return `j.experienceLevel = 'Entry Level' OR j.title LIKE '%entry level%' OR j.title LIKE '%grad%' OR j.title LIKE '%trainee%' OR j.title LIKE '%fellow%' OR j.title LIKE '%engineer I' OR j.title LIKE '%manager I' OR j.description LIKE '%entry level%' OR j.description LIKE '%associate%' OR j.description LIKE '%assistant%' OR j.description LIKE '%grad%' OR j.description LIKE '%junior%' OR j.description LIKE '%trainee%' OR j.description LIKE '%fellow%' OR j.description LIKE '%engineer I' OR j.description LIKE '%manager I'`;
-          }
+            if (isEntryLevel) {
+            return `j.experienceLevel = 'Entry Level' OR (j.title LIKE '%entry level%' OR j.title LIKE '%grad%' OR j.description LIKE '%entry level%' OR j.description LIKE '%graduate%' OR j.description LIKE '%1 year%') AND j.title NOT LIKE '%senior%' AND j.title NOT LIKE '%vp%' AND j.title NOT LIKE '%principal%'`;
+            }
           return `CONTAINS(j.experienceLevel, @${paramName}) OR CONTAINS(j.title, @${paramName})`;
         });
         conditions.push(`(${expLevelConditions.join(' OR ')})`);

@@ -3677,14 +3677,15 @@ class JobProcessor extends EventEmitter {
   }
 
   generateJobSystemPrompt() {
-    return `Analyze the information for the job posting given and sort the data such that you can extract the information:
+    return `
+    Analyze the information for the job posting given and sort the data such that you can extract the information:
       JobPosting = {
         title: string,
         location: string, // if there are multiple locations, separate them with a | character, format each date as 'City, State', max of 200 characters
         description: string, // write about what the ideal candidate for the job posting is like? who's the person they're looking for?
         experienceLevel: enum, // 'internship', 'junior', 'senior', 'lead', 'manager', 'vp', 'director' only, ensure that the experience level is correct based on the title
-        salary: int, // yearly salary, if not given in yearly, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY
-        salary_max: int, // if given a range this is max yearly salary, if given in hourly or anything else, convert to yearly, NULL IF NOTHING DO NOT MAKE UP A SALARY
+        salary: int, // convert to yearly salary if given in hourly or anything else, NULL IF NOTHING DO NOT MAKE UP A SALARY
+        salary_max: int, // NULL IF NO HIGHER VALUE GIVEN FOR SALARY
         additional_information: string,
         skills_string: string, // write the technicals, soft skills, and tools that are required for this job, separate each skill with a comma, max 200 characters
         benefits: string, // separate each benefit with a comma and format them like 'Healthcare: Yes, Dental: Yes, Vision: Yes, etc'
@@ -3769,7 +3770,7 @@ class JobProcessor extends EventEmitter {
       title: z.string(),
       location: z.string(),
       salary: z.number(),
-      salary_max: z.number().optional(),
+      salary_max: z.number(),
       experienceLevel: z.enum(experienceLevelEnum).optional(),
       description: z.string(),
       benefits: z.string().optional(),
