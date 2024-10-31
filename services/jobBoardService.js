@@ -10,7 +10,7 @@ const fs = require("fs").promises;
 const notificationQueries = require("../queries/notificationQueries");
 const EventEmitter = require("events");
 const path = require("path");
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-core");
 const jobQueries = require("../queries/jobQueries");
 const { title } = require("process");
 const rateLimit = require("axios-rate-limit");
@@ -41,7 +41,7 @@ const BROWSER_CONFIG = {
     '--disable-features=site-per-process',
     '--ignore-certificate-errors'
   ],
-  executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || null,
+  executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/google-chrome',
   timeout: 30000
 };
 
