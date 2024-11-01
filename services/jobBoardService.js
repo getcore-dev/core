@@ -1,5 +1,4 @@
 const sanitizeHtml = require("sanitize-html"); // Import the sanitization library
-const url = require("url");
 const { GoogleGenerativeAI, SchemaType } = require("@google/generative-ai");
 const OpenAI = require("openai");
 const { zodResponseFormat } = require("openai/helpers/zod");
@@ -7,25 +6,11 @@ const { z } = require("zod");
 const axios = require("axios");
 const cheerio = require("cheerio");
 const fs = require("fs").promises;
-const notificationQueries = require("../queries/notificationQueries");
 const EventEmitter = require("events");
 const path = require("path");
 const puppeteer = require("puppeteer");
 const jobQueries = require("../queries/jobQueries");
-const { title } = require("process");
-const rateLimit = require("axios-rate-limit");
-const http = rateLimit(axios.create(), {
-  maxRequests: 10,
-  perMilliseconds: 1000,
-}); // 10 requests per second
-const WebScraper = require("./webScraperService");
-const { link } = require("fs");
-const Queue = require("bull");
-const { set } = require("../app");
-const web = new WebScraper();
 const TurndownService = require("turndown");
-const { count } = require("console");
-const { name } = require("ejs-async");
 const BROWSER_CONFIG = {
   headless: true,
   args: [
