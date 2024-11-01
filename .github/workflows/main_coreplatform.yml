@@ -80,8 +80,5 @@ jobs:
           slot-name: 'Production'
           package: .
           startup-command: 'pm2 start server.js --no-daemon'
-        env:
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
-          PUPPETEER_EXECUTABLE_PATH: '/usr/bin/google-chrome'
       - name: 'Post-deployment cleanup'
         run: rm release.zip
