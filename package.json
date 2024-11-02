@@ -60,8 +60,6 @@
     "pdf-parse": "^1.1.1",
     "pdfkit": "^0.15.0",
     "puppeteer": "^23.6.1",
-    "puppeteer-core": "^23.6.1",
-    "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "request": "^2.88.2",
     "sanitize-html": "^2.13.0",
