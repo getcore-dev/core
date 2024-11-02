@@ -42,6 +42,10 @@ jobs:
       - name: Set Permissions
         run: chmod +x ./chrome-linux/chrome/google-chrome
 
+
+      - name: Set Permissions
+        run: chmod +x ./startup.sh
+
       - name: Zip artifact for deployment
         run: zip -r release.zip . -x "node_modules/**" ".git/**" ".github/**" "tests/**"
 
@@ -83,6 +87,6 @@ jobs:
           app-name: 'coreplatform'
           slot-name: 'Production'
           package: .
-          startup-command: 'pm2 start server.js --no-daemon'
+          startup-command: 'pm2 start'
       - name: 'Post-deployment cleanup'
         run: rm release.zip
