@@ -4480,8 +4480,8 @@ class JobProcessor extends EventEmitter {
       // convert salary range to salary and salary_max '$110,000.00/yr - $120,000.00/yr', to 110000, 120000
       if (extractedData.salary_range) {
         const [min, max] = extractedData.salary_range.split(" - ");
-        extractedData.salary = min.replace("$", "").replace(",", "");
-        extractedData.salary_max = max.replace("$", "").replace(",", "");
+        extractedData.salary = min.replace(/\$/g, "").replace(/,/g, "");
+        extractedData.salary_max = max.replace(/\$/g, "").replace(/,/g, "");
 
         if (extractedData.additional_information) {
           extractedData.additional_information += extractedData.salary_range;
