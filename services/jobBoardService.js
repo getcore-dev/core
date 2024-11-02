@@ -8,11 +8,12 @@ const cheerio = require("cheerio");
 const fs = require("fs").promises;
 const EventEmitter = require("events");
 const path = require("path");
-const puppeteer = require("puppeteer");
+const puppeteer = require('puppeteer');
 const jobQueries = require("../queries/jobQueries");
 const TurndownService = require("turndown");
 const BROWSER_CONFIG = {
   headless: 'new',
+  executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
   args: [
     '--no-sandbox',
     '--disable-setuid-sandbox',
