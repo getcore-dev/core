@@ -8,32 +8,13 @@ const cheerio = require("cheerio");
 const fs = require("fs").promises;
 const EventEmitter = require("events");
 const path = require("path");
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const jobQueries = require("../queries/jobQueries");
 const TurndownService = require("turndown");
 const BROWSER_CONFIG = {
-  headless: 'new',
-  executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
-  args: [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-    '--disable-dev-shm-usage',
-    '--disable-gpu',
-    '--no-first-run',
-    '--no-zygote',
-    '--single-process',
-    '--disable-extensions',
-    '--disable-software-rasterizer',
-    '--disable-features=site-per-process',
-    '--ignore-certificate-errors',
-    '--disable-accelerated-2d-canvas',
-    '--hide-scrollbars',
-    '--mute-audio',
-    '--font-render-hinting=none',
-    '--force-color-profile=srgb'
-  ],
-  timeout: 30000,
-  ignoreDefaultArgs: ['--enable-automation'],
+  headless: true,
+  executablePath: process.env.CHROME_BIN || '/home/site/wwwroot/chrome-linux/chrome/google-chrome',
+  args: ['--no-sandbox', '--disable-setuid-sandbox']
 };
 
 class ObjectSet extends Set {

@@ -1,3 +1,6 @@
+const {join} = require("path")
+
+
 /**
  * @type {import("puppeteer").Configuration}
  */
@@ -10,4 +13,5 @@ module.exports = {
     firefox: {
       skipDownload: false,
     },
+    cacheDirectory: join(__dirname, "cache", "puppeteer")
   };

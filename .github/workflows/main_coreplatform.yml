@@ -32,6 +32,16 @@ jobs:
       - name: Install PM2 globally
         run: npm install -g pm2
 
+      - name: Install Puppeteer dependencies
+        run: |
+            mkdir -p ./chrome-linux
+            wget -O google-chrome-stable_current_amd64.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+            dpkg-deb -x google-chrome-stable_current_amd64.deb ./chrome-linux
+            mv ./chrome-linux/opt/google/chrome ./chrome-linux/chrome
+
+      - name: Set Permissions
+        run: chmod +x ./chrome-linux/chrome/google-chrome
+
       - name: Zip artifact for deployment
         run: zip -r release.zip . -x "node_modules/**" ".git/**" ".github/**" "tests/**"
 
@@ -65,18 +75,6 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_97B5C32E11844D9C9E68A0FA7BBC4D40 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_074F77A61489473088C7AEA0D2F4119A }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_AAE5BA95235A4449B0C864089846E65F }}
-
-      - name: Install Puppeteer dependencies
-        run: |
-            sudo apt-get update
-            sudo apt-get install -y wget gnupg
-            wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-            sudo apt install -y ./google-chrome-stable_current_amd64.deb
-            sudo ln -s /usr/bin/google-chrome /usr/bin/chrome
-            sudo npx puppeteer browsers install chrome
-        env:
-            PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
-
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
