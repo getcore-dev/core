@@ -16,7 +16,9 @@ apt-get install -y wget gnupg ca-certificates fonts-liberation libappindicator3-
     libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 \
     lsb-release xdg-utils
 
-sudo apt-get install -y libgobject-2.0-0 libgtk-3-0 libx11-xcb1 libxtst6 libxss1 libgconf-2-4 libnss3 libcups2 libxcomposite1 libasound2 libpangocairo-1.0-0 libatk1.0-0 libatk-bridge2.0-0 libatspi2.0-0 libdrm2
+apt-get install -y libnss3 libglib2.0-0 libx11-6 libx11-xcb1 libxcb1 \
+      libxcomposite1 libxcursor1 libxdamage1 libxext6 libxi6 libxrandr2 \
+      libxrender1 libxss1 libxtst6 libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0
 
 # Install Google Chrome
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
