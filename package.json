@@ -4,8 +4,8 @@
   "description": "community-based platform for sharing projects and gaining opportunities",
   "main": "index.js",
   "scripts": {
+    "start": "./startup.sh",
     "dev-start": "nodemon server.js",
-    "start": "pm2 start server.js --no-daemon",
     "lint": "eslint .",
     "build": ""
   },
