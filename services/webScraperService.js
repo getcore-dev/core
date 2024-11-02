@@ -1,8 +1,6 @@
 const axios = require('axios');
 const https = require('https');
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-puppeteer.use(StealthPlugin());
+const puppeteer = require('puppeteer');
 
 class WebScraper {
   constructor() {
