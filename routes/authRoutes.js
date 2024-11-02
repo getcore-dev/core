@@ -12,6 +12,7 @@ const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer');
 const userQueries = require('../queries/userQueries');
 const notificationQueries = require('../queries/notificationQueries');
+const config = require('../config'); // Add this line to import the configuration
 
 // Set up nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -58,7 +59,7 @@ router.post('/reset-password', async (req, res) => {
     await sql.query`UPDATE users SET reset_password_token = ${resetToken}, reset_password_expires = ${resetTokenExpires} WHERE id = ${user.id}`;
 
     // Send reset email
-    const resetUrl = `http://${req.headers.host}/reset-password/${resetToken}`;
+    const resetUrl = `http://${config.hostname}/reset-password/${resetToken}`; // Use configured hostname
     const mailOptions = {
       from: '"CORE Support" <support@getcore.dev>',
       to: user.email,
