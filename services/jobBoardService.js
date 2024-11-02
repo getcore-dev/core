@@ -12,7 +12,7 @@ const puppeteer = require("puppeteer");
 const jobQueries = require("../queries/jobQueries");
 const TurndownService = require("turndown");
 const BROWSER_CONFIG = {
-  headless: true,
+  headless: 'new',
   args: [
     '--no-sandbox',
     '--disable-setuid-sandbox',
@@ -24,9 +24,15 @@ const BROWSER_CONFIG = {
     '--disable-extensions',
     '--disable-software-rasterizer',
     '--disable-features=site-per-process',
-    '--ignore-certificate-errors'
+    '--ignore-certificate-errors',
+    '--disable-accelerated-2d-canvas',
+    '--hide-scrollbars',
+    '--mute-audio',
+    '--font-render-hinting=none',
+    '--force-color-profile=srgb'
   ],
-  timeout: 30000
+  timeout: 30000,
+  ignoreDefaultArgs: ['--enable-automation'],
 };
 
 class ObjectSet extends Set {
