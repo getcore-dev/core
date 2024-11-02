@@ -73,6 +73,7 @@ jobs:
             wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
             sudo apt install -y ./google-chrome-stable_current_amd64.deb
             sudo ln -s /usr/bin/google-chrome /usr/bin/chrome
+            sudo npx puppeteer browsers install chrome
         env:
             PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
 
