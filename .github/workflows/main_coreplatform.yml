@@ -87,6 +87,6 @@ jobs:
           app-name: 'coreplatform'
           slot-name: 'Production'
           package: .
-          startup-command: 'pm2 start'
+          startup-command: 'npm start'
       - name: 'Post-deployment cleanup'
         run: rm release.zip

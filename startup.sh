@@ -21,4 +21,4 @@ apt-get install -y --no-install-recommends \
 echo "Chrome dependencies installed."
 
 # Start the Node.js server
-npm start
+pm2 start server.js --no-daemon
