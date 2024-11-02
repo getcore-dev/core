@@ -6,6 +6,7 @@ const multer = require("multer");
 const { checkAuthenticated } = require("../middleware/authMiddleware");
 const fs = require("fs");
 const path = require("path");
+const he = require("he");
 const JobProcessor = require("../services/jobBoardService");
 const jobProcessor = new JobProcessor();
 const githubService = require("../services/githubService");
@@ -1674,7 +1675,7 @@ router.get("/communities/:communitiesId", async (req, res) => {
 
     res.json(communities);
   } catch (err) {
-    res.status(500).send(err.message);
+    res.status(500).send(he.encode(err.message));
   }
 });
 
@@ -1685,7 +1686,7 @@ router.get("/link-preview/:link", cacheMiddleware(1200), async (req, res) => {
     res.json(linkPreview);
   } catch (err) {
     console.error("Error in link preview route:", err);
-    res.status(500).send(err.message);
+    res.status(500).send(he.encode(err.message));
   }
 });
 

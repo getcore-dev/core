@@ -66,7 +66,8 @@
     "session-file-store": "^1.5.0",
     "turndown": "^7.2.0",
     "uuid": "^11.0.2",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "he": "^1.2.0"
   },
   "devDependencies": {
     "globals": "^15.8.0",
