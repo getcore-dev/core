@@ -157,6 +157,9 @@ router.get('/updates/new', checkAuthenticated, async (req, res) => {
 router.get('/updates/:id', async (req, res) => {
   try {
     const updateId = req.params.id;
+    if (!/^[a-zA-Z0-9]+$/.test(updateId)) {
+      throw new Error('Invalid update ID');
+    }
     res.render('update-post.ejs', { user: req.user, updateId });
   } catch (error) {
     console.error('Error fetching updates:', error);
