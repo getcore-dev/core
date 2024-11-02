@@ -42,9 +42,10 @@ jobs:
       - name: Set Permissions
         run: chmod +x ./chrome-linux/chrome/google-chrome
 
-
       - name: Set Permissions
-        run: chmod +x ./startup.sh
+        run: |
+          chmod +x ./startup.sh
+          chmod +x ./install-dependencies.sh
 
       - name: Zip artifact for deployment
         run: zip -r release.zip . -x "node_modules/**" ".git/**" ".github/**" "tests/**"
