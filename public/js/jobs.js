@@ -823,6 +823,8 @@ function formatRelativeDate(dateString) {
   const date = new Date(dateString);
   const now = new Date();
   const diffInSeconds = Math.floor((now - date) / 1000);
+  const diffInDays = Math.floor(diffInSeconds / 86400);
+  const diffInWeeks = Math.floor(diffInDays / 7);
 
   if (diffInSeconds < 60) {
     return "Just now";
@@ -832,8 +834,10 @@ function formatRelativeDate(dateString) {
   } else if (diffInSeconds < 86400) {
     const hours = Math.floor(diffInSeconds / 3600);
     return `${hours}h ago`;
-  } else if (diffInSeconds < 172800) {
-    return "1d ago";
+  } else if (diffInDays < 7) {
+    return `${diffInDays}d ago`;
+  } else if (diffInWeeks <= 4) {
+    return `${diffInWeeks}w ago`;
   } else {
     const month = date.toLocaleString("default", { month: "short" });
     const day = String(date.getDate());
