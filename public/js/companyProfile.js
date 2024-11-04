@@ -456,6 +456,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const description = document.getElementById("companyDescription");
   const toggleButton = document.getElementById("toggleButton");
 
+  if (!description || !toggleButton) {
+    return;
+  }
+
   function checkOverflow() {
     const isOverflowing = description.scrollHeight > description.clientHeight;
     toggleButton.style.display = isOverflowing ? "block" : "none";
@@ -478,10 +482,7 @@ function renderComments(comments) {
   const commentsHeader = document.querySelector(
     ".company-comments-header-title",
   );
-  const commentCount = document.querySelector(".comments-count");
   commentsContainer.innerHTML = "";
-  commentCount.style.display = "flex";
-  commentCount.textContent = `${comments.length}`;
   commentsHeader.textContent = `${comments.length} Comment${comments.length !== 1 ? "s" : ""}`;
 
   comments.forEach((comment) => {

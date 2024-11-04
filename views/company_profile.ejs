@@ -275,43 +275,80 @@
         -->
       </div>
       <div class="company-containers">
-        <div class="company-comments company-profile-section">
-          <h3 class="company-comments-header-title margin-1-bottom"> Comments</h3>
-          <% if (user) { %>
-          <form class="comment-form margin-1-bottom" action="/jobs/company/<%= encodeURIComponent(company.name) %>/comments" method="POST">
-            <textarea class="comment-input adaptive-input" name="content" placeholder="Write a comment..."></textarea>
-            <button type="submit" class="comment-submit submit-button">Post</button>
-          </form>
-          <% } %>
-          <div class="comments-container">
-          </div>
-          <%- include('partials/footer') %>
+        <% if (user) { %>
+        <div class="company-comments company-profile-section mx-4">
+          <div class="flex flex-row v-center max-w-md bg-background border rounded-lg overflow-hidden px-4 py-3">
+            <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkle">
+              <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
+            </svg>
+            <p class="text-sm font-semibold company-comments-header-title">Comments</p>
+            <div class="ml-auto flex space-x-2">
+              <button id="toggleComments" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background shadow-sm relative z-10 h-7 w-7 text-foreground opacity-100 hover:bg-muted hover:text-foreground [&_svg]:h-3.5 [&_svg]:w-3.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye">
+                  <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
 
-        </div>
-        <div class="jobs company-profile-section">
-          <div class="jobs-company-header margin-06-bottom">
-            <h3 class="text-md font-semibold"> <%= company.name%> is hiring for <%= jobsCount %> jobs</h3>
-          </div>
-          <div class="filter-container">
-            <input type="text" class="filter-input flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" placeholder="Search for a job" />
-          </div>
-          <div class="job-list">
-            <div class="load-more" id="loading-indicator">
-              <button class="load-more-btn flex flex-row gap-06 main-button" id="load-more-btn">
-                <div>
-                  <div class="spinner-container">
-                    <div class="spinner"></div>
-                  </div>
-                </div>
-                <p class="sub-text">Load More</p>
               </button>
-
+              <button id="toggleForm" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background shadow-sm relative z-10 h-7 w-7 text-foreground opacity-100 hover:bg-muted hover:text-foreground [&_svg]:h-3.5 [&_svg]:w-3.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle-plus">
+                  <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                  <path d="M8 12h8" />
+                  <path d="M12 8v8" />
+                </svg>
+              </button>
             </div>
           </div>
-          <%- include('partials/footer') %>
-
+          <div id="commentForm" class="hidden mt-4 max-w-md bg-background border rounded-lg p-4">
+            <form>
+              <label for="comment" class="block text-sm font-medium text-gray-700">Your Comment</label>
+              <textarea id="comment" name="comment" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"></textarea>
+              <button type="submit" class="mt-2 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-7 px-4 py-2">
+                Submit
+              </button>
+            </form>
+          </div>
+          <div class="hidden comments-container mt-4 max-w-md bg-background border rounded-lg p-4">
+          </div>
         </div>
+        <% } %>
       </div>
+
+      <script>
+        document.getElementById('toggleForm').addEventListener('click', function () {
+          const form = document.getElementById('commentForm');
+          form.classList.toggle('hidden');
+        });
+
+        document.getElementById('toggleComments').addEventListener('click', function () {
+          const comments = document.querySelector('.comments-container');
+          comments.classList.toggle('hidden');
+        });
+      </script>
+      <div class="jobs company-profile-section">
+        <div class="jobs-company-header margin-06-bottom">
+          <h3 class="text-md font-semibold"> <%= company.name%> is hiring for <%= jobsCount %> jobs</h3>
+        </div>
+        <div class="filter-container">
+          <input type="text" class="filter-input flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" placeholder="Search for a job" />
+        </div>
+        <div class="job-list">
+          <div class="load-more" id="loading-indicator">
+            <button class="load-more-btn flex flex-row gap-06 main-button" id="load-more-btn">
+              <div>
+                <div class="spinner-container">
+                  <div class="spinner"></div>
+                </div>
+              </div>
+              <p class="sub-text">Load More</p>
+            </button>
+
+          </div>
+        </div>
+        <%- include('partials/footer') %>
+
+      </div>
+    </div>
 
     </div>
 

@@ -12,60 +12,6 @@
   <link rel="shortcut icon" href="/img/core.png" />
 </head>
 <style>
-  /* Table Styles */
-  .job-table {
-    width: 100%;
-    border-collapse: collapse;
-    border-radius: 30px;
-    border-style: hidden;
-    box-shadow: 0 0 0 1px var(--border-color);
-    border-collapse: collapse;
-  }
-
-  .job-table th,
-  .job-table tr {
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .job-table {
-    border-radius: 10px;
-  }
-
-  .job-table th {
-    background-color: transparent;
-    text-align: left;
-  }
-
-  .job-table td {
-    padding: 6px 4px;
-  }
-
-  .job-table th {
-    padding: 16px 8px;
-  }
-
-  .job-table tr:hover {
-    background-color: var(--light-mode-hover-color);
-  }
-
-  .job-table thead tr:hover {
-    background-color: transparent;
-  }
-
-  .job-table thead tr th:hover {
-    background-color: var(--light-mode-hover-color);
-  }
-
-  .color-circle {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    margin-right: 8px;
-    border-radius: 50%;
-    vertical-align: middle;
-  }
-
-
   td>* {
     word-break: break-all;
     overflow-wrap: break-word;
@@ -89,18 +35,6 @@
     .job-table tr {
       border-color: var(--dark-mode-border-color);
     }
-
-    .job-table {
-      box-shadow: 0 0 0 1px var(--dark-mode-border-color);
-    }
-
-    .job-table thead tr th:hover {
-      background-color: var(--dark-mode-hover-color);
-    }
-
-    .job-table tr:hover {
-      background-color: var(--dark-mode-hover-color);
-    }
   }
 </style>
 
@@ -111,7 +45,7 @@
       <div class="header flex sb v-center margin-1-bottom">
         <div class="header-title flex flex-col">
           <p class="header-text bold">Applied Jobs</p>
-          <a class="back-button link mini-text" href="/jobs">Back</a>
+          <a class="back-button underline underline-offset-4 mini-text" href="/jobs">Back</a>
         </div>
       </div>
       <div class="flex w-100 gap-1 margin-1-bottom relative">
@@ -126,12 +60,11 @@
         <table class="job-table">
           <thead>
             <tr>
-              <th class="mini-text" style="padding: 10px;"><input type="checkbox" name="select-all" id="select-all"></th>
-              <th class="mini-text" data-column="company_name" style="padding: 10px;">Company
+              <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0" data-column="company_name" style="padding: 10px;">Company
               </th>
-              <th class="mini-text" data-column="title">Title
+              <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0" data-column="title">Title
               </th>
-              <th class="mini-text" data-column="job_status">Status
+              <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0" data-column="job_status">Status
 
               </th>
             </tr>
@@ -167,8 +100,8 @@
     function createCustomSelect(job) {
       const jobId = job.id;
       const userChoice = job.job_status ?
-        `<span class = "color-circle ${job.job_status}"></span> ${job.job_status.charAt(0).toUpperCase() + job.job_status.slice(1)}` :
-        `<span class = "color-circle pending"></span> Pending`;
+        `<span class = "color-circle ${job.job_status}"></span>` :
+        `<span class = "color-circle pending"></span>`;
       const options = [{
           value: 'pending',
           label: 'Pending'
@@ -189,7 +122,7 @@
 
       return `
         <div class="dropdown" data-job-id="${jobId}">
-          <button class="dropdown-button mini-text px-4 py-2 secondary-text">
+          <button class="dropdown-button mini-text  h-8 w-8 secondary-text">
             ${userChoice}
           </button>
           <div class="dropdown-content">
@@ -274,39 +207,33 @@
 
       jobPostings.forEach((job) => {
         const jobRow = document.createElement('tr');
-        jobRow.classname = 'flex'
-
-        // Select cell
-        const selectCell = document.createElement('td');
-        selectCell.style.padding = '10px';
-        const selectCheckbox = document.createElement('input');
-        selectCheckbox.type = 'checkbox';
-        selectCheckbox.name = 'select-job';
-        selectCheckbox.value = job.id;
-        selectCell.appendChild(selectCheckbox);
+        jobRow.className = 'border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted';
 
         // Company Name cell
         const companyNameCell = document.createElement('td');
+        companyNameCell.className = 'p-4 align-middle [&:has([role=checkbox])]:pr-0';
         const companyLink = document.createElement('a');
         companyLink.href = `/jobs/company/${job.company_name}`;
-        companyLink.className = 'company-name mini-text bold';
+        companyLink.className = 'company-name font-medium';
         companyLink.textContent = job.company_name;
         companyNameCell.appendChild(companyLink);
 
         // Title cell
         const titleCell = document.createElement('td');
+        titleCell.className = 'p-4 align-middle [&:has([role=checkbox])]:pr-0';
+
         const titleLink = document.createElement('a');
         titleLink.href = `/jobs/${job.id}`;
-        titleLink.className = 'job-title sub-text link';
+        titleLink.className = 'font-medium underline underline-offset-4';
         titleLink.innerHTML = job.title;
 
         titleCell.appendChild(titleLink);
 
         // Status cell
         const statusCell = document.createElement('td');
+        statusCell.className = 'p-4 align-middle [&:has([role=checkbox])]:pr-0';
         statusCell.innerHTML = createCustomSelect(job);
 
-        jobRow.appendChild(selectCell);
         jobRow.appendChild(companyNameCell);
         jobRow.appendChild(titleCell);
         jobRow.appendChild(statusCell);

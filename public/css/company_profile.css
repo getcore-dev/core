@@ -18,21 +18,6 @@ div.comment-author {
     align-items: center;
 }
 
-.comments-count,
-.jobs-count {
-    height: 20px;
-    min-width: 20px;
-    font-size: 0.7rem;
-    margin-left: 0.5rem;
-    background: #ffffff45;
-    border: 1px solid #707070;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 5px;
-}
-
 .company-menu {
     border-radius: 10px;
     border: 1px solid var(--border-color);
@@ -45,11 +30,6 @@ div.comments-container {
     display: flex;
     flex-direction: column;
     gap: 1.6rem;
-}
-
-div.company-comments {
-    display: none;
-    padding: 1.95rem 1.15rem;
 }
 
 div.jobs {

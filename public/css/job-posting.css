@@ -348,12 +348,16 @@ ul.locations {
 }
 
 .job-details ul li::before {
-  content: "|";
-  color: var(--light-mode-bold-text-color);
+  content: "\2022";
+  /* Unicode for bullet point */
+  color: #3b82f6;
+  /* Tailwind's blue-500 color */
   font-size: 1.2rem;
-  float: left;
-  margin-right: .5rem;
-  margin-left: -1rem;
+  line-height: 1;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1.5em;
+  margin-right: 0.5em;
 }
 
 .job-flair p {

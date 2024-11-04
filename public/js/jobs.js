@@ -726,10 +726,12 @@ function renderJobPostings(jobs) {
       const now = new Date();
       const diffTime = Math.abs(now - postedDate);
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      // new tag
       if (diffDays <= 2 && !viewedJobs.includes(job.id)) {
-        tags.push({ text: "New", class: "new" });
+        tags.push({ text: "New", class: "new", icon:'<span class="flex h-2 w-2 rounded-full bg-blue-600"></span>' });
       }
 
+      // viewed tag
       if (viewedJobs.includes(job.id)) {
         tags.push({
           text: 'Viewed',
@@ -738,6 +740,7 @@ function renderJobPostings(jobs) {
         });
       }
       
+      // location tag
       if (job.location) {
         tags.push({
           text: formatLocation(job.location),
@@ -746,6 +749,7 @@ function renderJobPostings(jobs) {
         });
       }
 
+      // salary tag
       if (job.salary) {
         tags.push({
           text: `$${job.salary}`,
@@ -759,6 +763,8 @@ function renderJobPostings(jobs) {
           tags.push({ text: `$${salaryMatch[1]}`, class: "salary" });
         }
       }
+
+      // experience level tag
       if (job.experienceLevel || job.cleaned_experience_level) {
         tags.push({
           text: job.experienceLevel || job.cleaned_experience_level,
@@ -767,6 +773,7 @@ function renderJobPostings(jobs) {
         });
       }
 
+      // views tag
       if (job.views) {
         tags.push({
           text: `${job.views} views`,
@@ -774,6 +781,8 @@ function renderJobPostings(jobs) {
           icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>',
         });
       }
+
+      // applicants tag
       tags.push({
         text: `${job.applicants} applicants`,
         class: "applicants",

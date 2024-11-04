@@ -4,7 +4,7 @@ function createCard(name, timestamp, title, location, description, clickable=fal
     let tagsHtml = '';
     if (tags) {
       tagsHtml = tags.map(tag => `
-        <div class="${tag.class ? tag.class : 'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground'}">
+      <div class="${tag.class} inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground flex flex-row gap-2">
         <span class="mr-2">${tag.icon ? tag.icon : ''}</span>
           <span class="text-xs">${tag.text}</span>
         </div>
@@ -32,10 +32,6 @@ function createCard(name, timestamp, title, location, description, clickable=fal
       <div class="ml-auto text-xs text-foreground">${timestamp}</div>
       </div>
       <div class="text-sm text-foreground">${title}</div>
-      <span class="flex flex-row gap-2 items-center w-full">
-      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-            <p class="text-xs text-muted-foreground">${location}</p>
-            </span>
 
     </div>
     ${description ? `
