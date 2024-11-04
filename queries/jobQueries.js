@@ -329,6 +329,40 @@ const titleMappings = {
   ],
 };
 
+function buildTitleConditions2(titles, queryParams) {
+  if (!titles.length) return [];
+  
+  const allTitles = new Set();
+  
+  // Collect all related titles
+  titles.forEach(searchTitle => {
+    const normalizedSearch = searchTitle.toLowerCase().trim();
+    
+    // Add the original search term
+    allTitles.add(normalizedSearch);
+    
+    // Add mapped titles
+    Object.entries(titleMappings).forEach(([main, variations]) => {
+      // If the search term matches main title or any variation
+      if (main.includes(normalizedSearch) || 
+          variations.some(v => v.includes(normalizedSearch))) {
+        // Add main title and all variations
+        allTitles.add(main);
+        variations.forEach(v => allTitles.add(v));
+      }
+    });
+  });
+
+  // Build the SQL conditions
+  const titleConditions = Array.from(allTitles).map((title, index) => {
+    const paramName = `title${index}`;
+    queryParams.push({ name: paramName, value: `"*${title}*"` });
+    return `CONTAINS(title, @${paramName})`;
+  });
+
+  return titleConditions;
+}
+
 function buildTitleConditions(titles, queryParams) {
   if (!titles.length) return [];
   
@@ -390,20 +424,69 @@ const jobQueries = {
     console.log("Resume created");
   },
 
-  getJobCountByExperienceLevel: async (experienceLevel) => {
+  getJobCountByFilter: async (filters) => {
     try {
-      const result = await sql.query`
+      const { experienceLevels = [], titles = [], locations = [] } = filters;
+      const queryParams = [];
+      const conditions = [];
+
+      if (titles.length) {
+        const titleConditions = buildTitleConditions2(titles, queryParams);
+        conditions.push(`(${titleConditions.join(' OR ')})`);
+      }
+
+      if (experienceLevels.length) {
+        const expLevelConditions = experienceLevels.map((level, index) => {
+          const paramName = `experienceLevel${index}`;
+          queryParams.push({ name: paramName, value: `"*${level}*"` });
+          const isInternship = level.toLowerCase() === 'internship' || level.toLowerCase() === 'intern';
+          const isEntryLevel = level.toLowerCase() === 'entry level';
+          if (isInternship) {
+        return `CONTAINS(experienceLevel, '"Internship"') OR CONTAINS(title, '"Intern"') AND NOT CONTAINS(title, '"Internal" OR "International"')`;
+          }
+          if (isEntryLevel) {
+        return `CONTAINS(experienceLevel, '"Entry Level"') OR (CONTAINS(title, '"entry level" OR "grad"') OR CONTAINS(description, '"entry level" OR "graduate" OR "1 year"')) AND NOT CONTAINS(title, '"senior" OR "vp" OR "principal"')`;
+          }
+          return `CONTAINS(experienceLevel, @${paramName}) OR CONTAINS(title, @${paramName})`;
+        });
+        conditions.push(`(${expLevelConditions.join(' OR ')})`);
+      }
+
+      if (locations.length) {
+        const locationConditions = locations.map((location, index) => {
+          const paramName = `location${index}`;
+          queryParams.push({ name: paramName, value: `"*${location}*"` });
+          return `CONTAINS(location, @${paramName})`;
+        });
+
+        // Check if 'Remote' is in the locations array
+        if (locations.some(location => location.toLowerCase() === 'remote')) {
+          locationConditions.push(`CONTAINS(location, '"Virtual" OR "N/A" OR "Remote" OR "Work From Home" OR "Telecommute" OR "Anywhere"')`);
+        }
+
+        conditions.push(`(${locationConditions.join(' OR ')})`);
+      }
+
+      const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+
+      const query = `
         SELECT COUNT(*) as count
         FROM JobPostings
-        WHERE experienceLevel = ${experienceLevel}
+        ${whereClause}
       `;
+
+      const request = new sql.Request();
+      queryParams.forEach(param => {
+        request.input(param.name, sql.NVarChar, param.value);
+      });
+
+      const result = await request.query(query);
       return result.recordset[0].count;
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
     }
   },
-
 
   addToRecentJobs: async (userId, jobLink) => {
     try {
@@ -1115,6 +1198,12 @@ const jobQueries = {
           queryParams.push({ name: paramName, value: `"*${location}*"` });
           return `CONTAINS(j.location, @${paramName})`;
         });
+
+        // Check if 'Remote' is in the locations array
+        if (locations.some(location => location.toLowerCase() === 'remote')) {
+          locationConditions.push(`CONTAINS(j.location, '"Virtual" OR "N/A" OR "Remote" OR "Work From Home" OR "Telecommute" OR "Anywhere"')`);
+        }
+
         conditions.push(`(${locationConditions.join(' OR ')})`);
       }
   
@@ -1139,11 +1228,11 @@ const jobQueries = {
           const isInternship = level.toLowerCase() === 'internship' || level.toLowerCase() === 'intern';
           const isEntryLevel = level.toLowerCase() === 'entry level';
           if (isInternship) {
-            return `j.experienceLevel = 'Internship' OR j.title = 'Intern'`;
+            return `CONTAINS(experienceLevel, '"Internship"') OR CONTAINS(title, '"Intern"') AND NOT CONTAINS(title, '"Internal" OR "International"')`;
           }
-            if (isEntryLevel) {
-            return `j.experienceLevel = 'Entry Level' OR (j.title LIKE '%entry level%' OR j.title LIKE '%grad%' OR j.description LIKE '%entry level%' OR j.description LIKE '%graduate%' OR j.description LIKE '%1 year%') AND j.title NOT LIKE '%senior%' AND j.title NOT LIKE '%vp%' AND j.title NOT LIKE '%principal%'`;
-            }
+          if (isEntryLevel) {
+        return `CONTAINS(j.experienceLevel, '"Entry Level"') OR (CONTAINS(j.title, '"entry level" OR "grad"') OR CONTAINS(j.description, '"entry level" OR "graduate" OR "1 year"')) AND NOT CONTAINS(j.title, '"senior" OR "vp" OR "principal"')`;
+          }
           return `CONTAINS(j.experienceLevel, @${paramName}) OR CONTAINS(j.title, @${paramName})`;
         });
         conditions.push(`(${expLevelConditions.join(' OR ')})`);

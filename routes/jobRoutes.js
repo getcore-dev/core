@@ -5,6 +5,8 @@ const jobQueries = require('../queries/jobQueries');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const jobBoardService = require('../services/jobBoardService');
+const userJobService = require('../services/userJobService');
+
 const AZURE_STORAGE_CONNECTION_STRING =
   process.env.AZURE_STORAGE_CONNECTION_STRING;
 const marked = require('marked');
@@ -37,6 +39,17 @@ const experienceLevelRoutes = {
     mainFilter: 'Internships',
     needsJobCount: true
   },
+  '/remote': {
+    level: '',
+    locations: ['Remote'],
+    mainFilter: 'Remote Jobs',
+    needsJobCount: true
+  },
+  '/hybrid': {
+    locations: 'Hybrid',
+    mainFilter: 'Hybrid Jobs',
+    needsJobCount: true
+  },
   '/pm': {
     level: 'Entry Level',
     title: 'Project Manager',
@@ -67,17 +80,15 @@ const experienceLevelRoutes = {
 
 // Set up routes dynamically
 Object.entries(experienceLevelRoutes).forEach(([path, config]) => {
-  router.get(path, async (req, res) => {
+  router.get(path, cacheMiddleware(300), async (req, res) => {
     const filters = parseFilters(req.query);
-    filters.experienceLevels = [config.level];
-    if (config.title) {
-      filters.titles = [config.title];
-    }
+    if (config.level) filters.experienceLevels = [config.level];
+    if (config.title) filters.titles = [config.title];
+    if (config.locations) filters.locations = Array.isArray(config.locations) ? config.locations : [config.locations];
 
-
-    // Only fetch job count for internships (or modify as needed)
+    // Only fetch job count if needed
     const jobCount = config.needsJobCount 
-      ? await jobQueries.getJobCountByExperienceLevel(config.level)
+      ? await jobQueries.getJobCountByFilter(filters)
       : undefined;
 
     const userViewedJobs = req.user ? await userRecentQueries.getViewedJobs(req.user.id) : [];
@@ -131,6 +142,22 @@ router.get('/process/:jobId', checkAuthenticated, async (req, res) => {
   const improvedJobPostings = await jobProcessor.processJobPosting(jobId);
   res.json(improvedJobPostings);
 });
+
+router.get('/getMatch/:jobId', checkAuthenticated, async (req, res) => {
+  const user = req.user;
+  const jobId = req.params.jobId;
+  const job = await jobQueries.findById(jobId);
+  if (!job) {
+    req.flash('error', 'Job not found');
+    return res.redirect('/jobs');
+  }
+
+  const userProcessor = new userJobService();
+  console.log(`finding match: job ${jobId} for user ${user.id}`);
+  const matchInfo = await userProcessor.getMatchScore(job, user);
+  res.json(matchInfo);
+});
+
 
 router.get('/swe', async (req, res) => {
   const filters = parseFilters(req.query);

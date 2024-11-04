@@ -416,6 +416,8 @@
             </div>
           </div>
           -->
+        <% if (filters.locations && !filters.locations.includes('Remote')) { %>
+
         <div class="flex flex-row w-full v-center gap-3">
           <div class="location-input w-full relative">
             <input type="text" id="job-location-search-input" aria-label="Location" class="job-location-search-input pr-9 lex h-9 w-full rounded-md border border-input bg-transparent pr-8 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-8" placeholder="Type your location">
@@ -431,17 +433,19 @@
             </svg>
           </button>
         </div>
+        <% } %>
+
         <div class="quick-buttons flex gap-2 flex-row wrap">
-          <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground hover:bg-accent" onclick="document.getElementById('job-search-input').value = 'Software Engineer'; filters.titles = ['Software Engineer']; currentPage = 1; hasMore = true; clearJobs(); loadMoreJobs();">
+          <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground hover:bg-accent" onclick="document.getElementById('job-search-input').value = 'Software Engineer'; filters.titles = ['Software Engineer']; currentPage = 1; hasMore = true; clearJobs(); loadJobsCount(); loadMoreJobs();">
             Software Engineer
           </div>
-          <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground hover:bg-accent" onclick="document.getElementById('job-search-input').value = 'Project Manager'; filters.titles = ['Project Manager']; currentPage = 1; hasMore = true; clearJobs(); loadMoreJobs();">
+          <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground hover:bg-accent" onclick="document.getElementById('job-search-input').value = 'Project Manager'; filters.titles = ['Project Manager']; currentPage = 1; hasMore = true; clearJobs(); loadJobsCount(); loadMoreJobs();">
             Project Manager
           </div>
-          <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground hover:bg-accent" onclick="document.getElementById('job-search-input').value = 'Data Scientist'; filters.titles = ['Data Scientist']; currentPage = 1; hasMore = true; clearJobs(); loadMoreJobs();">
+          <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground hover:bg-accent" onclick="document.getElementById('job-search-input').value = 'Data Scientist'; filters.titles = ['Data Scientist']; currentPage = 1; hasMore = true; clearJobs(); loadJobsCount(); loadMoreJobs();">
             Data Scientist
           </div>
-          <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground hover:bg-accent" onclick="document.getElementById('job-search-input').value = 'Quantitative Analyst'; filters.titles = ['Quantitative Analyst']; currentPage = 1; hasMore = true; clearJobs(); loadMoreJobs();">
+          <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground hover:bg-accent" onclick="document.getElementById('job-search-input').value = 'Quantitative Analyst'; filters.titles = ['Quantitative Analyst']; currentPage = 1; hasMore = true; clearJobs(); loadJobsCount(); loadMoreJobs();">
             Quantitative Analyst
           </div>
         </div>
@@ -531,9 +535,45 @@
       currentPage = 1;
       hasMore = true;
       clearJobs();
+      loadJobsCount();
       loadMoreJobs();
     }
 
+    async function loadJobsCount() {
+      try {
+        const queryParams = new URLSearchParams({
+          titles: JSON.stringify(filters.titles || []),
+          locations: JSON.stringify(filters.locations || []),
+          experiencelevels: JSON.stringify(filters.experienceLevels || []),
+          majors: JSON.stringify(filters.majors || []),
+          salary: filters.salary || 0,
+          skills: JSON.stringify(filters.skills || []),
+          companies: JSON.stringify(filters.companies || []),
+          searchType: filters.searchType || 'recent'
+        });
+
+        console.log('loading jobs count')
+
+        const response = await fetch(`/api/jobs-count?${queryParams.toString()}`);
+        const jobCount = await response.json();
+
+        // Update the job count in the UI
+        const jobHeader = document.getElementById('jobHeader');
+        if (jobHeader) {
+          const countSpan = jobHeader.querySelector('span');
+          if (countSpan) {
+            countSpan.textContent = `(${jobCount}+)`;
+          } else {
+            const newCountSpan = document.createElement('span');
+            newCountSpan.className = 'text-lg text-muted-foreground';
+            newCountSpan.textContent = `(${jobCount}+)`;
+            jobHeader.appendChild(newCountSpan);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading job count:', error);
+      }
+    }
     // Function to load more jobs
     async function loadMoreJobs() {
       if (isLoading || !hasMore) return;
@@ -701,6 +741,7 @@
           currentPage = 1;
           hasMore = true;
           clearJobs();
+          loadJobsCount();
           loadMoreJobs();
         }, 300); // Adjust the debounce delay as needed
       });
@@ -716,6 +757,7 @@
           currentPage = 1;
           hasMore = true;
           clearJobs();
+          loadJobsCount();
           loadMoreJobs();
         }, 300); // Adjust the debounce delay as needed
       });

@@ -1,0 +1,33 @@
+function buildTitleConditions(titles, queryParams) {
+    if (!titles.length) return [];
+    
+    const allTitles = new Set();
+    
+    // Collect all related titles
+    titles.forEach(searchTitle => {
+      const normalizedSearch = searchTitle.toLowerCase().trim();
+      
+      // Add the original search term
+      allTitles.add(normalizedSearch);
+      
+      // Add mapped titles
+      Object.entries(titleMappings).forEach(([main, variations]) => {
+        // If the search term matches main title or any variation
+        if (main.includes(normalizedSearch) || 
+            variations.some(v => v.includes(normalizedSearch))) {
+          // Add main title and all variations
+          allTitles.add(main);
+          variations.forEach(v => allTitles.add(v));
+        }
+      });
+    });
+  
+    // Build the SQL conditions
+    const titleConditions = Array.from(allTitles).map((title, index) => {
+      const paramName = `title${index}`;
+      queryParams.push({ name: paramName, value: `"*${title}*"` });
+      return `CONTAINS(title, @${paramName})`;
+    });
+  
+    return titleConditions;
+  }

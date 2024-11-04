@@ -467,6 +467,47 @@ router.get("/skills", async (req, res) => {
   }
 });
 
+router.get("/jobs-count", cacheMiddleware(300), async (req, res) => {
+  try {
+
+    const {
+      titles,
+      locations,
+      experiencelevels,
+      majors,
+      salary,
+      skills,
+      companies,
+    } = req.query;
+
+    // Parse the query parameters
+    const parsedTitles = titles ? JSON.parse(titles) : [];
+    const parsedLocations = locations ? JSON.parse(locations) : [];
+    const parsedExperienceLevels = experiencelevels
+      ? JSON.parse(experiencelevels)
+      : [];
+    const parsedMajors = majors ? JSON.parse(majors) : [];
+    const parsedSalary = parseInt(salary) || 0;
+    const parsedSkills = skills ? JSON.parse(skills) : [];
+    const parsedCompanies = companies ? JSON.parse(companies) : [];
+
+    const filters = {
+      titles: parsedTitles,
+      locations: parsedLocations,
+      experienceLevels: parsedExperienceLevels,
+      accepted_college_majors: parsedMajors,
+      salary: parsedSalary,
+      skills: parsedSkills,
+      companies: parsedCompanies,
+    };
+    const jobCount = await jobQueries.getJobCountByFilter(filters);
+    res.json(jobCount);
+  } catch (err) {
+    console.error("Error fetching job count:", err);
+    res.status(500).send("Error fetching job count");
+  }
+});
+
 router.get("/community/:communityId/jobs", async (req, res) => {
   try {
     const communityId = req.params.communityId;
