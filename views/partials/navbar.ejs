@@ -46,8 +46,7 @@
                 <span class="material-symbols-outlined">
                   home
                 </span>
-                Home
-              </a>
+                Home</a>
             </li>
             <li>
               <a href="/networks" class="navbar-button <%= currentPath === '/networks' ? 'active' : '' %>">
@@ -70,8 +69,32 @@
       </div>
 
     </div>
-    <div class="flex flex-row w-100 flex-end">
-      <div class="hamburger-menu h-100 flex h-center">
+    <div class="flex flex-row w-100 flex-end gap-4">
+      <div id="mobileSearchResults" class="search-results-container"></div>
+
+      <div class="user-btns flex v-center flex-end h-100 w-full">
+        <ul id="user-links" class="user-links flex-row  gap-06">
+          <li id="search-toggle-button">
+            <form action="/search" method="GET" id="search-form">
+              <input class="flex h-7 w-full bg-accent rounded-lg border border-input px-3 py-2 text-sm text-foreground shadow-sm shadow-black/[.04] ring-offset-background transition-shadow transition-width duration-300 placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none [&::-webkit-search-results-button]:appearance-none [&::-webkit-search-results-decoration]:appearance-none pe-11" type="text" name="searchTerm" id="search-bar" placeholder="Search..." autocomplete="off" />
+            </form>
+          </li>
+
+          <% if (!user) { %>
+          <li class="navigation-avatar">
+            <div class="nav-avatar">
+              <a href="/login">
+                <button class="flex flex-row justify-between v-center w-full bg-primary text-background text-sm py-2 h-7 px-4 rounded-md text-center hover:bg-accent hover:text-accent-foreground">
+                  Sign in
+                </button>
+              </a>
+            </div>
+          </li>
+
+          <% } %>
+        </ul>
+      </div>
+      <div class="hamburger-menu h-100 flex h-center pr-4">
 
         <div class="menu-wrapper">
           <button id="menu-button" class="menu-button inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground">
@@ -84,98 +107,69 @@
         <button id="expandSearch" class="search-button">
         </button>
         <div class="menu-content bg-sidebar border-left-sidebar" id="menu-content">
-          <% if (user && user.avatar) { %>
+          <% if (user) { %>
 
-          <div class="flex flex-col w-100">
+          <div class="flex flex-col w-100 border rounded-md" onclick="window.location.href='/user/<%= user.username %>'">
             <div class="flex flex-col">
-              <div class="flex flex-row v-center w-100 gap-06 rounded-md text-card-foreground hover:bg-accent px-1 py-2">
+              <div class="flex flex-row v-center w-100 gap-06 rounded-md text-card-foreground hover:bg-accent px-3 py-2">
                 <img src="<%= user.avatar %>" alt="Avatar" class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 <div class="grid flex-1 text-left text-sm leading-tight">
                   <p class="truncate font-semibold"><%= user.firstname %> <%= user.lastname %></p>
                   <p class="truncate text-xs"><%= user.username %></p>
                 </div>
-                <div class="ml-auto flex flex-row gap-06 v-center">
-                  <a class="mini-text bold" href="/user/<%= user.username %>">
-                    <button class="bg-none">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user">
-                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                        <circle cx="12" cy="7" r="4" />
-                      </svg>
-                    </button>
-                  </a>
-                </div>
               </div>
             </div>
           </div>
+          <% } %>
+          <% if (user) { %>
 
-          <div class="flex flex-row margin-06-bottom gap-06 mt-2">
+          <div class="flex w-full min-w-0 flex-col gap-1 mt-3">
             <a href="/notifications">
-              <div class="flex flex-col v-center px-2 py-3 rounded-md border bg-card text-card-foreground">
-                <span class="flex flex-row v-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell">
-                    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-                    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-                  </svg>
-                  <span id="unreadCount" class="border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80 ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full ml-auto" style="display: none;"></span>
-
-                </span>
+              <div class="<%= isActive('/notifications') ? 'bg-muted' : '' %> flex w-full items-center gap-4 overflow-hidden rounded-md p-2 text-left outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-10 text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell">
+                  <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                  <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                </svg>
+                <span class="text-lg">Notifications</span>
+                <span id="unreadCount" class="border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80 ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full ml-auto" style="display: none;"></span>
               </div>
             </a>
             <a href="/favorites">
-              <div class="flex flex-col v-center px-2 py-3 rounded-md border bg-card text-card-foreground">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              <div class="<%= isActive('/favorites') ? 'bg-muted' : '' %> flex w-full items-center gap-4 overflow-hidden rounded-md p-2 text-left outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-10 text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-marked">
+                  <path d="M10 2v8l3-3 3 3V2" />
+                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
                 </svg>
-              </div>
-            </a>
-            <a href="/settings">
-              <div class="flex flex-col v-center px-2 py-3 rounded-md border bg-card text-card-foreground">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings">
-                  <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
-              </div>
-            </a>
-            <a href="#" onclick="document.getElementById('logoutForm').submit()">
-              <div class="flex flex-col v-center px-2 py-3 rounded-md border bg-card text-card-foreground cancel-button-text">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                  <polyline points="16 17 21 12 16 7" />
-                  <line x1="21" x2="9" y1="12" y2="12" />
-                </svg>
+                <span class="text-lg">Saved</span>
               </div>
             </a>
           </div>
-
           <% } %>
-
-
           <div class="flex">
             <div class="mobile-menu-header sub-text">
-              <h4 class="duration-200 flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 outline-none ring-sidebar-ring transition-[margin,opa] ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0">Navigation</h4>
+              <h4 class="duration-200 flex h-8 shrink-0 items-center rounded-md px-2 text-md text-muted-foreground outline-none ring-sidebar-ring transition-[margin,opa] ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0">Navigation</h4>
             </div>
           </div>
-
-          <div class="flex w-full min-w-0 flex-col gap-1">
+          <div class="flex w-full min-w-0 flex-col gap-1 mt-3">
             <a href="/">
-              <div class="<%= isActive('/') ? 'bg-muted text-primary' : '' %> flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-8 text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house">
+              <div class="<%= isActive('/') ? 'bg-muted' : '' %> flex w-full items-center gap-4 overflow-hidden rounded-md p-2 text-left outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-10 text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house">
                   <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
                   <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                 </svg>
-                Home
+                <span class="text-lg">Home</span>
               </div>
             </a>
 
             <li data-sidebar="menu-item" class="group/menu-item relative group/collapsible" data-state="open">
               <div class="flex items-center">
                 <a href="/jobs" class="flex-1">
-                  <span data-sidebar="menu-button" data-size="default" data-active="false" class="peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-8 text-sm <%= isActive('/jobs') ? 'bg-muted text-primary' : '' %>" type="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase">
+                  <span data-sidebar="menu-button" data-size="default" data-active="false" class="peer/menu-button flex w-full items-center gap-4 overflow-hidden rounded-md p-2 text-left outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-10<%= isActive('/jobs') ? 'bg-muted' : '' %>" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-briefcase">
                       <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                       <rect width="20" height="14" x="2" y="6" rx="2" />
                     </svg>
-                    <span>Search Jobs</span>
+                    <span class="text-lg">Search Jobs</span>
                     <button onclick="event.preventDefault(); toggleMenu(this);" class="ml-auto p-2">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90">
                         <path d="m9 18 6-6-6-6"></path>
@@ -185,7 +179,7 @@
                 </a>
               </div>
               <div data-state="open" class="transition-all duration-200">
-                <ul data-sidebar="menu-sub" class="ml-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-0.5 group-data-[collapsible=icon]:hidden">
+                <ul data-sidebar="menu-sub" class="ml-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-4 py-0.5 group-data-[collapsible=icon]:hidden">
                   <li>
                     <a href="/jobs/remote" data-sidebar="menu-sub-button" class="py-1 flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 text-sidebar-foreground outline-none ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground text-sm group-data-[collapsible=icon]:hidden">
                       <span class="text-md">Remote</span>
@@ -230,55 +224,80 @@
                 button.setAttribute('aria-expanded', !isOpen);
               }
             </script>
-            <details>
-              <summary>
-                <a href="/networks">
+            <a href="/networks">
 
-                  <div class="<%= isActive('/networks') ? 'bg-muted text-primary' : '' %>  flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-8 text-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users">
-                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                      <circle cx="9" cy="7" r="4" />
-                      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                    </svg>
-                    Networks
-
-                  </div>
-                </a>
-
-              </summary>
-              <div class="mobile-communities-container">
+              <div class="<%= isActive('/networks') ? 'bg-muted' : '' %>  flex w-full items-center gap-4 overflow-hidden rounded-md p-2 text-left outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-10">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                <span class="text-lg">Networks</span>
               </div>
-            </details>
+            </a>
             <a href="/updates">
-              <div class="<%= isActive('/updates') ? 'bg-muted text-primary' : '' %>  flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-8 text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package">
+              <div class="<%= isActive('/updates') ? 'bg-muted' : '' %>  flex w-full items-center gap-4 overflow-hidden rounded-md p-2 text-left outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-10">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package">
                   <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" />
                   <path d="M12 22V12" />
                   <path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7" />
                   <path d="m7.5 4.27 9 5.15" />
                 </svg>
-                Updates
+                <span class="text-lg">Updates</span>
 
               </div>
             </a>
 
 
             <% if (user) { %>
+            <a href="/settings">
+              <div class="<%= isActive('/settings') ? 'bg-muted' : '' %> flex w-full items-center gap-4 overflow-hidden rounded-md p-2 text-left outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-10 text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cog">
+                  <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" />
+                  <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+                  <path d="M12 2v2" />
+                  <path d="M12 22v-2" />
+                  <path d="m17 20.66-1-1.73" />
+                  <path d="M11 10.27 7 3.34" />
+                  <path d="m20.66 17-1.73-1" />
+                  <path d="m3.34 7 1.73 1" />
+                  <path d="M14 12h8" />
+                  <path d="M2 12h2" />
+                  <path d="m20.66 7-1.73 1" />
+                  <path d="m3.34 17 1.73-1" />
+                  <path d="m17 3.34-1 1.73" />
+                  <path d="m11 13.73-4 6.93" />
+                </svg>
+                <span class="text-lg">Settings</span>
+              </div>
+            </a>
+
             <form id="logoutForm" action="/logout?_method=DELETE" method="POST" style="display: none"></form>
             <a href="/feedback">
-              <div class="<%= isActive('/feedback') ? 'bg-muted text-primary' : '' %>  flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-8 text-sm">
+              <div class="<%= isActive('/feedback') ? 'bg-muted' : '' %>  flex w-full items-center gap-4 overflow-hidden rounded-md p-2 text-left outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-10">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle-heart">
                   <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
                   <path d="M15.8 9.2a2.5 2.5 0 0 0-3.5 0l-.3.4-.35-.3a2.42 2.42 0 1 0-3.2 3.6l3.6 3.5 3.6-3.5c1.2-1.2 1.1-2.7.2-3.7" />
                 </svg>
-                Feedback
+                <span class="text-lg">Feedback</span>
+
+              </div>
+            </a>
+            <a href="#" onclick="document.getElementById('logoutForm').submit()">
+              <div class="flex w-full items-center gap-4 overflow-hidden rounded-md p-2 text-left outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-10">
+                <svg class="cancel-button-text" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" x2="9" y1="12" y2="12" />
+                </svg>
+                <span class="text-lg cancel-button-text">Logout</span>
 
               </div>
             </a>
             <% } %>
             <a href="/about">
-              <div class="<%= isActive('/about') ? 'bg-muted text-primary' : '' %>  flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-8 text-sm">
+              <div class="<%= isActive('/about') ? 'bg-muted' : '' %>  flex w-full items-center gap-4 overflow-hidden rounded-md p-2 text-left outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-10">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-contact">
                   <path d="M16 2v2" />
                   <path d="M7 22v-2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2" />
@@ -286,7 +305,7 @@
                   <circle cx="12" cy="11" r="3" />
                   <rect x="3" y="4" width="18" height="18" rx="2" />
                 </svg>
-                About
+                <span class="text-lg">About</span>
 
               </div>
             </a>
@@ -294,9 +313,9 @@
 
           <% if (user) { %>
           <div class="mobile-menu-header mt-3 sub-text">
-            <h4 class="duration-200 flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 outline-none ring-sidebar-ring transition-[margin,opa] ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0">Recent Jobs</h4>
+            <h4 class="duration-200 flex h-8 shrink-0 items-center rounded-md px-2 text-md text-muted-foreground outline-none ring-sidebar-ring transition-[margin,opa] ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0">Recent Jobs</h4>
           </div>
-          <div class="mobile-recent-jobs flex flex-col gap-3">
+          <div class="mobile-recent-jobs flex flex-col gap-3 mt-3">
           </div>
           <% } %>
 
@@ -315,35 +334,6 @@
         </div>
 
         <div id="overlay"></div>
-      </div>
-      <div id="mobileSearchResults" class="search-results-container"></div>
-
-      <div class="user-btns flex v-center h-100">
-        <ul class="user-links flex-row  gap-06">
-          <li id="search-toggle-button" style="width: auto">
-            <button type="button" class="no-bg no-border no-padding">
-              <span id="nb-icon" class="primary-text">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search h-6 w-6 text-foreground">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <path d="m21 21-4.3-4.3"></path>
-                </svg>
-              </span>
-            </button>
-          </li>
-
-          <% if (!user) { %>
-          <li class="navigation-avatar">
-            <div class="nav-avatar">
-              <a href="/login">
-                <button class="flex flex-row justify-between v-center w-full bg-primary text-background text-sm py-2 h-7 px-4 rounded-md text-center hover:bg-accent hover:text-accent-foreground">
-                  Sign in
-                </button>
-              </a>
-            </div>
-          </li>
-
-          <% } %>
-        </ul>
       </div>
     </div>
   </div>
@@ -469,21 +459,10 @@
     </button>
   </div>
 </div>
-<div class="search-bar adaptive-main adaptive-border-bottom" id="search-bar-div">
-  <div class="search-bar-container">
-    <form action="/search" method="GET" id="search-form">
-      <button id="search-back-button" class="search-back-button" type="button">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left">
-          <path d="m12 19-7-7 7-7" />
-          <path d="M19 12H5" />
-        </svg>
-      </button>
-      <input type="text" name="searchTerm" id="search-bar" placeholder="Search" autocomplete="off" />
-    </form>
-  </div>
-  <div id="search-results" class="search-results" style="display: none;"></div>
+<div class="search-bar" id="search-bar-div">
+  <div id="search-results" class="search-results shadow border-b pb-4" style="display: none;"></div>
 </div>
-<div class="overlay" id="search-overlay"></div>
+<div class="overlay-clear" id="search-overlay"></div>
 <style>
   .search-bar {
     display: none;
@@ -556,6 +535,9 @@
 
   async function fetchAutocompleteResults(searchTerm) {
     try {
+      // Display the search button immediately
+      displaySearchButton(searchTerm);
+
       const response = await axios.get(`/autocomplete/all?term=${encodeURIComponent(searchTerm)}`);
       const data = response.data;
       console.log(data);
@@ -565,12 +547,33 @@
     }
   }
 
+  function displaySearchButton(searchTerm) {
+    searchResults.innerHTML = `
+      <div class="search-result-item">
+        <button class="text-sm" onclick="window.location.href='/jobs?titles=${encodeURIComponent(searchTerm)}'">
+        "${searchTerm}"
+        <span class="text-muted-foreground">in Jobs</span>
+        </button>
+      </div>
+    `;
+    searchResults.style.display = 'block';
+  }
+
   function displayAutocompleteResults(data) {
-    searchResults.innerHTML = '';
-    let resultsHtml = '';
+    if (!data.users.length && !data.posts.length && !data.companies.length) {
+      searchResults.innerHTML += `
+      <div class="search-result-item">
+        <span class="text-sm text-muted-foreground">No users, posts, or companies found.</span>
+      </div>
+      `;
+      searchResults.style.display = 'block';
+      return;
+    }
+
+    let resultsHtml = searchResults.innerHTML; // Keep the search button
 
     // Display top results (assuming 3 from each category)
-    const categories = ['users', 'posts', 'jobs', 'communities', 'companies'];
+    const categories = ['users', 'posts', 'companies'];
     categories.forEach(category => {
       const items = data[category].slice(0, 3);
       items.forEach(item => {
@@ -584,23 +587,41 @@
         resultsHtml += `
         <div data-id="${id}" data-category="${category}" class="search-result-item">
         <img src="${item.avatar || item.logo || '/img/glyph.png'}" alt="Avatar" class="aspect-square h-6 w-6 rounded-xl" />
-        ${name}
+        <span class="text-sm">${name}</span>
+                <span class="text-sm text-muted-foreground">in ${category.charAt(0).toUpperCase() + category.slice(1)}</span>
+
         </div>`;
       });
     });
 
     // Add category options
     resultsHtml += `
-                <div class="search-categories">
-                    <span class="search-category" data-category="posts">Posts</span>
-                    <span class="search-category" data-category="companies">Companies</span>
-                    <span class="search-category" data-category="users">Users</span>
-                    <span class="search-category" data-category="jobs">Jobs</span>
+                <div class="flex flex-row gap-2 wrap px-2 pt-4">
+                    <span class="search-category" data-category="posts">
+                      <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background shadow-sm relative z-10 h-7 text-foreground opacity-100 hover:bg-muted hover:text-foreground [&_svg]:h-3.5 [&_svg]:w-3.5 px-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sticky-note"><path d="M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8Z"/><path d="M15 3v4a2 2 0 0 0 2 2h4"/></svg>                    
+                        <span class="text-sm">
+                        Posts
+                        </span>
+                      </button>
+                    </span>
+                    <span class="search-category" data-category="companies">
+                                          <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background shadow-sm relative z-10 h-7 text-foreground opacity-100 hover:bg-muted hover:text-foreground [&_svg]:h-3.5 [&_svg]:w-3.5 px-2">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building-2"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>                        <span class="text-sm">
+                        Companies
+                        </span>
+                      </button>
+                    </span>
+                    <span class="search-category" data-category="users">
+                    <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background shadow-sm relative z-10 h-7 text-foreground opacity-100 hover:bg-muted hover:text-foreground [&_svg]:h-3.5 [&_svg]:w-3.5 px-2">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>                        <span class="text-sm">
+                        Users
+                        </span>
+                      </button></span>
                 </div>
             `;
 
     searchResults.innerHTML = resultsHtml;
-    searchResults.style.display = 'block';
 
     // Add event listeners for category options
     document.querySelectorAll('.search-category').forEach(category => {
@@ -1254,7 +1275,6 @@
     fetch('/api/communities') // Adjust this to your server's endpoint
       .then(response => response.json())
       .then(communities => {
-        console.log(communities);
         // Use window.matchMedia to check for mobile devices
         const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
         // Select the container based on whether or not it is a mobile device
@@ -1357,13 +1377,21 @@
     const banner = document.getElementById('latestCommitBanner');
     const closeButton = document.getElementById('closeCommitBanner');
     const searchBar = document.getElementById('search-bar-div');
+    const searchBarInput = document.getElementById('search-bar');
     const searchBarForm = document.getElementById('search-bar');
+    const searchForm = document.getElementById('search-form');
     const searchOverlay = document.getElementById('search-overlay');
+    const userLinks = document.getElementById('user-links');
     const navBar = document.querySelector('.navbar');
 
     searchButton.addEventListener('click', () => {
-      navBar.style.display = 'none';
       searchBar.style.display = 'block';
+      searchBarInput.style.width = '100%';
+      searchButton.style.width = '100%';
+      searchForm.style.width = '100%';
+      searchBarForm.style.width = '100%';
+      searchBar.style.width = '100%';
+      userLinks.style.width = '100%';
       searchBarForm.focus();
       document.body.style.overflow = 'hidden';
       window.scrollTo(0, 0);
@@ -1375,6 +1403,12 @@
       document.body.style.overflow = '';
       searchBar.style.display = 'none';
       searchOverlay.style.display = 'none';
+      searchBarInput.style.width = '';
+      searchButton.style.width = '';
+      searchForm.style.width = '';
+      searchBarForm.style.width = '';
+      searchBar.style.width = '';
+      userLinks.style.width = '';
     });
 
     getAllCommunities();
@@ -1530,13 +1564,5 @@
       }
     }
 
-    searchBackButton.addEventListener('click', () => {
-      document.getElementById('search-bar').value = '';
-      document.getElementById('search-bar').blur();
-      document.getElementById('search-bar-div').style.display = 'none';
-      document.querySelector('.navbar').style.display = 'flex';
-      document.body.style.overflow = '';
-      document.getElementById('search-overlay').style.display = 'none';
-    });
   });
 </script>

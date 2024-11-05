@@ -416,7 +416,6 @@
             </div>
           </div>
           -->
-        <% if (filters.locations && !filters.locations.includes('Remote')) { %>
 
         <div class="flex flex-row w-full v-center gap-3">
           <div class="location-input w-full relative">
@@ -433,7 +432,7 @@
             </svg>
           </button>
         </div>
-        <% } %>
+
 
         <div class="quick-buttons flex gap-2 flex-row wrap">
           <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground hover:bg-accent" onclick="document.getElementById('job-search-input').value = 'Software Engineer'; filters.titles = ['Software Engineer']; currentPage = 1; hasMore = true; clearJobs(); loadJobsCount(); loadMoreJobs();">
@@ -753,7 +752,8 @@
       locationInput.addEventListener('input', () => {
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(() => {
-          filters.locations = locationInput.value.split(', ').filter(Boolean);
+          const newLocations = locationInput.value.split(', ').filter(Boolean);
+          filters.locations = [...new Set([...filters.locations, ...newLocations])];
           currentPage = 1;
           hasMore = true;
           clearJobs();

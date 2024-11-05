@@ -122,25 +122,6 @@
     }
     getAllTags();
 
-    function getAllCommunities() {
-      fetch('/api/communities') // Adjust this to your server's endpoint
-        .then(response => response.json())
-        .then(communities => {
-          let currentCommunityId = document.getElementById('current_community_id').value; // Get the current community ID
-
-          // Create an option for each community
-          communities.forEach(community => {
-            const option = document.createElement('option');
-            option.value = community.id;
-            option.textContent = community.name;
-
-            // If this community is the current one, select it
-            if (community.id.toString() === currentCommunityId) {
-              option.selected = true;
-            }
-          });
-        });
-    }
 
     getAllCommunities();
   </script>

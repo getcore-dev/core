@@ -318,10 +318,6 @@ async function initialize() {
       await fetchJobPostings();
     }
 
-    if (state.companyNames.length === 0) {
-      state.companyNames = await fetchCompanyNames();
-      console.log(state.companyNames);
-    }
 
     setupInfiniteScroll();
   } catch (error) {
@@ -337,6 +333,8 @@ function toggleLoadingState(isLoading) {
     removeInfiniteScroll();
     return;
   }
+
+  
   if (isLoading) {
     elements.loadMoreButton.classList.add("hidden");
     elements.loadingIndicator.classList.remove("hidden");
@@ -685,6 +683,13 @@ async function fetchJobPostings() {
     const response = await fetch(`/api/jobs?${queryParams}`);
     const data = await response.json();
 
+    const loadingIndicator = document.getElementById("jobs-search-icon");
+    loadingIndicator.innerHTML = `
+    <circle cx="11" cy="11" r="8"></circle>
+    <path d="m21 21-4.3-4.3"></path>
+  `;
+  loadingIndicator.classList.remove("animate-spin");
+
     // Filter out jobs that have already been rendered
     const newJobs = data.jobPostings.filter(
       (job) => !state.renderedJobIds.has(job.id),
@@ -944,31 +949,6 @@ function updateJobHeader(filters) {
     majors = Array.from(filters.majors).join(", ");
   }
 
-  // Function to generate job header text
-  function generateJobHeaderText(title, experienceLevel, skills) {
-    if (title && experienceLevel && skills) {
-      return `${title} ${experienceLevel} - Skills: ${skills}`;
-    } else if (title && experienceLevel) {
-      return `${title} ${experienceLevel}`;
-    } else if (title && skills) {
-      return `${title} - Skills: ${skills}`;
-    } else if (experienceLevel && skills) {
-      return `${experienceLevel} jobs - Skills: ${skills}`;
-    } else if (title) {
-      return `${title} jobs`;
-    } else if (experienceLevel) {
-      return `${experienceLevel} jobs`;
-    } else if (skills) {
-      return `Jobs for ${skills}`;
-    } else {
-      return "Jobs";
-    }
-  }
-
-  // Update h1 element based on rules
-  if (jobHeaderElement) {
-    jobHeaderElement.textContent = generateJobHeaderText(title, experienceLevel, skills);
-  }
 
   // Update h5 element with location or majors if available
   if (jobSubHeaderElement) {
@@ -1401,8 +1381,6 @@ function handleResultClick(event) {
   } else {
     updateState(type, id, name, logo);
   }
-
-  state.jobSearchInput.value = "";
 
   // Hide skill results if company, title, location, or salary is selected
   if (

@@ -830,7 +830,7 @@ router.post("/report", async (req, res) => {
 });
 
 
-router.get("/job-suggestions", async (req, res) => {
+router.get("/job-suggestions", cacheMiddleware(3600), async (req, res) => {
   try {
     const user = req.user;
     let userPreferences = {};

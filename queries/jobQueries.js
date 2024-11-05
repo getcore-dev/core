@@ -1266,6 +1266,9 @@ const jobQueries = {
       request.input("salary", sql.Decimal(18, 2), salary);
       request.input("offset", sql.Int, offset);
       request.input("pageSize", sql.Int, pageSize);
+
+      console.log("Query:", baseQuery);
+      console.log("Params:", queryParams);
   
       // Execute the query
       const result = await request.query(baseQuery);
