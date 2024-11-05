@@ -744,15 +744,6 @@ function renderJobPostings(jobs) {
           icon: '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 fill-green-300 text-green-300"><path d="M0.877075 7.49991C0.877075 3.84222 3.84222 0.877075 7.49991 0.877075C11.1576 0.877075 14.1227 3.84222 14.1227 7.49991C14.1227 11.1576 11.1576 14.1227 7.49991 14.1227C3.84222 14.1227 0.877075 11.1576 0.877075 7.49991ZM7.49991 1.82708C4.36689 1.82708 1.82708 4.36689 1.82708 7.49991C1.82708 10.6329 4.36689 13.1727 7.49991 13.1727C10.6329 13.1727 13.1727 10.6329 13.1727 7.49991C13.1727 4.36689 10.6329 1.82708 7.49991 1.82708Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>'
         });
       }
-      
-      // location tag
-      if (job.location) {
-        tags.push({
-          text: formatLocation(job.location),
-          class: "location",
-          icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>',
-        });
-      }
 
       // salary tag
       if (job.salary) {
@@ -761,22 +752,8 @@ function renderJobPostings(jobs) {
           class: "salary",
           icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>',
         });
-      } else {
-        // try to extract salary from description
-        const salaryMatch = job.description.match(/\$(\d+(?:,?\d*)?(?:k|K)?)/);
-        if (salaryMatch) {
-          tags.push({ text: `$${salaryMatch[1]}`, class: "salary" });
-        }
-      }
+      } 
 
-      // experience level tag
-      if (job.experienceLevel || job.cleaned_experience_level) {
-        tags.push({
-          text: job.experienceLevel || job.cleaned_experience_level,
-          class: "experienceLevel",
-          icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-graduation-cap"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>',
-        });
-      }
 
       // views tag
       if (job.views) {
@@ -798,7 +775,8 @@ function renderJobPostings(jobs) {
         job.company_name,
         formatRelativeDate(job.postedDate),
         job.title,
-        job.description,
+        job.experienceLevel || job.cleaned_experience_level,
+        formatLocation(job.location),
         true,
         `/jobs/${job.id}`,
         job.company_logo,
@@ -1069,7 +1047,8 @@ function createCard(
   name,
   timestamp,
   title,
-  description,
+  experienceLevel,
+  location,
   clickable = false,
   link = null,
   image = null,
@@ -1082,7 +1061,7 @@ function createCard(
     tagsHtml = tags
       .map(
         (tag) => `
-      <div class="${tag.class} inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground flex flex-row gap-2">
+      <div class="${tag.class} inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground flex flex-row gap-2">
       ${tag.icon ? tag.icon : ""}
         ${tag.text}
       </div>
@@ -1100,15 +1079,21 @@ function createCard(
       <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
         <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.style.display='none';" />
       </span>
-        <div class="font-semibold">${name}</div>
+        <div class="text-md">${name}</div>
       </div>
       <div class="ml-auto text-xs text-foreground flex flex-row gap-06 v-center">${timestamp}
       </div>
     </div>
-    <div class="text-base font-medium text-balance max-w-lg leading-relaxed">${title}</div>
-  </div>
-  <div class="line-clamp-2 text-sm text-muted-foreground w-full text-balance max-w-lg leading-relaxed">
-    ${description}
+    <div class="flex flex-row gap-2 wrap">
+    <span class="text-base font-medium text-balance max-w-lg leading-relaxed">
+    ${title}
+    </span>
+<span class="flex flex-row text-sm text-muted-foreground items-center">
+    <span class="text-foreground font-semibold">${experienceLevel}</span>
+    ${experienceLevel && location ? '<div class="h-4 w-px bg-gray-300 mx-2"></div>' : ''}
+    ${location}
+</span>
+    </div>
   </div>
   <div class="flex items-center gap-2 wrap">
     ${tagsHtml}

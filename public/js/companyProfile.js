@@ -350,7 +350,6 @@ function createCard(
   image = null,
   tags = null,
 ) {
-  console.log(tags);
   const card = document.createElement("div");
 
   let tagsHtml = "";
@@ -358,7 +357,8 @@ function createCard(
     tagsHtml = tags
       .map(
         (tag) => `
-      <div class="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 text-balance ${tag.class}">
+      <div class="${tag.class} inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground flex flex-row gap-2">
+      ${tag.icon ? tag.icon : ""}
         ${tag.text}
       </div>
     `,
@@ -372,23 +372,15 @@ function createCard(
     <div class="flex items-center">
       <div class="flex items-center gap-2 wrap">
 
-      ${
-        image
-          ? `
-              <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
-        <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.onerror=null; this.src='/img/glyph.png';" />
+      <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
+        <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.style.display='none';" />
       </span>
-      `
-          : ""
-      }
         <div class="font-semibold">${name}</div>
       </div>
-      <div class="ml-auto text-xs text-foreground">${timestamp}</div>
+      <div class="ml-auto text-xs text-foreground flex flex-row gap-06 v-center">${timestamp}
+      </div>
     </div>
     <div class="text-base font-medium text-balance max-w-lg leading-relaxed">${title}</div>
-  </div>
-  <div class="line-clamp-2 text-sm text-muted-foreground w-full text-balance max-w-lg leading-relaxed">
-    ${description}
   </div>
   <div class="flex items-center gap-2 wrap">
     ${tagsHtml}
