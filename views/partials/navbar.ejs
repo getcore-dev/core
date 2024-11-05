@@ -549,11 +549,9 @@
 
   function displaySearchButton(searchTerm) {
     searchResults.innerHTML = `
-      <div class="search-result-item">
-        <button class="text-sm" onclick="window.location.href='/jobs?titles=${encodeURIComponent(searchTerm)}'">
+      <div class="search-result-item text-sm" onclick="window.location.href='/jobs?titles=${encodeURIComponent(searchTerm)}'">
         "${searchTerm}"
         <span class="text-muted-foreground">in Jobs</span>
-        </button>
       </div>
     `;
     searchResults.style.display = 'block';
