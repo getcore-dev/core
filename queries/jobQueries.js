@@ -516,18 +516,44 @@ const jobQueries = {
 
 
   updateCompanyLogo: async (companyId, logo) => {
-    try {
-      const result = await sql.query`
-        UPDATE companies
-        SET logo = ${logo}
-        WHERE id = ${companyId}
-      `;
-      return result.recordset;
-    } catch (err) {
-      console.error("Database query error:", err);
-      throw err;
-    }
-  },
+      try {
+        await sql.query`
+          UPDATE companies
+          SET logo = ${logo}
+          WHERE id = ${companyId}
+        `;
+        
+        const result = await sql.query`
+          SELECT * FROM companies
+          WHERE id = ${companyId}
+        `;
+        
+        return result.recordset[0]; // Assuming you want to return the first (and only) record
+      } catch (err) {
+        console.error("Database query error:", err);
+        throw err;
+      }
+    },
+
+    updateCompanyDescription: async (companyId, description) => {
+      try {
+        await sql.query`
+          UPDATE companies
+          SET description = ${description}
+          WHERE id = ${companyId}
+        `;
+        
+        const result = await sql.query`
+          SELECT * FROM companies
+          WHERE id = ${companyId}
+        `;
+        
+        return result.recordset[0]; // Assuming you want to return the first (and only) record
+      } catch (err) {
+        console.error("Database query error:", err);
+        throw err;
+      }
+    },
 
   getCompanyNames: async () => {
     try {
@@ -3025,6 +3051,7 @@ ORDER BY jp.postedDate DESC
     isProcessed = 0,
     employmentType = "Traditional",
     sourcePostingDate = "",
+    raw_json = "",
   ) => {
     try {
       
@@ -3120,7 +3147,8 @@ ORDER BY jp.postedDate DESC
     applicants,
     isProcessed,
     employmentType,
-    sourcePostingDate
+    sourcePostingDate,
+    raw_json
   )
   OUTPUT INSERTED.id INTO @InsertedJobPostings
   VALUES (
@@ -3151,7 +3179,8 @@ ORDER BY jp.postedDate DESC
     0,
     ${isProcessed},
     ${employmentType},
-    ${sourcePostingDate}
+    ${sourcePostingDate},
+    ${raw_json}
   );
 
   SELECT id FROM @InsertedJobPostings;

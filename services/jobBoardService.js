@@ -10,6 +10,7 @@ const EventEmitter = require("events");
 const path = require("path");
 const puppeteer = require('puppeteer-core');
 const jobQueries = require("../queries/jobQueries");
+const https = require("https");
 const TurndownService = require("turndown");
 const BROWSER_CONFIG = {
   headless: true,
@@ -28,7 +29,26 @@ class ObjectSet extends Set {
     return this;
   }
 }
+function getHTML(url) {
+  return new Promise((resolve, reject) => {
+    https.get(url, (response) => {
+      let data = '';
 
+      // Accumulate the data chunks
+      response.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      // When all data is received
+      response.on('end', () => {
+        resolve(data);
+      });
+
+    }).on('error', (error) => {
+      reject(error);
+    });
+  });
+}
 class JobProcessor extends EventEmitter {
   constructor() {
     super();
@@ -2597,11 +2617,19 @@ class JobProcessor extends EventEmitter {
     try {
       // Convert the original URL to the API URL
       const apiInfo = this.convertToWorkdayApiUrl(url);
+      console.log(`APINFO:`, apiInfo);
       const apiUrl = apiInfo.link;
       const company = apiInfo.company;
       const tenant = apiInfo.tenant;
-      const jobBoardUrl = `${company}.wd${apiInfo.wdNumber}.myworkdayjobs.com/${tenant}`;
+      const jobBoardUrl = `https://${company}${apiInfo.wdNumber}.myworkdayjobs.com/${tenant}`;
 
+      const response1 = await getHTML(jobBoardUrl);
+      const $ = cheerio.load(response1);
+      const companyName = $('meta[property="og:title"]').attr('content');
+      const companyDescription = $('meta[property="og:description"]').attr('content');
+      const ogImage = $('meta[property="og:image"]').attr('content');
+
+      console.log(jobBoardUrl)
       // Make the request to the Workday API
       const response = await axios.get(apiUrl);
       const data = response.data;
@@ -2617,14 +2645,14 @@ class JobProcessor extends EventEmitter {
       // const hiringOrganization = data.hiringOrganization;
 
       const companyId = await this.getOrCreateCompany(
-        company,
-        "",
+        companyName || company,
+        companyDescription || "",
         "",
         jobBoardUrl,
         "",
         "",
         "",
-        "",
+        ogImage || "",
         "",
       );
       // Convert HTML description to Markdown
@@ -2640,6 +2668,7 @@ class JobProcessor extends EventEmitter {
         location,
         description: descriptionMarkdown,
         url: jobPostingInfo.externalUrl || url,
+        raw_json: data,
       };
 
       return jobData;
@@ -3047,14 +3076,27 @@ class JobProcessor extends EventEmitter {
   convertToWorkdayApiUrl(originalUrl) {
     const url = new URL(originalUrl);
     const pathParts = url.pathname.split("/").filter(Boolean);
-    const company = url.hostname.split(".")[0];
-    const wdNumber = url.hostname.split(".")[1].replace("wd", "");
-    const tenant = pathParts[1];
-
+    const hostnameMatch = url.hostname.match(/^(.+?)(\.wd\d+)\.myworkdayjobs/);
+    
+    if (!hostnameMatch) {
+      throw new Error("Invalid Workday URL format");
+    }
+    
+    const company = hostnameMatch[1];
+    const wdPart = hostnameMatch[2]; // Gets the entire '.wdX' part
+    
+    // Check if the first path part matches a locale pattern (e.g., en-US, fr-CA)
+    const localePattern = /^[a-z]{2}-[A-Z]{2}$/;
+    const startIndex = localePattern.test(pathParts[0]) ? 1 : 0;
+    const tenant = pathParts[startIndex];
+  
+    const jobPathParts = pathParts.slice(startIndex + 2); // Skip tenant and "job"
+    
     const response = {
       company,
       tenant,
-      link: `https://${company}.wd${wdNumber}.myworkdayjobs.com/wday/cxs/${company}/${tenant}/job/${pathParts.slice(3).join("/")}`,
+      wdNumber: wdPart,
+      link: `https://${company}${wdPart}.myworkdayjobs.com/wday/cxs/${company}/${tenant}/job/${jobPathParts.join("/")}`,
     };
     return response;
   }
@@ -4276,6 +4318,12 @@ class JobProcessor extends EventEmitter {
           console.log(`Updating logo for company: ${companyName}`);
           company = await jobQueries.updateCompanyLogo(company.id, companyLogo);
         }
+
+        // Check if we need to update the description
+        if (companyDescription && !company.description) {
+          console.log(`Updating description for company: ${companyName}`);
+          company = await jobQueries.updateCompanyDescription(company.id, companyDescription);
+        }
         
         return company.id;
       } else {
@@ -4352,6 +4400,7 @@ class JobProcessor extends EventEmitter {
       jobData.Relocation,
       jobData.employmentType,
       jobData.sourcePostingDate,
+      jobData.raw_json,
     ];
 
     const sanitizeField = (field) => {
@@ -4398,6 +4447,7 @@ class JobProcessor extends EventEmitter {
       isProcessed,
       jobData.employmentType || "",
       jobData.sourcePostingDate || "",
+      jobData.raw_json || "",
     );
 
     this.updateProgress({ processedJobs: this.progress.processedJobs + 1 });
@@ -4672,11 +4722,24 @@ class JobProcessor extends EventEmitter {
     try {
       await this.init();
 
-      /*
       try {
         await this.updateJobPostings();
       } catch (error) {
         console.error("Error in updateJobPostings:", error);
+      }
+
+      try {
+        const GoogleCrawler = require("../services/googleCrawlService");
+        const crawler = new GoogleCrawler({
+          maxPages: 50,
+          headless: "new",  
+          delayBetweenRequests: 2000
+        });
+        crawler.crawlQueue('site:myworkdayjobs.com "jobs found"')
+        .then(links => console.log('Found links:', links))
+        .catch(error => console.error('Error:', error));
+      } catch (error) {
+        console.error("Error in crawlGoogle:", error);
       }
 
       try {
@@ -4692,17 +4755,18 @@ class JobProcessor extends EventEmitter {
         console.error('Error in removeDuplicateJobs:', error);
       }
       
+      /*
       try {
       await this.verifyAndUpdateCompanyData();
       } catch (error) {
         console.error('error attempting to verify company data');
         }
+        */
       try {
         await this.crawlYCombinator();
       } catch (error) {
         console.error("Error in crawlYCombinator:", error);
       }
-        */
 
       this.updateProgress({ phase: "Completed" });
     } catch (error) {

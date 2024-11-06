@@ -40,10 +40,6 @@ main {
   color: var(--light-mode-text-color);
 }
 
-.job-posting-description p {
-  margin-top: .4rem;
-}
-
 .job-posting-description a {
   color: var(--active-indicator-color);
 }
@@ -290,15 +286,6 @@ div.similar-job h4 {
   display: flex;
 }
 
-
-.job-details h4,
-.similar-jobs h4,
-.similar-company-jobs h4 {
-  margin: .8rem 0;
-
-  margin-top: 1.35rem;
-}
-
 .skill {
   display: inline-block;
 }
@@ -331,33 +318,6 @@ div.similar-job h4 {
   margin: 1.2rem;
 
 
-}
-
-.job-details p,
-.job-details ul,
-ul.locations {
-  word-wrap: break-word;
-  line-height: 1.8;
-  font-weight: 400;
-  margin: 0;
-  margin-bottom: 0;
-}
-
-.job-details ul {
-  margin: 0 .6rem;
-}
-
-.job-details ul li::before {
-  content: "\2022";
-  /* Unicode for bullet point */
-  color: #3b82f6;
-  /* Tailwind's blue-500 color */
-  font-size: 1.2rem;
-  line-height: 1;
-  display: inline-block;
-  width: 1em;
-  margin-left: -1.5em;
-  margin-right: 0.5em;
 }
 
 .job-flair p {
@@ -622,13 +582,6 @@ ul.locations {
   @media (prefers-color-scheme: dark) {
     .job-listing-menu {
       border-color: var(--dark-mode-border-color)
-    }
-
-    .job-details h4,
-    .similar-jobs h4,
-    .similar-company-jobs h4 {
-      margin: .8rem 0;
-      margin-top: 0;
     }
 
     div.similar-job {

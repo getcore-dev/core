@@ -1071,35 +1071,31 @@ function createCard(
   }
 
   const cardContent = `
-<div class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left mb-4 text-sm transition-all hover:bg-accent" ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
-  <div class="flex w-full flex-col gap-1">
+<div class="flex flex-row px-1 items-start gap-2 rounded-lg text-left mb-4 text-sm transition-all hover:bg-accent" ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
+  <span class="relative flex shrink-0 overflow-hidden rounded-md mr-2 h-10 w-10">
+    <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.style.display='none';" />
+  </span>
+  <div class="flex flex-col w-full gap-1">
     <div class="flex items-center">
-      <div class="flex items-center gap-2 wrap">
+      <div class="flex flex-col gap-1">
+        <div class="text-md font-semibold">${name}</div>
+            <div class="text-base font-medium text-balance max-w-lg leading-relaxed">
+      ${title}
+    </div>
+    ${experienceLevel ? `<div class="text-xs text-foreground flex flex-row gap-06 v-center">${experienceLevel}</div>` : ""}
+      </div>
+<div class="ml-auto text-xs text-foreground gap-06 v-center whitespace-nowrap">${timestamp}</div>
+    </div>
 
-      <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
-        <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.style.display='none';" />
-      </span>
-        <div class="text-md">${name}</div>
-      </div>
-      <div class="ml-auto text-xs text-foreground flex flex-row gap-06 v-center">${timestamp}
-      </div>
+    <div class="text-sm text-muted-foreground">
+      ${location}
     </div>
-    <div class="flex flex-row gap-2 wrap">
-    <span class="text-base font-medium text-balance max-w-lg leading-relaxed">
-    ${title}
-    </span>
-<span class="flex flex-row text-sm text-muted-foreground items-center">
-    <span class="text-foreground font-semibold">${experienceLevel}</span>
-    ${experienceLevel && location ? '<div class="h-4 w-px bg-gray-300 mx-2"></div>' : ''}
-    ${location}
-</span>
+    <div class="flex items-center gap-2 wrap">
+      ${tagsHtml}
     </div>
-  </div>
-  <div class="flex items-center gap-2 wrap">
-    ${tagsHtml}
   </div>
 </div>
-    `;
+  `;
 
   card.innerHTML = cardContent;
   return card;

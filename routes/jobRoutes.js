@@ -17,6 +17,7 @@ const {
 const userRecentQueries = require('../queries/userRecentQueries');
 const cacheMiddleware = require('../middleware/cache');
 const rateLimit = require('express-rate-limit');
+const { user } = require('../config/dbConfig');
 const viewLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
   max: 3,
@@ -246,9 +247,11 @@ router.get('/company/:name', async (req, res) => {
       return res.status(404).redirect('/jobs');
     }
     const jobs = [];
+    const userViewedJobs = req.user ? await userRecentQueries.getViewedJobs(req.user.id) : [];
     const jobsCount = await jobQueries.getJobCountByCompany(companyName);
     res.render('company_profile.ejs', {
       company,
+      userViewedJobs,
       jobs,
       user: req.user,
       jobsCount,
@@ -587,12 +590,11 @@ router.get('/:jobId', viewLimiter, async (req, res) => {
     if (req.user) {
         await userRecentQueries.addViewedJob(job.id, job.company_id, req.user.id);
     }
-
-
-
+    const userViewedJobs = req.user ? await userRecentQueries.getViewedJobs(req.user.id) : [];
     res.render('job-posting.ejs', {
       job_id: jobId,
       user: req.user,
+      userViewedJobs,
       job: job,
     });
   } catch (err) {

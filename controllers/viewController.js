@@ -2,6 +2,7 @@ const sql = require('mssql');
 const utilFunctions = require('../utils/utilFunctions');
 const userQueries = require('../queries/userQueries');
 const postQueries = require('../queries/postQueries');
+const userRecentQueries = require('../queries/userRecentQueries');
 
 const viewController = {
   renderHomePage: async (req, res) => {
@@ -24,10 +25,12 @@ const viewController = {
 
   renderJobHomePage: async (req, res) => {
     try {
+      const userViewedJobs = req.user ? await userRecentQueries.getViewedJobs(req.user.id) : [];
       // Send basic post data to the client
       res.render('jobs-home.ejs', {
         user: req.user,
         errorMessages: req.flash('error'),
+        userViewedJobs,
         successMessages: req.flash('success'),
       });
     } catch (err) {

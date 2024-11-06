@@ -302,36 +302,56 @@ function formatLocation(location) {
 
 function createJobElement(job) {
   let tags = [];
-
   const postedDate = new Date(job.postedDate.replace(" ", "T"));
   const now = new Date();
   const diffTime = Math.abs(now - postedDate);
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  if (diffDays <= 2) {
-    tags.push({ text: "New", class: "link" });
+  // new tag
+  if (diffDays <= 2 && !viewedJobs.includes(job.id)) {
+    tags.push({ text: "New", class: "new", icon:'<span class="flex h-2 w-2 rounded-full bg-blue-600"></span>' });
   }
 
-  if (job.location) {
-    tags.push({ text: formatLocation(job.location), class: "location" });
+  // viewed tag
+  if (viewedJobs.includes(job.id)) {
+    tags.push({
+      text: 'Viewed',
+      class: 'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground',
+      icon: '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 fill-green-300 text-green-300"><path d="M0.877075 7.49991C0.877075 3.84222 3.84222 0.877075 7.49991 0.877075C11.1576 0.877075 14.1227 3.84222 14.1227 7.49991C14.1227 11.1576 11.1576 14.1227 7.49991 14.1227C3.84222 14.1227 0.877075 11.1576 0.877075 7.49991ZM7.49991 1.82708C4.36689 1.82708 1.82708 4.36689 1.82708 7.49991C1.82708 10.6329 4.36689 13.1727 7.49991 13.1727C10.6329 13.1727 13.1727 10.6329 13.1727 7.49991C13.1727 4.36689 10.6329 1.82708 7.49991 1.82708Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>'
+    });
   }
+
+  // salary tag
   if (job.salary) {
-    tags.push({ text: `$${job.salary}`, class: "salary" });
-  } else {
-    // try to extract salary from description
-    const salaryMatch = job.description.match(/\$(\d+,?\d*)/);
-    if (salaryMatch) {
-      tags.push({ text: `$${salaryMatch[1]}`, class: "salary" });
-    }
+    tags.push({
+      text: `$${job.salary}`,
+      class: "salary",
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>',
+    });
+  } 
+
+
+  // views tag
+  if (job.views) {
+    tags.push({
+      text: `${job.views} views`,
+      class: "views",
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>',
+    });
   }
-  if (job.experienceLevel) {
-    tags.push({ text: job.experienceLevel, class: "experienceLevel" });
-  }
+
+  // applicants tag
+  tags.push({
+    text: `${job.applicants} applicants`,
+    class: "applicants",
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  });
 
   const jobElement = createCard(
     job.company_name,
     formatRelativeDate(job.postedDate),
     job.title,
-    job.description,
+    job.experienceLevel || job.cleaned_experience_level,
+    formatLocation(job.location),
     true,
     `/jobs/${job.id}`,
     job.company_logo,
@@ -344,7 +364,8 @@ function createCard(
   name,
   timestamp,
   title,
-  description,
+  experienceLevel,
+  location,
   clickable = false,
   link = null,
   image = null,
@@ -357,7 +378,7 @@ function createCard(
     tagsHtml = tags
       .map(
         (tag) => `
-      <div class="${tag.class} inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground flex flex-row gap-2">
+      <div class="${tag.class} inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground flex flex-row gap-2">
       ${tag.icon ? tag.icon : ""}
         ${tag.text}
       </div>
@@ -367,26 +388,31 @@ function createCard(
   }
 
   const cardContent = `
-<div class="flex flex-col items-start gap-2 rounded-lg border p-3 text-left mb-4 text-sm transition-all hover:bg-accent" ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
-  <div class="flex w-full flex-col gap-1">
+<div class="flex flex-row px-1 items-start gap-2 rounded-lg text-left mb-4 text-sm transition-all hover:bg-accent" ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
+  <span class="relative flex shrink-0 overflow-hidden rounded-md mr-2 h-10 w-10">
+    <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.style.display='none';" />
+  </span>
+  <div class="flex flex-col w-full gap-1">
     <div class="flex items-center">
-      <div class="flex items-center gap-2 wrap">
-
-      <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
-        <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.style.display='none';" />
-      </span>
-        <div class="font-semibold">${name}</div>
-      </div>
-      <div class="ml-auto text-xs text-foreground flex flex-row gap-06 v-center">${timestamp}
-      </div>
+      <div class="flex flex-col gap-1">
+        <div class="text-md font-semibold">${name}</div>
+            <div class="text-base font-medium text-balance max-w-lg leading-relaxed">
+      ${title}
     </div>
-    <div class="text-base font-medium text-balance max-w-lg leading-relaxed">${title}</div>
-  </div>
-  <div class="flex items-center gap-2 wrap">
-    ${tagsHtml}
+    ${experienceLevel ? `<div class="text-xs text-foreground flex flex-row gap-06 v-center">${experienceLevel}</div>` : ""}
+      </div>
+<div class="ml-auto text-xs text-foreground gap-06 v-center whitespace-nowrap">${timestamp}</div>
+    </div>
+
+    <div class="text-sm text-muted-foreground">
+      ${location}
+    </div>
+    <div class="flex items-center gap-2 wrap">
+      ${tagsHtml}
+    </div>
   </div>
 </div>
-    `;
+  `;
 
   card.innerHTML = cardContent;
   return card;

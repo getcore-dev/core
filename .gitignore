@@ -2,3 +2,4 @@
 *.env
 /public/uploads
 /uploads
+/cache

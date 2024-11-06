@@ -1,54 +1,60 @@
-function createCard(name, timestamp, title, location, description, clickable=false, link=null, image=null, tags=null) {
-    const card = document.createElement('span');
-  
-    let tagsHtml = '';
-    if (tags) {
-      tagsHtml = tags.map(tag => `
-      <div class="${tag.class} inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground flex flex-row gap-2">
-        <span class="mr-2">${tag.icon ? tag.icon : ''}</span>
-          <span class="text-xs">${tag.text}</span>
-        </div>
-      `).join('');
-    }
-  
-    const cardContent = `
-    <div class="flex flex-col border items-start gap-2 rounded-lg w-full p-3 text-left text-sm transition-all hover:bg-accent max-h-[250px]" ${clickable ? `onclick="window.location.href='${link}'"` : ''}>
-    <div class="flex flex-row gap-2 items-center w-full">
-    ${image ? `
-          <span class="relative flex shrink-0 overflow-hidden rounded-md mr-2">
-        <img class="aspect-square h-8 w-8" src="${image || '/img/glyph.png'}" onerror="this.onerror=null; this.src='/img/glyph.png';" />
-      </span>
-      ` : `       
-      <span class="relative flex shrink-0 overflow-hidden rounded-md mr-2">
-      <img class="aspect-square h-8 w-8" src="/img/glyph.png" onerror="this.onerror=null; this.src='/img/glyph.png';" />
-      </span>
-      `
-    }
-    <div class="flex w-full flex-col gap-1">
-      <div class="flex items-center">
-      <div class="flex items-center gap-2 wrap">
-        <div class="text-sm font-medium leading-none">${name}</div>
-      </div>
-      <div class="ml-auto text-xs text-foreground">${timestamp}</div>
-      </div>
-      <div class="text-sm text-foreground">${title}</div>
+function createCard(
+  name,
+  timestamp,
+  title,
+  experienceLevel,
+  location,
+  clickable = false,
+  link = null,
+  image = null,
+  tags = null,
+) {
+  const card = document.createElement("div");
 
+  let tagsHtml = "";
+  if (tags) {
+    tagsHtml = tags
+      .map(
+        (tag) => `
+      <div class="${tag.class} inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground flex flex-row gap-2">
+      ${tag.icon ? tag.icon : ""}
+        ${tag.text}
+      </div>
+    `,
+      )
+      .join("");
+  }
+
+  const cardContent = `
+<div class="flex flex-row items-start gap-2 rounded-lg text-left mb-4 text-sm transition-all hover:bg-accent" ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
+  <span class="relative flex shrink-0 overflow-hidden rounded-md mr-2 h-10 w-10">
+    <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.style.display='none';" />
+  </span>
+  <div class="flex flex-col w-full gap-1">
+    <div class="flex items-center">
+      <div class="flex flex-col gap-1">
+        <div class="text-md font-semibold">${name}</div>
+            <div class="text-base font-medium text-balance max-w-lg leading-relaxed">
+      ${title}
     </div>
-    ${description ? `
-    <div class="line-clamp-2 text-sm text-muted-foreground w-full">
-      ${description}
+    ${experienceLevel ? `<div class="text-xs text-foreground flex flex-row gap-06 v-center">${experienceLevel}</div>` : ""}
+      </div>
+<div class="ml-auto text-xs text-foreground gap-06 v-center whitespace-nowrap">${timestamp}</div>
     </div>
-    ` : ''}
+
+    <div class="text-sm text-muted-foreground">
+      ${location}
     </div>
-    <div class="flex gap-2 text-sm text-muted-foreground wrap">
+    <div class="flex items-center gap-2 wrap">
       ${tagsHtml}
     </div>
-    </div>
-      `;
-  
-    card.innerHTML = cardContent;
-    return card;
-  }
+  </div>
+</div>
+  `;
+
+  card.innerHTML = cardContent;
+  return card;
+}
 
   function formatDateJob(dateString) {
     const date = new Date(dateString);

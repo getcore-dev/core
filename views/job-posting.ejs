@@ -275,39 +275,6 @@
                     </div>
                     <% } %>
                   </div>
-                  <div class="job-recruiter-container">
-                    <div class="job-recruiter-info">
-                      <div class="recruiter-info flex flex-row gap-06">
-                        <a href="/user/<%= job.recruiter_username %>" class="recruiter-image">
-                          <img class="thumbnail thumbnail-micro thumbnail-regular" src="<%= job.recruiter_image %>" alt="<%= job.company_name %> logo" />
-                        </a>
-                        <div class="recruiter-details flex flex-row gap-2">
-                          <p class="text-sm text-balance max-w-lg leading-relaxed">
-                            Posted by
-                            @<a href="/user/<%= job.recruiter_username %>" class="mini-text"><%= job.recruiter_username %></a>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <% if (!job.isProcessed && user && user.isPremium) { %>
-                  <div class="adaptive-border rounded">
-                    <div class="text-sm p-4 flex items-center">
-                      <span class="material-symbols-outlined animate-spin mr-2" style="color: #6366f1;">auto_awesome</span>
-                      <span class='please-wait-button'>Please wait a moment while we improve this job posting!</span>
-                    </div>
-                  </div>
-                  <% } %>
-                  <!--
-              <% if (!job.isProcessed && user && !user.isPremium) { %>
-                <div class="adaptive-border rounded">
-                  <div class="text-sm p-4 flex items-center">
-                    <span class="material-symbols-outlined mr-2" style="color: #6366f1;">star</span>
-                    <span>Sign up for premium to generate better overviews of these job postings</span>
-                  </div>
-                </div>
-              <% } %>
-              -->
                   <% if (job.salary || job.salary_max) { %>
                   <div class="job-info-flairs text-sm text-balance max-w-lg leading-relaxed">
                     <% if (job.salary !== 0) { %>
@@ -332,6 +299,40 @@
                     <% } %>
                   </div>
                   <% } %>
+                  <% if (!job.isProcessed && user && user.isPremium) { %>
+                  <div class="adaptive-border rounded">
+                    <div class="text-sm p-4 flex items-center">
+                      <span class="material-symbols-outlined animate-spin mr-2" style="color: #6366f1;">auto_awesome</span>
+                      <span class='please-wait-button'>Please wait a moment while we improve this job posting!</span>
+                    </div>
+                  </div>
+                  <% } %>
+                  <% if (user && user.isPremium) { %>
+                  <div class="adaptive-border rounded flex justify-between items-center py-2 px-4">
+                    <div class="text-sm flex items-center">
+                      <span class='please-wait-button'>Generate a match overview for this job posting!</span>
+                    </div>
+                    <button class="inline-flex items-center shadow justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-black text-background shadow-sm hover:bg-black hover:text-accent-background h-8 w-8">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles">
+                        <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
+                        <path d="M20 3v4" />
+                        <path d="M22 5h-4" />
+                        <path d="M4 17v2" />
+                        <path d="M5 18H3" />
+                      </svg>
+                    </button>
+                  </div>
+                  <% } %>
+                  <!--
+              <% if (!job.isProcessed && user && !user.isPremium) { %>
+                <div class="adaptive-border rounded">
+                  <div class="text-sm p-4 flex items-center">
+                    <span class="material-symbols-outlined mr-2" style="color: #6366f1;">star</span>
+                    <span>Sign up for premium to generate better overviews of these job postings</span>
+                  </div>
+                </div>
+              <% } %>
+              -->
                 </div>
               </div>
             </div>
@@ -363,7 +364,7 @@
                         <circle cx="5" cy="12" r="1" />
                       </svg>
                     </button>
-                    <div class="dropdown-content">
+                    <div class="dropdown-content z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 w-56">
                       <a class="grow-button margin-h-auto">
                         <button class="no-margin no-padding no-bg no-border" onclick="share('<%= job.title %>', '', 'https://getcore.dev/jobs/<%= job.id %>', 'job', '<%= job.id %>');">
                           <span class="material-symbols-outlined">share</span>
@@ -443,9 +444,9 @@
           <% if (job.isProcessed) { %>
           <div class="job-posting-description <% if (job.recruiter_username === 'autojob') { %>ai-generated-content<% } %>">
             <h4 class="font-semibold leading-none tracking-tight" style="margin-top:0;"><span class="material-symbols-outlined" style="color: #6366f1;">auto_awesome</span> AI-Generated Overview</h4>
-            <p class="text-sm text-balance max-w-lg leading-relaxed">
+            <span class="text-sm text-balance max-w-lg leading-relaxed">
               <%- job.description.replace('??', '') %>
-            </p>
+            </span>
           </div>
           <% } %>
           <% if (job.Requirements) { %>
@@ -507,14 +508,30 @@
           <% if (job.raw_description_no_format) { %>
           <div class="raw-description-no-format">
             <h4 class="font-semibold leading-none tracking-tight">Job Description (from the company)</h4>
-            <p class="text-sm text-balance max-w-lg leading-relaxed">
-              <%- job.raw_description_no_format %></p>
+            <span class="text-sm text-balance max-w-lg leading-relaxed" data-show="false">
+              <%- job.raw_description_no_format %>
+            </span>
           </div>
           <% } %>
           <div class="flex">
             <div class="autojob-warning px-4 py-2">
               <span class="warning-icon">⚠️</span>
               <span class="warning-text">This post is scraped from the internet and may contain errors.</span>
+            </div>
+          </div>
+          <div class="job-recruiter-container">
+            <div class="job-recruiter-info">
+              <div class="recruiter-info flex flex-row gap-06">
+                <a href="/user/<%= job.recruiter_username %>" class="recruiter-image">
+                  <img class="thumbnail thumbnail-micro thumbnail-regular" src="<%= job.recruiter_image %>" alt="<%= job.company_name %> logo" />
+                </a>
+                <div class="recruiter-details flex flex-row gap-2">
+                  <p class="text-sm text-balance max-w-lg leading-relaxed">
+                    Posted by
+                    @<a href="/user/<%= job.recruiter_username %>" class="mini-text"><%= job.recruiter_username %></a>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           <div class="job-links">
@@ -595,6 +612,9 @@
 
     <%- include('partials/right-side-container', { }) %>
   </main>
+  <script>
+    const viewedJobs = <%- JSON.stringify(userViewedJobs || []) %>;
+  </script>
   <script src="/js/jobPosting.js"></script>
   <script>
     let currentJobId = null;

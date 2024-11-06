@@ -14,7 +14,7 @@ const utilFunctions = require("../utils/utilFunctions");
 const jobExtractionQueue = require("../utils/queue");
 const userRecentQueries = require("../queries/userRecentQueries");
 const reportQueries = require("../queries/reportQueries");
-
+const GoogleCrawler = require("../services/googleCrawlService");
 const storage = multer.diskStorage({
   destination: "./public/uploads/",
   filename: function (req, file, cb) {
@@ -680,6 +680,23 @@ router.get("/company/:name/comments", async (req, res) => {
   } catch (err) {
     console.error("Error fetching company comments:", err);
     res.status(500).send("Error fetching company comments");
+  }
+});
+
+router.get("/crawl-google", checkAuthenticated, async (req, res) => {
+  try {
+    const crawler = new GoogleCrawler({
+      maxPages: 5,
+      headless: "new",  
+      delayBetweenRequests: 2000
+    });
+    crawler.crawlQueue('site:myworkdayjobs.com "jobs found"')
+    .then(links => res.json(links))
+    .catch(error => console.error('Error:', error));
+
+  } catch (error) {
+    console.error("Error crawling Google:", error);
+    res.status(500).json({ error: "An error occurred while crawling Google" });
   }
 });
 
