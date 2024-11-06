@@ -12,7 +12,23 @@ const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer');
 const userQueries = require('../queries/userQueries');
 const notificationQueries = require('../queries/notificationQueries');
+const rateLimit = require('express-rate-limit');
+const registerLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 1
+});
+const failedAttempts = new Map();
+const verifyTurnstileToken = require('../middleware/turnstile');
 
+function checkFailedAttempts(req, res, next) {
+  const ip = req.ip;
+  const attempts = failedAttempts.get(ip) || 0;
+  
+  if (attempts >= 10) { 
+    return res.status(403).send('Too many failed attempts. Try again later.');
+  }
+  next();
+}
 // Set up nodemailer transporter
 const transporter = nodemailer.createTransport({
   host: 'smtp.mail.me.com',
@@ -176,10 +192,6 @@ router.get('/reset-password/:token', async (req, res) => {
   }
 });
 
-router.get('/recruiter', checkNotAuthenticated, async (req, res) => {
-  res.render('recruiter-register.ejs', { user: req.user });
-});
-
 router.get('/register', checkNotAuthenticated, async (req, res) => {
   const email = req.query.email || '';
   res.render('register.ejs', { 
@@ -191,7 +203,10 @@ router.get('/register', checkNotAuthenticated, async (req, res) => {
 });
 
 router.post(
-  '/register',
+  '/register', 
+  checkFailedAttempts,
+  registerLimiter, 
+  verifyTurnstileToken, // Add this middleware
   checkNotAuthenticated,
   [
     body('username')

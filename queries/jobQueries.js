@@ -445,7 +445,7 @@ const jobQueries = {
         return `CONTAINS(experienceLevel, '"Internship"') OR CONTAINS(title, '"Intern"') AND NOT CONTAINS(title, '"Internal" OR "International"')`;
           }
           if (isEntryLevel) {
-        return `CONTAINS(experienceLevel, '"Entry Level"') OR (CONTAINS(title, '"entry level" OR "grad"') OR CONTAINS(description, '"entry level" OR "graduate" OR "1 year"')) AND NOT CONTAINS(title, '"senior" OR "vp" OR "principal"')`;
+        return `CONTAINS(experienceLevel, '"Entry Level"')`;
           }
           return `CONTAINS(experienceLevel, @${paramName}) OR CONTAINS(title, @${paramName})`;
         });
@@ -1257,7 +1257,7 @@ const jobQueries = {
             return `CONTAINS(experienceLevel, '"Internship"') OR CONTAINS(title, '"Intern"') AND NOT CONTAINS(title, '"Internal" OR "International"')`;
           }
           if (isEntryLevel) {
-        return `CONTAINS(j.experienceLevel, '"Entry Level"') OR (CONTAINS(j.title, '"entry level" OR "grad"') OR CONTAINS(j.description, '"entry level" OR "graduate" OR "1 year"')) AND NOT CONTAINS(j.title, '"senior" OR "vp" OR "principal"')`;
+        return `CONTAINS(j.experienceLevel, '"Entry Level"')`;
           }
           return `CONTAINS(j.experienceLevel, @${paramName}) OR CONTAINS(j.title, @${paramName})`;
         });

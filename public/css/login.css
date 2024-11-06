@@ -191,7 +191,6 @@ input:not(:placeholder-shown)+.floating-label,
 
 .input-container input {
   width: 100%;
-  margin: 8px 0;
   box-sizing: border-box;
   font-size: .8rem;
   transition: box-shadow 0.3s ease;

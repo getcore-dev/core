@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="css/register.css" />
   <link rel="shortcut icon" href="/img/core.png" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
 </head>
 
 <body>
@@ -83,6 +85,9 @@
           <div class="input-container">
             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="username">Zipcode</label>
             <input type="text" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 flex-1" id="zipcode" name="zipcode" required style="display: block" placeholder="Zipcode" />
+          </div>
+          <div class="input-container">
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAAfrXFW9WQNvV2Xg" data-callback="javascriptCallback"></div>
           </div>
           <a href="/register" id="register-text" class="register-text margin-1-bottom">
             <button type="submit" class="inline-flex mb-4 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-400 disabled:pointer-events-none disabled:opacity-50 bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 shadow h-9 px-4 py-2 w-full">

@@ -22,6 +22,102 @@ const state = {
   jobSearchInput: document.getElementById("job-search-input"),
 };
 
+const titleMappings = {
+  // Software Engineering roles
+  'software engineer': [
+    'software developer',
+    'programmer',
+    'developer',
+    'swe',
+    'software development engineer',
+    'application developer',
+    'full stack developer',
+    'full stack engineer',
+    'backend developer',
+    'backend engineer',
+    'frontend developer',
+    'frontend engineer'
+  ],
+
+  // Product/Program Management roles
+  'product manager': [
+    'program manager',
+    'product owner',
+    'technical product manager',
+    'product management',
+    'pm',
+    'program management'
+  ],
+
+  // Data Science roles
+  'data scientist': [
+    'data analyst',
+    'data engineer',
+    'machine learning engineer',
+    'ml engineer',
+    'analytics engineer',
+    'data science'
+  ],
+
+  // Design roles
+  'product designer': [
+    'ui designer',
+    'ux designer',
+    'ui/ux designer',
+    'web designer',
+    'interaction designer',
+    'visual designer'
+  ],
+
+  // DevOps roles
+  'devops engineer': [
+    'site reliability engineer',
+    'platform engineer',
+    'infrastructure engineer',
+    'cloud engineer',
+    'systems engineer',
+    'sre'
+  ],
+
+  'financial analyst': [
+    'finance analyst',
+    'business analyst',
+    'financial advisor',
+    'investment analyst',
+    'corporate finance analyst',
+    'financial consultant',
+    'budget analyst'
+  ],
+  'operations manager': [
+    'operations director',
+    'operations coordinator',
+    'business operations manager',
+    'operations specialist',
+    'facilities manager',
+    'production manager',
+    'operations supervisor'
+  ],
+  'quantitative analyst': [
+    'quant',
+    'quantitative developer',
+    'quantitative trader',
+    'quantitative research',
+    'quantitative software',
+    'quantitative modeler',
+    'quantitative strategist',
+    'quantitative consultant',
+    'quantitative risk analyst'
+  ],
+
+  'project manager': [
+    'program manager',
+    'project coordinator',
+    'project management',
+    'pm',
+    'program management'
+  ],
+};
+
 const SearchType = {
   RECENT: 'recent',
   PREFERENCE: 'preference',
@@ -1256,6 +1352,11 @@ function clearSearchResults() {
   fetchJobPostings();
 }
 
+state.jobSearchInput.addEventListener(
+  "input",
+  debounce(handleSearchInput, DEBOUNCE_DELAY),
+);
+
 function handleSearchInput() {
   const searchTerm = state.jobSearchInput.value.trim().toLowerCase();
   const searchIcon = document.getElementById('jobs-search-icon');
@@ -1310,10 +1411,6 @@ function handleSearchInput() {
   updateJobHeader(state.filters);
 }
 
-state.jobSearchInput.addEventListener(
-  "input",
-  debounce(handleSearchInput, DEBOUNCE_DELAY),
-);
 /**
  * Helper function to determine the best matching company.
  * This example uses the longest matching name as the best match.
