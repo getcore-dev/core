@@ -1,5 +1,4 @@
 const express = require('express');
-const helmet = require('helmet');
 const path = require('path');
 const passport = require('passport');
 const flash = require('express-flash');
