@@ -41,7 +41,6 @@
     "express-validator": "^7.0.1",
     "get-stream": "^9.0.1",
     "get-urls": "^12.1.0",
-    "helmet": "^8.0.0",
     "highlight.js": "^11.9.0",
     "is-base64": "^1.1.0",
     "jsonwebtoken": "^9.0.2",
