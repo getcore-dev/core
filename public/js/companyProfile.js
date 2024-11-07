@@ -300,6 +300,30 @@ function formatLocation(location) {
   return locations.join("; ");
 }
 
+function extractSalaryFromDescription(description) {
+  const salaryPatterns = [
+    /\$([0-9,]+(?:\.[0-9]{2})?)\s?[-—]\s?\$?([0-9,]+(?:\.[0-9]{2})?)?\s?(USD)?\s?(\/mo|\/hr|\s*hour|\s*month)?/gi,  // Match salary ranges like "$190,800 - $267,100", "$10,000 - 11,000 /mo", "$45 /hr"
+    /USD\s([0-9,]+)\s?[-—]\s?USD\s([0-9,]+)/gi,  // Match salary ranges like "USD 59,000 - USD 114,000"
+    /\$([0-9,]+(?:\.[0-9]{2})?)\s?(USD)?\s?(\/mo|\/hr|\s*hour|\s*month)?/gi // Match individual salaries like "$45 /hr", "$45.00", etc.
+  ];
+
+  const matches = [];
+
+  salaryPatterns.forEach((pattern) => {
+    let match;
+    while ((match = pattern.exec(description)) !== null) {
+      matches.push({
+        value: match[0],
+        min: match[1] ? parseFloat(match[1].replace(/,/g, "")) : null,
+        max: match[2] ? parseFloat(match[2].replace(/,/g, "")) : null,
+        period: match[4] ? match[4].trim() : null,
+      });
+    }
+  });
+
+  return matches;
+}
+
 function createJobElement(job) {
   let tags = [];
   const postedDate = new Date(job.postedDate.replace(" ", "T"));
@@ -311,6 +335,7 @@ function createJobElement(job) {
     tags.push({ text: "New", class: "new", icon:'<span class="flex h-2 w-2 rounded-full bg-blue-600"></span>' });
   }
 
+
   // viewed tag
   if (viewedJobs.includes(job.id)) {
     tags.push({
@@ -320,14 +345,17 @@ function createJobElement(job) {
     });
   }
 
+  const salaries = extractSalaryFromDescription(job.description);
+      
   // salary tag
-  if (job.salary) {
+  if (job.salary || salaries.length > 0) {
+    const salaryText = job.salary ? `$${job.salary}` : salaries[0].value.startsWith('$') ? salaries[0].value : `$${salaries[0].value}`;
     tags.push({
-      text: `$${job.salary}`,
+      text: salaryText,
       class: "salary",
       icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>',
     });
-  } 
+  }
 
 
   // views tag

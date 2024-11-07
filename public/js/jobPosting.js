@@ -274,6 +274,7 @@ function createJobElement(job) {
       const now = new Date();
       const diffTime = Math.abs(now - postedDate);
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      let tags = [];
       // new tag
       if (diffDays <= 2 && !viewedJobs.includes(job.id)) {
         tags.push({ text: "New", class: "new", icon:'<span class="flex h-2 w-2 rounded-full bg-blue-600"></span>' });

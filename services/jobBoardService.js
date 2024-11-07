@@ -1,3 +1,4 @@
+        const GoogleCrawler = require("../services/googleCrawlService");
 const sanitizeHtml = require("sanitize-html"); // Import the sanitization library
 const { GoogleGenerativeAI, SchemaType } = require("@google/generative-ai");
 const OpenAI = require("openai");
@@ -4721,15 +4722,7 @@ class JobProcessor extends EventEmitter {
   async start() {
     try {
       await this.init();
-
       try {
-        await this.updateJobPostings();
-      } catch (error) {
-        console.error("Error in updateJobPostings:", error);
-      }
-
-      try {
-        const GoogleCrawler = require("../services/googleCrawlService");
         const crawler = new GoogleCrawler({
           maxPages: 50,
           headless: "new",  
@@ -4741,6 +4734,13 @@ class JobProcessor extends EventEmitter {
       } catch (error) {
         console.error("Error in crawlGoogle:", error);
       }
+
+      try {
+        await this.updateJobPostings();
+      } catch (error) {
+        console.error("Error in updateJobPostings:", error);
+      }
+
 
       try {
         await this.collectJobLinksFromSimplify();
