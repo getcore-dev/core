@@ -9,7 +9,6 @@ main {
 
 .container {
   overflow-y: auto;
-  border-right: 1px solid var(--border-color);
   width: 53%;
   max-width: 1000px;
 }
