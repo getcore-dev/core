@@ -421,7 +421,6 @@ function getRelatedTitles(searchTitle) {
 const jobQueries = {
   createResume: async (data) => {
     resumeFunctions.createResume(data);
-    console.log("Resume created");
   },
 
   getJobCountByFilter: async (filters) => {
@@ -3254,6 +3253,7 @@ ORDER BY jp.postedDate DESC
 
       return jobPostingId;
     } catch (err) {
+      /*
       console.log(
         `Error creating job posting with information:
 
@@ -3284,6 +3284,7 @@ ORDER BY jp.postedDate DESC
         equalOpportunityEmployerInfo: ${equalOpportunityEmployerInfo},
         relocation: ${relocation}`,
       );
+      */
       console.error(
         `Database insert error: ${err.message} in createJobPosting`,
       );
@@ -3504,7 +3505,6 @@ ORDER BY jp.postedDate DESC
       DELETE FROM JobPostings WHERE id = ${jobId}
     `;
 
-      console.log(`Deleted job with ID ${jobId}`);
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -3527,7 +3527,6 @@ ORDER BY jp.postedDate DESC
           DELETE FROM JobPostings WHERE id = ${duplicateJobId}
         `;
 
-      console.log(`Merged job ${duplicateJobId} into ${primaryJobId}`);
     } catch (err) {
       console.error("Database query error:", err);
       throw err;
@@ -3959,7 +3958,6 @@ ORDER BY jp.postedDate DESC
         ORDER BY JobPostings.postedDate DESC
       `;
 
-      console.log("SQL Query: ", query);
 
       const result = await sql.query(query);
 

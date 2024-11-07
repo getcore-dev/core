@@ -26,16 +26,16 @@ function createCard(
   }
 
   const cardContent = `
-<div class="flex flex-row items-start gap-2 rounded-lg text-left mb-4 text-sm transition-all hover:bg-accent" ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
+<div class="flex flex-row p-3 items-start gap-2 rounded-lg text-left mb-2 text-sm transition-all hover:bg-accent" ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
   <span class="relative flex shrink-0 overflow-hidden rounded-md mr-2 h-10 w-10">
-    <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.style.display='none';" />
+    <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.src='/img/glyph.png';"/>
   </span>
   <div class="flex flex-col w-full gap-1">
     <div class="flex items-center">
       <div class="flex flex-col gap-1">
         <div class="text-md font-semibold">${name}</div>
             <div class="text-base font-medium text-balance max-w-lg leading-relaxed">
-      ${title}
+            <a href="${link}" class="hover:text-accent">${title}</a>
     </div>
     ${experienceLevel ? `<div class="text-xs text-foreground flex flex-row gap-06 v-center">${experienceLevel}</div>` : ""}
       </div>

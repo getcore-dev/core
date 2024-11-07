@@ -68,7 +68,6 @@ class Notification {
       };
 
       const info = await Notification.transporter.sendMail(mailOptions);
-      console.log('Email sent: ' + info.response);
     } catch (error) {
       console.error('Error sending email notification:', error);
     }

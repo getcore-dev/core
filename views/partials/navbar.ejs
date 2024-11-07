@@ -12,10 +12,8 @@
     };
     %>
   <div class="nav-bar">
-    <div class="logo">
-      <div class="logo-img">
-        <a href="/"> <img class="core-header-img" src="/img/core.png" alt="CORE" /> </a>
-      </div>
+    <div class="logo relative">
+      <img class="w-10 h-10" style="max-width: 100%;" src="/img/core.png" alt="CORE" />
       <div class="nav-text-and-user-btns">
         <div class="nav-text-container">
           <% function getTintFromName(name) {
@@ -540,7 +538,6 @@
 
       const response = await axios.get(`/autocomplete/all?term=${encodeURIComponent(searchTerm)}`);
       const data = response.data;
-      console.log(data);
       displayAutocompleteResults(data);
     } catch (error) {
       console.error('Error fetching autocomplete results:', error);
@@ -725,12 +722,10 @@
         });
         if (!response.ok) throw new Error('Failed to increment share count');
         const data = await response.json();
-        console.log(`${type.charAt(0).toUpperCase() + type.slice(1)} share count updated:`, data.newShareCount);
       }
 
       if (navigator.share) {
         await navigator.share(shareData);
-        console.log('Content shared successfully');
       } else if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(url);
         alert('Content URL copied to clipboard!');
@@ -849,7 +844,7 @@
     const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
     let trendingJobsContainer;
     if (!isMobile) {
-      trendingJobsContainer = document.querySelector('.desktop-trending-jobs');
+      trendingJobsContainer = document.getElementById('desktop-trending-jobs');
     } else {
       trendingJobsContainer = document.querySelector('.mobile-trending-jobs');
     }
@@ -874,16 +869,16 @@
           };
 
           jobElement.innerHTML = `
-                <div class="flex flex-col gap-1">
-
-            <div class="flex flex-row gap-06 v-center">
-            <img src="${trendingJob.logo || '/img/glyph.png'}" alt="logo" class="aspect-square h-5 w-5 rounded" />
-            <p class="text-sm text-muted-foreground">${trendingJob.company_name}</p>
-            </div>
-            <div class="flex flex-col">
-            <p class="text-sm text-foreground w-full">${trendingJob.title} </p>
-            </div>
-            `;
+  <div class="flex flex-col gap-2 p-2 hover:bg-muted rounded-md">
+    <div class="flex items-center gap-2">
+      <img src="${trendingJob.company_logo || '/img/glyph.png'}" alt="logo" class="h-6 w-6 rounded-full object-cover" onerror="this.src='/img/glyph.png'" />
+      <p class="text-sm font-medium text-muted-foreground">${trendingJob.company_name}</p>
+    </div>
+    <div class="mt-1">
+      <p class="text-sm font-semibold text-foreground truncate">${trendingJob.title}</p>
+    </div>
+  </div>
+`;
 
           trendingJobsContainer.appendChild(jobElement);
         });
@@ -897,7 +892,7 @@
     const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
     let recentPostsContainer;
     if (!isMobile) {
-      recentPostsContainer = document.querySelector('.desktop-recent-jobs');
+      recentPostsContainer = document.getElementById('desktop-recent-jobs');
     } else {
       recentPostsContainer = document.querySelector('.mobile-recent-jobs');
     }
@@ -915,7 +910,7 @@
         const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
         let recentPostsContainer;
         if (!isMobile) {
-          recentPostsContainer = document.querySelector('.desktop-recent-jobs');
+          recentPostsContainer = document.getElementById('desktop-recent-jobs');
         } else {
           recentPostsContainer = document.querySelector('.mobile-recent-jobs');
         }
@@ -929,15 +924,15 @@
           };
 
           jobElement.innerHTML = `
-                <div class="flex flex-col gap-1">
-
-            <div class="flex flex-row gap-06 v-center">
-            <img src="${recentJob.company_logo}" onerror="this.onerror=null; this.src='/img/glyph.png';" alt="logo" class="aspect-square h-5 w-5 rounded" />
-            <p class="text-sm text-muted-foreground">${recentJob.company_name}</p>
-            </div>
-            <div class="flex flex-col">
-            <p class="text-sm text-foreground w-full">${recentJob.title} </p>
-            </div>
+                        <div class="flex flex-col gap-2 p-2 hover:bg-muted rounded-md">
+    <div class="flex items-center gap-2">
+      <img src="${recentJob.company_logo || '/img/glyph.png'}" alt="logo" class="h-6 w-6 rounded-full object-cover" onerror="this.src='/img/glyph.png'" />
+      <p class="text-sm font-medium text-muted-foreground">${recentJob.company_name}</p>
+    </div>
+    <div class="mt-1">
+      <p class="text-sm font-semibold text-foreground truncate">${recentJob.title}</p>
+    </div>
+  </div>
             `;
 
           recentPostsContainer.appendChild(jobElement);

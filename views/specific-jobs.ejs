@@ -507,14 +507,8 @@
     const filters = <%- JSON.stringify(filters || {}) %>;
     const viewedJobs = <%- JSON.stringify(userViewedJobs || {})%>;
 
-    console.log('viewedJobs', viewedJobs);
 
-    // Function to check if we've scrolled near the bottom
-    function isNearBottom() {
-      const scrollPosition = window.innerHeight + window.pageYOffset;
-      const pageHeight = document.documentElement.scrollHeight;
-      return pageHeight - scrollPosition < 1000; // Load more when within 1000px of bottom
-    }
+    // Function to check if we've scrolled near the botto
 
     function resetFilters() {
       // reset filters to initial state
@@ -551,7 +545,6 @@
           searchType: filters.searchType || 'recent'
         });
 
-        console.log('loading jobs count')
 
         const response = await fetch(`/api/jobs-count?${queryParams.toString()}`);
         const jobCount = await response.json();
@@ -724,8 +717,14 @@
       locationInput.addEventListener('input', () => {
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(() => {
+          // Ensure filters.locations is initialized as an empty array if it doesn't exist
+          if (!filters.locations) {
+            filters.locations = [];
+          }
+
           const newLocations = locationInput.value.split(', ').filter(Boolean);
           filters.locations = [...new Set([...filters.locations, ...newLocations])];
+
           currentPage = 1;
           hasMore = true;
           clearJobs();
@@ -735,30 +734,38 @@
       });
     }
 
+
     clearJobs = () => {
       const jobList = document.getElementById('personalized-job-list');
       jobList.innerHTML = '';
     }
-
-    // Initialize the infinite scroll
     document.addEventListener('DOMContentLoaded', () => {
       // Load initial jobs
       loadMoreJobs();
 
-      // Add scroll event listener with throttling
-      window.addEventListener('scroll', throttle(() => {
-        if (isNearBottom()) {
-          loadMoreJobs();
-        }
-      }, 250));
-    });
+      const loadMoreBtn = document.getElementById('load-more-btn');
 
-    const loadMoreBtn = document.getElementById('load-more-btn');
-    if (loadMoreBtn) {
-      loadMoreBtn.style.cursor = 'default';
-      loadMoreBtn.style.pointerEvents = 'none';
-      loadMoreBtn.addEventListener('click', loadMoreJobs);
-    }
+      if (loadMoreBtn) {
+        loadMoreBtn.style.cursor = 'default';
+        loadMoreBtn.style.pointerEvents = 'none';
+
+        // Create an IntersectionObserver instance
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              loadMoreJobs();
+            }
+          });
+        }, {
+          root: null, // Observe changes relative to the viewport
+          rootMargin: '0px', // Trigger when the element is fully in view
+          threshold: 1.0 // Trigger only when 100% of the button is visible
+        });
+
+        // Start observing the load-more button
+        observer.observe(loadMoreBtn);
+      }
+    });
   </script>
   <script src="/js/utils.js"></script>
 </body>

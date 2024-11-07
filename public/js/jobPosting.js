@@ -109,7 +109,7 @@ async function getSimilarJobs(jobId) {
 
     similarJobsContainer.innerHTML = '<h4 class="secondary-text">Related Jobs</h4>';
     const similarJobsList = document.createElement('div');
-    similarJobsList.className = 'flex flex-row gap-2 pl-2 horizontal-scroll';
+    similarJobsList.className = 'flex flex-col gap-2 pl-2';
 
     jobs.forEach((job) => {
       let tags = [];
@@ -341,7 +341,7 @@ async function getSimilarJobsByCompany(jobId) {
 
     similarJobsContainer.innerHTML = `<h4 class="secondary-text">More at ${jobs.companyName}</h4>`;
     const similarJobsList = document.createElement('div');
-    similarJobsList.className = 'flex flex-row gap-2 pl-2 horizontal-scroll';
+    similarJobsList.className = 'flex flex-col gap-2 pl-2';
 
     jobs.similarJobs.forEach((job) => {
       const jobElement = createJobElement(job);
@@ -902,14 +902,14 @@ function createCard(
   const cardContent = `
 <div class="flex flex-row px-1 items-start gap-2 rounded-lg text-left mb-4 text-sm transition-all hover:bg-accent" ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
   <span class="relative flex shrink-0 overflow-hidden rounded-md mr-2 h-10 w-10">
-    <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.style.display='none';" />
+    <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.src='/img/glyph.png';" />
   </span>
   <div class="flex flex-col w-full gap-1">
     <div class="flex items-center">
       <div class="flex flex-col gap-1">
         <div class="text-md font-semibold">${name}</div>
             <div class="text-base font-medium text-balance max-w-lg leading-relaxed">
-      ${title}
+            <a href="${link}" class="hover:text-accent">${title}</a>
     </div>
     ${experienceLevel ? `<div class="text-xs text-foreground flex flex-row gap-06 v-center">${experienceLevel}</div>` : ""}
       </div>
@@ -932,9 +932,7 @@ function createCard(
 
 function bindSelectorButtons() {
   const companyProfileButtons = document.querySelectorAll('.company-navbar-button');
-  console.log(companyProfileButtons);
   const companyProfileSections = document.querySelectorAll('.company-profile-section');
-  console.log(companyProfileSections);
 
   companyProfileButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -975,7 +973,6 @@ function checkFavorite(jobId) {
 }
 
 function favorite(favoriteType, TypeId) {
-  console.log('Favorite type:', favoriteType);
   const endpoints = {
     job: `/favorites/jobs/${TypeId}`,
     post: `/favorites/posts/${TypeId}`,

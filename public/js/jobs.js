@@ -173,8 +173,6 @@ function updateStateFromQuery() {
   const query = getQueryParams();
   if (Object.keys(query).length > 0) {
     flushState();
-    console.log(query);
-    console.log("cleared state");
   }
 
   if (query.skill) {
@@ -244,8 +242,8 @@ function setupInfiniteScroll() {
 
   const options = {
     root: null,
-    rootMargin: "500px",
-    threshold: 0.1,
+    rootMargin: "0px",
+    threshold: 1.0,
   };
 
   loadMoreBtn.style.display = "flex";
@@ -259,6 +257,12 @@ function setupInfiniteScroll() {
   if (loadMoreBtn) {
     observer.observe(loadMoreBtn);
   }
+
+  loadMoreBtn.addEventListener('click', () => {
+    if (!state.isLoading && state.hasMoreData) {
+      fetchJobPostings();
+    }
+  });
 }
 
 async function updateJobCount() {
@@ -1059,7 +1063,6 @@ function restoreUIState() {
     if (type === "locations") type = "job-locations";
     if (type === "majors") type = "majors";
     if (type === "experiencelevels") type = "job-levels";
-    console.log(type);
 
     if (type !== "salary" && filterSet.size > 0) {
       filterSet.forEach((filter) => {
@@ -1169,14 +1172,14 @@ function createCard(
   const cardContent = `
 <div class="flex flex-row px-1 items-start gap-2 rounded-lg text-left mb-4 text-sm transition-all hover:bg-accent" ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
   <span class="relative flex shrink-0 overflow-hidden rounded-md mr-2 h-10 w-10">
-    <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.style.display='none';" />
+    <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.src='/img/glyph.png';" />
   </span>
   <div class="flex flex-col w-full gap-1">
     <div class="flex items-center">
       <div class="flex flex-col gap-1">
         <div class="text-md font-semibold">${name}</div>
             <div class="text-base font-medium text-balance max-w-lg leading-relaxed">
-      ${title}
+            <a href="${link}" class="hover:text-accent">${title}</a>
     </div>
     ${experienceLevel ? `<div class="text-xs text-foreground flex flex-row gap-06 v-center">${experienceLevel}</div>` : ""}
       </div>
@@ -1370,7 +1373,6 @@ function handleSearchInput() {
 
   if (searchTerm.length < 2) {
     clearSearchResults();
-    console.log("Search term too short, clearing results.");
     return;
   }
 
@@ -1379,7 +1381,6 @@ function handleSearchInput() {
   state.filters.companies.clear();
   state.hasMoreData = true;
   state.isLoading = false;
-  console.log("Filters cleared.");
 
   // Filter companies based on the search term
   const matchingCompanies = state.companyNames.filter(
@@ -1388,22 +1389,18 @@ function handleSearchInput() {
       company.name &&
       company.name.toLowerCase().includes(searchTerm),
   );
-  console.log("Matching Companies:", matchingCompanies);
 
   if (matchingCompanies.length > 0) {
     // Determine the best match among the matching companies
     const bestMatchCompany = getBestMatch(searchTerm, matchingCompanies);
-    console.log("Best Match Company:", bestMatchCompany);
 
     if (bestMatchCompany) {
       // Add only the ID of the best matching company to the filters
       state.filters.companies.add(bestMatchCompany.id);
-      console.log("Added company ID to filters:", bestMatchCompany.id);
     }
   } else {
     // If no companies match, treat the search term as a job title
     state.filters.titles.add(searchTerm);
-    console.log("Added search term to title filters:", searchTerm);
   }
 
   // Trigger the job search with updated filters
@@ -1440,14 +1437,11 @@ function getBestMatch(searchTerm, companies) {
 // Attach event listener to the search input element
 
 function handleResultClick(event) {
-  console.log("handleResultClick");
   const result = event.currentTarget;
-  console.log(result);
   const type = result.dataset.type;
   const id = result.dataset.id;
   const name = result.dataset.name;
   const logo = result.dataset.logo;
-  console.log(type, id, name, logo);
 
   if (type === "job-locations" || type === "tech-job-titles") {
     updateState(type, name, name, logo);
@@ -1476,7 +1470,6 @@ function handleResultClick(event) {
 }
 
 function addToSelectedFilters(type, id, name, logo) {
-  console.log(id);
   const selectedFiltersContainer = document.querySelector(
     ".jobs-selected-filters",
   );
@@ -1530,19 +1523,15 @@ function addToSelectedFilters(type, id, name, logo) {
 function removeSelectedItem(item) {
   const type = item.dataset.type;
   const id = item.dataset.id;
-  console.log(id);
 
   const name = item.dataset.name || item.querySelector("span").textContent;
 
   const typeSection = item.parentElement;
-  console.log(typeSection.children.length);
-  console.log(typeSection.children);
   typeSection.removeChild(item);
   if (typeSection.children.length === 1) {
     // Only header left
     typeSection.parentElement.removeChild(typeSection);
   }
-  console.log(item.dataset);
   updateState(type, id, name, null, true); // true indicates removal
 
   // Update the corresponding dropdown or button
@@ -1619,8 +1608,6 @@ function toggleSelectedFilter(event) {
     dropdown.innerHTML = `${dropdownDefaultText}<span class="arrow"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 opacity-50" aria-hidden="true"><path d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.35753 11.9939 7.64245 11.9939 7.81819 11.8182L10.0682 9.56819Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg></span>`;
     dropdown.classList.remove("active");
     updateState(type, id, name, logo, true);
-    console.log(event.target);
-    console.log(type, id, name, logo, true);
   } else {
     dropdown.classList.add("active");
     clearSelectedFilters(type); // Clear previously selected filters
@@ -1717,8 +1704,6 @@ style.textContent = `
 document.head.appendChild(style);
 
 function updateState(type, id, name, logo, isRemoval = false) {
-  console.log("updateState");
-  console.log(type, id, name, logo, isRemoval);
   state.hasMoreData = true;
   let filterSet;
 
@@ -1756,10 +1741,7 @@ function updateState(type, id, name, logo, isRemoval = false) {
   }
 
   if (isRemoval) {
-    console.log(type, id, name);
-    console.log("Before removal:", filterSet);
     if (type === "companies") {
-      console.log(item);
       filterSet.forEach((item) => {
         const parsedItem = JSON.parse(item);
         if (parsedItem.name === name) {
@@ -1767,19 +1749,14 @@ function updateState(type, id, name, logo, isRemoval = false) {
         }
       });
     } else if (type === "tech-job-titles") {
-      console.log("Removing job title:", id);
       filterSet.delete(id);
     } else {
-      console.log("Removing item:", name);
       filterSet.delete(name);
     }
-    console.log("After removal:", filterSet);
   } else {
     if (type === "companies") {
-      console.log("Adding company:", id);
       filterSet.add(id);
     } else if (type === "tech-job-titles") {
-      console.log("Adding job title:", id);
       filterSet.add(id);
     } else {
       filterSet.add(name);

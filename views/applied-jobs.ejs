@@ -168,7 +168,6 @@
         })
         .then((response) => {
           if (response.ok) {
-            console.log('Job status updated');
             if (status === 'remove') {
               // Remove the job row from the table
               const jobRow = dropdown.closest('tr');

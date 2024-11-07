@@ -1,15 +1,37 @@
        <link rel="stylesheet" href="/css/right-side-container.css" />
 
-
        <div class="right-side-container">
+
+         <div class="job-header">
+           <h5>Quick Job Links</h5>
+         </div>
+         <div class="job-links flex flex-col gap-2 p-2">
+           <a href="/jobs/internships" class="text-sm font-medium text-primary hover:underline">Internships</a>
+           <a href="/jobs/grad" class="text-sm font-medium text-primary hover:underline">Entry Level Jobs</a>
+           <a href="/jobs/remote" class="text-sm font-medium text-primary hover:underline">Remote Jobs</a>
+           <a href="/jobs/hybrid" class="text-sm font-medium text-primary hover:underline">Hybrid Jobs</a>
+         </div>
+
+         <div class="job-header">
+           <h5>Recent Viewed Jobs</h5>
+         </div>
+         <div id="desktop-recent-jobs" class="desktop-recent-jobs flex-col gap-1">
+         </div>
+
+         <div class="job-header">
+           <h5>Trending Jobs</h5>
+         </div>
+         <div id="desktop-trending-jobs" class="desktop-trending-jobs flex-col gap-1">
+         </div>
 
          <div class="job-header">
            <h5>Openings</h5>
          </div>
-         <div class="jobslist flex-col gap-1">
+         <div id="desktop-jobs-list" class="jobslist flex-col gap-1">
          </div>
 
        </div>
+
        <script>
          function formatRelativeDate(dateString) {
            const date = new Date(dateString);
@@ -64,84 +86,45 @@
          }
 
          function fetchJobPreviews() {
-           fetch(`/api/recent-viewed-jobs`)
+           fetch(`/api/recent-jobs`)
              .then(response => response.json())
              .then(data => {
-               const jobs = data.jobPostings;
+               const jobs = data;
                const isMobile = window.matchMedia('(max-width: 768px)').matches;
-               let jobslistContainer;
-               if (isMobile) {
-                 jobslistContainer = document.querySelector('div.mobile-jobs-container > div.jobslist');
-               } else {
-                 jobslistContainer = document.querySelector('.right-side-container > div.jobslist');
-               }
-               jobslistContainer.innerHTML = jobs.map(job => `
-              <div class="job px-4 py-4 flex flex-col" onclick="window.location.href='/jobs/${job.id}'">
-              <div class="flex flex-row gap-06">
-                                  ${job.company_logo ? `
-                      <img loading="lazy" src="${job.company_logo}" alt="" onerror="this.onerror=null;this.src='/img/glyph.png';" class="thumbnail ${isMobile ? `thumbnail-tiny` : `thumbnail-tiny`} thumbnail-regular" />
-                      ` : `<img loading="lazy" src="/img/gylph.png" alt="" class="thumbnail ${isMobile ? `thumbnail-tiny` : `thumbnail-tiny`} thumbnail-regular" />`}
-                <div class="job-content">
-                  <div class="job-content-header">
-                    <div class="company-logo-container">
-                                            <div class="job-posting-header">
-                        <div class="secondary-text">
-                        
-                        <a class="mini-text secondary-text" href="/jobs/company/${encodeURIComponent(job.company_name)}">${job.company_name}</a>
-                        
-                        </div>
-                                                                            
-                               
-                      </div>
-                    
-                    </div>
-                                                              <div class="job-title mini-text bold"><a href="/jobs/${job.id}">${job.title.slice(0, 40)}</a></div>
+               const jobslistContainer = document.querySelector(
+                 isMobile ? 'div.mobile-jobs-container > div.jobslist' : '.right-side-container > div.jobslist'
+               );
 
 
-                  </div>
+               jobslistContainer.innerHTML = jobs
+                 .map(job => `
+            <div class="flex flex-col gap-2 p-2 hover:bg-muted rounded-md">
+    <div class="flex items-center gap-2">
+      <img src="${job.company_logo || '/img/glyph.png'}" alt="logo" class="h-6 w-6 rounded-full object-cover" onerror="this.onerror=null;this.src='/img/glyph.png';">
+      <p class="text-sm font-medium text-muted-foreground">${job.company_name}</p>
+    </div>
+    <div class="mt-1">
+      <p class="text-sm font-semibold text-foreground truncate">${job.title}</p>
+    </div>
+  </div>
+        `)
+                 .join('');
 
-
-                  ${!isMobile ? `
-
-                  ` : `
-                  `}
-                </div>
-                </div>
-                <div class="job-title-location mini-text text-muted-foreground">
-                ${job.salary || job.salary_max ? `
-                  <span class="job-salary mini-text">
-                    ${getFormattedSalary(job.salary, job.salary_max)}
-                  </span>
-                  <span style="font-size:.7rem;">•</span>
-                ` : ``}
-
-                <div class="location mini-text">
-                  <span class="material-symbols-outlined">location_on</span>
-                  ${formatLocation(job.location)}
-                </div>
-                  <span style="font-size:.7rem;">•</span>
-
-                <div class="views mini-text"><span class="material-symbols-outlined" style="padding:0;">visibility</span>
-                <span>${job.views ? job.views : '0'}</span></div>
-                  <span style="font-size:.7rem;">•</span>
-
-                <div class="job-post-date mini-text">
-                  <span class="material-symbols-outlined" style="padding:0;">calendar_month</span>
-                  <time>${formatRelativeDate(job.postedDate)}</time>
-                </div>
-
-                    </div>
-              </div>
-            `).join('');
-               jobslistContainer.innerHTML += '<div class="see-more"><a href="/jobs"><button class="regular-button">More</button></a></div>';
-
-
-               const jobElements = jobslistContainer.querySelectorAll('.job');
+               jobslistContainer.innerHTML += `
+        <div class="see-more mt-4 text-center">
+          <a href="/jobs">
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+              More Jobs
+            </button>
+          </a>
+        </div>
+      `;
              })
              .catch(error => {
                console.error('Error fetching job previews:', error);
              });
          }
+
 
 
          function fetchCommunityJobPreviews(communityId) {

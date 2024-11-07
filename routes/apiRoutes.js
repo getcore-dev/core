@@ -1246,35 +1246,6 @@ router.post("/job-postings", checkAuthenticated, async (req, res) => {
       employmentType,
       sourcePostingDate,
     } = req.body;
-    //console.log(req.body);
-
-    console.log({
-      title,
-      company,
-      location,
-      salary,
-      salary_max,
-      experienceLevel,
-      skills,
-      tags,
-      description,
-      link,
-      benefits,
-      additional_information,
-      preferredQualifications,
-      minimumQualifications,
-      responsibilities,
-      requirements,
-      niceToHave,
-      schedule,
-      hoursPerWeek,
-      h1bVisaSponsorship,
-      isRemote,
-      equalOpportunityEmployerInfo,
-      relocation,
-      employmentType,
-      sourcePostingDate,
-    });
 
     let companyObject = await jobQueries.getCompanyIdByName(company);
     let companyId = companyObject ? companyObject.id : null;

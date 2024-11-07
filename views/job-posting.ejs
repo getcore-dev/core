@@ -308,7 +308,7 @@
                   </div>
                   <% } %>
                   <% if (user && user.isPremium) { %>
-                  <div class="adaptive-border rounded flex justify-between items-center py-2 px-4">
+                  <div class="adaptive-border mb-4 rounded flex justify-between items-center py-2 px-4">
                     <div class="text-sm flex items-center">
                       <span class='please-wait-button'>Generate a match overview for this job posting!</span>
                     </div>
@@ -701,9 +701,7 @@
       }
 
       const companyProfileButtons = document.querySelectorAll('.company-navbar-button');
-      console.log(companyProfileButtons);
       const companyProfileSections = document.querySelectorAll('.company-profile-section');
-      console.log(companyProfileSections);
 
       companyProfileButtons.forEach(button => {
         button.addEventListener('click', () => {

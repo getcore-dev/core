@@ -49,7 +49,6 @@
   </main>
   <script>
     function displayPullRequestInfo(prData) {
-      console.log(prData);
       let prInfoContent = `
     <div class="pr-info">
       <p><strong> ${prData.pr_title}</strong></p>
@@ -117,8 +116,6 @@
           Promise.all([updateResponse.json(), prResponse.json()])
         )
         .then(([updateData, prData]) => {
-          //console.log('Received update data:', updateData);
-          //console.log('Received PR data:', prData);
 
           const updatePostHeader = document.querySelector('.update-post-header-text');
           const updatePostTitle = document.querySelector('.update-post-title');

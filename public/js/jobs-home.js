@@ -186,7 +186,6 @@ function createCardSquare(
   image = null,
   tags = null,
 ) {
-  console.log(tags);
   const card = document.createElement("div");
 
   let tagsHtml = "";
@@ -222,8 +221,10 @@ function createCardSquare(
         </div>
         <div class="ml-auto text-xs text-foreground">${timestamp}</div>
       </div>
-      <div class="text-base font-medium text-balance max-w-lg leading-relaxed">${title}</div>
+            <div class="text-base font-medium text-balance max-w-lg leading-relaxed">
+            <a href="${link}" class="hover:text-accent">${title}</a>
     </div>
+        </div>
     <div class="flex items-center gap-2 wrap">
       ${tagsHtml}
     </div>
@@ -244,7 +245,6 @@ function createCardLink(
   image = null,
   tags = null,
 ) {
-  console.log(tags);
   const card = document.createElement("div");
 
   let tagsHtml = "";
@@ -300,7 +300,6 @@ function createCard(
   image = null,
   tags = null,
 ) {
-  console.log(`name: ${name}, timestamp: ${timestamp}, title: ${title}, experienceLevel: ${experienceLevel}, location: ${location}, clickable: ${clickable}, link: ${link}, image: ${image}, tags: ${tags}`);
   const card = document.createElement("div");
 
   let tagsHtml = "";
@@ -327,7 +326,7 @@ function createCard(
       <div class="flex flex-col gap-1">
         <div class="text-md font-semibold">${name}</div>
             <div class="text-base font-medium text-balance max-w-lg leading-relaxed">
-      ${title}
+            <a href="${link}" class="hover:text-accent">${title}</a>
     </div>
     ${experienceLevel ? `<div class="text-xs text-foreground flex flex-row gap-06 v-center">${experienceLevel}</div>` : ""}
       </div>
@@ -438,8 +437,6 @@ function debounce(func, wait) {
 searchInput.addEventListener(
   "input",
   debounce(function (event) {
-    console.log("searching");
-    console.log(event.target.value);
     const query = event.target.value.trim();
     if (query.length > 2) {
       searchJobs(query);
@@ -517,7 +514,6 @@ function loadJobSuggestions(page = 1) {
     </div>
   `;
   jobSuggestions.appendChild(loadingIndicator);
-  console.log('hello');
 
   fetch(`/api/job-suggestions?page=${page}&limit=${jobsPerPage}`)
     .then((response) => response.json())
