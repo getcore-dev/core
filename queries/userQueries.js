@@ -59,11 +59,31 @@ const userQueries = {
     }
   },
 
+  findPasswordByEmail: async (email) => {
+    try {
+      const result = await sql.query`SELECT password FROM users WHERE email = ${email}`;
+      return result.recordset[0].password;
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
+  findUserByEmail: async (email) => {
+    try {
+      const result = await sql.query`SELECT id, email, username, github_url, created_at, isAdmin, bio, verified FROM users WHERE email = ${email}`;
+      return result.recordset[0];
+    } catch (err) {
+      console.error('Database query error:', err);
+      throw err;
+    }
+  },
+
   getUnverifiedUsers: async () => {
     // find users where verifiedAccount is null or false and verification_token is not null
     try {
       const result = await sql.query`
-        SELECT username, id, email, created_at, lastLogin FROM users WHERE verified = 0 AND verification_token IS NOT NULL`;
+        SELECT username, id, created_at, lastLogin FROM users WHERE verified = 0 AND verification_token IS NOT NULL`;
       return result.recordset;
     } catch (err) {
       console.error('Database query error:', err);

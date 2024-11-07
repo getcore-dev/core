@@ -120,11 +120,27 @@ function initialize(
     )
   );
 
-  passport.serializeUser((user, done) => done(null, user.id));
+  passport.serializeUser((user, done) => {
+    // Only serialize necessary fields
+    const { id, email, username, github_url, verified, avatar, firstname, lastname, recruiter_id, leetcode_url, linkedin_url, profile_border_color, bio, isAdmin, link, link2, isRecruiter, settings_PrivateJobNames, settings_PrivateSchoolNames, verifiedAccount, lastLogin, jobPreferredTitle, jobExperienceLevel, jobPreferredSalary, jobPreferredIndustry, jobPreferredLocation, githubCommitData, githubCommitDataLastUpdated, changed_username, desired_job_title, employment_type, desired_location, willing_to_relocate, desired_salary_min, desired_salary_max, availability_date, skills, languages, certifications, preferred_industries, preferred_companies, phone_number, professionalSummary, soft_skills, technical_skills, other_skills, isPremium, twitter } = user; // Do not include password
+    done(null, { id, email, username, github_url, verified, avatar, firstname, lastname, recruiter_id, leetcode_url, linkedin_url, profile_border_color, bio, isAdmin, link, link2, isRecruiter, settings_PrivateJobNames, settings_PrivateSchoolNames, verifiedAccount, lastLogin, jobPreferredTitle, jobExperienceLevel, jobPreferredSalary, jobPreferredIndustry, jobPreferredLocation, githubCommitData, githubCommitDataLastUpdated, changed_username, desired_job_title, employment_type, desired_location, willing_to_relocate, desired_salary_min, desired_salary_max, availability_date, skills, languages, certifications, preferred_industries, preferred_companies, phone_number, professionalSummary, soft_skills, technical_skills, other_skills, isPremium, twitter });
+  });
 
+  
   passport.deserializeUser(async (id, done) => {
     try {
       const user = await getUserById(id);
+      if (!user) {
+        return done(null, false);
+      }
+      if (user) {
+        delete user.password;
+        delete user.githubAccessToken;
+        delete user.phone_number;
+        delete user.twitter;
+        delete user.reset_password_token;
+      }
+
       done(null, user);
     } catch (e) {
       console.error('Error in deserialization:', e);

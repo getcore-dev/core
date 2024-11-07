@@ -262,7 +262,7 @@ function createCardLink(
   }
 
   const cardContent = `
-  <div class="flex flex-col items-start gap-2 rounded-lg text-left text-sm transition-all hover:bg-accent " ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
+  <div class="flex flex-col gap-2 p-2 hover:bg-muted rounded-md" ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
     <div class="flex w-full flex-col gap-0">
       <div class="flex flex-row gap-2">
         <div class="flex items-center gap-0">
