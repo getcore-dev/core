@@ -1,4 +1,3 @@
-        const GoogleCrawler = require("../services/googleCrawlService");
 const sanitizeHtml = require("sanitize-html"); // Import the sanitization library
 const { GoogleGenerativeAI, SchemaType } = require("@google/generative-ai");
 const OpenAI = require("openai");
@@ -4722,18 +4721,6 @@ class JobProcessor extends EventEmitter {
   async start() {
     try {
       await this.init();
-      try {
-        const crawler = new GoogleCrawler({
-          maxPages: 50,
-          headless: "new",  
-          delayBetweenRequests: 2000
-        });
-        crawler.crawlQueue('site:myworkdayjobs.com "jobs found"', this.addToJobLinkQueue)
-        .then(links => console.log('Found links:', links))
-        .catch(error => console.error('Error:', error));
-      } catch (error) {
-        console.error("Error in crawlGoogle:", error);
-      }
 /*
       try {
         await this.updateJobPostings();

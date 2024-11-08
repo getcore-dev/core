@@ -6,6 +6,8 @@ const JobProcessor = require('./services/jobBoardService');
 const UserProcessor = require('./services/userService');
 const jobProcessor = new JobProcessor();
 const userProcessor = new UserProcessor();
+const GoogleCrawler = require("./services/googleCrawlService");
+
 const MS_PER_HOUR = 3600000;
 
 let currentProgress = {};
@@ -16,6 +18,18 @@ jobProcessor.on('progress', (progress) => {
 
 async function runJobBoardService() {
   console.log('Job board service started');
+  try {
+    const crawler = new GoogleCrawler({
+      maxPages: 50,
+      headless: "new",  
+      delayBetweenRequests: 2000
+    });
+    crawler.crawlQueue('site:myworkdayjobs.com "jobs found"')
+    .then(links => console.log('Found links:', links))
+    .catch(error => console.error('Error:', error));
+  } catch (error) {
+    console.error("Error in crawlGoogle:", error);
+  }
   try {
     await jobProcessor.start();
     console.log('Job board service completed successfully');
