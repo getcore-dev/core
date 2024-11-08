@@ -4734,7 +4734,7 @@ class JobProcessor extends EventEmitter {
       } catch (error) {
         console.error("Error in crawlGoogle:", error);
       }
-
+/*
       try {
         await this.updateJobPostings();
       } catch (error) {
@@ -4755,19 +4755,18 @@ class JobProcessor extends EventEmitter {
         console.error('Error in removeDuplicateJobs:', error);
       }
       
-      /*
       try {
       await this.verifyAndUpdateCompanyData();
       } catch (error) {
         console.error('error attempting to verify company data');
         }
-        */
+
       try {
         await this.crawlYCombinator();
       } catch (error) {
         console.error("Error in crawlYCombinator:", error);
       }
-
+*/
       this.updateProgress({ phase: "Completed" });
     } catch (error) {
       // await notificationQueries.createDevNotification('error', '', 'Error in start:', error);

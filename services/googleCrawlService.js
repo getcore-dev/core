@@ -1,9 +1,18 @@
 const puppeteer = require('puppeteer-core');
 const jobProcessor = require('./jobBoardService');
 const BROWSER_CONFIG = {
-    headless: true,
+    headless: false,
     executablePath: process.env.CHROME_BIN || '/home/site/wwwroot/chrome-linux/chrome/google-chrome',
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    args: ['--disable-setuid-sandbox',
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--disable-gpu',
+        '--window-size=1920x1080',
+        '--disable-notifications',
+        '--disable-geolocation',
+    ],
   };
 class GoogleCrawler {
   constructor(options = {}) {
@@ -18,11 +27,7 @@ class GoogleCrawler {
 
   async initialize() {
     try {
-      this.browser = await puppeteer.launch({
-        headless: BROWSER_CONFIG.headless,
-        args: BROWSER_CONFIG.args,
-        executablePath: BROWSER_CONFIG.executablePath
-      });
+      this.browser = await puppeteer.launch(BROWSER_CONFIG);
 
       this.page = await this.browser.newPage();
       
