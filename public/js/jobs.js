@@ -820,11 +820,14 @@ async function fetchJobPostings() {
   }
   setupInfiniteScroll();
 }
+
 function extractSalaryFromDescription(description) {
   const salaryPatterns = [
-    /\$([0-9,]+(?:\.[0-9]{2})?)\s?[-—]\s?\$?([0-9,]+(?:\.[0-9]{2})?)?\s?(USD)?\s?(\/mo|\/hr|\s*hour|\s*month)?/gi,  // Match salary ranges like "$190,800 - $267,100", "$10,000 - 11,000 /mo", "$45 /hr"
-    /USD\s([0-9,]+)\s?[-—]\s?USD\s([0-9,]+)/gi,  // Match salary ranges like "USD 59,000 - USD 114,000"
-    /\$([0-9,]+(?:\.[0-9]{2})?)\s?(USD)?\s?(\/mo|\/hr|\s*hour|\s*month)?/gi // Match individual salaries like "$45 /hr", "$45.00", etc.
+    /\$([0-9,]+(?:\.[0-9]{2})?)\s?[-—]\s?\$([0-9,]+(?:\.[0-9]{2})?)/gi,  // Match salary ranges like "$144,000 - $203,500" or "$120,000.00 - $178,000.00"
+    /CAD?\s?\$([0-9,]+(?:\.[0-9]{2})?)\s?[-—]\s?CAD?\s?\$([0-9,]+(?:\.[0-9]{2})?)/gi,  // Match salary ranges like "CAD $108,100 - $199,700"
+    /USD\s?\$([0-9,]+(?:\.[0-9]{2})?)\s?[-—]\s?\$([0-9,]+(?:\.[0-9]{2})?)\s?(per year|per month|per hour)?/gi,  // Match salary ranges like "USD $106,100 - $185,400 per year"
+    /\$([0-9,]+(?:\.[0-9]{2})?)\s?(USD)?\s?(\/mo|\/hr|\s*hour|\s*month)?/gi, // Match individual salaries like "$45 /hr", "$45.00", etc.
+    /CA\$([0-9,]+(?:[KMB])?)\s?[-—]\s?CA\$([0-9,]+(?:[KMB])?)/gi  // Match salary ranges like "CA$125K - CA$160K"
   ];
 
   const matches = [];
@@ -834,9 +837,9 @@ function extractSalaryFromDescription(description) {
     while ((match = pattern.exec(description)) !== null) {
       matches.push({
         value: match[0],
-        min: match[1] ? parseFloat(match[1].replace(/,/g, "")) : null,
-        max: match[2] ? parseFloat(match[2].replace(/,/g, "")) : null,
-        period: match[4] ? match[4].trim() : null,
+        min: match[1] ? parseFloat(match[1].replace(/,/g, "")) * (match[1].includes('K') ? 1000 : match[1].includes('M') ? 1000000 : 1) : null,
+        max: match[2] ? parseFloat(match[2].replace(/,/g, "")) * (match[2].includes('K') ? 1000 : match[2].includes('M') ? 1000000 : 1) : null,
+        period: match[3] ? match[3].trim() : null,
       });
     }
   });
@@ -854,6 +857,8 @@ function renderJobPostings(jobs) {
       const now = new Date();
       const diffTime = Math.abs(now - postedDate);
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const salaries = extractSalaryFromDescription(job.description + ' ' + job.MinimumQualifications + ' ' + job.PreferredQualifications);
+
       // new tag
       if (diffDays <= 2 && !viewedJobs.includes(job.id)) {
         tags.push({ text: "New", class: "new", icon:'<span class="flex h-2 w-2 rounded-full bg-blue-600"></span>' });
@@ -868,16 +873,22 @@ function renderJobPostings(jobs) {
         });
       }
 
-      const salaries = extractSalaryFromDescription(job.description);
-      
       // salary tag
-      if (job.salary || salaries.length > 0) {
-        const salaryText = job.salary ? `$${job.salary}` : salaries[0].value.startsWith('$') ? salaries[0].value : `$${salaries[0].value}`;
+      if (job.salary) {
+        const salaryText = job.salary;
         tags.push({
           text: salaryText,
           class: "salary",
           icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>',
         });
+      } else {
+        if (salaries.length !== 0) {
+        tags.push({
+          text: salaries[0].value,
+          class: "salary",
+          icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>',
+        });
+      }
       }
 
 
@@ -1202,19 +1213,19 @@ function createCard(
   </span>
   <div class="flex flex-col w-full gap-1">
     <div class="flex items-center">
-      <div class="flex flex-col gap-1">
+      <div class="flex flex-col gap-0">
         <div class="text-md font-semibold">${name}</div>
             <div class="text-base font-medium text-balance max-w-lg leading-relaxed">
             <a href="${link}" class="hover:text-accent">${title}</a>
+                <div class="text-sm text-muted-foreground">
+                ${experienceLevel ? `${experienceLevel} • ` : ""}${location.replace(';','')}
+
     </div>
-    ${experienceLevel ? `<div class="text-xs text-foreground flex flex-row gap-06 v-center">${experienceLevel}</div>` : ""}
+    </div>
       </div>
 <div class="ml-auto text-xs text-foreground gap-06 v-center whitespace-nowrap">${timestamp}</div>
     </div>
 
-    <div class="text-sm text-muted-foreground">
-      ${location}
-    </div>
     <div class="flex items-center gap-2 wrap">
       ${tagsHtml}
     </div>

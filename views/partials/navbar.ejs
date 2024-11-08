@@ -77,23 +77,82 @@
               <input class="flex h-7 w-full bg-muted/40 rounded-lg border border-input px-3 py-2 text-sm text-foreground shadow-sm shadow-black/[.04] ring-offset-background transition-shadow transition-width duration-300 placeholder:text-muted-foreground/70 focus-visible:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none [&::-webkit-search-results-button]:appearance-none [&::-webkit-search-results-decoration]:appearance-none pe-11" type="text" name="searchTerm" id="search-bar" placeholder="Search..." autocomplete="off" style="font-size: 16px;" />
             </form>
           </li>
-
-          <% if (!user) { %>
-          <li class="navigation-avatar">
-            <div class="nav-avatar">
-              <a href="/login">
-                <button class="flex flex-row justify-between v-center w-full bg-primary text-background text-sm py-2 h-7 px-4 rounded-md text-center hover:bg-accent hover:text-accent-foreground">
-                  Sign in
-                </button>
-              </a>
-            </div>
-          </li>
-
-          <% } %>
         </ul>
       </div>
-      <div class="hamburger-menu h-100 flex h-center pr-4">
+      <% if (!user) { %>
+      <div class="profile-button h-100 flex h-center" onclick="window.location.href='/login'">
+        <div class="menu-wrapper">
+          <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <% } else { %>
+      <div class="hidden-mobile-button h-100 flex h-center" onclick="window.location.href='/settings'">
+        <div class="menu-wrapper">
+          <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user">
+              <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"></path>
+              <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"></path>
+              <path d="M12 2v2"></path>
+              <path d="M12 22v-2"></path>
+              <path d="m17 20.66-1-1.73"></path>
+              <path d="M11 10.27 7 3.34"></path>
+              <path d="m20.66 17-1.73-1"></path>
+              <path d="m3.34 7 1.73 1"></path>
+              <path d="M14 12h8"></path>
+              <path d="M2 12h2"></path>
+              <path d="m20.66 7-1.73 1"></path>
+              <path d="m3.34 17 1.73-1"></path>
+              <path d="m17 3.34-1 1.73"></path>
+              <path d="m11 13.73-4 6.93"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
 
+      <div class="hidden-mobile-button h-100 flex h-center" onclick="window.location.href='/notifications'">
+        <div class="menu-wrapper">
+          <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="hidden-mobile-button h-100 flex h-center" onclick="window.location.href='/saved'">
+        <div class="menu-wrapper">
+          <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user">
+              <path d="M10 2v8l3-3 3 3V2"></path>
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="hidden-mobile-button h-100 flex h-center" onclick="window.location.href='/feedback'">
+        <div class="menu-wrapper">
+          <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user">
+              <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
+              <path d="M15.8 9.2a2.5 2.5 0 0 0-3.5 0l-.3.4-.35-.3a2.42 2.42 0 1 0-3.2 3.6l3.6 3.5 3.6-3.5c1.2-1.2 1.1-2.7.2-3.7"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="profile-button h-100 flex h-center" onclick="window.location.href='/user/<%= user.username %>'">
+        <div class="menu-wrapper w-8">
+          <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground">
+            <img src="<%= user.avatar %>" alt="Profile Picture" class="rounded-full h-8 w-8 aspect-square" />
+          </button>
+        </div>
+      </div>
+      <% } %>
+      <div class="hamburger-menu h-100 flex h-center pr-4">
         <div class="menu-wrapper">
           <button id="menu-button" class="menu-button inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-panel-right">
@@ -105,20 +164,6 @@
         <button id="expandSearch" class="search-button">
         </button>
         <div class="menu-content bg-sidebar border-left-sidebar" id="menu-content">
-          <% if (user) { %>
-
-          <div class="flex flex-col w-100 border rounded-md" onclick="window.location.href='/user/<%= user.username %>'">
-            <div class="flex flex-col">
-              <div class="flex flex-row v-center w-100 gap-06 rounded-md text-card-foreground hover:bg-accent px-3 py-2">
-                <img src="<%= user.avatar %>" alt="Avatar" class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <div class="grid flex-1 text-left text-sm leading-tight">
-                  <p class="truncate font-semibold"><%= user.firstname %> <%= user.lastname %></p>
-                  <p class="truncate text-xs"><%= user.username %></p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <% } %>
           <% if (user) { %>
 
           <div class="flex w-full min-w-0 flex-col gap-1 mt-3">
@@ -1227,11 +1272,7 @@
       locations.push(formatSingleLocation(city, state, country));
     }
 
-    if (states.size > 1 || countries.size > 1) {
-      return 'Multiple Locations';
-    }
-
-    return locations.join('; ');
+    return locations.join(' | ');
   }
 
   function formatSalary(salary) {

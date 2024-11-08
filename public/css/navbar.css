@@ -492,9 +492,9 @@ ul li {
   gap: .25rem;
 }
 
-
 .hamburger-menu {
   opacity: 0;
+  display: none !important;
   pointer-events: none;
   display: none;
 }
@@ -1707,6 +1707,10 @@ a>.menu-item {
     display: flex;
   }
 
+  .hidden-mobile-button {
+    display: none !important;
+  }
+
   .user-links.slide-left #search-toggle-button {
     display: none;
   }
@@ -1725,6 +1729,7 @@ a>.menu-item {
 
 
   .hamburger-menu {
+    display: flex !important;
     right: 18px;
     top: 0;
     z-index: 100;

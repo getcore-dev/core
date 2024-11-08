@@ -1189,6 +1189,8 @@ const jobQueries = {
           j.applicants,
           j.description,
           j.salary_max,
+          j.MinimumQualifications,
+          j.PreferredQualifications,
           j.skills_string,
           j.experienceLevel AS cleaned_experience_level,
           c.logo AS company_logo,

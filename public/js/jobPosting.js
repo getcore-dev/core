@@ -907,7 +907,7 @@ function createCard(
   </span>
   <div class="flex flex-col w-full gap-1">
     <div class="flex items-center">
-      <div class="flex flex-col gap-1">
+      <div class="flex flex-col gap-0">
         <div class="text-md font-semibold">${name}</div>
             <div class="text-base font-medium text-balance max-w-lg leading-relaxed">
             <a href="${link}" class="hover:text-accent">${title}</a>
