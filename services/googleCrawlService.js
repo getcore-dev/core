@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer-core');
 const jobProcessor = require('./jobBoardService');
 const BROWSER_CONFIG = {
-    headless: false,
+    headless: true,
     executablePath: process.env.CHROME_BIN || '/home/site/wwwroot/chrome-linux/chrome/google-chrome',
     args: ['--disable-setuid-sandbox',
         '--no-sandbox',

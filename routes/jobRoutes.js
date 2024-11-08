@@ -575,15 +575,16 @@ router.get('/:jobId', viewLimiter, async (req, res) => {
 
     let job = await jobQueries.findById(jobId);
 
-    if (job.description) {
-        job.description = marked.parse(job.description);
+    if (job.description && typeof job.description === 'string' && job.description.length > 0) {
+      job.description = marked.parse(job.description);
     }
-    if (job.raw_description_no_format) {
-        job.raw_description_no_format = marked.parse(job.raw_description_no_format);
+    if (job.raw_description_no_format && typeof job.raw_description_no_format === 'string' && job.raw_description_no_format.length > 0) {
+      job.raw_description_no_format = marked.parse(job.raw_description_no_format);
     }
 
     if (!job) {
       console.log(`No job found with ID: ${jobId}`);
+      req.flash('error', 'Job not found');
       return res.redirect('/jobs');
     }
 
@@ -602,7 +603,8 @@ router.get('/:jobId', viewLimiter, async (req, res) => {
       `Error fetching job posting with ID ${req.params.jobId}:`,
       err
     );
-    res.status(500).send('Error fetching job posting');
+    req.flash('error', 'Error fetching job posting');
+    res.redirect('/jobs');
   }
 });
 
