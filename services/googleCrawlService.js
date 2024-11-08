@@ -198,9 +198,9 @@ class GoogleCrawler {
     const startTime = Date.now();
 
     try {
-      // Navigate to Google
+      // Navigate to Google with extended timeout
       const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
-      await this.page.goto(searchUrl, { waitUntil: 'networkidle0' });
+      await this.page.goto(searchUrl, { waitUntil: 'networkidle0', timeout: 60000 }); // Increased timeout
       
       // Check for initial CAPTCHA
       await this.handleCaptcha();
@@ -208,8 +208,8 @@ class GoogleCrawler {
       while (pageCount < this.maxPages) {
         console.log(`Crawling page ${pageCount + 1}`);
 
-        // Wait for results to load
-        await this.page.waitForSelector('div.g', { timeout: 5000 })
+        // Wait for results to load with extended timeout
+        await this.page.waitForSelector('div.g', { timeout: 10000 }) // Increased timeout
           .catch(() => console.warn('Warning: Search results selector not found'));
 
         // Extract links from current page
@@ -230,7 +230,22 @@ class GoogleCrawler {
         // Click next with random delay
         await this.randomDelay();
         await nextButton.click();
-        await this.page.waitForNavigation({ waitUntil: 'networkidle0' });
+        
+        let navigationSuccess = false;
+        for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
+          try {
+            await this.page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 }); // Increased timeout
+            navigationSuccess = true;
+            break;
+          } catch (error) {
+            console.error(`Navigation attempt ${attempt} failed:`, error);
+            if (attempt === this.maxRetries) throw error;
+          }
+        }
+
+        if (!navigationSuccess) {
+          break;
+        }
         
         // Check for CAPTCHA after navigation
         const captchaFound = await this.handleCaptcha();

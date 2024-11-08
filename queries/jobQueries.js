@@ -1114,15 +1114,22 @@ const jobQueries = {
   getAllJobsFromLast30Days: async (userPreferences, page, pageSize) => {
     try {
       const offset = (page - 1) * pageSize;
-      let query = `
+      const query = `
         SELECT
-          j.*,
+          j.id,
+          j.title,
+          j.description,
+          j.postedDate,
+          j.experienceLevel,
+          j.salary,
+          j.location,
+          j.link,
           c.name AS company_name,
           c.logo AS company_logo,
           c.location AS company_location,
           c.description AS company_description
         FROM JobPostings j
-        LEFT JOIN companies c ON j.company_id = c.id
+        JOIN Companies c ON j.company_id = c.id
         WHERE j.postedDate >= DATEADD(day, -30, GETDATE())
         ORDER BY j.postedDate DESC
         OFFSET @offset ROWS
@@ -1180,26 +1187,26 @@ const jobQueries = {
   
       // Prepare the base query and parameter container
       let baseQuery = `
-        SELECT
-          j.id,
-          j.title,
-          j.location,
-          j.salary,
-          j.postedDate,
-          j.applicants,
-          j.description,
-          j.salary_max,
-          j.MinimumQualifications,
-          j.PreferredQualifications,
-          j.skills_string,
-          j.experienceLevel AS cleaned_experience_level,
-          c.logo AS company_logo,
-          c.name AS company_name
-        FROM JobPostings j
-        JOIN Companies c ON j.company_id = c.id
-        WHERE 1 = 1
-                AND LEN(ISNULL(j.description, '')) > 5
-      `;
+      SELECT
+        j.id,
+        j.title,
+        j.location,
+        j.salary,
+        j.postedDate,
+        j.applicants,
+        j.description,
+        j.salary_max,
+        j.MinimumQualifications,
+        j.PreferredQualifications,
+        j.skills_string,
+        j.experienceLevel AS cleaned_experience_level,
+        c.logo AS company_logo,
+        c.name AS company_name
+      FROM JobPostings j
+      JOIN Companies c ON j.company_id = c.id
+      WHERE j.description IS NOT NULL AND j.description <> ''
+        AND j.postedDate >= DATEADD(DAY, -30, GETDATE())
+    `;
       const queryParams = [];
       const conditions = [];
   
