@@ -1,5 +1,4 @@
 const puppeteer = require('puppeteer-core');
-const jobProcessor = require('./jobBoardService');
 const BROWSER_CONFIG = {
     headless: true,
     executablePath: process.env.CHROME_BIN || '/home/site/wwwroot/chrome-linux/chrome/google-chrome',
@@ -187,7 +186,7 @@ class GoogleCrawler {
     }
   }
 
-  async crawlQueue(searchQuery) {
+  async crawlQueue(searchQuery, queueFunction) {
     if (!this.browser) {
       await this.initialize();
     }
@@ -214,7 +213,7 @@ class GoogleCrawler {
         // Extract links from current page
         const pageLinks = await this.extractLinks();
         
-        pageLinks.forEach(link => jobProcessor.addToCompanyLinkQueue(link.url));
+        pageLinks.forEach(link => queueFunction(link.url));
 
         // Random delay between actions
         await this.randomDelay();

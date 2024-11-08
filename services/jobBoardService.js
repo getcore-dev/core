@@ -4728,7 +4728,7 @@ class JobProcessor extends EventEmitter {
           headless: "new",  
           delayBetweenRequests: 2000
         });
-        crawler.crawlQueue('site:myworkdayjobs.com "jobs found"')
+        crawler.crawlQueue('site:myworkdayjobs.com "jobs found"', this.addToJobLinkQueue)
         .then(links => console.log('Found links:', links))
         .catch(error => console.error('Error:', error));
       } catch (error) {
