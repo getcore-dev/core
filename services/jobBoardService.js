@@ -3215,6 +3215,7 @@ class JobProcessor extends EventEmitter {
         title: "h1.ashby-job-posting-heading",
         location: 'div._section_101oc_37:contains("Location") p',
         type: 'div._section_101oc_37:contains("Type") p',
+        image: 'div.ashby-job-posting-header img',
         department: 'div._section_101oc_37:contains("Department") p',
         compensation: 'div._section_101oc_37:contains("Compensation") div p',
         description: "#overview>div",
@@ -3246,6 +3247,7 @@ class JobProcessor extends EventEmitter {
       typeof rules.company.name === "function"
         ? rules.company.name(url)
         : rules.company.name;
+    const image = rules.selectors.image ? $(rules.selectors.image).attr('src') : '';
     const jobBoardUrl =
       typeof rules.company.jobBoardUrl === "function"
         ? rules.company.jobBoardUrl(company)
@@ -3259,7 +3261,7 @@ class JobProcessor extends EventEmitter {
       "",
       "",
       "",
-      "",
+      image,
       "",
     );
 

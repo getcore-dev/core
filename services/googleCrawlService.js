@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer-core');
-const jobProcessor = require('./jobBoardService');
+const jobBoardService = require('./jobBoardService');
 
 const BROWSER_CONFIG = {
     headless: true,
@@ -190,6 +190,8 @@ class GoogleCrawler {
   }
 
   async crawlQueue(searchQuery) {
+    const jobProcessor = new jobBoardService();
+
     if (!this.browser) {
       await this.initialize();
     }
@@ -216,7 +218,7 @@ class GoogleCrawler {
         // Extract links from current page
         const pageLinks = await this.extractLinks();
         
-        pageLinks.forEach(link => queueFunction(link.url));
+        pageLinks.forEach(link => jobProcessor.addToCompanyLinkQueue(link.url));
 
         // Random delay between actions
         await this.randomDelay();
