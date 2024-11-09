@@ -2667,8 +2667,7 @@ class JobProcessor extends EventEmitter {
         company_name: company,
         location,
         description: descriptionMarkdown,
-        url: jobPostingInfo.externalUrl || url,
-        raw_json: data,
+        url: jobPostingInfo.externalUrl || url
       };
 
       return jobData;
@@ -4402,7 +4401,6 @@ class JobProcessor extends EventEmitter {
       jobData.Relocation,
       jobData.employmentType,
       jobData.sourcePostingDate,
-      jobData.raw_json,
     ];
 
     const sanitizeField = (field) => {
@@ -4448,8 +4446,7 @@ class JobProcessor extends EventEmitter {
       jobData.Relocation || 0,
       isProcessed,
       jobData.employmentType || "",
-      jobData.sourcePostingDate || "",
-      jobData.raw_json || "",
+      jobData.sourcePostingDate || ""
     );
 
     this.updateProgress({ processedJobs: this.progress.processedJobs + 1 });
