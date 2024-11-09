@@ -3073,7 +3073,6 @@ ORDER BY jp.postedDate DESC
     isProcessed = 0,
     employmentType = "Traditional",
     sourcePostingDate = "",
-    raw_json = "",
   ) => {
     try {
       
@@ -3169,8 +3168,7 @@ ORDER BY jp.postedDate DESC
     applicants,
     isProcessed,
     employmentType,
-    sourcePostingDate,
-    raw_json
+    sourcePostingDate
   )
   OUTPUT INSERTED.id INTO @InsertedJobPostings
   VALUES (
@@ -3201,8 +3199,7 @@ ORDER BY jp.postedDate DESC
     0,
     ${isProcessed},
     ${employmentType},
-    ${sourcePostingDate},
-    ${raw_json}
+    ${sourcePostingDate}
   );
 
   SELECT id FROM @InsertedJobPostings;
