@@ -56,6 +56,65 @@ function createCard(
   return card;
 }
 
+function createCardLink(
+  name,
+  timestamp,
+  title,
+  experienceLevel,
+  location,
+  clickable = false,
+  link = null,
+  image = null,
+  salary = null,
+  tags = null,
+) {
+  const card = document.createElement("div");
+
+  let tagsHtml = "";
+  if (tags) {
+    tagsHtml = tags
+      .map(
+        (tag) => `
+      <div class="${tag.class} inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground flex flex-row gap-2">
+      ${tag.icon ? tag.icon : ""}
+        ${tag.text}
+      </div>
+    `,
+      )
+      .join("");
+  }
+
+  const cardContent = `
+  <div class="flex flex-col gap-2 p-2 hover:bg-muted rounded-md" ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
+    <div class="flex w-full flex-col gap-0">
+      <div class="flex flex-row gap-2">
+        <div class="flex items-center gap-0">
+
+        ${
+          image
+            ? `
+                <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
+        <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.onerror=null; this.src='/img/glyph.png';" />
+        </span>
+        `
+            : "<span class='relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5'><img class='aspect-square h-full w-full' src='/img/glyph.png' /></span>"
+        }
+          <div class="text-sm">${name}</div>
+        </div>
+        <div class="ml-auto text-xs text-foreground">${timestamp}</div>
+      </div>
+      <div class="text-md font-semibold text-balance max-w-lg leading-relaxed">
+      <a href="${link}" class="hover:text-accent">${title}</a></div>
+      <div class="text-sm text-muted-foreground">${experienceLevel ? `${experienceLevel} • ` : ""}${location.replace(';','')} ${
+    salary ? `• ${salary}` : ""
+  }</div>
+    </div>
+  </div>
+      `;
+
+  card.innerHTML = cardContent;
+  return card;
+}
   function formatDateJob(dateString) {
     const date = new Date(dateString);
     const now = new Date();

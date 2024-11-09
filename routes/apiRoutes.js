@@ -683,6 +683,17 @@ router.get("/company/:name/comments", async (req, res) => {
   }
 });
 
+router.get("/company/:companyId/job-count", cacheMiddleware(600), async (req, res) => {
+  try {
+    const companyId = req.params.companyId;
+    const jobCount = await jobQueries.getJobCountByCompanyId(companyId);
+    res.json({ jobCount });
+  } catch (err) {
+    console.error("Error fetching job count by company ID:", err);
+    res.status(500).send("Error fetching job count by company ID");
+  }
+});
+
 router.get("/crawl-google", checkAuthenticated, async (req, res) => {
   try {
     const crawler = new GoogleCrawler({

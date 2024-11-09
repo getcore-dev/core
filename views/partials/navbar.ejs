@@ -80,7 +80,7 @@
         </ul>
       </div>
       <% if (!user) { %>
-      <div class="profile-button h-100 flex h-center" onclick="window.location.href='/login'">
+      <div class="profile-button h-100 flex h-center" id="navbar-menu-button" onclick="window.location.href='/login'">
         <div class="menu-wrapper">
           <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user">
@@ -91,7 +91,7 @@
         </div>
       </div>
       <% } else { %>
-      <div class="hidden-mobile-button h-100 flex h-center" onclick="window.location.href='/settings'">
+      <div class="hidden-mobile-button h-100 flex h-center" id="navbar-menu-button" onclick="window.location.href='/settings'">
         <div class="menu-wrapper">
           <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user">
@@ -146,24 +146,28 @@
       </div>
       <div class="profile-button h-100 flex h-center" onclick="window.location.href='/user/<%= user.username %>'">
         <div class="menu-wrapper w-7">
-          <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground">
-            <img src="<%= user.avatar %>" alt="Profile Picture" class="rounded-full h-7 w-7 aspect-square" />
-          </button>
+          <button class="inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/70 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 hover:text-accent-foreground h-auto p-0 hover:bg-transparent">
+            <img alt="Profile image" aria-hidden="true" loading="lazy" width="40" height="40" decoding="async" data-nimg="1" class="rounded-full" srcset="<%= user.avatar %>" style="color: transparent;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down ms-2 opacity-60" aria-hidden="true">
+              <path d="m6 9 6 6 6-6"></path>
+            </svg></button>
         </div>
       </div>
       <% } %>
       <div class="hamburger-menu h-100 flex h-center pr-4">
         <div class="menu-wrapper">
-          <button id="menu-button" class="menu-button inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-panel-right">
-              <rect width="18" height="18" x="3" y="3" rx="2" />
-              <path d="M15 3v18" />
-            </svg>
+          <button id="menu-button" class="inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/70 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 border border-input bg-background shadow-sm shadow-black/5 hover:bg-accent hover:text-accent-foreground h-9 w-9 group" aria-expanded="false" aria-label="Open menu"><svg class="pointer-events-none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-panel-right">
+                <path d="M4 12L20 12" class="origin-center -translate-y-[7px] transition-all duration-300 [transition-timing-function:cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-x-0 group-aria-expanded:translate-y-0 group-aria-expanded:rotate-[315deg]"></path>
+                <path d="M4 12H20" class="origin-center transition-all duration-300 [transition-timing-function:cubic-bezier(.5,.85,.25,1.8)] group-aria-expanded:rotate-45"></path>
+                <path d="M4 12H20" class="origin-center translate-y-[7px] transition-all duration-300 [transition-timing-function:cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-y-0 group-aria-expanded:rotate-[135deg]"></path>
+
+              </svg>
           </button>
         </div>
         <button id="expandSearch" class="search-button">
         </button>
-        <div class="menu-content bg-sidebar border-left-sidebar" id="menu-content">
+        <div class="menu-content bg-background border-left-sidebar" id="menu-content">
           <% if (user) { %>
 
           <div class="flex w-full min-w-0 flex-col gap-1 mt-3">
@@ -1571,11 +1575,8 @@
     var overlay = document.getElementById("search-overlay");
     var searchBackButton = document.getElementById("search-back-button");
     var menuButton = document.getElementById("menu-button");
-    var menuIcon = document.getElementById("menu-icon");
 
-
-
-    if (!content.contains(event.target) && event.target !== menuIcon && !menuButton.contains(event.target)) {
+    if (!content.contains(event.target) && event.target !== menuButton && !menuButton.contains(event.target)) {
       if (content.classList.contains("sidebar-open")) {
         content.classList.remove("sidebar-open");
         overlay.style.display = 'none';
@@ -1583,13 +1584,16 @@
           overlay.style.pointerEvents = 'none'; // Block clicks when the overlay is fully transparent
         }, 500);
         if (menuButton.classList.contains('active')) { // Check if menu is active then toggle
-          menuButton.classList.toggle('active');
+          toggleMenuButton(menuButton, false); // Update the button to inactive state
         }
         document.body.style.overflow = ""; // Re-enable scrolling
       }
     } else if (event.target === menuButton || menuButton.contains(event.target)) { // If clicking on the menuButton
+      var isOpening = !menuButton.classList.contains('active');
       menuButton.classList.toggle('active');
       content.classList.toggle("sidebar-open");
+      toggleMenuButton(menuButton, isOpening); // Update the button state accordingly
+
       if (content.classList.contains("sidebar-open")) {
         overlay.style.display = 'block';
         overlay.style.pointerEvents = 'auto'; // Enable clicks when the overlay is visible
@@ -1604,4 +1608,14 @@
     }
 
   });
+
+  function toggleMenuButton(button, isOpening) {
+    if (isOpening) {
+      button.setAttribute('aria-expanded', 'true');
+      button.setAttribute('aria-label', 'Close menu');
+    } else {
+      button.setAttribute('aria-expanded', 'false');
+      button.setAttribute('aria-label', 'Open menu');
+    }
+  }
 </script>

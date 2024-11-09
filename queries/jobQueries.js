@@ -1099,6 +1099,20 @@ const jobQueries = {
     }
   },
 
+  getJobCountByCompanyId: async (companyId) => {
+    try {
+      const result = await sql.query`
+        SELECT COUNT(*) as count
+        FROM JobPostings
+        WHERE company_id = ${companyId}
+      `;
+      return result.recordset[0].count;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   deleteJobsOlderThan2Months: async () => {
     try {
       await sql.query`
