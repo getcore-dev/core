@@ -117,7 +117,6 @@ class GoogleCrawler {
       console.warn('CAPTCHA detected! Waiting for manual intervention...');
       // Wait for navigation after CAPTCHA is solved
       
-      await this.page.waitForNavigation({ waitUntil: "networkidle0" }).catch(() => {});
       return true;
     }
     return false;
@@ -164,7 +163,6 @@ class GoogleCrawler {
         // Click next with random delay
         await this.randomDelay();
         await nextButton.click();
-        await this.page.waitForNavigation({ waitUntil: 'networkidle0' });
         
         // Check for CAPTCHA after navigation
         const captchaFound = await this.handleCaptcha();
@@ -237,7 +235,8 @@ class GoogleCrawler {
         let navigationSuccess = false;
         for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
           try {
-            await this.page.waitForNavigation({ waitUntil: 'networkidle0' }); // Increased timeout
+
+            await this.randomDelay();
             navigationSuccess = true;
             break;
           } catch (error) {
