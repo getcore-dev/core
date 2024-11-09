@@ -825,9 +825,10 @@ function extractSalaryFromDescription(description) {
   const salaryPatterns = [
     /\$([0-9,]+(?:\.[0-9]{2})?)\s?[-—]\s?\$([0-9,]+(?:\.[0-9]{2})?)/gi,  // Match salary ranges like "$144,000 - $203,500" or "$120,000.00 - $178,000.00"
     /CAD?\s?\$([0-9,]+(?:\.[0-9]{2})?)\s?[-—]\s?CAD?\s?\$([0-9,]+(?:\.[0-9]{2})?)/gi,  // Match salary ranges like "CAD $108,100 - $199,700"
-    /USD\s?\$([0-9,]+(?:\.[0-9]{2})?)\s?[-—]\s?\$([0-9,]+(?:\.[0-9]{2})?)\s?(per year|per month|per hour)?/gi,  // Match salary ranges like "USD $106,100 - $185,400 per year"
-    /\$([0-9,]+(?:\.[0-9]{2})?)\s?(USD)?\s?(\/mo|\/hr|\s*hour|\s*month)?/gi, // Match individual salaries like "$45 /hr", "$45.00", etc.
-    /CA\$([0-9,]+(?:[KMB])?)\s?[-—]\s?CA\$([0-9,]+(?:[KMB])?)/gi  // Match salary ranges like "CA$125K - CA$160K"
+    /USD?\s?\$?([0-9,]+(?:\.[0-9]{2})?)\s?[-—]\s?USD?\s?\$?([0-9,]+(?:\.[0-9]{2})?)\s?(per year|per month|per hour)?/gi,  // Match ranges with USD, e.g., "106,100 - 185,400 USD per year"
+    /\$?([0-9,]+)\s?(USD|CAD)?\s?[-—]\s?\$?([0-9,]+)\s?(USD|CAD)?/gi,  // Flexible range without strict "$" requirement, e.g., "148,000 - 276,000 USD"
+    /\$([0-9,]+(?:\.[0-9]{2})?)\s?(USD|CAD)?\s?(\/mo|\/hr|\s*hour|\s*month)?/gi,  // Match individual salaries like "$45 /hr", "$100,000 USD"
+    /(CA\$|USD)?([0-9,]+(?:[KMB])?)\s?[-—]\s?(CA\$|USD)?([0-9,]+(?:[KMB])?)/gi  // Match compact salary ranges like "CA$125K - CA$160K"
   ];
 
   const matches = [];
@@ -838,8 +839,8 @@ function extractSalaryFromDescription(description) {
       matches.push({
         value: match[0],
         min: match[1] ? parseFloat(match[1].replace(/,/g, "")) * (match[1].includes('K') ? 1000 : match[1].includes('M') ? 1000000 : 1) : null,
-        max: match[2] ? parseFloat(match[2].replace(/,/g, "")) * (match[2].includes('K') ? 1000 : match[2].includes('M') ? 1000000 : 1) : null,
-        period: match[3] ? match[3].trim() : null,
+        max: match[3] || match[2] ? parseFloat((match[3] || match[2]).replace(/,/g, "")) * ((match[3] || match[2]).includes('K') ? 1000 : (match[3] || match[2]).includes('M') ? 1000000 : 1) : null,
+        period: match[5] ? match[5].trim() : null,
       });
     }
   });
