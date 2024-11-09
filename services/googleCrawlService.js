@@ -116,7 +116,8 @@ class GoogleCrawler {
     if (isCaptchaPresent) {
       console.warn('CAPTCHA detected! Waiting for manual intervention...');
       // Wait for navigation after CAPTCHA is solved
-      await this.page.waitForNavigation({ timeout: 60000 }).catch(() => {});
+      
+      await this.page.waitForNavigation({ waitUntil: "networkidle0" }).catch(() => {});
       return true;
     }
     return false;
@@ -200,7 +201,7 @@ class GoogleCrawler {
     try {
       // Navigate to Google with extended timeout
       const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
-      await this.page.goto(searchUrl, { waitUntil: 'networkidle0', timeout: 60000 }); // Increased timeout
+      await this.page.goto(searchUrl, { waitUntil: "networkidle0" });
       
       // Check for initial CAPTCHA
       await this.handleCaptcha();
@@ -209,7 +210,7 @@ class GoogleCrawler {
         console.log(`Crawling page ${pageCount + 1}`);
 
         // Wait for results to load with extended timeout
-        await this.page.waitForSelector('div.g', { timeout: 10000 }) // Increased timeout
+        await this.page.waitForSelector('div.g', { waitUntil: "networkidle0" }) // Increased timeout
           .catch(() => console.warn('Warning: Search results selector not found'));
 
         // Extract links from current page
@@ -234,7 +235,7 @@ class GoogleCrawler {
         let navigationSuccess = false;
         for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
           try {
-            await this.page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 }); // Increased timeout
+            await this.page.waitForNavigation({ waitUntil: 'networkidle0' }); // Increased timeout
             navigationSuccess = true;
             break;
           } catch (error) {
