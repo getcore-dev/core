@@ -2817,13 +2817,9 @@ ORDER BY jp.postedDate DESC
     }
   },
 
-  // get jobs with similar tags/skills
   getSimilarJobs: async (jobId) => {
     try {
       const result = await sql.query(`
-        WITH OriginalJob AS (
-          SELECT id, title, location FROM JobPostings WHERE id = ${jobId}
-        )
         SELECT TOP 15
           jp.id,
           jp.title,
@@ -2840,13 +2836,13 @@ ORDER BY jp.postedDate DESC
           c.description AS company_description
         FROM JobPostings jp
         LEFT JOIN companies c ON jp.company_id = c.id
-        WHERE jp.id != (SELECT id FROM OriginalJob) 
-          AND (jp.location = (SELECT location FROM OriginalJob) OR jp.title LIKE '%' + (SELECT title FROM OriginalJob) + '%')
+        WHERE jp.id != ${jobId}
+          AND jp.experienceLevel = (SELECT experienceLevel FROM JobPostings WHERE id = ${jobId})
+          AND jp.title LIKE '%' + (SELECT title FROM JobPostings WHERE id = ${jobId}) + '%'
         ORDER BY jp.postedDate DESC
       `);
-
-      const jobs = result.recordset;
-      return jobs;
+  
+      return result.recordset;
     } catch (err) {
       console.error("Database query error:", err);
       throw err;

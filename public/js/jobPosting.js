@@ -157,7 +157,7 @@ async function getSimilarJobs(jobId) {
         icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
       });
 
-      const jobElement = createCard(
+      const jobElement = createCardLink(
         job.company_name,
         formatRelativeDate(job.postedDate),
         job.title,
@@ -166,6 +166,7 @@ async function getSimilarJobs(jobId) {
         true,
         `/jobs/${job.id}`,
         job.company_logo,
+        job.salary,
         tags,
       );
       similarJobsList.appendChild(jobElement);
@@ -269,6 +270,66 @@ function formatLocation(location) {
   return locations.join('; ');
 }
 
+function createCardLink(
+  name,
+  timestamp,
+  title,
+  experienceLevel,
+  location,
+  clickable = false,
+  link = null,
+  image = null,
+  salary = null,
+  tags = null,
+) {
+  const card = document.createElement("div");
+
+  let tagsHtml = "";
+  if (tags) {
+    tagsHtml = tags
+      .map(
+        (tag) => `
+      <div class="${tag.class} inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground flex flex-row gap-2">
+      ${tag.icon ? tag.icon : ""}
+        ${tag.text}
+      </div>
+    `,
+      )
+      .join("");
+  }
+
+  const cardContent = `
+  <div class="flex flex-col gap-2 p-2 hover:bg-muted rounded-md" ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
+    <div class="flex w-full flex-col gap-0">
+      <div class="flex flex-row gap-2">
+        <div class="flex items-center gap-0">
+
+        ${
+          image
+            ? `
+                <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
+        <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.onerror=null; this.src='/img/glyph.png';" />
+        </span>
+        `
+            : "<span class='relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5'><img class='aspect-square h-full w-full' src='/img/glyph.png' /></span>"
+        }
+          <div class="text-sm">${name}</div>
+        </div>
+        <div class="ml-auto text-xs text-foreground">${timestamp}</div>
+      </div>
+      <div class="text-md font-semibold text-balance max-w-lg leading-relaxed">
+      <a href="${link}" class="hover:text-accent">${title}</a></div>
+      <div class="text-sm text-muted-foreground">${experienceLevel ? `${experienceLevel} • ` : ""}${location.replace(';','')} ${
+    salary ? `• ${salary}` : ""
+  }</div>
+    </div>
+  </div>
+      `;
+
+  card.innerHTML = cardContent;
+  return card;
+}
+
 function createJobElement(job) {
   const postedDate = new Date(job.postedDate.replace(" ", "T"));
       const now = new Date();
@@ -315,7 +376,7 @@ function createJobElement(job) {
         icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
       });
 
-  const jobElement = createCard(
+  const jobElement = createCardLink(
     job.company_name,
     formatRelativeDate(job.postedDate),
     job.title,
@@ -324,6 +385,7 @@ function createJobElement(job) {
     true,
     `/jobs/${job.id}`,
     job.company_logo,
+    job.salary,
     tags,
   );
   return jobElement;
@@ -342,7 +404,7 @@ async function getSimilarJobsByCompany(jobId) {
 
     similarJobsContainer.innerHTML = `<h4 class="secondary-text">More at ${jobs.companyName}</h4>`;
     const similarJobsList = document.createElement('div');
-    similarJobsList.className = 'flex flex-col gap-2 pl-2';
+    similarJobsList.className = 'flex flex-col gap-2 px-2';
 
     jobs.similarJobs.forEach((job) => {
       const jobElement = createJobElement(job);
@@ -861,10 +923,17 @@ function processJobPosting(jobId) {
   fetch(`/jobs/process/${jobId}`)
     .then((response) => response.json())
     .then((data) => {
-      // change please wait button to say 'done processing click here to reload'
-      const pleaseWaitButton = document.querySelector('.please-wait-button');
-      pleaseWaitButton.innerHTML = '<span class="sub-text">Done processing! Click here to reload</span>';
-      pleaseWaitButton.onclick = () => {
+      const processJobButton = document.getElementById('processJobButton');
+      const generateInsightsText = document.getElementById('generate-insights-text');
+      
+      generateInsightsText.innerHTML = 'Done processing! Click to reload';
+      processJobButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-refresh-cw opacity-60" aria-hidden="true">
+          <path d="M23 4v6h-6"></path>
+          <path d="M1 20v-6h6"></path>
+          <path d="M3.51 9a9 9 0 1 1-.44 5h-2"></path>
+        </svg>`;
+      processJobButton.onclick = () => {
         window.location.reload();
       };
     })
