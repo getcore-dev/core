@@ -366,6 +366,7 @@
                     <% } %>
                   </div>
                   <% } %>
+                  <!--
                   <% if (!job.isProcessed && user && user.isPremium) { %>
                   <div class="adaptive-border rounded">
                     <div class="text-sm p-4 flex items-center">
@@ -374,6 +375,7 @@
                     </div>
                   </div>
                   <% } %>
+                  -->
                   <!--
                   <% if (user && user.isPremium) { %>
                   <div class="adaptive-border mb-4 rounded flex justify-between items-center py-2 px-4">
@@ -406,6 +408,69 @@
               </div>
             </div>
             <div class="flex flex-col gap-06">
+              <% if (user.isPremium && !job.isProcessed) { %>
+
+              <div class="max-w-md bg-background border rounded-lg overflow-hidden">
+                <div class="px-4 py-2 flex flex-col">
+                  <div class="flex flex-row v-center">
+                    <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path>
+                    </svg>
+                    <p class="text-sm font-semibold">Generate Insights</p>
+                    <button onclick="processJobPosting(<%= job.id %>)" class="ml-auto inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/70 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 border border-input bg-background shadow-sm shadow-black/5 hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles opacity-60" aria-hidden="true">
+                        <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path>
+                        <path d="M20 3v4"></path>
+                        <path d="M22 5h-4"></path>
+                        <path d="M4 17v2"></path>
+                        <path d="M5 18H3"></path>
+                      </svg></button>
+
+                  </div>
+                </div>
+              </div>
+              <% } %>
+
+              <% if (!job.lastProcessTime || new Date() - new Date(job.lastProcessTime) > 5 * 60 * 60 * 1000) { %>
+              <div id="job-alert-<%= job.id %>" role="alert" class="hidden relative w-full rounded-lg border p-4 [&amp;>svg~*]:pl-7 [&amp;>svg+div]:translate-y-[-3px] [&amp;>svg]:absolute [&amp;>svg]:left-4 [&amp;>svg]:top-4 border-destructive/50 text-destructive dark:border-destructive [&amp;>svg]:text-destructive">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-alert h-4 w-4">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" x2="12" y1="8" y2="12"></line>
+                  <line x1="12" x2="12.01" y1="16" y2="16"></line>
+                </svg>
+                <h5 class="mb-1 font-medium leading-none tracking-tight text-destructive">Error</h5>
+                <div class="text-sm [&amp;_p]:leading-relaxed">We can't verify this job is still active.</div>
+              </div>
+              <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                  reprocessJobPosting(<%= job.id %>);
+                });
+
+                async function reprocessJobPosting(jobId) {
+                  try {
+                    const response = await fetch(`/jobs/reprocessLink/${jobId}`, {
+                      method: 'GET',
+                    });
+
+                    if (!response.ok) {
+                      throw new Error('Network response was not ok');
+                    }
+
+                    const result = await response.json();
+
+                    // Check the similarity score and display the alert if necessary
+                    if (result.similarityScore < 0.8) {
+                      const alertDiv = document.getElementById(`job-alert-${jobId}`);
+                      alertDiv.classList.remove('hidden');
+                    }
+                  } catch (error) {
+                    console.error('Error reprocessing job posting:', error);
+                  }
+                }
+              </script>
+              <% } %>
+
+
               <a href="/jobs/company/<%= job.company_name %>" class="w-full" rel="noopener noreferrer">
                 <button type="button" class="inline-flex items-center w-full justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/70 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 border border-input bg-background shadow-sm shadow-black/5 hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
 
@@ -799,9 +864,6 @@
       getSimilarJobsByCompany(<%= job.id %>);
       if ('<%= user %>') {
         const userIsPremium = '<%= user ? user.isPremium : false %>';
-        if (userIsPremium && !<%= job.isProcessed %>) {
-          processJobPosting(<%= job.id %>);
-        }
         checkFavorite(<%= job.id %>);
       }
 

@@ -6,7 +6,7 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const jobBoardService = require('../services/jobBoardService');
 const userJobService = require('../services/userJobService');
-
+const natural = require('natural');
 const AZURE_STORAGE_CONNECTION_STRING =
   process.env.AZURE_STORAGE_CONNECTION_STRING;
 const marked = require('marked');
@@ -33,6 +33,64 @@ const viewLimiter = rateLimit({
     return req.rateLimit.resetTime && req.rateLimit.resetTime < eightHoursAgo;
   },
 });
+
+function compareJobs(originalJob, processedJob) {
+  let totalScore = 0;
+  let comparisonCount = 0;
+
+  // Compare title using Jaro-Winkler distance
+  if (originalJob.title && processedJob.title) {
+    const titleScore = natural.JaroWinklerDistance(originalJob.title, processedJob.title);
+    totalScore += titleScore;
+    comparisonCount++;
+  }
+
+  // Compare location (exact match)
+  if (originalJob.location && processedJob.location) {
+    const locationScore = originalJob.location === processedJob.location ? 1 : 0;
+    totalScore += locationScore;
+    comparisonCount++;
+  }
+
+  // Compare company name using Jaro-Winkler distance
+  if (originalJob.company_name && processedJob.company_name) {
+    const companyNameScore = natural.JaroWinklerDistance(originalJob.company_name.toLowerCase(), processedJob.company_name.toLowerCase());
+    totalScore += companyNameScore;
+    comparisonCount++;
+  }
+
+  // Compare description using cosine similarity
+  if (originalJob.description && processedJob.description) {
+    const descriptionTokenizer = new natural.WordTokenizer();
+    const originalTokens = descriptionTokenizer.tokenize(originalJob.isProcessed ? originalJob.raw_description_no_format : originalJob.description);
+    const processedTokens = descriptionTokenizer.tokenize(processedJob.description);
+
+    // Create word frequency vectors for both descriptions
+    const allTokens = Array.from(new Set([...originalTokens, ...processedTokens]));
+    const originalVector = allTokens.map(token => originalTokens.filter(t => t === token).length);
+    const processedVector = allTokens.map(token => processedTokens.filter(t => t === token).length);
+
+    // Calculate cosine similarity manually
+    const dotProduct = originalVector.reduce((sum, val, index) => sum + val * processedVector[index], 0);
+    const magnitudeA = Math.sqrt(originalVector.reduce((sum, val) => sum + val * val, 0));
+    const magnitudeB = Math.sqrt(processedVector.reduce((sum, val) => sum + val * val, 0));
+    const descriptionScore = magnitudeA && magnitudeB ? dotProduct / (magnitudeA * magnitudeB) : 0;
+
+    totalScore += descriptionScore;
+    comparisonCount++;
+  }
+
+  // Compare link (exact match)
+  if (originalJob.link && processedJob.url) {
+    const linkScore = originalJob.link === processedJob.url ? 1 : 0;
+    totalScore += linkScore;
+    comparisonCount++;
+  }
+
+  // Calculate average similarity score
+  const similarityScore = comparisonCount > 0 ? totalScore / comparisonCount : 0;
+  return similarityScore;
+}
 
 const experienceLevelRoutes = {
   '/internships': {
@@ -236,6 +294,34 @@ router.put('/update-job-status', checkAuthenticated, async (req, res) => {
   } catch (err) {
     console.error('Error updating job status:', err);
     res.status(500).send('Error updating job status');
+  }
+});
+
+router.get('/reprocessLink/:jobId', checkAuthenticated, async (req, res) => {
+  try {
+    console.log('Reprocessing job link');
+    const jobId = req.params.jobId;
+    const originalJob = await jobQueries.findById(jobId);
+    const jobProcessor = new jobBoardService();
+
+    // Process the job link
+    const processedJob = await jobProcessor.reprocessJobLink(originalJob.link);
+
+    // update the last processed date
+    await jobQueries.updateJobLastProcessedTime(jobId);
+
+    const similarityScore = compareJobs(originalJob, processedJob);
+    const flagged = similarityScore < 0.8;
+
+    res.json({
+      originalJob,
+      processedJob,
+      similarityScore,
+      flagged
+    });
+  } catch (err) {
+    console.error('Error processing job link:', err);
+    res.status(500).send('Error processing job link');
   }
 });
 

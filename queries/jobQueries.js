@@ -423,6 +423,19 @@ const jobQueries = {
     resumeFunctions.createResume(data);
   },
 
+  updateJobLastProcessedTime: async (jobId) => {
+    try {
+      await sql.query`
+        UPDATE JobPostings
+        SET lastProcessTime = GETDATE()
+        WHERE id = ${jobId}
+      `;
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getJobCountByFilter: async (filters) => {
     try {
       const { experienceLevels = [], titles = [], locations = [] } = filters;

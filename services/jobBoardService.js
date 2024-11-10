@@ -3474,6 +3474,89 @@ class JobProcessor extends EventEmitter {
     */
   }
 
+  async reprocessJobLink(link) {
+
+    if (typeof link !== "object" && typeof link !== "string") {
+      console.error("Invalid link type:", typeof link);
+      return { error: "Invalid link type" };
+    }
+
+    const url = typeof link === "object" && link.url ? link.url : link;
+
+    if (typeof url !== "string" || !url.startsWith("http")) {
+      console.error("Invalid URL:", url);
+      return { error: "Invalid URL" };
+    }
+
+    const isJobLink = this.isJobLink(url);
+    if (!isJobLink) {
+      return { skipped: true, reason: "Not a job link" };
+    }
+
+    const jobProcessors = [
+      {
+        keyword: "greenhouse.io",
+        processor: this.processGreenhouseJobLink.bind(this),
+      },
+      {
+        keyword: "bankofamerica.com",
+        processor: this.processBoFALink.bind(this),
+      },
+      { keyword: "ashbyhq.com", processor: this.processAshByHqLink.bind(this) },
+      { keyword: "stripe.com", processor: this.processStripeLink.bind(this) },
+      { keyword: "pfizer.com", processor: this.processPfizerLink.bind(this) },
+      { keyword: "abbvie.com", processor: this.processAbbVieLink.bind(this) },
+      { keyword: "c3.ai", processor: this.processC3AILink.bind(this) },
+      { keyword: "eightfold", processor: this.processEightFoldLink.bind(this) },
+      { keyword: "wiz.io", processor: this.processWizJobLink.bind(this) },
+      { keyword: "lever.co", processor: this.processLeverJobLink.bind(this) },
+      { keyword: "jobvite.com", processor: this.processJobViteLink.bind(this) },
+      {
+        keyword: "careers.tiktok.com",
+        processor: this.processTiktokJobLink.bind(this),
+      },
+      {
+        keyword: "myworkdayjobs.com",
+        processor: this.processWorkDayJobLink.bind(this),
+      },
+      {
+        keyword: "linkedin.com",
+        processor: async (url) => {
+          const response = await this.makeRequest(url);
+          return this.processLinkedInJob(response.data);
+        },
+      },
+      {
+        keyword: "smartrecruiters.com",
+        processor: this.processSmartRecruiterJob.bind(this),
+      },
+      {
+        keyword: "microsoft.com",
+        processor: this.processMicrosoftJob.bind(this),
+      },
+      { keyword: "apple.com", processor: this.processAppleJob.bind(this) },
+      {
+        keyword: "epicgames.com",
+        processor: this.processEpicGamesJob.bind(this),
+      },
+      {
+        keyword: "careerpuck.com",
+        processor: this.processCareerPuckJob.bind(this),
+      },
+    ];
+
+    for (const { keyword, processor } of jobProcessors) {
+      if (url.includes(keyword)) {
+        return await processor(url);
+      }
+    }
+/*
+    const response = await this.makeRequest(url);
+    console.log(response.data);
+    return await this.useGeminiAPI(url, response.data);
+    */
+  }
+
   async getBrowserInstance() {
     if (!this.browser) {
       this.browser = await puppeteer.launch(BROWSER_CONFIG);
@@ -4769,7 +4852,7 @@ class JobProcessor extends EventEmitter {
       } catch (error) {
         console.error("Error in crawlYCombinator:", error);
       }
-      
+
       this.updateProgress({ phase: "Completed" });
     } catch (error) {
       // await notificationQueries.createDevNotification('error', '', 'Error in start:', error);
