@@ -17,6 +17,8 @@ const BROWSER_CONFIG = {
   executablePath: process.env.CHROME_BIN || '/home/site/wwwroot/chrome-linux/chrome/google-chrome',
   args: ['--no-sandbox', '--disable-setuid-sandbox']
 };
+const MAX_CONCURRENT_COMPANY_LINKS = 5; // Adjust this number for optimal performance
+
 
 class ObjectSet extends Set {
   add(obj) {
@@ -210,6 +212,14 @@ class JobProcessor extends EventEmitter {
   }
 
   async addToCompanyLinkQueue(link) {
+    if (this.currentJobLinks.size === 0) {
+      await this.init();
+    }
+
+    if (this.currentJobLinks.has(link) || this.processedLinks.has(link)) {
+      return;
+    }
+    
     if (!this.companyLinkQueue.includes(link)) {
       this.companyLinkQueue.push(link);
       console.log(`Added company link to queue: ${link}`);
@@ -219,17 +229,24 @@ class JobProcessor extends EventEmitter {
 
   async processCompanyLinkQueue() {
     if (this.isProcessingCompanyLinks) {
-      return;
+        return;
     }
     this.isProcessingCompanyLinks = true;
 
-    while (this.companyLinkQueue.length > 0) {
-      const link = this.companyLinkQueue.shift();
-      await this.processQueuedCompanyLink(link);
+    try {
+        while (this.companyLinkQueue.length > 0) {
+            // Take up to MAX_CONCURRENT_COMPANY_LINKS from the queue for concurrent processing
+            const linksToProcess = this.companyLinkQueue.splice(0, MAX_CONCURRENT_COMPANY_LINKS);
+            
+            // Process all selected links concurrently
+            await Promise.all(linksToProcess.map(link => this.processQueuedCompanyLink(link)));
+        }
+    } catch (error) {
+        console.error("Error in processing company link queue:", error);
     }
 
     this.isProcessingCompanyLinks = false;
-  }
+}
 
   async processQueuedCompanyLink(link) {
     console.log(`Processing queued company link: ${link}`);
@@ -3014,8 +3031,8 @@ class JobProcessor extends EventEmitter {
         updatedPostData.offset = offset;
         updatedPostData.limit = limit;
 
-        // Add a random delay between 2 to 5 seconds
-        const delay = Math.floor(Math.random() * (5000 - 2000 + 1)) + 2000;
+        // Add a random delay between 0.5 to 1.5 seconds
+        const delay = Math.floor(Math.random() * (1500 - 500 + 1)) + 500;
         await new Promise((resolve) => setTimeout(resolve, delay));
 
         this.updateProgress({
@@ -4720,7 +4737,7 @@ class JobProcessor extends EventEmitter {
   async start() {
     try {
       await this.init();
-/*
+
       try {
         await this.updateJobPostings();
       } catch (error) {
@@ -4752,7 +4769,7 @@ class JobProcessor extends EventEmitter {
       } catch (error) {
         console.error("Error in crawlYCombinator:", error);
       }
-*/
+      
       this.updateProgress({ phase: "Completed" });
     } catch (error) {
       // await notificationQueries.createDevNotification('error', '', 'Error in start:', error);

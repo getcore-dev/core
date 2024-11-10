@@ -823,12 +823,26 @@ async function fetchJobPostings() {
 
 function extractSalaryFromDescription(description) {
   const salaryPatterns = [
-    /\$([0-9,]+(?:\.[0-9]{2})?)\s?[-—]\s?\$([0-9,]+(?:\.[0-9]{2})?)/gi,  // Match salary ranges like "$144,000 - $203,500" or "$120,000.00 - $178,000.00"
-    /CAD?\s?\$([0-9,]+(?:\.[0-9]{2})?)\s?[-—]\s?CAD?\s?\$([0-9,]+(?:\.[0-9]{2})?)/gi,  // Match salary ranges like "CAD $108,100 - $199,700"
-    /USD?\s?\$?([0-9,]+(?:\.[0-9]{2})?)\s?[-—]\s?USD?\s?\$?([0-9,]+(?:\.[0-9]{2})?)\s?(per year|per month|per hour)?/gi,  // Match ranges with USD, e.g., "106,100 - 185,400 USD per year"
-    /\$?([0-9,]+)\s?(USD|CAD)?\s?[-—]\s?\$?([0-9,]+)\s?(USD|CAD)?/gi,  // Flexible range without strict "$" requirement, e.g., "148,000 - 276,000 USD"
-    /\$([0-9,]+(?:\.[0-9]{2})?)\s?(USD|CAD)?\s?(\/mo|\/hr|\s*hour|\s*month)?/gi,  // Match individual salaries like "$45 /hr", "$100,000 USD"
-    /(CA\$|USD)?([0-9,]+(?:[KMB])?)\s?[-—]\s?(CA\$|USD)?([0-9,]+(?:[KMB])?)/gi  // Match compact salary ranges like "CA$125K - CA$160K"
+    // 1. Match salary ranges like "$144,000 - $203,500" or "$120,000.00 - $178,000.00"
+    /\$([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)\s?[-—]\s?\$([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)/gi,
+
+    // 2. Match salary ranges like "CAD $108,100 - CAD $199,700"
+    /(?:CAD\s?\$)\s?([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)\s?[-—]\s?(?:CAD\s?\$)?([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)/gi,
+
+    // 3. Match ranges with USD, e.g., "106,100 - 185,400 USD per year"
+    /(?:USD\s?)?\$?([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)\s?[-—]\s?(?:USD\s?)?\$?([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)\s?(?:per year|per month|per hour)?/gi,
+
+    // 4. Flexible range with at least one currency indicator, e.g., "148,000 - 276,000 USD"
+    /\$([0-9]{1,3}(?:,[0-9]{3})*)\s?(?:USD|CAD)\s?[-—]\s?\$([0-9]{1,3}(?:,[0-9]{3})*)\s?(?:USD|CAD)/gi,
+
+    // 5. Match individual salaries like "$45 /hr", "$100,000 USD"
+    /\$([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)\s?(?:USD|CAD)?\s?(?:\/mo|\/hr|\s*hour|\s*month)/gi,
+
+    // 6. Match compact salary ranges like "CA$125K - CA$160K"
+    /(?:CA\$|USD\s?)?([0-9]{1,3}(?:[KMB]))\s?[-—]\s?(?:CA\$|USD\s?)?([0-9]{1,3}(?:[KMB]))/gi,
+
+    // 7. Added pattern for hourly rates like "18 USD - 71 USD per hour" with at least one currency indicator
+    /([0-9]{2,}(?:,[0-9]{3})?)\s?(?:USD|CAD)\s?[-—]\s?([0-9]{2,}(?:,[0-9]{3})?)\s?(?:USD|CAD)\s?(?:per hour|\/hr|hourly)?/gi,
   ];
 
   const matches = [];
@@ -836,17 +850,41 @@ function extractSalaryFromDescription(description) {
   salaryPatterns.forEach((pattern) => {
     let match;
     while ((match = pattern.exec(description)) !== null) {
+      // Determine if the pattern is for a range or a single value
+      const isRange = match[2] !== undefined;
+
+      // Extract the period if present (only for patterns that capture it)
+      const period = match[3] ? match[3].trim() : null;
+
+      // Function to convert salary string to a numeric value
+      const parseSalary = (salaryStr) => {
+        if (!salaryStr) return null;
+        let multiplier = 1;
+        salaryStr = salaryStr.toUpperCase();
+
+        if (salaryStr.endsWith('K')) {
+          multiplier = 1000;
+          salaryStr = salaryStr.slice(0, -1);
+        } else if (salaryStr.endsWith('M')) {
+          multiplier = 1000000;
+          salaryStr = salaryStr.slice(0, -1);
+        }
+
+        return parseFloat(salaryStr.replace(/,/g, '')) * multiplier;
+      };
+
       matches.push({
         value: match[0],
-        min: match[1] ? parseFloat(match[1].replace(/,/g, "")) * (match[1].includes('K') ? 1000 : match[1].includes('M') ? 1000000 : 1) : null,
-        max: match[3] || match[2] ? parseFloat((match[3] || match[2]).replace(/,/g, "")) * ((match[3] || match[2]).includes('K') ? 1000 : (match[3] || match[2]).includes('M') ? 1000000 : 1) : null,
-        period: match[5] ? match[5].trim() : null,
+        min: parseSalary(match[1]),
+        max: isRange ? parseSalary(match[2]) : null,
+        period: period,
       });
     }
   });
 
   return matches;
 }
+
 
 function renderJobPostings(jobs) {
   const fragment = document.createDocumentFragment();

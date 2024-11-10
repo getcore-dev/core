@@ -1199,65 +1199,75 @@ const jobQueries = {
   
       const offset = (page - 1) * pageSize;
   
+      // Calculate start date in application code
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - 30);
+  
       // Prepare the base query and parameter container
       let baseQuery = `
-      SELECT
-        j.id,
-        j.title,
-        j.location,
-        j.salary,
-        j.postedDate,
-        j.applicants,
-        j.description,
-        j.salary_max,
-        j.MinimumQualifications,
-        j.PreferredQualifications,
-        j.skills_string,
-        j.experienceLevel AS cleaned_experience_level,
-        c.logo AS company_logo,
-        c.name AS company_name
-      FROM JobPostings j
-      JOIN Companies c ON j.company_id = c.id
-      WHERE j.description IS NOT NULL AND j.description <> ''
-        AND j.postedDate >= DATEADD(DAY, -30, GETDATE())
-    `;
+        SELECT
+          j.id,
+          j.title,
+          j.location,
+          j.salary,
+          j.postedDate,
+          j.applicants,
+          j.description,
+          j.salary_max,
+          j.MinimumQualifications,
+          j.PreferredQualifications,
+          j.skills_string,
+          j.experienceLevel AS cleaned_experience_level,
+          c.logo AS company_logo,
+          c.name AS company_name
+        FROM JobPostings j
+        JOIN Companies c ON j.company_id = c.id
+        WHERE j.postedDate >= @StartDate
+      `;
       const queryParams = [];
       const conditions = [];
   
       // Optimize and combine filter conditions
       if (titles.length) {
-        const titleConditions = buildTitleConditions(titles, queryParams);
+        // Build LIKE conditions for titles
+        const titleConditions = titles.map((title, index) => {
+          const paramName = `title${index}`;
+          queryParams.push({ name: paramName, value: `%${title}%` });
+          return `j.title LIKE @${paramName}`;
+        });
         conditions.push(`(${titleConditions.join(' OR ')})`);
       }
-
+  
       if (skills.length) {
         // Build full-text search conditions for skills
-        const skillConditions = skills.map((skill, index) => {
-          const paramName = `skill${index}`;
-          queryParams.push({ name: paramName, value: `"*${skill}*"` });
-          return `CONTAINS(j.skills_string, @${paramName}) OR CONTAINS(j.description, @${paramName}) OR CONTAINS(j.raw_description_no_format, @${paramName})`;
+        const skillConditions = skills.map((skill) => {
+          // Sanitize input to prevent SQL injection
+          const sanitizedSkill = skill.replace(/"/g, '""');
+          return `CONTAINS(j.skills_string, '"${sanitizedSkill}"') OR CONTAINS(j.description, '"${sanitizedSkill}"') OR CONTAINS(j.raw_description_no_format, '"${sanitizedSkill}"')`;
         });
         conditions.push(`(${skillConditions.join(' OR ')})`);
       }
-
+  
       if (locations.length) {
-        const locationConditions = locations.map((location, index) => {
-          const paramName = `location${index}`;
-          queryParams.push({ name: paramName, value: `"*${location}*"` });
-          return `CONTAINS(j.location, @${paramName})`;
+        const locationConditions = locations.map((location) => {
+          // Sanitize input to prevent SQL injection
+          const sanitizedLocation = location.replace(/"/g, '""');
+          return `CONTAINS(j.location, '"${sanitizedLocation}"')`;
         });
-
+  
         // Check if 'Remote' is in the locations array
-        if (locations.some(location => location.toLowerCase() === 'remote')) {
-          locationConditions.push(`CONTAINS(j.location, '"Virtual" OR "N/A" OR "Remote" OR "Work From Home" OR "Telecommute" OR "Anywhere"')`);
+        if (locations.some((location) => location.toLowerCase() === 'remote')) {
+          locationConditions.push(
+            `CONTAINS(j.location, '"Virtual" OR "N/A" OR "Remote" OR "Work From Home" OR "Telecommute" OR "Anywhere"')`
+          );
         }
-
+  
         conditions.push(`(${locationConditions.join(' OR ')})`);
       }
   
       if (salary > 0) {
-        conditions.push("j.salary >= @salary");
-        queryParams.push({ name: "salary", value: salary });
+        conditions.push('j.salary >= @salary');
+        queryParams.push({ name: 'salary', value: salary });
       }
   
       if (companies.length) {
@@ -1270,34 +1280,32 @@ const jobQueries = {
       }
   
       if (experienceLevels.length) {
-        const expLevelConditions = experienceLevels.map((level, index) => {
-          const paramName = `experienceLevel${index}`;
-          queryParams.push({ name: paramName, value: `"*${level}*"` });
-          const isInternship = level.toLowerCase() === 'internship' || level.toLowerCase() === 'intern';
-          const isEntryLevel = level.toLowerCase() === 'entry level';
-          if (isInternship) {
-            return `CONTAINS(experienceLevel, '"Internship"') OR CONTAINS(title, '"Intern"') AND NOT CONTAINS(title, '"Internal" OR "International"')`;
+        const expLevelConditions = experienceLevels.map((level) => {
+          const sanitizedLevel = level.replace(/"/g, '""').toLowerCase();
+          if (sanitizedLevel === 'internship' || sanitizedLevel === 'intern') {
+            return `(
+              CONTAINS(j.experienceLevel, '"Internship"') OR 
+              (CONTAINS(j.title, '"Intern"') AND NOT CONTAINS(j.title, '"Internal" OR "International"'))
+            )`;
           }
-          if (isEntryLevel) {
-        return `CONTAINS(j.experienceLevel, '"Entry Level"')`;
+          if (sanitizedLevel === 'entry level') {
+            return `CONTAINS(j.experienceLevel, '"Entry Level"')`;
           }
-          return `CONTAINS(j.experienceLevel, @${paramName}) OR CONTAINS(j.title, @${paramName})`;
+          return `CONTAINS(j.experienceLevel, '"${sanitizedLevel}"') OR CONTAINS(j.title, '"${sanitizedLevel}"')`;
         });
         conditions.push(`(${expLevelConditions.join(' OR ')})`);
       }
-      
   
       if (accepted_college_majors.length) {
-        const majorConditions = accepted_college_majors.map((major, index) => {
-          const paramName = `major${index}`;
-          queryParams.push({ name: paramName, value: `"*${major}*"` });
-          return `CONTAINS(j.accepted_college_majors, @${paramName})`;
+        const majorConditions = accepted_college_majors.map((major) => {
+          const sanitizedMajor = major.replace(/"/g, '""');
+          return `CONTAINS(j.accepted_college_majors, '"${sanitizedMajor}"')`;
         });
         conditions.push(`(${majorConditions.join(' OR ')})`);
       }
   
       if (conditions.length) {
-        baseQuery += " AND " + conditions.join(" AND ");
+        baseQuery += ' AND ' + conditions.join(' AND ');
       }
   
       baseQuery += `
@@ -1309,36 +1317,40 @@ const jobQueries = {
       // Prepare SQL request and input parameters
       const request = new sql.Request();
       queryParams.forEach((param) => {
-        request.input(param.name, sql.NVarChar, param.value);
+        request.input(param.name, param.name.startsWith('company') ? sql.Int : sql.NVarChar, param.value);
       });
-      request.input("salary", sql.Decimal(18, 2), salary);
-      request.input("offset", sql.Int, offset);
-      request.input("pageSize", sql.Int, pageSize);
-
-      console.log("Query:", baseQuery);
-      console.log("Params:", queryParams);
+      request.input('StartDate', sql.DateTime, startDate);
+      if (salary > 0) {
+        request.input('salary', sql.Decimal(18, 2), salary);
+      }
+      request.input('offset', sql.Int, offset);
+      request.input('pageSize', sql.Int, pageSize);
+  
+      console.log('Query:', baseQuery);
+      console.log('Params:', queryParams);
   
       // Execute the query
       const result = await request.query(baseQuery);
-
+  
       if (result.recordset.length) {
         // Filter out jobs with descriptions that are mostly '?'
-        result.recordset = result.recordset.filter(job => {
-          const description = job.description || "";
+        result.recordset = result.recordset.filter((job) => {
+          const description = job.description || '';
           const questionMarkCount = (description.match(/\?/g) || []).length;
           const totalLength = description.length;
-
+  
           // Check if the description is mostly '?'
-          return totalLength === 0 || (questionMarkCount / totalLength) < 0.5;
+          return totalLength === 0 || questionMarkCount / totalLength < 0.5;
         });
       }
   
       return result.recordset;
     } catch (error) {
-      console.error("Error in searchAllJobsFromLast30Days:", error);
+      console.error('Error in searchAllJobsFromLast30Days:', error);
       throw error;
     }
   },
+  
 
   searchRankedJobsFromLast30Days: async (filters, page, pageSize) => {
     try {
