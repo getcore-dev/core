@@ -711,7 +711,7 @@ router.get("/crawl-google", checkAuthenticated, async (req, res) => {
   }
 });
 
-router.get("/jobs", cacheMiddleware(3600), async (req, res) => {
+router.get("/jobs", cacheMiddleware(120), async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 20;
@@ -727,78 +727,59 @@ router.get("/jobs", cacheMiddleware(3600), async (req, res) => {
       searchType,
     } = req.query;
 
-    // Parse the query parameters
-    const parsedTitles = titles ? JSON.parse(titles) : [];
-    const parsedLocations = locations ? JSON.parse(locations) : [];
-    const parsedExperienceLevels = experiencelevels
-      ? JSON.parse(experiencelevels)
-      : [];
-    const parsedMajors = majors ? JSON.parse(majors) : [];
+    const parseQueryParam = (param) => (param ? JSON.parse(param) : []);
+    const parsedTitles = parseQueryParam(titles);
+    const parsedLocations = parseQueryParam(locations);
+    const parsedExperienceLevels = parseQueryParam(experiencelevels);
+    const parsedMajors = parseQueryParam(majors);
+    const parsedSkills = parseQueryParam(skills);
+    const parsedCompanies = parseQueryParam(companies);
     const parsedSalary = parseInt(salary) || 0;
-    const parsedSkills = skills ? JSON.parse(skills) : [];
-    const parsedCompanies = companies ? JSON.parse(companies) : [];
 
-    const areAllDefaults = 
-      parsedTitles.length === 0 &&
-      parsedLocations.length === 0 &&
-      parsedExperienceLevels.length === 0 &&
-      parsedMajors.length === 0 &&
-      parsedSalary === 0 &&
-      parsedSkills.length === 0 &&
-      parsedCompanies.length === 0;
+    const areAllDefaults =
+      !parsedTitles.length &&
+      !parsedLocations.length &&
+      !parsedExperienceLevels.length &&
+      !parsedMajors.length &&
+      !parsedSalary &&
+      !parsedSkills.length &&
+      !parsedCompanies.length;
 
     const user = req.user;
-    let userPreferences = {};
-
-    if (user) {
-      userPreferences = {
-        titles: user.jobPreferredTitle,
-        skills: [], // You can populate this if needed
-        locations: user.jobPreferredLocation ? [user.jobPreferredLocation] : "",
-        experienceLevel: user.jobExperienceLevel,
-        majors: [], // You can populate this if needed
-        salary: user.jobPreferredSalary,
-        companies: [],
-      };
-    }
-
-    // Check if user preferences are not empty
-    const userPreferencesNotEmpty = Object.values(userPreferences).some(
-      (value) =>
-        value !== null &&
-        value !== undefined &&
-        value !== "" &&
-        (Array.isArray(value) ? value.length > 0 : true),
-    );
+    const userPreferences = user
+      ? {
+          titles: Array.isArray(user.jobPreferredTitle)
+            ? user.jobPreferredTitle
+            : [user.jobPreferredTitle],
+          skills: [], // You can populate this if needed
+          locations: user.jobPreferredLocation
+            ? [user.jobPreferredLocation]
+            : [],
+          experienceLevels: Array.isArray(user.jobExperienceLevel)
+            ? user.jobExperienceLevel
+            : [user.jobExperienceLevel],
+          majors: [], // You can populate this if needed
+          salary: user.jobPreferredSalary,
+          companies: [],
+        }
+      : {};
 
     let allJobPostings;
 
-    console.log("Search type:", searchType);
     if (searchType === "preference" && areAllDefaults) {
-      console.log("User preference search");
       allJobPostings = await jobQueries.searchRankedJobsFromLast30Days(
-        {
-          titles: Array.isArray(userPreferences.titles) ? userPreferences.titles : [userPreferences.titles],
-          locations: userPreferences.locations,
-          experienceLevels: Array.isArray(userPreferences.experienceLevel) ? userPreferences.experienceLevel : [userPreferences.experienceLevel],
-          accepted_college_majors: userPreferences.majors,
-          salary: userPreferences.salary,
-          skills: userPreferences.skills,
-          companies: userPreferences.companies,
-        },
+        userPreferences,
         page,
         pageSize,
       );
     } else if (searchType === "trending" && areAllDefaults) {
-      allJobPostings = await jobQueries.getTrendingJobsPaginated(page, pageSize);
-    } else if (areAllDefaults) {
-      console.log("Blank search");
-      allJobPostings = await jobQueries.searchRecentJobs(
+      allJobPostings = await jobQueries.getTrendingJobsPaginated(
         page,
-        pageSize
+        pageSize,
       );
+    } else if (areAllDefaults) {
+      allJobPostings = await jobQueries.searchRecentJobs(page, pageSize);
     } else {
-      console.log("Regular search");
       allJobPostings = await jobQueries.searchAllJobsFromLast30Days(
         {
           titles: parsedTitles,

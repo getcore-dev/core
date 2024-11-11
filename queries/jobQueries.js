@@ -3574,6 +3574,39 @@ ORDER BY jp.postedDate DESC
     }
   },
 
+  getDuplicateJobPostingsByLink: async () => {
+    try {
+      const result = await sql.query(`
+        WITH DuplicateJobPostings AS (
+          SELECT link, COUNT(*) AS duplicate_count
+          FROM JobPostings
+          GROUP BY link
+          HAVING COUNT(*) > 1
+        )
+        SELECT jp.id, jp.title, jp.company_id, jp.salary, jp.location, jp.postedDate
+        FROM JobPostings jp
+        JOIN DuplicateJobPostings d
+        ON jp.link = d.link
+        ORDER BY jp.link, jp.postedDate DESC
+      `);
+
+      // Group the results
+      const groupedResults = result.recordset.reduce((acc, job) => {
+        const key = `${job.link}`;
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(job);
+        return acc;
+      }, {});
+
+      return Object.values(groupedResults);
+    } catch (err) {
+      console.error("Database query error:", err);
+      throw err;
+    }
+  },
+
   getDuplicateJobPostings: async () => {
     try {
       const result = await sql.query(`
