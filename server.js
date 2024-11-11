@@ -31,7 +31,7 @@ async function runJobBoardService() {
     try {
       const crawler = new GoogleCrawler({
         maxPages: 50,
-        headless: "new",
+        headless: true,
         delayBetweenRequests: 2000
       });
       crawler.crawlQueue(query)

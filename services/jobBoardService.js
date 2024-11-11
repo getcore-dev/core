@@ -14,7 +14,7 @@ const https = require("https");
 const TurndownService = require("turndown");
 const BROWSER_CONFIG = {
   headless: true,
-  args: ['--no-sandbox', '--disable-setuid-sandbox']
+  args: ['--no-sandbox', '--disable-setuid-sandbox'],
 };
 
 if (process.env.NODE_ENV !== 'development') {
