@@ -18,37 +18,24 @@ jobProcessor.on('progress', (progress) => {
 
 async function runJobBoardService() {
   console.log('Job board service started');
-  const crawlTargets = {
-    greenhouse: 'site:greenhouse.io "Current openings at"',
-    workday: 'site:myworkdayjobs.com "jobs found"',
-    lever: 'site:lever.co "location type"',
-    careerpuck: 'site:careerpuck.com "Join the team"',
-    smartrecruiters: 'site:smartrecruiters.com "Jobs at"',
-    /*taleo: 'site:taleo.net "Job Openings"',*/
-  };
-  
-  for (const [key, query] of Object.entries(crawlTargets)) {
-    try {
-      const crawler = new GoogleCrawler({
-        maxPages: 50,
-        headless: true,
-        delayBetweenRequests: 2000
-      });
-      crawler.crawlQueue(query)
-        .then(links => console.log(`Found links for ${key}:`, links))
-        .catch(error => console.error(`Error crawling ${key}:`, error));
-    } catch (error) {
-      console.error(`Error in crawlGoogle for ${key}:`, error);
-    }
+  try {
+    const crawler = new GoogleCrawler({
+      maxPages: 50,
+      headless: "new",  
+      delayBetweenRequests: 2000
+    });
+    crawler.crawlQueue('site:myworkdayjobs.com "jobs found"')
+    .then(links => console.log('Found links:', links))
+    .catch(error => console.error('Error:', error));
+  } catch (error) {
+    console.error("Error in crawlGoogle:", error);
   }
-  /*
   try {
     await jobProcessor.start();
     console.log('Job board service completed successfully');
   } catch (error) {
     console.error('Error running job board service:', error);
   }
-    */
   scheduleNextRun();
 }
 
@@ -109,7 +96,7 @@ if (cluster.isMaster && process.env.NODE_ENV !== 'development') {
   if (process.env.NODE_ENV !== 'development') {
     setTimeout(() => {
       runJobBoardService();
-    }, 800000);
+    }, 500000);
   }
 } else {
   app.listen(environment.port, () => {
