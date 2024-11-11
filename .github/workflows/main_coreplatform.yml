@@ -17,12 +17,19 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-
+      
       - name: Install dependencies
         run: npm ci
 
       - name: Install PM2 globally
         run: npm install -g pm2
+
+      - name: Install Puppeteer dependencies
+        run: |
+            mkdir -p ./chrome-linux
+            wget -O google-chrome-stable_current_amd64.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+            dpkg-deb -x google-chrome-stable_current_amd64.deb ./chrome-linux
+            mv ./chrome-linux/opt/google/chrome ./chrome-linux/chrome
 
       - name: Set Permissions
         run: chmod +x ./chrome-linux/chrome/google-chrome
