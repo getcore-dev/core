@@ -20,38 +20,6 @@ CREATE TABLE company_comments (
 );
 */
 
-const jobTitleCategories = {
-  "Software Engineer": [
-    "Software Developer",
-    "Python Developer",
-    "Java Developer",
-    "Full Stack Developer",
-    "Backend Developer",
-    "Frontend Developer",
-    "iOS Developer",
-    "Android Developer",
-    "Web Developer",
-    "DevOps Engineer",
-    "Cloud Engineer",
-  ],
-  "Data Scientist": [
-    "Data Analyst",
-    "Machine Learning Engineer",
-    "AI Engineer",
-    "Business Intelligence Analyst",
-    "Data Engineer",
-    "Statistician",
-  ],
-  "Product Manager": [
-    "Product Owner",
-    "Program Manager",
-    "Project Manager",
-    "Scrum Master",
-    "Agile Coach",
-  ],
-  // Add more categories as needed
-};
-
 // Define experience level adjacency mapping
 function expandExperienceLevels(experienceLevels) {
   const experienceLevelAdjacency = {
@@ -356,7 +324,7 @@ function buildTitleConditions2(titles, queryParams) {
   // Build the SQL conditions
   const titleConditions = Array.from(allTitles).map((title, index) => {
     const paramName = `title${index}`;
-    queryParams.push({ name: paramName, value: `"*${title}*"` });
+    queryParams.push({ name: paramName, value: `"${title}"` });
     return `CONTAINS(title, @${paramName})`;
   });
 
@@ -390,7 +358,7 @@ function buildTitleConditions(titles, queryParams) {
   // Build the SQL conditions
   const titleConditions = Array.from(allTitles).map((title, index) => {
     const paramName = `title${index}`;
-    queryParams.push({ name: paramName, value: `"*${title}*"` });
+    queryParams.push({ name: paramName, value: `"${title}"` });
     return `CONTAINS(j.title, @${paramName})`;
   });
 
@@ -1197,7 +1165,7 @@ const jobQueries = {
     }
   },
 
-  searchAllJobsFromLast30Days: async (filters, page, pageSize) => {
+  searchAllJobs: async (filters, page, pageSize) => {
     try {
       console.log("Searching for jobs with filters:", filters);
       const {
@@ -1211,10 +1179,6 @@ const jobQueries = {
       } = filters;
   
       const offset = (page - 1) * pageSize;
-  
-      // Calculate start date in application code
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - 30);
   
       // Prepare the base query and parameter container
       let baseQuery = `
@@ -1235,19 +1199,14 @@ const jobQueries = {
           c.name AS company_name
         FROM JobPostings j
         JOIN Companies c ON j.company_id = c.id
-        WHERE j.postedDate >= @StartDate
       `;
       const queryParams = [];
       const conditions = [];
   
       // Optimize and combine filter conditions
       if (titles.length) {
-        // Build LIKE conditions for titles
-        const titleConditions = titles.map((title, index) => {
-          const paramName = `title${index}`;
-          queryParams.push({ name: paramName, value: `%${title}%` });
-          return `j.title LIKE @${paramName}`;
-        });
+        // Build full-text search conditions for titles
+        const titleConditions = buildTitleConditions(titles, queryParams);
         conditions.push(`(${titleConditions.join(' OR ')})`);
       }
   
@@ -1332,7 +1291,6 @@ const jobQueries = {
       queryParams.forEach((param) => {
         request.input(param.name, param.name.startsWith('company') ? sql.Int : sql.NVarChar, param.value);
       });
-      request.input('StartDate', sql.DateTime, startDate);
       if (salary > 0) {
         request.input('salary', sql.Decimal(18, 2), salary);
       }
@@ -1359,7 +1317,7 @@ const jobQueries = {
   
       return result.recordset;
     } catch (error) {
-      console.error('Error in searchAllJobsFromLast30Days:', error);
+      console.error('Error in searchAllJobs:', error);
       throw error;
     }
   },

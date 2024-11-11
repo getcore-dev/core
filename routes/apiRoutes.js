@@ -694,23 +694,6 @@ router.get("/company/:companyId/job-count", cacheMiddleware(600), async (req, re
   }
 });
 
-router.get("/crawl-google", checkAuthenticated, async (req, res) => {
-  try {
-    const crawler = new GoogleCrawler({
-      maxPages: 5,
-      headless: "new",  
-      delayBetweenRequests: 2000
-    });
-    crawler.crawlQueue('site:myworkdayjobs.com "jobs found"')
-    .then(links => res.json(links))
-    .catch(error => console.error('Error:', error));
-
-  } catch (error) {
-    console.error("Error crawling Google:", error);
-    res.status(500).json({ error: "An error occurred while crawling Google" });
-  }
-});
-
 router.get("/jobs", cacheMiddleware(120), async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -759,7 +742,6 @@ router.get("/jobs", cacheMiddleware(120), async (req, res) => {
             ? user.jobExperienceLevel
             : [user.jobExperienceLevel],
           majors: [], // You can populate this if needed
-          salary: user.jobPreferredSalary,
           companies: [],
         }
       : {};
@@ -767,7 +749,7 @@ router.get("/jobs", cacheMiddleware(120), async (req, res) => {
     let allJobPostings;
 
     if (searchType === "preference" && areAllDefaults) {
-      allJobPostings = await jobQueries.searchRankedJobsFromLast30Days(
+      allJobPostings = await jobQueries.searchAllJobs(
         userPreferences,
         page,
         pageSize,
@@ -780,7 +762,7 @@ router.get("/jobs", cacheMiddleware(120), async (req, res) => {
     } else if (areAllDefaults) {
       allJobPostings = await jobQueries.searchRecentJobs(page, pageSize);
     } else {
-      allJobPostings = await jobQueries.searchAllJobsFromLast30Days(
+      allJobPostings = await jobQueries.searchAllJobs(
         {
           titles: parsedTitles,
           locations: parsedLocations,
@@ -855,7 +837,7 @@ router.get("/job-suggestions", cacheMiddleware(3600), async (req, res) => {
     }
 
     console.log(userPreferences);
-    const topSuggestions = await jobQueries.searchAllJobsFromLast30Days(
+    const topSuggestions = await jobQueries.searchAllJobs(
       userPreferences,
       1,
       50,

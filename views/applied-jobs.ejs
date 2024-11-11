@@ -60,12 +60,9 @@
         <table class="job-table">
           <thead>
             <tr>
-              <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0" data-column="company_name" style="padding: 10px;">Company
+              <th class="h-12 pr-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0" data-column="job_status">Status
               </th>
-              <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0" data-column="title">Title
-              </th>
-              <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0" data-column="job_status">Status
-
+              <th class="h-12 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0" data-column="title">Title
               </th>
             </tr>
           </thead>
@@ -84,8 +81,7 @@
       const jobRows = jobTableBody.querySelectorAll('tr');
 
       jobRows.forEach(row => {
-        const companyName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-        const title = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+        const combinedText = row.querySelector('td:nth-child(2)').textContent.toLowerCase() + ' ' + row.querySelector('td:nth-child(3)').textContent.toLowerCase();
 
 
         if (companyName.includes(query) || title.includes(query)) {
@@ -206,36 +202,45 @@
 
       jobPostings.forEach((job) => {
         const jobRow = document.createElement('tr');
-        jobRow.className = 'border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted';
+        jobRow.className = 'transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted';
 
-        // Company Name cell
-        const companyNameCell = document.createElement('td');
-        companyNameCell.className = 'p-4 align-middle [&:has([role=checkbox])]:pr-0';
+        // Combined Company Logo, Company Name, and Title cell
+        const combinedCell = document.createElement('td');
+        combinedCell.className = 'py-3 align-middle [&:has([role=checkbox])]:pr-0';
+
+        const companyLogo = document.createElement('img');
+        companyLogo.src = job.company_logo; // Assuming job object has company_logo_url property
+        companyLogo.alt = `${job.company_name} logo`;
+        companyLogo.onerror = function () {
+          this.src = '/img/glyph.png';
+        };
+        companyLogo.className = 'company-logo inline-block h-6 w-6 m-0 p-0 rounded-md'; // Add appropriate classes for styling
+
         const companyLink = document.createElement('a');
         companyLink.href = `/jobs/company/${job.company_name}`;
         companyLink.className = 'company-name font-medium';
         companyLink.textContent = job.company_name;
-        companyNameCell.appendChild(companyLink);
 
-        // Title cell
-        const titleCell = document.createElement('td');
-        titleCell.className = 'p-4 align-middle [&:has([role=checkbox])]:pr-0';
+        const companySpan = document.createElement('span');
+        companySpan.className = 'flex items-center space-x-2'; // Add appropriate classes for styling
+        companySpan.appendChild(companyLogo);
+        companySpan.appendChild(companyLink);
 
         const titleLink = document.createElement('a');
         titleLink.href = `/jobs/${job.id}`;
-        titleLink.className = 'font-medium underline underline-offset-4';
+        titleLink.className = 'font-medium underline underline-offset-4 block';
         titleLink.innerHTML = job.title;
 
-        titleCell.appendChild(titleLink);
+        combinedCell.appendChild(companySpan);
+        combinedCell.appendChild(titleLink);
 
         // Status cell
         const statusCell = document.createElement('td');
-        statusCell.className = 'p-4 align-middle [&:has([role=checkbox])]:pr-0';
+        statusCell.className = '';
         statusCell.innerHTML = createCustomSelect(job);
 
-        jobRow.appendChild(companyNameCell);
-        jobRow.appendChild(titleCell);
         jobRow.appendChild(statusCell);
+        jobRow.appendChild(combinedCell);
 
         jobTableBody.appendChild(jobRow);
       });

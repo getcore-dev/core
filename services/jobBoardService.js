@@ -8,15 +8,18 @@ const cheerio = require("cheerio");
 const fs = require("fs").promises;
 const EventEmitter = require("events");
 const path = require("path");
-const puppeteer = require('puppeteer-core');
+const puppeteer = process.env.NODE_ENV === 'development' ? require('puppeteer') : require('puppeteer-core');
 const jobQueries = require("../queries/jobQueries");
 const https = require("https");
 const TurndownService = require("turndown");
 const BROWSER_CONFIG = {
   headless: true,
-  executablePath: process.env.CHROME_BIN || '/home/site/wwwroot/chrome-linux/chrome/google-chrome',
   args: ['--no-sandbox', '--disable-setuid-sandbox']
 };
+
+if (process.env.NODE_ENV !== 'development') {
+  BROWSER_CONFIG.executablePath = process.env.CHROME_BIN || '/home/site/wwwroot/chrome-linux/chrome/google-chrome';
+}
 const MAX_CONCURRENT_COMPANY_LINKS = 5; // Adjust this number for optimal performance
 
 
@@ -4026,6 +4029,7 @@ class JobProcessor extends EventEmitter {
   }
   generateCompanyPrompt(companyContext) {
     return `
+
      Currently for the company ${companyContext.name}, please given all current information known on the company give the following information:
      - location (where the city is based out of: city, state),
      - description (description of the company and what their main products are),

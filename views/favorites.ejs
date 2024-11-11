@@ -189,35 +189,6 @@
           <h5 class="text-2xl font-semibold text-gray-800 dark:text-gray-200">Saved</h5>
         </div>
       </div>
-      <!-- Favorites Type Selector -->
-      <!--
-      <div class="favorites-type-selector">
-        <button class="favorites-type-button" onclick="getFavorites('all')">
-          <span class="material-symbols-outlined">
-            star
-          </span>
-          <p>All</p>
-        </button>
-        <button class="favorites-type-button bg-slate-800 text-background border-slate-700" onclick="getFavorites('posts')">
-          <span class="material-symbols-outlined">
-            article
-          </span>
-          <p>Posts</p>
-        </button>
-        <button class="favorites-type-button" onclick="getFavorites('jobs')">
-          <span class="material-symbols-outlined">
-            work
-          </span>
-          <p>Jobs</p>
-        </button>
-        <button class="favorites-type-button" onclick="getFavorites('comments')">
-          <span class="material-symbols-outlined">
-            comment
-          </span>
-          <p>Comments</p>
-        </button>
-      </div>
-      -->
     </div>
     <div class="favorites p-3" id="favoritesJobContainer">
 
@@ -364,6 +335,52 @@
       });
     }
 
+    function createCardLink(
+      name,
+      timestamp,
+      title,
+      experienceLevel,
+      location,
+      clickable = false,
+      link = null,
+      image = null,
+      salary = null,
+    ) {
+      const card = document.createElement("div");
+
+      const cardContent = `
+  <div class="flex flex-col gap-2 p-2 hover:bg-muted rounded-md" ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
+    <div class="flex w-full flex-col gap-0">
+      <div class="flex flex-row gap-2">
+        <div class="flex items-center gap-0">
+
+        ${
+          image
+            ? `
+                <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
+        <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.onerror=null; this.src='/img/glyph.png';" />
+        </span>
+        `
+            : "<span class='relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5'><img class='aspect-square h-full w-full' src='/img/glyph.png' /></span>"
+        }
+          <div class="text-sm">${name}</div>
+        </div>
+        <div class="ml-auto text-xs text-foreground">${timestamp}</div>
+      </div>
+      <div class="text-md font-semibold text-balance max-w-lg leading-relaxed">
+      <a href="${link}" class="hover:text-accent">${title}</a></div>
+      <div class="text-sm text-muted-foreground">${experienceLevel ? `${experienceLevel} • ` : ""}${location.replace(';','')} ${
+    salary ? `• ${salary}` : ""
+  }</div>
+    </div>
+  </div>
+      `;
+
+      card.innerHTML = cardContent;
+      return card;
+    }
+
+
     function createCard(
       name,
       timestamp,
@@ -386,7 +403,7 @@
       ${tag.icon ? tag.icon : ""}
         ${tag.text}
       </div>
-    `,
+      `,
           )
           .join("");
       }
@@ -422,25 +439,107 @@
       return card;
     }
 
+    function formatRelativeDate(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffInSeconds = Math.floor((now - date) / 1000);
+      const diffInDays = Math.floor(diffInSeconds / 86400);
+      const diffInWeeks = Math.floor(diffInDays / 7);
+
+      if (diffInSeconds < 60) {
+        return "Just now";
+      } else if (diffInSeconds < 3600) {
+        const minutes = Math.floor(diffInSeconds / 60);
+        return `${minutes}m ago`;
+      } else if (diffInSeconds < 86400) {
+        const hours = Math.floor(diffInSeconds / 3600);
+        return `${hours}h ago`;
+      } else if (diffInDays < 7) {
+        return `${diffInDays}d ago`;
+      } else if (diffInWeeks <= 4) {
+        return `${diffInWeeks}w ago`;
+      } else {
+        const month = date.toLocaleString("default", {
+          month: "short"
+        });
+        const day = String(date.getDate());
+        const year = date.getFullYear();
+        const currentYear = now.getFullYear();
+
+        if (year === currentYear) {
+          return `${month} ${day}`;
+        } else {
+          return `${month} ${day}, ${year}`;
+        }
+      }
+    }
+
+    function extractSalaryFromDescription(description) {
+      const salaryPatterns = [
+        // 1. Match salary ranges like "$144,000 - $203,500" or "$120,000.00 - $178,000.00"
+        /\$([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)\s?[-—]\s?\$([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)/gi,
+
+        // 2. Match salary ranges like "CAD $108,100 - CAD $199,700"
+        /(?:CAD\s?\$)\s?([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)\s?[-—]\s?(?:CAD\s?\$)?([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)/gi,
+
+        // 3. Match ranges with USD, e.g., "106,100 - 185,400 USD per year"
+        /(?:USD\s?)?\$?([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)\s?[-—]\s?(?:USD\s?)?\$?([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)\s?(?:per year|per month|per hour)?/gi,
+
+        // 4. Flexible range with at least one currency indicator, e.g., "148,000 - 276,000 USD"
+        /\$([0-9]{1,3}(?:,[0-9]{3})*)\s?(?:USD|CAD)\s?[-—]\s?\$([0-9]{1,3}(?:,[0-9]{3})*)\s?(?:USD|CAD)/gi,
+
+        // 5. Match individual salaries like "$45 /hr", "$100,000 USD"
+        /\$([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)\s?(?:USD|CAD)?\s?(?:\/mo|\/hr|\s*hour|\s*month)/gi,
+
+        // 6. Match compact salary ranges like "CA$125K - CA$160K"
+        /(?:CA\$|USD\s?)?([0-9]{1,3}(?:[KMB]))\s?[-—]\s?(?:CA\$|USD\s?)?([0-9]{1,3}(?:[KMB]))/gi,
+
+        // 7. Added pattern for hourly rates like "18 USD - 71 USD per hour" with at least one currency indicator
+        /([0-9]{2,}(?:,[0-9]{3})?)\s?(?:USD|CAD)\s?[-—]\s?([0-9]{2,}(?:,[0-9]{3})?)\s?(?:USD|CAD)\s?(?:per hour|\/hr|hourly)?/gi,
+      ];
+
+      const matches = [];
+
+      salaryPatterns.forEach((pattern) => {
+        let match;
+        while ((match = pattern.exec(description)) !== null) {
+          // Determine if the pattern is for a range or a single value
+          const isRange = match[2] !== undefined;
+
+          // Extract the period if present (only for patterns that capture it)
+          const period = match[3] ? match[3].trim() : null;
+
+          // Function to convert salary string to a numeric value
+          const parseSalary = (salaryStr) => {
+            if (!salaryStr) return null;
+            let multiplier = 1;
+            salaryStr = salaryStr.toUpperCase();
+
+            if (salaryStr.endsWith('K')) {
+              multiplier = 1000;
+              salaryStr = salaryStr.slice(0, -1);
+            } else if (salaryStr.endsWith('M')) {
+              multiplier = 1000000;
+              salaryStr = salaryStr.slice(0, -1);
+            }
+
+            return parseFloat(salaryStr.replace(/,/g, '')) * multiplier;
+          };
+
+          matches.push({
+            value: match[0],
+            min: parseSalary(match[1]),
+            max: isRange ? parseSalary(match[2]) : null,
+            period: period,
+          });
+        }
+      });
+
+      return matches;
+    }
+
     function renderFavoriteJobs(jobs) {
       const favoritesJobContainer = document.getElementById('favoritesJobContainer');
-
-      const favoritesHeaderContainer = document.createElement('div');
-      favoritesHeaderContainer.classList.add('flex', 'items-center', 'justify-between', 'mb-4', 'px-4', 'py-2', 'bg-gray-100', 'dark:bg-gray-800', 'rounded-lg');
-
-      const favoriteHeader = document.createElement('h5');
-      favoriteHeader.classList.add('text-lg', 'font-semibold', 'text-gray-800', 'dark:text-gray-200');
-      favoriteHeader.textContent = 'Jobs';
-
-      const headerIcon = document.createElement('span');
-      headerIcon.classList.add('material-symbols-outlined', 'text-blue-500');
-      headerIcon.textContent = 'work';
-
-      favoritesHeaderContainer.appendChild(headerIcon);
-      favoritesHeaderContainer.appendChild(favoriteHeader);
-      favoritesJobContainer.appendChild(favoritesHeaderContainer);
-
-
       if (jobs.length === 0) {
         const noFavoritesElement = document.createElement('div');
         noFavoritesElement.classList.add('favorite');
@@ -452,7 +551,41 @@
       }
 
       jobs.forEach((job) => {
-        const favoriteElement = createCard(job.company_name, formatDate(job.created_at), job.title, job.description, true, `/jobs/${job.job_id}`, job.company_logo, job.tags);
+        const postedDate = new Date(job.postedDate.replace(" ", "T"));
+        const now = new Date();
+        const diffTime = Math.abs(now - postedDate);
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        const salaries = extractSalaryFromDescription(job.description + ' ' + job.MinimumQualifications + ' ' + job.PreferredQualifications);
+
+        let salaryText;
+        // salary tag
+        if (job.salary) {
+          salaryText = `$${job.salary}`;
+          if (job.salary_max) {
+            salaryText += ` - $${job.salary_max}`;
+          }
+        } else {
+          if (salaries.length !== 0) {
+            salaryText = salaries[0].value;
+            if (!salaryText.startsWith('$')) {
+              salaryText = '$' + salaryText;
+            }
+            if ((salaries[0].min && salaries[0].min < 1000) || (salaries[0].max && salaries[0].max < 1000)) {
+              salaryText += ' /hr';
+            }
+          }
+        }
+        const favoriteElement = createCardLink(
+          job.company_name,
+          formatRelativeDate(job.postedDate),
+          job.title,
+          job.experienceLevel || job.cleaned_experience_level,
+          formatLocation(job.location),
+          true,
+          `/jobs/${job.job_id}`,
+          job.company_logo,
+          salaryText,
+        );
         favoriteElement.onclick = () => {
           window.location.href = `/jobs/${job.job_id}`;
         };
@@ -502,7 +635,7 @@
       });
     });
 
-    getFavorites('all');
+    getFavorites('jobs');
   </script>
 </body>
 

@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer-core');
+const puppeteer = process.env.NODE_ENV === 'development' ? require('puppeteer') : require('puppeteer-core');
 const jobBoardService = require('./jobBoardService');
 
 const BROWSER_CONFIG = {
@@ -186,6 +186,32 @@ class GoogleCrawler {
       return results;
     }
   }
+
+  async searchGoogle(searchQuery) {
+      if (!this.browser) {
+        await this.initialize();
+      }
+      try {
+        // Navigate to Google with extended timeout
+        const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+        await this.page.goto(searchUrl, { waitUntil: "networkidle0" });
+        
+        // Check for initial CAPTCHA
+        await this.handleCaptcha();
+        // Wait for results to load
+        await this.page.waitForSelector('div.g', { timeout: 5000 })
+          .catch(() => console.warn('Warning: Search results selector not found'));
+
+        // Return the page content
+        const content = await this.page.content();
+        return content;
+      } catch (error) {
+        console.error('Search error:', error);
+      } finally {
+        await this.browser.close();
+      }
+  }
+
 
   async crawlQueue(searchQuery) {
     const jobProcessor = new jobBoardService();
