@@ -364,57 +364,128 @@ function extractSalaryFromDescription(description) {
   return matches;
 }
 
+
+function createCardLink(
+  name,
+  timestamp,
+  title,
+  experienceLevel,
+  location,
+  clickable = false,
+  link = null,
+  image = null,
+  salary = null,
+  tags = null,
+) {
+  const card = document.createElement("div");
+
+  let tagsHtml = "";
+  if (tags) {
+    tagsHtml = tags
+      .map(
+        (tag) => `
+      <div class="${tag.class} inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground flex flex-row gap-2">
+      ${tag.icon ? tag.icon : ""}
+        ${tag.text}
+      </div>
+    `,
+      )
+      .join("");
+  }
+
+  const cardContent = `
+  <div class="flex flex-col gap-2 p-2 hover:bg-muted rounded-md" ${clickable ? `onclick="window.location.href='${link}'"` : ""}>
+    <div class="flex w-full flex-col gap-0">
+      <div class="flex flex-row gap-2">
+        <div class="flex items-center gap-0">
+
+        ${
+          image
+            ? `
+                <span class="relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5">
+        <img class="aspect-square h-full w-full" src="${image || '/img/glyph.png'}" onerror="this.onerror=null; this.src='/img/glyph.png';" />
+        </span>
+        `
+            : "<span class='relative flex shrink-0 overflow-hidden rounded-full mr-2 h-5 w-5'><img class='aspect-square h-full w-full' src='/img/glyph.png' /></span>"
+        }
+          <div class="text-sm">${name}</div>
+        </div>
+        <div class="ml-auto text-xs text-foreground">${timestamp}</div>
+      </div>
+      <div class="text-md font-semibold text-balance max-w-lg leading-relaxed">
+      <a href="${link}" class="hover:text-accent">${title}</a></div>
+      <div class="text-sm text-muted-foreground">${experienceLevel ? `${experienceLevel} • ` : ""}${location.replace(';','')} ${
+    salary ? `• ${salary}` : ""
+  }</div>
+    </div>
+  </div>
+      `;
+
+  card.innerHTML = cardContent;
+  return card;
+}
+
+
 function createJobElement(job) {
   let tags = [];
-  const postedDate = new Date(job.postedDate.replace(" ", "T"));
-  const now = new Date();
-  const diffTime = Math.abs(now - postedDate);
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  // new tag
-  if (diffDays <= 2 && !viewedJobs.includes(job.id)) {
-    tags.push({ text: "New", class: "new", icon:'<span class="flex h-2 w-2 rounded-full bg-blue-600"></span>' });
-  }
+
+      const postedDate = new Date(job.postedDate.replace(" ", "T"));
+      const now = new Date();
+      const diffTime = Math.abs(now - postedDate);
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const salaries = extractSalaryFromDescription(job.description + ' ' + job.MinimumQualifications + ' ' + job.PreferredQualifications);
+
+      // new tag
+      if (diffDays <= 2 && !viewedJobs.includes(job.id)) {
+        tags.push({ text: "New", class: "new", icon:'<span class="flex h-2 w-2 rounded-full bg-blue-600"></span>' });
+      }
+
+      // viewed tag
+      if (viewedJobs.includes(job.id)) {
+        tags.push({
+          text: 'Viewed',
+          class: 'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground',
+          icon: '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 fill-green-300 text-green-300"><path d="M0.877075 7.49991C0.877075 3.84222 3.84222 0.877075 7.49991 0.877075C11.1576 0.877075 14.1227 3.84222 14.1227 7.49991C14.1227 11.1576 11.1576 14.1227 7.49991 14.1227C3.84222 14.1227 0.877075 11.1576 0.877075 7.49991ZM7.49991 1.82708C4.36689 1.82708 1.82708 4.36689 1.82708 7.49991C1.82708 10.6329 4.36689 13.1727 7.49991 13.1727C10.6329 13.1727 13.1727 10.6329 13.1727 7.49991C13.1727 4.36689 10.6329 1.82708 7.49991 1.82708Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>'
+        });
+      }
+
+      let salaryText;
+      // salary tag
+      if (job.salary) {
+        salaryText = `$${job.salary}`;
+        if (job.salary_max) {
+          salaryText += ` - $${job.salary_max}`;
+        }
+      } else {
+        if (salaries.length !== 0) {
+          salaryText = salaries[0].value;
+          if (!salaryText.startsWith('$')) {
+            salaryText = '$' + salaryText;
+          }
+          if ((salaries[0].min && salaries[0].min < 1000) || (salaries[0].max && salaries[0].max < 1000)) {
+            salaryText += ' /hr';
+          }
+        }
+      }
 
 
-  // viewed tag
-  if (viewedJobs.includes(job.id)) {
-    tags.push({
-      text: 'Viewed',
-      class: 'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground',
-      icon: '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 fill-green-300 text-green-300"><path d="M0.877075 7.49991C0.877075 3.84222 3.84222 0.877075 7.49991 0.877075C11.1576 0.877075 14.1227 3.84222 14.1227 7.49991C14.1227 11.1576 11.1576 14.1227 7.49991 14.1227C3.84222 14.1227 0.877075 11.1576 0.877075 7.49991ZM7.49991 1.82708C4.36689 1.82708 1.82708 4.36689 1.82708 7.49991C1.82708 10.6329 4.36689 13.1727 7.49991 13.1727C10.6329 13.1727 13.1727 10.6329 13.1727 7.49991C13.1727 4.36689 10.6329 1.82708 7.49991 1.82708Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>'
-    });
-  }
+      // views tag
+      if (job.views) {
+        tags.push({
+          text: `${job.views} views`,
+          class: "views",
+          icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>',
+        });
+      }
 
-  const salaries = extractSalaryFromDescription(job.description);
-      
-  // salary tag
-  if (job.salary || salaries.length > 0) {
-    const salaryText = job.salary ? `$${job.salary}` : salaries[0].value.startsWith('$') ? salaries[0].value : `$${salaries[0].value}`;
-    tags.push({
-      text: salaryText,
-      class: "salary",
-      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coins"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>',
-    });
-  }
+      // applicants tag
+      tags.push({
+        text: `${job.applicants} applicants`,
+        class: "applicants",
+        icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+      });
 
-
-  // views tag
-  if (job.views) {
-    tags.push({
-      text: `${job.views} views`,
-      class: "views",
-      icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>',
-    });
-  }
-
-  // applicants tag
-  tags.push({
-    text: `${job.applicants} applicants`,
-    class: "applicants",
-    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
-  });
-
-  const jobElement = createCard(
+  const jobElement = createCardLink(
     job.company_name,
     formatRelativeDate(job.postedDate),
     job.title,
@@ -423,6 +494,7 @@ function createJobElement(job) {
     true,
     `/jobs/${job.id}`,
     job.company_logo,
+    salaryText,
     tags,
   );
   return jobElement;

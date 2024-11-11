@@ -17,7 +17,6 @@ const {
 const userRecentQueries = require('../queries/userRecentQueries');
 const cacheMiddleware = require('../middleware/cache');
 const rateLimit = require('express-rate-limit');
-const { user } = require('../config/dbConfig');
 const viewLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
   max: 3,
