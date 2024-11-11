@@ -18,6 +18,7 @@ jobProcessor.on('progress', (progress) => {
 
 async function runJobBoardService() {
   console.log('Job board service started');
+  await jobProcessor.init();
   try {
     const crawler = new GoogleCrawler({
       maxPages: 50,
@@ -30,12 +31,14 @@ async function runJobBoardService() {
   } catch (error) {
     console.error("Error in crawlGoogle:", error);
   }
+  /*
   try {
     await jobProcessor.start();
     console.log('Job board service completed successfully');
   } catch (error) {
     console.error('Error running job board service:', error);
   }
+    */
   scheduleNextRun();
 }
 
