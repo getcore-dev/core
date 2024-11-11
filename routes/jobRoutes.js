@@ -6,7 +6,6 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const jobBoardService = require('../services/jobBoardService');
 const userJobService = require('../services/userJobService');
-const natural = require('natural');
 const AZURE_STORAGE_CONNECTION_STRING =
   process.env.AZURE_STORAGE_CONNECTION_STRING;
 const marked = require('marked');
@@ -37,9 +36,9 @@ function compareJobs(originalJob, processedJob) {
   let totalScore = 0;
   let comparisonCount = 0;
 
-  // Compare title using Jaro-Winkler distance
+  // Compare title using Levenshtein distance
   if (originalJob.title && processedJob.title) {
-    const titleScore = natural.JaroWinklerDistance(originalJob.title, processedJob.title);
+    const titleScore = 1 - (levenshteinDistance(originalJob.title, processedJob.title) / Math.max(originalJob.title.length, processedJob.title.length));
     totalScore += titleScore;
     comparisonCount++;
   }
@@ -51,18 +50,18 @@ function compareJobs(originalJob, processedJob) {
     comparisonCount++;
   }
 
-  // Compare company name using Jaro-Winkler distance
+  // Compare company name using Levenshtein distance
   if (originalJob.company_name && processedJob.company_name) {
-    const companyNameScore = natural.JaroWinklerDistance(originalJob.company_name.toLowerCase(), processedJob.company_name.toLowerCase());
+    const companyNameScore = 1 - (levenshteinDistance(originalJob.company_name.toLowerCase(), processedJob.company_name.toLowerCase()) / Math.max(originalJob.company_name.length, processedJob.company_name.length));
     totalScore += companyNameScore;
     comparisonCount++;
   }
 
   // Compare description using cosine similarity
   if (originalJob.description && processedJob.description) {
-    const descriptionTokenizer = new natural.WordTokenizer();
-    const originalTokens = descriptionTokenizer.tokenize(originalJob.isProcessed ? originalJob.raw_description_no_format : originalJob.description);
-    const processedTokens = descriptionTokenizer.tokenize(processedJob.description);
+    const descriptionTokenizer = (str) => str.split(/\s+/);
+    const originalTokens = descriptionTokenizer(originalJob.isProcessed ? originalJob.raw_description_no_format : originalJob.description);
+    const processedTokens = descriptionTokenizer(processedJob.description);
 
     // Create word frequency vectors for both descriptions
     const allTokens = Array.from(new Set([...originalTokens, ...processedTokens]));
@@ -89,6 +88,28 @@ function compareJobs(originalJob, processedJob) {
   // Calculate average similarity score
   const similarityScore = comparisonCount > 0 ? totalScore / comparisonCount : 0;
   return similarityScore;
+}
+
+function levenshteinDistance(a, b) {
+  const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+
+  for (let i = 0; i <= a.length; i++) {
+    for (let j = 0; j <= b.length; j++) {
+      if (i === 0) {
+        matrix[i][j] = j;
+      } else if (j === 0) {
+        matrix[i][j] = i;
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)
+        );
+      }
+    }
+  }
+
+  return matrix[a.length][b.length];
 }
 
 const experienceLevelRoutes = {

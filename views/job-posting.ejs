@@ -437,13 +437,13 @@
   const hoursDifference = (now - lastProcessTime) / (1000 * 60 * 60);
 
   if (job.lastProcessTime && hoursDifference <= 5 && (job.needs_review === false || job.needs_review === null)) { %>
-              <div id="job-verified-<%= job.id %>" role="alert" class="relative w-full rounded-lg border p-4 [&amp;>svg~*]:pl-7 [&amp;>svg+div]:translate-y-[-3px] [&amp;>svg]:absolute [&amp;>svg]:left-4 [&amp;>svg]:top-4 [&amp;>svg]:text-foreground bg-background text-foreground">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle h-4 w-4">
+              <div id="job-verified-<%= job.id %>" role="alert" class="relative border-emerald-500 dark:border-emerald-800 w-full rounded-lg border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground bg-background text-foreground">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide text-emerald-500 border-emerald-500 dark:border-emerald-800 lucide-check-circle h-4 w-4">
                   <path d="M9 12l2 2 4-4"></path>
                   <circle cx="12" cy="12" r="10"></circle>
                 </svg>
-                <h5 class="mb-1 font-medium leading-none tracking-tight text-success">Verified</h5>
-                <div class="text-sm [&_p]:leading-relaxed">This job was verified active: <%= job.lastProcessTime %></div>
+                <h5 class="mb-1 font-medium leading-none tracking-tight text-emerald-500">Verified</h5>
+                <div class="text-sm [&_p]:leading-relaxed text-emerald-500 dark:border-emerald-800">This job was verified active: <%= job.lastProcessTime %></div>
               </div>
               <% } else { %>
               <div id="job-alert-<%= job.id %>" role="alert" class="hidden relative w-full rounded-lg border p-4 [&amp;>svg~*]:pl-7 [&amp;>svg+div]:translate-y-[-3px] [&amp;>svg]:absolute [&amp;>svg]:left-4 [&amp;>svg]:top-4 border-destructive/50 text-destructive dark:border-destructive [&amp;>svg]:text-destructive">
