@@ -23,7 +23,7 @@ async function runJobBoardService() {
     const crawler = new GoogleCrawler({
       maxPages: 50,
       headless: "new",  
-      delayBetweenRequests: 2000
+      delayBetweenRequests: 1500
     });
     crawler.crawlQueue('site:myworkdayjobs.com "jobs found"')
     .then(links => console.log('Found links:', links))
