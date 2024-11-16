@@ -18,27 +18,27 @@ jobProcessor.on('progress', (progress) => {
 
 async function runJobBoardService() {
   console.log('Job board service started');
-  await jobProcessor.init();
   try {
-    const crawler = new GoogleCrawler({
-      maxPages: 50,
-      headless: "new",  
-      delayBetweenRequests: 1500
-    });
-    crawler.crawlQueue('site:myworkdayjobs.com "jobs found"')
-    .then(links => console.log('Found links:', links))
-    .catch(error => console.error('Error:', error));
-  } catch (error) {
-    console.error("Error in crawlGoogle:", error);
-  }
-  /*
-  try {
+    await jobProcessor.init();
     await jobProcessor.start();
     console.log('Job board service completed successfully');
   } catch (error) {
     console.error('Error running job board service:', error);
   }
-    */
+
+  
+  try {
+    const crawler = new GoogleCrawler({
+      maxPages: 50,
+      headless: "new",
+      delayBetweenRequests: 1500
+    });
+    await crawler.initialize(); // Ensure crawler is initialized before crawling
+    await crawler.crawlQueue('site:myworkdayjobs.com "jobs found"');
+    console.log('Crawl completed successfully');
+  } catch (error) {
+    console.error("Error in crawlGoogle:", error);
+  }
   scheduleNextRun();
 }
 
