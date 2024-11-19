@@ -408,6 +408,13 @@ router.get(
   async (req, res) => {
     try {
       const username = req.params.username;
+      
+      // Validate the username parameter
+      const usernamePattern = /^[a-zA-Z0-9-]+$/;
+      if (!usernamePattern.test(username)) {
+        return res.status(400).json({ error: "Invalid GitHub username" });
+      }
+
       const user = await userQueries.findByGitHubUsername(username);
 
       if (!user || !user.githubAccessToken) {
