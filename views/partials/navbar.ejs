@@ -671,7 +671,12 @@
     document.querySelectorAll('.search-category').forEach(category => {
       category.addEventListener('click', function () {
         const selectedCategory = this.getAttribute('data-category');
-        window.location.href = `/search?searchTerm=${encodeURIComponent(searchBar.value)}&category=${selectedCategory}`;
+        const allowedCategories = ['posts', 'companies', 'users', 'jobs'];
+        if (allowedCategories.includes(selectedCategory)) {
+          window.location.href = `/search?searchTerm=${encodeURIComponent(searchBar.value)}&category=${selectedCategory}`;
+        } else {
+          console.warn('Invalid category selected');
+        }
       });
     });
 
