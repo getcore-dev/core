@@ -1135,9 +1135,14 @@ GROUP BY
         // Insert into LinkPreviewData table
         const insertLinkPreviewDataQuery = `
           INSERT INTO LinkPreviewData (link, image_url, description, title, favicon)
-          VALUES ('${preview.url}', '${preview.image}', '${preview.description}', '${preview.title}', '${preview.favicon}')
+          VALUES (@link, @image_url, @description, @title, @favicon)
         `;
-        await sql.query(insertLinkPreviewDataQuery);
+        await sql.query(insertLinkPreviewDataQuery)
+          .input('link', sql.VarChar, preview.url)
+          .input('image_url', sql.VarChar, preview.image)
+          .input('description', sql.VarChar, preview.description)
+          .input('title', sql.VarChar, preview.title)
+          .input('favicon', sql.VarChar, preview.favicon);
 
         return preview;
       }
