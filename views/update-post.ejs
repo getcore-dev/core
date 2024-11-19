@@ -109,8 +109,8 @@
 
     function fetchUpdates() {
       Promise.all([
-          fetch(`/api/updates/<%= updateId%>`),
-          fetch(`/api/updates/<%= updateId%>/pr-info`)
+          fetch(`/api/updates/<%- updateId %>`),
+          fetch(`/api/updates/<%- updateId %>/pr-info`)
         ])
         .then(([updateResponse, prResponse]) =>
           Promise.all([updateResponse.json(), prResponse.json()])
